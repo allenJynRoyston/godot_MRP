@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhspj3n5kam3h"]
+
+[ext_resource type="Script" path="res://Components/BaseReadout/base_readout.gd" id="1_thu40"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ysjqo"]
+bg_color = Color(0.226707, 0.226708, 0.226707, 1)
+
+[node name="BaseReadout" type="PanelContainer"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 106.0
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ysjqo")
+script = ExtResource("1_thu40")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Level:"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Rooms:"
+
+[node name="ListContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2

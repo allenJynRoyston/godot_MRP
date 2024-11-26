@@ -1,0 +1,198 @@
+[gd_scene load_steps=4 format=3 uid="uid://cg4dqkup54jxn"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wby5w"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1pah"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0sxnn"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0.105882, 0.105882, 0.105882, 1)
+
+[node name="SCP-Overlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.99592, 0.996157)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_wby5w")
+expand_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_e1pah")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "00"
+
+[node name="Button2" type="Button" parent="SubViewport/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "01"
+
+[node name="Button3" type="Button" parent="SubViewport/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "02"
+
+[node name="Button4" type="Button" parent="SubViewport/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "03"
+
+[node name="Button5" type="Button" parent="SubViewport/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "04"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SubViewport/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0sxnn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Unlock"
+
+[node name="title" type="RichTextLabel" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=100]SCP-8888-[x][/font_size]"
+fit_content = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Unlock"
+
+[node name="objectClass" type="RichTextLabel" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=24]Object Class:  Keter, Contained[/font_size]"
+fit_content = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Unlock"
+
+[node name="objectClass" type="RichTextLabel" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=24]Special Containment Procedures:[/font_size]"
+fit_content = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Unlock"
+
+[node name="objectClass" type="RichTextLabel" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=24]Lorem ipsum odor amet, consectetuer adipiscing elit. Faucibus suspendisse porta etiam vehicula cursus magna conubia. Turpis sociosqu per facilisi; tincidunt nascetur semper porta phasellus mattis? Donec porta ac aenean platea sem eleifend nam purus. Ad in convallis interdum porttitor mauris elementum vulputate eleifend ultricies. Efficitur urna condimentum fusce molestie; sodales senectus ut litora. Adipiscing elementum suscipit finibus tellus sem in massa taciti.
+[/font_size]"
+fit_content = true
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Unlock"
+
+[node name="objectClass" type="RichTextLabel" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=24]Lorem ipsum odor amet, consectetuer adipiscing elit. Faucibus suspendisse porta etiam vehicula cursus magna conubia. Turpis sociosqu per facilisi; tincidunt nascetur semper porta phasellus mattis? Donec porta ac aenean platea sem eleifend nam purus. Ad in convallis interdum porttitor mauris elementum vulputate eleifend ultricies. Efficitur urna condimentum fusce molestie; sodales senectus ut litora. Adipiscing elementum suscipit finibus tellus sem in massa taciti.
+[/font_size]"
+fit_content = true
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+text = "Unlock"
+
+[node name="objectClass" type="RichTextLabel" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=24]Lorem ipsum odor amet, consectetuer adipiscing elit. Faucibus suspendisse porta etiam vehicula cursus magna conubia. Turpis sociosqu per facilisi; tincidunt nascetur semper porta phasellus mattis? Donec porta ac aenean platea sem eleifend nam purus. Ad in convallis interdum porttitor mauris elementum vulputate eleifend ultricies. Efficitur urna condimentum fusce molestie; sodales senectus ut litora. Adipiscing elementum suscipit finibus tellus sem in massa taciti.
+[/font_size]"
+fit_content = true
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer7"]
+layout_mode = 2
+text = "Unlock"
+
+[node name="objectClass" type="RichTextLabel" parent="SubViewport/VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer7"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=24]Lorem ipsum odor amet, consectetuer adipiscing elit. Faucibus suspendisse porta etiam vehicula cursus magna conubia. Turpis sociosqu per facilisi; tincidunt nascetur semper porta phasellus mattis? Donec porta ac aenean platea sem eleifend nam purus. Ad in convallis interdum porttitor mauris elementum vulputate eleifend ultricies. Efficitur urna condimentum fusce molestie; sodales senectus ut litora. Adipiscing elementum suscipit finibus tellus sem in massa taciti.
+[/font_size]"
+fit_content = true
