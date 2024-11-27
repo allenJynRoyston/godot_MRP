@@ -19,6 +19,7 @@ run/size/viewport_height=720
 [autoload]
 
 FileSys="*res://Autoload/FileSys.gd"
+Buildables="*res://Autoload/Buildables.gd"
 
 [display]
 

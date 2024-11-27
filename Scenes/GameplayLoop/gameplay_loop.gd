@@ -1,108 +1,163 @@
 extends PanelContainer
 
-@onready var BaseReadout = $BaseReadout
+@onready var BasePhase = $BasePhase
 @onready var SimpleGUI = $SimpleGUI
+@onready var ResourceGUI = $ResourceGUI
 
-var phases:Array = [base_phase, assign_phase, action_phase, event_phase, xp_phase, spend_phase]
-var control_schemes:Array = [controls_gameplay, controls_change_level]
+var phase_arr:Array = [story_phase, base_phase, assign_phase, action_phase, event_phase, xp_phase, spend_phase]
+var control_arr:Array = []
+var secondary_control_arr:Array = []
 
-var current_phase:int = -1
-var current_day:int = 0
-var current_control:int = 0
+var current:Dictionary = {
+	"phase": 0,
+	"day": 0,
+	"control": -1,
+	"secondary_control": 0,
+	"enable_tabblable": true,
+	"enable_next": true,
+	"enable_floor_change": true,
+	"enable_save_load": true
+}
 
-var base_data:Dictionary = {
-	0: [],
-	1: [],
-	2: [],
-	3: []
+var player_resources:Dictionary = {
+	"money": {
+		"balance": 200,
+		"change_rate": 0
+	},
+	"energy": {
+		"balance": 10,
+		"change_rate": 0
+	},
+	"staff": {
+		"total": 0,
+		"assigned": 0,
+		"capacity": 0
+	},
+	"dclass": {
+		"total": 0,
+		"capacity": 0,
+		"assigned": 0,
+	}
+}
+
+var base_phase_data:Dictionary = {
+	"built": {
+		0: [],
+		1: [],
+		2: [],
+		3: []
+	},
+	"purchase_list": [],
+	"floor_selection": 0
 } : 
 	set(new_val):
-		base_data = new_val
-		BaseReadout.data = base_data
+		base_phase_data = new_val
+		BasePhase.data = new_val
+		ResourceGUI.data = new_val
 		
-var build_on_floor:int = -1 : 
-	set(new_val):
-		if build_on_floor != new_val:
-			build_on_floor = new_val
-			BaseReadout.on_floor = build_on_floor
 
 # -----------------------------------
 func _ready() -> void:
-	build_on_floor = 0
-	update_gui("game_start", "")	
-	update_controls()
+	control_arr = [SimpleGUI, BasePhase, ResourceGUI]
+	secondary_control_arr = [SimpleGUI, ResourceGUI]
+	restore_game()
 # -----------------------------------
 	
 # -----------------------------------
 #region SAVE/LOAD
 func quicksave() -> void:
 	var save_data = {
-		"current_control": current_control,
-		"current_phase": current_phase,
-		"current_day": current_day,
-		"build_on_floor": build_on_floor,
-		"base_data": base_data
+		"current": current,
+		"base_phase_data": base_phase_data,
+		"player_resources": player_resources
 	}	
 	var res = FileSys.save_file(FileSys.FILE.QUICK_SAVE, save_data)
+	print("saved game: ", res)
 
 func quickload() -> void:
 	var res = FileSys.load_file(FileSys.FILE.QUICK_SAVE)		
 	if res.success:
 		restore_game(res.filedata.data)
+	print("quickload game: ", res.success)
 		
-func restore_game(restore_data:Dictionary) -> void:
-	current_control = restore_data.current_control
-	current_phase = restore_data.current_phase
-	current_day = restore_data.current_day
-	build_on_floor = restore_data.build_on_floor
-	base_data = restore_data.base_data
-	phases[current_phase].call()	
-	update_controls()
+func restore_game(restore_data:Dictionary = {}) -> void:
+	activate_controls_for()
+	current = restore_data.current if !restore_data.is_empty() else current
+	base_phase_data = restore_data.base_phase_data if !restore_data.is_empty() else base_phase_data
+	player_resources = restore_data.player_resources if !restore_data.is_empty() else player_resources
+	
+	# assign data to nodes
+	ResourceGUI.player_resources = player_resources
+	
+	phase_arr[current.phase].call()	
+	
 	
 #endregion		
 # -----------------------------------			
 	
 # -----------------------------------
 func next() -> void:
-	current_phase = (current_phase + 1) % phases.size()
-	if current_phase == 0:
-		current_day += 1
-	phases[current_phase].call()
-
-
-func update_controls() -> void:
-	for item in [BaseReadout, SimpleGUI]:
-		item.is_active = false
-	
-	match current_control:
-		0: 
-			SimpleGUI.is_active = true
-		1: 
-			BaseReadout.is_active = true
+	current.phase = (current.phase + 1) % phase_arr.size()
+	if current.phase == 0:
+		current.day += 1
+	phase_arr[current.phase].call()
 # -----------------------------------
 
 # -----------------------------------
 func update_gui(phase:String, summary:String) -> void:
-	SimpleGUI.day_text = "Day: %s:" % [current_day]
-	SimpleGUI.phase_text = "Phase: %s (%s)" % [current_phase, phase]
-	SimpleGUI.summary_text = "Summary: %s" % [summary]
+	SimpleGUI.data = {
+		"day_text": "Day: %s:" % [current.day],
+		"phase_text": "Phase: %s (%s)" % [current.phase, phase],
+		"summary_text": "Summary: %s" % [summary]
+	}
+# -----------------------------------
+
+# -----------------------------------
+#region STORY
+func story_phase() -> void:	
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = true
+	
+	# activate controls
+	activate_controls_for(SimpleGUI)
+	
+	#activate_controls_for(SimpleGUI)
+	update_gui("story_phase", "Story goes here.")	
+#endregion	
 # -----------------------------------
 
 # -----------------------------------
 #region BASE
 func base_phase() -> void:
-	var selected := "Barricks"
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = false
 	
-	base_data[build_on_floor].push_back(selected)
-	base_data = base_data.duplicate()
-
-	update_gui("base_phase", "You built %s on floor %s." % [selected, build_on_floor])	
+	# update GUI
+	update_gui("base_phase", "Awaiting input...")
+	
+	# activate controls
+	activate_controls_for(BasePhase)	
+	await BasePhase.input_response
+	
+	# set enable rules / update GUI
+	current.enable_next = true
+	update_gui("base_phase", "You built %s on floor %s." % [5, base_phase_data.floor_selection])	
 #endregion
 # -----------------------------------
 
 # -----------------------------------
 #region ASSIGN
 func assign_phase() -> void:
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = true
+	
+	# update GUI
+	activate_controls_for(SimpleGUI)
+	
+	# update GUI
 	update_gui("assign_phase", "You assigned Dr. Maroon to Containment Cell 1")
 #endregion
 # -----------------------------------
@@ -110,6 +165,13 @@ func assign_phase() -> void:
 # -----------------------------------
 #region ACTION
 func action_phase() -> void:
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = true
+	
+	# update GUI
+	activate_controls_for(SimpleGUI)
+		
 	update_gui("action_phase", "You used [POWER A] to speed up reseach on Item-01.")
 #endregion
 # -----------------------------------
@@ -117,6 +179,13 @@ func action_phase() -> void:
 # -----------------------------------
 #region EVENT
 func event_phase() -> void:
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = true
+	
+	# update GUI
+	activate_controls_for(SimpleGUI)
+		
 	update_gui("event_phase", "Item 01 reactived violently, killing 3 staff and 10 D-Class.")
 #endregion
 # -----------------------------------
@@ -124,6 +193,13 @@ func event_phase() -> void:
 # -----------------------------------
 #region XP
 func xp_phase() -> void:
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = true
+	
+	# update GUI
+	activate_controls_for(SimpleGUI)
+		
 	update_gui("xp_phase", "You gained 10xp from Item 01.")
 #endregion
 # -----------------------------------
@@ -131,50 +207,75 @@ func xp_phase() -> void:
 # -----------------------------------
 #region SPEND
 func spend_phase() -> void:
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = true
+	
+	# update GUI
+	activate_controls_for(SimpleGUI)
+		
 	update_gui("spend_phase", "You unlocked [HISTORY] on Item 01.")
 #endregion
 # -----------------------------------
 
+#region CONTROLS 
 # -----------------------------------	
-func controls_save_and_load(keycode:int) -> void:
-	match keycode: 
-		# tab
-		4194306: 
-			current_control = (current_control + 1) % control_schemes.size()
-			update_controls()
-		# 5 key
-		53: quicksave() 
-		# 8 key
-		56: quickload()
+func activate_controls_for(val:Node = null) -> void:
+	if val != null:
+		var index = control_arr.find(val)
+		current.control = index	
+	
+	for i in range(control_arr.size()):
+		control_arr[i].is_active = i == current.control
 # -----------------------------------	
-
-# -----------------------------------	
-func controls_gameplay(keycode:int) -> void:
-	match keycode: 
-		# space
-		32: next() 
-# -----------------------------------			
-
-# -----------------------------------
-func controls_change_level(keycode:int) -> void:
-	match keycode: 
-		# 0
-		48: 
-			build_on_floor = 0
-		# 1
-		49: 
-			build_on_floor = 1
-		# 2
-		50: 
-			build_on_floor = 2
-		# 3
-		51: 
-			build_on_floor = 3
-# -----------------------------------
 
 # -----------------------------------	
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_pressed():
-		controls_save_and_load(event.keycode)
-		control_schemes[current_control].call(event.keycode)		
+		# --------------------------
+		if current.control != -1 and "on_key_input" in control_arr[current.control]:
+			control_arr[current.control].on_key_input(event.keycode)
+		
+		# --------------------------
+		if current.enable_tabblable:
+			match event.keycode: 
+				# tab
+				4194306:
+					current.secondary_control = (current.secondary_control + 1) % secondary_control_arr.size()
+					activate_controls_for(secondary_control_arr[current.secondary_control])
+					
+		# --------------------------
+		if current.enable_floor_change:
+			match event.keycode: 
+				# 0
+				48: 
+					base_phase_data.floor_selection = 0
+					base_phase_data = base_phase_data.duplicate()
+				# 1
+				49: 
+					base_phase_data.floor_selection = 1
+					base_phase_data = base_phase_data.duplicate()
+				# 2
+				50: 
+					base_phase_data.floor_selection = 2
+					base_phase_data = base_phase_data.duplicate()
+				# 3
+				51: 
+					base_phase_data.floor_selection = 3
+					base_phase_data = base_phase_data.duplicate()
+					
+		# --------------------------
+		if current.enable_next:
+			match event.keycode:
+				# space
+				32: next()
+				
+		# --------------------------
+		if current.enable_save_load:
+			match event.keycode:
+				# 5
+				53: quicksave() 
+				# 8 key
+				56: quickload()
 # -----------------------------------		
+#endregion

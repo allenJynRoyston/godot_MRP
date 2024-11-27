@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ceyir223dkdj2"]
+[gd_scene load_steps=5 format=3 uid="uid://ceyir223dkdj2"]
 
 [ext_resource type="Script" path="res://Scenes/GameplayLoop/gameplay_loop.gd" id="1_tvyoq"]
-[ext_resource type="PackedScene" uid="uid://dhspj3n5kam3h" path="res://Components/BaseReadout/BaseReadout.tscn" id="2_5t4y7"]
+[ext_resource type="PackedScene" uid="uid://dhspj3n5kam3h" path="res://Components/BasePhase/BasePhase.tscn" id="2_5t4y7"]
 [ext_resource type="PackedScene" uid="uid://b7rd7wl8acqmo" path="res://Components/SimpleGUI/SimpleGUI.tscn" id="2_68ecb"]
+[ext_resource type="PackedScene" uid="uid://cnsljxa1bq6lr" path="res://Components/ResourceGUI/ResourceGUI.tscn" id="3_7vqcg"]
 
 [node name="GameplayLoop" type="PanelContainer"]
 anchors_preset = 15
@@ -15,7 +16,10 @@ script = ExtResource("1_tvyoq")
 [node name="SimpleGUI" parent="." instance=ExtResource("2_68ecb")]
 layout_mode = 2
 
-[node name="BaseReadout" parent="." instance=ExtResource("2_5t4y7")]
+[node name="ResourceGUI" parent="." instance=ExtResource("3_7vqcg")]
+layout_mode = 2
+
+[node name="BasePhase" parent="." instance=ExtResource("2_5t4y7")]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 8

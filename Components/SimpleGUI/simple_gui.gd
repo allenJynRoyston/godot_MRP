@@ -1,39 +1,41 @@
-extends PanelContainer
+extends ControlPanel
 
-@onready var RootPanel = $CenterContainer/Panel
 @onready var DayLabel = $CenterContainer/Panel/MarginContainer/VBoxContainer/day
 @onready var PhaseLabel = $CenterContainer/Panel/MarginContainer/VBoxContainer/phase
 @onready var SummaryLabel = $CenterContainer/Panel/MarginContainer/VBoxContainer/summary
-
-var is_active:bool = false : 
-	set(val):
-		if is_active != val:
-			is_active = val
-			update_panel()
 			
-var day_text = "":
+var day_text:String = "":
 	set(val):
 		day_text = val
 		DayLabel.text = day_text
 		
-var phase_text = "" : 
+var phase_text:String = "" : 
 	set(val):
 		phase_text = val
 		PhaseLabel.text = phase_text
 		
-var summary_text = "" : 
+var summary_text:String = "" : 
 	set(val):
 		summary_text = val
-		SummaryLabel.text = summary_text		
-
-# -----------------------------------
+		SummaryLabel.text = summary_text
+		
+# -----------------------------------	
 func _ready() -> void:
-	update_panel()
-# -----------------------------------
+	RootPanel = $CenterContainer/Panel
+	super._ready()
+# -----------------------------------		
 
-# -----------------------------------
-func update_panel() -> void:
-	var new_stylebox = StyleBoxFlat.new()
-	new_stylebox.bg_color = "5531b8" if is_active else "3a3a3a"
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
-# -----------------------------------
+# -----------------------------------		
+func on_data_update(_previous_state:Dictionary) -> void:
+	day_text = data.day_text
+	phase_text = data.phase_text
+	summary_text = data.summary_text
+# -----------------------------------		
+
+# -----------------------------------	
+func on_key_input(keycode:int) -> void:
+	match keycode: 
+		# space
+		32: 
+			get_parent().next()
+# -----------------------------------		

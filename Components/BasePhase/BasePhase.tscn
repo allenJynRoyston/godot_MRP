@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhspj3n5kam3h"]
 
-[ext_resource type="Script" path="res://Components/BaseReadout/base_readout.gd" id="1_thu40"]
+[ext_resource type="Script" path="res://Components/BasePhase/BasePhase.gd" id="1_thu40"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ysjqo"]
 bg_color = Color(0.226707, 0.226708, 0.226707, 1)
 
-[node name="BaseReadout" type="PanelContainer"]
+[node name="BasePhase" type="PanelContainer"]
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 106.0
@@ -29,6 +29,13 @@ theme_override_constants/separation = 10
 [node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Level:"
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Purchase:"
+
+[node name="PurchaseContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

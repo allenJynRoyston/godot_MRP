@@ -1,0 +1,115 @@
+[gd_scene load_steps=3 format=3 uid="uid://cnsljxa1bq6lr"]
+
+[ext_resource type="Script" path="res://Components/ResourceGUI/resource_gui.gd" id="1_qa87o"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3iw57"]
+font_color = Color(1, 0.0980392, 0, 1)
+
+[node name="ResourceGUI" type="PanelContainer"]
+custom_minimum_size = Vector2(1080, 20)
+offset_right = 1080.0
+offset_bottom = 33.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_qa87o")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="money" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="title" type="Label" parent="MarginContainer/HBoxContainer/money"]
+layout_mode = 2
+text = " 💸(Money)"
+vertical_alignment = 1
+
+[node name="current" type="Label" parent="MarginContainer/HBoxContainer/money"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[node name="change_rate" type="Label" parent="MarginContainer/HBoxContainer/money"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_3iw57")
+vertical_alignment = 1
+
+[node name="energy" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="title" type="Label" parent="MarginContainer/HBoxContainer/energy"]
+layout_mode = 2
+text = " ️⚡(Energy)"
+vertical_alignment = 1
+
+[node name="current" type="Label" parent="MarginContainer/HBoxContainer/energy"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[node name="change_rate" type="Label" parent="MarginContainer/HBoxContainer/energy"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[node name="staff" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="title" type="Label" parent="MarginContainer/HBoxContainer/staff"]
+layout_mode = 2
+text = " 👷(Staff)"
+vertical_alignment = 1
+
+[node name="total" type="Label" parent="MarginContainer/HBoxContainer/staff"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[node name="capacity" type="Label" parent="MarginContainer/HBoxContainer/staff"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[node name="assigned" type="Label" parent="MarginContainer/HBoxContainer/staff"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_3iw57")
+vertical_alignment = 1
+
+[node name="dclass" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="title" type="Label" parent="MarginContainer/HBoxContainer/dclass"]
+layout_mode = 2
+text = " ️🦹(D-Class)"
+vertical_alignment = 1
+
+[node name="total" type="Label" parent="MarginContainer/HBoxContainer/dclass"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[node name="capacity" type="Label" parent="MarginContainer/HBoxContainer/dclass"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[node name="assigned" type="Label" parent="MarginContainer/HBoxContainer/dclass"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_3iw57")
+vertical_alignment = 1
