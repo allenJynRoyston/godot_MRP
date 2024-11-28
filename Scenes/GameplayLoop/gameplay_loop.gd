@@ -4,14 +4,14 @@ extends PanelContainer
 @onready var SimpleGUI = $SimpleGUI
 @onready var ResourceGUI = $ResourceGUI
 
-var phase_arr:Array = [story_phase, base_phase, assign_phase, action_phase, event_phase, xp_phase, spend_phase]
+var phase_arr:Array = [story_phase, base_phase, recruit_phase, assign_phase, action_phase, event_phase, xp_phase, spend_phase, calc_phase]
 var control_arr:Array = []
 var secondary_control_arr:Array = []
 
 var current:Dictionary = {
 	"phase": 0,
 	"day": 0,
-	"control": -1,
+	"control": 0,
 	"secondary_control": 0,
 	"enable_tabblable": true,
 	"enable_next": true,
@@ -20,29 +20,29 @@ var current:Dictionary = {
 }
 
 var player_resources:Dictionary = {
-	"money": {
-		"balance": 200,
-		"change_rate": 0
+	RESOURCE.MONEY: {
+		"total": 200,
 	},
-	"energy": {
-		"balance": 10,
-		"change_rate": 0
+	RESOURCE.ENERGY: {
+		"total": 0,		
 	},
-	"staff": {
-		"total": 0,
-		"assigned": 0,
-		"capacity": 0
+	RESOURCE.STAFF: {
+		"total": 0,		
 	},
-	"dclass": {
-		"total": 0,
-		"capacity": 0,
-		"assigned": 0,
-	}
-}
+	RESOURCE.MTF: {
+		"total": 0,		
+	},	
+	RESOURCE.DCLASS: {
+		"total": 0,		
+	}	
+} : 
+	set(val):
+		player_resources = val
+		ResourceGUI.data = val
 
 var base_phase_data:Dictionary = {
 	"built": {
-		0: [],
+		0: [BUILDING_TYPE.SOLAR_PANELS],
 		1: [],
 		2: [],
 		3: []
@@ -53,8 +53,22 @@ var base_phase_data:Dictionary = {
 	set(new_val):
 		base_phase_data = new_val
 		BasePhase.data = new_val
-		ResourceGUI.data = new_val
-		
+			
+var containment_data:Dictionary = {
+	"pending": [
+		SCP.ITEM.TWO
+	],
+	"active": [
+		{
+			"is_contained": true,
+			"ref": SCP.ITEM.ONE,
+			"placement": {
+				"floor": 0,
+			},
+			"assigned": null
+		}
+	]
+}
 
 # -----------------------------------
 func _ready() -> void:
@@ -69,7 +83,8 @@ func quicksave() -> void:
 	var save_data = {
 		"current": current,
 		"base_phase_data": base_phase_data,
-		"player_resources": player_resources
+		"player_resources": player_resources,
+		"containment_data": containment_data
 	}	
 	var res = FileSys.save_file(FileSys.FILE.QUICK_SAVE, save_data)
 	print("saved game: ", res)
@@ -83,15 +98,11 @@ func quickload() -> void:
 func restore_game(restore_data:Dictionary = {}) -> void:
 	activate_controls_for()
 	current = restore_data.current if !restore_data.is_empty() else current
-	base_phase_data = restore_data.base_phase_data if !restore_data.is_empty() else base_phase_data
-	player_resources = restore_data.player_resources if !restore_data.is_empty() else player_resources
-	
-	# assign data to nodes
-	ResourceGUI.player_resources = player_resources
-	
+	base_phase_data = restore_data.base_phase_data if !restore_data.is_empty() else base_phase_data	
+	containment_data = restore_data.containment_data if !restore_data.is_empty() else containment_data
+	player_resources = restore_data.player_resources if !restore_data.is_empty() else RESOURCE.calculate_properties(player_resources, base_phase_data.built, containment_data)
+
 	phase_arr[current.phase].call()	
-	
-	
 #endregion		
 # -----------------------------------			
 	
@@ -122,8 +133,11 @@ func story_phase() -> void:
 	# activate controls
 	activate_controls_for(SimpleGUI)
 	
-	#activate_controls_for(SimpleGUI)
-	update_gui("story_phase", "Story goes here.")	
+	if current.day == 0:
+		update_gui("story_phase", "Aquire new SCP")	
+	
+	else:
+		update_gui("story_phase", "Story goes here.")	
 #endregion	
 # -----------------------------------
 
@@ -139,13 +153,38 @@ func base_phase() -> void:
 	
 	# activate controls
 	activate_controls_for(BasePhase)	
-	await BasePhase.input_response
+	var res:Dictionary = await BasePhase.input_response
 	
+	var calc_res = RESOURCE.calc_purchases(base_phase_data, player_resources, containment_data, res)
+	base_phase_data = calc_res.base_data
+	player_resources = calc_res.resources
+
 	# set enable rules / update GUI
+	await get_tree().create_timer(0).timeout 
 	current.enable_next = true
-	update_gui("base_phase", "You built %s on floor %s." % [5, base_phase_data.floor_selection])	
+	update_gui("base_phase", "You built %s rooms." % [res.purchased.size()])	
+	
 #endregion
 # -----------------------------------
+
+# -----------------------------------
+#region HIRE
+func recruit_phase() -> void:
+	# set enable rules
+	current.enable_next = false
+	current.enable_tabblable = true
+	
+	# update GUI
+	activate_controls_for(SimpleGUI)
+	var changes = [[RESOURCE.MTF, 10], [RESOURCE.STAFF, 10], [RESOURCE.DCLASS, 10]]
+	
+	player_resources = RESOURCE.adjust_resource(player_resources, changes)
+	
+	# update GUI
+	update_gui("recruit_phase", "You recruited mtf, staff and dclass.")
+#endregion
+# -----------------------------------	
+	
 
 # -----------------------------------
 #region ASSIGN
@@ -217,6 +256,24 @@ func spend_phase() -> void:
 	update_gui("spend_phase", "You unlocked [HISTORY] on Item 01.")
 #endregion
 # -----------------------------------
+
+# -----------------------------------
+func calc_phase() -> void:
+	current.enable_next = false
+	
+	for item in containment_data.active:
+		if item.is_contained:
+			var scp_data = SCP.get_reference_data(item.ref)
+			if "containment_reward" in scp_data:
+				player_resources = RESOURCE.adjust_resource(player_resources, scp_data.containment_reward)
+	
+	player_resources = RESOURCE.calculate_end_of_phase(player_resources, base_phase_data.built)	
+	update_gui("calc_phase", "Recalculated resources.")
+	
+	# create delay
+	await get_tree().create_timer(0).timeout 
+	current.enable_next = true	
+# -----------------------------------	
 
 #region CONTROLS 
 # -----------------------------------	

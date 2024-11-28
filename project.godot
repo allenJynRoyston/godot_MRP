@@ -18,8 +18,12 @@ run/size/viewport_height=720
 
 [autoload]
 
+BUILDING_TYPE="*res://Autoload/enums/BUILDING_TYPE.gd"
+RESOURCE="*res://Autoload/enums/RESOURCE.gd"
+SCP="*res://Autoload/enums/SCP.gd"
 FileSys="*res://Autoload/FileSys.gd"
 Buildables="*res://Autoload/Buildables.gd"
+Utility="*res://Autoload/Utility.gd"
 
 [display]
 

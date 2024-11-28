@@ -11,115 +11,121 @@ const NONE:Dictionary = {
 
 const BARRICKS:Dictionary = {
 	"name": "BARRICKS",
-	"build_cost": {
-		"money": 3,
-	},
 	"resources": {
-		"capacity": {
-			"mtf": 10,
+		# cost to build 
+		"build_cost": {
+			RESOURCE.MONEY: 50,
 		},
-		"cost":{
-			"money": 3,
-		}
+		# adds to capacity total
+		"capacity": {
+			RESOURCE.MTF: 6
+		},
+		# cost to maintaince per month (lose resources)
+		"net":{
+			RESOURCE.MONEY: -10,
+			RESOURCE.ENERGY: -1
+		},
 	}
 }
 
 const DORMITORY:Dictionary = {
 	"name": "DORMITORY",
-	"build_cost": {
-		"money": 3,
-	},	
 	"resources": {
+		"build_cost": {
+			RESOURCE.MONEY: 50,
+		},
 		"capacity": {
-			"staff": 10,
+			RESOURCE.STAFF: 10,
 		},
-		"cost":{
-			"money": 3,
-		}
-	}
-}
-
-const CAFETERIA:Dictionary = {
-	"name": "CAFETERIA",
-	"build_cost": {
-		"money": 3,
-	},	
-	"resources": {
-		"gain": {
-			
-		},
-		"cost":{
-			"staff": 3,
-			"money": 3,
-		}
-	}
-}
-
-const SOLAR_PANELS:Dictionary = {
-	"name": "SOLAR_PANELS",
-	"build_cost": {
-		"money": 3,
-	},	
-	"resources": {
-		"gain": {
-			"energy": 2
-		},
-		"cost":{
-			"money": 2,
-		}
-	}
-}
-
-const STORAGE:Dictionary = {
-	"name": "STORAGE",
-	"build_cost": {
-		"money": 3,
-	},	
-	"resources": {
-		"capacity": {
-			"staff": 10,
-		},
-		"cost":{
-			"money": 1,
+		"net":{
+			RESOURCE.MONEY: -3,
+			RESOURCE.ENERGY: -1
 		}
 	}
 }
 
 const D_CLASS_PRISON:Dictionary = {
 	"name": "D_CLASS_PRISON",
-	"build_cost": {
-		"money": 3,
-	},	
 	"resources": {
-		"capacity": {
-			"dclass": 10,
+		"build_cost": {
+			RESOURCE.MONEY: 50,
 		},
-		"cost":{
-			"money": 2,
+		"capacity": {
+			RESOURCE.DCLASS: 10,
+		},
+		"net":{
+			RESOURCE.MONEY: -5,
+			RESOURCE.ENERGY: -2
 		}
 	}
 }
 
+const CAFETERIA:Dictionary = {
+	"name": "CAFETERIA",
+	"resources": {
+		"build_cost": {
+	
+		},
+		"capacity": {
+			
+		},
+		"net":{
+
+		}
+	}
+}
+
+const SOLAR_PANELS:Dictionary = {
+	"name": "SOLAR_PANELS",
+	"resources": {
+		"build_cost": {
+			
+		},
+		"capacity": {
+			RESOURCE.ENERGY: 5,
+		},
+		"net":{
+			RESOURCE.ENERGY: 5
+		}
+	}
+}
+
+const STORAGE:Dictionary = {
+	"name": "STORAGE",
+	"resources": {
+		"build_cost": {
+	
+		},
+		"capacity": {
+
+		},
+		"maintaince_cost":{
+
+		}
+	}
+}
+
+
 const reference_data:Dictionary = {
-	TYPE.NONE: NONE,
-	TYPE.CAFETERIA: CAFETERIA,
-	TYPE.BARRICKS: BARRICKS,
-	TYPE.DORMITORY: DORMITORY,
-	TYPE.SOLAR_PANELS: SOLAR_PANELS,
-	TYPE.D_CLASS_PRISON: D_CLASS_PRISON
+	BUILDING_TYPE.NONE: NONE,
+	BUILDING_TYPE.CAFETERIA: CAFETERIA,
+	BUILDING_TYPE.BARRICKS: BARRICKS,
+	BUILDING_TYPE.DORMITORY: DORMITORY,
+	BUILDING_TYPE.SOLAR_PANELS: SOLAR_PANELS,
+	BUILDING_TYPE.D_CLASS_PRISON: D_CLASS_PRISON
 }
 
 func get_type_arr() -> Array[Array]:
 	return [
-		[TYPE.NONE, TYPE.DORMITORY, TYPE.BARRICKS, TYPE.CAFETERIA],
-		[TYPE.SOLAR_PANELS, TYPE.D_CLASS_PRISON]
+		[BUILDING_TYPE.DORMITORY, BUILDING_TYPE.BARRICKS, BUILDING_TYPE.D_CLASS_PRISON],
+		[BUILDING_TYPE.CAFETERIA, BUILDING_TYPE.SOLAR_PANELS]
 	]
 
 func return_type_name(type:TYPE) -> String:
 	return reference_data[type].name
 
 func return_build_cost(type:TYPE) -> Dictionary:
-	return reference_data[type].build_cost
+	return reference_data[type].resources.build_cost
 
 func return_resources(type:TYPE) -> Dictionary:
 	return reference_data[type].resources

@@ -6,7 +6,7 @@ extends ControlPanel
 		
 var list:Array[Array] = Buildables.get_type_arr()
 var selected_vector := Vector2(0, 0)
-var selected = Buildables.TYPE.NONE
+var selected = BUILDING_TYPE.NONE
 		
 signal input_response
 
@@ -23,7 +23,7 @@ func on_active() -> void:
 
 # -----------------------------------
 func on_inactive() -> void:
-	selected = Buildables.TYPE.NONE
+	selected = BUILDING_TYPE.NONE
 	selected_vector = Vector2(0, 0)
 # -----------------------------------	
 
@@ -65,10 +65,19 @@ func assign_selected() -> void:
 # -----------------------------------		
 
 # -----------------------------------	
-func finalize_purchase() -> void:
-	for item in data.purchase_list:
-		data.built[item.on_floor].push_back(item.type)
-	data.purchase_list = []
+func finalize_purchase() -> Dictionary:
+	var results:Dictionary = RESOURCE.calculate_building_costs(get_parent().player_resources, data.purchase_list) 
+	
+	if results.can_afford:
+		var purchased = data.purchase_list.duplicate(true)
+		#for item in data.purchase_list:
+			#data.built[item.on_floor].push_back(item.type)
+		#data.purchase_list = []
+		
+		return {"success": true, "purchased": purchased, "new_totals": results.new_totals}
+	
+	print("Cannot afford purchases: ", results.new_totals)
+	return {"success": false}
 # -----------------------------------	
 
 # -----------------------------------
@@ -102,7 +111,7 @@ func on_key_input(keycode: int) -> void:
 				assign_selected()
 		# e btn
 		69: 
-			if selected != Buildables.TYPE.NONE:
+			if selected != BUILDING_TYPE.NONE:
 				data.purchase_list.push_back({
 					"type": selected, 
 					"on_floor": data.floor_selection
@@ -111,10 +120,10 @@ func on_key_input(keycode: int) -> void:
 		4194308:
 			data.purchase_list.pop_back()
 		# space	
-		32:	
-			finalize_purchase()
-			# DO CHECKS FOR PRICE AND STUFF HERE
-			input_response.emit({})
+		32:				
+			var results:Dictionary = finalize_purchase()
+			if results.success:
+				input_response.emit(results)
 
 	# updates parent, which in turn updates this
 	get_parent().base_phase_data = data

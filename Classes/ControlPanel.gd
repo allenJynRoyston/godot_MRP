@@ -8,8 +8,6 @@ var data:Dictionary = {} :
 		var previous_state = data.duplicate()
 		data = val
 		on_data_update(previous_state)
-			
-			
 
 var is_active:bool = false : 
 	set(val):
