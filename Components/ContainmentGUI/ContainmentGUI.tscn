@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=3 uid="uid://bkfbpmdwe6j5d"]
+
+[ext_resource type="Script" path="res://Components/ContainmentGUI/containment_gui.gd" id="1_p7bdt"]
+[ext_resource type="PackedScene" uid="uid://b5hl1x5y5ly0o" path="res://Components/ContainmentGUI/parts/AvailableContainmentItem.tscn" id="2_kon61"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_y8vna"]
+font_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_wl0sg"]
+font_size = 10
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_right = 102.0
+offset_bottom = 149.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+script = ExtResource("1_p7bdt")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Containment"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="AvailableVbox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox"]
+layout_mode = 2
+text = "available
+"
+label_settings = SubResource("LabelSettings_y8vna")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox"]
+layout_mode = 2
+
+[node name="PanelContainer3" parent="MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox/VBoxContainer" instance=ExtResource("2_kon61")]
+layout_mode = 2
+
+[node name="ActiveVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox"]
+layout_mode = 2
+text = "contained"
+label_settings = SubResource("LabelSettings_wl0sg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox"]
+layout_mode = 2

@@ -7,7 +7,8 @@ extends ControlPanel
 	"node": null,
 	"node_data": {
 		"title": "Money",
-		"show_capacity": false
+		"show_capacity": false,
+		"show_utilized": false
 	},
 } : 
 	set(val):

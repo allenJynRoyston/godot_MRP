@@ -1,10 +1,18 @@
 extends PanelContainer
 
-@onready var BasePhase = $BasePhase
+@onready var BuildGUI = $BuildGUI
 @onready var SimpleGUI = $SimpleGUI
 @onready var ResourceGUI = $ResourceGUI
+@onready var ContainmentGUI = $ContainmentGUI
 
-var phase_arr:Array = [story_phase, base_phase, recruit_phase, assign_phase, action_phase, event_phase, xp_phase, spend_phase, calc_phase]
+var phase_arr:Array = [
+	story_phase, 
+	build_phase, recruit_phase, contain_phase, assign_phase, 
+	action_phase,  event_phase, 
+	xp_phase, spend_phase, 
+	calc_phase, next_phase
+]
+
 var control_arr:Array = []
 var secondary_control_arr:Array = []
 
@@ -13,13 +21,19 @@ var current:Dictionary = {
 	"day": 0,
 	"control": 0,
 	"secondary_control": 0,
+	"on_floor": 0
+} : 
+	set(val): 
+		current = val
+		on_current_update()
+
+var permissions:Dictionary = {
 	"enable_tabblable": true,
-	"enable_next": true,
 	"enable_floor_change": true,
 	"enable_save_load": true
 }
 
-var player_resources:Dictionary = {
+var resource_data:Dictionary = {
 	RESOURCE.MONEY: {
 		"total": 200,
 	},
@@ -27,7 +41,7 @@ var player_resources:Dictionary = {
 		"total": 0,		
 	},
 	RESOURCE.STAFF: {
-		"total": 0,		
+		"total": 5,		
 	},
 	RESOURCE.MTF: {
 		"total": 0,		
@@ -37,75 +51,75 @@ var player_resources:Dictionary = {
 	}	
 } : 
 	set(val):
-		player_resources = val
-		ResourceGUI.data = val
-
-var base_phase_data:Dictionary = {
+		resource_data = val
+		on_resource_data_update()
+		
+var base_data:Dictionary = {
 	"built": {
-		0: [BUILDING_TYPE.SOLAR_PANELS],
+		0: [
+			{"type": BUILDING_TYPE.DORMITORY, "props": {}},
+			{"type": BUILDING_TYPE.SOLAR_PANELS, "props": {}}
+		],
 		1: [],
 		2: [],
 		3: []
 	},
-	"purchase_list": [],
-	"floor_selection": 0
+	"purchase_list": []
 } : 
 	set(new_val):
-		base_phase_data = new_val
-		BasePhase.data = new_val
+		base_data = new_val
+		on_base_data_update()
 			
 var containment_data:Dictionary = {
-	"pending": [
-		SCP.ITEM.TWO
+	"available": [		
+		{"item": SCP.ONE, "expires_in": 3},
+		{"item": SCP.TWO, "expires_in": 10}
 	],
 	"active": [
-		{
-			"is_contained": true,
-			"ref": SCP.ITEM.ONE,
-			"placement": {
-				"floor": 0,
-			},
-			"assigned": null
-		}
+		#{
+			#"item": C.ITEM.ONE,
+			#"status": {
+				#"is_contained": 'pending',
+				#"days_in_containment": 0,
+			#},
+			#"placement": {
+				#"on_floor": 0
+			#},
+			#"assigned": {
+				#"staff": 0,
+				#"dclass": 0
+			#}
+		#}
 	]
-}
+} : 
+	set (val):
+		containment_data = val
+		on_containment_data_update()
+
+var logs:Array = []
 
 # -----------------------------------
 func _ready() -> void:
-	control_arr = [SimpleGUI, BasePhase, ResourceGUI]
-	secondary_control_arr = [SimpleGUI, ResourceGUI]
+	control_arr = [SimpleGUI, BuildGUI, ResourceGUI, ContainmentGUI]
+	secondary_control_arr = [SimpleGUI, ResourceGUI, ContainmentGUI]
 	restore_game()
 # -----------------------------------
-	
+
 # -----------------------------------
-#region SAVE/LOAD
-func quicksave() -> void:
-	var save_data = {
-		"current": current,
-		"base_phase_data": base_phase_data,
-		"player_resources": player_resources,
-		"containment_data": containment_data
-	}	
-	var res = FileSys.save_file(FileSys.FILE.QUICK_SAVE, save_data)
-	print("saved game: ", res)
+func on_resource_data_update() -> void:
+	ResourceGUI.data = resource_data
+	ContainmentGUI.resources = resource_data
 
-func quickload() -> void:
-	var res = FileSys.load_file(FileSys.FILE.QUICK_SAVE)		
-	if res.success:
-		restore_game(res.filedata.data)
-	print("quickload game: ", res.success)
-		
-func restore_game(restore_data:Dictionary = {}) -> void:
-	activate_controls_for()
-	current = restore_data.current if !restore_data.is_empty() else current
-	base_phase_data = restore_data.base_phase_data if !restore_data.is_empty() else base_phase_data	
-	containment_data = restore_data.containment_data if !restore_data.is_empty() else containment_data
-	player_resources = restore_data.player_resources if !restore_data.is_empty() else RESOURCE.calculate_properties(player_resources, base_phase_data.built, containment_data)
+func on_base_data_update() -> void:
+	BuildGUI.data = base_data
 
-	phase_arr[current.phase].call()	
-#endregion		
-# -----------------------------------			
+func on_containment_data_update() -> void:
+	ContainmentGUI.data = containment_data
 	
+func on_current_update() -> void:
+	BuildGUI.on_floor = current.on_floor	
+# -----------------------------------
+
 # -----------------------------------
 func next() -> void:
 	current.phase = (current.phase + 1) % phase_arr.size()
@@ -121,14 +135,49 @@ func update_gui(phase:String, summary:String) -> void:
 		"phase_text": "Phase: %s (%s)" % [current.phase, phase],
 		"summary_text": "Summary: %s" % [summary]
 	}
+	logs.push_back("Day %s (%s): %s" % [current.day, phase, summary])
+# -----------------------------------
+
+
+# -----------------------------------
+#region SAVE/LOAD
+func quicksave() -> void:
+	var save_data = {
+		"current": current,
+		"base_data": base_data,
+		"resource_data": resource_data,
+		"containment_data": containment_data,
+		"logs": logs
+	}	
+	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
+	print("saved game!")
+
+func quickload() -> void:
+	var res = FS.load_file(FS.FILE.QUICK_SAVE)		
+	if res.success:
+		restore_game(res.filedata.data)
+	print("quickload game!")
+		
+func restore_game(restore_data:Dictionary = {}) -> void:
+	activate_controls_for()
+	var no_save:bool = restore_data.is_empty()
+	
+	current = restore_data.current if !no_save else current
+	base_data = restore_data.base_data if !no_save else base_data	
+	containment_data = restore_data.containment_data if !no_save else containment_data
+	logs = restore_data.logs if !no_save else logs
+	# requires call to calculate properties after base_data is available
+	resource_data = restore_data.resource_data if !no_save else U.calculate_resource_properties(resource_data, base_data.built, containment_data)
+
+	phase_arr[current.phase].call()	
+#endregion		
 # -----------------------------------
 
 # -----------------------------------
 #region STORY
 func story_phase() -> void:	
 	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = true
+	permissions.enable_tabblable = true
 	
 	# activate controls
 	activate_controls_for(SimpleGUI)
@@ -142,56 +191,84 @@ func story_phase() -> void:
 # -----------------------------------
 
 # -----------------------------------
-#region BASE
-func base_phase() -> void:
+#region BUILD
+func build_phase() -> void:
 	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = false
+	permissions.enable_tabblable = false
 	
 	# update GUI
-	update_gui("base_phase", "Awaiting input...")
+	update_gui("build_phase", "Awaiting input...")
 	
 	# activate controls
-	activate_controls_for(BasePhase)	
-	var res:Dictionary = await BasePhase.input_response
-	
-	var calc_res = RESOURCE.calc_purchases(base_phase_data, player_resources, containment_data, res)
-	base_phase_data = calc_res.base_data
-	player_resources = calc_res.resources
+	activate_controls_for(BuildGUI)	
+	var res:Dictionary = await BuildGUI.input_response
 
-	# set enable rules / update GUI
-	await get_tree().create_timer(0).timeout 
-	current.enable_next = true
-	update_gui("base_phase", "You built %s rooms." % [res.purchased.size()])	
-	
+	if res.is_empty():
+		activate_controls_for(SimpleGUI)
+		update_gui("build_phase", "Phase skipped")	
+		
+	else:	
+		var calc_res = U.calc_purchases(base_data, resource_data, containment_data, res)
+		base_data = calc_res.base_data
+		resource_data = calc_res.resources
+
+		# set enable rules / update GUI
+		activate_controls_for(SimpleGUI)
+		update_gui("build_phase", "You built %s rooms." % [res.purchased.size(), "rooms" if res.purchased.size() > 1 else "room"])	
 #endregion
 # -----------------------------------
 
 # -----------------------------------
-#region HIRE
+#region RECRUIT
 func recruit_phase() -> void:
 	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = true
+	permissions.enable_tabblable = true
 	
 	# update GUI
 	activate_controls_for(SimpleGUI)
 	var changes = [[RESOURCE.MTF, 10], [RESOURCE.STAFF, 10], [RESOURCE.DCLASS, 10]]
 	
-	player_resources = RESOURCE.adjust_resource(player_resources, changes)
+	resource_data = U.adjust_resources(resource_data, changes)
 	
 	# update GUI
 	update_gui("recruit_phase", "You recruited mtf, staff and dclass.")
 #endregion
 # -----------------------------------	
+
+# -----------------------------------
+#region CONTAIN
+func contain_phase() -> void:
+	# set enable rules
+	permissions.enable_tabblable = false
 	
+	# update GUI
+	update_gui("contain_phase", "Awaiting input...")
+		
+	# update GUI
+	ContainmentGUI.inspect_mode = false
+	activate_controls_for(ContainmentGUI)
+	var res:Dictionary = await ContainmentGUI.input_response
+	ContainmentGUI.inspect_mode = true
+		
+	# add selected from list to active style
+	var u_res = U.containment_data_move_available_to_active(containment_data, resource_data, res.selected)
+	resource_data = u_res.resource_data
+	containment_data = u_res.containment_data
+
+	# update GUI	
+	activate_controls_for(SimpleGUI)
+	if res.selected.size() > 0:
+		update_gui("contain_phase", "You moved to contain %s %s." % [res.selected.size(), "items" if res.selected.size() > 1 else "item"])	
+	else:
+		update_gui("contain_phase", "Phase skipped")	
+#endregion		
+# -----------------------------------
 
 # -----------------------------------
 #region ASSIGN
 func assign_phase() -> void:
 	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = true
+	permissions.enable_tabblable = true
 	
 	# update GUI
 	activate_controls_for(SimpleGUI)
@@ -204,9 +281,8 @@ func assign_phase() -> void:
 # -----------------------------------
 #region ACTION
 func action_phase() -> void:
-	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = true
+	# set enable rules	
+	permissions.enable_tabblable = true
 	
 	# update GUI
 	activate_controls_for(SimpleGUI)
@@ -218,9 +294,8 @@ func action_phase() -> void:
 # -----------------------------------
 #region EVENT
 func event_phase() -> void:
-	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = true
+	# set enable rules	
+	permissions.enable_tabblable = true
 	
 	# update GUI
 	activate_controls_for(SimpleGUI)
@@ -232,9 +307,8 @@ func event_phase() -> void:
 # -----------------------------------
 #region XP
 func xp_phase() -> void:
-	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = true
+	# set enable rules	
+	permissions.enable_tabblable = true
 	
 	# update GUI
 	activate_controls_for(SimpleGUI)
@@ -246,9 +320,8 @@ func xp_phase() -> void:
 # -----------------------------------
 #region SPEND
 func spend_phase() -> void:
-	# set enable rules
-	current.enable_next = false
-	current.enable_tabblable = true
+	# set enable rules	
+	permissions.enable_tabblable = true
 	
 	# update GUI
 	activate_controls_for(SimpleGUI)
@@ -258,30 +331,38 @@ func spend_phase() -> void:
 # -----------------------------------
 
 # -----------------------------------
-func calc_phase() -> void:
-	current.enable_next = false
-	
-	for item in containment_data.active:
-		if item.is_contained:
-			var scp_data = SCP.get_reference_data(item.ref)
+#region CALC
+func calc_phase() -> void:	
+	for i in containment_data.active:
+		if i.status.is_contained:
+			var scp_data = C.get_reference_data(i.item)
 			if "containment_reward" in scp_data:
-				player_resources = RESOURCE.adjust_resource(player_resources, scp_data.containment_reward)
+				resource_data = U.adjust_resources(resource_data, scp_data.containment_reward)
 	
-	player_resources = RESOURCE.calculate_end_of_phase(player_resources, base_phase_data.built)	
+	resource_data = U.calculate_end_of_phase(resource_data, base_data.built)	
 	update_gui("calc_phase", "Recalculated resources.")
-	
-	# create delay
-	await get_tree().create_timer(0).timeout 
-	current.enable_next = true	
+#endregion
 # -----------------------------------	
 
-#region CONTROLS 
 # -----------------------------------	
+#region NEXT
+func next_phase() -> void:
+	var u_res = U.inc_containment(containment_data)
+	containment_data = u_res.containment_data
+
+	update_gui("next_phase", "%s SCP expired and removed from list." % u_res.availables_expired.size())
+#endregion
+# -----------------------------------	
+
+# -----------------------------------	
+#region CONTROLS 
 func activate_controls_for(val:Node = null) -> void:
 	if val != null:
 		var index = control_arr.find(val)
 		current.control = index	
 	
+	await get_tree().create_timer(0).timeout 
+
 	for i in range(control_arr.size()):
 		control_arr[i].is_active = i == current.control
 # -----------------------------------	
@@ -294,7 +375,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			control_arr[current.control].on_key_input(event.keycode)
 		
 		# --------------------------
-		if current.enable_tabblable:
+		if permissions.enable_tabblable:
 			match event.keycode: 
 				# tab
 				4194306:
@@ -302,37 +383,35 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					activate_controls_for(secondary_control_arr[current.secondary_control])
 					
 		# --------------------------
-		if current.enable_floor_change:
+		if permissions.enable_floor_change:
 			match event.keycode: 
 				# 0
 				48: 
-					base_phase_data.floor_selection = 0
-					base_phase_data = base_phase_data.duplicate()
+					current.on_floor = 0
+					current = current.duplicate()
 				# 1
 				49: 
-					base_phase_data.floor_selection = 1
-					base_phase_data = base_phase_data.duplicate()
+					current.on_floor = 1
+					current = current.duplicate()
 				# 2
 				50: 
-					base_phase_data.floor_selection = 2
-					base_phase_data = base_phase_data.duplicate()
+					current.on_floor = 2
+					current = current.duplicate()
 				# 3
 				51: 
-					base_phase_data.floor_selection = 3
-					base_phase_data = base_phase_data.duplicate()
-					
+					current.on_floor = 3
+					current = current.duplicate()
+
 		# --------------------------
-		if current.enable_next:
+		if permissions.enable_save_load:
 			match event.keycode:
-				# space
-				32: next()
-				
-		# --------------------------
-		if current.enable_save_load:
-			match event.keycode:
+				76:
+					for log in logs:
+						print(log)
 				# 5
 				53: quicksave() 
 				# 8 key
 				56: quickload()
 # -----------------------------------		
 #endregion
+# -----------------------------------	

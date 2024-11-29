@@ -189,35 +189,35 @@ func save_file(type:FILE, save_data:Dictionary) -> Dictionary:
 func show_load_options() -> Dictionary:
 	var items = []
 
-	var data_one_image_file_path = str(folder, FileSys.save_config.filenames.save_file_one, save_config.image_ext)
-	var data_two_image_file_path = str(folder, FileSys.save_config.filenames.save_file_two, save_config.image_ext)
-	var data_three_image_file_path = str(folder, FileSys.save_config.filenames.save_file_three, save_config.image_ext)
+	var data_one_image_file_path = str(folder, FS.save_config.filenames.save_file_one, save_config.image_ext)
+	var data_two_image_file_path = str(folder, FS.save_config.filenames.save_file_two, save_config.image_ext)
+	var data_three_image_file_path = str(folder, FS.save_config.filenames.save_file_three, save_config.image_ext)
 		
 	if save_file_exist(FILE.QUICK_SAVE):
 		var data = load_file(FILE.QUICK_SAVE, true)
 		items.push_back({
-			"text": str("Load ", FileSys.save_config.pretty_filenames.quick_save), 
+			"text": str("Load ", FS.save_config.pretty_filenames.quick_save), 
 			"file": FILE.QUICK_SAVE,
 		})		
 		
 	if save_file_exist(FILE.SAVE_ONE):
 		var data = load_file(FILE.SAVE_ONE, true)
 		items.push_back({
-			"text": str("Load ", FileSys.save_config.pretty_filenames.filesave_one), 
+			"text": str("Load ", FS.save_config.pretty_filenames.filesave_one), 
 			"file": FILE.SAVE_ONE,
 		})
 		
 	if save_file_exist(FILE.SAVE_TWO):
 		var data = load_file(FILE.SAVE_TWO, true)
 		items.push_back({
-			"text": str("Load ", FileSys.save_config.pretty_filenames.filesave_two), 
+			"text": str("Load ", FS.save_config.pretty_filenames.filesave_two), 
 			"file": FILE.SAVE_TWO,
 		})
 		
 	if save_file_exist(FILE.SAVE_THREE):
 		var data = load_file(FILE.SAVE_THREE, true)
 		items.push_back({
-			"text": str("Load ", FileSys.save_config.pretty_filenames.filesave_two), 
+			"text": str("Load ", FS.save_config.pretty_filenames.filesave_two), 
 			"file": FILE.SAVE_THREE,
 		})
 	
@@ -233,26 +233,26 @@ func show_save_options() -> Dictionary:
 	var data_two = load_file(FILE.SAVE_TWO, true)
 	var data_three = load_file(FILE.SAVE_THREE, true)
 	
-	var data_one_image_file_path = str(folder, FileSys.save_config.filenames.save_file_one, save_config.image_ext)
-	var data_two_image_file_path = str(folder, FileSys.save_config.filenames.save_file_two, save_config.image_ext)
-	var data_three_image_file_path = str(folder, FileSys.save_config.filenames.save_file_three, save_config.image_ext)
+	var data_one_image_file_path = str(folder, FS.save_config.filenames.save_file_one, save_config.image_ext)
+	var data_two_image_file_path = str(folder, FS.save_config.filenames.save_file_two, save_config.image_ext)
+	var data_three_image_file_path = str(folder, FS.save_config.filenames.save_file_three, save_config.image_ext)
 	
 	var items = [
 		{
-			"text": str("Save ", FileSys.save_config.pretty_filenames.filesave_one), 
-			"save_name": FileSys.save_config.filenames.save_file_one,
+			"text": str("Save ", FS.save_config.pretty_filenames.filesave_one), 
+			"save_name": FS.save_config.filenames.save_file_one,
 			"file": FILE.SAVE_ONE,
 			"file_path": data_one_image_file_path
 		},
 		{
-			"text": str("Save ", FileSys.save_config.pretty_filenames.filesave_two), 
-			"save_name": FileSys.save_config.filenames.save_file_two,
+			"text": str("Save ", FS.save_config.pretty_filenames.filesave_two), 
+			"save_name": FS.save_config.filenames.save_file_two,
 			"file": FILE.SAVE_TWO,
 			"file_path": data_two_image_file_path
 		},
 		{
-			"text": str("Save ", FileSys.save_config.pretty_filenames.filesave_three), 
-			"save_name": FileSys.save_config.filenames.save_file_three,
+			"text": str("Save ", FS.save_config.pretty_filenames.filesave_three), 
+			"save_name": FS.save_config.filenames.save_file_three,
 			"file": FILE.SAVE_THREE,
 			"file_path": data_three_image_file_path
 		}

@@ -4,9 +4,13 @@ extends ControlPanel
 @onready var ListContainer = $MarginContainer/VBoxContainer/ListContainer
 @onready var PurchaseContainer = $MarginContainer/VBoxContainer/PurchaseContainer
 		
-var list:Array[Array] = Buildables.get_type_arr()
+var list:Array[Array] = B.get_type_arr()
 var selected_vector := Vector2(0, 0)
 var selected = BUILDING_TYPE.NONE
+var on_floor:int = 0:
+	set(val):
+		on_floor = val
+		on_data_update()
 		
 signal input_response
 
@@ -28,28 +32,28 @@ func on_inactive() -> void:
 # -----------------------------------	
 
 # -----------------------------------
-func on_data_update(_previous_state:Dictionary) -> void:
+func on_data_update(_previous_state:Dictionary = data) -> void:
 	if data.is_empty():
 		return
 	
 	# TODO: add differntial check so you don't have to redraw every element that
 	# gets replaced
 	
-	LevelLabel.text = "On level: %s" % [data.floor_selection]
+	LevelLabel.text = "On level: %s" % [on_floor]
 
 	for node in [ListContainer, PurchaseContainer]:
 		for child in node.get_children():
 			child.queue_free()
 
-	for type in data.built[data.floor_selection]:
+	for item in data.built[on_floor]:
 		var newLabel = Label.new()
-		newLabel.text = Buildables.return_type_name(type)
+		newLabel.text = B.return_type_name(item.type)
 		ListContainer.add_child(newLabel)
 		
 	for item in data.purchase_list:
-		if data.floor_selection == item.on_floor:
+		if on_floor == item.on_floor:
 			var newLabel = Label.new()
-			newLabel.text = Buildables.return_type_name(item.type)
+			newLabel.text = B.return_type_name(item.type)
 			PurchaseContainer.add_child(newLabel)		
 # -----------------------------------
 
@@ -61,19 +65,15 @@ func is_valid_selection(test_vector:Vector2) -> bool:
 # -----------------------------------		
 func assign_selected() -> void:
 	selected = list[selected_vector.y][selected_vector.x]
-	print( Buildables.return_type_name(selected) )
+	print( B.return_type_name(selected) )
 # -----------------------------------		
 
 # -----------------------------------	
 func finalize_purchase() -> Dictionary:
-	var results:Dictionary = RESOURCE.calculate_building_costs(get_parent().player_resources, data.purchase_list) 
+	var results:Dictionary = U.calculate_building_costs(get_parent().resource_data, data.purchase_list) 
 	
 	if results.can_afford:
-		var purchased = data.purchase_list.duplicate(true)
-		#for item in data.purchase_list:
-			#data.built[item.on_floor].push_back(item.type)
-		#data.purchase_list = []
-		
+		var purchased:Array = data.purchase_list.duplicate(true)
 		return {"success": true, "purchased": purchased, "new_totals": results.new_totals}
 	
 	print("Cannot afford purchases: ", results.new_totals)
@@ -114,17 +114,20 @@ func on_key_input(keycode: int) -> void:
 			if selected != BUILDING_TYPE.NONE:
 				data.purchase_list.push_back({
 					"type": selected, 
-					"on_floor": data.floor_selection
+					"on_floor": on_floor
 				})
 		# back
 		4194308:
 			data.purchase_list.pop_back()
 		# space	
-		32:				
-			var results:Dictionary = finalize_purchase()
-			if results.success:
-				input_response.emit(results)
+		32:			
+			if data.purchase_list.size() > 0:	
+				var results:Dictionary = finalize_purchase()
+				if results.success:
+					input_response.emit(results)
+			else:
+				input_response.emit({})
 
 	# updates parent, which in turn updates this
-	get_parent().base_phase_data = data
+	get_parent().base_data = data
 # -----------------------------------
