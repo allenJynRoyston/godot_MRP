@@ -1,6 +1,7 @@
 extends ControlPanel
 
-@onready var ResourceTabContainer = $MarginContainer/ResourceTabContainer
+@onready var WindowUI = $WindowUI
+@onready var ResourceTabContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/ResourceTabContainer
 
 @onready var money:Dictionary = {
 	"ref": RESOURCE.MONEY,
@@ -80,6 +81,11 @@ func _ready() -> void:
 # -----------------------------------
 
 # -----------------------------------
+func on_is_active_updated() -> void:
+	WindowUI.window_is_active = is_active
+# -----------------------------------	
+
+# -----------------------------------
 func on_inactive() -> void:
 	for item in select_arr:
 		if "node" in item:
@@ -90,6 +96,8 @@ func on_inactive() -> void:
 func on_active() -> void:
 	on_selected_update()
 # -----------------------------------	
+
+
 
 # -----------------------------------	
 func on_money_update() -> void:	

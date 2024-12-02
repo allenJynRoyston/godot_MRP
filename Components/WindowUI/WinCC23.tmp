@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://ywk37ko3ue05"]
+
+[ext_resource type="Script" path="res://Components/WindowUI/window_ui.gd" id="1_g5j4v"]
+[ext_resource type="PackedScene" uid="uid://bf3fe4o05ua20" path="res://Components/WindowUI/Header/Header.tscn" id="2_1p2wk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ksjr"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n082n"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="WindowUI" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 50)
+offset_right = 276.0
+offset_bottom = 50.0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_4ksjr")
+script = ExtResource("1_g5j4v")
+window_size = Vector2(200, 50)
+use_editor_position = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_1p2wk")]
+layout_mode = 2
+
+[node name="Body" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_n082n")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5

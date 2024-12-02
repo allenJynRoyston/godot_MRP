@@ -1,0 +1,96 @@
+[gd_scene load_steps=9 format=3 uid="uid://eqyg3c15y82h"]
+
+[ext_resource type="Material" uid="uid://2jrpoatnq0tx" path="res://Shader/Fractal/Factal.tres" id="1_04mdp"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://Components/WindowUI/WindowUI.tscn" id="1_q54wf"]
+[ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="3_yu754"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wixep"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kolxq"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_52o18"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_64c2y"]
+viewport_path = NodePath("WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_i2amw"]
+viewport_path = NodePath("WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/SubViewport2")
+
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 2
+size_flags_vertical = 2
+
+[node name="WindowUI" parent="." instance=ExtResource("1_q54wf")]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_wixep")
+window_is_active = true
+window_label = "Background"
+is_draggable = false
+
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+window_label = "Background"
+
+[node name="Body" parent="WindowUI/MarginContainer/VBoxContainer" index="1"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_kolxq")
+
+[node name="SubViewport" type="SubViewport" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0"]
+size = Vector2i(1280, 720)
+
+[node name="TextureRect" type="TextureRect" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/SubViewport"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("NoiseTexture2D_52o18")
+
+[node name="SubViewport2" type="SubViewport" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="1"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+
+[node name="TextureRect" type="TextureRect" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/SubViewport2"]
+material = ExtResource("1_04mdp")
+offset_left = 7.0
+offset_top = 35.0
+offset_right = 1273.0
+offset_bottom = 713.0
+size_flags_horizontal = 3
+texture = SubResource("ViewportTexture_64c2y")
+expand_mode = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/SubViewport2"]
+visible = false
+offset_left = 7.0
+offset_top = 35.0
+offset_right = 1273.0
+offset_bottom = 713.0
+theme_override_constants/separation = 0
+
+[node name="TextureRect2" type="TextureRect" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/SubViewport2/HBoxContainer"]
+visible = false
+material = ExtResource("1_04mdp")
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("ViewportTexture_64c2y")
+expand_mode = 1
+flip_h = true
+
+[node name="TextureRect3" type="TextureRect" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="2"]
+material = ExtResource("3_yu754")
+layout_mode = 2
+texture = SubResource("ViewportTexture_i2amw")
+expand_mode = 1
+
+[editable path="WindowUI"]

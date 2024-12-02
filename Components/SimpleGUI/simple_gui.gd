@@ -1,8 +1,9 @@
 extends ControlPanel
 
-@onready var DayLabel = $CenterContainer/Panel/MarginContainer/VBoxContainer/day
-@onready var PhaseLabel = $CenterContainer/Panel/MarginContainer/VBoxContainer/phase
-@onready var SummaryLabel = $CenterContainer/Panel/MarginContainer/VBoxContainer/summary
+@onready var WindowUI = $WindowUI
+@onready var DayLabel = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/day
+@onready var PhaseLabel = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/phase
+@onready var SummaryLabel = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/summary
 			
 var day_text:String = "":
 	set(val):
@@ -31,6 +32,17 @@ func on_data_update(_previous_state:Dictionary) -> void:
 	phase_text = data.phase_text
 	summary_text = data.summary_text
 # -----------------------------------		
+
+# -----------------------------------		
+func on_is_active_updated() -> void:
+	WindowUI.window_is_active = is_active
+	
+	for node in [DayLabel, PhaseLabel, SummaryLabel]:
+		var new_label_setting:LabelSettings = node.label_settings.duplicate()
+		new_label_setting.font_color = "00f647" if is_active else "004115"
+		node.label_settings = new_label_setting	
+	
+# -----------------------------------			
 
 # -----------------------------------	
 func on_key_input(keycode:int) -> void:

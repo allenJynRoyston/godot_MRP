@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://bq0ukhihq2nlf"]
+
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://Components/WindowUI/WindowUI.tscn" id="1_ivoj0"]
+[ext_resource type="Script" path="res://Scenes/test.gd" id="1_ufbx0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klsl2"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o1l46"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_color = Color(1, 1, 1, 0)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ufbx0")
+
+[node name="WindowUI" parent="." instance=ExtResource("1_ivoj0")]
+layout_mode = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_klsl2")
+window_label = "Window 1"
+
+[node name="WindowUI2" parent="." instance=ExtResource("1_ivoj0")]
+layout_mode = 0
+offset_left = 351.0
+offset_top = 118.0
+offset_right = 627.0
+offset_bottom = 218.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_o1l46")
+window_label = "Window 2"
+window_position = Vector2(351, 118)

@@ -129,5 +129,5 @@ func on_key_input(keycode: int) -> void:
 				input_response.emit({})
 
 	# updates parent, which in turn updates this
-	get_parent().base_data = data
+	# get_parent().base_data = data  
 # -----------------------------------

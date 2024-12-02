@@ -1,53 +1,84 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7rd7wl8acqmo"]
+[gd_scene load_steps=7 format=3 uid="uid://b7rd7wl8acqmo"]
 
 [ext_resource type="Script" path="res://Components/SimpleGUI/simple_gui.gd" id="1_csg60"]
+[ext_resource type="Script" path="res://Components/WindowUI/window_ui.gd" id="2_jcj1n"]
+[ext_resource type="PackedScene" uid="uid://bf3fe4o05ua20" path="res://Components/WindowUI/Header/Header.tscn" id="3_brro6"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_qiqit"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bkisa"]
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfe6r"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_color = Color(0, 0.964706, 0.278431, 1)
 
-[node name="SimpleGUI" type="PanelContainer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_if3ah"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="SimpleGUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_csg60")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="WindowUI" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 98.0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_sfe6r")
+script = ExtResource("2_jcj1n")
+enable_close_btn = true
+enable_max_btn = true
+window_label = "Simple GUI"
+window_size = Vector2(200, 50)
+window_position = Vector2(0, 0)
+is_draggable = false
+
+[node name="MarginContainer" type="MarginContainer" parent="WindowUI"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowUI/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" instance=ExtResource("3_brro6")]
+layout_mode = 2
+enable_max_btn = true
+enable_close_btn = true
+window_label = "Simple GUI"
+
+[node name="Body" type="PanelContainer" parent="WindowUI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_if3ah")
+
+[node name="MarginContainer" type="MarginContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer"]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="CenterContainer"]
-custom_minimum_size = Vector2(600, 200)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bkisa")
-
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel/MarginContainer"]
-layout_mode = 2
-
-[node name="day" type="Label" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="day" type="Label" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Day:"
+label_settings = ExtResource("3_qiqit")
 
-[node name="phase" type="Label" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="phase" type="Label" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Phase:"
+label_settings = ExtResource("3_qiqit")
 
-[node name="summary" type="Label" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="summary" type="Label" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Summary
 "
+label_settings = ExtResource("3_qiqit")

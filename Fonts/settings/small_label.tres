@@ -1,0 +1,7 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://gjdqvbphklm4"]
+
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="1_7p5th"]
+
+[resource]
+font = ExtResource("1_7p5th")
+font_color = Color(0, 0.254902, 0.0823529, 1)

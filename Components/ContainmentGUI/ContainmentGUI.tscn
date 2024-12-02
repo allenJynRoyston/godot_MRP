@@ -1,7 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://bkfbpmdwe6j5d"]
+[gd_scene load_steps=8 format=3 uid="uid://bkfbpmdwe6j5d"]
 
 [ext_resource type="Script" path="res://Components/ContainmentGUI/containment_gui.gd" id="1_p7bdt"]
 [ext_resource type="PackedScene" uid="uid://b5hl1x5y5ly0o" path="res://Components/ContainmentGUI/parts/AvailableContainmentItem.tscn" id="2_kon61"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://Components/WindowUI/WindowUI.tscn" id="2_vnce7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1amyb"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0uq0w"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.964706, 0.278431, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_y8vna"]
 font_size = 10
@@ -9,54 +21,56 @@ font_size = 10
 [sub_resource type="LabelSettings" id="LabelSettings_wl0sg"]
 font_size = 10
 
-[node name="PanelContainer" type="PanelContainer"]
-offset_right = 102.0
-offset_bottom = 149.0
-size_flags_horizontal = 0
-size_flags_vertical = 8
+[node name="ContainmentGUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_p7bdt")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="WindowUI" parent="." instance=ExtResource("2_vnce7")]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+offset_right = 204.0
+offset_bottom = 149.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1amyb")
+window_label = "Containment Status"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+window_label = "Containment Status"
+
+[node name="Body" parent="WindowUI/MarginContainer/VBoxContainer" index="1"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_0uq0w")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Containment"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="AvailableVbox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="AvailableVbox" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox"]
+[node name="Label" type="Label" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox"]
 layout_mode = 2
 text = "available
 "
 label_settings = SubResource("LabelSettings_y8vna")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox"]
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox"]
 layout_mode = 2
 
-[node name="PanelContainer3" parent="MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox/VBoxContainer" instance=ExtResource("2_kon61")]
+[node name="PanelContainer3" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox/VBoxContainer" instance=ExtResource("2_kon61")]
 layout_mode = 2
 
-[node name="ActiveVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="ActiveVBox" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox"]
+[node name="Label" type="Label" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox"]
 layout_mode = 2
 text = "contained"
 label_settings = SubResource("LabelSettings_wl0sg")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox"]
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox"]
 layout_mode = 2
+
+[editable path="WindowUI"]

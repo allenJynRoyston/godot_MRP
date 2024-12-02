@@ -1,6 +1,6 @@
-extends PanelContainer
+extends Control
 
-@onready var BuildGUI = $BuildGUI
+@onready var BuildGUI = $GameplayLoop/BuildGUI
 @onready var SimpleGUI = $SimpleGUI
 @onready var ResourceGUI = $ResourceGUI
 @onready var ContainmentGUI = $ContainmentGUI
@@ -415,3 +415,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 # -----------------------------------		
 #endregion
 # -----------------------------------	
+
+func _process(delta: float) -> void:
+	GBL.mouse_pos = get_global_mouse_position()

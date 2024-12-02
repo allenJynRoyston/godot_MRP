@@ -1,7 +1,8 @@
 extends ControlPanel
 
-@onready var AvailableVbox:VBoxContainer = $MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox/VBoxContainer
-@onready var ActiveVBox:VBoxContainer = $MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox/VBoxContainer
+@onready var WindowUI:Control = $WindowUI
+@onready var AvailableVbox:VBoxContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer/AvailableVbox
+@onready var ActiveVBox:VBoxContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/VBoxContainer/ActiveVBox
 
 const AvailableContainmentItemScene:PackedScene = preload("res://Components/ContainmentGUI/parts/AvailableContainmentItem.tscn")
 const ActiveContainmentItemScene:PackedScene = preload("res://Components/ContainmentGUI/parts/ActiveContainmentItem.tscn")
@@ -40,6 +41,11 @@ func _ready() -> void:
 	super._ready()
 	on_data_update()
 # -----------------------------------
+
+# -----------------------------------
+func on_is_active_updated() -> void:
+	WindowUI.window_is_active = is_active
+# -----------------------------------	
 
 # -----------------------------------
 func on_active() -> void:

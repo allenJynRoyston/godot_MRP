@@ -1,0 +1,50 @@
+shader_type canvas_item;
+
+// Adjustable properties
+uniform float zoom_speed : hint_range(0.0, 2.0) = 0.5;  // Speed of zoom
+uniform float distortion_speed : hint_range(0.0, 1.0) = 0.3;  // Speed of sinusoidal distortion
+uniform int max_iterations : hint_range(10, 500) = 100;  // Maximum fractal iterations
+uniform vec4 color_tint : source_color = vec4(0.8, 0.2, 1.0, 1.0); // Base color for the fractal
+
+void fragment() {
+    // Sinusoidal distortion factor based on time
+    float distortion = sin(TIME * distortion_speed) * 0.5 + 1.0; // Oscillates between 0.5 and 1.5
+
+    // Time-based zoom effect
+    float zoom = 1.0 / (TIME * zoom_speed + 1.0);
+    
+    // UV coordinates are scaled and zoomed
+    vec2 uv = (UV - 0.5) * zoom;
+    
+    // Apply sinusoidal distortion to the UV coordinates
+    uv.x += sin(TIME * 0.5) * distortion * 0.1; // Distort the x component
+    uv.y += cos(TIME * 0.5) * distortion * 0.1; // Distort the y component
+    
+    // Julia set formula with animated constant 'c' over time
+    vec2 c = vec2(sin(TIME * 0.3), cos(TIME * 0.3)); // Time-varying constant 'c'
+    vec2 z = uv;
+    
+    float iterations = 0.0;
+
+    // Maximum iterations (fractals have a limit to how many times you can iterate)
+    for (int i = 0; i < max_iterations; i++) {
+        // Julia set Iteration formula with dynamic changes
+        z = vec2(z.x * z.x - z.y * z.y + c.x, 2.0 * z.x * z.y + c.y);
+        
+        // Escape condition
+        if (length(z) > 2.0) {
+            break; // Escape condition for fractal
+        }
+
+        iterations++;
+    }
+
+    // Normalize the number of iterations to a color value
+    float color_value = float(iterations) / float(max_iterations);
+    
+    // Apply the base color tint
+    vec3 fractal_color = mix(color_tint.rgb, vec3(1.0, 1.0, 1.0), color_value);
+
+    // Final color output
+    COLOR = vec4(fractal_color, 1.0);
+}
