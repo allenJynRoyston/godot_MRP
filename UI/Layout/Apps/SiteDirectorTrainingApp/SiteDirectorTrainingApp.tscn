@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://bluesleu6wl4v"]
+
+[ext_resource type="Script" path="res://UI/Layout/Apps/SiteDirectorTrainingApp/site_director_training_app.gd" id="1_5dlsa"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_08334"]
+[ext_resource type="PackedScene" uid="uid://ceyir223dkdj2" path="res://Scenes/GameplayLoop/GameplayLoop.tscn" id="2_icb31"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_45imw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wbr2w"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 1)
+border_color = Color(0, 0.964706, 0.278431, 1)
+shadow_color = Color(0, 0.758458, 0.260647, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_co3pt"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="SiteDirectorTrainingApp" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_45imw")
+script = ExtResource("1_5dlsa")
+
+[node name="WindowUI" parent="." instance=ExtResource("1_08334")]
+custom_minimum_size = Vector2(1200, 600)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wbr2w")
+enable_close_btn = true
+enable_max_btn = true
+window_label = "Site Director Training Program"
+window_size = Vector2(1200, 600)
+
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+enable_max_btn = true
+enable_close_btn = true
+window_label = "Site Director Training Program"
+
+[node name="Body" parent="WindowUI/MarginContainer/VBoxContainer" index="1"]
+clip_contents = true
+theme_override_styles/panel = SubResource("StyleBoxFlat_co3pt")
+
+[node name="PanelContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("2_icb31")]
+layout_mode = 2
+
+[editable path="WindowUI"]

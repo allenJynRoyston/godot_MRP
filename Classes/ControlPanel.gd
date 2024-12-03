@@ -19,6 +19,11 @@ var is_active:bool = false :
 				on_active()
 			on_is_active_updated()
 			
+var window_offset:Vector2 = Vector2(0, 0) : 
+	set(val):
+		window_offset = val
+		on_window_offset_update()
+			
 
 # -----------------------------------
 func _ready() -> void:
@@ -29,6 +34,7 @@ func _ready() -> void:
 func on_data_update(_previous_state:Dictionary) -> void:pass
 func on_inactive() -> void:	pass
 func on_active() -> void: pass
+func on_window_offset_update() -> void:pass
 # -----------------------------------	
 
 # -----------------------------------

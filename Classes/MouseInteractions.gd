@@ -1,9 +1,8 @@
 extends Control
 class_name MouseInteractions
 
-@export var is_draggable:bool = true :  
-	set(val):
-		is_draggable = val
+@export var is_draggable:bool = true 
+@export var is_hoverable:bool = true 
 
 var on_hover:bool = false
 
@@ -15,6 +14,9 @@ func _ready() -> void:
 	if is_node_ready() and "subscribe_to_mouse_pos" in GBL:
 		GBL.subscribe_to_mouse_pos(self)
 # --------------------------------------			
+
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_mouse_pos(self)
 
 # --------------------------------------	
 func on_mouse_pos_update(new_mouse_pos:Vector2) -> void:
@@ -66,7 +68,7 @@ func _input(event) -> void:
 
 # --------------------------------------	
 func _process(_delta:float) -> void:
-	if is_visible_in_tree():
+	if is_visible_in_tree() and is_hoverable:
 		if get_global_rect().has_point(mouse_pos):
 			if !on_hover:
 				focus_event()

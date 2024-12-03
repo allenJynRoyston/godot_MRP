@@ -3,60 +3,35 @@
 [ext_resource type="Script" path="res://Scenes/GameplayLoop/gameplay_loop.gd" id="1_tvyoq"]
 [ext_resource type="PackedScene" uid="uid://dhspj3n5kam3h" path="res://Components/BuildGUI/BuildGUI.tscn" id="2_5t4y7"]
 [ext_resource type="PackedScene" uid="uid://b7rd7wl8acqmo" path="res://Components/SimpleGUI/SimpleGUI.tscn" id="2_68ecb"]
-[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Components/Background/Background.tscn" id="2_wlm47"]
 [ext_resource type="PackedScene" uid="uid://cnsljxa1bq6lr" path="res://Components/ResourceGUI/ResourceGUI.tscn" id="3_7vqcg"]
 [ext_resource type="PackedScene" uid="uid://bkfbpmdwe6j5d" path="res://Components/ContainmentGUI/ContainmentGUI.tscn" id="5_fcq8c"]
 
-[node name="GameplayLoop" type="Control"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_tvyoq")
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8pfjb"]
 
-[node name="Background" parent="." instance=ExtResource("2_wlm47")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_right = 1280.0
-offset_bottom = 720.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="GameplayLoop" type="PanelContainer" parent="."]
-layout_mode = 1
+[node name="PanelContainer" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1113.0
-offset_top = 43.0
-offset_right = 1219.0
-offset_bottom = 656.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="BuildGUI" parent="GameplayLoop" instance=ExtResource("2_5t4y7")]
-layout_mode = 2
-size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8pfjb")
+script = ExtResource("1_tvyoq")
 
 [node name="SimpleGUI" parent="." instance=ExtResource("2_68ecb")]
-offset_left = 295.0
-offset_top = 261.0
-offset_right = 295.0
-offset_bottom = 261.0
+layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 8
+
+[node name="BuildGUI" parent="." instance=ExtResource("2_5t4y7")]
+layout_mode = 2
+size_flags_horizontal = 8
 
 [node name="ResourceGUI" parent="." instance=ExtResource("3_7vqcg")]
-offset_left = 44.0
-offset_top = 64.0
-offset_right = 44.0
-offset_bottom = 64.0
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
 
 [node name="ContainmentGUI" parent="." instance=ExtResource("5_fcq8c")]
-offset_left = 2.0
-offset_top = 568.0
-offset_right = 2.0
-offset_bottom = 568.0
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0

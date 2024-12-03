@@ -6,11 +6,11 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pofj2"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0vyfb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xc41y"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_color = Color(0, 0.964706, 0.278431, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_llgnk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2dsn5"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 2
 border_width_right = 2
@@ -27,7 +27,7 @@ script = ExtResource("1_qa87o")
 custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_0vyfb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xc41y")
 script = ExtResource("2_eap23")
 window_label = "Resources"
 window_size = Vector2(800, 0)
@@ -51,7 +51,7 @@ window_label = "Resources"
 [node name="Body" type="PanelContainer" parent="WindowUI/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_llgnk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2dsn5")
 
 [node name="MarginContainer" type="MarginContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body"]
 layout_mode = 2

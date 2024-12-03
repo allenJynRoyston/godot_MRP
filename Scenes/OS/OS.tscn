@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://jjndhgp0ekhh"]
+
+[ext_resource type="Script" path="res://Scenes/OS/os.gd" id="1_fddhq"]
+[ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://UI/Layout/Layout.tscn" id="2_yqdyq"]
+
+[node name="OS" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fddhq")
+
+[node name="Layout" parent="." instance=ExtResource("2_yqdyq")]
+layout_mode = 2

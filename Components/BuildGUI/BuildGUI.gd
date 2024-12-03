@@ -1,9 +1,11 @@
 extends ControlPanel
 
-@onready var LevelLabel = $MarginContainer/VBoxContainer/LevelLabel
-@onready var ListContainer = $MarginContainer/VBoxContainer/ListContainer
-@onready var PurchaseContainer = $MarginContainer/VBoxContainer/PurchaseContainer
-		
+@onready var WindowUI = $WindowUI
+@onready var LevelLabel = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/LevelLabel
+@onready var ListContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/ListContainer
+@onready var PurchaseContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/PurchaseContainer
+
+var GameplayLoop:Control
 var list:Array[Array] = B.get_type_arr()
 var selected_vector := Vector2(0, 0)
 var selected = BUILDING_TYPE.NONE
@@ -18,12 +20,23 @@ signal input_response
 func _ready() -> void:
 	RootPanel = $"."
 	super._ready()
+	after_ready.call_deferred()
+# -----------------------------------
+
+# -----------------------------------
+func after_ready() -> void:
+	GameplayLoop = GBL.find_node(REFS.GAMEPLAY_LOOP)
 # -----------------------------------
 
 # -----------------------------------
 func on_active() -> void:
 	assign_selected()
 # -----------------------------------	
+
+# -----------------------------------	
+func on_is_active_updated() -> void:
+	WindowUI.window_is_active = is_active
+# -----------------------------------		
 
 # -----------------------------------
 func on_inactive() -> void:
@@ -70,7 +83,7 @@ func assign_selected() -> void:
 
 # -----------------------------------	
 func finalize_purchase() -> Dictionary:
-	var results:Dictionary = U.calculate_building_costs(get_parent().resource_data, data.purchase_list) 
+	var results:Dictionary = U.calculate_building_costs(GameplayLoop.resource_data, data.purchase_list) 
 	
 	if results.can_afford:
 		var purchased:Array = data.purchase_list.duplicate(true)
@@ -129,5 +142,5 @@ func on_key_input(keycode: int) -> void:
 				input_response.emit({})
 
 	# updates parent, which in turn updates this
-	# get_parent().base_data = data  
+	GameplayLoop.base_data = data  
 # -----------------------------------

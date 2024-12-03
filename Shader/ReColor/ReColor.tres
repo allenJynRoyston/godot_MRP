@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://2toh1uf8l10m"]
+
+[ext_resource type="Shader" path="res://Shader/ReColor/ReColor.gdshader" id="1_2qims"]
+
+[resource]
+shader = ExtResource("1_2qims")
+shader_parameter/tint_color = Color(0, 0.529412, 0.278431, 1)

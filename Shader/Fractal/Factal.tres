@@ -1,10 +1,90 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://2jrpoatnq0tx"]
 
-[ext_resource type="Shader" path="res://Shader/Fractal/Fractal.gdshader" id="1_53wxp"]
+[sub_resource type="Shader" id="Shader_w3kav"]
+code = "shader_type canvas_item;
+
+// Adjustable properties
+uniform float zoom_speed : hint_range(0.0, 2.0) = 0.5;  // Speed of zoom
+uniform float distortion_speed : hint_range(0.0, 1.0) = 0.3;  // Speed of sinusoidal distortion
+uniform int max_iterations : hint_range(10, 500) = 100;  // Maximum fractal iterations
+uniform float color_speed : hint_range(0.0, 2.0) = 0.2; // Speed of color cycling
+
+// Helper function: HSV to RGB conversion
+vec3 hsv_to_rgb(float h, float s, float v) {
+    float c = v * s;
+    float x = c * (1.0 - abs(mod(h * 6.0, 2.0) - 1.0));
+    float m = v - c;
+    vec3 rgb;
+
+    if (h < 1.0 / 6.0) {
+        rgb = vec3(c, x, 0.0);
+    } else if (h < 2.0 / 6.0) {
+        rgb = vec3(x, c, 0.0);
+    } else if (h < 3.0 / 6.0) {
+        rgb = vec3(0.0, c, x);
+    } else if (h < 4.0 / 6.0) {
+        rgb = vec3(0.0, x, c);
+    } else if (h < 5.0 / 6.0) {
+        rgb = vec3(x, 0.0, c);
+    } else {
+        rgb = vec3(c, 0.0, x);
+    }
+
+    return rgb + m;
+}
+
+void fragment() {
+    // Sinusoidal distortion factor based on time
+    float distortion = sin(TIME * distortion_speed) * 0.5 + 1.0; // Oscillates between 0.5 and 1.5
+
+    // Time-based zoom effect
+    float zoom = 1.0 / (TIME * zoom_speed + 1.0);
+    
+    // UV coordinates are scaled and zoomed
+    vec2 uv = (UV - 0.5) * zoom;
+    
+    // Apply sinusoidal distortion to the UV coordinates
+    uv.x += sin(TIME * 0.5) * distortion * 0.1; // Distort the x component
+    uv.y += cos(TIME * 0.5) * distortion * 0.1; // Distort the y component
+    
+    // Julia set formula with animated constant 'c' over time
+    vec2 c = vec2(sin(TIME * 0.3), cos(TIME * 0.3)); // Time-varying constant 'c'
+    vec2 z = uv;
+    
+    float iterations = 0.0;
+
+    // Maximum iterations (fractals have a limit to how many times you can iterate)
+    for (int i = 0; i < max_iterations; i++) {
+        // Julia set Iteration formula with dynamic changes
+        z = vec2(z.x * z.x - z.y * z.y + c.x, 2.0 * z.x * z.y + c.y);
+        
+        // Escape condition
+        if (length(z) > 2.0) {
+            break; // Escape condition for fractal
+        }
+
+        iterations++;
+    }
+
+    // Normalize the number of iterations to a color value
+    float color_value = float(iterations) / float(max_iterations);
+    
+    // Animate the hue based on time
+    float hue = mod(TIME * color_speed + color_value, 1.0); // Hue cycles over time
+    float saturation = 1.0; // Full saturation for vivid colors
+    float brightness = color_value; // Brightness based on iterations
+
+    // Convert HSV to RGB for the final color
+    vec3 fractal_color = hsv_to_rgb(hue, saturation, brightness);
+
+    // Final color output
+    COLOR = vec4(fractal_color, 1.0);
+}
+"
 
 [resource]
-shader = ExtResource("1_53wxp")
+shader = SubResource("Shader_w3kav")
 shader_parameter/zoom_speed = 0.0
-shader_parameter/distortion_speed = 0.3
-shader_parameter/max_iterations = 10
-shader_parameter/color_tint = Color(1, 0.321569, 0.0901961, 1)
+shader_parameter/distortion_speed = 0.0
+shader_parameter/max_iterations = 25
+shader_parameter/color_speed = 0.02

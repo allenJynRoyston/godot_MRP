@@ -1,9 +1,14 @@
 extends Control
 
-@onready var BuildGUI = $GameplayLoop/BuildGUI
+@onready var BuildGUI = $BuildGUI
 @onready var SimpleGUI = $SimpleGUI
 @onready var ResourceGUI = $ResourceGUI
 @onready var ContainmentGUI = $ContainmentGUI
+
+# -----------------------------------
+#region local vars
+var control_arr:Array = []
+var secondary_control_arr:Array = []
 
 var phase_arr:Array = [
 	story_phase, 
@@ -13,9 +18,16 @@ var phase_arr:Array = [
 	calc_phase, next_phase
 ]
 
-var control_arr:Array = []
-var secondary_control_arr:Array = []
+var permissions:Dictionary = {
+	"enable_tabblable": true,
+	"enable_floor_change": true,
+	"enable_save_load": true
+}
+#endregion
+# -----------------------------------
 
+# -----------------------------------
+#region savable data
 var current:Dictionary = {
 	"phase": 0,
 	"day": 0,
@@ -26,12 +38,16 @@ var current:Dictionary = {
 	set(val): 
 		current = val
 		on_current_update()
-
-var permissions:Dictionary = {
-	"enable_tabblable": true,
-	"enable_floor_change": true,
-	"enable_save_load": true
-}
+		
+@onready var window_offsets:Dictionary = {
+	BuildGUI.name: Vector2(0, 0),
+	SimpleGUI.name: Vector2(0, 0),
+	ResourceGUI.name: Vector2(0, 0),
+	ContainmentGUI.name: Vector2(0, 0),
+} : 
+	set(val):
+		window_offsets = val
+		on_window_offsets_update()
 
 var resource_data:Dictionary = {
 	RESOURCE.MONEY: {
@@ -97,13 +113,21 @@ var containment_data:Dictionary = {
 		on_containment_data_update()
 
 var logs:Array = []
+#endregion
+# -----------------------------------
 
 # -----------------------------------
 func _ready() -> void:
+	GBL.register_node(REFS.GAMEPLAY_LOOP, self)
 	control_arr = [SimpleGUI, BuildGUI, ResourceGUI, ContainmentGUI]
 	secondary_control_arr = [SimpleGUI, ResourceGUI, ContainmentGUI]
 	restore_game()
 # -----------------------------------
+
+# -----------------------------------
+func _exit_tree() -> void:
+	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
+# -----------------------------------	
 
 # -----------------------------------
 func on_resource_data_update() -> void:
@@ -118,6 +142,13 @@ func on_containment_data_update() -> void:
 	
 func on_current_update() -> void:
 	BuildGUI.on_floor = current.on_floor	
+
+func on_window_offsets_update() -> void:
+	for key in window_offsets:
+		var window_offset:Vector2 = window_offsets[key]
+		for node in [SimpleGUI, ContainmentGUI, ResourceGUI, ContainmentGUI]:
+			if key == node.name:
+				node.window_offset = window_offset
 # -----------------------------------
 
 # -----------------------------------
@@ -138,7 +169,6 @@ func update_gui(phase:String, summary:String) -> void:
 	logs.push_back("Day %s (%s): %s" % [current.day, phase, summary])
 # -----------------------------------
 
-
 # -----------------------------------
 #region SAVE/LOAD
 func quicksave() -> void:
@@ -147,6 +177,7 @@ func quicksave() -> void:
 		"base_data": base_data,
 		"resource_data": resource_data,
 		"containment_data": containment_data,
+		"window_offsets": window_offsets,
 		"logs": logs
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
@@ -168,7 +199,8 @@ func restore_game(restore_data:Dictionary = {}) -> void:
 	logs = restore_data.logs if !no_save else logs
 	# requires call to calculate properties after base_data is available
 	resource_data = restore_data.resource_data if !no_save else U.calculate_resource_properties(resource_data, base_data.built, containment_data)
-
+	window_offsets = restore_data.window_offsets if !no_save else window_offsets
+	
 	phase_arr[current.phase].call()	
 #endregion		
 # -----------------------------------
@@ -415,6 +447,3 @@ func _unhandled_key_input(event: InputEvent) -> void:
 # -----------------------------------		
 #endregion
 # -----------------------------------	
-
-func _process(delta: float) -> void:
-	GBL.mouse_pos = get_global_mouse_position()

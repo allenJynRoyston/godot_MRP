@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://bf3fe4o05ua20"]
 
-[ext_resource type="Script" path="res://Components/WindowUI/Header/header.gd" id="1_a2eh7"]
+[ext_resource type="Script" path="res://UI/WindowUI/Header/header.gd" id="1_a2eh7"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="2_exemx"]
 [ext_resource type="Texture2D" uid="uid://bacybyhcbo06n" path="res://SVGs/stop-svgrepo-com.svg" id="2_slb3a"]
 [ext_resource type="Texture2D" uid="uid://b11bec5r63wnc" path="res://SVGs/clear-svgrepo-com.svg" id="3_iy88p"]
@@ -9,24 +9,24 @@
 bg_color = Color(0, 0, 0, 0)
 border_color = Color(4.81307e-07, 0.954906, 0.483495, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0nty7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s0n6g"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 border_width_left = 2
 border_width_top = 2
 border_width_bottom = 2
 border_color = Color(0, 0.254902, 0.0823529, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_0iiqy"]
+[sub_resource type="LabelSettings" id="LabelSettings_60lnt"]
 font = ExtResource("2_exemx")
 font_color = Color(0, 0.254902, 0.0823529, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gsyv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uwqnh"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 border_width_top = 2
 border_width_bottom = 2
 border_color = Color(0, 0.254902, 0.0823529, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tu03y"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgavj"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 border_width_top = 2
 border_width_right = 2
@@ -36,10 +36,10 @@ border_color = Color(0, 0.254902, 0.0823529, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxs5j"]
 bg_color = Color(1, 0.964706, 0.278431, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c47sh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52lei"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_su1mv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pnfgn"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="Header" type="PanelContainer"]
@@ -54,33 +54,33 @@ theme_override_constants/separation = 0
 
 [node name="LabelContainer" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0nty7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s0n6g")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LabelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
+theme_override_constants/margin_left = 5
 theme_override_constants/margin_right = 20
 
 [node name="Label" type="Label" parent="HBoxContainer/LabelContainer/MarginContainer"]
 layout_mode = 2
-label_settings = SubResource("LabelSettings_0iiqy")
+label_settings = SubResource("LabelSettings_60lnt")
 
 [node name="FocusContainer" type="PanelContainer" parent="HBoxContainer"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_6gsyv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_uwqnh")
 
 [node name="BtnContainer" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tu03y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wgavj")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/BtnContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/BtnContainer/MarginContainer"]
@@ -106,7 +106,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_wxs5j")
 
 [node name="Button" type="Button" parent="HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/MaxBtnContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_c47sh")
+theme_override_styles/normal = SubResource("StyleBoxFlat_52lei")
 icon = ExtResource("2_slb3a")
 icon_alignment = 1
 expand_icon = true
@@ -133,6 +133,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_wxs5j")
 [node name="Button" type="Button" parent="HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/CrossBtnContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_icons/icon = ExtResource("3_iy88p")
-theme_override_styles/normal = SubResource("StyleBoxFlat_su1mv")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pnfgn")
 icon_alignment = 1
 expand_icon = true
+
+[connection signal="pressed" from="HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/MaxBtnContainer/MarginContainer/PanelContainer/Button" to="." method="on_max_btn_pressed"]
+[connection signal="pressed" from="HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/CrossBtnContainer/MarginContainer/PanelContainer/Button" to="." method="on_close_btn_pressed"]

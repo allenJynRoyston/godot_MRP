@@ -1,0 +1,62 @@
+[gd_scene load_steps=6 format=3 uid="uid://eqyg3c15y82h"]
+
+[ext_resource type="Material" uid="uid://2jrpoatnq0tx" path="res://Shader/Fractal/Factal.tres" id="1_04mdp"]
+[ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="3_yu754"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_52o18"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_64c2y"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_i2amw"]
+viewport_path = NodePath("SubViewport2")
+
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 2
+size_flags_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1280, 720)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("NoiseTexture2D_52o18")
+
+[node name="SubViewport2" type="SubViewport" parent="."]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport2"]
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport2/HBoxContainer"]
+material = ExtResource("1_04mdp")
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("ViewportTexture_64c2y")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="SubViewport2/HBoxContainer"]
+material = ExtResource("1_04mdp")
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("ViewportTexture_64c2y")
+expand_mode = 1
+flip_h = true
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+material = ExtResource("3_yu754")
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("ViewportTexture_i2amw")
+expand_mode = 1

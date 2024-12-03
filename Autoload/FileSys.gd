@@ -1,16 +1,20 @@
 extends Node
 
+enum FILE {SETTINGS, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
+
 const save_config:Dictionary = {
 	"folder": "res://Saves/",
 	"image_ext": ".png",
 	"image_size": 400,
 	"pretty_filenames": {
+		"settings": "Settings",
 		"quick_save": "Quicksave",
 		"filesave_one": "File 1",
 		"filesave_two": "File 2",
 		"filesave_three": "File 3"
 	},
 	"filenames": {		
+		"settings": "SETTINGS",
 		"quicksave": "SAVE_QUICKSAVE",
 		"save_file_one": "SAVE_01",
 		"save_file_two": "SAVE_02",
@@ -20,40 +24,11 @@ const save_config:Dictionary = {
 }
 
 const folder:String = save_config.folder
+const settings_filename:String = save_config.filenames.settings
 const quick_save_filename:String = save_config.filenames.quicksave
 const save_file_one_filename:String = save_config.filenames.save_file_one
 const save_file_two_filename:String = save_config.filenames.save_file_two
 const save_file_three_filename:String = save_config.filenames.save_file_three
-
-enum FILE {QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
-
-# -----------------------------------------------------------
-func system_data_defaults() -> Dictionary:
-	return {
-		"video": {
-			"MSAA": Viewport.MSAA_DISABLED,
-			"SSAA": Viewport.SCREEN_SPACE_AA_DISABLED,
-			"resolution": Vector2(1280, 720),
-			"full_screen": DisplayServer.WINDOW_MODE_WINDOWED
-		},
-		"sound_enabled": {
-			"fx": true,
-			"music": true
-		},
-		"sound_volume": {
-			"fx": 100,
-			"music": 100,	
-		},
-		"controls": {
-			
-		}
-	}	
-# -----------------------------------------------------------
-
-# -----------------------------------------------------------
-func persistant_data_defaults() -> Dictionary:
-	return {}
-# -----------------------------------------------------------
 
 # -----------------------------------------------------------
 func check_for_quicksave_file() -> bool:
@@ -78,6 +53,9 @@ func save_file_exist(type:FILE) -> bool:
 	var filepath:String
 	
 	match type:
+		# ----------------------------
+		FILE.SETTINGS:
+			filepath = str(folder, settings_filename)
 		# ----------------------------
 		FILE.QUICK_SAVE:
 			filepath = str(folder, quick_save_filename)		
@@ -111,6 +89,10 @@ func load_file(type:FILE, is_preview:bool = false) -> Dictionary:
 	var filedata:Dictionary = {}
 	
 	match type:
+		# ----------------------------
+		FILE.SETTINGS:
+			var filepath:String = str(folder, settings_filename)
+			filedata = get_file_data(filepath)			
 		# ----------------------------
 		FILE.QUICK_SAVE:
 			var filepath:String = str(folder, quick_save_filename)
@@ -161,6 +143,11 @@ func save_file(type:FILE, save_data:Dictionary) -> Dictionary:
 	var success:bool = false
 	
 	match type:
+		# ----------------------------
+		FILE.SETTINGS:
+			var filepath:String = str(folder, settings_filename)
+			file_data = add_savefile_metadata(settings_filename, save_data)
+			success = create_save_file(filepath, file_data)		
 		# ----------------------------
 		FILE.QUICK_SAVE:
 			var filepath:String = str(folder, quick_save_filename)

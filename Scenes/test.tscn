@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bq0ukhihq2nlf"]
 
-[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://Components/WindowUI/WindowUI.tscn" id="1_ivoj0"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_ivoj0"]
 [ext_resource type="Script" path="res://Scenes/test.gd" id="1_ufbx0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klsl2"]

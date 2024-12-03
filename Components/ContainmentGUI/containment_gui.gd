@@ -40,6 +40,12 @@ func _ready() -> void:
 	RootPanel = $"."
 	super._ready()
 	on_data_update()
+	
+	WindowUI.onDragEnd = func(new_offset:Vector2) -> void:
+		var GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
+		var window_offset = GameplayNode.window_offsets.duplicate()
+		window_offset[self.name] = new_offset
+		GameplayNode.window_offsets = window_offset	
 # -----------------------------------
 
 # -----------------------------------
@@ -47,6 +53,11 @@ func on_is_active_updated() -> void:
 	WindowUI.window_is_active = is_active
 # -----------------------------------	
 
+# -----------------------------------		
+func on_window_offset_update() -> void:
+	WindowUI.window_offset = window_offset
+# -----------------------------------		
+	
 # -----------------------------------
 func on_active() -> void:
 	on_section_update()

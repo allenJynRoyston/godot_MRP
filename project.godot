@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="SCP-001: Memory Recovery Protocol"
-run/main_scene="res://Scenes/GameplayLoop/GameplayLoop.tscn"
+run/main_scene="res://Scenes/OS/OS.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 run/size/viewport_height=720
 
 [autoload]
 
+REFS="*res://Autoload/enums/NODE_REFS.gd"
 BUILDING_TYPE="*res://Autoload/enums/BUILDING_TYPE.gd"
 RESOURCE="*res://Autoload/enums/RESOURCE.gd"
 SCP="*res://Autoload/enums/SCP.gd"
@@ -32,3 +33,5 @@ C="*res://Autoload/Containment.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/always_on_top=true
+window/stretch/mode="viewport"
+window/main_scene="res://Scenes/Computer/Computer.tscn"
