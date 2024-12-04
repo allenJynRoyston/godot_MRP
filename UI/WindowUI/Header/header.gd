@@ -77,7 +77,7 @@ func on_btn_update():
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_mouse_click(btn:int, is_focused:bool) -> void:
+func on_mouse_click(node:Control, btn:int, is_focused:bool) -> void:
 	if is_focused:
 		onDragStart.call()
 	

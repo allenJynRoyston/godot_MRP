@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2xiva1hpi0f4"]
+
+[ext_resource type="Script" path="res://UI/Layout/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
+[ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_k0ebq"]
+[ext_resource type="Texture2D" uid="uid://dok7sqxmfr2m8" path="res://SVGs/download-window-svgrepo-com.svg" id="3_ar60s"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="4_2gnm4"]
+
+[node name="AttachmentContainer" type="PanelContainer"]
+script = ExtResource("1_dkvyx")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+material = ExtResource("2_k0ebq")
+layout_mode = 2
+texture = ExtResource("3_ar60s")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Download:"
+label_settings = ExtResource("4_2gnm4")
+
+[node name="AttachmentLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "filename"
+label_settings = ExtResource("4_2gnm4")

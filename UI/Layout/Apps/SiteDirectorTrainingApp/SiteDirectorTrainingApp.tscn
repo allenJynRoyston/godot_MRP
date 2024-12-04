@@ -6,12 +6,12 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_45imw"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wbr2w"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3rmr"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 1)
 border_color = Color(0, 0.964706, 0.278431, 1)
 shadow_color = Color(0, 0.758458, 0.260647, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_co3pt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cfyn"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 2
 border_width_right = 2
@@ -29,7 +29,7 @@ script = ExtResource("1_5dlsa")
 [node name="WindowUI" parent="." instance=ExtResource("1_08334")]
 custom_minimum_size = Vector2(1200, 600)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wbr2w")
+theme_override_styles/panel = SubResource("StyleBoxFlat_n3rmr")
 enable_close_btn = true
 enable_max_btn = true
 window_label = "Site Director Training Program"
@@ -42,7 +42,7 @@ window_label = "Site Director Training Program"
 
 [node name="Body" parent="WindowUI/MarginContainer/VBoxContainer" index="1"]
 clip_contents = true
-theme_override_styles/panel = SubResource("StyleBoxFlat_co3pt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2cfyn")
 
 [node name="PanelContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("2_icb31")]
 layout_mode = 2

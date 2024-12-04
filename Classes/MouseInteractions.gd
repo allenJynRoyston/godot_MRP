@@ -29,7 +29,7 @@ func on_focus(state:bool) -> void:
 # --------------------------------------	
 
 # --------------------------------------	
-func on_mouse_click(btn:int, on_hover:bool) -> void:
+func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	pass
 # --------------------------------------		
 
@@ -59,7 +59,7 @@ func blur_event() -> void:
 func _input(event) -> void:
 	if event is InputEventMouseButton:
 		if event.is_pressed():
-			on_mouse_click(event.button_index, on_hover)
+			on_mouse_click(self, event.button_index, on_hover)
 		if event.is_released():
 			on_mouse_release(event.button_index, on_hover)
 		if event.double_click:

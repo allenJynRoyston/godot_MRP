@@ -41,7 +41,7 @@ func _ready() -> void:
 	super._ready()
 	on_data_update()
 	
-	WindowUI.onDragEnd = func(new_offset:Vector2) -> void:
+	WindowUI.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
 		var GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
 		var window_offset = GameplayNode.window_offsets.duplicate()
 		window_offset[self.name] = new_offset

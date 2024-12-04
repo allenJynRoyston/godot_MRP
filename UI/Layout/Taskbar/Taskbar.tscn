@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://tcw2mmfv8vct"]
+[gd_scene load_steps=5 format=3 uid="uid://tcw2mmfv8vct"]
 
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_4lxlp"]
 [ext_resource type="Script" path="res://UI/Layout/Taskbar/taskbar.gd" id="1_eg3xy"]
+[ext_resource type="PackedScene" uid="uid://cieqo2p3d5xly" path="res://UI/Layout/Taskbar/parts/MediaPlayer/MediaPlayer.tscn" id="3_7up16"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uove6"]
 bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
@@ -39,11 +40,18 @@ layout_mode = 2
 text = "MemSoft Systems"
 label_settings = ExtResource("1_4lxlp")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MediaPlayer" parent="MarginContainer/HBoxContainer/HBoxContainer3" instance=ExtResource("3_7up16")]
+layout_mode = 2
+
+[node name="TimeDisplay" type="HBoxContainer" parent="MarginContainer/HBoxContainer/HBoxContainer3"]
 layout_mode = 2
 alignment = 2
 
-[node name="Time" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer2"]
+[node name="TimeLabel" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer3/TimeDisplay"]
 layout_mode = 2
 text = "3:33 AM"
 label_settings = ExtResource("1_4lxlp")

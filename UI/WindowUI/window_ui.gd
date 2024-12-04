@@ -49,7 +49,11 @@ var is_focused:bool = false
 var is_dragging:bool = false
 var drag_start_pos:Vector2 = Vector2(0, 0)
 
-var onDragEnd:Callable = func(new_offset:Vector2) -> void:pass
+var onClick:Callable = func(btn:int, on_hover:bool) -> void:pass
+var onFocus:Callable = func(node:Control) -> void:pass
+var onBlur:Callable = func(node:Control) -> void:pass
+var onDragStart:Callable = func(node:Control) -> void:pass
+var onDragEnd:Callable = func(new_offset:Vector2, node:Control) -> void:pass
 var onMaxBtn:Callable = func(node:Control) -> void:pass
 var onCloseBtn:Callable = func(node:Control) -> void:pass
 
@@ -73,11 +77,12 @@ func _ready() -> void:
 		if !is_draggable or !is_focused: return
 		is_dragging = true
 		drag_start_pos = GBL.mouse_pos - window_offset
+		onDragStart.call(self)
 		
 	Header.onDragEnd = func() -> void:
 		if !is_draggable or !is_focused: return
 		is_dragging = false
-		onDragEnd.call(window_offset)
+		onDragEnd.call(window_offset, self)
 # ------------------------------------------------	
 
 # ------------------------------------------------	
@@ -95,7 +100,13 @@ func on_window_position_update() -> void:
 	if global_position.y < 0:
 		global_position.y = 0
 # ------------------------------------------------	
-	
+
+# --------------------------------------	
+func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:	
+	print("FIX THIS BUG")
+	# onClick.call(node, btn, on_hover)
+# --------------------------------------		
+
 # ------------------------------------------------
 func on_header_update() -> void:
 	if is_node_ready():
@@ -116,7 +127,9 @@ func on_enable_header_update() -> void:
 # ------------------------------------------------		
 
 # ------------------------------------------------
-func on_focus(state:bool = false) -> void:		
+func on_focus(state:bool = false) -> void:
+	onFocus.call(self) if state else onBlur.call(self)
+	
 	if is_node_ready():
 		is_focused = state
 		

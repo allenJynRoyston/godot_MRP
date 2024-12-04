@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://efhyf8f2yvv8"]
+
+[ext_resource type="Script" path="res://UI/VList/parts/v_list_item_label.gd" id="1_gtfh7"]
+[ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_q14la"]
+[ext_resource type="Texture2D" uid="uid://b017kthdoj5nm" path="res://SVGs/new-rectangle-solid-svgrepo-com.svg" id="3_c7lv5"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="4_vhl0u"]
+
+[node name="HBoxContainer" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 35)
+offset_right = 200.0
+offset_bottom = 35.0
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+script = ExtResource("1_gtfh7")
+
+[node name="IsNew" type="TextureRect" parent="."]
+material = ExtResource("2_q14la")
+custom_minimum_size = Vector2(35, 30)
+layout_mode = 2
+texture = ExtResource("3_c7lv5")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "label"
+label_settings = ExtResource("4_vhl0u")
+vertical_alignment = 1

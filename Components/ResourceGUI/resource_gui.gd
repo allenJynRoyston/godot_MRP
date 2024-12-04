@@ -79,7 +79,7 @@ func _ready() -> void:
 		item.node.data = item.node_data
 		ResourceTabContainer.add_child(item.node)
 		
-	WindowUI.onDragEnd = func(new_offset:Vector2) -> void:
+	WindowUI.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
 		var GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
 		var window_offset = GameplayNode.window_offsets.duplicate()		
 		window_offset[self.name] = new_offset		

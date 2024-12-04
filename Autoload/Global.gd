@@ -2,6 +2,15 @@ extends Node
 
 # ------------------------------------------------------------------------------
 # MOUSE POSITIONS
+var win_z_count:int = 0 
+
+func get_next_window_z() -> int:
+	win_z_count += 1
+	return win_z_count
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# MOUSE POSITIONS
 var mouse_pos := Vector2(0, 0) : 
 	set(val): 
 		mouse_pos = val;
@@ -21,6 +30,7 @@ func subscribe_to_mouse_pos(node:Control) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+# NODE REFS
 var node_refs:Dictionary = {}
 
 func register_node(key:int, node:Node) -> void:
@@ -33,4 +43,27 @@ func unregister_node(key:int) -> void:
 		
 func find_node(key:int) -> Node:
 	return node_refs[key]
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# NODE REFS
+var music_data_subscriptions:Array[Control] = []
+
+var music_data:Dictionary = {} : 
+	set(val): 
+		music_data = val
+		on_music_data_update()
+		
+func on_music_data_update() -> void:
+	for node in music_data_subscriptions:
+		if "on_music_data_update" in node:
+			node.music_data = music_data
+
+func subscribe_to_music_player(node:Control) -> void:
+	if node not in music_data_subscriptions:
+		music_data_subscriptions.push_back(node)
+		
+func unsubscribe_to_music_player(node:Control) -> void:
+	if node in music_data_subscriptions:
+		music_data_subscriptions.erase(node)
 # ------------------------------------------------------------------------------

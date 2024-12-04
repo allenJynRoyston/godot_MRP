@@ -88,7 +88,6 @@ layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="MaxBtnContainer" type="PanelContainer" parent="HBoxContainer/BtnContainer/MarginContainer/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 size_flags_stretch_ratio = 0.0
@@ -112,7 +111,6 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="CrossBtnContainer" type="PanelContainer" parent="HBoxContainer/BtnContainer/MarginContainer/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 size_flags_horizontal = 0

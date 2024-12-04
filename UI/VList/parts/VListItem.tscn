@@ -1,0 +1,69 @@
+[gd_scene load_steps=8 format=3 uid="uid://dobbsixb8ju58"]
+
+[ext_resource type="Script" path="res://UI/VList/parts/v_list_item.gd" id="1_5qhby"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_t3wb0"]
+[ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_qr6ln"]
+[ext_resource type="Texture2D" uid="uid://c81fhaja0d6v7" path="res://SVGs/media-play-svgrepo-com.svg" id="3_hnc4k"]
+[ext_resource type="Texture2D" uid="uid://b017kthdoj5nm" path="res://SVGs/new-rectangle-solid-svgrepo-com.svg" id="5_klawt"]
+[ext_resource type="PackedScene" uid="uid://efhyf8f2yvv8" path="res://UI/VList/parts/VListItemLabel.tscn" id="5_pvg7o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fkw1c"]
+
+[node name="VListItem" type="PanelContainer"]
+custom_minimum_size = Vector2(100, 0)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_fkw1c")
+script = ExtResource("1_5qhby")
+is_draggable = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 8
+
+[node name="OpenIconImage" type="TextureRect" parent="VBoxContainer/HBoxContainer/MarginContainer"]
+material = ExtResource("2_qr6ln")
+layout_mode = 2
+texture = ExtResource("3_hnc4k")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="SectionLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Label"
+label_settings = ExtResource("1_t3wb0")
+vertical_alignment = 1
+
+[node name="HasNew" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+material = ExtResource("2_qr6ln")
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("5_klawt")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+
+[node name="ItemContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" parent="VBoxContainer/MarginContainer/ItemContainer" instance=ExtResource("5_pvg7o")]
+layout_mode = 2

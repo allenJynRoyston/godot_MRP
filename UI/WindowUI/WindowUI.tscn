@@ -3,14 +3,15 @@
 [ext_resource type="Script" path="res://UI/WindowUI/window_ui.gd" id="1_g5j4v"]
 [ext_resource type="PackedScene" uid="uid://bf3fe4o05ua20" path="res://UI/WindowUI/Header/Header.tscn" id="2_1p2wk"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xk04p"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h1em5"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_color = Color(0, 0.964706, 0.278431, 1)
 shadow_color = Color(0, 0.758458, 0.260647, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wtqsm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5750g"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 2
+border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0.964706, 0.278431, 1)
@@ -19,7 +20,7 @@ border_color = Color(0, 0.964706, 0.278431, 1)
 custom_minimum_size = Vector2(200, 100)
 offset_right = 200.0
 offset_bottom = 100.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_xk04p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_h1em5")
 script = ExtResource("1_g5j4v")
 enable_close_btn = false
 enable_max_btn = false
@@ -41,7 +42,7 @@ window_label = "Window"
 [node name="Body" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_wtqsm")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5750g")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Body"]
 layout_mode = 2

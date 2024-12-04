@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bhlkeaoer7tk1"
+path="res://.godot/imported/Dick Gumshoe ~ Detective Gumshoe, Pal.mp3-43f055cdabcab3d51c064e10e92e620d.mp3str"
+
+[deps]
+
+source_file="res://SVGs/Dick Gumshoe ~ Detective Gumshoe, Pal.mp3"
+dest_files=["res://.godot/imported/Dick Gumshoe ~ Detective Gumshoe, Pal.mp3-43f055cdabcab3d51c064e10e92e620d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
