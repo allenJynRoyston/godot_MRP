@@ -25,7 +25,7 @@ border_color = Color(0, 0.964706, 0.278431, 1)
 
 [node name="WindowUI" type="PanelContainer"]
 custom_minimum_size = Vector2(100, 0)
-offset_right = 115.0
+offset_right = 100.0
 offset_bottom = 44.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_aug80")
 script = ExtResource("1_g5j4v")

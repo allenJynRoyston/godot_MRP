@@ -12,25 +12,25 @@ void fragment() {
 
     // Time-based zoom effect
     float zoom = 1.0 / (TIME * zoom_speed + 1.0);
-    
+
     // UV coordinates are scaled and zoomed
     vec2 uv = (UV - 0.5) * zoom;
-    
+
     // Apply sinusoidal distortion to the UV coordinates
     uv.x += sin(TIME * 0.5) * distortion * 0.1; // Distort the x component
     uv.y += cos(TIME * 0.5) * distortion * 0.1; // Distort the y component
-    
+
     // Julia set formula with animated constant 'c' over time
     vec2 c = vec2(sin(TIME * 0.3), cos(TIME * 0.3)); // Time-varying constant 'c'
     vec2 z = uv;
-    
+
     float iterations = 0.0;
 
     // Maximum iterations (fractals have a limit to how many times you can iterate)
     for (int i = 0; i < max_iterations; i++) {
         // Julia set Iteration formula with dynamic changes
         z = vec2(z.x * z.x - z.y * z.y + c.x, 2.0 * z.x * z.y + c.y);
-        
+
         // Escape condition
         if (length(z) > 2.0) {
             break; // Escape condition for fractal
@@ -41,7 +41,7 @@ void fragment() {
 
     // Normalize the number of iterations to a color value
     float color_value = float(iterations) / float(max_iterations);
-    
+
     // Apply the base color tint
     vec3 fractal_color = mix(color_tint.rgb, vec3(1.0, 1.0, 1.0), color_value);
 

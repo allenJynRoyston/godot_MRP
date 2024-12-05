@@ -19,12 +19,14 @@ custom_minimum_size = Vector2(1000, 600)
 layout_mode = 2
 enable_close_btn = true
 enable_max_btn = true
+window_label = "Site Director Training Program"
 window_size = Vector2(1000, 600)
+header_icon = 6
 
 [node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
 enable_max_btn = true
 enable_close_btn = true
-window_label = "Window"
+window_label = "Site Director Training Program"
 
 [node name="PanelContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("2_icb31")]
 layout_mode = 2

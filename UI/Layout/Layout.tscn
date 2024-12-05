@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=9 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_44c0x"]
 [ext_resource type="Script" path="res://UI/Layout/layout.gd" id="1_rk64t"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://UI/Layout/Background/Background.tscn" id="2_2u7t3"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://UI/Layout/Taskbar/Taskbar.tscn" id="3_v00j4"]
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://UI/Layout/AppItem/AppItem.tscn" id="4_e3kl5"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="6_wkcgy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a1m38"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -94,5 +95,20 @@ show_media_player = true
 
 [node name="FullScreenAppsContainer" type="Control" parent="."]
 layout_mode = 2
+
+[node name="SimulatedWait" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="SimulatedWait"]
+layout_mode = 2
+
+[node name="IconBtn" parent="SimulatedWait/CenterContainer" instance=ExtResource("6_wkcgy")]
+modulate = Color(1, 1, 1, 0.356863)
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+icon = 18
+static_color = Color(0, 0.256147, 0.00083709, 1)
+is_draggable = false
+is_hoverable = false
 
 [editable path="BackgroundWindow"]

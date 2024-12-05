@@ -23,11 +23,11 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------
 func after_ready():
-	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)
+	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
 	if in_fullscreen:
-		WindowUI.window_size = Vector2(1280 - 20, 720 - 45)
+		WindowUI.window_size = get_viewport().get_visible_rect().size - Vector2(50, 55)
 		WindowUI.is_draggable = false
-		WindowUI.window_position = Vector2(10, 40)
+		WindowUI.window_position = Vector2(25, 40)
 		
 	else:
 		var center_position:Vector2 = (container_node.size - WindowUI.window_size)/2 + offset

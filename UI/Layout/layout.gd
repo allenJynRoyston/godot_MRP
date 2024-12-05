@@ -5,6 +5,7 @@ extends MouseInteractions
 @onready var TaskbarAppsContainer:Control = $TaskbarAppsContainer
 @onready var FullScreenAppsContainer:Control = $FullScreenAppsContainer
 @onready var BackgroundWindow:PanelContainer = $BackgroundWindow
+@onready var SimulatedWait:PanelContainer = $SimulatedWait
 
 @onready var DesktopIconContainer:Control = $Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
@@ -18,6 +19,7 @@ const SiteDirectorTrainingAppScene:PackedScene = preload("res://UI/Layout/Apps/S
 const EmailAppScene:PackedScene = preload("res://UI/Layout/Apps/EmailApp/EmailApp.tscn")
 const MediaPlayerMiniAppScene:PackedScene = preload("res://UI/Layout/Apps/MediaPlayerMiniApp/MediaPlayerMiniApp.tscn")
 const ContextMenuAppScene:PackedScene = preload("res://UI/Layout/Apps/ContextMenuApp/ContextMenuApp.tscn")
+const TextFileAppScene:PackedScene = preload("res://UI/Layout/Apps/TextFileApp/TextFileApp.tscn")
 
 # -----------------------------------
 #region SAVABLE DATA
@@ -97,21 +99,23 @@ var app_list:Array[Dictionary] = [
 	{
 		"data": {
 			"ref": APPS.SDT,
-			"title": "Site Director Training",
+			"title": "Site Director Training Program",
 			"icon": SVGS.EXE_FILE,
 			"app": SiteDirectorTrainingAppScene,
 		},
 		"events": {
 			"onRightClick": func() -> void:
 				open_context_menu("Properties"),
-			"onDblClick": open_app
+			"onDblClick": func(data:Dictionary) -> void:
+				open_app(data, true),
 		}
 	},
 	{
 		"data": {
 			"ref": APPS.SETTINGS,
 			"title": "Settings",
-			"icon": SVGS.SETTINGS
+			"icon": SVGS.SETTINGS,
+			"app": TextFileAppScene
 		},
 		"defaults": {
 			"pos_offset": Vector2(0, 0),
@@ -168,11 +172,12 @@ var app_list:Array[Dictionary] = [
 			"onRightClick": func() -> void:
 				print("on right click"),
 			"onDblClick": func(data:Dictionary) -> void:
-				# open music player, no music selected
-				GBL.music_data = {
-					"track_list": music_track_list,
-					"selected": 0,
-				},
+				if GBL.music_data.is_empty():
+					# open music player, no music selected
+					GBL.music_data = {
+						"track_list": music_track_list,
+						"selected": 1,
+					},
 		},
 	},		
 	{
@@ -180,6 +185,7 @@ var app_list:Array[Dictionary] = [
 			"ref": APPS.README,
 			"title": "README.txt",
 			"icon": SVGS.TXT_FILE,
+			"app": TextFileAppScene
 		},
 		"defaults": {
 			"pos_offset": Vector2(0, 0),
@@ -191,6 +197,12 @@ var app_list:Array[Dictionary] = [
 		},
 	}	
 ]
+
+var already_loaded:Array = []
+var simulate_busy:bool = false : 
+	set(val):
+		simulate_busy = val
+		on_simulated_busy_update()
 
 var icon_focus_list:Array[Control] = []
 var window_focus_list:Array[Control] = []
@@ -211,17 +223,31 @@ var top_level_window:Control :
 func _ready() -> void:
 	load_state()
 	render_desktop_icons()
+	on_simulated_busy_update()
 
 	GBL.register_node(REFS.OS_LAYOUT, self)
 
-	RecycleBin.onDblClick = func() -> void:
-		print("dbl click")	
+	RecycleBin.onDblClick = func(data:Dictionary) -> void:
+		pass
 # -----------------------------------
 
 # -----------------------------------
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.OS_LAYOUT)
 # -----------------------------------	
+
+# -----------------------------------	
+func on_simulated_busy_update() -> void:	
+	SimulatedWait.show() if simulate_busy else SimulatedWait.hide()	
+# -----------------------------------		
+
+# -----------------------------------		
+func simulate_wait(duration:float) -> void:
+	simulate_busy = true
+	await U.set_timeout(duration * 1.0)
+	simulate_busy = false
+# -----------------------------------		
+	
 
 # -----------------------------------
 func on_running_apps_list_update() -> void:
@@ -243,6 +269,7 @@ func on_running_apps_list_update() -> void:
 
 	Taskbar.taskbar_live_items = taskbar_live_items
 # -----------------------------------
+
 
 # -----------------------------------
 #region MOUSE 
@@ -309,7 +336,7 @@ func open_context_menu(title:String = "Context Menu", items:Array = []) -> void:
 			"items": items
 		}
 	}	
-	open_app(data)
+	open_app(data, false, true)
 
 	
 # -----------------------------------	
@@ -343,10 +370,19 @@ func close_app(ref:int) -> void:
 		top_level_window = null
 	node.queue_free()	
 
-func open_app(data:Dictionary, in_fullscreen:bool = false) -> void:
-	var app_refs:Array = running_apps_list.map(func(item): return item.ref)
-	
+func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false) -> void:
+	if simulate_busy:
+		return
+		
+	var app_refs:Array = running_apps_list.map(func(item): return item.ref)	
 	if data.ref not in app_refs:
+		if !skip_loading:
+			if data.ref not in already_loaded:
+				already_loaded.push_back(data.ref)
+				await simulate_wait(0.7)
+			else:
+				await simulate_wait(0.2)
+				
 		var new_node:Control = data.app.instantiate()
 
 		running_apps_list.push_back({"ref": data.ref, "node": new_node})
@@ -374,7 +410,7 @@ func open_app(data:Dictionary, in_fullscreen:bool = false) -> void:
 			
 		new_node.onMaxBtn = func(node:Control, window_node:Control) -> void:
 			close_app(data.ref)
-			open_app(data, !new_node.in_fullscreen)			
+			open_app(data, !new_node.in_fullscreen, true)			
 		
 		new_node.onFocus = func(node:Control, window_node:Control) -> void:
 			if node not in window_focus_list:
@@ -401,6 +437,8 @@ func open_app(data:Dictionary, in_fullscreen:bool = false) -> void:
 			FullScreenAppsContainer.add_child(new_node)
 		else:
 			RunningAppsContainer.add_child( new_node )
+			
+
 # -----------------------------------	
 #endregion
 # -----------------------------------

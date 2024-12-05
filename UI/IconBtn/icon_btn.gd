@@ -8,7 +8,8 @@ enum SVG {
 	BIN, CLEAR, 
 	DELETE, DOT, DOWNLOAD, EMAIL, EXE_FILE, TXT_FILE,
 	MEDIA_FORWARD, MEDIA_PAUSE, MEDIA_PLAY, MINUS, MUSIC, 
-	NEW, PLUS, SETTINGS, STOP
+	NEW, PLUS, SETTINGS, STOP, 
+	THINKING, LOADING
 }
 
 @export var icon:SVG = SVG.DOT : 
@@ -103,6 +104,10 @@ func on_icon_update() -> void:
 				texture = load("res://SVGs/settings-svgrepo-com.svg")
 			SVGS.STOP:
 				texture = load("res://SVGs/stop-svgrepo-com.svg")
+			SVGS.THINKING:
+				texture = load("res://SVGs/thinking-round-svgrepo-com.svg")
+			SVGS.LOADING:
+				texture = load("res://SVGs/loading-svgrepo-com.svg")
 		
 		if texture != null:
 			Btn.texture = texture

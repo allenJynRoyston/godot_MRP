@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://b61dv5ws7o2c5"]
+
+[ext_resource type="Script" path="res://UI/Layout/Apps/TextFileApp/text_file_app.gd" id="1_ycmlw"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_d2y37"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2473v"]
+
+[node name="TextFileApp" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_2473v")
+script = ExtResource("1_ycmlw")
+
+[node name="WindowUI" parent="." instance=ExtResource("2_d2y37")]
+layout_mode = 2
