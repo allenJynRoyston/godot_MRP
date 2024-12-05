@@ -1,23 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dkq7qr452bxjl"]
+[gd_scene load_steps=5 format=3 uid="uid://dkq7qr452bxjl"]
 
 [ext_resource type="Script" path="res://UI/Layout/Apps/MediaPlayerMiniApp/media_player_mini_app.gd" id="1_0gr4a"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_4wqjg"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="3_s0vrx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pxali"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m488s"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-border_color = Color(0, 0.964706, 0.278431, 1)
-shadow_color = Color(0, 0.758458, 0.260647, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61ak5"]
-bg_color = Color(0, 0, 0, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0.964706, 0.278431, 1)
 
 [node name="MediaPlayerMiniApp" type="PanelContainer"]
 offset_right = 40.0
@@ -26,23 +13,11 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_pxali")
 script = ExtResource("1_0gr4a")
 
 [node name="WindowUI" parent="." instance=ExtResource("2_4wqjg")]
-custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_m488s")
-fixed_z = null
 enable_header = false
-enable_close_btn = true
-window_label = "Media Player"
-window_size = Vector2(300, 50)
-is_draggable = false
 
 [node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
 visible = false
-enable_close_btn = true
-window_label = "Media Player"
-
-[node name="Body" parent="WindowUI/MarginContainer/VBoxContainer" index="1"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_61ak5")
 
 [node name="VList" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_s0vrx")]
 layout_mode = 2

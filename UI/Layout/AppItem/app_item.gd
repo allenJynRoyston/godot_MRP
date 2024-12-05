@@ -1,7 +1,7 @@
 @tool
 extends MouseInteractions
 
-@onready var IconImage:TextureRect = $VBoxContainer/TextureRect
+@onready var IconButton:IconBtn = $VBoxContainer/CenterContainer/IconBtn
 @onready var AppLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/Label
 
 @export var title:String = "Application" : 
@@ -9,7 +9,7 @@ extends MouseInteractions
 		title = val
 		on_title_update()
 
-@export var icon:CompressedTexture2D = preload("res://icon.svg") : 
+@export var icon:int = SVGS.DOT : 
 	set(val):
 		icon = val
 		on_icon_update()
@@ -27,7 +27,6 @@ var pos_offset:Vector2 = Vector2() :
 		on_position_update()
 
 var can_release:bool = true
-var is_focused:bool = false
 var is_dragging:bool = false
 var drag_start_pos:Vector2 = Vector2(0, 0)
 var is_selectable:bool = true : 
@@ -35,8 +34,9 @@ var is_selectable:bool = true :
 		is_selectable = val
 		if !val:
 			is_dragging = false
-			on_focus(false)
+		on_focus()
 
+var onClick:Callable = func(node:Node, btn:int, is_focused:bool) -> void:pass
 var onDragStart:Callable = func(node:Node) -> void:pass
 var onDragEnd:Callable = func(new_offset:Vector2, node:Control) -> void:pass		
 var onFocus:Callable = func(node:Control) -> void:pass
@@ -71,8 +71,8 @@ func on_title_update() -> void:
 		AppLabel.text = title
 
 func on_icon_update() -> void:
-	if is_node_ready():
-		IconImage.texture = icon
+	if is_node_ready():		
+		IconButton.icon = icon
 		
 func on_position_update() -> void:
 	position = pos_offset + init_pos
@@ -84,36 +84,39 @@ func on_position_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_focus(state:bool) -> void:
+func on_focus(state:bool = is_focused) -> void:
 	onFocus.call(self) if state else onBlur.call(self)
+	
 	if !is_selectable: 
 		update_color(false)
 		return	
-	is_focused = state
 	update_color(is_focused)
 	
 func update_color(state:bool) -> void:
-	var shader_material:ShaderMaterial = IconImage.material.duplicate()	
-	shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
-	IconImage.material = shader_material
+	#var shader_material:ShaderMaterial = IconImage.material.duplicate()	
+	#shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
+	#IconImage.material = shader_material
 	
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
-	label_setting.font_color = Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1)
+	label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
 	AppLabel.label_settings = label_setting
 	
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover:
 		if !is_draggable or !is_focused or !is_selectable: return
-		is_dragging = true
-		drag_start_pos = GBL.mouse_pos - pos_offset
-		onDragStart.call(self)
+		onClick.call(self, btn, on_hover)
+		if !is_dragging:
+			is_dragging = true
+			drag_start_pos = GBL.mouse_pos - pos_offset
+			onDragStart.call(self)
 
-func on_mouse_release(btn:int, on_hover:bool) -> void:
+func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover:
 		if !is_draggable or !is_focused or !is_selectable: return
-		is_dragging = false
-		onDragEnd.call(pos_offset, self)
+		if is_dragging:
+			onDragEnd.call(pos_offset, self)
+			is_dragging = false
 
 func on_mouse_dbl_click(btn:int, on_hover:bool) -> void:
 	if !is_selectable: return

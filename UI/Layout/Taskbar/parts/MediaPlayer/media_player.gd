@@ -1,6 +1,6 @@
 extends MouseInteractions
 
-@onready var Logo:TextureRect = $MarginContainer/Logo
+@onready var LogoBtn:IconBtn = $MarginContainer/LogoBtn
 @onready var TrackNameLabel:Label = $TrackNameScrollContainer/PanelContainer/MarginContainer/TrackName
 @onready var TrackNameScrollContainer:ScrollContainer = $TrackNameScrollContainer
 @onready var AudioStreamPlayerUI:AudioStreamPlayer = $AudioStreamPlayer
@@ -50,7 +50,7 @@ func skip_to_track(track_data:Dictionary) -> void:
 
 # --------------------------------------	
 func on_pause_or_play_update() -> void:
-	PlayPauseBtn.icon = IconBtn.SVG.MEDIA_PLAY if !AudioStreamPlayerUI.playing else IconBtn.SVG.MEDIA_PAUSE	
+	PlayPauseBtn.icon = SVGS.MEDIA_PLAY if !AudioStreamPlayerUI.playing else SVGS.MEDIA_PAUSE	
 # --------------------------------------	
 
 # --------------------------------------	
@@ -95,12 +95,12 @@ func check_track_scroll() -> void:
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
-	var shader_material:ShaderMaterial = Logo.material.duplicate()	
-	shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
-	Logo.material = shader_material
+	#var shader_material:ShaderMaterial = Logo.material.duplicate()	
+	#shader_material.set_shader_parameter("tint_color", COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE))
+	#Logo.material = shader_material
 	
 	var label_setting:LabelSettings = TrackNameLabel.label_settings.duplicate()
-	label_setting.font_color = Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1)
+	label_setting.font_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.SHADING)
 	TrackNameLabel.label_settings = label_setting
 # --------------------------------------	
 

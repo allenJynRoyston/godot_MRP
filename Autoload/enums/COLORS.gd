@@ -1,0 +1,5 @@
+extends Node
+
+enum WINDOW {ACTIVE, INACTIVE, SHADING}
+
+enum TEXT {ACTIVE, INACTIVE, DARK, LIGHT}

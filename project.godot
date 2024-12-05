@@ -22,11 +22,14 @@ REFS="*res://Autoload/enums/NODE_REFS.gd"
 BUILDING_TYPE="*res://Autoload/enums/BUILDING_TYPE.gd"
 RESOURCE="*res://Autoload/enums/RESOURCE.gd"
 SCP="*res://Autoload/enums/SCP.gd"
+SVGS="*res://Autoload/enums/SVGS.gd"
+COLORS="*res://Autoload/enums/COLORS.gd"
 GBL="*res://Autoload/Global.gd"
 FS="*res://Autoload/FileSys.gd"
 B="*res://Autoload/Buildables.gd"
 U="*res://Autoload/Utility.gd"
 C="*res://Autoload/Containment.gd"
+COLOR_REF="*res://Autoload/ColorRef.gd"
 
 [display]
 

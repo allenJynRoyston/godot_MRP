@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2xiva1hpi0f4"]
+[gd_scene load_steps=4 format=3 uid="uid://b2xiva1hpi0f4"]
 
 [ext_resource type="Script" path="res://UI/Layout/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
-[ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_k0ebq"]
-[ext_resource type="Texture2D" uid="uid://dok7sqxmfr2m8" path="res://SVGs/download-window-svgrepo-com.svg" id="3_ar60s"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="2_7ovhd"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="4_2gnm4"]
 
 [node name="AttachmentContainer" type="PanelContainer"]
@@ -22,11 +21,11 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-material = ExtResource("2_k0ebq")
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_7ovhd")]
 layout_mode = 2
-texture = ExtResource("3_ar60s")
-expand_mode = 2
+icon = 4
+is_draggable = false
+is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2

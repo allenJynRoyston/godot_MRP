@@ -36,12 +36,12 @@ func _ready() -> void:
 # --------------------------------------	
 func on_focus(state:bool) -> void:
 	var shader_material:ShaderMaterial = IconImage.material.duplicate()	
-	shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
+	shader_material.set_shader_parameter("tint_color", COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) )
 	IconImage.material = shader_material
 	HasNewIcon.material = shader_material
 	
 	var label_setting:LabelSettings = SectionLabel.label_settings.duplicate()
-	label_setting.font_color = Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1)
+	label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
 	SectionLabel.label_settings = label_setting
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:

@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://tcw2mmfv8vct"]
+[gd_scene load_steps=6 format=3 uid="uid://tcw2mmfv8vct"]
 
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_4lxlp"]
 [ext_resource type="Script" path="res://UI/Layout/Taskbar/taskbar.gd" id="1_eg3xy"]
-[ext_resource type="PackedScene" uid="uid://c2137vkv86l50" path="res://UI/Layout/Taskbar/parts/Logo/Logo.tscn" id="2_y8mwm"]
 [ext_resource type="PackedScene" uid="uid://cieqo2p3d5xly" path="res://UI/Layout/Taskbar/parts/MediaPlayer/MediaPlayer.tscn" id="3_7up16"]
 [ext_resource type="PackedScene" uid="uid://btadhfwtptr10" path="res://UI/Layout/Taskbar/parts/TaskbarLiveItem/TaskbarLiveItem.tscn" id="3_ro53j"]
-[ext_resource type="PackedScene" uid="uid://dqoykb187y44p" path="res://UI/Layout/Taskbar/parts/TimeAndSettings/TimeAndSettings.tscn" id="5_nn734"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uove6"]
 bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
@@ -28,35 +27,42 @@ script = ExtResource("1_eg3xy")
 [node name="MarginContainer" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_constants/margin_left = 20
+theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 50
 
-[node name="LeftContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Logo" parent="MarginContainer/HBoxContainer/LeftContainer" instance=ExtResource("2_y8mwm")]
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
+text = "MemSoft Systems"
+label_settings = ExtResource("1_4lxlp")
 
-[node name="MidContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 10
 
-[node name="PanelContainer" parent="MarginContainer/HBoxContainer/MidContainer" instance=ExtResource("3_ro53j")]
+[node name="PanelContainer" parent="MarginContainer/HBoxContainer/HBoxContainer2" instance=ExtResource("3_ro53j")]
 layout_mode = 2
 
-[node name="RightContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="MediaPlayer" parent="MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("3_7up16")]
+[node name="MediaPlayer" parent="MarginContainer/HBoxContainer/HBoxContainer3" instance=ExtResource("3_7up16")]
 layout_mode = 2
 
-[node name="TimeAndSettings" parent="MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("5_nn734")]
+[node name="TimeDisplay" type="HBoxContainer" parent="MarginContainer/HBoxContainer/HBoxContainer3"]
 layout_mode = 2
+alignment = 2
+
+[node name="TimeLabel" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer3/TimeDisplay"]
+layout_mode = 2
+text = "3:33 AM"
+label_settings = ExtResource("1_4lxlp")

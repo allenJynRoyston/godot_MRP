@@ -18,6 +18,7 @@ var onBlur:Callable = func(node:Control):pass
 func _ready() -> void:
 	super._ready()
 	on_data_update()
+	on_focus(false)
 # --------------------------------------	
 
 # --------------------------------------	
@@ -25,11 +26,11 @@ func on_focus(state:bool) -> void:
 	onFocus.call(self) if state else onBlur.call(self)
 	
 	var shader_material:ShaderMaterial = IsNew.material.duplicate()	
-	shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
+	shader_material.set_shader_parameter("tint_color", COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) )
 	IsNew.material = shader_material
 	
 	var label_setting:LabelSettings = Lbl.label_settings.duplicate()
-	label_setting.font_color = Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1)
+	label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
 	Lbl.label_settings = label_setting
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:

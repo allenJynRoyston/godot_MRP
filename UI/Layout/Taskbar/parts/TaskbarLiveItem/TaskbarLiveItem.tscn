@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://btadhfwtptr10"]
+
+[ext_resource type="Script" path="res://UI/Layout/Taskbar/parts/TaskbarLiveItem/taskbar_live_item.gd" id="1_pvm5v"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_uj6ia"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="2_jsu1p"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34og0"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jhtup"]
+bg_color = Color(0.156863, 0.156863, 0.156863, 0.827451)
+
+[node name="TaskbarLiveItem" type="PanelContainer"]
+custom_minimum_size = Vector2(100, 20)
+theme_override_styles/panel = SubResource("StyleBoxFlat_34og0")
+script = ExtResource("1_pvm5v")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_jsu1p")]
+layout_mode = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+icon = 6
+is_draggable = false
+is_hoverable = false
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Application Name"
+label_settings = ExtResource("1_uj6ia")
+vertical_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jhtup")
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="CloseBtn" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer2" instance=ExtResource("2_jsu1p")]
+layout_mode = 2
+icon = 1
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0, 0.964706, 0.278431, 1)
+is_draggable = false

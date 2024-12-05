@@ -1,31 +1,38 @@
-[gd_scene load_steps=5 format=3 uid="uid://ywk37ko3ue05"]
+[gd_scene load_steps=6 format=3 uid="uid://ywk37ko3ue05"]
 
 [ext_resource type="Script" path="res://UI/WindowUI/window_ui.gd" id="1_g5j4v"]
 [ext_resource type="PackedScene" uid="uid://bf3fe4o05ua20" path="res://UI/WindowUI/Header/Header.tscn" id="2_1p2wk"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h1em5"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-border_color = Color(0, 0.964706, 0.278431, 1)
-shadow_color = Color(0, 0.758458, 0.260647, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5750g"]
-bg_color = Color(0, 0, 0, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aug80"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.956863)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0.964706, 0.278431, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0.758458, 0.260647, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0s0it"]
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 2
+border_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qxb7p"]
 
 [node name="WindowUI" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 100)
-offset_right = 200.0
-offset_bottom = 100.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_h1em5")
+custom_minimum_size = Vector2(100, 0)
+offset_right = 115.0
+offset_bottom = 44.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aug80")
 script = ExtResource("1_g5j4v")
 enable_close_btn = false
 enable_max_btn = false
 window_label = "Window"
-window_size = Vector2(200, 100)
+window_size = Vector2(100, 0)
 window_position = Vector2(0, 0)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -37,12 +44,13 @@ theme_override_constants/separation = 0
 
 [node name="Header" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_1p2wk")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0s0it")
 window_label = "Window"
 
 [node name="Body" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_5750g")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qxb7p")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Body"]
 layout_mode = 2

@@ -1,15 +1,17 @@
 @tool
 extends MouseInteractions
 
+@onready var RootPanel:PanelContainer = $"."
 @onready var LabelContainer:PanelContainer = $HBoxContainer/LabelContainer
 @onready var FocusContainer:PanelContainer = $HBoxContainer/FocusContainer
 @onready var BtnContainer:PanelContainer = $HBoxContainer/BtnContainer
 @onready var CloseBtnContainer:PanelContainer = $HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/CrossBtnContainer
 @onready var MaxBtnContainer:PanelContainer = $HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/MaxBtnContainer
 
-@onready var WindowLabel:Label = $HBoxContainer/LabelContainer/MarginContainer/Label
-@onready var MaxBtn:Button = $HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/MaxBtnContainer/MarginContainer/PanelContainer/Button
-@onready var CloseBtn:Button = $HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/CrossBtnContainer/MarginContainer/PanelContainer/Button
+@onready var WindowLabel:Label = $HBoxContainer/LabelContainer/MarginContainer/HBoxContainer/Label
+@onready var IconButton:IconBtn = $HBoxContainer/LabelContainer/MarginContainer/HBoxContainer/IconBtn
+@onready var MaxBtn:Control = $HBoxContainer/BtnContainer/HBoxContainer/MaxBtn
+@onready var CloseBtn:Control = $HBoxContainer/BtnContainer/HBoxContainer/CloseBtn
 
 @export var enable_max_btn: bool : 
 	set(val):
@@ -26,11 +28,20 @@ extends MouseInteractions
 		window_label = val
 		on_window_label_update()
 		
-@onready var is_focused:bool = false : 
+@onready var force_focus:bool = false : 
 	set(val):
-		is_focused = val
-		on_is_focused_updated()
-	
+		force_focus = val
+		on_force_focus_updated()
+		
+@onready var icon:int = SVGS.DOT : 
+	set(val):
+		icon = val
+		on_icon_update()
+
+var show_min_btn:bool = false : 
+	set(val): 
+		show_min_btn = val
+		on_show_min_btn_update()
 
 var onDragStart:Callable = func():pass
 var onDragEnd:Callable = func():pass
@@ -42,38 +53,55 @@ func _ready() -> void:
 	super._ready()
 	on_btn_update()
 	on_window_label_update()
-	on_is_focused_updated()
+	on_icon_update()	
+	on_show_min_btn_update()
+	on_force_focus_updated(false)
+	
+	MaxBtn.onClick = func():
+		onMaxBtn.call()
+	
+	CloseBtn.onClick = func():
+		onCloseBtn.call()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func on_show_min_btn_update() -> void:
+	MaxBtn.icon = SVGS.MINUS if show_min_btn else SVGS.PLUS
+	
 func on_window_label_update() -> void:
 	if is_node_ready():
 		WindowLabel.text = window_label
+
+func on_icon_update() -> void:
+	if is_node_ready():
+		IconButton.icon = icon
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_is_focused_updated() -> void:
+func on_force_focus_updated(state:bool = force_focus) -> void:
 	for node in [WindowLabel]:
 		var new_label_setting:LabelSettings = node.label_settings.duplicate()
-		new_label_setting.font_color = "00f647" if is_focused else "004115"
+		new_label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
 		node.label_settings = new_label_setting
 		
 	for node in [MaxBtn, CloseBtn]:
-		var new_stylebox:StyleBoxFlat = node.get_theme_stylebox('normal').duplicate()
-		new_stylebox.bg_color = "00f647" if is_focused else "004115"
-		node.add_theme_stylebox_override("normal", new_stylebox)
+		pass
+		#var new_stylebox:StyleBoxFlat = node.get_theme_stylebox('normal').duplicate()
+		#new_stylebox.bg_color = "00f647" if is_focused else "004115"
+		#node.add_theme_stylebox_override("normal", new_stylebox)
 	
-	for node in [LabelContainer, FocusContainer, BtnContainer]:
-		var new_stylebox:StyleBoxFlat = node.get_theme_stylebox('panel').duplicate()
-		new_stylebox.border_color = "00f647" if is_focused else "004115"
+
+	for node in [RootPanel]:
+		var new_stylebox:StyleBox = node.get_theme_stylebox('panel').duplicate()
+		new_stylebox.border_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
 		node.add_theme_stylebox_override("panel", new_stylebox)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func on_btn_update():
 	if is_node_ready():
-		CloseBtnContainer.show() if enable_close_btn else CloseBtnContainer.hide()
-		MaxBtnContainer.show() if enable_max_btn else MaxBtnContainer.hide()
+		CloseBtn.show() if enable_close_btn else CloseBtn.hide()
+		MaxBtn.show() if enable_max_btn else MaxBtn.hide()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -81,14 +109,6 @@ func on_mouse_click(node:Control, btn:int, is_focused:bool) -> void:
 	if is_focused:
 		onDragStart.call()
 	
-func on_mouse_release(btn:int, is_focused:bool) -> void:
+func on_mouse_release(node:Control, btn:int, is_focused:bool) -> void:
 	onDragEnd.call()
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-func on_max_btn_pressed() -> void:
-	onMaxBtn.call()
-
-func on_close_btn_pressed() -> void:
-	onCloseBtn.call()
 # --------------------------------------------------------------------------------------------------

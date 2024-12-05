@@ -1,18 +1,17 @@
-[gd_scene load_steps=9 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=8 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_44c0x"]
 [ext_resource type="Script" path="res://UI/Layout/layout.gd" id="1_rk64t"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://UI/Layout/Background/Background.tscn" id="2_2u7t3"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://UI/Layout/Taskbar/Taskbar.tscn" id="3_v00j4"]
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://UI/Layout/AppItem/AppItem.tscn" id="4_e3kl5"]
-[ext_resource type="Texture2D" uid="uid://cp44y64hy7i3x" path="res://SVGs/delete-bin-2-svgrepo-com.svg" id="5_mly6b"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r2w8s"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a1m38"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_color = Color(0, 0.964706, 0.278431, 1)
 shadow_color = Color(0, 0.758458, 0.260647, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wys3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1r30"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 2
 border_width_right = 2
@@ -31,7 +30,7 @@ script = ExtResource("1_rk64t")
 
 [node name="BackgroundWindow" parent="." instance=ExtResource("1_44c0x")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_r2w8s")
+theme_override_styles/panel = SubResource("StyleBoxFlat_a1m38")
 enable_header = false
 window_is_active = true
 is_draggable = false
@@ -41,53 +40,59 @@ is_hoverable = false
 visible = false
 
 [node name="Body" parent="BackgroundWindow/MarginContainer/VBoxContainer" index="1"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_5wys3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_j1r30")
 
 [node name="PanelContainer" parent="BackgroundWindow/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("2_2u7t3")]
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Desktop" type="PanelContainer" parent="."]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Desktop"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 25
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Desktop/MarginContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Desktop/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AppListContainer" type="GridContainer" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="DesktopIconContainer" type="GridContainer" parent="Desktop/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 20
 columns = 6
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Desktop/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 alignment = 2
 
-[node name="RecycleBin" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2" instance=ExtResource("4_e3kl5")]
+[node name="RecycleBin" parent="Desktop/MarginContainer/HBoxContainer/VBoxContainer2" instance=ExtResource("4_e3kl5")]
 layout_mode = 2
 title = "Recycle Bin"
-icon = ExtResource("5_mly6b")
+icon = 0
 
 [node name="RunningAppsContainer" type="Control" parent="."]
+layout_mode = 2
+
+[node name="TaskbarAppsContainer" type="Control" parent="."]
 layout_mode = 2
 
 [node name="Taskbar" parent="." instance=ExtResource("3_v00j4")]
 layout_mode = 2
 show_media_player = true
+
+[node name="FullScreenAppsContainer" type="Control" parent="."]
+layout_mode = 2
 
 [editable path="BackgroundWindow"]

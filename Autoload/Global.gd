@@ -42,7 +42,7 @@ func unregister_node(key:int) -> void:
 		node_refs.erase(key)
 		
 func find_node(key:int) -> Node:
-	return node_refs[key]
+	return node_refs[key] if key in node_refs else null
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

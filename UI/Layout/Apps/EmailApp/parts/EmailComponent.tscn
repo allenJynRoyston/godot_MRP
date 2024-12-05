@@ -15,7 +15,7 @@ bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yy1hf"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_top = 1
-border_color = Color(0, 0.964706, 0.278431, 1)
+border_color = Color(0.314316, 0.314316, 0.314316, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tvy7c"]
 
@@ -123,7 +123,7 @@ theme_override_styles/separator = SubResource("StyleBoxFlat_yy1hf")
 
 [node name="EmailContentRichText" type="RichTextLabel" parent="HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_colors/default_color = Color(0, 0.964706, 0.278431, 1)
+theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_fonts/normal_font = ExtResource("4_hm80f")
 bbcode_enabled = true
 text = "Lorem ipsum odor amet, consectetuer adipiscing elit."

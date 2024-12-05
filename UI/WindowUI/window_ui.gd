@@ -39,17 +39,32 @@ extends MouseInteractions
 	set(val):
 		window_position = val
 		on_window_position_update()
+		
+@export var freeze_inputs:bool = false : 
+	set(val):
+		freeze_inputs = val
+		on_freeze_inputs_update()
+
+@export var header_icon : IconBtn.SVG  = IconBtn.SVG.DOT : 
+	set(val):
+		header_icon = val
+		on_header_icon_update()
+		
+var in_fullscreen_mode:bool = false : 
+	set(val):
+		in_fullscreen_mode = val
+		on_in_fullscreen_mode_update()	
 
 var window_offset:Vector2 = Vector2() : 
 	set(val):
 		window_offset = val
 		on_window_position_update()
 
-var is_focused:bool = false
 var is_dragging:bool = false
 var drag_start_pos:Vector2 = Vector2(0, 0)
 
-var onClick:Callable = func(btn:int, on_hover:bool) -> void:pass
+var onClick:Callable = func(node:Control, btn:int, on_hover:bool) -> void:pass
+var onClickRelease:Callable = func(node:Control, btn:int, on_hover:bool) -> void:pass
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
 var onDragStart:Callable = func(node:Control) -> void:pass
@@ -61,10 +76,13 @@ var onCloseBtn:Callable = func(node:Control) -> void:pass
 func _ready() -> void:
 	super._ready()
 	on_header_update()
+	on_header_icon_update()
 	on_window_size_update()
 	on_window_position_update()
 	on_window_is_active_update()
 	on_enable_header_update()
+	on_freeze_inputs_update()
+	on_in_fullscreen_mode_update()
 	on_focus()
 	
 	Header.onMaxBtn = func() -> void:
@@ -92,6 +110,11 @@ func on_window_size_update() -> void:
 # ------------------------------------------------	
 
 # ------------------------------------------------	
+func on_in_fullscreen_mode_update() -> void:
+	Header.show_min_btn = in_fullscreen_mode
+# ------------------------------------------------	
+	
+# ------------------------------------------------	
 func on_window_position_update() -> void:
 	position = window_position + window_offset
 	
@@ -103,9 +126,13 @@ func on_window_position_update() -> void:
 
 # --------------------------------------	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:	
-	print("FIX THIS BUG")
-	# onClick.call(node, btn, on_hover)
+	onClick.call(node, btn, on_hover)
 # --------------------------------------		
+
+# --------------------------------------		
+func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:	
+	onClickRelease.call(node, btn, on_hover)
+# --------------------------------------			
 
 # ------------------------------------------------
 func on_header_update() -> void:
@@ -114,6 +141,17 @@ func on_header_update() -> void:
 		Header.enable_max_btn = enable_max_btn
 		Header.window_label = window_label
 # ------------------------------------------------
+
+# ------------------------------------------------
+func on_header_icon_update() -> void:
+	if is_node_ready():
+		Header.icon = header_icon
+# ------------------------------------------------	
+
+# ------------------------------------------------
+func on_freeze_inputs_update() -> void:
+	modulate = Color(0, 0, 1, 1) if freeze_inputs else Color(1, 1, 1, 1)
+# ------------------------------------------------	
 
 # ------------------------------------------------
 func on_window_is_active_update() -> void:
@@ -133,17 +171,17 @@ func on_focus(state:bool = false) -> void:
 	if is_node_ready():
 		is_focused = state
 		
-		Header.is_focused = (state or window_is_active)
+		Header.force_focus = (state or window_is_active)
 		
 		for node in [RootPanel]:
-			var root_stylebox = node.get_theme_stylebox('panel').duplicate()
-			root_stylebox.border_color = "00f647" if (state or window_is_active) else Color.TRANSPARENT
-			node.add_theme_stylebox_override("panel", root_stylebox)
-
-		for node in [BodyPanel]:
-			var root_stylebox = node.get_theme_stylebox('panel').duplicate()
-			root_stylebox.border_color = "00f647" if (state or window_is_active) else "004115"
-			node.add_theme_stylebox_override("panel", root_stylebox)
+			var new_stylebox:StyleBox = node.get_theme_stylebox('panel').duplicate()
+			new_stylebox.border_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if (state or window_is_active) else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+			node.add_theme_stylebox_override("panel", new_stylebox)
+#
+		#for node in [BodyPanel]:
+			#var root_stylebox:StyleBoxFlat = node.get_theme_stylebox('panel').duplicate()
+			#root_stylebox.border_color = "00f647" if (state or window_is_active) else "004115"
+			#node.add_theme_stylebox_override("panel", root_stylebox)
 # ------------------------------------------------
 
 # ------------------------------------------------

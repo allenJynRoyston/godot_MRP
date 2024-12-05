@@ -4,7 +4,6 @@
 
 [resource]
 font = ExtResource("1_7p5th")
-font_color = Color(0, 0.964706, 0.278431, 1)
 outline_color = Color(0, 0.529412, 0.278431, 1)
 shadow_size = 0
 shadow_color = Color(0, 0.784314, 0, 1)

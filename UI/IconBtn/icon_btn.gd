@@ -16,6 +16,21 @@ enum SVG {
 		icon = val
 		on_icon_update()
 
+@export var static_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) : 
+	set(val): 
+		static_color = val
+		update_color(static_color)
+		
+@export var active_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) :
+	set(val): 
+		active_color = val
+		on_focus()
+		
+@export var inactive_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) :
+	set(val): 
+		inactive_color = val
+		on_focus()
+
 var onClick:Callable = func():pass
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
@@ -23,16 +38,26 @@ var onBlur:Callable = func(node:Control) -> void:pass
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	on_focus(false)
+	if is_hoverable:
+		on_focus(false)
+	else:
+		update_color(static_color)
+
 	on_icon_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_focus(state:bool) -> void:
-	onFocus.call(self) if state else onBlur.call(self)
-	var shader_material:ShaderMaterial = Btn.material.duplicate()	
-	shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
-	Btn.material = shader_material	
+func update_color(new_color:Color) -> void:
+	if is_node_ready():
+		var shader_material:ShaderMaterial = Btn.material.duplicate()	
+		shader_material.set_shader_parameter("tint_color", new_color )
+		Btn.material = shader_material		
+
+func on_focus(state:bool = is_focused) -> void:
+	if is_node_ready():
+		is_focused = state
+		update_color(active_color if state else inactive_color)
+
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:
@@ -44,39 +69,39 @@ func on_icon_update() -> void:
 	if is_node_ready():
 		var texture:CompressedTexture2D 
 		match icon:
-			SVG.BIN:
+			SVGS.BIN:
 				texture = load("res://SVGs/bin-xmark-fill-svgrepo-com.svg")
-			SVG.CLEAR:
+			SVGS.CLEAR:
 				texture = load("res://SVGs/clear-svgrepo-com.svg")
-			SVG.DELETE:
+			SVGS.DELETE:
 				texture = load("res://SVGs/clear-svgrepo-com.svg")
-			SVG.DOT:
+			SVGS.DOT:
 				texture = load("res://SVGs/dot-filled-svgrepo-com.svg")
-			SVG.DOWNLOAD:
+			SVGS.DOWNLOAD:
 				texture = load("res://SVGs/download-window-svgrepo-com.svg")
-			SVG.EMAIL:
+			SVGS.EMAIL:
 				texture = load("res://SVGs/email-svgrepo-com.svg")
-			SVG.EXE_FILE:
+			SVGS.EXE_FILE:
 				texture = load("res://SVGs/exe-svgrepo-com.svg")
-			SVG.TXT_FILE:
+			SVGS.TXT_FILE:
 				texture = load("res://SVGs/txt-text-file-svgrepo-com.svg")
-			SVG.MEDIA_FORWARD:
+			SVGS.MEDIA_FORWARD:
 				texture = load("res://SVGs/media-forward-svgrepo-com.svg")
-			SVG.MEDIA_PAUSE:
+			SVGS.MEDIA_PAUSE:
 				texture = load("res://SVGs/media-pause-svgrepo-com.svg")
-			SVG.MEDIA_PLAY:
+			SVGS.MEDIA_PLAY:
 				texture = load("res://SVGs/media-play-svgrepo-com.svg")
-			SVG.MINUS:
+			SVGS.MINUS:
 				texture = load("res://SVGs/minus-svgrepo-com.svg")
-			SVG.MUSIC:
+			SVGS.MUSIC:
 				texture = load("res://SVGs/music-svgrepo-com.svg")
-			SVG.NEW:
+			SVGS.NEW:
 				texture = load("res://SVGs/new-rectangle-solid-svgrepo-com.svg")
-			SVG.PLUS:
+			SVGS.PLUS:
 				texture = load('res://SVGs/plus-svgrepo-com.svg')
-			SVG.SETTINGS:
+			SVGS.SETTINGS:
 				texture = load("res://SVGs/settings-svgrepo-com.svg")
-			SVG.STOP:
+			SVGS.STOP:
 				texture = load("res://SVGs/stop-svgrepo-com.svg")
 		
 		if texture != null:

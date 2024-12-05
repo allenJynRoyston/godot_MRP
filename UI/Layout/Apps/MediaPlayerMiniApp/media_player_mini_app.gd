@@ -19,13 +19,7 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func after_ready() -> void:
 	WindowUI.window_position = offset
-	WindowUI.onClick = onClick
-	WindowUI.onCloseBtn = onCloseBtn
-	WindowUI.onMaxBtn = onMaxBtn	
-	WindowUI.onDragStart = onDragStart
-	WindowUI.onDragEnd = onDragEnd
-	WindowUI.onFocus = onFocus
-	WindowUI.onBlur = onBlur
+	bind_events()
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
