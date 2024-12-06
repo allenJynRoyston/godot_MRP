@@ -220,6 +220,7 @@ var top_level_window:Control :
 #endregion
 # -----------------------------------
 
+#region local functions
 # -----------------------------------
 func _ready() -> void:
 	super._ready()
@@ -279,7 +280,7 @@ func on_running_apps_list_update() -> void:
 	
 	Taskbar.taskbar_live_items = taskbar_live_items
 # -----------------------------------
-
+#endregion
 
 # -----------------------------------
 #region MOUSE 
@@ -341,7 +342,6 @@ func toggle_fullscreen() -> void:
 # -----------------------------------
 #region OPEN APP/TASKBAR_DROPDOWNS/CONTEXT MENU
 # -----------------------------------
-
 func open_taskbar_menu(data:Dictionary) -> void:
 	var list_data:Array[Dictionary] = [
 		{
