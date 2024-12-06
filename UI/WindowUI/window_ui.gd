@@ -44,12 +44,19 @@ extends MouseInteractions
 	set(val):
 		freeze_inputs = val
 		on_freeze_inputs_update()
+		
+@export var freeze_content_input:bool = false : 
+	set(val):
+		freeze_content_input = val
+		on_freeze_content_input_update()		
 
 @export var header_icon : IconBtn.SVG  = IconBtn.SVG.DOT : 
 	set(val):
 		header_icon = val
 		on_header_icon_update()
-		
+
+@export var is_draggable:bool = true 
+
 var in_fullscreen_mode:bool = false : 
 	set(val):
 		in_fullscreen_mode = val
@@ -82,6 +89,7 @@ func _ready() -> void:
 	on_window_is_active_update()
 	on_enable_header_update()
 	on_freeze_inputs_update()
+	on_freeze_content_input_update()
 	on_in_fullscreen_mode_update()
 	on_focus()
 	
@@ -154,6 +162,12 @@ func on_freeze_inputs_update() -> void:
 # ------------------------------------------------	
 
 # ------------------------------------------------
+func on_freeze_content_input_update() -> void:
+	if is_node_ready() and "freeze_inputs" in BodyPanel:		
+		BodyPanel.freeze_inputs = freeze_content_input
+# ------------------------------------------------		
+
+# ------------------------------------------------
 func on_window_is_active_update() -> void:
 	on_focus(window_is_active)
 # ------------------------------------------------	
@@ -173,7 +187,7 @@ func on_focus(state:bool = false) -> void:
 	
 	if is_node_ready():
 		is_focused = state
-		
+
 		Header.force_focus = (state or window_is_active)
 		
 		for node in [RootPanel]:

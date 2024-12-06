@@ -107,7 +107,7 @@ func on_focus(state:bool) -> void:
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and hover_nodes.is_empty():
 		var layout_node:Control = GBL.find_node(REFS.OS_LAYOUT)
-		layout_node.open_taskbar_dropdown(self, 'media_player')
+		layout_node.open_media_player_mini(self)
 # --------------------------------------		
 
 # --------------------------------------		

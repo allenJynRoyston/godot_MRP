@@ -2,10 +2,10 @@ extends AppWrapper
 
 @onready var VList:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VList
 
-var music_track_list:Array = [] : 
+var data:Dictionary = {} :
 	set(val):
-		music_track_list = val
-		on_music_track_list_update()
+		data = val
+		on_data_update()
 
 var tracklist_unlocks:Dictionary = {}
 
@@ -13,7 +13,7 @@ var tracklist_unlocks:Dictionary = {}
 func _ready() -> void:
 	WindowUI = $WindowUI
 	super._ready()
-	on_music_track_list_update()
+	on_data_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -23,14 +23,14 @@ func after_ready() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func on_music_track_list_update() -> void:
-	if is_node_ready():
+func on_data_update() -> void:
+	if is_node_ready() and !data.is_empty():
 		var list_data:Array[Dictionary] = []
 		var author_list:Dictionary = {}
 		var all_tracks:Array = []
 		
-		for index in music_track_list.size():
-			var item:Dictionary = music_track_list[index]
+		for index in data.music_track_list.size():
+			var item:Dictionary = data.music_track_list[index]
 			var metadata:Dictionary = item.metadata
 			
 			if metadata.author not in author_list:
@@ -47,7 +47,7 @@ func on_music_track_list_update() -> void:
 					return item.unlocked.call(),
 				"onClick": func(_data:Dictionary):
 					GBL.music_data = {
-						"track_list": music_track_list,
+						"track_list": data.music_track_list,
 						"selected": index,
 					},
 			})
@@ -63,7 +63,7 @@ func on_music_track_list_update() -> void:
 					return item.unlocked.call(),
 				"onClick": func(_data:Dictionary):
 					GBL.music_data = {
-						"track_list": music_track_list,
+						"track_list": data.music_track_list,
 						"selected": index,
 					},
 			})

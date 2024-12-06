@@ -16,8 +16,10 @@ var app_events:Dictionary = {}
 var offset:Vector2 = Vector2(0, 0)
 var in_fullscreen:bool = false
 
+var default_setup:Dictionary = {}
+
 # ------------------------------------------------------------------------------
-func _ready() -> void:
+func _ready() -> void:	
 	after_ready.call_deferred()
 # ------------------------------------------------------------------------------
 
@@ -25,13 +27,17 @@ func _ready() -> void:
 func after_ready():
 	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
 	if in_fullscreen:
-		WindowUI.window_size = get_viewport().get_visible_rect().size - Vector2(50, 55)
+		WindowUI.window_size = get_viewport().get_visible_rect().size - Vector2(0, 35)
 		WindowUI.is_draggable = false
-		WindowUI.window_position = Vector2(25, 40)
+		WindowUI.window_position = Vector2(0, 35)
+		WindowUI.enable_header = false
+		WindowUI.enable_close_btn = false
+		WindowUI.enable_max_btn = false
 		
 	else:
-		var center_position:Vector2 = (container_node.size - WindowUI.window_size)/2 + offset
+		var center_position:Vector2 = (container_node.size - WindowUI.size)/2 + offset
 		WindowUI.window_position = center_position
+
 	
 	WindowUI.in_fullscreen_mode = in_fullscreen
 	bind_events()
@@ -41,7 +47,7 @@ func after_ready():
 func bind_events() -> void:
 	WindowUI.onClick = func(node:Control, btn:int, is_hovered:bool) -> void:
 		onClick.call(self, node, btn, is_hovered)
-	
+		
 	WindowUI.onClickRelease = func(node:Control, btn:int, is_hovered:bool) -> void:
 		onClickRelease.call(self, node, btn, is_hovered)
 	

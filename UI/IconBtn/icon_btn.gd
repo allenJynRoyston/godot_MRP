@@ -55,6 +55,7 @@ func update_color(new_color:Color) -> void:
 		Btn.material = shader_material		
 
 func on_focus(state:bool = is_focused) -> void:
+	onFocus.call(self) if state else onBlur.call(self)
 	if is_node_ready():
 		is_focused = state
 		update_color(active_color if state else inactive_color)

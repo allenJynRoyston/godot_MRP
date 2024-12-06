@@ -1,7 +1,11 @@
 extends AppWrapper
 
-@onready var TitleLabel:Label = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/Label
-@onready var ContentRTL:RichTextLabel = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/RichTextLabel
+@onready var VList:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VList
+
+var data:Dictionary = {} : 
+	set(val):
+		data = val
+		on_data_update()
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -11,11 +15,14 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func after_ready() -> void:
+	WindowUI.window_position = offset
+	bind_events()
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
 func on_data_update() -> void:
 	if is_node_ready():
-		if "title" in app_props:
-			TitleLabel.text = app_props.title
-		if "content" in app_props:
-			ContentRTL.text = app_props.content
-		
+		VList.data = data.list_data
 # ------------------------------------------------------------------------------	
+	

@@ -16,6 +16,7 @@ script = ExtResource("1_3ideg")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 window_size = Vector2(200, 0)
+is_draggable = false
 
 [node name="VList" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_fqj27")]
 layout_mode = 2

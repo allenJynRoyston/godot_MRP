@@ -1,7 +1,6 @@
 extends Control
 class_name MouseInteractions
 
-@export var is_draggable:bool = true 
 @export var is_hoverable:bool = true 
 
 var root_node:Control 
@@ -77,6 +76,10 @@ func find_root(node: Node) -> Node:
 
 ## --------------------------------------		
 func registered_click(event:InputEventMouseButton) -> void:
+	if root_node != null and "freeze_inputs" in root_node:
+		if root_node.freeze_inputs: 
+			return
+
 	if event.is_pressed():
 		on_mouse_click(self, event.button_index, on_hover)
 	if event.is_released():

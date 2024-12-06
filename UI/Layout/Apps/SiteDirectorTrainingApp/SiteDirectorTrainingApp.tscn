@@ -15,12 +15,12 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_45imw")
 script = ExtResource("1_5dlsa")
 
 [node name="WindowUI" parent="." instance=ExtResource("1_08334")]
-custom_minimum_size = Vector2(1000, 600)
+custom_minimum_size = Vector2(900, 600)
 layout_mode = 2
 enable_close_btn = true
 enable_max_btn = true
 window_label = "Site Director Training Program"
-window_size = Vector2(1000, 600)
+window_size = Vector2(900, 600)
 header_icon = 6
 
 [node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]

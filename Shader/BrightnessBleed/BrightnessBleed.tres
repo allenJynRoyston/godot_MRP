@@ -6,9 +6,9 @@
 shader = ExtResource("1_o7534")
 shader_parameter/bleed_amount = 1.0
 shader_parameter/resolution = Vector2(1280, 720)
-shader_parameter/bend_amount = 0.191
-shader_parameter/bend_offset = 0.447
-shader_parameter/scanline_strength = 0.798
+shader_parameter/bend_amount = 0.081
+shader_parameter/bend_offset = 0.5
+shader_parameter/scanline_strength = 1.0
 shader_parameter/scanline_frequency = 1.0
-shader_parameter/top_bottom_border_pixels = 10.0
-shader_parameter/left_right_border_pixels = 10.0
+shader_parameter/top_bottom_border_pixels = 0.0
+shader_parameter/left_right_border_pixels = 0.0

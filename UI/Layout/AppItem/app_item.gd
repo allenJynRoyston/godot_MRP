@@ -14,6 +14,8 @@ extends MouseInteractions
 		icon = val
 		on_icon_update()
 
+@export var is_draggable:bool = true 
+
 var data:Dictionary = {} : 
 	set(val):
 		data = val
@@ -41,7 +43,7 @@ var onDragStart:Callable = func(node:Node) -> void:pass
 var onDragEnd:Callable = func(new_offset:Vector2, node:Control) -> void:pass		
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
-var onDblClick:Callable = func(data:Dictionary) -> void:pass
+var onDblClick:Callable = func(node:Control, is_focused:bool, data:Dictionary) -> void:pass
 var onRightClick:Callable = func() -> void:pass
 
 
@@ -124,7 +126,7 @@ func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
 func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	if !is_selectable: return
 	if on_hover and btn == MOUSE_BUTTON_LEFT:
-		onDblClick.call(data)
+		onDblClick.call(self, on_hover, data)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

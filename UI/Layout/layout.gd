@@ -1,4 +1,5 @@
 extends MouseInteractions
+class_name Layout
 
 @onready var Taskbar:Control = $SubViewport/Taskbar
 @onready var RunningAppsContainer:Control = $SubViewport/RunningAppsContainer
@@ -10,7 +11,7 @@ extends MouseInteractions
 @onready var DesktopIconContainer:Control = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
-enum APPS {SDT, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, BIN, CONTEXT_MENU}
+enum APPS {SDT, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, BIN, CONTEXT_MENU, TASKBAR_MENU}
 
 const WindowUIScene:PackedScene = preload("res://UI/WindowUI/WindowUI.tscn")
 const AppItemScene:PackedScene = preload("res://UI/Layout/AppItem/AppItem.tscn")
@@ -18,6 +19,7 @@ const AppItemScene:PackedScene = preload("res://UI/Layout/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppScene:PackedScene = preload("res://UI/Layout/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
 const EmailAppScene:PackedScene = preload("res://UI/Layout/Apps/EmailApp/EmailApp.tscn")
 const MediaPlayerMiniAppScene:PackedScene = preload("res://UI/Layout/Apps/MediaPlayerMiniApp/MediaPlayerMiniApp.tscn")
+const TaskBarMenuAppScene:PackedScene = preload("res://UI/Layout/Apps/TaskbarMenuApp/TaskbarMenuApp.tscn")
 const ContextMenuAppScene:PackedScene = preload("res://UI/Layout/Apps/ContextMenuApp/ContextMenuApp.tscn")
 const TextFileAppScene:PackedScene = preload("res://UI/Layout/Apps/TextFileApp/TextFileApp.tscn")
 
@@ -49,6 +51,10 @@ var app_positions:Dictionary = {
 	APPS.README: Vector2(0, 0),
 	APPS.EMAIL: Vector2(0, 0),
 	APPS.MUSIC_PLAYER: Vector2(0, 0),
+}
+
+var running_apps_positions:Dictionary = {
+	
 }
 
 var default_app_positions:Dictionary = app_positions.duplicate()
@@ -104,8 +110,6 @@ var app_list:Array[Dictionary] = [
 			"app": SiteDirectorTrainingAppScene,
 		},
 		"events": {
-			"onRightClick": func() -> void:
-				open_context_menu("Properties"),
 			"onDblClick": func(data:Dictionary) -> void:
 				open_app(data, true),
 		}
@@ -121,8 +125,6 @@ var app_list:Array[Dictionary] = [
 			"pos_offset": Vector2(0, 0),
 		},
 		"events": {
-			"onRightClick": func() -> void:
-				print("on right click"),
 			"onDblClick": open_app
 		},
 	},
@@ -154,8 +156,6 @@ var app_list:Array[Dictionary] = [
 			"pos_offset": Vector2(0, 0),
 		},
 		"events": {
-			"onRightClick": func() -> void:
-				print("on right click"),
 			"onDblClick": open_app	
 		},
 	},
@@ -169,8 +169,6 @@ var app_list:Array[Dictionary] = [
 			"pos_offset": Vector2(0, 0),
 		},
 		"events": {
-			"onRightClick": func() -> void:
-				print("on right click"),
 			"onDblClick": func(data:Dictionary) -> void:
 				if GBL.music_data.is_empty():
 					# open music player, no music selected
@@ -183,16 +181,18 @@ var app_list:Array[Dictionary] = [
 	{
 		"data": {
 			"ref": APPS.README,
-			"title": "README.txt",
+			"title": "IMPORTANT PLEASE READ",
 			"icon": SVGS.TXT_FILE,
-			"app": TextFileAppScene
+			"app": TextFileAppScene,
+			"app_props": {
+				"title": "URGENT",
+				"content": "Check your EMAILS!"
+			},					
 		},
 		"defaults": {
 			"pos_offset": Vector2(0, 0),
 		},
 		"events": {
-			"onRightClick": func() -> void:
-				print("on right click"),
 			"onDblClick": open_app
 		},
 	}	
@@ -210,6 +210,7 @@ var running_apps_list:Array = [] :
 	set(val): 
 		running_apps_list = val
 		on_running_apps_list_update()
+var app_in_fullscreen:bool = false
 
 var top_level_icon:Control
 var top_level_window:Control : 
@@ -221,11 +222,14 @@ var top_level_window:Control :
 
 # -----------------------------------
 func _ready() -> void:
+	super._ready()
 	load_state()
 	render_desktop_icons()
 	on_simulated_busy_update()
 
 	GBL.register_node(REFS.OS_LAYOUT, self)
+
+	Taskbar.onTitleBarClick = open_taskbar_menu
 
 	RecycleBin.onDblClick = func(data:Dictionary) -> void:
 		pass
@@ -248,25 +252,31 @@ func simulate_wait(duration:float) -> void:
 	simulate_busy = false
 # -----------------------------------		
 	
-
 # -----------------------------------
 func on_running_apps_list_update() -> void:
-	var refs:Array = running_apps_list.map(func(item): return item.ref)
+	var refs:Array = running_apps_list.map(func(item): return item.data.ref)
 	var filter_list:Array = app_list.filter(func(item): return item.data.ref in refs)
 	var taskbar_live_items:Array = filter_list.map(func(item): 
-		var node_data:Dictionary = running_apps_list.filter(func(n): return item.data.ref == n.ref)[0]
+		var node_data:Dictionary = running_apps_list.filter(func(n): return item.data.ref == n.data.ref)[0]
 		
 		return {
 			"title": item.data.title,
 			"icon": item.data.icon,
+			"ref": item.data.ref,
 			"onClick": func() -> void:
-				RunningAppsContainer.move_child(node_data.node, RunningAppsContainer.get_child_count() - 1),
+				if app_in_fullscreen:
+					close_app(item.data.ref)
+					open_app(item.data, true, true)
+				else:
+					RunningAppsContainer.move_child(node_data.node, RunningAppsContainer.get_child_count() - 1),
+			"onMinimize": func() -> void:
+				close_app(item.data.ref)
+				open_app(item.data, false, true),
 			"onClose": func() -> void:
 				close_app(item.data.ref),
 		}
 	)
 	
-
 	Taskbar.taskbar_live_items = taskbar_live_items
 # -----------------------------------
 
@@ -274,6 +284,8 @@ func on_running_apps_list_update() -> void:
 # -----------------------------------
 #region MOUSE 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	if !window_focus_list.is_empty() or !icon_focus_list.is_empty() or GBL.mouse_pos.y < 40:return	
+	
 	if btn == MOUSE_BUTTON_RIGHT:
 		open_context_menu("Properties", [
 			{
@@ -283,8 +295,6 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 					},
 				"onClick": func(_data:Dictionary):
 					sort_desktop_icons(),
-				"onClose": func():
-					print("on close"),
 			}
 		])
 	
@@ -319,13 +329,104 @@ func restore_state(restore_data:Dictionary = {}) -> void:
 	email_has_read = restore_data.email_has_read if !no_save else email_has_read
 	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
 	app_positions = restore_data.app_positions if !no_save else app_positions
+
+func toggle_fullscreen() -> void:
+	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
 #endregion		
 # -----------------------------------
 
 # -----------------------------------
 #region OPEN APP/TASKBAR_DROPDOWNS/CONTEXT MENU
-func open_context_menu(title:String = "Context Menu", items:Array = []) -> void:
-	var data = {
+# -----------------------------------
+
+func open_taskbar_menu(data:Dictionary) -> void:
+	var list_data:Array[Dictionary] = [
+		{
+			"section": "Options",
+			"opened": data.is_empty(),
+			"items": [
+				{
+					"get_details": func():
+						return {
+							"title": "Settings"
+						},
+					"onClick": func(_data:Dictionary):
+						print("settings")
+						close_app(APPS.TASKBAR_MENU),
+				},
+				{
+					"get_details": func():
+						return {
+							"title": "Fullscreen"
+						},
+					"onClick": func(_data:Dictionary):
+						toggle_fullscreen()
+						close_app(APPS.TASKBAR_MENU),
+				},
+				{
+					"get_details": func():
+						return {
+							"title": "Save"
+						},
+					"onClick": func(_data:Dictionary):
+						save_state()
+						close_app(APPS.TASKBAR_MENU),
+				},
+				{
+					"get_details": func():
+						return {
+							"title": "Exit Game"
+						},
+					"onClick": func(_data:Dictionary):
+						get_tree().quit() 
+						close_app(APPS.TASKBAR_MENU),
+				},				
+			]			
+		}
+	]
+
+	if !data.is_empty():
+		list_data.push_back({
+			"section": data.title,
+			"opened": true,
+			"items": [
+				{
+					"get_details": func():
+						return {
+							"title": "Minimize"
+						},
+					"onClick": func(_data:Dictionary):
+						close_app(data.ref)
+						open_app(data, false, true)
+						close_app(APPS.TASKBAR_MENU),
+				},
+				{
+					"get_details": func():
+						return {
+							"title": "Close"
+						},
+					"onClick": func(_data:Dictionary):
+						close_app(data.ref)
+						close_app(APPS.TASKBAR_MENU),
+				},				
+			]
+		})
+
+	open_taskbar_dropdown(Taskbar, APPS.TASKBAR_MENU, {"list_data": list_data})	
+	
+# -----------------------------------	
+
+# -----------------------------------
+func open_media_player_mini(node:Control) -> void:
+	open_taskbar_dropdown(node, APPS.MEDIA_PLAYER_MINI, {"music_track_list": music_track_list})
+# -----------------------------------	
+
+# -----------------------------------	
+func open_context_menu(title:String = "Context Menu", items:Array = []) -> void:		
+	var data := {
 		"ref": APPS.CONTEXT_MENU,
 		"title": title,
 		"icon": SVGS.EXE_FILE,
@@ -337,108 +438,166 @@ func open_context_menu(title:String = "Context Menu", items:Array = []) -> void:
 		}
 	}	
 	open_app(data, false, true)
-
-	
 # -----------------------------------	
-func open_taskbar_dropdown(node:Control, id:String) -> void:
-	var new_node:Control
-	var ref:int
-	match id:
-		"media_player":
-			new_node = MediaPlayerMiniAppScene.instantiate()
-			ref = APPS.MEDIA_PLAYER_MINI
-			new_node.offset = Vector2(node.global_position.x, 40)
-			new_node.music_track_list = music_track_list
+
+# -----------------------------------	
+func open_taskbar_dropdown(node:Control, ref:int, props:Dictionary = {}) -> void:
+	var selected_scene:PackedScene
+	match ref:
+		APPS.MEDIA_PLAYER_MINI:
+			selected_scene = MediaPlayerMiniAppScene
+		APPS.TASKBAR_MENU:
+			selected_scene = TaskBarMenuAppScene
+					
+	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
+	if selected_scene != null and ref not in app_refs:
+		var new_node:Control = selected_scene.instantiate()
+		
+		# set offset	
+		new_node.offset = Vector2(node.global_position.x + 10, 40)
+
+		# adds to running apps list and when updated show up in the taskbar
+		running_apps_list.push_back({"node": new_node, "data": {"ref": ref}})
+		running_apps_list = running_apps_list
 			
-	if new_node != null:
+		if "data" in new_node:
+			new_node.data = props
+			
 		new_node.onClick = func(node:Control, window_node:Node, btn:int, on_hover:bool) -> void:
 			if !on_hover:
 				node.queue_free()
+				window_focus_list.erase(node)
+				close_app(ref)
 	
 		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:
 			node.queue_free()
+			window_focus_list.erase(node)
+			close_app(ref)
+		
+			
+		new_node.onFocus = func(node:Control, window_node:Control) -> void:
+			if node not in window_focus_list:
+				window_focus_list.push_back(node)
+				
+		new_node.onBlur = func(node:Control, window_node:Control) -> void:
+			window_focus_list.erase(node)
 
 		TaskbarAppsContainer.add_child( new_node )
 # -----------------------------------	
 
 # -----------------------------------	
-func close_app(ref:int) -> void:
-	var node:Control = running_apps_list.filter(func(item): return item.ref == ref)[0].node	
-	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)
+func close_app(ref:int) -> void:	
+	var node:Control = running_apps_list.filter(func(item): return item.data.ref == ref)[0].node
+	running_apps_list = running_apps_list.filter(func(item): return item.data.ref != ref)	
 	window_focus_list.erase(node)
+	
 	if top_level_window == node:
 		top_level_window = null
-	node.queue_free()	
+	if node.in_fullscreen:
+		var in_fs:Array = running_apps_list.filter(func(item): return item.node.in_fullscreen)
+		# checks if there are any other apps running in fullscreen
+		if in_fs.size() == 0:
+			app_in_fullscreen = false
+			Taskbar.fullscreen_data = {}
+		else:
+			Taskbar.fullscreen_data = in_fs[0].data
+			RunningAppsContainer.move_child(in_fs[0].node, RunningAppsContainer.get_child_count() - 1)
+			
+	node.queue_free()
 
 func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false) -> void:
 	if simulate_busy:
 		return
 		
-	var app_refs:Array = running_apps_list.map(func(item): return item.ref)	
-	if data.ref not in app_refs:
+	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
+	if data.ref not in app_refs:		
+		# adds new node and passes and props to them
+		var new_node:Control = data.app.instantiate()
+
+		# adds to running apps list and when updated show up in the taskbar
+		running_apps_list.push_back({"node": new_node, "data": data})
+		running_apps_list = running_apps_list
+
+		# adds a mock timer
 		if !skip_loading:
 			if data.ref not in already_loaded:
 				already_loaded.push_back(data.ref)
 				await simulate_wait(0.7)
 			else:
 				await simulate_wait(0.2)
-				
-		var new_node:Control = data.app.instantiate()
 
-		running_apps_list.push_back({"ref": data.ref, "node": new_node})
-		running_apps_list = running_apps_list
-		
+		# adds any props
 		if "app_props" in data:
 			new_node.app_props = data.app_props
-		
 		if "app_events" in data:
 			new_node.app_events = data.app_events
 		
+		# start in fullscreen or not
 		new_node.in_fullscreen = in_fullscreen
+		if in_fullscreen:
+			Taskbar.fullscreen_data = data
+			app_in_fullscreen = true
 		
+		# determines which container to add it  to
+		RunningAppsContainer.add_child( new_node )
+		
+		# adds event handlers
+		# -------------------
 		new_node.onClick = func(node:Control, window_node:Node, btn:int, on_hover:bool) -> void:
-			# --- IF CONTEXT MENU, CLOSE WHEN IT'S NOT HOVERED OVER
-			if data.ref == APPS.CONTEXT_MENU and !on_hover:
-				close_app(data.ref)
-				
-			# else, move the top level window to the top
-			if top_level_window != null:
-				RunningAppsContainer.move_child(top_level_window, RunningAppsContainer.get_child_count() - 1)
-
+			if btn == MOUSE_BUTTON_LEFT:
+				# --- IF CONTEXT MENU, CLOSE WHEN IT'S NOT HOVERED OVER
+				if data.ref == APPS.CONTEXT_MENU and !on_hover:
+					close_app(data.ref)
+				# else, move the top level window to the top
+				if top_level_window != null:
+					top_level_window.get_child(0).freeze_content_input = false
+					RunningAppsContainer.move_child(top_level_window, RunningAppsContainer.get_child_count() - 1)
+			
+		# -------------------
 		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:			
 			close_app(data.ref)
 			
+		# -------------------	
 		new_node.onMaxBtn = func(node:Control, window_node:Control) -> void:
 			close_app(data.ref)
-			open_app(data, !new_node.in_fullscreen, true)			
-		
+			open_app(data, !new_node.in_fullscreen, true)
+			
+		# -------------------
 		new_node.onFocus = func(node:Control, window_node:Control) -> void:
 			if node not in window_focus_list:
 				window_focus_list.push_back(node)
 				
+			# determine which window is on top
 			var z_order:Dictionary = {}
 			for index in RunningAppsContainer.get_children().size():
-					z_order[RunningAppsContainer.get_child(index)] = index
-			if window_focus_list.size() > 1:
+				z_order[RunningAppsContainer.get_child(index)] = index
+			if window_focus_list.size() > 1 and node in z_order:
 				if z_order[node] == RunningAppsContainer.get_children().size() - 1:
 					top_level_window = node
 			else:
 				top_level_window = node
 				
+				
+		# -------------------
 		new_node.onBlur = func(node:Control, window_node:Control) -> void:
 			window_focus_list.erase(node)
-
+			
+			# freeze content window (if it's not a context menu, and it's not fullscreen)
+			if data.ref != APPS.CONTEXT_MENU and !new_node.in_fullscreen:
+				window_node.freeze_content_input = true
+			
 			if window_focus_list.size() > 0:
 				top_level_window = window_focus_list[0]
+
 			else:
 				top_level_window = null
+		# -------------------
 		
-		if in_fullscreen:
-			FullScreenAppsContainer.add_child(new_node)
-		else:
-			RunningAppsContainer.add_child( new_node )
-			
-
+		# -------------------
+		new_node.onDragEnd = func(new_offset:Vector2, node:Control, window_node:Control) -> void:
+			pass
+		# -------------------			
+		
 # -----------------------------------	
 #endregion
 # -----------------------------------
@@ -481,12 +640,36 @@ func render_desktop_icons() -> void:
 		new_node.pos_offset = app_positions[item.data.ref]
 		new_node.data = item.data
 		
-		new_node.onDblClick = item.events.onDblClick
-		new_node.onRightClick = item.events.onRightClick		
-		
+		new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
+			if window_focus_list.is_empty():
+				item.events.onDblClick.call(data)
+			
 		new_node.onClick = func(node:Control, btn:int, on_hover:bool) -> void:
-			DesktopIconContainer.move_child(top_level_icon, DesktopIconContainer.get_child_count() - 1)
-		
+			if on_hover:
+				if btn == MOUSE_BUTTON_RIGHT:
+					open_context_menu(item.data.title, [
+						{
+							"get_details": func():
+								return {
+									"title": "Open..."
+								},
+							"onClick": func(_data:Dictionary):
+								item.events.onDblClick.call(item.data)
+								close_app(APPS.CONTEXT_MENU),
+						},						
+						{
+							"get_details": func():
+								return {
+									"title": "Move to Recycle Bin..."
+								},
+							"onClick": func(_data:Dictionary):
+								close_app(APPS.CONTEXT_MENU),
+						}
+					])
+					
+				if btn == MOUSE_BUTTON_LEFT:
+					DesktopIconContainer.move_child(top_level_icon, DesktopIconContainer.get_child_count() - 1)
+			
 		new_node.onDragStart = func(node:Control) -> void:
 			set_node_selectable_state(false, top_level_icon)
 			

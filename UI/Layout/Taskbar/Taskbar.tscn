@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://tcw2mmfv8vct"]
 
 [ext_resource type="Script" path="res://UI/Layout/Taskbar/taskbar.gd" id="1_eg3xy"]
-[ext_resource type="PackedScene" uid="uid://c2137vkv86l50" path="res://UI/Layout/Taskbar/parts/Logo/Logo.tscn" id="2_y8mwm"]
+[ext_resource type="PackedScene" uid="uid://c2137vkv86l50" path="res://UI/Layout/Taskbar/parts/TitleBar/TitleBar.tscn" id="2_y8mwm"]
 [ext_resource type="PackedScene" uid="uid://cieqo2p3d5xly" path="res://UI/Layout/Taskbar/parts/MediaPlayer/MediaPlayer.tscn" id="3_7up16"]
 [ext_resource type="PackedScene" uid="uid://btadhfwtptr10" path="res://UI/Layout/Taskbar/parts/TaskbarLiveItem/TaskbarLiveItem.tscn" id="3_ro53j"]
 [ext_resource type="PackedScene" uid="uid://dqoykb187y44p" path="res://UI/Layout/Taskbar/parts/TimeAndSettings/TimeAndSettings.tscn" id="5_nn734"]
@@ -40,15 +40,16 @@ theme_override_constants/separation = 50
 [node name="LeftContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Logo" parent="MarginContainer/HBoxContainer/LeftContainer" instance=ExtResource("2_y8mwm")]
+[node name="TitleBar" parent="MarginContainer/HBoxContainer/LeftContainer" instance=ExtResource("2_y8mwm")]
 layout_mode = 2
+title = "Memsoft Software"
 
-[node name="MidContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="RunningTasks" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="PanelContainer" parent="MarginContainer/HBoxContainer/MidContainer" instance=ExtResource("3_ro53j")]
+[node name="PanelContainer" parent="MarginContainer/HBoxContainer/RunningTasks" instance=ExtResource("3_ro53j")]
 layout_mode = 2
 
 [node name="RightContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]

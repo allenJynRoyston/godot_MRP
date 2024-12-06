@@ -16,7 +16,6 @@ shadow_size = 0
 [node name="MediaPlayer" type="HBoxContainer"]
 theme_override_constants/separation = 5
 script = ExtResource("1_bcpof")
-is_draggable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -28,9 +27,6 @@ theme_override_constants/margin_bottom = 2
 [node name="LogoBtn" parent="MarginContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 12
-active_color = Color(0, 0.964706, 0.278431, 1)
-inactive_color = Color(0, 0.254902, 0.0823529, 1)
-is_draggable = false
 
 [node name="TrackNameScrollContainer" type="ScrollContainer" parent="."]
 custom_minimum_size = Vector2(200, 15)
@@ -67,14 +63,10 @@ theme_override_constants/separation = 5
 [node name="PlayPauseBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 9
-active_color = Color(0, 0.964706, 0.278431, 1)
-inactive_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="NextBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 8
-active_color = Color(0, 0.964706, 0.278431, 1)
-inactive_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 autoplay = true
