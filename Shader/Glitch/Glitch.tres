@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cvsboqb84qqah"]
+
+[ext_resource type="Shader" path="res://Shader/Glitch/Glitch.gdshader" id="1_bdg6d"]
+
+[resource]
+shader = ExtResource("1_bdg6d")
+shader_parameter/glitch_intensity = 0.023
+shader_parameter/noise_intensity = 1.0
+shader_parameter/glitch_speed = 0.563
+shader_parameter/glitch_interval = 2.453
+shader_parameter/min_glitch_duration = 0.5
+shader_parameter/max_glitch_duration = 0.982

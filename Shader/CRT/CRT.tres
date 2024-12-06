@@ -4,18 +4,18 @@
 
 [resource]
 shader = ExtResource("1_31phn")
-shader_parameter/resolution = Vector2(64, 64)
+shader_parameter/resolution = Vector2(1280, 720)
 shader_parameter/scan_line_amount = 1.0
-shader_parameter/warp_amount = 0.1
-shader_parameter/noise_amount = 0.02
-shader_parameter/interference_amount = 0.245
-shader_parameter/grille_amount = 0.212
-shader_parameter/grille_size = 2.124
-shader_parameter/vignette_amount = 0.0
-shader_parameter/vignette_intensity = 0.0
+shader_parameter/warp_amount = 0.0
+shader_parameter/noise_amount = 0.032
+shader_parameter/interference_amount = 0.178
+shader_parameter/grille_amount = 0.375
+shader_parameter/grille_size = 1.18
+shader_parameter/vignette_amount = 0.27
+shader_parameter/vignette_intensity = 0.59
 shader_parameter/aberation_amount = 0.0
-shader_parameter/roll_line_amount = 0.0
-shader_parameter/roll_speed = -0.0789996
-shader_parameter/scan_line_strength = -5.281
-shader_parameter/pixel_strength = -2.939
-shader_parameter/blend_factor = 0.394
+shader_parameter/roll_line_amount = 0.354
+shader_parameter/roll_speed = 0.281
+shader_parameter/scan_line_strength = -2.562
+shader_parameter/pixel_strength = -1.141
+shader_parameter/blend_factor = 0.304

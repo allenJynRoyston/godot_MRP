@@ -93,6 +93,9 @@ func on_focus(state:bool = is_focused) -> void:
 	update_color(is_focused)
 	
 func update_color(state:bool) -> void:
+	if Engine.is_editor_hint():
+		return
+		
 	#var shader_material:ShaderMaterial = IconImage.material.duplicate()	
 	#shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
 	#IconImage.material = shader_material
@@ -118,7 +121,7 @@ func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
 			onDragEnd.call(pos_offset, self)
 			is_dragging = false
 
-func on_mouse_dbl_click(btn:int, on_hover:bool) -> void:
+func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	if !is_selectable: return
 	if on_hover and btn == MOUSE_BUTTON_LEFT:
 		onDblClick.call(data)

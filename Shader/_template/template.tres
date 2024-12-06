@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://wrbhauo7j8f6"]
+
+[ext_resource type="Shader" path="res://Shader/_template/template.gdshader" id="1_uih0u"]
+
+[resource]
+shader = ExtResource("1_uih0u")
+shader_parameter/bleed_strength = 0.0
+shader_parameter/blur_radius = 6.168

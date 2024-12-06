@@ -5,8 +5,6 @@ extends MouseInteractions
 @onready var LabelContainer:PanelContainer = $HBoxContainer/LabelContainer
 @onready var FocusContainer:PanelContainer = $HBoxContainer/FocusContainer
 @onready var BtnContainer:PanelContainer = $HBoxContainer/BtnContainer
-@onready var CloseBtnContainer:PanelContainer = $HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/CrossBtnContainer
-@onready var MaxBtnContainer:PanelContainer = $HBoxContainer/BtnContainer/MarginContainer/HBoxContainer/MaxBtnContainer
 
 @onready var WindowLabel:Label = $HBoxContainer/LabelContainer/MarginContainer/HBoxContainer/Label
 @onready var IconButton:IconBtn = $HBoxContainer/LabelContainer/MarginContainer/HBoxContainer/IconBtn
@@ -79,6 +77,9 @@ func on_icon_update() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func on_force_focus_updated(state:bool = force_focus) -> void:
+	if Engine.is_editor_hint():
+		return 
+			
 	for node in [WindowLabel]:
 		var new_label_setting:LabelSettings = node.label_settings.duplicate()
 		new_label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)

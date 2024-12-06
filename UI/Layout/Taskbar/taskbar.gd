@@ -26,12 +26,16 @@ var taskbar_live_items:Array = [] :
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		return	
 	GBL.subscribe_to_music_player(self)
 	on_music_data_update()
 	on_show_media_player_update()
 	on_taskbar_live_items_update()
 	
 func _exit_tree() -> void:
+	if Engine.is_editor_hint():
+		return	
 	GBL.unsubscribe_to_music_player(self)
 	
 func on_show_media_player_update() -> void:

@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://xaeua0jc0ktp"]
+
+[ext_resource type="Shader" path="res://Shader/Ripple/Ripple.gdshader" id="1_r72kl"]
+
+[resource]
+shader = ExtResource("1_r72kl")
+shader_parameter/ripple_center_x = -0.876
+shader_parameter/ripple_center_y = -1.0

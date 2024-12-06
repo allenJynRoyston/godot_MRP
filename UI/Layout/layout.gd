@@ -1,14 +1,14 @@
 extends MouseInteractions
 
-@onready var Taskbar:Control = $Taskbar
-@onready var RunningAppsContainer:Control = $RunningAppsContainer
-@onready var TaskbarAppsContainer:Control = $TaskbarAppsContainer
-@onready var FullScreenAppsContainer:Control = $FullScreenAppsContainer
-@onready var BackgroundWindow:PanelContainer = $BackgroundWindow
-@onready var SimulatedWait:PanelContainer = $SimulatedWait
+@onready var Taskbar:Control = $SubViewport/Taskbar
+@onready var RunningAppsContainer:Control = $SubViewport/RunningAppsContainer
+@onready var TaskbarAppsContainer:Control = $SubViewport/TaskbarAppsContainer
+@onready var FullScreenAppsContainer:Control = $SubViewport/FullScreenAppsContainer
+@onready var BackgroundWindow:PanelContainer = $SubViewport/BackgroundWindow
+@onready var SimulatedWait:PanelContainer = $SubViewport/SimulatedWait
 
-@onready var DesktopIconContainer:Control = $Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
-@onready var RecycleBin:PanelContainer = $Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
+@onready var DesktopIconContainer:Control = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
+@onready var RecycleBin:PanelContainer = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
 enum APPS {SDT, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, BIN, CONTEXT_MENU}
 
@@ -291,7 +291,7 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
 	pass
 
-func on_mouse_dbl_click(btn:int, on_hover:bool) -> void:
+func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	pass
 #endregion
 # -----------------------------------

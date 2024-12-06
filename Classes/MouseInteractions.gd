@@ -11,14 +11,20 @@ var is_focused:bool = false
 
 # --------------------------------------	
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		return 	
 	if is_node_ready() and "subscribe_to_mouse_pos" in GBL:
 		GBL.subscribe_to_mouse_pos(self)
 	root_node = find_root(self)
+	GBL.subscribe_to_input(self)
 # --------------------------------------			
 
 # --------------------------------------	
 func _exit_tree() -> void:
+	if Engine.is_editor_hint():
+		return 	
 	GBL.unsubscribe_to_mouse_pos(self)
+	GBL.unsubscribe_to_input(self)
 # --------------------------------------		
 
 # --------------------------------------	
@@ -42,7 +48,7 @@ func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
 # --------------------------------------			
 
 # --------------------------------------		
-func on_mouse_dbl_click(btn:int, on_hover:bool) -> void:
+func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	pass
 # --------------------------------------		
 
@@ -69,25 +75,27 @@ func find_root(node: Node) -> Node:
 	return null
 # --------------------------------------	
 
-# --------------------------------------		
-func _input(event) -> void:
-	if event is InputEventMouseButton:
-		if event.is_pressed():
-			on_mouse_click(self, event.button_index, on_hover)
-		if event.is_released():
-			on_mouse_release(self, event.button_index, on_hover)
-		if event.double_click:
-			on_mouse_dbl_click(event.button_index, on_hover)
-# --------------------------------------		
+## --------------------------------------		
+func registered_click(event:InputEventMouseButton) -> void:
+	if event.is_pressed():
+		on_mouse_click(self, event.button_index, on_hover)
+	if event.is_released():
+		on_mouse_release(self, event.button_index, on_hover)
+	if event.double_click:
+		on_mouse_dbl_click(self, event.button_index, on_hover)
+## --------------------------------------		
 
 # --------------------------------------	
 func _process(_delta:float) -> void:
+	if Engine.is_editor_hint():
+		return 
+		
 	if root_node != null and "freeze_inputs" in root_node:
 		if root_node.freeze_inputs: 
 			return
 	
 	if is_visible_in_tree() and is_hoverable:
-		if get_global_rect().has_point(mouse_pos):
+		if get_global_rect().has_point(GBL.mouse_pos):
 			if !on_hover:
 				focus_event()
 		else:

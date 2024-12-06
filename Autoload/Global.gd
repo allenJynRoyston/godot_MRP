@@ -38,8 +38,7 @@ func register_node(key:int, node:Node) -> void:
 		node_refs[key] = node
 		
 func unregister_node(key:int) -> void:
-	if key in node_refs:
-		node_refs.erase(key)
+	node_refs.erase(key)
 		
 func find_node(key:int) -> Node:
 	return node_refs[key] if key in node_refs else null
@@ -64,6 +63,23 @@ func subscribe_to_music_player(node:Control) -> void:
 		music_data_subscriptions.push_back(node)
 		
 func unsubscribe_to_music_player(node:Control) -> void:
-	if node in music_data_subscriptions:
-		music_data_subscriptions.erase(node)
+	music_data_subscriptions.erase(node)
 # ------------------------------------------------------------------------------
+
+
+# --------------------------------------	
+var input_subscriptions:Array = []
+
+func subscribe_to_input(node:Control) -> void:
+	if node not in input_subscriptions:
+		input_subscriptions.push_back(node)
+		
+func unsubscribe_to_input(node:Control) -> void:
+	input_subscriptions.erase(node)
+		
+func _input(event) -> void:
+	if event is InputEventMouseButton:
+		for node in input_subscriptions:
+			if "registered_click" in node:
+				node.registered_click(event)
+# --------------------------------------		

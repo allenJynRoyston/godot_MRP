@@ -7,31 +7,7 @@ code = "shader_type canvas_item;
 uniform float zoom_speed : hint_range(0.0, 2.0) = 0.5;  // Speed of zoom
 uniform float distortion_speed : hint_range(0.0, 1.0) = 0.3;  // Speed of sinusoidal distortion
 uniform int max_iterations : hint_range(10, 500) = 100;  // Maximum fractal iterations
-uniform float color_speed : hint_range(0.0, 2.0) = 0.2; // Speed of color cycling
-
-// Helper function: HSV to RGB conversion
-vec3 hsv_to_rgb(float h, float s, float v) {
-    float c = v * s;
-    float x = c * (1.0 - abs(mod(h * 6.0, 2.0) - 1.0));
-    float m = v - c;
-    vec3 rgb;
-
-    if (h < 1.0 / 6.0) {
-        rgb = vec3(c, x, 0.0);
-    } else if (h < 2.0 / 6.0) {
-        rgb = vec3(x, c, 0.0);
-    } else if (h < 3.0 / 6.0) {
-        rgb = vec3(0.0, c, x);
-    } else if (h < 4.0 / 6.0) {
-        rgb = vec3(0.0, x, c);
-    } else if (h < 5.0 / 6.0) {
-        rgb = vec3(x, 0.0, c);
-    } else {
-        rgb = vec3(c, 0.0, x);
-    }
-
-    return rgb + m;
-}
+uniform vec4 color_tint : source_color = vec4(0.8, 0.2, 1.0, 1.0); // Base color for the fractal
 
 void fragment() {
     // Sinusoidal distortion factor based on time
@@ -69,13 +45,8 @@ void fragment() {
     // Normalize the number of iterations to a color value
     float color_value = float(iterations) / float(max_iterations);
 
-    // Animate the hue based on time
-    float hue = mod(TIME * color_speed + color_value, 1.0); // Hue cycles over time
-    float saturation = 1.0; // Full saturation for vivid colors
-    float brightness = color_value; // Brightness based on iterations
-
-    // Convert HSV to RGB for the final color
-    vec3 fractal_color = hsv_to_rgb(hue, saturation, brightness);
+    // Apply the base color tint
+    vec3 fractal_color = mix(color_tint.rgb, vec3(1.0, 1.0, 1.0), color_value);
 
     // Final color output
     COLOR = vec4(fractal_color, 1.0);
@@ -85,6 +56,6 @@ void fragment() {
 [resource]
 shader = SubResource("Shader_w3kav")
 shader_parameter/zoom_speed = 0.0
-shader_parameter/distortion_speed = 0.0
-shader_parameter/max_iterations = 25
-shader_parameter/color_speed = 0.02
+shader_parameter/distortion_speed = 0.08
+shader_parameter/max_iterations = 15
+shader_parameter/color_tint = Color(0.0162652, 0.186062, 0.0882955, 1)

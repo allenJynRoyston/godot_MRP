@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c1wku6lui2jor"]
+
+[ext_resource type="Shader" path="res://Shader/Zoom/zoom.gdshader" id="1_viue7"]
+
+[resource]
+shader = ExtResource("1_viue7")
+shader_parameter/zoom = 0.0

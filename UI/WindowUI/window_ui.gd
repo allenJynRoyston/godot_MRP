@@ -166,6 +166,9 @@ func on_enable_header_update() -> void:
 
 # ------------------------------------------------
 func on_focus(state:bool = false) -> void:
+	if Engine.is_editor_hint():
+		return 
+			
 	onFocus.call(self) if state else onBlur.call(self)
 	
 	if is_node_ready():

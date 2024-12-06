@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://coshu3gq32ctr"]
+
+[ext_resource type="Shader" path="res://Shader/Zoom/zoom.gdshader" id="1_a55ao"]
+
+[resource]
+shader = ExtResource("1_a55ao")
+shader_parameter/zoom = 0.0

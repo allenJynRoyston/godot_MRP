@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ef45nkvjkp5x"]
+
+[ext_resource type="Shader" path="res://Shader/BrightnessBleed/BrightnessBleed.gdshader" id="1_o7534"]
+
+[resource]
+shader = ExtResource("1_o7534")
+shader_parameter/bleed_amount = 1.0
+shader_parameter/resolution = Vector2(1280, 720)
+shader_parameter/bend_amount = 0.191
+shader_parameter/bend_offset = 0.447
+shader_parameter/scanline_strength = 0.798
+shader_parameter/scanline_frequency = 1.0
+shader_parameter/top_bottom_border_pixels = 10.0
+shader_parameter/left_right_border_pixels = 10.0
