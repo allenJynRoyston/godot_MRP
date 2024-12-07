@@ -11,7 +11,7 @@ class_name Layout
 @onready var DesktopIconContainer:Control = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
-enum APPS {SDT, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, BIN, CONTEXT_MENU, TASKBAR_MENU}
+enum APPS {SDT, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, BIN, CONTEXT_MENU, TASKBAR_MENU, RECYCLE_BIN}
 
 const WindowUIScene:PackedScene = preload("res://UI/WindowUI/WindowUI.tscn")
 const AppItemScene:PackedScene = preload("res://UI/Layout/AppItem/AppItem.tscn")
@@ -22,6 +22,7 @@ const MediaPlayerMiniAppScene:PackedScene = preload("res://UI/Layout/Apps/MediaP
 const TaskBarMenuAppScene:PackedScene = preload("res://UI/Layout/Apps/TaskbarMenuApp/TaskbarMenuApp.tscn")
 const ContextMenuAppScene:PackedScene = preload("res://UI/Layout/Apps/ContextMenuApp/ContextMenuApp.tscn")
 const TextFileAppScene:PackedScene = preload("res://UI/Layout/Apps/TextFileApp/TextFileApp.tscn")
+const RecycleBinAppScene:PackedScene = preload("res://UI/Layout/Apps/RecycleBin/RecycleBin.tscn")
 
 # -----------------------------------
 #region SAVABLE DATA
@@ -64,6 +65,11 @@ var tracklist_unlocks:Dictionary = {
 	1:true,
 	2:true
 }
+
+var in_recycle_bin:Array = [
+	APPS.SDT,
+	APPS.README
+]
 
 var email_has_read:Array = [] 
 #endregion
@@ -232,8 +238,17 @@ func _ready() -> void:
 
 	Taskbar.onTitleBarClick = open_taskbar_menu
 
-	RecycleBin.onDblClick = func(data:Dictionary) -> void:
-		pass
+	RecycleBin.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
+		if is_focused:
+			open_app({
+				"ref": APPS.RECYCLE_BIN,
+				"icon": SVGS.TXT_FILE,
+				"app": RecycleBinAppScene,
+				"app_props": {
+					"app_data": app_list.duplicate().map(func(item):return item.data),
+					"in_bin": in_recycle_bin
+				},					
+			})
 # -----------------------------------
 
 # -----------------------------------
@@ -252,7 +267,23 @@ func simulate_wait(duration:float) -> void:
 	await U.set_timeout(duration * 1.0)
 	simulate_busy = false
 # -----------------------------------		
+
+# -----------------------------------		
+func onBinRestore(data:Dictionary) -> void:
+	in_recycle_bin = in_recycle_bin.filter(func(ref): return ref != data.details.ref)
+
+	# update contents of bin
+	data.details.bin_node.update_bin()
 	
+	for node in DesktopIconContainer.get_children():
+		if node.data.ref in in_recycle_bin:
+			node.hide()  
+		else: 
+			node.show()
+	
+  
+# -----------------------------------		
+
 # -----------------------------------
 func on_running_apps_list_update() -> void:
 	var refs:Array = running_apps_list.map(func(item): return item.data.ref)
@@ -312,6 +343,7 @@ func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 func save_state() -> void:
 	var save_data = {
 		"settings": settings,
+		"in_recycle_bin": in_recycle_bin,
 		"email_has_read": email_has_read,
 		"app_positions": app_positions,
 		"tracklist_unlocks": tracklist_unlocks,
@@ -327,6 +359,7 @@ func load_state() -> void:
 func restore_state(restore_data:Dictionary = {}) -> void:
 	var no_save:bool = restore_data.is_empty()
 	settings = restore_data.settings if !no_save else settings
+	in_recycle_bin = in_recycle_bin # restore_data.in_recycle_bin if !no_save else in_recycle_bin
 	email_has_read = restore_data.email_has_read if !no_save else email_has_read
 	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
 	app_positions = restore_data.app_positions if !no_save else app_positions
@@ -606,9 +639,10 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 #region LIST AND NODE BEHAVIOR
 # -----------------------------------	
 func set_node_selectable_state(state:bool, exclude = null) -> void:
-	for child in DesktopIconContainer.get_children():
-		if exclude != child:
-			child.is_selectable = state
+	if DesktopIconContainer != null:
+		for child in DesktopIconContainer.get_children():
+			if exclude != child:
+				child.is_selectable = state
 # -----------------------------------			
 
 # -----------------------------------
@@ -631,14 +665,14 @@ func sort_desktop_icons() -> void:
 func render_desktop_icons() -> void:
 	var column_tracker := {}
 	
-	for node in [DesktopIconContainer]:
-		for child in node.get_children():
-			node.queue_free()
-			
+	for child in DesktopIconContainer.get_children():
+		child.queue_free()
+	
 	for item in app_list:
 		var new_node:Control = AppItemScene.instantiate()	
 		new_node.pos_offset = app_positions[item.data.ref]
 		new_node.data = item.data
+		new_node.is_selectable = false # if item.data.ref in in_recycle_bin else new_node.show()
 		
 		new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
 			if window_focus_list.is_empty():
@@ -703,5 +737,6 @@ func render_desktop_icons() -> void:
 				top_level_icon = null			
 
 		DesktopIconContainer.add_child(new_node)
+
 # -----------------------------------
 #endregion

@@ -95,7 +95,7 @@ func on_focus(state:bool = is_focused) -> void:
 	update_color(is_focused)
 	
 func update_color(state:bool) -> void:
-	if Engine.is_editor_hint():
+	if Engine.is_editor_hint() or !is_node_ready():
 		return
 		
 	#var shader_material:ShaderMaterial = IconImage.material.duplicate()	
