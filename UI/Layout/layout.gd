@@ -672,7 +672,7 @@ func render_desktop_icons() -> void:
 		var new_node:Control = AppItemScene.instantiate()	
 		new_node.pos_offset = app_positions[item.data.ref]
 		new_node.data = item.data
-		new_node.is_selectable = false # if item.data.ref in in_recycle_bin else new_node.show()
+		#new_node.is_selectable = false # if item.data.ref in in_recycle_bin else new_node.show()
 		
 		new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
 			if window_focus_list.is_empty():

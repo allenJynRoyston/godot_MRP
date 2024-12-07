@@ -10,13 +10,13 @@ var email_data:Array[Dictionary] = [
 			{
 				"get_details": func():
 					return {
-						"title": "Email 1",
+						"title": "URGENT!",
 						"from": "@unknown",
 						"date": "unknown",
-						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis.",
+						"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your memory.  Also, DO NOT venture out into the darkness.  It will kill you.  Will explain more later.  Good luck.",
 						"get_attachment_details": func():
 							return {
-								"title": "Voicenote.wav",
+								"title": "Install Site_Director_Training_Programe.exe",
 								"onClick": func():
 									app_events.onOpenAttachment.call({
 										"type": "media_player", 
