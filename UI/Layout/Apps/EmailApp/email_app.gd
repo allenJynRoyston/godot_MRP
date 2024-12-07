@@ -13,7 +13,7 @@ var email_data:Array[Dictionary] = [
 						"title": "URGENT!",
 						"from": "@unknown",
 						"date": "unknown",
-						"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your memory.  Also, DO NOT venture out into the darkness.  It will kill you.  Will explain more later.  Good luck.",
+						"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your cuerent situation.  VERY IMPORTANT:  DO NOT venture out into the darkness.  It will kill you.  It will [REMOVE ALL YOUR PROGRESS - ESSENTIALLY A HARD RESET].",
 						"get_attachment_details": func():
 							return {
 								"title": "Install Site_Director_Training_Programe.exe",

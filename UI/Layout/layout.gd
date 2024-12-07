@@ -230,9 +230,10 @@ var top_level_window:Control :
 # -----------------------------------
 func _ready() -> void:
 	super._ready()
-	load_state()
-	render_desktop_icons()
+	load_state()	
 	on_simulated_busy_update()
+	
+	render_desktop_icons()	
 
 	GBL.register_node(REFS.OS_LAYOUT, self)
 
@@ -273,15 +274,10 @@ func onBinRestore(data:Dictionary) -> void:
 	in_recycle_bin = in_recycle_bin.filter(func(ref): return ref != data.details.ref)
 
 	# update contents of bin
-	data.details.bin_node.update_bin()
+	data.details.bin_node.update_bin(in_recycle_bin)
 	
-	for node in DesktopIconContainer.get_children():
-		if node.data.ref in in_recycle_bin:
-			node.hide()  
-		else: 
-			node.show()
-	
-  
+	# rerender ions
+	render_desktop_icons()
 # -----------------------------------		
 
 # -----------------------------------
@@ -362,7 +358,7 @@ func restore_state(restore_data:Dictionary = {}) -> void:
 	in_recycle_bin = in_recycle_bin # restore_data.in_recycle_bin if !no_save else in_recycle_bin
 	email_has_read = restore_data.email_has_read if !no_save else email_has_read
 	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
-	app_positions = restore_data.app_positions if !no_save else app_positions
+	app_positions = app_positions #restore_data.app_positions if !no_save else app_positions
 
 func toggle_fullscreen() -> void:
 	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
@@ -663,80 +659,93 @@ func sort_desktop_icons() -> void:
 
 # -----------------------------------	
 func render_desktop_icons() -> void:
+	await simulate_wait(0.5)
+	
 	var column_tracker := {}
 	
 	for child in DesktopIconContainer.get_children():
 		child.queue_free()
+	icon_focus_list = []	
+	await U.set_timeout(0)
 	
 	for item in app_list:
-		var new_node:Control = AppItemScene.instantiate()	
-		new_node.pos_offset = app_positions[item.data.ref]
-		new_node.data = item.data
-		#new_node.is_selectable = false # if item.data.ref in in_recycle_bin else new_node.show()
-		
-		new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
-			if window_focus_list.is_empty():
-				item.events.onDblClick.call(data)
+		if item.data.ref not in in_recycle_bin:
+			var new_node:Control = AppItemScene.instantiate()	
+			DesktopIconContainer.add_child(new_node)
+			new_node.pos_offset = app_positions[item.data.ref]
+			new_node.data = item.data
 			
-		new_node.onClick = func(node:Control, btn:int, on_hover:bool) -> void:
-			if on_hover:
-				if btn == MOUSE_BUTTON_RIGHT:
-					open_context_menu(item.data.title, [
-						{
-							"get_details": func():
-								return {
-									"title": "Open..."
-								},
-							"onClick": func(_data:Dictionary):
-								item.events.onDblClick.call(item.data)
-								close_app(APPS.CONTEXT_MENU),
-						},						
-						{
-							"get_details": func():
-								return {
-									"title": "Move to Recycle Bin..."
-								},
-							"onClick": func(_data:Dictionary):
-								close_app(APPS.CONTEXT_MENU),
-						}
-					])
-					
-				if btn == MOUSE_BUTTON_LEFT:
-					DesktopIconContainer.move_child(top_level_icon, DesktopIconContainer.get_child_count() - 1)
-			
-		new_node.onDragStart = func(node:Control) -> void:
-			set_node_selectable_state(false, top_level_icon)
-			
-		new_node.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
-			set_node_selectable_state(true)
-			icon_focus_list.erase(node)
-			if app_positions[item.data.ref] != new_offset:
-				if icon_focus_list.is_empty():
-					app_positions[item.data.ref] = new_offset
-					save_state()
-				else:
-					new_node.pos_offset = app_positions[item.data.ref]
-					
-		new_node.onFocus = func(node:Control) -> void:
-			if node not in icon_focus_list:
-				icon_focus_list.push_back(node)
-			var z_order:Dictionary = {}
-			for index in DesktopIconContainer.get_children().size():
-					z_order[DesktopIconContainer.get_child(index)] = index
-			if icon_focus_list.size() > 1:
-				if z_order[node] == DesktopIconContainer.get_children().size() - 1:
-					top_level_icon = node
-			else:
-				top_level_icon = node				
+			new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
+				if window_focus_list.is_empty():
+					item.events.onDblClick.call(data)
 				
-		new_node.onBlur = func(node:Control) -> void:
-			icon_focus_list.erase(node)
-			if icon_focus_list.size() > 0:
-				top_level_icon = icon_focus_list[0]
-			else:
-				top_level_icon = null			
+			new_node.onClick = func(node:Control, btn:int, on_hover:bool) -> void:
+				if on_hover:
+					if btn == MOUSE_BUTTON_RIGHT:
+						open_context_menu(item.data.title, [
+							{
+								"get_details": func():
+									return {
+										"title": "Open..."
+									},
+								"onClick": func(_data:Dictionary):
+									item.events.onDblClick.call(item.data)
+									close_app(APPS.CONTEXT_MENU),
+							},						
+							{
+								"get_details": func():
+									return {
+										"title": "Move to Recycle Bin..."
+									},
+								"onClick": func(_data:Dictionary):
+									in_recycle_bin.push_back(item.data.ref)
+									
+									for app in running_apps_list:
+										if app.data.ref == APPS.RECYCLE_BIN:
+											app.node.in_bin_list = in_recycle_bin
+											
+									
+									render_desktop_icons()
+									close_app(APPS.CONTEXT_MENU),
+							}
+						])
+						
+					if btn == MOUSE_BUTTON_LEFT:
+						DesktopIconContainer.move_child(top_level_icon, DesktopIconContainer.get_child_count() - 1)
+				
+			new_node.onDragStart = func(node:Control) -> void:
+				set_node_selectable_state(false, top_level_icon)
+				
+			new_node.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
+				set_node_selectable_state(true)
+				icon_focus_list.erase(node)
+				if app_positions[item.data.ref] != new_offset:
+					if icon_focus_list.is_empty():
+						app_positions[item.data.ref] = new_offset
+						save_state()
+					else:
+						new_node.pos_offset = app_positions[item.data.ref]
+						
+			new_node.onFocus = func(node:Control) -> void:
+				if node not in icon_focus_list:
+					icon_focus_list.push_back(node)
+				var z_order:Dictionary = {}
+				for index in DesktopIconContainer.get_children().size():
+						z_order[DesktopIconContainer.get_child(index)] = index
+				if icon_focus_list.size() > 1:
+					if z_order[node] == DesktopIconContainer.get_children().size() - 1:
+						top_level_icon = node
+				else:
+					top_level_icon = node				
+					
+			new_node.onBlur = func(node:Control) -> void:
+				icon_focus_list.erase(node)
+				if icon_focus_list.size() > 0:
+					top_level_icon = icon_focus_list[0]
+				else:
+					top_level_icon = null			
 
-		DesktopIconContainer.add_child(new_node)
+			
 
 # -----------------------------------
 #endregion

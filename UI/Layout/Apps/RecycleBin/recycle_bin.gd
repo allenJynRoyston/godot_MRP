@@ -3,17 +3,26 @@ extends AppWrapper
 @onready var VList:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VList
 @onready var EmailComponent = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/EmailComponent
 
+var in_bin_list:Array = [] :
+	set(val):
+		in_bin_list = app_props.app_data.filter(func(item): return item.ref in val)
+		on_bin_list_update()
+
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	WindowUI = $WindowUI
 	super._ready()	
 	
+	in_bin_list = app_props.in_bin
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func on_bin_list_update() -> void:
 	var layout_node:Control = GBL.find_node(REFS.OS_LAYOUT)
-	var in_bin:Array = app_props.in_bin
-	
-	var in_bin_list:Array = app_props.app_data.filter(func(item): return item.ref in in_bin)
-	in_bin_list = in_bin_list.map(func(item):
+
+	var items:Array = in_bin_list.map(func(item):
 		return {
 			"get_details": func():
 				return {
@@ -33,15 +42,16 @@ func _ready() -> void:
 		{
 			"section": "Contents",
 			"opened": true,
-			"items": in_bin_list
+			"items": items
 		},
 	]
 
 	VList.data = recycle_bin_list
-
 # ------------------------------------------------------------------------------
 
+
 # ------------------------------------------------------------------------------
-func update_bin() -> void:
-	print("here")
+func update_bin(in_recycle_bin:Array) -> void:
+	print(in_recycle_bin)
+	in_bin_list = in_recycle_bin
 # ------------------------------------------------------------------------------	
