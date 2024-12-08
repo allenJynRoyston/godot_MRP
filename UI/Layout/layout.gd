@@ -7,6 +7,7 @@ class_name Layout
 @onready var FullScreenAppsContainer:Control = $SubViewport/FullScreenAppsContainer
 @onready var NotificationContainer:PanelContainer = $SubViewport/NotificationContainer
 @onready var BackgroundWindow:PanelContainer = $SubViewport/BackgroundWindow
+@onready var Installer:PanelContainer = $SubViewport/Installer
 
 @onready var DesktopIconContainer:Control = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
@@ -75,12 +76,118 @@ var email_has_read:Array = []
 var event_switches:Dictionary = {
 	"show_status_on_boot": true
 }
+
+var apps_installed:Array = [] 
+var apps_installing:Array = []
  
 #endregion
 # -----------------------------------
 
 # -----------------------------------
 #region LOCAL DATA
+var app_list:Array[Dictionary] = [
+	{
+		"data": {
+			"ref": APPS.SDT,
+			"title": "Site Director Training Program",
+			"icon": SVGS.TYPE.EXE_FILE,
+			"app": SiteDirectorTrainingAppScene,
+		},
+		"installed": func() -> bool:
+			return APPS.SDT in apps_installed,
+		"events": {
+			"onDblClick": func(data:Dictionary) -> void:
+				open_app(data, true),
+		}
+	},
+	{
+		"data": {
+			"ref": APPS.SETTINGS,
+			"title": "Settings",
+			"icon": SVGS.TYPE.SETTINGS,
+			"app": TextFileAppScene
+		},
+		"installed": func() -> bool:
+			return true,
+		"defaults": {
+			"pos_offset": Vector2(0, 0),
+		},
+		"events": {
+			"onDblClick": open_app
+		},
+	},
+	{
+		"data": {
+			"ref": APPS.EMAIL,
+			"title": "Email",
+			"icon": SVGS.TYPE.EMAIL,
+			"app": EmailAppScene,
+			"installed": func() -> bool:
+				return true,
+			"app_props": {
+				"get_has_read": func() -> Array:
+					return email_has_read,
+			},
+			"app_events": {
+				"onHasReadUpdate": func(new_email_has_read:Array):
+					email_has_read = new_email_has_read
+					save_state(),
+				"onOpenAttachment": on_open_attachment,
+			}
+		},
+		"installed": func() -> bool:
+			return true,
+		"defaults": {
+			"pos_offset": Vector2(0, 0),
+		},
+		"events": {
+			"onDblClick": open_app	
+		},
+	},
+	{
+		"data": {
+			"ref": APPS.MUSIC_PLAYER,
+			"title": "Music Player",
+			"icon": SVGS.TYPE.MUSIC
+		},
+		"installed": func() -> bool:
+			return true,
+		"defaults": {
+			"pos_offset": Vector2(0, 0),
+		},
+		"events": {
+			"onDblClick": func(data:Dictionary) -> void:
+				if GBL.music_data.is_empty():
+					await simulate_wait(0.7)
+					# open music player, no music selected
+					GBL.music_data = {
+						"track_list": music_track_list,
+						"selected": 1,
+					},
+		},
+	},		
+	{
+		"data": {
+			"ref": APPS.README,
+			"title": "IMPORTANT PLEASE READ",
+			"icon": SVGS.TYPE.TXT_FILE,
+			"app": TextFileAppScene,
+			"app_props": {
+				"title": "URGENT",
+				"content": "Check your EMAILS!"
+			},					
+		},
+		"installed": func() -> bool:
+			return true,
+		"defaults": {
+			"pos_offset": Vector2(0, 0),
+		},
+		"events": {
+			"onDblClick": open_app
+		},
+	}	
+]
+
 var music_track_list:Array = [
 	{
 		"metadata": {
@@ -109,97 +216,6 @@ var music_track_list:Array = [
 			return tracklist_unlocks[2],
 		"file": preload("res://Media/mp3/The Weeknd - Popular (Vidojean X Oliver Loenn Amapiano Remix).mp3")
 	}							
-]
-
-var app_list:Array[Dictionary] = [
-	{
-		"data": {
-			"ref": APPS.SDT,
-			"title": "Site Director Training Program",
-			"icon": SVGS.TYPE.EXE_FILE,
-			"app": SiteDirectorTrainingAppScene,
-		},
-		"events": {
-			"onDblClick": func(data:Dictionary) -> void:
-				open_app(data, true),
-		}
-	},
-	{
-		"data": {
-			"ref": APPS.SETTINGS,
-			"title": "Settings",
-			"icon": SVGS.TYPE.SETTINGS,
-			"app": TextFileAppScene
-		},
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"onDblClick": open_app
-		},
-	},
-	{
-		"data": {
-			"ref": APPS.EMAIL,
-			"title": "Email",
-			"icon": SVGS.TYPE.EMAIL,
-			"app": EmailAppScene,
-			"app_props": {
-				"get_has_read": func() -> Array:
-					return email_has_read,
-			},
-			"app_events": {
-				"onHasReadUpdate": func(new_email_has_read:Array):
-					email_has_read = new_email_has_read
-					save_state(),
-				"onOpenAttachment": on_open_attachment,
-			}
-		},
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"onDblClick": open_app	
-		},
-	},
-	{
-		"data": {
-			"ref": APPS.MUSIC_PLAYER,
-			"title": "Music Player",
-			"icon": SVGS.TYPE.MUSIC
-		},
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"onDblClick": func(data:Dictionary) -> void:
-				if GBL.music_data.is_empty():
-					await simulate_wait(0.7)
-					# open music player, no music selected
-					GBL.music_data = {
-						"track_list": music_track_list,
-						"selected": 1,
-					},
-		},
-	},		
-	{
-		"data": {
-			"ref": APPS.README,
-			"title": "IMPORTANT PLEASE READ",
-			"icon": SVGS.TYPE.TXT_FILE,
-			"app": TextFileAppScene,
-			"app_props": {
-				"title": "URGENT",
-				"content": "Check your EMAILS!"
-			},					
-		},
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"onDblClick": open_app
-		},
-	}	
 ]
 
 var has_notification:bool = false
@@ -234,6 +250,8 @@ var top_level_window:Control :
 #region local functions
 # -----------------------------------
 func _ready() -> void:
+	GBL.register_node(REFS.OS_LAYOUT, self)
+
 	super._ready()
 	load_state()	
 	on_simulated_busy_update()
@@ -244,8 +262,6 @@ func _ready() -> void:
 
 	render_desktop_icons()	
 	on_notification_data_update()
-
-	GBL.register_node(REFS.OS_LAYOUT, self)
 
 	Taskbar.onTitleBarClick = open_taskbar_menu
 
@@ -311,6 +327,9 @@ func on_bin_restore(data:Dictionary) -> void:
 	
 	# rerender ions
 	render_desktop_icons(0.0)
+	
+	# save state
+	save_state(0.2)
 # -----------------------------------		
 
 # -----------------------------------
@@ -350,9 +369,21 @@ func on_open_attachment(data:Dictionary) -> void:
 				"selected": 0,
 			}
 		"download": 
-			print(data)
-			print("add to download")
-# -----------------------------------			
+			Installer.add_item(data.installer_data)
+			
+# -----------------------------------
+
+# -----------------------------------
+func installing_app_start(ref:APPS) -> void:
+	apps_installing.push_back(ref)
+
+func install_app_complete(ref:APPS) -> void:
+	apps_installing.erase(ref)
+	apps_installed.push_back(ref)
+	render_desktop_icons(0)
+	save_state()
+# -----------------------------------
+
 #endregion
 
 # -----------------------------------
@@ -382,17 +413,18 @@ func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 
 # -----------------------------------
 #region SAVE/LOAD
-func save_state() -> void:
+func save_state(duration:float = 1.5) -> void:
 	var save_data = {
 		"settings": settings,
 		"in_recycle_bin": in_recycle_bin,
 		"email_has_read": email_has_read,
 		"app_positions": app_positions,
 		"tracklist_unlocks": tracklist_unlocks,
-		"event_switches": event_switches
+		"event_switches": event_switches,
+		"apps_installed": apps_installed
 	}	
 	FS.save_file(FS.FILE.SETTINGS, save_data)
-	print("saved settings state!")
+	await simulate_wait(duration)
 
 func load_state() -> void:
 	var res = FS.load_file(FS.FILE.SETTINGS)		
@@ -402,11 +434,12 @@ func load_state() -> void:
 func restore_state(restore_data:Dictionary = {}) -> void:
 	var no_save:bool = restore_data.is_empty()
 	settings = restore_data.settings if !no_save else settings
-	in_recycle_bin = in_recycle_bin # restore_data.in_recycle_bin if !no_save else in_recycle_bin
+	in_recycle_bin = restore_data.in_recycle_bin if !no_save else in_recycle_bin
 	email_has_read = restore_data.email_has_read if !no_save else email_has_read
 	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
-	app_positions = app_positions #restore_data.app_positions if !no_save else app_positions
-	event_switches = event_switches #restore_data.event_switches if !no_save else event_switches
+	app_positions = restore_data.app_positions if !no_save else app_positions
+	event_switches = restore_data.event_switches if !no_save else event_switches
+	apps_installed = apps_installed #restore_data.apps_installed if !no_save else apps_installed
 
 func toggle_fullscreen() -> void:
 	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
@@ -423,7 +456,7 @@ func open_taskbar_menu(data:Dictionary) -> void:
 	var list_data:Array[Dictionary] = [
 		{
 			"section": "System",
-			"opened": false,
+			"opened": true,
 			"items": [
 				{
 					"get_details": func():
@@ -458,7 +491,7 @@ func open_taskbar_menu(data:Dictionary) -> void:
 							"title": "Save"
 						},
 					"onClick": func(_data:Dictionary):
-						save_state()
+						show_save_notice()
 						close_app(APPS.TASKBAR_MENU),
 				},				
 			]			
@@ -524,6 +557,21 @@ func show_status_notice() -> void:
 				"onClick": func():
 					event_switches.show_status_on_boot = false,
 			},
+			{
+				"title": "Dismiss", 
+				"onClick": func():
+					pass,
+			}
+		]
+	})
+	
+func show_save_notice() -> void:
+	await save_state()
+	var res:Dictionary = await notification_splash({
+		"type": Notification.TYPE.INFO,
+		"title": "Status",
+		"message": "Save state.",
+		"buttons": [
 			{
 				"title": "Dismiss", 
 				"onClick": func():
@@ -759,7 +807,7 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 	await U.set_timeout(0)
 	
 	for item in app_list:
-		if item.data.ref not in in_recycle_bin:
+		if (item.data.ref not in in_recycle_bin) and item.installed.call():
 			var new_node:Control = AppItemScene.instantiate()	
 			DesktopIconContainer.add_child(new_node)
 			new_node.pos_offset = app_positions[item.data.ref]
@@ -798,7 +846,9 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 											
 									# rerender desktop icons
 									render_desktop_icons(0.0)
-									close_app(APPS.CONTEXT_MENU),
+									close_app(APPS.CONTEXT_MENU)
+									
+									save_state(0.2),
 							}
 						])
 						

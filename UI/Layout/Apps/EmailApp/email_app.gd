@@ -17,13 +17,13 @@ var email_data:Array[Dictionary] = [
 						"get_attachment_details": func():
 							return {
 								"title": "Site_Director_Training_Program.exe",
-								"onClick": func():
+								"onClick": func(data:Dictionary) -> void:
 									app_events.onOpenAttachment.call({
 										"type": "download", 
-										"data": {
-											"duration": 10,
-											"on_complete": func():
-												print("here?"),
+										"installer_data": {
+											"filename": data.title,
+											"duration": 3,
+											"ref": Layout.APPS.SDT
 										}
 									}),
 							}
@@ -42,7 +42,7 @@ var email_data:Array[Dictionary] = [
 						"get_attachment_details": func():
 							return {
 								"title": "Voicenote",
-								"onClick": func():
+								"onClick": func(data:Dictionary) -> void:
 									app_events.onOpenAttachment.call({
 										"type": "media_player", 
 										"track_list": [

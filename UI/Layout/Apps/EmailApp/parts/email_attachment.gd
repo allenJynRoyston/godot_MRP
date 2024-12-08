@@ -13,10 +13,12 @@ func _ready() -> void:
 	super._ready()
 	on_data_update()
 	on_focus(false)
-	
+
+# --------------------------------------		
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		AttachmentLabel.text = data.title
+# --------------------------------------	
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
@@ -30,8 +32,10 @@ func on_focus(state:bool) -> void:
 		
 		if !Engine.is_editor_hint():
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)		
+# --------------------------------------	
 
+# --------------------------------------	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and "onClick" in data:
-		data.onClick.call()
+		data.onClick.call(data)
 # --------------------------------------		
