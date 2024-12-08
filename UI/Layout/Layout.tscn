@@ -106,6 +106,7 @@ offset_bottom = 720.0
 [node name="Installer" parent="SubViewport" instance=ExtResource("6_dhnyo")]
 
 [node name="NotificationContainer" parent="SubViewport" instance=ExtResource("7_mdufi")]
+visible = true
 
 [node name="SubViewport2" type="SubViewport" parent="."]
 size = Vector2i(1280, 720)
