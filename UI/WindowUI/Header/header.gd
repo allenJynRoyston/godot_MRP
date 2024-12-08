@@ -7,7 +7,7 @@ extends MouseInteractions
 @onready var BtnContainer:PanelContainer = $HBoxContainer/BtnContainer
 
 @onready var WindowLabel:Label = $HBoxContainer/LabelContainer/MarginContainer/HBoxContainer/Label
-@onready var IconButton:IconBtn = $HBoxContainer/LabelContainer/MarginContainer/HBoxContainer/IconBtn
+@onready var IconButton:Control = $HBoxContainer/LabelContainer/MarginContainer/HBoxContainer/IconBtn
 @onready var MaxBtn:Control = $HBoxContainer/BtnContainer/HBoxContainer/MaxBtn
 @onready var CloseBtn:Control = $HBoxContainer/BtnContainer/HBoxContainer/CloseBtn
 
@@ -31,7 +31,7 @@ extends MouseInteractions
 		force_focus = val
 		on_force_focus_updated()
 		
-@onready var icon:int = SVGS.DOT : 
+@onready var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
 	set(val):
 		icon = val
 		on_icon_update()
@@ -64,7 +64,7 @@ func _ready() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func on_show_min_btn_update() -> void:
-	MaxBtn.icon = SVGS.MINUS if show_min_btn else SVGS.PLUS
+	MaxBtn.icon = SVGS.TYPE.MINUS if show_min_btn else SVGS.TYPE.PLUS
 	
 func on_window_label_update() -> void:
 	if is_node_ready():

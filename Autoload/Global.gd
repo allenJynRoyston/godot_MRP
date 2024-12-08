@@ -1,24 +1,16 @@
 extends Node
 
 # ------------------------------------------------------------------------------
-# MOUSE POSITIONS
-var win_z_count:int = 0 
-
-func get_next_window_z() -> int:
-	win_z_count += 1
-	return win_z_count
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-# MOUSE POSITIONS
+# MOUSE POSITION
 var mouse_pos := Vector2(0, 0) : 
 	set(val): 
 		mouse_pos = val;
 		for node in mouse_pos_subscriptions:
 			if "on_mouse_pos_update" in node:
 				node.on_mouse_pos_update(mouse_pos)
-					
-		
+
+var next_mouse_icon:MOUSE_ICON = MOUSE_ICON.CURSOR
+
 var mouse_pos_subscriptions:Array[Control] = []
 
 func unsubscribe_to_mouse_pos(node:Control) -> void:
@@ -28,6 +20,35 @@ func subscribe_to_mouse_pos(node:Control) -> void:
 	if node not in mouse_pos_subscriptions: 
 		mouse_pos_subscriptions.push_back(node)
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# MOUSE ICON
+enum MOUSE_ICON {CURSOR, BUSY, POINTER}
+var mouse_icon_subscriptions:Array[Control] = []
+var mouse_icon:MOUSE_ICON = MOUSE_ICON.CURSOR : 
+	set(val):
+		mouse_icon = val
+		for node in mouse_icon_subscriptions:
+			if "on_mouse_icon_update" in node:
+				node.on_mouse_icon_update(mouse_icon)
+
+func unsubscribe_to_mouse_icons(node:Control) -> void:
+	mouse_icon_subscriptions.erase(node)
+
+func subscribe_to_mouse_icons(node:Control) -> void:
+	if node not in mouse_icon_subscriptions: 
+		mouse_icon_subscriptions.push_back(node)
+
+func change_mouse_icon(val:MOUSE_ICON) -> void:
+	if mouse_icon == MOUSE_ICON.BUSY:
+		next_mouse_icon = val
+		return
+	mouse_icon = val
+
+func end_mouse_busy() -> void:
+	mouse_icon = next_mouse_icon
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 # NODE REFS

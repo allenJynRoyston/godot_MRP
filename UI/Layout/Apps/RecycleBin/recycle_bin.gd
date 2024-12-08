@@ -40,7 +40,7 @@ func on_bin_list_update() -> void:
 	
 	var recycle_bin_list:Array[Dictionary] = [
 		{
-			"section": "Contents",
+			"section": "Restore",
 			"opened": true,
 			"items": items
 		},
@@ -52,6 +52,5 @@ func on_bin_list_update() -> void:
 
 # ------------------------------------------------------------------------------
 func update_bin(in_recycle_bin:Array) -> void:
-	print(in_recycle_bin)
 	in_bin_list = in_recycle_bin
 # ------------------------------------------------------------------------------	

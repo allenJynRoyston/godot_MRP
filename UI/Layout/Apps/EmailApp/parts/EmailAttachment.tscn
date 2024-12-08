@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b2xiva1hpi0f4"]
 
 [ext_resource type="Script" path="res://UI/Layout/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="2_7ovhd"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_7ovhd"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="4_2gnm4"]
 
 [node name="AttachmentContainer" type="PanelContainer"]
@@ -24,7 +24,6 @@ theme_override_constants/separation = 10
 [node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_7ovhd")]
 layout_mode = 2
 icon = 4
-is_draggable = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]

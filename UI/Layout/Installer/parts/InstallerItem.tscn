@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://j1m287c37id8"]
+
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_7fbql"]
+[ext_resource type="Script" path="res://UI/Layout/Installer/parts/installer_item.gd" id="1_ikxjo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4orv"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fyypl"]
+bg_color = Color(0.255659, 0.255659, 0.255659, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4jcva"]
+bg_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="InstallerItem" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 20)
+theme_override_styles/panel = SubResource("StyleBoxFlat_g4orv")
+script = ExtResource("1_ikxjo")
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
+layout_mode = 2
+
+[node name="Filename" type="Label" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+text = "Filename.exe"
+label_settings = ExtResource("1_7fbql")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ProgressLabel" type="Label" parent="MarginContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "99%"
+label_settings = ExtResource("1_7fbql")
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer2/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_fyypl")
+theme_override_styles/fill = SubResource("StyleBoxFlat_4jcva")
+max_value = 1.0
+value = 1.0
+show_percentage = false

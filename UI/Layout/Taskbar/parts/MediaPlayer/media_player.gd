@@ -1,6 +1,6 @@
 extends MouseInteractions
 
-@onready var LogoBtn:IconBtn = $MarginContainer/LogoBtn
+@onready var LogoBtn:Control = $MarginContainer/LogoBtn
 @onready var TrackNameLabel:Label = $TrackNameScrollContainer/PanelContainer/MarginContainer/TrackName
 @onready var TrackNameScrollContainer:ScrollContainer = $TrackNameScrollContainer
 @onready var AudioStreamPlayerUI:AudioStreamPlayer = $AudioStreamPlayer
@@ -50,7 +50,7 @@ func skip_to_track(track_data:Dictionary) -> void:
 
 # --------------------------------------	
 func on_pause_or_play_update() -> void:
-	PlayPauseBtn.icon = SVGS.MEDIA_PLAY if !AudioStreamPlayerUI.playing else SVGS.MEDIA_PAUSE	
+	PlayPauseBtn.icon = SVGS.TYPE.MEDIA_PLAY if !AudioStreamPlayerUI.playing else SVGS.TYPE.MEDIA_PAUSE	
 # --------------------------------------	
 
 # --------------------------------------	

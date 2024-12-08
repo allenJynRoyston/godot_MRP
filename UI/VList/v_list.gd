@@ -1,6 +1,6 @@
 extends PanelContainer
 
-@onready var ItemContainer:VBoxContainer = $VBoxContainer
+@onready var ItemContainer:VBoxContainer = $MarginContainer/VBoxContainer
 
 const VListItemScene:PackedScene = preload("res://UI/VList/parts/VListItem.tscn")
 

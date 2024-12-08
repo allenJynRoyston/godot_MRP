@@ -50,7 +50,7 @@ extends MouseInteractions
 		freeze_content_input = val
 		on_freeze_content_input_update()		
 
-@export var header_icon : IconBtn.SVG  = IconBtn.SVG.DOT : 
+@export var header_icon : SVGS.TYPE  = SVGS.TYPE.DOT : 
 	set(val):
 		header_icon = val
 		on_header_icon_update()

@@ -1,10 +1,10 @@
 [gd_scene load_steps=5 format=3 uid="uid://c5ld7n1ycuql2"]
 
 [ext_resource type="Shader" path="res://Shader/ReColor/ReColor.gdshader" id="2_ilvdr"]
-[ext_resource type="Texture2D" uid="uid://bcsulh43i1bt1" path="res://SVGs/bin-xmark-fill-svgrepo-com.svg" id="3_8fcd3"]
-[ext_resource type="Script" path="res://UI/IconBtn/icon_btn.gd" id="3_y66qb"]
+[ext_resource type="Texture2D" uid="uid://cf3xiua0hdis8" path="res://SVGs/dot-filled-svgrepo-com.svg" id="3_v63su"]
+[ext_resource type="Script" path="res://UI/Buttons/IconBtn/icon_btn.gd" id="3_y66qb"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k0e5m"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mff2j"]
 shader = ExtResource("2_ilvdr")
 shader_parameter/tint_color = Color(0, 0.254902, 0.0823529, 1)
 
@@ -22,7 +22,7 @@ active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="Btn" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_k0e5m")
+material = SubResource("ShaderMaterial_mff2j")
 layout_mode = 2
-texture = ExtResource("3_8fcd3")
+texture = ExtResource("3_v63su")
 expand_mode = 2

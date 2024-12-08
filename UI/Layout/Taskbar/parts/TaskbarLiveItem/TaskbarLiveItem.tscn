@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://UI/Layout/Taskbar/parts/TaskbarLiveItem/taskbar_live_item.gd" id="1_pvm5v"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_uj6ia"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="2_jsu1p"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_jsu1p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34og0"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)

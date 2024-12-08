@@ -164,4 +164,3 @@ void fragment(){
     COLOR.rgb = final_color;
 	COLOR.a = 1.0;
 }
-

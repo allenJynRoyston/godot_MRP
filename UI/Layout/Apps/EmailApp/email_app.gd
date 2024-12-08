@@ -16,7 +16,32 @@ var email_data:Array[Dictionary] = [
 						"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your cuerent situation.  VERY IMPORTANT:  DO NOT venture out into the darkness.  It will kill you.  It will [REMOVE ALL YOUR PROGRESS - ESSENTIALLY A HARD RESET].",
 						"get_attachment_details": func():
 							return {
-								"title": "Install Site_Director_Training_Programe.exe",
+								"title": "Site_Director_Training_Program.exe",
+								"onClick": func():
+									app_events.onOpenAttachment.call({
+										"type": "download", 
+										"data": {
+											"duration": 10,
+											"on_complete": func():
+												print("here?"),
+										}
+									}),
+							}
+						
+					},
+				"render_if": func():
+					return true,
+			},
+			{
+				"get_details": func():
+					return {
+						"title": "Test voicenote",
+						"from": "@unknown",
+						"date": "unknown",
+						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis.",
+						"get_attachment_details": func():
+							return {
+								"title": "Voicenote",
 								"onClick": func():
 									app_events.onOpenAttachment.call({
 										"type": "media_player", 
@@ -31,18 +56,6 @@ var email_data:Array[Dictionary] = [
 										]
 									}),
 							}
-						
-					},
-				"render_if": func():
-					return true,
-			},
-			{
-				"get_details": func():
-					return {
-						"title": "Email 2",
-						"from": "@unknown",
-						"date": "unknown",
-						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis."
 					},
 				"render_if": func():
 					return true,

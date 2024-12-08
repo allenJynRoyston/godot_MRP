@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=4 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" path="res://Scenes/OS/os.gd" id="1_fddhq"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://UI/Layout/Layout.tscn" id="2_yqdyq"]
+[ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_v31hb"]
 
 [node name="OS" type="PanelContainer"]
 anchors_preset = 15
@@ -13,3 +14,9 @@ script = ExtResource("1_fddhq")
 
 [node name="Layout" parent="." instance=ExtResource("2_yqdyq")]
 layout_mode = 2
+
+[node name="MousePointer" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("3_v31hb")
+expand_mode = 1
+stretch_mode = 2

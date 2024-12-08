@@ -1,7 +1,7 @@
 @tool
 extends MouseInteractions
 
-@onready var IconButton:IconBtn = $VBoxContainer/CenterContainer/IconBtn
+@onready var IconButton:Control = $VBoxContainer/CenterContainer/IconBtn
 @onready var AppLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/Label
 
 @export var title:String = "Application" : 
@@ -9,7 +9,7 @@ extends MouseInteractions
 		title = val
 		on_title_update()
 
-@export var icon:int = SVGS.DOT : 
+@export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
 	set(val):
 		icon = val
 		on_icon_update()

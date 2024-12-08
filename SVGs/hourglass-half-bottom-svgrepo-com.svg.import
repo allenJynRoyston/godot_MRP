@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0ohtsmb4gin4"
-path="res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
+uid="uid://j8rsa3fk1d07"
+path="res://.godot/imported/hourglass-half-bottom-svgrepo-com.svg-d8d45188fac6acc69f4b1798c9734feb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icon.svg"
-dest_files=["res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"]
+source_file="res://SVGs/hourglass-half-bottom-svgrepo-com.svg"
+dest_files=["res://.godot/imported/hourglass-half-bottom-svgrepo-com.svg-d8d45188fac6acc69f4b1798c9734feb.ctex"]
 
 [params]
 

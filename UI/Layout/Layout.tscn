@@ -5,8 +5,8 @@
 [ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="2_ea8gx"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://UI/Layout/Taskbar/Taskbar.tscn" id="3_v00j4"]
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://UI/Layout/AppItem/AppItem.tscn" id="4_e3kl5"]
+[ext_resource type="PackedScene" uid="uid://8hxxm66kio4n" path="res://UI/Layout/Installer/Installer.tscn" id="6_dhnyo"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_optch"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="6_wkcgy"]
 [ext_resource type="PackedScene" uid="uid://clbcu7v8n62o8" path="res://UI/Layout/Notification/Notification.tscn" id="7_mdufi"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_yvb83"]
@@ -103,20 +103,7 @@ anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 
-[node name="SimulatedWait" type="PanelContainer" parent="SubViewport"]
-offset_right = 1280.0
-offset_bottom = 720.0
-
-[node name="CenterContainer" type="CenterContainer" parent="SubViewport/SimulatedWait"]
-layout_mode = 2
-
-[node name="IconBtn" parent="SubViewport/SimulatedWait/CenterContainer" instance=ExtResource("6_wkcgy")]
-modulate = Color(1, 1, 1, 0.356863)
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-icon = 18
-static_color = Color(0, 0.256147, 0.00083709, 1)
-is_hoverable = false
+[node name="Installer" parent="SubViewport" instance=ExtResource("6_dhnyo")]
 
 [node name="NotificationContainer" parent="SubViewport" instance=ExtResource("7_mdufi")]
 

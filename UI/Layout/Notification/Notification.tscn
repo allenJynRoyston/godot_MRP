@@ -1,33 +1,34 @@
-[gd_scene load_steps=9 format=3 uid="uid://clbcu7v8n62o8"]
+[gd_scene load_steps=8 format=3 uid="uid://clbcu7v8n62o8"]
 
 [ext_resource type="Script" path="res://UI/Layout/Notification/notification.gd" id="1_1fpx8"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="2_yw5st"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_yw5st"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_0rsjo"]
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_72tyj"]
-[ext_resource type="Texture2D" uid="uid://b11bec5r63wnc" path="res://SVGs/clear-svgrepo-com.svg" id="5_tyx66"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_4osw4"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dwyhh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i8xj3"]
+bg_color = Color(0, 0, 0, 0.423529)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68jhm"]
 bg_color = Color(0, 0, 0, 0.388235)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8mxlg"]
-bg_color = Color(0, 0, 0, 0.211765)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 1, 0.517647, 1)
+bg_color = Color(0, 1, 0, 0.211765)
+border_color = Color(1, 0.745178, 0.380506, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="Notification" type="PanelContainer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -35,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_dwyhh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_i8xj3")
 script = ExtResource("1_1fpx8")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
@@ -62,10 +63,10 @@ layout_mode = 2
 
 [node name="IconBtn" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_yw5st")]
 layout_mode = 2
-icon = 3
+icon = 21
 is_hoverable = false
 
-[node name="Label" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Notification/Warning/Error"
 label_settings = ExtResource("3_0rsjo")
@@ -85,20 +86,31 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="NotificationLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-text = "Notification goes here."
+text = "Notification message goes here."
 label_settings = ExtResource("3_0rsjo")
 horizontal_alignment = 1
 
 [node name="HSeparator2" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 
-[node name="Button" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="IconBtn" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_yw5st")]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="CustomButtonContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="OkayBtn" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_4osw4")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_fonts/font = ExtResource("4_72tyj")
-text = "Dismiss"
-icon = ExtResource("5_tyx66")
-expand_icon = true
+static_color = Color(1, 1, 1, 1)
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+title = "Okay"

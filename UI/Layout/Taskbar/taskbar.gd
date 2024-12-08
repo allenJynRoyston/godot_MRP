@@ -28,6 +28,11 @@ var taskbar_live_items:Array = [] :
 	set(val):
 		taskbar_live_items = val
 		on_taskbar_live_items_update()
+		
+var is_busy:bool = false : 
+	set(val):
+		is_busy = val
+		on_is_busy_update()
 
 var title_bar_defaults:Dictionary = {}
 
@@ -49,6 +54,7 @@ func _ready() -> void:
 	on_show_media_player_update()
 	on_taskbar_live_items_update()
 	on_fullscreen_data_update()
+	on_is_busy_update()
 	
 	TitleBar.onClick = func() -> void:
 		onTitleBarClick.call(fullscreen_data)
@@ -62,6 +68,10 @@ func _exit_tree() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	
+func on_is_busy_update() -> void:
+	if !is_node_ready():return
+	TitleBar.is_busy = is_busy
+	
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()

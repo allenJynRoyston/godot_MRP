@@ -2,9 +2,9 @@ extends MouseInteractions
 
 @onready var RootPanel:PanelContainer = $"."
 @onready var ItemLabel:Label = $MarginContainer/HBoxContainer/Label
-@onready var IconButton:IconBtn = $MarginContainer/HBoxContainer/IconBtn
-@onready var CloseButton:IconBtn = $MarginContainer/HBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/CloseBtn
-@onready var MinButton:IconBtn = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer/MarginContainer2/MinBtn
+@onready var IconButton:Control = $MarginContainer/HBoxContainer/IconBtn
+@onready var CloseButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/CloseBtn
+@onready var MinButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer/MarginContainer2/MinBtn
 
 @onready var MinButtonContainer:PanelContainer = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer
 

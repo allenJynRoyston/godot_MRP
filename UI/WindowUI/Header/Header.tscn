@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://UI/WindowUI/Header/header.gd" id="1_a2eh7"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="2_exemx"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="3_8hswi"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_8hswi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ejy0"]
 bg_color = Color(0, 0, 0, 0)
