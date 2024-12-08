@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=11 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" path="res://UI/Layout/layout.gd" id="1_rk64t"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://UI/Layout/Background/Background.tscn" id="2_2u7t3"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://UI/Layout/AppItem/AppItem.tscn" id="4_e3kl5"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_optch"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/IconBtn/IconBtn.tscn" id="6_wkcgy"]
+[ext_resource type="PackedScene" uid="uid://clbcu7v8n62o8" path="res://UI/Layout/Notification/Notification.tscn" id="7_mdufi"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_yvb83"]
 viewport_path = NodePath("SubViewport2")
@@ -116,6 +117,8 @@ layout_mode = 2
 icon = 18
 static_color = Color(0, 0.256147, 0.00083709, 1)
 is_hoverable = false
+
+[node name="NotificationContainer" parent="SubViewport" instance=ExtResource("7_mdufi")]
 
 [node name="SubViewport2" type="SubViewport" parent="."]
 size = Vector2i(1280, 720)

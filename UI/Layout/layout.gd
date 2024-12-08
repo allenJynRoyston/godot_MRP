@@ -5,6 +5,7 @@ class_name Layout
 @onready var RunningAppsContainer:Control = $SubViewport/RunningAppsContainer
 @onready var TaskbarAppsContainer:Control = $SubViewport/TaskbarAppsContainer
 @onready var FullScreenAppsContainer:Control = $SubViewport/FullScreenAppsContainer
+@onready var NotificationContainer:PanelContainer = $SubViewport/NotificationContainer
 @onready var BackgroundWindow:PanelContainer = $SubViewport/BackgroundWindow
 @onready var SimulatedWait:PanelContainer = $SubViewport/SimulatedWait
 
@@ -204,6 +205,11 @@ var app_list:Array[Dictionary] = [
 	}	
 ]
 
+var notification_data:Dictionary = {} : 
+	set(val):
+		notification_data = val
+		on_notification_data_update()
+
 var already_loaded:Array = []
 var simulate_busy:bool = false : 
 	set(val):
@@ -234,8 +240,15 @@ func _ready() -> void:
 	on_simulated_busy_update()
 	
 	render_desktop_icons()	
+	on_notification_data_update()
 
 	GBL.register_node(REFS.OS_LAYOUT, self)
+	
+	# finish this part
+	notification_data = {
+		"type": "warning",
+		"title": "something"
+	}
 
 	Taskbar.onTitleBarClick = open_taskbar_menu
 
@@ -263,21 +276,31 @@ func on_simulated_busy_update() -> void:
 # -----------------------------------		
 
 # -----------------------------------		
-func simulate_wait(duration:float) -> void:
-	simulate_busy = true
+func simulate_wait(duration:float, show_busy:bool = true) -> void:
+	if show_busy:
+		simulate_busy = true
+		
 	await U.set_timeout(duration * 1.0)
-	simulate_busy = false
+	
+	if show_busy:
+		simulate_busy = false
 # -----------------------------------		
 
 # -----------------------------------		
-func onBinRestore(data:Dictionary) -> void:
+func on_notification_data_update() -> void:
+	if is_node_ready():
+		NotificationContainer.data = notification_data
+# -----------------------------------		
+
+# -----------------------------------		
+func on_bin_restore(data:Dictionary) -> void:
 	in_recycle_bin = in_recycle_bin.filter(func(ref): return ref != data.details.ref)
 
 	# update contents of bin
 	data.details.bin_node.update_bin(in_recycle_bin)
 	
 	# rerender ions
-	render_desktop_icons()
+	render_desktop_icons(0.0)
 # -----------------------------------		
 
 # -----------------------------------
@@ -658,8 +681,8 @@ func sort_desktop_icons() -> void:
 # -----------------------------------
 
 # -----------------------------------	
-func render_desktop_icons() -> void:
-	await simulate_wait(0.5)
+func render_desktop_icons(wait_time:float = 1.0) -> void:
+	await simulate_wait(wait_time, false)
 	
 	var column_tracker := {}
 	
@@ -698,14 +721,16 @@ func render_desktop_icons() -> void:
 										"title": "Move to Recycle Bin..."
 									},
 								"onClick": func(_data:Dictionary):
+									# add to recycle bin
 									in_recycle_bin.push_back(item.data.ref)
 									
+									# update recycle bin if it's open
 									for app in running_apps_list:
 										if app.data.ref == APPS.RECYCLE_BIN:
 											app.node.in_bin_list = in_recycle_bin
 											
-									
-									render_desktop_icons()
+									# rerender desktop icons
+									render_desktop_icons(0.0)
 									close_app(APPS.CONTEXT_MENU),
 							}
 						])
