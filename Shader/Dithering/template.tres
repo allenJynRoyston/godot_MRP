@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cy0uf2rgg1p4q"]
+
+[ext_resource type="Shader" path="res://Shader/Dithering/template.gdshader" id="1_e1omk"]
+
+[resource]
+shader = ExtResource("1_e1omk")
+shader_parameter/dither_strength = 0.118
+shader_parameter/dither_size = 500.0

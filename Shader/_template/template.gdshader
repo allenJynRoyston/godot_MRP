@@ -1,24 +1,25 @@
 shader_type canvas_item;
 
-uniform float bleed_strength : hint_range(0.0, 1.0) = 0.3;  // Strength of the bleed effect
-uniform float blur_radius : hint_range(0.0, 10.0) = 1.0;   // Amount of soft blur for the bleed
+uniform float edge_threshold : hint_range(0.0, 1.0) = 0.05; // Threshold for edge detection
+uniform float dither_strength : hint_range(0.0, 1.0) = 0.5; // Strength of the dithering effect
 
 void fragment() {
-    // Sample the texture at the current UV
-    vec4 screen_texture = texture(TEXTURE, UV);
+    // Get the texture color at the current UV
+    vec4 tex_color = texture(TEXTURE, UV);
+    
+    // Get the distance from the center of the texture
+    float edge_distance = min(UV.x, min(UV.y, min(1.0 - UV.x, 1.0 - UV.y)));
+    
+    // Apply dithering effect at the edges based on distance
+    if (edge_distance < edge_threshold) {
+        // Add noise/dithering based on the edge distance
+        float noise = fract(sin(UV.x * 12.9898 + UV.y * 78.233) * 43758.5453);
+        noise = (noise - 0.5) * 2.0; // Scale the noise to the range of [-1, 1]
+        
+        // Blend the dithering effect with the tex_color based on the strength
+        tex_color.rgb *= mix(1.0, 1.0 - dither_strength * noise, step(0.0, noise));
+    }
 
-    // Convert the color to grayscale (luminosity method) to determine brightness
-    float brightness = dot(screen_texture.rgb, vec3(0.299, 0.587, 0.114));
-
-    // Apply the bleed effect by spreading bright regions
-    vec4 bleed_color = screen_texture;
-    float spread = smoothstep(0.6, 1.0, brightness);  // Smooth transition for bright areas
-
-    // Apply a blur effect around bright regions (simple blur based on the brightness)
-    vec2 offset = vec2(blur_radius / 100.0, 0.0);  // Horizontal blur direction (adjust for softness)
-    vec4 blurred_texture = texture(TEXTURE, UV + offset);
-    vec4 final_color = mix(bleed_color, blurred_texture, spread * bleed_strength);  // Mix blur with bleed effect
-
-    // Output the final color
-    COLOR = final_color;
+    // Set the final color
+    COLOR = tex_color;
 }

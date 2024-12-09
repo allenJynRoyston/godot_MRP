@@ -1,6 +1,7 @@
 extends PanelContainer
 
-@onready var MousePointer:TextureRect = $MousePointer
+@onready var MousePointer:TextureRect = $SubViewport/MousePointer
+@onready var FinalScreen:TextureRect = $TextureRect
 
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
