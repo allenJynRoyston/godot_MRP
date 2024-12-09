@@ -15,6 +15,7 @@ var app_props:Dictionary = {}
 var app_events:Dictionary = {}
 var offset:Vector2 = Vector2(0, 0)
 var in_fullscreen:bool = false
+var previously_loaded:bool = false
 
 var default_setup:Dictionary = {}
 

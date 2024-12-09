@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://528j86gp5aj2"]
+
+[ext_resource type="Script" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_chhwg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_giaah"]
+
+[node name="LoadingComponent" type="PanelContainer"]
+offset_right = 25.0
+offset_bottom = 25.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_giaah")
+script = ExtResource("1_5j372")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="IconBtn" parent="CenterContainer" instance=ExtResource("2_chhwg")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 18
+is_hoverable = false

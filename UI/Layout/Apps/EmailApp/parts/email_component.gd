@@ -9,30 +9,39 @@ extends PanelContainer
 @onready var EmailContentRichText:RichTextLabel = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/EmailContentRichText
 @onready var AttachmentContainer:PanelContainer = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/AttachmentContainer
 
-var has_read:Array = [] : 
+var not_new:Array = [] : 
 	set(val):
-		has_read = val
-		on_has_read_update()
+		not_new = val
+		on_not_new_update()
 
 var email_data:Array[Dictionary] = [] : 
 	set(val):
 		var new_email_data = val.map(func(data):
 			for item in data.items:
 				item.is_new = check_if_new
-				item.onClick = mark_as_read_and_open
+				item.onClick = func(data:Dictionary) -> void:
+					mark_as_old(data)
+					on_click.call(data)
 			return data
 		)
 		email_data = val 
 		on_email_data_update()
 
-var onHasReadUpdate:Callable = func(arr:Array):pass
-	
+var on_marked:Callable = func(arr:Array):pass
+
+var on_data_changed:Callable = func(new_state:Array):pass
+var on_click:Callable = func(data:Dictionary):pass
+
+
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	on_email_data_update()
 	
 	EmailContentContainer.hide()
 	AttachmentContainer.hide()
+	
+	VList.on_data_changed = func(new_state) -> void:		
+		on_data_changed.call(new_state)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -40,18 +49,18 @@ func on_email_data_update() -> void:
 	if is_node_ready():
 		VList.data = email_data
 		
-func on_has_read_update() -> void:
-	onHasReadUpdate.call(has_read)
+func on_not_new_update() -> void:
+	on_marked.call(not_new)
 	
 func check_if_new(data:Dictionary) -> bool:
 	var id_str:String = str(data.parent_index, data.index)
-	return id_str not in has_read
+	return id_str not in not_new
 
-func mark_as_read_and_open(data:Dictionary) -> void:
+func mark_as_old(data:Dictionary) -> void:
 	var id_str:String = str(data.parent_index, data.index)
-	if id_str not in has_read:
-		has_read.push_back(id_str)
-		has_read = has_read
+	if id_str not in not_new:
+		not_new.push_back(id_str)
+		not_new = not_new
 		VList.data = email_data
 	
 	EmailContentContainer.show()	

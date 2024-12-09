@@ -54,6 +54,10 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 func on_icon_update() -> void:
 	if is_node_ready():
+		if icon == SVGS.TYPE.NONE:
+			Btn.texture = null
+			return
+			
 		var texture:CompressedTexture2D = CACHE.fetch_svg(icon)
 		if texture != null:
 			Btn.texture = texture

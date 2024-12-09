@@ -1,0 +1,154 @@
+[gd_scene load_steps=10 format=3 uid="uid://bg4f5xqrobe7"]
+
+[ext_resource type="Script" path="res://UI/Layout/Apps/ModApp/parts/mod_component.gd" id="1_fuktp"]
+[ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="1_ihp10"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_vywlc"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_85cpi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kno7o"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="GDScript" id="GDScript_xr013"]
+script/source = "extends MarginContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g4pu6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gsa2y"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_top = 1
+border_color = Color(0.314316, 0.314316, 0.314316, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_36o80"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[node name="ModComponent" type="PanelContainer"]
+custom_minimum_size = Vector2(500, 400)
+offset_right = 800.0
+offset_bottom = 600.0
+script = ExtResource("1_fuktp")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_kno7o")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/ScrollContainer2/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VList" parent="HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer" instance=ExtResource("1_ihp10")]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ModContentContainer" type="PanelContainer" parent="HBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+script = SubResource("GDScript_xr013")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="SaveContainer" type="PanelContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_g4pu6")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/SaveContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/SaveContainer/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/SaveContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Settings:"
+label_settings = ExtResource("2_vywlc")
+
+[node name="SaveBtn" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/SaveContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_85cpi")]
+layout_mode = 2
+icon = 19
+title = "Apply Changes"
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxFlat_gsa2y")
+
+[node name="DetailsListContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="DescriptionContainer" type="PanelContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_36o80")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/DescriptionContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/DescriptionContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DetailTitle" type="Label" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/DescriptionContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Title:"
+label_settings = ExtResource("2_vywlc")
+vertical_alignment = 1
+
+[node name="DetailDescription" type="Label" parent="HBoxContainer/ScrollContainer/ModContentContainer/MarginContainer/VBoxContainer/VBoxContainer/DescriptionContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Description:"
+label_settings = ExtResource("2_vywlc")
+vertical_alignment = 1

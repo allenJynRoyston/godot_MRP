@@ -25,6 +25,12 @@ var is_opened:bool = true :
 		
 var active_nodes:Array[Control] = []
 
+var on_opened_changed:Callable = func():pass
+
+var on_item_focus_change:Callable = func(state:bool, data:Dictionary) -> void:pass
+
+var on_list_focus_change:Callable = func(state:bool) -> void:pass
+
 # --------------------------------------	
 func _ready() -> void:
 	super._ready()
@@ -35,6 +41,9 @@ func _ready() -> void:
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
+	on_list_focus_change.call(state)
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
+
 	var shader_material:ShaderMaterial = IconImage.material.duplicate()	
 	shader_material.set_shader_parameter("tint_color", COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) )
 	IconImage.material = shader_material
@@ -45,6 +54,7 @@ func on_focus(state:bool) -> void:
 	SectionLabel.label_settings = label_setting
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 	if on_hover and active_nodes.is_empty():
 		is_opened = !is_opened
 # --------------------------------------		
@@ -53,6 +63,7 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 func on_is_opened_update() -> void:
 	IconImage.texture = plusSVG if is_opened else minusSVG
 	ItemContainer.show() if is_opened else ItemContainer.hide()
+	on_opened_changed.call(is_opened)
 # --------------------------------------	
 
 # --------------------------------------	
@@ -60,6 +71,7 @@ func on_data_update() -> void:
 	if !is_node_ready():
 		return
 	
+
 	SectionLabel.text = data.section
 		
 	for child in ItemContainer.get_children():
@@ -69,35 +81,44 @@ func on_data_update() -> void:
 	
 	var new_count:int = 0
 	
+	var selected:Array = []
+	if "selected" in data:
+		selected = data.selected
+	
 	for index in data.items.size():
 		var item:Dictionary = data.items[index]
+		
+		var render_if:bool = true
 		if "render_if" in item:
-			if !item.render_if.call():
-				return
+			render_if = item.render_if.call(item.get_details.call())
 		
-		var new_label:Control = VListItemLabelScene.instantiate()
-		new_label.data = item
-		new_label.index = index
-		new_label.parent_index = parent_index
-		
-		if "is_new" in item:
-			var is_new:bool = item.is_new.call({
-				"parent_index": parent_index, 
-				"index": index,
-				"data": item
-			}) 
-			if is_new:
-				new_count += 1
-		
-		new_label.onFocus = func(node:Control) -> void:
-			if node not in active_nodes:
-				active_nodes.push_back(node)
+		if render_if:
+			var new_label:Control = VListItemLabelScene.instantiate()
+			new_label.data = item
+			new_label.index = index
+			new_label.parent_index = parent_index
+			
+			if "is_new" in item:
+				var is_new:bool = item.is_new.call({
+					"parent_index": parent_index, 
+					"index": index,
+					"data": item
+				}) 
+				if is_new:
+					new_count += 1
+			
+			new_label.is_selected = index in selected
+			
+			new_label.onFocus = func(node:Control) -> void:
+				if node not in active_nodes:
+					active_nodes.push_back(node)
+				on_item_focus_change.call(true, item)
 
-		new_label.onBlur = func(node:Control) -> void:
-			active_nodes.erase(node)
-		
-		ItemContainer.add_child(new_label)
-	
+			new_label.onBlur = func(node:Control) -> void:
+				active_nodes.erase(node)
+				on_item_focus_change.call(false, item)
+			
+			ItemContainer.add_child(new_label)
 	
 	HasNewIcon.show() if new_count > 0 else HasNewIcon.hide()
 # --------------------------------------	

@@ -16,11 +16,12 @@ var ref:int
 var filename:String = "filename.exe"
 var duration:int = 10 : 
 	set(val):
-		duration = val
-		start = true
+		duration = val		
 
 func _ready() -> void:
 	FilenameLabel.text = "Installing %s..." % [filename]
+	await U.set_timeout(1.0)
+	start = true
 	
 	
 # ------------------------------------------------

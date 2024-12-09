@@ -15,17 +15,29 @@ class_name Layout
 const WindowUIScene:PackedScene = preload("res://UI/WindowUI/WindowUI.tscn")
 const AppItemScene:PackedScene = preload("res://UI/Layout/AppItem/AppItem.tscn")
 
-const SiteDirectorTrainingAppScene:PackedScene = preload("res://UI/Layout/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
-const EmailAppScene:PackedScene = preload("res://UI/Layout/Apps/EmailApp/EmailApp.tscn")
-const MediaPlayerMiniAppScene:PackedScene = preload("res://UI/Layout/Apps/MediaPlayerMiniApp/MediaPlayerMiniApp.tscn")
-const TaskBarMenuAppScene:PackedScene = preload("res://UI/Layout/Apps/TaskbarMenuApp/TaskbarMenuApp.tscn")
-const ContextMenuAppScene:PackedScene = preload("res://UI/Layout/Apps/ContextMenuApp/ContextMenuApp.tscn")
-const TextFileAppScene:PackedScene = preload("res://UI/Layout/Apps/TextFileApp/TextFileApp.tscn")
-const RecycleBinAppScene:PackedScene = preload("res://UI/Layout/Apps/RecycleBin/RecycleBin.tscn")
+const SiteDirectorTrainingAppPreload:PackedScene = preload("res://UI/Layout/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
+const SiteDirectorTrainingModsAppPreload:PackedScene = preload("res://UI/Layout/Apps/ModApp/ModApp.tscn")
+const EmailAppPreload:PackedScene = preload("res://UI/Layout/Apps/EmailApp/EmailApp.tscn")
+const MediaPlayerMiniAppPreload:PackedScene = preload("res://UI/Layout/Apps/MediaPlayerMiniApp/MediaPlayerMiniApp.tscn")
+const TaskBarMenuAppPreload:PackedScene = preload("res://UI/Layout/Apps/TaskbarMenuApp/TaskbarMenuApp.tscn")
+const ContextMenuAppPreload:PackedScene = preload("res://UI/Layout/Apps/ContextMenuApp/ContextMenuApp.tscn")
+const TextFileAppPreload:PackedScene = preload("res://UI/Layout/Apps/TextFileApp/TextFileApp.tscn")
+const RecycleBinAppPreload:PackedScene = preload("res://UI/Layout/Apps/RecycleBin/RecycleBin.tscn")
 
 enum APPS {
-	SDT, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, 
+	SDT, SDT_MODS, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, 
 	BIN, CONTEXT_MENU, TASKBAR_MENU, RECYCLE_BIN
+}
+
+enum MODS {
+	NONE,
+	DIFFICULTY_EASY, DIFFICULTY_NORMAL, DIFFICULTY_STORY,
+	PRODUCTION_ONE, PRODUCTION_TWO, PRODUCTION_THREE,
+	ECONOMY_ONE, ECONOMY_TWO, ECONOMY_THREE,
+}
+
+enum PLAYLIST {
+	TRACK_1, TRACK_2, TRACK_3
 }
 
 # -----------------------------------
@@ -50,33 +62,47 @@ var settings:Dictionary ={
 	}
 }
 
+var event_switches:Dictionary = {
+	"show_status_on_boot": true
+}
+
 var app_positions:Dictionary = {
 	APPS.SDT: Vector2(0, 0),
+	APPS.SDT_MODS: Vector2(0, 0),
 	APPS.SETTINGS: Vector2(0, 0),
 	APPS.README: Vector2(0, 0),
 	APPS.EMAIL: Vector2(0, 0),
 	APPS.MUSIC_PLAYER: Vector2(0, 0),
 }
 
-var running_apps_positions:Dictionary = {
-	
-}
-
 var default_app_positions:Dictionary = app_positions.duplicate()
 
 var tracklist_unlocks:Dictionary = {
-	0:true,
-	1:true,
-	2:true
+	PLAYLIST.TRACK_1:true,
+	PLAYLIST.TRACK_2:true,
+	PLAYLIST.TRACK_3:true
 }
 
+var modifications_unlocked:Dictionary = {
+	MODS.DIFFICULTY_EASY: true,
+	MODS.DIFFICULTY_NORMAL: true,
+	MODS.DIFFICULTY_STORY: false,
+	# ------------------------------
+	MODS.PRODUCTION_ONE: true,
+	MODS.PRODUCTION_TWO: true,
+	MODS.PRODUCTION_THREE: false,
+	# ------------------------------
+	MODS.ECONOMY_ONE: true,
+	MODS.ECONOMY_TWO: true,
+	MODS.ECONOMY_THREE: false	
+}
+
+
+
+var mod_settings:Array = []
+var mods_not_new:Array = ["00"]  #"00" makes easy "marked" in mods
+var email_not_new:Array = []
 var in_recycle_bin:Array = []
-var email_has_read:Array = []
-
-var event_switches:Dictionary = {
-	"show_status_on_boot": true
-}
-
 var apps_installed:Array = [] 
 var apps_installing:Array = []
  
@@ -87,11 +113,11 @@ var apps_installing:Array = []
 #region LOCAL DATA
 var app_list:Array[Dictionary] = [
 	{
-		"data": {
+		"details": {
 			"ref": APPS.SDT,
 			"title": "Site Director Training Program",
 			"icon": SVGS.TYPE.EXE_FILE,
-			"app": SiteDirectorTrainingAppScene,
+			"app": SiteDirectorTrainingAppPreload,
 		},
 		"installed": func() -> bool:
 			return APPS.SDT in apps_installed,
@@ -101,37 +127,48 @@ var app_list:Array[Dictionary] = [
 		}
 	},
 	{
-		"data": {
-			"ref": APPS.SETTINGS,
-			"title": "Settings",
-			"icon": SVGS.TYPE.SETTINGS,
-			"app": TextFileAppScene
+		"details": {
+			"ref": APPS.SDT_MODS,
+			"title": "Mods",
+			"icon": SVGS.TYPE.EXE_FILE,
+			"app": SiteDirectorTrainingModsAppPreload,
+			"app_props": {
+				"get_not_new": func() -> Array:
+					return mods_not_new,
+				"get_mod_settings": func() -> Array:
+					return mod_settings,
+				"get_modifications_unlocked": func() -> Dictionary:
+					return modifications_unlocked,
+			},
+			"app_events": {
+				"on_marked": func(updated_vals:Array) -> void:
+					mods_not_new = updated_vals
+					save_state(0),
+			}
 		},
 		"installed": func() -> bool:
-			return true,
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
+			return true, #APPS.SDT_MODS in apps_installed,
 		"events": {
-			"onDblClick": open_app
-		},
+			"onDblClick": func(data:Dictionary) -> void:
+				open_app(data, false),
+		}
 	},
 	{
-		"data": {
+		"details": {
 			"ref": APPS.EMAIL,
 			"title": "Email",
 			"icon": SVGS.TYPE.EMAIL,
-			"app": EmailAppScene,
+			"app": EmailAppPreload,
 			"installed": func() -> bool:
 				return true,
 			"app_props": {
-				"get_has_read": func() -> Array:
-					return email_has_read,
+				"get_not_new": func() -> Array:
+					return email_not_new,
 			},
 			"app_events": {
-				"onHasReadUpdate": func(new_email_has_read:Array):
-					email_has_read = new_email_has_read
-					save_state(),
+				"on_marked": func(updated_vals:Array) -> void:
+					email_not_new = updated_vals
+					save_state(0),
 				"onOpenAttachment": on_open_attachment,
 			}
 		},
@@ -145,7 +182,7 @@ var app_list:Array[Dictionary] = [
 		},
 	},
 	{
-		"data": {
+		"details": {
 			"ref": APPS.MUSIC_PLAYER,
 			"title": "Music Player",
 			"icon": SVGS.TYPE.MUSIC
@@ -157,7 +194,7 @@ var app_list:Array[Dictionary] = [
 		},
 		"events": {
 			"onDblClick": func(data:Dictionary) -> void:
-				if GBL.music_data.is_empty():
+				if GBL.music_data.is_empty() and !has_notification:
 					await simulate_wait(0.7)
 					# open music player, no music selected
 					GBL.music_data = {
@@ -167,11 +204,11 @@ var app_list:Array[Dictionary] = [
 		},
 	},		
 	{
-		"data": {
+		"details": {
 			"ref": APPS.README,
 			"title": "IMPORTANT PLEASE READ",
 			"icon": SVGS.TYPE.TXT_FILE,
-			"app": TextFileAppScene,
+			"app": TextFileAppPreload,
 			"app_props": {
 				"title": "URGENT",
 				"content": "Check your EMAILS!"
@@ -190,30 +227,33 @@ var app_list:Array[Dictionary] = [
 
 var music_track_list:Array = [
 	{
-		"metadata": {
+		"details": {
 			"name": "ghost trick finale",
-			"author": "capcom"
+			"author": "capcom",
+			"ref": PLAYLIST.TRACK_1,
 		},
-		"unlocked": func():
-			return tracklist_unlocks[0],
+		"unlocked": func(data:Dictionary) -> bool:
+			return tracklist_unlocks[data.ref],
 		"file": preload("res://Media/mp3/ghost_trick_test_track.mp3")
 	},
 	{
-		"metadata": {
+		"details": {
 			"name": "phoenix wright",
-			"author": "capcom"
+			"author": "capcom",
+			"ref": PLAYLIST.TRACK_2,
 		},
-		"unlocked": func():
-			return tracklist_unlocks[1],
+		"unlocked": func(data:Dictionary) -> bool:
+			return tracklist_unlocks[data.ref],
 		"file": preload("res://Media/mp3/phoenix wright.mp3")
 	},
 	{
-		"metadata": {
+		"details": {
 			"name": "The Weeknd - Popular",
-			"author": "Vidojean X Oliver Loenn Amapiano Remix"
+			"author": "Vidojean X Oliver Loenn Amapiano Remix",
+			"ref": PLAYLIST.TRACK_3,
 		},
-		"unlocked": func():
-			return tracklist_unlocks[2],
+		"unlocked": func(data:Dictionary) -> bool:
+			return tracklist_unlocks[data.ref],
 		"file": preload("res://Media/mp3/The Weeknd - Popular (Vidojean X Oliver Loenn Amapiano Remix).mp3")
 	}							
 ]
@@ -243,7 +283,8 @@ var top_level_window:Control :
 	set(val):
 		top_level_window = val
 		set_node_selectable_state(top_level_window == null)
-		
+
+signal on_confirm
 #endregion
 # -----------------------------------
 
@@ -258,7 +299,7 @@ func _ready() -> void:
 	
 	# finish this part
 	if event_switches.show_status_on_boot:
-		show_status_notice()
+		show_status_notice(true)
 
 	render_desktop_icons()	
 	on_notification_data_update()
@@ -270,9 +311,9 @@ func _ready() -> void:
 			open_app({
 				"ref": APPS.RECYCLE_BIN,
 				"icon": SVGS.TYPE.TXT_FILE,
-				"app": RecycleBinAppScene,
+				"app": RecycleBinAppPreload,
 				"app_props": {
-					"app_data": app_list.duplicate().map(func(item):return item.data),
+					"app_data": app_list.duplicate().map(func(item):return item.details),
 					"in_bin": in_recycle_bin
 				},					
 			})
@@ -291,13 +332,13 @@ func on_simulated_busy_update() -> void:
 
 # -----------------------------------		
 func simulate_wait(duration:float, show_busy:bool = true) -> void:
-	if show_busy:
+	if show_busy and duration > 0:
 		simulate_busy = true
 		GBL.change_mouse_icon(GBL.MOUSE_ICON.BUSY)
 		
 	await U.set_timeout(duration * 1.0)
 	
-	if show_busy:
+	if show_busy and duration > 0:
 		simulate_busy = false
 		GBL.end_mouse_busy()
 # -----------------------------------		
@@ -315,7 +356,7 @@ func on_notification_data_update() -> void:
 	if is_node_ready():
 		NotificationContainer.data = notification_data
 
-	has_notification = !notification_data.is_empty()
+	has_notification = !notification_data.is_empty()	
 # -----------------------------------		
 
 # -----------------------------------		
@@ -335,25 +376,26 @@ func on_bin_restore(data:Dictionary) -> void:
 # -----------------------------------
 func on_running_apps_list_update() -> void:
 	var refs:Array = running_apps_list.map(func(item): return item.data.ref)
-	var filter_list:Array = app_list.filter(func(item): return item.data.ref in refs)
+	var filter_list:Array = app_list.filter(func(item): return item.details.ref in refs)
 	var taskbar_live_items:Array = filter_list.map(func(item): 
-		var node_data:Dictionary = running_apps_list.filter(func(n): return item.data.ref == n.data.ref)[0]
+		var node_data:Dictionary = running_apps_list.filter(func(n): return item.details.ref == n.data.ref)[0]
+		var details:Dictionary = item.details
 		
 		return {
-			"title": item.data.title,
-			"icon": item.data.icon,
-			"ref": item.data.ref,
+			"title": details.title,
+			"icon": details.icon,
+			"ref": details.ref,
 			"onClick": func() -> void:
 				if app_in_fullscreen:
-					close_app(item.data.ref)
-					open_app(item.data, true, true)
+					close_app(details.ref)
+					open_app(details, true, true)
 				else:
 					RunningAppsContainer.move_child(node_data.node, RunningAppsContainer.get_child_count() - 1),
 			"onMinimize": func() -> void:
-				close_app(item.data.ref)
-				open_app(item.data, false, true),
+				close_app(details.ref)
+				open_app(details, false, true),
 			"onClose": func() -> void:
-				close_app(item.data.ref),
+				close_app(details.ref),
 		}
 	)
 	
@@ -374,6 +416,11 @@ func on_open_attachment(data:Dictionary) -> void:
 # -----------------------------------
 
 # -----------------------------------
+func update_mod_settings(new_state:Array) -> void:
+	mod_settings = new_state
+	save_state(0)
+	
+
 func installing_app_start(ref:APPS) -> void:
 	apps_installing.push_back(ref)
 
@@ -383,7 +430,6 @@ func install_app_complete(ref:APPS) -> void:
 	render_desktop_icons(0)
 	save_state()
 # -----------------------------------
-
 #endregion
 
 # -----------------------------------
@@ -412,16 +458,29 @@ func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 # -----------------------------------
 
 # -----------------------------------
+#region SETTINGS
+func toggle_fullscreen() -> void:
+	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
+#endregion
+# -----------------------------------
+
+# -----------------------------------
 #region SAVE/LOAD
 func save_state(duration:float = 1.5) -> void:
 	var save_data = {
 		"settings": settings,
 		"in_recycle_bin": in_recycle_bin,
-		"email_has_read": email_has_read,
+		"email_not_new": email_not_new,
+		"mods_not_new": mods_not_new,
 		"app_positions": app_positions,
 		"tracklist_unlocks": tracklist_unlocks,
+		"modifications_unlocked": modifications_unlocked,
 		"event_switches": event_switches,
-		"apps_installed": apps_installed
+		"apps_installed": apps_installed,
+		"mod_settings": mod_settings,
 	}	
 	FS.save_file(FS.FILE.SETTINGS, save_data)
 	await simulate_wait(duration)
@@ -435,19 +494,75 @@ func restore_state(restore_data:Dictionary = {}) -> void:
 	var no_save:bool = restore_data.is_empty()
 	settings = restore_data.settings if !no_save else settings
 	in_recycle_bin = restore_data.in_recycle_bin if !no_save else in_recycle_bin
-	email_has_read = restore_data.email_has_read if !no_save else email_has_read
+	email_not_new = restore_data.email_not_new if !no_save else email_not_new
+	mods_not_new = restore_data.mods_not_new if !no_save else mods_not_new
 	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
+	modifications_unlocked = restore_data.modifications_unlocked if !no_save else modifications_unlocked
 	app_positions = restore_data.app_positions if !no_save else app_positions
 	event_switches = restore_data.event_switches if !no_save else event_switches
-	apps_installed = apps_installed #restore_data.apps_installed if !no_save else apps_installed
-
-func toggle_fullscreen() -> void:
-	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
-		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
-	else:
-		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
+	apps_installed = restore_data.apps_installed if !no_save else apps_installed
+	mod_settings = restore_data.mod_settings if !no_save else mod_settings
 #endregion		
 # -----------------------------------
+
+# -----------------------------------	
+#region NOTIFICATIONS
+func show_status_notice(show_dismiss:bool = false) -> void:
+	await simulate_wait(1.0)
+	var res:Dictionary = await notification_splash({
+		"type": Notification.TYPE.INFO,
+		"title": "Status",
+		"message": "Memsoft OS has booted sucessfully.",
+		"buttons": [
+			{
+				"title": "Do not show again", 
+				"show": show_dismiss,
+				"onClick": func():
+					event_switches.show_status_on_boot = false,
+			},
+			{
+				"title": "Dismiss", 
+				"onClick": func():
+					pass,
+			}
+		]
+	})
+	
+func show_save_notice() -> void:
+	await save_state()
+	var res:Dictionary = await notification_splash({
+		"type": Notification.TYPE.INFO,
+		"title": "Status",
+		"message": "Save state.",
+		"buttons": [
+			{
+				"title": "Dismiss", 
+				"onClick": func():
+					pass,
+			}
+		]
+	})
+
+func show_confirm_notice(message:String = "Confirm?") -> void:
+	var res:Dictionary = await notification_splash({
+		"type": Notification.TYPE.INFO,
+		"title": "Confirm",
+		"message": message,
+		"buttons": [
+			{
+				"title": "Okay", 
+				"onClick": func() -> void:
+					on_confirm.emit(true),
+			},
+			{
+				"title": "Cancel", 
+				"onClick": func() -> void:
+					on_confirm.emit(false),
+			}			
+		]
+	})	
+#endregion
+# -----------------------------------		
 
 # -----------------------------------
 #region OPEN APP/TASKBAR_DROPDOWNS/CONTEXT MENU
@@ -503,11 +618,15 @@ func open_taskbar_menu(data:Dictionary) -> void:
 				{
 					"get_details": func():
 						return {
-							"title": "Close and exit"
+							"title": "Save and exit"
 						},
 					"onClick": func(_data:Dictionary):
-						Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-						get_tree().quit(),
+						show_confirm_notice()
+						close_app(APPS.TASKBAR_MENU)
+						if await on_confirm:
+							await save_state(1.0)
+							Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+							get_tree().quit(),
 				},				
 			]			
 		}
@@ -544,43 +663,6 @@ func open_taskbar_menu(data:Dictionary) -> void:
 	
 # -----------------------------------	
 
-# -----------------------------------	
-func show_status_notice() -> void:
-	await simulate_wait(1.0)
-	var res:Dictionary = await notification_splash({
-		"type": Notification.TYPE.INFO,
-		"title": "Status",
-		"message": "Memsoft OS has booted sucessfully.",
-		"buttons": [
-			{
-				"title": "Do not show again", 
-				"onClick": func():
-					event_switches.show_status_on_boot = false,
-			},
-			{
-				"title": "Dismiss", 
-				"onClick": func():
-					pass,
-			}
-		]
-	})
-	
-func show_save_notice() -> void:
-	await save_state()
-	var res:Dictionary = await notification_splash({
-		"type": Notification.TYPE.INFO,
-		"title": "Status",
-		"message": "Save state.",
-		"buttons": [
-			{
-				"title": "Dismiss", 
-				"onClick": func():
-					pass,
-			}
-		]
-	})
-# -----------------------------------		
-
 # -----------------------------------
 func open_media_player_mini(node:Control) -> void:
 	if has_notification: return
@@ -593,7 +675,7 @@ func open_context_menu(title:String = "Context Menu", items:Array = []) -> void:
 		"ref": APPS.CONTEXT_MENU,
 		"title": title,
 		"icon": SVGS.TYPE.EXE_FILE,
-		"app": ContextMenuAppScene,
+		"app": ContextMenuAppPreload,
 		"app_props": {
 			"window_label": title,
 			"offset": GBL.mouse_pos,
@@ -610,9 +692,9 @@ func open_taskbar_dropdown(node:Control, ref:int, props:Dictionary = {}) -> void
 	var selected_scene:PackedScene
 	match ref:
 		APPS.MEDIA_PLAYER_MINI:
-			selected_scene = MediaPlayerMiniAppScene
+			selected_scene = MediaPlayerMiniAppPreload
 		APPS.TASKBAR_MENU:
-			selected_scene = TaskBarMenuAppScene
+			selected_scene = TaskBarMenuAppPreload
 					
 	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
 	if selected_scene != null and ref not in app_refs:
@@ -673,31 +755,32 @@ func close_app(ref:int) -> void:
 func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false) -> void:
 	if simulate_busy or has_notification:
 		return
-		
+
 	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
 	if data.ref not in app_refs:		
 		# adds a mock timer
+		var previously_loaded:bool = data.ref in already_loaded
+		if !skip_loading and !previously_loaded:
+			already_loaded.push_back(data.ref)
+		
 		if !skip_loading:
-			if data.ref not in already_loaded:
-				already_loaded.push_back(data.ref)
-				await simulate_wait(0.7)
-			else:
-				await simulate_wait(0.2)
-						
+			await simulate_wait(0.2 if previously_loaded else 0.7)
+		
 		# adds new node and passes and props to them
 		var new_node:Control = data.app.instantiate()
 
 		# adds to running apps list and when updated show up in the taskbar
 		running_apps_list.push_back({"node": new_node, "data": data})
 		running_apps_list = running_apps_list
-
+	
 		# adds any props
 		if "app_props" in data:
 			new_node.app_props = data.app_props
 		if "app_events" in data:
 			new_node.app_events = data.app_events
 		
-		# start in fullscreen or not
+		# start in fullscreen or not, pass previously loaded
+		new_node.previously_loaded = previously_loaded
 		new_node.in_fullscreen = in_fullscreen
 		if in_fullscreen:
 			Taskbar.fullscreen_data = data
@@ -807,27 +890,28 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 	await U.set_timeout(0)
 	
 	for item in app_list:
-		if (item.data.ref not in in_recycle_bin) and item.installed.call():
+		if (item.details.ref not in in_recycle_bin) and item.installed.call():
 			var new_node:Control = AppItemScene.instantiate()	
 			DesktopIconContainer.add_child(new_node)
-			new_node.pos_offset = app_positions[item.data.ref]
-			new_node.data = item.data
+			new_node.pos_offset = app_positions[item.details.ref]
+			new_node.data = item.details
 			
 			new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
-				if window_focus_list.is_empty():
+				if window_focus_list.is_empty() and !has_notification:
 					item.events.onDblClick.call(data)
 				
 			new_node.onClick = func(node:Control, btn:int, on_hover:bool) -> void:
-				if on_hover:
+				if on_hover and !has_notification:
 					if btn == MOUSE_BUTTON_RIGHT:
-						open_context_menu(item.data.title, [
+						var details:Dictionary = item.details
+						open_context_menu(details.title, [
 							{
 								"get_details": func():
 									return {
 										"title": "Open..."
 									},
 								"onClick": func(_data:Dictionary):
-									item.events.onDblClick.call(item.data)
+									item.events.onDblClick.call(details)
 									close_app(APPS.CONTEXT_MENU),
 							},						
 							{
@@ -837,7 +921,7 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 									},
 								"onClick": func(_data:Dictionary):
 									# add to recycle bin
-									in_recycle_bin.push_back(item.data.ref)
+									in_recycle_bin.push_back(details.ref)
 									
 									# update recycle bin if it's open
 									for app in running_apps_list:
@@ -861,12 +945,12 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 			new_node.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
 				set_node_selectable_state(true)
 				icon_focus_list.erase(node)
-				if app_positions[item.data.ref] != new_offset:
+				if app_positions[item.details.ref] != new_offset:
 					if icon_focus_list.is_empty():
-						app_positions[item.data.ref] = new_offset
+						app_positions[item.details.ref] = new_offset
 						save_state()
 					else:
-						new_node.pos_offset = app_positions[item.data.ref]
+						new_node.pos_offset = app_positions[item.details.ref]
 						
 			new_node.onFocus = func(node:Control) -> void:
 				if node not in icon_focus_list:

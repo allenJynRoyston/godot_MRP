@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://btxy5mypwrlao"]
+[gd_scene load_steps=9 format=3 uid="uid://btxy5mypwrlao"]
 
 [ext_resource type="Script" path="res://UI/Layout/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="2_ar35n"]
@@ -8,9 +8,6 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b51d8"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aoioe"]
-bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yy1hf"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -28,7 +25,7 @@ script = ExtResource("1_w0o0s")
 layout_mode = 2
 
 [node name="ScrollContainer2" type="ScrollContainer" parent="HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/ScrollContainer2"]
@@ -57,7 +54,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_aoioe")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/ScrollContainer/EmailContentContainer"]
 layout_mode = 2

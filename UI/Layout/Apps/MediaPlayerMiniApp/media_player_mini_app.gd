@@ -31,20 +31,20 @@ func on_data_update() -> void:
 		
 		for index in data.music_track_list.size():
 			var item:Dictionary = data.music_track_list[index]
-			var metadata:Dictionary = item.metadata
+			var details:Dictionary = item.details
 			
-			if metadata.author not in author_list:
-				author_list[metadata.author] = []
+			if details.author not in author_list:
+				author_list[details.author] = []
 			
-			author_list[metadata.author].push_back({
+			author_list[details.author].push_back({
 				"get_details": func():
 					return {
-						"title": metadata.name
+						"title": details.name
 					},
 				"is_new": func(_data:Dictionary):
 					return false,
-				"render_if": func():
-					return item.unlocked.call(),
+				"render_if": func(_details:Dictionary) -> bool:
+					return item.unlocked.call(item.details),
 				"onClick": func(_data:Dictionary):
 					GBL.music_data = {
 						"track_list": data.music_track_list,
@@ -55,12 +55,12 @@ func on_data_update() -> void:
 			all_tracks.push_back({
 				"get_details": func():
 					return {
-						"title": metadata.name
+						"title": details.name
 					},
 				"is_new": func(_data:Dictionary):
 					return false,
-				"render_if": func():
-					return item.unlocked.call(),
+				"render_if": func(_details:Dictionary) -> bool:
+					return item.unlocked.call(item.details),
 				"onClick": func(_data:Dictionary):
 					GBL.music_data = {
 						"track_list": data.music_track_list,

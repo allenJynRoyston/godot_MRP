@@ -33,7 +33,7 @@ func on_bin_list_update() -> void:
 				},
 			"onClick": func(data:Dictionary):
 				layout_node.on_bin_restore(data),
-			"render_if": func():
+			"render_if": func(data:Dictionary):
 				return true,
 		}
 	)

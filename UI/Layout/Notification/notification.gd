@@ -49,16 +49,19 @@ func on_data_update() -> void:
 	else:
 		IconBtn.icon = SVGS.TYPE.INFO
 			
-	
 	if "buttons" in data:
 		OkayBtn.hide()
 		for item in data.buttons:
-			var new_button:Control = TextButtonPreload.instantiate()
-			new_button.title = item.title
-			new_button.onClick = func() -> void:
-				item.onClick.call()
-				resolve.emit({})
-			CustomButtonContainer.add_child(new_button)
+			var show:bool = true
+			if "show" in item:
+				show = item.show
+			if show:
+				var new_button:Control = TextButtonPreload.instantiate()
+				new_button.title = item.title
+				new_button.onClick = func() -> void:
+					item.onClick.call()
+					resolve.emit({})
+				CustomButtonContainer.add_child(new_button)
 	else:
 		OkayBtn.show()
 		

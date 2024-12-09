@@ -1,11 +1,13 @@
 extends AppWrapper
 
-@onready var EmailComponent = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/EmailComponent
+@onready var EmailComponent:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/EmailComponent
+@onready var LoadingComponent:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/LoadingComponent
 
 var email_data:Array[Dictionary] = [
 	{
 		"section": "Important",
 		"opened": true,
+		"selected": [],
 		"items": [
 			{
 				"get_details": func():
@@ -29,7 +31,7 @@ var email_data:Array[Dictionary] = [
 							}
 						
 					},
-				"render_if": func():
+				"render_if": func(_details:Dictionary) -> bool:
 					return true,
 			},
 			{
@@ -47,7 +49,7 @@ var email_data:Array[Dictionary] = [
 										"type": "media_player", 
 										"track_list": [
 											{
-												"metadata": {
+												"details": {
 													"name": "voicenote_001.wav",
 													"author": "unknown"
 												},
@@ -57,7 +59,7 @@ var email_data:Array[Dictionary] = [
 									}),
 							}
 					},
-				"render_if": func():
+				"render_if": func(_details:Dictionary) -> bool:
 					return true,
 			}			
 		]
@@ -65,6 +67,7 @@ var email_data:Array[Dictionary] = [
 	{
 		"section": "Junk",
 		"opened": false,
+		"selected": [],
 		"items": [
 			{
 				"get_details": func():
@@ -74,7 +77,7 @@ var email_data:Array[Dictionary] = [
 						"date": "unknown",
 						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis."
 					},
-				"render_if": func():
+				"render_if": func(_details:Dictionary) -> bool:
 					return true,
 			},
 			{
@@ -85,7 +88,7 @@ var email_data:Array[Dictionary] = [
 						"date": "unknown",
 						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis."
 					},
-				"render_if": func():
+				"render_if": func(_details:Dictionary) -> bool:
 					return true,
 			}			
 		]
@@ -97,12 +100,27 @@ func _ready() -> void:
 	WindowUI = $WindowUI
 	super._ready()	
 	
+	LoadingComponent.delay = 0.3 if previously_loaded else 1.0
+	EmailComponent.hide()
+	LoadingComponent.start()
+	await LoadingComponent.on_complete	
+	EmailComponent.show()
+	
 	# make sure has_read first so email_data can reference it
-	EmailComponent.has_read = app_props.get_has_read.call()	
+	EmailComponent.not_new = app_props.get_not_new.call()	
 	# assign email_data
 	EmailComponent.email_data = email_data
+
 	
-	EmailComponent.onHasReadUpdate = func(arr:Array) -> void:
-		app_events.onHasReadUpdate.call(arr)
-		
+	# assign event to update has read
+	EmailComponent.on_marked = app_events.on_marked	
+	# assign event to updat eif state has changed
+	EmailComponent.on_data_changed = func(new_state:Array) -> void:
+		# not used, but can be used to capture the state of opened 
+		pass
+	
+	EmailComponent.on_click = func(data:Dictionary) -> void:
+		for index in email_data.size():			
+			email_data[index].selected = [data.index] if index == data.parent_index else []
+		EmailComponent.email_data = email_data
 # ------------------------------------------------------------------------------

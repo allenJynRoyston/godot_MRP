@@ -58,7 +58,7 @@ func on_data_update() -> void:
 	if "track_list" in data and data.track_list.size() > 0:		
 		track_list = data.track_list.filter(func(item):
 			if "unlocked" in item:
-				return item.unlocked.call()
+				return item.unlocked.call(item.details)
 			return true
 		)
 		
@@ -69,9 +69,9 @@ func on_data_update() -> void:
 # --------------------------------------	
 func play_selected_track() -> void:
 	var track_data:Dictionary = track_list[selected_track]
-	var metadata:Dictionary = track_data.metadata if "metadata" in track_data else {"name": "No metadata...", "author": "unknown"}
+	var details:Dictionary = track_data.details if "details" in track_data else {"name": "No details...", "author": "unknown"}
 	
-	TrackNameLabel.text = " Playing %s by %s" % [metadata.name, metadata.author]
+	TrackNameLabel.text = " Playing %s by %s" % [details.name, details.author]
 	
 	if "file" not in track_data:
 		print("No file in track_data")
