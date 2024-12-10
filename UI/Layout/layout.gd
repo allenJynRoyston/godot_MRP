@@ -1,16 +1,16 @@
 extends MouseInteractions
 class_name Layout
 
-@onready var Taskbar:Control = $SubViewport/Taskbar
-@onready var RunningAppsContainer:Control = $SubViewport/RunningAppsContainer
-@onready var TaskbarAppsContainer:Control = $SubViewport/TaskbarAppsContainer
-@onready var FullScreenAppsContainer:Control = $SubViewport/FullScreenAppsContainer
-@onready var NotificationContainer:PanelContainer = $SubViewport/NotificationContainer
-@onready var BackgroundWindow:PanelContainer = $SubViewport/BackgroundWindow
-@onready var Installer:PanelContainer = $SubViewport/Installer
+@onready var Taskbar:Control = $SubViewport/WindowContainer/Taskbar
+@onready var RunningAppsContainer:Control = $SubViewport/WindowContainer/RunningAppsContainer
+@onready var TaskbarAppsContainer:Control = $SubViewport/WindowContainer/TaskbarAppsContainer
+@onready var FullScreenAppsContainer:Control = $SubViewport/WindowContainer/FullScreenAppsContainer
+@onready var NotificationContainer:PanelContainer = $SubViewport/WindowContainer/NotificationContainer
+@onready var BackgroundWindow:PanelContainer = $SubViewport/WindowContainer/BackgroundWindow
+@onready var Installer:PanelContainer = $SubViewport/WindowContainer/Installer
 
-@onready var DesktopIconContainer:Control = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
-@onready var RecycleBin:PanelContainer = $SubViewport/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
+@onready var DesktopIconContainer:Control = $SubViewport/WindowContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
+@onready var RecycleBin:PanelContainer = $SubViewport/WindowContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
 const WindowUIScene:PackedScene = preload("res://UI/WindowUI/WindowUI.tscn")
 const AppItemScene:PackedScene = preload("res://UI/Layout/AppItem/AppItem.tscn")
@@ -96,8 +96,6 @@ var modifications_unlocked:Dictionary = {
 	MODS.ECONOMY_TWO: true,
 	MODS.ECONOMY_THREE: false	
 }
-
-
 
 var mod_settings:Array = []
 var mods_not_new:Array = ["00"]  #"00" makes easy "marked" in mods
@@ -292,6 +290,7 @@ signal on_confirm
 # -----------------------------------
 func _ready() -> void:
 	GBL.register_node(REFS.OS_LAYOUT, self)
+	GBL.set_resolution([$SubViewport, $SubViewport])
 
 	super._ready()
 	load_state()	
@@ -460,10 +459,13 @@ func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 # -----------------------------------
 #region SETTINGS
 func toggle_fullscreen() -> void:
+	var os_root:Control = GBL.find_node(REFS.OS_ROOT)
 	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
+		os_root.update_fullscreen(false)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
+		os_root.update_fullscreen(true)
 #endregion
 # -----------------------------------
 
@@ -570,7 +572,7 @@ func show_confirm_notice(message:String = "Confirm?") -> void:
 func open_taskbar_menu(data:Dictionary) -> void:
 	var list_data:Array[Dictionary] = [
 		{
-			"section": "System",
+			"section": "Resolution",
 			"opened": true,
 			"items": [
 				{
@@ -582,6 +584,30 @@ func open_taskbar_menu(data:Dictionary) -> void:
 						toggle_fullscreen()
 						close_app(APPS.TASKBAR_MENU),
 				},				
+				{
+					"get_details": func():
+						return {
+							"title": "Desktop mode"
+						},
+					"onClick": func(_data:Dictionary):
+						GBL.change_resolution(Vector2(1920, 1080))
+						close_app(APPS.TASKBAR_MENU),
+				},
+				{
+					"get_details": func():
+						return {
+							"title": "Steamdeck mode"
+						},
+					"onClick": func(_data:Dictionary):
+						GBL.change_resolution(Vector2(1280, 720))
+						close_app(APPS.TASKBAR_MENU),
+				},								
+			]
+		},
+		{
+			"section": "System",
+			"opened": true,
+			"items": [
 				{
 					"get_details": func():
 						return {

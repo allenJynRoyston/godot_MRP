@@ -3,7 +3,7 @@ extends Node
 enum FILE {SETTINGS, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
 
 const save_config:Dictionary = {
-	"folder": "res://Saves/",
+	"folder": "user://",
 	"image_ext": ".png",
 	"image_size": 400,
 	"pretty_filenames": {

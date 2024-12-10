@@ -11,12 +11,21 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	GBL.register_node(REFS.OS_ROOT, self)
 	GBL.subscribe_to_mouse_icons(self)
+	GBL.set_resolution([self, $SubViewport, $TextureRect])
 # -----------------------------------		
 
 # -----------------------------------		
 func _exit_tree() -> void:
+	GBL.unregister_node(REFS.OS_ROOT)
 	GBL.unsubscribe_to_mouse_icons(self)
+# -----------------------------------			
+
+# -----------------------------------			
+func update_fullscreen(state:bool) -> void:
+	self.size = DisplayServer.screen_get_size() if state else GBL.resolution
+	FinalScreen.stretch_mode = TextureRect.STRETCH_SCALE if state else TextureRect.EXPAND_KEEP_SIZE
 # -----------------------------------			
 
 # -----------------------------------	

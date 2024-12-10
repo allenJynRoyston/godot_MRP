@@ -28,7 +28,7 @@ func _ready() -> void:
 func after_ready():
 	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
 	if in_fullscreen:
-		WindowUI.window_size = get_viewport().get_visible_rect().size - Vector2(0, 35)
+		WindowUI.window_size = GBL.game_resolution - Vector2(0, 35)
 		WindowUI.is_draggable = false
 		WindowUI.window_position = Vector2(0, 35)
 		WindowUI.enable_header = false

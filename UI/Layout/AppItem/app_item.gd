@@ -26,7 +26,7 @@ var init_pos:Vector2 = Vector2()
 var pos_offset:Vector2 = Vector2() : 
 	set(val):
 		pos_offset = val
-		on_position_update()
+		on_position_update.call_deferred()
 
 var can_release:bool = true
 var is_dragging:bool = false

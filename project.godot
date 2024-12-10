@@ -33,8 +33,9 @@ COLOR_REF="*res://Autoload/ColorRef.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/size/always_on_top=true
+window/size/viewport_width=1920.0
+window/size/viewport_height=1080.0
 window/stretch/mode="viewport"
+window/stretch/aspect="keep_width"
+window/stretch/scale_mode="integer"
 window/main_scene="res://Scenes/Computer/Computer.tscn"

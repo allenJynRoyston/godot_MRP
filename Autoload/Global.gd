@@ -1,5 +1,53 @@
 extends Node
 
+# DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
+var resolution:Vector2i = DisplayServer.screen_get_size()
+
+# ------------------------------------------------------------------------------
+# SETUP GAME RESOLUTION
+func _init() -> void:
+	if FileAccess.file_exists("user://config.json"):
+		var file = FileAccess.open("user://config.json", FileAccess.READ)
+		var result = JSON.parse_string(file.get_as_text())
+		if result is Dictionary:
+			resolution = Vector2(result.resolution_width, result.resolution_height)
+	else:
+		save_resolution(DisplayServer.screen_get_size())
+
+
+func _ready() -> void:
+	DisplayServer.window_set_size(resolution)
+	var screen_size = DisplayServer.screen_get_size()
+	var window_position = (screen_size - resolution) / 2
+	print(screen_size)
+	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+var resolution_nodes:Array = []
+func save_resolution(val:Vector2i) -> void:
+	var config_data:Dictionary = {
+		"resolution_width": val.x,
+		"resolution_height": val.y
+	}
+	var file = FileAccess.open("user://config.json", FileAccess.WRITE)
+	# Store the JSON string in the file
+	file.store_string(JSON.stringify(config_data))
+	# Close the file after writing
+	file.close()
+
+func change_resolution(new_resolution:Vector2i) -> void:
+	save_resolution(new_resolution)
+	OS.set_restart_on_exit(true)
+	get_tree().quit()
+	
+func set_resolution(nodes:Array) -> void:
+	for node in nodes:
+		if node not in resolution_nodes:
+			resolution_nodes.push_back(node)
+		node.size = resolution
+# ------------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------------
 # MOUSE POSITION
 var mouse_pos := Vector2(0, 0) : 
@@ -49,7 +97,6 @@ func end_mouse_busy() -> void:
 	mouse_icon = next_mouse_icon
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 # NODE REFS
 var node_refs:Dictionary = {}
@@ -88,7 +135,7 @@ func unsubscribe_to_music_player(node:Control) -> void:
 # ------------------------------------------------------------------------------
 
 
-# --------------------------------------	
+# ------------------------------------------------------------------------------
 var input_subscriptions:Array = []
 
 func subscribe_to_input(node:Control) -> void:
@@ -103,4 +150,4 @@ func _input(event) -> void:
 		for node in input_subscriptions:
 			if "registered_click" in node:
 				node.registered_click(event)
-# --------------------------------------		
+# ------------------------------------------------------------------------------

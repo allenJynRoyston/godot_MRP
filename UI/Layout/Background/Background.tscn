@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://eqyg3c15y82h"]
+[gd_scene load_steps=7 format=3 uid="uid://eqyg3c15y82h"]
 
 [ext_resource type="Material" uid="uid://2jrpoatnq0tx" path="res://Shader/Fractal/Factal.tres" id="1_04mdp"]
+[ext_resource type="Script" path="res://UI/Layout/Background/background.gd" id="1_m027t"]
 [ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="3_yu754"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_52o18"]
@@ -19,14 +20,18 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("1_m027t")
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(1280, 720)
+size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport"]
 material = ExtResource("1_04mdp")
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("NoiseTexture2D_52o18")
