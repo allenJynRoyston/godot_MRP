@@ -1,15 +1,12 @@
 extends MouseInteractions
 
-@onready var IconImage:TextureRect = $VBoxContainer/HBoxContainer/MarginContainer/OpenIconImage
+@onready var OpenBtn:Control = $VBoxContainer/HBoxContainer/OpenBtn
+@onready var NewBtn:Control = $VBoxContainer/HBoxContainer/NewBtn
 @onready var SectionLabel:Label = $VBoxContainer/HBoxContainer/SectionLabel
 @onready var ItemContainer:VBoxContainer = $VBoxContainer/MarginContainer/ItemContainer
-@onready var HasNewIcon:TextureRect = $VBoxContainer/HBoxContainer/HasNew
 
 const VListItemLabelScene:PackedScene = preload("res://UI/VList/parts/VListItemLabel.tscn")
 const label_settings:LabelSettings = preload("res://Fonts/settings/small_label.tres")
-
-const minusSVG:CompressedTexture2D = preload("res://SVGs/minus-svgrepo-com.svg")
-const plusSVG:CompressedTexture2D = preload("res://SVGs/plus-svgrepo-com.svg")
 
 var parent_index:int 
 
@@ -23,12 +20,11 @@ var is_opened:bool = true :
 		is_opened = val
 		on_is_opened_update()
 		
+var hide_selected:bool = false 	
 var active_nodes:Array[Control] = []
 
 var on_opened_changed:Callable = func():pass
-
 var on_item_focus_change:Callable = func(state:bool, data:Dictionary) -> void:pass
-
 var on_list_focus_change:Callable = func(state:bool) -> void:pass
 
 # --------------------------------------	
@@ -44,10 +40,8 @@ func on_focus(state:bool) -> void:
 	on_list_focus_change.call(state)
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
 
-	var shader_material:ShaderMaterial = IconImage.material.duplicate()	
-	shader_material.set_shader_parameter("tint_color", COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) )
-	IconImage.material = shader_material
-	HasNewIcon.material = shader_material
+	OpenBtn.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+	NewBtn.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
 	
 	var label_setting:LabelSettings = SectionLabel.label_settings.duplicate()
 	label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
@@ -61,7 +55,7 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 
 # --------------------------------------
 func on_is_opened_update() -> void:
-	IconImage.texture = plusSVG if is_opened else minusSVG
+	OpenBtn.icon = SVGS.TYPE.PLUS if is_opened else SVGS.TYPE.MINUS
 	ItemContainer.show() if is_opened else ItemContainer.hide()
 	on_opened_changed.call(is_opened)
 # --------------------------------------	
@@ -97,6 +91,7 @@ func on_data_update() -> void:
 			new_label.data = item
 			new_label.index = index
 			new_label.parent_index = parent_index
+			new_label.hide_selected = hide_selected
 			
 			if "is_new" in item:
 				var is_new:bool = item.is_new.call({
@@ -120,5 +115,5 @@ func on_data_update() -> void:
 			
 			ItemContainer.add_child(new_label)
 	
-	HasNewIcon.show() if new_count > 0 else HasNewIcon.hide()
+	NewBtn.show() if new_count > 0 else NewBtn.hide()
 # --------------------------------------	

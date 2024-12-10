@@ -1,10 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dobbsixb8ju58"]
+[gd_scene load_steps=5 format=3 uid="uid://dobbsixb8ju58"]
 
 [ext_resource type="Script" path="res://UI/VList/parts/v_list_item.gd" id="1_5qhby"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_t3wb0"]
-[ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_qr6ln"]
-[ext_resource type="Texture2D" uid="uid://c81fhaja0d6v7" path="res://SVGs/media-play-svgrepo-com.svg" id="3_hnc4k"]
-[ext_resource type="Texture2D" uid="uid://b017kthdoj5nm" path="res://SVGs/new-rectangle-solid-svgrepo-com.svg" id="5_klawt"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_gb1kg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fkw1c"]
 
@@ -21,23 +19,17 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
+[node name="OpenBtn" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_gb1kg")]
+custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 8
-
-[node name="OpenIconImage" type="TextureRect" parent="VBoxContainer/HBoxContainer/MarginContainer"]
-material = ExtResource("2_qr6ln")
-layout_mode = 2
-texture = ExtResource("3_hnc4k")
-expand_mode = 2
-stretch_mode = 4
+size_flags_horizontal = 4
+size_flags_vertical = 4
+icon = 3
+is_hoverable = false
 
 [node name="SectionLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -46,18 +38,17 @@ text = "Label"
 label_settings = ExtResource("1_t3wb0")
 vertical_alignment = 1
 
-[node name="HasNew" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
-material = ExtResource("2_qr6ln")
-custom_minimum_size = Vector2(25, 25)
+[node name="NewBtn" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_gb1kg")]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-size_flags_horizontal = 3
-texture = ExtResource("5_klawt")
-expand_mode = 1
-stretch_mode = 4
+size_flags_horizontal = 4
+size_flags_vertical = 4
+icon = 13
+is_hoverable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 30
+theme_override_constants/margin_left = 0
 
 [node name="ItemContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 layout_mode = 2

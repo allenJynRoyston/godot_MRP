@@ -1,3 +1,4 @@
+@tool
 extends Node
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
@@ -19,7 +20,6 @@ func _ready() -> void:
 	DisplayServer.window_set_size(resolution)
 	var screen_size = DisplayServer.screen_get_size()
 	var window_position = (screen_size - resolution) / 2
-	print(screen_size)
 	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())	
 # ------------------------------------------------------------------------------
 

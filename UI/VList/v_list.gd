@@ -8,9 +8,10 @@ var data:Array = [] :
 	set(val):
 		data = val
 		on_data_update()
+		
+var hide_selected:bool = false
 
 var on_data_changed:Callable = func(new_data:Array) -> void:pass
-
 var on_item_focus_change:Callable = func(state:bool, date:Dictionary) -> void:pass
 var on_list_focus_change:Callable = func(state:bool) -> void:pass
 
@@ -28,6 +29,7 @@ func on_data_update() -> void:
 				
 		new_node.data = item
 		new_node.parent_index = index
+		new_node.hide_selected = hide_selected
 		new_node.on_item_focus_change = on_item_focus_change
 		new_node.on_list_focus_change = on_list_focus_change
 		new_node.on_opened_changed = func(state:bool) -> void:

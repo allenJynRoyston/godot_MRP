@@ -87,6 +87,7 @@ func on_position_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
 	onFocus.call(self) if state else onBlur.call(self)
 	
 	if !is_selectable: 
@@ -98,9 +99,7 @@ func update_color(state:bool) -> void:
 	if Engine.is_editor_hint() or !is_node_ready():
 		return
 		
-	#var shader_material:ShaderMaterial = IconImage.material.duplicate()	
-	#shader_material.set_shader_parameter("tint_color", Color(0, 0.965, 0.278, 1) if state else Color(0, 0.529, 0.278, 1))
-	#IconImage.material = shader_material
+	IconButton.static_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
 	
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
 	label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)

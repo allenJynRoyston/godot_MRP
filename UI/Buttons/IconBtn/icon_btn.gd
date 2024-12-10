@@ -1,3 +1,4 @@
+@tool
 extends BtnBase
 
 @onready var Btn:TextureRect = $Btn
@@ -57,8 +58,8 @@ func on_icon_update() -> void:
 		if icon == SVGS.TYPE.NONE:
 			Btn.texture = null
 			return
-			
-		var texture:CompressedTexture2D = CACHE.fetch_svg(icon)
+		
+		var texture:CompressedTexture2D = CACHE.fetch_svg(icon) 
 		if texture != null:
 			Btn.texture = texture
 # ------------------------------------------------------------------------------

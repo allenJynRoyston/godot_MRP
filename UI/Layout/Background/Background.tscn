@@ -2,7 +2,7 @@
 
 [ext_resource type="Material" uid="uid://2jrpoatnq0tx" path="res://Shader/Fractal/Factal.tres" id="1_04mdp"]
 [ext_resource type="Script" path="res://UI/Layout/Background/background.gd" id="1_m027t"]
-[ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="3_yu754"]
+[ext_resource type="Material" uid="uid://xaeua0jc0ktp" path="res://Shader/Ripple/Ripple.tres" id="3_jqj67"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_52o18"]
 
@@ -61,7 +61,7 @@ expand_mode = 1
 flip_h = true
 
 [node name="TextureRect3" type="TextureRect" parent="."]
-material = ExtResource("3_yu754")
+material = ExtResource("3_jqj67")
 layout_mode = 2
 size_flags_horizontal = 3
 texture = SubResource("ViewportTexture_i2amw")

@@ -35,6 +35,9 @@ window_label = "Email"
 
 [node name="LoadingComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_gbgu8")]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+loading_text = "Loadinge Emails..."
 
 [node name="EmailComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="1" instance=ExtResource("3_0i4ns")]
 visible = false

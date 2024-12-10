@@ -16,6 +16,11 @@ var is_selected:bool = false :
 	set(val):
 		is_selected = val
 		on_is_selected_update()
+
+var hide_selected:bool = false : 
+	set(val):
+		hide_selected = val
+		on_hide_selected_update()
 		
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
@@ -25,17 +30,14 @@ func _ready() -> void:
 	super._ready()
 	on_data_update()
 	on_is_selected_update()
+	on_hide_selected_update()
 	on_focus(false)
 # --------------------------------------	
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
 	onFocus.call(self) if state else onBlur.call(self)
-	
-	#var shader_material:ShaderMaterial = IsNew.material.duplicate()	
-	#shader_material.set_shader_parameter("tint_color", COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) )
-	#IsNew.material = shader_material
-	#
+
 	# icon button
 	IsNew.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
 	IsSelected.static_color =  COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
@@ -56,9 +58,15 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # --------------------------------------
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	IsSelected.icon = SVGS.TYPE.PLUS if is_selected else SVGS.TYPE.NONE
+	IsSelected.icon = SVGS.TYPE.DOT if is_selected else SVGS.TYPE.NONE
 # --------------------------------------
-		
+
+# --------------------------------------
+func on_hide_selected_update() -> void:
+	if !is_node_ready():return
+	IsSelected.show() if !hide_selected else IsSelected.hide()
+# --------------------------------------
+
 # --------------------------------------	
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return

@@ -13,7 +13,7 @@ func _ready() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	GBL.register_node(REFS.OS_ROOT, self)
 	GBL.subscribe_to_mouse_icons(self)
-	GBL.set_resolution([self, $SubViewport, $TextureRect])
+	GBL.set_resolution([self, $SubViewport, $SubViewport2, $TextureRect])
 # -----------------------------------		
 
 # -----------------------------------		

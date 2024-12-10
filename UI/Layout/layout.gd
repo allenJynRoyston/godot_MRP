@@ -411,15 +411,14 @@ func on_open_attachment(data:Dictionary) -> void:
 			}
 		"download": 
 			Installer.add_item(data.installer_data)
-			
 # -----------------------------------
 
 # -----------------------------------
 func update_mod_settings(new_state:Array) -> void:
 	mod_settings = new_state
-	save_state(0)
+	await show_save_notice()
+	close_app(APPS.SDT_MODS)
 	
-
 func installing_app_start(ref:APPS) -> void:
 	apps_installing.push_back(ref)
 

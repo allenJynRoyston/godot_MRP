@@ -1,15 +1,15 @@
+@tool
 extends Node
 
 var svg_cache:Array = []
 
 # ------------------------------------------------------------------------------
 func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
-	var texture:CompressedTexture2D
-	
 	var cache_res:Array = svg_cache.filter(func(i):return i.key == key)
 	if cache_res.size() > 0:
 		return cache_res[0].texture
 	
+	var texture:CompressedTexture2D
 	match key:
 		SVGS.TYPE.BIN:
 			texture = load("res://SVGs/bin-xmark-fill-svgrepo-com.svg")			

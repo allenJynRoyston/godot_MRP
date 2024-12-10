@@ -24,8 +24,7 @@ func on_focus(state:bool = is_focused) -> void:
 	is_focused = state
 	if !is_node_ready():return	
 	onFocus.call(self) if state else onBlur.call(self)
-	if !Engine.is_editor_hint():
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:
