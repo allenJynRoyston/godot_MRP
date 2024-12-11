@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fuq4wko8ls6w"
-path="res://.godot/imported/scientist-svgrepo-com.svg-1fee43038fb830f2a9964dbb298dba39.ctex"
+uid="uid://0eg1vwjo1kv1"
+path="res://.godot/imported/human-resources-svgrepo-com.svg-81d6da81747113479b7514c4bfa2ea88.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://SVGs/scientist-svgrepo-com.svg"
-dest_files=["res://.godot/imported/scientist-svgrepo-com.svg-1fee43038fb830f2a9964dbb298dba39.ctex"]
+source_file="res://SVGs/human-resources-svgrepo-com.svg"
+dest_files=["res://.godot/imported/human-resources-svgrepo-com.svg-81d6da81747113479b7514c4bfa2ea88.ctex"]
 
 [params]
 

@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c20bb2a0jbecw"]
+
+[ext_resource type="Shader" path="res://Shader/StarPlasma/template.gdshader" id="1_lwck6"]
+
+[resource]
+shader = ExtResource("1_lwck6")
+shader_parameter/kelvin = 1000.0
+shader_parameter/red_colour = 7.4
+shader_parameter/green_colour = 5.6
+shader_parameter/blue_colour = 4.4
+shader_parameter/time_factor = 1.5
+shader_parameter/move = false
+shader_parameter/resolution = 0.4
+shader_parameter/sin_roll = 0.25
+shader_parameter/cos_roll = 0.25
+shader_parameter/alpha = 1.0

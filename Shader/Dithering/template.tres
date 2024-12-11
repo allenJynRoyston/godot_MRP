@@ -4,5 +4,5 @@
 
 [resource]
 shader = ExtResource("1_e1omk")
-shader_parameter/dither_strength = 0.118
-shader_parameter/dither_size = 500.0
+shader_parameter/dither_strength = 1.0
+shader_parameter/dither_size = 207.483

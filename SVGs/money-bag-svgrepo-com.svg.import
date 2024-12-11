@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqam1784sbktf"
-path="res://.godot/imported/build-fix-repair-2-svgrepo-com.svg-7d379fbe947af9e946cf6501d80affb6.ctex"
+uid="uid://c74l0oql4xebi"
+path="res://.godot/imported/money-bag-svgrepo-com.svg-0a800b4ff26423c5cd0ac2b5e2f7aa77.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://SVGs/build-fix-repair-2-svgrepo-com.svg"
-dest_files=["res://.godot/imported/build-fix-repair-2-svgrepo-com.svg-7d379fbe947af9e946cf6501d80affb6.ctex"]
+source_file="res://SVGs/money-bag-svgrepo-com.svg"
+dest_files=["res://.godot/imported/money-bag-svgrepo-com.svg-0a800b4ff26423c5cd0ac2b5e2f7aa77.ctex"]
 
 [params]
 

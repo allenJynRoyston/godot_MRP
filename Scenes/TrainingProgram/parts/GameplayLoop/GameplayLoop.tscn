@@ -22,7 +22,7 @@ render_priority = 0
 shader = ExtResource("3_4q8bq")
 shader_parameter/modelColor = Color(0, 0.529412, 0.278431, 1)
 shader_parameter/wireframeColor = Color(0, 0.964706, 0.278431, 1)
-shader_parameter/width = 2.0
+shader_parameter/width = 1.0
 shader_parameter/modelOpacity = 0.0
 shader_parameter/filtered = true
 
@@ -96,7 +96,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ovpld")
 
 [node name="SubViewport" type="SubViewport" parent="StructureContainer"]
 transparent_bg = true
-size = Vector2i(320, 240)
+size = Vector2i(640, 480)
 
 [node name="StructureScene" type="Node3D" parent="StructureContainer/SubViewport"]
 script = ExtResource("2_2xl4e")

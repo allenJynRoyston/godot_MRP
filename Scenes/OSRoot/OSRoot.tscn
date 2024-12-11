@@ -1,14 +1,22 @@
-[gd_scene load_steps=16 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=22 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
+[ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="3_rjxom"]
 [ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="4_fet0s"]
+[ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
 [ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="5_re5eu"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
+[ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="8_8iit3"]
+[ext_resource type="Material" uid="uid://wrbhauo7j8f6" path="res://Shader/_template/template.tres" id="10_fsu2y"]
+[ext_resource type="Material" uid="uid://dyg1w6nea47mj" path="res://Shader/BitSampler/template.tres" id="11_k5vjp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_m3rsi"]
+viewport_path = NodePath("SubViewportBG")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
 viewport_path = NodePath("SubViewport")
@@ -19,106 +27,17 @@ viewport_path = NodePath("SubViewport2")
 [sub_resource type="ViewportTexture" id="ViewportTexture_a5ilm"]
 viewport_path = NodePath("SubViewport3")
 
-[sub_resource type="Shader" id="Shader_3x5h5"]
-code = "shader_type canvas_item;
-
-uniform float bleed_amount : hint_range(0.0, 1.0) = 0.5;    // Intensity of brightness bleed
-uniform vec2 resolution = vec2(320.0, 180.0);               // Resolution for bleed effect
-uniform float bend_amount : hint_range(0.0, 1.0) = 0.1;     // Strength of CRT bending effect
-uniform float bend_offset : hint_range(0.0, 0.5) = 0.2;     // Offset for bending effect from the edges
-uniform float scanline_strength : hint_range(0.0, 1.0) = 0.5; // Intensity of scanline effect
-uniform float scanline_frequency : hint_range(0.0, 1.0) = 0.1; // Frequency of scanlines (line spacing)
-uniform float top_bottom_border_pixels : hint_range(0.0, 100.0) = 20.0;  // Pixel width of top and bottom black borders
-uniform float left_right_border_pixels : hint_range(0.0, 100.0) = 20.0;  // Pixel width of left and right black borders
-
-
-// Function to bend the image outward with an offset
-vec2 crt_bend(vec2 uv, float ba, float bo) {
-    vec2 offset = uv - vec2(0.5);  // Center the UV coordinates
-    float radius = length(offset); // Calculate the distance from the center
-
-    // Apply an inward offset so the bend starts away from the edges
-    radius = max(radius - bo, 0.0);  // Ensure bending only happens within the region after offset
-
-    // Apply the bend effect based on the radius and bend amount
-    offset *= (1.0 + ba * radius * radius);  // Bending becomes stronger further from the center
-
-    return offset + vec2(0.5);  // Recenter the UV coordinates
-}
-
-// Function to add the scanline effect
-float scanline_effect(vec2 uv, float strength, float frequency) {
-    // Create thicker scanlines by reducing the frequency and adding a wider line pattern
-    float scanline = mod(floor(uv.y * frequency), 3.0); // Using \"3.0\" makes the scanlines thicker
-    return mix(1.0, 1.0 - strength, scanline);  // Darken every 3rd line based on scanline pattern
-}
-
-void fragment() {
-    // Calculate the border widths in UV space based on pixel values and resolution
-    float top_bottom_border_width_uv = top_bottom_border_pixels / resolution.y;
-    float left_right_border_width_uv = left_right_border_pixels / resolution.x;
-
-    // Start by assuming we will output the original color
-    vec4 final_color = texture(TEXTURE, UV);
-
-    // Check if the current pixel is within the border region (top, left, right, bottom)
-    if (UV.x < left_right_border_width_uv || UV.x > 1.0 - left_right_border_width_uv ||
-        UV.y < top_bottom_border_width_uv || UV.y > 1.0 - top_bottom_border_width_uv) {
-        // If within the border, set the color to black
-        final_color.rgb = vec3(0.0);
-    } else {
-        // Apply CRT bend with offset to the UV coordinates
-        vec2 bent_uv = crt_bend(UV, bend_amount, bend_offset);
-
-        // Sample the texture with the bent UV coordinates
-        vec4 screen_texture = texture(TEXTURE, bent_uv);
-
-        // Brightness bleed effect
-        vec3 bleed = vec3(0.0);
-        vec2 pixel_size = 1.0 / resolution;
-
-        // Loop through neighboring pixels to create the bleed effect
-        float blur_radius = 2.0; // Size of the bleed radius
-        for (int x = -2; x <= 2; x++) {
-            for (int y = -2; y <= 2; y++) {
-                vec2 offset = pixel_size * vec2(float(x), float(y));
-                vec3 neighbor_color = texture(TEXTURE, bent_uv + offset).rgb;
-                float weight = 1.0 - length(vec2(float(x), float(y))) / blur_radius;
-                bleed += neighbor_color * neighbor_color * weight; // Weighted brightness emphasis
-            }
-        }
-
-        bleed /= 25.0;               // Normalize the bleed effect
-        bleed *= bleed_amount;       // Scale by the bleed amount
-
-        // Apply the scanline effect
-        float scanline_factor = scanline_effect(UV, scanline_strength, scanline_frequency);
-
-        // Combine the original color, brightness bleed, and scanline effect
-        final_color.rgb = (screen_texture.rgb + bleed) * scanline_factor;
-    }
-
-    // Output the final color
-    COLOR = final_color;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qcolg"]
-shader = SubResource("Shader_3x5h5")
-shader_parameter/bleed_amount = 1.0
-shader_parameter/resolution = Vector2(640, 480)
-shader_parameter/bend_amount = 0.116
-shader_parameter/bend_offset = 0.171
-shader_parameter/scanline_strength = 1.0
-shader_parameter/scanline_frequency = 1.0
-shader_parameter/top_bottom_border_pixels = 5.0
-shader_parameter/left_right_border_pixels = 5.0
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_jk85w"]
 viewport_path = NodePath("SubViewport4")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_wxflj"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_1d3xd"]
 viewport_path = NodePath("SubViewport5")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_e7if0"]
+viewport_path = NodePath("SubViewport6")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tlu3a"]
+viewport_path = NodePath("SubViewport7")
 
 [node name="OSRoot" type="PanelContainer"]
 anchors_preset = 15
@@ -131,16 +50,24 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_67w08")
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewportBG" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
-size_2d_override_stretch = true
 
-[node name="Background" parent="SubViewport" instance=ExtResource("2_yv40d")]
+[node name="Background" parent="SubViewportBG" instance=ExtResource("2_yv40d")]
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
 offset_right = 1920.0
 offset_bottom = 1080.0
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport"]
+material = ExtResource("3_rjxom")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_m3rsi")
 
 [node name="OS" parent="SubViewport" instance=ExtResource("2_hsa0l")]
 clip_contents = true
@@ -157,7 +84,7 @@ stretch_mode = 2
 size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport2"]
-material = ExtResource("5_re5eu")
+material = ExtResource("5_myocl")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_3omms")
@@ -184,12 +111,33 @@ texture = SubResource("ViewportTexture_a5ilm")
 size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport5"]
-material = SubResource("ShaderMaterial_qcolg")
+material = ExtResource("8_8iit3")
 offset_right = 1920.0
 offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 
+[node name="SubViewport6" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport6"]
+material = ExtResource("5_re5eu")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_1d3xd")
+stretch_mode = 2
+
+[node name="SubViewport7" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport7"]
+material = ExtResource("11_k5vjp")
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_e7if0")
+stretch_mode = 2
+
 [node name="FinalComposite" type="TextureRect" parent="."]
+material = ExtResource("10_fsu2y")
 layout_mode = 2
-texture = SubResource("ViewportTexture_wxflj")
+texture = SubResource("ViewportTexture_tlu3a")

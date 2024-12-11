@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2pbmwvf1bwf5"
-path="res://.godot/imported/dollar1-svgrepo-com.svg-a16c18fb466b1785b6ef7153eece4f4d.ctex"
+uid="uid://dx58awlgxx7dg"
+path="res://.godot/imported/assignment-svgrepo-com.svg-14dbd6b442b0383e73c04833145a2a25.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://SVGs/dollar1-svgrepo-com.svg"
-dest_files=["res://.godot/imported/dollar1-svgrepo-com.svg-a16c18fb466b1785b6ef7153eece4f4d.ctex"]
+source_file="res://SVGs/assignment-svgrepo-com.svg"
+dest_files=["res://.godot/imported/assignment-svgrepo-com.svg-14dbd6b442b0383e73c04833145a2a25.ctex"]
 
 [params]
 

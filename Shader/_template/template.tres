@@ -4,5 +4,3 @@
 
 [resource]
 shader = ExtResource("1_uih0u")
-shader_parameter/bleed_strength = 0.0
-shader_parameter/blur_radius = 6.168

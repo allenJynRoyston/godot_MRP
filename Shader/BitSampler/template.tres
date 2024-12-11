@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dyg1w6nea47mj"]
+
+[ext_resource type="Shader" path="res://Shader/BitSampler/template.gdshader" id="1_eq4hp"]
+
+[resource]
+shader = ExtResource("1_eq4hp")
+shader_parameter/bit_depth = 24.0

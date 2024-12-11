@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://d0hjgsth46phv"]
+
+[ext_resource type="Shader" path="res://Shader/Border/border.gdshader" id="1_ifvue"]
+
+[resource]
+shader = ExtResource("1_ifvue")
+shader_parameter/resolution = Vector2(1920, 1080)
+shader_parameter/top_bottom_border_pixels = 1.0
+shader_parameter/left_right_border_pixels = 2.0
+shader_parameter/border_color = Color(0, 0, 0, 1)

@@ -81,8 +81,9 @@ func toggle_fullscreen() -> void:
 
 # -----------------------------------	
 func on_fullscreen_update(use_resolution:Vector2i) -> void:
-	for node in [$SubViewport, $SubViewport2, $SubViewport3, $SubViewport4, $SubViewport5]:
-		node.size = use_resolution	
+	for node in get_children():
+		if node is SubViewport:
+			node.size = use_resolution	
 
 	# start children nodes
 	var screen_size = DisplayServer.screen_get_size()

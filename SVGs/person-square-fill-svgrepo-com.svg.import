@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bwapmrkveck15"
-path="res://.godot/imported/convict-justice-svgrepo-com.svg-d7b1897590fd24e5f5927dc793d7cd32.ctex"
+uid="uid://dq2ds4lcf2vm2"
+path="res://.godot/imported/person-square-fill-svgrepo-com.svg-b8285fd7ba7704b6441855a84ae0c95f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://SVGs/convict-justice-svgrepo-com.svg"
-dest_files=["res://.godot/imported/convict-justice-svgrepo-com.svg-d7b1897590fd24e5f5927dc793d7cd32.ctex"]
+source_file="res://SVGs/person-square-fill-svgrepo-com.svg"
+dest_files=["res://.godot/imported/person-square-fill-svgrepo-com.svg-b8285fd7ba7704b6441855a84ae0c95f.ctex"]
 
 [params]
 

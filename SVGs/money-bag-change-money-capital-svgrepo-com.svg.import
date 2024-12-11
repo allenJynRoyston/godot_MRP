@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bj0sxsnqqjit2"
-path="res://.godot/imported/round-bottom-flask-7-svgrepo-com.svg-1d8b9c06dd1560e9e564dbb9474f753e.ctex"
+uid="uid://bdnmk3iq7mcy1"
+path="res://.godot/imported/money-bag-change-money-capital-svgrepo-com.svg-bc16287354b3394beb64d4d33fba3b66.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://SVGs/round-bottom-flask-7-svgrepo-com.svg"
-dest_files=["res://.godot/imported/round-bottom-flask-7-svgrepo-com.svg-1d8b9c06dd1560e9e564dbb9474f753e.ctex"]
+source_file="res://SVGs/money-bag-change-money-capital-svgrepo-com.svg"
+dest_files=["res://.godot/imported/money-bag-change-money-capital-svgrepo-com.svg-bc16287354b3394beb64d4d33fba3b66.ctex"]
 
 [params]
 
