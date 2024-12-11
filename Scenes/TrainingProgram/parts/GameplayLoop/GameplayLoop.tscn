@@ -79,6 +79,7 @@ vertical = true
 [sub_resource type="LabelSettings" id="LabelSettings_lol7w"]
 font = ExtResource("4_4vh1j")
 font_size = 14
+font_color = Color(0, 0, 0, 1)
 shadow_color = Color(0.294118, 0.294118, 0.294118, 0)
 
 [node name="GameplayLoop" type="PanelContainer"]
