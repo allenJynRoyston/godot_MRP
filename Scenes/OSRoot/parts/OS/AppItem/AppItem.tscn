@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://r8fxl3w206rc"]
+
+[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/AppItem/app_item.gd" id="1_tkkct"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_w4olv"]
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_12a8c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhp16"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ruqfy"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rxw4r"]
+font = ExtResource("4_12a8c")
+font_color = Color(0, 0.965, 0.278, 1)
+outline_color = Color(0, 0.529412, 0.278431, 1)
+shadow_size = 0
+shadow_color = Color(0, 0.784314, 0, 1)
+shadow_offset = Vector2(0, 0)
+
+[node name="AppItem" type="PanelContainer"]
+offset_right = 110.0
+offset_bottom = 65.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nhp16")
+script = ExtResource("1_tkkct")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="VBoxContainer/CenterContainer" instance=ExtResource("2_w4olv")]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+icon = 3
+is_hoverable = false
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ruqfy")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Application"
+label_settings = SubResource("LabelSettings_rxw4r")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

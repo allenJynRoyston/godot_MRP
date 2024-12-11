@@ -1,28 +1,6 @@
 @tool
 extends Node
 
-# DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
-var resolution:Vector2i = DisplayServer.screen_get_size()
-
-# ------------------------------------------------------------------------------
-# SETUP GAME RESOLUTION
-func _init() -> void:
-	if FileAccess.file_exists("user://config.json"):
-		var file = FileAccess.open("user://config.json", FileAccess.READ)
-		var result = JSON.parse_string(file.get_as_text())
-		if result is Dictionary:
-			resolution = Vector2(result.resolution_width, result.resolution_height)
-	else:
-		save_resolution(DisplayServer.screen_get_size())
-
-
-func _ready() -> void:
-	DisplayServer.window_set_size(resolution)
-	var screen_size = DisplayServer.screen_get_size()
-	var window_position = (screen_size - resolution) / 2
-	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())	
-# ------------------------------------------------------------------------------
-
 # ------------------------------------------------------------------------------
 var resolution_nodes:Array = []
 func save_resolution(val:Vector2i) -> void:
@@ -40,12 +18,19 @@ func change_resolution(new_resolution:Vector2i) -> void:
 	save_resolution(new_resolution)
 	OS.set_restart_on_exit(true)
 	get_tree().quit()
-	
-func set_resolution(nodes:Array) -> void:
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+var subviewports:Array[SubViewport] = []
+func register_subviewports(nodes:Array[SubViewport]) -> void:
 	for node in nodes:
-		if node not in resolution_nodes:
-			resolution_nodes.push_back(node)
-		node.size = resolution
+		if node not in subviewports:
+			subviewports.push_back(nodes)
+	print(subviewports)
+
+func unregister_subviewports(nodes:Array[SubViewport]) -> void:
+	for node in nodes:
+		subviewports.erase(node)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -137,7 +122,6 @@ func unsubscribe_to_music_player(node:Control) -> void:
 
 # ------------------------------------------------------------------------------
 var input_subscriptions:Array = []
-
 func subscribe_to_input(node:Control) -> void:
 	if node not in input_subscriptions:
 		input_subscriptions.push_back(node)
@@ -150,4 +134,26 @@ func _input(event) -> void:
 		for node in input_subscriptions:
 			if "registered_click" in node:
 				node.registered_click(event)
+# ------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------
+var control_input_subscriptions:Array = []
+func subscribe_to_control_input(node:Control) -> void:
+	if node not in control_input_subscriptions:
+		control_input_subscriptions.push_back(node)
+		
+func unsubscribe_to_control_input(node:Control) -> void:
+	control_input_subscriptions.erase(node)
+		
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event.is_pressed():
+		for node in control_input_subscriptions:
+			if "on_control_input_update" in node:
+				var key:String = ""
+				match event.keycode:
+					70:
+						key = "F"
+				node.on_control_input_update({"keycode": event.keycode, "key": key})
 # ------------------------------------------------------------------------------

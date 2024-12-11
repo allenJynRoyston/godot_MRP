@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="SCP-001: Memory Recovery Protocol"
-run/main_scene="res://Scenes/TrainingProgram/TrainingProgram.tscn"
+run/main_scene="res://Scenes/OSRoot/OSRoot.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 run/size/viewport_height=720
 
@@ -33,9 +33,12 @@ COLOR_REF="*res://Autoload/ColorRef.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=4
+window/size/resizable=false
+window/size/always_on_top=true
 window/stretch/mode="viewport"
-window/stretch/aspect="keep_width"
+window/stretch/aspect="expand"
 window/stretch/scale_mode="integer"
 window/main_scene="res://Scenes/Computer/Computer.tscn"

@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgerooqlfg28l"]
+
+[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/TaskbarMenuApp/taskbar_menu_app.gd" id="1_nabms"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_5eisg"]
+[ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="3_j533a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w2tov"]
+
+[node name="TaskbarMenuApp" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_w2tov")
+script = ExtResource("1_nabms")
+
+[node name="WindowUI" parent="." instance=ExtResource("2_5eisg")]
+layout_mode = 2
+enable_header = false
+
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+visible = false
+
+[node name="VList" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_j533a")]
+layout_mode = 2
+
+[editable path="WindowUI"]

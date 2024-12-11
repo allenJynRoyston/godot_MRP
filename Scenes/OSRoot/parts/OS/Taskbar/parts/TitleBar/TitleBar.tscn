@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://c2137vkv86l50"]
+
+[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/TitleBar/title_bar.gd" id="1_7oi70"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_mhefv"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_tuvam"]
+
+[node name="TitleBar" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 10
+script = ExtResource("1_7oi70")
+
+[node name="IconBtn" parent="." instance=ExtResource("2_mhefv")]
+layout_mode = 2
+icon = 17
+is_hoverable = false
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Titlebar"
+label_settings = ExtResource("3_tuvam")
+
+[node name="IsBusyBtn" parent="." instance=ExtResource("2_mhefv")]
+visible = false
+layout_mode = 2
+icon = 22
+is_hoverable = false

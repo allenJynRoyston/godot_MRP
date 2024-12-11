@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3 uid="uid://cieqo2p3d5xly"]
+
+[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/MediaPlayer/media_player.gd" id="1_bcpof"]
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_f1wu2"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_dd8iw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qcy4p"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ae3nu"]
+font = ExtResource("4_f1wu2")
+font_size = 15
+font_color = Color(0, 0.964706, 0.278431, 1)
+shadow_size = 0
+
+[node name="MediaPlayer" type="HBoxContainer"]
+theme_override_constants/separation = 5
+script = ExtResource("1_bcpof")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="LogoBtn" parent="MarginContainer" instance=ExtResource("5_dd8iw")]
+layout_mode = 2
+icon = 12
+
+[node name="TrackNameScrollContainer" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(200, 15)
+layout_mode = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="TrackNameScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_qcy4p")
+
+[node name="MarginContainer" type="MarginContainer" parent="TrackNameScrollContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 0
+
+[node name="TrackName" type="Label" parent="TrackNameScrollContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "asdfasdf"
+label_settings = SubResource("LabelSettings_ae3nu")
+vertical_alignment = 1
+uppercase = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="PlayPauseBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
+layout_mode = 2
+icon = 9
+
+[node name="NextBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
+layout_mode = 2
+icon = 8
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+autoplay = true

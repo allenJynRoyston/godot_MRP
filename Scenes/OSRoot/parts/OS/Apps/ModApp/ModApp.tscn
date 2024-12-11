@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://bm7p6y12er84x"]
+
+[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/mod_app.gd" id="1_xh4up"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_2mlbq"]
+[ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="3_lkft3"]
+[ext_resource type="PackedScene" uid="uid://bg4f5xqrobe7" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/parts/ModComponent.tscn" id="4_x6k0l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_us4yl"]
+
+[node name="ModApp" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxEmpty_us4yl")
+script = ExtResource("1_xh4up")
+
+[node name="WindowUI" parent="." instance=ExtResource("2_2mlbq")]
+custom_minimum_size = Vector2(800, 600)
+layout_mode = 2
+enable_close_btn = true
+enable_max_btn = true
+window_label = "Mods"
+window_size = Vector2(800, 600)
+header_icon = 6
+
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+enable_max_btn = true
+enable_close_btn = true
+window_label = "Mods"
+
+[node name="LoadingComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_lkft3")]
+layout_mode = 2
+
+[node name="ModComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="1" instance=ExtResource("4_x6k0l")]
+layout_mode = 2
+
+[editable path="WindowUI"]

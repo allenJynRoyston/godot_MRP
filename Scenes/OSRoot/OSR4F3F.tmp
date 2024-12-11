@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://jjndhgp0ekhh"]
+
+[ext_resource type="Script" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
+[ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
+[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
+[ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
+[ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="4_fet0s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1iuq3"]
+viewport_path = NodePath("SubViewport")
+
+[node name="OSRoot" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
+script = ExtResource("1_67w08")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1280, 800)
+size_2d_override_stretch = true
+
+[node name="Background" parent="SubViewport" instance=ExtResource("2_yv40d")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="OS" parent="SubViewport" instance=ExtResource("2_hsa0l")]
+clip_contents = true
+
+[node name="MousePointer" type="TextureRect" parent="SubViewport"]
+offset_right = 1440.0
+offset_bottom = 800.0
+texture = ExtResource("3_ni4fo")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = ExtResource("4_fet0s")
+layout_mode = 2
+texture = SubResource("ViewportTexture_1iuq3")
+stretch_mode = 2

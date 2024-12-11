@@ -14,11 +14,9 @@ grow_vertical = 2
 script = ExtResource("1_kkc02")
 
 [node name="GameplayLoop" parent="." instance=ExtResource("2_bnndc")]
-visible = false
 layout_mode = 2
 
 [node name="TitleScreen" parent="." instance=ExtResource("3_8ygkj")]
-visible = false
 layout_mode = 2
 delay = 10.0
 

@@ -1,6 +1,25 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ef45nkvjkp5x"]
+[gd_scene load_steps=16 format=3 uid="uid://jjndhgp0ekhh"]
 
-[sub_resource type="Shader" id="Shader_co2et"]
+[ext_resource type="Script" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
+[ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
+[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
+[ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
+[ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="4_fet0s"]
+[ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="5_re5eu"]
+[ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
+viewport_path = NodePath("SubViewport2")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_a5ilm"]
+viewport_path = NodePath("SubViewport3")
+
+[sub_resource type="Shader" id="Shader_3x5h5"]
 code = "shader_type canvas_item;
 
 uniform float bleed_amount : hint_range(0.0, 1.0) = 0.5;    // Intensity of brightness bleed
@@ -84,13 +103,92 @@ void fragment() {
 }
 "
 
-[resource]
-shader = SubResource("Shader_co2et")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qcolg"]
+shader = SubResource("Shader_3x5h5")
 shader_parameter/bleed_amount = 1.0
 shader_parameter/resolution = Vector2(640, 480)
-shader_parameter/bend_amount = 0.0
-shader_parameter/bend_offset = 0.0
+shader_parameter/bend_amount = 0.116
+shader_parameter/bend_offset = 0.171
 shader_parameter/scanline_strength = 1.0
 shader_parameter/scanline_frequency = 1.0
-shader_parameter/top_bottom_border_pixels = 1.0
-shader_parameter/left_right_border_pixels = 1.0
+shader_parameter/top_bottom_border_pixels = 5.0
+shader_parameter/left_right_border_pixels = 5.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jk85w"]
+viewport_path = NodePath("SubViewport4")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wxflj"]
+viewport_path = NodePath("SubViewport5")
+
+[node name="OSRoot" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
+script = ExtResource("1_67w08")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+size_2d_override_stretch = true
+
+[node name="Background" parent="SubViewport" instance=ExtResource("2_yv40d")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="OS" parent="SubViewport" instance=ExtResource("2_hsa0l")]
+clip_contents = true
+
+[node name="MousePointer" type="TextureRect" parent="SubViewport"]
+offset_right = 1440.0
+offset_bottom = 800.0
+texture = ExtResource("3_ni4fo")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="SubViewport2" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport2"]
+material = ExtResource("5_re5eu")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_3omms")
+
+[node name="SubViewport3" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport3"]
+material = ExtResource("6_1ky4c")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_y3p8a")
+
+[node name="SubViewport4" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport4"]
+material = ExtResource("4_fet0s")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_a5ilm")
+
+[node name="SubViewport5" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport5"]
+material = SubResource("ShaderMaterial_qcolg")
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_jk85w")
+stretch_mode = 2
+
+[node name="FinalComposite" type="TextureRect" parent="."]
+layout_mode = 2
+texture = SubResource("ViewportTexture_wxflj")

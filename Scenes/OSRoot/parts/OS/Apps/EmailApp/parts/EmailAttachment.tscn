@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2xiva1hpi0f4"]
+
+[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_7ovhd"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="4_2gnm4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8egu3"]
+bg_color = Color(0.0728426, 0.0728426, 0.0728426, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="AttachmentContainer" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_8egu3")
+script = ExtResource("1_dkvyx")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_7ovhd")]
+layout_mode = 2
+icon = 4
+is_hoverable = false
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Download:"
+label_settings = ExtResource("4_2gnm4")
+
+[node name="AttachmentLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "filename"
+label_settings = ExtResource("4_2gnm4")
