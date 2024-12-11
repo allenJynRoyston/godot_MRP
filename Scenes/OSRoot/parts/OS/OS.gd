@@ -1,16 +1,18 @@
 extends MouseInteractions
 class_name Layout
 
-@onready var Taskbar:Control = $Taskbar
-@onready var RunningAppsContainer:Control = $RunningAppsContainer
-@onready var TaskbarAppsContainer:Control = $TaskbarAppsContainer
-@onready var FullScreenAppsContainer:Control = $FullScreenAppsContainer
-@onready var NotificationContainer:PanelContainer = $NotificationContainer
-@onready var BackgroundWindow:PanelContainer = $BackgroundWindow
-@onready var Installer:PanelContainer = $Installer
+@onready var Taskbar:Control = $MarginContainer/Taskbar
+@onready var RunningAppsContainer:Control = $MarginContainer/RunningAppsContainer
+@onready var TaskbarAppsContainer:Control = $MarginContainer/TaskbarAppsContainer
+@onready var FullScreenAppsContainer:Control = $MarginContainer/FullScreenAppsContainer
+@onready var NotificationContainer:PanelContainer = $MarginContainer/NotificationContainer
+@onready var BackgroundWindow:PanelContainer = $MarginContainer/BackgroundWindow
+@onready var Installer:PanelContainer = $MarginContainer/Installer
 
-@onready var DesktopIconContainer:Control = $Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
-@onready var RecycleBin:PanelContainer = $Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
+@onready var DesktopIconContainer:Control = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
+@onready var RecycleBin:PanelContainer = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
+
+@export var debug_game:bool = false
 
 const AppItemPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
@@ -114,6 +116,10 @@ var app_list:Array[Dictionary] = [
 			"title": "Site Director Training Program",
 			"icon": SVGS.TYPE.EXE_FILE,
 			"app": SiteDirectorTrainingAppPreload,
+			"app_events": {
+				"onQuit": func() -> void:
+					close_app(APPS.SDT),
+			}
 		},
 		"installed": func() -> bool:
 			return APPS.SDT in apps_installed,
@@ -286,13 +292,23 @@ signal on_confirm
 
 #region local functions
 # -----------------------------------
+func _init() -> void:
+	GBL.register_node(REFS.OS_LAYOUT, self)
+	GBL.subscribe_to_control_input(self)
+# -----------------------------------
+
+# -----------------------------------
+func _exit_tree() -> void:
+	GBL.unregister_node(REFS.OS_LAYOUT)
+	GBL.unsubscribe_to_control_input(self)
+# -----------------------------------	
+
+# -----------------------------------
 func _ready() -> void:	
 	super._ready()	
 	visible = false
 	set_process(false)
 	set_physics_process(false)	
-	GBL.register_node(REFS.OS_LAYOUT, self)
-	GBL.subscribe_to_control_input(self)
 # -----------------------------------
 
 # -----------------------------------
@@ -320,11 +336,9 @@ func start() -> void:
 					"in_bin": in_recycle_bin
 				},					
 			})
-# -----------------------------------	
-
-# -----------------------------------
-func _exit_tree() -> void:
-	GBL.unregister_node(REFS.OS_LAYOUT)
+			
+	if debug_game:
+		open_app(find_in_app_list(APPS.SDT).details, true, true, true)
 # -----------------------------------	
 
 # -----------------------------------	
@@ -406,6 +420,11 @@ func on_running_apps_list_update() -> void:
 # -----------------------------------
 
 # -----------------------------------
+func find_in_app_list(ref:APPS) -> Dictionary:
+	return app_list.filter(func(i): return i.details.ref == ref)[0]
+# -----------------------------------
+
+# -----------------------------------
 func on_open_attachment(data:Dictionary) -> void:
 	match data.type:
 		"media_player":
@@ -474,7 +493,7 @@ func toggle_fullscreen() -> void:
 
 # -----------------------------------
 #region SAVE/LOAD
-func save_state(duration:float = 1.5) -> void:
+func save_state(duration:float = 0.2) -> void:
 	var save_data = {
 		"settings": settings,
 		"in_recycle_bin": in_recycle_bin,
@@ -781,8 +800,8 @@ func close_app(ref:int) -> void:
 			
 	node.queue_free()
 
-func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false) -> void:
-	if simulate_busy or has_notification:
+func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false, force_open:bool = false) -> void:
+	if !force_open and (simulate_busy or has_notification):
 		return
 
 	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
@@ -809,7 +828,7 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 			new_node.app_events = data.app_events
 		
 		# start in fullscreen or not, pass previously loaded
-		new_node.previously_loaded = previously_loaded
+		new_node.fast_load = (previously_loaded or skip_loading or force_open)
 		new_node.in_fullscreen = in_fullscreen
 		if in_fullscreen:
 			Taskbar.fullscreen_data = data
@@ -961,7 +980,7 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 									render_desktop_icons(0.0)
 									close_app(APPS.CONTEXT_MENU)
 									
-									save_state(0.2),
+									save_state(),
 							}
 						])
 						

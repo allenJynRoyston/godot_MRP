@@ -127,7 +127,7 @@ func _ready() -> void:
 	WindowUI = $WindowUI
 	super._ready()	
 	
-	LoadingComponent.delay = 0.3 if previously_loaded else 1.0
+	LoadingComponent.delay = 0.3 if fast_load else 1.0
 	ModComponent.hide()
 	LoadingComponent.start()
 	await LoadingComponent.on_complete	

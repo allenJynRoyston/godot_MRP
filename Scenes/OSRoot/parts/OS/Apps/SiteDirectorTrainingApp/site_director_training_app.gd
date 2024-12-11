@@ -7,10 +7,13 @@ extends AppWrapper
 func _ready() -> void:
 	WindowUI = $WindowUI
 	super._ready()
-	
-	LoadingComponent.delay = 0.3 if previously_loaded else 3.0
-	TrainingProgram.hide()
-	LoadingComponent.start(previously_loaded)
+	TrainingProgram.fast_start = fast_load
+	LoadingComponent.delay = 0.3 if fast_load else 3.0
+
+	LoadingComponent.start(fast_load)
 	await LoadingComponent.on_complete	
-	TrainingProgram.show()	
+	TrainingProgram.start()
+	await TrainingProgram.on_quit
+	TrainingProgram.hide()
+	app_events.onQuit.call()
 # ------------------------------------------------------------------------------

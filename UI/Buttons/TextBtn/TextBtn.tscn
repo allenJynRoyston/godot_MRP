@@ -10,6 +10,9 @@ offset_top = 2.0
 offset_right = 34.0
 offset_bottom = 34.0
 script = ExtResource("1_53m1w")
+static_color = Color(1, 1, 1, 1)
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -28,5 +31,4 @@ is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "Title"
 label_settings = ExtResource("3_lo85m")

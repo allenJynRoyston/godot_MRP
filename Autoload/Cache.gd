@@ -59,6 +59,36 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/hourglass-half-bottom-svgrepo-com.svg")
 		SVGS.TYPE.INFO:
 			texture = load("res://SVGs/info-circle-svgrepo-com.svg")
+			
+		SVGS.TYPE.BUILD:
+			texture = load("res://SVGs/build-fix-repair-2-svgrepo-com.svg")
+		SVGS.TYPE.SCIENCE:
+			texture = load("res://SVGs/science-magnifying-glass-svgrepo-com.svg")
+		SVGS.TYPE.ASSIGN:
+			texture = load("res://SVGs/assign-svgrepo-com.svg")
+		SVGS.TYPE.INVESTIGATE:
+			texture = load("res://SVGs/binauculars-look-binoculars-look-ahead-svgrepo-com.svg")
+		SVGS.TYPE.NEXT:
+			texture = load("res://SVGs/next-svgrepo-com.svg")
+		SVGS.TYPE.PEOPLE:
+			texture = load("res://SVGs/people-nearby-svgrepo-com.svg")
+		
+		SVGS.TYPE.MONEY:
+			texture = load("res://SVGs/dollar1-svgrepo-com.svg")
+		SVGS.TYPE.ENERGY:
+			texture = load("res://SVGs/battery-half-svgrepo-com.svg")
+		SVGS.TYPE.D_CLASS:
+			texture = load("res://SVGs/convict-justice-svgrepo-com.svg")
+		SVGS.TYPE.STAFF:
+			texture = load("res://SVGs/scientist-svgrepo-com.svg")
+		SVGS.TYPE.DRS:
+			texture = load("res://SVGs/round-bottom-flask-7-svgrepo-com.svg")
+		SVGS.TYPE.SECURITY:
+			texture = load("res://SVGs/soldier-svgrepo-com.svg")
+			
+		
+		# ENERGY, D_CLASS, DRS, STAFF, SECURITY,
+				
 	
 	svg_cache.push_back({
 		"key": key, 

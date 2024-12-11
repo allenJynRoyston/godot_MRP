@@ -15,7 +15,7 @@ var app_props:Dictionary = {}
 var app_events:Dictionary = {}
 var offset:Vector2 = Vector2(0, 0)
 var in_fullscreen:bool = false
-var previously_loaded:bool = false
+var fast_load:bool = false
 
 var default_setup:Dictionary = {}
 
@@ -28,7 +28,7 @@ func _ready() -> void:
 func after_ready():
 	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
 	if in_fullscreen:
-		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(0, 35)
+		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, 35 + 4)
 		WindowUI.is_draggable = false
 		WindowUI.window_position = Vector2(0, 35)
 		WindowUI.enable_header = false

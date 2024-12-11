@@ -1,17 +1,16 @@
 extends PanelContainer
 
-signal finished
+@onready var Logo:TextureRect = $CenterContainer/VBoxContainer/Logo
 
-@export var delay:float = 0.7
+signal finished
 
 func _ready() -> void:
 	hide()
 
-func start(fast_boot:bool = false) -> void:
+func start(fast_boot:bool = false) -> void:	
 	show()
-	if !fast_boot:
-		await U.set_timeout(delay)
-	hide()
+	await U.set_timeout(5.0 if !fast_boot else 1.0)
+	self.modulate = Color(1, 1, 1, 0.3)
+	Logo.material.set_shader_parameter("alpha", 0.3)
 	await U.set_timeout(0.2)
-	finished.emit()
-	hide()
+	finished.emit()	

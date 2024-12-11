@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=6 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
-[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_xrkh4"]
+[ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_id14l"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_s4nou"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_f0u0i"]
+font = ExtResource("3_id14l")
+font_size = 12
 
 [node name="TitleScreen" type="PanelContainer"]
 anchors_preset = 15
@@ -14,10 +20,61 @@ script = ExtResource("1_1obr7")
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
-text = "TitleScreen
+theme_override_constants/separation = 50
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+text = "SITE DIRECTOR 
+TRAINING PROGRAM
 "
-label_settings = ExtResource("1_xrkh4")
-horizontal_alignment = 1
+label_settings = ExtResource("2_wrxma")
 vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "version 1.0.1"
+label_settings = SubResource("LabelSettings_f0u0i")
+horizontal_alignment = 2
+
+[node name="MenuList" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="NewGameBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+static_color = Color(1, 1, 1, 1)
+active_color = Color(0, 0.964706, 0.278431, 1)
+inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "New Game"
+
+[node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+static_color = Color(1, 1, 1, 1)
+active_color = Color(0, 0.964706, 0.278431, 1)
+inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "Continue"
+
+[node name="LoadBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+static_color = Color(1, 1, 1, 1)
+active_color = Color(0, 0.964706, 0.278431, 1)
+inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "Load"
+
+[node name="QuitBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+static_color = Color(1, 1, 1, 1)
+active_color = Color(0, 0.964706, 0.278431, 1)
+inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "Quit"

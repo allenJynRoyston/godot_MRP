@@ -1,12 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://dbbfm67s1r6vm"]
+[gd_scene load_steps=7 format=3 uid="uid://dbbfm67s1r6vm"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/LogoScreen/logo_screen.gd" id="1_hhjxh"]
-[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_q0ipm"]
+[ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_jqr35"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_kkl0i"]
+[ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="3_n7hac"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kp6tv"]
 bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
 
-[node name="BootScreen" type="PanelContainer"]
+[sub_resource type="LabelSettings" id="LabelSettings_wrpt2"]
+font = ExtResource("2_kkl0i")
+
+[node name="LogoScreen" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,9 +25,20 @@ script = ExtResource("1_hhjxh")
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
-text = "LOGO"
-label_settings = ExtResource("2_q0ipm")
+
+[node name="Logo" type="TextureRect" parent="CenterContainer/VBoxContainer"]
+material = ExtResource("2_jqr35")
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+texture = ExtResource("3_n7hac")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "SECURE. CONTAIN. PROTECT."
+label_settings = SubResource("LabelSettings_wrpt2")
 horizontal_alignment = 1
 vertical_alignment = 1

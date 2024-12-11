@@ -100,9 +100,9 @@ func _ready() -> void:
 	WindowUI = $WindowUI
 	super._ready()	
 	
-	LoadingComponent.delay = 0.3 if previously_loaded else 2.0
+	LoadingComponent.delay = 0.3 if fast_load else 2.0
 	EmailComponent.hide()
-	LoadingComponent.start(previously_loaded)
+	LoadingComponent.start(fast_load)
 	await LoadingComponent.on_complete	
 	EmailComponent.show()
 	

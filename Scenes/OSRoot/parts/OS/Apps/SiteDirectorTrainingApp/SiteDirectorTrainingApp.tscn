@@ -20,6 +20,7 @@ custom_minimum_size = Vector2(900, 600)
 layout_mode = 2
 enable_close_btn = true
 enable_max_btn = true
+window_is_active = true
 window_label = "Site Director Training Program"
 window_size = Vector2(900, 600)
 header_icon = 6
@@ -36,6 +37,6 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-loading_text = "Loadinge Site Director Training Program..."
+loading_text = "Starting Site Director Training Program..."
 
 [editable path="WindowUI"]

@@ -21,20 +21,29 @@ func _init() -> void:
 			resolution = Vector2(result.resolution_width, result.resolution_height)
 	else:
 		GBL.save_resolution(DisplayServer.screen_get_size())
+		
+	GBL.register_node(REFS.OS_ROOT, self)	
+	GBL.register_subviewports([])	
+	GBL.subscribe_to_control_input(self)	
+	GBL.subscribe_to_mouse_icons(self)
 # ------------------------------------------------------------------------------
+
+# -----------------------------------	
+func _exit_tree() -> void:
+	GBL.unregister_node(REFS.OS_ROOT)
+	GBL.unregister_subviewports([])
+	GBL.unsubscribe_to_mouse_icons(self)
+	GBL.unsubscribe_to_control_input(self)	
+# -----------------------------------		
 
 # -----------------------------------	
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	GBL.register_node(REFS.OS_ROOT, self)	
-	GBL.register_subviewports([])	
-	GBL.subscribe_to_control_input(self)	
-	GBL.subscribe_to_mouse_icons(self)
-	
 	on_fullscreen_update(resolution)
-
 	
+	toggle_fullscreen()
+
 	activate_children.call_deferred()
 # -----------------------------------		
 
@@ -46,24 +55,17 @@ func activate_children() -> void:
 		node.set_physics_process(true)
 		node.start()
 # -----------------------------------
-	
-# -----------------------------------		
-func _exit_tree() -> void:
-	GBL.unregister_node(REFS.OS_ROOT)
-	GBL.unregister_subviewports([])
-	GBL.unsubscribe_to_mouse_icons(self)
-	GBL.unsubscribe_to_control_input(self)	
-# -----------------------------------			
 
 # -----------------------------------	
 func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
-	match mouse_icon:
-		GBL.MOUSE_ICON.CURSOR:
-			MousePointer.texture = mouse_cursor
-		GBL.MOUSE_ICON.BUSY:
-			MousePointer.texture = mouse_busy
-		GBL.MOUSE_ICON.POINTER:
-			MousePointer.texture = mouse_pointer
+	if is_node_ready():
+		match mouse_icon:
+			GBL.MOUSE_ICON.CURSOR:
+				MousePointer.texture = mouse_cursor
+			GBL.MOUSE_ICON.BUSY:
+				MousePointer.texture = mouse_busy
+			GBL.MOUSE_ICON.POINTER:
+				MousePointer.texture = mouse_pointer
 # -----------------------------------	
 
 # -----------------------------------	
@@ -81,8 +83,7 @@ func toggle_fullscreen() -> void:
 func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	for node in [$SubViewport, $SubViewport2, $SubViewport3, $SubViewport4, $SubViewport5]:
 		node.size = use_resolution	
-		print(use_resolution)
-			
+
 	# start children nodes
 	var screen_size = DisplayServer.screen_get_size()
 	var window_position = (screen_size - use_resolution) / 2
@@ -94,8 +95,6 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 			FinalComposite.stretch_mode = TextureRect.STRETCH_SCALE
 		DisplayServer.WindowMode.WINDOW_MODE_WINDOWED:
 			FinalComposite.stretch_mode = TextureRect.STRETCH_KEEP
-			
-			
 # -----------------------------------	
 
 # -----------------------------------	

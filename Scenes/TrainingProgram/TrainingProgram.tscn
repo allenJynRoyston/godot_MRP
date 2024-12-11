@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dam3228oxnp8k"]
+[gd_scene load_steps=6 format=3 uid="uid://dam3228oxnp8k"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/training_program.gd" id="1_kkc02"]
 [ext_resource type="PackedScene" uid="uid://bcutea2mk6dtk" path="res://Scenes/TrainingProgram/parts/GameplayLoop/GameplayLoop.tscn" id="2_bnndc"]
 [ext_resource type="PackedScene" uid="uid://dbbfm67s1r6vm" path="res://Scenes/TrainingProgram/parts/LogoScreen/LogoScreen.tscn" id="2_rckpd"]
 [ext_resource type="PackedScene" uid="uid://ccfxehln1766x" path="res://Scenes/TrainingProgram/parts/TitleScreen/TitleScreen.tscn" id="3_8ygkj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ie45v"]
 
 [node name="TrainingProgram" type="PanelContainer"]
 anchors_preset = 15
@@ -11,15 +13,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ie45v")
 script = ExtResource("1_kkc02")
 
-[node name="GameplayLoop" parent="." instance=ExtResource("2_bnndc")]
+[node name="LogoScreen" parent="." instance=ExtResource("2_rckpd")]
 layout_mode = 2
 
 [node name="TitleScreen" parent="." instance=ExtResource("3_8ygkj")]
 layout_mode = 2
-delay = 10.0
 
-[node name="LogoScreen" parent="." instance=ExtResource("2_rckpd")]
+[node name="GameplayLoop" parent="." instance=ExtResource("2_bnndc")]
 layout_mode = 2
-delay = 20.0

@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://UI/WindowUI/body.gd" id="3_uttd3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aug80"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.956863)
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.901961)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -15,7 +15,7 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-shadow_color = Color(0, 0.758458, 0.260647, 1)
+anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0s0it"]
 bg_color = Color(0, 0, 0, 0)

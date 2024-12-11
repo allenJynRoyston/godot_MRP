@@ -1,3 +1,4 @@
+@tool
 extends BtnBase
 
 @onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn

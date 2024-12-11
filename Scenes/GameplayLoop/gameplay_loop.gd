@@ -117,17 +117,21 @@ var logs:Array = []
 # -----------------------------------
 
 # -----------------------------------
-func _ready() -> void:
+func _init() -> void:
 	GBL.register_node(REFS.GAMEPLAY_LOOP, self)
-	control_arr = [SimpleGUI, BuildGUI, ResourceGUI, ContainmentGUI]
-	secondary_control_arr = [SimpleGUI, ResourceGUI, ContainmentGUI]
-	restore_game()
-# -----------------------------------
+# -----------------------------------	
 
 # -----------------------------------
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
 # -----------------------------------	
+
+# -----------------------------------
+func _ready() -> void:
+	control_arr = [SimpleGUI, BuildGUI, ResourceGUI, ContainmentGUI]
+	secondary_control_arr = [SimpleGUI, ResourceGUI, ContainmentGUI]
+	restore_game()
+# -----------------------------------
 
 # -----------------------------------
 func on_resource_data_update() -> void:

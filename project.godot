@@ -41,4 +41,5 @@ window/size/always_on_top=true
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/stretch/scale_mode="integer"
+window/dpi/allow_hidpi=false
 window/main_scene="res://Scenes/Computer/Computer.tscn"
