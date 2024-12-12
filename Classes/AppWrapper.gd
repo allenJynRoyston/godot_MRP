@@ -14,34 +14,65 @@ var WindowUI:PanelContainer
 var app_props:Dictionary = {}
 var app_events:Dictionary = {}
 var offset:Vector2 = Vector2(0, 0)
+var default_size:Vector2 
 var in_fullscreen:bool = false
 var fast_load:bool = false
 
 var default_setup:Dictionary = {}
 
 # ------------------------------------------------------------------------------
-func _ready() -> void:	
+func _init() -> void:
+	GBL.subscribe_to_fullscreen(self)
+	
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_fullscreen(self)
+	
+func _ready() -> void:		
 	after_ready.call_deferred()
+	default_size = WindowUI.size
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func after_ready():
+	resize()
+	bind_events()
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	resize()
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------		
+func on_minification() -> void:
+	in_fullscreen = false
+	resize()
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------		
+func on_max() -> void:
+	in_fullscreen = true
+	resize()
+# ------------------------------------------------------------------------------			
+
+# ------------------------------------------------------------------------------	
+func resize() -> void:
 	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
 	if in_fullscreen:
 		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, 35 + 4)
-		WindowUI.is_draggable = false
 		WindowUI.window_position = Vector2(0, 35)
-		WindowUI.enable_header = false
-		WindowUI.enable_close_btn = false
-		WindowUI.enable_max_btn = false
-		
-	else:
-		var center_position:Vector2 = (container_node.size - WindowUI.size)/2 + offset
-		WindowUI.window_position = center_position
 
-	
+	else:
+		var center_position:Vector2 = (container_node.size - default_size)/2 + offset
+		WindowUI.window_position = center_position
+		WindowUI.window_size = default_size
+
+			
 	WindowUI.in_fullscreen_mode = in_fullscreen
-	bind_events()
+	WindowUI.enable_header = !in_fullscreen
+	WindowUI.enable_close_btn = !in_fullscreen
+	WindowUI.enable_max_btn = !in_fullscreen
+	WindowUI.is_draggable = !in_fullscreen
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

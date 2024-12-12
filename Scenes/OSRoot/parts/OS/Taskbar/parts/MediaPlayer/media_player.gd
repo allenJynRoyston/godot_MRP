@@ -16,6 +16,12 @@ var track_list:Array = []
 var selected_track:int = 0
 var scroll_name:bool = false
 
+func _init() -> void:
+	GBL.subscribe_to_process(self)
+
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_process(self)
+
 func _ready() -> void:
 	super._ready()
 	on_focus(false)	
@@ -111,8 +117,8 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # --------------------------------------		
 
 # --------------------------------------		
-func _process(delta: float) -> void:
-	super._process(delta)
+func on_process_update(delta: float) -> void:
+	super.on_process_update(delta)
 	if scroll_name:
 		frame_counter += 1
 		

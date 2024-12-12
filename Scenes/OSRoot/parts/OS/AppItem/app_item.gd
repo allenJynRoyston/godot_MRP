@@ -48,6 +48,12 @@ var onRightClick:Callable = func() -> void:pass
 
 
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	GBL.subscribe_to_process(self)
+
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_process(self)
+
 func _ready() -> void:
 	super._ready()
 	after_ready.call_deferred()
@@ -129,13 +135,13 @@ func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func _process(delta: float) -> void:		
-	super._process(delta)
+func on_process_update(delta: float) -> void:
+	super.on_process_update(delta)
 		
 	if !is_dragging: 
 		pos_offset = pos_offset
 		return
-	#
+	
 	pos_offset = GBL.mouse_pos - drag_start_pos 
 # ------------------------------------------------------------------------------
 	

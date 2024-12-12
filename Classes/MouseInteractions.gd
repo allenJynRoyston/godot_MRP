@@ -2,21 +2,25 @@ extends Control
 class_name MouseInteractions
 
 @export var is_hoverable:bool = true 
+@export var debug_me:bool = false
+
 
 var root_node:Control 
+var container_node:Control
+var is_in_subviewport:bool = false
 var on_hover:bool = false
 var mouse_pos:Vector2 = Vector2(0, 0)
 var is_focused:bool = false
 
 # --------------------------------------	
-func _ready() -> void:
+func _init() -> void:
 	if Engine.is_editor_hint():
 		return 	
 	if is_node_ready() and "subscribe_to_mouse_pos" in GBL:
 		GBL.subscribe_to_mouse_pos(self)
-	root_node = find_root(self)
 	GBL.subscribe_to_input(self)
-# --------------------------------------			
+	GBL.subscribe_to_process(self)
+# --------------------------------------	
 
 # --------------------------------------	
 func _exit_tree() -> void:
@@ -24,7 +28,14 @@ func _exit_tree() -> void:
 		return 	
 	GBL.unsubscribe_to_mouse_pos(self)
 	GBL.unsubscribe_to_input(self)
-# --------------------------------------		
+	GBL.unsubscribe_to_process(self)
+# --------------------------------------	
+
+# --------------------------------------	
+func _ready() -> void:
+	root_node = find_root(self)
+	is_in_subviewport = find_subviewport(self)
+# --------------------------------------
 
 # --------------------------------------	
 func on_mouse_pos_update(new_mouse_pos:Vector2) -> void:
@@ -74,6 +85,22 @@ func find_root(node: Node) -> Node:
 	return null
 # --------------------------------------	
 
+# --------------------------------------
+func find_subviewport(node: Node) -> bool:
+	var in_subviewport:bool = false
+	while node.get_parent() != null:
+		if node is SubViewport:
+			in_subviewport = true
+			
+		if "is_container" in node and in_subviewport:
+			container_node = node
+			return true
+			break
+			
+		node = node.get_parent()
+	return false
+# --------------------------------------	
+
 ## --------------------------------------		
 func registered_click(event:InputEventMouseButton) -> void:
 	if root_node != null and "freeze_inputs" in root_node:
@@ -89,16 +116,20 @@ func registered_click(event:InputEventMouseButton) -> void:
 ## --------------------------------------		
 
 # --------------------------------------	
-func _process(_delta:float) -> void:
+func on_process_update(_delta:float) -> void:
 	if Engine.is_editor_hint():
 		return 
-		
+			
 	if root_node != null and "freeze_inputs" in root_node:
 		if root_node.freeze_inputs: 
 			return
-	
+
 	if is_visible_in_tree() and is_hoverable:
-		if get_global_rect().has_point(GBL.mouse_pos):
+		var check_position:Vector2 = (container_node.get_global_rect().position + get_global_rect().position) if is_in_subviewport else get_global_rect().position
+		var use_rect:Rect2 = get_global_rect()
+		use_rect.position = check_position
+
+		if use_rect.has_point(GBL.mouse_pos):
 			if !on_hover:
 				focus_event()
 		else:

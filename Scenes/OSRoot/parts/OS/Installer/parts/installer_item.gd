@@ -18,11 +18,18 @@ var duration:int = 10 :
 	set(val):
 		duration = val		
 
+# ------------------------------------------------
+func _init() -> void:
+	GBL.subscribe_to_process(self)
+
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_process(self)
+
 func _ready() -> void:
 	FilenameLabel.text = "Installing %s..." % [filename]
 	await U.set_timeout(1.0)
 	start = true
-	
+# ------------------------------------------------
 	
 # ------------------------------------------------
 func on_percentage_complete_update() -> void:
@@ -41,7 +48,7 @@ func on_complete() -> void:
 
 
 # ------------------------------------------------
-func _process(delta: float) -> void:
+func on_process_update(delta: float) -> void:
 	if start:
 		time_elapsed += delta 
 		if percentage_complete < 1.0:

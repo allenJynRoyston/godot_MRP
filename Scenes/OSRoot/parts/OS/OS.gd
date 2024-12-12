@@ -409,8 +409,9 @@ func on_running_apps_list_update() -> void:
 				else:
 					RunningAppsContainer.move_child(node_data.node, RunningAppsContainer.get_child_count() - 1),
 			"onMinimize": func() -> void:
-				close_app(details.ref)
-				open_app(details, false, true),
+				node_data.node.on_minification.call()
+				app_in_fullscreen = false
+				Taskbar.fullscreen_data = {},
 			"onClose": func() -> void:
 				close_app(details.ref),
 		}
@@ -860,8 +861,10 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 			
 		# -------------------	
 		new_node.onMaxBtn = func(node:Control, window_node:Control) -> void:
-			close_app(data.ref)
-			open_app(data, !new_node.in_fullscreen, true)
+			Taskbar.fullscreen_data = data
+			app_in_fullscreen = true
+			node.on_max()
+
 			
 		# -------------------
 		new_node.onFocus = func(node:Control, window_node:Control) -> void:

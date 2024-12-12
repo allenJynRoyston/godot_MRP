@@ -6,7 +6,7 @@ extends PanelContainer
 
 var fast_start:bool = false
 
-var skip_to_new_game:bool = false
+var skip_to_new_game:bool = true
 
 signal on_quit
 

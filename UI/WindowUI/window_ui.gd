@@ -80,6 +80,12 @@ var onMaxBtn:Callable = func(node:Control) -> void:pass
 var onCloseBtn:Callable = func(node:Control) -> void:pass
 
 # ------------------------------------------------
+func _init() -> void:
+	GBL.subscribe_to_process(self)
+
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_process(self)
+
 func _ready() -> void:
 	super._ready()
 	on_header_update()
@@ -202,8 +208,8 @@ func on_focus(state:bool = false) -> void:
 # ------------------------------------------------
 
 # ------------------------------------------------
-func _process(delta: float) -> void:		
-	super._process(delta)
+func on_process_update(delta: float) -> void:		
+	super.on_process_update(delta)
 		
 	if !is_dragging: 
 		# not sure why this works but it does

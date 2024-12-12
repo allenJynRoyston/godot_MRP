@@ -21,17 +21,17 @@ func _init() -> void:
 			resolution = Vector2(result.resolution_width, result.resolution_height)
 	else:
 		GBL.save_resolution(DisplayServer.screen_get_size())
-		
+	
+	GBL.subscribe_to_process(self)
 	GBL.register_node(REFS.OS_ROOT, self)	
-	GBL.register_subviewports([])	
 	GBL.subscribe_to_control_input(self)	
 	GBL.subscribe_to_mouse_icons(self)
 # ------------------------------------------------------------------------------
 
 # -----------------------------------	
 func _exit_tree() -> void:
+	GBL.unsubscribe_to_process(self)
 	GBL.unregister_node(REFS.OS_ROOT)
-	GBL.unregister_subviewports([])
 	GBL.unsubscribe_to_mouse_icons(self)
 	GBL.unsubscribe_to_control_input(self)	
 # -----------------------------------		
@@ -76,7 +76,7 @@ func toggle_fullscreen() -> void:
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
 		on_fullscreen_update(resolution)
-	
+		
 # -----------------------------------	
 
 # -----------------------------------	
@@ -94,8 +94,10 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	match DisplayServer.window_get_mode():
 		DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			FinalComposite.stretch_mode = TextureRect.STRETCH_SCALE
+			GBL.update_fullscreen_mode(true)
 		DisplayServer.WindowMode.WINDOW_MODE_WINDOWED:
 			FinalComposite.stretch_mode = TextureRect.STRETCH_KEEP
+			GBL.update_fullscreen_mode(false)
 # -----------------------------------	
 
 # -----------------------------------	
@@ -108,7 +110,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	
 
 # -----------------------------------	
-func _process(delta: float) -> void:
+func on_process_update(delta: float) -> void:
 	var mouse_pos:Vector2 = get_global_mouse_position()
 	GBL.mouse_pos = mouse_pos
 	MousePointer.position = mouse_pos - Vector2(4, 0)

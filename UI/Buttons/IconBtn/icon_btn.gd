@@ -23,7 +23,6 @@ extends BtnBase
 		inactive_color = val
 		on_focus()
 
-
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -63,3 +62,7 @@ func on_icon_update() -> void:
 		if texture != null:
 			Btn.texture = texture
 # ------------------------------------------------------------------------------
+
+
+func _on_subviewport_child_changed() -> void:
+	pass # Replace with function body.

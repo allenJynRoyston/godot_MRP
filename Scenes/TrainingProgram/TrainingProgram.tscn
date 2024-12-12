@@ -23,4 +23,5 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="GameplayLoop" parent="." instance=ExtResource("2_bnndc")]
+visible = false
 layout_mode = 2

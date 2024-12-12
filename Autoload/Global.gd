@@ -2,6 +2,43 @@
 extends Node
 
 # ------------------------------------------------------------------------------
+# NODE REFS
+var node_refs:Dictionary = {}
+
+func register_node(key:int, node:Node) -> void:
+	if key not in node_refs:
+		node_refs[key] = node
+		
+func unregister_node(key:int) -> void:
+	node_refs.erase(key)
+		
+func find_node(key:int) -> Node:
+	return node_refs[key] if key in node_refs else null
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# NODE REFS
+var music_data_subscriptions:Array[Control] = []
+
+var music_data:Dictionary = {} : 
+	set(val): 
+		music_data = val
+		on_music_data_update()
+		
+func on_music_data_update() -> void:
+	for node in music_data_subscriptions:
+		if "on_music_data_update" in node:
+			node.music_data = music_data
+
+func subscribe_to_music_player(node:Control) -> void:
+	if node not in music_data_subscriptions:
+		music_data_subscriptions.push_back(node)
+		
+func unsubscribe_to_music_player(node:Control) -> void:
+	music_data_subscriptions.erase(node)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 var resolution_nodes:Array = []
 func save_resolution(val:Vector2i) -> void:
 	var config_data:Dictionary = {
@@ -21,17 +58,20 @@ func change_resolution(new_resolution:Vector2i) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-var subviewports:Array[SubViewport] = []
-func register_subviewports(nodes:Array[SubViewport]) -> void:
-	for node in nodes:
-		if node not in subviewports:
-			subviewports.push_back(nodes)
-	print(subviewports)
+var fullscreen_nodes:Array[Control] = []
+func subscribe_to_fullscreen(node:Control) -> void:
+	if node not in fullscreen_nodes:
+		fullscreen_nodes.push_back(node)
 
-func unregister_subviewports(nodes:Array[SubViewport]) -> void:
-	for node in nodes:
-		subviewports.erase(node)
+func unsubscribe_to_fullscreen(node:Control) -> void:
+	fullscreen_nodes.erase(node)
+	
+func update_fullscreen_mode(state:bool) -> void:
+	for node in fullscreen_nodes:
+		if "on_fullscreen_update":
+			node.on_fullscreen_update.call(state)
 # ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 # MOUSE POSITION
@@ -83,44 +123,6 @@ func end_mouse_busy() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-# NODE REFS
-var node_refs:Dictionary = {}
-
-func register_node(key:int, node:Node) -> void:
-	if key not in node_refs:
-		node_refs[key] = node
-		
-func unregister_node(key:int) -> void:
-	node_refs.erase(key)
-		
-func find_node(key:int) -> Node:
-	return node_refs[key] if key in node_refs else null
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-# NODE REFS
-var music_data_subscriptions:Array[Control] = []
-
-var music_data:Dictionary = {} : 
-	set(val): 
-		music_data = val
-		on_music_data_update()
-		
-func on_music_data_update() -> void:
-	for node in music_data_subscriptions:
-		if "on_music_data_update" in node:
-			node.music_data = music_data
-
-func subscribe_to_music_player(node:Control) -> void:
-	if node not in music_data_subscriptions:
-		music_data_subscriptions.push_back(node)
-		
-func unsubscribe_to_music_player(node:Control) -> void:
-	music_data_subscriptions.erase(node)
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
 var input_subscriptions:Array = []
 func subscribe_to_input(node:Control) -> void:
 	if node not in input_subscriptions:
@@ -135,8 +137,6 @@ func _input(event) -> void:
 			if "registered_click" in node:
 				node.registered_click(event)
 # ------------------------------------------------------------------------------
-
-
 
 # ------------------------------------------------------------------------------
 var control_input_subscriptions:Array = []
@@ -156,4 +156,21 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					70:
 						key = "F"
 				node.on_control_input_update({"keycode": event.keycode, "key": key})
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# NODE REFS
+var process_nodes:Array = []
+
+func subscribe_to_process(node:Node) -> void:
+	if node not in process_nodes:
+		process_nodes.push_back(node)
+		
+func unsubscribe_to_process(node:Node) -> void:
+	process_nodes.erase(node)
+	
+func _process(delta:float) -> void:
+	for node in process_nodes:
+		if "on_process_update" in node:
+			node.on_process_update.call(delta)
 # ------------------------------------------------------------------------------

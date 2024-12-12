@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=21 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
@@ -7,7 +7,6 @@
 [ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="3_rjxom"]
 [ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="4_fet0s"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
-[ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="5_re5eu"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="8_8iit3"]
 [ext_resource type="Material" uid="uid://wrbhauo7j8f6" path="res://Shader/_template/template.tres" id="10_fsu2y"]
@@ -121,7 +120,6 @@ stretch_mode = 2
 size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport6"]
-material = ExtResource("5_re5eu")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_1d3xd")

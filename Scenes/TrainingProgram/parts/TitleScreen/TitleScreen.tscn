@@ -53,28 +53,24 @@ alignment = 1
 
 [node name="NewGameBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-static_color = Color(1, 1, 1, 1)
 active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "New Game"
 
 [node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-static_color = Color(1, 1, 1, 1)
 active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "Continue"
 
 [node name="LoadBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-static_color = Color(1, 1, 1, 1)
 active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "Load"
 
 [node name="QuitBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-static_color = Color(1, 1, 1, 1)
 active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "Quit"

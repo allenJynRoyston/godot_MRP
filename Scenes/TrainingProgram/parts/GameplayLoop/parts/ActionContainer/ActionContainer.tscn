@@ -1,0 +1,119 @@
+[gd_scene load_steps=8 format=3 uid="uid://dphmbf3c8t587"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_7sv8v"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_gxny4"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_yv6p4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7egbh"]
+shader = ExtResource("2_yv6p4")
+shader_parameter/percentage = 1.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tvxn8"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_csxiv"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_2sp4n"]
+color = Color(0, 0.254902, 0.0823529, 1)
+grow_begin = 0.0
+grow_end = 0.0
+thickness = 2
+vertical = true
+
+[node name="ActionContainer" type="MarginContainer"]
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_7sv8v")
+freeze_inputs = false
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_7egbh")
+layout_mode = 2
+texture = SubResource("ViewportTexture_tvxn8")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(373, 50)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 373.0
+offset_bottom = 50.0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_csxiv")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="CheckBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 4
+icon = 29
+debug_me = true
+
+[node name="VSeparator2" type="VSeparator" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_2sp4n")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="BuildBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 6
+icon = 24
+
+[node name="AssignBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 6
+icon = 26
+
+[node name="RecruitBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 6
+icon = 25
+
+[node name="ContainBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 6
+icon = 28
+
+[node name="VSeparator" type="VSeparator" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_2sp4n")
+
+[node name="IconBtn3" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 27
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]
