@@ -1,0 +1,507 @@
+[gd_scene load_steps=17 format=3 uid="uid://dw4fw5d1x21qf"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ItemSelectContainer/item_select_container.gd" id="1_ywnyu"]
+[ext_resource type="Material" uid="uid://lfosoejrwy5i" path="res://Shader/Reveal/reveal.tres" id="2_ffmvn"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_uk8ri"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_vorlv"]
+[ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="5_da0dx"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="6_wfyrp"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tla5t"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yrrr3"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c10u1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_48eq6"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mq0v3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0h73g"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_l6tpd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_syf5r"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_66ypk"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_6dubg"]
+color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[node name="ItemSelectContainer" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_ywnyu")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = ExtResource("2_ffmvn")
+layout_mode = 2
+texture = SubResource("ViewportTexture_tla5t")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(950, 420)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+custom_minimum_size = Vector2(950, 420)
+theme_override_styles/panel = SubResource("StyleBoxFlat_yrrr3")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c10u1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PanelContainer2" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_48eq6")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_mq0v3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_vorlv")]
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Available"
+
+[node name="TextBtn2" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_vorlv")]
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Contained"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(225, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_right = 5
+
+[node name="GridContainer" type="GridContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="PanelContainer2" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="PanelContainer3" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer3"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer3/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer3/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer3/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer4/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer4/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer4/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="PanelContainer5" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer5"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer5/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer5/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer5/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="PanelContainer6" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer6"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer6/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer6/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer6/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="PanelContainer7" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer7"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer7/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer7/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer7/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="PanelContainer8" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0h73g")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer8"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer8/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer8/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM A"
+label_settings = ExtResource("3_uk8ri")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/PanelContainer8/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_l6tpd")
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_syf5r")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ITEM 01:"
+label_settings = ExtResource("5_da0dx")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Containment Procedures:"
+label_settings = ExtResource("6_wfyrp")
+
+[node name="Label4" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Lorem ipsum odor amet, consectetuer adipiscing elit. Ante bibendum convallis massa ac phasellus rutrum metus ad. Amus curae justo nascetur tempus placerat integer est. Mauris nisl mauris, etiam duis magnis ultrices. Suspendisse ex nulla finibus consequat curae tellus molestie arcu. Dictumst turpis malesuada conubia fusce mollis libero vel maecenas. Magnis imperdiet maximus sociosqu est parturient mi. Aliquam aliquet facilisis scelerisque non pulvinar adipiscing ex."
+label_settings = ExtResource("3_uk8ri")
+autowrap_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Description: "
+label_settings = ExtResource("6_wfyrp")
+
+[node name="Label4" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Lorem ipsum odor amet, consectetuer adipiscing elit. Ante bibendum convallis massa ac phasellus rutrum metus ad. Amus curae justo nascetur tempus placerat integer est. Mauris nisl mauris, etiam duis magnis ultrices. Suspendisse ex nulla finibus consequat curae tellus molestie arcu. Dictumst turpis malesuada conubia fusce mollis libero vel maecenas. Magnis imperdiet maximus sociosqu est parturient mi. Aliquam aliquet facilisis scelerisque non pulvinar adipiscing ex."
+label_settings = ExtResource("3_uk8ri")
+autowrap_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer3" type="ScrollContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_syf5r")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label3" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Available Actions:"
+label_settings = ExtResource("3_uk8ri")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_66ypk")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Action Title"
+label_settings = ExtResource("3_uk8ri")
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_6dubg")
+
+[node name="Label2" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Description"
+label_settings = ExtResource("3_uk8ri")
+
+[node name="PanelContainer2" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_66ypk")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Action Title"
+label_settings = ExtResource("3_uk8ri")
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_6dubg")
+
+[node name="Label2" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/ScrollContainer3/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Description"
+label_settings = ExtResource("3_uk8ri")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_vorlv")]
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Back"
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

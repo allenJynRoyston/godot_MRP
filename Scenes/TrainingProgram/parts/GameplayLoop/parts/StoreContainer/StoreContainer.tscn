@@ -1,0 +1,276 @@
+[gd_scene load_steps=11 format=3 uid="uid://d35m668pfaxmj"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_sgoc5"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_ejgw8"]
+[ext_resource type="Material" uid="uid://lfosoejrwy5i" path="res://Shader/Reveal/reveal.tres" id="2_h4i4h"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_exv6b"]
+[ext_resource type="PackedScene" uid="uid://bhbmv0st8pe22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/StoreItem/StoreItem.tscn" id="4_0r424"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jvtta"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a4dfh"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ed78i"]
+
+[sub_resource type="Texture2DRD" id="Texture2DRD_m2jsv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xa4j0"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="StoreContainer" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_sgoc5")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = ExtResource("2_h4i4h")
+layout_mode = 2
+texture = SubResource("ViewportTexture_jvtta")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(878, 420)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 878.0
+offset_bottom = 420.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_a4dfh")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ed78i")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HighlightContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HighlightContainer"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+texture = SubResource("Texture2DRD_m2jsv")
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HighlightContainer"]
+layout_mode = 2
+text = "Title"
+label_settings = ExtResource("2_ejgw8")
+
+[node name="Label2" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HighlightContainer"]
+layout_mode = 2
+text = "Description"
+label_settings = ExtResource("2_ejgw8")
+
+[node name="PanelContainer2" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PreviousBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+title = "Previous"
+
+[node name="TabContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="TextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/TabContainer" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+size_flags_vertical = 0
+title = "Category 1"
+
+[node name="TextBtn2" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/TabContainer" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+size_flags_vertical = 0
+title = "Category 2"
+
+[node name="TextBtn3" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/TabContainer" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+size_flags_vertical = 0
+title = "Category 3"
+
+[node name="TextBtn4" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/TabContainer" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+size_flags_vertical = 0
+title = "Category 4"
+
+[node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+title = "Next"
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_xa4j0")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
+
+[node name="GridContainer" type="GridContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 5
+
+[node name="StoreItem" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem2" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem3" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem4" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem5" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem6" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem7" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem8" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem9" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem10" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem11" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem12" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem13" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem14" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem15" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="StoreItem16" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
+layout_mode = 2
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 2
+
+[node name="CloseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+icon = 16
+title = "Back"
+debug_me = true
+
+[node name="SubmitBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+size_flags_horizontal = 8
+title = "Okay!"
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

@@ -7,7 +7,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gd0nf"]
 shader = ExtResource("2_l2bks")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -32,10 +32,9 @@ vertical = true
 [node name="ResourceContainer" type="MarginContainer"]
 size_flags_horizontal = 4
 size_flags_vertical = 0
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_bottom = 0
 script = ExtResource("1_qt3uu")
-freeze_inputs = false
 
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_gd0nf")
@@ -45,12 +44,11 @@ texture = SubResource("ViewportTexture_l8v1r")
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(314, 75)
+size = Vector2i(314, 50)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_top = 10.0
 offset_right = 314.0
-offset_bottom = 60.0
+offset_bottom = 50.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_e2277")

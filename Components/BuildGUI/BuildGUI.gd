@@ -78,7 +78,6 @@ func is_valid_selection(test_vector:Vector2) -> bool:
 # -----------------------------------		
 func assign_selected() -> void:
 	selected = list[selected_vector.y][selected_vector.x]
-	print( B.return_type_name(selected) )
 # -----------------------------------		
 
 # -----------------------------------	

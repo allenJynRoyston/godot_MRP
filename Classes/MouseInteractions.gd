@@ -4,7 +4,6 @@ class_name MouseInteractions
 @export var is_hoverable:bool = true 
 @export var debug_me:bool = false
 
-
 var root_node:Control 
 var container_node:Control
 var is_in_subviewport:bool = false
@@ -123,12 +122,19 @@ func on_process_update(_delta:float) -> void:
 	if root_node != null and "freeze_inputs" in root_node:
 		if root_node.freeze_inputs: 
 			return
-
+	
 	if is_visible_in_tree() and is_hoverable:
-		var check_position:Vector2 = (container_node.get_global_rect().position + get_global_rect().position) if is_in_subviewport else get_global_rect().position
+		var margins:Vector2 = Vector2(0, 0)
+		var check_position:Vector2 = get_global_rect().position
 		var use_rect:Rect2 = get_global_rect()
-		use_rect.position = check_position
-
+		
+		if is_in_subviewport:
+			if container_node is MarginContainer:
+				margins = Vector2(container_node.get_theme_constant('margin_left'), container_node.get_theme_constant('margin_top'))
+			check_position = container_node.get_global_rect().position + get_global_rect().position
+			
+		use_rect.position = check_position + margins
+			
 		if use_rect.has_point(GBL.mouse_pos):
 			if !on_hover:
 				focus_event()

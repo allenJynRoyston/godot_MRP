@@ -155,6 +155,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				match event.keycode:
 					70:
 						key = "F"
+					53:
+						key = "5"
+					56:
+						key = "8"
+						
 				node.on_control_input_update({"keycode": event.keycode, "key": key})
 # ------------------------------------------------------------------------------
 

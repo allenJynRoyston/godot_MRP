@@ -6,7 +6,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gxhv6"]
 shader = ExtResource("2_h0617")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -33,7 +33,7 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xyswn"]
 bg_color = Color(0, 0.964706, 0.278431, 1)
 
-[node name="MarginContainer" type="MarginContainer"]
+[node name="ItemStatusContainer" type="MarginContainer"]
 clip_contents = true
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -42,7 +42,6 @@ grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 script = ExtResource("1_fysh0")
-freeze_inputs = false
 
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_gxhv6")

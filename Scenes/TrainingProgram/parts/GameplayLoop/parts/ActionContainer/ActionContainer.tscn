@@ -29,9 +29,10 @@ thickness = 2
 vertical = true
 
 [node name="ActionContainer" type="MarginContainer"]
-theme_override_constants/margin_bottom = 10
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/margin_bottom = 0
 script = ExtResource("1_7sv8v")
-freeze_inputs = false
 
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_7egbh")
@@ -68,7 +69,6 @@ layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 4
 icon = 29
-debug_me = true
 
 [node name="VSeparator2" type="VSeparator" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2

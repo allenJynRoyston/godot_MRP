@@ -26,6 +26,7 @@ layout_mode = 2
 
 [node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wxkle")]
 layout_mode = 2
+size_flags_horizontal = 1
 icon = 3
 is_hoverable = false
 

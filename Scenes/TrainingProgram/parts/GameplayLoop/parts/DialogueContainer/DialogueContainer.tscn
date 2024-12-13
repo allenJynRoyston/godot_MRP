@@ -7,7 +7,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_amy1r"]
 shader = ExtResource("2_1cw7e")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -25,17 +25,10 @@ corner_radius_bottom_left = 20
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_f58qn"]
 
 [node name="DialogueContainer" type="MarginContainer"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -320.0
-offset_right = 320.0
+offset_right = 640.0
 offset_bottom = 115.0
-grow_horizontal = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 90
-theme_override_constants/margin_bottom = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
 script = ExtResource("1_d66cv")
 
 [node name="TextureRect" type="TextureRect" parent="."]
