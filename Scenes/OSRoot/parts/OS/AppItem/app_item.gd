@@ -48,12 +48,6 @@ var onRightClick:Callable = func() -> void:pass
 
 
 # ------------------------------------------------------------------------------
-func _init() -> void:
-	GBL.subscribe_to_process(self)
-
-func _exit_tree() -> void:
-	GBL.unsubscribe_to_process(self)
-
 func _ready() -> void:
 	super._ready()
 	after_ready.call_deferred()

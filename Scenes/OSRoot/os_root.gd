@@ -1,8 +1,8 @@
 extends PanelContainer
 
-@onready var OSNode:PanelContainer = $SubViewport/OS
-@onready var MousePointer:TextureRect = $SubViewport/MousePointer
-@onready var FinalComposite:TextureRect = $FinalComposite
+@onready var OSNode:PanelContainer = $GameLayer/OS
+@onready var MousePointer:TextureRect = $GameLayer/MousePointer
+@onready var FinalComposite:TextureRect = $Control/FinalComposite
 
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
@@ -40,9 +40,10 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	
 	on_fullscreen_update(resolution)
 	
-	toggle_fullscreen()
+	#toggle_fullscreen()
 
 	activate_children.call_deferred()
 # -----------------------------------		
@@ -72,11 +73,10 @@ func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
 func toggle_fullscreen() -> void:
 	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
-		on_fullscreen_update(Vector2i(1240, 720))
+		on_fullscreen_update(resolution * .75)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
 		on_fullscreen_update(resolution)
-		
 # -----------------------------------	
 
 # -----------------------------------	
@@ -84,16 +84,19 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	for node in get_children():
 		if node is SubViewport:
 			node.size = use_resolution	
-
+	
 	# start children nodes
 	var screen_size = DisplayServer.screen_get_size()
 	var window_position = (screen_size - use_resolution) / 2
 	DisplayServer.window_set_size(use_resolution)
 	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())			
-			
+	
+
 	match DisplayServer.window_get_mode():
 		DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			FinalComposite.stretch_mode = TextureRect.STRETCH_SCALE
+			FinalComposite.size = screen_size
+			FinalComposite.custom_minimum_size = screen_size
 			GBL.update_fullscreen_mode(true)
 		DisplayServer.WindowMode.WINDOW_MODE_WINDOWED:
 			FinalComposite.stretch_mode = TextureRect.STRETCH_KEEP
@@ -108,7 +111,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			toggle_fullscreen()
 # -----------------------------------		
 	
-
 # -----------------------------------	
 func on_process_update(delta: float) -> void:
 	var mouse_pos:Vector2 = get_global_mouse_position()

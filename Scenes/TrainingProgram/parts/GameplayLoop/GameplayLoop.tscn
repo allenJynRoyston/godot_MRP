@@ -31,6 +31,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 is_showing = false
+freeze_inputs = true
 
 [node name="ActionQueueContainer" parent="." instance=ExtResource("5_1tp62")]
 layout_mode = 2
@@ -66,5 +67,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 is_showing = false
+freeze_inputs = true
 
 [connection signal="item_rect_changed" from="." to="." method="_on_container_rect_changed"]

@@ -80,12 +80,6 @@ var onMaxBtn:Callable = func(node:Control) -> void:pass
 var onCloseBtn:Callable = func(node:Control) -> void:pass
 
 # ------------------------------------------------
-func _init() -> void:
-	GBL.subscribe_to_process(self)
-
-func _exit_tree() -> void:
-	GBL.unsubscribe_to_process(self)
-
 func _ready() -> void:
 	super._ready()
 	on_header_update()

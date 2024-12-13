@@ -18,25 +18,25 @@
 viewport_path = NodePath("SubViewportBG")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
-viewport_path = NodePath("SubViewport")
+viewport_path = NodePath("GameLayer")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
-viewport_path = NodePath("SubViewport2")
+viewport_path = NodePath("BorderShader")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_a5ilm"]
-viewport_path = NodePath("SubViewport3")
+viewport_path = NodePath("GlitchShader")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_jk85w"]
-viewport_path = NodePath("SubViewport4")
+viewport_path = NodePath("CRTShader")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1d3xd"]
-viewport_path = NodePath("SubViewport5")
+viewport_path = NodePath("Screenbend")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_e7if0"]
-viewport_path = NodePath("SubViewport6")
+viewport_path = NodePath("Empty")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_tlu3a"]
-viewport_path = NodePath("SubViewport7")
+viewport_path = NodePath("ColorDepthShader")
 
 [node name="OSRoot" type="PanelContainer"]
 anchors_preset = 15
@@ -59,83 +59,87 @@ anchor_bottom = 0.0
 offset_right = 1920.0
 offset_bottom = 1080.0
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="GameLayer" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport"]
+[node name="TextureRect" type="TextureRect" parent="GameLayer"]
 material = ExtResource("3_rjxom")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_m3rsi")
 
-[node name="OS" parent="SubViewport" instance=ExtResource("2_hsa0l")]
+[node name="OS" parent="GameLayer" instance=ExtResource("2_hsa0l")]
 clip_contents = true
-debug_game = true
 
-[node name="MousePointer" type="TextureRect" parent="SubViewport"]
+[node name="MousePointer" type="TextureRect" parent="GameLayer"]
 offset_right = 1440.0
 offset_bottom = 800.0
 texture = ExtResource("3_ni4fo")
 expand_mode = 1
 stretch_mode = 2
 
-[node name="SubViewport2" type="SubViewport" parent="."]
+[node name="BorderShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport2"]
+[node name="TextureRect" type="TextureRect" parent="BorderShader"]
 material = ExtResource("5_myocl")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_3omms")
 
-[node name="SubViewport3" type="SubViewport" parent="."]
+[node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport3"]
+[node name="TextureRect" type="TextureRect" parent="GlitchShader"]
 material = ExtResource("6_1ky4c")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_y3p8a")
 
-[node name="SubViewport4" type="SubViewport" parent="."]
+[node name="CRTShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport4"]
+[node name="TextureRect" type="TextureRect" parent="CRTShader"]
 material = ExtResource("4_fet0s")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_a5ilm")
 
-[node name="SubViewport5" type="SubViewport" parent="."]
+[node name="Screenbend" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport5"]
+[node name="TextureRect" type="TextureRect" parent="Screenbend"]
 material = ExtResource("8_8iit3")
 offset_right = 1920.0
 offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 
-[node name="SubViewport6" type="SubViewport" parent="."]
+[node name="Empty" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport6"]
+[node name="TextureRect" type="TextureRect" parent="Empty"]
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_1d3xd")
 stretch_mode = 2
 
-[node name="SubViewport7" type="SubViewport" parent="."]
+[node name="ColorDepthShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport7"]
+[node name="TextureRect" type="TextureRect" parent="ColorDepthShader"]
 material = ExtResource("11_k5vjp")
 offset_right = 1920.0
 offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_e7if0")
 stretch_mode = 2
 
-[node name="FinalComposite" type="TextureRect" parent="."]
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="FinalComposite" type="TextureRect" parent="Control"]
 material = ExtResource("10_fsu2y")
 layout_mode = 2
 texture = SubResource("ViewportTexture_tlu3a")
+expand_mode = 1
+stretch_mode = 5

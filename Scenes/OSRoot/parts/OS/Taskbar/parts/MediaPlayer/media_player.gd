@@ -16,12 +16,6 @@ var track_list:Array = []
 var selected_track:int = 0
 var scroll_name:bool = false
 
-func _init() -> void:
-	GBL.subscribe_to_process(self)
-
-func _exit_tree() -> void:
-	GBL.unsubscribe_to_process(self)
-
 func _ready() -> void:
 	super._ready()
 	on_focus(false)	

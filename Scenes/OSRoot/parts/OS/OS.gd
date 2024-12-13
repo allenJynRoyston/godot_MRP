@@ -624,7 +624,16 @@ func open_taskbar_menu(data:Dictionary) -> void:
 					"onClick": func(_data:Dictionary):
 						GBL.change_resolution(Vector2(1280, 720))
 						close_app(APPS.TASKBAR_MENU),
-				},								
+				},	
+				{
+					"get_details": func():
+						return {
+							"title": "MacOS mode"
+						},
+					"onClick": func(_data:Dictionary):
+						GBL.change_resolution(Vector2(1680, 1050))
+						close_app(APPS.TASKBAR_MENU),
+				},	
 			]
 		},
 		{
