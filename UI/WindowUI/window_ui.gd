@@ -94,9 +94,11 @@ func _ready() -> void:
 	on_focus()
 	
 	Header.onMaxBtn = func() -> void:
+		is_dragging = false
 		onMaxBtn.call(self)
 		
 	Header.onCloseBtn = func() -> void:
+		is_dragging = false
 		onCloseBtn.call(self)
 	
 	Header.onDragStart = func() -> void:

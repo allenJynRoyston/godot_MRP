@@ -4,7 +4,7 @@ class_name Notification
 
 enum TYPE {WARNING, CAUTION, INFO}
 
-@onready var IconBtn:Control = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/IconBtn
+@onready var IconBtn:Control = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/IconBtn
 @onready var OkayBtn:Control = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OkayBtn
 @onready var NotificationLabel:Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/NotificationLabel
 @onready var TitleLabel:Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/TitleLabel

@@ -32,7 +32,6 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="Notification" type="PanelContainer"]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -99,9 +98,6 @@ horizontal_alignment = 1
 [node name="HSeparator2" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="IconBtn" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_yw5st")]
-layout_mode = 2
-
 [node name="HBoxContainer2" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 2
@@ -114,7 +110,4 @@ alignment = 2
 [node name="OkayBtn" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_4osw4")]
 layout_mode = 2
 size_flags_horizontal = 8
-static_color = Color(1, 1, 1, 1)
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 title = "Okay"

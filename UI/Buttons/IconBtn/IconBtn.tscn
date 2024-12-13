@@ -4,16 +4,17 @@
 [ext_resource type="Texture2D" uid="uid://bcsulh43i1bt1" path="res://SVGs/bin-xmark-fill-svgrepo-com.svg" id="3_4f0o4"]
 [ext_resource type="Script" path="res://UI/Buttons/IconBtn/icon_btn.gd" id="3_y66qb"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1vmlv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wo4e8"]
 shader = ExtResource("2_ilvdr")
 shader_parameter/tint_color = Color(0, 0.254902, 0.0823529, 1)
 shader_parameter/alpha = 1.0
 
 [node name="IconBtn" type="MarginContainer"]
+custom_minimum_size = Vector2(20, 20)
 offset_right = 25.0
 offset_bottom = 25.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
@@ -25,7 +26,7 @@ active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="Btn" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_1vmlv")
+material = SubResource("ShaderMaterial_wo4e8")
 layout_mode = 2
 texture = ExtResource("3_4f0o4")
 expand_mode = 2

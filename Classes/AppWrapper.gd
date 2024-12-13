@@ -59,14 +59,15 @@ func on_max() -> void:
 func resize() -> void:
 	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
 	if in_fullscreen:
-		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, 35 + 4)
+		var is_windowed_mode:bool = DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
+		
+		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, (68 if is_windowed_mode else 35) + 4)
 		WindowUI.window_position = Vector2(0, 35)
 
 	else:
 		var center_position:Vector2 = (container_node.size - default_size)/2 + offset
 		WindowUI.window_position = center_position
 		WindowUI.window_size = default_size
-
 			
 	WindowUI.in_fullscreen_mode = in_fullscreen
 	WindowUI.enable_header = !in_fullscreen
