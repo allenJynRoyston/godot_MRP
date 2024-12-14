@@ -1,6 +1,9 @@
 @tool
 extends PanelContainer
 
+enum SHOP_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum CONTAIN_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var LocationContainer:MarginContainer = $LocationContainer
 @onready var ActionQueueContainer:MarginContainer = $ActionQueueContainer
@@ -11,6 +14,10 @@ extends PanelContainer
 @onready var StoreContainer:MarginContainer = $StoreContainer
 @onready var ItemSelectContainer:MarginContainer = $ItemSelectContainer
 
+@onready var ConfirmModal:MarginContainer = $ConfirmModal
+
+# ------------------------------------------------------------------------------	EXPORT VARS
+#region EXPORT VARS
 @export var show_structures:bool = true: 
 	set(val):
 		show_structures = val
@@ -56,19 +63,31 @@ extends PanelContainer
 		show_item_select = val
 		on_show_item_select_update()
 		
-var store_data:Dictionary = {} : 
+@export var show_confirm_modal:bool = false : 
 	set(val):
-		store_data = val
-		on_store_data_update()
-		
-var item_select_data:Dictionary = {} : 
-	set(val):
-		item_select_data = val
-		on_item_select_data_update()
+		show_confirm_modal = val
+		on_show_confirm_modal_update()
+#endregion
+# ------------------------------------------------------------------------------ 
 
+# ------------------------------------------------------------------------------	LOCAL DATA
+#region LOCAL DATA
 var showing_states:Dictionary = {} 
 
+var current_shop_step:SHOP_STEPS = SHOP_STEPS.HIDE : 
+	set(val):
+		current_shop_step = val
+		on_current_shop_step_update()
+		
+var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.HIDE : 
+	set(val):
+		current_contain_step = val
+		on_current_contain_step_update()
+#endregion
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------	LIFECYCLE
+#region LIFECYCLE
 func _init() -> void:
 	GBL.register_node(REFS.GAMEPLAY_LOOP, self)
 	GBL.subscribe_to_control_input(self)
@@ -82,7 +101,9 @@ func _ready() -> void:
 		hide()
 		set_process(false)
 		set_physics_process(false)	
-	
+	setup()
+
+func setup() -> void:
 	# first these
 	on_show_structures_update()
 	on_show_actions_update()
@@ -93,13 +114,25 @@ func _ready() -> void:
 	on_show_dialogue_update()
 	on_show_item_select_update()
 	
-	# then these
-	on_show_store_update()
-	on_store_data_update()
+	# modals
+	on_show_confirm_modal_update()
 	
+	# steps
+	on_show_store_update()
+	on_current_shop_step_update()
+	
+	# get default showing state
+	capture_default_showing_state()
+		
+	LocationContainer.onRoomSelected = func(data:Dictionary) -> void:
+		# update structure
+		print(data)
+		
+#endregion
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------	START GAME
+#region START GAME
 func start(game_data:Dictionary = {}) -> void:
 	show()
 	set_process(true)
@@ -120,61 +153,53 @@ func start_new_game() -> void:
 
 func start_load_game() -> void:
 	pass
+#endregion
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------	SHOW/HIDE CONTAINERS
+#region show/hide functions
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, LocationContainer, ActionQueueContainer, 
 		ItemStatusContainer, ActionContainer, ResourceContainer, 
-		DialogueContainer, StoreContainer, ItemSelectContainer
+		DialogueContainer, StoreContainer, ItemSelectContainer, 
+		ConfirmModal
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func capture_current_showing_state() -> void:
+func capture_default_showing_state() -> void:
 	for node in get_all_container_nodes():
 		showing_states[node] = node.is_showing
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func add_to_action_queue(item:Dictionary) -> void:
-	print("add to queue")
-# ------------------------------------------------------------------------------	
+func restore_default_state() -> void:
+	for node in get_all_container_nodes():
+		node.is_showing = showing_states[node]
+	await U.set_timeout(0.3)
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_store_data_update() -> void:
-	if store_data.is_empty():
-		for node in get_all_container_nodes():
-			if node.is_showing != showing_states[node]:
-				node.is_showing = showing_states[node]
-		return
-
-	capture_current_showing_state()
-	for node in get_all_container_nodes([ResourceContainer, StoreContainer, ActionQueueContainer, ItemStatusContainer]):
-		node.is_showing = false
-		
-	await U.set_timeout(0.1)
-	StoreContainer.is_showing = true
+func show_only(nodes:Array = []) -> void:
+	var show_filter:Array = get_all_container_nodes().filter(func(node): return node in nodes)
+	var hide_filter:Array = get_all_container_nodes().filter(func(node): return node not in nodes)
+	
+	for node in hide_filter:
+		if node.is_showing != false:
+			node.is_showing = false
+	await U.set_timeout(0.3)
+	
+	for node in show_filter:
+		if node.is_showing != true:
+			node.is_showing = true
+			
+	await U.set_timeout(0.3)
+#endregion
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------	
-func on_item_select_data_update() -> void:
-	if item_select_data.is_empty():
-		for node in get_all_container_nodes():
-			if node.is_showing != showing_states[node]:
-				node.is_showing = showing_states[node]
-		return
-
-	capture_current_showing_state()
-	for node in get_all_container_nodes([ResourceContainer, ItemSelectContainer, ActionQueueContainer, ItemStatusContainer]):
-		node.is_showing = false
-		
-	await U.set_timeout(0.1)
-	ItemSelectContainer.is_showing = true
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------	ON_SHOW_UPDATES
+#region on_show_updates
 func on_show_location_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
 		LocationContainer.is_showing = show_location
@@ -220,13 +245,94 @@ func on_show_item_select_update() -> void:
 		ItemSelectContainer.is_showing = show_item_select
 		showing_states[ItemSelectContainer] = show_item_select
 
+func on_show_confirm_modal_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		ConfirmModal.is_showing = show_confirm_modal
+		showing_states[ConfirmModal] = show_confirm_modal
+
 func _on_container_rect_changed() -> void:	
 	if is_node_ready() or Engine.is_editor_hint():
 		for sidebar in [ItemStatusContainer, ActionQueueContainer]:
 			sidebar.max_height = self.size.y
+#endregion
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------	SHOP STEPS
+#region SHOP STATES
+func on_current_shop_step_update() -> void:
+	if !is_node_ready() and !Engine.is_editor_hint():return
+	match current_shop_step:
+		# ---------------
+		SHOP_STEPS.HIDE:
+			await restore_default_state()
+		# ---------------
+		SHOP_STEPS.START:
+			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, ItemStatusContainer])
+			current_shop_step = SHOP_STEPS.WAIT_FOR_USER
+		# ---------------
+		SHOP_STEPS.WAIT_FOR_USER:
+			var response:Dictionary = await StoreContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			match response.action:
+				ACTION.BACK:
+					current_shop_step = SHOP_STEPS.HIDE
+				ACTION.NEXT:
+					current_shop_step = SHOP_STEPS.CONFIRM_LOCATION
+		# ---------------
+		SHOP_STEPS.CONFIRM_LOCATION:
+			await show_only([LocationContainer, ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_shop_step = SHOP_STEPS.START
+				ACTION.NEXT:
+					current_shop_step = SHOP_STEPS.FINALIZE
+		# ---------------
+		SHOP_STEPS.FINALIZE:
+			# do something with data
+			current_shop_step = SHOP_STEPS.HIDE
+#endregion
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------	
+# ------------------------------------------------------------------------------	CONTAIN STEPS
+#region CONTAIN STEPS
+func on_current_contain_step_update() -> void:
+	if !is_node_ready() and !Engine.is_editor_hint():return
+	match current_contain_step:
+		# ---------------
+		CONTAIN_STEPS.HIDE:
+			await restore_default_state()
+		# ---------------
+		CONTAIN_STEPS.START:
+			await show_only([ResourceContainer, ItemSelectContainer, ActionQueueContainer, ItemStatusContainer])
+			current_contain_step = CONTAIN_STEPS.WAIT_FOR_USER
+		# ---------------
+		CONTAIN_STEPS.WAIT_FOR_USER:
+			var response:Dictionary = await ItemSelectContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			match response.action:
+				ACTION.BACK:
+					current_contain_step = CONTAIN_STEPS.HIDE
+				ACTION.NEXT:
+					current_contain_step = CONTAIN_STEPS.CONFIRM_LOCATION
+		# ---------------
+		CONTAIN_STEPS.CONFIRM_LOCATION:
+			await show_only([LocationContainer, ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_contain_step = CONTAIN_STEPS.START
+				ACTION.NEXT:
+					current_contain_step = CONTAIN_STEPS.FINALIZE
+		# ---------------
+		CONTAIN_STEPS.FINALIZE:
+			# do something with data
+			current_contain_step = CONTAIN_STEPS.HIDE	
+#endregion
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------	CONTROLS
+#region CONTROL UPDATE
 func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
@@ -237,10 +343,10 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"8":
 			quickload()
 		
-	
+#endregion
 # ------------------------------------------------------------------------------	
 
-# -----------------------------------
+# ------------------------------------------------------------------------------	SAVE/LOAD
 #region SAVE/LOAD
 func quicksave() -> void:
 	var save_data = {
@@ -260,4 +366,4 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	
 
 #endregion		
-# -----------------------------------
+# ------------------------------------------------------------------------------

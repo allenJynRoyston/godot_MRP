@@ -32,6 +32,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="Notification" type="PanelContainer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

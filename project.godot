@@ -12,6 +12,7 @@ config_version=5
 
 config/name="SCP-001: Memory Recovery Protocol"
 run/main_scene="res://Scenes/OSRoot/OSRoot.tscn"
+run/print_header=false
 config/features=PackedStringArray("4.3", "Forward Plus")
 run/size/viewport_height=720
 
@@ -23,6 +24,7 @@ RESOURCE="*res://Autoload/enums/RESOURCE.gd"
 SCP="*res://Autoload/enums/SCP.gd"
 SVGS="*res://Autoload/enums/SVGS.gd"
 COLORS="*res://Autoload/enums/COLORS.gd"
+ACTION="*res://Autoload/enums/ACTIONS.gd"
 CACHE="*res://Autoload/Cache.gd"
 GBL="*res://Autoload/Global.gd"
 FS="*res://Autoload/FileSys.gd"

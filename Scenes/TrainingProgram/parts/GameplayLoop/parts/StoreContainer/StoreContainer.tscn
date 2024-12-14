@@ -179,83 +179,51 @@ columns = 5
 
 [node name="StoreItem" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem2" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem3" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem4" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem5" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem6" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem7" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem8" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem9" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem10" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem11" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem12" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem13" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem14" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem15" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="StoreItem16" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_0r424")]
 layout_mode = 2
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
 layout_mode = 2

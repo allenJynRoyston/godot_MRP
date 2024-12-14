@@ -22,16 +22,18 @@ func on_data_update() -> void:
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
-	if is_node_ready():
-		IconButton.static_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+	if !is_node_ready():return
+	IconButton.static_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+	
+	var label_setting:LabelSettings = AttachmentLabel.label_settings.duplicate()
+	label_setting.font_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+	AttachmentLabel.label_settings = label_setting
+	DownloadLabel.label_settings = label_setting
 		
-		var label_setting:LabelSettings = AttachmentLabel.label_settings.duplicate()
-		label_setting.font_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
-		AttachmentLabel.label_settings = label_setting
-		DownloadLabel.label_settings = label_setting
-		
-		if !Engine.is_editor_hint():
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)		
+	if state:
+		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	else:
+		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 # --------------------------------------	
 
 # --------------------------------------	

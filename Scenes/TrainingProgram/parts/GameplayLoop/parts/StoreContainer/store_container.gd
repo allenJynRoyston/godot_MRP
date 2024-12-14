@@ -9,6 +9,8 @@ extends GameContainer
 #@onready var SubmitBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/SubmitBtn
 #@onready var BackBtn:Control = $Back
 
+signal user_response
+
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -17,12 +19,12 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 	
 	CloseBtn.onClick = func() -> void:
-		get_parent().store_data = {}
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+		user_response.emit({"action": ACTION.BACK})
+		
 	
-	for node in GridItemContainer.get_children():
+	for index in GridItemContainer.get_child_count():
+		var node:Control = GridItemContainer.get_child(index)
 		node.onClick = func() -> void:
-			get_parent().store_data = {}
-			get_parent().add_to_action_queue({})
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			user_response.emit({"action": ACTION.NEXT, "data": {}})
+
 # --------------------------------------------------------------------------------------------------		

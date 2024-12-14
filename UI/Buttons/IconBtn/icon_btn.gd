@@ -53,16 +53,12 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 
 # ------------------------------------------------------------------------------
 func on_icon_update() -> void:
-	if is_node_ready():
-		if icon == SVGS.TYPE.NONE:
-			Btn.texture = null
-			return
-		
-		var texture:CompressedTexture2D = CACHE.fetch_svg(icon) 
-		if texture != null:
-			Btn.texture = texture
+	if !is_node_ready(): return
+	if icon == SVGS.TYPE.NONE:
+		Btn.texture = null
+		return
+
+	var texture:CompressedTexture2D = CACHE.fetch_svg(icon) 
+	if texture != null:
+		Btn.texture = texture
 # ------------------------------------------------------------------------------
-
-
-func _on_subviewport_child_changed() -> void:
-	pass # Replace with function body.

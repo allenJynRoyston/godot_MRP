@@ -70,6 +70,7 @@ texture = SubResource("ViewportTexture_m3rsi")
 
 [node name="OS" parent="GameLayer" instance=ExtResource("2_hsa0l")]
 clip_contents = true
+debug_game = true
 
 [node name="MousePointer" type="TextureRect" parent="GameLayer"]
 offset_right = 1440.0

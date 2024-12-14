@@ -1,8 +1,8 @@
 @tool
 extends GameContainer
 
-@onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer/BackBtn
-@onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer/NextBtn
+@onready var AcceptBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/AcceptBtn
+@onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/BackBtn
 
 signal user_response
 
@@ -13,9 +13,8 @@ func _ready() -> void:
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
 	
+	AcceptBtn.onClick = func() -> void:
+		user_response.emit({"action": ACTION.NEXT})
 	BackBtn.onClick = func() -> void:
 		user_response.emit({"action": ACTION.BACK})
-	
-	NextBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.NEXT})
 # --------------------------------------------------------------------------------------------------		

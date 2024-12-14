@@ -10,10 +10,11 @@ func _ready() -> void:
 	
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
+	var parentNode:Control = get_parent()
 	
 	CheckBtn.onClick = func() -> void:
-		get_parent().store_data = {"some": "data"}
+		parentNode.current_shop_step = parentNode.SHOP_STEPS.START
 	
 	ContainBtn.onClick = func() -> void:
-		get_parent().item_select_data = {"some": "data"}
+		parentNode.current_contain_step = parentNode.CONTAIN_STEPS.START
 # --------------------------------------------------------------------------------------------------		

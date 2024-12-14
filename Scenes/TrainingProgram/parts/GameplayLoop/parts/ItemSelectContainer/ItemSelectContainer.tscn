@@ -504,4 +504,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 title = "Back"
 
+[node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_vorlv")]
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Next"
+
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

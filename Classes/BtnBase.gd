@@ -20,11 +20,15 @@ func _exit_tree() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:
-	is_focused = state
+func on_focus(state:bool = is_focused) -> void:	
 	if !is_node_ready():return	
-	onFocus.call(self) if state else onBlur.call(self)
-	GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
+	is_focused = state
+	onFocus.call(self) if state else onBlur.call(self)	
+	if state:
+		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	else:
+		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+		
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:
@@ -32,6 +36,5 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 
 func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:
-		if !Engine.is_editor_hint():
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 # ------------------------------------------------------------------------------

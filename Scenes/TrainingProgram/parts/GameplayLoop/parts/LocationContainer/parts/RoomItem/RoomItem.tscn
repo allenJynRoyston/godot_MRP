@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://uqrxc7qa247g"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/parts/RoomItem/room_item.gd" id="1_1t5xa"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_58ndv"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_gvp2p"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rdliy"]
+font = ExtResource("2_58ndv")
+font_size = 12
+shadow_size = 0
+shadow_offset = Vector2(0, 0)
+
+[node name="RoomItem" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 25)
+size_flags_vertical = 4
+theme_override_constants/separation = 0
+alignment = 1
+script = ExtResource("1_1t5xa")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_rdliy")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SelectedBtn" parent="." instance=ExtResource("3_gvp2p")]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 1
+icon = 3
+static_color = Color(1, 1, 1, 0.796078)
+is_hoverable = false

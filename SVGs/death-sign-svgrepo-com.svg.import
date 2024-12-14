@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d28scxpk4df1g"
-path="res://.godot/imported/assign-svgrepo-com.svg-c2d7ff54061daa611e63890976daafd5.ctex"
+uid="uid://b4vsatlhv3inm"
+path="res://.godot/imported/death-sign-svgrepo-com.svg-fc05745242d270f95b13f7ac6cbdd9a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://SVGs/assign-svgrepo-com.svg"
-dest_files=["res://.godot/imported/assign-svgrepo-com.svg-c2d7ff54061daa611e63890976daafd5.ctex"]
+source_file="res://SVGs/death-sign-svgrepo-com.svg"
+dest_files=["res://.godot/imported/death-sign-svgrepo-com.svg-fc05745242d270f95b13f7ac6cbdd9a9.ctex"]
 
 [params]
 

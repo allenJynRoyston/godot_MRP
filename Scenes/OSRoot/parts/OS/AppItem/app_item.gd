@@ -87,8 +87,12 @@ func on_position_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:
-	GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
 	onFocus.call(self) if state else onBlur.call(self)
+	
+	if state:
+		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	else:
+		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 	
 	if !is_selectable: 
 		update_color(false)

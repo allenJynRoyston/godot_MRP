@@ -19,6 +19,7 @@ var in_fullscreen:bool = false
 var fast_load:bool = false
 
 var default_setup:Dictionary = {}
+var is_windows:bool = DisplayServer.get_name() == "Windows"
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -30,6 +31,7 @@ func _exit_tree() -> void:
 func _ready() -> void:		
 	after_ready.call_deferred()
 	default_size = WindowUI.size
+	print( )
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -60,8 +62,8 @@ func resize() -> void:
 	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
 	if in_fullscreen:
 		var is_windowed_mode:bool = DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
-		
-		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, (68 if is_windowed_mode else 35) + 4)
+		var spacing:int = 35 if is_windows else 68
+		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, (spacing if is_windowed_mode else 35) + 4)
 		WindowUI.window_position = Vector2(0, 35)
 
 	else:

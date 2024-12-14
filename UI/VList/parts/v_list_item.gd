@@ -37,8 +37,13 @@ func _ready() -> void:
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
+	if !is_node_ready():return
 	on_list_focus_change.call(state)
-	GBL.change_mouse_icon(GBL.MOUSE_ICON.POINTER if state else GBL.MOUSE_ICON.CURSOR)
+	
+	if state:
+		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	else:
+		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 
 	OpenBtn.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
 	NewBtn.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)

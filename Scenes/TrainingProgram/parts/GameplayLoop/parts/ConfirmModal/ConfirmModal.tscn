@@ -1,0 +1,72 @@
+[gd_scene load_steps=8 format=3 uid="uid://dqajtnshjj5i7"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_fp6o0"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_2lprj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fo7i7"]
+shader = ExtResource("2_fp6o0")
+shader_parameter/percentage = 0.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wb760"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5y77r"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w67u1"]
+
+[node name="ConfirmModal" type="MarginContainer"]
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+script = ExtResource("1_7tykf")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_fo7i7")
+layout_mode = 2
+texture = SubResource("ViewportTexture_wb760")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(165, 44)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 165.0
+offset_bottom = 44.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_5y77r")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_w67u1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AcceptBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
+layout_mode = 2
+title = "Accept"
+
+[node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
+layout_mode = 2
+title = "Back"
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

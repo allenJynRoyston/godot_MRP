@@ -86,9 +86,12 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 		SVGS.TYPE.SECURITY:
 			texture = load("res://SVGs/security-user-svgrepo-com.svg")
 			
-		
-		# ENERGY, D_CLASS, DRS, STAFF, SECURITY,
-				
+		SVGS.TYPE.TARGET:
+			texture = load("res://SVGs/target_svgrepo-com.svg")			
+		SVGS.TYPE.NO_ISSUES:
+			texture = load("res://SVGs/clear-day-svgrepo-com.svg")
+		SVGS.TYPE.DANGER:
+			texture = load("res://SVGs/death-sign-svgrepo-com.svg")
 	
 	svg_cache.push_back({
 		"key": key, 

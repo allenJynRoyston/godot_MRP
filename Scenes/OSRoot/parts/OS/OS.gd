@@ -273,12 +273,16 @@ var simulate_busy:bool = false :
 		on_simulated_busy_update()
 
 var icon_focus_list:Array[Control] = []
-var window_focus_list:Array[Control] = []
+var window_focus_list:Array[Control] = [] : 
+	set(val):
+		window_focus_list = val
+		on_window_focus_list_update()
+		
 var running_apps_list:Array = [] : 
 	set(val): 
 		running_apps_list = val
 		on_running_apps_list_update()
-var app_in_fullscreen:bool = false
+var app_in_fullscreen:bool = false 
 
 var top_level_icon:Control
 var top_level_window:Control : 
@@ -389,6 +393,11 @@ func on_bin_restore(data:Dictionary) -> void:
 	# save state
 	save_state(0.2)
 # -----------------------------------		
+
+# -----------------------------------		
+func on_window_focus_list_update() -> void:
+	set_desktop_hoverable_state(window_focus_list.is_empty())
+# -----------------------------------			
 
 # -----------------------------------
 func on_running_apps_list_update() -> void:
@@ -772,11 +781,13 @@ func open_taskbar_dropdown(node:Control, ref:int, props:Dictionary = {}) -> void
 			if !on_hover:
 				node.queue_free()
 				window_focus_list.erase(node)
+				window_focus_list = window_focus_list
 				close_app(ref)
 	
 		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:
 			node.queue_free()
 			window_focus_list.erase(node)
+			window_focus_list = window_focus_list
 			close_app(ref)
 		
 			
@@ -786,6 +797,7 @@ func open_taskbar_dropdown(node:Control, ref:int, props:Dictionary = {}) -> void
 				
 		new_node.onBlur = func(node:Control, window_node:Control) -> void:
 			window_focus_list.erase(node)
+			window_focus_list = window_focus_list
 
 		TaskbarAppsContainer.add_child( new_node )
 # -----------------------------------	
@@ -795,6 +807,7 @@ func close_app(ref:int) -> void:
 	var node:Control = running_apps_list.filter(func(item): return item.data.ref == ref)[0].node
 	running_apps_list = running_apps_list.filter(func(item): return item.data.ref != ref)	
 	window_focus_list.erase(node)
+	window_focus_list = window_focus_list
 	
 	if top_level_window == node:
 		top_level_window = null
@@ -879,6 +892,7 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 		new_node.onFocus = func(node:Control, window_node:Control) -> void:
 			if node not in window_focus_list:
 				window_focus_list.push_back(node)
+			window_focus_list = window_focus_list
 				
 			# determine which window is on top
 			var z_order:Dictionary = {}
@@ -894,6 +908,7 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 		# -------------------
 		new_node.onBlur = func(node:Control, window_node:Control) -> void:
 			window_focus_list.erase(node)
+			window_focus_list = window_focus_list
 
 			if window_focus_list.size() > 0:
 				top_level_window = window_focus_list[0]
@@ -919,6 +934,12 @@ func set_node_selectable_state(state:bool, exclude = null) -> void:
 		for child in DesktopIconContainer.get_children():
 			if exclude != child:
 				child.is_selectable = state
+# -----------------------------------			
+
+# -----------------------------------			
+func set_desktop_hoverable_state(state:bool) -> void:
+	for child in DesktopIconContainer.get_children():
+		child.is_hoverable = state
 # -----------------------------------			
 
 # -----------------------------------

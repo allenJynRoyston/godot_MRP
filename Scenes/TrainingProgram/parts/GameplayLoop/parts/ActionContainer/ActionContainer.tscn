@@ -67,7 +67,6 @@ theme_override_constants/separation = 25
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_horizontal = 1
-size_flags_vertical = 4
 icon = 29
 
 [node name="VSeparator2" type="VSeparator" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
@@ -109,7 +108,6 @@ theme_override_styles/separator = SubResource("StyleBoxLine_2sp4n")
 [node name="IconBtn3" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_vertical = 4
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0

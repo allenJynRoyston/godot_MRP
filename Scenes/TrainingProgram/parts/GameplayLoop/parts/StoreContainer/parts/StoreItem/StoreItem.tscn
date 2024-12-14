@@ -14,6 +14,8 @@ custom_minimum_size = Vector2(125, 0)
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_vrawy")
 script = ExtResource("1_kueja")
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
