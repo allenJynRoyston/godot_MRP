@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=14 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
 [ext_resource type="PackedScene" uid="uid://dw4fw5d1x21qf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ItemSelectContainer/ItemSelectContainer.tscn" id="10_v7mb0"]
 [ext_resource type="PackedScene" uid="uid://dqajtnshjj5i7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn" id="11_kf8f5"]
+[ext_resource type="PackedScene" uid="uid://d0dpehr5pt3xc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/RecruitContainer.tscn" id="12_dw62g"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxod"]
 
@@ -76,6 +77,13 @@ size_flags_horizontal = 8
 size_flags_vertical = 8
 theme_override_constants/margin_right = 150
 theme_override_constants/margin_bottom = 10
+is_showing = false
+freeze_inputs = true
+
+[node name="RecruitContainer" parent="." instance=ExtResource("12_dw62g")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 is_showing = false
 freeze_inputs = true
 

@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://bghgkext72llt"]
+
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_a3i6p"]
+[ext_resource type="Script" path="res://UI/Buttons/ToggleBtn/toggle_btn.gd" id="1_tudgk"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_myo6m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vkerp"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="ToggleBtn" type="PanelContainer"]
+offset_right = 60.0
+offset_bottom = 20.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_vkerp")
+script = ExtResource("1_tudgk")
+static_color = Color(1, 1, 1, 1)
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
+title = "Toggle"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_a3i6p")]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+icon = 11
+static_color = Color(0.662745, 0.662745, 0.662745, 1)
+is_hoverable = false
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Toggle"
+label_settings = ExtResource("2_myo6m")

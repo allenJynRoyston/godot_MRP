@@ -1,11 +1,18 @@
-[gd_scene load_steps=17 format=3 uid="uid://dw4fw5d1x21qf"]
+[gd_scene load_steps=18 format=3 uid="uid://dw4fw5d1x21qf"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ItemSelectContainer/item_select_container.gd" id="1_ywnyu"]
-[ext_resource type="Material" uid="uid://lfosoejrwy5i" path="res://Shader/Reveal/reveal.tres" id="2_ffmvn"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_aslxc"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_uk8ri"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_vorlv"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="5_da0dx"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="6_wfyrp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rx75c"]
+shader = ExtResource("2_aslxc")
+shader_parameter/percentage = 0.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_tla5t"]
 viewport_path = NodePath("SubViewport")
@@ -52,7 +59,7 @@ size_flags_vertical = 0
 script = ExtResource("1_ywnyu")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = ExtResource("2_ffmvn")
+material = SubResource("ShaderMaterial_rx75c")
 layout_mode = 2
 texture = SubResource("ViewportTexture_tla5t")
 stretch_mode = 2

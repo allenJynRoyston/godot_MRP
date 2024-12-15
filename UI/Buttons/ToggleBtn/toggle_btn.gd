@@ -3,23 +3,29 @@ extends BtnBase
 
 @onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
 @onready var BtnLabel:Label = $MarginContainer/HBoxContainer/Label
+@onready var Margin:MarginContainer = $MarginContainer
 
-@export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
+@export var icon_active:SVGS.TYPE = SVGS.TYPE.PLUS : 
 	set(val):
-		icon = val
-		on_icon_update()
+		icon_active = val
+		on_is_toggled_update()
+		
+@export var icon_inactive:SVGS.TYPE = SVGS.TYPE.MINUS : 
+	set(val):
+		icon_inactive = val
+		on_is_toggled_update()		
 
-@export var static_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE)   : 
+@export var static_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE)  : 
 	set(val): 
 		static_color = val
 		update_color(static_color)
 		
-@export var active_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) :
+@export var active_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE)  :
 	set(val): 
 		active_color = val
 		on_focus()
 		
-@export var inactive_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) :
+@export var inactive_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)  :
 	set(val): 
 		inactive_color = val
 		on_focus()
@@ -28,6 +34,12 @@ extends BtnBase
 	set(val): 
 		title = val
 		on_title_update()
+		
+
+@export var is_toggled:bool = false : 
+	set(val):
+		is_toggled = val
+		on_is_toggled_update()
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -37,8 +49,8 @@ func _ready() -> void:
 	else:
 		update_color(static_color)
 
-	on_icon_update()
 	on_title_update()
+	on_is_toggled_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -58,9 +70,15 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 func on_title_update() -> void:
 	if is_node_ready():
+		if title.is_empty():
+			BtnLabel.hide()
+			Margin.add_theme_constant_override("margin_right", 5)
+			return
+		BtnLabel.show()
+		Margin.add_theme_constant_override("margin_right", 10)
 		BtnLabel.text = title
 
-func on_icon_update() -> void:
+func on_is_toggled_update() -> void:
 	if is_node_ready():
-		IconBtn.icon = icon
+		IconBtn.icon = icon_active if is_toggled else icon_inactive
 # ------------------------------------------------------------------------------

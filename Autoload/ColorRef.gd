@@ -1,3 +1,4 @@
+@tool
 extends Node
 
 var neon_green:Color = Color("00f647")

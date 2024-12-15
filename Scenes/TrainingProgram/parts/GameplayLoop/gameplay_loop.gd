@@ -3,6 +3,7 @@ extends PanelContainer
 
 enum SHOP_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
 enum CONTAIN_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum RECRUIT_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var LocationContainer:MarginContainer = $LocationContainer
@@ -13,6 +14,7 @@ enum CONTAIN_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM,
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var StoreContainer:MarginContainer = $StoreContainer
 @onready var ItemSelectContainer:MarginContainer = $ItemSelectContainer
+@onready var RecruitContainer:MarginContainer = $RecruitContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 
@@ -57,6 +59,11 @@ enum CONTAIN_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM,
 	set(val):
 		show_store = val
 		on_show_store_update()		
+		
+@export var show_recruit:bool = false : 
+	set(val):
+		show_recruit = val
+		on_show_recruit_update()		
 
 @export var show_item_select:bool = false : 
 	set(val):
@@ -67,6 +74,8 @@ enum CONTAIN_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM,
 	set(val):
 		show_confirm_modal = val
 		on_show_confirm_modal_update()
+		
+
 #endregion
 # ------------------------------------------------------------------------------ 
 
@@ -83,6 +92,11 @@ var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.HIDE :
 	set(val):
 		current_contain_step = val
 		on_current_contain_step_update()
+		
+var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.HIDE : 
+	set(val):
+		current_recruit_step = val
+		on_current_recruit_step_update()
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -113,6 +127,7 @@ func setup() -> void:
 	on_show_item_status_update()
 	on_show_dialogue_update()
 	on_show_item_select_update()
+	on_show_recruit_update()
 	
 	# modals
 	on_show_confirm_modal_update()
@@ -163,7 +178,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		Structure3dContainer, LocationContainer, ActionQueueContainer, 
 		ItemStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ItemSelectContainer, 
-		ConfirmModal
+		ConfirmModal, RecruitContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -250,10 +265,16 @@ func on_show_confirm_modal_update() -> void:
 		ConfirmModal.is_showing = show_confirm_modal
 		showing_states[ConfirmModal] = show_confirm_modal
 
+func on_show_recruit_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		RecruitContainer.is_showing = show_recruit
+		showing_states[RecruitContainer] = show_recruit
+
 func _on_container_rect_changed() -> void:	
 	if is_node_ready() or Engine.is_editor_hint():
 		for sidebar in [ItemStatusContainer, ActionQueueContainer]:
 			sidebar.max_height = self.size.y
+
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -330,6 +351,46 @@ func on_current_contain_step_update() -> void:
 			current_contain_step = CONTAIN_STEPS.HIDE	
 #endregion
 # ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------	RECRUIT STEPS
+#region RECRUIT STEPS
+func on_current_recruit_step_update() -> void:
+	if !is_node_ready() and !Engine.is_editor_hint():return
+
+	match current_recruit_step:
+		# ---------------
+		RECRUIT_STEPS.HIDE:
+			await restore_default_state()
+		# ---------------
+		CONTAIN_STEPS.START:
+			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, ItemStatusContainer])
+			current_recruit_step = RECRUIT_STEPS.WAIT_FOR_USER
+		# ---------------
+		CONTAIN_STEPS.WAIT_FOR_USER:
+			var response:Dictionary = await RecruitContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			print(response)
+			match response.action:
+				ACTION.BACK:
+					current_recruit_step = RECRUIT_STEPS.HIDE
+				ACTION.NEXT:
+					current_recruit_step = RECRUIT_STEPS.CONFIRM_LOCATION
+		# ---------------
+		RECRUIT_STEPS.CONFIRM_LOCATION:
+			await show_only([LocationContainer, ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_recruit_step = RECRUIT_STEPS.START
+				ACTION.NEXT:
+					current_recruit_step = RECRUIT_STEPS.FINALIZE
+		# ---------------
+		RECRUIT_STEPS.FINALIZE:
+			# do something with data
+			current_recruit_step = RECRUIT_STEPS.HIDE	
+#endregion
+# ------------------------------------------------------------------------------		
+
 
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE

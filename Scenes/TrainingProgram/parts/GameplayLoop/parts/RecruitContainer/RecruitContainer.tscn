@@ -1,0 +1,133 @@
+[gd_scene load_steps=11 format=3 uid="uid://d0dpehr5pt3xc"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/recruit_container.gd" id="1_kc8pe"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_tdc6v"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_2repe"]
+[ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/ProfileCard.tscn" id="4_2h1yk"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_4avi5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_egd7m"]
+shader = ExtResource("2_tdc6v")
+shader_parameter/percentage = 1.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_lewaw"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lptqb"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_wdahj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7qb3h"]
+
+[node name="HireDrContainer" type="MarginContainer"]
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_kc8pe")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_egd7m")
+layout_mode = 2
+texture = SubResource("ViewportTexture_lewaw")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(670, 585)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 670.0
+offset_bottom = 585.0
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_lptqb")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="LeadBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
+layout_mode = 2
+title = "Lead Researchers"
+
+[node name="SupportBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
+layout_mode = 2
+title = "Support"
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_wdahj")
+
+[node name="SupportPanel" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="LeadResearcherPanel" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7qb3h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel/VBoxContainer"]
+layout_mode = 2
+text = "New canidates will be available in X days."
+label_settings = ExtResource("3_2repe")
+horizontal_alignment = 1
+
+[node name="CardContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ProfileCard" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel/VBoxContainer/CardContainer" instance=ExtResource("4_2h1yk")]
+layout_mode = 2
+
+[node name="ProfileCard2" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel/VBoxContainer/CardContainer" instance=ExtResource("4_2h1yk")]
+layout_mode = 2
+
+[node name="ProfileCard3" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel/VBoxContainer/CardContainer" instance=ExtResource("4_2h1yk")]
+layout_mode = 2
+
+[node name="BtnContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer" instance=ExtResource("6_4avi5")]
+layout_mode = 2
+title = "Back"
+
+[node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer" instance=ExtResource("6_4avi5")]
+layout_mode = 2
+title = "Select"
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

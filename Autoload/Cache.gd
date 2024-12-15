@@ -59,7 +59,9 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/hourglass-half-bottom-svgrepo-com.svg")
 		SVGS.TYPE.INFO:
 			texture = load("res://SVGs/info-circle-svgrepo-com.svg")
-			
+		SVGS.TYPE.RESEARCH:
+			texture = load("res://SVGs/research-2-svgrepo-com.svg")
+						
 		SVGS.TYPE.BUILD:
 			texture = load("res://SVGs/build-svgrepo-com.svg")
 		SVGS.TYPE.ASSIGN:
