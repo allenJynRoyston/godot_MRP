@@ -9,3 +9,8 @@ enum TYPE {
 	# ROOM THAT CAN CONTAIN IT
 	STEEL_CONTAINMENT_CELL,
 }
+
+
+enum CATEGORIES {
+	X, Y, Z
+}

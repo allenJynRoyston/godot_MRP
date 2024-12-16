@@ -4,6 +4,9 @@ extends Node
 var BARRICKS:Dictionary = {
 	"name": "BARRICKS",
 	"size_allowed": [1, 2, 3],
+	"categories": [
+		ROOM.CATEGORIES.X
+	],
 	"can_contain": false,
 	"get_build_time": func() -> int:
 		return 3,
