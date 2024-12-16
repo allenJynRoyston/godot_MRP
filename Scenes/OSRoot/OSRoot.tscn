@@ -17,14 +17,14 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_m3rsi"]
 viewport_path = NodePath("SubViewportBG")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
-viewport_path = NodePath("GameLayer")
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
-viewport_path = NodePath("BorderShader")
+viewport_path = NodePath("CRTShader/BorderShader")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_a5ilm"]
 viewport_path = NodePath("GlitchShader")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
+viewport_path = NodePath("GameLayer")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_jk85w"]
 viewport_path = NodePath("CRTShader")
@@ -79,15 +79,6 @@ texture = ExtResource("3_ni4fo")
 expand_mode = 1
 stretch_mode = 2
 
-[node name="BorderShader" type="SubViewport" parent="."]
-size = Vector2i(1920, 1080)
-
-[node name="TextureRect" type="TextureRect" parent="BorderShader"]
-material = ExtResource("5_myocl")
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("ViewportTexture_3omms")
-
 [node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
@@ -105,6 +96,15 @@ material = ExtResource("4_fet0s")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_a5ilm")
+
+[node name="BorderShader" type="SubViewport" parent="CRTShader"]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="CRTShader/BorderShader"]
+material = ExtResource("5_myocl")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_3omms")
 
 [node name="Screenbend" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)

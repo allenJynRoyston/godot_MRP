@@ -65,12 +65,13 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_bua8p")
 layout_mode = 2
 
 [node name="MaxBtn" parent="HBoxContainer/BtnContainer/HBoxContainer" instance=ExtResource("3_8hswi")]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-icon = 16
+icon = 14
 
 [node name="CloseBtn" parent="HBoxContainer/BtnContainer/HBoxContainer" instance=ExtResource("3_8hswi")]
 visible = false

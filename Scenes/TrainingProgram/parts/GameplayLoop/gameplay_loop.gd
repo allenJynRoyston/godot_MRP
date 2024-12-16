@@ -150,7 +150,7 @@ var current_shop_step:SHOP_STEPS = SHOP_STEPS.HIDE :
 	set(val):
 		current_shop_step = val
 		on_current_shop_step_update()
-		
+
 var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.HIDE : 
 	set(val):
 		current_contain_step = val
@@ -456,7 +456,7 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.CONFIRM_LOCATION
 		# ---------------
 		SHOP_STEPS.CONFIRM_LOCATION:
-			await show_only([LocationContainer, ConfirmModal])
+			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response			
 			match response.action:
 				ACTION.BACK:
@@ -597,9 +597,14 @@ func on_current_build_complete_step_update() -> void:
 
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
-func on_control_input_update(input_data:Dictionary) -> void:
-	if is_busy:return
+func is_occupied() -> bool:
+	if (current_shop_step != SHOP_STEPS.HIDE) or (current_contain_step != CONTAIN_STEPS.HIDE) or (current_recruit_step != RECRUIT_STEPS.HIDE) or (current_build_complete_step != BUILD_COMPLETE_STEPS.HIDE):
+		return true
+	return false
 	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if is_busy or is_occupied():return
+
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 	

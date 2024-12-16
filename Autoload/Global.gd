@@ -155,6 +155,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				match event.keycode:
 					4194309:
 						key = "ENTER"
+					4194308:
+						key = "BACK"
 					70:
 						key = "F"
 					53:
