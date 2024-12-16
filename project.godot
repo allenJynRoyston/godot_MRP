@@ -19,8 +19,8 @@ run/size/viewport_height=720
 [autoload]
 
 REFS="*res://Autoload/enums/NODE_REFS.gd"
-BUILDING_TYPE="*res://Autoload/enums/BUILDING_TYPE.gd"
 RESOURCE="*res://Autoload/enums/RESOURCE.gd"
+ROOM="*res://Autoload/enums/ROOM.gd"
 SCP="*res://Autoload/enums/SCP.gd"
 SVGS="*res://Autoload/enums/SVGS.gd"
 COLORS="*res://Autoload/enums/COLORS.gd"
@@ -28,10 +28,11 @@ ACTION="*res://Autoload/enums/ACTIONS.gd"
 CACHE="*res://Autoload/Cache.gd"
 GBL="*res://Autoload/Global.gd"
 FS="*res://Autoload/FileSys.gd"
-B="*res://Autoload/Buildables.gd"
 U="*res://Autoload/Utility.gd"
 C="*res://Autoload/Containment.gd"
-COLOR_REF="*res://Autoload/ColorRef.gd"
+COLOR_UTIL="*res://Autoload/ColorRef.gd"
+ROOM_UTIL="*res://Autoload/RoomUtility.gd"
+RESOURCE_UTIL="*res://Autoload/ResourceUtility.gd"
 
 [display]
 

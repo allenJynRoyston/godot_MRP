@@ -9,17 +9,17 @@ extends BtnBase
 		icon = val
 		on_icon_update()
 
-@export var static_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE)   : 
+@export var static_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE)   : 
 	set(val): 
 		static_color = val
 		update_color(static_color)
 		
-@export var active_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) :
+@export var active_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) :
 	set(val): 
 		active_color = val
 		on_focus()
 		
-@export var inactive_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) :
+@export var inactive_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE) :
 	set(val): 
 		inactive_color = val
 		on_focus()

@@ -1,12 +1,12 @@
 @tool
 extends BtnBase
 
-@export var active_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if !Engine.is_editor_hint() else Color.WHITE :
+@export var active_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if !Engine.is_editor_hint() else Color.WHITE :
 	set(val): 
 		active_color = val
 		on_focus()
 		
-@export var inactive_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE) if !Engine.is_editor_hint() else Color.WHITE  :
+@export var inactive_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE) if !Engine.is_editor_hint() else Color.WHITE  :
 	set(val): 
 		inactive_color = val
 		on_focus()
@@ -17,7 +17,6 @@ func _ready() -> void:
 	super._ready()
 	if is_hoverable:
 		on_focus(false)
-
 # ------------------------------------------------------------------------------
 
 ## ------------------------------------------------------------------------------

@@ -45,11 +45,11 @@ func on_focus(state:bool) -> void:
 	else:
 		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 
-	OpenBtn.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
-	NewBtn.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+	OpenBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+	NewBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 	
 	var label_setting:LabelSettings = SectionLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+	label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 	SectionLabel.label_settings = label_setting
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:

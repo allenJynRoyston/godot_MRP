@@ -28,6 +28,8 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		is_showing = true
 	on_freeze_inputs_update()
 	on_is_showing_update()
 # ------------------------------------------------------------------------------
@@ -55,10 +57,12 @@ func set_percent(percentage: float) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	
+func on_reset():pass
+
 func on_freeze_inputs_update() -> void:
 	pass
 	
 func _on_subviewport_child_changed() -> void:
-	if Engine.is_editor_hint() and Subviewport != null:
+	if Subviewport != null:
 		Subviewport.size = Subviewport.get_child(0).size
 # ------------------------------------------------------------------------------	

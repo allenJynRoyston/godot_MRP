@@ -47,11 +47,11 @@ func on_is_busy_update() -> void:
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:
 	if is_node_ready() and !Engine.is_editor_hint():
-		IconButton.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
-		IsBusyButton.static_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+		IconButton.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+		IsBusyButton.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 		
 		var label_setting:LabelSettings = TitleLabel.label_settings.duplicate()
-		label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+		label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 		TitleLabel.label_settings = label_setting
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:

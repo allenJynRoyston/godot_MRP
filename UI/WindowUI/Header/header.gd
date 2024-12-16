@@ -82,7 +82,7 @@ func on_force_focus_updated(state:bool = force_focus) -> void:
 			
 	for node in [WindowLabel]:
 		var new_label_setting:LabelSettings = node.label_settings.duplicate()
-		new_label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+		new_label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 		node.label_settings = new_label_setting
 		
 	for node in [MaxBtn, CloseBtn]:
@@ -94,7 +94,7 @@ func on_force_focus_updated(state:bool = force_focus) -> void:
 
 	for node in [RootPanel]:
 		var new_stylebox:StyleBox = node.get_theme_stylebox('panel').duplicate()
-		new_stylebox.border_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+		new_stylebox.border_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
 		node.add_theme_stylebox_override("panel", new_stylebox)
 # --------------------------------------------------------------------------------------------------
 

@@ -26,6 +26,8 @@ window_size = Vector2(900, 500)
 header_icon = 6
 
 [node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+enable_max_btn = true
+enable_close_btn = true
 window_label = "Site Director Training Program"
 
 [node name="IconBtn" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/LabelContainer/MarginContainer/HBoxContainer" index="0"]

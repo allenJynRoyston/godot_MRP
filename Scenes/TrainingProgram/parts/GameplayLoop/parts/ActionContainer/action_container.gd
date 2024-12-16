@@ -7,6 +7,8 @@ extends GameContainer
 @onready var ContainBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ContainBtn
 @onready var RecruitBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/RecruitBtn
 
+@onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/NextBtn
+
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -23,4 +25,7 @@ func _ready() -> void:
 		
 	RecruitBtn.onClick = func() -> void:
 		parentNode.current_recruit_step = parentNode.RECRUIT_STEPS.START
+	
+	NextBtn.onClick = func() -> void:
+		parentNode.next_day()
 # --------------------------------------------------------------------------------------------------		

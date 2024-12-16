@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3 uid="uid://bjpif0yvapqdn"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StatusContainer/status_container.gd" id="1_luwns"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_et8g1"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_vgalj"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_fqxdp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rlssl"]
+shader = ExtResource("2_et8g1")
+shader_parameter/percentage = 1.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ve1lb"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5ev7"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dh1uk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_lftaj"]
+font = ExtResource("2_vgalj")
+font_size = 42
+
+[node name="StatusContainer" type="MarginContainer"]
+offset_right = 178.0
+offset_bottom = 75.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_luwns")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_rlssl")
+layout_mode = 2
+texture = SubResource("ViewportTexture_ve1lb")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(198, 95)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 178.0
+offset_bottom = 75.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_c5ev7")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dh1uk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="DayLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "DAY 1"
+label_settings = SubResource("LabelSettings_lftaj")
+
+[node name="Label2" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Status: Green"
+label_settings = ExtResource("3_fqxdp")
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

@@ -153,6 +153,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			if "on_control_input_update" in node:
 				var key:String = ""
 				match event.keycode:
+					4194309:
+						key = "ENTER"
 					70:
 						key = "F"
 					53:

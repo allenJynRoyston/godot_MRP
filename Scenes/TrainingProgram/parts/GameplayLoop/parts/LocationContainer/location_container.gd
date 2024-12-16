@@ -58,6 +58,11 @@ func after_ready() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func goto_location(data:Dictionary) -> void:
+	floor_selected = data.floor
+	ring_selected = data.ring
+	room_selected = data.room
+	
 func on_floor_selected_updated() -> void:
 	for index in FloorItemContainer.get_child_count():
 		var node:Control = FloorItemContainer.get_child(index)

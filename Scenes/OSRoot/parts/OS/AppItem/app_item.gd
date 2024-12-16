@@ -103,10 +103,10 @@ func update_color(state:bool) -> void:
 	if Engine.is_editor_hint() or !is_node_ready():
 		return
 		
-	IconButton.static_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+	IconButton.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
 	
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+	label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 	AppLabel.label_settings = label_setting
 	
 	

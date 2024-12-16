@@ -1,0 +1,82 @@
+[gd_scene load_steps=8 format=3 uid="uid://cgp6oftk1itbm"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/action_queue_item.gd" id="1_fgfba"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_820ko"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_1yfsp"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_f2e5b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erjns"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vu7ry"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kbi1h"]
+bg_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="ActionQueueItem" type="PanelContainer"]
+offset_right = 150.0
+offset_bottom = 61.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_erjns")
+script = ExtResource("1_fgfba")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TitleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_1yfsp")]
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Title"
+
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_820ko")]
+layout_mode = 2
+icon = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_vu7ry")
+theme_override_styles/fill = SubResource("StyleBoxFlat_kbi1h")
+max_value = 1.0
+value = 0.5
+show_percentage = false
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="DaysLeft" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "3 days left"
+label_settings = ExtResource("4_f2e5b")
+
+[node name="RequirementContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="RequirementGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/RequirementContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+columns = 3

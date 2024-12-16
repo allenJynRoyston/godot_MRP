@@ -1,9 +1,10 @@
 @tool
 extends PanelContainer
 
-enum SHOP_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
-enum CONTAIN_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
-enum RECRUIT_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum SHOP_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum CONTAIN_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var LocationContainer:MarginContainer = $LocationContainer
@@ -15,8 +16,11 @@ enum RECRUIT_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM,
 @onready var StoreContainer:MarginContainer = $StoreContainer
 @onready var ItemSelectContainer:MarginContainer = $ItemSelectContainer
 @onready var RecruitContainer:MarginContainer = $RecruitContainer
+@onready var StatusContainer:MarginContainer = $StatusContainer
+@onready var BuildCompleteContainer:MarginContainer = $BuildCompleteContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
+@onready var WaitContainer:PanelContainer = $WaitContainer
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
@@ -75,13 +79,72 @@ enum RECRUIT_STEPS {HIDE, START, SHOW, WAIT_FOR_USER, CONFIRM_LOCATION, CONFIRM,
 		show_confirm_modal = val
 		on_show_confirm_modal_update()
 		
+@export var show_status:bool = false : 
+	set(val):
+		show_status = val
+		on_show_status_update()
+
+@export var show_build_complete:bool = false : 
+	set(val):
+		show_build_complete = val
+		on_show_build_complete_update()
+#endregion
+# ------------------------------------------------------------------------------ 
+
+# ------------------------------------------------------------------------------ 
+#region SAVABLE DATA
+var current_location:Dictionary = {} : 
+	set(val):
+		current_location = val
+		on_current_location_update()
+		
+var progress_data:Dictionary = { 
+		"day": 1,
+	} : 
+	set( val ) : 
+		progress_data = val
+		on_progress_data_update()
+		
+var action_queue_data:Array = [] : 
+	set( val ) : 
+		action_queue_data = val
+		on_action_queue_data_update()
+
+var facility_room_data:Array = [] : 
+	set( val ):
+		facility_room_data = val
+		on_facility_room_data_update()
+
+var resources_data:Dictionary = { 
+	RESOURCE.TYPE.MONEY: {"amount": 10, "capacity": 9999},
+	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
+	RESOURCE.TYPE.LEAD_RESEARCHERS: {"amount": 0, "capacity": 0},
+	RESOURCE.TYPE.STAFF: {"amount": 0, "capacity": 0},
+	RESOURCE.TYPE.SECURITY: {"amount": 0, "capacity": 0},
+	RESOURCE.TYPE.DCLASS: {"amount": 0, "capacity": 0},
+} : 
+	set(val): 
+		resources_data = val
+		on_resources_data_update()
 
 #endregion
 # ------------------------------------------------------------------------------ 
 
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
+var is_busy:bool = false : 
+	set(val):
+		is_busy = val
+		on_is_busy_update()
+
+var selected_shop_item:Dictionary = {}
+var completed_build_items:Array = [] : 
+	set(val):
+		completed_build_items = val
+		on_completed_build_items_update()
+
 var showing_states:Dictionary = {} 
+var revert_state_location:Dictionary = {}
 
 var current_shop_step:SHOP_STEPS = SHOP_STEPS.HIDE : 
 	set(val):
@@ -97,6 +160,11 @@ var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.HIDE :
 	set(val):
 		current_recruit_step = val
 		on_current_recruit_step_update()
+		
+var current_build_complete_step:BUILD_COMPLETE_STEPS = BUILD_COMPLETE_STEPS.HIDE : 
+	set(val):
+		current_build_complete_step = val
+		on_current_build_complete_step_update()
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -128,9 +196,18 @@ func setup() -> void:
 	on_show_dialogue_update()
 	on_show_item_select_update()
 	on_show_recruit_update()
+	on_show_status_update()
+	on_show_build_complete_update()
+	
+	# savable data update
+	on_progress_data_update()
+	on_action_queue_data_update()	
+	on_resources_data_update()
+	on_facility_room_data_update()
 	
 	# modals
 	on_show_confirm_modal_update()
+	on_is_busy_update()
 	
 	# steps
 	on_show_store_update()
@@ -140,8 +217,8 @@ func setup() -> void:
 	capture_default_showing_state()
 		
 	LocationContainer.onRoomSelected = func(data:Dictionary) -> void:
-		# update structure
-		print(data)
+		current_location = data
+
 		
 #endregion
 # ------------------------------------------------------------------------------
@@ -164,21 +241,29 @@ func start(game_data:Dictionary = {}) -> void:
 		start_load_game()
 
 func start_new_game() -> void:
-	pass
+	after_start()
 
 func start_load_game() -> void:
-	pass
+	# load save file
+	after_start()
+	
+func after_start() -> void:
+	LocationContainer.goto_location(current_location)	
 #endregion
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	SHOW/HIDE CONTAINERS
 #region show/hide functions
+func on_is_busy_update() -> void:
+	WaitContainer.show() if is_busy else WaitContainer.hide()
+
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, LocationContainer, ActionQueueContainer, 
 		ItemStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ItemSelectContainer, 
-		ConfirmModal, RecruitContainer
+		ConfirmModal, RecruitContainer, StatusContainer,
+		BuildCompleteContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -191,7 +276,8 @@ func capture_default_showing_state() -> void:
 # ------------------------------------------------------------------------------
 func restore_default_state() -> void:
 	for node in get_all_container_nodes():
-		node.is_showing = showing_states[node]
+		if showing_states[node] != node.is_showing:
+			node.is_showing = showing_states[node]
 	await U.set_timeout(0.3)
 # ------------------------------------------------------------------------------
 
@@ -210,6 +296,64 @@ func show_only(nodes:Array = []) -> void:
 			node.is_showing = true
 			
 	await U.set_timeout(0.3)
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+#region LOCAL FUNCS
+func wait_please(duration:float = 0.5) -> void:
+	is_busy = true
+	await U.set_timeout(duration)
+	is_busy = false	
+
+func next_day() -> void:
+	await wait_please()
+	
+	# UPDATE THINGS IN THE ACTION QUEUE
+	var temp:Array = action_queue_data.duplicate().map(func(i): 
+		i.days_in_queue += 1
+		return i
+	)	
+	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
+	action_queue_data = temp.filter(func(i): return i.days_in_queue < i.build_time)	
+	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
+	completed_build_items = temp.filter(func(i): return i.days_in_queue == i.build_time)
+	
+	progress_data.day += 1
+	progress_data = progress_data
+	
+	
+
+func goto_location(location:Dictionary) -> void:
+	LocationContainer.goto_location(location)
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	SAVABLE ON_UPDATES
+#region local SAVABLE ONUPDATES
+func on_progress_data_update() -> void:
+	if is_node_ready():
+		StatusContainer.progress_data = progress_data
+	
+func on_facility_room_data_update() -> void:
+	pass
+
+
+func on_action_queue_data_update() -> void:
+	if is_node_ready():
+		ActionQueueContainer.action_queue_data = action_queue_data
+	
+func on_completed_build_items_update() -> void:
+	if is_node_ready() and !completed_build_items.is_empty():
+		current_build_complete_step = BUILD_COMPLETE_STEPS.START
+		
+func on_resources_data_update() -> void:
+	if is_node_ready() and !resources_data.is_empty():
+		ResourceContainer.resources_data = resources_data
+
+func on_current_location_update() -> void:
+	pass
+	#print(current_location)
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -270,6 +414,16 @@ func on_show_recruit_update() -> void:
 		RecruitContainer.is_showing = show_recruit
 		showing_states[RecruitContainer] = show_recruit
 
+func on_show_status_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		StatusContainer.is_showing = show_status
+		showing_states[StatusContainer] = show_status
+
+func on_show_build_complete_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		BuildCompleteContainer.is_showing = show_build_complete
+		showing_states[BuildCompleteContainer] = show_build_complete
+
 func _on_container_rect_changed() -> void:	
 	if is_node_ready() or Engine.is_editor_hint():
 		for sidebar in [ItemStatusContainer, ActionQueueContainer]:
@@ -282,27 +436,28 @@ func _on_container_rect_changed() -> void:
 #region SHOP STATES
 func on_current_shop_step_update() -> void:
 	if !is_node_ready() and !Engine.is_editor_hint():return
+	
 	match current_shop_step:
 		# ---------------
 		SHOP_STEPS.HIDE:
 			await restore_default_state()
 		# ---------------
 		SHOP_STEPS.START:
+			selected_shop_item = {}
 			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, ItemStatusContainer])
-			current_shop_step = SHOP_STEPS.WAIT_FOR_USER
-		# ---------------
-		SHOP_STEPS.WAIT_FOR_USER:
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.HIDE
+					
 				ACTION.NEXT:
+					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.CONFIRM_LOCATION
 		# ---------------
 		SHOP_STEPS.CONFIRM_LOCATION:
 			await show_only([LocationContainer, ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response
+			var response:Dictionary = await ConfirmModal.user_response			
 			match response.action:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.START
@@ -310,7 +465,16 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.FINALIZE
 		# ---------------
 		SHOP_STEPS.FINALIZE:
-			# do something with data
+			var room_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.room_id)
+			action_queue_data.push_back({
+				"action": ACTION.BUILD,
+				"data": selected_shop_item,
+				"days_in_queue": 0,
+				"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
+				"location": current_location,
+			})
+			resources_data = ROOM_UTIL.calc_resource_cost(selected_shop_item.room_id, resources_data)
+			action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 #endregion
 # ------------------------------------------------------------------------------	
@@ -326,9 +490,6 @@ func on_current_contain_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.START:
 			await show_only([ResourceContainer, ItemSelectContainer, ActionQueueContainer, ItemStatusContainer])
-			current_contain_step = CONTAIN_STEPS.WAIT_FOR_USER
-		# ---------------
-		CONTAIN_STEPS.WAIT_FOR_USER:
 			var response:Dictionary = await ItemSelectContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -364,12 +525,8 @@ func on_current_recruit_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.START:
 			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, ItemStatusContainer])
-			current_recruit_step = RECRUIT_STEPS.WAIT_FOR_USER
-		# ---------------
-		CONTAIN_STEPS.WAIT_FOR_USER:
 			var response:Dictionary = await RecruitContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			print(response)
 			match response.action:
 				ACTION.BACK:
 					current_recruit_step = RECRUIT_STEPS.HIDE
@@ -391,14 +548,66 @@ func on_current_recruit_step_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------		
 
+# ------------------------------------------------------------------------------	RECRUIT STEPS
+#region BUILD COMPLETE
+func on_current_build_complete_step_update() -> void:
+	if !is_node_ready() and !Engine.is_editor_hint():return
+
+	match current_build_complete_step:
+		# ---------------
+		RECRUIT_STEPS.HIDE:
+			await restore_default_state()
+		# ---------------
+		CONTAIN_STEPS.START:
+			revert_state_location = current_location
+			BuildCompleteContainer.completed_build_items = completed_build_items
+			await show_only([Structure3dContainer, ResourceContainer, LocationContainer, BuildCompleteContainer])
+			var response:Dictionary = await BuildCompleteContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			match response.action:
+				ACTION.DONE:
+					current_build_complete_step = BUILD_COMPLETE_STEPS.HIDE
+				ACTION.SKIP:
+					current_build_complete_step = BUILD_COMPLETE_STEPS.HIDE
+			
+			current_location = revert_state_location
+			
+			# REMOVES FROM QUEUE LIST
+			await ActionQueueContainer.remove_from_queue(completed_build_items)
+			
+			# UPDATE SAVABLE DATA
+			for item in completed_build_items:
+				facility_room_data.push_back({
+					"data": item.data,
+					"location": item.location
+				})
+				
+				# update resources_data
+				resources_data = ROOM_UTIL.calc_resource_capacity(item.data.room_id, resources_data)
+				resources_data = ROOM_UTIL.calc_resource_amount(item.data.room_id, resources_data)
+				
+			# update reactively
+			resources_data = resources_data	
+			facility_room_data = facility_room_data
+			completed_build_items = []
+			
+					
+#endregion
+# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
 func on_control_input_update(input_data:Dictionary) -> void:
+	if is_busy:return
+	
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
+	
 	print("key: %s   keycode: %s" % [key, keycode])
+	
 	match key:
+		"ENTER":
+			next_day()
 		"5":
 			quicksave()
 		"8":
@@ -410,20 +619,46 @@ func on_control_input_update(input_data:Dictionary) -> void:
 # ------------------------------------------------------------------------------	SAVE/LOAD
 #region SAVE/LOAD
 func quicksave() -> void:
+	is_busy = true
 	var save_data = {
-
+		"progress_data": progress_data,		
+		"action_queue_data": action_queue_data,
+		"facility_room_data": facility_room_data,
+		"resources_data": resources_data,
+		"current_location": current_location,
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
+	await U.set_timeout(1.0)
+	is_busy = false
 	print("saved game!")
 
 func quickload() -> void:
-	var res = FS.load_file(FS.FILE.QUICK_SAVE)		
+	is_busy = true
+	var res = FS.load_file(FS.FILE.QUICK_SAVE)
 	if res.success:
-		parse_restore_data(res.filedata.data)
-	print("quickload game!")
+		await parse_restore_data(res.filedata.data)
+		print("quickload success!")
+	else:
+		print("quickload failed :(")
+	is_busy = false
+	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	var no_save:bool = restore_data.is_empty()
+	await restore_default_state()
+	
+	# trigger on reset in nodes
+	for node in get_all_container_nodes():
+		if "on_reset" in node:
+			node.on_reset()
+	
+	progress_data = progress_data if no_save else restore_data.progress_data
+	action_queue_data = action_queue_data if no_save else restore_data.action_queue_data	
+	facility_room_data = action_queue_data if no_save else restore_data.facility_room_data  
+	resources_data = action_queue_data if no_save else restore_data.resources_data	
+	current_location = action_queue_data if no_save else restore_data.current_location
+	
+	goto_location(current_location)
 	
 
 #endregion		

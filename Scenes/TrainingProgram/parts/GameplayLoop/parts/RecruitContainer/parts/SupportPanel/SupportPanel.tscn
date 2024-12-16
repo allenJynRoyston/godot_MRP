@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://by8lcxk66qelh"]
+
+[ext_resource type="PackedScene" uid="uid://fkdesfdwlevk" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/parts/SupportSection.tscn" id="1_p22eb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h7aq7"]
+
+[node name="SupportPanel" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxEmpty_h7aq7")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SupportSection" parent="MarginContainer/VBoxContainer2" instance=ExtResource("1_p22eb")]
+layout_mode = 2
+
+[node name="SupportSection2" parent="MarginContainer/VBoxContainer2" instance=ExtResource("1_p22eb")]
+layout_mode = 2
+option = 1
+
+[node name="SupportSection3" parent="MarginContainer/VBoxContainer2" instance=ExtResource("1_p22eb")]
+layout_mode = 2
+option = 2

@@ -23,10 +23,10 @@ func on_data_update() -> void:
 # --------------------------------------	
 func on_focus(state:bool) -> void:
 	if !is_node_ready():return
-	IconButton.static_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+	IconButton.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
 	
 	var label_setting:LabelSettings = AttachmentLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+	label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
 	AttachmentLabel.label_settings = label_setting
 	DownloadLabel.label_settings = label_setting
 		

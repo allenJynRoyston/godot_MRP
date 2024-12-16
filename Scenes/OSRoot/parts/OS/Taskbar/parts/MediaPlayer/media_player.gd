@@ -96,11 +96,11 @@ func check_track_scroll() -> void:
 # --------------------------------------	
 func on_focus(state:bool) -> void:
 	#var shader_material:ShaderMaterial = Logo.material.duplicate()	
-	#shader_material.set_shader_parameter("tint_color", COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE))
+	#shader_material.set_shader_parameter("tint_color", COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE))
 	#Logo.material = shader_material
 	
 	var label_setting:LabelSettings = TrackNameLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_REF.get_window_color(COLORS.WINDOW.SHADING)
+	label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
 	TrackNameLabel.label_settings = label_setting
 # --------------------------------------	
 

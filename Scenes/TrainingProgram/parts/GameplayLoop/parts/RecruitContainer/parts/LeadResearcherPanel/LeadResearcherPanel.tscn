@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://lgmqxg5r5bg4"]
+
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="1_8cydk"]
+[ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/ProfileCard.tscn" id="2_0dtbl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdxja"]
+
+[node name="LeadResearcherPanel" type="PanelContainer"]
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_hdxja")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "New canidates will be available in X days."
+label_settings = ExtResource("1_8cydk")
+horizontal_alignment = 1
+
+[node name="CardContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ProfileCard" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
+layout_mode = 2
+
+[node name="ProfileCard2" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
+layout_mode = 2
+
+[node name="ProfileCard3" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
+layout_mode = 2

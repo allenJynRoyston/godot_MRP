@@ -25,6 +25,12 @@ func _ready() -> void:
 	for index in GridItemContainer.get_child_count():
 		var node:Control = GridItemContainer.get_child(index)
 		node.onClick = func() -> void:
-			user_response.emit({"action": ACTION.NEXT, "data": {}})
+			user_response.emit({
+				"action": ACTION.NEXT, 
+				"selected": {
+					"uid": U.generate_uid(),
+					"room_id": ROOM.TYPE.BARRICKS
+				}
+			})
 
 # --------------------------------------------------------------------------------------------------		

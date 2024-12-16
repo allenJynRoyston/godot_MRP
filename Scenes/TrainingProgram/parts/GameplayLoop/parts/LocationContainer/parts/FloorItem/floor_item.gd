@@ -66,11 +66,11 @@ func on_is_disabled_update() -> void:
 
 # --------------------------------------
 func update_colors() -> void:
-	var use_color:Color = COLOR_REF.get_text_color(COLORS.TEXT.ACTIVE) if is_selected else COLOR_REF.get_text_color(COLORS.TEXT.INACTIVE)
+	var use_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if is_selected else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 	if is_disabled:
-		use_color = COLOR_REF.get_text_color(COLORS.TEXT.DARK)
+		use_color = COLOR_UTIL.get_text_color(COLORS.TEXT.DARK)
 	if is_focused:
-		use_color = COLOR_REF.get_text_color(COLORS.TEXT.LIGHT)
+		use_color = COLOR_UTIL.get_text_color(COLORS.TEXT.LIGHT)
 	
 	var label_setting:LabelSettings = FloorLabel.label_settings.duplicate()
 	label_setting.font_color = use_color

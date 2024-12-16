@@ -194,7 +194,7 @@ func on_focus(state:bool = false) -> void:
 		
 		for node in [RootPanel]:
 			var new_stylebox:StyleBox = node.get_theme_stylebox('panel').duplicate()
-			new_stylebox.border_color = COLOR_REF.get_window_color(COLORS.WINDOW.ACTIVE) if (state or window_is_active) else COLOR_REF.get_window_color(COLORS.WINDOW.INACTIVE)
+			new_stylebox.border_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if (state or window_is_active) else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
 			node.add_theme_stylebox_override("panel", new_stylebox)
 #
 		#for node in [BodyPanel]:
