@@ -3,6 +3,8 @@ extends Node
 
 var BARRICKS:Dictionary = {
 	"name": "BARRICKS",
+	"size_allowed": [1, 2, 3],
+	"can_contain": false,
 	"get_build_time": func() -> int:
 		return 3,
 	"get_resource_cost": func() -> Dictionary:
@@ -19,6 +21,13 @@ var BARRICKS:Dictionary = {
 		},		
 }
 
+# can this work?
+var STEEL_CONTAINMENT_CELL:Dictionary = {
+	"name": "STEEL LINED",
+	"size_allowed": [1, 2, 3],
+	"can_contain": true,
+}
+
 var DORMITORY:Dictionary = {
 	"name": "DORMITORY",
 	"build_time": 2,
@@ -28,7 +37,6 @@ var DORMITORY:Dictionary = {
 var HOLDING_CELLS:Dictionary = {
 	"name": "HOLDING CELLS",
 	"build_time": 2,
-
 }
 
 
