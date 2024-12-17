@@ -22,19 +22,20 @@ func _init() -> void:
 # --------------------------------------	
 
 # --------------------------------------	
+func _ready() -> void:
+	root_node = find_root(self)
+	is_in_subviewport = find_subviewport(self)
+# --------------------------------------
+
+# --------------------------------------	
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():
 		return 	
 	GBL.unsubscribe_to_mouse_pos(self)
 	GBL.unsubscribe_to_input(self)
-	GBL.unsubscribe_to_process(self)
+	GBL.unsubscribe_to_process(self)	
 # --------------------------------------	
 
-# --------------------------------------	
-func _ready() -> void:
-	root_node = find_root(self)
-	is_in_subviewport = find_subviewport(self)
-# --------------------------------------
 
 # --------------------------------------	
 func on_mouse_pos_update(new_mouse_pos:Vector2) -> void:

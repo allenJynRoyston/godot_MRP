@@ -30,7 +30,7 @@ GBL="*res://Autoload/Global.gd"
 FS="*res://Autoload/FileSys.gd"
 U="*res://Autoload/Utility.gd"
 C="*res://Autoload/Containment.gd"
-COLOR_UTIL="*res://Autoload/ColorRef.gd"
+COLOR_UTIL="*res://Autoload/ColorUtility.gd"
 ROOM_UTIL="*res://Autoload/RoomUtility.gd"
 RESOURCE_UTIL="*res://Autoload/ResourceUtility.gd"
 

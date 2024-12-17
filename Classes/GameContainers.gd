@@ -28,6 +28,7 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
+	print(is_showing)
 	if Engine.is_editor_hint():
 		is_showing = true
 	on_freeze_inputs_update()
