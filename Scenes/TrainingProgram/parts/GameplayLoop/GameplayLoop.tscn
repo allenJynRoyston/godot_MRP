@@ -41,6 +41,7 @@ show_status = true
 layout_mode = 2
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -53,32 +54,36 @@ metadata/_edit_group_ = true
 
 [node name="ItemStatusContainer" parent="." instance=ExtResource("6_emfl4")]
 layout_mode = 2
+script = null
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme_override_constants/margin_bottom = 10
+script = null
 
 [node name="LocationContainer" parent="." instance=ExtResource("4_fqcw3")]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 220
+script = null
 
 [node name="ResourceContainer" parent="." instance=ExtResource("8_asqny")]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 10
+script = null
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = false
-freeze_inputs = true
+script = null
 
 [node name="ItemSelectContainer" parent="." instance=ExtResource("10_v7mb0")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -86,15 +91,17 @@ is_showing = false
 freeze_inputs = true
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
-theme_override_constants/margin_right = 150
+theme_override_constants/margin_right = 250
 theme_override_constants/margin_bottom = 10
 is_showing = false
 freeze_inputs = true
 
 [node name="RecruitContainer" parent="." instance=ExtResource("12_dw62g")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -110,6 +117,7 @@ progress_data = {
 }
 
 [node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

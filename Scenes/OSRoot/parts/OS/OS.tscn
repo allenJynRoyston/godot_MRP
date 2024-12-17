@@ -62,8 +62,7 @@ alignment = 2
 
 [node name="RecycleBin" parent="MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2" instance=ExtResource("4_e3kl5")]
 layout_mode = 2
-title = "Recycle Bin"
-icon = 0
+script = null
 
 [node name="RunningAppsContainer" type="Control" parent="MarginContainer"]
 layout_mode = 2

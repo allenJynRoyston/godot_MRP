@@ -4,6 +4,8 @@ extends Node
 var neon_green:Color = Color("00f647")
 var dim_green:Color = Color("004115")
 var light_green:Color = Color("008747")
+var invalid_red:Color = Color("ff3400")
+var invalid_red_dim:Color = Color("861600")
 
 # ------------------------------------------------
 func get_window_color(ref:COLORS.WINDOW) -> Color:
@@ -29,6 +31,10 @@ func get_text_color(ref:COLORS.TEXT) -> Color:
 			return Color.BLACK
 		COLORS.TEXT.LIGHT:
 			return Color.WHITE
+		COLORS.TEXT.INVALID_ACTIVE:
+			return invalid_red
+		COLORS.TEXT.INVALID_INACTIVE:
+			return invalid_red_dim
 		_:
 			return neon_green
 # ------------------------------------------------

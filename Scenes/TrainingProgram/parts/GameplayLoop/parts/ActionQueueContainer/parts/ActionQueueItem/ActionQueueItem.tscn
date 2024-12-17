@@ -44,9 +44,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 title = "Title"
 
-[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_820ko")]
+[node name="CancelBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_820ko")]
 layout_mode = 2
 icon = 1
+debug_me = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
