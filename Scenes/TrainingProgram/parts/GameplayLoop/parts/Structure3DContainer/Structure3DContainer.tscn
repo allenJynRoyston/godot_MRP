@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://dl5rw8mq2i0dp"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_1i53d"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_c3jfr"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_wktvj"]
 [ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/GameplayLoop/wireframe.gdshader" id="2_1488l"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_wr5lh"]
 
@@ -13,6 +13,9 @@ shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_op3qm"]
 viewport_path = NodePath("SubViewport")
@@ -43,7 +46,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_w8kjt")
-script = ExtResource("1_c3jfr")
+script = ExtResource("1_wktvj")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_vfiyn")

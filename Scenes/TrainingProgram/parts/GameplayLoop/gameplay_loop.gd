@@ -1,7 +1,7 @@
 @tool
 extends PanelContainer
 
-enum SHOP_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum SHOP_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE, REFUND}
 enum CONTAIN_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
@@ -322,8 +322,12 @@ func next_day() -> void:
 	progress_data.day += 1
 	progress_data = progress_data
 	
-	
-
+func cancel_action(item_data:Dictionary) -> void:
+	match item_data.action:
+		ACTION.BUILD:
+			selected_shop_item = item_data
+			current_shop_step = SHOP_STEPS.REFUND
+			
 func goto_location(location:Dictionary) -> void:
 	LocationContainer.goto_location(location)
 #endregion
@@ -350,6 +354,7 @@ func on_completed_build_items_update() -> void:
 func on_resources_data_update() -> void:
 	if is_node_ready() and !resources_data.is_empty():
 		ResourceContainer.resources_data = resources_data
+		StoreContainer.resources_data = resources_data
 
 func on_current_location_update() -> void:
 	pass
@@ -436,14 +441,15 @@ func _on_container_rect_changed() -> void:
 #region SHOP STATES
 func on_current_shop_step_update() -> void:
 	if !is_node_ready() and !Engine.is_editor_hint():return
-	
 	match current_shop_step:
 		# ---------------
 		SHOP_STEPS.HIDE:
 			await restore_default_state()
+			StoreContainer.end()
 		# ---------------
 		SHOP_STEPS.START:
 			selected_shop_item = {}
+			StoreContainer.start()
 			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, ItemStatusContainer])
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
@@ -465,7 +471,7 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.FINALIZE
 		# ---------------
 		SHOP_STEPS.FINALIZE:
-			var room_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.room_id)
+			var room_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.id)
 			action_queue_data.push_back({
 				"action": ACTION.BUILD,
 				"data": selected_shop_item,
@@ -473,9 +479,22 @@ func on_current_shop_step_update() -> void:
 				"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
 				"location": current_location,
 			})
-			resources_data = ROOM_UTIL.calc_resource_cost(selected_shop_item.room_id, resources_data)
+			resources_data = ROOM_UTIL.calc_resource_cost(selected_shop_item.id, resources_data)
 			action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
+		SHOP_STEPS.REFUND:			
+			await show_only([ActionQueueContainer, ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response			
+			match response.action:
+				ACTION.NEXT:					
+					resources_data = ROOM_UTIL.calc_resource_cost(selected_shop_item.data.id, resources_data, true)
+					action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_shop_item.data.uid)
+					ActionQueueContainer.remove_from_queue([selected_shop_item])
+					current_shop_step = SHOP_STEPS.HIDE
+					await restore_default_state()
+				ACTION.BACK:
+					await restore_default_state()
+					
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -583,8 +602,8 @@ func on_current_build_complete_step_update() -> void:
 				})
 				
 				# update resources_data
-				resources_data = ROOM_UTIL.calc_resource_capacity(item.data.room_id, resources_data)
-				resources_data = ROOM_UTIL.calc_resource_amount(item.data.room_id, resources_data)
+				resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
+				resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
 				
 			# update reactively
 			resources_data = resources_data	

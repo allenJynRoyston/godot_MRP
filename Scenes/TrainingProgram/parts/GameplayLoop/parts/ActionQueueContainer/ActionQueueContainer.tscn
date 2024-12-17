@@ -9,6 +9,9 @@ shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_sbiep"]
 viewport_path = NodePath("SubViewport")
@@ -42,6 +45,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="ListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 alignment = 2
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

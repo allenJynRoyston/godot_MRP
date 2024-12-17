@@ -49,13 +49,16 @@ func update_display() -> void:
 	var data:Dictionary = completed_build_items[on_item]
 	
 	has_more = on_item + 1 < completed_build_items.size() 
+	
+	for child in DescriptionList.get_children():
+		child.queue_free()
 		
 	match data.action:
 		ACTION.BUILD:
-			var room_data:Dictionary = ROOM_UTIL.return_data(data.data.room_id)
+			var room_data:Dictionary = ROOM_UTIL.return_data(data.data.id)
 			TitleLabel.text = "%s Built!" % [room_data.name]
-			var capacity_list:Array = ROOM_UTIL.return_resource_capacity(data.data.room_id)
-			var amount_list:Array = ROOM_UTIL.return_resource_amount(data.data.room_id)
+			var capacity_list:Array = ROOM_UTIL.return_resource_capacity(data.data.id)
+			var amount_list:Array = ROOM_UTIL.return_resource_amount(data.data.id)
 			
 			for item in capacity_list:
 				var label_node:Label = Label.new()

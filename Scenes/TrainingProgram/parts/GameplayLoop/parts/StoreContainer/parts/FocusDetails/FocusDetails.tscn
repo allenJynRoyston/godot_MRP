@@ -1,0 +1,97 @@
+[gd_scene load_steps=4 format=3 uid="uid://bv44can1xyvh1"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/FocusDetails/focus_details.gd" id="1_8k54s"]
+[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="1_ohk76"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_6r8tp"]
+
+[node name="FocusDetails" type="PanelContainer"]
+custom_minimum_size = Vector2(185, 0)
+script = ExtResource("1_8k54s")
+
+[node name="FocusContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HighlightContainer" type="VBoxContainer" parent="FocusContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Details"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+layout_mode = 2
+text = "Title"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="DetailImage" type="TextureRect" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+material = ExtResource("1_ohk76")
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Description" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Description"
+label_settings = ExtResource("2_6r8tp")
+autowrap_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Effects"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EffectList" type="VBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+text = "Notes"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConstructionTime" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer3"]
+layout_mode = 2
+text = "construction time: 99 days"
+label_settings = ExtResource("2_6r8tp")

@@ -2,6 +2,7 @@
 extends PanelContainer
 
 @onready var TitleBtn:BtnBase = $MarginContainer/VBoxContainer/HBoxContainer/TitleBtn
+@onready var CancelBtn:BtnBase = $MarginContainer/VBoxContainer/HBoxContainer/CancelBtn
 
 @onready var RequirementContainer:VBoxContainer = $MarginContainer/VBoxContainer/RequirementContainer
 @onready var ProgressBarUI:ProgressBar = $MarginContainer/VBoxContainer/VBoxContainer/ProgressBar
@@ -11,6 +12,7 @@ extends PanelContainer
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var onClick:Callable = func():pass
+var onCancel:Callable = func():pass
 
 # --------------------------------------------------
 var room_data:Dictionary = {}
@@ -28,10 +30,17 @@ var requirements:Array = [] :
 
 # --------------------------------------------------
 func _ready() -> void:
-	on_data_update()
+	on_data_update()	
 	
-	TitleBtn.onClick = func():
+	TitleBtn.onClick = func() -> void:
 		onClick.call()
+	
+	CancelBtn.onClick = func() -> void:
+		print( CancelBtn.is_focused )
+		onCancel.call()
+	
+	#CancelBtn.onBlur = func(node:Control) -> void:
+		
 # --------------------------------------------------
 
 # --------------------------------------------------
@@ -46,12 +55,12 @@ func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		match data.action:
 			ACTION.BUILD:
-				room_data = ROOM_UTIL.return_data(data.data.room_id)
+				room_data = ROOM_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.BUILD
 				TitleBtn.title = "Build %s" % [room_data.name]
 				DaysLeftLabel.text = "%s days left till complete" % [data.build_time - data.days_in_queue]
 				ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
-				requirements = ROOM_UTIL.return_requirements(data.data.room_id) 
+				requirements = ROOM_UTIL.return_requirements(data.data.id) 
 	
 
 func on_requirements_update() -> void:
