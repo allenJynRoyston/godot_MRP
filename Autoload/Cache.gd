@@ -2,7 +2,28 @@
 extends Node
 
 var svg_cache:Array = []
+var image_cache:Array = []
 
+# ------------------------------------------------------------------------------
+func fetch_image(src:String) -> CompressedTexture2D:
+	var cache_res:Array = image_cache.filter(func(i):return i.src == src)
+	if cache_res.size() > 0:
+		return cache_res[0].texture
+	
+	var new_texture:CompressedTexture2D = load(src)
+
+	# if image fails or does not exists, return redacted image
+	if new_texture == null:
+		new_texture = load("res://Media/images/redacted.png")
+	
+	image_cache.push_back({
+		"src": src, 
+		"texture": new_texture
+	})
+			
+	return new_texture
+# ------------------------------------------------------------------------------
+		
 # ------------------------------------------------------------------------------
 func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 	var cache_res:Array = svg_cache.filter(func(i):return i.key == key)
