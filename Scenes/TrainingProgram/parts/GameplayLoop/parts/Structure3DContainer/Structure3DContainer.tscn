@@ -21,6 +21,11 @@ viewport_path = NodePath("SubViewport")
 
 [sub_resource type="Environment" id="Environment_qgafj"]
 ambient_light_color = Color(0, 0.395829, 0.231161, 1)
+ssil_enabled = true
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+glow_enabled = true
+volumetric_fog_enabled = true
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_a5rcf"]
 top_radius = 1.0
