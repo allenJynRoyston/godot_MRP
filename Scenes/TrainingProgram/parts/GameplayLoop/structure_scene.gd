@@ -13,6 +13,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func on_process_update(delta: float) -> void:
-	$MeshInstance3D.rotate_y(0.01)
-	$MeshInstance3D2.rotate_y(0.01)
+	
+	$Structure.rotate_y(0.005)
+	#$MeshInstance3D2.rotate_y(0.01)
 # ------------------------------------------------

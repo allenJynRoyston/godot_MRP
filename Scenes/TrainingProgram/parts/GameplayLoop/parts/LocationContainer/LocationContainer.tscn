@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bm6bs0iy51dcc"]
+[gd_scene load_steps=10 format=3 uid="uid://bm6bs0iy51dcc"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/location_container.gd" id="1_ghp6m"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_bm8dv"]
@@ -13,6 +13,9 @@ shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_3aj50"]
 viewport_path = NodePath("SubViewport")
@@ -24,15 +27,9 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_ism0o"]
-color = Color(0, 0.254902, 0.0823529, 1)
-grow_begin = -18.0
-grow_end = -5.0
-vertical = true
-
 [node name="LocationContainer" type="MarginContainer"]
-offset_right = 80.0
-offset_bottom = 140.0
+offset_right = 200.0
+offset_bottom = 145.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/margin_left = 0
@@ -47,142 +44,162 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(141, 182)
+size = Vector2i(200, 145)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 80.0
-offset_bottom = 140.0
+offset_right = 200.0
+offset_bottom = 145.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_w8rt7")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
+[node name="Floors" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors"]
 layout_mode = 2
-text = "FLOOR"
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/HBoxContainer"]
+layout_mode = 2
+text = "Floor"
 label_settings = ExtResource("3_aijd6")
-horizontal_alignment = 1
 
-[node name="FloorItemContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
+size_flags_horizontal = 3
 
-[node name="FloorItem" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/FloorItemContainer" instance=ExtResource("3_kx0yl")]
+[node name="FloorListContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="FloorItem" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/FloorListContainer" instance=ExtResource("3_kx0yl")]
+layout_mode = 2
+size_flags_horizontal = 3
 floor = 1
 is_selected = true
 
-[node name="FloorItem2" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/FloorItemContainer" instance=ExtResource("3_kx0yl")]
-layout_mode = 2
-floor = 2
-
-[node name="FloorItem3" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/FloorItemContainer" instance=ExtResource("3_kx0yl")]
-layout_mode = 2
-floor = 3
-
-[node name="FloorItem4" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/FloorItemContainer" instance=ExtResource("3_kx0yl")]
-layout_mode = 2
-floor = 4
-
-[node name="FloorItem5" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/FloorItemContainer" instance=ExtResource("3_kx0yl")]
-layout_mode = 2
-floor = 5
-
-[node name="FloorItem6" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/FloorItemContainer" instance=ExtResource("3_kx0yl")]
-layout_mode = 2
-floor = 6
-
-[node name="VSeparator" type="VSeparator" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_ism0o")
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="FloorItem2" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/FloorListContainer" instance=ExtResource("3_kx0yl")]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "RING"
-label_settings = ExtResource("3_aijd6")
-horizontal_alignment = 1
-vertical_alignment = 1
+floor = 2
 
-[node name="RingListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="FloorItem3" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/FloorListContainer" instance=ExtResource("3_kx0yl")]
+layout_mode = 2
+size_flags_horizontal = 3
+floor = 3
+
+[node name="FloorItem4" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/FloorListContainer" instance=ExtResource("3_kx0yl")]
+layout_mode = 2
+size_flags_horizontal = 3
+floor = 4
+
+[node name="FloorItem5" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/FloorListContainer" instance=ExtResource("3_kx0yl")]
+layout_mode = 2
+size_flags_horizontal = 3
+floor = 5
+
+[node name="FloorItem6" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/FloorListContainer" instance=ExtResource("3_kx0yl")]
+layout_mode = 2
+size_flags_horizontal = 3
+floor = 6
+
+[node name="Rings" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/HBoxContainer"]
+layout_mode = 2
+text = "Ring"
+label_settings = ExtResource("3_aijd6")
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RingListContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings"]
+layout_mode = 2
+
+[node name="RingItem" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/RingListContainer" instance=ExtResource("5_xdtwy")]
+layout_mode = 2
+size_flags_horizontal = 3
+is_selected = true
+
+[node name="RingItem2" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/RingListContainer" instance=ExtResource("5_xdtwy")]
+layout_mode = 2
+size_flags_horizontal = 3
+ring_letter = "B"
+
+[node name="RingItem3" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/RingListContainer" instance=ExtResource("5_xdtwy")]
+layout_mode = 2
+size_flags_horizontal = 3
+ring_letter = "C"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="RingItem" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2/RingListContainer" instance=ExtResource("5_xdtwy")]
-layout_mode = 2
-is_selected = true
-
-[node name="RingItem2" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2/RingListContainer" instance=ExtResource("5_xdtwy")]
-layout_mode = 2
-ring_letter = "B"
-
-[node name="RingItem3" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2/RingListContainer" instance=ExtResource("5_xdtwy")]
-layout_mode = 2
-ring_letter = "C"
-
-[node name="VSeparator2" type="VSeparator" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_ism0o")
-
-[node name="VBoxContainer3" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
+[node name="Rooms" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/VBoxContainer"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/HBoxContainer"]
+layout_mode = 2
+text = "Room "
+label_settings = ExtResource("3_aijd6")
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ROOM"
-label_settings = ExtResource("3_aijd6")
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="RoomListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3"]
+[node name="RoomListContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms"]
 layout_mode = 2
-theme_override_constants/separation = 0
 
-[node name="RoomItem" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/RoomListContainer" instance=ExtResource("6_x1n44")]
+[node name="RoomItem" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/RoomListContainer" instance=ExtResource("6_x1n44")]
 layout_mode = 2
+size_flags_horizontal = 3
 room = 1
 is_selected = true
 
-[node name="RoomItem2" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/RoomListContainer" instance=ExtResource("6_x1n44")]
+[node name="RoomItem2" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/RoomListContainer" instance=ExtResource("6_x1n44")]
 layout_mode = 2
+size_flags_horizontal = 3
 room = 2
 
-[node name="RoomItem3" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/RoomListContainer" instance=ExtResource("6_x1n44")]
+[node name="RoomItem3" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/RoomListContainer" instance=ExtResource("6_x1n44")]
 layout_mode = 2
+size_flags_horizontal = 3
 room = 3
 
-[node name="RoomItem4" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/RoomListContainer" instance=ExtResource("6_x1n44")]
+[node name="RoomItem4" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/RoomListContainer" instance=ExtResource("6_x1n44")]
 layout_mode = 2
+size_flags_horizontal = 3
 room = 4
 
-[node name="RoomItem5" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/RoomListContainer" instance=ExtResource("6_x1n44")]
+[node name="RoomItem5" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/RoomListContainer" instance=ExtResource("6_x1n44")]
 layout_mode = 2
+size_flags_horizontal = 3
 room = 5
 
-[node name="RoomItem6" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/RoomListContainer" instance=ExtResource("6_x1n44")]
+[node name="RoomItem6" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/RoomListContainer" instance=ExtResource("6_x1n44")]
 layout_mode = 2
+size_flags_horizontal = 3
 room = 6
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

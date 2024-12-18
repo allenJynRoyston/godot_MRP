@@ -19,7 +19,7 @@ var facility_room_data:Array = [] :
 func _ready() -> void:
 	on_facility_room_data_update()
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
-
+	
 func on_facility_room_data_update() -> void:
 	if !is_node_ready():return
 	

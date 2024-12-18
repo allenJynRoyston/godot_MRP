@@ -29,10 +29,10 @@ layout_mode = 2
 texture = SubResource("ViewportTexture_sbiep")
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(219, 1080)
+size = Vector2i(225, 1080)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 219.0
+offset_right = 225.0
 offset_bottom = 1080.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ehujf")
 

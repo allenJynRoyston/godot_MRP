@@ -34,8 +34,6 @@ var pagination:int = 0 :
 		
 var limit:int = 6
 
-signal user_response
-
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()

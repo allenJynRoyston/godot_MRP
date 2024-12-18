@@ -35,17 +35,30 @@ var action_queue_data:Array = [] :
 		action_queue_data = val	
 		on_action_queue_data_update()
 
+var current_location:Dictionary = {} : 
+	set(val):
+		current_location = val
+		on_current_location_update()
+		
+var room_config:Dictionary = {} : 
+	set(val):
+		room_config = val
+		on_room_config_update()
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 
 const is_container:bool = true
 
+signal user_response
+
 # ------------------------------------------------------------------------------
 func _init() -> void:
+	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
 	freeze_inputs = false	
 	
 func _exit_tree() -> void:
+	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
@@ -58,6 +71,8 @@ func _ready() -> void:
 	on_action_queue_data_update()
 	on_facility_room_data_update()
 	on_progress_data_update()
+	on_current_location_update()
+	on_room_config_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -67,6 +82,8 @@ func on_facility_room_data_update() -> void:pass
 func on_progress_data_update() -> void:pass
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass
+func on_current_location_update() -> void:pass
+func on_room_config_update() -> void:pass
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -96,3 +113,8 @@ func _on_subviewport_child_changed() -> void:
 	if Subviewport != null:
 		Subviewport.size = Subviewport.get_child(0).size
 # ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func on_control_input_update(input_data:Dictionary) -> void:pass
+# ------------------------------------------------------------------------------
+#endregion

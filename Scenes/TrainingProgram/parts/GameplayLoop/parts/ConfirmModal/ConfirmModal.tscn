@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=10 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_fp6o0"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_2lprj"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_yaau0"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_fdai8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fo7i7"]
 shader = ExtResource("2_fp6o0")
@@ -43,7 +45,7 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(175, 44)
+size = Vector2i(187, 117)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 99.0
@@ -54,24 +56,47 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_5y77r")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_w67u1")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="AcceptBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Title Label"
+label_settings = ExtResource("3_yaau0")
+vertical_alignment = 1
+
+[node name="SubLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Sub label content"
+label_settings = ExtResource("4_fdai8")
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="AcceptBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
 layout_mode = 2
 title = "Accept"
 
-[node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
+[node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
 layout_mode = 2
 title = "Back"
 

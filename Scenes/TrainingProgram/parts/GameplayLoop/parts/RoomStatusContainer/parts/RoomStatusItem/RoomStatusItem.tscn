@@ -1,0 +1,137 @@
+[gd_scene load_steps=9 format=3 uid="uid://hftdmqe4eykf"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/parts/RoomStatusItem/room_status_item.gd" id="1_q40l1"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_fv0mu"]
+[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="4_xcsh5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ms52"]
+bg_color = Color(0.321728, 0.321728, 0.321728, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r0iut"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_dc3nk"]
+color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ct8t5"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_35f10"]
+bg_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="RoomStatusItem" type="PanelContainer"]
+offset_right = 200.0
+offset_bottom = 69.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1ms52")
+script = ExtResource("1_q40l1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Details" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/Details"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer"]
+layout_mode = 2
+
+[node name="ActiveLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = ">>"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="DesignationLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "ROOM 1-1-0"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="RoomNameLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "NAME OF PLACE"
+label_settings = ExtResource("2_fv0mu")
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "CONTAINS: SCP-X-A"
+label_settings = ExtResource("2_fv0mu")
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="RoomImage" type="TextureRect" parent="MarginContainer/VBoxContainer/VBoxContainer/Details"]
+material = ExtResource("4_xcsh5")
+custom_minimum_size = Vector2(50, 40)
+layout_mode = 2
+size_flags_vertical = 0
+texture = SubResource("PlaceholderTexture2D_r0iut")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ExpandedDetails" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/ExpandedDetails"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/ExpandedDetails/HBoxContainer"]
+layout_mode = 2
+text = "Containment Status"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/VBoxContainer/ExpandedDetails/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CurrentAction" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/CurrentAction"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/separator = SubResource("StyleBoxLine_dc3nk")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/CurrentAction"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/CurrentAction/HBoxContainer2"]
+layout_mode = 2
+text = "50%"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/CurrentAction/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_ct8t5")
+theme_override_styles/fill = SubResource("StyleBoxFlat_35f10")
+max_value = 1.0
+step = 0.1
+value = 0.5
+show_percentage = false

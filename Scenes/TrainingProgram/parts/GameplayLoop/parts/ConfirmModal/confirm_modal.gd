@@ -1,10 +1,20 @@
 @tool
 extends GameContainer
 
-@onready var AcceptBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/AcceptBtn
-@onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/BackBtn
+@onready var TitleLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer/TitleLabel
+@onready var SubLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer/SubLabel
+@onready var AcceptBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/AcceptBtn
+@onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/BackBtn
 
-signal user_response
+var title:String = "" : 
+	set(val):
+		title = val
+		on_title_update()
+		
+var subtitle:String = "" : 
+	set(val):
+		subtitle = val
+		on_subtitle_update()
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -23,6 +33,25 @@ func _ready() -> void:
 		user_response.emit({"action": ACTION.NEXT})
 	BackBtn.onClick = func() -> void:
 		user_response.emit({"action": ACTION.BACK})
+		
+	on_title_update()
+	on_subtitle_update()
+
+func set_text(new_title:String = "", new_subtitle:String = "") -> void:
+	title = new_title
+	subtitle = new_subtitle
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_title_update() -> void:
+	if !is_node_ready():return
+	TitleLabel.text = title
+	TitleLabel.hide() if title.is_empty() else TitleLabel.show()
+		
+func on_subtitle_update() -> void:
+	if !is_node_ready():return
+	SubLabel.text = subtitle	
+	SubLabel.hide() if subtitle.is_empty() else SubLabel.show()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		

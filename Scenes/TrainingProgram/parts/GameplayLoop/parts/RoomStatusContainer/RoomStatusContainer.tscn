@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3 uid="uid://b6yaqlrk4nisj"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/RoomStatusContainer.gd" id="1_2lqot"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="1_l62r5"]
+[ext_resource type="PackedScene" uid="uid://hftdmqe4eykf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/parts/RoomStatusItem/RoomStatusItem.tscn" id="3_utovy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gxhv6"]
+shader = ExtResource("1_l62r5")
+shader_parameter/percentage = 1.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.03
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_m6qwp"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6deti"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[node name="RoomStatusContainer" type="MarginContainer"]
+clip_contents = true
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 158.0
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+script = ExtResource("1_2lqot")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_gxhv6")
+layout_mode = 2
+texture = SubResource("ViewportTexture_m6qwp")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(225, 1080)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 225.0
+offset_bottom = 1080.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6deti")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="RoomStatusListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="RoomStatusItem1" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+layout_mode = 2
+
+[node name="RoomStatusItem2" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+layout_mode = 2
+
+[node name="RoomStatusItem3" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+layout_mode = 2
+
+[node name="RoomStatusItem4" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+layout_mode = 2
+
+[node name="RoomStatusItem5" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+layout_mode = 2
+
+[node name="RoomStatusItem6" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+layout_mode = 2
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

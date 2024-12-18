@@ -12,6 +12,12 @@ func set_timeout(duration:float = 0.5) -> void:
 	await get_tree().process_frame
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------
+func tick() -> void:	
+	await get_tree().create_timer(0.02).timeout
+	await get_tree().process_frame
+# ------------------------------------------------------------------------------	
+
 # ------------------------------------------------------------------------------	
 func paginate_array(array:Array, start_at: int, limit: int) -> Array:
 	if start_at >= array.size():

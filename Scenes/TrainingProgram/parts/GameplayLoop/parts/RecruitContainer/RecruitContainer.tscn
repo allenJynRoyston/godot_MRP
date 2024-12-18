@@ -8,10 +8,13 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_egd7m"]
 shader = ExtResource("2_tdc6v")
-shader_parameter/percentage = 0.0
+shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_lewaw"]
 viewport_path = NodePath("SubViewport")
@@ -37,17 +40,19 @@ texture = SubResource("ViewportTexture_lewaw")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(670, 511)
+size = Vector2i(670, 535)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-custom_minimum_size = Vector2(400, 0)
-offset_right = 266.0
-offset_bottom = 472.0
+custom_minimum_size = Vector2(670, 0)
+offset_right = 624.0
+offset_bottom = 254.0
 size_flags_horizontal = 0
+size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_lptqb")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
@@ -55,9 +60,11 @@ theme_override_constants/margin_bottom = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 10
@@ -65,11 +72,11 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+size_flags_vertical = 0
+theme_override_constants/separation = 20
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-alignment = 1
 
 [node name="LeadBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
 layout_mode = 2

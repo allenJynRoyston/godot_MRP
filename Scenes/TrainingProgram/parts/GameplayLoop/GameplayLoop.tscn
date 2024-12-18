@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
 [ext_resource type="PackedScene" uid="uid://bm6bs0iy51dcc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/LocationContainer.tscn" id="4_fqcw3"]
 [ext_resource type="PackedScene" uid="uid://d04lnq4yhp80o" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/ActionQueueContainer.tscn" id="5_1tp62"]
-[ext_resource type="PackedScene" uid="uid://b6yaqlrk4nisj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ItemStatusContainer/ItemStatusContainer.tscn" id="6_emfl4"]
+[ext_resource type="PackedScene" uid="uid://b6yaqlrk4nisj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/RoomStatusContainer.tscn" id="6_emfl4"]
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
 [ext_resource type="PackedScene" uid="uid://ctsvcqvterlln" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/ResourceContainer.tscn" id="8_asqny"]
 [ext_resource type="PackedScene" uid="uid://d35m668pfaxmj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn" id="9_1cket"]
@@ -51,7 +51,7 @@ freeze_inputs = true
 layout_mode = 2
 metadata/_edit_group_ = true
 
-[node name="ItemStatusContainer" parent="." instance=ExtResource("6_emfl4")]
+[node name="RoomStatusContainer" parent="." instance=ExtResource("6_emfl4")]
 layout_mode = 2
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
@@ -87,17 +87,16 @@ freeze_inputs = true
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_constants/margin_right = 150
-theme_override_constants/margin_bottom = 10
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/margin_top = 50
 is_showing = false
 freeze_inputs = true
 
 [node name="RecruitContainer" parent="." instance=ExtResource("12_dw62g")]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
+theme_override_constants/margin_top = 100
 is_showing = false
 freeze_inputs = true
 

@@ -9,8 +9,6 @@ extends GameContainer
 
 const small_label_preload:LabelSettings = preload("res://Fonts/settings/small_label.tres")
 
-signal user_response
-
 var on_item:int = 0
 var has_more:bool = false : 
 	set(val):

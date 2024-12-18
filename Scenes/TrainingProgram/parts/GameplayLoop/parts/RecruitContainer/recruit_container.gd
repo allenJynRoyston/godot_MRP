@@ -17,8 +17,6 @@ enum TAB_OPTIONS {LEAD_RESEARCHERS, SUPPORT}
 		tab_open = val
 		on_tab_open_update()
 
-signal user_response
-
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()

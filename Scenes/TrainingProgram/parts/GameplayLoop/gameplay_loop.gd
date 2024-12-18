@@ -1,7 +1,7 @@
 @tool
 extends PanelContainer
 
-enum SHOP_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE, REFUND}
+enum SHOP_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_LOCATION, CONFIRM, FINALIZE, REFUND}
 enum CONTAIN_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
@@ -9,7 +9,7 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var LocationContainer:MarginContainer = $LocationContainer
 @onready var ActionQueueContainer:MarginContainer = $ActionQueueContainer
-@onready var ItemStatusContainer:MarginContainer = $ItemStatusContainer
+@onready var RoomStatusContainer:MarginContainer = $RoomStatusContainer
 @onready var ActionContainer:MarginContainer = $ActionContainer
 @onready var ResourceContainer:MarginContainer = $ResourceContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
@@ -39,10 +39,10 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 		show_action_queue = val
 		on_show_action_queue_update()
 		
-@export var show_item_status:bool = true : 
+@export var room_item_status:bool = true : 
 	set(val):
-		show_item_status = val
-		on_show_item_status_update()
+		room_item_status = val
+		on_room_item_status_update()
 
 @export var show_actions:bool = true : 
 	set(val):
@@ -165,6 +165,49 @@ var current_build_complete_step:BUILD_COMPLETE_STEPS = BUILD_COMPLETE_STEPS.HIDE
 	set(val):
 		current_build_complete_step = val
 		on_current_build_complete_step_update()
+
+var room_config:Dictionary = {
+	"floor": {
+		0: get_ring_default(),
+		1: get_ring_default(),
+		2: get_ring_default(),
+		3: get_ring_default(),
+		4: get_ring_default(),
+		5: get_ring_default(),
+	}
+} : 
+	set(val) : 
+		room_config = val
+		on_room_config_update()
+
+
+func get_ring_default() -> Dictionary:
+	return { 
+		"ring": { 
+			0: get_room_default(),
+			1: get_room_default(),
+			2: get_room_default()
+		}
+	}
+
+func get_room_default() -> Dictionary:
+	return {
+		"room": {
+			0: get_room_item_default(),
+			1: get_room_item_default(),
+			2: get_room_item_default(),
+			3: get_room_item_default(),
+			4: get_room_item_default(),
+			5: get_room_item_default()
+		}
+	}
+
+func get_room_item_default() -> Dictionary:
+	return {
+		"build_data": {},
+		"room_data": {},
+		"item_data": {}
+	}
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -184,6 +227,7 @@ func _ready() -> void:
 		set_process(false)
 		set_physics_process(false)	
 	setup()
+	
 
 func setup() -> void:
 	# first these
@@ -192,7 +236,7 @@ func setup() -> void:
 	on_show_resources_update()
 	on_show_location_update()
 	on_show_action_queue_update()
-	on_show_item_status_update()
+	on_room_item_status_update()
 	on_show_dialogue_update()
 	on_show_item_select_update()
 	on_show_recruit_update()
@@ -204,6 +248,7 @@ func setup() -> void:
 	on_action_queue_data_update()	
 	on_resources_data_update()
 	on_facility_room_data_update()
+
 	
 	# modals
 	on_show_confirm_modal_update()
@@ -242,6 +287,7 @@ func start(game_data:Dictionary = {}) -> void:
 
 func start_new_game() -> void:
 	after_start()
+	quickload()
 
 func start_load_game() -> void:
 	# load save file
@@ -260,7 +306,7 @@ func on_is_busy_update() -> void:
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, LocationContainer, ActionQueueContainer, 
-		ItemStatusContainer, ActionContainer, ResourceContainer, 
+		RoomStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ItemSelectContainer, 
 		ConfirmModal, RecruitContainer, StatusContainer,
 		BuildCompleteContainer
@@ -330,8 +376,37 @@ func cancel_action(item_data:Dictionary) -> void:
 			
 func goto_location(location:Dictionary) -> void:
 	LocationContainer.goto_location(location)
+	
+func set_room_config() -> void:
+	for item in action_queue_data:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room		
+		room_config.floor[floor].ring[ring].room[room].build_data = {
+			"id": item.data.id,
+			"get_room_data": func() -> Dictionary:
+				return ROOM_UTIL.return_data(item.data.id)
+		}
+	
+	for item in facility_room_data:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room
+		room_config.floor[floor].ring[ring].room[room].room_data = {
+			"id": item.data.id,
+			"get_room_data": func() -> Dictionary:
+				return ROOM_UTIL.return_data(item.data.id)
+		}
+	room_config = room_config	
 #endregion
 # ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	LOCAL ON_UPDATES
+func on_room_config_update() -> void:
+	if !is_node_ready():return
+	for node in get_all_container_nodes():
+		node.room_config = room_config
+# ------------------------------------------------------------------------------	SAVABLE ON_UPDATES	
 
 # ------------------------------------------------------------------------------	SAVABLE ON_UPDATES
 #region local SAVABLE ONUPDATES
@@ -342,11 +417,15 @@ func on_progress_data_update() -> void:
 
 func on_facility_room_data_update() -> void:
 	if !is_node_ready():return
+	# updates room data dictionary
+	set_room_config()
+	# then update nodes
 	for node in get_all_container_nodes():
 		node.facility_room_data = facility_room_data
 
 func on_action_queue_data_update() -> void:
 	if !is_node_ready():return
+	set_room_config()	
 	for node in get_all_container_nodes():
 		node.action_queue_data = action_queue_data	
 
@@ -360,10 +439,10 @@ func on_completed_build_items_update() -> void:
 	current_build_complete_step = BUILD_COMPLETE_STEPS.START
 		
 
-
 func on_current_location_update() -> void:
-	pass
-	#print(current_location)
+	if !is_node_ready(): return
+	for node in get_all_container_nodes():
+		node.current_location = current_location
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -389,10 +468,10 @@ func on_show_action_queue_update() -> void:
 		ActionQueueContainer.is_showing = show_action_queue
 		showing_states[ActionQueueContainer] = show_action_queue
 
-func on_show_item_status_update() -> void:
+func on_room_item_status_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
-		ItemStatusContainer.is_showing = show_item_status
-		showing_states[ItemStatusContainer] = show_item_status
+		RoomStatusContainer.is_showing = room_item_status
+		showing_states[RoomStatusContainer] = room_item_status
 
 func on_show_resources_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
@@ -436,7 +515,7 @@ func on_show_build_complete_update() -> void:
 
 func _on_container_rect_changed() -> void:	
 	if is_node_ready() or Engine.is_editor_hint():
-		for sidebar in [ItemStatusContainer, ActionQueueContainer]:
+		for sidebar in [RoomStatusContainer, ActionQueueContainer]:
 			sidebar.max_height = self.size.y
 
 #endregion
@@ -455,7 +534,7 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.START:
 			selected_shop_item = {}
 			StoreContainer.start()
-			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, ItemStatusContainer])
+			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -464,12 +543,22 @@ func on_current_shop_step_update() -> void:
 					
 				ACTION.NEXT:
 					selected_shop_item = response.selected
+					current_shop_step = SHOP_STEPS.PLACEMENT
+		# ---------------
+		SHOP_STEPS.PLACEMENT:
+			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
+			var structure_response = await Structure3dContainer.user_response
+			match structure_response.action:
+				ACTION.BACK:
+					current_shop_step = SHOP_STEPS.START
+				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.CONFIRM_LOCATION
 		# ---------------
 		SHOP_STEPS.CONFIRM_LOCATION:
-			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response			
-			match response.action:
+			ConfirmModal.set_text("Confirm location?")
+			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])			
+			var confirm_response:Dictionary = await ConfirmModal.user_response			
+			match confirm_response.action:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
@@ -488,8 +577,9 @@ func on_current_shop_step_update() -> void:
 			action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		SHOP_STEPS.REFUND:			
+			ConfirmModal.set_text("Cancel action?", "Resources will be refunded.")
 			await show_only([ActionQueueContainer, ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response			
+			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.NEXT:					
 					resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.data.id, resources_data, true)
@@ -513,7 +603,7 @@ func on_current_contain_step_update() -> void:
 			await restore_default_state()
 		# ---------------
 		CONTAIN_STEPS.START:
-			await show_only([ResourceContainer, ItemSelectContainer, ActionQueueContainer, ItemStatusContainer])
+			await show_only([ResourceContainer, ItemSelectContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await ItemSelectContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -548,7 +638,7 @@ func on_current_recruit_step_update() -> void:
 			await restore_default_state()
 		# ---------------
 		CONTAIN_STEPS.START:
-			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, ItemStatusContainer])
+			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await RecruitContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:

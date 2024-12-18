@@ -4,8 +4,6 @@ extends GameContainer
 @onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer/BackBtn
 @onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer/NextBtn
 
-signal user_response
-
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()

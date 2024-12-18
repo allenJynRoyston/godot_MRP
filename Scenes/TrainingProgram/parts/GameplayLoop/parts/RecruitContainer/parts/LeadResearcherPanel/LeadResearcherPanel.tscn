@@ -6,18 +6,13 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdxja"]
 
 [node name="LeadResearcherPanel" type="PanelContainer"]
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hdxja")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-text = "New canidates will be available in X days."
-label_settings = ExtResource("1_8cydk")
-horizontal_alignment = 1
 
 [node name="CardContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -27,9 +22,18 @@ alignment = 1
 
 [node name="ProfileCard" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ProfileCard2" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ProfileCard3" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "New canidates will be available in X days."
+label_settings = ExtResource("1_8cydk")
+horizontal_alignment = 1

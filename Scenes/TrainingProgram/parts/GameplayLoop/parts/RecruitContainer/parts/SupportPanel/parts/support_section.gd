@@ -3,8 +3,9 @@ extends PanelContainer
 
 enum OPTIONS {STAFF, SECURITY, DCLASS}
 
-@onready var TitleLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/TitleLabel
-@onready var IconBtn:Control = $MarginContainer/VBoxContainer/HBoxContainer/IconBtn
+@onready var TitleLabel:Label = $VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/TitleLabel
+@onready var IconBtn:Control = $VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/IconBtn
+@onready var SectionImage:TextureRect = $VBoxContainer/SectionImage
 
 @export var option:OPTIONS = OPTIONS.STAFF : 
 	set(val):
@@ -20,9 +21,12 @@ func on_option_update() -> void:
 			OPTIONS.STAFF:
 				TitleLabel.text = "Staff"
 				IconBtn.icon = SVGS.TYPE.STAFF
+				SectionImage.texture = CACHE.fetch_image("res://Media/images/researcher.jpg")
 			OPTIONS.SECURITY:
 				TitleLabel.text = "Security"
 				IconBtn.icon = SVGS.TYPE.SECURITY
+				SectionImage.texture = CACHE.fetch_image("res://Media/images/security.jpg")
 			OPTIONS.DCLASS:
 				TitleLabel.text = "D-Class"
 				IconBtn.icon = SVGS.TYPE.D_CLASS
+				SectionImage.texture = CACHE.fetch_image("res://Media/images/dclass.jpg")

@@ -1,9 +1,9 @@
 @tool
 extends GameContainer
 
-@onready var FloorItemContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/FloorItemContainer
-@onready var RingListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2/RingListContainer
-@onready var RoomListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3/RoomListContainer
+@onready var FloorListContainer:HBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/Floors/FloorListContainer
+@onready var RingListContainer:HBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/RingListContainer
+@onready var RoomListContainer:HBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rooms/RoomListContainer
 
 var floor_selected:int = 0 : 
 	set(val):
@@ -33,8 +33,8 @@ func _ready() -> void:
 	on_ring_selected_updated()
 	on_room_selected_updated()	
 	
-	for index in FloorItemContainer.get_child_count():
-		var node:Control = FloorItemContainer.get_child(index)
+	for index in FloorListContainer.get_child_count():
+		var node:Control = FloorListContainer.get_child(index)
 		node.floor = index + 1
 		node.onClick = func() -> void:
 			floor_selected = index
@@ -64,8 +64,8 @@ func goto_location(data:Dictionary) -> void:
 	room_selected = data.room
 	
 func on_floor_selected_updated() -> void:
-	for index in FloorItemContainer.get_child_count():
-		var node:Control = FloorItemContainer.get_child(index)
+	for index in FloorListContainer.get_child_count():
+		var node:Control = FloorListContainer.get_child(index)
 		node.is_selected = floor_selected == index
 	on_change()
 	
