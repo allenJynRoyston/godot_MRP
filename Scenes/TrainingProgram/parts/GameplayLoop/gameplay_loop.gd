@@ -336,25 +336,30 @@ func goto_location(location:Dictionary) -> void:
 # ------------------------------------------------------------------------------	SAVABLE ON_UPDATES
 #region local SAVABLE ONUPDATES
 func on_progress_data_update() -> void:
-	if is_node_ready():
-		StatusContainer.progress_data = progress_data
-	
-func on_facility_room_data_update() -> void:
-	pass
+	if !is_node_ready():return
+	for node in get_all_container_nodes():
+		node.progress_data = progress_data
 
+func on_facility_room_data_update() -> void:
+	if !is_node_ready():return
+	for node in get_all_container_nodes():
+		node.facility_room_data = facility_room_data
 
 func on_action_queue_data_update() -> void:
-	if is_node_ready():
-		ActionQueueContainer.action_queue_data = action_queue_data
+	if !is_node_ready():return
+	for node in get_all_container_nodes():
+		node.action_queue_data = action_queue_data	
+
+func on_resources_data_update() -> void:
+	if !is_node_ready(): return
+	for node in get_all_container_nodes():
+		node.resources_data = resources_data		
 	
 func on_completed_build_items_update() -> void:
-	if is_node_ready() and !completed_build_items.is_empty():
-		current_build_complete_step = BUILD_COMPLETE_STEPS.START
+	if !is_node_ready() or completed_build_items.is_empty(): return
+	current_build_complete_step = BUILD_COMPLETE_STEPS.START
 		
-func on_resources_data_update() -> void:
-	if is_node_ready() and !resources_data.is_empty():
-		ResourceContainer.resources_data = resources_data
-		StoreContainer.resources_data = resources_data
+
 
 func on_current_location_update() -> void:
 	pass
@@ -479,7 +484,7 @@ func on_current_shop_step_update() -> void:
 				"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
 				"location": current_location,
 			})
-			resources_data = ROOM_UTIL.calc_resource_cost(selected_shop_item.id, resources_data)
+			resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
 			action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		SHOP_STEPS.REFUND:			
@@ -487,7 +492,7 @@ func on_current_shop_step_update() -> void:
 			var response:Dictionary = await ConfirmModal.user_response			
 			match response.action:
 				ACTION.NEXT:					
-					resources_data = ROOM_UTIL.calc_resource_cost(selected_shop_item.data.id, resources_data, true)
+					resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.data.id, resources_data, true)
 					action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_shop_item.data.uid)
 					ActionQueueContainer.remove_from_queue([selected_shop_item])
 					current_shop_step = SHOP_STEPS.HIDE

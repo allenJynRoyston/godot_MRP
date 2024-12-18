@@ -12,8 +12,6 @@ extends GameContainer
 const StoreItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/StoreItem/StoreItem.tscn")
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
-var resources_data:Dictionary = {}
-
 var focus_data:Dictionary = {} : 
 	set(val):
 		focus_data = val

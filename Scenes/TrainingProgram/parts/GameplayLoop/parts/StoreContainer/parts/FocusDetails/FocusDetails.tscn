@@ -19,35 +19,35 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+[node name="Details" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/Details"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/Details/HBoxContainer"]
 layout_mode = 2
 text = "Details"
 label_settings = ExtResource("2_6r8tp")
 
-[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/VBoxContainer/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/Details/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Title" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="FocusContainer/HighlightContainer/Details"]
 layout_mode = 2
 text = "Title"
 label_settings = ExtResource("2_6r8tp")
 
-[node name="DetailImage" type="TextureRect" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+[node name="DetailImage" type="TextureRect" parent="FocusContainer/HighlightContainer/Details"]
 material = ExtResource("1_ohk76")
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Description" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer"]
+[node name="Description" type="Label" parent="FocusContainer/HighlightContainer/Details"]
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 size_flags_vertical = 1
@@ -55,43 +55,83 @@ text = "Description"
 label_settings = ExtResource("2_6r8tp")
 autowrap_mode = 2
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+[node name="Effects" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/Effects"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer2/HBoxContainer"]
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/Effects/HBoxContainer"]
 layout_mode = 2
 text = "Effects"
 label_settings = ExtResource("2_6r8tp")
 
-[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/VBoxContainer2/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/Effects/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EffectList" type="VBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer2"]
+[node name="EffectList" type="VBoxContainer" parent="FocusContainer/HighlightContainer/Effects"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+[node name="OperatingCosts" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/VBoxContainer3"]
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/OperatingCosts"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer3/HBoxContainer"]
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/OperatingCosts/HBoxContainer"]
+layout_mode = 2
+text = "Operational Expense"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/OperatingCosts/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OperatingCostsList" type="VBoxContainer" parent="FocusContainer/HighlightContainer/OperatingCosts"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="ConstructionCosts" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/ConstructionCosts"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/ConstructionCosts/HBoxContainer"]
+layout_mode = 2
+text = "Construction Expense"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/ConstructionCosts/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConstructionCostsList" type="VBoxContainer" parent="FocusContainer/HighlightContainer/ConstructionCosts"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Notes" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/Notes"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/Notes/HBoxContainer"]
 layout_mode = 2
 text = "Notes"
 label_settings = ExtResource("2_6r8tp")
 
-[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/VBoxContainer3/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/Notes/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ConstructionTime" type="Label" parent="FocusContainer/HighlightContainer/VBoxContainer3"]
+[node name="ConstructionTime" type="Label" parent="FocusContainer/HighlightContainer/Notes"]
 layout_mode = 2
 text = "construction time: 99 days"
 label_settings = ExtResource("2_6r8tp")

@@ -15,7 +15,13 @@ extends MouseInteractions
 		on_title_update()	
 		on_title_update()
 		
+		
+var onClick:Callable = func():pass
+var onDismiss:Callable = func():pass
+		
+# --------------------------------------
 func _ready() -> void:
+	super._ready()
 	on_icon_update()
 
 func on_icon_update() -> void:
@@ -25,8 +31,7 @@ func on_icon_update() -> void:
 func on_title_update() -> void:
 	if is_node_ready():
 		ItemLabel.text = title
-		
-var onClick:Callable = func():pass
+# --------------------------------------
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
@@ -47,4 +52,6 @@ func on_focus(state:bool) -> void:
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover:
 		onClick.call()
+	else:
+		onDismiss.call()
 # --------------------------------------		

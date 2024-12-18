@@ -12,10 +12,20 @@ var BARRICKS:Dictionary = {
 	"can_contain": false,
 	"get_build_time": func() -> int:
 		return 3,
-	"get_resource_cost": func() -> Dictionary:
+	"get_build_cost": func() -> Dictionary:
 		return {
 			RESOURCE.TYPE.MONEY: 2
 		},
+	"get_operating_income": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 10,
+			RESOURCE.TYPE.ENERGY: 1
+		},				
+	"get_operating_cost": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 1,
+			RESOURCE.TYPE.ENERGY: 10
+		},		
 	"get_resource_capacity": func() -> Dictionary:
 		return {
 			RESOURCE.TYPE.SECURITY: 10,
@@ -130,11 +140,38 @@ func return_requirements(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_resource_cost(id:int) -> Array:
+func return_build_cost(id:int) -> Array:
 	var room_data:Dictionary = return_data(id)
 	var list:Array = []
-	if "get_resource_cost" in room_data:
-		var dict:Dictionary = room_data.get_resource_cost.call()
+	if "get_build_cost" in room_data:
+		var dict:Dictionary = room_data.get_build_cost.call()
+		for key in dict:	
+			var amount:int = dict[key]
+			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
+			
+	return list
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func return_operating_income(id:int) -> Array:
+	var room_data:Dictionary = return_data(id)
+	var list:Array = []
+	if "get_operating_income" in room_data:
+		var dict:Dictionary = room_data.get_operating_income.call()
+		for key in dict:	
+			var amount:int = dict[key]
+			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
+			
+	return list
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_operating_cost(id:int) -> Array:
+	var room_data:Dictionary = return_data(id)
+	var list:Array = []
+	if "get_operating_cost" in room_data:
+		var dict:Dictionary = room_data.get_operating_cost.call()
 		for key in dict:	
 			var amount:int = dict[key]
 			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
@@ -169,11 +206,11 @@ func return_resource_amount(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calc_resource_cost(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:		
+func calc_build_cost(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:		
 	var room_data:Dictionary = return_data(id)
 	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
-	if "get_resource_cost" in room_data:
-		var dict:Dictionary = room_data.get_resource_cost.call()		
+	if "get_build_cost" in room_data:
+		var dict:Dictionary = room_data.get_build_cost.call()		
 		for key in dict:
 			var amount:int = dict[key]
 			if refund:

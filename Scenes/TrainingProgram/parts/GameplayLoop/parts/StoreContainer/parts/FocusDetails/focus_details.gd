@@ -1,11 +1,13 @@
 extends PanelContainer
 
 @onready var FocusContainer:Control = $FocusContainer
-@onready var DetailImage:TextureRect = $FocusContainer/HighlightContainer/VBoxContainer/DetailImage
-@onready var Title:Label = $FocusContainer/HighlightContainer/VBoxContainer/Title
-@onready var Description:Label = $FocusContainer/HighlightContainer/VBoxContainer/Description
-@onready var ConstructionTime:Label = $FocusContainer/HighlightContainer/VBoxContainer3/ConstructionTime
-@onready var EffectList:VBoxContainer = $FocusContainer/HighlightContainer/VBoxContainer2/EffectList
+@onready var DetailImage:TextureRect = $FocusContainer/HighlightContainer/Details/DetailImage
+@onready var Title:Label = $FocusContainer/HighlightContainer/Details/Title
+@onready var Description:Label = $FocusContainer/HighlightContainer/Details/Description
+@onready var ConstructionTime:Label = $FocusContainer/HighlightContainer/Notes/ConstructionTime
+@onready var EffectList:VBoxContainer = $FocusContainer/HighlightContainer/Effects/EffectList
+@onready var OperatingCostsList:VBoxContainer = $FocusContainer/HighlightContainer/OperatingCosts/OperatingCostsList
+@onready var ConstructionCostList:VBoxContainer = $FocusContainer/HighlightContainer/ConstructionCosts/ConstructionCostsList
 
 const small_label_preload:LabelSettings = preload("res://Fonts/settings/small_label.tres")
 const TextButtonPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
@@ -29,8 +31,9 @@ func on_hide_details_update() -> void:
 	if is_node_ready():
 		FocusContainer.show() if hide_details else FocusContainer.hide()
 		if hide_details:
-			for child in EffectList.get_children():
-				child.queue_free()
+			for node in [EffectList, ConstructionCostList, OperatingCostsList]:
+				for child in node.get_children():
+					child.queue_free()
 
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
@@ -42,6 +45,8 @@ func on_data_update() -> void:
 	
 	var capacity_list:Array = ROOM_UTIL.return_resource_capacity(data.id)
 	var amount_list:Array = ROOM_UTIL.return_resource_amount(data.id)
+	var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(data.id)
+	var construction_cost_list:Array = ROOM_UTIL.return_build_cost(data.id)
 
 	for item in capacity_list:
 		var new_node:BtnBase = TextButtonPreload.instantiate()		
@@ -54,3 +59,17 @@ func on_data_update() -> void:
 		new_node.icon = item.resource.icon
 		new_node.title = "+%s amount" % [item.amount]
 		EffectList.add_child(new_node)				
+		
+	for item in operating_cost_list:
+		var new_node:BtnBase = TextButtonPreload.instantiate()		
+		new_node.icon = item.resource.icon
+		new_node.title = "-%s amount" % [item.amount]
+		OperatingCostsList.add_child(new_node)			
+		
+	for item in construction_cost_list:
+		var new_node:BtnBase = TextButtonPreload.instantiate()		
+		new_node.icon = item.resource.icon
+		new_node.title = "-%s amount" % [item.amount]
+		ConstructionCostList.add_child(new_node)					
+		
+			

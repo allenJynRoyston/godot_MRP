@@ -14,6 +14,27 @@ class_name GameContainer
 	set(val):
 		freeze_inputs = val
 		on_freeze_inputs_update()
+		
+var progress_data:Dictionary = {} : 
+	set(val):
+		progress_data = val
+		on_progress_data_update()
+
+var resources_data:Dictionary = {} : 
+	set(val):
+		resources_data = val	
+		on_resources_data_update()
+
+var facility_room_data:Array = [] : 
+	set(val):
+		facility_room_data = val
+		on_facility_room_data_update()
+
+var action_queue_data:Array = [] : 
+	set(val):
+		action_queue_data = val	
+		on_action_queue_data_update()
+
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 
@@ -28,11 +49,24 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
-	print(is_showing)
 	if Engine.is_editor_hint():
 		is_showing = true
 	on_freeze_inputs_update()
 	on_is_showing_update()
+	
+	on_resources_data_update()
+	on_action_queue_data_update()
+	on_facility_room_data_update()
+	on_progress_data_update()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_resources_data_update() -> void:pass
+func on_action_queue_data_update() -> void:pass
+func on_facility_room_data_update() -> void:pass
+func on_progress_data_update() -> void:pass
+func on_reset() -> void:pass
+func on_freeze_inputs_update() -> void:pass
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -58,11 +92,6 @@ func set_percent(percentage: float) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	
-func on_reset():pass
-
-func on_freeze_inputs_update() -> void:
-	pass
-	
 func _on_subviewport_child_changed() -> void:
 	if Subviewport != null:
 		Subviewport.size = Subviewport.get_child(0).size

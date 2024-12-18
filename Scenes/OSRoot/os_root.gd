@@ -43,7 +43,7 @@ func _ready() -> void:
 	
 	on_fullscreen_update(resolution)
 	
-	#toggle_fullscreen()
+	toggle_fullscreen()
 
 	activate_children.call_deferred()
 # -----------------------------------		

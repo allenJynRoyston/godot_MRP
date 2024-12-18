@@ -3,11 +3,6 @@ extends GameContainer
 
 @onready var DayLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/DayLabel
 
-@export var progress_data:Dictionary = {} : 
-	set(val):
-		progress_data = val
-		on_progress_data_update()
-
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()

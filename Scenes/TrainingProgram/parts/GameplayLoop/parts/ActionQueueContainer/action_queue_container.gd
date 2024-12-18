@@ -11,16 +11,6 @@ var max_height:int :
 		max_height = val
 		on_max_height_update()
 
-var action_queue_data:Array = [] : 
-	set(val):
-		action_queue_data = val
-		on_action_queue_data_update()
-
-var progress_data:Dictionary = {} : 
-	set(val):
-		progress_data = val
-		
-		
 var uid_refs:Dictionary = {}
 
 signal wait_for_complete

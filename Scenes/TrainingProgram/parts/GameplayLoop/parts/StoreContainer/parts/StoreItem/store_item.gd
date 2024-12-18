@@ -45,7 +45,7 @@ func on_data_update() -> void:
 		ImageTextureRect.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")
 		
 		var can_afford:bool = true
-		for item in ROOM_UTIL.return_resource_cost(data.id):
+		for item in ROOM_UTIL.return_build_cost(data.id):
 			var amount:int = item.amount
 			var resource:Dictionary = item.resource
 			var new_node:Control = TextBtnPreload.instantiate()
