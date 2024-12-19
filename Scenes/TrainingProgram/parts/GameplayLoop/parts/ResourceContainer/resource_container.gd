@@ -61,9 +61,6 @@ func _ready() -> void:
 func open_detail_panel(node:Control) -> void:
 	var x_pos:float = (node.get_global_rect().position.x + node.get_global_rect().size.x/2)*1.0
 	DetailPanel.position.x = x_pos - (DetailPanel.get_global_rect().size.x / 2)
-	match node:
-		ResourceItemMoney:
-			pass
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -71,11 +68,18 @@ func on_facility_room_data_update() -> void:
 	if !is_node_ready(): return
 	DetailPanel.facility_room_data = facility_room_data
 # --------------------------------------------------------------------------------------------------
-	
+
+# --------------------------------------------------------------------------------------------------
+func on_lead_researchers_data_update() -> void:
+	if !is_node_ready() or lead_researchers_data.is_empty():return
+	DetailPanel.lead_researchers_data = lead_researchers_data
+# --------------------------------------------------------------------------------------------------
+
 # --------------------------------------------------------------------------------------------------
 func on_resources_data_update() -> void:
 	if !is_node_ready() or resources_data.is_empty():return
 	DetailPanel.resources_data = resources_data
+	
 	for key in resources_data:
 		var data:Dictionary = resources_data[key]
 		match key:

@@ -13,7 +13,6 @@ extends MouseInteractions
 	set(val):
 		title = val
 		on_title_update()	
-		on_title_update()
 		
 		
 var onClick:Callable = func():pass

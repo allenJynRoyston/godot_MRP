@@ -19,13 +19,13 @@ run/size/viewport_height=720
 [autoload]
 
 REFS="*res://Autoload/enums/NODE_REFS.gd"
-CAMERA="*res://Autoload/enums/CAMERA.gd"
 RESOURCE="*res://Autoload/enums/RESOURCE.gd"
 ROOM="*res://Autoload/enums/ROOM.gd"
 SCP="*res://Autoload/enums/SCP.gd"
 SVGS="*res://Autoload/enums/SVGS.gd"
 COLORS="*res://Autoload/enums/COLORS.gd"
 ACTION="*res://Autoload/enums/ACTIONS.gd"
+RESEARCHER="*res://Autoload/enums/RESEARCHER.gd"
 CACHE="*res://Autoload/Cache.gd"
 GBL="*res://Autoload/Global.gd"
 FS="*res://Autoload/FileSys.gd"
@@ -34,6 +34,8 @@ C="*res://Autoload/Containment.gd"
 COLOR_UTIL="*res://Autoload/ColorUtility.gd"
 ROOM_UTIL="*res://Autoload/RoomUtility.gd"
 RESOURCE_UTIL="*res://Autoload/ResourceUtility.gd"
+RESEARCHER_UTIL="*res://Autoload/ResearcherUtility.gd"
+CAMERA="*res://Autoload/enums/CAMERA.gd"
 
 [display]
 

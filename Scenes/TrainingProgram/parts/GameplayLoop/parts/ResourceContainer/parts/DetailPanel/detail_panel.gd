@@ -16,6 +16,11 @@ var resources_data:Dictionary = {} :
 	set(val):
 		resources_data = val	
 		on_resources_data_update()
+		
+var lead_researchers_data:Array = [] : 
+	set(val):
+		lead_researchers_data = val
+		on_lead_researchers_data_update()
 
 var facility_room_data:Array = [] : 
 	set(val):
@@ -29,6 +34,7 @@ func _ready() -> void:
 	
 	on_resources_data_update()
 	on_facility_room_data_update()
+	on_lead_researchers_data_update()
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
@@ -77,4 +83,9 @@ func on_facility_room_data_update() -> void:
 	if !is_node_ready():return
 	for node in [MoneyDetails, EnergyDetails]:
 		node.facility_room_data = facility_room_data
+
+func on_lead_researchers_data_update() -> void:
+	if !is_node_ready():return
+	for node in [LeadResearcherDetails]:
+		node.lead_researchers_data = lead_researchers_data
 # ------------------------------------------------------------------------------	

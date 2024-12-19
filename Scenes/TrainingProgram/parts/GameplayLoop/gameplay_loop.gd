@@ -115,6 +115,34 @@ var facility_room_data:Array = [] :
 		facility_room_data = val
 		on_facility_room_data_update()
 
+var lead_researchers_data:Array = [
+	{
+		"name": "Dr. Doctor",
+		"motivation": 0, 
+		"image_src": "res://Media/images/example_doctor.jpg",
+		"specialization": [
+			RESEARCHER.SPECALIZATION.ENGINEERING
+		],
+		"traits": [
+			RESEARCHER.TRAIT.MOTIVATED
+		]
+	},
+		{
+		"name": "Dr. Bright",
+		"motivation": 0, 
+		"image_src": "res://Media/images/example_doctor.jpg",
+		"specialization": [
+			RESEARCHER.SPECALIZATION.ENGINEERING
+		],
+		"traits": [
+			RESEARCHER.TRAIT.MOTIVATED
+		]
+	}
+] : 
+	set( val ):
+		lead_researchers_data = val
+		on_lead_researchers_data_update()
+
 var resources_data:Dictionary = { 
 	RESOURCE.TYPE.MONEY: {"amount": 10, "capacity": 9999},
 	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
@@ -414,12 +442,14 @@ func on_camera_layer_focus_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------	
 
+#region LOCAL UPDATES
 # ------------------------------------------------------------------------------	LOCAL ON_UPDATES
 func on_room_config_update() -> void:
 	if !is_node_ready():return
 	for node in get_all_container_nodes():
 		node.room_config = room_config
 # ------------------------------------------------------------------------------	SAVABLE ON_UPDATES	
+#endregion
 
 # ------------------------------------------------------------------------------	SAVABLE ON_UPDATES
 #region local SAVABLE ONUPDATES
@@ -450,7 +480,17 @@ func on_resources_data_update() -> void:
 func on_completed_build_items_update() -> void:
 	if !is_node_ready() or completed_build_items.is_empty(): return
 	current_build_complete_step = BUILD_COMPLETE_STEPS.START
+
+func on_lead_researchers_data_update() -> void:
+	if !is_node_ready(): return
+	for node in get_all_container_nodes():
+		node.lead_researchers_data = lead_researchers_data	
 		
+	resources_data[RESOURCE.TYPE.LEAD_RESEARCHERS] = {
+		"amount": lead_researchers_data.size() 
+	} 
+	
+	resources_data = resources_data
 
 func on_current_location_update() -> void:
 	if !is_node_ready(): return
@@ -758,6 +798,7 @@ func quicksave() -> void:
 		"progress_data": progress_data,		
 		"action_queue_data": action_queue_data,
 		"facility_room_data": facility_room_data,
+		"lead_researchers_data": lead_researchers_data,
 		"resources_data": resources_data,
 		"current_location": current_location,
 	}	
@@ -790,6 +831,8 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	action_queue_data = action_queue_data if no_save else restore_data.action_queue_data	
 	facility_room_data = action_queue_data if no_save else restore_data.facility_room_data  
 	resources_data = action_queue_data if no_save else restore_data.resources_data	
+	# comes after research data, fix this later
+	lead_researchers_data = lead_researchers_data if no_save else restore_data.lead_researchers_data
 	current_location = action_queue_data if no_save else restore_data.current_location
 	
 	goto_location(current_location)

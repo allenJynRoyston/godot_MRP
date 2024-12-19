@@ -34,6 +34,11 @@ var action_queue_data:Array = [] :
 	set(val):
 		action_queue_data = val	
 		on_action_queue_data_update()
+		
+var lead_researchers_data:Array = [] : 
+	set(val):
+		lead_researchers_data = val
+		on_lead_researchers_data_update()
 
 var current_location:Dictionary = {} : 
 	set(val):
@@ -84,6 +89,7 @@ func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass
 func on_current_location_update() -> void:pass
 func on_room_config_update() -> void:pass
+func on_lead_researchers_data_update() -> void:pass
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
