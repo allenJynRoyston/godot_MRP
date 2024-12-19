@@ -3,8 +3,8 @@ extends GameContainer
 
 @onready var ResourceItemMoney:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResourceItemMoney
 @onready var ResourceItemEnergy:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResourceItemEnergy
-@onready var ResourceItemLeadResearchers:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResourceItemLeadResearchers
 
+@onready var ResourceItemLeadResearchers:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2/ResourceItemLeadResearchers
 @onready var ResourceItemStaff:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2/ResourceItemStaff
 @onready var ResourceItemSecurity:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2/ResourceItemSecurity
 @onready var ResourceItemDClass:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2/ResourceItemDClass
@@ -34,6 +34,14 @@ func _ready() -> void:
 					DetailPanel.show_details(RESOURCE.TYPE.MONEY)
 				ResourceItemEnergy:
 					DetailPanel.show_details(RESOURCE.TYPE.ENERGY)
+				ResourceItemLeadResearchers:
+					DetailPanel.show_details(RESOURCE.TYPE.LEAD_RESEARCHERS)
+				ResourceItemStaff:
+					DetailPanel.show_details(RESOURCE.TYPE.STAFF)
+				ResourceItemSecurity:
+					DetailPanel.show_details(RESOURCE.TYPE.SECURITY)
+				ResourceItemDClass:
+					DetailPanel.show_details(RESOURCE.TYPE.DCLASS)
 					
 			detail_panel_is_busy = true
 			DetailPanel.show()

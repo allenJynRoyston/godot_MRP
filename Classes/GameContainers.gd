@@ -46,6 +46,7 @@ var room_config:Dictionary = {} :
 		on_room_config_update()
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
+var structure_node:Control
 
 const is_container:bool = true
 
@@ -73,6 +74,8 @@ func _ready() -> void:
 	on_progress_data_update()
 	on_current_location_update()
 	on_room_config_update()
+	
+	structure_node = GBL.find_node(REFS.STRUCTURE_3D)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -110,7 +113,7 @@ func set_percent(percentage: float) -> void:
 
 # ------------------------------------------------------------------------------	
 func _on_subviewport_child_changed() -> void:
-	if Subviewport != null:
+	if Subviewport != null and Subviewport.get_child_count() > 0:
 		Subviewport.size = Subviewport.get_child(0).size
 # ------------------------------------------------------------------------------	
 

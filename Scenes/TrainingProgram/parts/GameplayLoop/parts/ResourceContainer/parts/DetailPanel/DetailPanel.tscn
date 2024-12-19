@@ -1,8 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://crk6mkpuid5a3"]
+[gd_scene load_steps=9 format=3 uid="uid://crk6mkpuid5a3"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/detail_panel.gd" id="1_sgm8h"]
 [ext_resource type="PackedScene" uid="uid://c3ordkbr6lfu6" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/MoneyDetails/MoneyDetails.tscn" id="2_n3efn"]
 [ext_resource type="PackedScene" uid="uid://bhyg7mbnhegpb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/EnergyDetails/EnergyDetails.tscn" id="3_mv5r7"]
+[ext_resource type="PackedScene" uid="uid://fu2lmorso4n" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/LeadResearcherDetails/LeadResearcherDetails.tscn" id="4_kw3da"]
+[ext_resource type="PackedScene" uid="uid://wppf4hofx12w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/StaffDetails/StaffDetails.tscn" id="5_saucg"]
+[ext_resource type="PackedScene" uid="uid://cq8au0rw8x357" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DClassDetails/DClassDetails.tscn" id="6_st8v5"]
+[ext_resource type="PackedScene" uid="uid://bshu10pnmooj5" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/SecurityDetails/SecurityDetails.tscn" id="7_oxrd0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8m3dt"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
@@ -12,8 +16,9 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [node name="DetailPanel" type="PanelContainer"]
-offset_right = 20.0
-offset_bottom = 20.0
+offset_right = 158.0
+offset_bottom = 141.0
+size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8m3dt")
 script = ExtResource("1_sgm8h")
@@ -27,10 +32,29 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="MoneyDetails" parent="MarginContainer" instance=ExtResource("2_n3efn")]
-visible = false
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="EnergyDetails" parent="MarginContainer" instance=ExtResource("3_mv5r7")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="LeadResearcherDetails" parent="MarginContainer" instance=ExtResource("4_kw3da")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="StaffDetails" parent="MarginContainer" instance=ExtResource("5_saucg")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="DClassDetails" parent="MarginContainer" instance=ExtResource("6_st8v5")]
+visible = false
+layout_mode = 2
+
+[node name="SecurityDetails" parent="MarginContainer" instance=ExtResource("7_oxrd0")]
 visible = false
 layout_mode = 2

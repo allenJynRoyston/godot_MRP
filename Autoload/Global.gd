@@ -134,6 +134,9 @@ func unsubscribe_to_input(node:Control) -> void:
 func _input(event) -> void:
 	if event is InputEventMouseButton:
 		for node in input_subscriptions:
+			if node == null:
+				input_subscriptions.erase(node)
+				return
 			if "registered_click" in node:
 				node.registered_click(event)
 # ------------------------------------------------------------------------------
@@ -179,7 +182,12 @@ func unsubscribe_to_process(node:Node) -> void:
 	process_nodes.erase(node)
 	
 func _process(delta:float) -> void:
+	if Engine.is_editor_hint():return
+	
 	for node in process_nodes:
+		if node == null:
+			process_nodes.erase(node)
+			return
 		if "on_process_update" in node:
 			node.on_process_update.call(delta)
 # ------------------------------------------------------------------------------

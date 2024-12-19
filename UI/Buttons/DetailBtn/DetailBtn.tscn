@@ -1,9 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://colip2v06wa01"]
+[gd_scene load_steps=8 format=3 uid="uid://colip2v06wa01"]
 
 [ext_resource type="Script" path="res://UI/Buttons/DetailBtn/detail_btn.gd" id="1_cadc2"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_klsk0"]
-[ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_glsen"]
-[ext_resource type="Texture2D" uid="uid://bdnmk3iq7mcy1" path="res://SVGs/money-bag-change-money-capital-svgrepo-com.svg" id="3_w0ak7"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_m6mqi"]
+[ext_resource type="Shader" path="res://Shader/ReColor/ReColor.gdshader" id="3_nv3b4"]
+[ext_resource type="Texture2D" uid="uid://cf3xiua0hdis8" path="res://SVGs/dot-filled-svgrepo-com.svg" id="4_jd2wi"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ai1lp"]
+font = ExtResource("2_m6mqi")
+font_size = 8
+font_color = Color(0.552956, 0.552956, 0.552956, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lg1ku"]
+shader = ExtResource("3_nv3b4")
+shader_parameter/tint_color = Color(0.552956, 0.552956, 0.552956, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_mqbxx"]
+font = ExtResource("2_m6mqi")
+font_size = 8
+font_color = Color(0.552956, 0.552956, 0.552956, 1)
 
 [node name="DetailBtn" type="PanelContainer"]
 script = ExtResource("1_cadc2")
@@ -27,19 +42,19 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "ITEM A"
-label_settings = ExtResource("1_klsk0")
+text = "Title"
+label_settings = SubResource("LabelSettings_ai1lp")
 vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/HBoxContainer"]
-material = ExtResource("2_glsen")
+material = SubResource("ShaderMaterial_lg1ku")
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 size_flags_vertical = 4
-texture = ExtResource("3_w0ak7")
+texture = ExtResource("4_jd2wi")
 expand_mode = 1
 stretch_mode = 5
 
@@ -47,6 +62,6 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "99"
-label_settings = ExtResource("1_klsk0")
+text = "0"
+label_settings = SubResource("LabelSettings_mqbxx")
 vertical_alignment = 1

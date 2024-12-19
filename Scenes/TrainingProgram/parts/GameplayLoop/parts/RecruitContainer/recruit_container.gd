@@ -49,4 +49,5 @@ func on_tab_open_update() -> void:
 			TAB_OPTIONS.SUPPORT:
 				LeadResearchPanel.hide()
 				SupportPanel.show()
+		
 # --------------------------------------------------------------------------------------------------			

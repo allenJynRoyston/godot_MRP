@@ -20,6 +20,8 @@ var room_selected:int = 0 :
 		room_selected = val
 		on_room_selected_updated()
 		
+var layer:String = ""
+		
 var onRoomSelected:Callable = func(_data:Dictionary) -> void:pass
 
 # --------------------------------------------------------------------------------------------------
@@ -37,17 +39,23 @@ func _ready() -> void:
 		var node:Control = FloorListContainer.get_child(index)
 		node.floor = index + 1
 		node.onClick = func() -> void:
+			structure_node.set_camera_focus("floor")
+			layer = "floor" if layer != "floor" else ""
 			floor_selected = index
 			
 	for index in RingListContainer.get_child_count():
 		var node:Control = RingListContainer.get_child(index)
 		node.onClick = func() -> void:
+			structure_node.set_camera_focus("ring")
+			layer = "ring" if layer != "room" else ""
 			ring_selected = index			
 			
 	for index in RoomListContainer.get_child_count():
 		var node:Control = RoomListContainer.get_child(index)
 		node.room = index + 1
 		node.onClick = func() -> void:
+			structure_node.set_camera_focus("room")
+			layer = "room" if layer != "room" else ""
 			room_selected = index
 	
 	after_ready.call_deferred()
@@ -62,6 +70,7 @@ func goto_location(data:Dictionary) -> void:
 	floor_selected = data.floor
 	ring_selected = data.ring
 	room_selected = data.room
+	
 	
 func on_floor_selected_updated() -> void:
 	for index in FloorListContainer.get_child_count():
@@ -87,6 +96,7 @@ func on_change() -> void:
 	onRoomSelected.call({
 		"floor":  floor_selected,
 		"ring": ring_selected,
-		"room": room_selected
+		"room": room_selected,
+		"layer": layer
 	})
 # --------------------------------------------------------------------------------------------------	

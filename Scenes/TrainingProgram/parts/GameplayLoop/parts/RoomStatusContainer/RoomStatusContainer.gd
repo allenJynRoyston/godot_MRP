@@ -62,7 +62,7 @@ func on_current_location_update() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func update_room_states() -> void:
-	if room_config.is_empty():return
+	if room_config.is_empty() or !is_node_ready():return
 	await U.set_timeout(0.0)
 	for index in room_config.floor[current_floor].ring[current_ring].room:
 		var data = room_config.floor[current_floor].ring[current_ring].room[index]

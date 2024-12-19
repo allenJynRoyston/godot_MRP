@@ -23,7 +23,7 @@ theme_override_constants/margin_bottom = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
 
 [node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wxkle")]
 layout_mode = 2

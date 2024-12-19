@@ -1,7 +1,12 @@
 extends MouseInteractions
 
+@onready var RootNode:Control = $"."
 @onready var MoneyDetails:Control = $MarginContainer/MoneyDetails
 @onready var EnergyDetails:Control = $MarginContainer/EnergyDetails
+@onready var LeadResearcherDetails:Control = $MarginContainer/LeadResearcherDetails
+@onready var StaffDetails:Control = $MarginContainer/StaffDetails
+@onready var DClassDetails:Control = $MarginContainer/DClassDetails
+@onready var SecurityDetails:Control = $MarginContainer/SecurityDetails
 
 var onFocus:Callable = func():pass
 var onBlur:Callable = func():pass
@@ -28,7 +33,7 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------	
 func show_details(type:RESOURCE.TYPE) -> void:
-	for node in [MoneyDetails, EnergyDetails]:
+	for node in [MoneyDetails, EnergyDetails, LeadResearcherDetails, StaffDetails, DClassDetails, SecurityDetails]:
 		node.hide()
 		
 	match type:
@@ -36,6 +41,16 @@ func show_details(type:RESOURCE.TYPE) -> void:
 			MoneyDetails.show()
 		RESOURCE.TYPE.ENERGY:
 			EnergyDetails.show()
+		RESOURCE.TYPE.LEAD_RESEARCHERS:
+			LeadResearcherDetails.show()
+		RESOURCE.TYPE.STAFF:
+			StaffDetails.show()
+		RESOURCE.TYPE.SECURITY:
+			SecurityDetails.show()
+		RESOURCE.TYPE.DCLASS:
+			DClassDetails.show()
+	
+	RootNode.size = Vector2(0, 0)
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

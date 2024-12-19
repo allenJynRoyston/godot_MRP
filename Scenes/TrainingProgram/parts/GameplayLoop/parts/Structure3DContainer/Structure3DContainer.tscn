@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://dl5rw8mq2i0dp"]
+[gd_scene load_steps=11 format=3 uid="uid://dl5rw8mq2i0dp"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_1i53d"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_wktvj"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_wr5lh"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_5q3sd"]
+[ext_resource type="PackedScene" uid="uid://c60d3ymkiaiyy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/Rendering.tscn" id="4_ypl4m"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w8kjt"]
 
@@ -16,33 +17,20 @@ shader_parameter/laser_color = Color(1, 0, 0, 1)
 shader_parameter/glow_width = 0.05
 shader_parameter/trail_fade = 0.5
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_op3qm"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_0ghay"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="Environment" id="Environment_qgafj"]
-ambient_light_color = Color(0, 0.395829, 0.231161, 1)
-ssil_enabled = true
-sdfgi_enabled = true
-sdfgi_use_occlusion = true
-glow_enabled = true
-volumetric_fog_enabled = true
+[sub_resource type="ViewportTexture" id="ViewportTexture_qanbp"]
+viewport_path = NodePath("SubViewport2")
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_a5rcf"]
-top_radius = 1.0
-bottom_radius = 1.0
-height = 50.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_772ix"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
-[sub_resource type="BoxMesh" id="BoxMesh_2rvvf"]
-size = Vector3(1, 1, 20)
-
-[sub_resource type="BoxMesh" id="BoxMesh_2guip"]
-size = Vector3(2, 2, 2)
-
-[sub_resource type="BoxMesh" id="BoxMesh_dudta"]
-size = Vector3(4, 2, 4)
-
-[sub_resource type="BoxMesh" id="BoxMesh_pyw7o"]
-size = Vector3(8, 2, 8)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_buw2j"]
 
 [node name="Structure3DContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -56,591 +44,70 @@ script = ExtResource("1_wktvj")
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_vfiyn")
 layout_mode = 2
-texture = SubResource("ViewportTexture_op3qm")
+texture = SubResource("ViewportTexture_0ghay")
 stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_vfiyn")
+layout_mode = 2
+texture = SubResource("ViewportTexture_qanbp")
+stretch_mode = 5
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+layout_mode = 2
+offset_left = 250.0
+offset_top = 10.0
+offset_right = 290.0
+offset_bottom = 50.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_772ix")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_buw2j")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CameraA" parent="Control/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+layout_mode = 2
+icon = 40
+
+[node name="CameraB" parent="Control/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+layout_mode = 2
+icon = 41
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
+handle_input_locally = false
+use_taa = true
+use_debanding = true
+use_occlusion_culling = true
+debug_draw = 3
 size = Vector2i(640, 480)
 
-[node name="StructureScene" type="Node3D" parent="SubViewport"]
-script = ExtResource("1_1i53d")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/StructureScene"]
-transform = Transform3D(-0.13722, 0, -0.990541, 0, 1, 0, 0.990541, 0, -0.13722, 0, 0, 0)
-
-[node name="Camera3D" type="Camera3D" parent="SubViewport/StructureScene"]
-transform = Transform3D(0.162964, 0.670118, -0.724144, 0, 0.733955, 0.679198, 0.986632, -0.110685, 0.119609, -23.8618, 10.3558, 0)
-environment = SubResource("Environment_qgafj")
-
-[node name="Structure" type="Node3D" parent="SubViewport/StructureScene"]
-transform = Transform3D(0.436802, 0, -0.899558, 0, 1, 0, 0.899558, 0, 0.436802, 0, 0, 4)
-
-[node name="Elevator" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38419e-07, -6.95642, -4)
-mesh = SubResource("CylinderMesh_a5rcf")
-skeleton = NodePath("../..")
-
-[node name="Floor1" type="Node3D" parent="SubViewport/StructureScene/Structure"]
-transform = Transform3D(1, 1.74846e-07, -1.24235e-21, -1.74846e-07, 1, -7.10543e-15, 0, 7.10543e-15, 1, 0, 0, 0)
-
-[node name="Wing" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing2" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor1"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing3" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor1"]
-transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing4" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor1"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing5" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor1"]
-transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing6" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor1"]
-transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor1/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Floor2" type="Node3D" parent="SubViewport/StructureScene/Structure"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
-
-[node name="Wing" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing2" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor2"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing3" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor2"]
-transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing4" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor2"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing5" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor2"]
-transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing6" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor2"]
-transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor2/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Floor3" type="Node3D" parent="SubViewport/StructureScene/Structure"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 0)
-
-[node name="Wing" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing2" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor3"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing3" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor3"]
-transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing4" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor3"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing5" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor3"]
-transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing6" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor3"]
-transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor3/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Floor4" type="Node3D" parent="SubViewport/StructureScene/Structure"]
-transform = Transform3D(1, 1.74846e-07, 0, -1.74846e-07, 1, 0, 0, 0, 1, 0, -20, 0)
-
-[node name="Wing" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing2" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor4"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing3" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor4"]
-transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing4" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor4"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing5" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor4"]
-transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="Wing6" type="Node3D" parent="SubViewport/StructureScene/Structure/Floor4"]
-transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 0, 0, -4)
-
-[node name="Corridor" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = SubResource("BoxMesh_2rvvf")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 4)
-mesh = SubResource("BoxMesh_2guip")
-skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
-mesh = SubResource("BoxMesh_dudta")
-skeleton = NodePath("../MeshInstance3D3")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/StructureScene/Structure/Floor4/Wing6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.5, 20)
-mesh = SubResource("BoxMesh_pyw7o")
-skeleton = NodePath("../MeshInstance3D3")
+[node name="Rendering" parent="SubViewport" instance=ExtResource("4_ypl4m")]
+render_layer = 1
+
+[node name="SubViewport2" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+use_debanding = true
+use_occlusion_culling = true
+canvas_cull_mask = 4294966272
+size = Vector2i(640, 480)
+
+[node name="Rendering" parent="SubViewport2" instance=ExtResource("4_ypl4m")]
+enable_change_on_update = true

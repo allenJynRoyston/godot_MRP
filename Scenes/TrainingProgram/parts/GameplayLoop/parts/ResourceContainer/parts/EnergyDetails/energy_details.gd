@@ -20,6 +20,8 @@ func _ready() -> void:
 	on_facility_room_data_update()
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	
+	
+	
 func on_facility_room_data_update() -> void:
 	if !is_node_ready():return
 	
@@ -35,9 +37,9 @@ func on_facility_room_data_update() -> void:
 		var operation_income_list:Array = ROOM_UTIL.return_operating_income(item.data.id)
 		var details:Dictionary = ROOM_UTIL.return_data(item.data.id)
 
-		for i in operation_income_list:
-			var new_node:BtnBase = DetailBtnPreload.instantiate()
+		for i in operation_income_list:			
 			if i.resource.id == RESOURCE.TYPE.ENERGY:
+				var new_node:BtnBase = DetailBtnPreload.instantiate()
 				new_node.title = details.name
 				new_node.icon = i.resource.icon
 				new_node.amount = "+%s amount" % [i.amount]
@@ -48,9 +50,9 @@ func on_facility_room_data_update() -> void:
 				
 				IncomeList.add_child(new_node)			
 
-		for i in operating_cost_list:
-			var new_node:BtnBase = DetailBtnPreload.instantiate()		
+		for i in operating_cost_list:			
 			if i.resource.id == RESOURCE.TYPE.ENERGY:
+				var new_node:BtnBase = DetailBtnPreload.instantiate()		
 				new_node.title = details.name
 				new_node.icon = i.resource.icon
 				new_node.amount = "-%s amount" % [i.amount]

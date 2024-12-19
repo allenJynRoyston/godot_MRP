@@ -8,7 +8,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_egd7m"]
 shader = ExtResource("2_tdc6v")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -40,12 +40,12 @@ texture = SubResource("ViewportTexture_lewaw")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(670, 535)
+size = Vector2i(670, 353)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 custom_minimum_size = Vector2(670, 0)
-offset_right = 624.0
-offset_bottom = 254.0
+offset_right = 670.0
+offset_bottom = 353.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_lptqb")
@@ -92,10 +92,11 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_wdahj")
 
 [node name="SupportPanel" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_6lkj4")]
-visible = false
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="LeadResearcherPanel" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_4equ8")]
+visible = false
 layout_mode = 2
 
 [node name="BtnContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]

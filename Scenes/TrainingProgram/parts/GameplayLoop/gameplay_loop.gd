@@ -226,7 +226,7 @@ func _ready() -> void:
 		hide()
 		set_process(false)
 		set_physics_process(false)	
-	setup()
+	setup()	
 	
 
 func setup() -> void:
@@ -534,7 +534,7 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.START:
 			selected_shop_item = {}
 			StoreContainer.start()
-			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, RoomStatusContainer])
+			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -726,6 +726,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	
 	match key:
 		"ENTER":
+			print_orphan_nodes()
+			
 			next_day()
 		"5":
 			quicksave()

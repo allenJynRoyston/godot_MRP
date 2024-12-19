@@ -36,11 +36,9 @@ func _ready() -> void:
 		onClick.call()
 	
 	CancelBtn.onClick = func() -> void:
-		print( CancelBtn.is_focused )
 		onCancel.call()
 	
-	#CancelBtn.onBlur = func(node:Control) -> void:
-		
+
 # --------------------------------------------------
 
 # --------------------------------------------------

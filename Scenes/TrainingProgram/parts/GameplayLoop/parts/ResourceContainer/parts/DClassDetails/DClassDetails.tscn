@@ -1,0 +1,96 @@
+[gd_scene load_steps=5 format=3 uid="uid://cq8au0rw8x357"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DClassDetails/d_class_details.gd" id="1_v1mpu"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_5l4pl"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_qh3x0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkdk1"]
+
+[node name="DClassDetails" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_hkdk1")
+script = ExtResource("1_v1mpu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "D-Class"
+label_settings = ExtResource("2_5l4pl")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="List" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List"]
+layout_mode = 2
+
+[node name="TextBtn" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer" instance=ExtResource("3_qh3x0")]
+layout_mode = 2
+icon = 28
+title = "SCP A"
+
+[node name="TextBtn2" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer" instance=ExtResource("3_qh3x0")]
+layout_mode = 2
+icon = 32
+title = "5/5"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List"]
+layout_mode = 2
+
+[node name="TextBtn" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer2" instance=ExtResource("3_qh3x0")]
+layout_mode = 2
+icon = 28
+title = "SCP B"
+
+[node name="TextBtn2" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer2" instance=ExtResource("3_qh3x0")]
+layout_mode = 2
+icon = 32
+title = "5/5"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+text = "Details"
+label_settings = ExtResource("2_5l4pl")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="TextBtn" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2/HBoxContainer" instance=ExtResource("3_qh3x0")]
+layout_mode = 2
+size_flags_horizontal = 3
+icon = 32
+title = "25 Available"

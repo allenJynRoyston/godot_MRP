@@ -50,12 +50,12 @@ layout_mode = 2
 [node name="DetailPanel" parent="Control" instance=ExtResource("3_fwkup")]
 layout_mode = 0
 offset_top = 60.0
-offset_bottom = 117.0
+offset_bottom = 80.0
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(334, 50)
+size = Vector2i(344, 50)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 264.0
@@ -92,11 +92,6 @@ layout_mode = 2
 icon = 31
 title = "999"
 
-[node name="ResourceItemLeadResearchers" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("3_sg6pc")]
-layout_mode = 2
-icon = 33
-title = "999"
-
 [node name="VSeparator" type="VSeparator" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_8tj5b")
@@ -105,6 +100,11 @@ theme_override_styles/separator = SubResource("StyleBoxLine_8tj5b")
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 20
+
+[node name="ResourceItemLeadResearchers" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+layout_mode = 2
+icon = 33
+title = "999"
 
 [node name="ResourceItemStaff" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
