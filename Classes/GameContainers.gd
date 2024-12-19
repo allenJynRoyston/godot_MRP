@@ -46,7 +46,6 @@ var room_config:Dictionary = {} :
 		on_room_config_update()
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
-var structure_node:Control
 
 const is_container:bool = true
 
@@ -74,8 +73,6 @@ func _ready() -> void:
 	on_progress_data_update()
 	on_current_location_update()
 	on_room_config_update()
-	
-	structure_node = GBL.find_node(REFS.STRUCTURE_3D)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

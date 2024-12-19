@@ -10,8 +10,6 @@ extends Node3D
 @onready var PerspectiveCamera:Camera3D = $CameraContainers/PerspectiveCamera
 @onready var OverheadCamera:Camera3D = $CameraContainers/OverheadCamera
 
-enum CAMERA_TYPE {PERSPECTIVE, OVERHEAD}
-
 @export var render_layer:int = 0 : 
 	set(val): 
 		render_layer = val
@@ -19,7 +17,7 @@ enum CAMERA_TYPE {PERSPECTIVE, OVERHEAD}
 		
 @export var enable_change_on_update:bool = false		
 
-var camera_type:CAMERA_TYPE = CAMERA_TYPE.PERSPECTIVE : 
+var camera_type:CAMERA.TYPE = CAMERA.TYPE.PERSPECTIVE : 
 	set(val):
 		camera_type = val
 		on_camera_type_update()
@@ -152,9 +150,9 @@ func on_render_layout_update() -> void:
 func on_camera_type_update() -> void:
 	if !is_node_ready():return
 	match camera_type:
-		CAMERA_TYPE.PERSPECTIVE:
+		CAMERA.TYPE.PERSPECTIVE:
 			use_camera_node = PerspectiveCamera
-		CAMERA_TYPE.OVERHEAD:
+		CAMERA.TYPE.OVERHEAD:
 			use_camera_node = OverheadCamera
 	
 	tween_node(RoamingCamera, use_camera_node.position, use_camera_node.rotation)

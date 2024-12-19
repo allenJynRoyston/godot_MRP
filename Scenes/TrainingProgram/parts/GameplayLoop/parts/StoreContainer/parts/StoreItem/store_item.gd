@@ -55,7 +55,7 @@ func on_data_update() -> void:
 			CostContainer.add_child(new_node)
 			if resources_data[resource.id].amount < amount:
 				can_afford = false
-				onClick = func():
+				onClick = func() -> void:
 					print("cannot afford...")
 				new_node.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.INVALID_ACTIVE) 
 

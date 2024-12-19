@@ -6,13 +6,16 @@ extends GameContainer
 @onready var RenderLayer1:Node3D = $SubViewport/Rendering
 @onready var RenderLayer2:Node3D = $SubViewport2/Rendering
 
-enum CAMERA_TYPE {PERSPECTIVE, OVERHEAD}
-
-var camera_type:CAMERA_TYPE = CAMERA_TYPE.PERSPECTIVE : 
+var camera_type:CAMERA.TYPE = CAMERA.TYPE.PERSPECTIVE : 
 	set(val):
 		camera_type = val
 		on_camera_type_update()
 
+var camera_layer_focus:CAMERA.LAYER = CAMERA.LAYER.FLOOR : 
+	set(val):
+		camera_layer_focus = val
+		on_camera_layer_focus_update()
+		
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -28,16 +31,17 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 	
 	CameraA.onClick = func() -> void:
-		camera_type = CAMERA_TYPE.PERSPECTIVE
+		camera_type = CAMERA.TYPE.PERSPECTIVE
 	CameraB.onClick = func() -> void:
-		camera_type = CAMERA_TYPE.OVERHEAD
+		camera_type = CAMERA.TYPE.OVERHEAD
 	
 	on_camera_type_update()
+	on_camera_layer_focus_update()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func set_camera_focus(type:String) -> void:
-	print("set camera focus: ", type)
+func on_camera_layer_focus_update() -> void:
+	print("set camera focus: ", camera_layer_focus)
 # --------------------------------------------------------------------------------------------------			
 	
 

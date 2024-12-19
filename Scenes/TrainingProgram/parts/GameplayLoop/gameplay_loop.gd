@@ -166,6 +166,12 @@ var current_build_complete_step:BUILD_COMPLETE_STEPS = BUILD_COMPLETE_STEPS.HIDE
 		current_build_complete_step = val
 		on_current_build_complete_step_update()
 
+var camera_layer_focus:CAMERA.LAYER = CAMERA.LAYER.FLOOR : 
+	set(val):
+		camera_layer_focus = val
+		on_camera_layer_focus_update()
+		
+
 var room_config:Dictionary = {
 	"floor": {
 		0: get_ring_default(),
@@ -208,6 +214,7 @@ func get_room_item_default() -> Dictionary:
 		"room_data": {},
 		"item_data": {}
 	}
+		
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -250,9 +257,10 @@ func setup() -> void:
 	on_facility_room_data_update()
 
 	
-	# modals
+	# other
 	on_show_confirm_modal_update()
 	on_is_busy_update()
+	on_camera_layer_focus_update()
 	
 	# steps
 	on_show_store_update()
@@ -398,6 +406,11 @@ func set_room_config() -> void:
 				return ROOM_UTIL.return_data(item.data.id)
 		}
 	room_config = room_config	
+	
+func on_camera_layer_focus_update() -> void:
+	if !is_node_ready():return
+	for node in [Structure3dContainer]:
+		node.camera_layer_focus = camera_layer_focus
 #endregion
 # ------------------------------------------------------------------------------	
 

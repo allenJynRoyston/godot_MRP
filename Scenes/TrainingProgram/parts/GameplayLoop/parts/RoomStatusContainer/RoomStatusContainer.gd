@@ -69,6 +69,7 @@ func update_room_states() -> void:
 		room_nodes[index].designation = "%s-%s-%s" % [current_floor, current_ring, index] 
 		room_nodes[index].data = data
 		room_nodes[index].onClick = func() -> void:
+			GBL.find_node(REFS.GAMEPLAY_LOOP).camera_layer_focus = CAMERA.LAYER.RM
 			gameplay_node.goto_location({"floor": current_floor, "ring": current_ring, "room": index})
 			
 func highlight_current_room() -> void:

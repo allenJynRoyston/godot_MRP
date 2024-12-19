@@ -56,7 +56,7 @@ func on_data_update() -> void:
 				room_data = ROOM_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.BUILD
 				TitleBtn.title = "Build %s" % [room_data.name]
-				DaysLeftLabel.text = "%s days left till complete" % [data.build_time - data.days_in_queue]
+				DaysLeftLabel.text = "%s days left until complete" % [data.build_time - data.days_in_queue]
 				ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
 				requirements = ROOM_UTIL.return_requirements(data.data.id) 
 	

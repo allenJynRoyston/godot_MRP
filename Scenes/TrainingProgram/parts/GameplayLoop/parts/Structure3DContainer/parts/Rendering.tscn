@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=18 format=4 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_cucwc"]
 
@@ -21,8 +21,71 @@ size = Vector3(1, 1, 70)
 [sub_resource type="BoxMesh" id="BoxMesh_abxxi"]
 size = Vector3(11.65, 0.2, 0.2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_0w16f"]
-size = Vector3(2, 2, 2)
+[sub_resource type="ArrayMesh" id="ArrayMesh_v64aa"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/q6oqPwAAAAAAAIA/AAAAAKuqKj8AAAA/AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/q6oqPwAAAACrqio/AAAAP6uqqj4AAAA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6qqPgAAAD+rqqo+AACAPwAAAAAAAIA/q6qqPgAAAD+rqio/AAAAP6uqqj4AAIA/q6oqPwAAAD+rqio/AACAP6uqqj4AAIA/q6oqPwAAAD8AAIA/AAAAP6uqKj8AAIA/AACAPwAAAD8AAIA/AACAP6uqKj8AAIA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAvwAAgD8AAIA/AACAPwAAgD8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIC/AACAPwAAgL8AAIC/AACAvwAAgD8AAIC/AACAvwAAgL8AAIC/AACAPwAAgL8AAIC/AACAPwAAgD8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIC/AACAPwAAgL8AAIA/AACAvwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgD8AAIA/AACAvwAAgD8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgD8AAIC/AACAPwAAgD8AAIC/AACAvwAAgL8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgL8AAIA/AACAPwAAgL8AAIC/AACAvwAAgL8AAIC//3//f////7//f/9/////v/9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/////8AAP+/////f/////////9//////////3//////////f/////////9//////////3//////AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+/")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ut573"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/q6oqPwAAAAAAAIA/AAAAAKuqKj8AAAA/AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/q6oqPwAAAACrqio/AAAAP6uqqj4AAAA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6qqPgAAAD+rqqo+AACAPwAAAAAAAIA/q6qqPgAAAD+rqio/AAAAP6uqqj4AAIA/q6oqPwAAAD+rqio/AACAP6uqqj4AAIA/q6oqPwAAAD8AAIA/AAAAP6uqKj8AAIA/AACAPwAAAD8AAIA/AACAP6uqKj8AAIA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAvwAAgD8AAIA/AACAPwAAgD8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIC/AACAPwAAgL8AAIC/AACAvwAAgD8AAIC/AACAvwAAgL8AAIC/AACAPwAAgL8AAIC/AACAPwAAgD8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIC/AACAPwAAgL8AAIA/AACAvwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgD8AAIA/AACAvwAAgD8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgD8AAIC/AACAPwAAgD8AAIC/AACAvwAAgL8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgL8AAIA/AACAPwAAgL8AAIC/AACAvwAAgL8AAIC//3//f////7//f/9/////v/9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/////8AAP+/////f/////////9//////////3//////////f/////////9//////////3//////AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+/")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_cgwr6"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/q6oqPwAAAAAAAIA/AAAAAKuqKj8AAAA/AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/q6oqPwAAAACrqio/AAAAP6uqqj4AAAA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6qqPgAAAD+rqqo+AACAPwAAAAAAAIA/q6qqPgAAAD+rqio/AAAAP6uqqj4AAIA/q6oqPwAAAD+rqio/AACAP6uqqj4AAIA/q6oqPwAAAD8AAIA/AAAAP6uqKj8AAIA/AACAPwAAAD8AAIA/AACAP6uqKj8AAIA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAvwAAgD8AAIA/AACAPwAAgD8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIC/AACAPwAAgL8AAIC/AACAvwAAgD8AAIC/AACAvwAAgL8AAIC/AACAPwAAgL8AAIC/AACAPwAAgD8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIC/AACAPwAAgL8AAIA/AACAvwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgD8AAIA/AACAvwAAgD8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgD8AAIC/AACAPwAAgD8AAIC/AACAvwAAgL8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgL8AAIA/AACAPwAAgL8AAIC/AACAvwAAgL8AAIC//3//f////7//f/9/////v/9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/////8AAP+/////f/////////9//////////3//////////f/////////9//////////3//////AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+/")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_gqb1m"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/q6oqPwAAAAAAAIA/AAAAAKuqKj8AAAA/AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/q6oqPwAAAACrqio/AAAAP6uqqj4AAAA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6qqPgAAAD+rqqo+AACAPwAAAAAAAIA/q6qqPgAAAD+rqio/AAAAP6uqqj4AAIA/q6oqPwAAAD+rqio/AACAP6uqqj4AAIA/q6oqPwAAAD8AAIA/AAAAP6uqKj8AAIA/AACAPwAAAD8AAIA/AACAP6uqKj8AAIA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAvwAAgD8AAIA/AACAPwAAgD8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIC/AACAPwAAgL8AAIC/AACAvwAAgD8AAIC/AACAvwAAgL8AAIC/AACAPwAAgL8AAIC/AACAPwAAgD8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIC/AACAPwAAgL8AAIA/AACAvwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgD8AAIA/AACAvwAAgD8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgD8AAIC/AACAPwAAgD8AAIC/AACAvwAAgL8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgL8AAIA/AACAPwAAgL8AAIC/AACAvwAAgL8AAIC//3//f////7//f/9/////v/9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/////8AAP+/////f/////////9//////////3//////////f/////////9//////////3//////AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+/")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_up1il"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/q6oqPwAAAAAAAIA/AAAAAKuqKj8AAAA/AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/q6oqPwAAAACrqio/AAAAP6uqqj4AAAA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6qqPgAAAD+rqqo+AACAPwAAAAAAAIA/q6qqPgAAAD+rqio/AAAAP6uqqj4AAIA/q6oqPwAAAD+rqio/AACAP6uqqj4AAIA/q6oqPwAAAD8AAIA/AAAAP6uqKj8AAIA/AACAPwAAAD8AAIA/AACAP6uqKj8AAIA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAvwAAgD8AAIA/AACAPwAAgD8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIC/AACAPwAAgL8AAIC/AACAvwAAgD8AAIC/AACAvwAAgL8AAIC/AACAPwAAgL8AAIC/AACAPwAAgD8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIC/AACAPwAAgL8AAIA/AACAvwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgD8AAIA/AACAvwAAgD8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgD8AAIC/AACAPwAAgD8AAIC/AACAvwAAgL8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgL8AAIA/AACAPwAAgL8AAIC/AACAvwAAgL8AAIC//3//f////7//f/9/////v/9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/////8AAP+/////f/////////9//////////3//////////f/////////9//////////3//////AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+/")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_nbrvj"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/q6oqPwAAAAAAAIA/AAAAAKuqKj8AAAA/AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/q6oqPwAAAACrqio/AAAAP6uqqj4AAAA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6qqPgAAAD+rqqo+AACAPwAAAAAAAIA/q6qqPgAAAD+rqio/AAAAP6uqqj4AAIA/q6oqPwAAAD+rqio/AACAP6uqqj4AAIA/q6oqPwAAAD8AAIA/AAAAP6uqKj8AAIA/AACAPwAAAD8AAIA/AACAP6uqKj8AAIA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAvwAAgD8AAIA/AACAPwAAgD8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIC/AACAPwAAgL8AAIC/AACAvwAAgD8AAIC/AACAvwAAgL8AAIC/AACAPwAAgL8AAIC/AACAPwAAgD8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIA/AACAPwAAgD8AAIC/AACAPwAAgL8AAIC/AACAPwAAgL8AAIA/AACAvwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIC/AACAvwAAgD8AAIA/AACAvwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgD8AAIA/AACAvwAAgD8AAIA/AACAPwAAgD8AAIC/AACAvwAAgD8AAIA/AACAvwAAgD8AAIC/AACAPwAAgD8AAIC/AACAvwAAgL8AAIA/AACAPwAAgL8AAIA/AACAvwAAgL8AAIC/AACAPwAAgL8AAIA/AACAPwAAgL8AAIC/AACAvwAAgL8AAIC//3//f////7//f/9/////v/9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/////8AAP+/////f/////////9//////////3//////////f/////////9//////////3//////AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+/")
+}]
 
 [sub_resource type="BoxMesh" id="BoxMesh_yjl0e"]
 size = Vector3(23.95, 0.2, 0.2)
@@ -59,7 +122,7 @@ light_indirect_energy = 0.0
 transform = Transform3D(0.892586, 0.345392, -0.289819, 0, 0.642788, 0.766044, 0.450878, -0.68376, 0.573743, -18.8493, 12.5175, 14.3436)
 
 [node name="RoamingCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(1, 2.38419e-07, 2.98023e-07, 5.96046e-08, 1, -2.68221e-07, -2.98023e-08, 0, 1, 8.78115, -17.8545, 5.72965)
+transform = Transform3D(-0.577787, 0.625236, -0.524636, -0.625235, 0.0741181, 0.776909, 0.524636, 0.776909, 0.348095, -25.9523, 44.2691, -22.2332)
 cull_mask = 2
 current = true
 
@@ -145,35 +208,35 @@ skeleton = NodePath("../..")
 
 [node name="rooms" type="Node3D" parent="Building/FloorContainer/Floor0/rings/RingA"]
 
-[node name="Room0" type="CSGMesh3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
+[node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 9.41025, 0.5, 3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_v64aa")
 
-[node name="Room1" type="CSGMesh3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
+[node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_ut573")
 
-[node name="Room2" type="CSGMesh3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
+[node name="Room2" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -7.91025, 0.5, 6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_cgwr6")
 
-[node name="Room3" type="CSGMesh3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
+[node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -9.41025, 0.5, -3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_gqb1m")
 
-[node name="Room4" type="CSGMesh3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
+[node name="Room4" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, -10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_up1il")
 
-[node name="Room5" type="CSGMesh3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
+[node name="Room5" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 7.91025, 0.5, -6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor0/rings"]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
@@ -313,7 +376,7 @@ skeleton = NodePath("../../../../Corridors")
 
 [node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingC/rooms"]
 transform = Transform3D(0.500001, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.500001, -29.1521, 1.78136, -14.0275)
-layers = 3
+layers = 0
 mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
 
@@ -388,35 +451,35 @@ skeleton = NodePath("../..")
 
 [node name="rooms" type="Node3D" parent="Building/FloorContainer/Floor1/rings/RingA"]
 
-[node name="Room0Test" type="CSGMesh3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
+[node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 9.41025, 0.5, 3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_v64aa")
 
-[node name="Room1" type="CSGMesh3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
+[node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_ut573")
 
-[node name="Room2" type="CSGMesh3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
+[node name="Room2" type="MeshInstance3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -7.91025, 0.5, 6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_cgwr6")
 
-[node name="Room3" type="CSGMesh3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
+[node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -9.41025, 0.5, -3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_gqb1m")
 
-[node name="Room4" type="CSGMesh3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
+[node name="Room4" type="MeshInstance3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, -10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_up1il")
 
-[node name="Room5" type="CSGMesh3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
+[node name="Room5" type="MeshInstance3D" parent="Building/FloorContainer/Floor1/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 7.91025, 0.5, -6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor1/rings"]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
@@ -555,7 +618,7 @@ mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
 
 [node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor1/rings/RingC/rooms"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -32.5609, 0.5, -13.6029)
+transform = Transform3D(0.500001, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.500001, -29.1521, 1.78136, -14.0275)
 layers = 0
 mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
@@ -631,35 +694,35 @@ skeleton = NodePath("../..")
 
 [node name="rooms" type="Node3D" parent="Building/FloorContainer/Floor2/rings/RingA"]
 
-[node name="Room0Test" type="CSGMesh3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
+[node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 9.41025, 0.5, 3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_v64aa")
 
-[node name="Room1" type="CSGMesh3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
+[node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_ut573")
 
-[node name="Room2" type="CSGMesh3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
+[node name="Room2" type="MeshInstance3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -7.91025, 0.5, 6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_cgwr6")
 
-[node name="Room3" type="CSGMesh3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
+[node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -9.41025, 0.5, -3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_gqb1m")
 
-[node name="Room4" type="CSGMesh3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
+[node name="Room4" type="MeshInstance3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, -10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_up1il")
 
-[node name="Room5" type="CSGMesh3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
+[node name="Room5" type="MeshInstance3D" parent="Building/FloorContainer/Floor2/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 7.91025, 0.5, -6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor2/rings"]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
@@ -798,7 +861,7 @@ mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
 
 [node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor2/rings/RingC/rooms"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -32.5609, 0.5, -13.6029)
+transform = Transform3D(0.500001, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.500001, -29.1521, 1.78136, -14.0275)
 layers = 0
 mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
@@ -874,35 +937,35 @@ skeleton = NodePath("../..")
 
 [node name="rooms" type="Node3D" parent="Building/FloorContainer/Floor3/rings/RingA"]
 
-[node name="Room0Test" type="CSGMesh3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
+[node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 9.41025, 0.5, 3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_v64aa")
 
-[node name="Room1" type="CSGMesh3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
+[node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_ut573")
 
-[node name="Room2" type="CSGMesh3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
+[node name="Room2" type="MeshInstance3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -7.91025, 0.5, 6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_cgwr6")
 
-[node name="Room3" type="CSGMesh3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
+[node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -9.41025, 0.5, -3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_gqb1m")
 
-[node name="Room4" type="CSGMesh3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
+[node name="Room4" type="MeshInstance3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, -10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_up1il")
 
-[node name="Room5" type="CSGMesh3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
+[node name="Room5" type="MeshInstance3D" parent="Building/FloorContainer/Floor3/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 7.91025, 0.5, -6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor3/rings"]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
@@ -1041,7 +1104,7 @@ mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
 
 [node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor3/rings/RingC/rooms"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -32.5609, 0.5, -13.6029)
+transform = Transform3D(0.500001, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.500001, -29.1521, 1.78136, -14.0275)
 layers = 0
 mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
@@ -1117,35 +1180,35 @@ skeleton = NodePath("../..")
 
 [node name="rooms" type="Node3D" parent="Building/FloorContainer/Floor4/rings/RingA"]
 
-[node name="Room0Test" type="CSGMesh3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
+[node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 9.41025, 0.5, 3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_v64aa")
 
-[node name="Room1" type="CSGMesh3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
+[node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_ut573")
 
-[node name="Room2" type="CSGMesh3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
+[node name="Room2" type="MeshInstance3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -7.91025, 0.5, 6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_cgwr6")
 
-[node name="Room3" type="CSGMesh3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
+[node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -9.41025, 0.5, -3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_gqb1m")
 
-[node name="Room4" type="CSGMesh3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
+[node name="Room4" type="MeshInstance3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, -10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_up1il")
 
-[node name="Room5" type="CSGMesh3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
+[node name="Room5" type="MeshInstance3D" parent="Building/FloorContainer/Floor4/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 7.91025, 0.5, -6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor4/rings"]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
@@ -1284,7 +1347,7 @@ mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
 
 [node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor4/rings/RingC/rooms"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -32.5609, 0.5, -13.6029)
+transform = Transform3D(0.500001, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.500001, -29.1521, 1.78136, -14.0275)
 layers = 0
 mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
@@ -1360,35 +1423,35 @@ skeleton = NodePath("../..")
 
 [node name="rooms" type="Node3D" parent="Building/FloorContainer/Floor5/rings/RingA"]
 
-[node name="Room0" type="CSGMesh3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
+[node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 9.41025, 0.5, 3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_v64aa")
 
-[node name="Room1" type="CSGMesh3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
+[node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_ut573")
 
-[node name="Room2" type="CSGMesh3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
+[node name="Room2" type="MeshInstance3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -7.91025, 0.5, 6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_cgwr6")
 
-[node name="Room3" type="CSGMesh3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
+[node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -9.41025, 0.5, -3.70096)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_gqb1m")
 
-[node name="Room4" type="CSGMesh3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
+[node name="Room4" type="MeshInstance3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, -10)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_up1il")
 
-[node name="Room5" type="CSGMesh3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
+[node name="Room5" type="MeshInstance3D" parent="Building/FloorContainer/Floor5/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 7.91025, 0.5, -6.29903)
 layers = 0
-mesh = SubResource("BoxMesh_0w16f")
+mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor5/rings"]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
@@ -1527,7 +1590,7 @@ mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
 
 [node name="Room3" type="MeshInstance3D" parent="Building/FloorContainer/Floor5/rings/RingC/rooms"]
-transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -32.5609, 0.5, -13.6029)
+transform = Transform3D(0.500001, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.500001, -29.1521, 1.78136, -14.0275)
 layers = 0
 mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
