@@ -136,7 +136,6 @@ layout_mode = 2
 [node name="RingItem" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/RingListContainer" instance=ExtResource("5_xdtwy")]
 layout_mode = 2
 size_flags_horizontal = 3
-ring_letter = null
 is_selected = true
 
 [node name="RingItem2" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/Rings/RingListContainer" instance=ExtResource("5_xdtwy")]

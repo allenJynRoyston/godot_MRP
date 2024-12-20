@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=4 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=19 format=4 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_cucwc"]
+[ext_resource type="Texture2D" uid="uid://dsecx0uwupwl" path="res://SVGs/info-circle-svgrepo-com.svg" id="2_p8v84"]
 
 [sub_resource type="Environment" id="Environment_73ws8"]
 ambient_light_color = Color(0, 0.395829, 0.231161, 1)
@@ -120,36 +121,44 @@ light_energy = 1.181
 light_indirect_energy = 0.0
 
 [node name="CameraContainers" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="RoamingCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-cull_mask = 1023
+transform = Transform3D(-0.846414, 0.22618, -0.482104, 0.0189404, 0.917533, 0.39721, 0.532186, 0.327073, -0.780898, 6.807, 3.209, -5)
+cull_mask = 2
+current = true
 
 [node name="OverviewCamera" type="Camera3D" parent="CameraContainers"]
 transform = Transform3D(0.96702, 0.201103, -0.156298, -0.00817742, 0.637856, 0.770112, 0.254568, -0.743436, 0.618464, -14.8231, 33.4633, 47.7386)
-cull_mask = 1023
+cull_mask = 2
 
 [node name="FloorCamera" type="Camera3D" parent="CameraContainers"]
 transform = Transform3D(0.982113, 0.125966, -0.139949, 0, 0.743262, 0.669001, 0.18829, -0.657035, 0.729967, -16.0981, 21.4467, 35.6748)
-cull_mask = 1023
+cull_mask = 2
 
 [node name="RingCamera" type="Camera3D" parent="CameraContainers"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 55, 0)
-cull_mask = 1023
+cull_mask = 2
 environment = SubResource("Environment_73ws8")
 size = 64.157
 near = 0.041
 
 [node name="RoomCamera" type="Camera3D" parent="CameraContainers"]
 transform = Transform3D(-0.846415, 0.22618, -0.482104, 0.0189404, 0.917533, 0.397209, 0.532187, 0.327073, -0.780897, 6.807, 3.209, -5)
-cull_mask = 1023
+cull_mask = 2
 environment = SubResource("Environment_73ws8")
-current = true
 size = 42.052
 
 [node name="Building" type="Node3D" parent="."]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
+
+[node name="ActiveRoomSprite" type="Sprite3D" parent="Building"]
+transform = Transform3D(0.01, -2.32831e-10, -4.65661e-10, 1.60071e-10, 0.01, 4.65661e-10, 4.65661e-10, 4.03275e-10, 0.01, -2.38419e-07, 0, 4.12953e-07)
+visible = false
+layers = 2
+billboard = 1
+no_depth_test = true
+fixed_size = true
+texture = ExtResource("2_p8v84")
 
 [node name="Elevator" type="MeshInstance3D" parent="Building"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -40, 0)

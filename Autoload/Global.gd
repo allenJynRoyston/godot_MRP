@@ -1,6 +1,8 @@
 @tool
 extends Node
 
+var projected_mouse_point:Vector2 
+
 # ------------------------------------------------------------------------------
 var animation_queue:Array = []
 
@@ -12,7 +14,6 @@ func remove_from_animation_queue(node:Node) -> void:
 	animation_queue.erase(node)
 
 func has_animation_in_queue() -> bool:
-	print(animation_queue.size())
 	return animation_queue.size() > 0
 # ------------------------------------------------------------------------------
 

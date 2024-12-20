@@ -13,6 +13,8 @@ extends Node3D
 @onready var RingCamera:Camera3D = $CameraContainers/RingCamera
 @onready var RoomCamera:Camera3D = $CameraContainers/RoomCamera
 
+@onready var ActiveRoomSprite:Sprite3D = $Building/ActiveRoomSprite
+
 @export var render_layer:int = 0 : 
 	set(val): 
 		render_layer = val
@@ -40,6 +42,7 @@ var room_nodes:Dictionary = {}
 var use_camera_node:Camera3D
 var tween_queue:Array = []
 
+var active_room_node:Node3D
 
 
 # ------------------------------------------------
@@ -76,6 +79,8 @@ func camera_setup() -> void:
 	for camera in CameraContainers.get_children():
 		camera.current = false
 	RoamingCamera.current = true
+	RoamingCamera.position = OverviewCamera.position
+	RoamingCamera.rotation = OverviewCamera.rotation
 # ------------------------------------------------	
 
 # ------------------------------------------------	
@@ -176,6 +181,11 @@ func on_current_location_update() -> void:
 				for ring_index in ring_nodes.get_child_count():
 					var ring:Node3D = ring_nodes.get_child(ring_index)
 					ring.visible = true				
+					
+					if current_location.ring == ring_index:
+						print(ring)
+						active_room_node = ring.find_child('rooms').get_child(current_location.room)
+					
 			
 		CAMERA.ZOOM.FLOOR:
 			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
@@ -192,6 +202,9 @@ func on_current_location_update() -> void:
 				for ring_index in ring_nodes.get_child_count():
 					var ring:Node3D = ring_nodes.get_child(ring_index)
 					ring.visible = true
+					
+					if current_location.ring == ring_index:
+						active_room_node = ring.find_child('rooms').get_child(current_location.room)					
 			
 		CAMERA.ZOOM.RING:	
 			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
@@ -205,6 +218,9 @@ func on_current_location_update() -> void:
 				for ring_index in ring_nodes.get_child_count():
 					var ring:Node3D = ring_nodes.get_child(ring_index)
 					ring.visible = current_location.ring == ring_index
+					
+					if current_location.ring == ring_index:
+						active_room_node = ring.find_child('rooms').get_child(current_location.room)					
 			
 		CAMERA.ZOOM.RM:
 			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
@@ -222,6 +238,9 @@ func on_current_location_update() -> void:
 				for ring_index in ring_nodes.get_child_count():
 					var ring:Node3D = ring_nodes.get_child(ring_index)
 					ring.visible = current_location.ring == ring_index
+					
+					if current_location.ring == ring_index:
+						active_room_node = ring.find_child('rooms').get_child(current_location.room)					
 			
 			
 	await U.set_timeout(wait_time)
@@ -233,9 +252,11 @@ func on_current_location_update() -> void:
 func on_current_camera_zoom_update() -> void:	
 	GBL.add_to_animation_queue(self)
 	
+	# adjust the camera prior to changing types
 	if previous_camera_zoom == CAMERA.ZOOM.OVERVIEW and current_camera_zoom == CAMERA.ZOOM.FLOOR:
 		await tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0))
-		
+	
+	# adds some stylish zoom animation	
 	if previous_camera_zoom == CAMERA.ZOOM.RING and current_camera_zoom == CAMERA.ZOOM.RM:
 		var camera_position:Vector3 = RoamingCamera.position
 		var camera_rotation_degree:Vector3 = RoamingCamera.rotation_degrees
@@ -300,5 +321,10 @@ func on_process_update(delta: float) -> void:
 	if !is_node_ready():return
 	if current_camera_zoom == CAMERA.ZOOM.OVERVIEW:
 		Building.rotate_y(0.001)
+	
+	if ActiveRoomSprite != null and active_room_node != null:
+		ActiveRoomSprite.position = active_room_node.position	
+		GBL.projected_mouse_point = RoamingCamera.unproject_position(active_room_node.global_position)
+	
 	normalize_rotation_degrees(Building)
 # ------------------------------------------------

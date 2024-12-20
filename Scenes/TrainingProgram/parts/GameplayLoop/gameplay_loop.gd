@@ -22,6 +22,8 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
 
+@onready var TestPoint:PanelContainer = $Control/TestPoint
+
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
 @export var show_structures:bool = true: 
@@ -251,11 +253,13 @@ func _init() -> void:
 	GBL.register_node(REFS.GAMEPLAY_LOOP, self)
 	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_control_input(self)
+	GBL.subscribe_to_process(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
+	GBL.unsubscribe_to_process(self)
 	
 func _ready() -> void:
 	if !Engine.is_editor_hint():
@@ -852,4 +856,8 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	
 
 #endregion		
+
+func on_process_update(delta:float) -> void:
+	TestPoint.position = GBL.projected_mouse_point + Structure3dContainer.global_position
+	print(GBL.projected_mouse_point)
 # ------------------------------------------------------------------------------

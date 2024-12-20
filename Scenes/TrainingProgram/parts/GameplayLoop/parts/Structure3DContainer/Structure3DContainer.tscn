@@ -35,22 +35,22 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nmkjx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a5cgm"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3nrit"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgymh"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6qscr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ka4x5"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c62db"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bjk6o"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_phdp7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61nm1"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fv1ds"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g6u01"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="Structure3DContainer" type="PanelContainer"]
@@ -141,14 +141,14 @@ alignment = 1
 
 [node name="TextBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nmkjx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_a5cgm")
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "1F"
 
 [node name="TextBtn2" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3nrit")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jgymh")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
@@ -156,7 +156,7 @@ title = "2F"
 
 [node name="TextBtn3" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6qscr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ka4x5")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
@@ -164,7 +164,7 @@ title = "3F"
 
 [node name="TextBtn4" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_c62db")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bjk6o")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
@@ -172,7 +172,7 @@ title = "4F"
 
 [node name="TextBtn5" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_phdp7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_61nm1")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
@@ -180,7 +180,7 @@ title = "5F"
 
 [node name="TextBtn6" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fv1ds")
+theme_override_styles/panel = SubResource("StyleBoxFlat_g6u01")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
