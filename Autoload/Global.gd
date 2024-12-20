@@ -2,6 +2,21 @@
 extends Node
 
 # ------------------------------------------------------------------------------
+var animation_queue:Array = []
+
+func add_to_animation_queue(node:Node) -> void:
+	if node not in animation_queue:
+		animation_queue.push_back(node)
+
+func remove_from_animation_queue(node:Node) -> void:
+	animation_queue.erase(node)
+
+func has_animation_in_queue() -> bool:
+	print(animation_queue.size())
+	return animation_queue.size() > 0
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 # NODE REFS
 var node_refs:Dictionary = {}
 
@@ -124,11 +139,12 @@ func end_mouse_busy() -> void:
 
 # ------------------------------------------------------------------------------
 var input_subscriptions:Array = []
-func subscribe_to_input(node:Control) -> void:
+var mouse_input_wait:bool = false
+func subscribe_to_mouse_input(node:Control) -> void:
 	if node not in input_subscriptions:
 		input_subscriptions.push_back(node)
 		
-func unsubscribe_to_input(node:Control) -> void:
+func unsubscribe_to_mouse_input(node:Control) -> void:
 	input_subscriptions.erase(node)
 		
 func _input(event) -> void:
@@ -137,6 +153,20 @@ func _input(event) -> void:
 			if node == null:
 				input_subscriptions.erase(node)
 				return
+
+			if event.button_index == 4: 
+				if "on_mouse_scroll" in node and !mouse_input_wait:
+					node.on_mouse_scroll(0)
+					mouse_input_wait = true
+					await U.set_timeout(0.1)
+					mouse_input_wait = false					
+			if event.button_index == 5:
+				if "on_mouse_scroll" in node and !mouse_input_wait:
+					node.on_mouse_scroll(1)
+					mouse_input_wait = true
+					await U.set_timeout(0.1)
+					mouse_input_wait = false
+				
 			if "registered_click" in node:
 				node.registered_click(event)
 # ------------------------------------------------------------------------------

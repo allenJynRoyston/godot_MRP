@@ -1,8 +1,10 @@
 @tool
 extends GameContainer
 
-@onready var CameraA:BtnBase = $Control/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/CameraA
-@onready var CameraB:BtnBase = $Control/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/CameraB
+@onready var ZoomA:BtnBase = $Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/ZoomA
+@onready var ZoomB:BtnBase = $Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/ZoomB
+@onready var ZoomC:BtnBase = $Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/ZoomC
+
 @onready var RenderLayer1:Node3D = $SubViewport/Rendering
 @onready var RenderLayer2:Node3D = $SubViewport2/Rendering
 
@@ -11,10 +13,10 @@ var camera_type:CAMERA.TYPE = CAMERA.TYPE.PERSPECTIVE :
 		camera_type = val
 		on_camera_type_update()
 
-var camera_layer_focus:CAMERA.LAYER = CAMERA.LAYER.FLOOR : 
+var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.FLOOR : 
 	set(val):
-		camera_layer_focus = val
-		on_camera_layer_focus_update()
+		current_camera_zoom = val
+		on_current_camera_zoom_update()
 		
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -30,21 +32,26 @@ func _ready() -> void:
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
 	
-	CameraA.onClick = func() -> void:
-		camera_type = CAMERA.TYPE.PERSPECTIVE
-	CameraB.onClick = func() -> void:
-		camera_type = CAMERA.TYPE.OVERHEAD
+	ZoomA.onClick = func() -> void:
+		pass
+		#camera_type = CAMERA.TYPE.PERSPECTIVE
+	ZoomB.onClick = func() -> void:
+		pass
+		#$camera_type = CAMERA.TYPE.OVERHEAD
+	ZoomC.onClick = func() -> void:
+		pass
+		#camera_type = CAMERA.TYPE.OVERHEAD		
 	
 	on_camera_type_update()
-	on_camera_layer_focus_update()
+	on_current_camera_zoom_update()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_camera_layer_focus_update() -> void:
-	print("set camera focus: ", camera_layer_focus)
+func on_current_camera_zoom_update() -> void:
+	for node in [RenderLayer1, RenderLayer2]:
+		node.current_camera_zoom = current_camera_zoom
 # --------------------------------------------------------------------------------------------------			
 	
-
 # --------------------------------------------------------------------------------------------------
 func on_current_location_update() -> void:
 	for node in [RenderLayer1, RenderLayer2]:
@@ -54,7 +61,7 @@ func on_current_location_update() -> void:
 # --------------------------------------------------------------------------------------------------
 func on_camera_type_update() -> void:
 	for node in [RenderLayer1, RenderLayer2]:
-		node.camera_type = camera_type
+		node.current_camera_zoom = current_camera_zoom
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

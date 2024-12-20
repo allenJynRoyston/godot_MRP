@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://dl5rw8mq2i0dp"]
+[gd_scene load_steps=19 format=3 uid="uid://dl5rw8mq2i0dp"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_wktvj"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_wr5lh"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_5q3sd"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_01cm2"]
 [ext_resource type="PackedScene" uid="uid://c60d3ymkiaiyy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/Rendering.tscn" id="4_ypl4m"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w8kjt"]
@@ -23,14 +24,34 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="ViewportTexture" id="ViewportTexture_qanbp"]
 viewport_path = NodePath("SubViewport2")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_772ix"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tkeyg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_buw2j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ny8vv"]
+bg_color = Color(0, 0, 0, 0.941176)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yuhj1"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uts02"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tien4"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wwqfv"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gnrip"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pav4"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="Structure3DContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -58,13 +79,13 @@ layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Control"]
 layout_mode = 2
-offset_left = 250.0
+offset_left = 280.0
 offset_top = 10.0
-offset_right = 290.0
+offset_right = 350.0
 offset_bottom = 50.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_772ix")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tkeyg")
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
 layout_mode = 2
@@ -77,17 +98,93 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_buw2j")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="CameraA" parent="Control/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+[node name="ZoomA" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
 layout_mode = 2
 icon = 40
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.29219, 0.29219, 0.29219, 0.827451)
 
-[node name="CameraB" parent="Control/PanelContainer/MarginContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+[node name="ZoomB" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
 layout_mode = 2
-icon = 41
+icon = 24
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.29219, 0.29219, 0.29219, 0.827451)
+
+[node name="ZoomC" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+layout_mode = 2
+icon = 28
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.29219, 0.29219, 0.29219, 0.827451)
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ny8vv")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TextBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yuhj1")
+icon_placement = 1
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "1F"
+
+[node name="TextBtn2" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uts02")
+icon = 42
+icon_placement = 1
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "2F"
+
+[node name="TextBtn3" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tien4")
+icon = 42
+icon_placement = 1
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "3F"
+
+[node name="TextBtn4" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wwqfv")
+icon = 42
+icon_placement = 1
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "4F"
+
+[node name="TextBtn5" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gnrip")
+icon = 42
+icon_placement = 1
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "5F"
+
+[node name="TextBtn6" parent="Control/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5pav4")
+icon = 42
+icon_placement = 1
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "6F"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true

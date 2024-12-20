@@ -7,8 +7,11 @@ extends Node3D
 
 @onready var CameraContainers:Node3D = $CameraContainers
 @onready var RoamingCamera:Camera3D = $CameraContainers/RoamingCamera
-@onready var PerspectiveCamera:Camera3D = $CameraContainers/PerspectiveCamera
-@onready var OverheadCamera:Camera3D = $CameraContainers/OverheadCamera
+
+@onready var OverviewCamera:Camera3D = $CameraContainers/OverviewCamera
+@onready var FloorCamera:Camera3D = $CameraContainers/FloorCamera
+@onready var RingCamera:Camera3D = $CameraContainers/RingCamera
+@onready var RoomCamera:Camera3D = $CameraContainers/RoomCamera
 
 @export var render_layer:int = 0 : 
 	set(val): 
@@ -17,19 +20,25 @@ extends Node3D
 		
 @export var enable_change_on_update:bool = false		
 
-var camera_type:CAMERA.TYPE = CAMERA.TYPE.PERSPECTIVE : 
+var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.FLOOR : 
 	set(val):
-		camera_type = val
-		on_camera_type_update()
+		previous_state = current_camera_zoom
+		current_camera_zoom = val
+		on_current_camera_zoom_update()		
+var previous_state:CAMERA.ZOOM = current_camera_zoom
 
 var current_location:Dictionary = {} : 
 	set(val):
+		previous_location = current_location
 		current_location = val
 		on_current_location_update()
+var previous_location:Dictionary = current_location
 
 var building_nodes:Dictionary = {}
 var room_nodes:Dictionary = {}
 var use_camera_node:Camera3D
+var tween_queue:Array = []
+
 
 # ------------------------------------------------
 func _ready() -> void:
@@ -59,8 +68,9 @@ func _ready() -> void:
 				building_nodes[floor_index].rings[ring_index].room[room_index] = room_child
 				room_nodes[floor_index].push_back(room_child)
 				
-	on_camera_type_update()
+	camera_setup()
 	on_render_layout_update()
+	on_current_camera_zoom_update()
 	
 	
 func _init() -> void:
@@ -70,16 +80,11 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 # ------------------------------------------------
 
-# ------------------------------------------------
-func on_current_location_update() -> void:
-	if !is_node_ready() or current_location.is_empty():return
-	
-	if enable_change_on_update:
-		highlight_floor(current_location.floor)
-	
-	var new_pos:Vector3 = Building.position
-	new_pos.y = (current_location.floor * 10)
-	tween_node(Building, new_pos)
+# ------------------------------------------------	
+func camera_setup() -> void:
+	for camera in CameraContainers.get_children():
+		camera.current = false
+	RoamingCamera.current = true
 # ------------------------------------------------	
 
 # ------------------------------------------------	
@@ -145,40 +150,99 @@ func on_render_layout_update() -> void:
 			10:
 				camera.cull_mask = (1 << 9)  # Enables only layer 10
 # ------------------------------------------------	
-		
+
 # ------------------------------------------------
-func on_camera_type_update() -> void:
-	if !is_node_ready():return
-	match camera_type:
-		CAMERA.TYPE.PERSPECTIVE:
-			use_camera_node = PerspectiveCamera
-		CAMERA.TYPE.OVERHEAD:
-			use_camera_node = OverheadCamera
+func on_current_location_update() -> void:	
+	if !is_node_ready() or current_location.is_empty():return
+	GBL.add_to_animation_queue(self)
 	
-	tween_node(RoamingCamera, use_camera_node.position, use_camera_node.rotation)
+	if enable_change_on_update:
+		highlight_floor(current_location.floor)
+	
+	var new_pos:Vector3 = Building.position
+	new_pos.y = (current_location.floor * 10)
+
+	var floor_distance:int = 1 if previous_location.is_empty() else abs(previous_location.floor - current_location.floor)
+	var ring_distance:int = 1 if previous_location.is_empty() else abs(previous_location.ring - current_location.ring)
+	var room_distance:int = 1 if previous_location.is_empty() else abs(previous_location.room - current_location.room)	
+	
+	var floor_wait_time = floor_distance * 0.2
+	var ring_wait_time = ring_distance * 0.2
+	var room_wait_time = room_distance * 0.2
+	
+	var wait_time:float = max(0.02, floor_wait_time, ring_wait_time, room_wait_time)
+
+	match current_camera_zoom:
+		CAMERA.ZOOM.OVERVIEW:
+			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
+		CAMERA.ZOOM.FLOOR:
+			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
+			var camera_position:Vector3 = FloorCamera.position
+			camera_position.x -= (current_location.ring * 10)
+			tween_position(RoamingCamera, camera_position, 0.3)
+			tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0), room_wait_time)
+		CAMERA.ZOOM.RING:	
+			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
+			tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0), room_wait_time)
+		CAMERA.ZOOM.RM:
+			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
+			var camera_position:Vector3 = RoomCamera.position
+			camera_position.x += (current_location.ring * 10)
+			camera_position.z -= (current_location.ring * 5)
+			tween_position(RoamingCamera, camera_position, ring_wait_time)
+			tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0), room_wait_time)
+			
+	await U.set_timeout(wait_time)
+	previous_location = current_location
+	GBL.remove_from_animation_queue(self)
+# ------------------------------------------------	
+
+# ------------------------------------------------
+func on_current_camera_zoom_update() -> void:	
+	GBL.add_to_animation_queue(self)
+	
+	if previous_state == CAMERA.ZOOM.OVERVIEW and current_camera_zoom == CAMERA.ZOOM.FLOOR:
+		await tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0))
+	
+	match current_camera_zoom:
+		CAMERA.ZOOM.OVERVIEW:
+			tween_rotation(RoamingCamera, OverviewCamera.rotation_degrees)
+			await tween_position(RoamingCamera, OverviewCamera.position)
+		CAMERA.ZOOM.FLOOR:
+			tween_rotation(RoamingCamera, FloorCamera.rotation_degrees)
+			await tween_position(RoamingCamera, FloorCamera.position)			
+		CAMERA.ZOOM.RING:
+			tween_rotation(RoamingCamera, RingCamera.rotation_degrees)
+			await tween_position(RoamingCamera, RingCamera.position)			
+		CAMERA.ZOOM.RM:
+			tween_rotation(RoamingCamera, RoomCamera.rotation_degrees)
+			await tween_position(RoamingCamera, RoomCamera.position)
 	
 	on_current_location_update()
-# ------------------------------------------------
+# ------------------------------------------------	
 
 # ------------------------------------------------
-func tween_node(node:Node3D, new_position:Vector3, new_rotation:Vector3 = node.rotation) -> void:
-	var set_camera_position:Callable = func(v3: Vector3) -> void:
+func tween_position(node:Node3D, new_position:Vector3, duration:float = 0.3) -> void:
+	var position_func:Callable = func(v3: Vector3) -> void:
 		node.position = v3
 		
-	var set_camera_rotation:Callable = func(v3:Vector3) -> void:
-		node.rotation = v3	
-	
 	var tween_pos:Tween = create_tween()
-	tween_pos.tween_method(set_camera_position, node.position, new_position, 0.3).set_trans(Tween.TRANS_SINE)
-	var tween_rot:Tween = create_tween()
-	tween_rot.tween_method(set_camera_rotation, node.rotation, new_rotation, 0.3).set_trans(Tween.TRANS_SINE)
-	await tween_rot.finished
-
-
-
+	tween_pos.tween_method(position_func, node.position, new_position, duration).set_trans(Tween.TRANS_SINE)
+	await tween_pos.finished
 # ------------------------------------------------
 
-func on_process_update(delta: float) -> void:
-	if is_node_ready():
-		$Building.rotate_y(0.001)
+# ------------------------------------------------
+func tween_rotation(node:Node3D, new_rotation:Vector3, duration:float = 0.3) -> void:
+	var rotation_func:Callable = func(v3:Vector3) -> void:
+		node.rotation_degrees = v3	
+
+	var tween_rot:Tween = create_tween()
+	tween_rot.tween_method(rotation_func, node.rotation_degrees, new_rotation, duration).set_trans(Tween.TRANS_SINE)
+	await tween_rot.finished
+# ------------------------------------------------	
+
+func on_process_update(delta: float) -> void:	
+	if !is_node_ready():return
+	if current_camera_zoom == CAMERA.ZOOM.OVERVIEW:
+		Building.rotate_y(0.001)
 # ------------------------------------------------

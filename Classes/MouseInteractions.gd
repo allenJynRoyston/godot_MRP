@@ -17,7 +17,7 @@ func _init() -> void:
 		return 	
 	if is_node_ready() and "subscribe_to_mouse_pos" in GBL:
 		GBL.subscribe_to_mouse_pos(self)
-	GBL.subscribe_to_input(self)
+	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_process(self)
 # --------------------------------------	
 
@@ -32,7 +32,7 @@ func _exit_tree() -> void:
 	if Engine.is_editor_hint():
 		return 	
 	GBL.unsubscribe_to_mouse_pos(self)
-	GBL.unsubscribe_to_input(self)
+	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_process(self)	
 # --------------------------------------	
 

@@ -46,7 +46,7 @@ func on_facility_room_data_update() -> void:
 				total_income += i.amount
 				
 				new_node.onClick = func() -> void:
-					GBL.find_node(REFS.GAMEPLAY_LOOP).camera_layer_focus = CAMERA.LAYER.RM
+					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RM
 					gameplay_node.goto_location(item.location)
 				
 				IncomeList.add_child(new_node)			
@@ -60,7 +60,7 @@ func on_facility_room_data_update() -> void:
 				total_expense += i.amount
 				
 				new_node.onClick = func() -> void:
-					GBL.find_node(REFS.GAMEPLAY_LOOP).camera_layer_focus = CAMERA.LAYER.RM
+					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RM
 					gameplay_node.goto_location(item.location)
 				
 				ExpenseList.add_child(new_node)	

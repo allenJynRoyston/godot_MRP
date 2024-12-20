@@ -37,20 +37,20 @@ func _ready() -> void:
 		var node:Control = FloorListContainer.get_child(index)
 		node.floor = index + 1
 		node.onClick = func() -> void:
-			GBL.find_node(REFS.GAMEPLAY_LOOP).camera_layer_focus = CAMERA.LAYER.FLOOR
+			#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.FLOOR
 			floor_selected = index
 			
 	for index in RingListContainer.get_child_count():
 		var node:Control = RingListContainer.get_child(index)
 		node.onClick = func() -> void:
-			GBL.find_node(REFS.GAMEPLAY_LOOP).camera_layer_focus = CAMERA.LAYER.RING
+			#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RING
 			ring_selected = index			
 			
 	for index in RoomListContainer.get_child_count():
 		var node:Control = RoomListContainer.get_child(index)
 		node.room = index + 1
 		node.onClick = func() -> void:
-			GBL.find_node(REFS.GAMEPLAY_LOOP).camera_layer_focus = CAMERA.LAYER.RM
+			#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RM
 			room_selected = index
 	
 	after_ready.call_deferred()

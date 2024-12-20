@@ -39,13 +39,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ehujf")
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 180
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 20
 
 [node name="ListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
-alignment = 2
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]
