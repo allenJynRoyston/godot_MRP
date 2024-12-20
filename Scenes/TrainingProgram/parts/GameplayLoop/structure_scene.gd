@@ -20,12 +20,12 @@ extends Node3D
 		
 @export var enable_change_on_update:bool = false		
 
-var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.FLOOR : 
+var current_camera_zoom:CAMERA.ZOOM  : 
 	set(val):
-		previous_state = current_camera_zoom
+		previous_camera_zoom = current_camera_zoom
 		current_camera_zoom = val
 		on_current_camera_zoom_update()		
-var previous_state:CAMERA.ZOOM = current_camera_zoom
+var previous_camera_zoom:CAMERA.ZOOM = current_camera_zoom
 
 var current_location:Dictionary = {} : 
 	set(val):
@@ -34,10 +34,12 @@ var current_location:Dictionary = {} :
 		on_current_location_update()
 var previous_location:Dictionary = current_location
 
-var building_nodes:Dictionary = {}
+var floor_container_nodes:Dictionary = {}
 var room_nodes:Dictionary = {}
+
 var use_camera_node:Camera3D
 var tween_queue:Array = []
+
 
 
 # ------------------------------------------------
@@ -47,25 +49,14 @@ func _ready() -> void:
 		var ring_container:Node3D = floor_container.find_child("rings")
 		
 		room_nodes[floor_index] = []
-		
-		building_nodes[floor_index] = {
-			"floor_container": floor_container,
-			"ring_container": ring_container,
-			"rings": {}
-		}		
+		floor_container_nodes[floor_index] = floor_container
 		
 		for ring_index in ring_container.get_child_count():
 			var ring_child:Node3D = ring_container.get_child(ring_index)
 			var room_container:Node3D = ring_child.find_child("rooms")
-			building_nodes[floor_index].rings[ring_index] = {
-				"node": ring_child,
-				"room_container": room_container,
-				"room": {}
-			}
-			
+
 			for room_index in room_container.get_child_count():
 				var room_child:Node3D = room_container.get_child(room_index)
-				building_nodes[floor_index].rings[ring_index].room[room_index] = room_child
 				room_nodes[floor_index].push_back(room_child)
 				
 	camera_setup()
@@ -158,7 +149,7 @@ func on_current_location_update() -> void:
 	
 	if enable_change_on_update:
 		highlight_floor(current_location.floor)
-	
+
 	var new_pos:Vector3 = Building.position
 	new_pos.y = (current_location.floor * 10)
 
@@ -174,16 +165,47 @@ func on_current_location_update() -> void:
 
 	match current_camera_zoom:
 		CAMERA.ZOOM.OVERVIEW:
+			tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0), room_wait_time)
 			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
+			
+			for index in floor_container_nodes:
+				var node:Node3D = floor_container_nodes[index]
+				node.visible = true
+				
+				var ring_nodes:Node3D = node.find_child('rings')
+				for ring_index in ring_nodes.get_child_count():
+					var ring:Node3D = ring_nodes.get_child(ring_index)
+					ring.visible = true				
+			
 		CAMERA.ZOOM.FLOOR:
 			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
 			var camera_position:Vector3 = FloorCamera.position
 			camera_position.x -= (current_location.ring * 10)
 			tween_position(RoamingCamera, camera_position, 0.3)
 			tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0), room_wait_time)
+			
+			for index in floor_container_nodes:
+				var node:Node3D = floor_container_nodes[index]
+				node.visible = current_location.floor <= index
+				
+				var ring_nodes:Node3D = node.find_child('rings')
+				for ring_index in ring_nodes.get_child_count():
+					var ring:Node3D = ring_nodes.get_child(ring_index)
+					ring.visible = true
+			
 		CAMERA.ZOOM.RING:	
 			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
 			tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0), room_wait_time)
+			
+			for index in floor_container_nodes:
+				var node:Node3D = floor_container_nodes[index]
+				node.visible = current_location.floor == index
+				
+				var ring_nodes:Node3D = node.find_child('rings')
+				for ring_index in ring_nodes.get_child_count():
+					var ring:Node3D = ring_nodes.get_child(ring_index)
+					ring.visible = current_location.ring == ring_index
+			
 		CAMERA.ZOOM.RM:
 			tween_position(Building, Vector3(0, current_location.floor * 10, 0), floor_wait_time)
 			var camera_position:Vector3 = RoomCamera.position
@@ -191,6 +213,16 @@ func on_current_location_update() -> void:
 			camera_position.z -= (current_location.ring * 5)
 			tween_position(RoamingCamera, camera_position, ring_wait_time)
 			tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0), room_wait_time)
+			
+			for index in floor_container_nodes:
+				var node:Node3D = floor_container_nodes[index]
+				node.visible = current_location.floor == index
+				
+				var ring_nodes:Node3D = node.find_child('rings')
+				for ring_index in ring_nodes.get_child_count():
+					var ring:Node3D = ring_nodes.get_child(ring_index)
+					ring.visible = current_location.ring == ring_index
+			
 			
 	await U.set_timeout(wait_time)
 	previous_location = current_location
@@ -201,9 +233,17 @@ func on_current_location_update() -> void:
 func on_current_camera_zoom_update() -> void:	
 	GBL.add_to_animation_queue(self)
 	
-	if previous_state == CAMERA.ZOOM.OVERVIEW and current_camera_zoom == CAMERA.ZOOM.FLOOR:
+	if previous_camera_zoom == CAMERA.ZOOM.OVERVIEW and current_camera_zoom == CAMERA.ZOOM.FLOOR:
 		await tween_rotation(Building, Vector3(0, 30 + (current_location.room * 60), 0))
-	
+		
+	if previous_camera_zoom == CAMERA.ZOOM.RING and current_camera_zoom == CAMERA.ZOOM.RM:
+		var camera_position:Vector3 = RoamingCamera.position
+		var camera_rotation_degree:Vector3 = RoamingCamera.rotation_degrees
+		camera_position.y -= 40
+		camera_rotation_degree.y -= 30
+		await tween_position(RoamingCamera, camera_position, 0.3)
+		await tween_rotation(RoamingCamera, camera_rotation_degree, 0.3)
+
 	match current_camera_zoom:
 		CAMERA.ZOOM.OVERVIEW:
 			tween_rotation(RoamingCamera, OverviewCamera.rotation_degrees)
@@ -217,7 +257,7 @@ func on_current_camera_zoom_update() -> void:
 		CAMERA.ZOOM.RM:
 			tween_rotation(RoamingCamera, RoomCamera.rotation_degrees)
 			await tween_position(RoamingCamera, RoomCamera.position)
-	
+
 	on_current_location_update()
 # ------------------------------------------------	
 
@@ -241,8 +281,24 @@ func tween_rotation(node:Node3D, new_rotation:Vector3, duration:float = 0.3) -> 
 	await tween_rot.finished
 # ------------------------------------------------	
 
+
+func normalize_rotation_degrees(node:Node3D):
+	# Normalize each component of rotation_degrees to the range [0, 360)
+	node.rotation_degrees.x = fmod(node.rotation_degrees.x, 360)
+	if node.rotation_degrees.x < 0:
+		node.rotation_degrees.x += 360
+
+	node.rotation_degrees.y = fmod(node.rotation_degrees.y, 360)
+	if node.rotation_degrees.y < 0:
+		node.rotation_degrees.y += 360
+
+	node.rotation_degrees.z = fmod(node.rotation_degrees.z, 360)
+	if node.rotation_degrees.z < 0:
+		node.rotation_degrees.z += 360
+
 func on_process_update(delta: float) -> void:	
 	if !is_node_ready():return
 	if current_camera_zoom == CAMERA.ZOOM.OVERVIEW:
 		Building.rotate_y(0.001)
+	normalize_rotation_degrees(Building)
 # ------------------------------------------------

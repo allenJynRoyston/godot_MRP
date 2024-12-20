@@ -153,7 +153,7 @@ transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
 
 [node name="Elevator" type="MeshInstance3D" parent="Building"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -40, 0)
-layers = 4
+visible = false
 mesh = SubResource("CylinderMesh_j3nt2")
 skeleton = NodePath("../../../..")
 
@@ -219,7 +219,7 @@ skeleton = NodePath("../..")
 
 [node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 9.41025, 0.5, 3.70096)
-layers = 3
+layers = 0
 mesh = SubResource("ArrayMesh_v64aa")
 
 [node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingA/rooms"]
@@ -252,7 +252,6 @@ transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor0/rings/RingB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
-visible = false
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingB/Connecting"]
 transform = Transform3D(-5.96046e-08, 0, -1, 0, 1, 0, 1, 0, -5.96046e-08, 20.6484, 0, 1.90735e-06)
@@ -292,7 +291,7 @@ transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
 
 [node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingB/rooms"]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 12.5981, 0.5, 15.8205)
-layers = 3
+layers = 0
 mesh = SubResource("BoxMesh_uuvpg")
 skeleton = NodePath("")
 
@@ -367,7 +366,7 @@ transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
 
 [node name="Room0" type="MeshInstance3D" parent="Building/FloorContainer/Floor0/rings/RingC/rooms"]
 transform = Transform3D(1, 0, 5.96046e-08, 0, 1, 0, -5.96046e-08, 0, 1, -4.5, 0.5, -35)
-layers = 3
+layers = 0
 mesh = SubResource("BoxMesh_gx7ij")
 skeleton = NodePath("../../../../Corridors")
 
