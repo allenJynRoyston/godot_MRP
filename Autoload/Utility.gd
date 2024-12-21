@@ -19,6 +19,16 @@ func tick() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
+func convert_to_normalized_position(container_size:Vector2, pos:Vector2) -> Vector2:
+	return Vector2((pos.x / container_size.x * 1.0), (pos.y / container_size.y * 1.0) )
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func convert_from_normalized_position(container_size:Vector2, normalized_pos:Vector2) -> Vector2:
+	return Vector2(container_size.x * normalized_pos.x, container_size.y * normalized_pos.y )
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
 func paginate_array(array:Array, start_at: int, limit: int) -> Array:
 	if start_at >= array.size():
 		return []  # Return an empty array if start_at is beyond the array size

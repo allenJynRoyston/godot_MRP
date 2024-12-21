@@ -119,7 +119,9 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 		SVGS.TYPE.CAMERA_A:
 			texture = load("res://SVGs/camera-svgrepo-com.svg")
 		SVGS.TYPE.CAMERA_B:
-			texture = load("res://SVGs/film-camera-svgrepo-com.svg")			
+			texture = load("res://SVGs/film-camera-svgrepo-com.svg")
+		SVGS.TYPE.DOWN_ARROW:
+			texture = load("res://SVGs/down-arrow-svgrepo-com.svg")
 	
 	svg_cache.push_back({
 		"key": key, 

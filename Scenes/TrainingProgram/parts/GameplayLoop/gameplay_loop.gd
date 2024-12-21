@@ -253,13 +253,13 @@ func _init() -> void:
 	GBL.register_node(REFS.GAMEPLAY_LOOP, self)
 	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_control_input(self)
-	GBL.subscribe_to_process(self)
+	
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
-	GBL.unsubscribe_to_process(self)
+
 	
 func _ready() -> void:
 	if !Engine.is_editor_hint():
@@ -853,11 +853,5 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	current_location = action_queue_data if no_save else restore_data.current_location
 	
 	goto_location(current_location)
-	
-
 #endregion		
-
-func on_process_update(delta:float) -> void:
-	TestPoint.position = GBL.projected_mouse_point + Structure3dContainer.global_position
-	print(GBL.projected_mouse_point)
 # ------------------------------------------------------------------------------

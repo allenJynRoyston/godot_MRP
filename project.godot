@@ -53,3 +53,7 @@ window/main_scene="res://Scenes/Computer/Computer.tscn"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/csg_converter/plugin.cfg")
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

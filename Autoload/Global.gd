@@ -1,7 +1,22 @@
 @tool
 extends Node
 
-var projected_mouse_point:Vector2 
+# ------------------------------------------------------------------------------
+var projected_3D_objects:Dictionary = {}
+
+func update_projected_3D_objects_position(key:String, normalized_position:Vector2 = Vector2(0, 0)) -> void:
+	if key not in projected_3D_objects:
+		projected_3D_objects[key] = normalized_position
+	projected_3D_objects[key] = normalized_position
+
+func remove_from_projected_3d_objects(key:String) -> void:
+	projected_3D_objects.erase(key)
+
+func get_projected_3d_object_normalized_position(key:String) -> Vector2:
+	if key in projected_3D_objects:
+		return projected_3D_objects[key]
+	return Vector2(-1, -1)
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 var animation_queue:Array = []
@@ -95,6 +110,7 @@ var mouse_pos := Vector2(0, 0) :
 	set(val): 
 		mouse_pos = val;
 		for node in mouse_pos_subscriptions:
+			print(node)
 			if "on_mouse_pos_update" in node:
 				node.on_mouse_pos_update(mouse_pos)
 
@@ -174,11 +190,11 @@ func _input(event) -> void:
 
 # ------------------------------------------------------------------------------
 var control_input_subscriptions:Array = []
-func subscribe_to_control_input(node:Control) -> void:
+func subscribe_to_control_input(node:Node) -> void:
 	if node not in control_input_subscriptions:
 		control_input_subscriptions.push_back(node)
 		
-func unsubscribe_to_control_input(node:Control) -> void:
+func unsubscribe_to_control_input(node:Node) -> void:
 	control_input_subscriptions.erase(node)
 		
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -197,6 +213,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "5"
 					56:
 						key = "8"
+					65:
+						key = "A"
+					68:
+						key = "D"
+					87:
+						key = "W"
+					83:
+						key = "S"
 						
 				node.on_control_input_update({"keycode": event.keycode, "key": key})
 # ------------------------------------------------------------------------------
