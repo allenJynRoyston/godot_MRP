@@ -44,10 +44,10 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(200, 145)
+size = Vector2i(240, 145)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 200.0
+offset_right = 240.0
 offset_bottom = 145.0
 size_flags_horizontal = 0
 size_flags_vertical = 0

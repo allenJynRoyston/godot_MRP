@@ -30,6 +30,13 @@ viewport_path = NodePath("SubViewport2")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aok4n"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qf3g3"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ny8vv"]
 bg_color = Color(0, 0, 0, 0.941176)
 corner_radius_top_left = 5
@@ -37,30 +44,23 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_48pi2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_43hg2"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxvvi"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ip3ho"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjnoa"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ut5s0"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uil11"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wwpp"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tm7y"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u8jrs"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fv1g1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yep2"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qf3g3"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [node name="Structure3DContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -97,11 +97,47 @@ layout_mode = 2
 theme_override_constants/margin_left = 267
 theme_override_constants/margin_right = 267
 
-[node name="PanelContainer" type="PanelContainer" parent="TextureRect2/PanelContainer/MarginContainer"]
+[node name="OverlayContainer" type="PanelContainer" parent="TextureRect2/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_aok4n")
 
-[node name="MarginContainer" type="MarginContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer"]
+[node name="LineDrawController" type="Control" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer"]
+layout_mode = 2
+script = ExtResource("5_5cekg")
+line_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="FloatingInfo" type="Control" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer"]
+layout_mode = 2
+
+[node name="TestPoint" type="PanelContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo"]
+layout_mode = 2
+offset_left = 20.0
+offset_top = 274.0
+offset_right = 124.0
+offset_bottom = 302.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qf3g3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RoomName" type="Label" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint/VBoxContainer/MarginContainer"]
+z_index = 10
+z_as_relative = false
+layout_mode = 2
+text = "Room: Barricks"
+label_settings = ExtResource("3_5hrov")
+
+[node name="MarginContainer" type="MarginContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -110,128 +146,104 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="ZoomA" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
-layout_mode = 2
-icon = 40
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.29219, 0.29219, 0.29219, 0.827451)
-
-[node name="ZoomB" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
-layout_mode = 2
-icon = 24
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.29219, 0.29219, 0.29219, 0.827451)
-
-[node name="ZoomC" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+[node name="ZoomA" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
 layout_mode = 2
 icon = 28
 active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.29219, 0.29219, 0.29219, 0.827451)
+inactive_color = Color(0.292, 0.292, 0.292, 0.827)
 
-[node name="PanelContainer" type="PanelContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ZoomB" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+layout_mode = 2
+icon = 28
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+
+[node name="ZoomC" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+layout_mode = 2
+icon = 28
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.292, 0.292, 0.292, 0.827)
+
+[node name="ZoomD" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_5q3sd")]
+layout_mode = 2
+icon = 28
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.292, 0.292, 0.292, 0.827)
+
+[node name="PanelContainer" type="PanelContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ny8vv")
 
-[node name="MarginContainer" type="MarginContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2"]
+visible = false
 layout_mode = 2
 alignment = 1
 
-[node name="TextBtn" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+[node name="TextBtn" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_48pi2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_43hg2")
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "1F"
 
-[node name="TextBtn2" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+[node name="TextBtn2" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_sxvvi")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ip3ho")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "2F"
 
-[node name="TextBtn3" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+[node name="TextBtn3" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fjnoa")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ut5s0")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "3F"
 
-[node name="TextBtn4" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+[node name="TextBtn4" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_uil11")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5wwpp")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "4F"
 
-[node name="TextBtn5" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+[node name="TextBtn5" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tm7y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_u8jrs")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "5F"
 
-[node name="TextBtn6" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_01cm2")]
+[node name="TextBtn6" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fv1g1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7yep2")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "6F"
-
-[node name="LineDrawController" type="Control" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer"]
-layout_mode = 2
-script = ExtResource("5_5cekg")
-
-[node name="FloatingPointContainer" type="Control" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="TestPoint" type="PanelContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/FloatingPointContainer"]
-layout_mode = 0
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qf3g3")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/FloatingPointContainer/TestPoint"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/FloatingPointContainer/TestPoint/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Label" type="Label" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/FloatingPointContainer/TestPoint/VBoxContainer/MarginContainer"]
-z_index = 10
-z_as_relative = false
-layout_mode = 2
-text = "Room: Barricks"
-label_settings = ExtResource("3_5hrov")
-
-[node name="IconBtn" parent="TextureRect2/PanelContainer/MarginContainer/PanelContainer/FloatingPointContainer/TestPoint/VBoxContainer" instance=ExtResource("3_5q3sd")]
-layout_mode = 2
-icon = 16
-is_hoverable = false
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true

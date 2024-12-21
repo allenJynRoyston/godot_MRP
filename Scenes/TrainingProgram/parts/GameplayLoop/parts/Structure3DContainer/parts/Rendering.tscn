@@ -259,7 +259,6 @@ layers = 0
 mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor0/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor0/rings/RingB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -338,7 +337,6 @@ mesh = SubResource("BoxMesh_uuvpg")
 skeleton = NodePath("../..")
 
 [node name="RingC" type="Node3D" parent="Building/FloorContainer/Floor0/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor0/rings/RingC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -502,7 +500,6 @@ layers = 0
 mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor1/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor1/rings/RingB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -580,7 +577,6 @@ mesh = SubResource("BoxMesh_uuvpg")
 skeleton = NodePath("../..")
 
 [node name="RingC" type="Node3D" parent="Building/FloorContainer/Floor1/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor1/rings/RingC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -744,7 +740,6 @@ layers = 0
 mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor2/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor2/rings/RingB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -822,7 +817,6 @@ mesh = SubResource("BoxMesh_uuvpg")
 skeleton = NodePath("../..")
 
 [node name="RingC" type="Node3D" parent="Building/FloorContainer/Floor2/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor2/rings/RingC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -986,7 +980,6 @@ layers = 0
 mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor3/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor3/rings/RingB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -1064,7 +1057,6 @@ mesh = SubResource("BoxMesh_uuvpg")
 skeleton = NodePath("../..")
 
 [node name="RingC" type="Node3D" parent="Building/FloorContainer/Floor3/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor3/rings/RingC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -1228,7 +1220,6 @@ layers = 0
 mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor4/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor4/rings/RingB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -1306,7 +1297,6 @@ mesh = SubResource("BoxMesh_uuvpg")
 skeleton = NodePath("../..")
 
 [node name="RingC" type="Node3D" parent="Building/FloorContainer/Floor4/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor4/rings/RingC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -1470,7 +1460,6 @@ layers = 0
 mesh = SubResource("ArrayMesh_nbrvj")
 
 [node name="RingB" type="Node3D" parent="Building/FloorContainer/Floor5/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor5/rings/RingB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
@@ -1548,7 +1537,6 @@ mesh = SubResource("BoxMesh_uuvpg")
 skeleton = NodePath("../..")
 
 [node name="RingC" type="Node3D" parent="Building/FloorContainer/Floor5/rings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Connecting" type="Node3D" parent="Building/FloorContainer/Floor5/rings/RingC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
