@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://48t1auawg8qm"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/floating_item.gd" id="1_23m2p"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_dkso4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2reox"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="FloatingItem" type="PanelContainer"]
+offset_right = 104.0
+offset_bottom = 28.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2reox")
+script = ExtResource("1_23m2p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RoomName" type="Label" parent="VBoxContainer/MarginContainer"]
+z_index = 10
+z_as_relative = false
+layout_mode = 2
+text = "Room Name"
+label_settings = ExtResource("2_dkso4")

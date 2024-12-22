@@ -7,6 +7,7 @@ extends GameContainer
 @onready var ZoomD:BtnBase = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer/ZoomD
 
 @onready var OverlayContainer:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer
+@onready var BookmarkedInfo:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/BookmarkedInfo
 @onready var FloatingInfo:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo
 @onready var TestPoint:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint
 @onready var LineDrawController:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/LineDrawController
@@ -15,6 +16,8 @@ extends GameContainer
 
 @onready var RenderLayer1:Node3D = $SubViewport/Rendering
 @onready var RenderLayer2:Node3D = $SubViewport2/Rendering
+
+const FloatingInfoPreload = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/FloatingItem.tscn")
 
 var camera_type:CAMERA.TYPE = CAMERA.TYPE.PERSPECTIVE : 
 	set(val):
@@ -25,7 +28,11 @@ var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.FLOOR :
 	set(val):
 		current_camera_zoom = val
 		on_current_camera_zoom_update()
-		
+
+var floating_node_refs:Dictionary = {}
+var bookmarked_node_refs:Dictionary = {}
+var tracking_nodes:Array = []
+
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -59,7 +66,16 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func traverse(callback:Callable) -> void:
+	for floor_index in room_config.floor:
+		for ring_index in room_config.floor[floor_index].ring:
+			for room_index in room_config.floor[floor_index].ring[ring_index].room:	
+				callback.call("%s%s%s" % [floor_index, ring_index, room_index], floor_index, ring_index, room_index)
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
 func on_current_camera_zoom_update() -> void:
+	if !is_node_ready():return
 	for node in [ZoomA, ZoomB, ZoomC, ZoomD]:
 		node.inactive_color = Color(0.292, 0.292, 0.292, 0.827)
 	
@@ -73,34 +89,72 @@ func on_current_camera_zoom_update() -> void:
 		CAMERA.ZOOM.RM:
 			ZoomD.inactive_color = Color.WHITE			
 			
-
 	for node in [RenderLayer1, RenderLayer2]:
 		node.current_camera_zoom = current_camera_zoom
-	
-	
-		
 # --------------------------------------------------------------------------------------------------			
+
+# --------------------------------------------------------------------------------------------------
+func on_room_config_update() -> void:
+	if !is_node_ready() or room_config.is_empty():return
 	
+	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
+		if ref_name not in floating_node_refs:
+			var new_floating_node:Control = FloatingInfoPreload.instantiate()
+			FloatingInfo.add_child(new_floating_node)
+			floating_node_refs[ref_name] = new_floating_node
+		floating_node_refs[ref_name].data = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data
+		floating_node_refs[ref_name].location = {"floor": floor_index, "ring": ring_index, "room": room_index}
+	traverse(callback) 
+	
+	on_bookmarked_rooms_update()
+# --------------------------------------------------------------------------------------------------
+
 # --------------------------------------------------------------------------------------------------
 func on_current_location_update() -> void:
-	if !is_node_ready():return
+	if !is_node_ready() or room_config.is_empty():return
 	for node in [RenderLayer1, RenderLayer2]:
 		node.current_location = current_location
+
+	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
+		if ref_name in floating_node_refs:
+			var active_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
+			var node:Control = floating_node_refs[ref_name]
+			node.show() if ref_name == active_ref else node.hide() 
+	traverse(callback) 
 	
-	if room_config.is_empty():return
-	var floor:int = current_location.floor
-	var ring:int = current_location.ring
-	var room:int = current_location.room		
-	var room_data:Dictionary = room_config.floor[floor].ring[ring].room[room].room_data
-	if room_data.is_empty():
-		RoomName.text = "Empty"
-	else:
-		RoomName.text = room_data.get_room_data.call().name
-	#RoomName.text = 
+	LineDrawController.draw_keys = []
 # --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func on_bookmarked_rooms_update() -> void:
+	if !is_node_ready() or room_config.is_empty():return
+	
+	bookmarked_node_refs = {}
+	for child in BookmarkedInfo.get_children():
+		child.queue_free()
+	
+	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
+		if ref_name in bookmarked_rooms:
+			var new_floating_node:Control = FloatingInfoPreload.instantiate()
+			BookmarkedInfo.add_child(new_floating_node)
+			new_floating_node.show()
+			bookmarked_node_refs[ref_name] = new_floating_node
+			bookmarked_node_refs[ref_name].data = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data
+			bookmarked_node_refs[ref_name].location = {"floor": floor_index, "ring": ring_index, "room": room_index}
+	traverse(callback) 
+	
+	LineDrawController.draw_keys = []
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func update_draw_keys() -> void:
+	var active_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
+	LineDrawController.draw_keys =  [active_ref] + bookmarked_rooms
+# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
 func on_camera_type_update() -> void:
+	if !is_node_ready():return
 	for node in [RenderLayer1, RenderLayer2]:
 		node.current_camera_zoom = current_camera_zoom
 # --------------------------------------------------------------------------------------------------
@@ -120,8 +174,29 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func on_process_update(delta:float) -> void:
-	if !is_node_ready():return		
-	var active_room_pos:Vector2 = U.convert_from_normalized_position(FloatingInfo.size, GBL.get_projected_3d_object_normalized_position("active_room"))
-	TestPoint.position = active_room_pos - Vector2(TestPoint.size.x + 50, 40)
-	LineDrawController.update_line_vectors(active_room_pos, TestPoint.global_position - LineDrawController.global_position + TestPoint.size/2 )	
+	if !is_node_ready() or current_location.is_empty():return	
+	
+	# display all bookmarked rooms as a floating tag
+	for index in bookmarked_rooms.size():
+		var ref_name:String = bookmarked_rooms[index]
+		var active_room_pos:Vector2 = U.convert_from_normalized_position(FloatingInfo.size, GBL.get_projected_3d_object_normalized_position(ref_name))
+		var floating_node:Control = bookmarked_node_refs[ref_name]
+		floating_node.position = Vector2(OverlayContainer.size.x - 80, (((10 + floating_node.size.y) * index) + 10) )
+
+	if !floating_node_refs.is_empty():
+		var ref_name:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
+		var active_room_pos:Vector2 = U.convert_from_normalized_position(FloatingInfo.size, GBL.get_projected_3d_object_normalized_position(ref_name))
+		var floating_node:Control = floating_node_refs[ref_name]
+		floating_node.position = active_room_pos - Vector2(floating_node.size.x, 40)
+		var line_data:Dictionary = {
+			"key": ref_name, 
+			"lines": [
+				{
+					"start_point": active_room_pos,
+					"end_point": floating_node.global_position - LineDrawController.global_position + floating_node.size/2
+				}
+			]
+		}
+		LineDrawController.update_line_data(line_data)			
+
 # --------------------------------------------------------------------------------------------------

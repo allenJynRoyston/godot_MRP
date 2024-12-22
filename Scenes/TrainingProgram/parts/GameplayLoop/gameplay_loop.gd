@@ -215,6 +215,10 @@ var room_config:Dictionary = {
 		room_config = val
 		on_room_config_update()
 
+var bookmarked_rooms:Array = ["001", "005", "003"] : # ["000", "201"] <- "floor_index, ring_index, room_index"]
+	set(val):
+		bookmarked_rooms = val
+		on_bookmarked_rooms_update()
 
 func get_ring_default() -> Dictionary:
 	return { 
@@ -294,6 +298,7 @@ func setup() -> void:
 	on_show_confirm_modal_update()
 	on_is_busy_update()
 	on_current_camera_zoom_update()
+	on_bookmarked_rooms_update()
 	
 	# steps
 	on_show_store_update()
@@ -438,6 +443,8 @@ func set_room_config() -> void:
 			"get_room_data": func() -> Dictionary:
 				return ROOM_UTIL.return_data(item.data.id)
 		}
+		# if facility is built, clear build_data
+		room_config.floor[floor].ring[ring].room[room].build_data = {}
 	room_config = room_config	
 	
 func on_current_camera_zoom_update() -> void:
@@ -501,6 +508,11 @@ func on_current_location_update() -> void:
 	if !is_node_ready(): return
 	for node in get_all_container_nodes():
 		node.current_location = current_location
+		
+func on_bookmarked_rooms_update() -> void:
+	if !is_node_ready(): return
+	for node in get_all_container_nodes():
+		node.bookmarked_rooms = bookmarked_rooms
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -757,7 +769,9 @@ func on_current_build_complete_step_update() -> void:
 				# update resources_data
 				resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
 				resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
-				
+			
+			print(facility_room_data)
+			
 			# update reactively
 			resources_data = resources_data	
 			facility_room_data = facility_room_data
@@ -818,6 +832,7 @@ func quicksave() -> void:
 		"lead_researchers_data": lead_researchers_data,
 		"resources_data": resources_data,
 		"current_location": current_location,
+		"bookmarked_rooms": bookmarked_rooms,
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
@@ -848,6 +863,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	action_queue_data = action_queue_data if no_save else restore_data.action_queue_data	
 	facility_room_data = action_queue_data if no_save else restore_data.facility_room_data  
 	resources_data = action_queue_data if no_save else restore_data.resources_data	
+	bookmarked_rooms = bookmarked_rooms #if no_save else restore_data.bookmarked_rooms
 	# comes after research data, fix this later
 	lead_researchers_data = lead_researchers_data if no_save else restore_data.lead_researchers_data
 	current_location = action_queue_data if no_save else restore_data.current_location

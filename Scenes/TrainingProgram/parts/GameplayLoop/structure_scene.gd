@@ -13,14 +13,15 @@ extends Node3D
 @onready var RingCamera:Camera3D = $CameraContainers/RingCamera
 @onready var RoomCamera:Camera3D = $CameraContainers/RoomCamera
 
-@onready var ActiveRoomSprite:Sprite3D = $Building/ActiveRoomSprite
-
 @export var render_layer:int = 0 : 
 	set(val): 
 		render_layer = val
 		on_render_layout_update()
 		
 @export var enable_change_on_update:bool = false		
+
+const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialActive.tres")
+const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMaterialInactive.tres")
 
 var current_camera_zoom:CAMERA.ZOOM  : 
 	set(val):		
@@ -46,37 +47,22 @@ var active_nodes:Dictionary = {
 	"room": null
 }
 
+var room_node_refs:Dictionary = {}
 
 # ------------------------------------------------
 func _ready() -> void:
-	for floor_index in FloorContainer.get_child_count():
-		var floor_container:Node3D = FloorContainer.get_child(floor_index)
-		var ring_container:Node3D = floor_container.find_child("rings")
-		
-		room_nodes[floor_index] = []
-		floor_container_nodes[floor_index] = floor_container
-		
-		for ring_index in ring_container.get_child_count():
-			var ring_child:Node3D = ring_container.get_child(ring_index)
-			var room_container:Node3D = ring_child.find_child("rooms")
-
-			for room_index in room_container.get_child_count():
-				var room_child:Node3D = room_container.get_child(room_index)
-				room_nodes[floor_index].push_back(room_child)
-				
 	camera_setup()
 	on_render_layout_update()
 	on_current_camera_zoom_update()
 
-	
 func _init() -> void:
 	GBL.subscribe_to_process(self)
-	GBL.subscribe_to_control_input(self)
 
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
-	GBL.unsubscribe_to_control_input(self)
 	GBL.remove_from_projected_3d_objects('active_room')
+	for key in room_node_refs:
+		GBL.remove_from_projected_3d_objects(key)
 # ------------------------------------------------
 
 # ------------------------------------------------	
@@ -90,9 +76,11 @@ func camera_setup() -> void:
 
 # ------------------------------------------------	
 func highlight_floor(floor:int) -> void:
-	for index in room_nodes:				
-		for room in room_nodes[index]:
-			set_node_layer(room, 2 if floor == index else 1)
+	var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:pass
+	var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:pass
+	var room_func:Callable = func(room:Node3D, d:Dictionary) -> void:
+		set_node_layer(room, 2 if floor == d.floor_index else 1)
+	traverse_nodes(floor_func, ring_func, room_func)
 # ------------------------------------------------		
 
 # ------------------------------------------------		
@@ -153,36 +141,40 @@ func on_render_layout_update() -> void:
 # ------------------------------------------------	
 
 # ------------------------------------------------
-func traverse_nodes(floor_func:Callable, ring_func:Callable, room_func:Callable) -> void:
-	for floor_index in floor_container_nodes:
-		var floor_node:Node3D = floor_container_nodes[floor_index]
-		floor_func.call(floor_node, floor_index)
+func traverse_nodes(floor_func:Callable, ring_func:Callable, room_func:Callable) -> void:	
+	for floor_index in FloorContainer.get_child_count():
+		var floor_node:Node3D = FloorContainer.get_child(floor_index)
+		var dict:Dictionary = {"room_index": null, "ring_index": null, "floor_index": null}
+		dict.floor_index = floor_index
+		floor_func.call(floor_node, dict)
 		
-		if (floor_index == current_location.floor):
-			active_nodes.floor = floor_node
-			
 		var ring_nodes:Node3D = floor_node.find_child('rings')
 		for ring_index in ring_nodes.get_child_count():
 			var ring_node:Node3D = ring_nodes.get_child(ring_index)
-			ring_func.call(ring_node, ring_index)
-			
-			if (floor_index == current_location.floor) and (ring_index == current_location.ring):
-				active_nodes.ring = ring_node
+			dict.ring_index = ring_index
+			ring_func.call(ring_node, dict)
 			
 			var room_nodes:Node3D = ring_node.find_child('rooms')
 			for room_index in room_nodes.get_child_count():
 				var room_node:Node3D = room_nodes.get_child(room_index)
-				room_func.call(room_node, room_index)
+				dict.room_index = room_index				
+				room_func.call(room_node, dict)
 				
-				if (floor_index == current_location.floor) and (ring_index == current_location.ring) and (current_location.room == room_index):
-					active_nodes.room = room_node	
-					
 # ------------------------------------------------
 
 # ------------------------------------------------
 func on_current_location_update() -> void:	
 	if !is_node_ready() or current_location.is_empty():return
 	GBL.add_to_animation_queue(self)
+	
+	if room_node_refs.is_empty():
+		var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:pass
+		var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:pass
+		var room_func:Callable = func(room:Node3D, d:Dictionary) -> void:
+			var ref_name:String = "%s%s%s" % [d.floor_index, d.ring_index, d.room_index]
+			room_node_refs[ref_name] = room
+		traverse_nodes(floor_func, ring_func, room_func)	
+	
 	
 	if enable_change_on_update:
 		highlight_floor(current_location.floor)
@@ -205,54 +197,51 @@ func on_current_location_update() -> void:
 	var zoom_to_floor:Callable = func(floor:int = current_location.floor, time:float = 0.3) -> void:
 		tween_position(Building, Vector3(0, floor * 10, 0), time)	
 	
-	
+
 	match current_camera_zoom:
 		# ------------------
-		CAMERA.ZOOM.OVERVIEW:
-			ActiveRoomSprite.pixel_size = 0.02
+		CAMERA.ZOOM.OVERVIEW:			
 			ElevatorNode.visible = true
 			if previous_camera_zoom != current_camera_zoom:
 				rotate_building.call()
 			zoom_to_floor.call(0)
-			var floor_func:Callable = func(floor:Node3D, i:int) -> void:
+			var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:
 				floor.visible = true
-			var ring_func:Callable = func(ring:Node3D, i:int) -> void:
+			var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:
 				ring.visible = true
-			var room_func:Callable = func(room:Node3D, i:int) -> void:
+			var room_func:Callable = func(room:MeshInstance3D, d:Dictionary) -> void:
 				room.visible = true	
+
 			traverse_nodes(floor_func, ring_func, room_func)
 		# ------------------
 		
 		# ------------------
-		CAMERA.ZOOM.FLOOR:
-			ActiveRoomSprite.pixel_size = 0.02
+		CAMERA.ZOOM.FLOOR:			
 			ElevatorNode.visible = false
 			zoom_to_floor.call()
-			var floor_func:Callable = func(floor:Node3D, i:int) -> void:
-				floor.visible = current_location.floor <= i
-			var ring_func:Callable = func(ring:Node3D, i:int) -> void:
+			var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:
+				floor.visible = current_location.floor <= d.floor_index
+			var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:
 				ring.visible = true
-			var room_func:Callable = func(room:Node3D, i:int) -> void:
+			var room_func:Callable = func(room:MeshInstance3D, d:Dictionary) -> void:
 				room.visible = true	
 			traverse_nodes(floor_func, ring_func, room_func)
 		# ------------------
 		
 		# ------------------
-		CAMERA.ZOOM.RING:	
-			ActiveRoomSprite.pixel_size = 0.025
+		CAMERA.ZOOM.RING:				
 			zoom_to_floor.call()
-			var floor_func:Callable = func(floor:Node3D, i:int) -> void:
-				floor.visible = current_location.floor == i
-			var ring_func:Callable = func(ring:Node3D, i:int) -> void:
-				ring.visible = current_location.ring == i
-			var room_func:Callable = func(room:Node3D, i:int) -> void:
+			var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:
+				floor.visible = current_location.floor == d.floor_index
+			var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:
+				ring.visible = current_location.ring == d.ring_index
+			var room_func:Callable = func(room:MeshInstance3D, d:Dictionary) -> void:
 				room.visible = true	
 			traverse_nodes(floor_func, ring_func, room_func)
 		# ------------------
 		
 		# ------------------
-		CAMERA.ZOOM.RM:
-			ActiveRoomSprite.pixel_size = 0.1
+		CAMERA.ZOOM.RM:			
 			rotate_building.call()
 			zoom_to_floor.call()
 			
@@ -261,19 +250,38 @@ func on_current_location_update() -> void:
 			camera_position.z -= (current_location.ring * 5)
 			tween_position(RoamingCamera, camera_position, ring_wait_time)
 			
-			var floor_func:Callable = func(floor:Node3D, i:int) -> void:
-				floor.visible = current_location.floor == i
-			var ring_func:Callable = func(ring:Node3D, i:int) -> void:
-				ring.visible = current_location.ring == i
-			var room_func:Callable = func(room:Node3D, i:int) -> void:
+			var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:
+				floor.visible = current_location.floor == d.floor_index
+			var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:
+				ring.visible = current_location.ring == d.ring_index
+			var room_func:Callable = func(room:MeshInstance3D, d:Dictionary) -> void:
 				room.visible = true
 			traverse_nodes(floor_func, ring_func, room_func)
 		# ------------------
+	
+	await color_active_node()
 			
 	await U.set_timeout(wait_time)
 	previous_location = current_location
 	GBL.remove_from_animation_queue(self)
 # ------------------------------------------------	
+
+# ------------------------------------------------
+func color_active_node() -> void:
+	await U.tick()
+	var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:pass
+	var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:pass
+	var room_func:Callable = func(room:MeshInstance3D, d:Dictionary) -> void:
+		
+		if current_location.floor == d.floor_index and current_location.ring == d.ring_index and current_location.room == d.room_index:
+			await U.tick()
+			room.mesh.material = RoomMaterialActive
+		else:
+			room.mesh.material = RoomMaterialInactive
+			
+			
+	traverse_nodes(floor_func, ring_func, room_func)
+# ------------------------------------------------
 
 # ------------------------------------------------
 func on_current_camera_zoom_update() -> void:	
@@ -287,9 +295,10 @@ func on_current_camera_zoom_update() -> void:
 	if previous_camera_zoom == CAMERA.ZOOM.RING and current_camera_zoom == CAMERA.ZOOM.RM:
 		var camera_position:Vector3 = RoamingCamera.position
 		var camera_rotation_degree:Vector3 = RoamingCamera.rotation_degrees
-		camera_position.y -= 40
+		camera_position.y -= 45
+		camera_rotation_degree.y -= 90
 		await tween_position(RoamingCamera, camera_position, 0.3)
-		await tween_rotation(RoamingCamera, camera_rotation_degree, 0.3)
+		await tween_rotation(RoamingCamera, camera_rotation_degree, 0.6)
 
 	match current_camera_zoom:
 		CAMERA.ZOOM.OVERVIEW:
@@ -346,20 +355,38 @@ func normalize_rotation_degrees(node:Node3D):
 # ------------------------------------------------
 
 # ------------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:	
-	if !is_node_ready():return	
+func get_room_position(key:String) -> Vector3:
+	var room_node:Node3D = room_node_refs[key]
+	var ring_node:Node3D = room_node.get_parent().get_parent()
+	var floor_node:Node3D = ring_node.get_parent().get_parent()
+	match current_camera_zoom:
+		CAMERA.ZOOM.OVERVIEW:	
+			return (room_node.global_position + ring_node.global_position - floor_node.position if current_camera_zoom == CAMERA.ZOOM.OVERVIEW else 0 ) 
+		_:
+			return (room_node.global_position + ring_node.global_position ) 
 # ------------------------------------------------
 
 # ------------------------------------------------
 func on_process_update(delta: float) -> void:	
 	if !is_node_ready():return
+	# ensures that building rotation cannot be > 360 degrees
+	normalize_rotation_degrees(Building)
+	
 	if current_camera_zoom == CAMERA.ZOOM.OVERVIEW:
 		Building.rotate_y(0.001)
 	
-	if ActiveRoomSprite != null:
-		ActiveRoomSprite.position = active_nodes.room.position + active_nodes.ring.position + active_nodes.floor.position
-		var normalized_position:Vector2 = U.convert_to_normalized_position(get_viewport().size, RoamingCamera.unproject_position(ActiveRoomSprite.global_position))
-		GBL.update_projected_3D_objects_position('active_room', normalized_position)
-		
-	normalize_rotation_degrees(Building)
+	if room_node_refs.is_empty(): return
+	
+	# update active room by moving sprite into location
+	var global_pos:Vector3 = get_room_position("%s%s%s" % [current_location.floor, current_location.ring, current_location.room])
+	var normalized_position:Vector2 = U.convert_to_normalized_position(get_viewport().size, RoamingCamera.unproject_position(global_pos))
+	GBL.update_projected_3D_objects_position('active_room', normalized_position)
+	
+	# update other room by moving sprite into location
+	for key in room_node_refs:
+		global_pos = get_room_position(key)
+		normalized_position = U.convert_to_normalized_position(get_viewport().size, RoamingCamera.unproject_position(global_pos))
+		GBL.update_projected_3D_objects_position(key, normalized_position)	
+
+	
 # ------------------------------------------------

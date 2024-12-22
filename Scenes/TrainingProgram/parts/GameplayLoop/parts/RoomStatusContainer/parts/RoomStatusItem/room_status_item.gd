@@ -60,6 +60,7 @@ func on_designation_update() -> void:
 
 func on_data_update(previous_state:Dictionary = {}) -> void:
 	if !is_node_ready() or data.is_empty():return
+	
 	if data.room_data.is_empty() and data.build_data.is_empty():
 		RoomNameLabel.text = "EMPTY"
 		StatusLabel.text = ""
@@ -73,7 +74,9 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		StatusLabel.text = "[UNDER CONSTRUCTION]"
 		RoomImage.texture = CACHE.fetch_image("res://Media/rooms/construction.jpg")
 		is_empty = false
-				
+	else:
+		StatusLabel.text = ""
+				#
 	if !data.room_data.is_empty():
 		var room_data:Dictionary = data.room_data.get_room_data.call()
 		RoomNameLabel.text = "%s" % [room_data.name]

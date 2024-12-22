@@ -66,11 +66,10 @@ func update_room_states() -> void:
 	await U.set_timeout(0.0)
 	for index in room_config.floor[current_floor].ring[current_ring].room:
 		var data = room_config.floor[current_floor].ring[current_ring].room[index]
-		room_nodes[index].room_id = index
+		room_nodes[index].room_id = int(index)
 		room_nodes[index].designation = "%s-%s-%s" % [current_floor, current_ring, index] 
 		room_nodes[index].data = data
 		room_nodes[index].onClick = func() -> void:
-			#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RM
 			gameplay_node.goto_location({"floor": current_floor, "ring": current_ring, "room": index})
 			
 func highlight_current_room() -> void:

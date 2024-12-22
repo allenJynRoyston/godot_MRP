@@ -6,18 +6,28 @@ var end_point: Vector2
 @export var line_color: Color = Color(1, 0, 0)  # Red color
 @export var line_width: float = 2.0
 
-func _draw():	
-	draw_line(start_point, end_point, line_color, line_width)
+var draw_data:Dictionary = {} 
+var draw_keys:Array = [] : 
+	set(val):
+		draw_keys = val
+		on_draw_keys_update()
 
-func update_line_vectors(sp:Vector2, ep:Vector2) -> void:
-	start_point = sp
-	end_point = ep
+func _draw() -> void:	
+	for key in draw_data:
+		for line_data in draw_data[key]:
+			var sp:Vector2 = line_data.start_point
+			var ep:Vector2 = line_data.end_point
+			draw_line(sp, ep, line_color, line_width)
 
-func redraw():	
-	if !is_node_ready():return
-	# Ensure the points are inside the Control's local space
-	draw_line(start_point, GBL.mouse_pos, line_color, line_width)
-
+func update_line_data(line_data:Dictionary) -> void:
+	if line_data.key not in draw_data:
+		draw_data[line_data.key] = []
+	draw_data[line_data.key] = line_data.lines
+	
+func on_draw_keys_update() -> void:	
+	for key in draw_data:
+		if key not in draw_keys:
+			draw_data.erase(key)
 
 func _process(delta:float) -> void:
 	queue_redraw() 
