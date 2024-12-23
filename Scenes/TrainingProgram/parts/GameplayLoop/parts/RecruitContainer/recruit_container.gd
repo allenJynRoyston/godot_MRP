@@ -23,7 +23,7 @@ func _ready() -> void:
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
 	
-	LeadResearchPanel.addHire = func(data:Array) -> void:
+	LeadResearchPanel.addHire = func(data:Dictionary) -> void:
 		user_response.emit({"action": ACTION.HIRE_LEAD, "data": data})		
 	
 	SupportPanel.addHire = func(data:Dictionary) -> void:
@@ -44,6 +44,7 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_resources_data_update() -> void:
 	SupportPanel.resources_data = resources_data
+	LeadResearchPanel.resources_data = resources_data
 
 func on_lead_researchers_data_update() -> void:
 	LeadResearchPanel.lead_researchers_data = lead_researchers_data

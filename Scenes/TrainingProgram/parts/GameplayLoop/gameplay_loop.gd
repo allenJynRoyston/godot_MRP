@@ -150,7 +150,7 @@ var is_busy:bool = false :
 		on_is_busy_update()
 
 var selected_support_hire:Dictionary = {}
-var selected_lead_hire:Array = []
+var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
 var completed_build_items:Array = [] : 
 	set(val):
@@ -698,7 +698,7 @@ func on_current_recruit_step_update() -> void:
 			await restore_default_state()
 		# ---------------
 		CONTAIN_STEPS.START:
-			selected_lead_hire = []
+			selected_lead_hire = {}
 			selected_support_hire = {}
 			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await RecruitContainer.user_response
@@ -721,7 +721,8 @@ func on_current_recruit_step_update() -> void:
 				ACTION.BACK:
 					current_recruit_step = RECRUIT_STEPS.START
 				ACTION.NEXT:
-					lead_researchers_data.push_back(selected_lead_hire)
+					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_lead_hire.cost
+					lead_researchers_data.push_back(selected_lead_hire.researcher)
 					lead_researchers_data = lead_researchers_data
 					# subtract hire costs and change status from of recruit data to empty
 					current_recruit_step = RECRUIT_STEPS.START

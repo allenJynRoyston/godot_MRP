@@ -8,7 +8,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_egd7m"]
 shader = ExtResource("2_tdc6v")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -26,15 +26,15 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3jf4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hhbch"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1fj3o"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixip7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_wdahj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lp2tl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unk86"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="RecruitmentContainer" type="MarginContainer"]
@@ -87,14 +87,14 @@ layout_mode = 2
 
 [node name="LeadBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_y3jf4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hhbch")
 icon_placement = 0
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "Lead Researchers"
 
 [node name="SupportBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1fj3o")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ixip7")
 icon_placement = 0
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "Support"
@@ -118,7 +118,7 @@ alignment = 2
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_lp2tl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_unk86")
 icon_placement = 0
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "Back"

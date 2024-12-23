@@ -18,8 +18,10 @@ var lead_researchers_data:Array = [] :
 	set ( val ): 
 		lead_researchers_data = val
 		on_recruit_data_update()
-		
-var addHire:Callable = func(data:Array) -> void:pass
+
+var resources_data:Dictionary = {} 
+	
+var addHire:Callable = func(data:Dictionary) -> void:pass
 
 # ---------------------------------------------------------------
 func _ready() -> void:
@@ -38,8 +40,12 @@ func on_recruit_data_update() -> void:
 		var data:Dictionary = recruit_data[index]
 		var card_node:Control = ProfileCardPreload.instantiate()
 		card_node.data = data
-		card_node.addHire = func() -> void:
-			addHire.call(researcher_hire_list[index])
+		card_node.addHire = func(cost:int) -> void:
+			if resources_data[RESOURCE.TYPE.MONEY].amount >= cost:
+				addHire.call({
+					"researcher": researcher_hire_list[index], 
+					"cost": cost
+				})
 			# do purchase check first
 		var already_hired:bool = lead_researchers_data.filter(func(i):return i[0] == data.uid).size() > 0
 		card_node.none_available = already_hired

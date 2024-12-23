@@ -6,18 +6,24 @@ var specialization_data:Dictionary = {
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},
 	RESEARCHER.SPECALIZATION.BIOLOGY: {
 		"name": "BIO", 
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},
 	RESEARCHER.SPECALIZATION.ENGINEERING: {
 		"name": "ENG", 
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,					
 	}
 }
 
@@ -28,6 +34,8 @@ var trait_data:Dictionary = {
 		"type": 0, # 0 IS POSITIVE, 1 IS NEGATIVE
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},
 	RESEARCHER.TRAITS.DILIGENT: {
 		"name": "DIL", 
@@ -35,6 +43,8 @@ var trait_data:Dictionary = {
 		"type": 0,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},
 	RESEARCHER.TRAITS.BENEVOLENT: {
 		"name": "BEN", 
@@ -42,6 +52,8 @@ var trait_data:Dictionary = {
 		"type": 0,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},
 	RESEARCHER.TRAITS.MOODY: {
 		"name": "MDY", 
@@ -49,6 +61,8 @@ var trait_data:Dictionary = {
 		"type": 1,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},	
 	RESEARCHER.TRAITS.PARTICULAR: {
 		"name": "PAR", 
@@ -56,6 +70,8 @@ var trait_data:Dictionary = {
 		"type": 1,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},
 	RESEARCHER.TRAITS.CRUEL: {
 		"name": "CRL", 
@@ -63,6 +79,8 @@ var trait_data:Dictionary = {
 		"type": 1,
 		"get_effect": func() -> void:
 			return,
+		"hire_cost": func() -> int:
+			return 4,		
 	},			
 }
 
