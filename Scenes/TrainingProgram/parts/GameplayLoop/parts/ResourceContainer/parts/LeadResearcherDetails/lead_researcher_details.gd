@@ -21,7 +21,8 @@ func on_lead_researchers_data_update() -> void:
 	for node in List.get_children():
 		node.queue_free()
 	
-	for item in lead_researchers_data:
+	for researcher in lead_researchers_data:
+		var item:Dictionary = RESEARCHER_UTIL.get_user_object(researcher)
 		var new_node:Control = TextBtnPreload.instantiate()
 		new_node.title = item.name
 		new_node.icon = SVGS.TYPE.DRS

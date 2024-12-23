@@ -79,7 +79,7 @@ func on_lead_researchers_data_update() -> void:
 func on_resources_data_update() -> void:
 	if !is_node_ready() or resources_data.is_empty():return
 	DetailPanel.resources_data = resources_data
-	
+
 	for key in resources_data:
 		var data:Dictionary = resources_data[key]
 		match key:

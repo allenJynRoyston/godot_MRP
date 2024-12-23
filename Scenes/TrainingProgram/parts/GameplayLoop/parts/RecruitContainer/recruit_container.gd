@@ -5,8 +5,6 @@ enum TAB_OPTIONS {LEAD_RESEARCHERS, SUPPORT}
 
 @onready var LeadBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3/LeadBtn
 @onready var SupportBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3/SupportBtn
-
-@onready var NextBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer/NextBtn
 @onready var BackBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer/BackBtn
 
 @onready var LeadResearchPanel:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel
@@ -17,6 +15,7 @@ enum TAB_OPTIONS {LEAD_RESEARCHERS, SUPPORT}
 		tab_open = val
 		on_tab_open_update()
 
+
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -24,9 +23,12 @@ func _ready() -> void:
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
 	
-	NextBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.NEXT})		
-		
+	LeadResearchPanel.addHire = func(data:Array) -> void:
+		user_response.emit({"action": ACTION.HIRE_LEAD, "data": data})		
+	
+	SupportPanel.addHire = func(data:Dictionary) -> void:
+		user_response.emit({"action": ACTION.HIRE_SUPPORT, "data": data})		
+	
 	BackBtn.onClick = func() -> void:
 		user_response.emit({"action": ACTION.BACK})		
 		
@@ -38,6 +40,18 @@ func _ready() -> void:
 		
 	on_tab_open_update()
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_resources_data_update() -> void:
+	SupportPanel.resources_data = resources_data
+
+func on_lead_researchers_data_update() -> void:
+	LeadResearchPanel.lead_researchers_data = lead_researchers_data
+
+func on_researcher_hire_list_update() -> void:
+	LeadResearchPanel.researcher_hire_list = researcher_hire_list
+# --------------------------------------------------------------------------------------------------		
+
 
 # --------------------------------------------------------------------------------------------------		
 func on_tab_open_update() -> void:

@@ -1,5 +1,5 @@
 extends Node
 
-enum {NEXT, BACK, SKIP, DONE}
+enum {NEXT, BACK, SKIP, DONE, HIRE_LEAD, HIRE_SUPPORT}
 
 enum {BUILD, RECRUIT}

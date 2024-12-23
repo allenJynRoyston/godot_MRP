@@ -1,34 +1,31 @@
-[gd_scene load_steps=3 format=3 uid="uid://by8lcxk66qelh"]
+[gd_scene load_steps=4 format=3 uid="uid://by8lcxk66qelh"]
 
 [ext_resource type="PackedScene" uid="uid://fkdesfdwlevk" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/parts/SupportSection.tscn" id="1_p22eb"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/support_panel.gd" id="1_seop1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h7aq7"]
 
 [node name="SupportPanel" type="PanelContainer"]
+offset_right = 640.0
+offset_bottom = 356.0
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_h7aq7")
+script = ExtResource("1_seop1")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(200, 0)
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 10
+theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-
-[node name="SupportSection" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_p22eb")]
+[node name="StaffSupport" parent="HBoxContainer" instance=ExtResource("1_p22eb")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SupportSection2" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_p22eb")]
+[node name="SecuritySupport" parent="HBoxContainer" instance=ExtResource("1_p22eb")]
 layout_mode = 2
 size_flags_horizontal = 3
 option = 1
 
-[node name="SupportSection3" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_p22eb")]
+[node name="DClassSupport" parent="HBoxContainer" instance=ExtResource("1_p22eb")]
 layout_mode = 2
 size_flags_horizontal = 3
 option = 2

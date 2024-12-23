@@ -1,11 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://fkdesfdwlevk"]
+[gd_scene load_steps=16 format=3 uid="uid://fkdesfdwlevk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/parts/support_section.gd" id="1_hucwp"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="2_ci03c"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_tjoko"]
+[ext_resource type="Texture2D" uid="uid://yxrw4k62dvvm" path="res://Media/images/researcher.jpg" id="3_h34ux"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_jcxkq"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_rvii1"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_8busf"]
+[ext_resource type="PackedScene" uid="uid://cj45qvgilldjj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/MotivationPanel/MotivationPanel.tscn" id="8_ek0f3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sgvih"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -14,20 +16,29 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1u6qh"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_afxjr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4be8"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l7pej"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f0nbl"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_awcpa"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7381s"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1h1ew"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="SupportSection" type="PanelContainer"]
 clip_contents = true
-offset_top = 120.0
-offset_right = 164.0
-offset_bottom = 120.0
+custom_minimum_size = Vector2(0, 356)
+offset_right = 200.0
+offset_bottom = 356.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_sgvih")
 script = ExtResource("1_hucwp")
 
@@ -38,116 +49,169 @@ layout_mode = 2
 material = ExtResource("2_ci03c")
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
-texture = SubResource("PlaceholderTexture2D_1u6qh")
+texture = ExtResource("3_h34ux")
 expand_mode = 1
 stretch_mode = 6
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TitleLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 text = "Staff"
 label_settings = ExtResource("2_tjoko")
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="IconBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_jcxkq")]
+[node name="IconBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer" instance=ExtResource("3_jcxkq")]
 layout_mode = 2
 icon = 34
 is_hoverable = false
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="CurrentLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
-text = "99"
+text = "10"
 label_settings = ExtResource("3_rvii1")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TextBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/VBoxContainer" instance=ExtResource("4_8busf")]
+[node name="PlusOne" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/HBoxContainer/VBoxContainer" instance=ExtResource("4_8busf")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u4be8")
 icon = 14
+icon_placement = 0
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 static_color = Color(0, 0.964706, 0.278431, 1)
 active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0, 0.529412, 0.278431, 1)
 title = "1"
 
-[node name="TextBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/VBoxContainer" instance=ExtResource("4_8busf")]
+[node name="MinusOne" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/HBoxContainer/VBoxContainer" instance=ExtResource("4_8busf")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_l7pej")
 icon = 11
+icon_placement = 0
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 static_color = Color(1, 0.203922, 0, 1)
 active_color = Color(1, 0.203922, 0, 1)
 inactive_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 title = "1"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TextBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/VBoxContainer2" instance=ExtResource("4_8busf")]
+[node name="PlusFive" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/HBoxContainer/VBoxContainer2" instance=ExtResource("4_8busf")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f0nbl")
 icon = 14
+icon_placement = 0
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 static_color = Color(0, 0.964706, 0.278431, 1)
 active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0, 0.529412, 0.278431, 1)
 title = "5"
 
-[node name="TextBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/VBoxContainer2" instance=ExtResource("4_8busf")]
+[node name="MinusFive" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/HBoxContainer/VBoxContainer2" instance=ExtResource("4_8busf")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_awcpa")
 icon = 11
+icon_placement = 0
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 static_color = Color(1, 0.203922, 0, 1)
 active_color = Color(1, 0.203922, 0, 1)
 inactive_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 title = "5"
 
-[node name="Label2" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="PurchaseLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
-text = "99"
+text = "22"
 label_settings = ExtResource("3_rvii1")
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+[node name="TitleLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer3"]
 layout_mode = 2
-size_flags_horizontal = 6
-theme_override_styles/panel = SubResource("StyleBoxFlat_afxjr")
+text = "Price per unit"
+label_settings = ExtResource("2_tjoko")
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer3/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer3/PanelContainer/MarginContainer"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Max capacity left: 99"
+
+[node name="PPU" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3" instance=ExtResource("4_8busf")]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_7381s")
+icon = 30
+icon_placement = 0
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "3"
+is_hoverable = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Recruitment Fee "
 label_settings = ExtResource("2_tjoko")
-horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HireBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("4_8busf")]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_1h1ew")
+icon = 30
+icon_placement = 0
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "25 "
+
+[node name="MotivationPanel" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("8_ek0f3")]
+visible = false
+layout_mode = 2

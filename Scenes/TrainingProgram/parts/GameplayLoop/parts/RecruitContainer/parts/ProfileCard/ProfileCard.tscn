@@ -1,11 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://boomisn56mb2k"]
+[gd_scene load_steps=12 format=3 uid="uid://boomisn56mb2k"]
 
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="1_h3ktg"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/profile_card.gd" id="1_lh8q0"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_scb26"]
 [ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="1_xqr2m"]
 [ext_resource type="PackedScene" uid="uid://bghgkext72llt" path="res://UI/Buttons/ToggleBtn/ToggleBtn.tscn" id="2_mstwi"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_p8tjc"]
 [ext_resource type="PackedScene" uid="uid://cj45qvgilldjj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/MotivationPanel/MotivationPanel.tscn" id="3_s608v"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_jgoh7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah0ml"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -14,12 +15,21 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gks3m"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3eye0"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[node name="PanelContainer" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 0)
-size_flags_vertical = 0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y0u38"]
+bg_color = Color(0.0823529, 0.0823529, 0.0823529, 0.882353)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvo2k"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="ProfileCard" type="PanelContainer"]
+offset_right = 250.0
+offset_bottom = 400.0
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ah0ml")
+script = ExtResource("1_lh8q0")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -31,52 +41,9 @@ texture = ExtResource("1_xqr2m")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/TextureRect"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_gks3m")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/TextureRect/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/TextureRect/PanelContainer/MarginContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/TextureRect/PanelContainer/MarginContainer/PanelContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TextureRect/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/TextureRect/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "25"
-label_settings = ExtResource("1_h3ktg")
-
-[node name="IconBtn" parent="VBoxContainer/TextureRect/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("2_p8tjc")]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-icon = 30
-is_hoverable = false
-
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -84,22 +51,18 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 layout_mode = 2
-size_flags_vertical = 0
 theme_override_constants/separation = 5
 alignment = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="NameLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "DR BRIGHT"
+text = "NAMETAG"
 label_settings = ExtResource("1_h3ktg")
-
-[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("2_mstwi")]
-layout_mode = 2
-title = ""
+horizontal_alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -126,25 +89,25 @@ label_settings = ExtResource("1_scb26")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2"]
+[node name="SpecContainer" type="GridContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2"]
 layout_mode = 2
 columns = 2
 
-[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/GridContainer" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("2_mstwi")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
 title = "ENGINEER"
 is_toggled = true
 
-[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/GridContainer" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("2_mstwi")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
 title = "ENGINEER"
 is_toggled = true
 
-[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/GridContainer" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("2_mstwi")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
@@ -163,25 +126,32 @@ label_settings = ExtResource("1_scb26")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GridContainer2" type="GridContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2"]
 layout_mode = 2
-columns = 2
 
-[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/GridContainer2" instance=ExtResource("2_mstwi")]
+[node name="PosTraitsList" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/PosTraitsList" instance=ExtResource("2_mstwi")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
 title = "TRAIT"
 is_toggled = true
 
-[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/GridContainer2" instance=ExtResource("2_mstwi")]
+[node name="NegTraitsList" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/NegTraitsList" instance=ExtResource("2_mstwi")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
 title = "TRAIT"
 is_toggled = true
 
-[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/GridContainer2" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/NegTraitsList" instance=ExtResource("2_mstwi")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
@@ -190,19 +160,57 @@ is_toggled = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
 layout_mode = 2
-theme_override_constants/separation = 5
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer"]
 layout_mode = 2
 
 [node name="Label2" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Motivation "
+text = "Recruitment Fee "
 label_settings = ExtResource("1_scb26")
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="HireBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("6_jgoh7")]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_3eye0")
+icon = 30
+icon_placement = 0
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "25 "
+
 [node name="MotivationPanel" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("3_s608v")]
+visible = false
+layout_mode = 2
+
+[node name="NoneAvailable" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_y0u38")
+
+[node name="MarginContainer" type="MarginContainer" parent="NoneAvailable"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="NoneAvailable/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kvo2k")
+
+[node name="Label" type="Label" parent="NoneAvailable/MarginContainer/PanelContainer"]
+layout_mode = 2
+text = "NOT AVAILABLE"
+label_settings = ExtResource("1_h3ktg")
+horizontal_alignment = 1
+
+[node name="MotivationPanel" parent="." instance=ExtResource("3_s608v")]
+visible = false
 layout_mode = 2

@@ -24,7 +24,7 @@ var camera_type:CAMERA.TYPE = CAMERA.TYPE.PERSPECTIVE :
 		camera_type = val
 		on_camera_type_update()
 
-var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.FLOOR : 
+var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW : 
 	set(val):
 		current_camera_zoom = val
 		on_current_camera_zoom_update()
@@ -72,6 +72,7 @@ func traverse(callback:Callable) -> void:
 			for room_index in room_config.floor[floor_index].ring[ring_index].room:	
 				callback.call("%s%s%s" % [floor_index, ring_index, room_index], floor_index, ring_index, room_index)
 # --------------------------------------------------------------------------------------------------		
+
 
 # --------------------------------------------------------------------------------------------------		
 func on_current_camera_zoom_update() -> void:
@@ -166,6 +167,12 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		var keycode:int = input_data.keycode
 
 		match key:
+			"D":
+				for node in [RenderLayer1, RenderLayer2]:
+					node.rotate_ring(current_location.ring, 1)
+			"A":
+				for node in [RenderLayer1, RenderLayer2]:
+					node.rotate_ring(current_location.ring, -1)
 			"ENTER":
 				user_response.emit({"action": ACTION.NEXT})
 			"BACK":

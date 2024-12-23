@@ -2,6 +2,11 @@
 extends Node
 
 # ------------------------------------------------------------------------------
+func generate_rand(min: int, max: int) -> int:
+	return randi() % (max - min + 1) + min
+# ------------------------------------------------------------------------------
+	
+# ------------------------------------------------------------------------------
 func generate_uid() -> String:
 	return str(Time.get_unix_time_from_system()) + "_" + str(randf())
 # ------------------------------------------------------------------------------	
@@ -25,7 +30,7 @@ func convert_to_normalized_position(container_size:Vector2, pos:Vector2) -> Vect
 
 # ------------------------------------------------------------------------------	
 func convert_from_normalized_position(container_size:Vector2, normalized_pos:Vector2) -> Vector2:
-	return Vector2(container_size.x * normalized_pos.x, container_size.y * normalized_pos.y )
+	return Vector2(container_size.x * normalized_pos.x, container_size.y * normalized_pos.y ) 
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

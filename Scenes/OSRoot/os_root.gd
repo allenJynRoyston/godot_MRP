@@ -43,7 +43,7 @@ func _ready() -> void:
 	
 	on_fullscreen_update(resolution)
 	
-	toggle_fullscreen()
+	#toggle_fullscreen()
 
 	activate_children.call_deferred()
 # -----------------------------------		
@@ -91,7 +91,6 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	DisplayServer.window_set_size(use_resolution)
 	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())			
 	
-
 	match DisplayServer.window_get_mode():
 		DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			FinalComposite.stretch_mode = TextureRect.STRETCH_SCALE

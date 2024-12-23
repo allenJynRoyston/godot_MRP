@@ -1,14 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://lgmqxg5r5bg4"]
+[gd_scene load_steps=5 format=3 uid="uid://lgmqxg5r5bg4"]
 
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/LeadResearcherPanel/lead_researcher_panel.gd" id="1_7vgy0"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="1_8cydk"]
 [ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/ProfileCard.tscn" id="2_0dtbl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdxja"]
 
 [node name="LeadResearcherPanel" type="PanelContainer"]
+offset_right = 800.0
+offset_bottom = 400.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hdxja")
+script = ExtResource("1_7vgy0")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -17,22 +21,23 @@ theme_override_constants/separation = 20
 [node name="CardContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 20
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="ProfileCard" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="ProfileCard2" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="ProfileCard3" parent="VBoxContainer/CardContainer" instance=ExtResource("2_0dtbl")]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "New canidates will be available in X days."
 label_settings = ExtResource("1_8cydk")

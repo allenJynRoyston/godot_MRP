@@ -7,7 +7,7 @@ var projected_3D_objects:Dictionary = {}
 func update_projected_3D_objects_position(key:String, normalized_position:Vector2 = Vector2(0, 0)) -> void:
 	if key not in projected_3D_objects:
 		projected_3D_objects[key] = normalized_position
-	projected_3D_objects[key] = normalized_position
+	projected_3D_objects[key] = normalized_position 
 
 func remove_from_projected_3d_objects(key:String) -> void:
 	projected_3D_objects.erase(key)
@@ -110,7 +110,6 @@ var mouse_pos := Vector2(0, 0) :
 	set(val): 
 		mouse_pos = val;
 		for node in mouse_pos_subscriptions:
-			print(node)
 			if "on_mouse_pos_update" in node:
 				node.on_mouse_pos_update(mouse_pos)
 
@@ -164,7 +163,24 @@ func subscribe_to_mouse_input(node:Control) -> void:
 func unsubscribe_to_mouse_input(node:Control) -> void:
 	input_subscriptions.erase(node)
 		
-func _input(event) -> void:
+func _input(event:InputEvent) -> void:
+	if event is InputEventGesture:
+		for node in input_subscriptions:
+			if node == null:
+				return
+			
+			if event.delta.y > 0.1 and "on_mouse_scroll" in node and !mouse_input_wait:
+				node.on_mouse_scroll(0)
+				mouse_input_wait = true
+				await U.set_timeout(0.3)
+				mouse_input_wait = false	
+			if event.delta.y < 0.1 and "on_mouse_scroll" in node and !mouse_input_wait:
+				node.on_mouse_scroll(1)
+				mouse_input_wait = true
+				await U.set_timeout(0.3)
+				mouse_input_wait = false	
+				
+	
 	if event is InputEventMouseButton:
 		for node in input_subscriptions:
 			if node == null:
@@ -238,7 +254,7 @@ func unsubscribe_to_process(node:Node) -> void:
 	
 func _process(delta:float) -> void:
 	if Engine.is_editor_hint():return
-	
+		
 	for node in process_nodes:
 		if node == null:
 			process_nodes.erase(node)

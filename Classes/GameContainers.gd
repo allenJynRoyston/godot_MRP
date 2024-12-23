@@ -54,6 +54,11 @@ var bookmarked_rooms:Array = [] :
 	set(val):
 		bookmarked_rooms = val
 		on_bookmarked_rooms_update()		
+		
+var researcher_hire_list:Array = [] : 
+	set( val ):
+		researcher_hire_list = val
+		on_researcher_hire_list_update()
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 
@@ -84,6 +89,7 @@ func _ready() -> void:
 	on_current_location_update()
 	on_room_config_update()
 	on_bookmarked_rooms_update()
+	on_researcher_hire_list_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -97,6 +103,7 @@ func on_current_location_update() -> void:pass
 func on_room_config_update() -> void:pass
 func on_lead_researchers_data_update() -> void:pass
 func on_bookmarked_rooms_update() -> void:pass
+func on_researcher_hire_list_update() -> void:pass
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

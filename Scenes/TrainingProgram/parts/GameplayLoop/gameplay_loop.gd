@@ -3,7 +3,7 @@ extends PanelContainer
 
 enum SHOP_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_LOCATION, CONFIRM, FINALIZE, REFUND}
 enum CONTAIN_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
-enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
@@ -117,30 +117,12 @@ var facility_room_data:Array = [] :
 		facility_room_data = val
 		on_facility_room_data_update()
 
-var lead_researchers_data:Array = [
-	{
-		"name": "Dr. Doctor",
-		"motivation": 0, 
-		"image_src": "res://Media/images/example_doctor.jpg",
-		"specialization": [
-			RESEARCHER.SPECALIZATION.ENGINEERING
-		],
-		"traits": [
-			RESEARCHER.TRAIT.MOTIVATED
-		]
-	},
-		{
-		"name": "Dr. Bright",
-		"motivation": 0, 
-		"image_src": "res://Media/images/example_doctor.jpg",
-		"specialization": [
-			RESEARCHER.SPECALIZATION.ENGINEERING
-		],
-		"traits": [
-			RESEARCHER.TRAIT.MOTIVATED
-		]
-	}
-] : 
+var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() : 
+	set( val ):
+		researcher_hire_list = val
+		on_researcher_hire_list_update()
+
+var lead_researchers_data:Array = [] : 
 	set( val ):
 		lead_researchers_data = val
 		on_lead_researchers_data_update()
@@ -167,6 +149,8 @@ var is_busy:bool = false :
 		is_busy = val
 		on_is_busy_update()
 
+var selected_support_hire:Dictionary = {}
+var selected_lead_hire:Array = []
 var selected_shop_item:Dictionary = {}
 var completed_build_items:Array = [] : 
 	set(val):
@@ -451,6 +435,7 @@ func on_current_camera_zoom_update() -> void:
 	if !is_node_ready():return
 	for node in [Structure3dContainer]:
 		node.current_camera_zoom = current_camera_zoom
+		
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -513,6 +498,11 @@ func on_bookmarked_rooms_update() -> void:
 	if !is_node_ready(): return
 	for node in get_all_container_nodes():
 		node.bookmarked_rooms = bookmarked_rooms
+		
+func on_researcher_hire_list_update() -> void:
+	if !is_node_ready(): return
+	for node in get_all_container_nodes():
+		node.researcher_hire_list = researcher_hire_list
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -708,27 +698,47 @@ func on_current_recruit_step_update() -> void:
 			await restore_default_state()
 		# ---------------
 		CONTAIN_STEPS.START:
+			selected_lead_hire = []
+			selected_support_hire = {}
 			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await RecruitContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.BACK:
 					current_recruit_step = RECRUIT_STEPS.HIDE
-				ACTION.NEXT:
-					current_recruit_step = RECRUIT_STEPS.CONFIRM_LOCATION
+				ACTION.HIRE_LEAD:
+					selected_lead_hire = response.data
+					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_LEAD
+				ACTION.HIRE_SUPPORT:
+					selected_support_hire = response.data
+					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT
 		# ---------------
-		RECRUIT_STEPS.CONFIRM_LOCATION:
+		RECRUIT_STEPS.CONFIRM_HIRE_LEAD:
+			ConfirmModal.set_text("Confirm hire?")
 			await show_only([LocationContainer, ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.BACK:
 					current_recruit_step = RECRUIT_STEPS.START
 				ACTION.NEXT:
-					current_recruit_step = RECRUIT_STEPS.FINALIZE
+					lead_researchers_data.push_back(selected_lead_hire)
+					lead_researchers_data = lead_researchers_data
+					# subtract hire costs and change status from of recruit data to empty
+					current_recruit_step = RECRUIT_STEPS.START
 		# ---------------
-		RECRUIT_STEPS.FINALIZE:
-			# do something with data
-			current_recruit_step = RECRUIT_STEPS.HIDE	
+		RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT:
+			ConfirmModal.set_text("Confirm support?")
+			await show_only([LocationContainer, ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_recruit_step = RECRUIT_STEPS.START
+				ACTION.NEXT:
+					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_support_hire.cost
+					resources_data[selected_support_hire.resource].amount += selected_support_hire.amount
+					resources_data = resources_data
+					current_recruit_step = RECRUIT_STEPS.START
+
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -769,9 +779,7 @@ func on_current_build_complete_step_update() -> void:
 				# update resources_data
 				resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
 				resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
-			
-			print(facility_room_data)
-			
+
 			# update reactively
 			resources_data = resources_data	
 			facility_room_data = facility_room_data
@@ -833,6 +841,7 @@ func quicksave() -> void:
 		"resources_data": resources_data,
 		"current_location": current_location,
 		"bookmarked_rooms": bookmarked_rooms,
+		"researcher_hire_list": researcher_hire_list,
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
@@ -861,12 +870,13 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	
 	progress_data = progress_data if no_save else restore_data.progress_data
 	action_queue_data = action_queue_data if no_save else restore_data.action_queue_data	
-	facility_room_data = action_queue_data if no_save else restore_data.facility_room_data  
-	resources_data = action_queue_data if no_save else restore_data.resources_data	
-	bookmarked_rooms = bookmarked_rooms #if no_save else restore_data.bookmarked_rooms
+	facility_room_data = facility_room_data if no_save else restore_data.facility_room_data  
+	resources_data = resources_data if no_save else restore_data.resources_data	
+	bookmarked_rooms = bookmarked_rooms if no_save else restore_data.bookmarked_rooms
+	researcher_hire_list = researcher_hire_list if no_save else restore_data.researcher_hire_list
 	# comes after research data, fix this later
 	lead_researchers_data = lead_researchers_data if no_save else restore_data.lead_researchers_data
-	current_location = action_queue_data if no_save else restore_data.current_location
+	current_location = current_location if no_save else restore_data.current_location
 	
 	goto_location(current_location)
 #endregion		

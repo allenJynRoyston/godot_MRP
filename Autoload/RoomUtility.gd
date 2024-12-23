@@ -9,7 +9,6 @@ var BARRICKS:Dictionary = {
 	"categories": [
 		ROOM.CATEGORIES.SECURITY
 	],
-	"can_contain": false,
 	"get_build_time": func() -> int:
 		return 3,
 	"get_build_cost": func() -> Dictionary:
@@ -18,13 +17,11 @@ var BARRICKS:Dictionary = {
 		},
 	"get_operating_income": func() -> Dictionary:
 		return {
-			RESOURCE.TYPE.MONEY: 10,
-			RESOURCE.TYPE.ENERGY: 1
+
 		},				
 	"get_operating_cost": func() -> Dictionary:
 		return {
 			RESOURCE.TYPE.MONEY: 1,
-			RESOURCE.TYPE.ENERGY: 10
 		},		
 	"get_resource_capacity": func() -> Dictionary:
 		return {
@@ -32,43 +29,73 @@ var BARRICKS:Dictionary = {
 		},
 	"get_resource_amount": func() -> Dictionary:
 		return {
-			RESOURCE.TYPE.ENERGY: 5
+
 		},		
 }
 
-# can this work?
-var STEEL_CONTAINMENT_CELL:Dictionary = {
-	"name": "STEEL LINED",
-	"description": "Description",
-	"size_allowed": [1, 2, 3],
-	"categories": [
-		ROOM.CATEGORIES.CAN_CONTAIN
-	],	
-	"can_contain": true,
-	"get_build_time": func() -> int:
-		return 3,	
-}
 
 var DORMITORY:Dictionary = {
 	"name": "DORMITORY",
-	"description": "Houses foundation staff.",
+	"image_src": "res://Media/images/redacted.png",
+	"description": "Houses facility staff.",
 	"size_allowed": [1, 2, 3],
 	"categories": [
 		ROOM.CATEGORIES.STAFF
-	],		
+	],
 	"get_build_time": func() -> int:
 		return 3,
+	"get_build_cost": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 2
+		},
+	"get_operating_income": func() -> Dictionary:
+		return {
+
+		},				
+	"get_operating_cost": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 1,
+		},		
+	"get_resource_capacity": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.STAFF: 10,
+		},
+	"get_resource_amount": func() -> Dictionary:
+		return {
+
+		},
 }
 
 var HOLDING_CELLS:Dictionary = {
 	"name": "HOLDING CELLS",
-	"description": "Houses D-Class personel.",
+	"image_src": "res://Media/images/redacted.png",
+	"description": "Houses D-class personel.",
 	"size_allowed": [1, 2, 3],
 	"categories": [
 		ROOM.CATEGORIES.DCLASS
-	],			
+	],
 	"get_build_time": func() -> int:
 		return 3,
+	"get_build_cost": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 2
+		},
+	"get_operating_income": func() -> Dictionary:
+		return {
+
+		},				
+	"get_operating_cost": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 1,
+		},		
+	"get_resource_capacity": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.DCLASS: 10,
+		},
+	"get_resource_amount": func() -> Dictionary:
+		return {
+			
+		},
 }
 
 
@@ -76,7 +103,6 @@ var reference_data:Dictionary = {
 	ROOM.TYPE.BARRICKS: BARRICKS,
 	ROOM.TYPE.DORMITORY: DORMITORY,
 	ROOM.TYPE.HOLDING_CELLS: HOLDING_CELLS,
-	ROOM.TYPE.STEEL_CONTAINMENT_CELL: STEEL_CONTAINMENT_CELL,
 }
 
 var category_data:Dictionary = {
