@@ -95,38 +95,15 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
 # ------------------------------------------------------------------------------ 
 #region SAVABLE DATA
-var current_location:Dictionary = {} : 
-	set(val):
-		current_location = val
-		on_current_location_update()
-		
+var current_location:Dictionary = {} 
 var progress_data:Dictionary = { 
 		"day": 1,
-	} : 
-	set( val ) : 
-		progress_data = val
-		on_progress_data_update()
-		
-var action_queue_data:Array = [] : 
-	set( val ) : 
-		action_queue_data = val
-		on_action_queue_data_update()
-
-var facility_room_data:Array = [] : 
-	set( val ):
-		facility_room_data = val
-		on_facility_room_data_update()
-
-var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() : 
-	set( val ):
-		researcher_hire_list = val
-		on_researcher_hire_list_update()
-
-var lead_researchers_data:Array = [] : 
-	set( val ):
-		lead_researchers_data = val
-		on_lead_researchers_data_update()
-
+	} 
+var action_queue_data:Array = []
+var facility_room_data:Array = [] 
+var bookmarked_rooms:Array = ["000", "001", "002"] # ["000", "201"] <- "floor_index, ring_index, room_index"]
+var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() 
+var lead_researchers_data:Array = [] 
 var resources_data:Dictionary = { 
 	RESOURCE.TYPE.MONEY: {"amount": 10, "capacity": 9999},
 	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
@@ -134,10 +111,18 @@ var resources_data:Dictionary = {
 	RESOURCE.TYPE.STAFF: {"amount": 0, "capacity": 0},
 	RESOURCE.TYPE.SECURITY: {"amount": 0, "capacity": 0},
 	RESOURCE.TYPE.DCLASS: {"amount": 0, "capacity": 0},
-} : 
-	set(val): 
-		resources_data = val
-		on_resources_data_update()
+}
+
+var room_config:Dictionary = {
+	"floor": {
+		0: get_ring_default(),
+		1: get_ring_default(),
+		2: get_ring_default(),
+		3: get_ring_default(),
+		4: get_ring_default(),
+		5: get_ring_default(),
+	}
+} 
 
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -185,52 +170,6 @@ var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW :
 		current_camera_zoom = val
 		on_current_camera_zoom_update()
 
-var room_config:Dictionary = {
-	"floor": {
-		0: get_ring_default(),
-		1: get_ring_default(),
-		2: get_ring_default(),
-		3: get_ring_default(),
-		4: get_ring_default(),
-		5: get_ring_default(),
-	}
-} : 
-	set(val) : 
-		room_config = val
-		on_room_config_update()
-
-var bookmarked_rooms:Array = ["001", "005", "003"] : # ["000", "201"] <- "floor_index, ring_index, room_index"]
-	set(val):
-		bookmarked_rooms = val
-		on_bookmarked_rooms_update()
-
-func get_ring_default() -> Dictionary:
-	return { 
-		"ring": { 
-			0: get_room_default(),
-			1: get_room_default(),
-			2: get_room_default()
-		}
-	}
-
-func get_room_default() -> Dictionary:
-	return {
-		"room": {
-			0: get_room_item_default(),
-			1: get_room_item_default(),
-			2: get_room_item_default(),
-			3: get_room_item_default(),
-			4: get_room_item_default(),
-			5: get_room_item_default()
-		}
-	}
-
-func get_room_item_default() -> Dictionary:
-	return {
-		"build_data": {},
-		"room_data": {},
-		"item_data": {}
-	}
 		
 #endregion
 # ------------------------------------------------------------------------------
@@ -242,13 +181,29 @@ func _init() -> void:
 	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_control_input(self)
 	
+	SUBSCRIBE.subscribe_to_current_location(self)
+	SUBSCRIBE.subscribe_to_progress_data(self)
+	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_facility_room_data(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
+	
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
-
 	
+	SUBSCRIBE.unsubscribe_to_current_location(self)
+	SUBSCRIBE.unsubscribe_to_progress_data(self)
+	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	SUBSCRIBE.unsubscribe_to_facility_room_data(self)
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+
+	  
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		hide()
@@ -270,19 +225,11 @@ func setup() -> void:
 	on_show_recruit_update()
 	on_show_status_update()
 	on_show_build_complete_update()
-	
-	# savable data update
-	on_progress_data_update()
-	on_action_queue_data_update()	
-	on_resources_data_update()
-	on_facility_room_data_update()
 
-	
 	# other
 	on_show_confirm_modal_update()
 	on_is_busy_update()
 	on_current_camera_zoom_update()
-	on_bookmarked_rooms_update()
 	
 	# steps
 	on_show_store_update()
@@ -292,7 +239,7 @@ func setup() -> void:
 	capture_default_showing_state()
 		
 	LocationContainer.onRoomSelected = func(data:Dictionary) -> void:
-		current_location = data
+		SUBSCRIBE.current_location = data
 
 		
 #endregion
@@ -327,6 +274,39 @@ func after_start() -> void:
 	LocationContainer.goto_location(current_location)	
 #endregion
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+#region defaults functions
+func get_ring_default() -> Dictionary:
+	return { 
+		"ring": { 
+			0: get_room_default(),
+			1: get_room_default(),
+			2: get_room_default()
+		}
+	}
+
+func get_room_default() -> Dictionary:
+	return {
+		"room": {
+			0: get_room_item_default(),
+			1: get_room_item_default(),
+			2: get_room_item_default(),
+			3: get_room_item_default(),
+			4: get_room_item_default(),
+			5: get_room_item_default()
+		}
+	}
+
+func get_room_item_default() -> Dictionary:
+	return {
+		"build_data": {},
+		"room_data": {},
+		"item_data": {}
+	}
+#endregion
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------	SHOW/HIDE CONTAINERS
 #region show/hide functions
@@ -391,12 +371,12 @@ func next_day() -> void:
 		return i
 	)	
 	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
-	action_queue_data = temp.filter(func(i): return i.days_in_queue < i.build_time)	
+	SUBSCRIBE.action_queue_data = temp.filter(func(i): return i.days_in_queue < i.build_time)	
 	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
 	completed_build_items = temp.filter(func(i): return i.days_in_queue == i.build_time)
 	
 	progress_data.day += 1
-	progress_data = progress_data
+	SUBSCRIBE.progress_data = progress_data
 	
 func cancel_action(item_data:Dictionary) -> void:
 	match item_data.action:
@@ -429,7 +409,8 @@ func set_room_config() -> void:
 		}
 		# if facility is built, clear build_data
 		room_config.floor[floor].ring[ring].room[room].build_data = {}
-	room_config = room_config	
+	SUBSCRIBE.room_config = room_config	
+
 	
 func on_current_camera_zoom_update() -> void:
 	if !is_node_ready():return
@@ -439,70 +420,45 @@ func on_current_camera_zoom_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------	
 
-#region LOCAL UPDATES
-# ------------------------------------------------------------------------------	LOCAL ON_UPDATES
-func on_room_config_update() -> void:
-	if !is_node_ready():return
-	for node in get_all_container_nodes():
-		node.room_config = room_config
-# ------------------------------------------------------------------------------	SAVABLE ON_UPDATES	
-#endregion
-
-# ------------------------------------------------------------------------------	SAVABLE ON_UPDATES
 #region local SAVABLE ONUPDATES
-func on_progress_data_update() -> void:
-	if !is_node_ready():return
-	for node in get_all_container_nodes():
-		node.progress_data = progress_data
+# ------------------------------------------------------------------------------	LOCAL ON_UPDATES
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
 
-func on_facility_room_data_update() -> void:
-	if !is_node_ready():return
-	# updates room data dictionary
+func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
+	progress_data = new_val
+
+func on_facility_room_data_update(new_val:Array = facility_room_data) -> void:
+	facility_room_data = new_val
 	set_room_config()
-	# then update nodes
-	for node in get_all_container_nodes():
-		node.facility_room_data = facility_room_data
 
-func on_action_queue_data_update() -> void:
-	if !is_node_ready():return
-	set_room_config()	
-	for node in get_all_container_nodes():
-		node.action_queue_data = action_queue_data	
-
-func on_resources_data_update() -> void:
-	if !is_node_ready(): return
-	for node in get_all_container_nodes():
-		node.resources_data = resources_data		
+func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
+	action_queue_data = new_val
 	
-func on_completed_build_items_update() -> void:
-	if !is_node_ready() or completed_build_items.is_empty(): return
-	current_build_complete_step = BUILD_COMPLETE_STEPS.START
-
-func on_lead_researchers_data_update() -> void:
-	if !is_node_ready(): return
-	for node in get_all_container_nodes():
-		node.lead_researchers_data = lead_researchers_data	
-		
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val 
+	
+func on_lead_researchers_data_update(new_val:Array = lead_researchers_data) -> void:
+	lead_researchers_data = new_val
 	resources_data[RESOURCE.TYPE.LEAD_RESEARCHERS] = {
 		"amount": lead_researchers_data.size() 
 	} 
 	
-	resources_data = resources_data
+	SUBSCRIBE.resources_data = resources_data
 
-func on_current_location_update() -> void:
-	if !is_node_ready(): return
-	for node in get_all_container_nodes():
-		node.current_location = current_location
+func on_current_location_update(new_val:Dictionary = current_location) -> void:
+	current_location = new_val
 		
-func on_bookmarked_rooms_update() -> void:
-	if !is_node_ready(): return
-	for node in get_all_container_nodes():
-		node.bookmarked_rooms = bookmarked_rooms
+func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
+	bookmarked_rooms = new_val
 		
-func on_researcher_hire_list_update() -> void:
-	if !is_node_ready(): return
-	for node in get_all_container_nodes():
-		node.researcher_hire_list = researcher_hire_list
+func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> void:
+	researcher_hire_list = new_val
+		
+func on_completed_build_items_update() -> void:
+	if !is_node_ready() or completed_build_items.is_empty(): return
+	current_build_complete_step = BUILD_COMPLETE_STEPS.START
+
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -633,17 +589,18 @@ func on_current_shop_step_update() -> void:
 				"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
 				"location": current_location,
 			})
-			resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
-			action_queue_data = action_queue_data
+			SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
+		# ---------------
 		SHOP_STEPS.REFUND:			
 			ConfirmModal.set_text("Cancel action?", "Resources will be refunded.")
 			await show_only([ActionQueueContainer, ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.NEXT:					
-					resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.data.id, resources_data, true)
-					action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_shop_item.data.uid)
+					SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.data.id, resources_data, true)
+					SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_shop_item.data.uid)
 					ActionQueueContainer.remove_from_queue([selected_shop_item])
 					current_shop_step = SHOP_STEPS.HIDE
 					await restore_default_state()
@@ -721,9 +678,10 @@ func on_current_recruit_step_update() -> void:
 				ACTION.BACK:
 					current_recruit_step = RECRUIT_STEPS.START
 				ACTION.NEXT:
-					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_lead_hire.cost
+					print(resources_data)
+					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_support_hire.cost
 					lead_researchers_data.push_back(selected_lead_hire.researcher)
-					lead_researchers_data = lead_researchers_data
+					SUBSCRIBE.lead_researchers_data = lead_researchers_data
 					# subtract hire costs and change status from of recruit data to empty
 					current_recruit_step = RECRUIT_STEPS.START
 		# ---------------
@@ -737,7 +695,7 @@ func on_current_recruit_step_update() -> void:
 				ACTION.NEXT:
 					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_support_hire.cost
 					resources_data[selected_support_hire.resource].amount += selected_support_hire.amount
-					resources_data = resources_data
+					SUBSCRIBE.resources_data = resources_data
 					current_recruit_step = RECRUIT_STEPS.START
 
 #endregion
@@ -782,8 +740,8 @@ func on_current_build_complete_step_update() -> void:
 				resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
 
 			# update reactively
-			resources_data = resources_data	
-			facility_room_data = facility_room_data
+			SUBSCRIBE.resources_data = resources_data	
+			SUBSCRIBE.facility_room_data = facility_room_data
 			completed_build_items = []
 			
 					
@@ -869,15 +827,15 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 		if "on_reset" in node:
 			node.on_reset()
 	
-	progress_data = progress_data if no_save else restore_data.progress_data
-	action_queue_data = action_queue_data if no_save else restore_data.action_queue_data	
-	facility_room_data = facility_room_data if no_save else restore_data.facility_room_data  
-	resources_data = resources_data if no_save else restore_data.resources_data	
-	bookmarked_rooms = bookmarked_rooms if no_save else restore_data.bookmarked_rooms
-	researcher_hire_list = researcher_hire_list if no_save else restore_data.researcher_hire_list
+	SUBSCRIBE.progress_data = progress_data if no_save else restore_data.progress_data
+	SUBSCRIBE.action_queue_data = action_queue_data if no_save else restore_data.action_queue_data	
+	SUBSCRIBE.facility_room_data = facility_room_data if no_save else restore_data.facility_room_data  
+	SUBSCRIBE.resources_data = resources_data if no_save else restore_data.resources_data	
+	SUBSCRIBE.bookmarked_rooms = bookmarked_rooms if no_save else restore_data.bookmarked_rooms
+	SUBSCRIBE.researcher_hire_list = researcher_hire_list if no_save else restore_data.researcher_hire_list
 	# comes after research data, fix this later
-	lead_researchers_data = lead_researchers_data if no_save else restore_data.lead_researchers_data
-	current_location = current_location if no_save else restore_data.current_location
+	SUBSCRIBE.lead_researchers_data = lead_researchers_data if no_save else restore_data.lead_researchers_data
+	SUBSCRIBE.current_location = current_location if no_save else restore_data.current_location
 	
 	goto_location(current_location)
 #endregion		

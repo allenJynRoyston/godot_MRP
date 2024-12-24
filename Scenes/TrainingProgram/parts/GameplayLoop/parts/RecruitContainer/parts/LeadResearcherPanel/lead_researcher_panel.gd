@@ -4,35 +4,44 @@ extends PanelContainer
 
 const ProfileCardPreload = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/ProfileCard.tscn")
 
-var recruit_data:Array = []:
-	set(val):
-		recruit_data = val
-		on_recruit_data_update()
-
-var researcher_hire_list:Array = [] : 
-	set( val ):
-		researcher_hire_list = val
-		on_researcher_hire_list_update()
-		
-var lead_researchers_data:Array = [] : 
-	set ( val ): 
-		lead_researchers_data = val
-		on_recruit_data_update()
-
-var resources_data:Dictionary = {} 
+var researcher_hire_list:Array = [] 
+var lead_researchers_data:Array = []
+var resources_data:Dictionary = {}
 	
 var addHire:Callable = func(data:Dictionary) -> void:pass
 
 # ---------------------------------------------------------------
-func _ready() -> void:
-	on_recruit_data_update()
-	on_researcher_hire_list_update()
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_resources_data(self)
+	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
+	SUBSCRIBE.subscribe_to_lead_researchers_data(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
+	SUBSCRIBE.unsubscribe_to_lead_researchers_data(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
 # ---------------------------------------------------------------
 
 # ---------------------------------------------------------------
-func on_recruit_data_update() -> void:
-	if !is_node_ready():return
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
+# ---------------------------------------------------------------
+
+# ---------------------------------------------------------------
+func on_lead_researchers_data_update(new_val:Array = lead_researchers_data) -> void:
+	lead_researchers_data = new_val
+# ---------------------------------------------------------------
+
+# ---------------------------------------------------------------
+func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> void:
+	researcher_hire_list = new_val
 	
+	var recruit_data = []
+	for researcher in researcher_hire_list:
+		recruit_data.push_back(RESEARCHER_UTIL.get_user_object(researcher))
+
 	for node in CardContainer.get_children():
 		node.queue_free()
 		
@@ -50,12 +59,4 @@ func on_recruit_data_update() -> void:
 		var already_hired:bool = lead_researchers_data.filter(func(i):return i[0] == data.uid).size() > 0
 		card_node.none_available = already_hired
 		CardContainer.add_child(card_node)
-# ---------------------------------------------------------------
-
-# ---------------------------------------------------------------
-func on_researcher_hire_list_update() -> void:
-	recruit_data = []
-	for researcher in researcher_hire_list:
-		recruit_data.push_back(RESEARCHER_UTIL.get_user_object(researcher))
-	recruit_data = recruit_data
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------	

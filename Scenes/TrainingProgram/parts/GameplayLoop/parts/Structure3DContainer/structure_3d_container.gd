@@ -39,6 +39,7 @@ func _init() -> void:
 	GBL.register_node(REFS.STRUCTURE_3D, self)
 	GBL.subscribe_to_process(self)
 	
+
 func _exit_tree() -> void:
 	super._exit_tree()
 	GBL.unregister_node(REFS.STRUCTURE_3D)
@@ -95,23 +96,14 @@ func on_current_camera_zoom_update() -> void:
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------
-func on_room_config_update() -> void:
-	if !is_node_ready() or room_config.is_empty():return
-	
-	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
-		if ref_name not in floating_node_refs:
-			var new_floating_node:Control = FloatingInfoPreload.instantiate()
-			FloatingInfo.add_child(new_floating_node)
-			floating_node_refs[ref_name] = new_floating_node
-		floating_node_refs[ref_name].data = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data
-		floating_node_refs[ref_name].location = {"floor": floor_index, "ring": ring_index, "room": room_index}
-	traverse(callback) 
-	
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
 	on_bookmarked_rooms_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_current_location_update() -> void:
+func on_current_location_update(new_val:Dictionary = current_location) -> void:
+	current_location = new_val
 	if !is_node_ready() or room_config.is_empty():return
 	for node in [RenderLayer1, RenderLayer2]:
 		node.current_location = current_location
@@ -127,18 +119,22 @@ func on_current_location_update() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_bookmarked_rooms_update() -> void:
+func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
+	bookmarked_rooms = new_val
 	if !is_node_ready() or room_config.is_empty():return
 	
 	bookmarked_node_refs = {}
 	for child in BookmarkedInfo.get_children():
 		child.queue_free()
-	
+
 	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
 		if ref_name in bookmarked_rooms:
 			var new_floating_node:Control = FloatingInfoPreload.instantiate()
 			BookmarkedInfo.add_child(new_floating_node)
 			new_floating_node.show()
+			
+			print(room_config.floor[floor_index].ring[ring_index].room[0])
+			
 			bookmarked_node_refs[ref_name] = new_floating_node
 			bookmarked_node_refs[ref_name].data = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data
 			bookmarked_node_refs[ref_name].location = {"floor": floor_index, "ring": ring_index, "room": room_index}
@@ -181,7 +177,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func on_process_update(delta:float) -> void:
-	if !is_node_ready() or current_location.is_empty():return	
+	if !is_node_ready() or current_location.is_empty() or bookmarked_node_refs.is_empty():return	
 	
 	# display all bookmarked rooms as a floating tag
 	for index in bookmarked_rooms.size():

@@ -24,11 +24,10 @@ func on_data_update() -> void:
 	if data.is_empty():
 		use_empty_defaults()
 		return
-	
+
 	if "get_room_data" in data:
 		room_details = data.get_room_data.call()
 		RoomName.text = room_details.name
-
 
 func on_focus(state:bool = is_focused) -> void:	
 	if !is_node_ready():return	

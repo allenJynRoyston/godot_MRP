@@ -15,50 +15,16 @@ class_name GameContainer
 		freeze_inputs = val
 		on_freeze_inputs_update()
 		
-var progress_data:Dictionary = {} : 
-	set(val):
-		progress_data = val
-		on_progress_data_update()
 
-var resources_data:Dictionary = {} : 
-	set(val):
-		resources_data = val	
-		on_resources_data_update()
-
-var facility_room_data:Array = [] : 
-	set(val):
-		facility_room_data = val
-		on_facility_room_data_update()
-
-var action_queue_data:Array = [] : 
-	set(val):
-		action_queue_data = val	
-		on_action_queue_data_update()
-		
-var lead_researchers_data:Array = [] : 
-	set(val):
-		lead_researchers_data = val
-		on_lead_researchers_data_update()
-
-var current_location:Dictionary = {} : 
-	set(val):
-		current_location = val
-		on_current_location_update()
-		
-var room_config:Dictionary = {} : 
-	set(val):
-		room_config = val
-		on_room_config_update()
-		
-var bookmarked_rooms:Array = [] : 
-	set(val):
-		bookmarked_rooms = val
-		on_bookmarked_rooms_update()		
-		
-var researcher_hire_list:Array = [] : 
-	set( val ):
-		researcher_hire_list = val
-		on_researcher_hire_list_update()
+var resources_data:Dictionary = {} 
+var facility_room_data:Array = [] 
+var bookmarked_rooms:Array = [] 
+var lead_researchers_data:Array = [] 
+var current_location:Dictionary = {} 
+var progress_data:Dictionary = {}
+var action_queue_data:Array = [] 
+var room_config:Dictionary = {} 
+var researcher_hire_list:Array = [] 
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 
@@ -68,11 +34,29 @@ signal user_response
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
+	SUBSCRIBE.subscribe_to_current_location(self)
+	SUBSCRIBE.subscribe_to_progress_data(self)
+	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_bookmarked_rooms(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
+	SUBSCRIBE.subscribe_to_lead_researchers_data(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
+	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
 	freeze_inputs = false	
 	
 func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_current_location(self)
+	SUBSCRIBE.unsubscribe_to_progress_data(self)
+	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	SUBSCRIBE.unsubscribe_to_bookmarked_rooms(self)
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
+	SUBSCRIBE.unsubscribe_to_lead_researchers_data(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
 
@@ -81,29 +65,28 @@ func _ready() -> void:
 		is_showing = true
 	on_freeze_inputs_update()
 	on_is_showing_update()
-	
-	on_resources_data_update()
-	on_action_queue_data_update()
-	on_facility_room_data_update()
-	on_progress_data_update()
-	on_current_location_update()
-	on_room_config_update()
-	on_bookmarked_rooms_update()
-	on_researcher_hire_list_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_resources_data_update() -> void:pass
-func on_action_queue_data_update() -> void:pass
-func on_facility_room_data_update() -> void:pass
-func on_progress_data_update() -> void:pass
+func on_resources_data_update(new_val:Dictionary) -> void:
+	resources_data = new_val
+func on_progress_data_update(new_val:Dictionary) -> void:
+	progress_data = new_val
+func on_current_location_update(new_val:Dictionary) -> void:
+	current_location = new_val
+func on_room_config_update(new_val:Dictionary) -> void:
+	room_config = new_val
+func on_action_queue_data_update(new_val:Array) -> void:
+	action_queue_data = new_val
+func on_bookmarked_rooms_update(new_val:Array) -> void:
+	bookmarked_rooms = new_val
+func on_researcher_hire_list_update(new_val:Array) -> void:
+	researcher_hire_list = new_val
+func on_lead_researchers_data_update(new_val:Array) -> void:
+	lead_researchers_data = new_val
+
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass
-func on_current_location_update() -> void:pass
-func on_room_config_update() -> void:pass
-func on_lead_researchers_data_update() -> void:pass
-func on_bookmarked_rooms_update() -> void:pass
-func on_researcher_hire_list_update() -> void:pass
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

@@ -23,7 +23,15 @@ var none_available:bool = false :
 var addHire:Callable = func():pass
 
 var hire_cost:int = 0
-		
+
+# ------------------------------------
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_resources_data(self)		
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+# ------------------------------------
+
 # ------------------------------------
 func _ready() -> void:
 	on_data_update()
@@ -46,9 +54,7 @@ func on_data_update() -> void:
 	for node in [PosTraitsList, SpecContainer, NegTraitsList]:
 		for child in node.get_children():
 			child.queue_free()
-	
-	
-	
+
 	NameLabel.text = data.name
 	for key in data.specializations:
 		var btn_node:BtnBase = TextBtnPreload.instantiate()

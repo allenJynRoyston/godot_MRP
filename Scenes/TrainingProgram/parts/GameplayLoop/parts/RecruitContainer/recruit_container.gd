@@ -14,8 +14,7 @@ enum TAB_OPTIONS {LEAD_RESEARCHERS, SUPPORT}
 	set(val):
 		tab_open = val
 		on_tab_open_update()
-
-
+		
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -42,15 +41,8 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_resources_data_update() -> void:
-	SupportPanel.resources_data = resources_data
-	LeadResearchPanel.resources_data = resources_data
-
-func on_lead_researchers_data_update() -> void:
-	LeadResearchPanel.lead_researchers_data = lead_researchers_data
-
-func on_researcher_hire_list_update() -> void:
-	LeadResearchPanel.researcher_hire_list = researcher_hire_list
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
 # --------------------------------------------------------------------------------------------------		
 
 

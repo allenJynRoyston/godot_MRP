@@ -48,12 +48,14 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_room_config_update() -> void:
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
 	update_room_states()
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
-func on_current_location_update() -> void:
+func on_current_location_update(new_val:Dictionary = current_location) -> void:
+	current_location = new_val
 	if !is_node_ready() or current_location.is_empty():return	
 	current_floor = current_location.floor
 	current_ring = current_location.ring
@@ -64,6 +66,7 @@ func on_current_location_update() -> void:
 func update_room_states() -> void:
 	if room_config.is_empty() or !is_node_ready():return
 	await U.set_timeout(0.0)
+	
 	for index in room_config.floor[current_floor].ring[current_ring].room:
 		var data = room_config.floor[current_floor].ring[current_ring].room[index]
 		room_nodes[index].room_id = int(index)

@@ -14,15 +14,18 @@ var gameplay_node:Control
 var facility_room_data:Array = [] : 
 	set(val):
 		facility_room_data = val
-		on_facility_room_data_update()		
+
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_facility_room_data(self)
+
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_facility_room_data(self)
 
 func _ready() -> void:
-	on_facility_room_data_update()
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	
-	
-	
-func on_facility_room_data_update() -> void:
+func on_facility_room_data_update(new_val:Array = facility_room_data) -> void:
+	facility_room_data = new_val
 	if !is_node_ready():return
 	
 	for node in [ExpenseList, IncomeList]:

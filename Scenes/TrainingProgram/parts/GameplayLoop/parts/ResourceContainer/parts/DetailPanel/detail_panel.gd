@@ -12,29 +12,22 @@ var onFocus:Callable = func():pass
 var onBlur:Callable = func():pass
 var onClick:Callable = func():pass
 
-var resources_data:Dictionary = {} : 
-	set(val):
-		resources_data = val	
-		on_resources_data_update()
-		
-var lead_researchers_data:Array = [] : 
-	set(val):
-		lead_researchers_data = val
-		on_lead_researchers_data_update()
-
-var facility_room_data:Array = [] : 
-	set(val):
-		facility_room_data = val
-		on_facility_room_data_update()		
+var resources_data:Dictionary = {} 		
+var lead_researchers_data:Array = []
+var facility_room_data:Array = [] 
 
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_resources_data(self)
+	SUBSCRIBE.subscribe_to_facility_room_data(self)
+
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	SUBSCRIBE.unsubscribe_to_facility_room_data(self)
+
 func _ready() -> void:
 	hide()
-	super._ready()
-	
-	on_resources_data_update()
-	on_facility_room_data_update()
-	on_lead_researchers_data_update()
+	super._ready()	
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
@@ -75,17 +68,12 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_resources_data_update() -> void:
-	if !is_node_ready():return
-	pass
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
 
-func on_facility_room_data_update() -> void:
-	if !is_node_ready():return
-	for node in [MoneyDetails, EnergyDetails]:
-		node.facility_room_data = facility_room_data
+func on_facility_room_data_update(new_val:Array = facility_room_data) -> void:
+	facility_room_data = new_val
 
-func on_lead_researchers_data_update() -> void:
-	if !is_node_ready():return
-	for node in [LeadResearcherDetails]:
-		node.lead_researchers_data = lead_researchers_data
+func on_lead_researchers_data_update(new_val:Array = lead_researchers_data) -> void:
+	lead_researchers_data = new_val
 # ------------------------------------------------------------------------------	

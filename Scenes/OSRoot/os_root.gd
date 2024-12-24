@@ -41,8 +41,8 @@ func _ready() -> void:
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
-	on_fullscreen_update(resolution)
-	
+	#on_fullscreen_update(resolution)
+	on_fullscreen_update(Vector2(1280, 720))
 	#toggle_fullscreen()
 
 	activate_children.call_deferred()

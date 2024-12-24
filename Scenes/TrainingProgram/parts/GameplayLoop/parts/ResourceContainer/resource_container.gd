@@ -53,8 +53,6 @@ func _ready() -> void:
 				return
 			if !detail_panel_is_focused and DetailPanel.is_visible_in_tree():
 				DetailPanel.hide()
-
-	on_resources_data_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -64,19 +62,18 @@ func open_detail_panel(node:Control) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func on_facility_room_data_update() -> void:	
-	if !is_node_ready(): return
-	DetailPanel.facility_room_data = facility_room_data
+func on_facility_room_data_update(new_val:Array = facility_room_data) -> void:
+	facility_room_data = new_val
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_lead_researchers_data_update() -> void:
-	if !is_node_ready() or lead_researchers_data.is_empty():return
-	DetailPanel.lead_researchers_data = lead_researchers_data
+func on_lead_researchers_data_update(new_val:Array = lead_researchers_data) -> void:
+	lead_researchers_data = new_val
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_resources_data_update() -> void:
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
 	if !is_node_ready() or resources_data.is_empty():return
 	DetailPanel.resources_data = resources_data
 

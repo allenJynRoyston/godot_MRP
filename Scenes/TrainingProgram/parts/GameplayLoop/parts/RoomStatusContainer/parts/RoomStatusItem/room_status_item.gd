@@ -52,7 +52,7 @@ func _ready() -> void:
 
 # --------------------------------------	
 func on_room_id_update() -> void:
-	IndexLabel.text = str(room_id)
+	IndexLabel.text = str(room_id + 1)
 
 func on_designation_update() -> void:
 	if !is_node_ready():return

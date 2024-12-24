@@ -36,22 +36,22 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wo4dy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_flexq"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2ce5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_84ryr"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gjl88"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ddlc2"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rus8c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4h2oq"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dhgrd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a4whk"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yy0s8"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wl6vs"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="Structure3DContainer" type="PanelContainer"]
@@ -167,49 +167,55 @@ alignment = 1
 
 [node name="TextBtn" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wo4dy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_flexq")
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+is_disabled = false
 title = "1F"
 
 [node name="TextBtn2" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_l2ce5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_84ryr")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+is_disabled = false
 title = "2F"
 
 [node name="TextBtn3" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gjl88")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ddlc2")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+is_disabled = false
 title = "3F"
 
 [node name="TextBtn4" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rus8c")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4h2oq")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+is_disabled = false
 title = "4F"
 
 [node name="TextBtn5" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dhgrd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_a4whk")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+is_disabled = false
 title = "5F"
 
 [node name="TextBtn6" parent="TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("4_01cm2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yy0s8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wl6vs")
 icon = 42
 icon_placement = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+is_disabled = false
 title = "6F"
 
 [node name="SubViewport" type="SubViewport" parent="."]

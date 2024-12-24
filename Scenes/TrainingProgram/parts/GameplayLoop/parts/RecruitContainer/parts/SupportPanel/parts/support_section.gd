@@ -24,10 +24,7 @@ enum OPTIONS {STAFF, SECURITY, DCLASS}
 
 var onHireClick:Callable = func(amount:int):pass
 
-var resources_data:Dictionary = {} : 
-	set(val):
-		resources_data = val
-		on_resources_data_update()
+var resources_data:Dictionary = {} 
 
 var amount:int = 0 : 
 	set(val):
@@ -48,6 +45,14 @@ var amount_price:int = 0 :
 		on_amount_update()
 
 # ----------------------------------------------------------------------------
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_resources_data(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
 func _ready() -> void:
 	PlusOne.onClick = func() -> void:
 		amount = amount + 1		
@@ -66,7 +71,6 @@ func _ready() -> void:
 			print("NOT ENOUGH...")
 	on_amount_update()
 	on_option_update()
-	on_resources_data_update()
 # ----------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------
@@ -78,7 +82,8 @@ func on_amount_update() -> void:
 
 
 # ----------------------------------------------------------------------------
-func on_resources_data_update() -> void:
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
 	if !is_node_ready or resources_data.is_empty():return
 	match option:
 		OPTIONS.STAFF:

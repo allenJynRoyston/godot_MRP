@@ -38,6 +38,11 @@ enum SIDE {LEFT, RIGHT}
 		inactive_color = val
 		on_focus()
 
+@export var is_disabled:bool = false : 
+	set(val):
+		is_disabled = val
+		on_is_disabled_updated()
+
 @export var title:String = "" : 
 	set(val): 
 		title = val
@@ -57,6 +62,7 @@ func _ready() -> void:
 	on_title_update()
 	on_icon_placement_update()
 	on_panel_color_update()
+	on_is_disabled_updated()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -75,6 +81,9 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_is_disabled_updated() -> void:
+	modulate = Color(1, 0, 0, 1) if is_disabled else Color(1, 1, 1, 1)
+	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
 	var new_stylebox:StyleBoxFlat = StyleBoxFlat.new()

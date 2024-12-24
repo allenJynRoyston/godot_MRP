@@ -8,14 +8,12 @@ const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tsc
 
 func _ready() -> void:
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
-	on_lead_researchers_data_update()
 
-var lead_researchers_data:Array = [] : 
-	set(val):
-		lead_researchers_data = val
-		on_lead_researchers_data_update()
 
-func on_lead_researchers_data_update() -> void:
+var lead_researchers_data:Array = [] 
+
+func on_lead_researchers_data_update(new_val:Array = lead_researchers_data) -> void:
+	lead_researchers_data = new_val
 	if !is_node_ready():return
 	
 	for node in List.get_children():

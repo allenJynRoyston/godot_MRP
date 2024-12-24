@@ -24,15 +24,28 @@ var data:Dictionary = {} :
 		data = val
 		on_data_update()
 
-var resources_data:Dictionary = {}
+var resources_data:Dictionary
 
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	super._init()
+	SUBSCRIBE.subscribe_to_resources_data(self)
+
+func _exit_tree() -> void:
+	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+
 func _ready() -> void:
 	super._ready()
 	if is_hoverable:
 		on_focus(false)
 	
 	on_data_update()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -60,7 +73,6 @@ func on_data_update() -> void:
 				new_node.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.INVALID_ACTIVE) 
 
 		modulate = Color(1, 1, 1, 1) if can_afford else Color(1, 1, 1, 0.75)
-		
 # ------------------------------------------------------------------------------	
 	
 

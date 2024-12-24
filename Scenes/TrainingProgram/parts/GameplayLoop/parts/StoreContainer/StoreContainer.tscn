@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=13 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_sgoc5"]
 [ext_resource type="Material" uid="uid://lfosoejrwy5i" path="res://Shader/Reveal/reveal.tres" id="2_h4i4h"]
@@ -18,12 +18,21 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ed78i"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uodfh"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xa4j0"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yq5sq"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ie803"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="StoreContainer" type="MarginContainer"]
 offset_right = 40.0
@@ -95,7 +104,9 @@ size_flags_horizontal = 3
 
 [node name="CloseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_exv6b")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uodfh")
 icon = 16
+is_disabled = false
 title = "Back"
 debug_me = true
 
@@ -138,11 +149,15 @@ alignment = 2
 
 [node name="PaginationBackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yq5sq")
 icon = 16
+is_disabled = false
 title = "Previous"
 
 [node name="PaginationMoreBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ie803")
+is_disabled = false
 title = "More"
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

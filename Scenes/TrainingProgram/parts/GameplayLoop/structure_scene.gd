@@ -31,10 +31,7 @@ var current_camera_zoom:CAMERA.ZOOM  :
 		on_current_camera_zoom_update()		
 var previous_camera_zoom:CAMERA.ZOOM = current_camera_zoom
 
-var current_location:Dictionary = {} : 
-	set(val):		
-		current_location = val
-		on_current_location_update()
+var current_location:Dictionary = {} 
 var previous_location:Dictionary = current_location
 
 var floor_container_nodes:Dictionary = {}
@@ -58,6 +55,17 @@ var rotate_ring_count:Dictionary = {
 var room_node_refs:Dictionary = {}
 
 # ------------------------------------------------
+func _init() -> void:
+	GBL.subscribe_to_process(self)
+	SUBSCRIBE.subscribe_to_current_location(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_current_location(self)
+	GBL.unsubscribe_to_process(self)
+	GBL.remove_from_projected_3d_objects('active_room')
+	for key in room_node_refs:
+		GBL.remove_from_projected_3d_objects(key)
+			
 func _ready() -> void:
 	camera_setup()
 	await building_setup()
@@ -68,14 +76,6 @@ func after_ready() -> void:
 	on_render_layout_update()
 	on_current_camera_zoom_update()
 
-func _init() -> void:
-	GBL.subscribe_to_process(self)
-
-func _exit_tree() -> void:
-	GBL.unsubscribe_to_process(self)
-	GBL.remove_from_projected_3d_objects('active_room')
-	for key in room_node_refs:
-		GBL.remove_from_projected_3d_objects(key)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -187,7 +187,8 @@ func traverse_nodes(floor_func:Callable, ring_func:Callable, room_func:Callable)
 # ------------------------------------------------
 
 # ------------------------------------------------
-func on_current_location_update() -> void:	
+func on_current_location_update(new_val:Dictionary = current_location) -> void:	
+	current_location = new_val
 	if !is_node_ready() or current_location.is_empty() or !building_setup_complete:return
 	GBL.add_to_animation_queue(self)
 	

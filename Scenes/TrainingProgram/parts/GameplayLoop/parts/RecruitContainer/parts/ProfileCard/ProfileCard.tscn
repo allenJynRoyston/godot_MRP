@@ -15,7 +15,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nji5s"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_472xk"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y0u38"]
@@ -179,10 +179,10 @@ size_flags_horizontal = 3
 [node name="HireBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("6_jgoh7")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_nji5s")
+theme_override_styles/panel = SubResource("StyleBoxFlat_472xk")
 icon = 30
-icon_placement = 0
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+is_disabled = false
 title = "25 "
 
 [node name="MotivationPanel" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer" instance=ExtResource("3_s608v")]
