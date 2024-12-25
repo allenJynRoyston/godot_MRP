@@ -1,13 +1,13 @@
 @tool
 extends GameContainer
 
-@onready var CloseBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/CloseBtn
-@onready var GridItemContainer:GridContainer = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
-@onready var FocusDetails:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/FocusDetails
-@onready var CategoryContainer:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/CategoryContainer
+@onready var CloseBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/CloseBtn
+@onready var GridItemContainer:GridContainer = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
+@onready var FocusDetails:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/FocusDetails
+@onready var CategoryContainer:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/CategoryContainer
 
-@onready var PaginationBack:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/PaginationBackBtn
-@onready var PaginationMore:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/PaginationMoreBtn
+@onready var PaginationBack:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/PaginationBackBtn
+@onready var PaginationMore:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/PaginationMoreBtn
 
 const StoreItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/StoreItem/StoreItem.tscn")
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
@@ -146,7 +146,7 @@ func update_focus_data(new_state:Dictionary):
 		
 # --------------------------------------------------------------------------------------------------		
 func on_focus_data_update() -> void:
-	if is_node_ready():
-		FocusDetails.hide_details = !focus_data.is_empty()
-		FocusDetails.data = focus_data
+	if !is_node_ready(): return
+	FocusDetails.hide_details = !focus_data.is_empty()
+	FocusDetails.data = focus_data
 # --------------------------------------------------------------------------------------------------			

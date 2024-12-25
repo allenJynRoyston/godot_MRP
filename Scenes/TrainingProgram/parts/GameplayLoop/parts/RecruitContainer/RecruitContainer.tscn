@@ -26,15 +26,15 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f4mhq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xemvg"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cxe8w"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2s01w"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_wdahj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_25vna"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lryqw"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="RecruitmentContainer" type="MarginContainer"]
@@ -87,14 +87,14 @@ layout_mode = 2
 
 [node name="LeadBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f4mhq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xemvg")
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 is_disabled = false
 title = "Lead Researchers"
 
 [node name="SupportBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_cxe8w")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2s01w")
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 is_disabled = false
 title = "Support"
@@ -118,7 +118,7 @@ alignment = 2
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_25vna")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lryqw")
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 is_disabled = false
 title = "Back"

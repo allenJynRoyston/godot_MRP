@@ -4,7 +4,7 @@
 
 [resource]
 shader = ExtResource("1_mhbxg")
-shader_parameter/percentage = 0.0
+shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
