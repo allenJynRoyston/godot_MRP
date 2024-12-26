@@ -1,0 +1,5 @@
+extends Node
+
+enum TYPE { BASE, RESEARCH_AND_DEVELOPMENT }
+
+enum VAL {ZERO, ONE, TWO, THREE, FOUR, FIVE}

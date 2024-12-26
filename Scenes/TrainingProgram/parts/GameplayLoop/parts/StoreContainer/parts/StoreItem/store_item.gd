@@ -24,6 +24,9 @@ var data:Dictionary = {} :
 		data = val
 		on_data_update()
 
+var tab:TIER.TYPE = TIER.TYPE.BASE
+
+
 var resources_data:Dictionary
 
 # ------------------------------------------------------------------------------
@@ -50,15 +53,23 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 
 # ------------------------------------------------------------------------------
 func on_data_update() -> void:
-	if is_node_ready():
+	if is_node_ready() and !data.is_empty() and !resources_data.is_empty():
 		NameLabel.text = data.details.name		
 		var can_contain:bool = data.details.can_contain if "can_contain" in data.details else false	
 		ContainIcon.show() if can_contain else ContainIcon.hide()
-		Duration.title = str(data.details.get_build_time.call())
+		Duration.title = str(data.details.get_build_time.call()) if "get_build_time" in data.details else "N/A"
 		ImageTextureRect.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")
 		
 		var can_afford:bool = true
-		for item in ROOM_UTIL.return_build_cost(data.id):
+		var item_data:Array = []
+		
+		match(tab):
+			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
+				item_data = RD_UTIL.return_build_cost(data.id)
+			TIER.TYPE.BASE:
+				item_data = ROOM_UTIL.return_build_cost(data.id)
+			
+		for item in item_data:
 			var amount:int = item.amount
 			var resource:Dictionary = item.resource
 			var new_node:Control = TextBtnPreload.instantiate()

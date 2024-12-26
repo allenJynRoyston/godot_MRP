@@ -1,7 +1,12 @@
 @tool
 extends PanelContainer
 
-enum SHOP_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_LOCATION, CONFIRM, FINALIZE, REFUND}
+enum SHOP_STEPS {
+	HIDE, START, SHOW, PLACEMENT,
+	CONFIRM_RESEARCH, CONFIRM_BUILD, CONFIRM_TIER_PURCHASE,
+	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER,
+	REFUND
+}
 enum CONTAIN_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
@@ -113,6 +118,27 @@ var resources_data:Dictionary = {
 	RESOURCE.TYPE.DCLASS: {"amount": 0, "capacity": 0},
 }
 
+
+
+var tier_unlocked:Dictionary = {
+	TIER.TYPE.BASE: {
+		TIER.VAL.ZERO: true,
+		TIER.VAL.ONE: false,
+		TIER.VAL.TWO: false,
+		TIER.VAL.THREE: false,
+		TIER.VAL.FOUR: false,
+		TIER.VAL.FIVE: false
+	},
+	TIER.TYPE.RESEARCH_AND_DEVELOPMENT: {
+		TIER.VAL.ZERO: true,
+		TIER.VAL.ONE: false,
+		TIER.VAL.TWO: false,
+		TIER.VAL.THREE: false,
+		TIER.VAL.FOUR: false,
+		TIER.VAL.FIVE: false
+	}
+}
+
 var room_config:Dictionary = {
 	"floor": {
 		0: get_ring_default(),
@@ -123,6 +149,7 @@ var room_config:Dictionary = {
 		5: get_ring_default(),
 	}
 } 
+
 
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -137,6 +164,9 @@ var is_busy:bool = false :
 var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
+var selected_tier_item:Dictionary = {}
+var selected_research_item:Dictionary = {}
+
 var completed_build_items:Array = [] : 
 	set(val):
 		completed_build_items = val
@@ -549,6 +579,9 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.START:
 			selected_shop_item = {}
+			selected_research_item = {}
+			selected_tier_item = {}
+			
 			StoreContainer.start()
 			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
 			var response:Dictionary = await StoreContainer.user_response
@@ -557,9 +590,17 @@ func on_current_shop_step_update() -> void:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.HIDE
 					
-				ACTION.NEXT:
+				ACTION.PURCHASE_TIER:
+					selected_tier_item = response.selected
+					current_shop_step = SHOP_STEPS.CONFIRM_TIER_PURCHASE
+										
+				ACTION.PURCHASE_BUILD:
 					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.PLACEMENT
+				
+				ACTION.PURCHASE_RD:
+					selected_research_item = response.selected
+					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH
 		# ---------------
 		SHOP_STEPS.PLACEMENT:
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
@@ -568,9 +609,29 @@ func on_current_shop_step_update() -> void:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
-					current_shop_step = SHOP_STEPS.CONFIRM_LOCATION
+					current_shop_step = SHOP_STEPS.CONFIRM_BUILD
 		# ---------------
-		SHOP_STEPS.CONFIRM_LOCATION:
+		SHOP_STEPS.CONFIRM_TIER_PURCHASE:
+			ConfirmModal.set_text("Confirm TIER purchase?")
+			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])			
+			var confirm_response:Dictionary = await ConfirmModal.user_response			
+			match confirm_response.action:
+				ACTION.BACK:
+					current_shop_step = SHOP_STEPS.START
+				ACTION.NEXT:
+					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_TIER					
+		# ---------------
+		SHOP_STEPS.CONFIRM_RESEARCH:
+			ConfirmModal.set_text("Confirm research?")
+			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])			
+			var confirm_response:Dictionary = await ConfirmModal.user_response			
+			match confirm_response.action:
+				ACTION.BACK:
+					current_shop_step = SHOP_STEPS.START
+				ACTION.NEXT:
+					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH
+		# ---------------
+		SHOP_STEPS.CONFIRM_BUILD:
 			ConfirmModal.set_text("Confirm location?")
 			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])			
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
@@ -578,9 +639,9 @@ func on_current_shop_step_update() -> void:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
-					current_shop_step = SHOP_STEPS.FINALIZE
+					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BUILD
 		# ---------------
-		SHOP_STEPS.FINALIZE:
+		SHOP_STEPS.FINALIZE_PURCHASE_BUILD:
 			var room_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.id)
 			action_queue_data.push_back({
 				"action": ACTION.BUILD,
@@ -591,6 +652,35 @@ func on_current_shop_step_update() -> void:
 			})
 			SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
+			current_shop_step = SHOP_STEPS.HIDE
+		# ---------------
+		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
+			print("purchase research")
+			#var room_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.id)
+			#action_queue_data.push_back({
+				#"action": ACTION.BUILD,
+				#"data": selected_shop_item,
+				#"days_in_queue": 0,
+				#"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
+				#"location": current_location,
+			#})
+			#SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
+			#SUBSCRIBE.action_queue_data = action_queue_data
+			current_shop_step = SHOP_STEPS.HIDE			
+		# ---------------
+		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
+			# unlock the tier
+			tier_unlocked[selected_tier_item.tier_type][selected_tier_item.tier_data.id] = true
+			
+			# remove costs
+			var resource_list:Dictionary = selected_tier_item.tier_data.get_unlock_cost.call()
+			for key in resource_list:
+				var amount:int = resource_list[key]
+				resources_data[key].amount -= amount	
+			
+			# update subscribes
+			SUBSCRIBE.resources_data = resources_data
+			SUBSCRIBE.tier_unlocked = tier_unlocked
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.REFUND:			
@@ -678,7 +768,6 @@ func on_current_recruit_step_update() -> void:
 				ACTION.BACK:
 					current_recruit_step = RECRUIT_STEPS.START
 				ACTION.NEXT:
-					print(resources_data)
 					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_support_hire.cost
 					lead_researchers_data.push_back(selected_lead_hire.researcher)
 					SUBSCRIBE.lead_researchers_data = lead_researchers_data
@@ -801,6 +890,7 @@ func quicksave() -> void:
 		"current_location": current_location,
 		"bookmarked_rooms": bookmarked_rooms,
 		"researcher_hire_list": researcher_hire_list,
+		"tier_unlocked": tier_unlocked
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
@@ -819,7 +909,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
+	var no_save:bool =  restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes
@@ -836,7 +926,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	# comes after research data, fix this later
 	SUBSCRIBE.lead_researchers_data = lead_researchers_data if no_save else restore_data.lead_researchers_data
 	SUBSCRIBE.current_location = current_location if no_save else restore_data.current_location
-	
+	SUBSCRIBE.tier_unlocked = tier_unlocked if no_save else restore_data.tier_unlocked
 	goto_location(current_location)
 #endregion		
 # ------------------------------------------------------------------------------

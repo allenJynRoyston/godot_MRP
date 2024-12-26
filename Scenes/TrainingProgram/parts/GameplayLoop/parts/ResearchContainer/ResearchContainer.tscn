@@ -1,9 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://da2s51rv40ou7"]
+[gd_scene load_steps=14 format=3 uid="uid://da2s51rv40ou7"]
 
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="1_hpw8m"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_wlkyy"]
 [ext_resource type="PackedScene" uid="uid://bv44can1xyvh1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/FocusDetails/FocusDetails.tscn" id="3_p5osw"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_clyac"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5cd0o"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
@@ -15,6 +14,18 @@ corner_radius_bottom_left = 10
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tltqb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7biuk"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jycly"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_578tn"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ku6i7"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mmnei"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig1nu"]
@@ -112,14 +123,33 @@ theme_override_constants/separation = 10
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TextBtn" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_wlkyy")]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-text = "Filter by:"
-label_settings = ExtResource("4_clyac")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jycly")
+is_disabled = true
+title = "TIER 1"
 
-[node name="CategoryContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TextBtn2" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_wlkyy")]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_578tn")
+is_disabled = true
+title = "TIER 2"
+
+[node name="TextBtn3" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_wlkyy")]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ku6i7")
+is_disabled = true
+title = "TIER 3"
+
+[node name="TextBtn4" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_wlkyy")]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mmnei")
+is_disabled = true
+title = "TIER 4"
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
 layout_mode = 2

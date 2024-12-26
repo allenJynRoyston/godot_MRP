@@ -26,6 +26,9 @@ SVGS="*res://Autoload/enums/SVGS.gd"
 COLORS="*res://Autoload/enums/COLORS.gd"
 ACTION="*res://Autoload/enums/ACTIONS.gd"
 RESEARCHER="*res://Autoload/enums/RESEARCHER.gd"
+CAMERA="*res://Autoload/enums/CAMERA.gd"
+TIER="*res://Autoload/enums/TIER.gd"
+RD="*res://Autoload/enums/RD.gd"
 CACHE="*res://Autoload/Cache.gd"
 GBL="*res://Autoload/Global.gd"
 SUBSCRIBE="*res://Autoload/Subscriptions.gd"
@@ -36,7 +39,7 @@ COLOR_UTIL="*res://Autoload/ColorUtility.gd"
 ROOM_UTIL="*res://Autoload/RoomUtility.gd"
 RESOURCE_UTIL="*res://Autoload/ResourceUtility.gd"
 RESEARCHER_UTIL="*res://Autoload/ResearcherUtility.gd"
-CAMERA="*res://Autoload/enums/CAMERA.gd"
+RD_UTIL="*res://Autoload/RDUtility.gd"
 
 [display]
 

@@ -164,7 +164,6 @@ func get_lname(i:int) -> String:
 	return 'R. SMITH'
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func return_trait_data(key:RESEARCHER.TRAITS) -> Dictionary:
 	return trait_data[key]

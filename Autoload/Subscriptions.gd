@@ -1,6 +1,24 @@
 @tool
 extends Node
 
+# ------------------------------------------------------------	
+var tier_unlocked_subscriptions:Array = []
+
+var tier_unlocked:Dictionary = {} : 
+	set(val):
+		tier_unlocked = val
+		for node in tier_unlocked_subscriptions:
+			if "on_tier_unlocked_update" in node:
+				node.on_tier_unlocked_update.call(tier_unlocked)
+
+func subscribe_to_tier_unlocked(node:Node) -> void:
+	if node not in tier_unlocked_subscriptions:
+		tier_unlocked_subscriptions.push_back(node)
+	
+func unsubscribe_to_tier_unlocked(node:Node) -> void:
+	tier_unlocked_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
 # ------------------------------------------------------------
 var progress_data_subscriptions:Array = []
 

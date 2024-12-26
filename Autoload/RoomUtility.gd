@@ -3,6 +3,7 @@ extends Node
 
 var BARRICKS:Dictionary = {
 	"name": "BARRICKS",
+	"tier": TIER.VAL.ZERO,
 	"image_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
 	"size_allowed": [1, 2, 3],
@@ -36,6 +37,7 @@ var BARRICKS:Dictionary = {
 
 var DORMITORY:Dictionary = {
 	"name": "DORMITORY",
+	"tier": TIER.VAL.ONE,
 	"image_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
 	"size_allowed": [1, 2, 3],
@@ -68,6 +70,7 @@ var DORMITORY:Dictionary = {
 
 var HOLDING_CELLS:Dictionary = {
 	"name": "HOLDING CELLS",
+	"tier": TIER.VAL.TWO,
 	"image_src": "res://Media/images/redacted.png",
 	"description": "Houses D-class personel.",
 	"size_allowed": [1, 2, 3],
@@ -120,6 +123,64 @@ var category_data:Dictionary = {
 	}
 }
 
+var tier_data:Dictionary = {
+	TIER.VAL.ZERO: {
+		"id": TIER.VAL.ZERO,
+		"name": "ZERO",
+		"get_unlock_cost": func() -> Dictionary:
+			return {
+				RESOURCE.TYPE.MONEY: 0,
+			},
+	},
+	TIER.VAL.ONE: {
+		"id": TIER.VAL.ONE,
+		"name": "ONE",
+		"get_unlock_cost": func() -> Dictionary:
+			return {
+				RESOURCE.TYPE.MONEY: 5,
+			},
+	},
+	TIER.VAL.TWO: {
+		"id": TIER.VAL.TWO,
+		"name": "TWO",
+		"get_unlock_cost": func() -> Dictionary:
+			return {
+				RESOURCE.TYPE.MONEY: 100,
+			},
+	},
+	TIER.VAL.THREE: {
+		"id": TIER.VAL.THREE,
+		"name": "THREE",
+		"get_unlock_cost": func() -> Dictionary:
+			return {
+				RESOURCE.TYPE.MONEY: 250,
+			},
+	},
+	TIER.VAL.FOUR: {
+		"id": TIER.VAL.FOUR,
+		"name": "FOUR",
+		"get_unlock_cost": func() -> Dictionary:
+			return {
+				RESOURCE.TYPE.MONEY: 500,
+			},
+	},
+}
+
+# ------------------------------------------------------------------------------
+func get_tier_item(id:TIER.VAL) -> Dictionary:
+	return tier_data[id]
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_tier_data() -> Dictionary:
+	var list:Array = []
+	for id in tier_data:
+		list.push_back({
+			"id": id, "details": tier_data[id] 
+		})
+	return {"list": list}	
+# ------------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------------
 func get_categories() -> Dictionary:
 	var list:Array = []
@@ -132,22 +193,17 @@ func get_categories() -> Dictionary:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func get_rooms(active_filters:Array = [], start_at:int = 0, limit:int = 10) -> Dictionary:
+func get_rooms(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:
 	var list:Array = []
+	
 	for id in reference_data:
-		var details:Dictionary = reference_data[id] 
-		if active_filters.is_empty():
-			list.push_back({
-				"id": id, 
-				"details": details
-			})			
-		else:
-			for category in details.categories:
-				if category in active_filters:
-					list.push_back({
-						"id": id, 
-						"details": details
-					})
+		list.push_back({
+			"id": id, 
+			"details": reference_data[id] 
+		})
+
+	# filter for tier
+	list = list.filter(func(i): return i.details.tier == tier)
 	
 	var paginated_array:Array = U.paginate_array(list, start_at, limit)
 	
@@ -177,7 +233,6 @@ func return_build_cost(id:int) -> Array:
 			
 	return list
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 func return_operating_income(id:int) -> Array:
