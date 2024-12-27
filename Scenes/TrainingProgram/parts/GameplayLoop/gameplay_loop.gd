@@ -106,19 +106,18 @@ var progress_data:Dictionary = {
 	} 
 var action_queue_data:Array = []
 var facility_room_data:Array = [] 
+var purchased_research_arr:Array = []
 var bookmarked_rooms:Array = ["000", "001", "002"] # ["000", "201"] <- "floor_index, ring_index, room_index"]
 var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() 
 var lead_researchers_data:Array = [] 
 var resources_data:Dictionary = { 
-	RESOURCE.TYPE.MONEY: {"amount": 10, "capacity": 9999},
+	RESOURCE.TYPE.MONEY: {"amount": 50, "capacity": 9999},
 	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
 	RESOURCE.TYPE.LEAD_RESEARCHERS: {"amount": 0, "capacity": 0},
 	RESOURCE.TYPE.STAFF: {"amount": 0, "capacity": 0},
 	RESOURCE.TYPE.SECURITY: {"amount": 0, "capacity": 0},
 	RESOURCE.TYPE.DCLASS: {"amount": 0, "capacity": 0},
 }
-
-
 
 var tier_unlocked:Dictionary = {
 	TIER.TYPE.BASE: {
@@ -218,7 +217,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
-	
+	SUBSCRIBE.subscribe_to_purchased_research_arr(self)	
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
@@ -232,6 +231,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
 
 	  
 func _ready() -> void:
@@ -462,6 +462,10 @@ func on_facility_room_data_update(new_val:Array = facility_room_data) -> void:
 	facility_room_data = new_val
 	set_room_config()
 
+func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) -> void:
+	purchased_research_arr = new_val
+	print("purchased_research_arr: ", purchased_research_arr)
+
 func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 	action_queue_data = new_val
 	
@@ -655,17 +659,18 @@ func on_current_shop_step_update() -> void:
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
-			print("purchase research")
-			#var room_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.id)
-			#action_queue_data.push_back({
-				#"action": ACTION.BUILD,
-				#"data": selected_shop_item,
-				#"days_in_queue": 0,
-				#"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
-				#"location": current_location,
-			#})
-			#SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
-			#SUBSCRIBE.action_queue_data = action_queue_data
+			var research_data:Dictionary = RD_UTIL.return_data(selected_research_item.id)
+
+			action_queue_data.push_back({
+				"action": ACTION.RESEARCH,
+				"data": selected_research_item,
+				"days_in_queue": 0,
+				"build_time": research_data.get_build_time.call() if "get_build_time" in research_data else 0,
+				# "location": current_location,
+			})
+			
+			SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_research_item.id, resources_data)
+			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE			
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
@@ -797,10 +802,10 @@ func on_current_build_complete_step_update() -> void:
 
 	match current_build_complete_step:
 		# ---------------
-		RECRUIT_STEPS.HIDE:
+		BUILD_COMPLETE_STEPS.HIDE:
 			await restore_default_state()
 		# ---------------
-		CONTAIN_STEPS.START:
+		BUILD_COMPLETE_STEPS.START:
 			revert_state_location = current_location
 			BuildCompleteContainer.completed_build_items = completed_build_items
 			await show_only([Structure3dContainer, ResourceContainer, LocationContainer, BuildCompleteContainer])
@@ -819,18 +824,26 @@ func on_current_build_complete_step_update() -> void:
 			
 			# UPDATE SAVABLE DATA
 			for item in completed_build_items:
-				facility_room_data.push_back({
-					"data": item.data,
-					"location": item.location
-				})
-				
-				# update resources_data
-				resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
-				resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
+				match item.action:
+					ACTION.BUILD:
+						facility_room_data.push_back({
+							"data": item.data,
+							"location": item.location
+						})
+						# update resources_data
+						resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
+						resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
+						SUBSCRIBE.facility_room_data = facility_room_data
+					ACTION.RESEARCH:
+						purchased_research_arr.push_back({
+							"data": item.data
+						})
+						SUBSCRIBE.purchased_research_arr = purchased_research_arr
+
 
 			# update reactively
 			SUBSCRIBE.resources_data = resources_data	
-			SUBSCRIBE.facility_room_data = facility_room_data
+			
 			completed_build_items = []
 			
 					
@@ -909,7 +922,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool =  restore_data.is_empty()
+	var no_save:bool =  true #restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes

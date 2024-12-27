@@ -7,4 +7,4 @@ enum {
 	PURCHASE_TIER
 }
 
-enum {BUILD, RECRUIT}
+enum {BUILD, RESEARCH, RECRUIT}

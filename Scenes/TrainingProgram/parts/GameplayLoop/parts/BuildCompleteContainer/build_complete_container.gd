@@ -71,8 +71,8 @@ func update_display() -> void:
 				DescriptionList.add_child(label_node)				
 				
 				
-
-	get_parent().goto_location(data.location)
+	if "location" in data:
+		get_parent().goto_location(data.location)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		

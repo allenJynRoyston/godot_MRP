@@ -2,6 +2,24 @@
 extends Node
 
 # ------------------------------------------------------------	
+var purchased_research_list_subscriptions:Array = []
+
+var purchased_research_arr:Array = [] : 
+	set(val):
+		purchased_research_arr = val
+		for node in purchased_research_list_subscriptions:
+			if "on_purchased_research_arr_update" in node:
+				node.on_purchased_research_arr_update.call(purchased_research_arr)
+
+func subscribe_to_purchased_research_arr(node:Node) -> void:
+	if node not in purchased_research_list_subscriptions:
+		purchased_research_list_subscriptions.push_back(node)
+
+func unsubscribe_to_purchased_research_arr(node:Node) -> void:
+	purchased_research_list_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
 var tier_unlocked_subscriptions:Array = []
 
 var tier_unlocked:Dictionary = {} : 

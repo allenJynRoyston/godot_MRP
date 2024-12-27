@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cgp6oftk1itbm"]
+[gd_scene load_steps=9 format=3 uid="uid://cgp6oftk1itbm"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/action_queue_item.gd" id="1_fgfba"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_820ko"]
@@ -11,6 +11,9 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gl4yn"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vu7ry"]
 bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
@@ -42,6 +45,8 @@ layout_mode = 2
 [node name="TitleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_1yfsp")]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_gl4yn")
+is_disabled = false
 title = "Title"
 
 [node name="CancelBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_820ko")]

@@ -216,12 +216,6 @@ func return_data(key:int) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_requirements(id:int) -> Array:
-	var room_data:Dictionary = return_data(id)
-	return room_data.get_requirements.call() if "get_requirements" in room_data else []	
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 func return_build_cost(id:int) -> Array:
 	var room_data:Dictionary = return_data(id)
 	var list:Array = []

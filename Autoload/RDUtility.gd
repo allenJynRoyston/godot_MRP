@@ -101,7 +101,6 @@ func get_rd(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> 
 	}
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func return_data(key:int) -> Dictionary:
 	return reference_data[key]
@@ -121,4 +120,20 @@ func return_build_cost(id:int) -> Array:
 			})
 			
 	return list
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calc_build_cost(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:		
+	var rd_data:Dictionary = return_data(id)
+	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
+	if "get_build_cost" in rd_data:
+		var dict:Dictionary = rd_data.get_build_cost.call()		
+		for key in dict:
+			var amount:int = dict[key]
+			if refund:
+				resources_data_duplicate[key].amount += amount	
+			else:
+				resources_data_duplicate[key].amount -= amount	
+
+	return resources_data_duplicate
 # ------------------------------------------------------------------------------

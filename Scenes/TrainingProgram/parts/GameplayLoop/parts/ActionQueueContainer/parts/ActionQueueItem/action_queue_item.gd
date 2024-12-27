@@ -15,7 +15,7 @@ var onClick:Callable = func():pass
 var onCancel:Callable = func():pass
 
 # --------------------------------------------------
-var room_data:Dictionary = {}
+var item_data:Dictionary = {}
 
 var data:Dictionary = {} : 
 	set(val):
@@ -44,7 +44,7 @@ func _ready() -> void:
 # --------------------------------------------------
 func animate_and_complete() -> void:	
 	await U.set_timeout(0.5)
-	print(room_data.name + ' animate and remove from action queue list...')
+	print(item_data.name + ' animate and remove from action queue list...')
 	queue_free()
 # --------------------------------------------------	
 
@@ -52,13 +52,19 @@ func animate_and_complete() -> void:
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		match data.action:
+			ACTION.RESEARCH:
+				item_data = RD_UTIL.return_data(data.data.id)
+				TitleBtn.icon = SVGS.TYPE.RESEARCH
+				requirements = RD_UTIL.return_build_cost(data.data.id) 
 			ACTION.BUILD:
-				room_data = ROOM_UTIL.return_data(data.data.id)
+				item_data = ROOM_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.BUILD
-				TitleBtn.title = "Build %s" % [room_data.name]
-				DaysLeftLabel.text = "%s days left until complete" % [data.build_time - data.days_in_queue]
-				ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
-				requirements = ROOM_UTIL.return_requirements(data.data.id) 
+				requirements = ROOM_UTIL.return_build_cost(data.data.id) 
+				
+		TitleBtn.title = "Build %s" % [item_data.name]
+		DaysLeftLabel.text = "%s days left until complete" % [data.build_time - data.days_in_queue]
+		ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
+		
 	
 
 func on_requirements_update() -> void:
@@ -69,7 +75,7 @@ func on_requirements_update() -> void:
 		for item in requirements:
 			var new_btn:BtnBase = TextBtnPreload.instantiate()
 			new_btn.title = str(item.amount)
-			new_btn.icon = item.icon
+			new_btn.icon = item.resource.icon
 			new_btn.is_hoverable = false
 			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			RequirementGrid.add_child(new_btn)
