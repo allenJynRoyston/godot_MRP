@@ -62,6 +62,7 @@ func after_ready() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func goto_location(data:Dictionary) -> void:
+	if data.is_empty():return
 	floor_selected = data.floor
 	ring_selected = data.ring
 	room_selected = data.room

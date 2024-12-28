@@ -29,6 +29,7 @@ func _ready() -> void:
 	
 	for node in [ResourceItemMoney, ResourceItemEnergy, ResourceItemLeadResearchers, ResourceItemStaff, ResourceItemSecurity, ResourceItemDClass]:
 		node.onClick = func() -> void:
+			if suppress_click:return
 			match node:
 				ResourceItemMoney:
 					DetailPanel.show_details(RESOURCE.TYPE.MONEY)
@@ -62,13 +63,13 @@ func open_detail_panel(node:Control) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func on_facility_room_data_update(new_val:Array = facility_room_data) -> void:
-	facility_room_data = new_val
+func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
+	purchased_base_arr = new_val
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_lead_researchers_data_update(new_val:Array = lead_researchers_data) -> void:
-	lead_researchers_data = new_val
+func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
+	hired_lead_researchers_arr = new_val
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

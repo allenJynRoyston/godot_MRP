@@ -402,7 +402,7 @@ func get_room_position(key:String) -> Vector3:
 
 # ------------------------------------------------
 func on_process_update(delta: float) -> void:	
-	if !is_node_ready():return
+	if !is_node_ready() or current_location.is_empty():return
 	# ensures that building rotation cannot be > 360 degrees
 	normalize_rotation_degrees(Building)
 	

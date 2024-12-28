@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://lgmqxg5r5bg4"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/LeadResearcherPanel/lead_researcher_panel.gd" id="1_7vgy0"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="1_8cydk"]
 [ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/ProfileCard.tscn" id="2_0dtbl"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_t5s6v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdxja"]
 
@@ -36,9 +36,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer"]
-visible = false
+[node name="NextLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-text = "New canidates will be available in X days."
-label_settings = ExtResource("1_8cydk")
-horizontal_alignment = 1
+text = "More choices available in X days."
+label_settings = ExtResource("3_t5s6v")

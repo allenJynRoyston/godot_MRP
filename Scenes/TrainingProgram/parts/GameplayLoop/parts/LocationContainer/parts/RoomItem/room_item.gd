@@ -20,7 +20,7 @@ enum STATUS {NO_ISSUES, WARNING, DANGER}
 	set(val):
 		is_disabled = val
 		on_is_disabled_update()
-		
+
 var onClick:Callable = func():pass
 
 # --------------------------------------	

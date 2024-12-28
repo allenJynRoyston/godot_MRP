@@ -7,6 +7,7 @@ extends PanelContainer
 
 @onready var HireBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer/HireBtn
 @onready var NoneAvailable:Control = $NoneAvailable
+@onready var MoreAvailableLabel:Label = $NoneAvailable/MarginContainer/PanelContainer/VBoxContainer/MoreAvailableLabel
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 

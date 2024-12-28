@@ -1,15 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://bhbmv0st8pe22"]
+[gd_scene load_steps=10 format=3 uid="uid://bhbmv0st8pe22"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/StoreItem/store_item.gd" id="1_kueja"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_w1or2"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_qacpv"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="4_2blmb"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_120ef"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="6_vxb0w"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vrawy"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ydu8v"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wuyd4"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s3nd0"]
@@ -41,7 +42,7 @@ layout_mode = 2
 [node name="Duration" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_120ef")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_ydu8v")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wuyd4")
 icon = 22
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 is_disabled = false
@@ -93,3 +94,23 @@ is_hoverable = false
 [node name="CostContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 1
+
+[node name="InProgress" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="InProgress"]
+layout_mode = 2
+text = "RESEARCHING"
+label_settings = ExtResource("6_vxb0w")
+horizontal_alignment = 1
+
+[node name="AlreadyOwned" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AlreadyOwned"]
+layout_mode = 2
+text = "ALREADY OWNED"
+label_settings = ExtResource("6_vxb0w")
+horizontal_alignment = 1

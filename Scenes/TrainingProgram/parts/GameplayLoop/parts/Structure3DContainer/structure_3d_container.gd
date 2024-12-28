@@ -39,11 +39,15 @@ func _init() -> void:
 	GBL.register_node(REFS.STRUCTURE_3D, self)
 	GBL.subscribe_to_process(self)
 	
+	SUBSCRIBE.subscribe_to_current_location(self)
+	
 
 func _exit_tree() -> void:
 	super._exit_tree()
 	GBL.unregister_node(REFS.STRUCTURE_3D)
 	GBL.unsubscribe_to_process(self)
+	
+	SUBSCRIBE.unsubscribe_to_current_location(self)
 	
 func _ready() -> void:
 	super._ready()
@@ -73,7 +77,6 @@ func traverse(callback:Callable) -> void:
 			for room_index in room_config.floor[floor_index].ring[ring_index].room:	
 				callback.call("%s%s%s" % [floor_index, ring_index, room_index], floor_index, ring_index, room_index)
 # --------------------------------------------------------------------------------------------------		
-
 
 # --------------------------------------------------------------------------------------------------		
 func on_current_camera_zoom_update() -> void:
@@ -133,8 +136,6 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 			BookmarkedInfo.add_child(new_floating_node)
 			new_floating_node.show()
 			
-			print(room_config.floor[floor_index].ring[ring_index].room[0])
-			
 			bookmarked_node_refs[ref_name] = new_floating_node
 			bookmarked_node_refs[ref_name].data = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data
 			bookmarked_node_refs[ref_name].location = {"floor": floor_index, "ring": ring_index, "room": room_index}
@@ -158,21 +159,21 @@ func on_camera_type_update() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if is_visible_in_tree():
-		var key:String = input_data.key
-		var keycode:int = input_data.keycode
+	if !is_visible_in_tree() or current_location.is_empty():return
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
 
-		match key:
-			"D":
-				for node in [RenderLayer1, RenderLayer2]:
-					node.rotate_ring(current_location.ring, 1)
-			"A":
-				for node in [RenderLayer1, RenderLayer2]:
-					node.rotate_ring(current_location.ring, -1)
-			"ENTER":
-				user_response.emit({"action": ACTION.NEXT})
-			"BACK":
-				user_response.emit({"action": ACTION.BACK})
+	match key:
+		"D":
+			for node in [RenderLayer1, RenderLayer2]:
+				node.rotate_ring(current_location.ring, 1)
+		"A":
+			for node in [RenderLayer1, RenderLayer2]:
+				node.rotate_ring(current_location.ring, -1)
+		"ENTER":
+			user_response.emit({"action": ACTION.NEXT})
+		"BACK":
+			user_response.emit({"action": ACTION.BACK})
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

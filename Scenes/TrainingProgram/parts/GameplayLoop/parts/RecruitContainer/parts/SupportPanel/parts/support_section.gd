@@ -84,7 +84,7 @@ func on_amount_update() -> void:
 # ----------------------------------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
-	if !is_node_ready or resources_data.is_empty():return
+	if !is_node_ready() or resources_data.is_empty():return
 	match option:
 		OPTIONS.STAFF:
 			CurrentAmount.text = str(resources_data[RESOURCE.TYPE.STAFF].amount)

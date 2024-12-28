@@ -17,15 +17,17 @@ class_name GameContainer
 		
 
 var resources_data:Dictionary = {} 
-var facility_room_data:Array = [] 
+var purchased_base_arr:Array = [] 
 var bookmarked_rooms:Array = [] 
-var lead_researchers_data:Array = [] 
+var hired_lead_researchers_arr:Array = [] 
 var current_location:Dictionary = {} 
 var progress_data:Dictionary = {}
 var action_queue_data:Array = [] 
 var room_config:Dictionary = {} 
 var researcher_hire_list:Array = [] 
 var tier_unlocked:Dictionary = {}
+var purchased_research_arr:Array = []
+var suppress_click:bool = false 
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 
@@ -41,9 +43,11 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_bookmarked_rooms(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
-	SUBSCRIBE.subscribe_to_lead_researchers_data(self)
+	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_tier_unlocked(self)
+	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
+	SUBSCRIBE.subscribe_to_suppress_click(self)
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
@@ -56,9 +60,11 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_bookmarked_rooms(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
-	SUBSCRIBE.unsubscribe_to_lead_researchers_data(self)
+	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_tier_unlocked(self)
+	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
+	SUBSCRIBE.unsubscribe_to_suppress_click(self)
 
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
@@ -85,12 +91,15 @@ func on_bookmarked_rooms_update(new_val:Array) -> void:
 	bookmarked_rooms = new_val
 func on_researcher_hire_list_update(new_val:Array) -> void:
 	researcher_hire_list = new_val
-func on_lead_researchers_data_update(new_val:Array) -> void:
-	lead_researchers_data = new_val
+func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
+	hired_lead_researchers_arr = new_val
 func on_tier_unlocked_update(new_val:Dictionary) -> void:
 	tier_unlocked = new_val
-	
-	
+func on_purchased_research_arr_update(new_val:Array) -> void:
+	purchased_research_arr = new_val
+func on_suppress_click_update(new_val:bool) -> void:
+	suppress_click = new_val
+
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass
 # ------------------------------------------------------------------------------

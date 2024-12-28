@@ -45,6 +45,7 @@ func on_is_disabled_update() -> void:
 	if !is_node_ready():return
 	update_colors()
 	is_hoverable = !is_disabled
+	
 # --------------------------------------
 
 # --------------------------------------

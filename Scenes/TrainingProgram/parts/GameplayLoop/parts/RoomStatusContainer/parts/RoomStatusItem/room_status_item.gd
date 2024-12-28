@@ -37,8 +37,8 @@ var is_highlighted:bool = false :
 		on_is_highlighted_update.call_deferred()		
 		
 var is_empty:bool = false
-
 var onClick:Callable = func():pass
+
 
 # --------------------------------------	
 func _ready() -> void:

@@ -100,16 +100,21 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
 # ------------------------------------------------------------------------------ 
 #region SAVABLE DATA
-var current_location:Dictionary = {} 
+var current_location:Dictionary = {
+	"floor": 0,
+	"ring": 0,
+	"room": 0
+} 
 var progress_data:Dictionary = { 
 		"day": 1,
+		"days_till_new_hires": 7,
 	} 
 var action_queue_data:Array = []
-var facility_room_data:Array = [] 
+var purchased_base_arr:Array = [] 
 var purchased_research_arr:Array = []
 var bookmarked_rooms:Array = ["000", "001", "002"] # ["000", "201"] <- "floor_index, ring_index, room_index"]
 var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() 
-var lead_researchers_data:Array = [] 
+var hired_lead_researchers_arr:Array = [] 
 var resources_data:Dictionary = { 
 	RESOURCE.TYPE.MONEY: {"amount": 50, "capacity": 9999},
 	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
@@ -149,6 +154,20 @@ var room_config:Dictionary = {
 	}
 } 
 
+var initial_values:Dictionary = {
+	"current_location": current_location.duplicate(true),
+	"progress_data": progress_data.duplicate(true),
+	"action_queue_data": action_queue_data.duplicate(true),
+	"purchased_base_arr": purchased_base_arr.duplicate(true),
+	"purchased_research_arr": purchased_research_arr.duplicate(true),
+	"bookmarked_rooms": bookmarked_rooms.duplicate(true),
+	"researcher_hire_list": researcher_hire_list.duplicate(true),
+	"hired_lead_researchers_arr": hired_lead_researchers_arr.duplicate(true),
+	"resources_data": resources_data.duplicate(true),
+	"tier_unlocked": tier_unlocked.duplicate(true),
+	"room_config": room_config.duplicate(true)
+}
+
 
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -164,6 +183,7 @@ var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
 var selected_tier_item:Dictionary = {}
+var selected_refund_item:Dictionary = {}
 var selected_research_item:Dictionary = {}
 
 var completed_build_items:Array = [] : 
@@ -210,29 +230,30 @@ func _init() -> void:
 	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_control_input(self)
 	
-	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_action_queue_data(self)
-	SUBSCRIBE.subscribe_to_facility_room_data(self)
+	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
-	SUBSCRIBE.subscribe_to_purchased_research_arr(self)	
+	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
+	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
+	SUBSCRIBE.subscribe_to_current_location(self)	
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
 	
-	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
 	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
-	SUBSCRIBE.unsubscribe_to_facility_room_data(self)
+	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
-
+	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
+	SUBSCRIBE.unsubscribe_to_current_location(self)
 	  
 func _ready() -> void:
 	if !Engine.is_editor_hint():
@@ -409,37 +430,42 @@ func next_day() -> void:
 	SUBSCRIBE.progress_data = progress_data
 	
 func cancel_action(item_data:Dictionary) -> void:
-	match item_data.action:
-		ACTION.BUILD:
-			selected_shop_item = item_data
-			current_shop_step = SHOP_STEPS.REFUND
+	selected_refund_item = item_data
+	current_shop_step = SHOP_STEPS.REFUND
+
 			
 func goto_location(location:Dictionary) -> void:
 	LocationContainer.goto_location(location)
 	
 func set_room_config() -> void:
-	for item in action_queue_data:
-		var floor:int = item.location.floor
-		var ring:int = item.location.ring
-		var room:int = item.location.room		
-		room_config.floor[floor].ring[ring].room[room].build_data = {
-			"id": item.data.id,
-			"get_room_data": func() -> Dictionary:
-				return ROOM_UTIL.return_data(item.data.id)
-		}
+	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
 	
-	for item in facility_room_data:
+	for item in action_queue_data:
+		match item.action:
+			ACTION.BUILD:
+				var floor:int = item.location.floor
+				var ring:int = item.location.ring
+				var room:int = item.location.room		
+				new_room_config.floor[floor].ring[ring].room[room].build_data = {
+					"id": item.data.id,
+					"get_room_data": func() -> Dictionary:
+						return ROOM_UTIL.return_data(item.data.id)
+				}
+			
+	
+	for item in purchased_base_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
-		room_config.floor[floor].ring[ring].room[room].room_data = {
+		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"id": item.data.id,
 			"get_room_data": func() -> Dictionary:
 				return ROOM_UTIL.return_data(item.data.id)
 		}
 		# if facility is built, clear build_data
-		room_config.floor[floor].ring[ring].room[room].build_data = {}
-	SUBSCRIBE.room_config = room_config	
+		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
+		
+	SUBSCRIBE.room_config = new_room_config	
 
 	
 func on_current_camera_zoom_update() -> void:
@@ -458,26 +484,25 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 	progress_data = new_val
 
-func on_facility_room_data_update(new_val:Array = facility_room_data) -> void:
-	facility_room_data = new_val
+func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
+	purchased_base_arr = new_val
 	set_room_config()
 
 func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) -> void:
 	purchased_research_arr = new_val
-	print("purchased_research_arr: ", purchased_research_arr)
 
 func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 	action_queue_data = new_val
+	set_room_config()
 	
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val 
 	
-func on_lead_researchers_data_update(new_val:Array = lead_researchers_data) -> void:
-	lead_researchers_data = new_val
+func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
+	hired_lead_researchers_arr = new_val
 	resources_data[RESOURCE.TYPE.LEAD_RESEARCHERS] = {
-		"amount": lead_researchers_data.size() 
+		"amount": hired_lead_researchers_arr.size() 
 	} 
-	
 	SUBSCRIBE.resources_data = resources_data
 
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
@@ -578,10 +603,12 @@ func on_current_shop_step_update() -> void:
 	match current_shop_step:
 		# ---------------
 		SHOP_STEPS.HIDE:
+			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 			StoreContainer.end()
 		# ---------------
 		SHOP_STEPS.START:
+			SUBSCRIBE.suppress_click = true
 			selected_shop_item = {}
 			selected_research_item = {}
 			selected_tier_item = {}
@@ -688,15 +715,26 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.tier_unlocked = tier_unlocked
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
-		SHOP_STEPS.REFUND:			
-			ConfirmModal.set_text("Cancel action?", "Resources will be refunded.")
+		SHOP_STEPS.REFUND:
+			match selected_refund_item.action:
+				ACTION.BUILD:
+					ConfirmModal.set_text("Cancel build?", "Resources will be refunded.")
+				ACTION.RESEARCH:
+					ConfirmModal.set_text("Cancel research?", "Resources will be refunded.")
 			await show_only([ActionQueueContainer, ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
-				ACTION.NEXT:					
-					SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.data.id, resources_data, true)
-					SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_shop_item.data.uid)
-					ActionQueueContainer.remove_from_queue([selected_shop_item])
+				ACTION.NEXT:
+					match selected_refund_item.action:
+						ACTION.BUILD:
+							SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+						ACTION.RESEARCH:
+							SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+					
+					SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
+
+					ActionQueueContainer.remove_from_queue([selected_refund_item])
+					selected_refund_item = {}
 					current_shop_step = SHOP_STEPS.HIDE
 					await restore_default_state()
 				ACTION.BACK:
@@ -712,9 +750,11 @@ func on_current_contain_step_update() -> void:
 	match current_contain_step:
 		# ---------------
 		CONTAIN_STEPS.HIDE:
+			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 		# ---------------
 		CONTAIN_STEPS.START:
+			SUBSCRIBE.suppress_click = true
 			await show_only([ResourceContainer, ItemSelectContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await ItemSelectContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
@@ -747,12 +787,14 @@ func on_current_recruit_step_update() -> void:
 	match current_recruit_step:
 		# ---------------
 		RECRUIT_STEPS.HIDE:
+			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 		# ---------------
 		CONTAIN_STEPS.START:
+			SUBSCRIBE.suppress_click = true
 			selected_lead_hire = {}
 			selected_support_hire = {}
-			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, RoomStatusContainer])
+			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
 			var response:Dictionary = await RecruitContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -773,9 +815,9 @@ func on_current_recruit_step_update() -> void:
 				ACTION.BACK:
 					current_recruit_step = RECRUIT_STEPS.START
 				ACTION.NEXT:
-					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_support_hire.cost
-					lead_researchers_data.push_back(selected_lead_hire.researcher)
-					SUBSCRIBE.lead_researchers_data = lead_researchers_data
+					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_lead_hire.cost
+					hired_lead_researchers_arr.push_back(selected_lead_hire.researcher)
+					SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 					# subtract hire costs and change status from of recruit data to empty
 					current_recruit_step = RECRUIT_STEPS.START
 		# ---------------
@@ -803,9 +845,11 @@ func on_current_build_complete_step_update() -> void:
 	match current_build_complete_step:
 		# ---------------
 		BUILD_COMPLETE_STEPS.HIDE:
+			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 		# ---------------
 		BUILD_COMPLETE_STEPS.START:
+			SUBSCRIBE.suppress_click = true
 			revert_state_location = current_location
 			BuildCompleteContainer.completed_build_items = completed_build_items
 			await show_only([Structure3dContainer, ResourceContainer, LocationContainer, BuildCompleteContainer])
@@ -826,14 +870,14 @@ func on_current_build_complete_step_update() -> void:
 			for item in completed_build_items:
 				match item.action:
 					ACTION.BUILD:
-						facility_room_data.push_back({
+						purchased_base_arr.push_back({
 							"data": item.data,
 							"location": item.location
 						})
 						# update resources_data
 						resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
 						resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
-						SUBSCRIBE.facility_room_data = facility_room_data
+						SUBSCRIBE.purchased_base_arr = purchased_base_arr
 					ACTION.RESEARCH:
 						purchased_research_arr.push_back({
 							"data": item.data
@@ -897,12 +941,13 @@ func quicksave() -> void:
 	var save_data = {
 		"progress_data": progress_data,		
 		"action_queue_data": action_queue_data,
-		"facility_room_data": facility_room_data,
-		"lead_researchers_data": lead_researchers_data,
+		"purchased_base_arr": purchased_base_arr,
+		"hired_lead_researchers_arr": hired_lead_researchers_arr,
 		"resources_data": resources_data,
 		"current_location": current_location,
 		"bookmarked_rooms": bookmarked_rooms,
 		"researcher_hire_list": researcher_hire_list,
+		"purchased_research_arr": purchased_research_arr,
 		"tier_unlocked": tier_unlocked
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
@@ -922,7 +967,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool =  true #restore_data.is_empty()
+	var no_save:bool = restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes
@@ -930,16 +975,17 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 		if "on_reset" in node:
 			node.on_reset()
 	
-	SUBSCRIBE.progress_data = progress_data if no_save else restore_data.progress_data
-	SUBSCRIBE.action_queue_data = action_queue_data if no_save else restore_data.action_queue_data	
-	SUBSCRIBE.facility_room_data = facility_room_data if no_save else restore_data.facility_room_data  
-	SUBSCRIBE.resources_data = resources_data if no_save else restore_data.resources_data	
-	SUBSCRIBE.bookmarked_rooms = bookmarked_rooms if no_save else restore_data.bookmarked_rooms
-	SUBSCRIBE.researcher_hire_list = researcher_hire_list if no_save else restore_data.researcher_hire_list
+	SUBSCRIBE.progress_data = initial_values.progress_data if no_save else restore_data.progress_data
+	SUBSCRIBE.action_queue_data = initial_values.action_queue_data if no_save else restore_data.action_queue_data	
+	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr if no_save else restore_data.purchased_base_arr  
+	SUBSCRIBE.resources_data = initial_values.resources_data if no_save else restore_data.resources_data	
+	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms if no_save else restore_data.bookmarked_rooms
+	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list if no_save else restore_data.researcher_hire_list
+	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr
 	# comes after research data, fix this later
-	SUBSCRIBE.lead_researchers_data = lead_researchers_data if no_save else restore_data.lead_researchers_data
-	SUBSCRIBE.current_location = current_location if no_save else restore_data.current_location
-	SUBSCRIBE.tier_unlocked = tier_unlocked if no_save else restore_data.tier_unlocked
-	goto_location(current_location)
+	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
+	SUBSCRIBE.current_location = initial_values.current_location if no_save else restore_data.current_location
+	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
+	goto_location(initial_values.current_location)
 #endregion		
 # ------------------------------------------------------------------------------

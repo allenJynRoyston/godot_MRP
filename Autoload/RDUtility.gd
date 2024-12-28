@@ -14,6 +14,21 @@ var RESEARCH_ONE:Dictionary = {
 		return 3,		
 }
 
+
+var RESEARCH_TWO:Dictionary = {
+	"name": "RESEARCH TWO",
+	"tier": TIER.VAL.ZERO,
+	"image_src": "res://Media/rooms/redacted.jpg",
+	"description": "Research item goes here...",
+	"get_build_cost": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 10
+		},
+	"get_build_time": func() -> int:
+		return 3,		
+}
+
+
 var tier_data:Dictionary = {
 	TIER.VAL.ZERO: {
 		"id": TIER.VAL.ZERO,
@@ -58,7 +73,8 @@ var tier_data:Dictionary = {
 }
 
 var reference_data:Dictionary = {
-	RD.TYPE.R_ONE: RESEARCH_ONE
+	RD.TYPE.R_ONE: RESEARCH_ONE,
+	RD.TYPE.R_TWO: RESEARCH_TWO
 }
 
 # ------------------------------------------------------------------------------

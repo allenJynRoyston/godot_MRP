@@ -6,6 +6,8 @@ extends BtnBase
 @onready var ImageTextureRect:TextureRect = $MarginContainer/VBoxContainer/PanelContainer/TextureRect
 @onready var CostContainer:Control = $MarginContainer/VBoxContainer/CostContainer
 @onready var Duration:Control = $MarginContainer/VBoxContainer/HBoxContainer/Duration
+@onready var AlreadyOwned:PanelContainer = $AlreadyOwned
+@onready var InProgress:PanelContainer = $InProgress
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -26,17 +28,22 @@ var data:Dictionary = {} :
 
 var tab:TIER.TYPE = TIER.TYPE.BASE
 
-
-var resources_data:Dictionary
+var resources_data:Dictionary = {}
+var purchased_research_arr:Array = []
+var action_queue_data:Array = []
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
 	SUBSCRIBE.subscribe_to_resources_data(self)
+	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
+	SUBSCRIBE.subscribe_to_action_queue_data(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
+	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 
 func _ready() -> void:
 	super._ready()
@@ -52,6 +59,16 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) -> void:
+	purchased_research_arr = new_val
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
+	action_queue_data = new_val
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty() and !resources_data.is_empty():
 		NameLabel.text = data.details.name		
@@ -62,11 +79,25 @@ func on_data_update() -> void:
 		
 		var can_afford:bool = true
 		var item_data:Array = []
+		var already_owned:bool = false
+		var in_progress:bool = false
 		
 		match(tab):
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
+				var purchased_research_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
+				var current_researching_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH).map(func(i): return i.data.id)
+				
+				already_owned = data.id in purchased_research_ids
+				in_progress = data.id in current_researching_ids
+
+				InProgress.show() if in_progress else InProgress.hide()
+				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
+				
 				item_data = RD_UTIL.return_build_cost(data.id)
 			TIER.TYPE.BASE:
+				AlreadyOwned.hide()
+				InProgress.hide()
+				
 				item_data = ROOM_UTIL.return_build_cost(data.id)
 			
 		for item in item_data:
@@ -77,13 +108,17 @@ func on_data_update() -> void:
 			new_node.icon = resource.icon
 			new_node.title = str(amount)
 			CostContainer.add_child(new_node)
-			if resources_data[resource.id].amount < amount:
-				can_afford = false
-				onClick = func() -> void:
-					print("cannot afford...")
-				new_node.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.INVALID_ACTIVE) 
 
-		modulate = Color(1, 1, 1, 1) if can_afford else Color(1, 1, 1, 0.75)
+			if already_owned or in_progress:
+				new_node.is_disabled = true
+				
+			if resources_data[resource.id].amount < amount:
+				new_node.is_disabled = true
+				can_afford = false
+		
+		if already_owned or in_progress or !can_afford:
+			onClick = func() -> void:
+				pass
 # ------------------------------------------------------------------------------	
 	
 
