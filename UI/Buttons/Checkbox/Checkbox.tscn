@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://cp63njwa3niv7"]
+
+[ext_resource type="Script" path="res://UI/Buttons/Checkbox/checkbox.gd" id="1_wmtyv"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_kiejb"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_ygnts"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v2dwt"]
+bg_color = Color(0.055, 0.055, 0.055, 0.796)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="CheckBox" type="PanelContainer"]
+offset_right = 20.0
+offset_bottom = 20.0
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_v2dwt")
+script = ExtResource("1_wmtyv")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_kiejb")]
+layout_mode = 2
+icon = 46
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+is_hoverable = false
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+label_settings = ExtResource("3_ygnts")

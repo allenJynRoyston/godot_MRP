@@ -15,7 +15,6 @@ class_name GameContainer
 		freeze_inputs = val
 		on_freeze_inputs_update()
 		
-
 var resources_data:Dictionary = {} 
 var purchased_base_arr:Array = [] 
 var bookmarked_rooms:Array = [] 
@@ -28,6 +27,7 @@ var researcher_hire_list:Array = []
 var tier_unlocked:Dictionary = {}
 var purchased_research_arr:Array = []
 var suppress_click:bool = false 
+var camera_zoom:CAMERA.ZOOM 
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 
@@ -48,6 +48,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_tier_unlocked(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.subscribe_to_suppress_click(self)
+	SUBSCRIBE.subscribe_to_camera_zoom(self)
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
@@ -65,6 +66,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_tier_unlocked(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
+	SUBSCRIBE.unsubscribe_to_camera_zoom(self)
 
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
@@ -99,6 +101,8 @@ func on_purchased_research_arr_update(new_val:Array) -> void:
 	purchased_research_arr = new_val
 func on_suppress_click_update(new_val:bool) -> void:
 	suppress_click = new_val
+func on_camera_zoom_update(new_val:CAMERA.ZOOM) -> void:
+	camera_zoom = new_val
 
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass

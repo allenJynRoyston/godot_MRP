@@ -1,10 +1,20 @@
-[gd_scene load_steps=15 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=16 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_sgoc5"]
-[ext_resource type="Material" uid="uid://lfosoejrwy5i" path="res://Shader/Reveal/reveal.tres" id="2_h4i4h"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_417gh"]
 [ext_resource type="PackedScene" uid="uid://bv44can1xyvh1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/FocusDetails/FocusDetails.tscn" id="3_4l4wr"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_exv6b"]
 [ext_resource type="PackedScene" uid="uid://cy8nluju7hwvu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/TierUnlockPanel.tscn" id="5_onij2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d15tv"]
+shader = ExtResource("2_417gh")
+shader_parameter/percentage = 0.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_jvtta"]
 viewport_path = NodePath("SubViewport")
@@ -18,13 +28,13 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6drsp"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qmeo7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l10ft"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enfje"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ol5na"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvqbr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y72j7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pa75o"]
@@ -34,10 +44,10 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5xl0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2rt0j"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c3q5o"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cq1w7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="StoreContainer" type="MarginContainer"]
@@ -48,7 +58,7 @@ size_flags_vertical = 0
 script = ExtResource("1_sgoc5")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = ExtResource("2_h4i4h")
+material = SubResource("ShaderMaterial_d15tv")
 layout_mode = 2
 texture = SubResource("ViewportTexture_jvtta")
 stretch_mode = 2
@@ -87,19 +97,19 @@ size_flags_horizontal = 3
 
 [node name="BaseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qmeo7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_l10ft")
 is_disabled = false
 title = "FACILITY"
 
 [node name="RDBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_enfje")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ol5na")
 is_disabled = false
 title = "RESEARCH AND DEVELOPMENT"
 
 [node name="CloseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wvqbr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y72j7")
 icon = 16
 is_disabled = false
 title = "Back"
@@ -172,7 +182,7 @@ alignment = 2
 [node name="PaginationBackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_t5xl0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2rt0j")
 icon = 16
 is_disabled = false
 title = "Previous"
@@ -180,7 +190,7 @@ title = "Previous"
 [node name="PaginationMoreBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_c3q5o")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cq1w7")
 is_disabled = false
 title = "More"
 

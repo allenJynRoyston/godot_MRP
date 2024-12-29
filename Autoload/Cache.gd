@@ -122,6 +122,14 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/film-camera-svgrepo-com.svg")
 		SVGS.TYPE.DOWN_ARROW:
 			texture = load("res://SVGs/down-arrow-svgrepo-com.svg")
+		SVGS.TYPE.LOCK:
+			texture = load("res://SVGs/lock-closed-svgrepo-com.svg")
+		SVGS.TYPE.UNLOCK:
+			texture = load("res://SVGs/lock-open-svgrepo-com.svg")			
+		SVGS.TYPE.CHECKBOX:
+			texture = load("res://SVGs/checkbox-cross-svgrepo-com.svg")
+		SVGS.TYPE.EMPTY_CHECKBOX:
+			texture = load("res://SVGs/checkbox-blank-svgrepo-com.svg")
 	
 	svg_cache.push_back({
 		"key": key, 

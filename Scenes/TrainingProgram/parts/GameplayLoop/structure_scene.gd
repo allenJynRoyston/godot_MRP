@@ -25,12 +25,8 @@ const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMat
 
 var building_setup_complete:bool = false
 
-var current_camera_zoom:CAMERA.ZOOM  : 
-	set(val):		
-		current_camera_zoom = val
-		on_current_camera_zoom_update()		
-var previous_camera_zoom:CAMERA.ZOOM = current_camera_zoom
-
+var camera_zoom:CAMERA.ZOOM 
+var previous_camera_zoom:CAMERA.ZOOM = camera_zoom
 var current_location:Dictionary = {} 
 var previous_location:Dictionary = current_location
 
@@ -56,11 +52,13 @@ var room_node_refs:Dictionary = {}
 
 # ------------------------------------------------
 func _init() -> void:
-	GBL.subscribe_to_process(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
+	SUBSCRIBE.subscribe_to_camera_zoom(self)
+	GBL.subscribe_to_process(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
+	SUBSCRIBE.unsubscribe_to_camera_zoom(self)	
 	GBL.unsubscribe_to_process(self)
 	GBL.remove_from_projected_3d_objects('active_room')
 	for key in room_node_refs:
@@ -73,9 +71,8 @@ func _ready() -> void:
 
 func after_ready() -> void:
 	building_setup_complete = true
-	on_render_layout_update()
-	on_current_camera_zoom_update()
-
+	on_render_layout_update()	
+	on_camera_zoom_update()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -85,7 +82,6 @@ func building_setup() -> void:
 		FloorContainer.add_child(FloorCopy)
 		FloorCopy.position.y = count * -10
 # ------------------------------------------------
-
 
 # ------------------------------------------------	
 func camera_setup() -> void:
@@ -223,11 +219,11 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		tween_position(Building, Vector3(0, floor * 10, 0), time)	
 	
 
-	match current_camera_zoom:
+	match camera_zoom:
 		# ------------------
 		CAMERA.ZOOM.OVERVIEW:			
 			ElevatorNode.visible = true
-			if previous_camera_zoom != current_camera_zoom:
+			if previous_camera_zoom != camera_zoom:
 				rotate_building.call()
 			zoom_to_floor.call(0)
 			var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:
@@ -259,7 +255,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:
 				floor.visible = current_location.floor == d.floor_index
 			var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:
-				ring.visible = current_location.ring == d.ring_index
+				ring.visible = true #current_location.ring == d.ring_index
 			var room_func:Callable = func(room:MeshInstance3D, d:Dictionary) -> void:
 				room.visible = true	
 			traverse_nodes(floor_func, ring_func, room_func)
@@ -326,15 +322,20 @@ func rotate_ring(ring_index:int, amount:int) -> void:
 
 
 # ------------------------------------------------
-func on_current_camera_zoom_update() -> void:	
+func on_camera_zoom_update(new_val:CAMERA.ZOOM = camera_zoom) -> void:	
+	if !is_node_ready():return
+	camera_zoom = new_val
+	
+	print("camera_zoom: ", camera_zoom)
+	
 	GBL.add_to_animation_queue(self)
 	
 	# adjust the camera prior to changing types
-	if previous_camera_zoom == CAMERA.ZOOM.OVERVIEW and current_camera_zoom == CAMERA.ZOOM.FLOOR:
+	if previous_camera_zoom == CAMERA.ZOOM.OVERVIEW and camera_zoom == CAMERA.ZOOM.FLOOR:
 		await tween_rotation(Building, Vector3(0, 30, 0))
 		
 	# adds some stylish zoom animation	
-	if previous_camera_zoom == CAMERA.ZOOM.RING and current_camera_zoom == CAMERA.ZOOM.RM:
+	if previous_camera_zoom == CAMERA.ZOOM.RING and camera_zoom == CAMERA.ZOOM.RM:
 		var camera_position:Vector3 = RoamingCamera.position
 		var camera_rotation_degree:Vector3 = RoamingCamera.rotation_degrees
 		camera_position.y -= 45
@@ -342,7 +343,7 @@ func on_current_camera_zoom_update() -> void:
 		await tween_position(RoamingCamera, camera_position, 0.3)
 		await tween_rotation(RoamingCamera, camera_rotation_degree, 0.6)
 
-	match current_camera_zoom:
+	match camera_zoom:
 		CAMERA.ZOOM.OVERVIEW:
 			tween_rotation(RoamingCamera, OverviewCamera.rotation_degrees)
 			await tween_position(RoamingCamera, OverviewCamera.position)
@@ -356,7 +357,7 @@ func on_current_camera_zoom_update() -> void:
 			tween_rotation(RoamingCamera, RoomCamera.rotation_degrees)
 			await tween_position(RoamingCamera, RoomCamera.position)
 	
-	previous_camera_zoom = current_camera_zoom
+	previous_camera_zoom = camera_zoom
 	on_current_location_update()
 # ------------------------------------------------	
 
@@ -393,9 +394,9 @@ func get_room_position(key:String) -> Vector3:
 	var room_node:Node3D = room_node_refs[key]
 	var ring_node:Node3D = room_node.get_parent().get_parent()
 	var floor_node:Node3D = ring_node.get_parent().get_parent()
-	match current_camera_zoom:
+	match camera_zoom:
 		CAMERA.ZOOM.OVERVIEW:	
-			return (room_node.global_position + ring_node.global_position - floor_node.position if current_camera_zoom == CAMERA.ZOOM.OVERVIEW else 0 ) 
+			return (room_node.global_position + ring_node.global_position - floor_node.position if camera_zoom == CAMERA.ZOOM.OVERVIEW else 0 ) 
 		_:
 			return (room_node.global_position + ring_node.global_position ) 
 # ------------------------------------------------
@@ -407,7 +408,7 @@ func on_process_update(delta: float) -> void:
 	normalize_rotation_degrees(Building)
 	
 
-	if current_camera_zoom == CAMERA.ZOOM.OVERVIEW:
+	if camera_zoom == CAMERA.ZOOM.OVERVIEW:
 		Building.rotate_y(0.001)
 	
 	if room_node_refs.is_empty(): return

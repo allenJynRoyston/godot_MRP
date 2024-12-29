@@ -63,6 +63,18 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func get_ring_as_text(val:int) -> String:
+	match val:
+		0:
+			return "A"
+		1: 
+			return "B"
+		2:
+			return "C"
+	return ""
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
 func update_room_states() -> void:
 	if room_config.is_empty() or !is_node_ready():return
 	await U.set_timeout(0.0)
@@ -70,7 +82,8 @@ func update_room_states() -> void:
 	for index in room_config.floor[current_floor].ring[current_ring].room:
 		var data = room_config.floor[current_floor].ring[current_ring].room[index]
 		room_nodes[index].room_id = int(index)
-		room_nodes[index].designation = "%s-%s-%s" % [current_floor, current_ring, index] 
+		room_nodes[index].raw_designation = "%s%s%s" % [current_floor, current_ring, index] 
+		room_nodes[index].designation = "%s-%s%s" % [current_floor + 1, get_ring_as_text(current_ring), index + 1] 
 		room_nodes[index].data = data
 		room_nodes[index].onClick = func() -> void:
 			gameplay_node.goto_location({"floor": current_floor, "ring": current_ring, "room": index})

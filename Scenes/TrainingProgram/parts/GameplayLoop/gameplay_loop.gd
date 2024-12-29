@@ -23,6 +23,7 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 @onready var RecruitContainer:MarginContainer = $RecruitContainer
 @onready var StatusContainer:MarginContainer = $StatusContainer
 @onready var BuildCompleteContainer:MarginContainer = $BuildCompleteContainer
+@onready var InfoContainer:MarginContainer = $InfoContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
@@ -90,6 +91,11 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 	set(val):
 		show_status = val
 		on_show_status_update()
+		
+@export var show_info:bool = false : 
+	set(val):
+		show_info = val
+		on_show_info_update()		
 
 @export var show_build_complete:bool = false : 
 	set(val):
@@ -100,6 +106,9 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
 # ------------------------------------------------------------------------------ 
 #region SAVABLE DATA
+var previous_camera_zoom:CAMERA.ZOOM 
+var camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW 
+
 var current_location:Dictionary = {
 	"floor": 0,
 	"ring": 0,
@@ -110,11 +119,17 @@ var progress_data:Dictionary = {
 		"days_till_new_hires": 7,
 	} 
 var action_queue_data:Array = []
+
 var purchased_base_arr:Array = [] 
+
 var purchased_research_arr:Array = []
-var bookmarked_rooms:Array = ["000", "001", "002"] # ["000", "201"] <- "floor_index, ring_index, room_index"]
+
+var bookmarked_rooms:Array = [] # ["000", "201"] <- "floor_index, ring_index, room_index"]
+
 var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() 
+
 var hired_lead_researchers_arr:Array = [] 
+
 var resources_data:Dictionary = { 
 	RESOURCE.TYPE.MONEY: {"amount": 50, "capacity": 9999},
 	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
@@ -145,28 +160,29 @@ var tier_unlocked:Dictionary = {
 
 var room_config:Dictionary = {
 	"floor": {
-		0: get_ring_default(),
-		1: get_ring_default(),
-		2: get_ring_default(),
-		3: get_ring_default(),
-		4: get_ring_default(),
-		5: get_ring_default(),
+		0: get_floor_default(),
+		1: get_floor_default(),
+		2: get_floor_default(),
+		3: get_floor_default(),
+		4: get_floor_default(),
+		5: get_floor_default(),
 	}
 } 
 
 var initial_values:Dictionary = {
-	"current_location": current_location.duplicate(true),
-	"progress_data": progress_data.duplicate(true),
-	"action_queue_data": action_queue_data.duplicate(true),
-	"purchased_base_arr": purchased_base_arr.duplicate(true),
-	"purchased_research_arr": purchased_research_arr.duplicate(true),
-	"bookmarked_rooms": bookmarked_rooms.duplicate(true),
-	"researcher_hire_list": researcher_hire_list.duplicate(true),
-	"hired_lead_researchers_arr": hired_lead_researchers_arr.duplicate(true),
-	"resources_data": resources_data.duplicate(true),
-	"tier_unlocked": tier_unlocked.duplicate(true),
-	"room_config": room_config.duplicate(true)
-}
+	"current_location": current_location,
+	"progress_data": progress_data,
+	"action_queue_data": action_queue_data,
+	"purchased_base_arr": purchased_base_arr,
+	"purchased_research_arr": purchased_research_arr,
+	"bookmarked_rooms": bookmarked_rooms,
+	"researcher_hire_list": researcher_hire_list,
+	"hired_lead_researchers_arr": hired_lead_researchers_arr,
+	"resources_data": resources_data,
+	"tier_unlocked": tier_unlocked,
+	"room_config": room_config,
+	"camera_zoom": camera_zoom
+}.duplicate(true)
 
 
 #endregion
@@ -214,10 +230,7 @@ var current_build_complete_step:BUILD_COMPLETE_STEPS = BUILD_COMPLETE_STEPS.HIDE
 		current_build_complete_step = val
 		on_current_build_complete_step_update()
 
-var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW : 
-	set(val):
-		current_camera_zoom = val
-		on_current_camera_zoom_update()
+signal store_select_location
 
 		
 #endregion
@@ -275,12 +288,12 @@ func setup() -> void:
 	on_show_item_select_update()
 	on_show_recruit_update()
 	on_show_status_update()
+	on_show_info_update()
 	on_show_build_complete_update()
 
 	# other
 	on_show_confirm_modal_update()
 	on_is_busy_update()
-	on_current_camera_zoom_update()
 	
 	# steps
 	on_show_store_update()
@@ -328,8 +341,14 @@ func after_start() -> void:
 
 # ------------------------------------------------------------------------------
 #region defaults functions
-func get_ring_default() -> Dictionary:
+func get_floor_default() -> Dictionary:
 	return { 
+		"readings": {
+			RESOURCE.BASE.MORALE: 4,
+			RESOURCE.BASE.SECURITY: 4,
+			RESOURCE.BASE.READINESS: 3,
+			RESOURCE.BASE.HUME: 5,
+		},
 		"ring": { 
 			0: get_room_default(),
 			1: get_room_default(),
@@ -370,7 +389,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		RoomStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ItemSelectContainer, 
 		ConfirmModal, RecruitContainer, StatusContainer,
-		BuildCompleteContainer
+		BuildCompleteContainer, InfoContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -467,11 +486,6 @@ func set_room_config() -> void:
 		
 	SUBSCRIBE.room_config = new_room_config	
 
-	
-func on_current_camera_zoom_update() -> void:
-	if !is_node_ready():return
-	for node in [Structure3dContainer]:
-		node.current_camera_zoom = current_camera_zoom
 		
 #endregion
 # ------------------------------------------------------------------------------	
@@ -583,6 +597,11 @@ func on_show_status_update() -> void:
 		StatusContainer.is_showing = show_status
 		showing_states[StatusContainer] = show_status
 
+func on_show_info_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		InfoContainer.is_showing = show_info
+		showing_states[InfoContainer] = show_info
+
 func on_show_build_complete_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
 		BuildCompleteContainer.is_showing = show_build_complete
@@ -633,13 +652,19 @@ func on_current_shop_step_update() -> void:
 					selected_research_item = response.selected
 					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH
 		# ---------------
-		SHOP_STEPS.PLACEMENT:
+		SHOP_STEPS.PLACEMENT:		
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
+			previous_camera_zoom = camera_zoom
+			SUBSCRIBE.camera_zoom = CAMERA.ZOOM.RING
+			Structure3dContainer.show_instructions = true
 			var structure_response = await Structure3dContainer.user_response
+			Structure3dContainer.show_instructions = false
 			match structure_response.action:
 				ACTION.BACK:
+					SUBSCRIBE.camera_zoom = previous_camera_zoom
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
+					SUBSCRIBE.camera_zoom = previous_camera_zoom
 					current_shop_step = SHOP_STEPS.CONFIRM_BUILD
 		# ---------------
 		SHOP_STEPS.CONFIRM_TIER_PURCHASE:
@@ -906,15 +931,17 @@ func on_mouse_scroll(dir:int) -> void:
 	
 	match dir:
 		0: #UP
-			if current_camera_zoom - 1 >= 0:
-				current_camera_zoom = current_camera_zoom - 1
+			if camera_zoom - 1 >= 0:
+				camera_zoom = camera_zoom - 1
 		1: #DOWN
-			if current_camera_zoom + 1 < CAMERA.ZOOM.size():
-				current_camera_zoom = current_camera_zoom + 1
+			if camera_zoom + 1 < CAMERA.ZOOM.size():
+				camera_zoom = camera_zoom + 1
+				
+	SUBSCRIBE.camera_zoom = camera_zoom
 	
 
 func on_control_input_update(input_data:Dictionary) -> void:
-	if is_busy or is_occupied():return
+	var do_not_continue:bool = is_busy or is_occupied()
 
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
@@ -922,13 +949,35 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	print("key: %s   keycode: %s" % [key, keycode])
 	
 	match key:
+		"D":
+			current_location.ring += 1
+			if current_location.ring > room_config.floor[current_location.floor].ring.size() - 1:
+				current_location.ring =  room_config.floor[current_location.floor].ring.size() - 1
+			SUBSCRIBE.current_location = current_location
+		"A":
+			current_location.ring -= 1
+			if current_location.ring < 0:
+				current_location.ring = 0
+			SUBSCRIBE.current_location = current_location		
+		"S":
+			current_location.room += 1
+			if current_location.room > room_config.floor.size() - 1:
+				current_location.room = 0
+			SUBSCRIBE.current_location = current_location
+		"W":
+			current_location.room -= 1
+			if current_location.room < 0:
+				current_location.room = room_config.floor.size() - 1
+			SUBSCRIBE.current_location = current_location
 		"ENTER":
-			print_orphan_nodes()
-			
+			if do_not_continue:return
+			print_orphan_nodes()			
 			next_day()
 		"5":
+			if do_not_continue:return
 			quicksave()
 		"8":
+			if do_not_continue:return
 			quickload()
 		
 #endregion
@@ -948,7 +997,8 @@ func quicksave() -> void:
 		"bookmarked_rooms": bookmarked_rooms,
 		"researcher_hire_list": researcher_hire_list,
 		"purchased_research_arr": purchased_research_arr,
-		"tier_unlocked": tier_unlocked
+		"tier_unlocked": tier_unlocked,
+		"camera_zoom": camera_zoom
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
@@ -967,7 +1017,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
+	var no_save:bool = true # restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes
@@ -982,10 +1032,12 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms if no_save else restore_data.bookmarked_rooms
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list if no_save else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr
-	# comes after research data, fix this later
-	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
 	SUBSCRIBE.current_location = initial_values.current_location if no_save else restore_data.current_location
 	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
+	SUBSCRIBE.camera_zoom = initial_values.camera_zoom if no_save else initial_values.camera_zoom	
+	# comes after purchased_research_arr, fix this later
+	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
+
 	goto_location(initial_values.current_location)
 #endregion		
 # ------------------------------------------------------------------------------

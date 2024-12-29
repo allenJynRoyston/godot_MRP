@@ -1,10 +1,7 @@
 @tool
 extends GameContainer
 
-@onready var ZoomA:BtnBase = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer/ZoomA
-@onready var ZoomB:BtnBase = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer/ZoomB
-@onready var ZoomC:BtnBase = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer/ZoomC
-@onready var ZoomD:BtnBase = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer/ZoomD
+@onready var SelectLocationInstructions:Control = $TextureRect2/PanelContainer/MarginContainer/SelectLocationInstructions
 
 @onready var OverlayContainer:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer
 @onready var BookmarkedInfo:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/BookmarkedInfo
@@ -12,26 +9,19 @@ extends GameContainer
 @onready var TestPoint:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint
 @onready var LineDrawController:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/LineDrawController
 
-@onready var RoomName:Label = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint/VBoxContainer/MarginContainer/RoomName
-
 @onready var RenderLayer1:Node3D = $SubViewport/Rendering
 @onready var RenderLayer2:Node3D = $SubViewport2/Rendering
 
 const FloatingInfoPreload = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/FloatingItem.tscn")
 
-var camera_type:CAMERA.TYPE = CAMERA.TYPE.PERSPECTIVE : 
-	set(val):
-		camera_type = val
-		on_camera_type_update()
-
-var current_camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW : 
-	set(val):
-		current_camera_zoom = val
-		on_current_camera_zoom_update()
-
 var floating_node_refs:Dictionary = {}
 var bookmarked_node_refs:Dictionary = {}
 var tracking_nodes:Array = []
+
+var show_instructions:bool = false : 
+	set(val):
+		show_instructions = val
+		on_show_instructions_update()
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -53,21 +43,7 @@ func _ready() -> void:
 	super._ready()
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
-	
-	ZoomA.onClick = func() -> void:
-		GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.OVERVIEW
-		
-	ZoomB.onClick = func() -> void:
-		GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.FLOOR
-		
-	ZoomC.onClick = func() -> void:
-		GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RING
-		
-	ZoomD.onClick = func() -> void:
-		GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RM
-	
-	on_camera_type_update()
-	on_current_camera_zoom_update()
+	on_show_instructions_update()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -77,26 +53,6 @@ func traverse(callback:Callable) -> void:
 			for room_index in room_config.floor[floor_index].ring[ring_index].room:	
 				callback.call("%s%s%s" % [floor_index, ring_index, room_index], floor_index, ring_index, room_index)
 # --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
-func on_current_camera_zoom_update() -> void:
-	if !is_node_ready():return
-	for node in [ZoomA, ZoomB, ZoomC, ZoomD]:
-		node.inactive_color = Color(0.292, 0.292, 0.292, 0.827)
-	
-	match current_camera_zoom:
-		CAMERA.ZOOM.OVERVIEW:
-			ZoomA.inactive_color = Color.WHITE
-		CAMERA.ZOOM.FLOOR:
-			ZoomB.inactive_color = Color.WHITE
-		CAMERA.ZOOM.RING:
-			ZoomC.inactive_color = Color.WHITE
-		CAMERA.ZOOM.RM:
-			ZoomD.inactive_color = Color.WHITE			
-			
-	for node in [RenderLayer1, RenderLayer2]:
-		node.current_camera_zoom = current_camera_zoom
-# --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
@@ -120,6 +76,13 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	
 	LineDrawController.draw_keys = []
 # --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func on_show_instructions_update() -> void:
+	if !is_node_ready():return
+	SelectLocationInstructions.show() if show_instructions else SelectLocationInstructions.hide()
+# --------------------------------------------------------------------------------------------------	
+	
 
 # --------------------------------------------------------------------------------------------------
 func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
@@ -151,25 +114,19 @@ func update_draw_keys() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
-func on_camera_type_update() -> void:
-	if !is_node_ready():return
-	for node in [RenderLayer1, RenderLayer2]:
-		node.current_camera_zoom = current_camera_zoom
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or current_location.is_empty():return
+
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
-
+#
 	match key:
-		"D":
-			for node in [RenderLayer1, RenderLayer2]:
-				node.rotate_ring(current_location.ring, 1)
-		"A":
-			for node in [RenderLayer1, RenderLayer2]:
-				node.rotate_ring(current_location.ring, -1)
+		#"D":
+			#for node in [RenderLayer1, RenderLayer2]:
+				#node.rotate_ring(current_location.ring, 1)
+		#"A":
+			#for node in [RenderLayer1, RenderLayer2]:
+				#node.rotate_ring(current_location.ring, -1)
 		"ENTER":
 			user_response.emit({"action": ACTION.NEXT})
 		"BACK":

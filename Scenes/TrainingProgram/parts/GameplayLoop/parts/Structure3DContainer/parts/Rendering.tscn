@@ -1,7 +1,7 @@
 [gd_scene load_steps=28 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_cucwc"]
-[ext_resource type="Material" uid="uid://c7oqlup6o06fx" path="res://Materials/RoomMaterialActive.tres" id="2_jmgub"]
+[ext_resource type="Material" uid="uid://c7oqlup6o06fx" path="res://Materials/RoomMaterialActive.tres" id="2_a35xk"]
 [ext_resource type="Material" uid="uid://bd4w7qpjfg7dv" path="res://Materials/RoomMaterialInactive.tres" id="2_yu7ib"]
 
 [sub_resource type="Environment" id="Environment_73ws8"]
@@ -24,7 +24,7 @@ size = Vector3(1, 1, 70)
 size = Vector3(11.65, 0.2, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_bu1lt"]
-material = ExtResource("2_jmgub")
+material = ExtResource("2_a35xk")
 size = Vector3(2, 2, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_5g0lb"]
@@ -114,7 +114,7 @@ light_indirect_energy = 0.0
 [node name="CameraContainers" type="Node3D" parent="."]
 
 [node name="RoamingCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(-0.846414, 0.22618, -0.482104, 0.0189404, 0.917533, 0.39721, 0.532186, 0.327073, -0.780898, 6.807, 3.209, -5)
+transform = Transform3D(-0.846414, 0.22618, -0.482104, 0.0189404, 0.917532, 0.39721, 0.532186, 0.327073, -0.780898, 6.807, 3.209, -5)
 cull_mask = 2
 current = true
 

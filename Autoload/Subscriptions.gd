@@ -1,6 +1,27 @@
 @tool
 extends Node
 
+
+# ------------------------------------------------------------	
+var camera_zoom_subscriptions:Array = []
+
+var camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW : 
+	set(val):
+		camera_zoom = val
+		for node in camera_zoom_subscriptions:
+			if "on_camera_zoom_update" in node:
+				node.on_camera_zoom_update.call(camera_zoom)
+
+func subscribe_to_camera_zoom(node:Node) -> void:
+	if node not in camera_zoom_subscriptions:
+		camera_zoom_subscriptions.push_back(node)
+		if "on_camera_zoom_update" in node:
+			node.on_camera_zoom_update.call(camera_zoom)
+
+func unsubscribe_to_camera_zoom(node:Node) -> void:
+	camera_zoom_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
 # ------------------------------------------------------------	
 var suppress_click_subscriptions:Array = []
 

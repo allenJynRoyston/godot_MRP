@@ -1,10 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://hftdmqe4eykf"]
+[gd_scene load_steps=15 format=3 uid="uid://hftdmqe4eykf"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/parts/RoomStatusItem/room_status_item.gd" id="1_q40l1"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_fv0mu"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_vxe1n"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="4_xcsh5"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_k8kgj"]
+[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="5_g1wc4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwwo4"]
 
@@ -22,6 +22,13 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_32fd4"]
 font = ExtResource("2_vxe1n")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgekb"]
+bg_color = Color(1, 1, 1, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r0iut"]
 
@@ -68,12 +75,22 @@ layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_right = 5
 
-[node name="IndexLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="IndexLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "1"
 label_settings = SubResource("LabelSettings_32fd4")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BookmarkCB" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_g1wc4")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jgekb")
+no_bg = true
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -183,8 +200,3 @@ max_value = 1.0
 step = 0.1
 value = 0.5
 show_percentage = false
-
-[node name="SelectedBtn" parent="HBoxContainer" instance=ExtResource("5_k8kgj")]
-layout_mode = 2
-icon = 3
-is_hoverable = false

@@ -2,8 +2,8 @@ extends MouseInteractions
 
 @onready var RootPanel:Control = $HBoxContainer/Content
 @onready var ActiveLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer/ActiveLabel
-@onready var SelectedBtn:Control = $HBoxContainer/SelectedBtn
-@onready var IndexLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/IndexLabel
+@onready var BookmarkCB:BtnBase = $HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/BookmarkCB
+@onready var IndexLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/IndexLabel
 @onready var DesignationLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/DesignationLabel
 @onready var RoomNameLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer/RoomNameLabel
 @onready var StatusLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/StatusLabel
@@ -14,6 +14,11 @@ var room_id:int = 0 :
 	set(val):
 		room_id = val
 		on_room_id_update()
+
+var raw_designation:String = "" : 
+	set(val):
+		raw_designation = val
+		on_raw_designation_update()
 
 var designation:String = "" : 
 	set(val):
@@ -36,23 +41,44 @@ var is_highlighted:bool = false :
 		is_highlighted = val
 		on_is_highlighted_update.call_deferred()		
 		
+var bookmarked_rooms:Array = []
 var is_empty:bool = false
 var onClick:Callable = func():pass
 
-
 # --------------------------------------	
+func _init() -> void:
+	super._init()
+	SUBSCRIBE.subscribe_to_bookmarked_rooms(self)
+	
+func _exit_tree() -> void:
+	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_bookmarked_rooms(self)
+
 func _ready() -> void:
 	super._ready()
 	on_data_update()
 	on_designation_update()
 	on_is_highlighted_update()
 	on_room_id_update()
+	on_raw_designation_update()
 	on_focus(false)
+	
+
+	BookmarkCB.onChange = func(is_checked:bool) -> void:
+		if is_checked:
+			if raw_designation not in bookmarked_rooms:
+				bookmarked_rooms.push_back(raw_designation)
+		else: 
+			bookmarked_rooms.erase(raw_designation)		
+		SUBSCRIBE.bookmarked_rooms = bookmarked_rooms
 # --------------------------------------	
 
 # --------------------------------------	
 func on_room_id_update() -> void:
 	IndexLabel.text = str(room_id + 1)
+
+func on_raw_designation_update() -> void:
+	on_bookmarked_rooms_update()
 
 func on_designation_update() -> void:
 	if !is_node_ready():return
@@ -86,12 +112,16 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
 	ActiveLabel.show() if is_highlighted else ActiveLabel.hide()
-	SelectedBtn.icon = SVGS.TYPE.DOT if is_highlighted else SVGS.TYPE.NONE
 	update_colors()
 
 func on_is_expanded_update() -> void:
 	ExpandedDetails.show() if (is_expanded and !is_empty) else ExpandedDetails.hide()
 	update_colors()
+	
+func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
+	bookmarked_rooms = new_val
+	if !is_node_ready():return
+	BookmarkCB.is_checked = raw_designation in bookmarked_rooms	
 # --------------------------------------	
 
 # --------------------------------------	

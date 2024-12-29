@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://dtpu5w3pyuwgk"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/InfoContainer/parts/info_zoom_item.gd" id="1_357bc"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_c7wqr"]
+
+[node name="HBoxContainer" type="HBoxContainer"]
+script = ExtResource("1_357bc")
+
+[node name="IconBtn" parent="." instance=ExtResource("1_c7wqr")]
+layout_mode = 2
+icon = 28
+is_hoverable = false
+
+[node name="IndicatorBtn" parent="." instance=ExtResource("1_c7wqr")]
+layout_mode = 2
+icon = 3
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+is_hoverable = false
