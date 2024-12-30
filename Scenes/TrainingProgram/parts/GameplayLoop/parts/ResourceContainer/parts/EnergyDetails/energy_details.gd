@@ -11,21 +11,21 @@ const DetailBtnPreload:PackedScene = preload("res://UI/Buttons/DetailBtn/DetailB
 
 var gameplay_node:Control
 
-var purchased_base_arr:Array = [] : 
+var purchased_facility_arr:Array = [] : 
 	set(val):
-		purchased_base_arr = val
+		purchased_facility_arr = val
 
 func _init() -> void:
-	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 
 func _exit_tree() -> void:
-	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 
 func _ready() -> void:
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	
-func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
-	purchased_base_arr = new_val
+func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
+	purchased_facility_arr = new_val
 	if !is_node_ready():return
 	
 	for node in [ExpenseList, IncomeList]:
@@ -35,7 +35,7 @@ func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 	var total_income:int = 0
 	var total_expense:int = 0
 
-	for item in purchased_base_arr:
+	for item in purchased_facility_arr:
 		var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(item.data.id)
 		var operation_income_list:Array = ROOM_UTIL.return_operating_income(item.data.id)
 		var details:Dictionary = ROOM_UTIL.return_data(item.data.id)

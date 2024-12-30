@@ -16,7 +16,8 @@ class_name GameContainer
 		on_freeze_inputs_update()
 		
 var resources_data:Dictionary = {} 
-var purchased_base_arr:Array = [] 
+var purchased_facility_arr:Array = [] 
+var purchased_base_arr:Array = []
 var bookmarked_rooms:Array = [] 
 var hired_lead_researchers_arr:Array = [] 
 var current_location:Dictionary = {} 
@@ -49,6 +50,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.subscribe_to_suppress_click(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
+	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
@@ -67,6 +69,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
+	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
 
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
@@ -103,6 +106,8 @@ func on_suppress_click_update(new_val:bool) -> void:
 	suppress_click = new_val
 func on_camera_settings_update(new_val:Dictionary) -> void:
 	camera_settings = new_val
+func on_purchased_base_arr_update(new_val:Array) -> void:
+	purchased_base_arr = new_val	
 
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass

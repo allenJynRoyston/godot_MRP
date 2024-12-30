@@ -57,7 +57,7 @@ func update_display() -> void:
 			var details:Dictionary = RD_UTIL.return_data(data.data.id)
 			TitleLabel.text = "Research complete: %s" % [details.name]
 		# ------------------------------------------------------------------------------------------
-		ACTION.RESEARCH_ITEM:
+		ACTION.BASE_ITEM:
 			var details:Dictionary = BASE_UTIL.return_data(data.data.id)
 			TitleLabel.text = "%s Built!" % [details.name]
 			var capacity_list:Array = BASE_UTIL.return_resource_capacity(data.data.id)

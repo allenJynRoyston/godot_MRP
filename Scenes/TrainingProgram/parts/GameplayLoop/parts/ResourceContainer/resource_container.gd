@@ -63,8 +63,8 @@ func open_detail_panel(node:Control) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
-	purchased_base_arr = new_val
+func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
+	purchased_facility_arr = new_val
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

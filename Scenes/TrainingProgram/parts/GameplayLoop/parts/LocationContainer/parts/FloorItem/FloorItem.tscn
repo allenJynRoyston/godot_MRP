@@ -4,7 +4,7 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_lji61"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_jr8yd"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_lmtgf"]
+[sub_resource type="LabelSettings" id="LabelSettings_3lj7p"]
 font = ExtResource("2_lji61")
 font_size = 12
 font_color = Color(0.662745, 0.662745, 0.662745, 1)
@@ -14,26 +14,9 @@ shadow_offset = Vector2(0, 0)
 [node name="FloorItem" type="HBoxContainer"]
 custom_minimum_size = Vector2(0, 25)
 size_flags_vertical = 4
-theme_override_constants/separation = 2
+theme_override_constants/separation = 5
 alignment = 1
 script = ExtResource("1_oimup")
-
-[node name="Label" type="Label" parent="."]
-layout_mode = 2
-size_flags_vertical = 1
-text = "0F"
-label_settings = SubResource("LabelSettings_lmtgf")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SelectedBtn" parent="." instance=ExtResource("3_jr8yd")]
-visible = false
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-size_flags_horizontal = 1
-icon = 3
-static_color = Color(0.662745, 0.662745, 0.662745, 1)
-is_hoverable = false
 
 [node name="StatusBtn" parent="." instance=ExtResource("3_jr8yd")]
 visible = false
@@ -43,6 +26,34 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-icon = 37
+icon = 43
+static_color = Color(0.662745, 0.662745, 0.662745, 1)
+is_hoverable = false
+
+[node name="LockBtn" parent="." instance=ExtResource("3_jr8yd")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 43
+static_color = Color(0.662745, 0.662745, 0.662745, 1)
+is_hoverable = false
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0F"
+label_settings = SubResource("LabelSettings_3lj7p")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SelectedBtn" parent="." instance=ExtResource("3_jr8yd")]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 1
+icon = 3
 static_color = Color(0.662745, 0.662745, 0.662745, 1)
 is_hoverable = false

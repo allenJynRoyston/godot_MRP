@@ -43,26 +43,6 @@ func unsubscribe_to_suppress_click(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
-var purchased_research_list_subscriptions:Array = []
-
-var purchased_research_arr:Array = [] : 
-	set(val):
-		purchased_research_arr = val
-		for node in purchased_research_list_subscriptions:
-			if "on_purchased_research_arr_update" in node:
-				node.on_purchased_research_arr_update.call(purchased_research_arr)
-
-func subscribe_to_purchased_research_arr(node:Node) -> void:
-	if node not in purchased_research_list_subscriptions:
-		purchased_research_list_subscriptions.push_back(node)
-		if "on_purchased_research_arr_update" in node:
-			node.on_purchased_research_arr_update.call(purchased_research_arr)
-
-func unsubscribe_to_purchased_research_arr(node:Node) -> void:
-	purchased_research_list_subscriptions.erase(node)
-# ------------------------------------------------------------	
-
-# ------------------------------------------------------------	
 var tier_unlocked_subscriptions:Array = []
 
 var tier_unlocked:Dictionary = {} : 
@@ -143,6 +123,46 @@ func unsubscribe_to_action_queue_data(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
+var purchased_research_list_subscriptions:Array = []
+
+var purchased_research_arr:Array = [] : 
+	set(val):
+		purchased_research_arr = val
+		for node in purchased_research_list_subscriptions:
+			if "on_purchased_research_arr_update" in node:
+				node.on_purchased_research_arr_update.call(purchased_research_arr)
+
+func subscribe_to_purchased_research_arr(node:Node) -> void:
+	if node not in purchased_research_list_subscriptions:
+		purchased_research_list_subscriptions.push_back(node)
+		if "on_purchased_research_arr_update" in node:
+			node.on_purchased_research_arr_update.call(purchased_research_arr)
+
+func unsubscribe_to_purchased_research_arr(node:Node) -> void:
+	purchased_research_list_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
+var purchased_facility_arr_subscriptions:Array = []
+
+var purchased_facility_arr:Array = [] : 
+	set(val):
+		purchased_facility_arr = val
+		for node in purchased_facility_arr_subscriptions:
+			if "on_purchased_facility_arr_update" in node:
+				node.on_purchased_facility_arr_update.call(purchased_facility_arr)
+
+func subscribe_to_purchased_facility_arr(node:Node) -> void:
+	if node not in purchased_facility_arr_subscriptions:
+		purchased_facility_arr_subscriptions.push_back(node)
+		if "on_purchased_facility_arr_update" in node:
+			node.on_purchased_facility_arr_update.call(purchased_facility_arr)
+
+func unsubscribe_to_purchased_facility_arr(node:Node) -> void:
+	purchased_facility_arr_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
 var purchased_base_arr_subscriptions:Array = []
 
 var purchased_base_arr:Array = [] : 
@@ -161,7 +181,6 @@ func subscribe_to_purchased_base_arr(node:Node) -> void:
 func unsubscribe_to_purchased_base_arr(node:Node) -> void:
 	purchased_base_arr_subscriptions.erase(node)
 # ------------------------------------------------------------	
-
 
 # ------------------------------------------------------------	
 var hired_lead_researchers_arr_subscriptions:Array = []

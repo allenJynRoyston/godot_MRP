@@ -6,12 +6,8 @@ enum STATUS {NO_ISSUES, WARNING, DANGER}
 @onready var FloorLabel:Label = $Label
 @onready var SelectedBtn:BtnBase = $SelectedBtn
 @onready var StatusBtn:BtnBase = $StatusBtn
+@onready var LockBtn:BtnBase = $LockBtn
 
-@export var floor:int = 0 : 
-	set(val):
-		floor = val
-		on_floor_update()
-		
 @export var is_selected:bool = false : 
 	set(val):
 		is_selected = val
@@ -26,8 +22,26 @@ enum STATUS {NO_ISSUES, WARNING, DANGER}
 	set(val):
 		is_disabled = val
 		on_is_disabled_update()
-		
+
+var floor:int = 0 : 
+	set(val):
+		floor = val
+		on_floor_update()
+
 var onClick:Callable = func():pass
+
+var room_config:Dictionary = {}
+var purchased_base_arr:Array = []
+
+# --------------------------------------	
+func _init() -> void:
+	super._init()
+	SUBSCRIBE.subscribe_to_room_config(self)
+
+func _exit_tree() -> void:
+	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+# --------------------------------------		
 
 # --------------------------------------	
 func _ready() -> void:
@@ -36,12 +50,20 @@ func _ready() -> void:
 	on_status_update()
 	on_floor_update()
 	update_colors()
+	on_room_config_update()
 # --------------------------------------	
 
 # --------------------------------------	
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
+	if !is_node_ready():return
+	LockBtn.show() if room_config.floor[floor].is_locked else LockBtn.hide()
+	FloorLabel.hide() if room_config.floor[floor].is_locked else FloorLabel.show()
+
+
 func on_floor_update() -> void:
 	if !is_node_ready():return
-	FloorLabel.text = "%sF" % [floor]
+	FloorLabel.text = "%sF" % [floor + 1]
 	
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
@@ -50,6 +72,7 @@ func on_is_selected_update() -> void:
 
 func on_status_update() -> void:
 	if !is_node_ready():return
+	StatusBtn.hide() # not used currently
 	match status:
 		STATUS.NO_ISSUES:
 			StatusBtn.icon = SVGS.TYPE.NO_ISSUES
@@ -91,6 +114,6 @@ func on_focus(state:bool) -> void:
 	update_colors()
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover and btn == MOUSE_BUTTON_LEFT:
+	if on_hover and btn == MOUSE_BUTTON_LEFT and !room_config.floor[floor].is_locked:
 		onClick.call()
 # --------------------------------------			

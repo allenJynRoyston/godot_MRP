@@ -20,7 +20,7 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var StoreContainer:MarginContainer = $StoreContainer
 @onready var ItemSelectContainer:MarginContainer = $ItemSelectContainer
-@onready var RecruitContainer:MarginContainer = $RecruitContainer
+@onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var StatusContainer:MarginContainer = $StatusContainer
 @onready var BuildCompleteContainer:MarginContainer = $BuildCompleteContainer
 @onready var InfoContainer:MarginContainer = $InfoContainer
@@ -123,7 +123,9 @@ var progress_data:Dictionary = {
 	} 
 var action_queue_data:Array = []
 
-var purchased_base_arr:Array = [] 
+var purchased_facility_arr:Array = [] 
+
+var purchased_base_arr:Array = []
 
 var purchased_research_arr:Array = []
 
@@ -174,12 +176,13 @@ var tier_unlocked:Dictionary = {
 
 var room_config:Dictionary = {
 	"floor": {
-		0: get_floor_default(),
+		0: get_floor_default(false),
 		1: get_floor_default(),
 		2: get_floor_default(),
 		3: get_floor_default(),
 		4: get_floor_default(),
 		5: get_floor_default(),
+		6: get_floor_default(),
 	}
 } 
 
@@ -187,6 +190,7 @@ var initial_values:Dictionary = {
 	"current_location": current_location,
 	"progress_data": progress_data,
 	"action_queue_data": action_queue_data,
+	"purchased_facility_arr": purchased_facility_arr,
 	"purchased_base_arr": purchased_base_arr,
 	"purchased_research_arr": purchased_research_arr,
 	"bookmarked_rooms": bookmarked_rooms,
@@ -256,14 +260,15 @@ func _init() -> void:
 	GBL.register_node(REFS.GAMEPLAY_LOOP, self)
 	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_control_input(self)
-	
+
 	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_action_queue_data(self)
-	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
+	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.subscribe_to_current_location(self)	
 	
@@ -274,11 +279,12 @@ func _exit_tree() -> void:
 	
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
 	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
-	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
+	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	  
@@ -355,8 +361,9 @@ func after_start() -> void:
 
 # ------------------------------------------------------------------------------
 #region defaults functions
-func get_floor_default() -> Dictionary:
+func get_floor_default(is_locked:bool = true) -> Dictionary:
 	return { 
+		"is_locked": is_locked,
 		"readings": {
 			RESOURCE.BASE.MORALE: 4,
 			RESOURCE.BASE.SECURITY: 4,
@@ -378,7 +385,7 @@ func get_room_default() -> Dictionary:
 			2: get_room_item_default(),
 			3: get_room_item_default(),
 			4: get_room_item_default(),
-			5: get_room_item_default()
+			5: get_room_item_default(),
 		}
 	}
 
@@ -402,7 +409,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		Structure3dContainer, LocationContainer, ActionQueueContainer, 
 		RoomStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ItemSelectContainer, 
-		ConfirmModal, RecruitContainer, StatusContainer,
+		ConfirmModal, RecruitmentContainer, StatusContainer,
 		BuildCompleteContainer, InfoContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
@@ -489,9 +496,18 @@ func set_room_config() -> void:
 					"get_room_data": func() -> Dictionary:
 						return ROOM_UTIL.return_data(item.data.id)
 				}
-			
+
 	# mark rooms that are already built...
 	for item in purchased_base_arr:
+		var details:Dictionary = BASE_UTIL.return_data(item.data.id)
+		match details.ref:
+			BASE.TYPE.UNLOCK_FLOOR_2:
+				new_room_config.floor[1].is_locked = false
+			BASE.TYPE.UNLOCK_FLOOR_3:
+				new_room_config.floor[2].is_locked = false
+
+	# mark rooms that are already built...
+	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
@@ -513,13 +529,10 @@ func set_room_config() -> void:
 					under_construction_rooms.push_back(designation)
 				if !config_data.room_data.is_empty():
 					built_rooms.push_back(designation)
-					#under_construction_rooms.push_back(designation)					
-	
-
+					
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
-		
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -531,12 +544,16 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 	progress_data = new_val
 
-func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
-	purchased_base_arr = new_val
+func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
+	purchased_facility_arr = new_val
 	set_room_config()
 
 func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) -> void:
 	purchased_research_arr = new_val
+	
+func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
+	purchased_base_arr = new_val	
+	set_room_config()
 
 func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 	action_queue_data = new_val
@@ -622,8 +639,8 @@ func on_show_confirm_modal_update() -> void:
 
 func on_show_recruit_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
-		RecruitContainer.is_showing = show_recruit
-		showing_states[RecruitContainer] = show_recruit
+		RecruitmentContainer.is_showing = show_recruit
+		showing_states[RecruitmentContainer] = show_recruit
 
 func on_show_status_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
@@ -896,8 +913,8 @@ func on_current_recruit_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			selected_lead_hire = {}
 			selected_support_hire = {}
-			await show_only([ResourceContainer, RecruitContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
-			var response:Dictionary = await RecruitContainer.user_response
+			await show_only([ResourceContainer, RecruitmentContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
+			var response:Dictionary = await RecruitmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.BACK:
@@ -971,15 +988,23 @@ func on_current_build_complete_step_update() -> void:
 			# UPDATE SAVABLE DATA
 			for item in completed_build_items:
 				match item.action:
-					ACTION.BUILD_ITEM:
+					ACTION.BASE_ITEM:
 						purchased_base_arr.push_back({
+							"data": item.data,
+						})
+						# update resources_data
+						resources_data = BASE_UTIL.calc_resource_capacity(item.data.id, resources_data)
+						resources_data = BASE_UTIL.calc_resource_amount(item.data.id, resources_data)
+						SUBSCRIBE.purchased_base_arr = purchased_base_arr
+					ACTION.BUILD_ITEM:
+						purchased_facility_arr.push_back({
 							"data": item.data,
 							"location": item.location
 						})
 						# update resources_data
 						resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
 						resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
-						SUBSCRIBE.purchased_base_arr = purchased_base_arr
+						SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
 					ACTION.RESEARCH_ITEM:
 						purchased_research_arr.push_back({
 							"data": item.data
@@ -1038,13 +1063,13 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			SUBSCRIBE.current_location = current_location		
 		"D":
 			current_location.room += 1
-			if current_location.room > room_config.floor.size() - 1:
+			if current_location.room > room_config.floor[current_location.floor].ring[current_location.ring].room.size() - 1:
 				current_location.room = 0
 			SUBSCRIBE.current_location = current_location
 		"A":
 			current_location.room -= 1
 			if current_location.room < 0:
-				current_location.room = room_config.floor.size() - 1
+				current_location.room = room_config.floor[current_location.floor].ring[current_location.ring].room.size() - 1
 			SUBSCRIBE.current_location = current_location
 		"SPACEBAR":
 			SUBSCRIBE.current_location = tenative_location
@@ -1070,12 +1095,13 @@ func quicksave() -> void:
 		"progress_data": progress_data,		
 		"action_queue_data": action_queue_data,
 		"purchased_base_arr": purchased_base_arr,
+		"purchased_facility_arr": purchased_facility_arr,
+		"purchased_research_arr": purchased_research_arr,
 		"hired_lead_researchers_arr": hired_lead_researchers_arr,
 		"resources_data": resources_data,
 		"current_location": current_location,
 		"bookmarked_rooms": bookmarked_rooms,
 		"researcher_hire_list": researcher_hire_list,
-		"purchased_research_arr": purchased_research_arr,
 		"tier_unlocked": tier_unlocked,
 		"unavailable_rooms": unavailable_rooms, 
 		"camera_settings": camera_settings
@@ -1097,7 +1123,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
+	var no_save:bool = true #restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes
@@ -1107,7 +1133,8 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	
 	SUBSCRIBE.progress_data = initial_values.progress_data if no_save else restore_data.progress_data
 	SUBSCRIBE.action_queue_data = initial_values.action_queue_data if no_save else restore_data.action_queue_data	
-	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr if no_save else restore_data.purchased_base_arr  
+	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr if no_save else restore_data.purchased_facility_arr  
+	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr if no_save else restore_data.purchased_base_arr
 	SUBSCRIBE.resources_data = initial_values.resources_data if no_save else restore_data.resources_data	
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms if no_save else restore_data.bookmarked_rooms
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list if no_save else restore_data.researcher_hire_list

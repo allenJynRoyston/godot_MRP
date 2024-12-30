@@ -2,6 +2,7 @@ extends Node
 
 
 var UNLOCK_FLOOR_2:Dictionary = {
+	"ref": BASE.TYPE.UNLOCK_FLOOR_2,
 	"name": "UNLOCK FLOOR 2",
 	"tier": TIER.VAL.ZERO,
 	"image_src": "res://Media/rooms/redacted.jpg",
@@ -17,6 +18,7 @@ var UNLOCK_FLOOR_2:Dictionary = {
 
 
 var UNLOCK_FLOOR_3:Dictionary = {
+	"ref": BASE.TYPE.UNLOCK_FLOOR_3,
 	"name": "UNLOCK FLOOR 3",
 	"tier": TIER.VAL.ZERO,
 	"image_src": "res://Media/rooms/redacted.jpg",
@@ -218,5 +220,40 @@ func calc_build_cost(id:int, resources_data:Dictionary, refund:bool = false) -> 
 			else:
 				resources_data_duplicate[key].amount -= amount	
 
+	return resources_data_duplicate
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calc_resource_capacity(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
+	var details:Dictionary = return_data(id)
+	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
+	if "get_resource_capacity" in details:
+		var dict:Dictionary = details.get_resource_capacity.call()
+		for key in dict:
+			var amount:int = dict[key]
+			if refund:
+				resources_data_duplicate[key].capacity -= amount	
+			else:
+				resources_data_duplicate[key].capacity += amount	
+	return resources_data_duplicate
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calc_resource_amount(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
+	var details:Dictionary = return_data(id)
+	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
+	if "get_resource_amount" in details:
+		var dict:Dictionary = details.get_resource_amount.call()
+		for key in dict:
+			var amount:int = dict[key]
+			if refund:
+				resources_data_duplicate[key].amount -= amount	
+				if resources_data_duplicate[key].amount < 0:
+					resources_data_duplicate[key].amount = 0
+			else:
+				resources_data_duplicate[key].amount += amount	
+				if resources_data_duplicate[key].amount > resources_data_duplicate[key].capacity:
+					resources_data_duplicate[key].amount = resources_data_duplicate[key].capacity
+			
 	return resources_data_duplicate
 # ------------------------------------------------------------------------------

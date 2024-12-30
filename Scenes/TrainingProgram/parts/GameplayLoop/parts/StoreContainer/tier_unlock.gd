@@ -1,9 +1,9 @@
 extends PanelContainer
 
-@onready var BackBtn:BtnBase = $MarginContainer/PanelContainer/CenterContainer/VBoxContainer/HBoxContainer/BackBtn
-@onready var ConfirmBtn:BtnBase = $MarginContainer/PanelContainer/CenterContainer/VBoxContainer/HBoxContainer/ConfirmBtn 
-
-@onready var ResourceContainer:HBoxContainer = $MarginContainer/PanelContainer/CenterContainer/VBoxContainer/MarginContainer/ResourceContainer
+@onready var BackBtn:BtnBase = $MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/BackBtn
+@onready var ConfirmBtn:BtnBase = $MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/ConfirmBtn
+@onready var ResourceContainer:HBoxContainer = $MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer/MarginContainer/ResourceContainer
+@onready var TitleBarLabel:Label = $MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer/TitleBarLabel
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -49,6 +49,8 @@ func on_data_update() -> void:
 	hide() if data.is_empty() else show()
 	if data.is_empty() or resource_data.is_empty():return
 	var resource_list:Dictionary = data.get_unlock_cost.call()
+	
+	TitleBarLabel.text = "UNLOCK %s?" % [data.name]
 	
 	for child in ResourceContainer.get_children():
 		child.queue_free()

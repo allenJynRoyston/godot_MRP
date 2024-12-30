@@ -30,18 +30,21 @@ var tab:TIER.TYPE = TIER.TYPE.FACILITY
 
 var resources_data:Dictionary = {}
 var purchased_research_arr:Array = []
+var purchased_base_arr:Array = []
 var action_queue_data:Array = []
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
 	SUBSCRIBE.subscribe_to_resources_data(self)
+	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.subscribe_to_action_queue_data(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 
@@ -56,6 +59,11 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
+	purchased_base_arr = new_val
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -84,11 +92,11 @@ func on_data_update() -> void:
 		
 		match(tab):
 			TIER.TYPE.BASE_DEVELOPMENT:
-				#var purchased_research_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
-				#var current_researching_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH).map(func(i): return i.data.id)
+				var purchased_ids:Array = purchased_base_arr.map(func(i): return i.data.id)
+				var current_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.BASE_ITEM).map(func(i): return i.data.id)
 				
-				#already_owned = data.id in purchased_research_ids
-				#in_progress = data.id in current_researching_ids
+				already_owned = data.id in purchased_ids
+				in_progress = data.id in current_ids
 
 				InProgress.show() if in_progress else InProgress.hide()
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
@@ -96,11 +104,11 @@ func on_data_update() -> void:
 				item_data = BASE_UTIL.return_build_cost(data.id)
 							
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
-				var purchased_research_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
-				var current_researching_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH).map(func(i): return i.data.id)
+				var purchased_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
+				var current_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH_ITEM).map(func(i): return i.data.id)
 				
-				already_owned = data.id in purchased_research_ids
-				in_progress = data.id in current_researching_ids
+				already_owned = data.id in purchased_ids
+				in_progress = data.id in current_ids
 
 				InProgress.show() if in_progress else InProgress.hide()
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()

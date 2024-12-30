@@ -10,7 +10,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vrawy"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3vgmj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y5ssk"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s3nd0"]
@@ -42,7 +42,7 @@ layout_mode = 2
 [node name="Duration" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_120ef")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_3vgmj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y5ssk")
 icon = 22
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 is_disabled = false
