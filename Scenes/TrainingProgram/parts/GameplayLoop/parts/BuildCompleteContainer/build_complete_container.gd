@@ -52,7 +52,30 @@ func update_display() -> void:
 		child.queue_free()
 		
 	match data.action:
-		ACTION.BUILD:
+		# ------------------------------------------------------------------------------------------
+		ACTION.RESEARCH_ITEM:
+			var details:Dictionary = RD_UTIL.return_data(data.data.id)
+			TitleLabel.text = "Research complete: %s" % [details.name]
+		# ------------------------------------------------------------------------------------------
+		ACTION.RESEARCH_ITEM:
+			var details:Dictionary = BASE_UTIL.return_data(data.data.id)
+			TitleLabel.text = "%s Built!" % [details.name]
+			var capacity_list:Array = BASE_UTIL.return_resource_capacity(data.data.id)
+			var amount_list:Array = BASE_UTIL.return_resource_amount(data.data.id)
+			
+			for item in capacity_list:
+				var label_node:Label = Label.new()
+				label_node.label_settings = small_label_preload
+				label_node.text = "%s +%s capacity" % [item.resource.name, item.amount]
+				DescriptionList.add_child(label_node)
+				
+			for item in amount_list:
+				var label_node:Label = Label.new()
+				label_node.label_settings = small_label_preload
+				label_node.text = "%s +%s amount" % [item.resource.name, item.amount]
+				DescriptionList.add_child(label_node)
+		# ------------------------------------------------------------------------------------------
+		ACTION.BUILD_ITEM:
 			var room_data:Dictionary = ROOM_UTIL.return_data(data.data.id)
 			TitleLabel.text = "%s Built!" % [room_data.name]
 			var capacity_list:Array = ROOM_UTIL.return_resource_capacity(data.data.id)
@@ -69,7 +92,7 @@ func update_display() -> void:
 				label_node.label_settings = small_label_preload
 				label_node.text = "%s +%s amount" % [item.resource.name, item.amount]
 				DescriptionList.add_child(label_node)				
-				
+		# ------------------------------------------------------------------------------------------
 				
 	if "location" in data:
 		get_parent().goto_location(data.location)

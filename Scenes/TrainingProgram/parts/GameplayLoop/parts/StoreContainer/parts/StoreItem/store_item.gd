@@ -26,7 +26,7 @@ var data:Dictionary = {} :
 		data = val
 		on_data_update()
 
-var tab:TIER.TYPE = TIER.TYPE.BASE
+var tab:TIER.TYPE = TIER.TYPE.FACILITY
 
 var resources_data:Dictionary = {}
 var purchased_research_arr:Array = []
@@ -83,6 +83,18 @@ func on_data_update() -> void:
 		var in_progress:bool = false
 		
 		match(tab):
+			TIER.TYPE.BASE_DEVELOPMENT:
+				#var purchased_research_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
+				#var current_researching_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH).map(func(i): return i.data.id)
+				
+				#already_owned = data.id in purchased_research_ids
+				#in_progress = data.id in current_researching_ids
+
+				InProgress.show() if in_progress else InProgress.hide()
+				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
+				
+				item_data = BASE_UTIL.return_build_cost(data.id)
+							
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
 				var purchased_research_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
 				var current_researching_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH).map(func(i): return i.data.id)
@@ -94,7 +106,7 @@ func on_data_update() -> void:
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
 				
 				item_data = RD_UTIL.return_build_cost(data.id)
-			TIER.TYPE.BASE:
+			TIER.TYPE.FACILITY:
 				AlreadyOwned.hide()
 				InProgress.hide()
 				

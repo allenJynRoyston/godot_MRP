@@ -73,8 +73,8 @@ var tier_data:Dictionary = {
 }
 
 var reference_data:Dictionary = {
-	RD.TYPE.R_ONE: RESEARCH_ONE,
-	RD.TYPE.R_TWO: RESEARCH_TWO
+	RD.TYPE.RD_ONE: RESEARCH_ONE,
+	RD.TYPE.RD_TWO: RESEARCH_TWO
 }
 
 # ------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ func get_tier_data() -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_rd(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:
+func get_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:
 	var list:Array = []
 	
 	for id in reference_data:

@@ -42,8 +42,11 @@ func _ready() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
 	#on_fullscreen_update(resolution)
-	on_fullscreen_update(Vector2(1280, 720))
-	#toggle_fullscreen()
+	# ENABLE FOR MACBOOK 
+	#on_fullscreen_update(Vector2(1280, 720))
+	
+	
+	toggle_fullscreen()
 
 	activate_children.call_deferred()
 # -----------------------------------		

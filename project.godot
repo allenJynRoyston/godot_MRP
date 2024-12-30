@@ -21,6 +21,7 @@ run/size/viewport_height=720
 REFS="*res://Autoload/enums/NODE_REFS.gd"
 RESOURCE="*res://Autoload/enums/RESOURCE.gd"
 ROOM="*res://Autoload/enums/ROOM.gd"
+BASE="*res://Autoload/enums/BASE.gd"
 SCP="*res://Autoload/enums/SCP.gd"
 SVGS="*res://Autoload/enums/SVGS.gd"
 COLORS="*res://Autoload/enums/COLORS.gd"
@@ -37,9 +38,10 @@ U="*res://Autoload/Utility.gd"
 C="*res://Autoload/Containment.gd"
 COLOR_UTIL="*res://Autoload/ColorUtility.gd"
 ROOM_UTIL="*res://Autoload/RoomUtility.gd"
+BASE_UTIL="*res://Autoload/BaseUtility.gd"
+RD_UTIL="*res://Autoload/RDUtility.gd"
 RESOURCE_UTIL="*res://Autoload/ResourceUtility.gd"
 RESEARCHER_UTIL="*res://Autoload/ResearcherUtility.gd"
-RD_UTIL="*res://Autoload/RDUtility.gd"
 
 [display]
 

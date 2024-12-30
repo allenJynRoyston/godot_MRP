@@ -38,7 +38,6 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
 # --------------------------------------------------
 
-
 # --------------------------------------------------
 func _ready() -> void:
 	on_data_update()	
@@ -50,8 +49,6 @@ func _ready() -> void:
 	CancelBtn.onClick = func() -> void:
 		if suppress_click: return
 		onCancel.call()
-	
-
 # --------------------------------------------------
 
 # --------------------------------------------------
@@ -71,16 +68,21 @@ func on_suppress_click_update(new_val:bool) -> void:
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		match data.action:
-			ACTION.RESEARCH:
+			ACTION.RESEARCH_ITEM:
 				item_data = RD_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.RESEARCH
 				requirements = RD_UTIL.return_build_cost(data.data.id) 
 				TitleBtn.title = "RESEARCHING"
-			ACTION.BUILD:
+			ACTION.BUILD_ITEM:
 				item_data = ROOM_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.BUILD
 				requirements = ROOM_UTIL.return_build_cost(data.data.id) 
 				TitleBtn.title = "BUILDING"
+			ACTION.BASE_ITEM:
+				item_data = BASE_UTIL.return_data(data.data.id)
+				TitleBtn.icon = SVGS.TYPE.CONTAIN
+				requirements = BASE_UTIL.return_build_cost(data.data.id) 
+				TitleBtn.title = "CONSTRUCTING"
 				
 		NameLabel.text = "%s" % [item_data.name]
 		DaysLeftLabel.text = "%s days left until complete" % [data.build_time - data.days_in_queue]

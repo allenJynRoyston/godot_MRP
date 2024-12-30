@@ -23,7 +23,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_32fd4"]
 font = ExtResource("2_vxe1n")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_77xme"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_45kyg"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -91,7 +91,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_77xme")
+theme_override_styles/panel = SubResource("StyleBoxFlat_45kyg")
 no_bg = true
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer"]

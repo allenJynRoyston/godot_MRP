@@ -205,6 +205,26 @@ func unsubscribe_to_current_location(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
+var built_rooms_subscriptions:Array = []
+
+var built_rooms:Array = [] : 
+	set(val):
+		built_rooms = val
+		for node in built_rooms_subscriptions:
+			if "on_built_rooms_update" in node:
+				node.on_built_rooms_update.call(built_rooms)
+
+func subscribe_to_built_rooms(node:Node) -> void:
+	if node not in built_rooms_subscriptions:
+		built_rooms_subscriptions.push_back(node)
+		if "on_built_rooms_update" in node:
+			node.on_built_rooms_update.call(built_rooms)
+				
+func unsubscribe_to_built_rooms(node:Node) -> void:
+	built_rooms_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
 var under_construction_rooms_subscriptions:Array = []
 
 var under_construction_rooms:Array = [] : 

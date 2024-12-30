@@ -1,6 +1,7 @@
 @tool
 extends GameContainer
 
+@onready var FacilityBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer/FacilityBtn
 @onready var BaseBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer/BaseBtn
 @onready var RDBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer/RDBtn 
 @onready var CloseBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/CloseBtn
@@ -23,7 +24,7 @@ extends GameContainer
 const StoreItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/StoreItem/StoreItem.tscn")
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
-enum TAB { BASE, RESEARCH_AND_DEVELOPMENT }
+enum TAB { FACILITY, BASE_DEVELOPMENT, RESEARCH_AND_DEVELOPMENT }
 
 var focus_data:Dictionary = {} : 
 	set(val):
@@ -45,7 +46,7 @@ var pagination:int = 0 :
 		pagination = val
 		on_pagination_update()
 
-var current_tab:TAB = TAB.BASE : 
+var current_tab:TAB = TAB.FACILITY : 
 	set(val):
 		current_tab = val
 		on_current_tab_update()
@@ -78,8 +79,11 @@ func _ready() -> void:
 	PaginationMore.onClick = func() -> void:
 		pagination = pagination + 1
 	
+	FacilityBtn.onClick = func() -> void:
+		current_tab = TAB.FACILITY
+		
 	BaseBtn.onClick = func() -> void:
-		current_tab = TAB.BASE
+		current_tab = TAB.BASE_DEVELOPMENT
 	
 	RDBtn.onClick = func() -> void:
 		current_tab = TAB.RESEARCH_AND_DEVELOPMENT
@@ -126,13 +130,13 @@ func on_current_tab_update() -> void:
 		child.queue_free()	
 	
 	match current_tab:
-		TAB.BASE:
-			FocusDetails.tab = TIER.TYPE.BASE
+		TAB.FACILITY:
+			FocusDetails.tab = TIER.TYPE.FACILITY
 			
 			for item in ROOM_UTIL.get_tier_data().list:
 				var btn_node:BtnBase = TextBtnPreload.instantiate()
 				btn_node.title = item.details.name
-				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.BASE][item.id]
+				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.FACILITY][item.id]
 				btn_node.onClick = func() -> void:
 					if btn_node.is_disabled:
 						tier_unlock_data = ROOM_UTIL.get_tier_item(item.id)
@@ -140,7 +144,20 @@ func on_current_tab_update() -> void:
 						current_tier = item.id
 				TierBtnContainer.add_child(btn_node)
 								
+		TAB.BASE_DEVELOPMENT:
+			FocusDetails.tab = TIER.TYPE.BASE_DEVELOPMENT
 			
+			for item in BASE_UTIL.get_tier_data().list:
+				var btn_node:BtnBase = TextBtnPreload.instantiate()
+				btn_node.title = item.details.name
+				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.BASE_DEVELOPMENT][item.id]
+				btn_node.onClick = func() -> void:
+					if btn_node.is_disabled:
+						tier_unlock_data = BASE_UTIL.get_tier_item(item.id)
+					else:
+						current_tier = item.id
+				TierBtnContainer.add_child(btn_node)
+							
 		TAB.RESEARCH_AND_DEVELOPMENT:
 			FocusDetails.tab = TIER.TYPE.RESEARCH_AND_DEVELOPMENT
 			
@@ -184,10 +201,12 @@ func build_list() -> void:
 	var list_data:Dictionary = {}
 		
 	match current_tab:
-		TAB.BASE:
-			list_data = ROOM_UTIL.get_rooms(current_tier, start_at, limit)
+		TAB.FACILITY:
+			list_data = ROOM_UTIL.get_list(current_tier, start_at, limit)
 		TAB.RESEARCH_AND_DEVELOPMENT:
-			list_data = RD_UTIL.get_rd(current_tier, start_at, limit)
+			list_data = RD_UTIL.get_list(current_tier, start_at, limit)
+		TAB.BASE_DEVELOPMENT:
+			list_data = BASE_UTIL.get_list(current_tier, start_at, limit)
 			
 	PaginationBack.hide() if pagination == 0 else PaginationBack.show()
 	PaginationMore.show() if list_data.has_more else PaginationMore.hide()
@@ -199,13 +218,27 @@ func build_list() -> void:
 		var new_node:Control = StoreItemPreload.instantiate()
 		new_node.resources_data = resources_data
 		new_node.data = item
-		new_node.tab = TIER.TYPE.BASE if current_tab == TAB.BASE else TIER.TYPE.RESEARCH_AND_DEVELOPMENT 
-		
+		match current_tab:
+			TAB.FACILITY:
+				new_node.tab = TAB.FACILITY
+			TAB.RESEARCH_AND_DEVELOPMENT:
+				new_node.tab = TAB.RESEARCH_AND_DEVELOPMENT
+			TAB.BASE_DEVELOPMENT:
+				new_node.tab = TAB.BASE_DEVELOPMENT
+
 		new_node.onClick = func() -> void:
 			match current_tab:
-				TAB.BASE:
+				TAB.BASE_DEVELOPMENT:
 					user_response.emit({
-						"action": ACTION.PURCHASE_BUILD, 
+						"action": ACTION.PURCHASE_BASE_ITEM, 
+						"selected": {
+							"uid": U.generate_uid(),
+							"id": item.id
+						}
+					})
+				TAB.FACILITY:
+					user_response.emit({
+						"action": ACTION.PURCHASE_BUILD_ITEM, 
 						"selected": {
 							"uid": U.generate_uid(),
 							"id": item.id
@@ -213,7 +246,7 @@ func build_list() -> void:
 					})
 				TAB.RESEARCH_AND_DEVELOPMENT:
 					user_response.emit({
-						"action": ACTION.PURCHASE_RD, 
+						"action": ACTION.PURCHASE_RD_ITEM, 
 						"selected": {
 							"uid": U.generate_uid(),
 							"id": item.id
@@ -228,7 +261,7 @@ func build_list() -> void:
 			
 		GridItemContainer.add_child(new_node)	
 		
-	await U.set_timeout(0.2)
+	await U.tick()
 	is_busy = false		
 # --------------------------------------------------------------------------------------------------			
 

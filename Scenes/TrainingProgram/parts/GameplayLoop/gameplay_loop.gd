@@ -3,8 +3,8 @@ extends PanelContainer
 
 enum SHOP_STEPS {
 	HIDE, START, SHOW, PLACEMENT,
-	CONFIRM_RESEARCH, CONFIRM_BUILD, CONFIRM_TIER_PURCHASE,
-	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER,
+	CONFIRM_RESEARCH_ITEM_PURCHASE, CONFIRM_BUILD, CONFIRM_TIER_PURCHASE, CONFIRM_BASE_ITEM_PURCHASE,
+	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
 	REFUND
 }
 enum CONTAIN_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
@@ -145,7 +145,15 @@ var resources_data:Dictionary = {
 }
 
 var tier_unlocked:Dictionary = {
-	TIER.TYPE.BASE: {
+	TIER.TYPE.BASE_DEVELOPMENT: {
+		TIER.VAL.ZERO: true,
+		TIER.VAL.ONE: false,
+		TIER.VAL.TWO: false,
+		TIER.VAL.THREE: false,
+		TIER.VAL.FOUR: false,
+		TIER.VAL.FIVE: false
+	},
+	TIER.TYPE.FACILITY: {
 		TIER.VAL.ZERO: true,
 		TIER.VAL.ONE: false,
 		TIER.VAL.TWO: false,
@@ -160,7 +168,8 @@ var tier_unlocked:Dictionary = {
 		TIER.VAL.THREE: false,
 		TIER.VAL.FOUR: false,
 		TIER.VAL.FIVE: false
-	}
+	},
+	
 }
 
 var room_config:Dictionary = {
@@ -204,9 +213,7 @@ var is_busy:bool = false :
 var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
-var selected_tier_item:Dictionary = {}
 var selected_refund_item:Dictionary = {}
-var selected_research_item:Dictionary = {}
 
 var completed_build_items:Array = [] : 
 	set(val):
@@ -468,12 +475,12 @@ func goto_location(location:Dictionary) -> void:
 func set_room_config() -> void:
 	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
 	var under_construction_rooms:Array = []
+	var built_rooms:Array = []
 	
 	# mark rooms that are under construction...
 	for item in action_queue_data:
 		match item.action:
-			ACTION.BUILD:
-				print(item.location)
+			ACTION.BUILD_ITEM:
 				var floor:int = item.location.floor
 				var ring:int = item.location.ring
 				var room:int = item.location.room		
@@ -505,13 +512,13 @@ func set_room_config() -> void:
 				if !config_data.build_data.is_empty():
 					under_construction_rooms.push_back(designation)
 				if !config_data.room_data.is_empty():
-					pass
+					built_rooms.push_back(designation)
 					#under_construction_rooms.push_back(designation)					
 	
-	print("under_construction_rooms: ", under_construction_rooms)
-	
+
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
+	SUBSCRIBE.built_rooms = built_rooms
 		
 #endregion
 # ------------------------------------------------------------------------------	
@@ -655,8 +662,6 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			selected_shop_item = {}
-			selected_research_item = {}
-			selected_tier_item = {}
 			
 			StoreContainer.start()
 			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
@@ -667,16 +672,20 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.HIDE
 					
 				ACTION.PURCHASE_TIER:
-					selected_tier_item = response.selected
+					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.CONFIRM_TIER_PURCHASE
-										
-				ACTION.PURCHASE_BUILD:
+				
+				ACTION.PURCHASE_BASE_ITEM:
+					selected_shop_item = response.selected
+					current_shop_step = SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE
+					
+				ACTION.PURCHASE_BUILD_ITEM:
 					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.PLACEMENT
 				
-				ACTION.PURCHASE_RD:
-					selected_research_item = response.selected
-					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH
+				ACTION.PURCHASE_RD_ITEM:
+					selected_shop_item = response.selected
+					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE
 		# ---------------
 		SHOP_STEPS.PLACEMENT:		
 			# sort which rooms can be built in
@@ -712,17 +721,27 @@ func on_current_shop_step_update() -> void:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
-					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_TIER					
+					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_TIER
 		# ---------------
-		SHOP_STEPS.CONFIRM_RESEARCH:
+		SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE:
 			ConfirmModal.set_text("Confirm research?")
-			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])			
-			var confirm_response:Dictionary = await ConfirmModal.user_response			
+			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])
+			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:
 				ACTION.BACK:
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH
+		# ---------------
+		SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE:
+			ConfirmModal.set_text("Confirm base item purchase?")
+			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])
+			var confirm_response:Dictionary = await ConfirmModal.user_response
+			match confirm_response.action:
+				ACTION.BACK:
+					current_shop_step = SHOP_STEPS.START
+				ACTION.NEXT:
+					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM
 		# ---------------
 		SHOP_STEPS.CONFIRM_BUILD:
 			ConfirmModal.set_text("Confirm location?")
@@ -733,41 +752,57 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BUILD
+					
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BUILD:
-			var room_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.id)
+			var purchase_item_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.id)
+			
 			action_queue_data.push_back({
-				"action": ACTION.BUILD,
+				"action": ACTION.BUILD_ITEM,
 				"data": selected_shop_item,
 				"days_in_queue": 0,
-				"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
+				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
 				"location": current_location.duplicate(),
 			})
+			
 			SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
-			var research_data:Dictionary = RD_UTIL.return_data(selected_research_item.id)
+			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.id)
 
 			action_queue_data.push_back({
-				"action": ACTION.RESEARCH,
-				"data": selected_research_item,
+				"action": ACTION.RESEARCH_ITEM,
+				"data": selected_shop_item,
 				"days_in_queue": 0,
-				"build_time": research_data.get_build_time.call() if "get_build_time" in research_data else 0,
-				# "location": current_location,
+				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
 			})
 			
-			SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_research_item.id, resources_data)
+			SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE			
 		# ---------------
+		SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM:
+			var purchased_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.id)
+
+			action_queue_data.push_back({
+				"action": ACTION.BASE_ITEM,
+				"data": selected_shop_item,
+				"days_in_queue": 0,
+				"build_time": purchased_item_data.get_build_time.call() if "get_build_time" in purchased_item_data else 0,
+			})
+			
+			SUBSCRIBE.resources_data = BASE_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.action_queue_data = action_queue_data
+			current_shop_step = SHOP_STEPS.HIDE
+		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
 			# unlock the tier
-			tier_unlocked[selected_tier_item.tier_type][selected_tier_item.tier_data.id] = true
+			tier_unlocked[selected_shop_item.tier_type][selected_shop_item.tier_data.id] = true
 			
 			# remove costs
-			var resource_list:Dictionary = selected_tier_item.tier_data.get_unlock_cost.call()
+			var resource_list:Dictionary = selected_shop_item.tier_data.get_unlock_cost.call()
 			for key in resource_list:
 				var amount:int = resource_list[key]
 				resources_data[key].amount -= amount	
@@ -776,23 +811,28 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.resources_data = resources_data
 			SUBSCRIBE.tier_unlocked = tier_unlocked
 			current_shop_step = SHOP_STEPS.HIDE
+
 		# ---------------
 		SHOP_STEPS.REFUND:
 			match selected_refund_item.action:
-				ACTION.BUILD:
+				ACTION.BUILD_ITEM:
 					ConfirmModal.set_text("Cancel build?", "Resources will be refunded.")
-				ACTION.RESEARCH:
+				ACTION.RESEARCH_ITEM:
 					ConfirmModal.set_text("Cancel research?", "Resources will be refunded.")
+				ACTION.BASE_ITEM:
+					ConfirmModal.set_text("Cancel construction?", "Resources will be refunded.")
 			await show_only([ActionQueueContainer, ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.NEXT:
 					match selected_refund_item.action:
-						ACTION.BUILD:
+						ACTION.BUILD_ITEM:
 							SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
-						ACTION.RESEARCH:
+						ACTION.RESEARCH_ITEM:
 							SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
-					
+						ACTION.BASE_ITEM:
+							SUBSCRIBE.resources_data = BASE_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+							
 					SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 
 					ActionQueueContainer.remove_from_queue([selected_refund_item])
@@ -931,7 +971,7 @@ func on_current_build_complete_step_update() -> void:
 			# UPDATE SAVABLE DATA
 			for item in completed_build_items:
 				match item.action:
-					ACTION.BUILD:
+					ACTION.BUILD_ITEM:
 						purchased_base_arr.push_back({
 							"data": item.data,
 							"location": item.location
@@ -940,7 +980,7 @@ func on_current_build_complete_step_update() -> void:
 						resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
 						resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
 						SUBSCRIBE.purchased_base_arr = purchased_base_arr
-					ACTION.RESEARCH:
+					ACTION.RESEARCH_ITEM:
 						purchased_research_arr.push_back({
 							"data": item.data
 						})
@@ -1057,7 +1097,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = true # restore_data.is_empty()
+	var no_save:bool = restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes

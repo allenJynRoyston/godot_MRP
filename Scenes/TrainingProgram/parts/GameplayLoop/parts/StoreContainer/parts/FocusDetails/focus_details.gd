@@ -21,7 +21,7 @@ var data:Dictionary = {} :
 		data = val
 		on_data_update()
 		
-var tab:TIER.TYPE  = TIER.TYPE.BASE
+var tab:TIER.TYPE  = TIER.TYPE.FACILITY
 
 func _ready() -> void:
 	on_data_update()
@@ -39,6 +39,16 @@ func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
 	
 	match tab:
+		TIER.TYPE.BASE_DEVELOPMENT:
+			print(data)
+			Title.text = data.details.name
+			Description.text = data.details.description
+			DetailImage.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")		
+			
+			Effects.hide()
+			OperatingCosts.hide()
+			ConstructionCosts.hide()	
+			
 		TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
 			Title.text = data.details.name
 			Description.text = data.details.description
@@ -48,7 +58,7 @@ func on_data_update() -> void:
 			OperatingCosts.hide()
 			ConstructionCosts.hide()	
 			
-		TIER.TYPE.BASE:
+		TIER.TYPE.FACILITY:
 			Title.text = data.details.name
 			Description.text = data.details.description
 			DetailImage.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")		

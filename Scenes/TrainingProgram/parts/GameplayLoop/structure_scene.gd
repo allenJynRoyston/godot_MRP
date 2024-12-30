@@ -24,6 +24,7 @@ const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMat
 const RoomMaterialUnavailable:StandardMaterial3D = preload("res://Materials/RoomMaterialUnavailable.tres")
 const RoomMaterialActiveUnavailable:StandardMaterial3D = preload("res://Materials/RoomMaterialActiveUnavailable.tres")
 const RoomMaterialUnderConstruction:StandardMaterial3D = preload("res://Materials/RoomMaterialUnderConstruction.tres")
+const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMaterialBuilt.tres")
 
 var building_setup_complete:bool = false
 
@@ -32,10 +33,10 @@ var previous_camera_settings:CAMERA.ZOOM
 var current_location:Dictionary = {} 
 var previous_location:Dictionary = current_location
 
-
 var room_designations_list:Array = []
 var unavailable_rooms:Array = []
 var under_construction_rooms:Array = []
+var built_rooms:Array = []
 
 var floor_container_nodes:Dictionary = {}
 var room_nodes:Dictionary = {}
@@ -65,6 +66,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	SUBSCRIBE.subscribe_to_unavailable_rooms(self)
 	SUBSCRIBE.subscribe_to_under_construction_rooms(self)
+	SUBSCRIBE.subscribe_to_built_rooms(self)
 	
 	GBL.subscribe_to_process(self)
 	
@@ -73,6 +75,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
 	SUBSCRIBE.unsubscribe_to_unavailable_rooms(self)
 	SUBSCRIBE.unsubscribe_to_under_construction_rooms(self)
+	SUBSCRIBE.unsubscribe_to_built_rooms(self)
 	
 	GBL.unsubscribe_to_process(self)
 	GBL.remove_from_projected_3d_objects('active_room')
@@ -223,6 +226,12 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 	color_active_node()
 # ------------------------------------------------		
 
+# ------------------------------------------------	
+func on_built_rooms_update(new_val:Array = built_rooms) -> void:
+	built_rooms = new_val
+	color_active_node()
+# ------------------------------------------------		
+
 # ------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:	
 	current_location = new_val
@@ -353,7 +362,13 @@ func color_active_node() -> void:
 				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
 				box_mesh_copy.material = material_copy			
 			
-			
+		if key in built_rooms:
+			box_mesh_copy.material = RoomMaterialBuilt
+			if key == current_designation:
+				var material_copy:StandardMaterial3D = RoomMaterialBuilt.duplicate()
+				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+				box_mesh_copy.material = material_copy
+				
 		node.mesh = box_mesh_copy
 # ------------------------------------------------
 
