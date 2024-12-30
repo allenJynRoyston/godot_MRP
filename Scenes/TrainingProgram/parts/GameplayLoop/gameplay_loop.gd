@@ -106,8 +106,11 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
 # ------------------------------------------------------------------------------ 
 #region SAVABLE DATA
-var previous_camera_zoom:CAMERA.ZOOM 
-var camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW 
+var previous_camera_settings:CAMERA.ZOOM 
+var camera_settings:Dictionary = {
+	"zoom": CAMERA.ZOOM.OVERVIEW,
+	"is_locked": false
+}
 
 var current_location:Dictionary = {
 	"floor": 0,
@@ -125,6 +128,8 @@ var purchased_base_arr:Array = []
 var purchased_research_arr:Array = []
 
 var bookmarked_rooms:Array = [] # ["000", "201"] <- "floor_index, ring_index, room_index"]
+
+var unavailable_rooms:Array = []
 
 var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() 
 
@@ -176,12 +181,13 @@ var initial_values:Dictionary = {
 	"purchased_base_arr": purchased_base_arr,
 	"purchased_research_arr": purchased_research_arr,
 	"bookmarked_rooms": bookmarked_rooms,
+	"unavailable_rooms": unavailable_rooms,
 	"researcher_hire_list": researcher_hire_list,
 	"hired_lead_researchers_arr": hired_lead_researchers_arr,
 	"resources_data": resources_data,
 	"tier_unlocked": tier_unlocked,
 	"room_config": room_config,
-	"camera_zoom": camera_zoom
+	"camera_settings": camera_settings
 }.duplicate(true)
 
 
@@ -209,6 +215,7 @@ var completed_build_items:Array = [] :
 
 var showing_states:Dictionary = {} 
 var revert_state_location:Dictionary = {}
+var tenative_location:Dictionary = {}
 
 var current_shop_step:SHOP_STEPS = SHOP_STEPS.HIDE : 
 	set(val):
@@ -452,16 +459,21 @@ func cancel_action(item_data:Dictionary) -> void:
 	selected_refund_item = item_data
 	current_shop_step = SHOP_STEPS.REFUND
 
+func update_tenative_location(location:Dictionary) -> void:
+	tenative_location = location	
 			
 func goto_location(location:Dictionary) -> void:
 	LocationContainer.goto_location(location)
 	
 func set_room_config() -> void:
 	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
+	var under_construction_rooms:Array = []
 	
+	# mark rooms that are under construction...
 	for item in action_queue_data:
 		match item.action:
 			ACTION.BUILD:
+				print(item.location)
 				var floor:int = item.location.floor
 				var ring:int = item.location.ring
 				var room:int = item.location.room		
@@ -471,7 +483,7 @@ func set_room_config() -> void:
 						return ROOM_UTIL.return_data(item.data.id)
 				}
 			
-	
+	# mark rooms that are already built...
 	for item in purchased_base_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
@@ -483,9 +495,23 @@ func set_room_config() -> void:
 		}
 		# if facility is built, clear build_data
 		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
-		
+	
+	# mark rooms and push to subscriptions
+	for floor_index in new_room_config.floor.size():
+		for ring_index in new_room_config.floor[floor_index].ring.size():
+			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
+				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
+				var config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
+				if !config_data.build_data.is_empty():
+					under_construction_rooms.push_back(designation)
+				if !config_data.room_data.is_empty():
+					pass
+					#under_construction_rooms.push_back(designation)					
+	
+	print("under_construction_rooms: ", under_construction_rooms)
+	
 	SUBSCRIBE.room_config = new_room_config	
-
+	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 		
 #endregion
 # ------------------------------------------------------------------------------	
@@ -653,18 +679,29 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH
 		# ---------------
 		SHOP_STEPS.PLACEMENT:		
+			# sort which rooms can be built in
+			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.id, room_config)
+			
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
-			previous_camera_zoom = camera_zoom
-			SUBSCRIBE.camera_zoom = CAMERA.ZOOM.RING
+			previous_camera_settings = camera_settings.zoom
+			camera_settings.zoom = CAMERA.ZOOM.RING
+			camera_settings.is_locked = true
+			SUBSCRIBE.camera_settings = camera_settings
 			Structure3dContainer.show_instructions = true
 			var structure_response = await Structure3dContainer.user_response
 			Structure3dContainer.show_instructions = false
 			match structure_response.action:
-				ACTION.BACK:
-					SUBSCRIBE.camera_zoom = previous_camera_zoom
+				ACTION.BACK:					
+					camera_settings.zoom = previous_camera_settings
+					camera_settings.is_locked = false
+					SUBSCRIBE.camera_settings = camera_settings
+					SUBSCRIBE.unavailable_rooms = []
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
-					SUBSCRIBE.camera_zoom = previous_camera_zoom
+					camera_settings.zoom = previous_camera_settings
+					camera_settings.is_locked = false
+					SUBSCRIBE.camera_settings = camera_settings
+					SUBSCRIBE.unavailable_rooms = []
 					current_shop_step = SHOP_STEPS.CONFIRM_BUILD
 		# ---------------
 		SHOP_STEPS.CONFIRM_TIER_PURCHASE:
@@ -704,7 +741,7 @@ func on_current_shop_step_update() -> void:
 				"data": selected_shop_item,
 				"days_in_queue": 0,
 				"build_time": room_data.get_build_time.call() if "get_build_time" in room_data else 0,
-				"location": current_location,
+				"location": current_location.duplicate(),
 			})
 			SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
@@ -927,17 +964,17 @@ func is_occupied() -> bool:
 	return false
 
 func on_mouse_scroll(dir:int) -> void:
-	if GBL.has_animation_in_queue():return
-	
+	if GBL.has_animation_in_queue() or camera_settings.is_locked:return
+		
 	match dir:
 		0: #UP
-			if camera_zoom - 1 >= 0:
-				camera_zoom = camera_zoom - 1
+			if camera_settings.zoom - 1 >= 0:
+				camera_settings.zoom = camera_settings.zoom - 1
 		1: #DOWN
-			if camera_zoom + 1 < CAMERA.ZOOM.size():
-				camera_zoom = camera_zoom + 1
+			if camera_settings.zoom + 1 < CAMERA.ZOOM.size():
+				camera_settings.zoom = camera_settings.zoom + 1
 				
-	SUBSCRIBE.camera_zoom = camera_zoom
+	SUBSCRIBE.camera_settings = camera_settings
 	
 
 func on_control_input_update(input_data:Dictionary) -> void:
@@ -949,26 +986,28 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	print("key: %s   keycode: %s" % [key, keycode])
 	
 	match key:
-		"D":
+		"W":
 			current_location.ring += 1
 			if current_location.ring > room_config.floor[current_location.floor].ring.size() - 1:
 				current_location.ring =  room_config.floor[current_location.floor].ring.size() - 1
 			SUBSCRIBE.current_location = current_location
-		"A":
+		"S":
 			current_location.ring -= 1
 			if current_location.ring < 0:
 				current_location.ring = 0
 			SUBSCRIBE.current_location = current_location		
-		"S":
+		"D":
 			current_location.room += 1
 			if current_location.room > room_config.floor.size() - 1:
 				current_location.room = 0
 			SUBSCRIBE.current_location = current_location
-		"W":
+		"A":
 			current_location.room -= 1
 			if current_location.room < 0:
 				current_location.room = room_config.floor.size() - 1
 			SUBSCRIBE.current_location = current_location
+		"SPACEBAR":
+			SUBSCRIBE.current_location = tenative_location
 		"ENTER":
 			if do_not_continue:return
 			print_orphan_nodes()			
@@ -998,7 +1037,8 @@ func quicksave() -> void:
 		"researcher_hire_list": researcher_hire_list,
 		"purchased_research_arr": purchased_research_arr,
 		"tier_unlocked": tier_unlocked,
-		"camera_zoom": camera_zoom
+		"unavailable_rooms": unavailable_rooms, 
+		"camera_settings": camera_settings
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
@@ -1034,7 +1074,8 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr
 	SUBSCRIBE.current_location = initial_values.current_location if no_save else restore_data.current_location
 	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
-	SUBSCRIBE.camera_zoom = initial_values.camera_zoom if no_save else initial_values.camera_zoom	
+	SUBSCRIBE.camera_settings = initial_values.camera_settings if no_save else restore_data.camera_settings	
+	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms if no_save else restore_data.unavailable_rooms
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
 

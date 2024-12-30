@@ -44,6 +44,7 @@ var is_highlighted:bool = false :
 var bookmarked_rooms:Array = []
 var is_empty:bool = false
 var onClick:Callable = func():pass
+var onFocus:Callable = func():pass
 
 # --------------------------------------	
 func _init() -> void:
@@ -137,6 +138,7 @@ func on_focus(state:bool) -> void:
 	update_colors()
 	
 	if state:
+		onFocus.call()
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
 	else:
 		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)

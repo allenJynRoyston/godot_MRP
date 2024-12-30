@@ -3,23 +3,23 @@ extends Node
 
 
 # ------------------------------------------------------------	
-var camera_zoom_subscriptions:Array = []
+var camera_settings_subscriptions:Array = []
 
-var camera_zoom:CAMERA.ZOOM = CAMERA.ZOOM.OVERVIEW : 
+var camera_settings:Dictionary = {} : 
 	set(val):
-		camera_zoom = val
-		for node in camera_zoom_subscriptions:
-			if "on_camera_zoom_update" in node:
-				node.on_camera_zoom_update.call(camera_zoom)
+		camera_settings = val
+		for node in camera_settings_subscriptions:
+			if "on_camera_settings_update" in node:
+				node.on_camera_settings_update.call(camera_settings)
 
-func subscribe_to_camera_zoom(node:Node) -> void:
-	if node not in camera_zoom_subscriptions:
-		camera_zoom_subscriptions.push_back(node)
-		if "on_camera_zoom_update" in node:
-			node.on_camera_zoom_update.call(camera_zoom)
+func subscribe_to_camera_settings(node:Node) -> void:
+	if node not in camera_settings_subscriptions:
+		camera_settings_subscriptions.push_back(node)
+		if "on_camera_settings_update" in node:
+			node.on_camera_settings_update.call(camera_settings)
 
-func unsubscribe_to_camera_zoom(node:Node) -> void:
-	camera_zoom_subscriptions.erase(node)
+func unsubscribe_to_camera_settings(node:Node) -> void:
+	camera_settings_subscriptions.erase(node)
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
@@ -204,6 +204,45 @@ func unsubscribe_to_current_location(node:Node) -> void:
 	current_location_subscriptions.erase(node)
 # ------------------------------------------------------------	
 
+# ------------------------------------------------------------	
+var under_construction_rooms_subscriptions:Array = []
+
+var under_construction_rooms:Array = [] : 
+	set(val):
+		under_construction_rooms = val
+		for node in under_construction_rooms_subscriptions:
+			if "on_under_construction_rooms_update" in node:
+				node.on_under_construction_rooms_update.call(under_construction_rooms)
+
+func subscribe_to_under_construction_rooms(node:Node) -> void:
+	if node not in under_construction_rooms_subscriptions:
+		under_construction_rooms_subscriptions.push_back(node)
+		if "on_under_construction_rooms_update" in node:
+			node.on_under_construction_rooms_update.call(under_construction_rooms)
+				
+func unsubscribe_to_under_construction_rooms(node:Node) -> void:
+	under_construction_rooms_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
+var unavailable_rooms_subscriptions:Array = []
+
+var unavailable_rooms:Array = [] : 
+	set(val):
+		unavailable_rooms = val
+		for node in unavailable_rooms_subscriptions:
+			if "on_unavailable_rooms_update" in node:
+				node.on_unavailable_rooms_update.call(unavailable_rooms)
+
+func subscribe_to_unavailable_rooms(node:Node) -> void:
+	if node not in unavailable_rooms_subscriptions:
+		unavailable_rooms_subscriptions.push_back(node)
+		if "on_unavailable_rooms_update" in node:
+			node.on_unavailable_rooms_update.call(unavailable_rooms)
+				
+func unsubscribe_to_unavailable_rooms(node:Node) -> void:
+	unavailable_rooms_subscriptions.erase(node)
+# ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
 var bookmarked_rooms_subscriptions:Array = []

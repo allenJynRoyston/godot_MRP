@@ -6,7 +6,10 @@ var BARRICKS:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"image_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
-	"size_allowed": [1, 2, 3],
+	"placement": [
+		ROOM.PLACEMENT.RING_A,
+		ROOM.PLACEMENT.RING_C
+	],
 	"categories": [
 		ROOM.CATEGORIES.SECURITY
 	],
@@ -40,7 +43,9 @@ var DORMITORY:Dictionary = {
 	"tier": TIER.VAL.ONE,
 	"image_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
-	"size_allowed": [1, 2, 3],
+	"placement": [
+		ROOM.PLACEMENT.RING_A
+	],
 	"categories": [
 		ROOM.CATEGORIES.STAFF
 	],
@@ -73,7 +78,9 @@ var HOLDING_CELLS:Dictionary = {
 	"tier": TIER.VAL.TWO,
 	"image_src": "res://Media/images/redacted.png",
 	"description": "Houses D-class personel.",
-	"size_allowed": [1, 2, 3],
+	"placement": [
+		ROOM.PLACEMENT.RING_A
+	],
 	"categories": [
 		ROOM.CATEGORIES.DCLASS
 	],
@@ -126,7 +133,7 @@ var category_data:Dictionary = {
 var tier_data:Dictionary = {
 	TIER.VAL.ZERO: {
 		"id": TIER.VAL.ZERO,
-		"name": "ZERO",
+		"name": "SURFACE",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
 				RESOURCE.TYPE.MONEY: 0,
@@ -134,7 +141,7 @@ var tier_data:Dictionary = {
 	},
 	TIER.VAL.ONE: {
 		"id": TIER.VAL.ONE,
-		"name": "ONE",
+		"name": "RING A",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
 				RESOURCE.TYPE.MONEY: 5,
@@ -142,15 +149,15 @@ var tier_data:Dictionary = {
 	},
 	TIER.VAL.TWO: {
 		"id": TIER.VAL.TWO,
-		"name": "TWO",
+		"name": "RING B",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
-				RESOURCE.TYPE.MONEY: 100,
+				RESOURCE.TYPE.MONEY: 50,
 			},
 	},
 	TIER.VAL.THREE: {
 		"id": TIER.VAL.THREE,
-		"name": "THREE",
+		"name": "RING C",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
 				RESOURCE.TYPE.MONEY: 250,
@@ -158,7 +165,7 @@ var tier_data:Dictionary = {
 	},
 	TIER.VAL.FOUR: {
 		"id": TIER.VAL.FOUR,
-		"name": "FOUR",
+		"name": "AUXILLARY",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
 				RESOURCE.TYPE.MONEY: 500,
@@ -214,6 +221,23 @@ func get_rooms(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) 
 func return_data(key:int) -> Dictionary:
 	return reference_data[key]
 # ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func return_unavailable_placement(id:int, room_config:Dictionary) -> Array: 
+	var unavailable_list:Array = []
+	var room_data:Dictionary = return_data(id)
+
+	for floor_index in room_config.floor.size():
+		for ring_index in room_config.floor[floor_index].ring.size():
+			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
+				var config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]				
+				if ring_index not in room_data.placement or !config_data.room_data.is_empty() or !config_data.build_data.is_empty():
+					unavailable_list.push_back(designation)
+	
+	return unavailable_list
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func return_build_cost(id:int) -> Array:

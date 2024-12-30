@@ -42,16 +42,14 @@ show_info = true
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
 
-[node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-is_showing = false
-freeze_inputs = true
-
 [node name="ActionQueueContainer" parent="." instance=ExtResource("5_1tp62")]
 layout_mode = 2
 metadata/_edit_group_ = true
+
+[node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
+layout_mode = 2
+is_showing = false
+freeze_inputs = true
 
 [node name="RoomStatusContainer" parent="." instance=ExtResource("6_emfl4")]
 layout_mode = 2
@@ -70,8 +68,6 @@ theme_override_constants/margin_right = 0
 
 [node name="ResourceContainer" parent="." instance=ExtResource("8_asqny")]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 10
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
 layout_mode = 2

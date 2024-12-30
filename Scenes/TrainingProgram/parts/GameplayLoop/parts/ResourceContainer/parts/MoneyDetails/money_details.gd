@@ -47,7 +47,7 @@ func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 				total_income += i.amount
 				
 				new_node.onClick = func() -> void:
-					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RM
+					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_settings = CAMERA.ZOOM.RM
 					gameplay_node.goto_location(item.location)
 				
 				IncomeList.add_child(new_node)			
@@ -61,7 +61,7 @@ func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 				total_expense += i.amount
 				
 				new_node.onClick = func() -> void:
-					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_zoom = CAMERA.ZOOM.RM
+					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_settings = CAMERA.ZOOM.RM
 					gameplay_node.goto_location(item.location)
 				
 				ExpenseList.add_child(new_node)	

@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dphmbf3c8t587"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_7sv8v"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_b0vyh"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_gxny4"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_yv6p4"]
 
@@ -10,6 +10,9 @@ shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_tvxn8"]
 viewport_path = NodePath("SubViewport")
@@ -32,7 +35,7 @@ vertical = true
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/margin_bottom = 0
-script = ExtResource("1_7sv8v")
+script = ExtResource("1_b0vyh")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_7egbh")

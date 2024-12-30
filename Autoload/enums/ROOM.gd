@@ -1,6 +1,12 @@
 @tool
 extends Node
 
+enum PLACEMENT {
+	RING_A, 
+	RING_B,
+	RING_C
+}
+
 enum TYPE { 
 	NONE, 
 	BARRICKS, DORMITORY, HOLDING_CELLS,

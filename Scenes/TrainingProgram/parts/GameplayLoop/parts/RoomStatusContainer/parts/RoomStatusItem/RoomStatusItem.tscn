@@ -23,7 +23,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_32fd4"]
 font = ExtResource("2_vxe1n")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgekb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_77xme"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -89,7 +89,9 @@ vertical_alignment = 1
 
 [node name="BookmarkCB" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_g1wc4")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jgekb")
+size_flags_horizontal = 1
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_77xme")
 no_bg = true
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer"]

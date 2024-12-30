@@ -1,4 +1,3 @@
-@tool
 extends Node3D
 
 @onready var Building:Node3D = $Building
@@ -22,19 +21,29 @@ extends Node3D
 
 const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialActive.tres")
 const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMaterialInactive.tres")
+const RoomMaterialUnavailable:StandardMaterial3D = preload("res://Materials/RoomMaterialUnavailable.tres")
+const RoomMaterialActiveUnavailable:StandardMaterial3D = preload("res://Materials/RoomMaterialActiveUnavailable.tres")
+const RoomMaterialUnderConstruction:StandardMaterial3D = preload("res://Materials/RoomMaterialUnderConstruction.tres")
 
 var building_setup_complete:bool = false
 
-var camera_zoom:CAMERA.ZOOM 
-var previous_camera_zoom:CAMERA.ZOOM = camera_zoom
+var camera_settings:Dictionary
+var previous_camera_settings:CAMERA.ZOOM
 var current_location:Dictionary = {} 
 var previous_location:Dictionary = current_location
+
+
+var room_designations_list:Array = []
+var unavailable_rooms:Array = []
+var under_construction_rooms:Array = []
 
 var floor_container_nodes:Dictionary = {}
 var room_nodes:Dictionary = {}
 
 var use_camera_node:Camera3D
 var tween_queue:Array = []
+
+var mesh_material_ref:Dictionary = {} 
 
 var active_nodes:Dictionary = {
 	"floor": null,
@@ -53,12 +62,18 @@ var room_node_refs:Dictionary = {}
 # ------------------------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)
-	SUBSCRIBE.subscribe_to_camera_zoom(self)
+	SUBSCRIBE.subscribe_to_camera_settings(self)
+	SUBSCRIBE.subscribe_to_unavailable_rooms(self)
+	SUBSCRIBE.subscribe_to_under_construction_rooms(self)
+	
 	GBL.subscribe_to_process(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
-	SUBSCRIBE.unsubscribe_to_camera_zoom(self)	
+	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
+	SUBSCRIBE.unsubscribe_to_unavailable_rooms(self)
+	SUBSCRIBE.unsubscribe_to_under_construction_rooms(self)
+	
 	GBL.unsubscribe_to_process(self)
 	GBL.remove_from_projected_3d_objects('active_room')
 	for key in room_node_refs:
@@ -70,17 +85,31 @@ func _ready() -> void:
 	after_ready.call_deferred()
 
 func after_ready() -> void:
-	building_setup_complete = true
+	
 	on_render_layout_update()	
-	on_camera_zoom_update()
+	on_camera_settings_update()
 # ------------------------------------------------
 
 # ------------------------------------------------
 func building_setup() -> void:
 	for count in [1, 2, 3, 4, 5]:
-		var FloorCopy:Node3D = FloorTemplate.duplicate()
+		var FloorCopy:Node3D = FloorTemplate.duplicate(true)
 		FloorContainer.add_child(FloorCopy)
 		FloorCopy.position.y = count * -10
+		
+	building_setup_complete = true
+
+	var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:pass
+	var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:pass
+	var room_func:Callable = func(room:Node3D, d:Dictionary) -> void:
+		var as_designation:String = "%s%s%s" % [d.floor_index, d.ring_index, d.room_index]
+		mesh_material_ref[as_designation] = {
+			"node": room
+		}
+		
+	traverse_nodes(floor_func, ring_func, room_func)
+	
+	await U.tick()
 # ------------------------------------------------
 
 # ------------------------------------------------	
@@ -182,10 +211,22 @@ func traverse_nodes(floor_func:Callable, ring_func:Callable, room_func:Callable)
 				
 # ------------------------------------------------
 
+# ------------------------------------------------	
+func on_under_construction_rooms_update(new_val:Array = under_construction_rooms) -> void:
+	under_construction_rooms = new_val
+	color_active_node()
+# ------------------------------------------------	
+	
+# ------------------------------------------------	
+func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
+	unavailable_rooms = new_val
+	color_active_node()
+# ------------------------------------------------		
+
 # ------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:	
 	current_location = new_val
-	if !is_node_ready() or current_location.is_empty() or !building_setup_complete:return
+	if !is_node_ready() or current_location.is_empty() or !building_setup_complete or camera_settings.is_empty():return
 	GBL.add_to_animation_queue(self)
 	
 	if room_node_refs.is_empty():
@@ -219,11 +260,11 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		tween_position(Building, Vector3(0, floor * 10, 0), time)	
 	
 
-	match camera_zoom:
+	match camera_settings.zoom:
 		# ------------------
 		CAMERA.ZOOM.OVERVIEW:			
 			ElevatorNode.visible = true
-			if previous_camera_zoom != camera_zoom:
+			if previous_camera_settings != camera_settings.zoom:
 				rotate_building.call()
 			zoom_to_floor.call(0)
 			var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:
@@ -289,21 +330,32 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 
 # ------------------------------------------------
 func color_active_node() -> void:
-	await U.tick()
-	var floor_func:Callable = func(floor:Node3D, d:Dictionary) -> void:pass
-	var ring_func:Callable = func(ring:Node3D, d:Dictionary) -> void:pass
-	var room_func:Callable = func(room:MeshInstance3D, d:Dictionary) -> void:
-		
-		if current_location.floor == d.floor_index and current_location.ring == d.ring_index and current_location.room == d.room_index:
-			await U.tick()
-			room.mesh.material = RoomMaterialActive
-		else:
-			room.mesh.material = RoomMaterialInactive
-			
-			
-	traverse_nodes(floor_func, ring_func, room_func)
-# ------------------------------------------------
+	if render_layer != 2 or mesh_material_ref.is_empty() or current_location.is_empty():return
+	var current_designation:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
 
+	for key in mesh_material_ref:
+		var node:Node3D = mesh_material_ref[key].node
+		var box_mesh_copy:BoxMesh = node.mesh.duplicate()
+		
+		box_mesh_copy.material = RoomMaterialActive if key == current_designation else RoomMaterialInactive
+		
+		if key in unavailable_rooms:
+			box_mesh_copy.material = RoomMaterialUnavailable
+			if key == current_designation:
+				var material_copy:StandardMaterial3D = RoomMaterialUnavailable.duplicate()
+				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+				box_mesh_copy.material = material_copy
+		
+		if key in under_construction_rooms:
+			box_mesh_copy.material = RoomMaterialUnderConstruction
+			if key == current_designation:
+				var material_copy:StandardMaterial3D = RoomMaterialUnderConstruction.duplicate()
+				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+				box_mesh_copy.material = material_copy			
+			
+			
+		node.mesh = box_mesh_copy
+# ------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
 func rotate_ring(ring_index:int, amount:int) -> void:
@@ -322,20 +374,18 @@ func rotate_ring(ring_index:int, amount:int) -> void:
 
 
 # ------------------------------------------------
-func on_camera_zoom_update(new_val:CAMERA.ZOOM = camera_zoom) -> void:	
-	if !is_node_ready():return
-	camera_zoom = new_val
-	
-	print("camera_zoom: ", camera_zoom)
-	
+func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:	
+	camera_settings = new_val
+	if !is_node_ready() or camera_settings.is_empty():return
+
 	GBL.add_to_animation_queue(self)
 	
 	# adjust the camera prior to changing types
-	if previous_camera_zoom == CAMERA.ZOOM.OVERVIEW and camera_zoom == CAMERA.ZOOM.FLOOR:
+	if previous_camera_settings == CAMERA.ZOOM.OVERVIEW and camera_settings.zoom == CAMERA.ZOOM.FLOOR:
 		await tween_rotation(Building, Vector3(0, 30, 0))
 		
 	# adds some stylish zoom animation	
-	if previous_camera_zoom == CAMERA.ZOOM.RING and camera_zoom == CAMERA.ZOOM.RM:
+	if previous_camera_settings == CAMERA.ZOOM.RING and camera_settings.zoom == CAMERA.ZOOM.RM:
 		var camera_position:Vector3 = RoamingCamera.position
 		var camera_rotation_degree:Vector3 = RoamingCamera.rotation_degrees
 		camera_position.y -= 45
@@ -343,7 +393,7 @@ func on_camera_zoom_update(new_val:CAMERA.ZOOM = camera_zoom) -> void:
 		await tween_position(RoamingCamera, camera_position, 0.3)
 		await tween_rotation(RoamingCamera, camera_rotation_degree, 0.6)
 
-	match camera_zoom:
+	match camera_settings.zoom:
 		CAMERA.ZOOM.OVERVIEW:
 			tween_rotation(RoamingCamera, OverviewCamera.rotation_degrees)
 			await tween_position(RoamingCamera, OverviewCamera.position)
@@ -357,7 +407,7 @@ func on_camera_zoom_update(new_val:CAMERA.ZOOM = camera_zoom) -> void:
 			tween_rotation(RoamingCamera, RoomCamera.rotation_degrees)
 			await tween_position(RoamingCamera, RoomCamera.position)
 	
-	previous_camera_zoom = camera_zoom
+	previous_camera_settings = camera_settings.zoom
 	on_current_location_update()
 # ------------------------------------------------	
 
@@ -394,21 +444,21 @@ func get_room_position(key:String) -> Vector3:
 	var room_node:Node3D = room_node_refs[key]
 	var ring_node:Node3D = room_node.get_parent().get_parent()
 	var floor_node:Node3D = ring_node.get_parent().get_parent()
-	match camera_zoom:
+	match camera_settings.zoom:
 		CAMERA.ZOOM.OVERVIEW:	
-			return (room_node.global_position + ring_node.global_position - floor_node.position if camera_zoom == CAMERA.ZOOM.OVERVIEW else 0 ) 
+			return (room_node.global_position + ring_node.global_position - floor_node.position if camera_settings.zoom == CAMERA.ZOOM.OVERVIEW else 0 ) 
 		_:
 			return (room_node.global_position + ring_node.global_position ) 
 # ------------------------------------------------
 
 # ------------------------------------------------
 func on_process_update(delta: float) -> void:	
-	if !is_node_ready() or current_location.is_empty():return
+	if !is_node_ready() or current_location.is_empty() or camera_settings.is_empty():return
 	# ensures that building rotation cannot be > 360 degrees
 	normalize_rotation_degrees(Building)
 	
 
-	if camera_zoom == CAMERA.ZOOM.OVERVIEW:
+	if camera_settings.zoom == CAMERA.ZOOM.OVERVIEW:
 		Building.rotate_y(0.001)
 	
 	if room_node_refs.is_empty(): return

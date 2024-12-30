@@ -17,6 +17,8 @@ const FloatingInfoPreload = preload("res://Scenes/TrainingProgram/parts/Gameplay
 var floating_node_refs:Dictionary = {}
 var bookmarked_node_refs:Dictionary = {}
 var tracking_nodes:Array = []
+var unavailable_rooms:Array = []
+var active_designation:String = ""
 
 var show_instructions:bool = false : 
 	set(val):
@@ -28,7 +30,7 @@ func _init() -> void:
 	super._init()
 	GBL.register_node(REFS.STRUCTURE_3D, self)
 	GBL.subscribe_to_process(self)
-	
+	SUBSCRIBE.subscribe_to_unavailable_rooms(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	
 
@@ -36,7 +38,7 @@ func _exit_tree() -> void:
 	super._exit_tree()
 	GBL.unregister_node(REFS.STRUCTURE_3D)
 	GBL.unsubscribe_to_process(self)
-	
+	SUBSCRIBE.unsubscribe_to_unavailable_rooms(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	
 func _ready() -> void:
@@ -61,17 +63,20 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
+	unavailable_rooms = new_val
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready() or room_config.is_empty():return
-	for node in [RenderLayer1, RenderLayer2]:
-		node.current_location = current_location
-
+	active_designation = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
+	
 	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
-		if ref_name in floating_node_refs:
-			var active_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
+		if ref_name in floating_node_refs:			
 			var node:Control = floating_node_refs[ref_name]
-			node.show() if ref_name == active_ref else node.hide() 
+			node.show() if ref_name == active_designation else node.hide() 
 	traverse(callback) 
 	
 	LineDrawController.draw_keys = []
@@ -109,8 +114,7 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func update_draw_keys() -> void:
-	var active_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
-	LineDrawController.draw_keys =  [active_ref] + bookmarked_rooms
+	LineDrawController.draw_keys =  [active_designation] + bookmarked_rooms
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
@@ -121,14 +125,12 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var keycode:int = input_data.keycode
 #
 	match key:
-		#"D":
-			#for node in [RenderLayer1, RenderLayer2]:
-				#node.rotate_ring(current_location.ring, 1)
-		#"A":
-			#for node in [RenderLayer1, RenderLayer2]:
-				#node.rotate_ring(current_location.ring, -1)
 		"ENTER":
-			user_response.emit({"action": ACTION.NEXT})
+			print(active_designation, unavailable_rooms)
+			if active_designation not in unavailable_rooms:
+				user_response.emit({"action": ACTION.NEXT})
+			else:
+				print("cannot build here...")
 		"BACK":
 			user_response.emit({"action": ACTION.BACK})
 # --------------------------------------------------------------------------------------------------

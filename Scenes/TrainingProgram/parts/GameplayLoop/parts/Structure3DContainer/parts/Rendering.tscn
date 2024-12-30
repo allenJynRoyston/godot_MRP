@@ -1,7 +1,6 @@
-[gd_scene load_steps=28 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=27 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_cucwc"]
-[ext_resource type="Material" uid="uid://c7oqlup6o06fx" path="res://Materials/RoomMaterialActive.tres" id="2_a35xk"]
 [ext_resource type="Material" uid="uid://bd4w7qpjfg7dv" path="res://Materials/RoomMaterialInactive.tres" id="2_yu7ib"]
 
 [sub_resource type="Environment" id="Environment_73ws8"]
@@ -24,7 +23,6 @@ size = Vector3(1, 1, 70)
 size = Vector3(11.65, 0.2, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_bu1lt"]
-material = ExtResource("2_a35xk")
 size = Vector3(2, 2, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_5g0lb"]
@@ -51,7 +49,6 @@ size = Vector3(2, 2, 2)
 size = Vector3(23.95, 0.2, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_amtie"]
-material = ExtResource("2_yu7ib")
 size = Vector3(4, 4, 4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0w3d0"]
@@ -78,7 +75,6 @@ size = Vector3(4, 4, 4)
 size = Vector3(40.53, 0.2, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0e2c3"]
-material = ExtResource("2_yu7ib")
 size = Vector3(8, 4, 8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ngiml"]
@@ -143,6 +139,7 @@ size = 42.052
 
 [node name="Elevator" type="MeshInstance3D" parent="Building"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -40, 0)
+visible = false
 mesh = SubResource("CylinderMesh_j3nt2")
 skeleton = NodePath("../../../..")
 
