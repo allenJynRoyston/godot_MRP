@@ -3,7 +3,7 @@ extends Node3D
 @onready var Building:Node3D = $Building
 @onready var FloorContainer:Node3D = $Building/FloorContainer
 @onready var ElevatorNode:Node3D = $Building/Elevator
-@onready var FloorTemplate:Node3D = $Building/FloorContainer/Floor0
+@onready var FloorTemplate:Node3D = $Building/FloorContainer/BasementFloorTemplate
 @onready var CameraContainers:Node3D = $CameraContainers
 @onready var RoamingCamera:Camera3D = $CameraContainers/RoamingCamera
 
@@ -95,10 +95,10 @@ func after_ready() -> void:
 
 # ------------------------------------------------
 func building_setup() -> void:
-	for count in [1, 2, 3, 4, 5]:
+	for count in [1, 2, 3, 4]:
 		var FloorCopy:Node3D = FloorTemplate.duplicate(true)
 		FloorContainer.add_child(FloorCopy)
-		FloorCopy.position.y = count * -10
+		FloorCopy.position.y = FloorTemplate.position.y + (count * -10)
 		
 	building_setup_complete = true
 

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_kiejb"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_ygnts"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ys2lj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6d4a0"]
 bg_color = Color(0.055, 0.055, 0.055, 0.796)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -15,7 +15,7 @@ corner_radius_bottom_left = 5
 offset_right = 20.0
 offset_bottom = 20.0
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ys2lj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6d4a0")
 script = ExtResource("1_wmtyv")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

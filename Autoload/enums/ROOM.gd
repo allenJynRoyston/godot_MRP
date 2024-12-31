@@ -2,9 +2,22 @@
 extends Node
 
 enum PLACEMENT {
-	RING_A, 
-	RING_B,
-	RING_C
+	SURFACE = 0, 
+	B1 = 1, 
+	B2 = 2, 
+	B3 = 3, 
+	B4 = 4, 
+	B5 = 5,
+	
+	RING_A = 0, 
+	RING_B = 1,
+	RING_C = 2,
+	
+	R1 = 0, 
+	R2 = 1, 
+	R3 = 2, 
+	R4 = 3, 
+	R5 = 4
 }
 
 enum TYPE { 
@@ -13,6 +26,7 @@ enum TYPE {
 	BARRICKS, DORMITORY, HOLDING_CELLS,
 	# BEFORE AN SCP CAN BE CONTAINED, IT HAS TO BE IN A 
 	# ROOM THAT CAN CONTAIN IT
+	STANDARD_LOCKER,
 	STEEL_CONTAINMENT_CELL,
 }
 

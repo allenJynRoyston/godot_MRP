@@ -27,6 +27,8 @@ extends BtnBase
 
 var onChange = func(is_checked:bool):pass
 
+var onCondition = null
+
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -51,6 +53,10 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover:
 		is_checked = !is_checked
 		onChange.call(is_checked)
+
+func on_condition_check(props:Dictionary = {}) -> void:
+	if onCondition != null:
+		is_checked = onCondition.call(props)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -1,18 +1,20 @@
 @tool
 extends GameContainer
 
-@onready var SelectLocationInstructions:Control = $TextureRect2/PanelContainer/MarginContainer/SelectLocationInstructions
+@onready var SelectLocationInstructions:VBoxContainer = $PanelContainer/MarginContainer/SelectLocationInstructions
+@onready var PlacementInstructions:VBoxContainer = $PanelContainer/MarginContainer/PlacementInstructions
 
-@onready var OverlayContainer:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer
-@onready var BookmarkedInfo:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/BookmarkedInfo
-@onready var FloatingInfo:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo
-@onready var TestPoint:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint
-@onready var LineDrawController:Control = $TextureRect2/PanelContainer/MarginContainer/OverlayContainer/LineDrawController
+@onready var OverlayContainer:Control = $PanelContainer/MarginContainer/OverlayContainer
+@onready var BookmarkedInfo:Control = $PanelContainer/MarginContainer/OverlayContainer/BookmarkedInfo
+@onready var FloatingInfo:Control = $PanelContainer/MarginContainer/OverlayContainer/FloatingInfo
+@onready var TestPoint:Control = $PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint
+@onready var LineDrawController:Control = $PanelContainer/MarginContainer/OverlayContainer/LineDrawController
 
 @onready var RenderLayer1:Node3D = $SubViewport/Rendering
 @onready var RenderLayer2:Node3D = $SubViewport2/Rendering
 
-const FloatingInfoPreload = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/FloatingItem.tscn")
+const FloatingInfoPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/FloatingItem.tscn")
+const CheckboxPreload:PackedScene = preload("res://UI/Buttons/Checkbox/checkbox.tscn")
 
 var floating_node_refs:Dictionary = {}
 var bookmarked_node_refs:Dictionary = {}
@@ -24,6 +26,11 @@ var show_instructions:bool = false :
 	set(val):
 		show_instructions = val
 		on_show_instructions_update()
+
+var placement_instructions:Array = [] : 
+	set(val):
+		placement_instructions = val
+		on_placement_instructions_update()
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -46,6 +53,7 @@ func _ready() -> void:
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
 	on_show_instructions_update()
+	on_placement_instructions_update()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -67,6 +75,21 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 	unavailable_rooms = new_val
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------	
+func on_placement_instructions_update() -> void:
+	if !is_node_ready():return
+	for child in PlacementInstructions.get_children():
+		child.queue_free()
+	
+	for item in placement_instructions:
+		var new_checkbox:Control = CheckboxPreload.instantiate()
+		new_checkbox.title = item.title
+		new_checkbox.onCondition = item.is_checked
+		new_checkbox.on_condition_check(current_location)
+		PlacementInstructions.add_child(new_checkbox)
+# --------------------------------------------------------------------------------------------------	
+
+
 # --------------------------------------------------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
@@ -80,12 +103,16 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	traverse(callback) 
 	
 	LineDrawController.draw_keys = []
+
+	for child in PlacementInstructions.get_children():
+		child.on_condition_check(current_location)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func on_show_instructions_update() -> void:
 	if !is_node_ready():return
 	SelectLocationInstructions.show() if show_instructions else SelectLocationInstructions.hide()
+	PlacementInstructions.show() if show_instructions else PlacementInstructions.hide()
 # --------------------------------------------------------------------------------------------------	
 	
 

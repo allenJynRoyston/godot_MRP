@@ -498,13 +498,15 @@ func set_room_config() -> void:
 				}
 
 	# mark rooms that are already built...
-	for item in purchased_base_arr:
-		var details:Dictionary = BASE_UTIL.return_data(item.data.id)
-		match details.ref:
-			BASE.TYPE.UNLOCK_FLOOR_2:
-				new_room_config.floor[1].is_locked = false
-			BASE.TYPE.UNLOCK_FLOOR_3:
-				new_room_config.floor[2].is_locked = false
+	new_room_config.floor[1].is_locked = false
+	new_room_config.floor[2].is_locked = false
+	#for item in purchased_base_arr:
+		#var details:Dictionary = BASE_UTIL.return_data(item.data.id)
+		#match details.ref:
+			#BASE.TYPE.UNLOCK_FLOOR_2:
+				#new_room_config.floor[1].is_locked = false
+			#BASE.TYPE.UNLOCK_FLOOR_3:
+				#new_room_config.floor[2].is_locked = false
 
 	# mark rooms that are already built...
 	for item in purchased_facility_arr:
@@ -714,8 +716,10 @@ func on_current_shop_step_update() -> void:
 			camera_settings.is_locked = true
 			SUBSCRIBE.camera_settings = camera_settings
 			Structure3dContainer.show_instructions = true
+			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
 			var structure_response = await Structure3dContainer.user_response
 			Structure3dContainer.show_instructions = false
+			Structure3dContainer.placement_instructions = []
 			match structure_response.action:
 				ACTION.BACK:					
 					camera_settings.zoom = previous_camera_settings
