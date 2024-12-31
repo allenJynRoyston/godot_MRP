@@ -53,8 +53,9 @@ func on_focus_arr_update() -> void:
 		var card_position:Vector2 = List.get_child(index).position
 		ProfileCard.position.y = card_position.y
 		ProfileCard.data = RESEARCHER_UTIL.get_user_object(hired_lead_researchers_arr[index])
-		ProfileCard.size = Vector2(0, 0)
 		ProfileCard.show()
+		await U.tick()
+		ProfileCard.size.y = 0
 
 
 func _on_visibility_changed() -> void:
