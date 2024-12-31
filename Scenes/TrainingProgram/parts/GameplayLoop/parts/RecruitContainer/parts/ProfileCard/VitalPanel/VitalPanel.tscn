@@ -1,0 +1,93 @@
+[gd_scene load_steps=9 format=3 uid="uid://brrua5mve6jio"]
+
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_osjdb"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/VitalPanel/vital_panel.gd" id="1_s7pmh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dtdwx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m24vm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fi3xk"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vsqhj"]
+bg_color = Color(1, 0.297689, 0.517875, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sqtow"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xa4g"]
+bg_color = Color(2.95042e-05, 0.801167, 0.174004, 1)
+
+[node name="VitalsPanel" type="PanelContainer"]
+offset_right = 159.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dtdwx")
+script = ExtResource("1_s7pmh")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_m24vm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "STRESS"
+label_settings = ExtResource("1_osjdb")
+
+[node name="StressAmount" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "0/10"
+label_settings = ExtResource("1_osjdb")
+horizontal_alignment = 2
+
+[node name="StressProgressBar" type="ProgressBar" parent="MarginContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+theme_override_styles/background = SubResource("StyleBoxFlat_fi3xk")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vsqhj")
+max_value = 10.0
+step = 1.0
+show_percentage = false
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "SANITY"
+label_settings = ExtResource("1_osjdb")
+
+[node name="SanityAmount" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "0/10"
+label_settings = ExtResource("1_osjdb")
+horizontal_alignment = 2
+
+[node name="SanityProgressBar" type="ProgressBar" parent="MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+theme_override_styles/background = SubResource("StyleBoxFlat_sqtow")
+theme_override_styles/fill = SubResource("StyleBoxFlat_2xa4g")
+max_value = 10.0
+step = 1.0
+show_percentage = false

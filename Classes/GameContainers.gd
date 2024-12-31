@@ -51,6 +51,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_suppress_click(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
@@ -70,7 +71,8 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
-
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
+	
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
 
@@ -108,6 +110,8 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 	camera_settings = new_val
 func on_purchased_base_arr_update(new_val:Array) -> void:
 	purchased_base_arr = new_val	
+func on_purchased_facility_arr_update(new_val:Array) -> void:
+	purchased_facility_arr = new_val
 
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass

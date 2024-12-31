@@ -120,7 +120,7 @@ func generate_researcher() -> Array:
 	var rval:int = U.generate_rand(0, 9)
 	var lval:int = U.generate_rand(0, 9)
 		
-	return [ uid, lname, traits, specialization, rval, lval]
+	return [ uid, lname, traits, specialization, rval, lval, 0, 10]
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
@@ -131,6 +131,8 @@ func get_user_object(val:Array) -> Dictionary:
 	var specializations_list:Array = val[3]
 	var r_val:int = val[4]
 	var l_val:int = val[5]
+	var stress:int = val[6]
+	var sanity:int = val[7] 
 	
 	var lname:String = get_lname(name_val)
 	
@@ -148,7 +150,9 @@ func get_user_object(val:Array) -> Dictionary:
 		"traits": traits,
 		"specializations": specializations,
 		"r_val": r_val,
-		"l_val": l_val
+		"l_val": l_val,
+		"stress": stress,
+		"sanity": sanity
 	}
 # ------------------------------------------------------------------------------
 

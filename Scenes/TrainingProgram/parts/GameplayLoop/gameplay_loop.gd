@@ -1123,7 +1123,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = true #restore_data.is_empty()
+	var no_save:bool = restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes

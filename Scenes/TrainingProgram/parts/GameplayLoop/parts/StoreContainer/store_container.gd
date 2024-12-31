@@ -83,10 +83,12 @@ func _ready() -> void:
 		current_tab = TAB.FACILITY
 		
 	BaseBtn.onClick = func() -> void:
-		current_tab = TAB.BASE_DEVELOPMENT
+		if ROOM_UTIL.get_count(ROOM.TYPE.CONSTRUCTION_YARD, purchased_facility_arr) > 0:
+			current_tab = TAB.BASE_DEVELOPMENT
 	
 	RDBtn.onClick = func() -> void:
-		current_tab = TAB.RESEARCH_AND_DEVELOPMENT
+		if ROOM_UTIL.get_count(ROOM.TYPE.R_AND_D_LAB, purchased_facility_arr) > 0:
+			current_tab = TAB.RESEARCH_AND_DEVELOPMENT
 		
 	TierUnlock.onConfirm = func(data:Dictionary) -> void:
 		tier_unlock_data = {}
@@ -114,6 +116,22 @@ func end() -> void:
 		child.queue_free()
 # --------------------------------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------------------------------
+func on_purchased_facility_arr_update(new_val:Array) -> void:
+	purchased_facility_arr = new_val
+	if !is_node_ready():return
+	var has_rd_prereq:bool = ROOM_UTIL.get_count(ROOM.TYPE.R_AND_D_LAB, purchased_facility_arr) > 0 
+	var has_base_prereq:bool = ROOM_UTIL.get_count(ROOM.TYPE.CONSTRUCTION_YARD, purchased_facility_arr) > 0
+	
+	print(has_rd_prereq)
+	
+	RDBtn.is_disabled = !has_rd_prereq
+	RDBtn.icon = SVGS.TYPE.DOT if has_rd_prereq else SVGS.TYPE.LOCK
+	
+	BaseBtn.is_disabled = !has_base_prereq
+	BaseBtn.icon = SVGS.TYPE.DOT if has_base_prereq else SVGS.TYPE.LOCK	
+# --------------------------------------------------------------------------------------------------
+
 # --------------------------------------------------------------------------------------------------			
 func on_tier_unlocked_update(new_val:Dictionary) -> void:
 	super.on_tier_unlocked_update(new_val)
@@ -137,6 +155,7 @@ func on_current_tab_update() -> void:
 				var btn_node:BtnBase = TextBtnPreload.instantiate()
 				btn_node.title = item.details.name
 				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.FACILITY][item.id]
+				btn_node.icon = SVGS.TYPE.DOT if tier_unlocked[TIER.TYPE.FACILITY][item.id] else SVGS.TYPE.LOCK
 				btn_node.onClick = func() -> void:
 					if btn_node.is_disabled:
 						tier_unlock_data = ROOM_UTIL.get_tier_item(item.id)
