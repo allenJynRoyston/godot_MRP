@@ -9,11 +9,9 @@ var R_AND_D_LAB:Dictionary = {
 	"placement_restrictions": {
 		"floor": [
 			ROOM.PLACEMENT.SURFACE,
-			ROOM.PLACEMENT.B1
 		],
 		"ring": [
 			ROOM.PLACEMENT.RING_A, 
-			ROOM.PLACEMENT.RING_B
 		]
 	},
 	"get_build_time": func() -> int:

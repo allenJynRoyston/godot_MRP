@@ -35,15 +35,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+show_action_queue = false
 show_dialogue = false
-show_status = true
-show_info = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
 
 [node name="ActionQueueContainer" parent="." instance=ExtResource("5_1tp62")]
 layout_mode = 2
+is_showing = false
+freeze_inputs = true
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
 layout_mode = 2
@@ -60,10 +61,11 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
+theme_override_constants/margin_bottom = 5
 
 [node name="ResourceContainer" parent="." instance=ExtResource("8_asqny")]
 layout_mode = 2
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 5
 
 [node name="LocationContainer" parent="." instance=ExtResource("4_fqcw3")]
 layout_mode = 2
@@ -98,10 +100,13 @@ is_showing = false
 freeze_inputs = true
 
 [node name="StatusContainer" parent="." instance=ExtResource("13_goe6f")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
+is_showing = false
+freeze_inputs = true
 
 [node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]
 layout_mode = 2
@@ -114,6 +119,8 @@ freeze_inputs = true
 layout_mode = 2
 theme_override_constants/margin_left = 275
 theme_override_constants/margin_top = 10
+is_showing = false
+freeze_inputs = true
 
 [node name="WaitContainer" type="PanelContainer" parent="."]
 visible = false

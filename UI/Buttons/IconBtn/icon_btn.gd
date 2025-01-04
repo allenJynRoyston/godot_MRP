@@ -23,6 +23,11 @@ extends BtnBase
 		inactive_color = val
 		on_focus()
 
+@export var flip_h:bool = false : 
+	set(val):
+		flip_h = val
+		on_flip_h_update()
+
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -30,7 +35,8 @@ func _ready() -> void:
 		on_focus(false)
 	else:
 		update_color(static_color)
-
+	
+	on_flip_h_update()
 	on_icon_update()
 # ------------------------------------------------------------------------------
 
@@ -46,6 +52,10 @@ func on_focus(state:bool = is_focused) -> void:
 	if is_node_ready():
 		update_color(active_color if state else inactive_color)
 
+# ------------------------------------------------------------------------------
+func on_flip_h_update() -> void:
+	if !is_node_ready():return
+	Btn.flip_h = flip_h
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	super.on_mouse_click(node, btn, on_hover)

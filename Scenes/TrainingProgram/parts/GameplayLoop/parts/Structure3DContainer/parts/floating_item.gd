@@ -12,6 +12,7 @@ var room_details:Dictionary = {}
 var location:Dictionary = {}
 
 func _ready() -> void:
+	super._ready()
 	on_data_update()
 	hide()
 

@@ -9,8 +9,8 @@ var UNLOCK_FLOOR_2:Dictionary = {
 	"description": "Research item goes here...",
 	"get_build_cost": func() -> Dictionary:
 		return {
-			RESOURCE.TYPE.ENERGY: 10,
-			RESOURCE.TYPE.MONEY: 10
+			RESOURCE.TYPE.ENERGY: 1,
+			RESOURCE.TYPE.MONEY: 1
 		},
 	"get_build_time": func() -> int:
 		return 3,		
@@ -25,8 +25,8 @@ var UNLOCK_FLOOR_3:Dictionary = {
 	"description": "Research item goes here...",
 	"get_build_cost": func() -> Dictionary:
 		return {
-			RESOURCE.TYPE.ENERGY: 50,
-			RESOURCE.TYPE.MONEY: 50
+			RESOURCE.TYPE.ENERGY: 1,
+			RESOURCE.TYPE.MONEY: 1
 		},
 	"get_build_time": func() -> int:
 		return 3,		
@@ -85,6 +85,12 @@ var reference_data:Dictionary = {
 func get_tier_item(id:TIER.VAL) -> Dictionary:
 	return tier_data[id]
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_count(id:BASE.TYPE, arr:Array) -> int:
+	return arr.filter(func(i):return i.data.id == id).size()
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func get_tier_data() -> Dictionary:

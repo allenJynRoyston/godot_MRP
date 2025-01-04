@@ -30,7 +30,7 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ego76"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klekk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wrlxv"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -41,28 +41,28 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vg2ut"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lmad4"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prx1s"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n2l3t"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mjbma"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5yige"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yswbj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a25xl"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -120,7 +120,7 @@ label_settings = ExtResource("3_swtif")
 [node name="ShowHideCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_klekk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wrlxv")
 no_bg = true
 is_checked = true
 
@@ -149,6 +149,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_45se3")
 visible = false
 layout_mode = 2
 icon = 43
+flip_h = false
 is_hoverable = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox"]
@@ -192,25 +193,25 @@ theme_override_constants/separation = 0
 
 [node name="MoraleCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vg2ut")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lmad4")
 no_bg = true
 title = "Morale"
 
 [node name="SecurityCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_prx1s")
+theme_override_styles/panel = SubResource("StyleBoxFlat_n2l3t")
 no_bg = true
 title = "Security"
 
 [node name="ReadinessCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_mjbma")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yige")
 no_bg = true
 title = "Readiness"
 
 [node name="HumeCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yswbj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_a25xl")
 no_bg = true
 title = "Hume"
 

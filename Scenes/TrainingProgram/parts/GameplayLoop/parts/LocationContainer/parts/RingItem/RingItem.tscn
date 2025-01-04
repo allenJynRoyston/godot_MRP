@@ -4,7 +4,7 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_lip7y"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_0y83s"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_7syf1"]
+[sub_resource type="LabelSettings" id="LabelSettings_akoyu"]
 font = ExtResource("2_lip7y")
 font_size = 12
 font_color = Color(0.662745, 0.662745, 0.662745, 1)
@@ -14,17 +14,31 @@ shadow_offset = Vector2(0, 0)
 [node name="RingItem" type="HBoxContainer"]
 custom_minimum_size = Vector2(0, 25)
 size_flags_vertical = 4
-theme_override_constants/separation = 0
+theme_override_constants/separation = 10
 alignment = 1
 script = ExtResource("1_s4yq2")
+
+[node name="IconBtn2" parent="." instance=ExtResource("3_0y83s")]
+layout_mode = 2
+icon = 27
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.768729, 0.768729, 0.768729, 1)
+flip_h = true
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
 size_flags_vertical = 1
 text = "A"
-label_settings = SubResource("LabelSettings_7syf1")
+label_settings = SubResource("LabelSettings_akoyu")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="IconBtn" parent="." instance=ExtResource("3_0y83s")]
+layout_mode = 2
+icon = 27
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.768729, 0.768729, 0.768729, 1)
+flip_h = false
 
 [node name="SelectedBtn" parent="." instance=ExtResource("3_0y83s")]
 visible = false
@@ -33,4 +47,6 @@ layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
 static_color = Color(0.662745, 0.662745, 0.662745, 1)
-is_hoverable = false
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 1)
+flip_h = false

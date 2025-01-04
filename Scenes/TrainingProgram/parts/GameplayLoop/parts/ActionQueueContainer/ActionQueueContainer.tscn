@@ -5,19 +5,19 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rolq4"]
 shader = ExtResource("2_mfivy")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
 shader_parameter/laser_color = Color(1, 0, 0, 1)
-shader_parameter/glow_width = 0.05
-shader_parameter/trail_fade = 0.03
+shader_parameter/glow_width = 0.03
+shader_parameter/trail_fade = 0.5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_sbiep"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehujf"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.054902, 0.054902, 1, 1)
 
 [node name="ActionQueueContainer" type="MarginContainer"]
 size_flags_horizontal = 8

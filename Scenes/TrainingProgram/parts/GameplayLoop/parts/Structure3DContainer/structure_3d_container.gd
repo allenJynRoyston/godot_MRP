@@ -4,11 +4,11 @@ extends GameContainer
 @onready var SelectLocationInstructions:VBoxContainer = $PanelContainer/MarginContainer/SelectLocationInstructions
 @onready var PlacementInstructions:VBoxContainer = $PanelContainer/MarginContainer/PlacementInstructions
 
-@onready var OverlayContainer:Control = $PanelContainer/MarginContainer/OverlayContainer
-@onready var BookmarkedInfo:Control = $PanelContainer/MarginContainer/OverlayContainer/BookmarkedInfo
-@onready var FloatingInfo:Control = $PanelContainer/MarginContainer/OverlayContainer/FloatingInfo
-@onready var TestPoint:Control = $PanelContainer/MarginContainer/OverlayContainer/FloatingInfo/TestPoint
-@onready var LineDrawController:Control = $PanelContainer/MarginContainer/OverlayContainer/LineDrawController
+@onready var OverlayContainer:Control = $OverlayContainer
+@onready var BookmarkedInfo:Control = $OverlayContainer/BookmarkedInfo
+@onready var FloatingInfo:Control = $OverlayContainer/FloatingInfo
+@onready var TestPoint:Control = $OverlayContainer/FloatingInfo/TestPoint
+@onready var LineDrawController:Control = $OverlayContainer/LineDrawController
 
 @onready var RenderLayer1:Node3D = $SubViewport/Rendering
 @onready var RenderLayer2:Node3D = $SubViewport2/Rendering
@@ -171,7 +171,7 @@ func on_process_update(delta:float) -> void:
 		var ref_name:String = bookmarked_rooms[index]
 		var active_room_pos:Vector2 = U.convert_from_normalized_position(FloatingInfo.size, GBL.get_projected_3d_object_normalized_position(ref_name))
 		var floating_node:Control = bookmarked_node_refs[ref_name]
-		floating_node.position = Vector2(OverlayContainer.size.x - 80, (((10 + floating_node.size.y) * index) + 10) )
+		floating_node.position = Vector2(OverlayContainer.size.x - 150, (((10 + floating_node.size.y) * index) + 10) )
 
 	if !floating_node_refs.is_empty():
 		var ref_name:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]

@@ -13,18 +13,16 @@ var is_focused:bool = false
 
 # --------------------------------------	
 func _init() -> void:
-	if Engine.is_editor_hint():
-		return 	
-	if is_node_ready() and "subscribe_to_mouse_pos" in GBL:
-		GBL.subscribe_to_mouse_pos(self)
-	GBL.subscribe_to_mouse_input(self)
-	GBL.subscribe_to_process(self)
+	if Engine.is_editor_hint():return 	
 # --------------------------------------	
 
 # --------------------------------------	
 func _ready() -> void:
 	root_node = find_root(self)
 	is_in_subviewport = find_subviewport(self)
+	GBL.subscribe_to_mouse_pos(self)
+	GBL.subscribe_to_mouse_input(self)
+	GBL.subscribe_to_process(self)	
 # --------------------------------------
 
 # --------------------------------------	

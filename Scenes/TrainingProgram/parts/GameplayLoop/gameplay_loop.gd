@@ -295,6 +295,7 @@ func _ready() -> void:
 		set_physics_process(false)	
 	setup()	
 	
+	
 
 func setup() -> void:
 	# first these
@@ -498,8 +499,8 @@ func set_room_config() -> void:
 				}
 
 	# mark rooms that are already built...
-	new_room_config.floor[1].is_locked = false
-	new_room_config.floor[2].is_locked = false
+	new_room_config.floor[1].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) == 0
+	new_room_config.floor[2].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) == 0
 	#for item in purchased_base_arr:
 		#var details:Dictionary = BASE_UTIL.return_data(item.data.id)
 		#match details.ref:

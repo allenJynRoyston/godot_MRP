@@ -123,8 +123,6 @@ func on_purchased_facility_arr_update(new_val:Array) -> void:
 	var has_rd_prereq:bool = ROOM_UTIL.get_count(ROOM.TYPE.R_AND_D_LAB, purchased_facility_arr) > 0 
 	var has_base_prereq:bool = ROOM_UTIL.get_count(ROOM.TYPE.CONSTRUCTION_YARD, purchased_facility_arr) > 0
 	
-	print(has_rd_prereq)
-	
 	RDBtn.is_disabled = !has_rd_prereq
 	RDBtn.icon = SVGS.TYPE.DOT if has_rd_prereq else SVGS.TYPE.LOCK
 	

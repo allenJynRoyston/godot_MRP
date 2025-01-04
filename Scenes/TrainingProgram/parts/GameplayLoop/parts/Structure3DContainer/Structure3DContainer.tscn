@@ -25,9 +25,9 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="ViewportTexture" id="ViewportTexture_qanbp"]
 viewport_path = NodePath("SubViewport2")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jmu1m"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aok4n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jmu1m"]
 
 [node name="Structure3DContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -42,13 +42,28 @@ script = ExtResource("1_wktvj")
 material = SubResource("ShaderMaterial_vfiyn")
 layout_mode = 2
 texture = SubResource("ViewportTexture_0ghay")
-stretch_mode = 5
+stretch_mode = 6
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_vfiyn")
 layout_mode = 2
 texture = SubResource("ViewportTexture_qanbp")
-stretch_mode = 5
+stretch_mode = 6
+
+[node name="OverlayContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_aok4n")
+
+[node name="LineDrawController" type="Control" parent="OverlayContainer"]
+layout_mode = 2
+script = ExtResource("5_5cekg")
+line_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="FloatingInfo" type="Control" parent="OverlayContainer"]
+layout_mode = 2
+
+[node name="BookmarkedInfo" type="Control" parent="OverlayContainer"]
+layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
@@ -110,21 +125,6 @@ label_settings = ExtResource("4_he2su")
 layout_mode = 2
 text = "[BACKSPACE] to cancel"
 label_settings = ExtResource("4_he2su")
-
-[node name="OverlayContainer" type="PanelContainer" parent="PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_aok4n")
-
-[node name="LineDrawController" type="Control" parent="PanelContainer/MarginContainer/OverlayContainer"]
-layout_mode = 2
-script = ExtResource("5_5cekg")
-line_color = Color(0, 0.964706, 0.278431, 1)
-
-[node name="FloatingInfo" type="Control" parent="PanelContainer/MarginContainer/OverlayContainer"]
-layout_mode = 2
-
-[node name="BookmarkedInfo" type="Control" parent="PanelContainer/MarginContainer/OverlayContainer"]
-layout_mode = 2
 
 [node name="PlacementInstructions" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 visible = false

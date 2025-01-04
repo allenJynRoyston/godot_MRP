@@ -118,7 +118,7 @@ cull_mask = 2
 current = true
 
 [node name="OverviewCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(0.96702, 0.201103, -0.156298, -0.00817742, 0.637856, 0.770112, 0.254568, -0.743436, 0.618464, -14.8231, 33.4633, 47.7386)
+transform = Transform3D(0.96702, 0.201103, -0.156298, -0.00817742, 0.637856, 0.770112, 0.254568, -0.743436, 0.618464, -14.823, 50, 47.739)
 cull_mask = 2
 
 [node name="FloorCamera" type="Camera3D" parent="CameraContainers"]
@@ -202,12 +202,12 @@ layers = 0
 mesh = SubResource("BoxMesh_bu1lt")
 
 [node name="Room1" type="MeshInstance3D" parent="Building/FloorContainer/Surface/rings/RingA/rooms"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.82151, 0.5, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 10)
 layers = 0
 mesh = SubResource("BoxMesh_5g0lb")
 
 [node name="Room2" type="MeshInstance3D" parent="Building/FloorContainer/Surface/rings/RingA/rooms"]
-transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 24.696, 0.5, 6.29903)
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -7.91025, 0.5, 6.29903)
 layers = 0
 mesh = SubResource("BoxMesh_ij4wj")
 

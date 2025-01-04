@@ -50,18 +50,19 @@ func on_is_disabled_update() -> void:
 
 # --------------------------------------
 func update_colors() -> void:
-	var use_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if is_selected else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
-	if is_disabled:
-		use_color = COLOR_UTIL.get_text_color(COLORS.TEXT.DARK)
-	if is_focused:
-		use_color = COLOR_UTIL.get_text_color(COLORS.TEXT.LIGHT)
-	
-	var label_setting:LabelSettings = FloorLabel.label_settings.duplicate()
-	label_setting.font_color = use_color
-	FloorLabel.label_settings = label_setting
-		
-	for node in [SelectedBtn]:
-		node.static_color = use_color
+	pass
+	#var use_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if is_selected else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+	#if is_disabled:
+		#use_color = COLOR_UTIL.get_text_color(COLORS.TEXT.DARK)
+	#if is_focused:
+		#use_color = COLOR_UTIL.get_text_color(COLORS.TEXT.LIGHT)
+	#
+	#var label_setting:LabelSettings = FloorLabel.label_settings.duplicate()
+	#label_setting.font_color = use_color
+	#FloorLabel.label_settings = label_setting
+		#
+	#for node in [SelectedBtn]:
+		#node.static_color = use_color
 # --------------------------------------
 	
 
