@@ -19,7 +19,7 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 @onready var ResourceContainer:MarginContainer = $ResourceContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var StoreContainer:MarginContainer = $StoreContainer
-@onready var ItemSelectContainer:MarginContainer = $ItemSelectContainer
+@onready var ContainmentContainer:MarginContainer = $ContainmentContainer
 @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var StatusContainer:MarginContainer = $StatusContainer
 @onready var BuildCompleteContainer:MarginContainer = $BuildCompleteContainer
@@ -77,10 +77,10 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 		show_recruit = val
 		on_show_recruit_update()		
 
-@export var show_item_select:bool = false : 
+@export var show_containment_status:bool = false : 
 	set(val):
-		show_item_select = val
-		on_show_item_select_update()
+		show_containment_status = val
+		on_show_containment_status_update()
 		
 @export var show_confirm_modal:bool = false : 
 	set(val):
@@ -306,7 +306,7 @@ func setup() -> void:
 	on_show_action_queue_update()
 	on_room_item_status_update()
 	on_show_dialogue_update()
-	on_show_item_select_update()
+	on_show_containment_status_update()
 	on_show_recruit_update()
 	on_show_status_update()
 	on_show_info_update()
@@ -409,7 +409,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, LocationContainer, ActionQueueContainer, 
 		RoomStatusContainer, ActionContainer, ResourceContainer, 
-		DialogueContainer, StoreContainer, ItemSelectContainer, 
+		DialogueContainer, StoreContainer, ContainmentContainer, 
 		ConfirmModal, RecruitmentContainer, StatusContainer,
 		BuildCompleteContainer, InfoContainer
 	].filter(func(node): return node not in exclude)
@@ -630,10 +630,10 @@ func on_show_store_update() -> void:
 		StoreContainer.is_showing = show_store
 		showing_states[StoreContainer] = show_store
 
-func on_show_item_select_update() -> void:
+func on_show_containment_status_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
-		ItemSelectContainer.is_showing = show_item_select
-		showing_states[ItemSelectContainer] = show_item_select
+		ContainmentContainer.is_showing = show_containment_status
+		showing_states[ContainmentContainer] = show_containment_status
 
 func on_show_confirm_modal_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
@@ -710,7 +710,6 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.PLACEMENT:		
 			# sort which rooms can be built in
 			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.id, room_config)
-			
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
 			previous_camera_settings = camera_settings.zoom
 			camera_settings.zoom = CAMERA.ZOOM.RING
@@ -879,8 +878,8 @@ func on_current_contain_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.START:
 			SUBSCRIBE.suppress_click = true
-			await show_only([ResourceContainer, ItemSelectContainer, ActionQueueContainer, RoomStatusContainer])
-			var response:Dictionary = await ItemSelectContainer.user_response
+			await show_only([ResourceContainer, ContainmentContainer, ActionQueueContainer, RoomStatusContainer])
+			var response:Dictionary = await ContainmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.BACK:

@@ -40,7 +40,6 @@ func on_data_update() -> void:
 	
 	match tab:
 		TIER.TYPE.BASE_DEVELOPMENT:
-			print(data)
 			Title.text = data.details.name
 			Description.text = data.details.description
 			DetailImage.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")		

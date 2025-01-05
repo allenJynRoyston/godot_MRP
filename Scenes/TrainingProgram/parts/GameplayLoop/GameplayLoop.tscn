@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://ctsvcqvterlln" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/ResourceContainer.tscn" id="8_asqny"]
 [ext_resource type="PackedScene" uid="uid://d35m668pfaxmj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn" id="9_1cket"]
 [ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
-[ext_resource type="PackedScene" uid="uid://dw4fw5d1x21qf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ItemSelectContainer/ItemSelectContainer.tscn" id="10_v7mb0"]
+[ext_resource type="PackedScene" uid="uid://dw4fw5d1x21qf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/ContainmentContainer.tscn" id="10_v7mb0"]
 [ext_resource type="PackedScene" uid="uid://dqajtnshjj5i7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn" id="11_kf8f5"]
 [ext_resource type="PackedScene" uid="uid://d0dpehr5pt3xc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/RecruitContainer.tscn" id="12_dw62g"]
 [ext_resource type="PackedScene" uid="uid://bjpif0yvapqdn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StatusContainer/StatusContainer.tscn" id="13_goe6f"]
@@ -35,16 +35,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-show_action_queue = false
 show_dialogue = false
+show_status = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
 
 [node name="ActionQueueContainer" parent="." instance=ExtResource("5_1tp62")]
 layout_mode = 2
-is_showing = false
-freeze_inputs = true
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
 layout_mode = 2
@@ -87,8 +85,10 @@ theme_override_constants/margin_top = 75
 is_showing = false
 freeze_inputs = true
 
-[node name="ItemSelectContainer" parent="." instance=ExtResource("10_v7mb0")]
+[node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 is_showing = false
 freeze_inputs = true
 
@@ -100,13 +100,10 @@ is_showing = false
 freeze_inputs = true
 
 [node name="StatusContainer" parent="." instance=ExtResource("13_goe6f")]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
-is_showing = false
-freeze_inputs = true
 
 [node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]
 layout_mode = 2

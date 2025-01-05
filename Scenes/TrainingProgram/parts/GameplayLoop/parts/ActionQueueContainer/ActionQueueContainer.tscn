@@ -5,7 +5,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rolq4"]
 shader = ExtResource("2_mfivy")
-shader_parameter/percentage = 0.0
+shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -20,6 +20,8 @@ viewport_path = NodePath("SubViewport")
 bg_color = Color(0.054902, 0.054902, 1, 1)
 
 [node name="ActionQueueContainer" type="MarginContainer"]
+offset_right = 300.0
+offset_bottom = 1080.0
 size_flags_horizontal = 8
 script = ExtResource("1_bgvki")
 
@@ -29,10 +31,10 @@ layout_mode = 2
 texture = SubResource("ViewportTexture_sbiep")
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(225, 1080)
+size = Vector2i(250, 1080)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 225.0
+offset_right = 250.0
 offset_bottom = 1080.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ehujf")
 

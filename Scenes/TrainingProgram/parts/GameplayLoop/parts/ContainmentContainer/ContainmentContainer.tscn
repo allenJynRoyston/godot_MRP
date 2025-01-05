@@ -1,6 +1,6 @@
 [gd_scene load_steps=18 format=3 uid="uid://dw4fw5d1x21qf"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ItemSelectContainer/item_select_container.gd" id="1_ywnyu"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/item_select_container.gd" id="1_ywnyu"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_aslxc"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_uk8ri"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_vorlv"]

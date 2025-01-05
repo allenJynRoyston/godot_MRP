@@ -1,6 +1,9 @@
 extends Node
 
-enum { 
-	NONE, 
-	ONE, TWO
+enum TYPE { 
+	THE_DOOR
+}
+
+enum RESEARCH_LVL { 
+	INITIAL, ONE, TWO, THREE
 }

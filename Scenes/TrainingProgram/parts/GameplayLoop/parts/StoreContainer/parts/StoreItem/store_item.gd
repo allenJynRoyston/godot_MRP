@@ -8,6 +8,7 @@ extends BtnBase
 @onready var Duration:Control = $MarginContainer/VBoxContainer/HBoxContainer/Duration
 @onready var AlreadyOwned:PanelContainer = $AlreadyOwned
 @onready var InProgress:PanelContainer = $InProgress
+@onready var MaxOwned:PanelContainer = $MaxOwned
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -29,6 +30,7 @@ var data:Dictionary = {} :
 var tab:TIER.TYPE = TIER.TYPE.FACILITY
 
 var resources_data:Dictionary = {}
+var purchased_facility_arr:Array = []
 var purchased_research_arr:Array = []
 var purchased_base_arr:Array = []
 var action_queue_data:Array = []
@@ -40,6 +42,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
@@ -47,6 +50,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 
 func _ready() -> void:
 	super._ready()
@@ -59,6 +63,11 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
+	purchased_facility_arr = new_val
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -88,37 +97,42 @@ func on_data_update() -> void:
 		var can_afford:bool = true
 		var item_data:Array = []
 		var already_owned:bool = false
+		var at_own_limit:bool = false
 		var in_progress:bool = false
 		
 		match(tab):
 			TIER.TYPE.BASE_DEVELOPMENT:
 				var purchased_ids:Array = purchased_base_arr.map(func(i): return i.data.id)
-				var current_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.BASE_ITEM).map(func(i): return i.data.id)
+				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.BASE_ITEM).map(func(i): return i.data.id)
 				
 				already_owned = data.id in purchased_ids
-				in_progress = data.id in current_ids
+				in_progress = data.id in in_progress_ids
 
 				InProgress.show() if in_progress else InProgress.hide()
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
+				MaxOwned.hide()
 				
 				item_data = BASE_UTIL.return_build_cost(data.id)
 							
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
 				var purchased_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
-				var current_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH_ITEM).map(func(i): return i.data.id)
+				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH_ITEM).map(func(i): return i.data.id)
 				
 				already_owned = data.id in purchased_ids
-				in_progress = data.id in current_ids
+				in_progress = data.id in in_progress_ids
 
 				InProgress.show() if in_progress else InProgress.hide()
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
+				MaxOwned.hide()
 				
 				item_data = RD_UTIL.return_build_cost(data.id)
 			TIER.TYPE.FACILITY:
+				at_own_limit = ROOM_UTIL.at_own_limit(data.id, purchased_facility_arr, action_queue_data)
+				item_data = ROOM_UTIL.return_build_cost(data.id)
+				
 				AlreadyOwned.hide()
 				InProgress.hide()
-				
-				item_data = ROOM_UTIL.return_build_cost(data.id)
+				MaxOwned.show() if at_own_limit else MaxOwned.hide()
 			
 		for item in item_data:
 			var amount:int = item.amount
@@ -136,7 +150,7 @@ func on_data_update() -> void:
 				new_node.is_disabled = true
 				can_afford = false
 		
-		if already_owned or in_progress or !can_afford:
+		if already_owned or in_progress or at_own_limit or !can_afford:
 			onClick = func() -> void:
 				pass
 # ------------------------------------------------------------------------------	

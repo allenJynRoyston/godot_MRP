@@ -9,11 +9,15 @@ var R_AND_D_LAB:Dictionary = {
 	"placement_restrictions": {
 		"floor": [
 			ROOM.PLACEMENT.SURFACE,
+			ROOM.PLACEMENT.B1
 		],
 		"ring": [
 			ROOM.PLACEMENT.RING_A, 
+			ROOM.PLACEMENT.RING_B
 		]
 	},
+	"own_limit": func() -> int:
+		return 3,
 	"get_build_time": func() -> int:
 		return 2,
 	"get_build_cost": func() -> Dictionary:
@@ -51,6 +55,8 @@ var CONSTRUCTION_YARD:Dictionary = {
 			ROOM.PLACEMENT.RING_C
 		]
 	},
+	"own_limit": func() -> int:
+		return 1,	
 	"get_build_time": func() -> int:
 		return 5,
 	"get_build_cost": func() -> Dictionary:
@@ -88,6 +94,8 @@ var BARRICKS:Dictionary = {
 			ROOM.PLACEMENT.RING_A
 		]
 	},
+	"own_limit": func() -> int:
+		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
 	"get_build_cost": func() -> Dictionary:
@@ -126,6 +134,8 @@ var DORMITORY:Dictionary = {
 			ROOM.PLACEMENT.RING_B
 		]
 	},
+	"own_limit": func() -> int:
+		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
 	"get_build_cost": func() -> Dictionary:
@@ -163,6 +173,8 @@ var HOLDING_CELLS:Dictionary = {
 			ROOM.PLACEMENT.RING_A
 		]
 	},
+	"own_limit": func() -> int:
+		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
 	"get_build_cost": func() -> Dictionary:
@@ -201,6 +213,8 @@ var STANDARD_LOCKER:Dictionary = {
 			ROOM.PLACEMENT.RING_A
 		]
 	},
+	"own_limit": func() -> int:
+		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
 	"get_build_cost": func() -> Dictionary:
@@ -280,6 +294,18 @@ var tier_data:Dictionary = {
 }
 
 # ------------------------------------------------------------------------------
+func at_own_limit(id:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
+	var room_data:Dictionary = return_data(id)
+	var owned_count:int = arr.filter(func(i): return i.data.id == id).size()
+	var in_progress_count:int = action_queue_data.filter(func(i): return i.data.id == id and i.action == ACTION.BUILD_ITEM).size()
+	
+	if room_data.own_limit.call() == -1:
+		return false
+	else: 
+		return (owned_count + in_progress_count) >= room_data.own_limit.call()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func get_count(id:ROOM.TYPE, arr:Array) -> int:
 	return arr.filter(func(i):return i.data.id == id).size()
 # ------------------------------------------------------------------------------
@@ -322,167 +348,16 @@ func return_data(key:int) -> Dictionary:
 	return reference_data[key]
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func return_placement_instructions(id:int) -> Array:
 	var room_data:Dictionary = return_data(id)
-	var list:Array = []
-	
-	if "floor_blacklist" in room_data.placement_restrictions:
-		var title:String = "Can NOT be built on %s " % ["the " if room_data.placement_restrictions.floor_blacklist.size() == 1 else "floors"] 
-		for index in room_data.placement_restrictions.floor_blacklist.size():
-			var key:int = room_data.placement_restrictions.floor_blacklist[index]
-			var last_in_list:bool = index == room_data.placement_restrictions.floor_blacklist.size() - 1
-			var key_str:String = ""
-			match key:
-				ROOM.PLACEMENT.SURFACE:
-					key_str = "SURFACE"
-				ROOM.PLACEMENT.B1:
-					key_str = "B1"
-				ROOM.PLACEMENT.B2:
-					key_str = "B2"	
-				ROOM.PLACEMENT.B3:
-					key_str = "B3"
-				ROOM.PLACEMENT.B4:
-					key_str = "B4"
-				ROOM.PLACEMENT.B5:
-					key_str = "B5"
-			title += "%s" % [str("[", key_str, "]", '.') if last_in_list else str("[", key_str, "] ")]
-		list.push_back({
-			"title": title, "is_checked": func(current_location:Dictionary) -> bool:
-				return current_location.floor not in room_data.placement_restrictions.floor_blacklist
-		})	
-		
-	if "ring_blacklist" in room_data.placement_restrictions:
-		var title:String = "Can NOT be built in %s " % ["the " if room_data.placement_restrictions.ring_blacklist.size() == 1 else "rings"] 
-		for index in room_data.placement_restrictions.ring_blacklist.size():
-			var key:int = room_data.placement_restrictions.ring_blacklist[index]
-			var last_in_list:bool = index == room_data.placement_restrictions.ring_blacklist.size() - 1
-			var key_str:String = ""
-			match key:
-				ROOM.PLACEMENT.RING_A:
-					key_str = "RING A"
-				ROOM.PLACEMENT.RING_B:
-					key_str = "RING B"
-				ROOM.PLACEMENT.RING_A:
-					key_str = "RING C"	
-			title += "%s" % [str("[", key_str, "]", '.') if last_in_list else str("[", key_str, "] ")]
-		list.push_back({
-			"title": title, "is_checked": func(current_location:Dictionary) -> bool:
-				return current_location.floor not in room_data.placement_restrictions.ring_blacklist
-		})			
-	
-	if "floor" in room_data.placement_restrictions:
-		var title:String = "Can be built on %s " % ["the " if room_data.placement_restrictions.floor.size() == 1 else "floors"] 
-		for index in room_data.placement_restrictions.floor.size():
-			var key:int = room_data.placement_restrictions.floor[index]
-			var last_in_list:bool = index == room_data.placement_restrictions.floor.size() - 1
-			var key_str:String = ""
-			match key:
-				ROOM.PLACEMENT.SURFACE:
-					key_str = "SURFACE"
-				ROOM.PLACEMENT.B1:
-					key_str = "B1"
-				ROOM.PLACEMENT.B2:
-					key_str = "B2"	
-				ROOM.PLACEMENT.B3:
-					key_str = "B3"
-				ROOM.PLACEMENT.B4:
-					key_str = "B4"
-				ROOM.PLACEMENT.B5:
-					key_str = "B5"
-			title += "%s" % [str("[", key_str, "]", '.') if last_in_list else str("[", key_str, "] ")]
-		list.push_back({
-			"title": title, "is_checked": func(current_location:Dictionary) -> bool:
-				return current_location.floor in room_data.placement_restrictions.floor
-		})
-		
-	if "ring" in room_data.placement_restrictions:
-		var title:String = "Can be built in %s " % ["ring" if room_data.placement_restrictions.ring.size() == 1 else "rings"] 
-		for index in room_data.placement_restrictions.ring.size():
-			var key:int = room_data.placement_restrictions.ring[index]
-			var last_in_list:bool = index == room_data.placement_restrictions.ring.size() - 1
-			var key_str:String = ""
-			match key:
-				ROOM.PLACEMENT.RING_A:
-					key_str = "RING A"
-				ROOM.PLACEMENT.RING_B:
-					key_str = "RING B"
-				ROOM.PLACEMENT.RING_A:
-					key_str = "RING C"	
-			title += "%s" % [str("[", key_str, "]", '.') if last_in_list else str("[", key_str, "] ")]
-		list.push_back({
-			"title": title, "is_checked": func(current_location:Dictionary) -> bool:
-				return current_location.ring in room_data.placement_restrictions.ring
-		})		
-		
-	if "room" in room_data.placement_restrictions:
-		var title:String = "Can be built in %s " % ["room" if room_data.placement_restrictions.room.size() == 1 else "rooms"] 
-		for index in room_data.placement_restrictions.room.size():
-			var key:int = room_data.placement_restrictions.room[index]
-			var last_in_list:bool = index == room_data.placement_restrictions.room.size() - 1
-			var key_str:String = ""
-			match key:
-				ROOM.PLACEMENT.R1:
-					key_str = "ROOM 1"
-				ROOM.PLACEMENT.R2:
-					key_str = "ROOM 2"
-				ROOM.PLACEMENT.R3:
-					key_str = "ROOM 3"
-				ROOM.PLACEMENT.R4:
-					key_str = "ROOM 4"
-				ROOM.PLACEMENT.R5:
-					key_str = "ROOM 5"
-			title += "%s" % [str("[", key_str, "]", '.') if last_in_list else str("[", key_str, "] ")]
-		list.push_back({
-			"title": title, "is_checked": func(current_location:Dictionary) -> bool:
-				return current_location.room in room_data.placement_restrictions.room
-		})	
-	return list
+	return SHARED_UTIL.return_placement_instructions(room_data)
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 func return_unavailable_placement(id:int, room_config:Dictionary) -> Array: 
-	var unavailable_list:Array = []
 	var room_data:Dictionary = return_data(id)
-
-	for floor_index in room_config.floor.size():
-		for ring_index in room_config.floor[floor_index].ring.size():
-			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
-				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
-				var config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]	
-				var placement_restrictions:Dictionary = room_data.placement_restrictions
-				
-				# check for blacklists
-				if "floor_blacklist" in room_data.placement_restrictions:
-					if floor_index in room_data.placement_restrictions.floor_blacklist:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "ring_blacklist" in room_data.placement_restrictions:
-					if ring_index in room_data.placement_restrictions.ring_blacklist:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "room_blacklist" in room_data.placement_restrictions:
-					if room_index in room_data.placement_restrictions.room_blacklist:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)				
-							
-				# check for individual f/r/ro			
-				if "floor" in room_data.placement_restrictions:
-					if floor_index not in room_data.placement_restrictions.floor:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "ring" in room_data.placement_restrictions:
-					if ring_index not in room_data.placement_restrictions.ring:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "room" in room_data.placement_restrictions:
-					if room_index not in room_data.placement_restrictions.room:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-	
-	return unavailable_list
+	return SHARED_UTIL.return_unavailable_placement(room_data, room_config)
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
