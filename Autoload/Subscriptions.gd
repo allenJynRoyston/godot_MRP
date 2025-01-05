@@ -342,3 +342,23 @@ func subscribe_to_room_config(node:Node) -> void:
 func unsubscribe_to_room_config(node:Node) -> void:
 	room_config_subscriptions.erase(node)
 # ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
+var scp_data_subscriptions:Array = []
+
+var scp_data:Dictionary = {} : 
+	set(val):
+		scp_data = val 
+		for node in scp_data_subscriptions:
+			if "on_scp_data_update" in node:
+				node.on_scp_data_update.call(scp_data)
+				
+func subscribe_to_scp_data(node:Node) -> void:
+	if node not in scp_data_subscriptions:
+		scp_data_subscriptions.push_back(node)
+		if "on_scp_data_update" in node:
+			node.on_scp_data_update.call(scp_data)
+			
+func unsubscribe_to_scp_data(node:Node) -> void:
+	room_config_subscriptions.erase(node)				
+# ------------------------------------------------------------	

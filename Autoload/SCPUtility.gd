@@ -5,6 +5,8 @@ var THE_DOOR:Dictionary = {
 	"item_id": "001-P",
 	"name": "THE DOOR",
 	"image_src": "res://Media/scps/the_door.png",
+	"offered_on_day": func() -> int:
+		return 1,
 	"description": [
 		{
 			SCP.RESEARCH_LVL.INITIAL: "A basic wooden door that remains locked until a human being gets within 3 feet of the door.  Door then opens up to an unknown location.  If a person goes through the door, it then shuts.  That person is never seen again."

@@ -153,7 +153,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 #
 	match key:
 		"ENTER":
-			print(active_designation, unavailable_rooms)
 			if active_designation not in unavailable_rooms:
 				user_response.emit({"action": ACTION.NEXT})
 			else:

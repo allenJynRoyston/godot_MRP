@@ -121,6 +121,27 @@ var progress_data:Dictionary = {
 		"day": 1,
 		"days_till_new_hires": 7,
 	} 
+
+var scp_data:Dictionary = {
+	"available_list": [
+		{
+			"id": SCP.TYPE.THE_DOOR, "expires_in": 3
+		}
+	],
+	"contained_list": [
+		{
+			"id": SCP.TYPE.THE_DOOR,
+			"progression": {
+				"research_level": 0,
+				"path_unlocks": [
+					
+				]
+			}, 
+		}
+	],
+
+}
+
 var action_queue_data:Array = []
 
 var purchased_facility_arr:Array = [] 
@@ -188,6 +209,7 @@ var room_config:Dictionary = {
 
 var initial_values:Dictionary = {
 	"current_location": current_location,
+	"scp_data": scp_data,
 	"progress_data": progress_data,
 	"action_queue_data": action_queue_data,
 	"purchased_facility_arr": purchased_facility_arr,
@@ -271,6 +293,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.subscribe_to_current_location(self)	
+	SUBSCRIBE.subscribe_to_scp_data(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
@@ -287,6 +310,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
+	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	  
 func _ready() -> void:
 	if !Engine.is_editor_hint():
@@ -580,6 +604,9 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 		
 func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> void:
 	researcher_hire_list = new_val
+
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val
 		
 func on_completed_build_items_update() -> void:
 	if !is_node_ready() or completed_build_items.is_empty(): return
@@ -1097,6 +1124,7 @@ func quicksave() -> void:
 	is_busy = true
 	var save_data = {
 		"progress_data": progress_data,		
+		"scp_data": scp_data,
 		"action_queue_data": action_queue_data,
 		"purchased_base_arr": purchased_base_arr,
 		"purchased_facility_arr": purchased_facility_arr,
@@ -1127,7 +1155,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
+	var no_save:bool = true #restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes
@@ -1136,6 +1164,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 			node.on_reset()
 	
 	SUBSCRIBE.progress_data = initial_values.progress_data if no_save else restore_data.progress_data
+	SUBSCRIBE.scp_data = initial_values.scp_data if no_save else restore_data.scp_data
 	SUBSCRIBE.action_queue_data = initial_values.action_queue_data if no_save else restore_data.action_queue_data	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr if no_save else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr if no_save else restore_data.purchased_base_arr

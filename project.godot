@@ -43,6 +43,7 @@ BASE_UTIL="*res://Autoload/BaseUtility.gd"
 RD_UTIL="*res://Autoload/RDUtility.gd"
 RESOURCE_UTIL="*res://Autoload/ResourceUtility.gd"
 RESEARCHER_UTIL="*res://Autoload/ResearcherUtility.gd"
+SCP_UTIL="*res://Autoload/SCPUtility.gd"
 
 [display]
 
