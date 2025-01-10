@@ -110,7 +110,7 @@ var mouse_pos := Vector2(0, 0) :
 	set(val): 
 		mouse_pos = val;
 		for node in mouse_pos_subscriptions:
-			if "on_mouse_pos_update" in node:
+			if node != null and "on_mouse_pos_update" in node:
 				node.on_mouse_pos_update(mouse_pos)
 
 var next_mouse_icon:MOUSE_ICON = MOUSE_ICON.CURSOR

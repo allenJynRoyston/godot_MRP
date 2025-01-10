@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=18 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_sgoc5"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_417gh"]
@@ -28,17 +28,19 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6drsp"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fp1sl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2tep8"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8v7y6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bay6i"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ht35"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2frcp"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7h4mn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e58q1"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_iibdj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pa75o"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
@@ -47,10 +49,10 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5haqx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vlt7e"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4glh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rxstu"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="StoreContainer" type="MarginContainer"]
@@ -67,7 +69,8 @@ texture = SubResource("ViewportTexture_jvtta")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(955, 504)
+transparent_bg = true
+size = Vector2i(955, 518)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 700.0
@@ -100,13 +103,13 @@ size_flags_horizontal = 3
 
 [node name="FacilityBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fp1sl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2tep8")
 title = "FACILITY"
 
 [node name="RDBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8v7y6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bay6i")
 icon = 43
 is_disabled = true
 title = "RESEARCH AND DEVELOPMENT"
@@ -114,17 +117,21 @@ title = "RESEARCH AND DEVELOPMENT"
 [node name="BaseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5ht35")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2frcp")
 icon = 43
 is_disabled = true
 title = "BASE"
 
 [node name="CloseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7h4mn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_e58q1")
 icon = 16
-title = "Back"
+title = "BACK"
 debug_me = true
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_iibdj")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -193,14 +200,14 @@ alignment = 2
 [node name="PaginationBackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5haqx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_vlt7e")
 icon = 16
 title = "Previous"
 
 [node name="PaginationMoreBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_g4glh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rxstu")
 title = "More"
 
 [node name="TierUnlock" parent="SubViewport/PanelContainer" instance=ExtResource("5_onij2")]

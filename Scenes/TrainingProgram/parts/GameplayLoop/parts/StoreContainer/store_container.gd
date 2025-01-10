@@ -138,6 +138,7 @@ func on_tier_unlocked_update(new_val:Dictionary) -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func on_current_tab_update() -> void:
+	if !is_node_ready():return
 	if tier_unlocked.is_empty():return
 	pagination = 0
 	current_tier = TIER.VAL.ZERO

@@ -3,8 +3,8 @@ extends GameContainer
 
 enum TAB_OPTIONS {LEAD_RESEARCHERS, SUPPORT}
 
-@onready var LeadBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3/LeadBtn
-@onready var SupportBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3/SupportBtn
+@onready var LeadBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer/HBoxContainer3/LeadBtn
+@onready var SupportBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer/HBoxContainer3/SupportBtn
 @onready var BackBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer/BackBtn
 
 @onready var LeadResearchPanel:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/LeadResearcherPanel

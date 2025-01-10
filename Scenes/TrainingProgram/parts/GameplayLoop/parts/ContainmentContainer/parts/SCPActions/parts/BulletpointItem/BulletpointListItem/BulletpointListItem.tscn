@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://cyhe3unultj57"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPActions/parts/BulletpointItem/BulletpointListItem/bulletpoint_list_item.gd" id="1_kmjol"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_xrxux"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_jvk3o"]
+
+[node name="BulletpointListItem" type="HBoxContainer"]
+script = ExtResource("1_kmjol")
+
+[node name="IconBtn" parent="." instance=ExtResource("2_xrxux")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 28
+is_hoverable = false
+
+[node name="ListLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Requires \"A\" sized containment cell."
+label_settings = ExtResource("3_jvk3o")

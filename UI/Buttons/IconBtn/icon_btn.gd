@@ -27,30 +27,36 @@ extends BtnBase
 	set(val):
 		flip_h = val
 		on_flip_h_update()
+		
+
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	if is_hoverable:
-		on_focus(false)
-	else:
-		update_color(static_color)
-	
+	on_is_hoverable_update()
 	on_flip_h_update()
 	on_icon_update()
 # ------------------------------------------------------------------------------
 
+func on_is_hoverable_update() -> void:
+	if !is_node_ready():return
+	super.on_is_hoverable_update()
+	if is_hoverable:
+		on_focus(false)
+	else:
+		update_color(static_color)
+
 # ------------------------------------------------------------------------------
 func update_color(new_color:Color) -> void:
-	if is_node_ready():
-		var shader_material:ShaderMaterial = Btn.material.duplicate()	
-		shader_material.set_shader_parameter("tint_color", new_color )
-		Btn.material = shader_material		
+	if !is_node_ready():return
+	var shader_material:ShaderMaterial = Btn.material.duplicate()	
+	shader_material.set_shader_parameter("tint_color", new_color )
+	Btn.material = shader_material		
 
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
-	if is_node_ready():
-		update_color(active_color if state else inactive_color)
+	if !is_node_ready():return
+	update_color(active_color if state else inactive_color)
 
 # ------------------------------------------------------------------------------
 func on_flip_h_update() -> void:

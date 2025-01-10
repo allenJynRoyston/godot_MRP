@@ -50,6 +50,7 @@ func on_list_type_update() -> void:
 		LIST_TYPE.CONTAINED:
 			AvailableTabBtn.icon = SVGS.TYPE.NONE
 			ContainTabBtn.icon = SVGS.TYPE.DOT
-		
+	
+	Actions.list_type = list_type	
 	List.list_type = list_type
 # --------------------------------------------------------------------------------------------------		

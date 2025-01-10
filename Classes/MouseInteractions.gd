@@ -1,7 +1,11 @@
 extends Control
 class_name MouseInteractions
 
-@export var is_hoverable:bool = true 
+@export var is_hoverable:bool = true : 
+	set(val):
+		is_hoverable = val
+		on_is_hoverable_update()
+		
 @export var debug_me:bool = false
 
 var root_node:Control 
@@ -23,6 +27,8 @@ func _ready() -> void:
 	GBL.subscribe_to_mouse_pos(self)
 	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_process(self)	
+	
+	on_is_hoverable_update()
 # --------------------------------------
 
 # --------------------------------------	
@@ -34,6 +40,10 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)	
 # --------------------------------------	
 
+# --------------------------------------	
+func on_is_hoverable_update() -> void:
+	pass
+# --------------------------------------	
 
 # --------------------------------------	
 func on_mouse_pos_update(new_mouse_pos:Vector2) -> void:

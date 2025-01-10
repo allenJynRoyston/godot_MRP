@@ -17,7 +17,7 @@ shader_parameter/trail_fade = 0.5
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehujf"]
-bg_color = Color(0.054902, 0.054902, 1, 1)
+bg_color = Color(0, 0, 0, 1)
 
 [node name="ActionQueueContainer" type="MarginContainer"]
 offset_right = 300.0
