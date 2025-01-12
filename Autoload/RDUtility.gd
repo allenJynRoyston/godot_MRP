@@ -4,7 +4,7 @@ extends Node
 var RESEARCH_ONE:Dictionary = {
 	"name": "RESEARCH ONE",
 	"tier": TIER.VAL.ZERO,
-	"image_src": "res://Media/rooms/redacted.jpg",
+	"img_src": "res://Media/rooms/redacted.jpg",
 	"description": "Research item goes here...",
 	"get_build_cost": func() -> Dictionary:
 		return {
@@ -18,7 +18,7 @@ var RESEARCH_ONE:Dictionary = {
 var RESEARCH_TWO:Dictionary = {
 	"name": "RESEARCH TWO",
 	"tier": TIER.VAL.ZERO,
-	"image_src": "res://Media/rooms/redacted.jpg",
+	"img_src": "res://Media/rooms/redacted.jpg",
 	"description": "Research item goes here...",
 	"get_build_cost": func() -> Dictionary:
 		return {

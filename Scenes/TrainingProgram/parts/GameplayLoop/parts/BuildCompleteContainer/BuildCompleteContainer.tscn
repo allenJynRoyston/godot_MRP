@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://85i830v26h73"]
+[gd_scene load_steps=12 format=3 uid="uid://85i830v26h73"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildCompleteContainer/build_complete_container.gd" id="1_0s54v"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_4ryf8"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_msxfm"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_knmmc"]
+[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="4_h1hot"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0ckom"]
 shader = ExtResource("2_4ryf8")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -23,6 +24,12 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_j1538"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xyhfs"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ycc7"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
 [node name="BuildCompleteContainer" type="MarginContainer"]
 script = ExtResource("1_0s54v")
 
@@ -33,11 +40,11 @@ texture = SubResource("ViewportTexture_250ra")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(166, 167)
+size = Vector2i(250, 167)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 166.0
-offset_bottom = 157.0
+offset_right = 250.0
+offset_bottom = 167.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ts4d2")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
@@ -68,10 +75,13 @@ label_settings = ExtResource("2_msxfm")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ImageContainer" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+material = ExtResource("4_h1hot")
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 texture = SubResource("PlaceholderTexture2D_j1538")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="DescriptionList" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -84,12 +94,14 @@ alignment = 1
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_xyhfs")
 icon = 8
 title = "Skip"
 
 [node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_knmmc")]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7ycc7")
 icon = 27
 title = "Close"
 

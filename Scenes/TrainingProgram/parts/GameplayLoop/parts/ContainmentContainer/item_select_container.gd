@@ -16,6 +16,8 @@ var list_type:LIST_TYPE = LIST_TYPE.AVAILABLE :
 		list_type = val
 		on_list_type_update()
 
+var selected_scp_data:Dictionary = {}
+
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -35,7 +37,17 @@ func _ready() -> void:
 	List.onUpdate = func(scp_data:Dictionary) -> void:
 		Details.data = scp_data
 		Actions.data = scp_data
-		
+		selected_scp_data = scp_data
+	
+	Actions.onContain = func() -> void:
+		user_response.emit({"action": ACTION.CONTAIN_START, "data": selected_scp_data})
+	
+	Actions.onReject = func() -> void:
+		user_response.emit({"action": ACTION.CONTAIN_REJECT, "data": selected_scp_data})
+	
+	Actions.onCancelTransfer = func() -> void:
+		user_response.emit({"action": ACTION.CONTAIN_TRANSFER_CANCEL, "data": selected_scp_data})
+	
 	on_list_type_update()
 # --------------------------------------------------------------------------------------------------		
 
@@ -53,4 +65,5 @@ func on_list_type_update() -> void:
 	
 	Actions.list_type = list_type	
 	List.list_type = list_type
+	Details.list_type = list_type
 # --------------------------------------------------------------------------------------------------		

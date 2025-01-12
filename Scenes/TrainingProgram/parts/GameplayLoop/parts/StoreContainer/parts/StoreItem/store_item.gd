@@ -92,7 +92,7 @@ func on_data_update() -> void:
 		var can_contain:bool = data.details.can_contain if "can_contain" in data.details else false	
 		ContainIcon.show() if can_contain else ContainIcon.hide()
 		Duration.title = str(data.details.get_build_time.call()) if "get_build_time" in data.details else "N/A"
-		ImageTextureRect.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")
+		ImageTextureRect.texture = CACHE.fetch_image(data.details.img_src if "img_src" in data.details else "")
 		
 		var can_afford:bool = true
 		var item_data:Array = []

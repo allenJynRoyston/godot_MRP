@@ -49,3 +49,27 @@ func paginate_array(array:Array, start_at: int, limit: int) -> Array:
 	
 	return _list
 # ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------		
+func has_diff(new_val:Dictionary, current:Dictionary, list_property:String, properties:Array) -> Dictionary:
+	if list_property not in new_val:
+		return {"error": true}
+		
+	var list:Array = new_val[list_property]
+	for index in list.size():
+		var item:Dictionary = list[index]
+		var val = item
+		for prop in properties:
+			val = val[prop]
+		
+		print(val)
+
+
+	#for index in new_val[property_to_check].size():
+		#var val = new_val[property_to_check][index]
+		#print(val)	
+		
+	return {"error": false}
+# ------------------------------------------------------------------------------		
+	
+	

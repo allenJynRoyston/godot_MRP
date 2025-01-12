@@ -4,7 +4,7 @@ extends Node
 var R_AND_D_LAB:Dictionary = {
 	"name": "R & D LAB",
 	"tier": TIER.VAL.ZERO,
-	"image_src": "res://Media/rooms/barricks.jpg",
+	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Enables research and development.",
 	"placement_restrictions": {
 		"floor": [
@@ -45,7 +45,7 @@ var R_AND_D_LAB:Dictionary = {
 var CONSTRUCTION_YARD:Dictionary = {
 	"name": "CONSTRUCTION YARD",
 	"tier": TIER.VAL.ZERO,
-	"image_src": "res://Media/rooms/barricks.jpg",
+	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Enables base development.",
 	"placement_restrictions": {
 		"floor": [
@@ -84,7 +84,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 var BARRICKS:Dictionary = {
 	"name": "BARRICKS",
 	"tier": TIER.VAL.ZERO,
-	"image_src": "res://Media/rooms/barricks.jpg",
+	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
 	"placement_restrictions": {
 		"floor": [
@@ -124,7 +124,7 @@ var BARRICKS:Dictionary = {
 var DORMITORY:Dictionary = {
 	"name": "DORMITORY",
 	"tier": TIER.VAL.ONE,
-	"image_src": "res://Media/images/redacted.png",
+	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
 	"placement_restrictions": {
 		"floor": [
@@ -163,7 +163,7 @@ var DORMITORY:Dictionary = {
 var HOLDING_CELLS:Dictionary = {
 	"name": "HOLDING CELLS",
 	"tier": TIER.VAL.TWO,
-	"image_src": "res://Media/images/redacted.png",
+	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses D-class personel.",
 	"placement_restrictions": {
 		"floor": [
@@ -203,7 +203,7 @@ var HOLDING_CELLS:Dictionary = {
 var STANDARD_LOCKER:Dictionary = {
 	"name": "STANDARD_LOCKER",
 	"tier": TIER.VAL.ONE,
-	"image_src": "res://Media/images/redacted.png",
+	"img_src": "res://Media/images/redacted.png",
 	"description": "A basic room with a high security lock.",
 	"placement_restrictions": {
 		"floor_blacklist": [
@@ -294,10 +294,10 @@ var tier_data:Dictionary = {
 }
 
 # ------------------------------------------------------------------------------
-func at_own_limit(id:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
-	var room_data:Dictionary = return_data(id)
-	var owned_count:int = arr.filter(func(i): return i.data.id == id).size()
-	var in_progress_count:int = action_queue_data.filter(func(i): return i.data.id == id and i.action == ACTION.BUILD_ITEM).size()
+func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
+	var room_data:Dictionary = return_data(ref)
+	var owned_count:int = arr.filter(func(i): return i.data.ref == ref).size()
+	var in_progress_count:int = action_queue_data.filter(func(i): return i.data.ref == ref and i.action == ACTION.BUILD_ITEM).size()
 	
 	if room_data.own_limit.call() == -1:
 		return false
@@ -345,6 +345,7 @@ func get_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -
 
 # ------------------------------------------------------------------------------
 func return_data(key:int) -> Dictionary:
+	reference_data[key].ref = key
 	return reference_data[key]
 # ------------------------------------------------------------------------------
 

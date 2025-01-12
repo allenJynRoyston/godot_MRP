@@ -42,7 +42,7 @@ func on_data_update() -> void:
 		TIER.TYPE.BASE_DEVELOPMENT:
 			Title.text = data.details.name
 			Description.text = data.details.description
-			DetailImage.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")		
+			DetailImage.texture = CACHE.fetch_image(data.details.img_src if "img_src" in data.details else "")		
 			
 			Effects.hide()
 			OperatingCosts.hide()
@@ -51,7 +51,7 @@ func on_data_update() -> void:
 		TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
 			Title.text = data.details.name
 			Description.text = data.details.description
-			DetailImage.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")		
+			DetailImage.texture = CACHE.fetch_image(data.details.img_src if "img_src" in data.details else "")		
 			
 			Effects.hide()
 			OperatingCosts.hide()
@@ -60,7 +60,7 @@ func on_data_update() -> void:
 		TIER.TYPE.FACILITY:
 			Title.text = data.details.name
 			Description.text = data.details.description
-			DetailImage.texture = CACHE.fetch_image(data.details.image_src if "image_src" in data.details else "")		
+			DetailImage.texture = CACHE.fetch_image(data.details.img_src if "img_src" in data.details else "")		
 			ConstructionTime.text = "Construction time: %s days" % [str(data.details.get_build_time.call())]
 			
 			var capacity_list:Array = ROOM_UTIL.return_resource_capacity(data.id)

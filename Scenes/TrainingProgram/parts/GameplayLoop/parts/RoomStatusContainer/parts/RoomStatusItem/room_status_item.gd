@@ -107,7 +107,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 	if !data.room_data.is_empty():
 		var room_data:Dictionary = data.room_data.get_room_data.call()
 		RoomNameLabel.text = "%s" % [room_data.name]
-		RoomImage.texture = CACHE.fetch_image(room_data.image_src)
+		RoomImage.texture = CACHE.fetch_image(room_data.img_src)
 		is_empty = false
 
 func on_is_highlighted_update() -> void:

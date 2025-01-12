@@ -13,6 +13,8 @@ extends GameContainer
 @onready var RenderLayer1:Node3D = $SubViewport/Rendering
 @onready var RenderLayer2:Node3D = $SubViewport2/Rendering
 
+enum STEPS { OVERVIEW, SELECT_FOOR, SELECT_RING, SELECT_ROOM, FINALIZE }
+
 const FloatingInfoPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/FloatingItem.tscn")
 const CheckboxPreload:PackedScene = preload("res://UI/Buttons/Checkbox/checkbox.tscn")
 
@@ -22,15 +24,22 @@ var tracking_nodes:Array = []
 var unavailable_rooms:Array = []
 var active_designation:String = ""
 
-var show_instructions:bool = false : 
-	set(val):
-		show_instructions = val
-		on_show_instructions_update()
+#var show_instructions:bool = false : 
+	#set(val):
+		#show_instructions = val
+		#on_show_instructions_update()
 
 var placement_instructions:Array = [] : 
 	set(val):
 		placement_instructions = val
 		on_placement_instructions_update()
+		
+var current_step:STEPS = STEPS.OVERVIEW : 
+	set(val):
+		current_step = val
+		on_current_step_update()
+		
+signal wait_for_input
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -52,8 +61,8 @@ func _ready() -> void:
 	super._ready()
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
-	on_show_instructions_update()
 	on_placement_instructions_update()
+	on_current_step_update()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -76,6 +85,15 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
+func select_location() -> Signal:
+	camera_settings.is_locked = true
+	SUBSCRIBE.camera_settings = camera_settings
+				
+	current_step = STEPS.SELECT_FOOR
+	return user_response
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
 func on_placement_instructions_update() -> void:
 	if !is_node_ready():return
 	for child in PlacementInstructions.get_children():
@@ -87,6 +105,8 @@ func on_placement_instructions_update() -> void:
 		new_checkbox.onCondition = item.is_checked
 		new_checkbox.on_condition_check(current_location)
 		PlacementInstructions.add_child(new_checkbox)
+	
+	PlacementInstructions.show() if placement_instructions.size() > 0 else PlacementInstructions.hide()
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -108,13 +128,13 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		child.on_condition_check(current_location)
 # --------------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------
-func on_show_instructions_update() -> void:
-	if !is_node_ready():return
-	SelectLocationInstructions.show() if show_instructions else SelectLocationInstructions.hide()
-	PlacementInstructions.show() if show_instructions else PlacementInstructions.hide()
-# --------------------------------------------------------------------------------------------------	
-	
+## --------------------------------------------------------------------------------------------------
+#func on_show_instructions_update() -> void:
+	#if !is_node_ready():return
+	#SelectLocationInstructions.show() if show_instructions else SelectLocationInstructions.hide()
+	#PlacementInstructions.show() if show_instructions else PlacementInstructions.hide()
+## --------------------------------------------------------------------------------------------------	
+	#
 
 # --------------------------------------------------------------------------------------------------
 func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
@@ -134,6 +154,7 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 			bookmarked_node_refs[ref_name] = new_floating_node
 			bookmarked_node_refs[ref_name].data = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data
 			bookmarked_node_refs[ref_name].location = {"floor": floor_index, "ring": ring_index, "room": room_index}
+	
 	traverse(callback) 
 	
 	LineDrawController.draw_keys = []
@@ -144,21 +165,93 @@ func update_draw_keys() -> void:
 	LineDrawController.draw_keys =  [active_designation] + bookmarked_rooms
 # --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
+func on_current_step_update() -> void:
+	match current_step:
+		# ------------------------------------------------
+		STEPS.OVERVIEW:
+			SelectLocationInstructions.hide()
+			PlacementInstructions.hide()
+			
+			camera_settings.zoom = CAMERA.ZOOM.OVERVIEW
+		# ------------------------------------------------
+		STEPS.SELECT_FOOR:
+			SelectLocationInstructions.show()
+			
+			camera_settings.zoom = CAMERA.ZOOM.FLOOR
+			SUBSCRIBE.camera_settings = camera_settings
+			var key:String = await wait_for_input
+			match key:
+				"ENTER":
+					current_step = STEPS.SELECT_RING
+				"BACK":
+					user_response.emit({"action": ACTION.BACK})
+					current_step = STEPS.OVERVIEW
+		# ------------------------------------------------
+		STEPS.SELECT_RING:
+			SelectLocationInstructions.show()
+			
+			camera_settings.zoom = CAMERA.ZOOM.RING
+			SUBSCRIBE.camera_settings = camera_settings
+			var key:String = await wait_for_input
+			match key:
+				"ENTER":
+					current_step = STEPS.SELECT_ROOM
+				"BACK":
+					current_step = STEPS.SELECT_FOOR
+		# ------------------------------------------------
+		STEPS.SELECT_ROOM:
+			SelectLocationInstructions.show()
+			
+			camera_settings.zoom = CAMERA.ZOOM.RM
+			SUBSCRIBE.camera_settings = camera_settings
+			var key:String = await wait_for_input
+			match key:
+				"ENTER":
+					current_step = STEPS.FINALIZE
+				"BACK":
+					current_step = STEPS.SELECT_RING
+		# ------------------------------------------------
+		STEPS.FINALIZE:
+			user_response.emit({"action": ACTION.NEXT})
+			current_step = STEPS.OVERVIEW
+		
+# --------------------------------------------------------------------------------------------------		
+
 # --------------------------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or current_location.is_empty():return
+	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue():return
 
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
-#
+	
 	match key:
+		"W":
+			current_location.ring += 1
+			if current_location.ring > room_config.floor[current_location.floor].ring.size() - 1:
+				current_location.ring =  room_config.floor[current_location.floor].ring.size() - 1
+			SUBSCRIBE.current_location = current_location
+		"S":
+			current_location.ring -= 1
+			if current_location.ring < 0:
+				current_location.ring = 0
+			SUBSCRIBE.current_location = current_location		
+		"D":
+			current_location.room += 1
+			if current_location.room > room_config.floor[current_location.floor].ring[current_location.ring].room.size() - 1:
+				current_location.room = 0
+			SUBSCRIBE.current_location = current_location
+		"A":
+			current_location.room -= 1
+			if current_location.room < 0:
+				current_location.room = room_config.floor[current_location.floor].ring[current_location.ring].room.size() - 1
+			SUBSCRIBE.current_location = current_location		
+		
+		
 		"ENTER":
-			if active_designation not in unavailable_rooms:
-				user_response.emit({"action": ACTION.NEXT})
-			else:
-				print("cannot build here...")
+			wait_for_input.emit(key)
 		"BACK":
-			user_response.emit({"action": ACTION.BACK})
+			wait_for_input.emit(key)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

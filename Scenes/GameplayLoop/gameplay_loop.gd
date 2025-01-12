@@ -88,8 +88,8 @@ extends Control
 			#
 #var containment_data:Dictionary = {
 	#"available": [		
-		#{"item": SCP.ONE, "expires_in": 3},
-		#{"item": SCP.TWO, "expires_in": 10}
+		#{"item": SCP.ONE, "days_until_expire": 3},
+		#{"item": SCP.TWO, "days_until_expire": 10}
 	#],
 	#"active": [
 		##{

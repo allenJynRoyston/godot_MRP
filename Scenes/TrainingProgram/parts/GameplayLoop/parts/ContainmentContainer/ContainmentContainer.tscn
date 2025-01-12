@@ -29,13 +29,13 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c10u1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_304q5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d536s"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6qis"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xknc1"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odmyf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3oln5"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_r0lcp"]
@@ -55,12 +55,12 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(950, 600)
+size = Vector2i(1042, 550)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-custom_minimum_size = Vector2(950, 550)
-offset_right = 950.0
-offset_bottom = 600.0
+custom_minimum_size = Vector2(1000, 550)
+offset_right = 1042.0
+offset_bottom = 550.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_yrrr3")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
@@ -94,17 +94,17 @@ size_flags_horizontal = 3
 
 [node name="AvailableTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_304q5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_d536s")
 title = "AVAILABLE"
 
 [node name="ContainedTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_u6qis")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xknc1")
 title = "IN CONTAINMENT"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_odmyf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3oln5")
 title = "BACK"
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
@@ -117,12 +117,16 @@ size_flags_vertical = 3
 theme_override_constants/separation = 10
 
 [node name="List" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_5uscs")]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
 [node name="Details" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("8_emlcs")]
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
+size_flags_horizontal = 1
 
 [node name="Actions" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("9_wcryc")]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

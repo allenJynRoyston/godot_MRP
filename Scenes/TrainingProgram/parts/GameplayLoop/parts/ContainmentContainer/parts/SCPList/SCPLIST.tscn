@@ -6,11 +6,12 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f5xl8"]
 
 [node name="List" type="PanelContainer"]
+offset_right = 225.0
+offset_bottom = 448.0
 script = ExtResource("1_1e2pm")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10

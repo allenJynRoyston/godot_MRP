@@ -63,28 +63,36 @@ func on_suppress_click_update(new_val:bool) -> void:
 	suppress_click = new_val
 # --------------------------------------------------
 
-
 # --------------------------------------------------
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		match data.action:
+			ACTION.TRANSFER_SCP:
+				item_data = SCP_UTIL.return_data(data.data.ref)
+				TitleBtn.icon = SVGS.TYPE.CONTAIN
+				requirements = []
+				TitleBtn.title = "TRANSFER IN PROGRESS..."
+				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
 			ACTION.RESEARCH_ITEM:
 				item_data = RD_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.RESEARCH
 				requirements = RD_UTIL.return_build_cost(data.data.id) 
 				TitleBtn.title = "RESEARCHING"
+				NameLabel.text = "%s" % [item_data.name]
 			ACTION.BUILD_ITEM:
 				item_data = ROOM_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.BUILD
 				requirements = ROOM_UTIL.return_build_cost(data.data.id) 
 				TitleBtn.title = "BUILDING"
+				NameLabel.text = "%s" % [item_data.name]
 			ACTION.BASE_ITEM:
 				item_data = BASE_UTIL.return_data(data.data.id)
 				TitleBtn.icon = SVGS.TYPE.CONTAIN
 				requirements = BASE_UTIL.return_build_cost(data.data.id) 
 				TitleBtn.title = "CONSTRUCTING"
+				NameLabel.text = "%s" % [item_data.name]
 				
-		NameLabel.text = "%s" % [item_data.name]
+		
 		DaysLeftLabel.text = "%s days left until complete" % [data.build_time - data.days_in_queue]
 		ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
 

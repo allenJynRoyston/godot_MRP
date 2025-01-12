@@ -41,6 +41,7 @@ func on_max_height_update() -> void:
 # --------------------------------------------------------------------------------------------------
 func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 	action_queue_data = new_val	
+	
 	for item_data in action_queue_data:
 		if item_data.data.uid not in uid_refs:
 			var new_node:Control = ActionQueueItemPreload.instantiate()

@@ -8,31 +8,26 @@ var MONEY:Dictionary = {
 }
 
 var ENERGY:Dictionary = {
-	"id": RESOURCE.TYPE.ENERGY,
 	"name": "ENERGY",
 	"icon": SVGS.TYPE.ENERGY
 }
 
 var LEAD_RESEARCHERS:Dictionary = {
-	"id": RESOURCE.TYPE.LEAD_RESEARCHERS,
 	"name": "LEAD RESEARCHER",
 	"icon": SVGS.TYPE.DRS
 }
 
 var STAFF:Dictionary = {
-	"id": RESOURCE.TYPE.STAFF,
 	"name": "STAFF",
 	"icon": SVGS.TYPE.STAFF
 }
 
 var SECURITY:Dictionary = {
-	"id": RESOURCE.TYPE.SECURITY,
 	"name": "SECURITY",
 	"icon": SVGS.TYPE.SECURITY
 }
 
 var DCLASS:Dictionary = {
-	"id": RESOURCE.TYPE.DCLASS,
 	"name": "D CLASS",
 	"icon": SVGS.TYPE.D_CLASS
 }
@@ -48,5 +43,6 @@ var reference_data:Dictionary = {
 
 # ------------------------------------------------------------------------------
 func return_data(key:int) -> Dictionary:
+	reference_data[key].ref = key
 	return reference_data[key]
 # ------------------------------------------------------------------------------

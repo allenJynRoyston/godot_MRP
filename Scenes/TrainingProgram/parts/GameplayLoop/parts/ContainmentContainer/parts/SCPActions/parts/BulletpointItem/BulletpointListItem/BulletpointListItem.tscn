@@ -5,15 +5,19 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_jvk3o"]
 
 [node name="BulletpointListItem" type="HBoxContainer"]
+offset_right = 200.0
+offset_bottom = 20.0
 script = ExtResource("1_kmjol")
 
 [node name="IconBtn" parent="." instance=ExtResource("2_xrxux")]
-custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+size_flags_vertical = 0
 icon = 28
 is_hoverable = false
 
 [node name="ListLabel" type="Label" parent="."]
 layout_mode = 2
-text = "Requires \"A\" sized containment cell."
+size_flags_horizontal = 3
+text = "Lorem ipsum lorem ipsum lorem ipsumlorem ipsum."
 label_settings = ExtResource("3_jvk3o")
+autowrap_mode = 2

@@ -57,7 +57,8 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 func update_icons() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return
-	IndicatorBtn.icon = SVGS.TYPE.LOCK if camera_settings.is_locked else (SVGS.TYPE.DOT if set_camera_to == camera_settings.zoom else SVGS.TYPE.NONE)
+	if "is_locked" in camera_settings:
+		IndicatorBtn.icon = SVGS.TYPE.LOCK if camera_settings.is_locked else (SVGS.TYPE.DOT if set_camera_to == camera_settings.zoom else SVGS.TYPE.NONE)
 	IndicatorBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if set_camera_to == camera_settings.zoom else COLORS.TEXT.INACTIVE)
 	IconBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if set_camera_to == camera_settings.zoom else COLORS.TEXT.INACTIVE)
 # ------------------------------------------------------------------------------	

@@ -7,7 +7,7 @@ enum SHOP_STEPS {
 	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
 	REFUND
 }
-enum CONTAIN_STEPS {HIDE, START, SHOW, CONFIRM_LOCATION, CONFIRM, FINALIZE}
+enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, ON_REJECT, ON_TRANSFER_CANCEL, CONFIRM, FINALIZE}
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
@@ -125,21 +125,24 @@ var progress_data:Dictionary = {
 var scp_data:Dictionary = {
 	"available_list": [
 		{
-			"id": SCP.TYPE.THE_DOOR, "expires_in": 3
+			"ref": SCP.TYPE.THE_DOOR, 
+			"days_until_expire": 3, 
+			"is_new": true,
+			"transfered_status": {
+				"state": false, 
+				"days_till_complete": -1
+			}
 		}
 	],
 	"contained_list": [
-		{
-			"id": SCP.TYPE.THE_DOOR,
-			"progression": {
-				"research_level": 0,
-				"path_unlocks": [
-					
-				]
-			}, 
-		}
+		#{ 
+			#"ref": item.data.ref,
+			#"progression": {
+				#"research_level": 0,
+				#"path_unlocks": []
+			#}
+		#}		
 	],
-
 }
 
 var action_queue_data:Array = []
@@ -240,6 +243,7 @@ var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
 var selected_refund_item:Dictionary = {}
+var selected_contain_item:Dictionary = {} 
 
 var completed_build_items:Array = [] : 
 	set(val):
@@ -478,22 +482,6 @@ func wait_please(duration:float = 0.5) -> void:
 	await U.set_timeout(duration)
 	is_busy = false	
 
-func next_day() -> void:
-	await wait_please()
-	
-	# UPDATE THINGS IN THE ACTION QUEUE
-	var temp:Array = action_queue_data.duplicate().map(func(i): 
-		i.days_in_queue += 1
-		return i
-	)	
-	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
-	SUBSCRIBE.action_queue_data = temp.filter(func(i): return i.days_in_queue < i.build_time)	
-	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	completed_build_items = temp.filter(func(i): return i.days_in_queue == i.build_time)
-	
-	progress_data.day += 1
-	SUBSCRIBE.progress_data = progress_data
-	
 func cancel_action(item_data:Dictionary) -> void:
 	selected_refund_item = item_data
 	current_shop_step = SHOP_STEPS.REFUND
@@ -503,6 +491,31 @@ func update_tenative_location(location:Dictionary) -> void:
 			
 func goto_location(location:Dictionary) -> void:
 	LocationContainer.goto_location(location)
+
+func next_day() -> void:
+	await wait_please()
+	
+	# UPDATE THINGS IN THE ACTION QUEUE
+	var temp:Array = action_queue_data.duplicate().map(func(i): 
+		i.days_in_queue += 1
+		return i
+	)	
+	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
+	SUBSCRIBE.action_queue_data = temp.filter(func(i): return i.days_in_queue < i.build_time)
+	
+	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
+	completed_build_items = temp.filter(func(i): return i.days_in_queue == i.build_time)
+	
+	# ADDS DAY COUNT TO SCP DATA
+	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
+	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
+	SUBSCRIBE.scp_data = scp_data	
+	
+	# ADD TO PROGRESS DATA day count
+	progress_data.day += 1
+	SUBSCRIBE.progress_data = progress_data
+	
+
 	
 func set_room_config() -> void:
 	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
@@ -525,13 +538,6 @@ func set_room_config() -> void:
 	# mark rooms that are already built...
 	new_room_config.floor[1].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) == 0
 	new_room_config.floor[2].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) == 0
-	#for item in purchased_base_arr:
-		#var details:Dictionary = BASE_UTIL.return_data(item.data.id)
-		#match details.ref:
-			#BASE.TYPE.UNLOCK_FLOOR_2:
-				#new_room_config.floor[1].is_locked = false
-			#BASE.TYPE.UNLOCK_FLOOR_3:
-				#new_room_config.floor[2].is_locked = false
 
 	# mark rooms that are already built...
 	for item in purchased_facility_arr:
@@ -560,6 +566,25 @@ func set_room_config() -> void:
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
+
+func cancel_scp_transfer(selected_data:Dictionary) -> void:
+	# resets it in the available list
+	scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
+		if i.ref == selected_data.data.ref:
+			i.transfered_status = {
+				"state": false, 
+				"days_till_complete": -1
+			}
+		return i
+	)
+	SUBSCRIBE.scp_data = scp_data
+	
+	# remove from action queue list
+	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): 
+		return !(i.action == ACTION.TRANSFER_SCP and i.data.ref == selected_data.data.ref)
+	)
+	ActionQueueContainer.remove_from_queue([selected_data])
+	
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -607,7 +632,7 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-		
+	
 func on_completed_build_items_update() -> void:
 	if !is_node_ready() or completed_build_items.is_empty(): return
 	current_build_complete_step = BUILD_COMPLETE_STEPS.START
@@ -736,27 +761,19 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.PLACEMENT:		
 			# sort which rooms can be built in
+			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
 			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.id, room_config)
-			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
-			previous_camera_settings = camera_settings.zoom
-			camera_settings.zoom = CAMERA.ZOOM.RING
-			camera_settings.is_locked = true
-			SUBSCRIBE.camera_settings = camera_settings
-			Structure3dContainer.show_instructions = true
+			Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
 			var structure_response = await Structure3dContainer.user_response
-			Structure3dContainer.show_instructions = false
+
 			Structure3dContainer.placement_instructions = []
 			match structure_response.action:
 				ACTION.BACK:					
-					camera_settings.zoom = previous_camera_settings
-					camera_settings.is_locked = false
 					SUBSCRIBE.camera_settings = camera_settings
 					SUBSCRIBE.unavailable_rooms = []
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
-					camera_settings.zoom = previous_camera_settings
-					camera_settings.is_locked = false
 					SUBSCRIBE.camera_settings = camera_settings
 					SUBSCRIBE.unavailable_rooms = []
 					current_shop_step = SHOP_STEPS.CONFIRM_BUILD
@@ -863,6 +880,8 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.REFUND:
 			match selected_refund_item.action:
+				ACTION.TRANSFER_SCP:
+					ConfirmModal.set_text("Cancel transfer?", "There are no costs for this action.")
 				ACTION.BUILD_ITEM:
 					ConfirmModal.set_text("Cancel build?", "Resources will be refunded.")
 				ACTION.RESEARCH_ITEM:
@@ -874,16 +893,21 @@ func on_current_shop_step_update() -> void:
 			match response.action:
 				ACTION.NEXT:
 					match selected_refund_item.action:
+						ACTION.TRANSFER_SCP:
+							cancel_scp_transfer(selected_refund_item)
 						ACTION.BUILD_ITEM:
 							SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
+							ActionQueueContainer.remove_from_queue([selected_refund_item])
 						ACTION.RESEARCH_ITEM:
 							SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
+							ActionQueueContainer.remove_from_queue([selected_refund_item])
 						ACTION.BASE_ITEM:
 							SUBSCRIBE.resources_data = BASE_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
-							
-					SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
-
-					ActionQueueContainer.remove_from_queue([selected_refund_item])
+							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
+							ActionQueueContainer.remove_from_queue([selected_refund_item])
+					
 					selected_refund_item = {}
 					current_shop_step = SHOP_STEPS.HIDE
 					await restore_default_state()
@@ -904,6 +928,8 @@ func on_current_contain_step_update() -> void:
 			await restore_default_state()
 		# ---------------
 		CONTAIN_STEPS.START:
+			selected_contain_item = {} 
+			
 			SUBSCRIBE.suppress_click = true
 			await show_only([ResourceContainer, ContainmentContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await ContainmentContainer.user_response
@@ -911,21 +937,93 @@ func on_current_contain_step_update() -> void:
 			match response.action:
 				ACTION.BACK:
 					current_contain_step = CONTAIN_STEPS.HIDE
-				ACTION.NEXT:
-					current_contain_step = CONTAIN_STEPS.CONFIRM_LOCATION
+				ACTION.CONTAIN_START:
+					selected_contain_item = response.data
+					current_contain_step = CONTAIN_STEPS.PLACEMENT
+				ACTION.CONTAIN_REJECT:
+					selected_contain_item = response.data
+					current_contain_step = CONTAIN_STEPS.ON_REJECT
+				ACTION.CONTAIN_TRANSFER_CANCEL:
+					selected_contain_item = response.data
+					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
 		# ---------------
-		CONTAIN_STEPS.CONFIRM_LOCATION:
-			await show_only([LocationContainer, ConfirmModal])
+		CONTAIN_STEPS.PLACEMENT:
+			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
+			SUBSCRIBE.unavailable_rooms = [] #ROOM_UTIL.return_unavailable_placement(selected_contain_item.ref, room_config)
+			Structure3dContainer.select_location()
+			Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
+			var structure_response = await Structure3dContainer.user_response
+
+			Structure3dContainer.placement_instructions = []
+			match structure_response.action:
+				ACTION.BACK:					
+					SUBSCRIBE.camera_settings = camera_settings
+					SUBSCRIBE.unavailable_rooms = []
+					current_contain_step = CONTAIN_STEPS.START
+				ACTION.NEXT:
+					SUBSCRIBE.camera_settings = camera_settings
+					SUBSCRIBE.unavailable_rooms = []
+					current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
+		# ---------------			
+		CONTAIN_STEPS.ON_REJECT:
+			ConfirmModal.set_text("Remove SCP from available list?")
+			await show_only([ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.BACK:
 					current_contain_step = CONTAIN_STEPS.START
 				ACTION.NEXT:
+					scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != selected_contain_item.ref)
+					SUBSCRIBE.scp_data = scp_data
+					current_contain_step = CONTAIN_STEPS.START
+		# ---------------
+		CONTAIN_STEPS.ON_TRANSFER_CANCEL:
+			ConfirmModal.set_text("Cancel transfer?")
+			await show_only([ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_contain_step = CONTAIN_STEPS.START
+				ACTION.NEXT:
+					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.data.ref == selected_contain_item.ref)[0]
+					cancel_scp_transfer(action_queue_item)
+					current_contain_step = CONTAIN_STEPS.START
+		# ---------------
+		CONTAIN_STEPS.CONFIRM_PLACEMENT:
+			ConfirmModal.set_text("Contain at this location?")
+			await show_only([LocationContainer, ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_contain_step = CONTAIN_STEPS.PLACEMENT
+				ACTION.NEXT:
 					current_contain_step = CONTAIN_STEPS.FINALIZE
 		# ---------------
 		CONTAIN_STEPS.FINALIZE:
-			# do something with data
-			current_contain_step = CONTAIN_STEPS.HIDE	
+			var scp_details:Dictionary = SCP_UTIL.return_data(selected_contain_item.ref)
+			selected_contain_item.uid = U.generate_uid()
+			# update transfer_state
+			scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
+				if i.ref == selected_contain_item.ref:
+					i.transfered_status = {
+						"state": true, 
+						"days_till_complete": scp_details.containment_time.call()
+					}
+				return i
+			)
+
+			action_queue_data.push_back({
+				"action": ACTION.TRANSFER_SCP,
+				"data": selected_contain_item,
+				"days_in_queue": 0,
+				"build_time": scp_details.containment_time.call(),
+				"location": current_location.duplicate(),
+			})
+			
+			SUBSCRIBE.action_queue_data = action_queue_data
+			SUBSCRIBE.scp_data = scp_data
+
+			current_contain_step = CONTAIN_STEPS.START	
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -1019,6 +1117,27 @@ func on_current_build_complete_step_update() -> void:
 			# UPDATE SAVABLE DATA
 			for item in completed_build_items:
 				match item.action:
+					# ----------------------------
+					ACTION.TRANSFER_SCP:
+						# first, remove from available list...
+						scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != item.data.ref)
+						
+						# then add to contained list...
+						var new_contained_item:Dictionary = { 
+							"ref": item.data.ref,
+							"progression": {
+								"research_level": 0,
+								"path_unlocks": []
+							},
+							"days_in_containment": 0
+						}
+						scp_data.contained_list.push_back(new_contained_item)
+						
+						# TODO: add containment bonuses
+						
+						
+						SUBSCRIBE.scp_data = scp_data
+					# ----------------------------
 					ACTION.BASE_ITEM:
 						purchased_base_arr.push_back({
 							"data": item.data,
@@ -1027,6 +1146,7 @@ func on_current_build_complete_step_update() -> void:
 						resources_data = BASE_UTIL.calc_resource_capacity(item.data.id, resources_data)
 						resources_data = BASE_UTIL.calc_resource_amount(item.data.id, resources_data)
 						SUBSCRIBE.purchased_base_arr = purchased_base_arr
+					# ----------------------------	
 					ACTION.BUILD_ITEM:
 						purchased_facility_arr.push_back({
 							"data": item.data,
@@ -1036,6 +1156,7 @@ func on_current_build_complete_step_update() -> void:
 						resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
 						resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
 						SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+					# ----------------------------
 					ACTION.RESEARCH_ITEM:
 						purchased_research_arr.push_back({
 							"data": item.data
@@ -1082,31 +1203,11 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	print("key: %s   keycode: %s" % [key, keycode])
 	
 	match key:
-		"W":
-			current_location.ring += 1
-			if current_location.ring > room_config.floor[current_location.floor].ring.size() - 1:
-				current_location.ring =  room_config.floor[current_location.floor].ring.size() - 1
-			SUBSCRIBE.current_location = current_location
-		"S":
-			current_location.ring -= 1
-			if current_location.ring < 0:
-				current_location.ring = 0
-			SUBSCRIBE.current_location = current_location		
-		"D":
-			current_location.room += 1
-			if current_location.room > room_config.floor[current_location.floor].ring[current_location.ring].room.size() - 1:
-				current_location.room = 0
-			SUBSCRIBE.current_location = current_location
-		"A":
-			current_location.room -= 1
-			if current_location.room < 0:
-				current_location.room = room_config.floor[current_location.floor].ring[current_location.ring].room.size() - 1
-			SUBSCRIBE.current_location = current_location
 		"SPACEBAR":
 			SUBSCRIBE.current_location = tenative_location
 		"ENTER":
 			if do_not_continue:return
-			print_orphan_nodes()			
+			#print_orphan_nodes()			
 			next_day()
 		"5":
 			if do_not_continue:return
@@ -1176,6 +1277,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
 	SUBSCRIBE.camera_settings = initial_values.camera_settings if no_save else restore_data.camera_settings	
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms if no_save else restore_data.unavailable_rooms
+	
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
 

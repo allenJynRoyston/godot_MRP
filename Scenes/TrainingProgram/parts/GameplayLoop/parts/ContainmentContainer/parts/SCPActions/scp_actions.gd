@@ -16,84 +16,164 @@ var data:Dictionary = {} :
 		data = val
 		on_data_update()
 		
-var available_actions:Array = [
-	{
-		"title": "Contain",
-		"title_icon": SVGS.TYPE.TARGET,
-		"bulletpoints": [
-			{
-				"header": "Placement",
-				"list": [
-					{
-						"icon": SVGS.TYPE.CONTAIN, 
-						"text": func() -> String:
-							return "Requires [] containment cell.",
-					}
-				]
-			},
-			{
-				"header": "Bonus",
-				"list": [
-					{
-						"icon": SVGS.TYPE.MONEY, 
-						"text": func() -> String:
-							return "+[] inital containment bonus",
-					},
-					{
-						"icon": SVGS.TYPE.MONEY, 
-						"text": func() -> String:
-							return "+[] bonus containment",
-					}					
-				]
-			}				
-		],
-		"onClick": func() -> void:
-			print("show map and select location."),
-	},
-	{
-		"title":"Reject",
-		"title_icon": SVGS.TYPE.DELETE,
-		"onClick": func() -> void:
-			print("show map and select location."),
-	}		
-]
+var available_actions:Array = [] : 
+	set(val): 
+		available_actions = val
+
+var purchased_facility_arr:Array = []
+var scp_data:Dictionary = {} 
+
+var onContain:Callable = func() -> void:pass
+var onReject:Callable = func() -> void:pass
+var onCancelTransfer:Callable = func() -> void:pass
 
 # ------------------------------------------------------------
-func _ready() -> void:
-	on_data_update()
-	on_list_type_update()
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_scp_data(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_scp_data(self)
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
 func on_list_type_update() -> void:
 	if !is_node_ready():return
-	update_list()
+	on_data_update()
+	#update_list()
 # ------------------------------------------------------------	
 
+# ------------------------------------------------------------
+func on_purchased_facility_arr_update(new_val:Array) -> void:
+	purchased_facility_arr = new_val
+# ------------------------------------------------------------
+
+# ------------------------------------------------------------
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val 
+	on_data_update()
+# ------------------------------------------------------------
 
 # ------------------------------------------------------------
 func on_data_update() -> void:
 	if !is_node_ready():return
-	update_list()
-# ------------------------------------------------------------
-
-# ------------------------------------------------------------
-func update_list() -> void:
+	
 	for child in ListContainer.get_children():
 		child.queue_free()
 	
-	if data.is_empty():return
+	if data.is_empty():return	
+	
+	var list:Array = []
 	
 	match list_type:
-		LIST_TYPE.CONTAINED:
-			for action_data in available_actions:
-				var new_btn:Control = ActionItemBtnPreload.instantiate()
-				new_btn.data = action_data
-				ListContainer.add_child(new_btn)
-				
 		LIST_TYPE.AVAILABLE:
-			for action_data in available_actions:
-				var new_btn:Control = ActionItemBtnPreload.instantiate()
-				new_btn.data = action_data
-				ListContainer.add_child(new_btn)	
+			var scp_list:Array = scp_data.available_list.filter(func(i): return i.ref == data.ref)
+			if scp_list.size() > 0:
+				var active_scp_data:Dictionary = scp_list[0]
+				
+				var placement_bullepoints:Array = []
+				var bonus_bulletpoints:Array = []
+				var ongoing_bulletspoints:Array = []
+				
+				var initial_containment_rewards:Array = SCP_UTIL.return_initial_containment_rewards.call(data.ref)
+				var ongoing_containment_rewards:Array = SCP_UTIL.return_ongoing_containment_rewards.call(data.ref)
+				var containment_requirements:Array = data.containment_requirements.call()
+				
+				for index in containment_requirements.size():
+					var room_data:Dictionary = ROOM_UTIL.return_data( containment_requirements[index] )
+					var room_count:int = ROOM_UTIL.get_count(index, purchased_facility_arr)
+					placement_bullepoints.push_back({
+						"icon": SVGS.TYPE.CLEAR if room_count < 1 else SVGS.TYPE.CHECKBOX, 
+						"text": func() -> String:
+							return 'Requires [%s] containment cell.  (You have %s available.)' % [str(room_data.name).to_upper(), room_count],
+					})
+
+				for item in initial_containment_rewards:
+					match item.type:
+						"amount": 
+							bonus_bulletpoints.push_back({
+								"icon": item.resource.icon, 
+								"text": func() -> String:
+									return '+%s %s [amount] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+							})
+						"capacity":
+							bonus_bulletpoints.push_back({
+								"icon": item.resource.icon, 
+								"text": func() -> String:
+									return '+%s %s [capacity] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+							})
+
+				for item in ongoing_containment_rewards:
+					match item.type:
+						"amount": 
+							ongoing_bulletspoints.push_back({
+								"icon": item.resource.icon, 
+								"text": func() -> String:
+									return '+%s %s [amount] for each week in containment.' % [item.amount, str(item.resource.name).to_upper()],
+							})
+						"capacity":
+							ongoing_bulletspoints.push_back({
+								"icon": item.resource.icon, 
+								"text": func() -> String:
+									return '+%s %s [capacity] for each week in containment.' % [item.amount, str(item.resource.name).to_upper()],
+							})
+							
+				list = [
+					{
+						"title":"Cancel Transfer",
+						"title_icon": SVGS.TYPE.DELETE,
+						"onClick": func() -> void:
+							onCancelTransfer.call(),
+					}		
+				]  if active_scp_data.transfered_status.state else [
+					{
+						"title": "Contain",
+						"title_icon": SVGS.TYPE.TARGET,
+						"bulletpoints": [
+							{
+								"header": "Placement",
+								"list": placement_bullepoints
+							},
+							{
+								"header": "Initial Bonus",
+								"list": bonus_bulletpoints
+							},
+							{
+								"header": "Ongoing Containment Bonus",
+								"list": ongoing_bulletspoints
+							}								
+						],
+						"onClick": func() -> void:
+							onContain.call(),
+					},
+					{
+						"title":"Reject",
+						"title_icon": SVGS.TYPE.DELETE,
+						"onClick": func() -> void:
+							onReject.call(),
+					}		
+				] 
+			
+		LIST_TYPE.CONTAINED:
+			var scp_list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
+			if scp_list.size() > 0:			
+				var active_scp_data:Dictionary = scp_list[0]
+			# TODO check for any active statuses
+	
+
+	
+
+	update_list(list)
+# ------------------------------------------------------------
+
+# ------------------------------------------------------------
+func update_list(list:Array) -> void:
+	if data.is_empty():return
+	
+	for action_data in list:
+		var new_btn:Control = ActionItemBtnPreload.instantiate()
+		new_btn.data = action_data
+		new_btn.onClick = action_data.onClick
+		ListContainer.add_child(new_btn)	
 # ------------------------------------------------------------

@@ -3,6 +3,7 @@ extends GameContainer
 
 @onready var TitleLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
 @onready var DescriptionList:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DescriptionList
+@onready var ImageContainer:TextureRect = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
 
 @onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
 @onready var SkipBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipBtn
@@ -53,6 +54,11 @@ func update_display() -> void:
 		
 	match data.action:
 		# ------------------------------------------------------------------------------------------
+		ACTION.TRANSFER_SCP:
+			var details:Dictionary = SCP_UTIL.return_data(data.data.ref)
+			TitleLabel.text = "SCP %s successfully transfered" % [details.item_id]
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		# ------------------------------------------------------------------------------------------
 		ACTION.RESEARCH_ITEM:
 			var details:Dictionary = RD_UTIL.return_data(data.data.id)
 			TitleLabel.text = "Research complete: %s" % [details.name]
@@ -77,10 +83,13 @@ func update_display() -> void:
 		# ------------------------------------------------------------------------------------------
 		ACTION.BUILD_ITEM:
 			var room_data:Dictionary = ROOM_UTIL.return_data(data.data.id)
-			TitleLabel.text = "%s Built!" % [room_data.name]
 			var capacity_list:Array = ROOM_UTIL.return_resource_capacity(data.data.id)
 			var amount_list:Array = ROOM_UTIL.return_resource_amount(data.data.id)
+						
+			TitleLabel.text = "%s Built!" % [room_data.name]
+			ImageContainer.texture = CACHE.fetch_image(room_data.img_src)
 			
+		
 			for item in capacity_list:
 				var label_node:Label = Label.new()
 				label_node.label_settings = small_label_preload

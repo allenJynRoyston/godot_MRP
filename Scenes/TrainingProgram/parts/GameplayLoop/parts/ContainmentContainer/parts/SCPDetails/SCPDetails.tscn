@@ -1,10 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://drfnsxi54q7yo"]
+[gd_scene load_steps=9 format=3 uid="uid://drfnsxi54q7yo"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPDetails/scp_details.gd" id="1_msblh"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_x8ud6"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_a402l"]
 [ext_resource type="Texture2D" uid="uid://ci63y150nrl57" path="res://Media/images/safe-euclid-keter-icons-v0-bk4m6sye843c1.png" id="4_683d7"]
 [ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="5_tmkf4"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_gc4eb"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_5dqx0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3r3wf"]
+font = ExtResource("7_5dqx0")
 
 [node name="Details" type="PanelContainer"]
 custom_minimum_size = Vector2(500, 0)
@@ -12,83 +17,83 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_msblh")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="ArticleContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ArticleContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 10
 
-[node name="DetailsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="DetailsContainer" type="VBoxContainer" parent="ArticleContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/DetailsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ArticleContainer/VBoxContainer/DetailsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="Item" type="HBoxContainer" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer"]
+[node name="Item" type="HBoxContainer" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/Item"]
+[node name="Label" type="Label" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/Item"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "ITEM #:"
 label_settings = ExtResource("3_a402l")
 
-[node name="ItemLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/Item"]
+[node name="ItemLabel" type="Label" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/Item"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "SCP-001-P"
 label_settings = ExtResource("2_x8ud6")
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "OBJECT CLASS:"
 label_settings = ExtResource("3_a402l")
 
-[node name="ObjectLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="ObjectLabel" type="Label" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "PENDING"
 label_settings = ExtResource("3_a402l")
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/DetailsContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 texture = ExtResource("4_683d7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ContainmentContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ContainmentContainer" type="VBoxContainer" parent="ArticleContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/ContainmentContainer"]
+[node name="HSeparator" type="HSeparator" parent="ArticleContainer/VBoxContainer/ContainmentContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ContainmentContainer"]
+[node name="Label" type="Label" parent="ArticleContainer/VBoxContainer/ContainmentContainer"]
 layout_mode = 2
 text = "SPECIAL CONTAINMNET PROCEDURES:"
 label_settings = ExtResource("3_a402l")
 
-[node name="ContainmentLabel" type="Label" parent="MarginContainer/VBoxContainer/ContainmentContainer"]
+[node name="ContainmentLabel" type="Label" parent="ArticleContainer/VBoxContainer/ContainmentContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 size_flags_vertical = 1
@@ -96,24 +101,24 @@ text = "Lorem ipsum odor amet, consectetuer adipiscing elit. Ante bibendum conva
 label_settings = ExtResource("3_a402l")
 autowrap_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="DescriptionContainer" type="HBoxContainer" parent="ArticleContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="DescriptionContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="DescriptionContainer" type="VBoxContainer" parent="ArticleContainer/VBoxContainer/DescriptionContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer2/DescriptionContainer"]
+[node name="HSeparator" type="HSeparator" parent="ArticleContainer/VBoxContainer/DescriptionContainer/DescriptionContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/DescriptionContainer"]
+[node name="Label" type="Label" parent="ArticleContainer/VBoxContainer/DescriptionContainer/DescriptionContainer"]
 layout_mode = 2
 text = "DESCRIPTION:"
 label_settings = ExtResource("3_a402l")
 
-[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/DescriptionContainer"]
+[node name="DescriptionLabel" type="Label" parent="ArticleContainer/VBoxContainer/DescriptionContainer/DescriptionContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 size_flags_vertical = 1
@@ -121,9 +126,48 @@ text = "Lorem ipsum odor amet, consectetuer adipiscing elit. Ante bibendum conva
 label_settings = ExtResource("3_a402l")
 autowrap_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="TextureRect" type="TextureRect" parent="ArticleContainer/VBoxContainer/DescriptionContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 texture = ExtResource("5_tmkf4")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="StatusContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="StatusContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconBtn" parent="StatusContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_gc4eb")]
+layout_mode = 2
+icon = 20
+is_hoverable = false
+
+[node name="StatusLabel" type="Label" parent="StatusContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TRANSFER IN PROGRESS"
+label_settings = SubResource("LabelSettings_3r3wf")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IconBtn2" parent="StatusContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_gc4eb")]
+layout_mode = 2
+icon = 20
+is_hoverable = false
+
+[node name="HSeparator" type="HSeparator" parent="StatusContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2

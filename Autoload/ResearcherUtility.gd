@@ -170,10 +170,12 @@ func get_lname(i:int) -> String:
 
 # ------------------------------------------------------------------------------
 func return_trait_data(key:RESEARCHER.TRAITS) -> Dictionary:
+	trait_data[key].ref = key
 	return trait_data[key]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func return_specialization_data(key:RESEARCHER.SPECALIZATION) -> Dictionary:
+	specialization_data[key].ref = key
 	return specialization_data[key]
 # ------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2lrea"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1old"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vu7ry"]
@@ -53,8 +53,7 @@ layout_mode = 2
 [node name="TitleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_1yfsp")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_2lrea")
-is_disabled = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_d1old")
 title = "Title"
 
 [node name="CancelBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_820ko")]

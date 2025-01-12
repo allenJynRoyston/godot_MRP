@@ -5,7 +5,7 @@ var UNLOCK_FLOOR_2:Dictionary = {
 	"ref": BASE.TYPE.UNLOCK_FLOOR_2,
 	"name": "UNLOCK FLOOR 2",
 	"tier": TIER.VAL.ZERO,
-	"image_src": "res://Media/rooms/redacted.jpg",
+	"img_src": "res://Media/rooms/redacted.jpg",
 	"description": "Research item goes here...",
 	"get_build_cost": func() -> Dictionary:
 		return {
@@ -21,7 +21,7 @@ var UNLOCK_FLOOR_3:Dictionary = {
 	"ref": BASE.TYPE.UNLOCK_FLOOR_3,
 	"name": "UNLOCK FLOOR 3",
 	"tier": TIER.VAL.ZERO,
-	"image_src": "res://Media/rooms/redacted.jpg",
+	"img_src": "res://Media/rooms/redacted.jpg",
 	"description": "Research item goes here...",
 	"get_build_cost": func() -> Dictionary:
 		return {
