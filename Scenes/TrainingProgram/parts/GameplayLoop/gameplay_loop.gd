@@ -132,7 +132,16 @@ var scp_data:Dictionary = {
 				"state": false, 
 				"days_till_complete": -1
 			}
-		}
+		},
+		{
+			"ref": SCP.TYPE.THE_BOOK, 
+			"days_until_expire": 5, 
+			"is_new": true,
+			"transfered_status": {
+				"state": false, 
+				"days_till_complete": -1
+			}
+		}		
 	],
 	"contained_list": [
 		#{ 

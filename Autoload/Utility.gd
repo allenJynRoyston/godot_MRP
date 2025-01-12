@@ -51,25 +51,37 @@ func paginate_array(array:Array, start_at: int, limit: int) -> Array:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
-func has_diff(new_val:Dictionary, current:Dictionary, list_property:String, properties:Array) -> Dictionary:
+func dict_has_diff(new_val:Dictionary, current:Dictionary, list_property:String, properties:Array) -> Dictionary:
 	if list_property not in new_val:
 		return {"error": true}
-		
+	
 	var list:Array = new_val[list_property]
+	var index_diff:Array = []
 	for index in list.size():
-		var item:Dictionary = list[index]
-		var val = item
-		for prop in properties:
-			val = val[prop]
-		
-		print(val)
+		if list_property not in current:
+			index_diff.push_back(index)
+		else:
+			if list_property not in current:
+				index_diff.push_back(index)
+			else:
+				var new_item_val = list[index]
+				var current_val = current[list_property][index]
+				
+				for prop in properties:
+					if prop not in new_item_val:
+						return {"error": true}
+					else:
+						if prop not in current_val:
+							index_diff.push_back(index)
+						else:
+							current_val = current_val[prop]
+							new_item_val = new_item_val[prop]
+				
+				if (current_val != new_item_val) and (index not in index_diff):
+					index_diff.push_back(index)
 
-
-	#for index in new_val[property_to_check].size():
-		#var val = new_val[property_to_check][index]
-		#print(val)	
 		
-	return {"error": false}
+	return {"error": false, "updated_index": index_diff}
 # ------------------------------------------------------------------------------		
 	
 	

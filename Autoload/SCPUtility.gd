@@ -64,9 +64,72 @@ var THE_DOOR:Dictionary = {
 		return 3,
 }
 
+var THE_BOOK:Dictionary = {
+	"item_id": "002",
+	"name": "THE BOOK",
+	"img_src": "res://Media/scps/the_door.png",
+	"offered_on_day": func() -> int:
+		return 1,
+	"description": [
+		{
+			SCP.RESEARCH_LVL.INITIAL: "A book that reads out the events the reader in real time."
+		}
+	],
+	"placement_restrictions": {
+		"floor_blacklist": [
+			ROOM.PLACEMENT.SURFACE,
+		],
+		"ring": [
+			ROOM.PLACEMENT.RING_A, 
+		]
+	},
+	
+	"initial_containment": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 20
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					
+				},
+		}	
+	},
+	
+	"ongoing_containment": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 8
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					
+				},
+		}	
+	},
+	#"on_initial_containment_reward": func() -> Dictionary:
+		#return {
+			#RESOURCE.TYPE.MONEY: 50,
+			#RESOURCE.TYPE.STAFF: 5
+		#},
+	"ongoing_containment_reward": func() -> Dictionary:
+		return {
+			RESOURCE.TYPE.MONEY: 10
+		},
+	"containment_requirements": func() -> Array:
+		return [
+			ROOM.TYPE.STANDARD_LOCKER
+		],	
+	"containment_time": func() -> int:
+		return 3,
+}
+
 
 var reference_data:Dictionary = {
 	SCP.TYPE.THE_DOOR: THE_DOOR,
+	SCP.TYPE.THE_BOOK: THE_BOOK
 }
 
 # ------------------------------------------------------------------------------

@@ -61,12 +61,11 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
 	if !is_node_ready():return
 	
+	clear_list()
+	
 	if scp_data.is_empty():
-		clear_list()
 		return
-	print(scp_data)
-	print( U.has_diff(scp_data, previous_scp_data, "available_list", ["is_new"]) )
-		
+
 	match list_type:
 		LIST_TYPE.AVAILABLE:
 			for index in scp_data.available_list.size():
@@ -101,7 +100,7 @@ func on_toggle_active_active(new_active_index:int) -> void:
 			onUpdate.call(SCP_UTIL.return_data(data.ref) if node.is_active else {})
 			
 			if scp_data.available_list[active_index].is_new:
-				scp_data.available_list[active_index].is_new = false
+				scp_data.available_list[active_index].is_new = !scp_data.available_list[active_index].is_new
 				SUBSCRIBE.scp_data = scp_data
 		else:
 			node.is_active = false

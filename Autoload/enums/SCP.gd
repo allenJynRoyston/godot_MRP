@@ -1,7 +1,8 @@
 extends Node
 
 enum TYPE { 
-	THE_DOOR
+	THE_DOOR, 
+	THE_BOOK
 }
 
 enum RESEARCH_LVL { 
