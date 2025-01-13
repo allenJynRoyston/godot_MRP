@@ -61,13 +61,13 @@ func update_display() -> void:
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
 		ACTION.RESEARCH_ITEM:
-			var details:Dictionary = RD_UTIL.return_data(data.data.id)
+			var details:Dictionary = RD_UTIL.return_data(data.data.ref)
 			TitleLabel.text = "Research complete: %s" % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
 		ACTION.BASE_ITEM:
-			var details:Dictionary = BASE_UTIL.return_data(data.data.id)
-			var build_complete_list:Array = BASE_UTIL.return_build_complete(data.data.id)
+			var details:Dictionary = BASE_UTIL.return_data(data.data.ref)
+			var build_complete_list:Array = BASE_UTIL.return_build_complete(data.data.ref)
 
 			TitleLabel.text = "%s Built!" % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
@@ -80,8 +80,8 @@ func update_display() -> void:
 				DescriptionList.add_child(label_node)
 		# ------------------------------------------------------------------------------------------
 		ACTION.BUILD_ITEM:
-			var details:Dictionary = ROOM_UTIL.return_data(data.data.id)
-			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.data.id)
+			var details:Dictionary = ROOM_UTIL.return_data(data.data.ref)
+			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.data.ref)
 
 			TitleLabel.text = "%s Built!" % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)

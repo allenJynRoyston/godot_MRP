@@ -47,7 +47,7 @@ func on_data_update() -> void:
 			ConstructionLabel.text = "Development costs"
 			ConstructionTime.text = "Days required: %s" % [str(data.details.get_build_time.call())]
 			
-			var purchase_cost_list:Array = BASE_UTIL.return_purchase_cost(data.id)
+			var purchase_cost_list:Array = BASE_UTIL.return_purchase_cost(data.ref)
 			for item in purchase_cost_list:
 				var new_node:BtnBase = TextButtonPreload.instantiate()		
 				new_node.icon = item.resource.icon
@@ -65,7 +65,7 @@ func on_data_update() -> void:
 			ConstructionLabel.text = "Research costs"
 			ConstructionTime.text = "Days required: %s" % [str(data.details.get_build_time.call())]
 			
-			var purchase_cost_list:Array = RD_UTIL.return_purchase_cost(data.id)
+			var purchase_cost_list:Array = RD_UTIL.return_purchase_cost(data.ref)
 			for item in purchase_cost_list:
 				var new_node:BtnBase = TextButtonPreload.instantiate()		
 				new_node.icon = item.resource.icon
@@ -83,9 +83,9 @@ func on_data_update() -> void:
 			ConstructionLabel.text = "Construction costs"
 			ConstructionTime.text = "Days required: %s" % [str(data.details.get_build_time.call())]
 			
-			var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(data.id)
-			var purchase_cost_list:Array = ROOM_UTIL.return_purchase_cost(data.id)
-			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.id)
+			var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(data.ref)
+			var purchase_cost_list:Array = ROOM_UTIL.return_purchase_cost(data.ref)
+			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.ref)
 
 			for item in build_complete_list:
 				var new_node:BtnBase = TextButtonPreload.instantiate()		

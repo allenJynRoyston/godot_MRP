@@ -185,6 +185,39 @@ func return_resource_list(details:Dictionary, dict_property:String) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func return_tier_dict(tier_data:Dictionary) -> Dictionary:
+	var list:Array = []
+	for ref in tier_data:
+		list.push_back({
+			"ref": ref, 
+			"details": tier_data[ref] 
+		})
+	return {"list": list}		
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_tier_paginated(reference_data:Dictionary, tier:int, start_at:int, limit:int) -> Dictionary:
+	var list:Array = []
+	
+	for ref in reference_data:
+		list.push_back({
+			"ref": ref, 
+			"details": reference_data[ref] 
+		})
+
+	# filter for tier
+	list = list.filter(func(i): return i.details.tier == tier)
+	
+	var paginated_array:Array = U.paginate_array(list, start_at, limit)
+	
+	return {
+		"list": paginated_array, 
+		"size": list.size(), 
+		"has_more": list.size() > (paginated_array.size() + start_at)
+	}	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func calculate_resources(details:Dictionary, dict_property:String, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
 	var resource_data_copy:Dictionary = resources_data.duplicate(true)
 	

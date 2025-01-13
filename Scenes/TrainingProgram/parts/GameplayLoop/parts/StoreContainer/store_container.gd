@@ -150,44 +150,44 @@ func on_current_tab_update() -> void:
 		TAB.FACILITY:
 			FocusDetails.tab = TIER.TYPE.FACILITY
 			
-			for item in ROOM_UTIL.get_tier_data().list:
+			for item in ROOM_UTIL.get_tier_dict().list:
 				var btn_node:BtnBase = TextBtnPreload.instantiate()
 				btn_node.title = item.details.name
-				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.FACILITY][item.id]
-				btn_node.icon = SVGS.TYPE.DOT if tier_unlocked[TIER.TYPE.FACILITY][item.id] else SVGS.TYPE.LOCK
+				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.FACILITY][item.ref]
+				btn_node.icon = SVGS.TYPE.DOT if tier_unlocked[TIER.TYPE.FACILITY][item.ref] else SVGS.TYPE.LOCK
 				btn_node.onClick = func() -> void:
 					if btn_node.is_disabled:
-						tier_unlock_data = ROOM_UTIL.get_tier_item(item.id)
+						tier_unlock_data = ROOM_UTIL.return_tier_data(item.ref)
 					else:
-						current_tier = item.id
+						current_tier = item.ref
 				TierBtnContainer.add_child(btn_node)
 								
 		TAB.BASE_DEVELOPMENT:
 			FocusDetails.tab = TIER.TYPE.BASE_DEVELOPMENT
 			
-			for item in BASE_UTIL.get_tier_data().list:
+			for item in BASE_UTIL.get_tier_dict().list:
 				var btn_node:BtnBase = TextBtnPreload.instantiate()
 				btn_node.title = item.details.name
-				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.BASE_DEVELOPMENT][item.id]
+				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.BASE_DEVELOPMENT][item.ref]
 				btn_node.onClick = func() -> void:
 					if btn_node.is_disabled:
-						tier_unlock_data = BASE_UTIL.get_tier_item(item.id)
+						tier_unlock_data = BASE_UTIL.return_tier_data(item.ref)
 					else:
-						current_tier = item.id
+						current_tier = item.ref
 				TierBtnContainer.add_child(btn_node)
 							
 		TAB.RESEARCH_AND_DEVELOPMENT:
 			FocusDetails.tab = TIER.TYPE.RESEARCH_AND_DEVELOPMENT
 			
-			for item in RD_UTIL.get_tier_data().list:
+			for item in RD_UTIL.get_tier_dict().list:
 				var btn_node:BtnBase = TextBtnPreload.instantiate()
 				btn_node.title = item.details.name
-				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.RESEARCH_AND_DEVELOPMENT][item.id]
+				btn_node.is_disabled = !tier_unlocked[TIER.TYPE.RESEARCH_AND_DEVELOPMENT][item.ref]
 				btn_node.onClick = func() -> void:
 					if btn_node.is_disabled:
-						tier_unlock_data = RD_UTIL.get_tier_item(item.id)
+						tier_unlock_data = RD_UTIL.return_tier_data(item.ref)
 					else:
-						current_tier = item.id
+						current_tier = item.ref
 				TierBtnContainer.add_child(btn_node)
 	
 	build_list()
@@ -220,11 +220,11 @@ func build_list() -> void:
 		
 	match current_tab:
 		TAB.FACILITY:
-			list_data = ROOM_UTIL.get_list(current_tier, start_at, limit)
+			list_data = ROOM_UTIL.get_paginated_list(current_tier, start_at, limit)
 		TAB.RESEARCH_AND_DEVELOPMENT:
-			list_data = RD_UTIL.get_list(current_tier, start_at, limit)
+			list_data = RD_UTIL.get_paginated_list(current_tier, start_at, limit)
 		TAB.BASE_DEVELOPMENT:
-			list_data = BASE_UTIL.get_list(current_tier, start_at, limit)
+			list_data = BASE_UTIL.get_paginated_list(current_tier, start_at, limit)
 			
 	PaginationBack.hide() if pagination == 0 else PaginationBack.show()
 	PaginationMore.show() if list_data.has_more else PaginationMore.hide()
@@ -251,7 +251,7 @@ func build_list() -> void:
 						"action": ACTION.PURCHASE_BASE_ITEM, 
 						"selected": {
 							"uid": U.generate_uid(),
-							"id": item.id
+							"ref": item.ref
 						}
 					})
 				TAB.FACILITY:
@@ -259,7 +259,7 @@ func build_list() -> void:
 						"action": ACTION.PURCHASE_BUILD_ITEM, 
 						"selected": {
 							"uid": U.generate_uid(),
-							"id": item.id
+							"ref": item.ref
 						}
 					})
 				TAB.RESEARCH_AND_DEVELOPMENT:
@@ -267,7 +267,7 @@ func build_list() -> void:
 						"action": ACTION.PURCHASE_RD_ITEM, 
 						"selected": {
 							"uid": U.generate_uid(),
-							"id": item.id
+							"ref": item.ref
 						}
 					})
 		

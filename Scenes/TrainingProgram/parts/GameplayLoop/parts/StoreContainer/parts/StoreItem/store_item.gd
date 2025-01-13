@@ -102,35 +102,34 @@ func on_data_update() -> void:
 		
 		match(tab):
 			TIER.TYPE.BASE_DEVELOPMENT:
-				var purchased_ids:Array = purchased_base_arr.map(func(i): return i.data.id)
-				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.BASE_ITEM).map(func(i): return i.data.id)
+				var purchased_ids:Array = purchased_base_arr.map(func(i): return i.data.ref)
+				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.BASE_ITEM).map(func(i): return i.data.ref)
 				
-				already_owned = data.id in purchased_ids
-				in_progress = data.id in in_progress_ids
+				already_owned = data.ref in purchased_ids
+				in_progress = data.ref in in_progress_ids
 
 				InProgress.show() if in_progress else InProgress.hide()
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
 				MaxOwned.hide()
 				
-				item_data = BASE_UTIL.return_purchase_cost(data.id)
+				item_data = BASE_UTIL.return_purchase_cost(data.ref)
 							
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
-				var purchased_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
-				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH_ITEM).map(func(i): return i.data.id)
+				var purchased_ids:Array = purchased_research_arr.map(func(i): return i.data.ref)
+				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.RESEARCH_ITEM).map(func(i): return i.data.ref)
 				
-				already_owned = data.id in purchased_ids
-				in_progress = data.id in in_progress_ids
+				already_owned = data.ref in purchased_ids
+				in_progress = data.ref in in_progress_ids
 
 				InProgress.show() if in_progress else InProgress.hide()
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
 				MaxOwned.hide()
 				
-				item_data = RD_UTIL.return_purchase_cost(data.id)
+				item_data = RD_UTIL.return_purchase_cost(data.ref)
 			TIER.TYPE.FACILITY:
-				at_own_limit = ROOM_UTIL.at_own_limit(data.id, purchased_facility_arr, action_queue_data)
-				item_data = ROOM_UTIL.return_purchase_cost(data.id)
-				
-				
+				at_own_limit = ROOM_UTIL.at_own_limit(data.ref, purchased_facility_arr, action_queue_data)
+				item_data = ROOM_UTIL.return_purchase_cost(data.ref)
+
 				AlreadyOwned.hide()
 				InProgress.hide()
 				MaxOwned.show() if at_own_limit else MaxOwned.hide()
@@ -147,7 +146,7 @@ func on_data_update() -> void:
 			if already_owned or in_progress:
 				new_node.is_disabled = true
 				
-			if resources_data[resource.id].amount < amount:
+			if resources_data[resource.ref].amount < amount:
 				new_node.is_disabled = true
 				can_afford = false
 		

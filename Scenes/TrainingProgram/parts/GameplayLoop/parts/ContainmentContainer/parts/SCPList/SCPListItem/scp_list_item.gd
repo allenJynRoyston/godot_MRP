@@ -47,8 +47,11 @@ func on_data_update() -> void:
 	DangerLabel.text = "UNKNOWN"
 	ItemImage.texture = CACHE.fetch_image(scp_data.img_src)
 	
-	NewIcon.show() if data.is_new else NewIcon.hide()
-
+	if "is_new" in data:
+		NewIcon.show() if data.is_new else NewIcon.hide()
+	else:
+		NewIcon.hide()
+	
 	if "days_until_expire" in data:
 		if data.transfer_status.state:
 			StatusLabel.text = "TRANSFER IN PROGRESS"

@@ -34,7 +34,6 @@ var UNLOCK_FLOOR_2:Dictionary = {
 	},		
 }
 
-
 var UNLOCK_FLOOR_3:Dictionary = {
 	"ref": BASE.TYPE.UNLOCK_FLOOR_3,
 	"name": "UNLOCK FLOOR 3",
@@ -71,7 +70,6 @@ var UNLOCK_FLOOR_3:Dictionary = {
 
 var tier_data:Dictionary = {
 	TIER.VAL.ZERO: {
-		"id": TIER.VAL.ZERO,
 		"name": "BASE ZERO",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
@@ -79,7 +77,6 @@ var tier_data:Dictionary = {
 			},
 	},
 	TIER.VAL.ONE: {
-		"id": TIER.VAL.ONE,
 		"name": "BASE ONE",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
@@ -87,7 +84,6 @@ var tier_data:Dictionary = {
 			},
 	},
 	TIER.VAL.TWO: {
-		"id": TIER.VAL.TWO,
 		"name": "BASE TWO",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
@@ -95,7 +91,6 @@ var tier_data:Dictionary = {
 			},
 	},
 	TIER.VAL.THREE: {
-		"id": TIER.VAL.THREE,
 		"name": "BASE THREE",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
@@ -103,7 +98,6 @@ var tier_data:Dictionary = {
 			},
 	},
 	TIER.VAL.FOUR: {
-		"id": TIER.VAL.FOUR,
 		"name": "BASE FOUR",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
@@ -118,8 +112,9 @@ var reference_data:Dictionary = {
 }
 
 # ------------------------------------------------------------------------------
-func get_tier_item(id:TIER.VAL) -> Dictionary:
-	return tier_data[id]
+func return_tier_data(key:TIER.VAL) -> Dictionary:
+	tier_data[key].ref = key
+	return tier_data[key]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -127,61 +122,10 @@ func get_count(id:BASE.TYPE, arr:Array) -> int:
 	return arr.filter(func(i):return i.data.id == id).size()
 # ------------------------------------------------------------------------------
 
-
-# ------------------------------------------------------------------------------
-func get_tier_data() -> Dictionary:
-	var list:Array = []
-	for id in tier_data:
-		list.push_back({
-			"id": id, 
-			"details": tier_data[id]
-		})
-		
-	return {"list": list}	
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func get_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:
-	var list:Array = []
-	
-	for id in reference_data:
-		list.push_back({
-			"id": id, 
-			"details": reference_data[id] 
-		})
-
-	# filter for tier
-	list = list.filter(func(i): return i.details.tier == tier)
-	
-	var paginated_array:Array = U.paginate_array(list, start_at, limit)
-	
-	return {
-		"list": paginated_array, 
-		"size": list.size(), 
-		"has_more": list.size() > (paginated_array.size() + start_at)
-	}
-# ------------------------------------------------------------------------------
-
 # ------------------------------------------------------------------------------
 func return_data(key:int) -> Dictionary:
 	return reference_data[key]
 # ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func return_unavailable_placement(id:int, room_config:Dictionary) -> Array: 
-	var unavailable_list:Array = []
-	var room_data:Dictionary = return_data(id)
-
-	for floor_index in room_config.floor.size():
-		for ring_index in room_config.floor[floor_index].ring.size():
-			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
-				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
-				var config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]				
-				if ring_index not in room_data.placement or !config_data.room_data.is_empty() or !config_data.build_data.is_empty():
-					unavailable_list.push_back(designation)
-	
-	return unavailable_list
-# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func return_purchase_cost(id:int) -> Array:
@@ -201,4 +145,14 @@ func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = true
 # ------------------------------------------------------------------------------
 func calculate_build_complete(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "build_complete", resources_data, add)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_tier_dict() -> Dictionary:
+	return SHARED_UTIL.return_tier_dict(tier_data)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_paginated_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:
+	return SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
 # ------------------------------------------------------------------------------

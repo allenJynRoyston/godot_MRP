@@ -93,11 +93,15 @@ func on_data_update() -> void:
 		btn_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn_node.title = details.name
 		btn_node.icon = details.icon
-		hire_cost += details.hire_cost.call()
 		if details.type == 0:
+			hire_cost += details.hire_cost.call()
 			PosTraitsList.add_child(btn_node)
 		else:
+			hire_cost -= details.hire_cost.call()
 			NegTraitsList.add_child(btn_node)
 			
+	if hire_cost < 0:
+		hire_cost = 2
+		
 	HireBtn.title = str(hire_cost)
 # ------------------------------------

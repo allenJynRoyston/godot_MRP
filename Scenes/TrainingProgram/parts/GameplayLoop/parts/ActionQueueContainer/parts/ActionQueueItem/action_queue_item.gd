@@ -74,21 +74,21 @@ func on_data_update() -> void:
 				TitleBtn.title = "TRANSFER IN PROGRESS..."
 				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
 			ACTION.RESEARCH_ITEM:
-				item_data = RD_UTIL.return_data(data.data.id)
+				item_data = RD_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.RESEARCH
-				requirements = RD_UTIL.return_purchase_cost(data.data.id) 
+				requirements = RD_UTIL.return_purchase_cost(data.data.ref) 
 				TitleBtn.title = "RESEARCHING"
 				NameLabel.text = "%s" % [item_data.name]
 			ACTION.BUILD_ITEM:
-				item_data = ROOM_UTIL.return_data(data.data.id)
+				item_data = ROOM_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.BUILD
-				requirements = ROOM_UTIL.return_purchase_cost(data.data.id) 
+				requirements = ROOM_UTIL.return_purchase_cost(data.data.ref) 
 				TitleBtn.title = "BUILDING"
 				NameLabel.text = "%s" % [item_data.name]
 			ACTION.BASE_ITEM:
-				item_data = BASE_UTIL.return_data(data.data.id)
+				item_data = BASE_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.CONTAIN
-				requirements = BASE_UTIL.return_purchase_cost(data.data.id) 
+				requirements = BASE_UTIL.return_purchase_cost(data.data.ref) 
 				TitleBtn.title = "CONSTRUCTING"
 				NameLabel.text = "%s" % [item_data.name]
 				

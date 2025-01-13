@@ -348,13 +348,6 @@ func color_active_node() -> void:
 		
 		box_mesh_copy.material = RoomMaterialActive if key == current_designation else RoomMaterialInactive
 		
-		if key in unavailable_rooms:
-			box_mesh_copy.material = RoomMaterialUnavailable
-			if key == current_designation:
-				var material_copy:StandardMaterial3D = RoomMaterialUnavailable.duplicate()
-				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-				box_mesh_copy.material = material_copy
-		
 		if key in under_construction_rooms:
 			box_mesh_copy.material = RoomMaterialUnderConstruction
 			if key == current_designation:
@@ -367,7 +360,16 @@ func color_active_node() -> void:
 			if key == current_designation:
 				var material_copy:StandardMaterial3D = RoomMaterialBuilt.duplicate()
 				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+				box_mesh_copy.material = material_copy		
+		
+		if key in unavailable_rooms:
+			box_mesh_copy.material = RoomMaterialUnavailable
+			if key == current_designation:
+				var material_copy:StandardMaterial3D = RoomMaterialUnavailable.duplicate()
+				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
 				box_mesh_copy.material = material_copy
+		
+
 				
 		node.mesh = box_mesh_copy
 # ------------------------------------------------
@@ -472,7 +474,6 @@ func on_process_update(delta: float) -> void:
 	# ensures that building rotation cannot be > 360 degrees
 	normalize_rotation_degrees(Building)
 	
-
 	if camera_settings.zoom == CAMERA.ZOOM.OVERVIEW:
 		Building.rotate_y(0.001)
 	

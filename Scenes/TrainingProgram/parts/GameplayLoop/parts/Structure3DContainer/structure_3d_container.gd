@@ -206,9 +206,10 @@ func on_current_step_update() -> void:
 			camera_settings.zoom = CAMERA.ZOOM.RM
 			SUBSCRIBE.camera_settings = camera_settings
 			var key:String = await wait_for_input
+			
 			match key:
 				"ENTER":
-					current_step = STEPS.FINALIZE
+					current_step = STEPS.FINALIZE if active_designation not in unavailable_rooms else current_step
 				"BACK":
 					current_step = STEPS.SELECT_RING
 		# ------------------------------------------------

@@ -10,7 +10,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vrawy"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2r4hs"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mk51"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s3nd0"]
@@ -39,15 +39,6 @@ theme_override_constants/separation = 5
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Duration" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_120ef")]
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_2r4hs")
-icon = 22
-panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-title = "3"
-is_hoverable = false
-
 [node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -55,9 +46,17 @@ size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 text = "ITEM NAME HERE"
 label_settings = ExtResource("1_w1or2")
-horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="Duration" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_120ef")]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_4mk51")
+icon = 22
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+title = "3"
+is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

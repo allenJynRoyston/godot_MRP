@@ -13,17 +13,13 @@ var THE_DOOR:Dictionary = {
 		}
 	],
 	
-	"placement_restrictions": {
-		"floor_blacklist": [
-			ROOM.PLACEMENT.SURFACE,
-		],
-		"ring": [
-			ROOM.PLACEMENT.RING_A, 
-		]
-	},
-	
 	"containment_time": func() -> int:
 		return 3,	
+
+	"containment_requirements": func() -> Array:
+		return [
+			ROOM.TYPE.STANDARD_LOCKER
+		],	
 	
 	"initial_containment": {
 		"resources": {
@@ -68,14 +64,10 @@ var THE_BOOK:Dictionary = {
 	"containment_time": func() -> int:
 		return 3,
 			
-	"placement_restrictions": {
-		"floor_blacklist": [
-			ROOM.PLACEMENT.SURFACE,
-		],
-		"ring": [
-			ROOM.PLACEMENT.RING_A, 
-		]
-	},
+	"containment_requirements": func() -> Array:
+		return [
+			ROOM.TYPE.STANDARD_LOCKER
+		],	
 	
 	"initial_containment": {
 		"resources": {

@@ -548,9 +548,9 @@ func set_room_config() -> void:
 				var ring:int = item.location.ring
 				var room:int = item.location.room		
 				new_room_config.floor[floor].ring[ring].room[room].build_data = {
-					"id": item.data.id,
+					"ref": item.data.ref,
 					"get_room_data": func() -> Dictionary:
-						return ROOM_UTIL.return_data(item.data.id)
+						return ROOM_UTIL.return_data(item.data.ref)
 				}
 
 	# mark rooms that are already built...
@@ -563,9 +563,9 @@ func set_room_config() -> void:
 		var ring:int = item.location.ring
 		var room:int = item.location.room
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
-			"id": item.data.id,
+			"ref": item.data.ref,
 			"get_room_data": func() -> Dictionary:
-				return ROOM_UTIL.return_data(item.data.id)
+				return ROOM_UTIL.return_data(item.data.ref)
 		}
 		# if facility is built, clear build_data
 		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
@@ -777,9 +777,9 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.PLACEMENT:		
 			# sort which rooms can be built in
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
-			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.id, room_config)
+			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.ref, room_config)
 			Structure3dContainer.select_location()
-			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
+			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
 			var structure_response = await Structure3dContainer.user_response
 
 			Structure3dContainer.placement_instructions = []
@@ -835,8 +835,7 @@ func on_current_shop_step_update() -> void:
 					
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BUILD:
-			var purchase_item_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.id)
-			
+			var purchase_item_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
 			action_queue_data.push_back({
 				"action": ACTION.BUILD_ITEM,
 				"data": selected_shop_item,
@@ -845,12 +844,12 @@ func on_current_shop_step_update() -> void:
 				"location": current_location.duplicate(),
 			})
 			
-			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
-			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.id)
+			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
 
 			action_queue_data.push_back({
 				"action": ACTION.RESEARCH_ITEM,
@@ -859,12 +858,12 @@ func on_current_shop_step_update() -> void:
 				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
 			})
 			
-			SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE			
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM:
-			var purchased_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.id)
+			var purchased_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
 
 			action_queue_data.push_back({
 				"action": ACTION.BASE_ITEM,
@@ -873,13 +872,13 @@ func on_current_shop_step_update() -> void:
 				"build_time": purchased_item_data.get_build_time.call() if "get_build_time" in purchased_item_data else 0,
 			})
 			
-			SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
 			# unlock the tier
-			tier_unlocked[selected_shop_item.tier_type][selected_shop_item.tier_data.id] = true
+			tier_unlocked[selected_shop_item.tier_type][selected_shop_item.tier_data.ref] = true
 			
 			# remove costs
 			var resource_list:Dictionary = selected_shop_item.tier_data.get_unlock_cost.call()
@@ -1165,7 +1164,7 @@ func on_current_build_complete_step_update() -> void:
 							"location": item.location
 						})
 						# update resources_data
-						SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(item.data.id, resources_data)
+						SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(item.data.ref, resources_data)
 						SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
 					# ----------------------------
 					ACTION.RESEARCH_ITEM:
@@ -1273,7 +1272,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = true #restore_data.is_empty()
+	var no_save:bool = restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes
