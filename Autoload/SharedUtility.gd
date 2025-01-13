@@ -118,7 +118,7 @@ func return_placement_instructions(item_data:Dictionary) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_unavailable_placement(item_data:Dictionary, room_config:Dictionary) -> Array: 
+func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary) -> Array: 
 	var unavailable_list:Array = []
 	
 	for floor_index in room_config.floor.size():
@@ -126,41 +126,55 @@ func return_unavailable_placement(item_data:Dictionary, room_config:Dictionary) 
 			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]	
-				var placement_restrictions:Dictionary = item_data.placement_restrictions
 				
-				# if building already exists or has something being constructed
-				if !config_data.room_data.is_empty() or !config_data.build_data.is_empty():
-					if designation not in unavailable_list:
+				# ------------------------------------------
+				if "placement_restrictions" in item_data:
+					var placement_restrictions:Dictionary = item_data.placement_restrictions
+					
+					# if building already exists or has something being constructed
+					if !config_data.room_data.is_empty() or !config_data.build_data.is_empty():
+						if designation not in unavailable_list:
+							unavailable_list.push_back(designation)
+					
+					# check for blacklists
+					if "floor_blacklist" in item_data.placement_restrictions:
+						if floor_index in item_data.placement_restrictions.floor_blacklist:
+							if designation not in unavailable_list:
+								unavailable_list.push_back(designation)
+					if "ring_blacklist" in item_data.placement_restrictions:
+						if ring_index in item_data.placement_restrictions.ring_blacklist:
+							if designation not in unavailable_list:
+								unavailable_list.push_back(designation)
+					if "room_blacklist" in item_data.placement_restrictions:
+						if room_index in item_data.placement_restrictions.room_blacklist:
+							if designation not in unavailable_list:
+								unavailable_list.push_back(designation)				
+								
+					# check for individual f/r/ro			
+					if "floor" in item_data.placement_restrictions:
+						if floor_index not in item_data.placement_restrictions.floor:
+							if designation not in unavailable_list:
+								unavailable_list.push_back(designation)
+					if "ring" in item_data.placement_restrictions:
+						if ring_index not in item_data.placement_restrictions.ring:
+							if designation not in unavailable_list:
+								unavailable_list.push_back(designation)
+					if "room" in item_data.placement_restrictions:
+						if room_index not in item_data.placement_restrictions.room:
+							if designation not in unavailable_list:
+								unavailable_list.push_back(designation)
+				# ------------------------------------------
+					
+				# ------------------------------------------
+				if "containment_requirements" in item_data:
+					var containment_requirements:Array = item_data.containment_requirements
+					
+					if !config_data.room_data.is_empty():
+						if config_data.room_data.ref not in containment_requirements:
+							unavailable_list.push_back(designation)
+					else:
 						unavailable_list.push_back(designation)
-				
-				# check for blacklists
-				if "floor_blacklist" in item_data.placement_restrictions:
-					if floor_index in item_data.placement_restrictions.floor_blacklist:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "ring_blacklist" in item_data.placement_restrictions:
-					if ring_index in item_data.placement_restrictions.ring_blacklist:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "room_blacklist" in item_data.placement_restrictions:
-					if room_index in item_data.placement_restrictions.room_blacklist:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)				
-							
-				# check for individual f/r/ro			
-				if "floor" in item_data.placement_restrictions:
-					if floor_index not in item_data.placement_restrictions.floor:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "ring" in item_data.placement_restrictions:
-					if ring_index not in item_data.placement_restrictions.ring:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-				if "room" in item_data.placement_restrictions:
-					if room_index not in item_data.placement_restrictions.room:
-						if designation not in unavailable_list:
-							unavailable_list.push_back(designation)
-	
+				# ------------------------------------------
 	
 	return unavailable_list
 # ------------------------------------------------------------------------------	

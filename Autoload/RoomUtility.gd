@@ -267,12 +267,9 @@ var STANDARD_LOCKER:Dictionary = {
 	"img_src": "res://Media/images/redacted.png",
 	"description": "A basic room with a high security lock.",
 	"placement_restrictions": {
-		"floor_blacklist": [
+		"floor": [
 			ROOM.PLACEMENT.SURFACE
 		],
-		"ring_blacklist": [
-			ROOM.PLACEMENT.RING_A
-		]
 	},
 	"own_limit": func() -> int:
 		return 10,	
@@ -379,8 +376,8 @@ func return_placement_instructions(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_unavailable_placement(id:int, room_config:Dictionary) -> Array: 
-	return SHARED_UTIL.return_unavailable_placement(return_data(id), room_config)
+func return_unavailable_rooms(id:int, room_config:Dictionary) -> Array: 
+	return SHARED_UTIL.return_unavailable_rooms(return_data(id), room_config)
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

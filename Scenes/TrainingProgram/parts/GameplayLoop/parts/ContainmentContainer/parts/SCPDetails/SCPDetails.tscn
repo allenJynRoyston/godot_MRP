@@ -159,7 +159,7 @@ is_hoverable = false
 [node name="StatusLabel" type="Label" parent="StatusContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "TRANSFER IN PROGRESS"
+text = "CONTAINMENT IN PROGRESS"
 label_settings = SubResource("LabelSettings_3r3wf")
 horizontal_alignment = 1
 vertical_alignment = 1

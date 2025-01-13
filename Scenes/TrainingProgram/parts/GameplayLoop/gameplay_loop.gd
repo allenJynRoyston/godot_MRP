@@ -32,6 +32,8 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
+@export var debug_mode:bool = false 
+
 @export var show_structures:bool = true: 
 	set(val):
 		show_structures = val
@@ -107,6 +109,7 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 # ------------------------------------------------------------------------------ 
 #region SAVABLE DATA
 var previous_camera_settings:CAMERA.ZOOM 
+
 var camera_settings:Dictionary = {
 	"zoom": CAMERA.ZOOM.OVERVIEW,
 	"is_locked": false
@@ -126,7 +129,7 @@ var scp_data:Dictionary = {
 	"available_list": [
 		{
 			"ref": SCP.TYPE.THE_DOOR, 
-			"days_until_expire": 3, 
+			"days_until_expire": 99, 
 			"is_new": true,
 			"transfer_status": {
 				"state": false, 
@@ -136,7 +139,7 @@ var scp_data:Dictionary = {
 		},
 		{
 			"ref": SCP.TYPE.THE_BOOK, 
-			"days_until_expire": 5, 
+			"days_until_expire": 99, 
 			"is_new": true,
 			"transfer_status": {
 				"state": false, 
@@ -174,7 +177,7 @@ var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires()
 var hired_lead_researchers_arr:Array = [] 
 
 var resources_data:Dictionary = { 
-	RESOURCE.TYPE.MONEY: {"amount": 50, "capacity": 9999},
+	RESOURCE.TYPE.MONEY: {"amount": 500, "capacity": 9999},
 	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
 	RESOURCE.TYPE.LEAD_RESEARCHERS: {"amount": 0, "capacity": 0},
 	RESOURCE.TYPE.STAFF: {"amount": 0, "capacity": 0},
@@ -798,7 +801,7 @@ func on_current_shop_step_update() -> void:
 					
 				ACTION.PURCHASE_BUILD_ITEM:
 					selected_shop_item = response.selected
-					SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.ref, room_config)			
+					SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_rooms(selected_shop_item.ref, room_config)			
 					current_shop_step = SHOP_STEPS.PLACEMENT
 				
 				ACTION.PURCHASE_RD_ITEM:
@@ -810,9 +813,10 @@ func on_current_shop_step_update() -> void:
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
 			Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
-			var structure_response = await Structure3dContainer.user_response
-
+			
+			var structure_response:Dictionary = await Structure3dContainer.user_response
 			Structure3dContainer.placement_instructions = []
+			
 			match structure_response.action:
 				ACTION.BACK:					
 					SUBSCRIBE.camera_settings = camera_settings
@@ -993,12 +997,14 @@ func on_current_contain_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
-			SUBSCRIBE.unavailable_rooms = [] #ROOM_UTIL.return_unavailable_placement(selected_contain_item.ref, room_config)
+			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config)
+			
 			Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
-			var structure_response = await Structure3dContainer.user_response
-
+			
+			var structure_response:Dictionary = await Structure3dContainer.user_response
 			Structure3dContainer.placement_instructions = []
+			
 			match structure_response.action:
 				ACTION.BACK:					
 					SUBSCRIBE.camera_settings = camera_settings
@@ -1303,7 +1309,9 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = true #restore_data.is_empty()
+	var no_save:bool = restore_data.is_empty()
+	if debug_mode:
+		no_save = true
 	await restore_default_state()
 	
 	# trigger on reset in nodes

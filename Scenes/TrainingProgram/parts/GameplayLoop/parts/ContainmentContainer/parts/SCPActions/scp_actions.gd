@@ -78,7 +78,7 @@ func on_data_update() -> void:
 				
 				var initial_containment_rewards:Array = SCP_UTIL.return_initial_containment_rewards.call(data.ref)
 				var ongoing_containment_rewards:Array = SCP_UTIL.return_ongoing_containment_rewards.call(data.ref)
-				var containment_requirements:Array = data.containment_requirements.call()
+				var containment_requirements:Array = data.containment_requirements
 				
 				for index in containment_requirements.size():
 					var room_data:Dictionary = ROOM_UTIL.return_data( containment_requirements[index] )

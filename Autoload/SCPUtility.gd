@@ -16,10 +16,9 @@ var THE_DOOR:Dictionary = {
 	"containment_time": func() -> int:
 		return 3,	
 
-	"containment_requirements": func() -> Array:
-		return [
-			ROOM.TYPE.STANDARD_LOCKER
-		],	
+	"containment_requirements": [
+		ROOM.TYPE.STANDARD_LOCKER
+	],	
 	
 	"initial_containment": {
 		"resources": {
@@ -64,10 +63,9 @@ var THE_BOOK:Dictionary = {
 	"containment_time": func() -> int:
 		return 3,
 			
-	"containment_requirements": func() -> Array:
-		return [
-			ROOM.TYPE.STANDARD_LOCKER
-		],	
+	"containment_requirements": [
+		ROOM.TYPE.STANDARD_LOCKER
+	],
 	
 	"initial_containment": {
 		"resources": {
@@ -127,3 +125,8 @@ func calculate_initial_containment_bonus(ref:int, resources_data:Dictionary, add
 func calculate_ongoing_containment(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:
 	return SHARED_UTIL.calculate_resources(return_data(ref), "ongoing_containment", resources_data, add)
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_unavailable_rooms(id:int, room_config:Dictionary) -> Array: 
+	return SHARED_UTIL.return_unavailable_rooms(return_data(id), room_config)
+# ------------------------------------------------------------------------------	
