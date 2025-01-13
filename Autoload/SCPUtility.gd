@@ -12,6 +12,7 @@ var THE_DOOR:Dictionary = {
 			SCP.RESEARCH_LVL.INITIAL: "A basic wooden door that remains locked until a human being gets within 3 feet of the door.  Door then opens up to an unknown location.  If a person goes through the door, it then shuts.  That person is never seen again."
 		}
 	],
+	
 	"placement_restrictions": {
 		"floor_blacklist": [
 			ROOM.PLACEMENT.SURFACE,
@@ -20,6 +21,9 @@ var THE_DOOR:Dictionary = {
 			ROOM.PLACEMENT.RING_A, 
 		]
 	},
+	
+	"containment_time": func() -> int:
+		return 3,	
 	
 	"initial_containment": {
 		"resources": {
@@ -46,22 +50,7 @@ var THE_DOOR:Dictionary = {
 					
 				},
 		}	
-	},
-	#"on_initial_containment_reward": func() -> Dictionary:
-		#return {
-			#RESOURCE.TYPE.MONEY: 50,
-			#RESOURCE.TYPE.STAFF: 5
-		#},
-	"ongoing_containment_reward": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 10
-		},
-	"containment_requirements": func() -> Array:
-		return [
-			ROOM.TYPE.STANDARD_LOCKER
-		],	
-	"containment_time": func() -> int:
-		return 3,
+	}
 }
 
 var THE_BOOK:Dictionary = {
@@ -75,6 +64,10 @@ var THE_BOOK:Dictionary = {
 			SCP.RESEARCH_LVL.INITIAL: "A book that reads out the events the reader in real time."
 		}
 	],
+	
+	"containment_time": func() -> int:
+		return 3,
+			
 	"placement_restrictions": {
 		"floor_blacklist": [
 			ROOM.PLACEMENT.SURFACE,
@@ -109,21 +102,6 @@ var THE_BOOK:Dictionary = {
 				},
 		}	
 	},
-	#"on_initial_containment_reward": func() -> Dictionary:
-		#return {
-			#RESOURCE.TYPE.MONEY: 50,
-			#RESOURCE.TYPE.STAFF: 5
-		#},
-	"ongoing_containment_reward": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 10
-		},
-	"containment_requirements": func() -> Array:
-		return [
-			ROOM.TYPE.STANDARD_LOCKER
-		],	
-	"containment_time": func() -> int:
-		return 3,
 }
 
 
@@ -133,79 +111,27 @@ var reference_data:Dictionary = {
 }
 
 # ------------------------------------------------------------------------------
-func return_data(key:int) -> Dictionary:
-	reference_data[key].ref = key
-	return reference_data[key]
+func return_data(ref:int) -> Dictionary:
+	reference_data[ref].ref = ref
+	return reference_data[ref]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_initial_containment_amount(id:int) -> Array:
-	var rd_data:Dictionary = return_data(id)
-	var list:Array = []
-	if "get_build_cost" in rd_data:
-		var dict:Dictionary = rd_data.get_build_cost.call()
-		for key in dict:	
-			var amount:int = dict[key]
-			list.push_back({
-				"amount": amount, 
-				"resource": RESOURCE_UTIL.return_data(key)
-			})
-			
-	return list
+func return_initial_containment_rewards(ref:int) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(ref), "initial_containment")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_initial_containment_rewards(id:int) -> Array:
-	var details:Dictionary = return_data(id)
-	var list:Array = []
-	
-	if "initial_containment" in details and "resources" in details.initial_containment:
-		if "amount" in details.initial_containment.resources:
-			var dict:Dictionary = details.initial_containment.resources.amount.call()
-			for key in dict:	
-				var amount:int = dict[key]
-				list.push_back({
-					"type": "amount",
-					"amount": amount, 
-					"resource": RESOURCE_UTIL.return_data(key)
-				})
-		if "capacity" in details.initial_containment.resources:
-			var dict:Dictionary = details.initial_containment.resources.capacity.call()
-			for key in dict:	
-				var amount:int = dict[key]
-				list.push_back({
-					"type": "capacity",
-					"amount": amount, 
-					"resource": RESOURCE_UTIL.return_data(key)
-				})
-				
-	return list
+func return_ongoing_containment_rewards(ref:int) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(ref), "ongoing_containment")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_ongoing_containment_rewards(id:int) -> Array:
-	var details:Dictionary = return_data(id)
-	var list:Array = []
-	
-	if "ongoing_containment" in details and "resources" in details.ongoing_containment:
-		if "amount" in details.ongoing_containment.resources:
-			var dict:Dictionary = details.ongoing_containment.resources.amount.call()
-			for key in dict:	
-				var amount:int = dict[key]
-				list.push_back({
-					"type": "amount",
-					"amount": amount, 
-					"resource": RESOURCE_UTIL.return_data(key)
-				})
-		if "capacity" in details.ongoing_containment.resources:
-			var dict:Dictionary = details.ongoing_containment.resources.capacity.call()
-			for key in dict:	
-				var amount:int = dict[key]
-				list.push_back({
-					"type": "capacity",
-					"amount": amount, 
-					"resource": RESOURCE_UTIL.return_data(key)
-				})
-				
-	return list
+func calculate_initial_containment_bonus(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:
+	return SHARED_UTIL.calculate_resources(return_data(ref), "initial_containment", resources_data, add)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calculate_ongoing_containment(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:
+	return SHARED_UTIL.calculate_resources(return_data(ref), "ongoing_containment", resources_data, add)
 # ------------------------------------------------------------------------------

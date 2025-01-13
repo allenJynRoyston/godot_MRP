@@ -6,12 +6,18 @@ var RESEARCH_ONE:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/redacted.jpg",
 	"description": "Research item goes here...",
-	"get_build_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 10
-		},
+
 	"get_build_time": func() -> int:
 		return 3,		
+		
+	"purchase_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -10
+				},
+		}	
+	},		
 }
 
 
@@ -20,12 +26,17 @@ var RESEARCH_TWO:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/redacted.jpg",
 	"description": "Research item goes here...",
-	"get_build_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 10
-		},
 	"get_build_time": func() -> int:
 		return 3,		
+		
+	"purchase_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -100
+				},
+		}	
+	},				
 }
 
 
@@ -123,33 +134,11 @@ func return_data(key:int) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_build_cost(id:int) -> Array:
-	var rd_data:Dictionary = return_data(id)
-	var list:Array = []
-	if "get_build_cost" in rd_data:
-		var dict:Dictionary = rd_data.get_build_cost.call()
-		for key in dict:	
-			var amount:int = dict[key]
-			list.push_back({
-				"amount": amount, 
-				"resource": RESOURCE_UTIL.return_data(key)
-			})
-			
-	return list
+func return_purchase_cost(id:int) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(id), "purchase_cost")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calc_build_cost(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:		
-	var rd_data:Dictionary = return_data(id)
-	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
-	if "get_build_cost" in rd_data:
-		var dict:Dictionary = rd_data.get_build_cost.call()		
-		for key in dict:
-			var amount:int = dict[key]
-			if refund:
-				resources_data_duplicate[key].amount += amount	
-			else:
-				resources_data_duplicate[key].amount -= amount	
-
-	return resources_data_duplicate
+func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_cost", resources_data, add)
 # ------------------------------------------------------------------------------

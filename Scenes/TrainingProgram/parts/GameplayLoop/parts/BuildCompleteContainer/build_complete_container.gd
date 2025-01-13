@@ -8,6 +8,7 @@ extends GameContainer
 @onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
 @onready var SkipBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipBtn
 
+const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 const small_label_preload:LabelSettings = preload("res://Fonts/settings/small_label.tres")
 
 var on_item:int = 0
@@ -62,45 +63,36 @@ func update_display() -> void:
 		ACTION.RESEARCH_ITEM:
 			var details:Dictionary = RD_UTIL.return_data(data.data.id)
 			TitleLabel.text = "Research complete: %s" % [details.name]
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
 		ACTION.BASE_ITEM:
 			var details:Dictionary = BASE_UTIL.return_data(data.data.id)
+			var build_complete_list:Array = BASE_UTIL.return_build_complete(data.data.id)
+
 			TitleLabel.text = "%s Built!" % [details.name]
-			var capacity_list:Array = BASE_UTIL.return_resource_capacity(data.data.id)
-			var amount_list:Array = BASE_UTIL.return_resource_amount(data.data.id)
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 			
-			for item in capacity_list:
-				var label_node:Label = Label.new()
-				label_node.label_settings = small_label_preload
-				label_node.text = "%s +%s capacity" % [item.resource.name, item.amount]
-				DescriptionList.add_child(label_node)
-				
-			for item in amount_list:
-				var label_node:Label = Label.new()
-				label_node.label_settings = small_label_preload
-				label_node.text = "%s +%s amount" % [item.resource.name, item.amount]
+			for item in build_complete_list:
+				var label_node:Control = TextBtnPreload.instantiate()
+				label_node.is_hoverable = false
+				label_node.icon = item.resource.icon
+				label_node.title =  "+%s [%s]" % [item.amount, item.type]
 				DescriptionList.add_child(label_node)
 		# ------------------------------------------------------------------------------------------
 		ACTION.BUILD_ITEM:
-			var room_data:Dictionary = ROOM_UTIL.return_data(data.data.id)
-			var capacity_list:Array = ROOM_UTIL.return_resource_capacity(data.data.id)
-			var amount_list:Array = ROOM_UTIL.return_resource_amount(data.data.id)
-						
-			TitleLabel.text = "%s Built!" % [room_data.name]
-			ImageContainer.texture = CACHE.fetch_image(room_data.img_src)
-			
-		
-			for item in capacity_list:
-				var label_node:Label = Label.new()
-				label_node.label_settings = small_label_preload
-				label_node.text = "%s +%s capacity" % [item.resource.name, item.amount]
+			var details:Dictionary = ROOM_UTIL.return_data(data.data.id)
+			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.data.id)
+
+			TitleLabel.text = "%s Built!" % [details.name]
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+
+			for item in build_complete_list:
+				var label_node:Control = TextBtnPreload.instantiate()
+				label_node.is_hoverable = false
+				label_node.icon = item.resource.icon
+				label_node.title =  "+%s [%s]" % [item.amount, item.type]
 				DescriptionList.add_child(label_node)
 				
-			for item in amount_list:
-				var label_node:Label = Label.new()
-				label_node.label_settings = small_label_preload
-				label_node.text = "%s +%s amount" % [item.resource.name, item.amount]
-				DescriptionList.add_child(label_node)				
 		# ------------------------------------------------------------------------------------------
 				
 	if "location" in data:

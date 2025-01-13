@@ -204,7 +204,6 @@ var tier_unlocked:Dictionary = {
 		TIER.VAL.FOUR: false,
 		TIER.VAL.FIVE: false
 	},
-	
 }
 
 var room_config:Dictionary = {
@@ -846,7 +845,7 @@ func on_current_shop_step_update() -> void:
 				"location": current_location.duplicate(),
 			})
 			
-			SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.id, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
@@ -860,7 +859,7 @@ func on_current_shop_step_update() -> void:
 				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
 			})
 			
-			SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(selected_shop_item.id, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE			
 		# ---------------
@@ -874,7 +873,7 @@ func on_current_shop_step_update() -> void:
 				"build_time": purchased_item_data.get_build_time.call() if "get_build_time" in purchased_item_data else 0,
 			})
 			
-			SUBSCRIBE.resources_data = BASE_UTIL.calc_build_cost(selected_shop_item.id, resources_data)
+			SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(selected_shop_item.id, resources_data)
 			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
@@ -912,15 +911,15 @@ func on_current_shop_step_update() -> void:
 						ACTION.TRANSFER_SCP:
 							cancel_scp_transfer(selected_refund_item)
 						ACTION.BUILD_ITEM:
-							SUBSCRIBE.resources_data = ROOM_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+							SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_refund_item.data.id, resources_data, false)
 							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 							ActionQueueContainer.remove_from_queue([selected_refund_item])
 						ACTION.RESEARCH_ITEM:
-							SUBSCRIBE.resources_data = RD_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+							SUBSCRIBE.resources_data = RD_UTIL.calculate_resources(selected_refund_item.data.id, resources_data, false)
 							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 							ActionQueueContainer.remove_from_queue([selected_refund_item])
 						ACTION.BASE_ITEM:
-							SUBSCRIBE.resources_data = BASE_UTIL.calc_build_cost(selected_refund_item.data.id, resources_data, true)
+							SUBSCRIBE.resources_data = BASE_UTIL.calculate_resources(selected_refund_item.data.id, resources_data, false)
 							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 							ActionQueueContainer.remove_from_queue([selected_refund_item])
 					
@@ -1149,9 +1148,7 @@ func on_current_build_complete_step_update() -> void:
 						}
 						scp_data.contained_list.push_back(new_contained_item)
 						
-						# TODO: add containment bonuses
-						print('here: ', item.data)
-						
+						SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(item.data.ref, resources_data)
 						SUBSCRIBE.scp_data = scp_data
 					# ----------------------------
 					ACTION.BASE_ITEM:
@@ -1159,8 +1156,7 @@ func on_current_build_complete_step_update() -> void:
 							"data": item.data,
 						})
 						# update resources_data
-						resources_data = BASE_UTIL.calc_resource_capacity(item.data.id, resources_data)
-						resources_data = BASE_UTIL.calc_resource_amount(item.data.id, resources_data)
+						SUBSCRIBE.resources_data = BASE_UTIL.calculate_build_complete(item.data.id, resources_data)
 						SUBSCRIBE.purchased_base_arr = purchased_base_arr
 					# ----------------------------	
 					ACTION.BUILD_ITEM:
@@ -1169,8 +1165,7 @@ func on_current_build_complete_step_update() -> void:
 							"location": item.location
 						})
 						# update resources_data
-						resources_data = ROOM_UTIL.calc_resource_capacity(item.data.id, resources_data)
-						resources_data = ROOM_UTIL.calc_resource_amount(item.data.id, resources_data)
+						SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(item.data.id, resources_data)
 						SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
 					# ----------------------------
 					ACTION.RESEARCH_ITEM:
@@ -1278,7 +1273,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
+	var no_save:bool = true #restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes

@@ -112,7 +112,7 @@ func on_data_update() -> void:
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
 				MaxOwned.hide()
 				
-				item_data = BASE_UTIL.return_build_cost(data.id)
+				item_data = BASE_UTIL.return_purchase_cost(data.id)
 							
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
 				var purchased_ids:Array = purchased_research_arr.map(func(i): return i.data.id)
@@ -125,17 +125,18 @@ func on_data_update() -> void:
 				AlreadyOwned.show() if already_owned else AlreadyOwned.hide()
 				MaxOwned.hide()
 				
-				item_data = RD_UTIL.return_build_cost(data.id)
+				item_data = RD_UTIL.return_purchase_cost(data.id)
 			TIER.TYPE.FACILITY:
 				at_own_limit = ROOM_UTIL.at_own_limit(data.id, purchased_facility_arr, action_queue_data)
-				item_data = ROOM_UTIL.return_build_cost(data.id)
+				item_data = ROOM_UTIL.return_purchase_cost(data.id)
+				
 				
 				AlreadyOwned.hide()
 				InProgress.hide()
 				MaxOwned.show() if at_own_limit else MaxOwned.hide()
 			
 		for item in item_data:
-			var amount:int = item.amount
+			var amount:int = abs(item.amount)
 			var resource:Dictionary = item.resource
 			var new_node:Control = TextBtnPreload.instantiate()
 			new_node.is_hoverable = false

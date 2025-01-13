@@ -20,26 +20,39 @@ var R_AND_D_LAB:Dictionary = {
 		return 3,
 	"get_build_time": func() -> int:
 		return 2,
-	"get_build_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 2
-		},
-	"get_operating_income": func() -> Dictionary:
-		return {
 
-		},				
-	"get_operating_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 1,
-		},		
-	"get_resource_capacity": func() -> Dictionary:
-		return {
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -20
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.STAFF: 20
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -5,
+					RESOURCE.TYPE.MONEY: -5
+				},
 			
-		},
-	"get_resource_amount": func() -> Dictionary:
-		return {
-
-		},		
+		}	
+	}
 }
 
 var CONSTRUCTION_YARD:Dictionary = {
@@ -59,26 +72,38 @@ var CONSTRUCTION_YARD:Dictionary = {
 		return 1,	
 	"get_build_time": func() -> int:
 		return 5,
-	"get_build_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 2
-		},
-	"get_operating_income": func() -> Dictionary:
-		return {
 
-		},				
-	"get_operating_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 1,
-		},		
-	"get_resource_capacity": func() -> Dictionary:
-		return {
-			
-		},
-	"get_resource_amount": func() -> Dictionary:
-		return {
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 30
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 5
+				},
+		}	
+	}
 
-		},		
 }
 
 var BARRICKS:Dictionary = {
@@ -98,26 +123,38 @@ var BARRICKS:Dictionary = {
 		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
-	"get_build_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 2
-		},
-	"get_operating_income": func() -> Dictionary:
-		return {
 
-		},				
-	"get_operating_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 1,
-		},		
-	"get_resource_capacity": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.SECURITY: 10,
-		},
-	"get_resource_amount": func() -> Dictionary:
-		return {
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 40
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.SECURITY: 20
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 10
+				},
+		}	
+	}
 
-		},		
 }
 
 
@@ -138,26 +175,38 @@ var DORMITORY:Dictionary = {
 		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
-	"get_build_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 2
-		},
-	"get_operating_income": func() -> Dictionary:
-		return {
 
-		},				
-	"get_operating_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 1,
-		},		
-	"get_resource_capacity": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.STAFF: 10,
-		},
-	"get_resource_amount": func() -> Dictionary:
-		return {
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 20
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.STAFF: 20
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 10
+				},
+		}	
+	}
 
-		},
 }
 
 var HOLDING_CELLS:Dictionary = {
@@ -177,26 +226,38 @@ var HOLDING_CELLS:Dictionary = {
 		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
-	"get_build_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 2
-		},
-	"get_operating_income": func() -> Dictionary:
-		return {
 
-		},				
-	"get_operating_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 1,
-		},		
-	"get_resource_capacity": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.DCLASS: 10,
-		},
-	"get_resource_amount": func() -> Dictionary:
-		return {
-			
-		},
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 20
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.DCLASS: 20
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 5
+				},
+		}	
+	}
+
 }
 
 
@@ -217,29 +278,43 @@ var STANDARD_LOCKER:Dictionary = {
 		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
-	"get_build_cost": func() -> Dictionary:
+	"get_purchase_cost": func() -> Dictionary:
 		return {
 			RESOURCE.TYPE.MONEY: 2
 		},
-	"get_operating_income": func() -> Dictionary:
-		return {
 
-		},				
-	"get_operating_cost": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.MONEY: 1,
-		},		
-	"get_resource_capacity": func() -> Dictionary:
-		return {
-			RESOURCE.TYPE.DCLASS: 10,
-		},
-	"get_resource_amount": func() -> Dictionary:
-		return {
-			
-		},
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 5
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 1
+				},
+		}	
+	}
+
 }
-
-
 
 var reference_data:Dictionary = {
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
@@ -362,118 +437,32 @@ func return_unavailable_placement(id:int, room_config:Dictionary) -> Array:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func return_build_cost(id:int) -> Array:
-	var details:Dictionary = return_data(id)
-	var list:Array = []
-	if "get_build_cost" in details:
-		var dict:Dictionary = details.get_build_cost.call()
-		for key in dict:	
-			var amount:int = dict[key]
-			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-			
-	return list
+func return_purchase_cost(id:int) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(id), "purchase_costs")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_operating_income(id:int) -> Array:
-	var details:Dictionary = return_data(id)
-	var list:Array = []
-	if "get_operating_income" in details:
-		var dict:Dictionary = details.get_operating_income.call()
-		for key in dict:	
-			var amount:int = dict[key]
-			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-			
-	return list
+func return_build_complete(id:int) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(id), "build_complete")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func return_operating_cost(id:int) -> Array:
-	var details:Dictionary = return_data(id)
-	var list:Array = []
-	if "get_operating_cost" in details:
-		var dict:Dictionary = details.get_operating_cost.call()
-		for key in dict:	
-			var amount:int = dict[key]
-			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-			
-	return list
+	return SHARED_UTIL.return_resource_list(return_data(id), "operating_costs")
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_resource_capacity(id:int) -> Array:
-	var details:Dictionary = return_data(id)
-	var list:Array = []
-	if "get_resource_capacity" in details:
-		var dict:Dictionary = details.get_resource_capacity.call()
-		for key in dict:	
-			var amount:int = dict[key]
-			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-			
-	return list
+func calculate_build_complete(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+	return SHARED_UTIL.calculate_resources(return_data(ref), "build_complete", resources_data, !add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_resource_amount(id:int) -> Array:
-	var details:Dictionary = return_data(id)
-	var list:Array = []
-	if "get_resource_amount" in details:
-		var dict:Dictionary = details.get_resource_amount.call()
-		for key in dict:	
-			var amount:int = dict[key]
-			list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-			
-	return list
+func calculate_operating_costs(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+	return SHARED_UTIL.calculate_resources(return_data(ref), "operating_costs", resources_data, add)
 # ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func calc_build_cost(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:		
-	var details:Dictionary = return_data(id)
-	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
-	if "get_build_cost" in details:
-		var dict:Dictionary = details.get_build_cost.call()		
-		for key in dict:
-			var amount:int = dict[key]
-			if refund:
-				resources_data_duplicate[key].amount += amount	
-			else:
-				resources_data_duplicate[key].amount -= amount	
-
-	return resources_data_duplicate
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func calc_resource_capacity(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
-	var details:Dictionary = return_data(id)
-	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
-	if "get_resource_capacity" in details:
-		var dict:Dictionary = details.get_resource_capacity.call()
-		for key in dict:
-			var amount:int = dict[key]
-			if refund:
-				resources_data_duplicate[key].capacity -= amount	
-			else:
-				resources_data_duplicate[key].capacity += amount	
-	return resources_data_duplicate
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func calc_resource_amount(id:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
-	var details:Dictionary = return_data(id)
-	var resources_data_duplicate:Dictionary = resources_data.duplicate(true)
-	if "get_resource_amount" in details:
-		var dict:Dictionary = details.get_resource_amount.call()
-		for key in dict:
-			var amount:int = dict[key]
-			if refund:
-				resources_data_duplicate[key].amount -= amount	
-				if resources_data_duplicate[key].amount < 0:
-					resources_data_duplicate[key].amount = 0
-			else:
-				resources_data_duplicate[key].amount += amount	
-				if resources_data_duplicate[key].amount > resources_data_duplicate[key].capacity:
-					resources_data_duplicate[key].amount = resources_data_duplicate[key].capacity
-			
-	return resources_data_duplicate
-# ------------------------------------------------------------------------------
-	

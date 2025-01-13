@@ -35,38 +35,24 @@ func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) ->
 
 	for item in purchased_facility_arr:
 		var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(item.data.id)
-		var operation_income_list:Array = ROOM_UTIL.return_operating_income(item.data.id)
 		var details:Dictionary = ROOM_UTIL.return_data(item.data.id)
-
-		for i in operation_income_list:			
-			if i.resource.id == RESOURCE.TYPE.MONEY:
+		for i in operating_cost_list:
+			if i.resource.ref == RESOURCE.TYPE.MONEY and i.type == "amount":
 				var new_node:BtnBase = DetailBtnPreload.instantiate()
 				new_node.title = details.name
 				new_node.icon = i.resource.icon
-				new_node.amount = "+%s amount" % [i.amount]
-				total_income += i.amount
-				
-				new_node.onClick = func() -> void:
-					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_settings = CAMERA.ZOOM.RM
-					gameplay_node.goto_location(item.location)
-				
-				IncomeList.add_child(new_node)			
+				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
 
-		for i in operating_cost_list:			
-			if i.resource.id == RESOURCE.TYPE.MONEY:
-				var new_node:BtnBase = DetailBtnPreload.instantiate()		
-				new_node.title = details.name
-				new_node.icon = i.resource.icon
-				new_node.amount = "-%s amount" % [i.amount]
-				total_expense += i.amount
-				
 				new_node.onClick = func() -> void:
-					#GBL.find_node(REFS.GAMEPLAY_LOOP).current_camera_settings = CAMERA.ZOOM.RM
 					gameplay_node.goto_location(item.location)
+				if i.amount >= 0:
+					total_income += i.amount
+					IncomeList.add_child(new_node)
+				if i.amount < 0:
+					total_expense += i.amount
+					ExpenseList.add_child(new_node)	
 				
-				ExpenseList.add_child(new_node)	
-				
-	var diff:int = total_income - total_expense
+	var diff:int = total_income + total_expense
 	TotalIncomeLabel.text = str(total_income)
 	TotalExpenseLabel.text = str(total_expense)
 		

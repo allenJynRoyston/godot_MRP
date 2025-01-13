@@ -164,3 +164,56 @@ func return_unavailable_placement(item_data:Dictionary, room_config:Dictionary) 
 	
 	return unavailable_list
 # ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func return_resource_list(details:Dictionary, dict_property:String) -> Array:
+	var list:Array = []
+	
+	if dict_property in details and "resources" in details[dict_property] :
+		if "amount" in details[dict_property].resources:
+			var amount_dict:Dictionary = details[dict_property].resources.amount.call()
+			for key in amount_dict:	
+				var amount:int = amount_dict[key]
+				list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
+		if "capacity" in details[dict_property].resources:
+			var capacity_dict:Dictionary = details[dict_property].resources.capacity.call()
+			for key in capacity_dict:	
+				var amount:int = capacity_dict[key]
+				list.push_back({"type": "capacity", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})	
+	
+	return list
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calculate_resources(details:Dictionary, dict_property:String, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
+	var resource_data_copy:Dictionary = resources_data.duplicate(true)
+	
+	if dict_property in details and "resources" in details[dict_property]:
+		if "capacity" in details[dict_property].resources:
+			var capacity_dict:Dictionary = details[dict_property].resources.capacity.call()
+			for key in capacity_dict:
+				var amount:int = capacity_dict[key]
+				if !refund:
+					resource_data_copy[key].capacity -= amount
+					if resource_data_copy[key].capacity < 0:
+						resource_data_copy[key].capacity = 0
+				else:
+					resource_data_copy[key].capacity += amount
+					if resource_data_copy[key].amount > 999:
+						resource_data_copy[key].amount = 999
+				
+		if "amount" in details[dict_property].resources:
+			var amount_dict:Dictionary = details[dict_property].resources.amount.call()
+			for key in amount_dict:
+				var amount:int = amount_dict[key]
+				if !refund:
+					resource_data_copy[key].amount -= amount
+					if resource_data_copy[key].amount < 0:
+						resource_data_copy[key].amount = 0
+				else:
+					resource_data_copy[key].amount += amount
+					if resource_data_copy[key].amount > resource_data_copy[key].capacity:
+						resource_data_copy[key].amount = resource_data_copy[key].capacity	
+						
+	return resource_data_copy
+# ------------------------------------------------------------------------------

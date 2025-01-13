@@ -55,6 +55,36 @@ text = "Description"
 label_settings = ExtResource("2_6r8tp")
 autowrap_mode = 2
 
+[node name="ConstructionCosts" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/ConstructionCosts"]
+layout_mode = 2
+
+[node name="ConstructionLabel" type="Label" parent="FocusContainer/HighlightContainer/ConstructionCosts/HBoxContainer"]
+layout_mode = 2
+text = "Construction Costs"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/ConstructionCosts/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConstructionCostsList" type="VBoxContainer" parent="FocusContainer/HighlightContainer/ConstructionCosts"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="ConstructionTime" type="Label" parent="FocusContainer/HighlightContainer/ConstructionCosts"]
+layout_mode = 2
+text = "Completion time:"
+label_settings = ExtResource("2_6r8tp")
+
+[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="Effects" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
@@ -64,7 +94,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="FocusContainer/HighlightContainer/Effects/HBoxContainer"]
 layout_mode = 2
-text = "Effects"
+text = "Built Effects"
 label_settings = ExtResource("2_6r8tp")
 
 [node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/Effects/HBoxContainer"]
@@ -84,7 +114,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="FocusContainer/HighlightContainer/OperatingCosts/HBoxContainer"]
 layout_mode = 2
-text = "Operational Expense"
+text = "Operational Effects"
 label_settings = ExtResource("2_6r8tp")
 
 [node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/OperatingCosts/HBoxContainer"]
@@ -95,27 +125,8 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="ConstructionCosts" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="FocusContainer/HighlightContainer/ConstructionCosts"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="FocusContainer/HighlightContainer/ConstructionCosts/HBoxContainer"]
-layout_mode = 2
-text = "Construction Expense"
-label_settings = ExtResource("2_6r8tp")
-
-[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/ConstructionCosts/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ConstructionCostsList" type="VBoxContainer" parent="FocusContainer/HighlightContainer/ConstructionCosts"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
 [node name="Notes" type="VBoxContainer" parent="FocusContainer/HighlightContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
@@ -125,13 +136,4 @@ layout_mode = 2
 [node name="Label" type="Label" parent="FocusContainer/HighlightContainer/Notes/HBoxContainer"]
 layout_mode = 2
 text = "Notes"
-label_settings = ExtResource("2_6r8tp")
-
-[node name="HSeparator" type="HSeparator" parent="FocusContainer/HighlightContainer/Notes/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ConstructionTime" type="Label" parent="FocusContainer/HighlightContainer/Notes"]
-layout_mode = 2
-text = "construction time: 99 days"
 label_settings = ExtResource("2_6r8tp")
