@@ -4,7 +4,7 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_58ndv"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_gvp2p"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_n3wd7"]
+[sub_resource type="LabelSettings" id="LabelSettings_xldxo"]
 font = ExtResource("2_58ndv")
 font_size = 12
 font_color = Color(0.662745, 0.662745, 0.662745, 1)
@@ -22,7 +22,7 @@ script = ExtResource("1_1t5xa")
 layout_mode = 2
 size_flags_vertical = 1
 text = "0"
-label_settings = SubResource("LabelSettings_n3wd7")
+label_settings = SubResource("LabelSettings_xldxo")
 horizontal_alignment = 1
 vertical_alignment = 1
 

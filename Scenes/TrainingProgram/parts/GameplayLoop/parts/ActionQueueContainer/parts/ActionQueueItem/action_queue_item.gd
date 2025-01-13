@@ -71,7 +71,7 @@ func on_data_update() -> void:
 				item_data = SCP_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.CONTAIN
 				requirements = []
-				TitleBtn.title = "TRANSFER IN PROGRESS..."
+				TitleBtn.title = "CONTAINMENT IN PROGRESS"
 				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
 			ACTION.RESEARCH_ITEM:
 				item_data = RD_UTIL.return_data(data.data.ref)
@@ -83,7 +83,7 @@ func on_data_update() -> void:
 				item_data = ROOM_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.BUILD
 				requirements = ROOM_UTIL.return_purchase_cost(data.data.ref) 
-				TitleBtn.title = "BUILDING"
+				TitleBtn.title = "UNDER CONSTRUCTION"
 				NameLabel.text = "%s" % [item_data.name]
 			ACTION.BASE_ITEM:
 				item_data = BASE_UTIL.return_data(data.data.ref)
@@ -93,7 +93,7 @@ func on_data_update() -> void:
 				NameLabel.text = "%s" % [item_data.name]
 				
 		
-		DaysLeftLabel.text = "%s days left until complete" % [data.build_time - data.days_in_queue]
+		DaysLeftLabel.text = "%s DAYS LEFT" % [data.build_time - data.days_in_queue]
 		ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
 
 func on_requirements_update() -> void:

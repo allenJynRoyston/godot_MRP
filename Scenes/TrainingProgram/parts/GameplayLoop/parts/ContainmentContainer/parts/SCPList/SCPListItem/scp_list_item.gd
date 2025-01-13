@@ -54,7 +54,7 @@ func on_data_update() -> void:
 	
 	if "days_until_expire" in data:
 		if data.transfer_status.state:
-			StatusLabel.text = "TRANSFER IN PROGRESS"
+			StatusLabel.text = "CONTAINMENT IN PROGRESS"
 		else:
 			StatusLabel.text = "EXPIRES IN %s DAYS" % [data.days_until_expire]
 # --------------------------------------	

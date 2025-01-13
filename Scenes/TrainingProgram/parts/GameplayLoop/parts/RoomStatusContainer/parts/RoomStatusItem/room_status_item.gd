@@ -8,7 +8,12 @@ extends MouseInteractions
 @onready var RoomNameLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer/RoomNameLabel
 @onready var StatusLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/StatusLabel
 @onready var RoomImage:TextureRect = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/RoomImage
-@onready var ExpandedDetails:Control = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ExpandedDetails
+@onready var ExpandedDetails:Control = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ExpandedDetails
+
+@onready var ProgressLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/ProgressLabel
+@onready var ProgressAmountLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/HBoxContainer2/ProgressAmountLabel
+@onready var ProgressBarContainer:VBoxContainer = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer
+@onready var ActionProgressBar:ProgressBar = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/HBoxContainer2/ProgressBar
 
 var room_id:int = 0 : 
 	set(val):
@@ -40,8 +45,15 @@ var is_highlighted:bool = false :
 	set(val):
 		is_highlighted = val
 		on_is_highlighted_update.call_deferred()		
+
+var progress_bar_value:float = -1.0 : 
+	set(val):
+		progress_bar_value = val
+		on_progress_bar_value_update()
 		
+var action_queue_data:Array = []
 var bookmarked_rooms:Array = []
+
 var is_empty:bool = false
 var onClick:Callable = func():pass
 var onFocus:Callable = func():pass
@@ -50,10 +62,12 @@ var onFocus:Callable = func():pass
 func _init() -> void:
 	super._init()
 	SUBSCRIBE.subscribe_to_bookmarked_rooms(self)
+	SUBSCRIBE.subscribe_to_action_queue_data(self)
 	
 func _exit_tree() -> void:
 	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_bookmarked_rooms(self)
+	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 
 func _ready() -> void:
 	super._ready()
@@ -64,7 +78,8 @@ func _ready() -> void:
 	on_raw_designation_update()
 	on_focus(false)
 	
-
+	ProgressBarContainer.hide()
+	
 	BookmarkCB.onChange = func(is_checked:bool) -> void:
 		if is_checked:
 			if raw_designation not in bookmarked_rooms:
@@ -77,10 +92,20 @@ func _ready() -> void:
 # --------------------------------------	
 func on_room_id_update() -> void:
 	IndexLabel.text = str(room_id + 1)
+# --------------------------------------	
 
+# --------------------------------------	
+func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
+	action_queue_data = new_val
+	on_data_update()
+# --------------------------------------	
+
+# --------------------------------------	
 func on_raw_designation_update() -> void:
 	on_bookmarked_rooms_update()
+# --------------------------------------	
 
+# --------------------------------------	
 func on_designation_update() -> void:
 	if !is_node_ready():return
 	DesignationLabel.text = "ROOM %s" % [designation]
@@ -88,28 +113,70 @@ func on_designation_update() -> void:
 func on_data_update(previous_state:Dictionary = {}) -> void:
 	if !is_node_ready() or data.is_empty():return
 	
+	# --------------------------
 	if data.room_data.is_empty() and data.build_data.is_empty():
 		RoomNameLabel.text = "EMPTY"
 		StatusLabel.text = ""
 		RoomImage.texture = null
-		is_empty = true
-		return
+		progress_bar_value = -1.0
+		
+	if data.scp_data.is_empty():
+		pass
 	
+	is_empty = false
+	var action_queue_filter:Array = []
+	# --------------------------
+	
+	# --------------------------
 	if !data.build_data.is_empty():
-		var room_data:Dictionary = data.build_data.get_room_data.call()
+		var room_data:Dictionary = data.build_data.get_data.call()
 		RoomNameLabel.text = "%s" % [room_data.name]
-		StatusLabel.text = "[UNDER CONSTRUCTION]"
 		RoomImage.texture = CACHE.fetch_image("res://Media/rooms/construction.jpg")
-		is_empty = false
-	else:
 		StatusLabel.text = ""
-				#
+		ProgressLabel.text = "UNDER CONSTRUCTION"
+		
+		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.BUILD_ITEM and i.data.ref == room_data.ref)
+	# --------------------------
+	
+	# --------------------------
 	if !data.room_data.is_empty():
-		var room_data:Dictionary = data.room_data.get_room_data.call()
+		var room_data:Dictionary = data.room_data.get_data.call()
 		RoomNameLabel.text = "%s" % [room_data.name]
 		RoomImage.texture = CACHE.fetch_image(room_data.img_src)
-		is_empty = false
+		StatusLabel.text = ""
+	# --------------------------
 
+	# --------------------------
+	if !data.scp_data.is_empty():
+		var scp_data:Dictionary = data.scp_data.get_data.call()
+		RoomNameLabel.text = "SCP-%s: [%s]" % [scp_data.item_id, scp_data.name]
+		RoomImage.texture = CACHE.fetch_image(scp_data.img_src)
+		StatusLabel.text = ""
+		ProgressLabel.text = "CONTAINMENT IN PROGRESS"
+		
+		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.TRANSFER_SCP and i.data.ref == scp_data.ref)
+	# --------------------------
+	
+	# -------------------------- 
+	if action_queue_filter.size() > 0:
+		var action_queue_item:Dictionary = action_queue_filter[0]
+		progress_bar_value = (action_queue_item.days_in_queue*1.0 / action_queue_item.build_time*1.0)
+		ProgressAmountLabel.text = str(int(progress_bar_value * 100)) + "%"			
+	# --------------------------
+	
+	StatusLabel.hide() if StatusLabel.text == "" else StatusLabel.show()
+# --------------------------------------	
+
+# --------------------------------------	
+func on_progress_bar_value_update() -> void:
+	if progress_bar_value == -1:
+		ProgressBarContainer.hide()
+		ActionProgressBar.value = 0
+	else:
+		ProgressBarContainer.show()
+		ActionProgressBar.value = progress_bar_value
+	
+	
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
 	ActiveLabel.show() if is_highlighted else ActiveLabel.hide()

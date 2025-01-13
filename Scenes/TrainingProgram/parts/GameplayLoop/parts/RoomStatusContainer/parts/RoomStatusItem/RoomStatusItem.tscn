@@ -23,7 +23,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_32fd4"]
 font = ExtResource("2_vxe1n")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v71pd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_53or0"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -42,8 +42,8 @@ bg_color = Color(0, 0, 0, 1)
 bg_color = Color(0, 0.964706, 0.278431, 1)
 
 [node name="RoomStatusItem" type="PanelContainer"]
-offset_right = 218.0
-offset_bottom = 78.0
+offset_right = 226.0
+offset_bottom = 60.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_mwwo4")
 script = ExtResource("1_q40l1")
 
@@ -91,7 +91,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_v71pd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_53or0")
 no_bg = true
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer"]
@@ -141,6 +141,7 @@ text = "ROOM 1-1-0"
 label_settings = ExtResource("2_fv0mu")
 
 [node name="StatusLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "CONTAINS: SCP-X-A"
@@ -157,42 +158,48 @@ texture = SubResource("PlaceholderTexture2D_r0iut")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ExpandedDetails" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="ExpandedDetails" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ExpandedDetails"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ExpandedDetails"]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="Label" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ExpandedDetails/HBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ExpandedDetails/HBoxContainer"]
 layout_mode = 2
 text = "Details"
 label_settings = ExtResource("2_fv0mu")
 
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ExpandedDetails/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ExpandedDetails/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CurrentAction" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
-visible = false
+[node name="ProgressBarContainer" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/CurrentAction"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/separator = SubResource("StyleBoxLine_dc3nk")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/CurrentAction"]
+[node name="ProgressLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer"]
+layout_mode = 2
+text = "Action"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/CurrentAction/HBoxContainer2"]
+[node name="ProgressAmountLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/HBoxContainer2"]
 layout_mode = 2
 text = "50%"
 label_settings = ExtResource("2_fv0mu")
 
-[node name="ProgressBar" type="ProgressBar" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/CurrentAction/HBoxContainer2"]
-custom_minimum_size = Vector2(0, 4)
+[node name="ProgressBar" type="ProgressBar" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4

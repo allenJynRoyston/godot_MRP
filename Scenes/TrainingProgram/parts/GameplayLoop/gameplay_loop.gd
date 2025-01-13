@@ -130,7 +130,8 @@ var scp_data:Dictionary = {
 			"is_new": true,
 			"transfer_status": {
 				"state": false, 
-				"days_till_complete": -1
+				"days_till_complete": -1,
+				"location": {}
 			}
 		},
 		{
@@ -139,7 +140,8 @@ var scp_data:Dictionary = {
 			"is_new": true,
 			"transfer_status": {
 				"state": false, 
-				"days_till_complete": -1
+				"days_till_complete": -1,
+				"location": {}
 			}
 		}		
 	],
@@ -148,7 +150,8 @@ var scp_data:Dictionary = {
 			#"ref": item.data.ref,
 			#"progression": {
 				#"research_level": 0,
-				#"path_unlocks": []
+				#"path_unlocks": [],
+				#"progression": {}
 			#}
 		#}		
 	],
@@ -429,7 +432,7 @@ func get_room_item_default() -> Dictionary:
 	return {
 		"build_data": {},
 		"room_data": {},
-		"item_data": {}
+		"scp_data": {}
 	}
 #endregion
 # ------------------------------------------------------------------------------
@@ -540,6 +543,31 @@ func set_room_config() -> void:
 	var under_construction_rooms:Array = []
 	var built_rooms:Array = []
 	
+	# mark rooms that have an SCP contained in them or are under
+	if "available_list" in scp_data:
+		for item in scp_data.available_list:
+			if item.transfer_status.state:
+				var floor:int = item.transfer_status.location.floor
+				var ring:int = item.transfer_status.location.ring
+				var room:int = item.transfer_status.location.room	
+				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
+					"ref": item.ref,
+					"is_transfer": true,
+					"get_data": func() -> Dictionary:
+						return SCP_UTIL.return_data(item.ref)
+				}
+	if "contained_list" in scp_data:
+		for item in scp_data.contained_list:
+			var floor:int = item.location.floor
+			var ring:int = item.location.ring
+			var room:int = item.location.room	
+			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
+				"ref": item.ref,
+				"is_transfer": false,
+				"get_data": func() -> Dictionary:
+					return SCP_UTIL.return_data(item.ref)
+			}				
+	
 	# mark rooms that are under construction...
 	for item in action_queue_data:
 		match item.action:
@@ -549,13 +577,9 @@ func set_room_config() -> void:
 				var room:int = item.location.room		
 				new_room_config.floor[floor].ring[ring].room[room].build_data = {
 					"ref": item.data.ref,
-					"get_room_data": func() -> Dictionary:
+					"get_data": func() -> Dictionary:
 						return ROOM_UTIL.return_data(item.data.ref)
 				}
-
-	# mark rooms that are already built...
-	new_room_config.floor[1].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) == 0
-	new_room_config.floor[2].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) == 0
 
 	# mark rooms that are already built...
 	for item in purchased_facility_arr:
@@ -564,7 +588,7 @@ func set_room_config() -> void:
 		var room:int = item.location.room
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"ref": item.data.ref,
-			"get_room_data": func() -> Dictionary:
+			"get_data": func() -> Dictionary:
 				return ROOM_UTIL.return_data(item.data.ref)
 		}
 		# if facility is built, clear build_data
@@ -580,7 +604,12 @@ func set_room_config() -> void:
 					under_construction_rooms.push_back(designation)
 				if !config_data.room_data.is_empty():
 					built_rooms.push_back(designation)
-					
+			
+	# mark rooms that are already built...
+	new_room_config.floor[1].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) == 0
+	new_room_config.floor[2].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) == 0
+			
+			
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
@@ -591,7 +620,8 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 		if i.ref == selected_data.data.ref:
 			i.transfer_status = {
 				"state": false, 
-				"days_till_complete": -1
+				"days_till_complete": -1,
+				"location": {}
 			}
 		return i
 	)
@@ -614,20 +644,8 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 	progress_data = new_val
 
-func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
-	purchased_facility_arr = new_val
-	set_room_config()
-
 func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) -> void:
 	purchased_research_arr = new_val
-	
-func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
-	purchased_base_arr = new_val	
-	set_room_config()
-
-func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
-	action_queue_data = new_val
-	set_room_config()
 	
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val 
@@ -648,9 +666,21 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> void:
 	researcher_hire_list = new_val
 
+func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
+	purchased_facility_arr = new_val
+	set_room_config()
+	
+func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
+	purchased_base_arr = new_val	
+	set_room_config()
+
+func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
+	action_queue_data = new_val
+	set_room_config()
+
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-	
+	set_room_config()
 
 #endregion
 # ------------------------------------------------------------------------------	
@@ -768,6 +798,7 @@ func on_current_shop_step_update() -> void:
 					
 				ACTION.PURCHASE_BUILD_ITEM:
 					selected_shop_item = response.selected
+					SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.ref, room_config)			
 					current_shop_step = SHOP_STEPS.PLACEMENT
 				
 				ACTION.PURCHASE_RD_ITEM:
@@ -777,7 +808,6 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.PLACEMENT:		
 			# sort which rooms can be built in
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
-			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_placement(selected_shop_item.ref, room_config)
 			Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
 			var structure_response = await Structure3dContainer.user_response
@@ -829,7 +859,7 @@ func on_current_shop_step_update() -> void:
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
 				ACTION.BACK:
-					current_shop_step = SHOP_STEPS.START
+					current_shop_step = SHOP_STEPS.PLACEMENT
 				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BUILD
 					
@@ -1021,7 +1051,8 @@ func on_current_contain_step_update() -> void:
 				if i.ref == selected_contain_item.ref:
 					i.transfer_status = {
 						"state": true, 
-						"days_till_complete": scp_details.containment_time.call()
+						"days_till_complete": scp_details.containment_time.call(),
+						"location": current_location.duplicate(),
 					}
 				return i
 			)
@@ -1135,14 +1166,14 @@ func on_current_build_complete_step_update() -> void:
 					ACTION.TRANSFER_SCP:
 						# first, remove from available list...
 						scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != item.data.ref)
-						
 						# then add to contained list...
 						var new_contained_item:Dictionary = { 
 							"ref": item.data.ref,
 							"progression": {
 								"research_level": 0,
-								"path_unlocks": []
+								"path_unlocks": [],
 							},
+							"location": item.location,
 							"days_in_containment": 0
 						}
 						scp_data.contained_list.push_back(new_contained_item)
@@ -1272,7 +1303,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
+	var no_save:bool = true #restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes

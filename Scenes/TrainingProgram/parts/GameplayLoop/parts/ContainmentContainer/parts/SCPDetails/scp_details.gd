@@ -80,7 +80,7 @@ func on_data_update() -> void:
 			if list.size() > 0:
 				var item:Dictionary = list[0]
 				status_details.use = item.transfer_status.state
-				status_details.title = "TRANSFER IN PROGRESS"
+				status_details.title = "CONTAINMENT IN PROGRESS"
 		LIST_TYPE.CONTAINED:
 			var list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
 			if list.size() > 0:
