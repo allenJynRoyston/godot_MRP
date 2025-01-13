@@ -20,8 +20,8 @@ viewport_path = NodePath("SubViewport")
 bg_color = Color(0, 0, 0, 1)
 
 [node name="ActionQueueContainer" type="MarginContainer"]
-offset_right = 300.0
-offset_bottom = 1080.0
+offset_right = 20.0
+offset_bottom = 200.0
 size_flags_horizontal = 8
 script = ExtResource("1_bgvki")
 
@@ -31,11 +31,11 @@ layout_mode = 2
 texture = SubResource("ViewportTexture_sbiep")
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(250, 1080)
+size = Vector2i(20, 200)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 250.0
-offset_bottom = 1080.0
+offset_right = 20.0
+offset_bottom = 200.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ehujf")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]

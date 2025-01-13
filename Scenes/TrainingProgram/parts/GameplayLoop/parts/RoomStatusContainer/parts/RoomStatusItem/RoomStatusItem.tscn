@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://hftdmqe4eykf"]
+[gd_scene load_steps=16 format=3 uid="uid://hftdmqe4eykf"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/parts/RoomStatusItem/room_status_item.gd" id="1_q40l1"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_fv0mu"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_vxe1n"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="4_xcsh5"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="5_g1wc4"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_qwx6c"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwwo4"]
 
@@ -23,7 +24,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_32fd4"]
 font = ExtResource("2_vxe1n")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_53or0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kdsab"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -91,7 +92,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_53or0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kdsab")
 no_bg = true
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer"]
@@ -109,25 +110,25 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Details" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="RoomDetails" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer"]
 layout_mode = 2
 
-[node name="ActiveLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer"]
+[node name="ActiveLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = ">>"
 label_settings = ExtResource("2_fv0mu")
 
-[node name="RoomNameLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer"]
+[node name="RoomNameLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "NAME OF PLACE"
@@ -135,12 +136,12 @@ label_settings = ExtResource("2_fv0mu")
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="DesignationLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer"]
+[node name="RoomDesignationLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer"]
 layout_mode = 2
 text = "ROOM 1-1-0"
 label_settings = ExtResource("2_fv0mu")
 
-[node name="StatusLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer"]
+[node name="StatusLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -149,7 +150,7 @@ label_settings = ExtResource("2_fv0mu")
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="RoomImage" type="TextureRect" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details"]
+[node name="RoomImage" type="TextureRect" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails"]
 material = ExtResource("4_xcsh5")
 custom_minimum_size = Vector2(50, 40)
 layout_mode = 2
@@ -157,6 +158,37 @@ size_flags_vertical = 0
 texture = SubResource("PlaceholderTexture2D_r0iut")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="ContainmentDetails" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails" instance=ExtResource("6_qwx6c")]
+layout_mode = 2
+icon = 28
+is_hoverable = false
+
+[node name="SCPDetails" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails"]
+layout_mode = 2
+
+[node name="ObjectDesignationLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCP-001"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="ObjectClassLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer"]
+layout_mode = 2
+text = "KETER"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="ObjectNameLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails"]
+layout_mode = 2
+text = "THE DOOR"
+label_settings = ExtResource("2_fv0mu")
 
 [node name="ExpandedDetails" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
 visible = false

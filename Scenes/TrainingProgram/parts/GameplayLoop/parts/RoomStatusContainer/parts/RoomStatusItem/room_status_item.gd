@@ -1,19 +1,28 @@
 extends MouseInteractions
 
 @onready var RootPanel:Control = $HBoxContainer/Content
-@onready var ActiveLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer/ActiveLabel
 @onready var BookmarkCB:BtnBase = $HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/BookmarkCB
 @onready var IndexLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/IndexLabel
-@onready var DesignationLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/DesignationLabel
-@onready var RoomNameLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/HBoxContainer/RoomNameLabel
-@onready var StatusLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/VBoxContainer/StatusLabel
-@onready var RoomImage:TextureRect = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Details/RoomImage
-@onready var ExpandedDetails:Control = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ExpandedDetails
+
+@onready var RoomDetails:HBoxContainer = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails
+@onready var ActiveLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer/HBoxContainer/ActiveLabel
+@onready var RoomNameLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer/HBoxContainer/RoomNameLabel
+@onready var StatusLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer/StatusLabel
+@onready var RoomImage:TextureRect = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/RoomImage
+@onready var RoomDesignationLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/RoomDetails/VBoxContainer/RoomDesignationLabel
+
+@onready var ContainmentDetails:HBoxContainer = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails
+@onready var ObjectDesignationLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer/ObjectDesignationLabel
+@onready var ObjectClassLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer/ObjectClassLabel
+@onready var ObjectNameLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/ObjectNameLabel
 
 @onready var ProgressLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/ProgressLabel
 @onready var ProgressAmountLabel:Label = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/HBoxContainer2/ProgressAmountLabel
 @onready var ProgressBarContainer:VBoxContainer = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer
 @onready var ActionProgressBar:ProgressBar = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ProgressBarContainer/HBoxContainer2/ProgressBar
+
+@onready var ExpandedDetails:Control = $HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/ExpandedDetails
+
 
 var room_id:int = 0 : 
 	set(val):
@@ -108,10 +117,11 @@ func on_raw_designation_update() -> void:
 # --------------------------------------	
 func on_designation_update() -> void:
 	if !is_node_ready():return
-	DesignationLabel.text = "ROOM %s" % [designation]
+	RoomDesignationLabel.text = "ROOM %s" % [designation]
 
 func on_data_update(previous_state:Dictionary = {}) -> void:
 	if !is_node_ready() or data.is_empty():return
+	var action_queue_filter:Array = []
 	
 	# --------------------------
 	if data.room_data.is_empty() and data.build_data.is_empty():
@@ -120,11 +130,8 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		RoomImage.texture = null
 		progress_bar_value = -1.0
 		
-	if data.scp_data.is_empty():
-		pass
-	
 	is_empty = false
-	var action_queue_filter:Array = []
+	ContainmentDetails.hide() if data.scp_data.is_empty() else ContainmentDetails.show()	
 	# --------------------------
 	
 	# --------------------------
@@ -149,9 +156,9 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 	# --------------------------
 	if !data.scp_data.is_empty():
 		var scp_data:Dictionary = data.scp_data.get_data.call()
-		RoomNameLabel.text = "SCP-%s: [%s]" % [scp_data.item_id, scp_data.name]
-		RoomImage.texture = CACHE.fetch_image(scp_data.img_src)
-		StatusLabel.text = ""
+		ObjectDesignationLabel.text = "SCP-%s" % [scp_data.item_id]
+		ObjectClassLabel.text = "KETER"
+		ObjectNameLabel.text = "%s" % [scp_data.name]
 		ProgressLabel.text = "CONTAINMENT IN PROGRESS"
 		
 		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.TRANSFER_SCP and i.data.ref == scp_data.ref)

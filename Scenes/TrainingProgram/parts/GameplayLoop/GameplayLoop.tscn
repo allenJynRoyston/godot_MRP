@@ -35,6 +35,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+show_location = false
 show_dialogue = false
 show_status = true
 
@@ -69,6 +70,8 @@ theme_override_constants/margin_top = 5
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 10
+is_showing = false
+freeze_inputs = true
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
 layout_mode = 2

@@ -37,7 +37,7 @@ texture = SubResource("ViewportTexture_m6qwp")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(267, 1080)
+size = Vector2i(251, 1080)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 238.0
@@ -47,7 +47,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_6deti")
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 180
+theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 10
 
