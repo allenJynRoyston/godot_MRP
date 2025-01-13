@@ -47,13 +47,12 @@ func set_label_defaults() -> void:
 	
 	StatusContainer.hide()
 	ArticleContainer.hide()
-
 # ----------------------------------------
 
 # ----------------------------------------
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-	on_data_update()
+	on_data_update.call_deferred()
 # ----------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
@@ -77,12 +76,16 @@ func on_data_update() -> void:
 	
 	match list_type:
 		LIST_TYPE.AVAILABLE:
-			var item:Dictionary = scp_data.available_list.filter(func(i): return i.ref == data.ref)[0]
-			status_details.use = item.transfered_status.state
-			status_details.title = "TRANSFER IN PROGRESS"
+			var list:Array = scp_data.available_list.filter(func(i): return i.ref == data.ref)
+			if list.size() > 0:
+				var item:Dictionary = list[0]
+				status_details.use = item.transfer_status.state
+				status_details.title = "TRANSFER IN PROGRESS"
 		LIST_TYPE.CONTAINED:
-			var item:Dictionary = scp_data.contained_list.filter(func(i): return i.ref == data.ref)[0]
-			# TODO check for any active statuses
+			var list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
+			if list.size() > 0:
+				var item:Dictionary = scp_data.contained_list.filter(func(i): return i.ref == data.ref)[0]
+				# TODO check for any active statuses
 	
 	var description:String = ""
 	for item in data.description:

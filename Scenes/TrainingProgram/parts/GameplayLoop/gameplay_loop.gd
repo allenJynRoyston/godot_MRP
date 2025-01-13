@@ -128,7 +128,7 @@ var scp_data:Dictionary = {
 			"ref": SCP.TYPE.THE_DOOR, 
 			"days_until_expire": 3, 
 			"is_new": true,
-			"transfered_status": {
+			"transfer_status": {
 				"state": false, 
 				"days_till_complete": -1
 			}
@@ -137,7 +137,7 @@ var scp_data:Dictionary = {
 			"ref": SCP.TYPE.THE_BOOK, 
 			"days_until_expire": 5, 
 			"is_new": true,
-			"transfered_status": {
+			"transfer_status": {
 				"state": false, 
 				"days_till_complete": -1
 			}
@@ -254,10 +254,8 @@ var selected_shop_item:Dictionary = {}
 var selected_refund_item:Dictionary = {}
 var selected_contain_item:Dictionary = {} 
 
-var completed_build_items:Array = [] : 
-	set(val):
-		completed_build_items = val
-		on_completed_build_items_update()
+var completed_build_items:Array = [] 
+var expired_scp_items:Array = [] 
 
 var showing_states:Dictionary = {} 
 var revert_state_location:Dictionary = {}
@@ -284,7 +282,8 @@ var current_build_complete_step:BUILD_COMPLETE_STEPS = BUILD_COMPLETE_STEPS.HIDE
 		on_current_build_complete_step_update()
 
 signal store_select_location
-
+signal on_complete_build_complete
+signal on_expired_scp_items_complete
 		
 #endregion
 # ------------------------------------------------------------------------------
@@ -504,26 +503,37 @@ func goto_location(location:Dictionary) -> void:
 func next_day() -> void:
 	await wait_please()
 	
-	# UPDATE THINGS IN THE ACTION QUEUE
-	var temp:Array = action_queue_data.duplicate().map(func(i): 
-		i.days_in_queue += 1
-		return i
-	)	
-	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
-	SUBSCRIBE.action_queue_data = temp.filter(func(i): return i.days_in_queue < i.build_time)
-	
-	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	completed_build_items = temp.filter(func(i): return i.days_in_queue == i.build_time)
-	
-	# ADDS DAY COUNT TO SCP DATA
-	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
-	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
-	SUBSCRIBE.scp_data = scp_data	
-	
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
 	SUBSCRIBE.progress_data = progress_data
 	
+	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
+	action_queue_data = action_queue_data.map(func(i): 
+		i.days_in_queue += 1
+		return i
+	)	
+	completed_build_items = action_queue_data.filter(func(i): return i.days_in_queue == i.build_time)	
+	action_queue_data = action_queue_data.filter(func(i): return i.days_in_queue < i.build_time)
+	SUBSCRIBE.action_queue_data = action_queue_data
+		
+	# ADDS DAY COUNT TO SCP DATA
+	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
+	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
+	
+	# and remove if expired, add to expire list
+	expired_scp_items = scp_data.available_list.filter(func(i): return i.days_until_expire == 0 and !i.transfer_status.state)
+	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
+
+	SUBSCRIBE.scp_data = scp_data
+	
+	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
+	if completed_build_items.size() > 0:
+		current_build_complete_step = BUILD_COMPLETE_STEPS.START
+		await on_complete_build_complete
+	
+	
+	if expired_scp_items.size() > 0:
+		pass
 
 	
 func set_room_config() -> void:
@@ -580,7 +590,7 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 	# resets it in the available list
 	scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
 		if i.ref == selected_data.data.ref:
-			i.transfered_status = {
+			i.transfer_status = {
 				"state": false, 
 				"days_till_complete": -1
 			}
@@ -642,9 +652,6 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
 	
-func on_completed_build_items_update() -> void:
-	if !is_node_ready() or completed_build_items.is_empty(): return
-	current_build_complete_step = BUILD_COMPLETE_STEPS.START
 
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1014,7 +1021,7 @@ func on_current_contain_step_update() -> void:
 			# update transfer_state
 			scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
 				if i.ref == selected_contain_item.ref:
-					i.transfered_status = {
+					i.transfer_status = {
 						"state": true, 
 						"days_till_complete": scp_details.containment_time.call()
 					}
@@ -1094,7 +1101,7 @@ func on_current_recruit_step_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------		
 
-# ------------------------------------------------------------------------------	RECRUIT STEPS
+# ------------------------------------------------------------------------------	BUILD COMPLETE
 #region BUILD COMPLETE
 func on_current_build_complete_step_update() -> void:
 	if !is_node_ready() and !Engine.is_editor_hint():return
@@ -1143,7 +1150,7 @@ func on_current_build_complete_step_update() -> void:
 						scp_data.contained_list.push_back(new_contained_item)
 						
 						# TODO: add containment bonuses
-						
+						print('here: ', item.data)
 						
 						SUBSCRIBE.scp_data = scp_data
 					# ----------------------------
@@ -1177,10 +1184,16 @@ func on_current_build_complete_step_update() -> void:
 			SUBSCRIBE.resources_data = resources_data	
 			
 			completed_build_items = []
+			on_complete_build_complete.emit()
 			
 					
 #endregion
 # ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------	
+func on_expired_scp_items_update() -> void:
+	pass
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
@@ -1265,7 +1278,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = true #restore_data.is_empty()
+	var no_save:bool = restore_data.is_empty()
 	await restore_default_state()
 	
 	# trigger on reset in nodes

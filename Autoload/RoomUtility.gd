@@ -296,7 +296,7 @@ var tier_data:Dictionary = {
 # ------------------------------------------------------------------------------
 func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
 	var room_data:Dictionary = return_data(ref)
-	var owned_count:int = arr.filter(func(i): return i.data.ref == ref).size()
+	var owned_count:int = arr.filter(func(i): return i.data.id == ref).size()
 	var in_progress_count:int = action_queue_data.filter(func(i): return i.data.ref == ref and i.action == ACTION.BUILD_ITEM).size()
 	
 	if room_data.own_limit.call() == -1:

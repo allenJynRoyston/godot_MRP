@@ -71,7 +71,7 @@ func on_data_update() -> void:
 			var scp_list:Array = scp_data.available_list.filter(func(i): return i.ref == data.ref)
 			if scp_list.size() > 0:
 				var active_scp_data:Dictionary = scp_list[0]
-				
+
 				var placement_bullepoints:Array = []
 				var bonus_bulletpoints:Array = []
 				var ongoing_bulletspoints:Array = []
@@ -121,12 +121,15 @@ func on_data_update() -> void:
 							
 				list = [
 					{
-						"title":"Cancel Transfer",
+						"title":"Cancel Transfer" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
 						"title_icon": SVGS.TYPE.DELETE,
 						"onClick": func() -> void:
-							onCancelTransfer.call(),
+							if active_scp_data.days_until_expire > 0:
+								onCancelTransfer.call()
+							else:
+								onReject.call(),
 					}		
-				]  if active_scp_data.transfered_status.state else [
+				]  if active_scp_data.transfer_status.state else [
 					{
 						"title": "Contain",
 						"title_icon": SVGS.TYPE.TARGET,

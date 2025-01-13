@@ -17,7 +17,7 @@ var list_type:LIST_TYPE = LIST_TYPE.AVAILABLE :
 
 var onUpdate:Callable = func(data:Dictionary):pass
 var previous_type:LIST_TYPE
-var active_index:int = -1
+var active_index:int = -1 
 
 
 # --------------------------------------------------------------------------------------------------		
@@ -34,6 +34,7 @@ func _ready() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func on_reset() -> void:
+	active_index = -1
 	for index in SCPItemList.get_child_count():
 		var node:Control = SCPItemList.get_child(index)
 		node.is_active = false

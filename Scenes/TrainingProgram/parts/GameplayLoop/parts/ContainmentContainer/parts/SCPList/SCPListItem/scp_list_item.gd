@@ -50,7 +50,7 @@ func on_data_update() -> void:
 	NewIcon.show() if data.is_new else NewIcon.hide()
 
 	if "days_until_expire" in data:
-		if data.transfered_status.state:
+		if data.transfer_status.state:
 			StatusLabel.text = "TRANSFER IN PROGRESS"
 		else:
 			StatusLabel.text = "EXPIRES IN %s DAYS" % [data.days_until_expire]

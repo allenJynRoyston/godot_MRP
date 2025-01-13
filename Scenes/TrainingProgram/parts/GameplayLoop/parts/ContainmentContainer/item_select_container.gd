@@ -67,3 +67,18 @@ func on_list_type_update() -> void:
 	List.list_type = list_type
 	Details.list_type = list_type
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val
+	if selected_scp_data.is_empty() or scp_data.is_empty():return
+	var reset:bool = scp_data.available_list.filter(func(i): return i.ref == selected_scp_data.ref).size() == 0
+	if reset:
+		List.on_reset()
+# --------------------------------------------------------------------------------------------------		
+
+func on_is_showing_update() -> void:
+	if !is_node_ready():return
+	super.on_is_showing_update()
+	if !is_showing:
+		List.on_reset()
