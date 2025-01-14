@@ -118,9 +118,9 @@ func return_placement_instructions(item_data:Dictionary) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary) -> Array: 
+func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary, scp_data:Dictionary = {}) -> Array: 
 	var unavailable_list:Array = []
-	
+
 	for floor_index in room_config.floor.size():
 		for ring_index in room_config.floor[floor_index].ring.size():
 			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
@@ -169,6 +169,18 @@ func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary) -> A
 				if "containment_requirements" in item_data:
 					var containment_requirements:Array = item_data.containment_requirements
 					
+					# checks if any other items are being contained or will be contained in a location
+					if !scp_data.is_empty():
+						for item in scp_data.available_list:
+							if item.transfer_status.state:
+								var location:Dictionary = item.transfer_status.location
+								if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
+									unavailable_list.push_back(designation)
+						for item in scp_data.contained_list:
+							var location:Dictionary = item.location
+							if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
+								unavailable_list.push_back(designation)
+								
 					if !config_data.room_data.is_empty():
 						if config_data.room_data.ref not in containment_requirements:
 							unavailable_list.push_back(designation)

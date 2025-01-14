@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=21 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://85i830v26h73" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildCompleteContainer/BuildCompleteContainer.tscn" id="14_ohg8q"]
 [ext_resource type="PackedScene" uid="uid://b2glyeqvwy3vs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/InfoContainer/InfoContainer.tscn" id="15_g2w1o"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="15_y8y6g"]
+[ext_resource type="PackedScene" uid="uid://dqxnw3r7jjl1s" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn" id="16_nfnev"]
 [ext_resource type="LabelSettings" uid="uid://dnk5qeem6x4ca" path="res://Fonts/game/label_small_black.tres" id="17_gexf3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxod"]
@@ -121,6 +122,12 @@ theme_override_constants/margin_left = 275
 theme_override_constants/margin_top = 10
 is_showing = false
 freeze_inputs = true
+
+[node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+is_showing = false
 
 [node name="WaitContainer" type="PanelContainer" parent="."]
 visible = false

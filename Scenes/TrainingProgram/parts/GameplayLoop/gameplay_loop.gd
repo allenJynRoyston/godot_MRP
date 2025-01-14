@@ -10,6 +10,8 @@ enum SHOP_STEPS {
 enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, ON_REJECT, ON_TRANSFER_CANCEL, CONFIRM, FINALIZE}
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
+enum EVENT_STEPS {RESET, START}
+
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var LocationContainer:MarginContainer = $LocationContainer
@@ -24,6 +26,7 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 @onready var StatusContainer:MarginContainer = $StatusContainer
 @onready var BuildCompleteContainer:MarginContainer = $BuildCompleteContainer
 @onready var InfoContainer:MarginContainer = $InfoContainer
+@onready var EventContainer:MarginContainer = $EventContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
@@ -98,6 +101,11 @@ enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 	set(val):
 		show_info = val
 		on_show_info_update()		
+
+@export var show_events:bool = false : 
+	set(val):
+		show_events = val
+		on_show_events_update()		
 
 @export var show_build_complete:bool = false : 
 	set(val):
@@ -266,6 +274,12 @@ var showing_states:Dictionary = {}
 var revert_state_location:Dictionary = {}
 var tenative_location:Dictionary = {}
 
+var event_data:Array = [] : 
+	set(val):
+		event_data = val
+		if !event_data.is_empty():
+			current_event_step = EVENT_STEPS.START
+
 var current_shop_step:SHOP_STEPS = SHOP_STEPS.HIDE : 
 	set(val):
 		current_shop_step = val
@@ -285,6 +299,11 @@ var current_build_complete_step:BUILD_COMPLETE_STEPS = BUILD_COMPLETE_STEPS.HIDE
 	set(val):
 		current_build_complete_step = val
 		on_current_build_complete_step_update()
+
+var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET : 
+	set(val):
+		current_event_step = val
+		on_current_event_step_update()
 
 signal store_select_location
 signal on_complete_build_complete
@@ -351,6 +370,7 @@ func setup() -> void:
 	on_show_recruit_update()
 	on_show_status_update()
 	on_show_info_update()
+	on_show_events_update()
 	on_show_build_complete_update()
 
 	# other
@@ -440,7 +460,6 @@ func get_room_item_default() -> Dictionary:
 #endregion
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------	SHOW/HIDE CONTAINERS
 #region show/hide functions
 func on_is_busy_update() -> void:
@@ -452,7 +471,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		RoomStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ContainmentContainer, 
 		ConfirmModal, RecruitmentContainer, StatusContainer,
-		BuildCompleteContainer, InfoContainer
+		BuildCompleteContainer, InfoContainer, EventContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -490,6 +509,17 @@ func show_only(nodes:Array = []) -> void:
 
 # ------------------------------------------------------------------------------	
 #region LOCAL FUNCS
+func get_data_snapshot(self_ref:Dictionary = {}) -> Dictionary:
+	return {
+		"room_config": room_config.duplicate(true),
+		"hired_lead_researchers_arr": hired_lead_researchers_arr.duplicate(true),
+		"scp_data": scp_data.duplicate(true),
+		"resources_data": resources_data.duplicate(true),
+		"purchased_base_arr": purchased_base_arr.duplicate(true),
+		"purchased_facility_arr": purchased_facility_arr.duplicate(true),
+		"purchased_research_arr": purchased_research_arr.duplicate(true),
+		"self_ref": self_ref,
+	}
 func wait_please(duration:float = 0.5) -> void:
 	is_busy = true
 	await U.set_timeout(duration)
@@ -639,6 +669,7 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 #endregion
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
 #region local SAVABLE ONUPDATES
 # ------------------------------------------------------------------------------	LOCAL ON_UPDATES
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
@@ -755,6 +786,13 @@ func on_show_info_update() -> void:
 		InfoContainer.is_showing = show_info
 		showing_states[InfoContainer] = show_info
 
+func on_show_events_update() -> void:
+	print("show_events: ", show_events)
+	if is_node_ready() or Engine.is_editor_hint():
+		EventContainer.is_showing = show_events
+		showing_states[EventContainer] = show_events
+		
+		
 func on_show_build_complete_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
 		BuildCompleteContainer.is_showing = show_build_complete
@@ -997,7 +1035,7 @@ func on_current_contain_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
-			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config)
+			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
 			
 			Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
@@ -1165,6 +1203,9 @@ func on_current_build_complete_step_update() -> void:
 			# REMOVES FROM QUEUE LIST
 			await ActionQueueContainer.remove_from_queue(completed_build_items)
 			
+			# resets event_data 
+			event_data = []
+			
 			# UPDATE SAVABLE DATA
 			for item in completed_build_items:
 				match item.action:
@@ -1183,9 +1224,22 @@ func on_current_build_complete_step_update() -> void:
 							"days_in_containment": 0
 						}
 						scp_data.contained_list.push_back(new_contained_item)
-						
+
 						SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(item.data.ref, resources_data)
 						SUBSCRIBE.scp_data = scp_data
+						
+						# setup self reference callables
+						var get_self_ref:Callable = func() -> Dictionary:
+							return {
+								"details": SCP_UTIL.return_data(item.data.ref),
+								"update": func(new_val:Dictionary) -> void:
+									print("on update triggered")
+									print(new_val)
+									scp_data = scp_data
+							}
+						var event:Dictionary = SCP_UTIL.check_for_events(item.data.ref, get_data_snapshot, get_self_ref, "after_inital_containment")
+						event_data.push_back(event)
+						
 					# ----------------------------
 					ACTION.BASE_ITEM:
 						purchased_base_arr.push_back({
@@ -1217,7 +1271,31 @@ func on_current_build_complete_step_update() -> void:
 			completed_build_items = []
 			on_complete_build_complete.emit()
 			
+			# trigger event_data check
+			event_data = event_data
 					
+#endregion
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------		
+#region BUILD COMPLETE
+func on_current_event_step_update() -> void:
+	if !is_node_ready() and !Engine.is_editor_hint():return
+
+	match current_event_step:
+		EVENT_STEPS.RESET:
+			SUBSCRIBE.suppress_click = false
+			await restore_default_state()
+		EVENT_STEPS.START:
+			SUBSCRIBE.suppress_click = true
+			await show_only([EventContainer])
+			EventContainer.event_data = event_data
+			EventContainer.start()
+			await EventContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			# reset and evempty event_data
+			event_data = []
+			current_event_step = EVENT_STEPS.RESET
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -1229,12 +1307,14 @@ func on_expired_scp_items_update() -> void:
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
 func is_occupied() -> bool:
-	if (current_shop_step != SHOP_STEPS.HIDE) or (current_contain_step != CONTAIN_STEPS.HIDE) or (current_recruit_step != RECRUIT_STEPS.HIDE) or (current_build_complete_step != BUILD_COMPLETE_STEPS.HIDE):
+	if is_busy or GBL.has_animation_in_queue():
+		return true
+	if (current_shop_step != SHOP_STEPS.HIDE) or (current_contain_step != CONTAIN_STEPS.HIDE) or (current_recruit_step != RECRUIT_STEPS.HIDE) or (current_build_complete_step != BUILD_COMPLETE_STEPS.HIDE) or (current_event_step != EVENT_STEPS.RESET):
 		return true
 	return false
 
 func on_mouse_scroll(dir:int) -> void:
-	if GBL.has_animation_in_queue() or camera_settings.is_locked:return
+	if is_occupied() or camera_settings.is_locked:return
 		
 	match dir:
 		0: #UP
@@ -1248,25 +1328,21 @@ func on_mouse_scroll(dir:int) -> void:
 	
 
 func on_control_input_update(input_data:Dictionary) -> void:
-	var do_not_continue:bool = is_busy or is_occupied()
-
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
+	
+	if is_occupied():
+		print("Input not allowed (is occupied).")
+		return
 	
 	print("key: %s   keycode: %s" % [key, keycode])
 	
 	match key:
-		"SPACEBAR":
-			SUBSCRIBE.current_location = tenative_location
-		"ENTER":
-			if do_not_continue:return
-			#print_orphan_nodes()			
+		"ENTER":	
 			next_day()
 		"5":
-			if do_not_continue:return
 			quicksave()
 		"8":
-			if do_not_continue:return
 			quickload()
 		
 #endregion

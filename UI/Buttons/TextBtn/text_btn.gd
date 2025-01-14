@@ -70,6 +70,7 @@ func update_color(new_color:Color) -> void:
 	if is_node_ready():
 		IconBtnLeft.static_color = new_color
 		IconBtnRight.static_color = new_color
+		BtnLabel.modulate = new_color
 		
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)

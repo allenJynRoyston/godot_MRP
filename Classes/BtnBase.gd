@@ -5,6 +5,8 @@ var onClick:Callable = func():pass
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
 
+var index:int = -1
+
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
