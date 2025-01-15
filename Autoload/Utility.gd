@@ -24,6 +24,23 @@ func tick() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
+func min_max(val:int, min:int, max:int, cycle_back:bool = false) -> int:
+	var new_val:int = val
+	if val > max:
+		if cycle_back:
+			new_val = min
+		else:
+			new_val = max
+	if val < min:
+		if cycle_back:
+			new_val = max
+		else:
+			new_val = min
+	return new_val
+# ------------------------------------------------------------------------------	
+
+
+# ------------------------------------------------------------------------------	
 func convert_to_normalized_position(container_size:Vector2, pos:Vector2) -> Vector2:
 	return Vector2((pos.x / container_size.x * 1.0), (pos.y / container_size.y * 1.0) )
 # ------------------------------------------------------------------------------	
@@ -51,6 +68,7 @@ func paginate_array(array:Array, start_at: int, limit: int) -> Array:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
+# THIS DOESN'T WORK YET
 func dict_has_diff(new_val:Dictionary, current:Dictionary, list_property:String, properties:Array) -> Dictionary:
 	if list_property not in new_val:
 		return {"error": true}

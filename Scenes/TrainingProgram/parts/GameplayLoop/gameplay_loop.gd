@@ -136,7 +136,7 @@ var progress_data:Dictionary = {
 var scp_data:Dictionary = {
 	"available_list": [
 		{
-			"ref": SCP.TYPE.THE_DOOR, 
+			"ref": SCP.TYPE.SCP_001, 
 			"days_until_expire": 99, 
 			"is_new": true,
 			"transfer_status": {
@@ -146,7 +146,7 @@ var scp_data:Dictionary = {
 			}
 		},
 		{
-			"ref": SCP.TYPE.THE_BOOK, 
+			"ref": SCP.TYPE.SCP_002, 
 			"days_until_expire": 99, 
 			"is_new": true,
 			"transfer_status": {
@@ -520,6 +520,7 @@ func get_data_snapshot(self_ref:Dictionary = {}) -> Dictionary:
 		"purchased_research_arr": purchased_research_arr.duplicate(true),
 		"self_ref": self_ref,
 	}
+	
 func wait_please(duration:float = 0.5) -> void:
 	is_busy = true
 	await U.set_timeout(duration)
@@ -535,40 +536,23 @@ func update_tenative_location(location:Dictionary) -> void:
 func goto_location(location:Dictionary) -> void:
 	LocationContainer.goto_location(location)
 
-func next_day() -> void:
-	await wait_please()
-	
-	# ADD TO PROGRESS DATA day count
-	progress_data.day += 1
-	SUBSCRIBE.progress_data = progress_data
-	
-	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
-	action_queue_data = action_queue_data.map(func(i): 
-		i.days_in_queue += 1
-		return i
-	)	
-	completed_build_items = action_queue_data.filter(func(i): return i.days_in_queue == i.build_time)	
-	action_queue_data = action_queue_data.filter(func(i): return i.days_in_queue < i.build_time)
-	SUBSCRIBE.action_queue_data = action_queue_data
-		
-	# ADDS DAY COUNT TO SCP DATA
-	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
-	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
-	
-	# and remove if expired, add to expire list
-	expired_scp_items = scp_data.available_list.filter(func(i): return i.days_until_expire == 0 and !i.transfer_status.state)
-	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
-
-	SUBSCRIBE.scp_data = scp_data
-	
-	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	if completed_build_items.size() > 0:
-		current_build_complete_step = BUILD_COMPLETE_STEPS.START
-		await on_complete_build_complete
-	
-	
-	if expired_scp_items.size() > 0:
-		pass
+func get_self_ref_callable(scp_ref:int) -> Callable:
+	# setup self reference callables
+	return func() -> Dictionary:
+		return {
+			"details": SCP_UTIL.return_data(scp_ref),
+			"add_unlockable": func(unlockable:SCP_UTIL.UNLOCKABLE) -> void:
+				scp_data.contained_list = scp_data.contained_list.map(func(i): 
+					if i.ref == scp_ref:
+						var refs_arr:Array = i.unlocked.map(func(i): return i.ref)
+						if unlockable not in refs_arr:
+							i.unlocked.push_back({
+								"ref": unlockable
+							})
+					return i
+				)
+				scp_data = scp_data
+		}
 
 	
 func set_room_config() -> void:
@@ -665,7 +649,54 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 		return !(i.action == ACTION.TRANSFER_SCP and i.data.ref == selected_data.data.ref)
 	)
 	ActionQueueContainer.remove_from_queue([selected_data])
+
+
+# -----------------------------------
+func next_day() -> void:
+	is_busy = true
+	await U.set_timeout(1.0)
+
+	# ADD TO PROGRESS DATA day count
+	progress_data.day += 1
+	SUBSCRIBE.progress_data = progress_data
 	
+	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
+	action_queue_data = action_queue_data.map(func(i): 
+		i.days_in_queue += 1
+		return i
+	)	
+	completed_build_items = action_queue_data.filter(func(i): return i.days_in_queue == i.build_time)	
+	action_queue_data = action_queue_data.filter(func(i): return i.days_in_queue < i.build_time)
+	SUBSCRIBE.action_queue_data = action_queue_data
+		
+	# ADDS DAY COUNT TO SCP DATA
+	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
+	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
+	
+	# and remove if expired, add to expire list
+	expired_scp_items = scp_data.available_list.filter(func(i): return i.days_until_expire == 0 and !i.transfer_status.state)
+	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
+
+	SUBSCRIBE.scp_data = scp_data
+	is_busy = false
+	
+	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
+	if completed_build_items.size() > 0:
+		current_build_complete_step = BUILD_COMPLETE_STEPS.START
+		await on_complete_build_complete
+	
+	
+	if expired_scp_items.size() > 0:
+		pass
+	
+	# TRIGGERS ANY RANDOM EVENTS
+	event_data = []
+	for data in scp_data.contained_list:
+		if data.days_in_containment > 0:
+			var event:Dictionary = SCP_UTIL.check_for_events(data.ref, get_data_snapshot, get_self_ref_callable(data.ref), "random_events")
+			event_data.push_back(event)		
+	event_data = event_data
+
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1216,10 +1247,7 @@ func on_current_build_complete_step_update() -> void:
 						# then add to contained list...
 						var new_contained_item:Dictionary = { 
 							"ref": item.data.ref,
-							"progression": {
-								"research_level": 0,
-								"path_unlocks": [],
-							},
+							"unlocked": [],
 							"location": item.location,
 							"days_in_containment": 0
 						}
@@ -1228,16 +1256,7 @@ func on_current_build_complete_step_update() -> void:
 						SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(item.data.ref, resources_data)
 						SUBSCRIBE.scp_data = scp_data
 						
-						# setup self reference callables
-						var get_self_ref:Callable = func() -> Dictionary:
-							return {
-								"details": SCP_UTIL.return_data(item.data.ref),
-								"update": func(new_val:Dictionary) -> void:
-									print("on update triggered")
-									print(new_val)
-									scp_data = scp_data
-							}
-						var event:Dictionary = SCP_UTIL.check_for_events(item.data.ref, get_data_snapshot, get_self_ref, "after_inital_containment")
+						var event:Dictionary = SCP_UTIL.check_for_events(item.data.ref, get_data_snapshot, get_self_ref_callable(item.data.ref), "after_inital_containment")
 						event_data.push_back(event)
 						
 					# ----------------------------

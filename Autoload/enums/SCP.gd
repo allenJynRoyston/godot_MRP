@@ -1,8 +1,8 @@
 extends Node
 
 enum TYPE { 
-	THE_DOOR, 
-	THE_BOOK
+	SCP_001, 
+	SCP_002
 }
 
 enum RESEARCH_LVL { 

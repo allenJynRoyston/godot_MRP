@@ -31,18 +31,28 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 	
 	NextBtn.onClick = func() -> void:
-		on_item = on_item + 1
-		if !has_more:
-			user_response.emit({"action": ACTION.DONE})
-			return
-			
-		update_display()
+		on_next()
 		
 	SkipBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.SKIP})
+		on_skip()
 		
 	on_has_more_update()
 # --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func on_next() -> void:
+	on_item = on_item + 1
+	if !has_more:
+		user_response.emit({"action": ACTION.DONE})
+		return
+	update_display()
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func on_skip() -> void:
+	user_response.emit({"action": ACTION.SKIP})
+# --------------------------------------------------------------------------------------------------
+
 
 # --------------------------------------------------------------------------------------------------
 func update_display() -> void:
@@ -118,3 +128,16 @@ func on_has_more_update() -> void:
 		NextBtn.title = "Next" if has_more else "Close"
 		SkipBtn.show() if has_more else SkipBtn.hide()
 # --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_showing:return
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+	
+	match key:
+		"ENTER":
+			on_skip()
+		"E":
+			on_next()
+# --------------------------------------------------------------------------------------------------	

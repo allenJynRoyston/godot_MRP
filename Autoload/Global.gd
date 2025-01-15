@@ -225,6 +225,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "BACK"
 					32:
 						key = "SPACEBAR"
+					69:
+						key = "E"
 					70:
 						key = "F"
 					53:

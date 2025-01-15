@@ -28,7 +28,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="GameplayLoop" type="PanelContainer"]
+[node name="----" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -128,6 +128,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 is_showing = false
+freeze_inputs = true
 
 [node name="WaitContainer" type="PanelContainer" parent="."]
 visible = false

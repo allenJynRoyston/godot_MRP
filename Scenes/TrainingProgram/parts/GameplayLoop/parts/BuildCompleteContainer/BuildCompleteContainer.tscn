@@ -8,7 +8,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0ckom"]
 shader = ExtResource("2_4ryf8")
-shader_parameter/percentage = 0.0
+shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -24,10 +24,10 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_j1538"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n6cw1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ltnya"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v04lt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1pq5c"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="BuildCompleteContainer" type="MarginContainer"]
@@ -94,14 +94,14 @@ alignment = 1
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_n6cw1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ltnya")
 icon = 8
 title = "Skip"
 
 [node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_knmmc")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_v04lt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1pq5c")
 icon = 27
 title = "Close"
 
