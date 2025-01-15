@@ -158,7 +158,7 @@ var SCP_001:Dictionary = {
 		# -------------------------
 		"random_events": [
 			{
-				"trigger_threshold": 100,
+				"trigger_threshold": 10,
 				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
 					var details:Dictionary = self_ref.call().details
 					var img_src:String = details.img_src					
@@ -174,7 +174,7 @@ var SCP_001:Dictionary = {
 					],
 			},
 			{
-				"trigger_threshold": 100,
+				"trigger_threshold": 10,
 				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
 					var details:Dictionary = self_ref.call().details
 					var img_src:String = details.img_src					
@@ -190,7 +190,7 @@ var SCP_001:Dictionary = {
 					],
 			},
 			{
-				"trigger_threshold": 100,
+				"trigger_threshold": 10,
 				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
 					var details:Dictionary = self_ref.call().details
 					var img_src:String = details.img_src					
@@ -407,6 +407,9 @@ func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictiona
 func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable, event_property:String) -> Dictionary:
 	var data:Dictionary = return_data(ref)
 	var event_arr:Array = []
+	var event_instructions:Array = []
+	var event_id:int = -1
+	
 	if "events" in data and event_property in data.events:
 		var events:Array = data.events[event_property]
 		for event in events:
@@ -414,11 +417,11 @@ func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable
 			if rand_int <= event.trigger_threshold:
 				event_arr.push_back(event) 
 	
-	# if multiple events are available, will pick one in the array at random
-	var random_event_int:int = U.generate_rand(0, event_arr.size() - 1)
-	var event_instructions:Array = event_arr[random_event_int].trigger_check.call(get_data_snapshot, get_self_ref)
+	if event_arr.size() > 0:
+		# if multiple events are available, will pick one in the array at random
+		event_id = U.generate_rand(0, event_arr.size() - 1)
+		event_instructions = event_arr[event_id].trigger_check.call(get_data_snapshot, get_self_ref)
 
-				
 	# if event_instructions are empty, then check if there's a default available
 	if event_instructions.is_empty():
 		match event_property:
@@ -435,7 +438,7 @@ func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable
 				]
 
 	return {
-		"random_event_int": random_event_int,
+		"event_id": event_id,
 		"event_instructions": event_instructions
 	}
 # ------------------------------------------------------------------------------	

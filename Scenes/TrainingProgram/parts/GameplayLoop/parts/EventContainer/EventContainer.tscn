@@ -41,7 +41,7 @@ font = ExtResource("6_5xty8")
 font_size = 14
 font_color = Color(0.290354, 0.290354, 0.290353, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vvayo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixyes"]
 bg_color = Color(0, 0, 0, 0.788235)
 
 [node name="EventContainer" type="MarginContainer"]
@@ -78,7 +78,6 @@ theme_override_constants/separation = 20
 
 [node name="HeaderLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "EVENT HEADER"
 label_settings = ExtResource("4_6n6tl")
 
 [node name="ImageContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
@@ -195,10 +194,10 @@ theme_override_constants/separation = 0
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_vvayo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ixyes")
 icon = 36
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0.788235)
-title = "NEXT"
+static_color = Color(0.52549, 0.0862745, 0, 1)
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

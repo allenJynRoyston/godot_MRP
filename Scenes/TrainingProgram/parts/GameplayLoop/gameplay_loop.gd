@@ -260,6 +260,8 @@ var is_busy:bool = false :
 	set(val):
 		is_busy = val
 		on_is_busy_update()
+		
+var processing_next_day:bool = false
 
 var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
@@ -308,7 +310,8 @@ var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET :
 signal store_select_location
 signal on_complete_build_complete
 signal on_expired_scp_items_complete
-		
+signal on_events_complete
+
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -509,6 +512,7 @@ func show_only(nodes:Array = []) -> void:
 
 # ------------------------------------------------------------------------------	
 #region LOCAL FUNCS
+# -----------------------------------
 func get_data_snapshot(self_ref:Dictionary = {}) -> Dictionary:
 	return {
 		"room_config": room_config.duplicate(true),
@@ -535,7 +539,9 @@ func update_tenative_location(location:Dictionary) -> void:
 			
 func goto_location(location:Dictionary) -> void:
 	LocationContainer.goto_location(location)
+# -----------------------------------
 
+# -----------------------------------
 func get_self_ref_callable(scp_ref:int) -> Callable:
 	# setup self reference callables
 	return func() -> Dictionary:
@@ -553,8 +559,9 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 				)
 				scp_data = scp_data
 		}
+# -----------------------------------
 
-	
+# -----------------------------------
 func set_room_config() -> void:
 	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
 	var under_construction_rooms:Array = []
@@ -630,7 +637,9 @@ func set_room_config() -> void:
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
+# -----------------------------------
 
+# -----------------------------------
 func cancel_scp_transfer(selected_data:Dictionary) -> void:
 	# resets it in the available list
 	scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
@@ -649,13 +658,13 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 		return !(i.action == ACTION.TRANSFER_SCP and i.data.ref == selected_data.data.ref)
 	)
 	ActionQueueContainer.remove_from_queue([selected_data])
-
+# -----------------------------------
 
 # -----------------------------------
 func next_day() -> void:
-	is_busy = true
-	await U.set_timeout(1.0)
-
+	# turn processing next day flag to true
+	processing_next_day = true
+	
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
 	SUBSCRIBE.progress_data = progress_data
@@ -676,27 +685,42 @@ func next_day() -> void:
 	# and remove if expired, add to expire list
 	expired_scp_items = scp_data.available_list.filter(func(i): return i.days_until_expire == 0 and !i.transfer_status.state)
 	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
-
-	SUBSCRIBE.scp_data = scp_data
-	is_busy = false
 	
+	# hide busy modal
+	await wait_please(1.5)
+	
+	# lastly, check for random events in the scp
+	event_data = []
+	for index in scp_data.contained_list.size():
+		var data:Dictionary = scp_data.contained_list[index]
+		if data.days_in_containment > 0:
+			var event:Dictionary = SCP_UTIL.check_for_events(data.ref, get_data_snapshot, get_self_ref_callable(data.ref), "random_events")
+			
+			# event must have instructions or there's no event to play out
+			if !event.event_instructions.is_empty():
+				# adds number of times an event has been triggered to the contained_List data
+				if event.event_id not in scp_data.contained_list[index].event_counts:
+					scp_data.contained_list[index].event_counts[event.event_id] = 0
+				scp_data.contained_list[index].event_counts[event.event_id] += 1
+				event_data.push_back(event)
+	SUBSCRIBE.scp_data = scp_data
+	event_data = event_data
+	if !event_data.is_empty():
+		await on_events_complete
+
+
 	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
 	if completed_build_items.size() > 0:
 		current_build_complete_step = BUILD_COMPLETE_STEPS.START
 		await on_complete_build_complete
-	
-	
+
+	# make notification that SCP has expired
 	if expired_scp_items.size() > 0:
 		pass
-	
-	# TRIGGERS ANY RANDOM EVENTS
-	event_data = []
-	for data in scp_data.contained_list:
-		if data.days_in_containment > 0:
-			var event:Dictionary = SCP_UTIL.check_for_events(data.ref, get_data_snapshot, get_self_ref_callable(data.ref), "random_events")
-			event_data.push_back(event)		
-	event_data = event_data
 
+	# revert processing flag
+	processing_next_day = false
+# -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1248,6 +1272,9 @@ func on_current_build_complete_step_update() -> void:
 						var new_contained_item:Dictionary = { 
 							"ref": item.data.ref,
 							"unlocked": [],
+							"event_counts": {
+								
+							},
 							"location": item.location,
 							"days_in_containment": 0
 						}
@@ -1315,6 +1342,8 @@ func on_current_event_step_update() -> void:
 			# reset and evempty event_data
 			event_data = []
 			current_event_step = EVENT_STEPS.RESET
+			await U.set_timeout(0.5)
+			on_events_complete.emit()
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -1326,7 +1355,7 @@ func on_expired_scp_items_update() -> void:
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
 func is_occupied() -> bool:
-	if is_busy or GBL.has_animation_in_queue():
+	if is_busy or processing_next_day or GBL.has_animation_in_queue():
 		return true
 	if (current_shop_step != SHOP_STEPS.HIDE) or (current_contain_step != CONTAIN_STEPS.HIDE) or (current_recruit_step != RECRUIT_STEPS.HIDE) or (current_build_complete_step != BUILD_COMPLETE_STEPS.HIDE) or (current_event_step != EVENT_STEPS.RESET):
 		return true
