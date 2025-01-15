@@ -168,7 +168,9 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 	if action_queue_filter.size() > 0:
 		var action_queue_item:Dictionary = action_queue_filter[0]
 		progress_bar_value = (action_queue_item.days_in_queue*1.0 / action_queue_item.build_time*1.0)
-		ProgressAmountLabel.text = str(int(progress_bar_value * 100)) + "%"			
+		ProgressAmountLabel.text = str(int(progress_bar_value * 100)) + "%"
+	else:
+		progress_bar_value = -1
 	# --------------------------
 	
 	StatusLabel.hide() if StatusLabel.text == "" else StatusLabel.show()

@@ -299,6 +299,7 @@ var SCP_002:Dictionary = {
 		# -------------------------
 		"after_inital_containment": [
 			{
+				"trigger_threshold": 100,
 				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
 					var details:Dictionary = self_ref.call().details
 					var img_src:String = details.img_src

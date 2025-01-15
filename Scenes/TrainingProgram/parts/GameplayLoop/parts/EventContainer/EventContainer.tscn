@@ -1,9 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=17 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_qylge"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_r48o5"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_6n6tl"]
+[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="5_qdr0c"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_5xty8"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_fgcdw"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
@@ -105,6 +106,7 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_right = 5
 
 [node name="ImageTextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/ImageContainer/MarginContainer"]
+material = ExtResource("5_qdr0c")
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 texture = SubResource("PlaceholderTexture2D_ygy2h")
