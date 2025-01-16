@@ -67,31 +67,31 @@ func on_suppress_click_update(new_val:bool) -> void:
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		match data.action:
-			ACTION.INITIAL_CONTAINMENT:
+			ACTION.AQ.CONTAIN:
 				item_data = SCP_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.CONTAIN
 				requirements = []
 				TitleBtn.title = "CONTAINMENT IN PROGRESS"
 				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
-			ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+			ACTION.AQ.TRANSFER:
 				item_data = SCP_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.CONTAIN
 				requirements = []
 				TitleBtn.title = "TRANSFER IN PROGRESS"
 				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
-			ACTION.RESEARCH_ITEM:
+			ACTION.AQ.RESEARCH_ITEM:
 				item_data = RD_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.RESEARCH
 				requirements = RD_UTIL.return_purchase_cost(data.data.ref) 
 				TitleBtn.title = "RESEARCHING"
 				NameLabel.text = "%s" % [item_data.name]
-			ACTION.BUILD_ITEM:
+			ACTION.AQ.BUILD_ITEM:
 				item_data = ROOM_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.BUILD
 				requirements = ROOM_UTIL.return_purchase_cost(data.data.ref) 
 				TitleBtn.title = "UNDER CONSTRUCTION"
 				NameLabel.text = "%s" % [item_data.name]
-			ACTION.BASE_ITEM:
+			ACTION.AQ.BASE_ITEM:
 				item_data = BASE_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.CONTAIN
 				requirements = BASE_UTIL.return_purchase_cost(data.data.ref) 

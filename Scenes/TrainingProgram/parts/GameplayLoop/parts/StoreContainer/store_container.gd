@@ -71,7 +71,7 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 
 	CloseBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.BACK})
+		user_response.emit({"action": ACTION.PURCHASE.BACK})
 	
 	PaginationBack.onClick = func() -> void:
 		pagination = pagination - 1
@@ -248,7 +248,7 @@ func build_list() -> void:
 			match current_tab:
 				TAB.BASE_DEVELOPMENT:
 					user_response.emit({
-						"action": ACTION.PURCHASE_BASE_ITEM, 
+						"action": ACTION.PURCHASE.BASE_ITEM, 
 						"selected": {
 							"uid": U.generate_uid(),
 							"ref": item.ref
@@ -256,7 +256,7 @@ func build_list() -> void:
 					})
 				TAB.FACILITY:
 					user_response.emit({
-						"action": ACTION.PURCHASE_BUILD_ITEM, 
+						"action": ACTION.PURCHASE.FACILITY_ITEM, 
 						"selected": {
 							"uid": U.generate_uid(),
 							"ref": item.ref
@@ -264,7 +264,7 @@ func build_list() -> void:
 					})
 				TAB.RESEARCH_AND_DEVELOPMENT:
 					user_response.emit({
-						"action": ACTION.PURCHASE_RD_ITEM, 
+						"action": ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT, 
 						"selected": {
 							"uid": U.generate_uid(),
 							"ref": item.ref
@@ -314,7 +314,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	match key:
 		"BACK":
-			user_response.emit({"action": ACTION.BACK})
+			user_response.emit({"action": ACTION.PURCHASE.BACK})
 		"B":
-			user_response.emit({"action": ACTION.BACK})
+			user_response.emit({"action": ACTION.PURCHASE.BACK})
 # --------------------------------------------------------------------------------------------------	

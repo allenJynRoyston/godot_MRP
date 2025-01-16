@@ -23,13 +23,13 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 	
 	LeadResearchPanel.addHire = func(data:Dictionary) -> void:
-		user_response.emit({"action": ACTION.HIRE_LEAD, "data": data})		
+		user_response.emit({"action": ACTION.HIRE.LEAD, "data": data})		
 	
 	SupportPanel.addHire = func(data:Dictionary) -> void:
-		user_response.emit({"action": ACTION.HIRE_SUPPORT, "data": data})		
+		user_response.emit({"action": ACTION.HIRE.SUPPORT, "data": data})		
 	
 	BackBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.BACK})		
+		user_response.emit({"action": ACTION.HIRE.BACK})		
 		
 	LeadBtn.onClick = func() -> void:
 		tab_open = TAB_OPTIONS.LEAD_RESEARCHERS

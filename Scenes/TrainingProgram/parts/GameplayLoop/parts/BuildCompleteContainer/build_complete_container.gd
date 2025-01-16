@@ -65,22 +65,22 @@ func update_display() -> void:
 		
 	match data.action:
 		# ------------------------------------------------------------------------------------------
-		ACTION.INITIAL_CONTAINMENT:
+		ACTION.AQ.CONTAIN:
 			var details:Dictionary = SCP_UTIL.return_data(data.data.ref)
 			TitleLabel.text = "SCP %s successfully contained." % [details.item_id]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
-		ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+		ACTION.AQ.TRANSFER:
 			var details:Dictionary = SCP_UTIL.return_data(data.data.ref)
 			TitleLabel.text = "SCP %s successfully transfered." % [details.item_id]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------		
-		ACTION.RESEARCH_ITEM:
+		ACTION.AQ.RESEARCH_ITEM:
 			var details:Dictionary = RD_UTIL.return_data(data.data.ref)
 			TitleLabel.text = "Research complete: %s" % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
-		ACTION.BASE_ITEM:
+		ACTION.AQ.BASE_ITEM:
 			var details:Dictionary = BASE_UTIL.return_data(data.data.ref)
 			var build_complete_list:Array = BASE_UTIL.return_build_complete(data.data.ref)
 
@@ -94,7 +94,7 @@ func update_display() -> void:
 				label_node.title =  "+%s [%s]" % [item.amount, item.type]
 				DescriptionList.add_child(label_node)
 		# ------------------------------------------------------------------------------------------
-		ACTION.BUILD_ITEM:
+		ACTION.AQ.BUILD_ITEM:
 			var details:Dictionary = ROOM_UTIL.return_data(data.data.ref)
 			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.data.ref)
 

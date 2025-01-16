@@ -26,6 +26,10 @@ var scp_data:Dictionary = {}
 var onContain:Callable = func() -> void:pass
 var onReject:Callable = func() -> void:pass
 var onTransfer:Callable = func() -> void:pass
+var startResearch:Callable = func() -> void:pass
+var stopResearch:Callable = func() -> void:pass
+var assignResearcher:Callable = func() -> void:pass
+var unassignResearcher:Callable = func() -> void:pass
 var onCancelTransfer:Callable = func(action:int) -> void:pass
 
 # ------------------------------------------------------------
@@ -126,7 +130,7 @@ func on_data_update() -> void:
 						"title_icon": SVGS.TYPE.DELETE,
 						"onClick": func() -> void:
 							if active_scp_data.days_until_expire > 0:
-								onCancelTransfer.call(ACTION.CONTAIN_TRANSFER_CANCEL)
+								onCancelTransfer.call(ACTION.CONTAINED.STOP_CONTAINMENT)
 							else:
 								onReject.call(),
 					}		
@@ -169,28 +173,46 @@ func on_data_update() -> void:
 							"title":"Cancel Transfer",
 							"title_icon": SVGS.TYPE.DELETE,
 							"onClick": func() -> void:
-								onCancelTransfer.call(ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION),
+								onCancelTransfer.call(ACTION.CONTAINED.CANCEL_TRANSFER),
 						}	
 					)
 				else:
-					if active_scp_data.lead_researcher == null:
-						list.push_back(
-							{
-								"title":"Assign Lead Researcher",
-								"title_icon": SVGS.TYPE.RESEARCH,
-								"onClick": func() -> void:
-									pass,
-							}		
-						)
-					else:
-						list.push_back(
-							{
-								"title":"Remove Lead Researcher",
-								"title_icon": SVGS.TYPE.RESEARCH,
-								"onClick": func() -> void:
-									pass,
-							}		
-						)
+					
+					list.push_back(
+						{
+							"title": "Start Research" if active_scp_data.current_activity.is_empty() else "Stop Research",
+							"title_icon": SVGS.TYPE.RESEARCH,
+							"onClick": func() -> void:
+								if active_scp_data.current_activity.is_empty():
+									startResearch.call()
+								else:
+									stopResearch.call(),
+						}		
+					)					
+
+					list.push_back(
+						{
+							"title":"Assign Lead Researcher" if active_scp_data.lead_researcher.is_empty() else "Remove Lead Researcher",
+							"title_icon": SVGS.TYPE.DRS,
+							"onClick": func() -> void:
+								if active_scp_data.lead_researcher.is_empty():
+									assignResearcher.call()
+								else:
+									unassignResearcher.call(),
+							"bulletpoints": [
+								{
+									"header": "Lead Researcher",
+									"list": [
+										{
+											"icon": SVGS.TYPE.STAFF, 
+											"text": func() -> String:
+												return "NONE ASSIGNED",
+										}	
+									]
+								}
+							]
+						}
+					)
 						
 					list.push_back(
 						{
@@ -207,6 +229,18 @@ func on_data_update() -> void:
 							"title_icon": SVGS.TYPE.CAUTION,
 							"onClick": func() -> void:
 								pass,
+							"bulletpoints": [
+								{
+									"header": "Prerequisites",
+									"list": [
+										{
+											"icon": SVGS.TYPE.EMPTY_CHECKBOX, 
+											"text": func() -> String:
+												return "Nuclear Detonation Controls",
+										}	
+									]
+								}
+							]
 						}		
 					)
 

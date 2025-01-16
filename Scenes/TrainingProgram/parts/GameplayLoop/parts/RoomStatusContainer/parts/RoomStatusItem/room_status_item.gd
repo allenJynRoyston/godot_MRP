@@ -142,7 +142,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		StatusLabel.text = ""
 		ProgressLabel.text = "UNDER CONSTRUCTION"
 		
-		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.BUILD_ITEM and i.data.ref == room_data.ref)
+		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.AQ.BUILD_ITEM and i.data.ref == room_data.ref)
 	# --------------------------
 	
 	# --------------------------
@@ -159,7 +159,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		ObjectDesignationLabel.text = "SCP-%s" % [scp_data.item_id]
 		ObjectClassLabel.text = "KETER"
 		ObjectNameLabel.text = "%s" % [scp_data.name]
-		action_queue_filter = action_queue_data.filter(func(i): return (i.action == ACTION.INITIAL_CONTAINMENT or i.action == ACTION.TRANSFER_SCP_TO_NEW_LOCATION) and i.data.ref == scp_data.ref)
+		action_queue_filter = action_queue_data.filter(func(i): return (i.action == ACTION.AQ.CONTAIN or i.action == ACTION.AQ.TRANSFER) and i.data.ref == scp_data.ref)
 	# --------------------------
 	
 	# -------------------------- 

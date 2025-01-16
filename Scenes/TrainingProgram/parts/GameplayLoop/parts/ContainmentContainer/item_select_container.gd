@@ -39,18 +39,31 @@ func _ready() -> void:
 		Actions.data = scp_data
 		selected_scp_data = scp_data
 	
+	
 	Actions.onContain = func() -> void:
-		user_response.emit({"action": ACTION.CONTAIN_START, "data": selected_scp_data})
+		user_response.emit({"action": ACTION.CONTAINED.START_CONTAINMENT, "data": selected_scp_data})
 	
 	Actions.onReject = func() -> void:
-		user_response.emit({"action": ACTION.CONTAIN_REJECT, "data": selected_scp_data})
+		user_response.emit({"action": ACTION.CONTAINED.REJECT_AND_REMOVE, "data": selected_scp_data})
 	
 	Actions.onCancelTransfer = func(action:int) -> void:
 		user_response.emit({"action": action, "data": selected_scp_data})
 		
 	Actions.onTransfer = func() -> void:
-		user_response.emit({"action": ACTION.TRANSFER_SCP_TO_NEW_LOCATION, "data": selected_scp_data})
+		user_response.emit({"action": ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION, "data": selected_scp_data})
+		
+	Actions.assignResearcher = func() -> void:
+		user_response.emit({"action": ACTION.CONTAINED.ASSIGN_RESEARCHER})
 	
+	Actions.unassignResearcher = func() -> void:
+		user_response.emit({"action": ACTION.CONTAINED.UNASSIGN_RESEARCHER})	
+	
+	Actions.startResearch = func() -> void:
+		user_response.emit({"action": ACTION.CONTAINED.START_RESEARCH})
+	
+	Actions.stopResearch = func() -> void:
+		user_response.emit({"action": ACTION.CONTAINED.STOP_RESEARCH})	
+			
 	on_list_type_update()
 # --------------------------------------------------------------------------------------------------		
 
@@ -95,7 +108,7 @@ func on_is_showing_update() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_back() -> void:
-	user_response.emit({"action": ACTION.BACK})
+	user_response.emit({"action": ACTION.CONTAINED.BACK})
 	List.on_reset()
 # --------------------------------------------------------------------------------------------------	
 	

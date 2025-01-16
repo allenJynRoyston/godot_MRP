@@ -147,7 +147,7 @@ var SCP_001:Dictionary = {
 						# ---------
 						func() -> Dictionary:
 							if option_selected.val:
-								_dict.perform_action.call(ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION)
+								_dict.perform_action.call(ACTION.CONTAINED.CANCEL_TRANSFER)
 						
 							return {
 								"text": [

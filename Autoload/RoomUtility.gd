@@ -429,7 +429,7 @@ func get_paginated_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:i
 func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
 	var room_data:Dictionary = return_data(ref)
 	var owned_count:int = arr.filter(func(i): return i.data.ref == ref).size()
-	var in_progress_count:int = action_queue_data.filter(func(i): return i.data.ref == ref and i.action == ACTION.BUILD_ITEM).size()
+	var in_progress_count:int = action_queue_data.filter(func(i): return i.data.ref == ref and i.action == ACTION.PURCHASE.FACILITY_ITEM).size()
 	
 	if room_data.own_limit.call() == -1:
 		return false

@@ -566,8 +566,8 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 			# -------------------------	
 			"perform_action": func(action:int) -> void:
 				match action:
-					ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION:
-						var filtered_arr:Array = action_queue_data.filter(func(i): return i.data.ref == scp_ref and i.action == ACTION.TRANSFER_SCP_TO_NEW_LOCATION)
+					ACTION.CONTAINED.CANCEL_TRANSFER:
+						var filtered_arr:Array = action_queue_data.filter(func(i): return i.data.ref == scp_ref and i.action == ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION)
 						if !filtered_arr.is_empty():
 							var action_queue_item:Dictionary = filtered_arr[0]
 							cancel_scp_transfer(action_queue_item)
@@ -643,7 +643,7 @@ func set_room_config() -> void:
 	# mark rooms that are under construction...
 	for item in action_queue_data:
 		match item.action:
-			ACTION.BUILD_ITEM:
+			ACTION.AQ.BUILD_ITEM:
 				var floor:int = item.location.floor
 				var ring:int = item.location.ring
 				var room:int = item.location.room		
@@ -702,7 +702,7 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 	
 	# remove from action queue list
 	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): 
-		return !(i.action == ACTION.TRANSFER_SCP_TO_NEW_LOCATION and i.data.ref == selected_data.data.ref)
+		return !(i.action == ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION and i.data.ref == selected_data.data.ref)
 	)
 	ActionQueueContainer.remove_from_queue([selected_data])
 # -----------------------------------
@@ -723,7 +723,7 @@ func cancel_scp_containment(selected_data:Dictionary) -> void:
 	
 	# remove from action queue list
 	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): 
-		return !(i.action == ACTION.INITIAL_CONTAINMENT and i.data.ref == selected_data.data.ref)
+		return !(i.action == ACTION.CONTAINED.START_CONTAINMENT and i.data.ref == selected_data.data.ref)
 	)
 	ActionQueueContainer.remove_from_queue([selected_data])
 # -----------------------------------
@@ -982,23 +982,23 @@ func on_current_shop_step_update() -> void:
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
-				ACTION.BACK:
+				ACTION.PURCHASE.BACK:
 					current_shop_step = SHOP_STEPS.HIDE
 					
-				ACTION.PURCHASE_TIER:
+				ACTION.PURCHASE.TIER_ITEM:
 					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.CONFIRM_TIER_PURCHASE
 				
-				ACTION.PURCHASE_BASE_ITEM:
+				ACTION.PURCHASE.BASE_ITEM:
 					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE
 					
-				ACTION.PURCHASE_BUILD_ITEM:
+				ACTION.PURCHASE.FACILITY_ITEM:
 					selected_shop_item = response.selected
 					SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_rooms(selected_shop_item.ref, room_config)			
 					current_shop_step = SHOP_STEPS.PLACEMENT
 				
-				ACTION.PURCHASE_RD_ITEM:
+				ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT:
 					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE
 		# ---------------
@@ -1065,7 +1065,7 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.FINALIZE_PURCHASE_BUILD:
 			var purchase_item_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
 			action_queue_data.push_back({
-				"action": ACTION.BUILD_ITEM,
+				"action": ACTION.AQ.BUILD_ITEM,
 				"data": selected_shop_item,
 				"days_in_queue": 0,
 				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
@@ -1080,7 +1080,7 @@ func on_current_shop_step_update() -> void:
 			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
 
 			action_queue_data.push_back({
-				"action": ACTION.RESEARCH_ITEM,
+				"action": ACTION.AQ.RESEARCH_ITEM,
 				"data": selected_shop_item,
 				"days_in_queue": 0,
 				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
@@ -1094,7 +1094,7 @@ func on_current_shop_step_update() -> void:
 			var purchased_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
 
 			action_queue_data.push_back({
-				"action": ACTION.BASE_ITEM,
+				"action": ACTION.AQ.BASE_ITEM,
 				"data": selected_shop_item,
 				"days_in_queue": 0,
 				"build_time": purchased_item_data.get_build_time.call() if "get_build_time" in purchased_item_data else 0,
@@ -1121,43 +1121,42 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.REFUND:
 			match selected_refund_item.action:
-				ACTION.INITIAL_CONTAINMENT:
+				ACTION.AQ.CONTAIN:
 					ConfirmModal.set_text("Cancel containment?", "There are no costs for this action.")
-				ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+				ACTION.AQ.TRANSFER:
 					ConfirmModal.set_text("Cancel transfer?", "There are no costs for this action.")					
-				ACTION.BUILD_ITEM:
+				ACTION.AQ.BUILD_ITEM:
 					ConfirmModal.set_text("Cancel build?", "Resources will be refunded.")
-				ACTION.RESEARCH_ITEM:
+				ACTION.AQ.RESEARCH_ITEM:
 					ConfirmModal.set_text("Cancel research?", "Resources will be refunded.")
-				ACTION.BASE_ITEM:
+				ACTION.AQ.BASE_ITEM:
 					ConfirmModal.set_text("Cancel construction?", "Resources will be refunded.")
 			await show_only([ActionQueueContainer, ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.NEXT:
 					match selected_refund_item.action:
-						ACTION.INITIAL_CONTAINMENT:
+						ACTION.AQ.CONTAIN:
 							cancel_scp_containment(selected_refund_item)
-						ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+						ACTION.AQ.TRANSFER:
 							cancel_scp_transfer(selected_refund_item)
-						ACTION.BUILD_ITEM:
-							SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_refund_item.data.id, resources_data, false)
+						ACTION.AQ.BUILD_ITEM:
+							SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_refund_item.data.ref, resources_data, false)
 							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 							ActionQueueContainer.remove_from_queue([selected_refund_item])
-						ACTION.RESEARCH_ITEM:
-							SUBSCRIBE.resources_data = RD_UTIL.calculate_resources(selected_refund_item.data.id, resources_data, false)
+						ACTION.AQ.RESEARCH_ITEM:
+							SUBSCRIBE.resources_data = RD_UTIL.calculate_resources(selected_refund_item.data.ref, resources_data, false)
 							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 							ActionQueueContainer.remove_from_queue([selected_refund_item])
-						ACTION.BASE_ITEM:
-							SUBSCRIBE.resources_data = BASE_UTIL.calculate_resources(selected_refund_item.data.id, resources_data, false)
+						ACTION.AQ.BASE_ITEM:
+							SUBSCRIBE.resources_data = BASE_UTIL.calculate_resources(selected_refund_item.data.ref, resources_data, false)
 							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 							ActionQueueContainer.remove_from_queue([selected_refund_item])
 
 					selected_refund_item = {}
-					current_shop_step = SHOP_STEPS.HIDE
-					await restore_default_state()
-				ACTION.BACK:
-					await restore_default_state()
+					
+			current_shop_step = SHOP_STEPS.HIDE
+			await restore_default_state()
 					
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1179,30 +1178,26 @@ func on_current_contain_step_update() -> void:
 			await show_only([ResourceContainer, ContainmentContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await ContainmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			print(response.action, "  ", ACTION.CONTAINED.STOP_CONTAINMENT)
 			match response.action:
-				ACTION.BACK:
+				ACTION.CONTAINED.BACK:
 					current_contain_step = CONTAIN_STEPS.HIDE
-				ACTION.CONTAIN_START:
+				ACTION.CONTAINED.START_CONTAINMENT:
 					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = true
 					current_contain_step = CONTAIN_STEPS.PLACEMENT
-				ACTION.CONTAIN_REJECT:
+				ACTION.CONTAINED.STOP_CONTAINMENT:
+					selected_contain_item = response.data
+					selected_contain_item.is_new_transfer = true
+					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				ACTION.CONTAINED.REJECT_AND_REMOVE:
 					selected_contain_item = response.data
 					current_contain_step = CONTAIN_STEPS.ON_REJECT
-					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
-				ACTION.INITIAL_CONTAINMENT:
-					selected_contain_item = response.data
-					selected_contain_item.is_new_transfer = true
-					current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
-				ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+				ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION:
 					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = false
-					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION					
-				ACTION.CONTAIN_TRANSFER_CANCEL:
-					selected_contain_item = response.data
-					selected_contain_item.is_new_transfer = true
-					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
-				ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION:
+					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION
+				ACTION.CONTAINED.CANCEL_TRANSFER:
 					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = false
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
@@ -1235,6 +1230,8 @@ func on_current_contain_step_update() -> void:
 				ACTION.BACK:
 					current_contain_step = CONTAIN_STEPS.START
 				ACTION.NEXT:
+					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.data.ref == selected_contain_item.ref)[0]
+					cancel_scp_containment(action_queue_item)
 					scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != selected_contain_item.ref)
 					SUBSCRIBE.scp_data = scp_data
 					current_contain_step = CONTAIN_STEPS.START
@@ -1311,7 +1308,7 @@ func on_current_contain_step_update() -> void:
 				)				
 
 			action_queue_data.push_back({
-				"action": ACTION.INITIAL_CONTAINMENT if selected_contain_item.is_new_transfer else ACTION.TRANSFER_SCP_TO_NEW_LOCATION,
+				"action": ACTION.AQ.CONTAIN if selected_contain_item.is_new_transfer else ACTION.AQ.TRANSFER,
 				"data": selected_contain_item,
 				"days_in_queue": 0,
 				"build_time": scp_details.containment_time.call(),
@@ -1345,12 +1342,12 @@ func on_current_recruit_step_update() -> void:
 			var response:Dictionary = await RecruitmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
-				ACTION.BACK:
+				ACTION.HIRE.BACK:
 					current_recruit_step = RECRUIT_STEPS.HIDE
-				ACTION.HIRE_LEAD:
+				ACTION.HIRE.LEAD:
 					selected_lead_hire = response.data
 					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_LEAD
-				ACTION.HIRE_SUPPORT:
+				ACTION.HIRE.SUPPORT:
 					selected_support_hire = response.data
 					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT
 		# ---------------
@@ -1420,7 +1417,7 @@ func on_current_build_complete_step_update() -> void:
 			for item in completed_build_items:
 				match item.action:
 					# ----------------------------
-					ACTION.INITIAL_CONTAINMENT:
+					ACTION.AQ.CONTAIN:
 						# first, remove from available list...
 						scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != item.data.ref)
 						# then add to contained list...
@@ -1429,13 +1426,11 @@ func on_current_build_complete_step_update() -> void:
 							"unlocked": [],
 							"location": item.location,
 							"days_in_containment": 0,
-							"lead_researcher": null,
+							"lead_researcher": {},
 							"event_type_count": {
-								
+								#["type/event_id"]: count[int]
 							},
-							"event_counts": {
-								#event_id: count[int]
-							},
+							"current_activity": {},
 							"transfer_status": {
 								"state": false, 
 								"days_till_complete": -1,
@@ -1449,7 +1444,7 @@ func on_current_build_complete_step_update() -> void:
 
 						await check_events(item.data.ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
 					# ----------------------------
-					ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+					ACTION.AQ.TRANSFER:
 						scp_data.contained_list = scp_data.contained_list.map(func(i):
 							if i.ref == item.data.ref:
 								# move to new location
@@ -1467,7 +1462,7 @@ func on_current_build_complete_step_update() -> void:
 						
 						await check_events(item.data.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
 					# ----------------------------
-					ACTION.BASE_ITEM:
+					ACTION.AQ.BASE_ITEM:
 						purchased_base_arr.push_back({
 							"data": item.data,
 						})
@@ -1475,7 +1470,7 @@ func on_current_build_complete_step_update() -> void:
 						SUBSCRIBE.resources_data = BASE_UTIL.calculate_build_complete(item.data.id, resources_data)
 						SUBSCRIBE.purchased_base_arr = purchased_base_arr
 					# ----------------------------	
-					ACTION.BUILD_ITEM:
+					ACTION.AQ.BUILD_ITEM:
 						purchased_facility_arr.push_back({
 							"data": item.data,
 							"location": item.location
@@ -1484,7 +1479,7 @@ func on_current_build_complete_step_update() -> void:
 						SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(item.data.ref, resources_data)
 						SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
 					# ----------------------------
-					ACTION.RESEARCH_ITEM:
+					ACTION.AQ.RESEARCH_ITEM:
 						purchased_research_arr.push_back({
 							"data": item.data
 						})
