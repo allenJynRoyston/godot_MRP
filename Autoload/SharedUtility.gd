@@ -176,10 +176,15 @@ func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary, scp_
 								var location:Dictionary = item.transfer_status.location
 								if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
 									unavailable_list.push_back(designation)
+						
 						for item in scp_data.contained_list:
 							var location:Dictionary = item.location
 							if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
 								unavailable_list.push_back(designation)
+							if item.transfer_status.state:
+								location = item.transfer_status.location
+								if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
+									unavailable_list.push_back(designation)
 								
 					if !config_data.room_data.is_empty():
 						if config_data.room_data.ref not in containment_requirements:

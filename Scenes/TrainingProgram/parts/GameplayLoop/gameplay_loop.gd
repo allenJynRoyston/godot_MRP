@@ -330,6 +330,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_action_queue_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_tier_unlocked(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
@@ -347,6 +348,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_tier_unlocked(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
@@ -835,7 +837,10 @@ func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) ->
 	
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val 
-	
+
+func on_tier_unlocked_update(new_val:Dictionary = tier_unlocked) -> void:
+	tier_unlocked = new_val
+
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
 	resources_data[RESOURCE.TYPE.LEAD_RESEARCHERS] = {
@@ -1113,7 +1118,6 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.resources_data = resources_data
 			SUBSCRIBE.tier_unlocked = tier_unlocked
 			current_shop_step = SHOP_STEPS.HIDE
-
 		# ---------------
 		SHOP_STEPS.REFUND:
 			match selected_refund_item.action:
@@ -1585,6 +1589,9 @@ func quicksave() -> void:
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
+	
+	print(save_data.tier_unlocked)
+	
 	is_busy = false
 	print("saved game!")
 
@@ -1623,7 +1630,8 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
 	SUBSCRIBE.camera_settings = initial_values.camera_settings if no_save else restore_data.camera_settings	
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms if no_save else restore_data.unavailable_rooms
-	
+
+
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
 
