@@ -24,7 +24,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_32fd4"]
 font = ExtResource("2_vxe1n")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8jdnc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l7xu0"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -92,7 +92,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_8jdnc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_l7xu0")
 no_bg = true
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer"]
@@ -109,6 +109,37 @@ theme_override_constants/separation = 10
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
+
+[node name="ContainmentDetails" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails" instance=ExtResource("6_qwx6c")]
+layout_mode = 2
+icon = 28
+is_hoverable = false
+
+[node name="SCPDetails" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails"]
+layout_mode = 2
+
+[node name="ObjectDesignationLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCP-001"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="ObjectClassLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer"]
+layout_mode = 2
+text = "KETER"
+label_settings = ExtResource("2_fv0mu")
+
+[node name="ObjectNameLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails"]
+layout_mode = 2
+text = "THE DOOR"
+label_settings = ExtResource("2_fv0mu")
 
 [node name="RoomDetails" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -158,37 +189,6 @@ size_flags_vertical = 0
 texture = SubResource("PlaceholderTexture2D_r0iut")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="ContainmentDetails" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="IconBtn" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails" instance=ExtResource("6_qwx6c")]
-layout_mode = 2
-icon = 28
-is_hoverable = false
-
-[node name="SCPDetails" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails"]
-layout_mode = 2
-
-[node name="ObjectDesignationLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "SCP-001"
-label_settings = ExtResource("2_fv0mu")
-
-[node name="ObjectClassLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails/HBoxContainer"]
-layout_mode = 2
-text = "KETER"
-label_settings = ExtResource("2_fv0mu")
-
-[node name="ObjectNameLabel" type="Label" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/ContainmentDetails/SCPDetails"]
-layout_mode = 2
-text = "THE DOOR"
-label_settings = ExtResource("2_fv0mu")
 
 [node name="ExpandedDetails" type="VBoxContainer" parent="HBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
 visible = false

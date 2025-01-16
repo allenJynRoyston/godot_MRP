@@ -45,8 +45,8 @@ func _ready() -> void:
 	Actions.onReject = func() -> void:
 		user_response.emit({"action": ACTION.CONTAIN_REJECT, "data": selected_scp_data})
 	
-	Actions.onCancelTransfer = func() -> void:
-		user_response.emit({"action": ACTION.CONTAIN_TRANSFER_CANCEL, "data": selected_scp_data})
+	Actions.onCancelTransfer = func(action:int) -> void:
+		user_response.emit({"action": action, "data": selected_scp_data})
 		
 	Actions.onTransfer = func() -> void:
 		user_response.emit({"action": ACTION.TRANSFER_SCP_TO_NEW_LOCATION, "data": selected_scp_data})
@@ -91,8 +91,6 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 func on_is_showing_update() -> void:
 	if !is_node_ready():return
 	super.on_is_showing_update()
-	if !is_showing:
-		check_for_reset()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	

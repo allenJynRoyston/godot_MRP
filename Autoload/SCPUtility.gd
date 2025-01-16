@@ -85,132 +85,150 @@ var SCP_001:Dictionary = {
 
 	# -----------------------------------
 	"events": {
-		
 		# -------------------------
-		"after_inital_containment": [
+		SCP.EVENT_TYPE.AFTER_CONTAINMENT: [
 			{
-				"trigger_threshold": 100,
-				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
-					var details:Dictionary = self_ref.call().details
-					var img_src:String = details.img_src
-					#var option_selected:Dictionary = {
-						#"val": null
-					#}
-					#var onSelected = func(val:int) -> void:
-						#option_selected.val = val
-					#
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: INITALIZED EVENT" % [details.item_id],
-								"img_src": img_src,
+								"header": "SCP-%s: AFTER CONTAINMENT EVENT" % [details.item_id],
+								"img_src": details.img_src,
 								"text": [
-									"TRIGGER EVENT 1."
+									"After containment text"
 								]
 							},
-						#func() -> Dictionary:
-							#return {
-								#"header": "SCP-%s INITIAL CONTAINMENT REPORT" % [details.item_id],
-								#"img_src": img_src,
-								#"text": [
-									#"Upon containment, a knock at the door can audiable be heard.",
-									#"The noise grows in intensity."
-								#]
-							#},
-						#func() -> Dictionary:
-							#return {
-								#"text": [
-									#"What action should we take."
-								#],
-								#"options": [
-									#{
-										#"show": true,
-										#"title": "Ignore it, but monitor for activity from outside the containment cell.",
-										#"val": UNLOCKABLE.ONE,
-										#"onSelected": onSelected
-									#},
-									#{
-										#"show": true,
-										#"title": "Send an MTF to cautiously open the door.",
-										#"val": UNLOCKABLE.ONE,
-										#"onSelected": onSelected
-									#},
-									#{
-										#"show": true,
-										#"title": "Have a staff member open the door.",
-										#"val": UNLOCKABLE.ONE,
-										#"onSelected": onSelected
-									#},
-									#{
-										#"show": true,
-										#"title": "Instruct a D-Class to open the door.",
-										#"val": UNLOCKABLE.ONE,
-										#"onSelected": onSelected
-									#}
-								#]
-							#},
-						#func() -> Dictionary:
-							#var unlockables:Dictionary = details.unlockables[option_selected.val]
-							#self_ref.call().add_unlockable.call(option_selected.val)
-							#if "event_text" in unlockables:
-								#return {
-									#"text": unlockables.event_text.call(details)
-								#}	
-							#return {}
-							#
+					],
+			}
+		],
+		# -------------------------		
+		
+		# -------------------------
+		SCP.EVENT_TYPE.DURING_TRANSFER: [
+			{
+				"trigger_threshold": func(_count:int) -> int:
+					return 100 if _count == 0 else 0,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					var option_selected:Dictionary = {
+						"val": null
+					}
+					var onSelected = func(val:int) -> void:
+						option_selected.val = val
+					
+					return [
+						# ---------
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: DURING TRANSFER EVENT" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"Transfer event.  Times triggered: %s" % [_dict.count],
+									"Should we cancel the transfer?"
+								],
+								"options": [
+									{
+										"show": true,
+										"title": "Cancel transfer.  We can't risk damaging it or the facility.",
+										"val": true,
+										"onSelected": onSelected
+									},
+									{
+										"show": true,
+										"title": "Continue transfer.  Its just a door.",
+										"val": false,
+										"onSelected": onSelected
+									}
+								]
+							},
+						# ---------
+						func() -> Dictionary:
+							if option_selected.val:
+								_dict.perform_action.call(ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION)
+						
+							return {
+								"text": [
+									"You stop the transfer.  Shortly after, the shaking stops.",
+								] if option_selected.val else [
+									"The staff back off and the shaking immediately stops.",
+									"Hmm."
+								]
+							}	
 					],
 			}
 		],
 		# -------------------------
 		
 		# -------------------------
-		"random_events": [
+		SCP.EVENT_TYPE.AFTER_TRANSFER: [
 			{
-				"trigger_threshold": 100,
-				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
-					var details:Dictionary = self_ref.call().details
-					var img_src:String = details.img_src					
+				"trigger_threshold": func(_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: AFTER TRANSFER EVENT" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"AFTER transfer event."
+								]
+							},
+					],
+			}
+		],
+		# -------------------------
+		
+		# -------------------------
+		SCP.EVENT_TYPE.RANDOM_EVENTS: [
+			{
+				"trigger_threshold": func(_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: RANDOM EVENT 0" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"Random event 0.  Times triggered: %s" % [_dict.count]
+								]
+							},
+					],
+			},
+			{
+				"trigger_threshold": func(_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
 					return [
 						func() -> Dictionary:
 							return {
 								"header": "SCP-%s: RANDOM EVENT 1" % [details.item_id],
-								"img_src": img_src,
+								"img_src": details.img_src,
 								"text": [
-									"TRIGGER EVENT 1 starts here.",
-									"Text goes here.",
-									"And it ends here.",
+									"Random event 1.  Times triggered: %s" % [_dict.count]
 								]
 							},
 					],
 			},
 			{
-				"trigger_threshold": 10,
-				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
-					var details:Dictionary = self_ref.call().details
-					var img_src:String = details.img_src					
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
 					return [
 						func() -> Dictionary:
 							return {
 								"header": "SCP-%s: RANDOM EVENT 2" % [details.item_id],
-								"img_src": img_src,
+								"img_src": details.img_src,
 								"text": [
-									"TRIGGER EVENT 2."
-								]
-							},
-					],
-			},
-			{
-				"trigger_threshold": 10,
-				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
-					var details:Dictionary = self_ref.call().details
-					var img_src:String = details.img_src					
-					return [
-						func() -> Dictionary:
-							return {
-								"header": "SCP-%s: RANDOM EVENT 3" % [details.item_id],
-								"img_src": img_src,
-								"text": [
-									"TRIGGER EVENT 3."
+									"Random event 2.  Times triggered: %s" % [_dict.count]
 								]
 							},
 					],
@@ -415,28 +433,46 @@ func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictiona
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable, event_property:String) -> Dictionary:
+func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable, event_type:SCP.EVENT_TYPE) -> Dictionary:
 	var data:Dictionary = return_data(ref)
 	var event_arr:Array = []
 	var event_instructions:Array = []
 	var event_id:int = -1
+	var event_type_triggered:int = -1
 	
-	if "events" in data and event_property in data.events:
-		var events:Array = data.events[event_property]
-		for event in events:
+	
+	if "events" in data and event_type in data.events:
+		var events:Array = data.events[event_type]
+		for index in events.size():
+			var event:Dictionary = events[index]
 			var rand_int:int = U.generate_rand(0, 100)
-			if rand_int <= event.trigger_threshold:
+			var event_type_count:int = get_self_ref.call().event_type_count.call(event_type, index)
+			if rand_int <= event.trigger_threshold.call(event_type_count):
 				event_arr.push_back(event) 
 	
 	if event_arr.size() > 0:
 		# if multiple events are available, will pick one in the array at random
 		event_id = U.generate_rand(0, event_arr.size() - 1)
-		event_instructions = event_arr[event_id].trigger_check.call(get_data_snapshot, get_self_ref)
+		var event_trigger_count:int = get_self_ref.call().event_type_count.call(event_type, event_id)
+		var scp_details:Dictionary = get_self_ref.call().details
+		var scp_contained_details:Dictionary = get_self_ref.call().contained_list_details.call()
+		var perform_action:Callable = get_self_ref.call().perform_action
+		var combined_dict:Dictionary = {
+			"details": scp_details, 
+			"list_details": scp_contained_details,
+			"count":  event_trigger_count,
+			# ------- functions
+			"perform_action": perform_action,
+			"get_self_ref": get_self_ref,
+			"get_data_snapshot": get_data_snapshot
+		}
+		event_instructions = event_arr[event_id].trigger_check.call(combined_dict)
 
 	# if event_instructions are empty, then check if there's a default available
 	if event_instructions.is_empty():
-		match event_property:
-			"after_inital_containment":
+		match event_type:
+			# -----------------------
+			SCP.EVENT_TYPE.AFTER_CONTAINMENT:
 				event_instructions = [
 					func() -> Dictionary:
 						return {
@@ -447,7 +483,19 @@ func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable
 							]
 						}
 				]
-
+			# -----------------------
+			SCP.EVENT_TYPE.AFTER_TRANSFER:
+				event_instructions = [
+					func() -> Dictionary:
+						return {
+							"header": "SCP-%s TRANSFER REPORT" % [data.item_id],
+							"img_src": data.img_src,
+							"text": [
+								"SCP-%s was successfully transfered without incident." % [data.item_id]
+							]
+						}
+				]				
+	
 	return {
 		"event_id": event_id,
 		"event_instructions": event_instructions

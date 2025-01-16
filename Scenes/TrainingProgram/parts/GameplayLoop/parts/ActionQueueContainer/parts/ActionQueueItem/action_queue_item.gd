@@ -67,11 +67,17 @@ func on_suppress_click_update(new_val:bool) -> void:
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		match data.action:
-			ACTION.TRANSFER_SCP:
+			ACTION.INITIAL_CONTAINMENT:
 				item_data = SCP_UTIL.return_data(data.data.ref)
 				TitleBtn.icon = SVGS.TYPE.CONTAIN
 				requirements = []
 				TitleBtn.title = "CONTAINMENT IN PROGRESS"
+				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
+			ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+				item_data = SCP_UTIL.return_data(data.data.ref)
+				TitleBtn.icon = SVGS.TYPE.CONTAIN
+				requirements = []
+				TitleBtn.title = "TRANSFER IN PROGRESS"
 				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
 			ACTION.RESEARCH_ITEM:
 				item_data = RD_UTIL.return_data(data.data.ref)

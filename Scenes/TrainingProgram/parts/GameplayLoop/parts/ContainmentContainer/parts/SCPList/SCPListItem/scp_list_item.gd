@@ -52,11 +52,17 @@ func on_data_update() -> void:
 	else:
 		NewIcon.hide()
 	
-	if "days_until_expire" in data:
+	var status_text:String = "No issues."
+	
+	
+	if "transfer_status" in data:
 		if data.transfer_status.state:
-			StatusLabel.text = "CONTAINMENT IN PROGRESS"
-		else:
-			StatusLabel.text = "EXPIRES IN %s DAYS" % [data.days_until_expire]
+			status_text = "CONTAINMENT IN PROGRESS"
+	
+	if "days_until_expire" in data:
+		status_text = "EXPIRES IN %s DAYS" % [data.days_until_expire]
+		
+	StatusLabel.text = status_text
 # --------------------------------------	
 
 # --------------------------------------	

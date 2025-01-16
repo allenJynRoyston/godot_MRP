@@ -26,7 +26,7 @@ var scp_data:Dictionary = {}
 var onContain:Callable = func() -> void:pass
 var onReject:Callable = func() -> void:pass
 var onTransfer:Callable = func() -> void:pass
-var onCancelTransfer:Callable = func() -> void:pass
+var onCancelTransfer:Callable = func(action:int) -> void:pass
 
 # ------------------------------------------------------------
 func _init() -> void:
@@ -122,11 +122,11 @@ func on_data_update() -> void:
 							
 				list = [
 					{
-						"title":"Cancel Transfer" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
+						"title":"Cancel Containment" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
 						"title_icon": SVGS.TYPE.DELETE,
 						"onClick": func() -> void:
 							if active_scp_data.days_until_expire > 0:
-								onCancelTransfer.call()
+								onCancelTransfer.call(ACTION.CONTAIN_TRANSFER_CANCEL)
 							else:
 								onReject.call(),
 					}		
@@ -163,46 +163,52 @@ func on_data_update() -> void:
 			var scp_list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
 			if scp_list.size() > 0:			
 				var active_scp_data:Dictionary = scp_list[0]
-				if active_scp_data.lead_researcher == null:
+				if active_scp_data.transfer_status.state:
 					list.push_back(
 						{
-							"title":"Assign Lead Researcher",
-							"title_icon": SVGS.TYPE.RESEARCH,
+							"title":"Cancel Transfer",
+							"title_icon": SVGS.TYPE.DELETE,
 							"onClick": func() -> void:
-								pass,
-						}		
+								onCancelTransfer.call(ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION),
+						}	
 					)
 				else:
+					if active_scp_data.lead_researcher == null:
+						list.push_back(
+							{
+								"title":"Assign Lead Researcher",
+								"title_icon": SVGS.TYPE.RESEARCH,
+								"onClick": func() -> void:
+									pass,
+							}		
+						)
+					else:
+						list.push_back(
+							{
+								"title":"Remove Lead Researcher",
+								"title_icon": SVGS.TYPE.RESEARCH,
+								"onClick": func() -> void:
+									pass,
+							}		
+						)
+						
 					list.push_back(
 						{
-							"title":"Remove Lead Researcher",
-							"title_icon": SVGS.TYPE.RESEARCH,
+							"title":"Transfer SCP (Unavailable)",
+							"title_icon": SVGS.TYPE.CONTAIN,
+							"onClick": func() -> void:
+								onTransfer.call(),
+						}		
+					)
+										
+					list.push_back(
+						{
+							"title":"Destroy SCP (Unavailable)",
+							"title_icon": SVGS.TYPE.CAUTION,
 							"onClick": func() -> void:
 								pass,
 						}		
 					)
-					
-				list.push_back(
-					{
-						"title":"Transfer SCP (Unavailable)",
-						"title_icon": SVGS.TYPE.CONTAIN,
-						"onClick": func() -> void:
-							onTransfer.call(),
-					}		
-				)
-									
-				list.push_back(
-					{
-						"title":"Destroy SCP (Unavailable)",
-						"title_icon": SVGS.TYPE.CAUTION,
-						"onClick": func() -> void:
-							pass,
-					}		
-				)
-			# TODO check for any active statuses
-	
-
-	
 
 	update_list(list)
 # ------------------------------------------------------------

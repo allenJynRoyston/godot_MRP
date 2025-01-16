@@ -34,7 +34,7 @@ func _ready() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_showing:return
+	if !is_showing or parentNode.is_occupied():return
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 

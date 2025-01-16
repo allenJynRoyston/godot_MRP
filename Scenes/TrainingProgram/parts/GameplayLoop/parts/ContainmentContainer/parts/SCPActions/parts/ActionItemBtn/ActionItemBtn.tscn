@@ -7,7 +7,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fifyy"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ecd2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ne1ww"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="ActionItemBtn" type="PanelContainer"]
@@ -37,7 +37,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_6ecd2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ne1ww")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "Action"
 

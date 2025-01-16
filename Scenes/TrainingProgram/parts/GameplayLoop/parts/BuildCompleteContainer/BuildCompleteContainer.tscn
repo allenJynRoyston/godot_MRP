@@ -8,7 +8,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0ckom"]
 shader = ExtResource("2_4ryf8")
-shader_parameter/percentage = 1.0
+shader_parameter/percentage = 0.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -24,10 +24,10 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_j1538"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ltnya"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4nbjs"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1pq5c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grii0"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="BuildCompleteContainer" type="MarginContainer"]
@@ -40,7 +40,7 @@ texture = SubResource("ViewportTexture_250ra")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(250, 167)
+size = Vector2i(330, 242)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 250.0
@@ -77,7 +77,7 @@ vertical_alignment = 1
 
 [node name="ImageContainer" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 material = ExtResource("4_h1hot")
-custom_minimum_size = Vector2(0, 75)
+custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 texture = SubResource("PlaceholderTexture2D_j1538")
 expand_mode = 1
@@ -94,14 +94,14 @@ alignment = 1
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ltnya")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4nbjs")
 icon = 8
 title = "Skip"
 
 [node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_knmmc")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_1pq5c")
+theme_override_styles/panel = SubResource("StyleBoxFlat_grii0")
 icon = 27
 title = "Close"
 

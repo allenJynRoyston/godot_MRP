@@ -550,7 +550,36 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 	# setup self reference callables
 	return func() -> Dictionary:
 		return {
+			# get scp details
+			# -------------------------
 			"details": SCP_UTIL.return_data(scp_ref),
+			# -------------------------
+			# get their contained_list details
+			"contained_list_details": func() -> Dictionary:
+				var res:Dictionary = find_in_contained(scp_ref)
+				return {
+					"index": res.index,
+					"data": res.data
+				},
+			# -------------------------	
+			"perform_action": func(action:int) -> void:
+				match action:
+					ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION:
+						var filtered_arr:Array = action_queue_data.filter(func(i): return i.data.ref == scp_ref and i.action == ACTION.TRANSFER_SCP_TO_NEW_LOCATION)
+						if !filtered_arr.is_empty():
+							var action_queue_item:Dictionary = filtered_arr[0]
+							cancel_scp_transfer(action_queue_item)
+						else:
+							print("perform_action CANCEL_TRANSFER_SCP_TO_NEW_LOCATION: action queue item does not exists for this action.")
+				pass,
+			# -------------------------	
+			# get counts for type (randomize, after_contained, etc)
+			"event_type_count": func(type:int, event_id:int) -> int:
+				var res:Dictionary = find_in_contained(scp_ref)
+				var event_name:String = "%s%s" % [type, event_id]
+				return 0 if event_name not in res.data.event_type_count else res.data.event_type_count[event_name].count,
+			# -------------------------
+			# easy method to call when you want to add something to their unlockable
 			"add_unlockable": func(unlockable:SCP_UTIL.UNLOCKABLE) -> void:
 				scp_data.contained_list = scp_data.contained_list.map(func(i): 
 					if i.ref == scp_ref:
@@ -571,7 +600,7 @@ func set_room_config() -> void:
 	var under_construction_rooms:Array = []
 	var built_rooms:Array = []
 	
-	# mark rooms that have an SCP contained in them or are under
+	# mark rooms that are being transfered to a room 
 	if "available_list" in scp_data:
 		for item in scp_data.available_list:
 			if item.transfer_status.state:
@@ -584,14 +613,27 @@ func set_room_config() -> void:
 					"get_data": func() -> Dictionary:
 						return SCP_UTIL.return_data(item.ref)
 				}
+				
+	# ... and mark rooms that are currently contained 
 	if "contained_list" in scp_data:
 		for item in scp_data.contained_list:
+			# ... or in a state of being transfered to another room
+			if item.transfer_status.state:
+				var floor:int = item.transfer_status.location.floor
+				var ring:int = item.transfer_status.location.ring
+				var room:int = item.transfer_status.location.room	
+				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
+					"ref": item.ref,
+					"is_transfer": true,
+					"get_data": func() -> Dictionary:
+						return SCP_UTIL.return_data(item.ref)
+				}			
 			var floor:int = item.location.floor
 			var ring:int = item.location.ring
 			var room:int = item.location.room	
 			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 				"ref": item.ref,
-				"is_transfer": false,
+				"is_transfer": item.transfer_status.state,
 				"get_data": func() -> Dictionary:
 					return SCP_UTIL.return_data(item.ref)
 			}				
@@ -637,7 +679,6 @@ func set_room_config() -> void:
 	new_room_config.floor[1].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) == 0
 	new_room_config.floor[2].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) == 0
 			
-			
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
@@ -645,6 +686,27 @@ func set_room_config() -> void:
 
 # -----------------------------------
 func cancel_scp_transfer(selected_data:Dictionary) -> void:
+	# resets it in the available list
+	scp_data.contained_list = scp_data.contained_list.map(func(i) -> Dictionary:
+		if i.ref == selected_data.data.ref:
+			i.transfer_status = {
+				"state": false, 
+				"days_till_complete": -1,
+				"location": {}
+			}
+		return i
+	)
+	SUBSCRIBE.scp_data = scp_data
+	
+	# remove from action queue list
+	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): 
+		return !(i.action == ACTION.TRANSFER_SCP_TO_NEW_LOCATION and i.data.ref == selected_data.data.ref)
+	)
+	ActionQueueContainer.remove_from_queue([selected_data])
+# -----------------------------------
+
+# -----------------------------------
+func cancel_scp_containment(selected_data:Dictionary) -> void:
 	# resets it in the available list
 	scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
 		if i.ref == selected_data.data.ref:
@@ -659,9 +721,55 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 	
 	# remove from action queue list
 	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): 
-		return !(i.action == ACTION.TRANSFER_SCP and i.data.ref == selected_data.data.ref)
+		return !(i.action == ACTION.INITIAL_CONTAINMENT and i.data.ref == selected_data.data.ref)
 	)
 	ActionQueueContainer.remove_from_queue([selected_data])
+# -----------------------------------
+
+# -----------------------------------
+func find_in_contained(ref:int) -> Dictionary:
+	var index:int = -1
+	var res_data:Dictionary = {} 
+
+	for ind in scp_data.contained_list.size():
+		var data:Dictionary = scp_data.contained_list[ind]
+		if data.ref == ref:
+			index = ind
+			res_data = data
+			break	
+	
+	return {
+		"index": index,
+		"data": res_data
+	}
+# -----------------------------------
+
+# -----------------------------------
+func check_events(ref:int, type:SCP.EVENT_TYPE, skip_wait:bool = false) -> void:
+	var res:Dictionary = find_in_contained(ref)
+	var index:int = res.index
+	var list_data:Dictionary = res.data
+	var event:Dictionary = SCP_UTIL.check_for_events(ref, get_data_snapshot, get_self_ref_callable(ref), type)
+	var event_arr:Array = []
+	if !event.event_instructions.is_empty():
+		var event_id:int = event.event_id
+		
+		# add number of times an event has been triggered
+		var event_type_id:String = "%s%s" % [type, event_id]
+		if event_type_id not in list_data.event_type_count:
+			scp_data.contained_list[index].event_type_count[event_type_id] = {
+				"count": 0
+			}
+		scp_data.contained_list[index].event_type_count[event_type_id].count += 1
+			
+		# update scp data first
+		SUBSCRIBE.scp_data = scp_data
+	
+		if !skip_wait:
+			await wait_please()
+			
+		event_data = [event]
+		await on_events_complete
 # -----------------------------------
 
 # -----------------------------------
@@ -687,6 +795,7 @@ func next_day() -> void:
 	# ADDS DAY COUNT TO SCP DATA
 	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
 	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
+	
 	# ...and remove if expired, add to expire list
 	expired_scp_items = scp_data.available_list.filter(func(i): return i.days_until_expire == 0 and !i.transfer_status.state)
 	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
@@ -701,27 +810,12 @@ func next_day() -> void:
 		pass	
 	
 	# CHECK FOR RANDOMIZED EVENTS
-	var event_data_arr = []
+	#var event_data_arr = []
 	for index in scp_data.contained_list.size():
 		var data:Dictionary = scp_data.contained_list[index]
 		if data.days_in_containment > 0:
-			var event:Dictionary = SCP_UTIL.check_for_events(data.ref, get_data_snapshot, get_self_ref_callable(data.ref), "random_events")
-			# event must have instructions or there's no event to play out
-			if !event.event_instructions.is_empty():
-				# adds number of times an event has been triggered to the contained_List data
-				if event.event_id not in scp_data.contained_list[index].event_counts:
-					scp_data.contained_list[index].event_counts[event.event_id] = 0
-				scp_data.contained_list[index].event_counts[event.event_id] += 1
-				event_data_arr.push_back(event)
-	
-	# if events are present, update scp data dnd then execute events
-	if !event_data_arr.is_empty():
-		SUBSCRIBE.scp_data = scp_data
-		await wait_please()	
-		event_data = event_data_arr
-		await on_events_complete
-
-	# revert processing flag
+			var event_type:int = SCP.EVENT_TYPE.RANDOM_EVENTS if !data.transfer_status.state else SCP.EVENT_TYPE.DURING_TRANSFER
+			await check_events(data.ref, event_type, true)
 	processing_next_day = false
 # -----------------------------------
 #endregion
@@ -905,7 +999,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.PLACEMENT:		
 			# sort which rooms can be built in
-			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
+			await show_only([Structure3dContainer, RoomStatusContainer])			
 			Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
 			
@@ -924,7 +1018,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.CONFIRM_TIER_PURCHASE:
 			ConfirmModal.set_text("Confirm TIER purchase?")
-			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])			
+			await show_only([Structure3dContainer, ConfirmModal])			
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
 				ACTION.BACK:
@@ -934,7 +1028,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE:
 			ConfirmModal.set_text("Confirm research?")
-			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])
+			await show_only([Structure3dContainer, ConfirmModal])
 			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:
 				ACTION.BACK:
@@ -944,7 +1038,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE:
 			ConfirmModal.set_text("Confirm base item purchase?")
-			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])
+			await show_only([Structure3dContainer, ConfirmModal])
 			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:
 				ACTION.BACK:
@@ -954,7 +1048,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.CONFIRM_BUILD:
 			ConfirmModal.set_text("Confirm location?")
-			await show_only([LocationContainer, Structure3dContainer, ConfirmModal])			
+			await show_only([Structure3dContainer, ConfirmModal])			
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
 				ACTION.BACK:
@@ -1023,8 +1117,10 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.REFUND:
 			match selected_refund_item.action:
-				ACTION.TRANSFER_SCP:
-					ConfirmModal.set_text("Cancel transfer?", "There are no costs for this action.")
+				ACTION.INITIAL_CONTAINMENT:
+					ConfirmModal.set_text("Cancel containment?", "There are no costs for this action.")
+				ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+					ConfirmModal.set_text("Cancel transfer?", "There are no costs for this action.")					
 				ACTION.BUILD_ITEM:
 					ConfirmModal.set_text("Cancel build?", "Resources will be refunded.")
 				ACTION.RESEARCH_ITEM:
@@ -1036,7 +1132,9 @@ func on_current_shop_step_update() -> void:
 			match response.action:
 				ACTION.NEXT:
 					match selected_refund_item.action:
-						ACTION.TRANSFER_SCP:
+						ACTION.INITIAL_CONTAINMENT:
+							cancel_scp_containment(selected_refund_item)
+						ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
 							cancel_scp_transfer(selected_refund_item)
 						ACTION.BUILD_ITEM:
 							SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_refund_item.data.id, resources_data, false)
@@ -1050,7 +1148,7 @@ func on_current_shop_step_update() -> void:
 							SUBSCRIBE.resources_data = BASE_UTIL.calculate_resources(selected_refund_item.data.id, resources_data, false)
 							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
 							ActionQueueContainer.remove_from_queue([selected_refund_item])
-					
+
 					selected_refund_item = {}
 					current_shop_step = SHOP_STEPS.HIDE
 					await restore_default_state()
@@ -1082,19 +1180,31 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.HIDE
 				ACTION.CONTAIN_START:
 					selected_contain_item = response.data
+					selected_contain_item.is_new_transfer = true
 					current_contain_step = CONTAIN_STEPS.PLACEMENT
 				ACTION.CONTAIN_REJECT:
 					selected_contain_item = response.data
 					current_contain_step = CONTAIN_STEPS.ON_REJECT
-				ACTION.CONTAIN_TRANSFER_CANCEL:
-					selected_contain_item = response.data
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				ACTION.INITIAL_CONTAINMENT:
+					selected_contain_item = response.data
+					selected_contain_item.is_new_transfer = true
+					current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
 				ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
 					selected_contain_item = response.data
-					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION
+					selected_contain_item.is_new_transfer = false
+					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION					
+				ACTION.CONTAIN_TRANSFER_CANCEL:
+					selected_contain_item = response.data
+					selected_contain_item.is_new_transfer = true
+					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				ACTION.CANCEL_TRANSFER_SCP_TO_NEW_LOCATION:
+					selected_contain_item = response.data
+					selected_contain_item.is_new_transfer = false
+					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
-			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
+			await show_only([Structure3dContainer, RoomStatusContainer])			
 			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
 			
 			Structure3dContainer.select_location()
@@ -1126,7 +1236,7 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.ON_TRANSFER_CANCEL:
-			ConfirmModal.set_text("Cancel transfer?")
+			ConfirmModal.set_text("Cancel containment?" if selected_contain_item.is_new_transfer else "Cancel transfer?")
 			await show_only([ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
@@ -1134,14 +1244,14 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.START
 				ACTION.NEXT:
 					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.data.ref == selected_contain_item.ref)[0]
-					cancel_scp_transfer(action_queue_item)
+					if selected_contain_item.is_new_transfer:
+						cancel_scp_containment(action_queue_item)
+					else:
+						cancel_scp_transfer(action_queue_item)
 					current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION:
-			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
-			
-			print(selected_contain_item)
-			
+			await show_only([Structure3dContainer, RoomStatusContainer])
 			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
 			
 			Structure3dContainer.select_location()
@@ -1161,7 +1271,7 @@ func on_current_contain_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.CONFIRM_PLACEMENT:
 			ConfirmModal.set_text("Contain at this location?")
-			await show_only([LocationContainer, ConfirmModal])
+			await show_only([ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.BACK:
@@ -1172,23 +1282,37 @@ func on_current_contain_step_update() -> void:
 		CONTAIN_STEPS.FINALIZE:
 			var scp_details:Dictionary = SCP_UTIL.return_data(selected_contain_item.ref)
 			selected_contain_item.uid = U.generate_uid()
-			# update transfer_state
-			scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
-				if i.ref == selected_contain_item.ref:
-					i.transfer_status = {
-						"state": true, 
-						"days_till_complete": scp_details.containment_time.call(),
-						"location": current_location.duplicate(),
-					}
-				return i
-			)
+			
+			# is_new means it's coming from the availble_list 
+			if selected_contain_item.is_new_transfer:
+				scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
+					if i.ref == selected_contain_item.ref:
+						i.transfer_status = {
+							"state": true, 
+							"days_till_complete": scp_details.containment_time.call(),
+							"location": current_location.duplicate(),
+						}
+					return i
+				)
+				
+			else:
+				scp_data.contained_list = scp_data.contained_list.map(func(i) -> Dictionary:
+					if i.ref == selected_contain_item.ref:
+						i.transfer_status = {
+							"state": true, 
+							"days_till_complete": scp_details.containment_time.call(),
+							"location": current_location.duplicate(),
+						}
+					return i
+				)				
 
 			action_queue_data.push_back({
-				"action": ACTION.TRANSFER_SCP,
+				"action": ACTION.INITIAL_CONTAINMENT if selected_contain_item.is_new_transfer else ACTION.TRANSFER_SCP_TO_NEW_LOCATION,
 				"data": selected_contain_item,
 				"days_in_queue": 0,
 				"build_time": scp_details.containment_time.call(),
 				"location": current_location.duplicate(),
+				"note": "CONTAINMENT IN PROGRESS" if selected_contain_item.is_new_transfer else "TRANSFER IN PROGRESS"
 			})
 			
 			SUBSCRIBE.action_queue_data = action_queue_data
@@ -1213,7 +1337,7 @@ func on_current_recruit_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			selected_lead_hire = {}
 			selected_support_hire = {}
-			await show_only([ResourceContainer, RecruitmentContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
+			await show_only([ResourceContainer, RecruitmentContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await RecruitmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -1228,7 +1352,7 @@ func on_current_recruit_step_update() -> void:
 		# ---------------
 		RECRUIT_STEPS.CONFIRM_HIRE_LEAD:
 			ConfirmModal.set_text("Confirm hire?")
-			await show_only([LocationContainer, ConfirmModal])
+			await show_only([ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.BACK:
@@ -1242,7 +1366,7 @@ func on_current_recruit_step_update() -> void:
 		# ---------------
 		RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT:
 			ConfirmModal.set_text("Confirm support?")
-			await show_only([LocationContainer, ConfirmModal])
+			await show_only([ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.BACK:
@@ -1271,7 +1395,7 @@ func on_current_build_complete_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			revert_state_location = current_location
 			BuildCompleteContainer.completed_build_items = completed_build_items
-			await show_only([Structure3dContainer, ResourceContainer, LocationContainer, BuildCompleteContainer])
+			await show_only([Structure3dContainer, ResourceContainer, BuildCompleteContainer])
 			var response:Dictionary = await BuildCompleteContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -1292,7 +1416,7 @@ func on_current_build_complete_step_update() -> void:
 			for item in completed_build_items:
 				match item.action:
 					# ----------------------------
-					ACTION.TRANSFER_SCP:
+					ACTION.INITIAL_CONTAINMENT:
 						# first, remove from available list...
 						scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != item.data.ref)
 						# then add to contained list...
@@ -1302,18 +1426,42 @@ func on_current_build_complete_step_update() -> void:
 							"location": item.location,
 							"days_in_containment": 0,
 							"lead_researcher": null,
+							"event_type_count": {
+								
+							},
 							"event_counts": {
 								#event_id: count[int]
 							},
+							"transfer_status": {
+								"state": false, 
+								"days_till_complete": -1,
+								"location": {}
+							}	
 						}
 						scp_data.contained_list.push_back(new_contained_item)
 
 						SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(item.data.ref, resources_data)
 						SUBSCRIBE.scp_data = scp_data
+
+						await check_events(item.data.ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
+					# ----------------------------
+					ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+						scp_data.contained_list = scp_data.contained_list.map(func(i):
+							if i.ref == item.data.ref:
+								# move to new location
+								i.location = i.transfer_status.location
+								# remove transfer status
+								i.transfer_status = {
+									"state": false, 
+									"days_till_complete": -1,
+									"location": {}	
+								}
+							return i
+						)
 						
-						var event:Dictionary = SCP_UTIL.check_for_events(item.data.ref, get_data_snapshot, get_self_ref_callable(item.data.ref), "after_inital_containment")
-						event_data_arr.push_back(event)
+						SUBSCRIBE.scp_data = scp_data
 						
+						await check_events(item.data.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
 					# ----------------------------
 					ACTION.BASE_ITEM:
 						purchased_base_arr.push_back({
@@ -1342,18 +1490,9 @@ func on_current_build_complete_step_update() -> void:
 			# update reactively
 			SUBSCRIBE.resources_data = resources_data	
 			
-			# trigger event_data check
-			if event_data_arr.size() > 0:
-				await wait_please()
-				event_data = event_data_arr
-				await on_events_complete	
-				
-			
+
 			completed_build_items = []
 			on_complete_build_complete.emit()
-			
-
-					
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -1399,7 +1538,6 @@ func is_occupied() -> bool:
 
 func on_mouse_scroll(dir:int) -> void:
 	if is_occupied() or camera_settings.is_locked:return
-		
 	match dir:
 		0: #UP
 			if camera_settings.zoom - 1 >= 0:
@@ -1410,20 +1548,13 @@ func on_mouse_scroll(dir:int) -> void:
 				
 	SUBSCRIBE.camera_settings = camera_settings
 	
-
 func on_control_input_update(input_data:Dictionary) -> void:
+	if is_occupied():return
+	
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 	
-	if is_occupied():
-		print("Input not allowed (is occupied).")
-		return
-	
-	print("key: %s   keycode: %s" % [key, keycode])
-	
 	match key:
-		"ENTER":	
-			next_day()
 		"5":
 			quicksave()
 		"8":

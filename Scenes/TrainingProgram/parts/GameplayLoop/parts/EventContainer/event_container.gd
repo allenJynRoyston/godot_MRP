@@ -167,7 +167,6 @@ func update_next_btn(is_active:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_current_event_instruction_update() -> void:
 	current_instruction = current_event_instruction.event_instructions[instruction_index].call()
-	print("current_instruction: ", current_instruction)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		

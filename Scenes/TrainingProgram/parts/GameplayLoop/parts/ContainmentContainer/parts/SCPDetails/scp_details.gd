@@ -5,6 +5,7 @@ extends PanelContainer
 
 @onready var ItemLabel:Label = $ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/Item/ItemLabel
 @onready var ObjectLabel:Label = $ArticleContainer/VBoxContainer/DetailsContainer/HBoxContainer/VBoxContainer/HBoxContainer/ObjectLabel
+@onready var StatusLabel:Label = $StatusContainer/MarginContainer/VBoxContainer/HBoxContainer/StatusLabel
 
 @onready var DetailsContainer:VBoxContainer = $ArticleContainer/VBoxContainer/DetailsContainer
 @onready var ContainmentContainer:VBoxContainer = $ArticleContainer/VBoxContainer/HBoxContainer/VBoxContainer/ContainmentContainer
@@ -85,24 +86,24 @@ func on_data_update() -> void:
 	
 	var status_details:Dictionary = {
 		"use": false,
-		"title": ""
+		"text": ""
 	}
 	var unlocked:Array = []
-	
-	
-	
+
 	match list_type:
 		LIST_TYPE.AVAILABLE:
 			var list:Array = scp_data.available_list.filter(func(i): return i.ref == data.ref)
 			if list.size() > 0:
 				var item:Dictionary = list[0]
 				status_details.use = item.transfer_status.state
-				status_details.title = "CONTAINMENT IN PROGRESS"
+				status_details.text = "CONTAINMENT IN PROGRESS"
 			add_line("Containment procedures unavailable at this time.", ContainmentProceduresList)
 		LIST_TYPE.CONTAINED:
 			var list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
 			if list.size() > 0:
 				var item:Dictionary = scp_data.contained_list.filter(func(i): return i.ref == data.ref)[0]
+				status_details.use = item.transfer_status.state
+				status_details.text = "TRANSFER IN PROGRESS"
 				unlocked = item.unlocked
 	
 	# get refs in unlockables
@@ -135,6 +136,7 @@ func on_data_update() -> void:
 	ArticleContainer.show()
 	ArticleContainer.add_theme_constant_override('margin_top', 55 if status_details.use else 20)
 	StatusContainer.show() if status_details.use else StatusContainer.hide()
+	StatusLabel.text = status_details.text
 # ----------------------------------------
 
 # ----------------------------------------

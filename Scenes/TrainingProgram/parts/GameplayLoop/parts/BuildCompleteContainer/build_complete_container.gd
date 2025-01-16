@@ -65,11 +65,16 @@ func update_display() -> void:
 		
 	match data.action:
 		# ------------------------------------------------------------------------------------------
-		ACTION.TRANSFER_SCP:
+		ACTION.INITIAL_CONTAINMENT:
 			var details:Dictionary = SCP_UTIL.return_data(data.data.ref)
-			TitleLabel.text = "SCP %s successfully transfered" % [details.item_id]
+			TitleLabel.text = "SCP %s successfully contained." % [details.item_id]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
+		ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+			var details:Dictionary = SCP_UTIL.return_data(data.data.ref)
+			TitleLabel.text = "SCP %s successfully transfered." % [details.item_id]
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		# ------------------------------------------------------------------------------------------		
 		ACTION.RESEARCH_ITEM:
 			var details:Dictionary = RD_UTIL.return_data(data.data.ref)
 			TitleLabel.text = "Research complete: %s" % [details.name]
