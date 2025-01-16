@@ -7,7 +7,7 @@ enum SHOP_STEPS {
 	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
 	REFUND
 }
-enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, ON_REJECT, ON_TRANSFER_CANCEL, CONFIRM, FINALIZE}
+enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, ON_REJECT, ON_TRANSFER_CANCEL, ON_TRANSFER_TO_NEW_LOCATION, CONFIRM, FINALIZE}
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
 enum EVENT_STEPS {RESET, START}
@@ -268,14 +268,18 @@ var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
 var selected_refund_item:Dictionary = {}
 var selected_contain_item:Dictionary = {} 
-
-var completed_build_items:Array = [] 
 var expired_scp_items:Array = [] 
 
 var showing_states:Dictionary = {} 
 var revert_state_location:Dictionary = {}
 var tenative_location:Dictionary = {}
 
+var completed_build_items:Array = [] : 
+	set(val):
+		completed_build_items = val
+		if !completed_build_items.is_empty():
+			current_build_complete_step = BUILD_COMPLETE_STEPS.START
+			
 var event_data:Array = [] : 
 	set(val):
 		event_data = val
@@ -661,9 +665,12 @@ func cancel_scp_transfer(selected_data:Dictionary) -> void:
 # -----------------------------------
 
 # -----------------------------------
-func next_day() -> void:
+func next_day() -> void:		
 	# turn processing next day flag to true
 	processing_next_day = true
+	
+	# show busy modal
+	await wait_please(1.0)	
 	
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
@@ -674,49 +681,45 @@ func next_day() -> void:
 		i.days_in_queue += 1
 		return i
 	)	
-	completed_build_items = action_queue_data.filter(func(i): return i.days_in_queue == i.build_time)	
-	action_queue_data = action_queue_data.filter(func(i): return i.days_in_queue < i.build_time)
-	SUBSCRIBE.action_queue_data = action_queue_data
+	var completed_build_items_arr:Array = action_queue_data.filter(func(i): return i.days_in_queue == i.build_time)	
+	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.days_in_queue < i.build_time)
 		
 	# ADDS DAY COUNT TO SCP DATA
 	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
 	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
-	
-	# and remove if expired, add to expire list
+	# ...and remove if expired, add to expire list
 	expired_scp_items = scp_data.available_list.filter(func(i): return i.days_until_expire == 0 and !i.transfer_status.state)
 	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
 	
-	# hide busy modal
-	await wait_please(1.5)
+	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
+	if completed_build_items_arr.size() > 0:
+		completed_build_items = completed_build_items_arr
+		await on_complete_build_complete
 	
-	# lastly, check for random events in the scp
-	event_data = []
+	# make notification that SCP has expired
+	if expired_scp_items.size() > 0:
+		pass	
+	
+	# CHECK FOR RANDOMIZED EVENTS
+	var event_data_arr = []
 	for index in scp_data.contained_list.size():
 		var data:Dictionary = scp_data.contained_list[index]
 		if data.days_in_containment > 0:
 			var event:Dictionary = SCP_UTIL.check_for_events(data.ref, get_data_snapshot, get_self_ref_callable(data.ref), "random_events")
-			
 			# event must have instructions or there's no event to play out
 			if !event.event_instructions.is_empty():
 				# adds number of times an event has been triggered to the contained_List data
 				if event.event_id not in scp_data.contained_list[index].event_counts:
 					scp_data.contained_list[index].event_counts[event.event_id] = 0
 				scp_data.contained_list[index].event_counts[event.event_id] += 1
-				event_data.push_back(event)
-	SUBSCRIBE.scp_data = scp_data
-	event_data = event_data
-	if !event_data.is_empty():
+				event_data_arr.push_back(event)
+	
+	# if events are present, update scp data dnd then execute events
+	if !event_data_arr.is_empty():
+		SUBSCRIBE.scp_data = scp_data
+		await wait_please()	
+		event_data = event_data_arr
 		await on_events_complete
-
-
-	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	if completed_build_items.size() > 0:
-		current_build_complete_step = BUILD_COMPLETE_STEPS.START
-		await on_complete_build_complete
-
-	# make notification that SCP has expired
-	if expired_scp_items.size() > 0:
-		pass
 
 	# revert processing flag
 	processing_next_day = false
@@ -842,7 +845,6 @@ func on_show_info_update() -> void:
 		showing_states[InfoContainer] = show_info
 
 func on_show_events_update() -> void:
-	print("show_events: ", show_events)
 	if is_node_ready() or Engine.is_editor_hint():
 		EventContainer.is_showing = show_events
 		showing_states[EventContainer] = show_events
@@ -1087,6 +1089,9 @@ func on_current_contain_step_update() -> void:
 				ACTION.CONTAIN_TRANSFER_CANCEL:
 					selected_contain_item = response.data
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				ACTION.TRANSFER_SCP_TO_NEW_LOCATION:
+					selected_contain_item = response.data
+					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
 			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])			
@@ -1131,6 +1136,28 @@ func on_current_contain_step_update() -> void:
 					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.data.ref == selected_contain_item.ref)[0]
 					cancel_scp_transfer(action_queue_item)
 					current_contain_step = CONTAIN_STEPS.START
+		# ---------------
+		CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION:
+			await show_only([LocationContainer, Structure3dContainer, RoomStatusContainer])
+			
+			print(selected_contain_item)
+			
+			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
+			
+			Structure3dContainer.select_location()
+			Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
+			
+			var structure_response:Dictionary = await Structure3dContainer.user_response
+			Structure3dContainer.placement_instructions = []
+			
+			match structure_response.action:
+				ACTION.BACK:					
+					SUBSCRIBE.unavailable_rooms = []
+					current_contain_step = CONTAIN_STEPS.START
+				ACTION.NEXT:
+					SUBSCRIBE.unavailable_rooms = []
+					current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
+					
 		# ---------------
 		CONTAIN_STEPS.CONFIRM_PLACEMENT:
 			ConfirmModal.set_text("Contain at this location?")
@@ -1259,8 +1286,8 @@ func on_current_build_complete_step_update() -> void:
 			await ActionQueueContainer.remove_from_queue(completed_build_items)
 			
 			# resets event_data 
-			event_data = []
-			
+			var event_data_arr:Array = []
+		
 			# UPDATE SAVABLE DATA
 			for item in completed_build_items:
 				match item.action:
@@ -1272,11 +1299,12 @@ func on_current_build_complete_step_update() -> void:
 						var new_contained_item:Dictionary = { 
 							"ref": item.data.ref,
 							"unlocked": [],
-							"event_counts": {
-								
-							},
 							"location": item.location,
-							"days_in_containment": 0
+							"days_in_containment": 0,
+							"lead_researcher": null,
+							"event_counts": {
+								#event_id: count[int]
+							},
 						}
 						scp_data.contained_list.push_back(new_contained_item)
 
@@ -1284,7 +1312,7 @@ func on_current_build_complete_step_update() -> void:
 						SUBSCRIBE.scp_data = scp_data
 						
 						var event:Dictionary = SCP_UTIL.check_for_events(item.data.ref, get_data_snapshot, get_self_ref_callable(item.data.ref), "after_inital_containment")
-						event_data.push_back(event)
+						event_data_arr.push_back(event)
 						
 					# ----------------------------
 					ACTION.BASE_ITEM:
@@ -1314,11 +1342,17 @@ func on_current_build_complete_step_update() -> void:
 			# update reactively
 			SUBSCRIBE.resources_data = resources_data	
 			
+			# trigger event_data check
+			if event_data_arr.size() > 0:
+				await wait_please()
+				event_data = event_data_arr
+				await on_events_complete	
+				
+			
 			completed_build_items = []
 			on_complete_build_complete.emit()
 			
-			# trigger event_data check
-			event_data = event_data
+
 					
 #endregion
 # ------------------------------------------------------------------------------		
@@ -1343,7 +1377,9 @@ func on_current_event_step_update() -> void:
 			event_data = []
 			current_event_step = EVENT_STEPS.RESET
 			await U.set_timeout(0.5)
+			# trigger signal
 			on_events_complete.emit()
+			
 #endregion
 # ------------------------------------------------------------------------------		
 

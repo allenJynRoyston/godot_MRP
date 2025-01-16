@@ -91,8 +91,8 @@ var SCP_001:Dictionary = {
 			{
 				"trigger_threshold": 100,
 				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
-					#var details:Dictionary = self_ref.call().details
-					#var img_src:String = details.img_src
+					var details:Dictionary = self_ref.call().details
+					var img_src:String = details.img_src
 					#var option_selected:Dictionary = {
 						#"val": null
 					#}
@@ -100,6 +100,14 @@ var SCP_001:Dictionary = {
 						#option_selected.val = val
 					#
 					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: INITALIZED EVENT" % [details.item_id],
+								"img_src": img_src,
+								"text": [
+									"TRIGGER EVENT 1."
+								]
+							},
 						#func() -> Dictionary:
 							#return {
 								#"header": "SCP-%s INITIAL CONTAINMENT REPORT" % [details.item_id],
@@ -158,7 +166,7 @@ var SCP_001:Dictionary = {
 		# -------------------------
 		"random_events": [
 			{
-				"trigger_threshold": 10,
+				"trigger_threshold": 100,
 				"trigger_check": func(get_snapshot:Callable, self_ref:Callable) -> Array:
 					var details:Dictionary = self_ref.call().details
 					var img_src:String = details.img_src					
@@ -168,7 +176,9 @@ var SCP_001:Dictionary = {
 								"header": "SCP-%s: RANDOM EVENT 1" % [details.item_id],
 								"img_src": img_src,
 								"text": [
-									"TRIGGER EVENT 1."
+									"TRIGGER EVENT 1 starts here.",
+									"Text goes here.",
+									"And it ends here.",
 								]
 							},
 					],

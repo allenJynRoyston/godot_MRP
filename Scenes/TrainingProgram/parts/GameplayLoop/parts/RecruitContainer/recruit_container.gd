@@ -45,7 +45,6 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 # --------------------------------------------------------------------------------------------------		
 
-
 # --------------------------------------------------------------------------------------------------		
 func on_tab_open_update() -> void:
 	if is_node_ready():
@@ -58,3 +57,16 @@ func on_tab_open_update() -> void:
 				SupportPanel.show()
 		
 # --------------------------------------------------------------------------------------------------			
+
+# --------------------------------------------------------------------------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_showing:return
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+
+	match key:
+		"BACK":
+			user_response.emit({"action": ACTION.BACK})
+		"B":
+			user_response.emit({"action": ACTION.BACK})
+# --------------------------------------------------------------------------------------------------	

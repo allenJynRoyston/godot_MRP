@@ -26,7 +26,7 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 	
 	BackBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.BACK})
+		on_back()
 		
 	AvailableTabBtn.onClick = func() -> void:
 		list_type = LIST_TYPE.AVAILABLE
@@ -47,6 +47,9 @@ func _ready() -> void:
 	
 	Actions.onCancelTransfer = func() -> void:
 		user_response.emit({"action": ACTION.CONTAIN_TRANSFER_CANCEL, "data": selected_scp_data})
+		
+	Actions.onTransfer = func() -> void:
+		user_response.emit({"action": ACTION.TRANSFER_SCP_TO_NEW_LOCATION, "data": selected_scp_data})
 	
 	on_list_type_update()
 # --------------------------------------------------------------------------------------------------		
@@ -69,16 +72,44 @@ func on_list_type_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
-	scp_data = new_val
-	if selected_scp_data.is_empty() or scp_data.is_empty():return
+func check_for_reset() -> void:
+	if scp_data.is_empty() or selected_scp_data.is_empty():return
+	
 	var reset:bool = scp_data.available_list.filter(func(i): return i.ref == selected_scp_data.ref).size() == 0
 	if reset:
 		List.on_reset()
 # --------------------------------------------------------------------------------------------------		
+		
+# --------------------------------------------------------------------------------------------------		
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val
+	if selected_scp_data.is_empty() or scp_data.is_empty():return
+	check_for_reset()
+# --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
 func on_is_showing_update() -> void:
 	if !is_node_ready():return
 	super.on_is_showing_update()
 	if !is_showing:
-		List.on_reset()
+		check_for_reset()
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------	
+func on_back() -> void:
+	user_response.emit({"action": ACTION.BACK})
+	List.on_reset()
+# --------------------------------------------------------------------------------------------------	
+	
+# --------------------------------------------------------------------------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_showing:return
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+
+	match key:
+		"BACK":
+			on_back()
+		"B":
+			on_back()
+# --------------------------------------------------------------------------------------------------	

@@ -9,13 +9,15 @@ extends GameContainer
 
 @onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/NextBtn
 
+var parentNode:Control
+
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
-	var parentNode:Control = get_parent()
+	parentNode = get_parent()
 	
 	BuildBtn.onClick = func() -> void:
 		parentNode.current_shop_step = parentNode.SHOP_STEPS.START
@@ -29,3 +31,20 @@ func _ready() -> void:
 	NextBtn.onClick = func() -> void:
 		parentNode.next_day()
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_showing:return
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+
+	match key:
+		"ENTER":
+			parentNode.next_day()
+		"B":
+			parentNode.current_shop_step = parentNode.SHOP_STEPS.START
+		"R":
+			parentNode.current_recruit_step = parentNode.RECRUIT_STEPS.START
+		"C":
+			parentNode.current_contain_step = parentNode.CONTAIN_STEPS.START
+# --------------------------------------------------------------------------------------------------	

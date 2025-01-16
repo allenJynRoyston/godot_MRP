@@ -305,3 +305,16 @@ func on_focus_data_update() -> void:
 	if !is_node_ready(): return
 	FocusDetails.data = focus_data
 # --------------------------------------------------------------------------------------------------			
+
+# --------------------------------------------------------------------------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_showing:return
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+
+	match key:
+		"BACK":
+			user_response.emit({"action": ACTION.BACK})
+		"B":
+			user_response.emit({"action": ACTION.BACK})
+# --------------------------------------------------------------------------------------------------	

@@ -113,9 +113,9 @@ func start() -> void:
 func end() -> void:
 	current_controls = CONTROLS.FREEZE
 	update_next_btn(true)
-	user_response.emit()
 	reset()
 	reset_content_nodes()	
+	user_response.emit()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -136,7 +136,7 @@ func next_instruction(inc:bool = false) -> void:
 	if inc:
 		instruction_index += 1
 		
-	if instruction_index >= current_event_instruction.event_instructions.size():
+	if current_event_instruction.is_empty() or instruction_index >= current_event_instruction.event_instructions.size():
 		next_event(true)	
 	else:
 		current_event_instruction = event_data[event_instruction_index]
@@ -167,6 +167,7 @@ func update_next_btn(is_active:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_current_event_instruction_update() -> void:
 	current_instruction = current_event_instruction.event_instructions[instruction_index].call()
+	print("current_instruction: ", current_instruction)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
