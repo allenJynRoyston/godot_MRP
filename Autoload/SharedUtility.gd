@@ -257,20 +257,20 @@ func calculate_resources(details:Dictionary, dict_property:String, resources_dat
 			var capacity_dict:Dictionary = details[dict_property].resources.capacity.call()
 			for key in capacity_dict:
 				var amount:int = capacity_dict[key]
-				if !refund:
+				if refund:
 					resource_data_copy[key].capacity -= amount
 					if resource_data_copy[key].capacity < 0:
 						resource_data_copy[key].capacity = 0
 				else:
 					resource_data_copy[key].capacity += amount
-					if resource_data_copy[key].amount > 999:
-						resource_data_copy[key].amount = 999
+					if resource_data_copy[key].capacity > 999:
+						resource_data_copy[key].capacity = 999
 				
 		if "amount" in details[dict_property].resources:
 			var amount_dict:Dictionary = details[dict_property].resources.amount.call()
 			for key in amount_dict:
 				var amount:int = amount_dict[key]
-				if !refund:
+				if refund:
 					resource_data_copy[key].amount -= amount
 					if resource_data_copy[key].amount < 0:
 						resource_data_copy[key].amount = 0

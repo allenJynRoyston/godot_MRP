@@ -93,7 +93,7 @@ func _ready() -> void:
 	TierUnlock.onConfirm = func(data:Dictionary) -> void:
 		tier_unlock_data = {}
 		user_response.emit({
-			"action": ACTION.PURCHASE_TIER, 
+			"action": ACTION.PURCHASE.TIER_ITEM, 
 			"selected": {
 				"tier_data": data,
 				"tier_type": current_tab

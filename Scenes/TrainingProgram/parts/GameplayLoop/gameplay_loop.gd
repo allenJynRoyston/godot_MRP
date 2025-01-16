@@ -807,6 +807,7 @@ func next_day() -> void:
 		completed_build_items = completed_build_items_arr
 		await on_complete_build_complete
 	
+	
 	# make notification that SCP has expired
 	if expired_scp_items.size() > 0:
 		pass	
@@ -819,6 +820,8 @@ func next_day() -> void:
 			var event_type:int = SCP.EVENT_TYPE.RANDOM_EVENTS if !data.transfer_status.state else SCP.EVENT_TYPE.DURING_TRANSFER
 			await check_events(data.ref, event_type, true)
 	processing_next_day = false
+	
+	
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1178,7 +1181,7 @@ func on_current_contain_step_update() -> void:
 			await show_only([ResourceContainer, ContainmentContainer, ActionQueueContainer, RoomStatusContainer])
 			var response:Dictionary = await ContainmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			print(response.action, "  ", ACTION.CONTAINED.STOP_CONTAINMENT)
+			
 			match response.action:
 				ACTION.CONTAINED.BACK:
 					current_contain_step = CONTAIN_STEPS.HIDE
@@ -1201,6 +1204,9 @@ func on_current_contain_step_update() -> void:
 					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = false
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				_:
+					print("action missing")
+					current_contain_step = CONTAIN_STEPS.HIDE
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
 			await show_only([Structure3dContainer, RoomStatusContainer])			

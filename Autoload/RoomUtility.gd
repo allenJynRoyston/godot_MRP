@@ -396,7 +396,7 @@ func return_operating_cost(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 

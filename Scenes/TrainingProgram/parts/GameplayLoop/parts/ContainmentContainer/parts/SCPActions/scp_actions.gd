@@ -22,15 +22,7 @@ var available_actions:Array = [] :
 
 var purchased_facility_arr:Array = []
 var scp_data:Dictionary = {} 
-
-var onContain:Callable = func() -> void:pass
-var onReject:Callable = func() -> void:pass
-var onTransfer:Callable = func() -> void:pass
-var startResearch:Callable = func() -> void:pass
-var stopResearch:Callable = func() -> void:pass
-var assignResearcher:Callable = func() -> void:pass
-var unassignResearcher:Callable = func() -> void:pass
-var onCancelTransfer:Callable = func(action:int) -> void:pass
+var onAction:Callable = func(action:ACTION.CONTAINED) -> void:pass
 
 # ------------------------------------------------------------
 func _init() -> void:
@@ -72,6 +64,7 @@ func on_data_update() -> void:
 	var list:Array = []
 	
 	match list_type:
+		# ----------------------------------------------------------------
 		LIST_TYPE.AVAILABLE:
 			var scp_list:Array = scp_data.available_list.filter(func(i): return i.ref == data.ref)
 			if scp_list.size() > 0:
@@ -123,16 +116,16 @@ func on_data_update() -> void:
 								"text": func() -> String:
 									return '+%s %s [capacity] for each week in containment.' % [item.amount, str(item.resource.name).to_upper()],
 							})
-							
+
 				list = [
 					{
 						"title":"Cancel Containment" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
 						"title_icon": SVGS.TYPE.DELETE,
 						"onClick": func() -> void:
 							if active_scp_data.days_until_expire > 0:
-								onCancelTransfer.call(ACTION.CONTAINED.STOP_CONTAINMENT)
+								onAction.call(ACTION.CONTAINED.STOP_CONTAINMENT)
 							else:
-								onReject.call(),
+								onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
 					}		
 				]  if active_scp_data.transfer_status.state else [
 					{
@@ -153,16 +146,17 @@ func on_data_update() -> void:
 							}								
 						],
 						"onClick": func() -> void:
-							onContain.call(),
+							onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
 					},
 					{
 						"title":"Reject",
 						"title_icon": SVGS.TYPE.DELETE,
 						"onClick": func() -> void:
-							onReject.call(),
+							onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
 					}		
 				] 
-			
+				
+		# ----------------------------------------------------------------
 		LIST_TYPE.CONTAINED:
 			var scp_list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
 			if scp_list.size() > 0:			
@@ -173,7 +167,7 @@ func on_data_update() -> void:
 							"title":"Cancel Transfer",
 							"title_icon": SVGS.TYPE.DELETE,
 							"onClick": func() -> void:
-								onCancelTransfer.call(ACTION.CONTAINED.CANCEL_TRANSFER),
+								onAction.call(ACTION.CONTAINED.CANCEL_TRANSFER),
 						}	
 					)
 				else:
@@ -184,9 +178,9 @@ func on_data_update() -> void:
 							"title_icon": SVGS.TYPE.RESEARCH,
 							"onClick": func() -> void:
 								if active_scp_data.current_activity.is_empty():
-									startResearch.call()
+									onAction.call(ACTION.CONTAINED.START_RESEARCH)
 								else:
-									stopResearch.call(),
+									onAction.call(ACTION.CONTAINED.STOP_RESEARCH),
 						}		
 					)					
 
@@ -196,9 +190,9 @@ func on_data_update() -> void:
 							"title_icon": SVGS.TYPE.DRS,
 							"onClick": func() -> void:
 								if active_scp_data.lead_researcher.is_empty():
-									assignResearcher.call()
+									onAction.call(ACTION.CONTAINED.ASSIGN_RESEARCHER)
 								else:
-									unassignResearcher.call(),
+									onAction.call(ACTION.CONTAINED.UNASSIGN_RESEARCHER),
 							"bulletpoints": [
 								{
 									"header": "Lead Researcher",
@@ -219,7 +213,7 @@ func on_data_update() -> void:
 							"title":"Transfer SCP (Unavailable)",
 							"title_icon": SVGS.TYPE.CONTAIN,
 							"onClick": func() -> void:
-								onTransfer.call(),
+								onAction.call(ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION),
 						}		
 					)
 										
