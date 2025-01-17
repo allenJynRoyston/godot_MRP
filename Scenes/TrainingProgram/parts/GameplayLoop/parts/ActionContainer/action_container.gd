@@ -6,6 +6,7 @@ extends GameContainer
 @onready var BuildBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/BuildBtn
 @onready var ContainBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ContainBtn
 @onready var RecruitBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/RecruitBtn
+@onready var ResearchersBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResearchersBtn
 
 @onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/NextBtn
 
@@ -20,17 +21,38 @@ func _ready() -> void:
 	parentNode = get_parent()
 	
 	BuildBtn.onClick = func() -> void:
-		parentNode.current_shop_step = parentNode.SHOP_STEPS.START
+		open_shop()
 	
 	ContainBtn.onClick = func() -> void:
-		parentNode.current_contain_step = parentNode.CONTAIN_STEPS.START
+		open_contain()
 		
 	RecruitBtn.onClick = func() -> void:
-		parentNode.current_recruit_step = parentNode.RECRUIT_STEPS.START
+		open_recruit()
+	
+	ResearchersBtn.onClick = func() -> void:
+		open_researchers()
 	
 	NextBtn.onClick = func() -> void:
-		parentNode.next_day()
+		on_next_day()
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_next_day() -> void:
+	parentNode.next_day()
+
+func open_shop() -> void:
+	parentNode.current_shop_step = parentNode.SHOP_STEPS.START
+
+func open_recruit() -> void:
+	parentNode.current_recruit_step = parentNode.RECRUIT_STEPS.START
+
+func open_contain() -> void:
+	parentNode.current_contain_step = parentNode.CONTAIN_STEPS.START	
+
+func open_researchers() -> void:
+	parentNode.current_researcher_step = parentNode.RESEARCHERS_STEPS.START
+# --------------------------------------------------------------------------------------------------		
+
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
@@ -40,11 +62,14 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	match key:
 		"ENTER":
-			parentNode.next_day()
+			on_next_day()
 		"B":
-			parentNode.current_shop_step = parentNode.SHOP_STEPS.START
+			open_shop()
+		"E":
+			open_researchers()
 		"R":
-			parentNode.current_recruit_step = parentNode.RECRUIT_STEPS.START
+			open_recruit()
 		"C":
-			parentNode.current_contain_step = parentNode.CONTAIN_STEPS.START
+			open_contain()
+			
 # --------------------------------------------------------------------------------------------------	

@@ -46,7 +46,7 @@ stretch_mode = 2
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(373, 50)
+size = Vector2i(373, 40)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 328.0
@@ -86,8 +86,7 @@ layout_mode = 2
 size_flags_vertical = 6
 icon = 24
 
-[node name="AssignBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
-visible = false
+[node name="ResearchersBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_vertical = 6

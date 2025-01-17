@@ -1,0 +1,130 @@
+[gd_scene load_steps=15 format=3 uid="uid://bqjbewhv2mf4t"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/researchers_container.gd" id="1_u5c0a"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_w3gm4"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_teb68"]
+[ext_resource type="PackedScene" uid="uid://b77anuijj4ncb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/List/ResearcherList.tscn" id="4_hhwlg"]
+[ext_resource type="PackedScene" uid="uid://bse3kl7blgrq2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/Details/Details.tscn" id="5_ma56q"]
+[ext_resource type="PackedScene" uid="uid://ibxjb8ivu013" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/Actions/Actions.tscn" id="6_2oso1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fe6tw"]
+shader = ExtResource("2_w3gm4")
+shader_parameter/percentage = 0.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_bxxpf"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bdxbk"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4nhy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ydhv"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8peg4"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0ix1"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_70itj"]
+
+[node name="ResearcherContainer" type="MarginContainer"]
+offset_right = 329.0
+offset_bottom = 78.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_u5c0a")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_fe6tw")
+layout_mode = 2
+texture = SubResource("ViewportTexture_bxxpf")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(678, 494)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 588.0
+offset_bottom = 494.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bdxbk")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_f4nhy")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AvailableTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("3_teb68")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2ydhv")
+title = "AVAILABLE"
+
+[node name="OccupiedTab" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("3_teb68")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8peg4")
+title = "OCCUPIED"
+
+[node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3" instance=ExtResource("3_teb68")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o0ix1")
+title = "BACK"
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_70itj")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="List" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_hhwlg")]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Details" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("5_ma56q")]
+layout_mode = 2
+
+[node name="Actions" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("6_2oso1")]
+layout_mode = 2
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

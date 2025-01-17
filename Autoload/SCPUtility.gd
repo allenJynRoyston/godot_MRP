@@ -86,6 +86,28 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 	"events": {
 		# -------------------------
+		SCP.EVENT_TYPE.START_TESTING: [
+			{
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: START TESTING EVENT" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"After containment text"
+								]
+							},
+					],
+			}
+		],
+		# -------------------------
+
+		
+		# -------------------------
 		SCP.EVENT_TYPE.AFTER_CONTAINMENT: [
 			{
 				"trigger_threshold": func(_trigger_count:int) -> int:
@@ -233,8 +255,50 @@ var SCP_001:Dictionary = {
 							},
 					],
 			}						
-		]
+		],
 		# -------------------------
+		
+		# -------------------------
+		SCP.EVENT_TYPE.BEFORE_DESTROY: [
+			{
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: BEFORE DESTROY EVENT" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"After containment text"
+								]
+							},
+					],
+			}
+		],
+		# -------------------------		
+		
+		# -------------------------
+		SCP.EVENT_TYPE.AFTER_DESTROY: [
+			{
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: AFTER DESTROY EVENT" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"After containment text"
+								]
+							},
+					],
+			}
+		],
+		# -------------------------				
 		
 	}
 	# -----------------------------------

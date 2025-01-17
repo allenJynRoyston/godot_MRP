@@ -4,7 +4,7 @@ extends Node
 var R_AND_D_LAB:Dictionary = {
 	"name": "R & D LAB",
 	"tier": TIER.VAL.ZERO,
-	"img_src": "res://Media/rooms/barricks.jpg",
+	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Enables research and development.",
 	"placement_restrictions": {
 		"floor": [
@@ -58,7 +58,7 @@ var R_AND_D_LAB:Dictionary = {
 var CONSTRUCTION_YARD:Dictionary = {
 	"name": "CONSTRUCTION YARD",
 	"tier": TIER.VAL.ZERO,
-	"img_src": "res://Media/rooms/barricks.jpg",
+	"img_src": "res://Media/rooms/construction_yard.jpg",
 	"description": "Enables base development.",
 	"placement_restrictions": {
 		"floor": [

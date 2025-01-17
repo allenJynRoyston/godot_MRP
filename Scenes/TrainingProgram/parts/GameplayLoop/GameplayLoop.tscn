@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=22 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dqajtnshjj5i7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn" id="11_kf8f5"]
 [ext_resource type="PackedScene" uid="uid://d0dpehr5pt3xc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/RecruitContainer.tscn" id="12_dw62g"]
 [ext_resource type="PackedScene" uid="uid://bjpif0yvapqdn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StatusContainer/StatusContainer.tscn" id="13_goe6f"]
+[ext_resource type="PackedScene" uid="uid://bqjbewhv2mf4t" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn" id="13_rsj21"]
 [ext_resource type="PackedScene" uid="uid://85i830v26h73" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildCompleteContainer/BuildCompleteContainer.tscn" id="14_ohg8q"]
 [ext_resource type="PackedScene" uid="uid://b2glyeqvwy3vs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/InfoContainer/InfoContainer.tscn" id="15_g2w1o"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="15_y8y6g"]
@@ -97,6 +98,13 @@ is_showing = false
 freeze_inputs = true
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+is_showing = false
+freeze_inputs = true
+
+[node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

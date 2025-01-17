@@ -7,11 +7,17 @@ enum SHOP_STEPS {
 	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
 	REFUND
 }
-enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, ON_REJECT, ON_TRANSFER_CANCEL, ON_TRANSFER_TO_NEW_LOCATION, CONFIRM, FINALIZE}
+enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
+	ON_REJECT, ON_TRANSFER_CANCEL, 
+	ON_TRANSFER_TO_NEW_LOCATION, 
+	CONFIRM_RESEARCHER,
+	CONFIRM, FINALIZE
+}
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
-enum EVENT_STEPS {RESET, START}
 
+enum RESEARCHERS_STEPS {RESET, START, WAIT_FOR_SELECT}
+enum EVENT_STEPS {RESET, START}
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var LocationContainer:MarginContainer = $LocationContainer
@@ -26,6 +32,7 @@ enum EVENT_STEPS {RESET, START}
 @onready var StatusContainer:MarginContainer = $StatusContainer
 @onready var BuildCompleteContainer:MarginContainer = $BuildCompleteContainer
 @onready var InfoContainer:MarginContainer = $InfoContainer
+@onready var ResearchersContainer:MarginContainer = $ResearcherContainer
 @onready var EventContainer:MarginContainer = $EventContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
@@ -81,6 +88,11 @@ enum EVENT_STEPS {RESET, START}
 	set(val):
 		show_recruit = val
 		on_show_recruit_update()		
+
+@export var show_reseachers:bool = false : 
+	set(val):
+		show_reseachers = val
+		on_show_reseachers_update()
 
 @export var show_containment_status:bool = false : 
 	set(val):
@@ -311,6 +323,12 @@ var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET :
 		current_event_step = val
 		on_current_event_step_update()
 
+var current_researcher_step:RESEARCHERS_STEPS = RESEARCHERS_STEPS.RESET : 
+	set(val):
+		current_researcher_step = val
+		on_current_researcher_step_update()
+
+
 signal store_select_location
 signal on_complete_build_complete
 signal on_expired_scp_items_complete
@@ -381,14 +399,15 @@ func setup() -> void:
 	on_show_info_update()
 	on_show_events_update()
 	on_show_build_complete_update()
+	on_show_reseachers_update()
 
 	# other
 	on_show_confirm_modal_update()
 	on_is_busy_update()
 	
 	# steps
-	on_show_store_update()
-	on_current_shop_step_update()
+	#on_show_store_update()
+	#on_current_shop_step_update()
 	
 	# get default showing state
 	capture_default_showing_state()
@@ -476,7 +495,7 @@ func on_is_busy_update() -> void:
 
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
-		Structure3dContainer, LocationContainer, ActionQueueContainer, 
+		Structure3dContainer, LocationContainer, ActionQueueContainer, ResearchersContainer,
 		RoomStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ContainmentContainer, 
 		ConfirmModal, RecruitmentContainer, StatusContainer,
@@ -901,6 +920,11 @@ func on_show_action_queue_update() -> void:
 		ActionQueueContainer.is_showing = show_action_queue
 		showing_states[ActionQueueContainer] = show_action_queue
 
+func on_show_reseachers_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		ResearchersContainer.is_showing = show_reseachers
+		showing_states[ResearchersContainer] = show_reseachers
+		
 func on_room_item_status_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
 		RoomStatusContainer.is_showing = room_item_status
@@ -981,7 +1005,7 @@ func on_current_shop_step_update() -> void:
 			selected_shop_item = {}
 			
 			StoreContainer.start()
-			await show_only([ResourceContainer, StoreContainer, ActionQueueContainer, LocationContainer, RoomStatusContainer])
+			await show_only([ResourceContainer, StoreContainer])
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -1178,7 +1202,7 @@ func on_current_contain_step_update() -> void:
 			selected_contain_item = {} 
 			
 			SUBSCRIBE.suppress_click = true
-			await show_only([ResourceContainer, ContainmentContainer, ActionQueueContainer, RoomStatusContainer])
+			await show_only([ ContainmentContainer])
 			var response:Dictionary = await ContainmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
@@ -1204,9 +1228,37 @@ func on_current_contain_step_update() -> void:
 					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = false
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				ACTION.CONTAINED.ASSIGN_RESEARCHER:
+					await show_only([ResearchersContainer])
+					var res:Dictionary = await ResearchersContainer.user_response
+					match res.action:
+						ACTION.RESEARCHERS.BACK:
+							current_contain_step = CONTAIN_STEPS.START
+						ACTION.RESEARCHERS.SELECT:
+							# store selected researcher id 
+							current_contain_step = CONTAIN_STEPS.CONFIRM_RESEARCHER
+
+				ACTION.CONTAINED.UNASSIGN_RESEARCHER:
+					print("unassign researcher...")	
+					current_contain_step = CONTAIN_STEPS.HIDE
+				ACTION.CONTAINED.START_TESTING:
+					await check_events(response.data.ref, SCP.EVENT_TYPE.START_TESTING, true)
+					print("AFTER TESTING ENDS...")
+					current_contain_step = CONTAIN_STEPS.HIDE
 				_:
 					print("action missing")
 					current_contain_step = CONTAIN_STEPS.HIDE
+		# ---------------
+		CONTAIN_STEPS.CONFIRM_RESEARCHER:
+			ConfirmModal.set_text("Make [RESEARCH NAME] lead researcher for [SCP NAME]?")
+			await show_only([ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_contain_step = CONTAIN_STEPS.START
+				ACTION.NEXT:
+					print("ATTACH RESEARCHER TO SCP DATA")
+					current_contain_step = CONTAIN_STEPS.START			
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
 			await show_only([Structure3dContainer, RoomStatusContainer])			
@@ -1527,6 +1579,27 @@ func on_current_event_step_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------		
 
+# ------------------------------------------------------------------------------		
+#region BUILD COMPLETE
+func on_current_researcher_step_update() -> void:
+	if !is_node_ready() and !Engine.is_editor_hint():return
+	
+	match current_researcher_step:
+		RESEARCHERS_STEPS.RESET:
+			SUBSCRIBE.suppress_click = false
+			await restore_default_state()
+		RESEARCHERS_STEPS.START:
+			SUBSCRIBE.suppress_click = true
+			await show_only([ResearchersContainer])
+			var response:Dictionary = await ResearchersContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			match response.action:
+				ACTION.RESEARCHERS.BACK:
+					current_researcher_step = RESEARCHERS_STEPS.RESET
+#endregion
+# ------------------------------------------------------------------------------		
+
+
 # ------------------------------------------------------------------------------	
 func on_expired_scp_items_update() -> void:
 	pass
@@ -1590,9 +1663,6 @@ func quicksave() -> void:
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
-	
-	print(save_data.tier_unlocked)
-	
 	is_busy = false
 	print("saved game!")
 

@@ -174,13 +174,10 @@ func on_data_update() -> void:
 					
 					list.push_back(
 						{
-							"title": "Start Research" if active_scp_data.current_activity.is_empty() else "Stop Research",
+							"title": "Start Testing" if active_scp_data.current_activity.is_empty() else "Stop Testing",
 							"title_icon": SVGS.TYPE.RESEARCH,
 							"onClick": func() -> void:
-								if active_scp_data.current_activity.is_empty():
-									onAction.call(ACTION.CONTAINED.START_RESEARCH)
-								else:
-									onAction.call(ACTION.CONTAINED.STOP_RESEARCH),
+								onAction.call(ACTION.CONTAINED.START_TESTING if active_scp_data.current_activity.is_empty() else ACTION.CONTAINED.STOP_TESTING),
 						}		
 					)					
 
@@ -189,10 +186,7 @@ func on_data_update() -> void:
 							"title":"Assign Lead Researcher" if active_scp_data.lead_researcher.is_empty() else "Remove Lead Researcher",
 							"title_icon": SVGS.TYPE.DRS,
 							"onClick": func() -> void:
-								if active_scp_data.lead_researcher.is_empty():
-									onAction.call(ACTION.CONTAINED.ASSIGN_RESEARCHER)
-								else:
-									onAction.call(ACTION.CONTAINED.UNASSIGN_RESEARCHER),
+								onAction.call(ACTION.CONTAINED.ASSIGN_RESEARCHER if active_scp_data.lead_researcher.is_empty() else ACTION.CONTAINED.UNASSIGN_RESEARCHER),
 							"bulletpoints": [
 								{
 									"header": "Lead Researcher",
