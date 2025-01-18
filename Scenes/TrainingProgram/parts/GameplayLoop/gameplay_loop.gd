@@ -1,4 +1,3 @@
-@tool
 extends PanelContainer
 
 enum SHOP_STEPS {
@@ -10,7 +9,7 @@ enum SHOP_STEPS {
 enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
 	ON_REJECT, ON_TRANSFER_CANCEL, 
 	ON_TRANSFER_TO_NEW_LOCATION, 
-	CONFIRM_RESEARCHER,
+	CONFIRM_RESEARCHER, CONFIRM_REMOVE_RESEARCHER,
 	CONFIRM, FINALIZE
 }
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
@@ -280,6 +279,7 @@ var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
 var selected_refund_item:Dictionary = {}
 var selected_contain_item:Dictionary = {} 
+var selected_researcher_item:Dictionary = {}
 var expired_scp_items:Array = [] 
 
 var showing_states:Dictionary = {} 
@@ -766,6 +766,26 @@ func find_in_contained(ref:int) -> Dictionary:
 # -----------------------------------
 
 # -----------------------------------
+func assign_researcher_to_scp(lead_researcher:Dictionary, scp_details:Dictionary) -> void:
+	var res:Dictionary = find_in_contained(scp_details.ref)
+	var index:int = res.index
+	var list_data:Dictionary = res.data
+	scp_data.contained_list[index].lead_researcher = {
+		"uid": lead_researcher.details.uid
+	}
+	SUBSCRIBE.scp_data = scp_data
+# -----------------------------------
+
+# -----------------------------------
+func unassign_researcher_to_scp(scp_details:Dictionary) -> void:
+	var res:Dictionary = find_in_contained(scp_details.ref)
+	var index:int = res.index
+	var list_data:Dictionary = res.data
+	scp_data.contained_list[index].lead_researcher = {}
+	SUBSCRIBE.scp_data = scp_data
+# -----------------------------------	
+
+# -----------------------------------
 func check_events(ref:int, type:SCP.EVENT_TYPE, skip_wait:bool = false) -> void:
 	var res:Dictionary = find_in_contained(ref)
 	var index:int = res.index
@@ -1200,47 +1220,55 @@ func on_current_contain_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.START:
 			selected_contain_item = {} 
+			selected_researcher_item = {} 
 			
 			SUBSCRIBE.suppress_click = true
 			await show_only([ ContainmentContainer])
 			var response:Dictionary = await ContainmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
+			if "data" in response:
+				selected_contain_item = response.data
+			
 			match response.action:
+				# --------------------
 				ACTION.CONTAINED.BACK:
 					current_contain_step = CONTAIN_STEPS.HIDE
+				# --------------------
 				ACTION.CONTAINED.START_CONTAINMENT:
-					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = true
 					current_contain_step = CONTAIN_STEPS.PLACEMENT
+				# --------------------
 				ACTION.CONTAINED.STOP_CONTAINMENT:
-					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = true
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				# --------------------
 				ACTION.CONTAINED.REJECT_AND_REMOVE:
-					selected_contain_item = response.data
 					current_contain_step = CONTAIN_STEPS.ON_REJECT
+				# --------------------
 				ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION:
-					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = false
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION
+				# --------------------
 				ACTION.CONTAINED.CANCEL_TRANSFER:
-					selected_contain_item = response.data
 					selected_contain_item.is_new_transfer = false
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+				# --------------------
 				ACTION.CONTAINED.ASSIGN_RESEARCHER:
+					ResearchersContainer.assign_only = true
 					await show_only([ResearchersContainer])
 					var res:Dictionary = await ResearchersContainer.user_response
 					match res.action:
 						ACTION.RESEARCHERS.BACK:
 							current_contain_step = CONTAIN_STEPS.START
-						ACTION.RESEARCHERS.SELECT:
+						ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
+							selected_researcher_item = res.data
 							# store selected researcher id 
 							current_contain_step = CONTAIN_STEPS.CONFIRM_RESEARCHER
-
+				# --------------------
 				ACTION.CONTAINED.UNASSIGN_RESEARCHER:
-					print("unassign researcher...")	
-					current_contain_step = CONTAIN_STEPS.HIDE
+					current_contain_step = CONTAIN_STEPS.CONFIRM_REMOVE_RESEARCHER
+				# --------------------
 				ACTION.CONTAINED.START_TESTING:
 					await check_events(response.data.ref, SCP.EVENT_TYPE.START_TESTING, true)
 					print("AFTER TESTING ENDS...")
@@ -1250,15 +1278,26 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.HIDE
 		# ---------------
 		CONTAIN_STEPS.CONFIRM_RESEARCHER:
-			ConfirmModal.set_text("Make [RESEARCH NAME] lead researcher for [SCP NAME]?")
+			ConfirmModal.set_text("Make %s lead researcher for SCP-%s?" % [selected_researcher_item.details.name, selected_contain_item.item_id])
 			await show_only([ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
 				ACTION.BACK:
 					current_contain_step = CONTAIN_STEPS.START
 				ACTION.NEXT:
-					print("ATTACH RESEARCHER TO SCP DATA")
-					current_contain_step = CONTAIN_STEPS.START			
+					assign_researcher_to_scp(selected_researcher_item, selected_contain_item)
+					current_contain_step = CONTAIN_STEPS.START
+		# ---------------
+		CONTAIN_STEPS.CONFIRM_REMOVE_RESEARCHER:
+			ConfirmModal.set_text("Remove researcher from SCP-%s?" % [selected_contain_item.item_id])
+			await show_only([ConfirmModal])
+			var response:Dictionary = await ConfirmModal.user_response
+			match response.action:
+				ACTION.BACK:
+					current_contain_step = CONTAIN_STEPS.START
+				ACTION.NEXT:
+					unassign_researcher_to_scp(selected_contain_item)
+					current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
 			await show_only([Structure3dContainer, RoomStatusContainer])			
@@ -1580,7 +1619,7 @@ func on_current_event_step_update() -> void:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
-#region BUILD COMPLETE
+#region RESEARCHER STEPS
 func on_current_researcher_step_update() -> void:
 	if !is_node_ready() and !Engine.is_editor_hint():return
 	
@@ -1590,12 +1629,14 @@ func on_current_researcher_step_update() -> void:
 			await restore_default_state()
 		RESEARCHERS_STEPS.START:
 			SUBSCRIBE.suppress_click = true
+			ResearchersContainer.assign_only = false
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.RESEARCHERS.BACK:
 					current_researcher_step = RESEARCHERS_STEPS.RESET
+
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -1701,7 +1742,6 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
 	SUBSCRIBE.camera_settings = initial_values.camera_settings if no_save else restore_data.camera_settings	
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms if no_save else restore_data.unavailable_rooms
-
 
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr

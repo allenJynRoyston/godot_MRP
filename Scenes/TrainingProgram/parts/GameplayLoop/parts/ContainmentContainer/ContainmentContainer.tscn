@@ -29,13 +29,13 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c10u1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sg3bl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mnus5"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ry1yg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xi1x7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jro5k"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sn7f7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_r0lcp"]
@@ -46,6 +46,8 @@ offset_bottom = 40.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource("1_ywnyu")
+is_showing = false
+freeze_inputs = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_rx75c")
@@ -94,17 +96,17 @@ size_flags_horizontal = 3
 
 [node name="AvailableTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_sg3bl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mnus5")
 title = "AVAILABLE"
 
 [node name="ContainedTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ry1yg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xi1x7")
 title = "IN CONTAINMENT"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jro5k")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sn7f7")
 title = "BACK"
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]

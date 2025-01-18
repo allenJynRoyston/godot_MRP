@@ -16,7 +16,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k42pi"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbv6y"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="ProfileCard" type="PanelContainer"]
@@ -187,7 +187,7 @@ size_flags_horizontal = 3
 [node name="HireBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HireSection" instance=ExtResource("6_jgoh7")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_k42pi")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mbv6y")
 icon = 30
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "25 "

@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://d2y2fbamnea4o"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/List/ResearcherBtn/researcher_btn.gd" id="1_b0eso"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_wer02"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mfen"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+
+[node name="ResearcherBtn" type="PanelContainer"]
+custom_minimum_size = Vector2(150, 0)
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_b0eso")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="NameLabel" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wer02")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5mfen")
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+is_hoverable = false

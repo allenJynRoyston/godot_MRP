@@ -65,7 +65,6 @@ func on_hide_hire_section_update() -> void:
 	HireSection.hide() if hide_hire_section else HireSection.show()
 # ------------------------------------
 
-
 # ------------------------------------
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return

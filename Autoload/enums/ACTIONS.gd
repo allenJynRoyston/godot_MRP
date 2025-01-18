@@ -39,7 +39,8 @@ enum AQ {
 enum RESEARCHERS {
 	BACK,
 	# -------
-	SELECT
+	FIRE,
+	SELECT_FOR_ASSIGN
 }
 
 enum CONTAINED {

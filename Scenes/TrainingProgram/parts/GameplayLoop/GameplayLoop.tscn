@@ -52,7 +52,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/margin_top = 20
-is_showing = false
 freeze_inputs = true
 
 [node name="RoomStatusContainer" parent="." instance=ExtResource("6_emfl4")]
@@ -72,7 +71,6 @@ theme_override_constants/margin_top = 5
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 10
-is_showing = false
 freeze_inputs = true
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
@@ -87,28 +85,24 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/margin_top = 75
-is_showing = false
 freeze_inputs = true
 
 [node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = false
-freeze_inputs = true
+is_showing = true
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = false
 freeze_inputs = true
 
 [node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = false
 freeze_inputs = true
 
 [node name="StatusContainer" parent="." instance=ExtResource("13_goe6f")]
@@ -121,21 +115,18 @@ theme_override_constants/margin_right = 10
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = false
 freeze_inputs = true
 
 [node name="InfoContainer" parent="." instance=ExtResource("15_g2w1o")]
 layout_mode = 2
 theme_override_constants/margin_left = 275
 theme_override_constants/margin_top = 10
-is_showing = false
 freeze_inputs = true
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = false
 freeze_inputs = true
 
 [node name="WaitContainer" type="PanelContainer" parent="."]

@@ -1,12 +1,13 @@
 [gd_scene load_steps=3 format=3 uid="uid://b77anuijj4ncb"]
 
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_0vkoc"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/List/researcher_list.gd" id="1_gywvb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wcskp"]
 
 [node name="List" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("1_gywvb")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -27,8 +28,3 @@ theme_override_constants/separation = 10
 [node name="SCPItemList" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
-
-[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/SCPItemList"]
-layout_mode = 2
-text = "Researcher name"
-label_settings = ExtResource("1_0vkoc")

@@ -23,15 +23,18 @@ var available_actions:Array = [] :
 var purchased_facility_arr:Array = []
 var scp_data:Dictionary = {} 
 var onAction:Callable = func(action:ACTION.CONTAINED) -> void:pass
+var hired_lead_researchers_arr:Array = []
 
 # ------------------------------------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
+	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
+	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
@@ -51,6 +54,12 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val 
 	on_data_update()
 # ------------------------------------------------------------
+
+# ------------------------------------------------------------
+func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
+	hired_lead_researchers_arr = new_val
+# ------------------------------------------------------------
+
 
 # ------------------------------------------------------------
 func on_data_update() -> void:
@@ -194,7 +203,11 @@ func on_data_update() -> void:
 										{
 											"icon": SVGS.TYPE.STAFF, 
 											"text": func() -> String:
-												return "NONE ASSIGNED",
+												if active_scp_data.lead_researcher.is_empty():
+													return "NONE ASSIGNED"
+												else:
+													var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid, hired_lead_researchers_arr)
+													return "DR %s" % [researcher_details.name],
 										}	
 									]
 								}

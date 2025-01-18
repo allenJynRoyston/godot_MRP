@@ -93,6 +93,16 @@ func generate_new_researcher_hires() -> Array:
 	]
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func return_data_with_uid(uid:String, hired_lead_researchers_arr:Array) -> Dictionary:
+	for index in hired_lead_researchers_arr.size():
+		var item:Array = hired_lead_researchers_arr[index]
+		if uid == item[0]:
+			return get_user_object(item)
+			break
+	
+	return {}
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func generate_researcher() -> Array:
