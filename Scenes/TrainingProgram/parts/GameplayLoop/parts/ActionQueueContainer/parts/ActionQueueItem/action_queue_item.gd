@@ -1,4 +1,3 @@
-@tool
 extends PanelContainer
 
 @onready var TitleBtn:BtnBase = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/TitleBtn
@@ -53,9 +52,7 @@ func _ready() -> void:
 
 # --------------------------------------------------
 func animate_and_complete() -> void:	
-	await U.set_timeout(0.5)
-	print(item_data.name + ' animate and remove from action queue list...')
-	queue_free()
+	await U.set_timeout(0.2)
 # --------------------------------------------------	
 
 # --------------------------------------------------
@@ -65,42 +62,57 @@ func on_suppress_click_update(new_val:bool) -> void:
 
 # --------------------------------------------------
 func on_data_update() -> void:
-	if is_node_ready() and !data.is_empty():
-		match data.action:
-			ACTION.AQ.CONTAIN:
-				item_data = SCP_UTIL.return_data(data.data.ref)
-				TitleBtn.icon = SVGS.TYPE.CONTAIN
-				requirements = []
-				TitleBtn.title = "CONTAINMENT IN PROGRESS"
-				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
-			ACTION.AQ.TRANSFER:
-				item_data = SCP_UTIL.return_data(data.data.ref)
-				TitleBtn.icon = SVGS.TYPE.CONTAIN
-				requirements = []
-				TitleBtn.title = "TRANSFER IN PROGRESS"
-				NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
-			ACTION.AQ.RESEARCH_ITEM:
-				item_data = RD_UTIL.return_data(data.data.ref)
-				TitleBtn.icon = SVGS.TYPE.RESEARCH
-				requirements = RD_UTIL.return_purchase_cost(data.data.ref) 
-				TitleBtn.title = "RESEARCHING"
-				NameLabel.text = "%s" % [item_data.name]
-			ACTION.AQ.BUILD_ITEM:
-				item_data = ROOM_UTIL.return_data(data.data.ref)
-				TitleBtn.icon = SVGS.TYPE.BUILD
-				requirements = ROOM_UTIL.return_purchase_cost(data.data.ref) 
-				TitleBtn.title = "UNDER CONSTRUCTION"
-				NameLabel.text = "%s" % [item_data.name]
-			ACTION.AQ.BASE_ITEM:
-				item_data = BASE_UTIL.return_data(data.data.ref)
-				TitleBtn.icon = SVGS.TYPE.CONTAIN
-				requirements = BASE_UTIL.return_purchase_cost(data.data.ref) 
-				TitleBtn.title = "CONSTRUCTING"
-				NameLabel.text = "%s" % [item_data.name]
-				
-		
-		DaysLeftLabel.text = "%s DAYS LEFT" % [data.build_time - data.days_in_queue]
-		ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
+	if !is_node_ready() or data.is_empty():return
+	var title_btn:Dictionary = data.title_btn
+	var count:Dictionary = data.count
+	
+	TitleBtn.icon = title_btn.icon
+	TitleBtn.title = title_btn.title
+	
+	NameLabel.text = data.description
+	
+	DaysLeftLabel.text = "%s DAYS LEFT" % [count.completed_at - count.day]
+	ProgressBarUI.value = (count.day*1.0 / count.completed_at*1.0)	
+	
+		#match data.action:
+			#ACTION.AQ.CONTAIN:
+				#item_data = SCP_UTIL.return_data(data.data.ref)
+				#TitleBtn.icon = SVGS.TYPE.CONTAIN
+				#requirements = []
+				#TitleBtn.title = "CONTAINMENT IN PROGRESS"
+				#NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
+			#ACTION.AQ.TRANSFER:
+				#item_data = SCP_UTIL.return_data(data.data.ref)
+				#TitleBtn.icon = SVGS.TYPE.CONTAIN
+				#requirements = []
+				#TitleBtn.title = "TRANSFER IN PROGRESS"
+				#NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
+			#ACTION.AQ.RESEARCH_ITEM:
+				#item_data = RD_UTIL.return_data(data.data.ref)
+				#TitleBtn.icon = SVGS.TYPE.RESEARCH
+				#requirements = RD_UTIL.return_purchase_cost(data.data.ref) 
+				#TitleBtn.title = "RESEARCHING"
+				#NameLabel.text = "%s" % [item_data.name]
+			#ACTION.AQ.BUILD_ITEM:
+				#item_data = ROOM_UTIL.return_data(data.data.ref)
+				#TitleBtn.icon = SVGS.TYPE.BUILD
+				#requirements = ROOM_UTIL.return_purchase_cost(data.data.ref) 
+				#TitleBtn.title = "UNDER CONSTRUCTION"
+				#NameLabel.text = "%s" % [item_data.name]
+			#ACTION.AQ.BASE_ITEM:
+				#item_data = BASE_UTIL.return_data(data.data.ref)
+				#TitleBtn.icon = SVGS.TYPE.CONTAIN
+				#requirements = BASE_UTIL.return_purchase_cost(data.data.ref) 
+				#TitleBtn.title = "CONSTRUCTING"
+				#NameLabel.text = "%s" % [item_data.name]
+			#ACTION.AQ.RESEARCHING:
+				#TitleBtn.icon = SVGS.TYPE.CONTAIN
+				##requirements = BASE_UTIL.return_purchase_cost(data.data.ref) 
+				#TitleBtn.title = "RESEARCHING"
+				#NameLabel.text = "%s" % ["SCP-NAME-GOES-HERE"]
+		#
+		#DaysLeftLabel.text = "%s DAYS LEFT" % [data.build_time - data.days_in_queue]
+		#ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
 
 func on_requirements_update() -> void:
 	if is_node_ready():

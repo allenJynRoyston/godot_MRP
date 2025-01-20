@@ -42,7 +42,7 @@ font = ExtResource("6_5xty8")
 font_size = 14
 font_color = Color(0.290354, 0.290354, 0.290353, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixyes"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4gpot"]
 bg_color = Color(0, 0, 0, 0.788235)
 
 [node name="EventContainer" type="MarginContainer"]
@@ -196,7 +196,7 @@ theme_override_constants/separation = 0
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_ixyes")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4gpot")
 icon = 36
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0.788235)

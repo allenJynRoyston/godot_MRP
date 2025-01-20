@@ -35,6 +35,7 @@ GBL="*res://Autoload/Global.gd"
 SUBSCRIBE="*res://Autoload/Subscriptions.gd"
 FS="*res://Autoload/FileSys.gd"
 U="*res://Autoload/Utility.gd"
+EVENT_UTIL="*res://Autoload/EventsUtility.gd"
 C="*res://Autoload/Containment.gd"
 COLOR_UTIL="*res://Autoload/ColorUtility.gd"
 SHARED_UTIL="*res://Autoload/SharedUtility.gd"
@@ -44,6 +45,7 @@ RD_UTIL="*res://Autoload/RDUtility.gd"
 RESOURCE_UTIL="*res://Autoload/ResourceUtility.gd"
 RESEARCHER_UTIL="*res://Autoload/ResearcherUtility.gd"
 SCP_UTIL="*res://Autoload/SCPUtility.gd"
+EVT="*res://Autoload/enums/EVENTS.gd"
 
 [display]
 

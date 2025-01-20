@@ -65,24 +65,23 @@ func update_display() -> void:
 		
 	match data.action:
 		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.CONTAIN:
-			var details:Dictionary = SCP_UTIL.return_data(data.data.ref)
-			TitleLabel.text = "SCP %s successfully contained." % [details.item_id]
+		ACTION.AQ.BUILD_ITEM:
+			var details:Dictionary = ROOM_UTIL.return_data(data.ref)
+			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.ref)
+
+			TitleLabel.text = "%s Built!" % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.TRANSFER:
-			var details:Dictionary = SCP_UTIL.return_data(data.data.ref)
-			TitleLabel.text = "SCP %s successfully transfered." % [details.item_id]
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		# ------------------------------------------------------------------------------------------		
-		ACTION.AQ.RESEARCH_ITEM:
-			var details:Dictionary = RD_UTIL.return_data(data.data.ref)
-			TitleLabel.text = "Research complete: %s" % [details.name]
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+
+			for item in build_complete_list:
+				var label_node:Control = TextBtnPreload.instantiate()
+				label_node.is_hoverable = false
+				label_node.icon = item.resource.icon
+				label_node.title =  "+%s [%s]" % [item.amount, item.type]
+				DescriptionList.add_child(label_node)
 		# ------------------------------------------------------------------------------------------
 		ACTION.AQ.BASE_ITEM:
-			var details:Dictionary = BASE_UTIL.return_data(data.data.ref)
-			var build_complete_list:Array = BASE_UTIL.return_build_complete(data.data.ref)
+			var details:Dictionary = BASE_UTIL.return_data(data.ref)
+			var build_complete_list:Array = BASE_UTIL.return_build_complete(data.ref)
 
 			TitleLabel.text = "%s Built!" % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
@@ -93,23 +92,33 @@ func update_display() -> void:
 				label_node.icon = item.resource.icon
 				label_node.title =  "+%s [%s]" % [item.amount, item.type]
 				DescriptionList.add_child(label_node)
+		# ------------------------------------------------------------------------------------------		
+		ACTION.AQ.RESEARCH_ITEM:
+			var details:Dictionary = RD_UTIL.return_data(data.ref)
+			TitleLabel.text = "Research complete: %s" % [details.name]
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)		
 		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.BUILD_ITEM:
-			var details:Dictionary = ROOM_UTIL.return_data(data.data.ref)
-			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.data.ref)
-
-			TitleLabel.text = "%s Built!" % [details.name]
+		ACTION.AQ.CONTAIN:
+			var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			TitleLabel.text = "SCP %s successfully contained." % [details.item_id]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-
-			for item in build_complete_list:
-				var label_node:Control = TextBtnPreload.instantiate()
-				label_node.is_hoverable = false
-				label_node.icon = item.resource.icon
-				label_node.title =  "+%s [%s]" % [item.amount, item.type]
-				DescriptionList.add_child(label_node)
-				
 		# ------------------------------------------------------------------------------------------
-				
+		ACTION.AQ.TRANSFER:
+			var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			TitleLabel.text = "SCP %s successfully transfered." % [details.item_id]
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		# ------------------------------------------------------------------------------------------
+		ACTION.AQ.ACCESSING:
+			var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			TitleLabel.text = "Accessing complete."
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		# ------------------------------------------------------------------------------------------
+		ACTION.AQ.TESTING:
+			var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			TitleLabel.text = "Testing complete."
+			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		# ------------------------------------------------------------------------------------------	
+					
 	if "location" in data:
 		get_parent().goto_location(data.location)
 # --------------------------------------------------------------------------------------------------	

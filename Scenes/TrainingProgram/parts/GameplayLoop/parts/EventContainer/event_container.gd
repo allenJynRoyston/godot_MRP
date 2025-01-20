@@ -50,7 +50,8 @@ var current_text:String = "" :
 		on_current_text_update()
 
 var current_controls:CONTROLS = CONTROLS.FREEZE 
-		
+var event_output:Dictionary = {}
+
 var text_reveal_tween:Tween
 
 signal text_phase_complete
@@ -86,6 +87,7 @@ func reset() -> void:
 	event_instruction_index = 0
 	instruction_index = 0
 	text_index = 0
+	event_output = {}
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -112,10 +114,10 @@ func start() -> void:
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
 	current_controls = CONTROLS.FREEZE
+	user_response.emit(event_output)
 	update_next_btn(true)
 	reset()
 	reset_content_nodes()	
-	user_response.emit()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -193,6 +195,11 @@ func on_current_instruction_update() -> void:
 	# -----------------------------------
 	
 	# -----------------------------------
+	if "set_return_val" in current_instruction:
+		event_output = current_instruction.set_return_val.call()
+	# -----------------------------------
+
+	# -----------------------------------
 	if "text" in current_instruction:
 		if current_instruction.text.size() > 0:
 			BodyContainer.show()
@@ -217,17 +224,21 @@ func on_current_instruction_update() -> void:
 		for index in options.size():
 			var option:Dictionary = options[index]
 			var new_node:BtnBase = TextBtnPreload.instantiate()
-			new_node.title = "%s: %s" % [index, option.title]
-			new_node.icon = SVGS.TYPE.DOT if option_selected_index == index else SVGS.TYPE.NONE
-			new_node.index = index 
-			new_node.static_color = Color(1, 1, 1, 0)
-			new_node.is_hoverable = false
-			new_node.onFocus = func(node:Control) -> void:
-				if node == new_node:
-					option_selected_index = index
-			new_node.onClick = func() -> void:
-				on_option_select()
-			OptionsListContainer.add_child(new_node)
+			var include:bool = option.include if "include" in option else true
+			var completed:bool = option.completed if "completed" in option else false
+			
+			if include:
+				new_node.title = "%s: %s %s" % [index, option.title, "[COMPLETED]" if completed else ""]
+				new_node.icon = SVGS.TYPE.DOT if option_selected_index == index else SVGS.TYPE.NONE
+				new_node.index = index 
+				new_node.static_color = Color(1, 1, 1, 0) if !completed else Color(1, 1, 1, 0.5)
+				new_node.is_hoverable = false
+				new_node.onFocus = func(node:Control) -> void:
+					if node == new_node:
+						option_selected_index = index
+				new_node.onClick = func() -> void:
+					on_option_select()
+				OptionsListContainer.add_child(new_node)
 			
 		# enable hover state
 		for child in OptionsListContainer.get_children():
@@ -246,6 +257,11 @@ func on_current_instruction_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_option_select() -> void:
 	current_controls = CONTROLS.FREEZE
+	var option:Dictionary = current_instruction.options[option_selected_index]
+	var is_completed:bool = option.completed if "completed" in option else false
+	if is_completed:
+		return
+	
 	update_next_btn(false)
 	for index in OptionsListContainer.get_child_count():
 		var node:Control = OptionsListContainer.get_child(index)
@@ -253,7 +269,8 @@ func on_option_select() -> void:
 		if index != option_selected_index:
 			tween_option_color(node, Color.RED, 0.5)
 	
-	if "onSelected" in current_instruction.options[option_selected_index]:
+	
+	if "onSelected" in option:			
 		# if selected val property is available, send it
 		if "val" in current_instruction.options[option_selected_index]:
 			var val = current_instruction.options[option_selected_index].val

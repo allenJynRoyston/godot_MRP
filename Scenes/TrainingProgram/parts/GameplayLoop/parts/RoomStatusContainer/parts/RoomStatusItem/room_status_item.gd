@@ -142,7 +142,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		StatusLabel.text = ""
 		ProgressLabel.text = "UNDER CONSTRUCTION"
 		
-		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.AQ.BUILD_ITEM and i.data.ref == room_data.ref)
+		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.AQ.BUILD_ITEM and i.ref == room_data.ref)
 	# --------------------------
 	
 	# --------------------------
@@ -159,19 +159,19 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		ObjectDesignationLabel.text = "SCP-%s" % [scp_data.item_id]
 		ObjectClassLabel.text = "KETER"
 		ObjectNameLabel.text = "%s" % [scp_data.name]
-		action_queue_filter = action_queue_data.filter(func(i): return (i.action == ACTION.AQ.CONTAIN or i.action == ACTION.AQ.TRANSFER) and i.data.ref == scp_data.ref)
+		action_queue_filter = action_queue_data.filter(func(i): return (i.action == ACTION.AQ.CONTAIN or i.action == ACTION.AQ.TRANSFER) and i.ref == scp_data.ref)
 	# --------------------------
 	
-	# -------------------------- 
-	if action_queue_filter.size() > 0:
-		if "note" in action_queue_filter[0]:
-			ProgressLabel.text = action_queue_filter[0].note		
-		var action_queue_item:Dictionary = action_queue_filter[0]
-		progress_bar_value = (action_queue_item.days_in_queue*1.0 / action_queue_item.build_time*1.0)
-		ProgressAmountLabel.text = str(int(progress_bar_value * 100)) + "%"
-	else:
-		progress_bar_value = -1
-	# --------------------------
+	## -------------------------- 
+	#if action_queue_filter.size() > 0:
+		#if "note" in action_queue_filter[0]:
+			#ProgressLabel.text = action_queue_filter[0].note		
+		#var action_queue_item:Dictionary = action_queue_filter[0]
+		#progress_bar_value = (action_queue_item.days_in_queue*1.0 / action_queue_item.build_time*1.0)
+		#ProgressAmountLabel.text = str(int(progress_bar_value * 100)) + "%"
+	#else:
+		#progress_bar_value = -1
+	## --------------------------
 	
 	StatusLabel.hide() if StatusLabel.text == "" else StatusLabel.show()
 # --------------------------------------	

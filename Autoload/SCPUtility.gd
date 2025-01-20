@@ -1,6 +1,7 @@
 extends Node
 
 enum UNLOCKABLE {ONE, TWO, THREE, FOUR, FIVE}
+enum RESEARCH {ONE, TWO, THREE, FOUR, FIVE}
 
 var SCP_001:Dictionary = {
 	"item_id": "001",
@@ -27,6 +28,22 @@ var SCP_001:Dictionary = {
 			"SCP-%s is a basic wooden door that remains locked until a human being gets within 3 feet of the door. Door then opens up to an unknown location.  If a person goes through the door, it then shuts." % [self_ref.item_id],
 			"That person is never seen again."
 		],
+	# -----------------------------------
+	
+	# -----------------------------------
+	"testing_options": {
+		RESEARCH.ONE: {
+			"title": "Research one",
+			"description": "Research one description",
+			"prerequisites": func() -> bool:
+				return true,
+			"requirements": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.DCLASS: 10,
+					RESOURCE.TYPE.MONEY: 20	
+				},
+		}
+	},
 	# -----------------------------------
 	
 	# -----------------------------------
@@ -92,20 +109,80 @@ var SCP_001:Dictionary = {
 					return 100,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
+					var list_details:Dictionary = _dict.list_details
+					var research_completed:Array = list_details.data.research_completed
+					var option_selected:Dictionary = {"val": null}
+					var onSelected = func(val) -> void:
+						option_selected.val = val
+
 					return [
 						func() -> Dictionary:
 							return {
 								"header": "SCP-%s: START TESTING EVENT" % [details.item_id],
 								"img_src": details.img_src,
 								"text": [
-									"After containment text"
-								]
+									"Select research..."
+								],
+								"options": [
+									{
+										"completed": RESEARCH.ONE in research_completed,
+										"title": "Research 1",
+										"val": RESEARCH.ONE,
+										"onSelected": onSelected
+									},
+									{
+										"completed": RESEARCH.TWO in research_completed,
+										"title": "Research 2",
+										"val": RESEARCH.TWO,
+										"onSelected": onSelected
+									},
+									{
+										"completed": RESEARCH.THREE in research_completed,
+										"title": "Research 3",
+										"val": RESEARCH.THREE,
+										"onSelected": onSelected
+									},
+									{
+										"title": "Cancel research",
+										"val": -1,
+										"onSelected": onSelected
+									},
+								]								
 							},
+						func() -> Dictionary:
+							return {
+								"text": [
+									"You begin researching..."
+								],
+								"set_return_val": func() -> Dictionary:
+									return option_selected,
+							}		
 					],
 			}
 		],
 		# -------------------------
 
+		
+		# -------------------------
+		SCP.EVENT_TYPE.DURING_TESTING: [
+			{
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 10 if _trigger_count == 0 else 0,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: DURING TESTING EVENT" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"Lorem ipsum."
+								]
+							},
+					],
+			}
+		],
+		# -------------------------				
 		
 		# -------------------------
 		SCP.EVENT_TYPE.AFTER_CONTAINMENT: [
@@ -132,7 +209,7 @@ var SCP_001:Dictionary = {
 		SCP.EVENT_TYPE.DURING_TRANSFER: [
 			{
 				"trigger_threshold": func(_count:int) -> int:
-					return 100 if _count == 0 else 0,
+					return 10 if _count == 0 else 0,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					var option_selected:Dictionary = {
@@ -153,13 +230,13 @@ var SCP_001:Dictionary = {
 								],
 								"options": [
 									{
-										"show": true,
+										"include": true,
 										"title": "Cancel transfer.  We can't risk damaging it or the facility.",
 										"val": true,
 										"onSelected": onSelected
 									},
 									{
-										"show": true,
+										"include": true,
 										"title": "Continue transfer.  Its just a door.",
 										"val": false,
 										"onSelected": onSelected
@@ -209,7 +286,7 @@ var SCP_001:Dictionary = {
 		SCP.EVENT_TYPE.RANDOM_EVENTS: [
 			{
 				"trigger_threshold": func(_count:int) -> int:
-					return 100,
+					return 10,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					return [
@@ -225,7 +302,7 @@ var SCP_001:Dictionary = {
 			},
 			{
 				"trigger_threshold": func(_count:int) -> int:
-					return 100,
+					return 10,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					return [
@@ -241,7 +318,7 @@ var SCP_001:Dictionary = {
 			},
 			{
 				"trigger_threshold": func(_trigger_count:int) -> int:
-					return 100,
+					return 10,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					return [
@@ -418,25 +495,25 @@ var SCP_002:Dictionary = {
 								],
 								"options": [
 									{
-										"show": true,
+										"include": true,
 										"title": "Ignore it, but monitor for activity from outside the containment cell.",
 										"val": UNLOCKABLE.ONE,
 										"onSelected": onSelected
 									},
 									{
-										"show": true,
+										"include": true,
 										"title": "Send an MTF to cautiously open the door.",
 										"val": UNLOCKABLE.ONE,
 										"onSelected": onSelected
 									},
 									{
-										"show": true,
+										"include": true,
 										"title": "Have a staff member open the door.",
 										"val": UNLOCKABLE.ONE,
 										"onSelected": onSelected
 									},
 									{
-										"show": true,
+										"include": true,
 										"title": "Instruct a D-Class to open the door.",
 										"val": UNLOCKABLE.ONE,
 										"onSelected": onSelected

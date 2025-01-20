@@ -17,6 +17,19 @@ var researcher_details:Dictionary = {} :
 
 var onAction:Callable = func(_action:ACTION.RESEARCHERS):pass
 
+var scp_details:Dictionary = {} : 
+	set(val):
+		scp_details = val
+		on_scp_details_update()
+		
+		
+# -------------------------
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_scp_data(self)
+
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_scp_data(self)
+			
 # -------------------------
 func _ready() -> void:
 	on_assign_only_update()
@@ -29,6 +42,16 @@ func on_assign_only_update() -> void:
 	build_list()
 # -------------------------
 
+# -------------------------
+func on_scp_details_update() -> void:
+	if !is_node_ready():return
+	build_list()
+# -------------------------
+
+# -------------------------
+func on_scp_data_update(_new_val:Dictionary) -> void:
+	build_list()
+# -------------------------
 
 # -------------------------
 func on_researcher_details_update() -> void:
@@ -45,7 +68,8 @@ func on_researcher_details_update() -> void:
 # -------------------------
 func build_list() -> void:
 	var list:Array = []
-	
+	if researcher_details.is_empty():return
+
 	if assign_only:
 		list.push_back(
 			{
@@ -68,13 +92,56 @@ func build_list() -> void:
 			}		
 		)	
 	else:
-	
+		
+		if !scp_details.is_empty():
+			list.push_back(
+				{
+					"title":"Remove as Lead Researcher",
+					"title_icon": SVGS.TYPE.CAUTION,
+					"onClick": func() -> void:
+						onAction.call(ACTION.RESEARCHERS.UNASSIGN_FROM_SCP),
+					"bulletpoints": [
+						{
+							"header": "Attached to",
+							"list": [
+								{
+									"icon": SVGS.TYPE.CONTAIN, 
+									"text": func() -> String:
+										return "SCP-%s" % [scp_details.item_id],
+								}	
+							]
+						}
+					]
+				}		
+			)
+		else:
+			list.push_back(
+				{
+					"title":"Assign as Lead Researcher",
+					"title_icon": SVGS.TYPE.CAUTION,
+					"onClick": func() -> void:
+						onAction.call(ACTION.RESEARCHERS.ASSIGN_TO_SCP),
+					"bulletpoints": [
+						{
+							"header": "Attached to",
+							"list": [
+								{
+									"icon": SVGS.TYPE.CONTAIN, 
+									"text": func() -> String:
+										return "None",
+								}	
+							]
+						}
+					]
+				}		
+			)
+			
 		list.push_back(
 			{
-				"title":"Fire Researcher",
+				"title":"Dismiss Researcher",
 				"title_icon": SVGS.TYPE.CAUTION,
 				"onClick": func() -> void:
-					pass,
+					onAction.call(ACTION.RESEARCHERS.DISMISS),
 				#"bulletpoints": [
 					#{
 						#"header": "Prerequisites",
@@ -88,7 +155,7 @@ func build_list() -> void:
 					#}
 				#]
 			}		
-		)	
+		)			
 					
 	update_list(list)
 # -------------------------

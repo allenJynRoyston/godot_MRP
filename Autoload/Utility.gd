@@ -8,7 +8,7 @@ func generate_rand(min: int, max: int) -> int:
 	
 # ------------------------------------------------------------------------------
 func generate_uid() -> String:
-	return str(Time.get_unix_time_from_system()) + "_" + str(randf())
+	return str(Time.get_unix_time_from_system()).substr(0, 6) + str(randi())
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

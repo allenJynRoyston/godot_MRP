@@ -7,9 +7,19 @@ var researcher_details:Dictionary = {} :
 		researcher_details = val
 		on_researcher_details_update()
 
+var scp_data:Dictionary = {} : 
+	set(val):
+		scp_data = val
+		on_scp_data_update()
+
 # -------------------------------------------
 func _ready() -> void:
 	on_researcher_details_update()
+# -------------------------------------------
+
+# -------------------------------------------
+func on_scp_data_update() -> void:
+	pass
 # -------------------------------------------
 
 # -------------------------------------------

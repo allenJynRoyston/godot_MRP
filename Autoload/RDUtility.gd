@@ -92,6 +92,7 @@ func return_tier_data(key:TIER.VAL) -> Dictionary:
 
 # ------------------------------------------------------------------------------
 func return_data(key:int) -> Dictionary:
+	reference_data[key].ref = key
 	return reference_data[key]
 # ------------------------------------------------------------------------------
 
@@ -101,7 +102,7 @@ func return_purchase_cost(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_cost", resources_data, add)
 # ------------------------------------------------------------------------------
 

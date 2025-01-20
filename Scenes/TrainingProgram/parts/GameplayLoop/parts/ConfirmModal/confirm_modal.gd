@@ -15,6 +15,11 @@ var subtitle:String = "" :
 	set(val):
 		subtitle = val
 		on_subtitle_update()
+		
+var confirm_only:bool = false : 
+	set(val):
+		confirm_only = val
+		on_confirm_only_update()
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -42,7 +47,13 @@ func set_text(new_title:String = "", new_subtitle:String = "") -> void:
 	subtitle = new_subtitle
 # --------------------------------------------------------------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------		
+# --------------------------------------------------------------------------------------------------	
+func on_is_showing_update() -> void:
+	super.on_is_showing_update()
+	if !is_showing:
+		await U.set_timeout(0.5)
+		confirm_only = false
+		
 func on_title_update() -> void:
 	if !is_node_ready():return
 	TitleLabel.text = title
@@ -55,6 +66,16 @@ func on_subtitle_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func on_confirm_only_update() -> void:
+	if !is_node_ready():return
+	if confirm_only:
+		BackBtn.hide()
+	else:
+		BackBtn.show()
+# --------------------------------------------------------------------------------------------------		
+
+
+# --------------------------------------------------------------------------------------------------		
 func on_control_input_update(input_data:Dictionary) -> void:
 	if is_visible_in_tree():
 		var key:String = input_data.key
@@ -64,6 +85,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			"ENTER":
 				user_response.emit({"action": ACTION.NEXT})
 			"BACK":
-				user_response.emit({"action": ACTION.BACK})
+				if BackBtn.is_visible():
+					user_response.emit({"action": ACTION.BACK})
 # --------------------------------------------------------------------------------------------------		
 	

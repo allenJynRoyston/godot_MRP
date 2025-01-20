@@ -118,8 +118,8 @@ func return_tier_data(key:TIER.VAL) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_count(id:BASE.TYPE, arr:Array) -> int:
-	return arr.filter(func(i):return i.data.id == id).size()
+func get_count(ref:BASE.TYPE, arr:Array) -> int:
+	return arr.filter(func(i):return i.data.ref == ref).size()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ func return_build_complete(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 

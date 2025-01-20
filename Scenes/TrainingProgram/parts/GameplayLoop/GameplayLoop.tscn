@@ -77,7 +77,6 @@ freeze_inputs = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = false
 freeze_inputs = true
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
@@ -91,7 +90,6 @@ freeze_inputs = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-is_showing = true
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
 layout_mode = 2

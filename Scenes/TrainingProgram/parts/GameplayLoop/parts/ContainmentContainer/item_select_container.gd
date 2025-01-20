@@ -16,6 +16,11 @@ var list_type:LIST_TYPE = LIST_TYPE.AVAILABLE :
 		list_type = val
 		on_list_type_update()
 
+var assign_only:bool = false : 
+	set(val):
+		assign_only = val 
+		on_assign_only_update()
+
 var selected_scp_data:Dictionary = {}
 
 # --------------------------------------------------------------------------------------------------
@@ -54,7 +59,7 @@ func on_list_type_update() -> void:
 		LIST_TYPE.AVAILABLE:
 			AvailableTabBtn.icon = SVGS.TYPE.DOT
 			ContainTabBtn.icon = SVGS.TYPE.NONE
-		LIST_TYPE.CONTAINED:
+		list_type:
 			AvailableTabBtn.icon = SVGS.TYPE.NONE
 			ContainTabBtn.icon = SVGS.TYPE.DOT
 	
@@ -62,6 +67,22 @@ func on_list_type_update() -> void:
 	List.list_type = list_type
 	Details.list_type = list_type
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_assign_only_update() -> void:
+	if !is_node_ready():return
+	
+	if assign_only:
+		list_type = LIST_TYPE.CONTAINED
+		AvailableTabBtn.hide()
+		ContainTabBtn.hide()
+	else:
+		AvailableTabBtn.show()
+		ContainTabBtn.show()
+		
+	Actions.assign_only = assign_only
+# --------------------------------------------------------------------------------------------------		
+
 
 # --------------------------------------------------------------------------------------------------		
 func check_for_reset() -> void:

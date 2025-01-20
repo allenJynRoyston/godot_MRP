@@ -25,8 +25,12 @@ func _ready() -> void:
 # --------------------------------
 
 # --------------------------------
-func reset() -> void:
+func reset(clear_list:bool = false) -> void:
 	active_index = -1
+	onSelect.call({"details": {}})
+	if clear_list:
+		for child in SCPItemList.get_children():
+			child.queue_free()
 # --------------------------------
 
 # --------------------------------
@@ -34,7 +38,7 @@ func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers
 	hired_lead_researchers_arr = new_val
 	if !is_node_ready():return
 	
-	reset()
+	reset(true)
 	
 	for index in hired_lead_researchers_arr.size():
 		var data:Array = hired_lead_researchers_arr[index]

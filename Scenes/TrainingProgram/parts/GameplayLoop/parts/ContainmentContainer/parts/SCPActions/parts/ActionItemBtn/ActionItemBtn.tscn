@@ -7,7 +7,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fifyy"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ne1ww"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6uxpc"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="ActionItemBtn" type="PanelContainer"]
@@ -37,12 +37,12 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ne1ww")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6uxpc")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "Action"
 
-[node name="DescriptionToggleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_l0w44")]
-visible = false
+[node name="BulletpointToggleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_l0w44")]
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 icon = 23
 active_color = Color(1, 1, 1, 1)

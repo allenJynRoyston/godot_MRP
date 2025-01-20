@@ -9,13 +9,12 @@ enum SHOP_STEPS {
 enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
 	ON_REJECT, ON_TRANSFER_CANCEL, 
 	ON_TRANSFER_TO_NEW_LOCATION, 
-	CONFIRM_RESEARCHER, CONFIRM_REMOVE_RESEARCHER,
 	CONFIRM, FINALIZE
 }
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
-enum BUILD_COMPLETE_STEPS {HIDE, START, FINALIZE}
+enum ACTION_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
-enum RESEARCHERS_STEPS {RESET, START, WAIT_FOR_SELECT}
+enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
 enum EVENT_STEPS {RESET, START}
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
@@ -280,17 +279,18 @@ var selected_shop_item:Dictionary = {}
 var selected_refund_item:Dictionary = {}
 var selected_contain_item:Dictionary = {} 
 var selected_researcher_item:Dictionary = {}
+var selected_scp_details:Dictionary = {} 
 var expired_scp_items:Array = [] 
 
 var showing_states:Dictionary = {} 
 var revert_state_location:Dictionary = {}
 var tenative_location:Dictionary = {}
 
-var completed_build_items:Array = [] : 
+var completed_actions:Array = [] : 
 	set(val):
-		completed_build_items = val
-		if !completed_build_items.is_empty():
-			current_build_complete_step = BUILD_COMPLETE_STEPS.START
+		completed_actions = val
+		if !completed_actions.is_empty():
+			current_action_complete_step = ACTION_COMPLETE_STEPS.START
 			
 var event_data:Array = [] : 
 	set(val):
@@ -313,10 +313,10 @@ var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.HIDE :
 		current_recruit_step = val
 		on_current_recruit_step_update()
 		
-var current_build_complete_step:BUILD_COMPLETE_STEPS = BUILD_COMPLETE_STEPS.HIDE : 
+var current_action_complete_step:ACTION_COMPLETE_STEPS = ACTION_COMPLETE_STEPS.HIDE : 
 	set(val):
-		current_build_complete_step = val
-		on_current_build_complete_step_update()
+		current_action_complete_step = val
+		on_current_action_complete_step_update()
 
 var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET : 
 	set(val):
@@ -400,13 +400,14 @@ func setup() -> void:
 	on_show_events_update()
 	on_show_build_complete_update()
 	on_show_reseachers_update()
-
+	on_show_store_update()
+	
 	# other
 	on_show_confirm_modal_update()
 	on_is_busy_update()
 	
 	# steps
-	#on_show_store_update()
+	#
 	#on_current_shop_step_update()
 	
 	# get default showing state
@@ -555,10 +556,6 @@ func wait_please(duration:float = 0.5) -> void:
 	await U.set_timeout(duration)
 	is_busy = false	
 
-func cancel_action(item_data:Dictionary) -> void:
-	selected_refund_item = item_data
-	current_shop_step = SHOP_STEPS.REFUND
-
 func update_tenative_location(location:Dictionary) -> void:
 	tenative_location = location	
 			
@@ -586,12 +583,9 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 			"perform_action": func(action:int) -> void:
 				match action:
 					ACTION.CONTAINED.CANCEL_TRANSFER:
-						var filtered_arr:Array = action_queue_data.filter(func(i): return i.data.ref == scp_ref and i.action == ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION)
-						if !filtered_arr.is_empty():
-							var action_queue_item:Dictionary = filtered_arr[0]
-							cancel_scp_transfer(action_queue_item)
-						else:
-							print("perform_action CANCEL_TRANSFER_SCP_TO_NEW_LOCATION: action queue item does not exists for this action.")
+						var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_ref and i.action == ACTION.AQ.TRANSFER)
+						cancel_scp_transfer(scp_ref)
+						remove_from_action_queue(filtered_arr[0])
 				pass,
 			# -------------------------	
 			# get counts for type (randomize, after_contained, etc)
@@ -667,9 +661,9 @@ func set_room_config() -> void:
 				var ring:int = item.location.ring
 				var room:int = item.location.room		
 				new_room_config.floor[floor].ring[ring].room[room].build_data = {
-					"ref": item.data.ref,
+					"ref": item.ref,
 					"get_data": func() -> Dictionary:
-						return ROOM_UTIL.return_data(item.data.ref)
+						return ROOM_UTIL.return_data(item.ref)
 				}
 
 	# mark rooms that are already built...
@@ -706,87 +700,7 @@ func set_room_config() -> void:
 # -----------------------------------
 
 # -----------------------------------
-func cancel_scp_transfer(selected_data:Dictionary) -> void:
-	# resets it in the available list
-	scp_data.contained_list = scp_data.contained_list.map(func(i) -> Dictionary:
-		if i.ref == selected_data.data.ref:
-			i.transfer_status = {
-				"state": false, 
-				"days_till_complete": -1,
-				"location": {}
-			}
-		return i
-	)
-	SUBSCRIBE.scp_data = scp_data
-	
-	# remove from action queue list
-	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): 
-		return !(i.action == ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION and i.data.ref == selected_data.data.ref)
-	)
-	ActionQueueContainer.remove_from_queue([selected_data])
-# -----------------------------------
-
-# -----------------------------------
-func cancel_scp_containment(selected_data:Dictionary) -> void:
-	# resets it in the available list
-	scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
-		if i.ref == selected_data.data.ref:
-			i.transfer_status = {
-				"state": false, 
-				"days_till_complete": -1,
-				"location": {}
-			}
-		return i
-	)
-	SUBSCRIBE.scp_data = scp_data
-	
-	# remove from action queue list
-	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): 
-		return !(i.action == ACTION.CONTAINED.START_CONTAINMENT and i.data.ref == selected_data.data.ref)
-	)
-	ActionQueueContainer.remove_from_queue([selected_data])
-# -----------------------------------
-
-# -----------------------------------
-func find_in_contained(ref:int) -> Dictionary:
-	var index:int = -1
-	var res_data:Dictionary = {} 
-
-	for ind in scp_data.contained_list.size():
-		var data:Dictionary = scp_data.contained_list[ind]
-		if data.ref == ref:
-			index = ind
-			res_data = data
-			break	
-	
-	return {
-		"index": index,
-		"data": res_data
-	}
-# -----------------------------------
-
-# -----------------------------------
-func assign_researcher_to_scp(lead_researcher:Dictionary, scp_details:Dictionary) -> void:
-	var res:Dictionary = find_in_contained(scp_details.ref)
-	var index:int = res.index
-	var list_data:Dictionary = res.data
-	scp_data.contained_list[index].lead_researcher = {
-		"uid": lead_researcher.details.uid
-	}
-	SUBSCRIBE.scp_data = scp_data
-# -----------------------------------
-
-# -----------------------------------
-func unassign_researcher_to_scp(scp_details:Dictionary) -> void:
-	var res:Dictionary = find_in_contained(scp_details.ref)
-	var index:int = res.index
-	var list_data:Dictionary = res.data
-	scp_data.contained_list[index].lead_researcher = {}
-	SUBSCRIBE.scp_data = scp_data
-# -----------------------------------	
-
-# -----------------------------------
-func check_events(ref:int, type:SCP.EVENT_TYPE, skip_wait:bool = false) -> void:
+func check_events(ref:int, type:SCP.EVENT_TYPE, skip_wait:bool = false) -> Dictionary:
 	var res:Dictionary = find_in_contained(ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data
@@ -810,7 +724,8 @@ func check_events(ref:int, type:SCP.EVENT_TYPE, skip_wait:bool = false) -> void:
 			await wait_please()
 			
 		event_data = [event]
-		await on_events_complete
+		return await on_events_complete
+	return {}
 # -----------------------------------
 
 # -----------------------------------
@@ -827,12 +742,11 @@ func next_day() -> void:
 	
 	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
 	action_queue_data = action_queue_data.map(func(i): 
-		i.days_in_queue += 1
+		i.count.day += 1
 		return i
-	)	
-	var completed_build_items_arr:Array = action_queue_data.filter(func(i): return i.days_in_queue == i.build_time)	
-	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.days_in_queue < i.build_time)
-		
+	)
+	SUBSCRIBE.action_queue_data = action_queue_data	
+	
 	# ADDS DAY COUNT TO SCP DATA
 	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
 	scp_data.contained_list = scp_data.contained_list.map(func(i): i.days_in_containment = i.days_in_containment + 1; return i)
@@ -842,8 +756,8 @@ func next_day() -> void:
 	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
 	
 	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	if completed_build_items_arr.size() > 0:
-		completed_build_items = completed_build_items_arr
+	completed_actions = action_queue_data.filter(func(i): return i.count.day >=i.count.completed_at)	
+	if completed_actions.size() > 0:
 		await on_complete_build_complete
 	
 	
@@ -856,12 +770,421 @@ func next_day() -> void:
 	for index in scp_data.contained_list.size():
 		var data:Dictionary = scp_data.contained_list[index]
 		if data.days_in_containment > 0:
-			var event_type:int = SCP.EVENT_TYPE.RANDOM_EVENTS if !data.transfer_status.state else SCP.EVENT_TYPE.DURING_TRANSFER
-			await check_events(data.ref, event_type, true)
+			if data.current_activity.is_empty():
+				var event_type:int = SCP.EVENT_TYPE.RANDOM_EVENTS if !data.transfer_status.state else SCP.EVENT_TYPE.DURING_TRANSFER
+				await check_events(data.ref, event_type, true)
+			else:
+				var event_type:int = SCP.EVENT_TYPE.DURING_TESTING
+				await check_events(data.ref, event_type, true)
+				
 	processing_next_day = false
-	
-	
 # -----------------------------------
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+#region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
+func on_completed_action(action_item:Dictionary) -> void:
+	match action_item.action:
+		ACTION.AQ.ACCESSING:
+			var event_res:Dictionary = await check_events(action_item.ref, SCP.EVENT_TYPE.START_TESTING, true)
+			if !event_res.is_empty():
+				# testing was cancelled
+				update_scp_testing(action_item.ref, event_res.val)
+		# ----------------------------
+		ACTION.AQ.TESTING:
+			var res:Dictionary = find_in_contained(action_item.props.scp_ref)
+			var index:int = res.index
+			var list_data:Dictionary = res.data			
+
+			if action_item.ref not in scp_data.contained_list[index].research_completed:
+				scp_data.contained_list[index].research_completed.push_back(action_item.ref)
+			
+			stop_scp_testing(action_item.props.scp_ref)
+			
+			SUBSCRIBE.scp_data = scp_data
+		# ----------------------------
+		ACTION.AQ.CONTAIN:
+			# first, remove from available list...
+			scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != action_item.ref)
+			# then add to contained list...
+			var new_contained_item:Dictionary = create_new_contained_item(action_item.ref, action_item.location)
+			scp_data.contained_list.push_back(new_contained_item)
+
+			SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(action_item.ref, resources_data)
+			SUBSCRIBE.scp_data = scp_data
+
+			await check_events(action_item.ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
+		# ----------------------------
+		ACTION.AQ.TRANSFER:
+			scp_data.contained_list = scp_data.contained_list.map(func(i):
+				if i.ref == action_item.ref:
+					# move to new location
+					i.location = i.transfer_status.location
+					# remove transfer status
+					i.transfer_status = {
+						"state": false, 
+						"days_till_complete": -1,
+						"location": {}	
+					}
+				return i
+			)
+			
+			SUBSCRIBE.scp_data = scp_data
+			
+			await check_events(action_item.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
+		# ----------------------------
+		ACTION.AQ.BASE_ITEM:
+			purchased_base_arr.push_back({
+				"data": BASE_UTIL.return_data(action_item.ref),
+			})
+			SUBSCRIBE.resources_data = BASE_UTIL.calculate_build_complete(action_item.ref, resources_data)
+			SUBSCRIBE.purchased_base_arr = purchased_base_arr
+		# ----------------------------	
+		ACTION.AQ.BUILD_ITEM:
+			purchased_facility_arr.push_back({
+				"data": ROOM_UTIL.return_data(action_item.ref),
+				"location": action_item.location
+			})
+
+			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(action_item.ref, resources_data)
+			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+		# ----------------------------
+		ACTION.AQ.RESEARCH_ITEM:
+			purchased_research_arr.push_back({
+				"data": RD_UTIL.return_data(action_item.ref),
+			})
+			SUBSCRIBE.purchased_research_arr = purchased_research_arr
+			
+	remove_from_action_queue(action_item)
+# -----------------------------------
+
+# -----------------------------------
+func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) -> void:
+	match action_item.action:
+		ACTION.AQ.CONTAIN:
+			ConfirmModal.set_text("Cancel containment?", "There are no costs for this action.")
+		ACTION.AQ.TRANSFER:
+			ConfirmModal.set_text("Cancel transfer?", "There are no costs for this action.")					
+		ACTION.AQ.BUILD_ITEM:
+			ConfirmModal.set_text("Cancel construction?", "Resources will be refunded.")
+		ACTION.AQ.RESEARCH_ITEM:
+			ConfirmModal.set_text("Cancel research?", "Resources will be refunded.")						
+		ACTION.AQ.BASE_ITEM:
+			ConfirmModal.set_text("Cancel base upgrade?", "Resources will be refunded.")
+		ACTION.AQ.ACCESSING:
+			ConfirmModal.set_text("Cancel accessing SCP?", "Unspent resources will be refunded.")
+		ACTION.AQ.TESTING:
+			ConfirmModal.set_text("Cancel SCP testing?", "Unspent resources will be refunded.")			
+		_:
+			ConfirmModal.set_text("Missing instruction...", "Check for errors.")
+			
+	await show_only([ConfirmModal])	
+	var response:Dictionary = await ConfirmModal.user_response
+	match response.action:
+		ACTION.NEXT:
+			match action_item.action:
+				ACTION.AQ.BUILD_ITEM:
+					SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(action_item.ref, resources_data, true)
+				ACTION.AQ.RESEARCH_ITEM:
+					SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(action_item.ref, resources_data, true)
+				ACTION.AQ.BASE_ITEM:
+					SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(action_item.ref, resources_data, true)
+				ACTION.AQ.CONTAIN:
+					cancel_scp_containment(action_item.ref)
+				ACTION.AQ.TRANSFER:
+					cancel_scp_transfer(action_item.ref)
+				ACTION.AQ.ACCESSING:
+					stop_scp_testing(action_item.ref)
+				ACTION.AQ.TESTING:
+					stop_scp_testing(action_item.ref)
+					
+			await remove_from_action_queue(action_item)
+	
+	if include_restore:
+		await restore_default_state()
+	#selected_refund_item = item_data
+	#current_shop_step = SHOP_STEPS.REFUND
+# -----------------------------------
+
+# -----------------------------------
+func remove_from_action_queue(action_item:Dictionary) -> void:
+	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.uid != action_item.uid)
+	await ActionQueueContainer.remove_from_queue([action_item])
+# -----------------------------------
+
+# -----------------------------------
+func add_action_queue_item(dict:Dictionary, props:Dictionary = {}) -> void:
+	action_queue_data.push_back({
+		"uid": U.generate_uid(),
+		"action": dict.action,
+		"ref": dict.ref,
+		"title_btn": dict.title_btn,
+		"description": dict.description,
+		"count":{
+			"day": 0,
+			"completed_at": dict.completed_at,
+		},
+		"location": dict.location,
+		"props": props
+	})
+	
+	
+	SUBSCRIBE.action_queue_data = action_queue_data
+# -----------------------------------
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+#region SCP FUNCS (assign/unassign/dismiss, etc)
+# -----------------------------------
+func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
+	return { 
+		"ref": ref,
+		"unlocked": [],
+		"location": location,
+		"days_in_containment": 0,
+		"lead_researcher": {
+			#uid:[string[
+		},
+		"research_completed": [
+			#0, 1 [RESEARCH.ONE, RESEARCH.TWO, etc]
+		],
+		"event_type_count": {
+			#["type/event_id"]: count[int]
+		},
+		"current_activity": {
+			#"research_id": -1,
+			#"progress": -1 			
+		},
+		"transfer_status": {
+			"state": false, 
+			"days_till_complete": -1,
+			"location": {}
+		}	
+	}
+# -----------------------------------
+
+# -----------------------------------
+func find_in_contained(ref:int) -> Dictionary:
+	var index:int = -1
+	var res_data:Dictionary = {} 
+
+	for ind in scp_data.contained_list.size():
+		var data:Dictionary = scp_data.contained_list[ind]
+		if data.ref == ref:
+			index = ind
+			res_data = data
+			break	
+	
+	return {
+		"index": index,
+		"data": res_data
+	}
+# -----------------------------------	
+
+# -----------------------------------
+func find_in_available(ref:int) -> Dictionary:
+	var index:int = -1
+	var res_data:Dictionary = {} 
+
+	for ind in scp_data.available_list.size():
+		var data:Dictionary = scp_data.available_list[ind]
+		if data.ref == ref:
+			index = ind
+			res_data = data
+			break	
+	
+	return {
+		"index": index,
+		"data": res_data
+	}
+# -----------------------------------	
+
+# -----------------------------------
+func start_scp_testing(ref:int) -> void:
+	# resets it in the available list
+	var res:Dictionary = find_in_contained(ref)
+	var index:int = res.index
+	var list_data:Dictionary = res.data
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr)
+	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+	# add placeholder
+	scp_data.contained_list[index].current_activity = { 
+		"research_id": -1,
+		"progress": -1 
+	}	
+	
+	add_action_queue_item({
+		"action": ACTION.AQ.ACCESSING,
+		"ref": scp_details.ref,
+		"title_btn": {
+			"title": "ACCESSING",
+			"icon": SVGS.TYPE.CONTAIN,
+		},
+		"completed_at": 1,
+		"description": "Accessing research for SCP-%s." % [scp_details.item_id],
+		"location": list_data.location
+	})	
+	
+	ConfirmModal.confirm_only = true
+	ConfirmModal.set_text("Researcher %s begins accessing SCP-%s." % [researcher_details.name, scp_details.item_id])
+	await show_only([ConfirmModal])	
+	var response:Dictionary = await ConfirmModal.user_response
+	
+	SUBSCRIBE.action_queue_data = action_queue_data
+	SUBSCRIBE.scp_data = scp_data
+# -----------------------------------
+
+# -----------------------------------
+func update_scp_testing(ref:int, research_id:int) -> void:
+	var res:Dictionary = find_in_contained(ref)
+	var index:int = res.index
+	var list_data:Dictionary = res.data
+	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+
+	# canceled
+	if research_id == -1:
+		scp_data.contained_list[index].current_activity = {}
+	else:
+		# else add research id and being progressZ
+		scp_data.contained_list[index].current_activity = { 
+			"research_id": research_id,
+			"progress": 0 
+		}
+		
+		add_action_queue_item({
+			"action": ACTION.AQ.TESTING,
+			"ref": research_id,
+			"title_btn": {
+				"title": "TESTING",
+				"icon": SVGS.TYPE.RESEARCH,
+			},
+			"completed_at": 3,
+			"description": "Testing SCP-%s." % [scp_details.item_id],
+			"location": list_data.location,
+		}, {"scp_ref": ref})			
+		
+# -----------------------------------
+
+# -----------------------------------
+func stop_scp_testing(ref:int) -> void:
+	var res:Dictionary = find_in_contained(ref)
+	var index:int = res.index
+	
+	scp_data.contained_list[index].current_activity = {}	
+
+	SUBSCRIBE.scp_data = scp_data	
+# -----------------------------------
+
+# -----------------------------------
+func cancel_scp_transfer(ref:int) -> void:
+	var res:Dictionary = find_in_contained(ref)
+	var index:int = res.index
+	
+	scp_data.contained_list[index].transfer_status = { 
+		"state": false, 
+		"days_till_complete": -1,
+		"location": {}
+	}	
+
+	SUBSCRIBE.scp_data = scp_data
+# -----------------------------------
+
+# -----------------------------------
+func cancel_scp_containment(ref:int) -> void:
+	var res:Dictionary = find_in_available(ref)
+	var index:int = res.index
+		
+	# resets it in the available list
+	scp_data.available_list[index].transfer_status = { 
+		"state": false, 
+		"days_till_complete": -1,
+		"location": {}
+	}
+	
+	SUBSCRIBE.scp_data = scp_data
+# -----------------------------------
+
+# -----------------------------------	
+func destroy_scp(selected_data:Dictionary) -> void:
+	pass
+# -----------------------------------	
+
+# -----------------------------------	
+func on_expired_scp_items_update() -> void:
+	pass
+# -----------------------------------	
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+#region RESEARCHER FUNCS (assign/unassign/dismiss, etc)
+# -----------------------------------
+func dismiss_researcher(researcher_data:Dictionary) -> void:
+	# first, remove from any projects
+	scp_data.contained_list = scp_data.contained_list.map(func(i): 
+		if !i.lead_researcher.is_empty() and (i.lead_researcher.uid == researcher_data.details.uid):
+			i.lead_researcher = {}
+		return i
+	)
+	
+	hired_lead_researchers_arr = hired_lead_researchers_arr.filter(func(i):
+		return i[0] != researcher_data.details.uid	
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+	SUBSCRIBE.scp_data = scp_data
+# -----------------------------------
+
+# -----------------------------------
+func assign_researcher_to_scp_find_researcher(scp_details:Dictionary) -> void:
+	ResearchersContainer.assign_only = true
+	await show_only([ResearchersContainer])
+	var response:Dictionary = await ResearchersContainer.user_response
+	match response.action:
+		ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
+			var res:Dictionary = find_in_contained(scp_details.ref)
+			var index:int = res.index
+			var list_data:Dictionary = res.data
+			scp_data.contained_list[index].lead_researcher = {
+				"uid": response.data.details.uid
+			}
+			SUBSCRIBE.scp_data = scp_data
+# -----------------------------------
+
+# -----------------------------------
+func assign_researcher_to_scp_find_scp(reseacher_details:Dictionary) -> void:
+	ContainmentContainer.assign_only = true
+	await show_only([ContainmentContainer])
+	var response:Dictionary = await ContainmentContainer.user_response
+	match response.action:
+		ACTION.CONTAINED.SELECT_FOR_ASSIGN:
+			var res:Dictionary = find_in_contained(response.data.ref)
+			var index:int = res.index
+			var list_data:Dictionary = res.data
+			scp_data.contained_list[index].lead_researcher = {
+				"uid": reseacher_details.details.uid
+			}
+			SUBSCRIBE.scp_data = scp_data	
+# -----------------------------------
+
+
+# -----------------------------------
+func unassign_researcher_to_scp(scp_details:Dictionary) -> void:
+	var res:Dictionary = find_in_contained(scp_details.ref)
+	var index:int = res.index
+	var list_data:Dictionary = res.data
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr)
+
+	ConfirmModal.set_text("Remove %s as Lead Researcher on SCP-%s?" % [researcher_details.name, scp_details.item_id])
+	await show_only([ConfirmModal])
+	var response:Dictionary = await ConfirmModal.user_response
+	match response.action:
+		ACTION.NEXT:	
+			scp_data.contained_list[index].lead_researcher = {}
+			SUBSCRIBE.scp_data = scp_data
+# -----------------------------------	
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1111,44 +1434,54 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BUILD:
 			var purchase_item_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
-			action_queue_data.push_back({
+			add_action_queue_item({
 				"action": ACTION.AQ.BUILD_ITEM,
-				"data": selected_shop_item,
-				"days_in_queue": 0,
-				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
-				"location": current_location.duplicate(),
+				"ref": selected_shop_item.ref,
+				"title_btn": {
+					"title": "CONSTRUCTING...", 
+					"icon": SVGS.TYPE.BUILD,
+				},
+				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
+				"description": "%s" % [purchase_item_data.name],
+				"location": current_location.duplicate()
 			})
 			
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
 			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
-
-			action_queue_data.push_back({
+			add_action_queue_item({
 				"action": ACTION.AQ.RESEARCH_ITEM,
-				"data": selected_shop_item,
-				"days_in_queue": 0,
-				"build_time": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
+				"ref": selected_shop_item.ref,
+				"title_btn": {
+					"title": "RESEARCHING...", 
+					"icon": SVGS.TYPE.RESEARCH,
+				},
+				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
+				"description": "%s" % [purchase_item_data.name],
+				"location": current_location.duplicate()
 			})
+
 			
 			SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE			
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM:
-			var purchased_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
-
-			action_queue_data.push_back({
+			var purchase_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
+			add_action_queue_item({
 				"action": ACTION.AQ.BASE_ITEM,
-				"data": selected_shop_item,
-				"days_in_queue": 0,
-				"build_time": purchased_item_data.get_build_time.call() if "get_build_time" in purchased_item_data else 0,
+				"ref": selected_shop_item.ref,
+				"title_btn": {
+					"title": "UPGRADING...", 
+					"icon": SVGS.TYPE.RESEARCH,
+				},
+				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
+				"description": "%s" % [purchase_item_data.name],
+				"location": current_location.duplicate()
 			})
 			
 			SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			SUBSCRIBE.action_queue_data = action_queue_data
 			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
@@ -1165,46 +1498,6 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.resources_data = resources_data
 			SUBSCRIBE.tier_unlocked = tier_unlocked
 			current_shop_step = SHOP_STEPS.HIDE
-		# ---------------
-		SHOP_STEPS.REFUND:
-			match selected_refund_item.action:
-				ACTION.AQ.CONTAIN:
-					ConfirmModal.set_text("Cancel containment?", "There are no costs for this action.")
-				ACTION.AQ.TRANSFER:
-					ConfirmModal.set_text("Cancel transfer?", "There are no costs for this action.")					
-				ACTION.AQ.BUILD_ITEM:
-					ConfirmModal.set_text("Cancel build?", "Resources will be refunded.")
-				ACTION.AQ.RESEARCH_ITEM:
-					ConfirmModal.set_text("Cancel research?", "Resources will be refunded.")
-				ACTION.AQ.BASE_ITEM:
-					ConfirmModal.set_text("Cancel construction?", "Resources will be refunded.")
-			await show_only([ActionQueueContainer, ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response
-			match response.action:
-				ACTION.NEXT:
-					match selected_refund_item.action:
-						ACTION.AQ.CONTAIN:
-							cancel_scp_containment(selected_refund_item)
-						ACTION.AQ.TRANSFER:
-							cancel_scp_transfer(selected_refund_item)
-						ACTION.AQ.BUILD_ITEM:
-							SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_refund_item.data.ref, resources_data, false)
-							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
-							ActionQueueContainer.remove_from_queue([selected_refund_item])
-						ACTION.AQ.RESEARCH_ITEM:
-							SUBSCRIBE.resources_data = RD_UTIL.calculate_resources(selected_refund_item.data.ref, resources_data, false)
-							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
-							ActionQueueContainer.remove_from_queue([selected_refund_item])
-						ACTION.AQ.BASE_ITEM:
-							SUBSCRIBE.resources_data = BASE_UTIL.calculate_resources(selected_refund_item.data.ref, resources_data, false)
-							SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.data.uid != selected_refund_item.data.uid)
-							ActionQueueContainer.remove_from_queue([selected_refund_item])
-
-					selected_refund_item = {}
-					
-			current_shop_step = SHOP_STEPS.HIDE
-			await restore_default_state()
-					
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1221,15 +1514,15 @@ func on_current_contain_step_update() -> void:
 		CONTAIN_STEPS.START:
 			selected_contain_item = {} 
 			selected_researcher_item = {} 
-			
 			SUBSCRIBE.suppress_click = true
+			ContainmentContainer.assign_only = false
 			await show_only([ ContainmentContainer])
 			var response:Dictionary = await ContainmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
 			if "data" in response:
 				selected_contain_item = response.data
-			
+				
 			match response.action:
 				# --------------------
 				ACTION.CONTAINED.BACK:
@@ -1255,48 +1548,24 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
 				# --------------------
 				ACTION.CONTAINED.ASSIGN_RESEARCHER:
-					ResearchersContainer.assign_only = true
-					await show_only([ResearchersContainer])
-					var res:Dictionary = await ResearchersContainer.user_response
-					match res.action:
-						ACTION.RESEARCHERS.BACK:
-							current_contain_step = CONTAIN_STEPS.START
-						ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
-							selected_researcher_item = res.data
-							# store selected researcher id 
-							current_contain_step = CONTAIN_STEPS.CONFIRM_RESEARCHER
+					await assign_researcher_to_scp_find_researcher(selected_contain_item)
+					current_contain_step = CONTAIN_STEPS.START
 				# --------------------
 				ACTION.CONTAINED.UNASSIGN_RESEARCHER:
-					current_contain_step = CONTAIN_STEPS.CONFIRM_REMOVE_RESEARCHER
+					await unassign_researcher_to_scp(selected_contain_item)
+					current_contain_step = CONTAIN_STEPS.START
 				# --------------------
 				ACTION.CONTAINED.START_TESTING:
-					await check_events(response.data.ref, SCP.EVENT_TYPE.START_TESTING, true)
-					print("AFTER TESTING ENDS...")
-					current_contain_step = CONTAIN_STEPS.HIDE
-				_:
-					print("action missing")
-					current_contain_step = CONTAIN_STEPS.HIDE
-		# ---------------
-		CONTAIN_STEPS.CONFIRM_RESEARCHER:
-			ConfirmModal.set_text("Make %s lead researcher for SCP-%s?" % [selected_researcher_item.details.name, selected_contain_item.item_id])
-			await show_only([ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response
-			match response.action:
-				ACTION.BACK:
+					await start_scp_testing(selected_contain_item.ref)
 					current_contain_step = CONTAIN_STEPS.START
-				ACTION.NEXT:
-					assign_researcher_to_scp(selected_researcher_item, selected_contain_item)
-					current_contain_step = CONTAIN_STEPS.START
-		# ---------------
-		CONTAIN_STEPS.CONFIRM_REMOVE_RESEARCHER:
-			ConfirmModal.set_text("Remove researcher from SCP-%s?" % [selected_contain_item.item_id])
-			await show_only([ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response
-			match response.action:
-				ACTION.BACK:
-					current_contain_step = CONTAIN_STEPS.START
-				ACTION.NEXT:
-					unassign_researcher_to_scp(selected_contain_item)
+				# --------------------
+				ACTION.CONTAINED.STOP_TESTING:
+					ConfirmModal.set_text("Cancel SCP testing?", "Unspent resources will be refunded.")
+					await show_only([ConfirmModal])
+					var res:Dictionary = await ConfirmModal.user_response
+					match res.action:
+						ACTION.NEXT:					
+							await stop_scp_testing(selected_contain_item.ref)
 					current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
@@ -1327,26 +1596,20 @@ func on_current_contain_step_update() -> void:
 				ACTION.BACK:
 					current_contain_step = CONTAIN_STEPS.START
 				ACTION.NEXT:
-					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.data.ref == selected_contain_item.ref)[0]
-					cancel_scp_containment(action_queue_item)
+					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref)[0]
+					cancel_scp_containment(action_queue_item.ref)
 					scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != selected_contain_item.ref)
 					SUBSCRIBE.scp_data = scp_data
 					current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.ON_TRANSFER_CANCEL:
-			ConfirmModal.set_text("Cancel containment?" if selected_contain_item.is_new_transfer else "Cancel transfer?")
-			await show_only([ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response
-			match response.action:
-				ACTION.BACK:
-					current_contain_step = CONTAIN_STEPS.START
-				ACTION.NEXT:
-					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.data.ref == selected_contain_item.ref)[0]
-					if selected_contain_item.is_new_transfer:
-						cancel_scp_containment(action_queue_item)
-					else:
-						cancel_scp_transfer(action_queue_item)
-					current_contain_step = CONTAIN_STEPS.START
+			var action_queue_item:Dictionary = {}
+			if selected_contain_item.is_new_transfer:
+				action_queue_item = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref and i.action == ACTION.AQ.CONTAIN)[0]
+			else:
+				action_queue_item = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref and i.action == ACTION.AQ.TRANSFER)[0]
+			await cancel_action_queue(action_queue_item, false)
+			current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION:
 			await show_only([Structure3dContainer, RoomStatusContainer])
@@ -1379,8 +1642,7 @@ func on_current_contain_step_update() -> void:
 		# ---------------
 		CONTAIN_STEPS.FINALIZE:
 			var scp_details:Dictionary = SCP_UTIL.return_data(selected_contain_item.ref)
-			selected_contain_item.uid = U.generate_uid()
-			
+
 			# is_new means it's coming from the availble_list 
 			if selected_contain_item.is_new_transfer:
 				scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
@@ -1403,17 +1665,20 @@ func on_current_contain_step_update() -> void:
 						}
 					return i
 				)				
-
-			action_queue_data.push_back({
-				"action": ACTION.AQ.CONTAIN if selected_contain_item.is_new_transfer else ACTION.AQ.TRANSFER,
-				"data": selected_contain_item,
-				"days_in_queue": 0,
-				"build_time": scp_details.containment_time.call(),
-				"location": current_location.duplicate(),
-				"note": "CONTAINMENT IN PROGRESS" if selected_contain_item.is_new_transfer else "TRANSFER IN PROGRESS"
-			})
 			
-			SUBSCRIBE.action_queue_data = action_queue_data
+			add_action_queue_item({
+				"action": ACTION.AQ.CONTAIN if selected_contain_item.is_new_transfer else ACTION.AQ.TRANSFER,
+				"ref": selected_contain_item.ref,
+				"title_btn": {
+					"title": "CONTAINMENT IN PROGRESS" if selected_contain_item.is_new_transfer else "TRANSFER IN PROGRESS",
+					"icon": SVGS.TYPE.CONTAIN,
+				},
+				"completed_at": scp_details.containment_time.call(),
+				"description": "SCP-%s %s." % [selected_contain_item.item_id, "containment in progress" if selected_contain_item.is_new_transfer else "transfer in progress" ],
+				"location": current_location.duplicate()
+			})			
+			
+			#SUBSCRIBE.action_queue_data = action_queue_data
 			SUBSCRIBE.scp_data = scp_data
 
 			current_contain_step = CONTAIN_STEPS.START	
@@ -1480,115 +1745,44 @@ func on_current_recruit_step_update() -> void:
 
 # ------------------------------------------------------------------------------	BUILD COMPLETE
 #region BUILD COMPLETE
-func on_current_build_complete_step_update() -> void:
-	if !is_node_ready() and !Engine.is_editor_hint():return
+func on_current_action_complete_step_update() -> void:
+	if !is_node_ready():return
 
-	match current_build_complete_step:
+	match current_action_complete_step:
 		# ---------------
-		BUILD_COMPLETE_STEPS.HIDE:
+		ACTION_COMPLETE_STEPS.HIDE:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 		# ---------------
-		BUILD_COMPLETE_STEPS.START:
+		ACTION_COMPLETE_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			revert_state_location = current_location
-			BuildCompleteContainer.completed_build_items = completed_build_items
-			await show_only([Structure3dContainer, ResourceContainer, BuildCompleteContainer])
+			BuildCompleteContainer.completed_build_items = completed_actions
+			await show_only([BuildCompleteContainer])
 			var response:Dictionary = await BuildCompleteContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.DONE:
-					current_build_complete_step = BUILD_COMPLETE_STEPS.HIDE
+					current_action_complete_step = ACTION_COMPLETE_STEPS.HIDE
 				ACTION.SKIP:
-					current_build_complete_step = BUILD_COMPLETE_STEPS.HIDE
+					current_action_complete_step = ACTION_COMPLETE_STEPS.HIDE
 			
 			current_location = revert_state_location
 			
 			# REMOVES FROM QUEUE LIST
-			await ActionQueueContainer.remove_from_queue(completed_build_items)
+			await ActionQueueContainer.remove_from_queue(completed_actions)
 			
 			# resets event_data 
 			var event_data_arr:Array = []
 		
 			# UPDATE SAVABLE DATA
-			for item in completed_build_items:
-				match item.action:
-					# ----------------------------
-					ACTION.AQ.CONTAIN:
-						# first, remove from available list...
-						scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != item.data.ref)
-						# then add to contained list...
-						var new_contained_item:Dictionary = { 
-							"ref": item.data.ref,
-							"unlocked": [],
-							"location": item.location,
-							"days_in_containment": 0,
-							"lead_researcher": {},
-							"event_type_count": {
-								#["type/event_id"]: count[int]
-							},
-							"current_activity": {},
-							"transfer_status": {
-								"state": false, 
-								"days_till_complete": -1,
-								"location": {}
-							}	
-						}
-						scp_data.contained_list.push_back(new_contained_item)
-
-						SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(item.data.ref, resources_data)
-						SUBSCRIBE.scp_data = scp_data
-
-						await check_events(item.data.ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
-					# ----------------------------
-					ACTION.AQ.TRANSFER:
-						scp_data.contained_list = scp_data.contained_list.map(func(i):
-							if i.ref == item.data.ref:
-								# move to new location
-								i.location = i.transfer_status.location
-								# remove transfer status
-								i.transfer_status = {
-									"state": false, 
-									"days_till_complete": -1,
-									"location": {}	
-								}
-							return i
-						)
-						
-						SUBSCRIBE.scp_data = scp_data
-						
-						await check_events(item.data.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
-					# ----------------------------
-					ACTION.AQ.BASE_ITEM:
-						purchased_base_arr.push_back({
-							"data": item.data,
-						})
-						# update resources_data
-						SUBSCRIBE.resources_data = BASE_UTIL.calculate_build_complete(item.data.id, resources_data)
-						SUBSCRIBE.purchased_base_arr = purchased_base_arr
-					# ----------------------------	
-					ACTION.AQ.BUILD_ITEM:
-						purchased_facility_arr.push_back({
-							"data": item.data,
-							"location": item.location
-						})
-						# update resources_data
-						SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(item.data.ref, resources_data)
-						SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
-					# ----------------------------
-					ACTION.AQ.RESEARCH_ITEM:
-						purchased_research_arr.push_back({
-							"data": item.data
-						})
-						SUBSCRIBE.purchased_research_arr = purchased_research_arr
-
-
+			for item in completed_actions:
+				await on_completed_action(item)
+				
 			# update reactively
-			SUBSCRIBE.resources_data = resources_data	
-			
-
-			completed_build_items = []
+			completed_actions = []
 			on_complete_build_complete.emit()
+			
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -1606,14 +1800,14 @@ func on_current_event_step_update() -> void:
 			await show_only([EventContainer])
 			EventContainer.event_data = event_data
 			EventContainer.start()
-			await EventContainer.user_response
+			var event_res:Dictionary = await EventContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			# reset and evempty event_data
 			event_data = []
 			current_event_step = EVENT_STEPS.RESET
 			await U.set_timeout(0.5)
 			# trigger signal
-			on_events_complete.emit()
+			on_events_complete.emit(event_res)
 			
 #endregion
 # ------------------------------------------------------------------------------		
@@ -1627,31 +1821,68 @@ func on_current_researcher_step_update() -> void:
 		RESEARCHERS_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
+			selected_scp_details = {}
+			selected_researcher_item = {}
+			
 		RESEARCHERS_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			ResearchersContainer.assign_only = false
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			
+			if "data" in response:
+				selected_researcher_item = response.data
+			
+			if "scp_details" in response:
+				selected_scp_details = response.scp_details
+			
 			match response.action:
 				ACTION.RESEARCHERS.BACK:
 					current_researcher_step = RESEARCHERS_STEPS.RESET
-
+				ACTION.RESEARCHERS.DISMISS:
+					current_researcher_step = RESEARCHERS_STEPS.DISMISS
+				ACTION.RESEARCHERS.UNASSIGN_FROM_SCP:
+					await unassign_researcher_to_scp(selected_scp_details)
+					current_researcher_step = RESEARCHERS_STEPS.START
+				ACTION.RESEARCHERS.ASSIGN_TO_SCP:
+					await assign_researcher_to_scp_find_scp(selected_researcher_item)
+					current_researcher_step = RESEARCHERS_STEPS.START
+		RESEARCHERS_STEPS.DISMISS:
+			ConfirmModal.set_text("Dismiss DR %s?" % [selected_researcher_item.details.name], "Researcher will be removed permanently.")
+			await show_only([Structure3dContainer, ConfirmModal])			
+			var confirm_response:Dictionary = await ConfirmModal.user_response
+			match confirm_response.action:
+				ACTION.BACK:
+					current_researcher_step = RESEARCHERS_STEPS.START
+				ACTION.NEXT:
+					current_researcher_step = RESEARCHERS_STEPS.FINALIZE_DISMISS
+		RESEARCHERS_STEPS.FINALIZE_DISMISS:
+			var props:Dictionary = {
+				"name": selected_researcher_item.details.name,
+				"onSelection": func(val:EVT.DISMISS_TYPE) -> void:
+					match val:
+						EVT.DISMISS_TYPE.THANK_AND_DISMISS:
+							print('no change, costs money as severence based')
+						EVT.DISMISS_TYPE.ADMINISTER_AMNESTICS:
+							print('no change')
+						EVT.DISMISS_TYPE.TERMINATE:
+							print('dec morale')
+			}
+			event_data = [EVENT_UTIL.run_event(EVT.TYPE.DISMISS_RESEARCHER, props)]
+			await on_events_complete
+			dismiss_researcher(selected_researcher_item)
+			current_researcher_step = RESEARCHERS_STEPS.START
 #endregion
 # ------------------------------------------------------------------------------		
 
-
-# ------------------------------------------------------------------------------	
-func on_expired_scp_items_update() -> void:
-	pass
-# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
 func is_occupied() -> bool:
 	if is_busy or processing_next_day or GBL.has_animation_in_queue():
 		return true
-	if (current_shop_step != SHOP_STEPS.HIDE) or (current_contain_step != CONTAIN_STEPS.HIDE) or (current_recruit_step != RECRUIT_STEPS.HIDE) or (current_build_complete_step != BUILD_COMPLETE_STEPS.HIDE) or (current_event_step != EVENT_STEPS.RESET):
+	if (current_shop_step != SHOP_STEPS.HIDE) or (current_contain_step != CONTAIN_STEPS.HIDE) or (current_recruit_step != RECRUIT_STEPS.HIDE) or (current_action_complete_step != ACTION_COMPLETE_STEPS.HIDE) or (current_event_step != EVENT_STEPS.RESET):
 		return true
 	return false
 

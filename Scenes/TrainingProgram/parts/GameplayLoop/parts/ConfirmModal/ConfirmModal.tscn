@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=12 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_fp6o0"]
@@ -28,6 +28,12 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w67u1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v53fl"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xn012"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
 [node name="ConfirmModal" type="MarginContainer"]
 offset_right = 175.0
 offset_bottom = 44.0
@@ -45,7 +51,7 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(187, 117)
+size = Vector2i(197, 83)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 99.0
@@ -74,14 +80,14 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="TitleLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-text = "Title Label"
 label_settings = ExtResource("3_yaau0")
 vertical_alignment = 1
 
 [node name="SubLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-text = "Sub label content"
 label_settings = ExtResource("4_fdai8")
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
@@ -94,10 +100,12 @@ alignment = 1
 
 [node name="AcceptBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v53fl")
 title = "Accept"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xn012")
 title = "Back"
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]
