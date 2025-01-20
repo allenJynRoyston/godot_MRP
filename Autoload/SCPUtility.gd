@@ -286,7 +286,7 @@ var SCP_001:Dictionary = {
 		SCP.EVENT_TYPE.RANDOM_EVENTS: [
 			{
 				"trigger_threshold": func(_count:int) -> int:
-					return 10,
+					return 2,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					return [
@@ -302,7 +302,7 @@ var SCP_001:Dictionary = {
 			},
 			{
 				"trigger_threshold": func(_count:int) -> int:
-					return 10,
+					return 2,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					return [
@@ -318,7 +318,7 @@ var SCP_001:Dictionary = {
 			},
 			{
 				"trigger_threshold": func(_trigger_count:int) -> int:
-					return 10,
+					return 2,
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					return [
