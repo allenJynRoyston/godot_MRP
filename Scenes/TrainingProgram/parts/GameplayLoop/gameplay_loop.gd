@@ -580,6 +580,14 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 					"data": res.data
 				},
 			# -------------------------	
+			# return current researcher attached to scp
+			"research_details": func() -> Dictionary:
+				var res:Dictionary = find_in_contained(scp_ref)
+				var list_data:Dictionary = res.data
+				if list_data.lead_researcher.is_empty():
+					return {}		
+				return RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr),
+			# -------------------------	
 			# get a count of the current resources available
 			"resources_data": func() -> Dictionary:
 				return resources_data.duplicate(true),
@@ -808,17 +816,13 @@ func on_completed_action(action_item:Dictionary) -> void:
 	match action_item.action:
 		ACTION.AQ.ACCESSING:
 			var event_res:Dictionary = await check_events(action_item.ref, SCP.EVENT_TYPE.START_TESTING, true)
-			if !event_res.is_empty():
-				update_scp_testing(action_item.ref, event_res.val)
+			update_scp_testing(action_item.ref, event_res.val)
 		# ----------------------------
 		ACTION.AQ.TESTING:  # when testing is completed
 			var scp_ref:int = action_item.ref 
-			print(action_item.props)
 			var testing_ref:int = action_item.props.testing_ref
 			var res:Dictionary = find_in_contained(scp_ref)
 			var index:int = res.index
-			var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-			var research_details:Dictionary = scp_details.testing_options[testing_ref]
 			
 			# trigger post research event
 			await check_testing_events(scp_ref, testing_ref)
@@ -830,9 +834,7 @@ func on_completed_action(action_item:Dictionary) -> void:
 			
 			# continue testing
 			var event_res:Dictionary = await check_events(scp_ref, SCP.EVENT_TYPE.START_TESTING, true)
-			print(event_res)
-			if !event_res.is_empty():
-				update_scp_testing(scp_ref, event_res.val)			
+			update_scp_testing(scp_ref, event_res.val)			
 		# ----------------------------
 		ACTION.AQ.CONTAIN:
 			# first, remove from available list...

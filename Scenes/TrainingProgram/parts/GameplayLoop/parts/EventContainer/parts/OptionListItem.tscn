@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://doexmbeotqsd4"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_ryuwo"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_aisjx"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_w80op"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ufhi1"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_as5wc"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hghmq"]
+font = ExtResource("4_w80op")
+font_size = 8
+
+[node name="OptionListItem" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_j7po5")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_ryuwo")]
+layout_mode = 2
+icon = 49
+is_hoverable = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="LockedTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ufhi1")
+icon = 43
+panel_color = Color(0, 0, 0, 0)
+is_disabled = true
+title = "[PREREQUISITES MISSING]"
+
+[node name="OptionTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_as5wc")
+icon = 49
+icon_placement = 1
+panel_color = Color(0, 0, 0, 0)
+inactive_color = Color(0.448712, 0.448712, 0.448712, 1)
+title = "Option title goes here"
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "     Description goes here AND IT CAN GET VERY LONG."
+label_settings = SubResource("LabelSettings_hghmq")
+uppercase = true

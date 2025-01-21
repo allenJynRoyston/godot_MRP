@@ -63,14 +63,21 @@ var SCP_001:Dictionary = {
 		# -------------------------
 		SCP.TESTING.ONE: {
 			"title": "Research one",
-			"description": "Research one description",
+			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
-				return {},
-			"resources_required": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.DCLASS: 10,
-					RESOURCE.TYPE.MONEY: 20	
+					"traits": [],
+					"specializations": [RESEARCHER.SPECALIZATION.ENGINEERING]
 				},
+			"requirements": {
+				"resources": {
+					"amount": func() -> Dictionary:
+						return {
+							RESOURCE.TYPE.MONEY: 50,
+							RESOURCE.TYPE.DCLASS: 5	
+						},
+				}
+			},	
 			"add_to": {
 				"testing_log": func(self_ref:Dictionary) -> Array: 
 					return [
@@ -88,14 +95,20 @@ var SCP_001:Dictionary = {
 		# -------------------------
 		SCP.TESTING.TWO: {
 			"title": "Research two",
-			"description": "Research two description",
+			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
-				return {},
-			"resources_required": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.DCLASS: 10,
-					RESOURCE.TYPE.MONEY: 20	
+					"traits": [RESEARCHER.TRAITS.DILIGENT]
 				},
+			"requirements": {
+				"resources": {
+					"amount": func() -> Dictionary:
+						return {
+							RESOURCE.TYPE.MONEY: 50,
+							RESOURCE.TYPE.STAFF: 5	
+						},
+				}
+			},
 			# -------------------------
 		},
 		# -------------------------
@@ -103,14 +116,18 @@ var SCP_001:Dictionary = {
 		# -------------------------
 		SCP.TESTING.THREE: {
 			"title": "Research three",
-			"description": "Research three description",
+			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
 				return {},
-			"resources_required": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.DCLASS: 10,
-					RESOURCE.TYPE.MONEY: 20	
-				},
+			"requirements": {
+				"resources": {
+					"amount": func() -> Dictionary:
+						return {
+							RESOURCE.TYPE.MONEY: 50,
+							RESOURCE.TYPE.STAFF: 5	
+						},
+				}
+			},
 			# -------------------------
 		}
 		# -------------------------
@@ -232,11 +249,11 @@ var SCP_001:Dictionary = {
 					var list_details:Dictionary = _dict.list_details
 					var resources_data:Dictionary = _dict.resources_data
 					var research_completed:Array = list_details.data.research_completed
+					var research_details:Dictionary = _dict.research_details	
+
 					var option_selected:Dictionary = {"val": null}
 					var onSelected = func(val) -> void:
 						option_selected.val = val
-						
-					var options = build_event_options_list(_dict)
 						
 					return [
 						func() -> Dictionary:
@@ -244,38 +261,14 @@ var SCP_001:Dictionary = {
 								"header": "SCP-%s: START TESTING EVENT" % [details.item_id],
 								"img_src": details.img_src,
 								"text": [
-									"Select a testing option:"
+									"Researcher %s presents you with the following testing options:" % [research_details.name]
 								],
-								"options": [
-									{
-										"completed": SCP.TESTING.ONE in research_completed,
-										"title": "Research 1",
-										"val": SCP.TESTING.ONE,
-										"onSelected": onSelected
-									},
-									{
-										"completed": SCP.TESTING.TWO in research_completed,
-										"title": "Research 2",
-										"val": SCP.TESTING.TWO,
-										"onSelected": onSelected
-									},
-									{
-										"completed": SCP.TESTING.THREE in research_completed,
-										"title": "Research 3",
-										"val": SCP.TESTING.THREE,
-										"onSelected": onSelected
-									},
-									{
-										"title": "End testing.",
-										"val": -1,
-										"onSelected": onSelected
-									},
-								]
+								"options": build_event_options_list(_dict, option_selected, onSelected)
 							},
 						func() -> Dictionary:
 							return {
 								"text": [
-									"You begin researching..."
+									"You begin testing." if option_selected.val != -1 else "You've stopped testing."
 								],
 								"set_return_val": func() -> Dictionary:
 									return option_selected,
@@ -724,6 +717,7 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Call
 			"list_details": scp_contained_details,
 			"count":  event_trigger_count,
 			"resources_data": get_self_ref.call().resources_data.call(),
+			"research_details": get_self_ref.call().research_details.call(),
 			# ------- functions
 			"perform_action": perform_action,
 			"get_self_ref": get_self_ref,
@@ -786,6 +780,7 @@ func check_for_testing_events(ref:int, testing_ref:SCP.TESTING, get_data_snapsho
 			"list_details": scp_contained_details,
 			"count":  0,
 			"resources_data": get_self_ref.call().resources_data.call(),
+			"research_details": get_self_ref.call().research_details.call(),
 			# ------- functions
 			"perform_action": perform_action,
 			"get_self_ref": get_self_ref,
@@ -799,14 +794,100 @@ func check_for_testing_events(ref:int, testing_ref:SCP.TESTING, get_data_snapsho
 # ------------------------------------------------------------------------------	
 	
 # ------------------------------------------------------------------------------
-func build_event_options_list(_dict:Dictionary) -> Array:
+func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSelected:Callable) -> Array:
 	var details:Dictionary = _dict.details
 	var list_details:Dictionary = _dict.list_details
 	var resources_data:Dictionary = _dict.resources_data
+	var research_details:Dictionary = _dict.research_details	
 	var research_completed:Array = list_details.data.research_completed
+	var testing_options:Dictionary = details.testing_options
+
+	# first, check if all research options are exhasted
+	var options:Array = []
+	for testing_ref in testing_options:
+		var option:Dictionary = testing_options[testing_ref]
+		var completed:bool = testing_ref in research_completed
+		var repeatable:bool = option.repeatable if "repeatable" in option else false
+		
+		# -----------
+		# checks if prerequirites have been met
+		var prerequisites:Dictionary = option.prerequisites.call()
+		var required_traits:Array = prerequisites.traits if "traits" in prerequisites else []
+		var required_specilization:Array = prerequisites.specializations if "specializations" in prerequisites else []
+		var requires_trait:bool = required_traits.size() > 0
+		var requires_specilization:bool = required_specilization.size() > 0
+		
+		var useable_traits:Array = required_traits.filter(func(i): return research_details.traits.has(i)).map(func(i): return RESEARCHER_UTIL.return_trait_data(i))
+		var useable_specilization:Array = required_specilization.filter(func(i): return research_details.specializations.has(i)).map(func(i): return RESEARCHER_UTIL.return_specialization_data(i))
+		var is_missing_traits:bool = false if !requires_trait else required_traits.filter(func(i): return research_details.traits.has(i)).size() == 0
+		var is_missing_specilization:bool = false if !requires_specilization else required_specilization.filter(func(i): return research_details.specializations.has(i)).size() == 0
+		# 
+		var trait_tag:String = "[TRAIT - %s] " % useable_traits[0].fullname if useable_traits.size() > 0 else ""
+		var specilization_tag:String = "[SPECIALIZATION - %s] " % useable_specilization[0].fullname if useable_specilization.size() > 0 else ""
+		var usable_tag_string:String = "%s%s" % [trait_tag, specilization_tag]
+		# -----------
+		
+		# -----------
+		var not_enough_resources:bool = false
+		var required_resources:Dictionary = option.requirements.resources.amount.call()
+		var required_notes:Dictionary = {
+			"header": "Resources required",
+			"list": []
+		}
+		var missing_notes:Dictionary = {
+			"header": "Missing resources",
+			"list": []
+		}
+		
 	
-	print(details)
-	print(resources_data)
-						
-	return []
+		for key in required_resources:
+			var amount:int = required_resources[key]
+			var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
+			required_notes.list.push_back({
+				"icon": resource_details.icon, 
+				"text": "[%s] %s" % [resource_details.name, amount]
+			})
+			
+			if resources_data[key].amount < amount:
+				missing_notes.list.push_back({
+					"icon": resource_details.icon, 
+					"text": "[%s] %s (You have %s)" % [resource_details.name, amount, resources_data[key].amount]
+				})
+			
+		
+		var locked:bool = is_missing_traits or is_missing_specilization or missing_notes.list.size() > 0
+		
+		
+		var lock_str:String = "PREREQUISITES MISSING: "
+		if is_missing_traits:
+			for data in required_traits.map(func(i): return RESEARCHER_UTIL.return_trait_data(i)):
+				lock_str += " [TRAIT - %s]" % [data.fullname]
+
+		if is_missing_specilization:
+			for data in required_specilization.map(func(i): return RESEARCHER_UTIL.return_specialization_data(i)):
+				lock_str += " [SPECIALIZATION - %s]" % [data.fullname]
+		
+		if missing_notes.list.size() > 0 and (!is_missing_traits and !is_missing_specilization) :
+			lock_str = "[NOT ENOUGH RESOURCES]"
+	
+		if !completed or (completed and repeatable):
+			options.push_back({
+				"completed": testing_ref in research_completed,
+				"repeatable": repeatable,
+				"locked": locked,
+				"hint": [required_notes, missing_notes],
+				"title": "%s%s" % ["%s- " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.title] if !locked else "%s" % [lock_str], 
+				"description": "",
+				"val": testing_ref,
+				"onSelected": onSelected			
+			})
+
+	options.push_back({
+		"completed": false,
+		"title": "End testing for now.",
+		"val": -1,
+		"onSelected": onSelected			
+	})
+				
+	return options
 # ------------------------------------------------------------------------------

@@ -10,14 +10,14 @@ extends GameContainer
 @onready var BodyLabelBtm:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
 @onready var BodyLabelTop:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
 
-@onready var OptionsContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
-@onready var OptionsListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/OptionListContainer
+@onready var OptionsContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer
+@onready var OptionsListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer/OptionListContainer
 
 @onready var NextBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/NextBtn
 
 enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
 
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+const OptionListItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/OptionListItem.tscn")
 
 var event_data:Array = [] 
 		
@@ -218,19 +218,22 @@ func on_current_instruction_update() -> void:
 		update_next_btn(false)
 		OptionsContainer.show()
 		option_selected_index = 0
+		
+		for child in OptionsListContainer.get_children():
+			child.queue_free()			
+		
 		var options:Array = current_instruction.options
 		for index in options.size():
 			var option:Dictionary = options[index]
-			var new_node:BtnBase = TextBtnPreload.instantiate()
+			var new_node:Control = OptionListItem.instantiate()
 			var include:bool = option.include if "include" in option else true
 			var completed:bool = option.completed if "completed" in option else false
+			var locked:bool = option.locked if "locked" in option else false
 			
 			if include:
-				new_node.title = "%s: %s %s" % [index, option.title, "[COMPLETED]" if completed else ""]
-				new_node.icon = SVGS.TYPE.DOT if option_selected_index == index else SVGS.TYPE.NONE
+				new_node.data = option
 				new_node.index = index 
-				new_node.static_color = Color(1, 1, 1, 0) if !completed else Color(1, 1, 1, 0.5)
-				new_node.is_hoverable = false
+				new_node.is_selected = option_selected_index == index
 				new_node.onFocus = func(node:Control) -> void:
 					if node == new_node:
 						option_selected_index = index
@@ -238,10 +241,8 @@ func on_current_instruction_update() -> void:
 					on_option_select()
 				OptionsListContainer.add_child(new_node)
 			
-		# enable hover state
-		for child in OptionsListContainer.get_children():
-			child.is_hoverable = true
-			await tween_option_color(child, Color(1, 1, 1, 1), 0.3)
+		
+		await U.set_timeout(0.5)
 		
 		# wait for input
 		current_controls = CONTROLS.OPTIONS
@@ -255,19 +256,16 @@ func on_current_instruction_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_option_select() -> void:
 	current_controls = CONTROLS.FREEZE
-	var option:Dictionary = current_instruction.options[option_selected_index]
-	var is_completed:bool = option.completed if "completed" in option else false
-	#if is_completed:
-		#return
-	
 	update_next_btn(false)
+	
+	var option:Dictionary = current_instruction.options[option_selected_index]
+
 	for index in OptionsListContainer.get_child_count():
 		var node:Control = OptionsListContainer.get_child(index)
-		node.is_hoverable = false
+		node.is_enabled = false
 		if index != option_selected_index:
-			tween_option_color(node, Color.RED, 0.5)
-	
-	
+			node.fade_out() 
+
 	if "onSelected" in option:			
 		# if selected val property is available, send it
 		if "val" in current_instruction.options[option_selected_index]:
@@ -279,11 +277,6 @@ func on_option_select() -> void:
 	
 	await U.set_timeout(1.0)
 	
-	# fade out and hide options container
-	for node in OptionsListContainer.get_children():
-		await tween_option_color(node, Color.TRANSPARENT, 0.2)	
-	OptionsContainer.hide()
-	
 	# goto next instruction
 	next_instruction(true)
 # --------------------------------------------------------------------------------------------------		
@@ -292,14 +285,7 @@ func on_option_select() -> void:
 func on_option_selected_index() -> void:
 	if !is_node_ready():return
 	for child in OptionsListContainer.get_children():
-		child.icon = SVGS.TYPE.DOT if option_selected_index == child.index else SVGS.TYPE.NONE
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
-func tween_option_color(node:Node, new_color:Color, duration:float = 0.3) -> void:
-	var tween:Tween = create_tween()
-	tween.tween_property(node, "static_color", new_color, duration).set_trans(Tween.TRANS_QUAD)
-	await tween.finished
+		child.is_selected = option_selected_index == child.index
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	

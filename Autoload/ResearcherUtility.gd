@@ -3,6 +3,7 @@ extends Node
 var specialization_data:Dictionary = { 
 	RESEARCHER.SPECALIZATION.PSYCHOLOGY: {
 		"name": "PSY", 
+		"fullname": "PSYCHOLOGY",
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func() -> void:
 			return,
@@ -11,6 +12,7 @@ var specialization_data:Dictionary = {
 	},
 	RESEARCHER.SPECALIZATION.BIOLOGY: {
 		"name": "BIO", 
+		"fullname": "BIOLOGY",
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func() -> void:
 			return,
@@ -19,6 +21,7 @@ var specialization_data:Dictionary = {
 	},
 	RESEARCHER.SPECALIZATION.ENGINEERING: {
 		"name": "ENG", 
+		"fullname": "ENGINEERING",
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func() -> void:
 			return,
@@ -30,6 +33,7 @@ var specialization_data:Dictionary = {
 var trait_data:Dictionary = {
 	RESEARCHER.TRAITS.MOTIVATED: {
 		"name": "MOT", 
+		"fullname": "MOTIVATED",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0, # 0 IS POSITIVE, 1 IS NEGATIVE
 		"get_effect": func() -> void:
@@ -39,6 +43,7 @@ var trait_data:Dictionary = {
 	},
 	RESEARCHER.TRAITS.DILIGENT: {
 		"name": "DIL", 
+		"fullname": "DILIGENT",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
 		"get_effect": func() -> void:
@@ -48,6 +53,7 @@ var trait_data:Dictionary = {
 	},
 	RESEARCHER.TRAITS.BENEVOLENT: {
 		"name": "BEN", 
+		"fullname": "BENEVOLENT",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
 		"get_effect": func() -> void:
@@ -57,6 +63,7 @@ var trait_data:Dictionary = {
 	},
 	RESEARCHER.TRAITS.MOODY: {
 		"name": "MDY", 
+		"fullname": "MOODY",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
 		"get_effect": func() -> void:
@@ -66,6 +73,7 @@ var trait_data:Dictionary = {
 	},	
 	RESEARCHER.TRAITS.PARTICULAR: {
 		"name": "PAR", 
+		"fullname": "PARTICULAR",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
 		"get_effect": func() -> void:
@@ -75,6 +83,7 @@ var trait_data:Dictionary = {
 	},
 	RESEARCHER.TRAITS.CRUEL: {
 		"name": "CRL", 
+		"fullname": "CRUEL",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
 		"get_effect": func() -> void:

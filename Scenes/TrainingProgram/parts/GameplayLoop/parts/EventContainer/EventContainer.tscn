@@ -37,12 +37,12 @@ grow_end = -5.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_qlk3x"]
 font = ExtResource("6_5xty8")
-font_size = 14
+font_size = 12
 font_color = Color(0.290354, 0.290354, 0.290353, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ygy2h"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m0sty"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ibtvp"]
 bg_color = Color(0, 0, 0, 0.788235)
 
 [node name="EventContainer" type="MarginContainer"]
@@ -58,7 +58,7 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(979, 407)
+size = Vector2i(980, 377)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 custom_minimum_size = Vector2(725, 200)
@@ -82,10 +82,11 @@ layout_mode = 2
 label_settings = ExtResource("4_6n6tl")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 220)
+custom_minimum_size = Vector2(900, 220)
 layout_mode = 2
 
 [node name="BodyContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 20
@@ -109,18 +110,17 @@ size_flags_vertical = 3
 theme_override_constants/separation = 20
 
 [node name="IconBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer" instance=ExtResource("6_fgcdw")]
-custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
+size_flags_horizontal = 1
 size_flags_vertical = 0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-icon = 10
+icon = 48
 is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ke4bq")
 
@@ -141,6 +141,7 @@ autowrap_mode = 3
 visible_characters_behavior = 1
 
 [node name="ImageContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -172,25 +173,30 @@ texture = SubResource("PlaceholderTexture2D_ygy2h")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="OptionsContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="OptionsContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer/HBoxContainer2"]
 layout_mode = 2
 text = "OPTIONS"
 label_settings = ExtResource("3_r48o5")
 
-[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer2"]
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_01nsj")
 
-[node name="OptionListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer"]
+[node name="OptionListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
@@ -198,7 +204,7 @@ theme_override_constants/separation = 0
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_m0sty")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ibtvp")
 icon = 36
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0.788235)
