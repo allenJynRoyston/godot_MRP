@@ -580,6 +580,11 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 					"data": res.data
 				},
 			# -------------------------	
+			# get a count of the current resources available
+			"resources_data": func() -> Dictionary:
+				return resources_data.duplicate(true),
+			# -------------------------	
+			# preform an action (like cancel transfer, stop reserach, etc)
 			"perform_action": func(action:int) -> void:
 				match action:
 					ACTION.CONTAINED.CANCEL_TRANSFER:
@@ -595,7 +600,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 				return 0 if event_name not in res.data.event_type_count else res.data.event_type_count[event_name].count,
 			# -------------------------
 			# easy method to call when you want to add something to their unlockable
-			"add_unlockable": func(unlockable:SCP_UTIL.UNLOCKABLE) -> void:
+			"add_unlockable": func(unlockable:SCP.UNLOCKABLE) -> void:
 				scp_data.contained_list = scp_data.contained_list.map(func(i): 
 					if i.ref == scp_ref:
 						var refs_arr:Array = i.unlocked.map(func(i): return i.ref)
@@ -700,17 +705,17 @@ func set_room_config() -> void:
 # -----------------------------------
 
 # -----------------------------------
-func check_events(ref:int, type:SCP.EVENT_TYPE, skip_wait:bool = false) -> Dictionary:
+func check_events(ref:int, event_ref:SCP.EVENT_TYPE, skip_wait:bool = false) -> Dictionary:
 	var res:Dictionary = find_in_contained(ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data
-	var event:Dictionary = SCP_UTIL.check_for_events(ref, get_data_snapshot, get_self_ref_callable(ref), type)
+	var event:Dictionary = SCP_UTIL.check_for_events(ref, event_ref, get_data_snapshot, get_self_ref_callable(ref))
 	var event_arr:Array = []
 	if !event.event_instructions.is_empty():
 		var event_id:int = event.event_id
 		
 		# add number of times an event has been triggered
-		var event_type_id:String = "%s%s" % [type, event_id]
+		var event_type_id:String = "%s%s" % [event_ref, event_id]
 		if event_type_id not in list_data.event_type_count:
 			scp_data.contained_list[index].event_type_count[event_type_id] = {
 				"count": 0
@@ -725,6 +730,21 @@ func check_events(ref:int, type:SCP.EVENT_TYPE, skip_wait:bool = false) -> Dicti
 			
 		event_data = [event]
 		return await on_events_complete
+		
+	return {}
+# -----------------------------------
+
+# -----------------------------------
+func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> Dictionary:
+	var res:Dictionary = find_in_contained(ref)
+	var index:int = res.index
+	var list_data:Dictionary = res.data
+	var event:Dictionary = SCP_UTIL.check_for_testing_events(ref, testing_ref, get_data_snapshot, get_self_ref_callable(ref))
+	var event_arr:Array = []
+	if !event.event_instructions.is_empty():
+		event_data = [event]
+		return await on_events_complete
+		
 	return {}
 # -----------------------------------
 
@@ -789,20 +809,30 @@ func on_completed_action(action_item:Dictionary) -> void:
 		ACTION.AQ.ACCESSING:
 			var event_res:Dictionary = await check_events(action_item.ref, SCP.EVENT_TYPE.START_TESTING, true)
 			if !event_res.is_empty():
-				# testing was cancelled
 				update_scp_testing(action_item.ref, event_res.val)
 		# ----------------------------
-		ACTION.AQ.TESTING:
-			var res:Dictionary = find_in_contained(action_item.props.scp_ref)
+		ACTION.AQ.TESTING:  # when testing is completed
+			var scp_ref:int = action_item.ref 
+			print(action_item.props)
+			var testing_ref:int = action_item.props.testing_ref
+			var res:Dictionary = find_in_contained(scp_ref)
 			var index:int = res.index
-			var list_data:Dictionary = res.data			
-
+			var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+			var research_details:Dictionary = scp_details.testing_options[testing_ref]
+			
+			# trigger post research event
+			await check_testing_events(scp_ref, testing_ref)
+			
+			# update reesearch completed
 			if action_item.ref not in scp_data.contained_list[index].research_completed:
-				scp_data.contained_list[index].research_completed.push_back(action_item.ref)
-			
-			stop_scp_testing(action_item.props.scp_ref)
-			
+				scp_data.contained_list[index].research_completed.push_back(testing_ref)
 			SUBSCRIBE.scp_data = scp_data
+			
+			# continue testing
+			var event_res:Dictionary = await check_events(scp_ref, SCP.EVENT_TYPE.START_TESTING, true)
+			print(event_res)
+			if !event_res.is_empty():
+				update_scp_testing(scp_ref, event_res.val)			
 		# ----------------------------
 		ACTION.AQ.CONTAIN:
 			# first, remove from available list...
@@ -1011,7 +1041,7 @@ func start_scp_testing(ref:int) -> void:
 	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 	# add placeholder
 	scp_data.contained_list[index].current_activity = { 
-		"research_id": -1,
+		"testing_ref": -1,
 		"progress": -1 
 	}	
 	
@@ -1037,25 +1067,25 @@ func start_scp_testing(ref:int) -> void:
 # -----------------------------------
 
 # -----------------------------------
-func update_scp_testing(ref:int, research_id:int) -> void:
-	var res:Dictionary = find_in_contained(ref)
+func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
+	var res:Dictionary = find_in_contained(scp_ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data
-	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 
 	# canceled
-	if research_id == -1:
+	if testing_ref == -1:
 		scp_data.contained_list[index].current_activity = {}
 	else:
 		# else add research id and being progressZ
 		scp_data.contained_list[index].current_activity = { 
-			"research_id": research_id,
+			"testing_ref": testing_ref,
 			"progress": 0 
 		}
 		
 		add_action_queue_item({
 			"action": ACTION.AQ.TESTING,
-			"ref": research_id,
+			"ref": scp_ref,
 			"title_btn": {
 				"title": "TESTING",
 				"icon": SVGS.TYPE.RESEARCH,
@@ -1063,7 +1093,7 @@ func update_scp_testing(ref:int, research_id:int) -> void:
 			"completed_at": 3,
 			"description": "Testing SCP-%s." % [scp_details.item_id],
 			"location": list_data.location,
-		}, {"scp_ref": ref})			
+		}, {"testing_ref": testing_ref})			
 		
 # -----------------------------------
 

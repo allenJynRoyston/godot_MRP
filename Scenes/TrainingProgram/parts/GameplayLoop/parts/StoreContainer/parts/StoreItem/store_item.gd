@@ -115,7 +115,6 @@ func on_data_update() -> void:
 				item_data = BASE_UTIL.return_purchase_cost(data.ref)
 							
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
-				print(purchased_research_arr)
 				var purchased_ids:Array = purchased_research_arr.map(func(i): return i.data.ref)
 				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.AQ.RESEARCH_ITEM).map(func(i): return i.data.ref)
 				

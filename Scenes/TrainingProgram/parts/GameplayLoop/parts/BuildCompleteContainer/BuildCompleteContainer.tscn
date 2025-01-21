@@ -24,10 +24,10 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_j1538"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xex5g"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bd3n3"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ar6xe"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6xigk"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="BuildCompleteContainer" type="MarginContainer"]
@@ -94,14 +94,14 @@ alignment = 1
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_xex5g")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bd3n3")
 icon = 8
 title = "Skip"
 
 [node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_knmmc")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ar6xe")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6xigk")
 icon = 27
 title = "Close"
 

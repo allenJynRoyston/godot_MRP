@@ -3,12 +3,12 @@ extends GameContainer
 
 @onready var HeaderLabel:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HeaderLabel
 
-@onready var ImageContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
-@onready var ImageTextureRect:TextureRect = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/ImageContainer/MarginContainer/ImageTextureRect
+@onready var ImageContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer
+@onready var ImageTextureRect:TextureRect = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer/MarginContainer/ImageTextureRect
 
-@onready var BodyContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/BodyContainer
-@onready var BodyLabelBtm:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
-@onready var BodyLabelTop:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
+@onready var BodyContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
+@onready var BodyLabelBtm:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
+@onready var BodyLabelTop:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
 
 @onready var OptionsContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
 @onready var OptionsListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/OptionListContainer
@@ -19,9 +19,7 @@ enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
-var event_data:Array = [] : 
-	set(val):
-		event_data = val
+var event_data:Array = [] 
 		
 var event_instructions:Array = []
 var option_selected_index:int = 0 : 
@@ -259,8 +257,8 @@ func on_option_select() -> void:
 	current_controls = CONTROLS.FREEZE
 	var option:Dictionary = current_instruction.options[option_selected_index]
 	var is_completed:bool = option.completed if "completed" in option else false
-	if is_completed:
-		return
+	#if is_completed:
+		#return
 	
 	update_next_btn(false)
 	for index in OptionsListContainer.get_child_count():

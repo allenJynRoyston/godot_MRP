@@ -130,7 +130,11 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/checkbox-cross-svgrepo-com.svg")
 		SVGS.TYPE.EMPTY_CHECKBOX:
 			texture = load("res://SVGs/checkbox-blank-svgrepo-com.svg")
-	
+		SVGS.TYPE.CONVERSATION:
+			texture = load("res://SVGs/conversation-fill-svgrepo-com.svg")
+		SVGS.TYPE.QUESTION_MARK:
+			texture = load("res://SVGs/question-square-fill-svgrepo-com.svg")
+			
 	svg_cache.push_back({
 		"key": key, 
 		"texture": texture

@@ -1,8 +1,5 @@
 extends Node
 
-enum UNLOCKABLE {ONE, TWO, THREE, FOUR, FIVE}
-enum RESEARCH {ONE, TWO, THREE, FOUR, FIVE}
-
 var SCP_001:Dictionary = {
 	"item_id": "001",
 	"name": "THE DOOR",
@@ -28,22 +25,6 @@ var SCP_001:Dictionary = {
 			"SCP-%s is a basic wooden door that remains locked until a human being gets within 3 feet of the door. Door then opens up to an unknown location.  If a person goes through the door, it then shuts." % [self_ref.item_id],
 			"That person is never seen again."
 		],
-	# -----------------------------------
-	
-	# -----------------------------------
-	"testing_options": {
-		RESEARCH.ONE: {
-			"title": "Research one",
-			"description": "Research one description",
-			"prerequisites": func() -> bool:
-				return true,
-			"requirements": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.DCLASS: 10,
-					RESOURCE.TYPE.MONEY: 20	
-				},
-		}
-	},
 	# -----------------------------------
 	
 	# -----------------------------------
@@ -76,10 +57,70 @@ var SCP_001:Dictionary = {
 		}	
 	},
 	# -----------------------------------
+
+	# -----------------------------------
+	"testing_options": {
+		# -------------------------
+		SCP.TESTING.ONE: {
+			"title": "Research one",
+			"description": "Research one description",
+			"prerequisites": func() -> Dictionary:
+				return {},
+			"resources_required": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.DCLASS: 10,
+					RESOURCE.TYPE.MONEY: 20	
+				},
+			"add_to": {
+				"testing_log": func(self_ref:Dictionary) -> Array: 
+					return [
+						"" % [self_ref.item_id]
+					],
+				"description": func(self_ref:Dictionary) -> Array:
+					return [
+						"SCP-%s research one description added." % [self_ref.item_id]
+					],
+			},				
+			# -------------------------
+		},
+		# -------------------------
+		
+		# -------------------------
+		SCP.TESTING.TWO: {
+			"title": "Research two",
+			"description": "Research two description",
+			"prerequisites": func() -> Dictionary:
+				return {},
+			"resources_required": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.DCLASS: 10,
+					RESOURCE.TYPE.MONEY: 20	
+				},
+			# -------------------------
+		},
+		# -------------------------
+		
+		# -------------------------
+		SCP.TESTING.THREE: {
+			"title": "Research three",
+			"description": "Research three description",
+			"prerequisites": func() -> Dictionary:
+				return {},
+			"resources_required": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.DCLASS: 10,
+					RESOURCE.TYPE.MONEY: 20	
+				},
+			# -------------------------
+		}
+		# -------------------------
+		
+	},
+	# -----------------------------------	
 	
 	# -----------------------------------	
 	"unlockables": {
-		UNLOCKABLE.ONE: {
+		SCP.UNLOCKABLE.ONE: {
 			"add_to": {
 				"containment_procedures": func(self_ref:Dictionary) -> Array: 
 					return [
@@ -99,7 +140,86 @@ var SCP_001:Dictionary = {
 		}
 	},
 	# -----------------------------------
-
+	
+	# -----------------------------------
+	"testing_events": {
+		# -------------------------
+		SCP.TESTING.ONE: [
+			{
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					var list_details:Dictionary = _dict.list_details
+					var research_completed:Array = list_details.data.research_completed
+					var option_selected:Dictionary = {"val": null}
+					var onSelected = func(val) -> void:
+						option_selected.val = val
+						
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: RESEARCH ONE COMPLETE" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"After many failed attempts to forciably open the door, you have a slight success."
+								]
+							},	
+					],
+			}
+		],
+		# -------------------------
+		
+		# -------------------------
+		SCP.TESTING.TWO: [
+			{
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					var list_details:Dictionary = _dict.list_details
+					var research_completed:Array = list_details.data.research_completed
+					var option_selected:Dictionary = {"val": null}
+					var onSelected = func(val) -> void:
+						option_selected.val = val
+						
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: RESEARCH TWO COMPLETE" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"SOMETHING SOMETHIGN SOMETHING"
+								]
+							},	
+					],
+			}
+		],
+		# -------------------------
+		
+		# -------------------------
+		SCP.TESTING.THREE: [
+			{
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					var list_details:Dictionary = _dict.list_details
+					var research_completed:Array = list_details.data.research_completed
+					var option_selected:Dictionary = {"val": null}
+					var onSelected = func(val) -> void:
+						option_selected.val = val
+						
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: RESEARCH THREE COMPLETE" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"SOMETHING SOMETHIGN SOMETHING"
+								]
+							},	
+					],
+			}
+		],
+		# -------------------------		
+	},
+	# -----------------------------------
+	
 	# -----------------------------------
 	"events": {
 		# -------------------------
@@ -110,44 +230,47 @@ var SCP_001:Dictionary = {
 				"trigger_check": func(_dict:Dictionary) -> Array:
 					var details:Dictionary = _dict.details
 					var list_details:Dictionary = _dict.list_details
+					var resources_data:Dictionary = _dict.resources_data
 					var research_completed:Array = list_details.data.research_completed
 					var option_selected:Dictionary = {"val": null}
 					var onSelected = func(val) -> void:
 						option_selected.val = val
-
+						
+					var options = build_event_options_list(_dict)
+						
 					return [
 						func() -> Dictionary:
 							return {
 								"header": "SCP-%s: START TESTING EVENT" % [details.item_id],
 								"img_src": details.img_src,
 								"text": [
-									"Select research..."
+									"Select a testing option:"
 								],
 								"options": [
 									{
-										"completed": RESEARCH.ONE in research_completed,
+										"completed": SCP.TESTING.ONE in research_completed,
 										"title": "Research 1",
-										"val": RESEARCH.ONE,
+										"val": SCP.TESTING.ONE,
 										"onSelected": onSelected
 									},
 									{
-										"completed": RESEARCH.TWO in research_completed,
+										"completed": SCP.TESTING.TWO in research_completed,
 										"title": "Research 2",
-										"val": RESEARCH.TWO,
+										"val": SCP.TESTING.TWO,
 										"onSelected": onSelected
 									},
 									{
-										"completed": RESEARCH.THREE in research_completed,
+										"completed": SCP.TESTING.THREE in research_completed,
 										"title": "Research 3",
-										"val": RESEARCH.THREE,
+										"val": SCP.TESTING.THREE,
 										"onSelected": onSelected
 									},
 									{
-										"title": "Cancel research",
+										"title": "End testing.",
 										"val": -1,
 										"onSelected": onSelected
 									},
-								]								
+								]
 							},
 						func() -> Dictionary:
 							return {
@@ -441,7 +564,7 @@ var SCP_002:Dictionary = {
 	
 	# -----------------------------------	
 	"unlockables": {
-		UNLOCKABLE.ONE: {
+		SCP.UNLOCKABLE.ONE: {
 			"add_to": {
 				"containment_procedures": func(self_ref:Dictionary) -> Array: 
 					return [
@@ -497,25 +620,25 @@ var SCP_002:Dictionary = {
 									{
 										"include": true,
 										"title": "Ignore it, but monitor for activity from outside the containment cell.",
-										"val": UNLOCKABLE.ONE,
+										"val": SCP.UNLOCKABLE.ONE,
 										"onSelected": onSelected
 									},
 									{
 										"include": true,
 										"title": "Send an MTF to cautiously open the door.",
-										"val": UNLOCKABLE.ONE,
+										"val": SCP.UNLOCKABLE.ONE,
 										"onSelected": onSelected
 									},
 									{
 										"include": true,
 										"title": "Have a staff member open the door.",
-										"val": UNLOCKABLE.ONE,
+										"val": SCP.UNLOCKABLE.ONE,
 										"onSelected": onSelected
 									},
 									{
 										"include": true,
 										"title": "Instruct a D-Class to open the door.",
-										"val": UNLOCKABLE.ONE,
+										"val": SCP.UNLOCKABLE.ONE,
 										"onSelected": onSelected
 									}
 								]
@@ -574,13 +697,11 @@ func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictiona
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable, event_type:SCP.EVENT_TYPE) -> Dictionary:
+func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Callable, get_self_ref:Callable) -> Dictionary:
 	var data:Dictionary = return_data(ref)
 	var event_arr:Array = []
 	var event_instructions:Array = []
 	var event_id:int = -1
-	var event_type_triggered:int = -1
-	
 	
 	if "events" in data and event_type in data.events:
 		var events:Array = data.events[event_type]
@@ -602,6 +723,7 @@ func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable
 			"details": scp_details, 
 			"list_details": scp_contained_details,
 			"count":  event_trigger_count,
+			"resources_data": get_self_ref.call().resources_data.call(),
 			# ------- functions
 			"perform_action": perform_action,
 			"get_self_ref": get_self_ref,
@@ -636,10 +758,55 @@ func check_for_events(ref:int, get_data_snapshot:Callable, get_self_ref:Callable
 							]
 						}
 				]				
-	
+				
 	return {
 		"event_id": event_id,
 		"event_instructions": event_instructions
 	}
 # ------------------------------------------------------------------------------	
 	
+# ------------------------------------------------------------------------------	
+func check_for_testing_events(ref:int, testing_ref:SCP.TESTING, get_data_snapshot:Callable, get_self_ref:Callable) -> Dictionary:
+	var data:Dictionary = return_data(ref)
+	var event_arr:Array = []
+	var event_instructions:Array = []
+	
+	if "testing_events" in data and testing_ref in data.testing_events:
+		var events:Array = data.testing_events[testing_ref]
+		for index in events.size():
+			var event:Dictionary = events[index]
+			event_arr.push_back(event) 
+	
+	if event_arr.size() > 0:
+		var scp_details:Dictionary = get_self_ref.call().details
+		var scp_contained_details:Dictionary = get_self_ref.call().contained_list_details.call()
+		var perform_action:Callable = get_self_ref.call().perform_action
+		var combined_dict:Dictionary = {
+			"details": scp_details, 
+			"list_details": scp_contained_details,
+			"count":  0,
+			"resources_data": get_self_ref.call().resources_data.call(),
+			# ------- functions
+			"perform_action": perform_action,
+			"get_self_ref": get_self_ref,
+			"get_data_snapshot": get_data_snapshot
+		}
+		event_instructions = event_arr[0].trigger_check.call(combined_dict)
+
+	return {
+		"event_instructions": event_instructions
+	}
+# ------------------------------------------------------------------------------	
+	
+# ------------------------------------------------------------------------------
+func build_event_options_list(_dict:Dictionary) -> Array:
+	var details:Dictionary = _dict.details
+	var list_details:Dictionary = _dict.list_details
+	var resources_data:Dictionary = _dict.resources_data
+	var research_completed:Array = list_details.data.research_completed
+	
+	print(details)
+	print(resources_data)
+						
+	return []
+# ------------------------------------------------------------------------------
