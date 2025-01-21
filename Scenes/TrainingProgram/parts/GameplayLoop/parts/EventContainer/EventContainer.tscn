@@ -42,7 +42,7 @@ font_color = Color(0.290354, 0.290354, 0.290353, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ygy2h"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ibtvp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uit1i"]
 bg_color = Color(0, 0, 0, 0.788235)
 
 [node name="EventContainer" type="MarginContainer"]
@@ -58,7 +58,7 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(980, 377)
+size = Vector2i(980, 433)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 custom_minimum_size = Vector2(725, 200)
@@ -80,18 +80,33 @@ theme_override_constants/separation = 20
 [node name="HeaderLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 label_settings = ExtResource("4_6n6tl")
+horizontal_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "INCOMING TRANSMISSION"
+label_settings = ExtResource("3_r48o5")
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_01nsj")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(900, 220)
 layout_mode = 2
 
 [node name="BodyContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer2"]
@@ -106,10 +121,10 @@ theme_override_styles/separator = SubResource("StyleBoxLine_01nsj")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 6
 theme_override_constants/separation = 20
 
-[node name="IconBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer" instance=ExtResource("6_fgcdw")]
+[node name="DialogBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer" instance=ExtResource("6_fgcdw")]
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 0
@@ -152,7 +167,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer/HBoxContainer"]
 layout_mode = 2
-text = "IMAGE"
+text = "VIDEO FEED"
 label_settings = ExtResource("3_r48o5")
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer/HBoxContainer"]
@@ -173,38 +188,45 @@ texture = SubResource("PlaceholderTexture2D_ygy2h")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="OptionsContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-
-[node name="OptionsContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer3"]
 layout_mode = 2
-text = "OPTIONS"
+text = "INPUT REQUIRED"
 label_settings = ExtResource("3_r48o5")
 
-[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer/HBoxContainer2"]
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_01nsj")
 
-[node name="OptionListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OptionListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 0
+
+[node name="NoteContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("7_xorcm")]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_ibtvp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_uit1i")
 icon = 36
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0.788235)

@@ -3,6 +3,7 @@ extends GameContainer
 
 @onready var HeaderLabel:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HeaderLabel
 
+@onready var DialogBtn:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
 @onready var ImageContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer
 @onready var ImageTextureRect:TextureRect = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer/MarginContainer/ImageTextureRect
 
@@ -10,17 +11,18 @@ extends GameContainer
 @onready var BodyLabelBtm:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
 @onready var BodyLabelTop:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
 
-@onready var OptionsContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer
-@onready var OptionsListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/OptionsContainer/OptionListContainer
+@onready var OptionsContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
+@onready var OptionsListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionListContainer
+@onready var NoteContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/NoteContainer
 
 @onready var NextBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/NextBtn
 
 enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
 
 const OptionListItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/OptionListItem.tscn")
+const OptionNoteItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/OptionNoteItem.tscn")
 
-var event_data:Array = [] 
-		
+var event_data:Array = [] 	
 var event_instructions:Array = []
 var option_selected_index:int = 0 : 
 	set(val):
@@ -90,15 +92,16 @@ func reset() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reset_content_nodes() -> void:
-	for node in [OptionsContainer, ImageContainer, BodyContainer]:
+	for node in [OptionsContainer, ImageContainer, BodyContainer, NoteContainer, OptionsContainer]:
 		node.hide()
 	
 	HeaderLabel.text = ""
 	BodyLabelBtm.text = ""
 	BodyLabelTop.text = ""
 	
-	for child in OptionsListContainer.get_children():
-		child.queue_free()	
+	for node in [NoteContainer, OptionsListContainer]:
+		for child in node.get_children():
+			child.queue_free()	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -200,6 +203,7 @@ func on_current_instruction_update() -> void:
 	# -----------------------------------
 	if "text" in current_instruction:
 		if current_instruction.text.size() > 0:
+			DialogBtn.icon = SVGS.TYPE.CONVERSATION
 			BodyContainer.show()
 			text_index = 0
 			current_text = current_instruction.text[0]
@@ -217,7 +221,10 @@ func on_current_instruction_update() -> void:
 	if "options" in current_instruction:
 		update_next_btn(false)
 		OptionsContainer.show()
+		NoteContainer.hide()
+		
 		option_selected_index = 0
+		DialogBtn.icon = SVGS.TYPE.QUESTION_MARK
 		
 		for child in OptionsListContainer.get_children():
 			child.queue_free()			
@@ -259,7 +266,9 @@ func on_option_select() -> void:
 	update_next_btn(false)
 	
 	var option:Dictionary = current_instruction.options[option_selected_index]
-
+	
+	NoteContainer.hide()
+	
 	for index in OptionsListContainer.get_child_count():
 		var node:Control = OptionsListContainer.get_child(index)
 		node.is_enabled = false
@@ -286,6 +295,20 @@ func on_option_selected_index() -> void:
 	if !is_node_ready():return
 	for child in OptionsListContainer.get_children():
 		child.is_selected = option_selected_index == child.index
+	
+	var options:Array = current_instruction.options
+	var option:Dictionary = options[option_selected_index]
+
+	for child in NoteContainer.get_children():
+		child.queue_free()	
+	NoteContainer.hide()
+	
+	if "notes" in option:
+		NoteContainer.show()
+		for data in option.notes:
+			var new_node:Control = OptionNoteItem.instantiate()
+			new_node.data = data
+			NoteContainer.add_child(new_node)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	

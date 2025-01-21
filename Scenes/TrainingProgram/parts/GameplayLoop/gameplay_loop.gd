@@ -195,12 +195,36 @@ var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires()
 var hired_lead_researchers_arr:Array = [] 
 
 var resources_data:Dictionary = { 
-	RESOURCE.TYPE.MONEY: {"amount": 500, "capacity": 9999},
-	RESOURCE.TYPE.ENERGY: {"amount": 25, "capacity": 28},
-	RESOURCE.TYPE.LEAD_RESEARCHERS: {"amount": 0, "capacity": 0},
-	RESOURCE.TYPE.STAFF: {"amount": 0, "capacity": 0},
-	RESOURCE.TYPE.SECURITY: {"amount": 0, "capacity": 0},
-	RESOURCE.TYPE.DCLASS: {"amount": 0, "capacity": 0},
+	RESOURCE.TYPE.MONEY: {
+		"amount": 500, 
+		"in_use": 0, 
+		"capacity": 9999
+	},
+	RESOURCE.TYPE.ENERGY: {
+		"amount": 10, 
+		"in_use": 0, 
+		"capacity": 50
+	},
+	RESOURCE.TYPE.LEAD_RESEARCHERS: {
+		"amount": 0, 
+		"in_use": 0, 
+		"capacity": 0
+	},
+	RESOURCE.TYPE.STAFF: {
+		"amount": 10, 
+		"in_use": 0, 
+		"capacity": 20
+	},
+	RESOURCE.TYPE.SECURITY: {
+		"amount": 10, 
+		"in_use": 0, 
+		"capacity": 20
+	},
+	RESOURCE.TYPE.DCLASS: {
+		"amount": 10, 
+		"in_use": 0, 
+		"capacity": 20
+	},
 }
 
 var tier_unlocked:Dictionary = {
@@ -1997,7 +2021,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.action_queue_data = initial_values.action_queue_data if no_save else restore_data.action_queue_data	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr if no_save else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr if no_save else restore_data.purchased_base_arr
-	SUBSCRIBE.resources_data = initial_values.resources_data if no_save else restore_data.resources_data	
+	SUBSCRIBE.resources_data = initial_values.resources_data #if no_save else restore_data.resources_data	
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms if no_save else restore_data.bookmarked_rooms
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list if no_save else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr

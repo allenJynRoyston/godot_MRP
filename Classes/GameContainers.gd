@@ -147,7 +147,9 @@ func set_percent(percentage: float) -> void:
 # ------------------------------------------------------------------------------	
 func _on_subviewport_child_changed() -> void:
 	if Subviewport != null and Subviewport.get_child_count() > 0:
-		Subviewport.size = Subviewport.get_child(0).size
+		await U.tick()
+		if Vector2i(Subviewport.size) != Vector2i(Subviewport.get_child(0).size):
+			Subviewport.size = Subviewport.get_child(0).size
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

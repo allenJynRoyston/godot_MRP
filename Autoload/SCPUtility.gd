@@ -74,7 +74,10 @@ var SCP_001:Dictionary = {
 					"amount": func() -> Dictionary:
 						return {
 							RESOURCE.TYPE.MONEY: 50,
-							RESOURCE.TYPE.DCLASS: 5	
+						},
+					"in_use": func() -> Dictionary:
+						return {
+							RESOURCE.TYPE.STAFF: 5
 						},
 				}
 			},	
@@ -834,28 +837,23 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 			"header": "Resources required",
 			"list": []
 		}
-		var missing_notes:Dictionary = {
-			"header": "Missing resources",
-			"list": []
-		}
+		var missing_resources:Array = []
 		
 	
 		for key in required_resources:
 			var amount:int = required_resources[key]
 			var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
 			required_notes.list.push_back({
+				"is_checked": resources_data[key].amount >= amount,
 				"icon": resource_details.icon, 
-				"text": "[%s] %s" % [resource_details.name, amount]
+				"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
 			})
 			
 			if resources_data[key].amount < amount:
-				missing_notes.list.push_back({
-					"icon": resource_details.icon, 
-					"text": "[%s] %s (You have %s)" % [resource_details.name, amount, resources_data[key].amount]
-				})
+				missing_resources.push_back(key)
 			
 		
-		var locked:bool = is_missing_traits or is_missing_specilization or missing_notes.list.size() > 0
+		var locked:bool = is_missing_traits or is_missing_specilization or missing_resources.size() > 0
 		
 		
 		var lock_str:String = "PREREQUISITES MISSING: "
@@ -867,15 +865,15 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 			for data in required_specilization.map(func(i): return RESEARCHER_UTIL.return_specialization_data(i)):
 				lock_str += " [SPECIALIZATION - %s]" % [data.fullname]
 		
-		if missing_notes.list.size() > 0 and (!is_missing_traits and !is_missing_specilization) :
-			lock_str = "[NOT ENOUGH RESOURCES]"
+		if missing_resources.size() > 0 and (!is_missing_traits and !is_missing_specilization) :
+			lock_str = "%s [NOT ENOUGH RESOURCES]" % [option.title]
 	
 		if !completed or (completed and repeatable):
 			options.push_back({
 				"completed": testing_ref in research_completed,
 				"repeatable": repeatable,
 				"locked": locked,
-				"hint": [required_notes, missing_notes],
+				"notes": [required_notes],
 				"title": "%s%s" % ["%s- " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.title] if !locked else "%s" % [lock_str], 
 				"description": "",
 				"val": testing_ref,

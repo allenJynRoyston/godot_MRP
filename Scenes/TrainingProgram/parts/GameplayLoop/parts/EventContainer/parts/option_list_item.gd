@@ -72,7 +72,7 @@ func on_show_description_update() -> void:
 	DescriptionLabel.show() if show_description else DescriptionLabel.hide()
 
 func on_data_update() -> void:
-	if !is_node_ready():return
+	if !is_node_ready() or data.is_empty():return
 	show_description = false
 	OptionTextBtn.title = data.title
 	LockedTextBtn.title = data.title

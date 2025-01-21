@@ -1,0 +1,61 @@
+[gd_scene load_steps=8 format=3 uid="uid://c03q3rrtdu3xl"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_note_item.gd" id="1_ug6vh"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_td3xd"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_dobgp"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_k66e0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjh7t"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_84316"]
+color = Color(1, 1, 1, 1)
+grow_end = -5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lwflp"]
+bg_color = Color(0.05, 0.05, 0.05, 0)
+
+[node name="OptionNoteItem" type="PanelContainer"]
+custom_minimum_size = Vector2(100, 0)
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qjh7t")
+script = ExtResource("1_ug6vh")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "MESSAGE"
+label_settings = ExtResource("2_td3xd")
+uppercase = true
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_84316")
+
+[node name="NoteList" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/NoteList"]
+layout_mode = 2
+
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/NoteList/HBoxContainer" instance=ExtResource("3_dobgp")]
+layout_mode = 2
+
+[node name="TextBtn" parent="MarginContainer/VBoxContainer/NoteList/HBoxContainer" instance=ExtResource("4_k66e0")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lwflp")
+panel_color = Color(0.05, 0.05, 0.05, 0)
