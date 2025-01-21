@@ -197,32 +197,32 @@ var hired_lead_researchers_arr:Array = []
 var resources_data:Dictionary = { 
 	RESOURCE.TYPE.MONEY: {
 		"amount": 500, 
-		"in_use": 0, 
+		"utilized": 0, 
 		"capacity": 9999
 	},
 	RESOURCE.TYPE.ENERGY: {
 		"amount": 10, 
-		"in_use": 0, 
+		"utilized": 0, 
 		"capacity": 50
 	},
 	RESOURCE.TYPE.LEAD_RESEARCHERS: {
 		"amount": 0, 
-		"in_use": 0, 
+		"utilized": 0, 
 		"capacity": 0
 	},
 	RESOURCE.TYPE.STAFF: {
 		"amount": 10, 
-		"in_use": 0, 
+		"utilized": 0, 
 		"capacity": 20
 	},
 	RESOURCE.TYPE.SECURITY: {
 		"amount": 10, 
-		"in_use": 0, 
+		"utilized": 0, 
 		"capacity": 20
 	},
 	RESOURCE.TYPE.DCLASS: {
 		"amount": 10, 
-		"in_use": 0, 
+		"utilized": 0, 
 		"capacity": 20
 	},
 }
@@ -838,15 +838,23 @@ func next_day() -> void:
 #region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
 func on_completed_action(action_item:Dictionary) -> void:
 	match action_item.action:
+		# RUNS AFTER TESTING ACCESSMENT IS COMPLETED
 		ACTION.AQ.ACCESSING:
-			var event_res:Dictionary = await check_events(action_item.ref, SCP.EVENT_TYPE.START_TESTING, true)
-			update_scp_testing(action_item.ref, event_res.val)
+			var scp_ref:int = action_item.ref 
+			var event_res:Dictionary = await check_events(scp_ref, SCP.EVENT_TYPE.START_TESTING, true)
+			var testing_ref:int = event_res.val			
+			update_scp_testing(action_item.ref, testing_ref)
 		# ----------------------------
-		ACTION.AQ.TESTING:  # when testing is completed
+		# RUNS AFTER A TESTING EVENT HAS COMPLETED
+		ACTION.AQ.TESTING:  
 			var scp_ref:int = action_item.ref 
 			var testing_ref:int = action_item.props.testing_ref
+			var utilized_amounts:Dictionary = action_item.props.utilized_amounts
 			var res:Dictionary = find_in_contained(scp_ref)
 			var index:int = res.index
+			
+			# refunds utilized amounts
+			SUBSCRIBE.resources_data = SCP_UTIL.calculate_refunded_utilizied(utilized_amounts, resources_data)
 			
 			# trigger post research event
 			await check_testing_events(scp_ref, testing_ref)
@@ -858,7 +866,8 @@ func on_completed_action(action_item:Dictionary) -> void:
 			
 			# continue testing
 			var event_res:Dictionary = await check_events(scp_ref, SCP.EVENT_TYPE.START_TESTING, true)
-			update_scp_testing(scp_ref, event_res.val)			
+			var new_testing_ref:int = event_res.val
+			update_scp_testing(scp_ref, new_testing_ref)			
 		# ----------------------------
 		ACTION.AQ.CONTAIN:
 			# first, remove from available list...
@@ -1103,6 +1112,9 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 	if testing_ref == -1:
 		scp_data.contained_list[index].current_activity = {}
 	else:
+		# calculate resources data usage
+		SUBSCRIBE.resources_data = 	SCP_UTIL.calculate_testing_costs(scp_ref, testing_ref, resources_data)
+		
 		# else add research id and being progressZ
 		scp_data.contained_list[index].current_activity = { 
 			"testing_ref": testing_ref,
@@ -1116,10 +1128,13 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 				"title": "TESTING",
 				"icon": SVGS.TYPE.RESEARCH,
 			},
-			"completed_at": 3,
+			"completed_at": 7,
 			"description": "Testing SCP-%s." % [scp_details.item_id],
 			"location": list_data.location,
-		}, {"testing_ref": testing_ref})			
+		}, {
+			"testing_ref": testing_ref, 
+			"utilized_amounts": SCP_UTIL.return_utilized_amounts(scp_ref, testing_ref)
+		})			
 		
 # -----------------------------------
 
@@ -2021,7 +2036,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.action_queue_data = initial_values.action_queue_data if no_save else restore_data.action_queue_data	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr if no_save else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr if no_save else restore_data.purchased_base_arr
-	SUBSCRIBE.resources_data = initial_values.resources_data #if no_save else restore_data.resources_data	
+	SUBSCRIBE.resources_data = initial_values.resources_data if no_save else restore_data.resources_data	
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms if no_save else restore_data.bookmarked_rooms
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list if no_save else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr

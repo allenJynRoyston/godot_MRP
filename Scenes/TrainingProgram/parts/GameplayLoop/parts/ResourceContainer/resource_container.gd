@@ -80,6 +80,7 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 
 	for key in resources_data:
 		var data:Dictionary = resources_data[key]
+		
 		match key:
 			RESOURCE.TYPE.MONEY:
 				ResourceItemMoney.title = "%s" % [data.amount]
@@ -88,9 +89,9 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 			RESOURCE.TYPE.LEAD_RESEARCHERS:
 				ResourceItemLeadResearchers.title = "%s" % [data.amount]
 			RESOURCE.TYPE.STAFF:
-				ResourceItemStaff.title = "%s/%s" % [data.amount, data.capacity]
+				ResourceItemStaff.title = "%s%s/%s" % [data.amount, "/%s" % [data.utilized] if data.utilized > 0 else "",  data.capacity]
 			RESOURCE.TYPE.SECURITY:
-				ResourceItemSecurity.title = "%s/%s" % [data.amount, data.capacity]
+				ResourceItemSecurity.title = "%s%s/%s" % [data.amount, "/%s" % [data.utilized] if data.utilized > 0 else "",  data.capacity]
 			RESOURCE.TYPE.DCLASS:
-				ResourceItemDClass.title = "%s/%s" % [data.amount, data.capacity]
+				ResourceItemDClass.title = "%s%s/%s" % [data.amount, "/%s" % [data.utilized] if data.utilized > 0 else "",  data.capacity]
 # --------------------------------------------------------------------------------------------------

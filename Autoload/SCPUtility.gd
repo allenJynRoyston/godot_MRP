@@ -1,5 +1,7 @@
 extends Node
 
+const prefered_greeting:String = "Sir"
+
 var SCP_001:Dictionary = {
 	"item_id": "001",
 	"name": "THE DOOR",
@@ -67,7 +69,7 @@ var SCP_001:Dictionary = {
 			"prerequisites": func() -> Dictionary:
 				return {
 					"traits": [],
-					"specializations": [RESEARCHER.SPECALIZATION.ENGINEERING]
+					"specializations": []
 				},
 			"requirements": {
 				"resources": {
@@ -75,7 +77,7 @@ var SCP_001:Dictionary = {
 						return {
 							RESOURCE.TYPE.MONEY: 50,
 						},
-					"in_use": func() -> Dictionary:
+					"utilized": func() -> Dictionary:
 						return {
 							RESOURCE.TYPE.STAFF: 5
 						},
@@ -101,14 +103,18 @@ var SCP_001:Dictionary = {
 			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
 				return {
-					"traits": [RESEARCHER.TRAITS.DILIGENT]
+					"traits": [],
+					"specializations": []
 				},
 			"requirements": {
 				"resources": {
 					"amount": func() -> Dictionary:
 						return {
 							RESOURCE.TYPE.MONEY: 50,
-							RESOURCE.TYPE.STAFF: 5	
+						},
+					"utilized": func() -> Dictionary:
+						return {
+							RESOURCE.TYPE.STAFF: 10
 						},
 				}
 			},
@@ -121,14 +127,20 @@ var SCP_001:Dictionary = {
 			"title": "Research three",
 			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
-				return {},
+				return {
+					"traits": [],
+					"specializations": []
+				},
 			"requirements": {
 				"resources": {
 					"amount": func() -> Dictionary:
 						return {
 							RESOURCE.TYPE.MONEY: 50,
-							RESOURCE.TYPE.STAFF: 5	
 						},
+					"utilized": func() -> Dictionary:
+						return {
+							RESOURCE.TYPE.DCLASS: 12
+						},						
 				}
 			},
 			# -------------------------
@@ -263,15 +275,19 @@ var SCP_001:Dictionary = {
 							return {
 								"header": "SCP-%s: START TESTING EVENT" % [details.item_id],
 								"img_src": details.img_src,
+								"portrait": {
+									"title": "RESEARCHER %s" % [research_details.name],
+									"img_src": 	research_details.img_src
+								},
 								"text": [
-									"Researcher %s presents you with the following testing options:" % [research_details.name]
+									"%s, these are my proposals for SCP-%s." % [prefered_greeting, details.item_id]
 								],
 								"options": build_event_options_list(_dict, option_selected, onSelected)
 							},
 						func() -> Dictionary:
 							return {
 								"text": [
-									"You begin testing." if option_selected.val != -1 else "You've stopped testing."
+									"I'll begin immediately." if option_selected.val != -1 else "Probably for the best."
 								],
 								"set_return_val": func() -> Dictionary:
 									return option_selected,
@@ -688,6 +704,51 @@ func calculate_ongoing_containment(ref:int, resources_data:Dictionary, add:bool 
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func return_utilized_amounts(scp_ref:int, testing_ref:int) -> Dictionary:
+	var scp_data:Dictionary = return_data(scp_ref)
+	var resource_requirements:Dictionary = scp_data.testing_options[testing_ref].requirements.resources
+	
+	return resource_requirements.utilized.call() if "utilized" in resource_requirements else {}
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calculate_testing_costs(scp_ref:int, testing_ref:int, resources_data:Dictionary) -> Dictionary:
+	var scp_data:Dictionary = return_data(scp_ref)
+	var resource_data_copy:Dictionary = resources_data.duplicate(true)
+	var resource_requirements:Dictionary = scp_data.testing_options[testing_ref].requirements.resources
+	
+	if "utilized" in resource_requirements:
+		var dict:Dictionary = resource_requirements.utilized.call()
+		for key in dict:
+			var amount:int = dict[key]
+			resource_data_copy[key].utilized += amount
+			resource_data_copy[key].amount -= amount
+			
+	if "amount" in resource_requirements:
+		var dict:Dictionary = resource_requirements.amount.call()
+		for key in dict:
+			var amount:int = dict[key]
+			resource_data_copy[key].amount -= amount
+			if resource_data_copy[key].amount < 0:
+				resource_data_copy[key].amount = 0
+						
+	return resource_data_copy	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calculate_refunded_utilizied(utilized_data:Dictionary, resources_data:Dictionary) -> Dictionary:
+	var resource_data_copy:Dictionary = resources_data.duplicate(true)
+	for key in utilized_data:
+		resource_data_copy[key].utilized -= utilized_data[key]
+		resource_data_copy[key].amount += utilized_data[key]
+		if resource_data_copy[key].amount > resources_data[key].capacity:
+			resource_data_copy[key].amount = resources_data[key].capacity
+	
+	return resource_data_copy
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
 func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictionary) -> Array: 
 	return SHARED_UTIL.return_unavailable_rooms(return_data(ref), room_config, scp_data)
 # ------------------------------------------------------------------------------	
@@ -832,16 +893,22 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 		
 		# -----------
 		var not_enough_resources:bool = false
-		var required_resources:Dictionary = option.requirements.resources.amount.call()
+		var required_resources_amount:Dictionary = option.requirements.resources.amount.call() if "amount" in option.requirements.resources else {}
+		var required_resources_utilized:Dictionary = option.requirements.resources.utilized.call() if "utilized" in option.requirements.resources else {}
 		var required_notes:Dictionary = {
 			"header": "Resources required",
 			"list": []
 		}
+		var utilized_notes:Dictionary = {
+			"header": "Resources utilized",
+			"list": []
+		}		
+		
 		var missing_resources:Array = []
 		
 	
-		for key in required_resources:
-			var amount:int = required_resources[key]
+		for key in required_resources_amount:
+			var amount:int = required_resources_amount[key]
 			var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
 			required_notes.list.push_back({
 				"is_checked": resources_data[key].amount >= amount,
@@ -851,6 +918,18 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 			
 			if resources_data[key].amount < amount:
 				missing_resources.push_back(key)
+				
+		for key in required_resources_utilized:
+			var amount:int = required_resources_utilized[key]
+			var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
+			utilized_notes.list.push_back({
+				"is_checked": resources_data[key].amount >= amount,
+				"icon": resource_details.icon, 
+				"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
+			})
+			
+			if resources_data[key].amount < amount:
+				missing_resources.push_back(key)				
 			
 		
 		var locked:bool = is_missing_traits or is_missing_specilization or missing_resources.size() > 0
@@ -873,7 +952,7 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 				"completed": testing_ref in research_completed,
 				"repeatable": repeatable,
 				"locked": locked,
-				"notes": [required_notes],
+				"notes": [required_notes, utilized_notes],
 				"title": "%s%s" % ["%s- " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.title] if !locked else "%s" % [lock_str], 
 				"description": "",
 				"val": testing_ref,

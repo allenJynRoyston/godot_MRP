@@ -138,6 +138,9 @@ func generate_researcher() -> Array:
 	
 	var rval:int = U.generate_rand(0, 9)
 	var lval:int = U.generate_rand(0, 9)
+	
+	# TODO: add this in later
+	# var img_src:String = "res://Media/images/example_doctor.jpg"
 		
 	return [ uid, lname, traits, specialization, rval, lval, 0, 10]
 # ------------------------------------------------------------------------------
@@ -152,6 +155,7 @@ func get_user_object(val:Array) -> Dictionary:
 	var l_val:int = val[5]
 	var stress:int = val[6]
 	var sanity:int = val[7] 
+	var img_src:String = "res://Media/images/example_doctor.jpg"
 	
 	var lname:String = get_lname(name_val)
 	
@@ -165,7 +169,8 @@ func get_user_object(val:Array) -> Dictionary:
 		
 	return {
 		"uid": uid_val,
-		"name": "DR %s. %s" % [lname],
+		"name": "%s" % [lname],
+		"img_src": img_src,
 		"traits": traits,
 		"specializations": specializations,
 		"r_val": r_val,
@@ -178,13 +183,13 @@ func get_user_object(val:Array) -> Dictionary:
 # ------------------------------------------------------------------------------
 func get_lname(i:int) -> String:
 	match i:
-		0: return 'A. RYAN'
-		1: return 'B. MARTIN'
-		2: return 'C. OYAS'
-		3: return 'D. SINCLAIRE'
-		4: return 'E. WOODS'
-		5: return 'F. VIAJAR'
-	return 'R. SMITH'
+		0: return 'RYAN'
+		1: return 'MARTIN'
+		2: return 'OYAS'
+		3: return 'SINCLAIRE'
+		4: return 'WOODS'
+		5: return 'VIAJAR'
+	return 'SMITH'
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

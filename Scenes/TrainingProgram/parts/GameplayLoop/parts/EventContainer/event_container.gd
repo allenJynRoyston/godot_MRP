@@ -1,11 +1,16 @@
 @tool
 extends GameContainer
 
+@onready var PanelRoot:PanelContainer = $SubViewport/PanelContainer
 @onready var HeaderLabel:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HeaderLabel
 
 @onready var DialogBtn:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
 @onready var ImageContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer
 @onready var ImageTextureRect:TextureRect = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ImageContainer/MarginContainer/ImageTextureRect
+
+@onready var PortraitContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/PortraitContainer
+@onready var PortraitNameLabel:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/PortraitContainer/HBoxContainer/PortraitNameLabel
+@onready var PortraitTextureRect:TextureRect = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/PortraitContainer/MarginContainer/PortraitTexture
 
 @onready var BodyContainer:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
 @onready var BodyLabelBtm:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
@@ -79,6 +84,7 @@ func reset() -> void:
 	if !is_node_ready():return
 	update_next_btn(false)
 	NextBtn.title = ""
+	PanelRoot.modulate = Color.TRANSPARENT
 	
 	current_controls = CONTROLS.FREEZE
 	current_event_instruction = {} 
@@ -92,9 +98,9 @@ func reset() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reset_content_nodes() -> void:
-	for node in [OptionsContainer, ImageContainer, BodyContainer, NoteContainer, OptionsContainer]:
+	for node in [OptionsContainer, ImageContainer, BodyContainer, NoteContainer, OptionsContainer, PortraitContainer]:
 		node.hide()
-	
+	PanelRoot.modulate = Color(1, 1, 1, 0)
 	HeaderLabel.text = ""
 	BodyLabelBtm.text = ""
 	BodyLabelTop.text = ""
@@ -186,8 +192,13 @@ func on_current_instruction_update() -> void:
 	if !is_node_ready() or current_instruction.is_empty():return
 	update_next_btn(false)
 	
+	# allows for a smoother transition in
+	tween_reveal(PanelRoot, "modulate", Color(1, 1, 1, 1), 0.7)
+	
+	# -----------------------------------
 	if "header" in current_instruction:
 		HeaderLabel.text = "%s" % [current_instruction.header]
+	# -----------------------------------
 	
 	# -----------------------------------
 	if "img_src" in current_instruction:
@@ -195,6 +206,14 @@ func on_current_instruction_update() -> void:
 		ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
 	# -----------------------------------
 	
+	# -----------------------------------
+	if "portrait" in current_instruction:
+		var p_details:Dictionary = current_instruction.portrait
+		PortraitContainer.show()
+		PortraitNameLabel.text = p_details.title if "title" in p_details else "[REDACTED]"
+		PortraitTextureRect.texture = CACHE.fetch_image(p_details.img_src if "img_src" in p_details else "")
+	# -----------------------------------
+
 	# -----------------------------------
 	if "set_return_val" in current_instruction:
 		event_output = current_instruction.set_return_val.call()
@@ -211,10 +230,10 @@ func on_current_instruction_update() -> void:
 			current_controls = CONTROLS.TEXT_REVEAL
 			# wait for all texts in array to finish before being allowed to continue
 			await text_phase_complete
-	else:
-		BodyContainer.hide()
-		BodyLabelBtm.text = ""
-		BodyLabelTop.text = ""
+	#else:
+		#BodyContainer.hide()
+		#BodyLabelBtm.text = ""
+		#BodyLabelTop.text = ""
 	# -----------------------------------
 	
 	# -----------------------------------
@@ -310,6 +329,13 @@ func on_option_selected_index() -> void:
 			new_node.data = data
 			NoteContainer.add_child(new_node)
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------	
+func tween_reveal(node:Control, property:String, val:Color, duration:float = 0.5) -> void:
+	var new_tween = create_tween()
+	new_tween.tween_property(node, property, val, duration).set_trans(Tween.TRANS_LINEAR)
+	new_tween.play()
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func tween_text_reveal(duration:float = 0.3) -> void:

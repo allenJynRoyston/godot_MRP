@@ -15,6 +15,6 @@ icon = 3
 
 [node name="ItemLabel" type="Label" parent="."]
 layout_mode = 2
-text = "title"
+text = "10/10 (5)"
 label_settings = ExtResource("3_fsctv")
 horizontal_alignment = 1

@@ -5,12 +5,15 @@ var svg_cache:Array = []
 var image_cache:Array = []
 
 # ------------------------------------------------------------------------------
-func fetch_image(src:String) -> CompressedTexture2D:
-	var cache_res:Array = image_cache.filter(func(i):return i.src == src)
-	if cache_res.size() > 0:
-		return cache_res[0].texture
+func fetch_image(src:String = "") -> CompressedTexture2D:
+	var new_texture:CompressedTexture2D
 	
-	var new_texture:CompressedTexture2D = load(src)
+	if src != "":
+		var cache_res:Array = image_cache.filter(func(i):return i.src == src)
+		if cache_res.size() > 0:
+			return cache_res[0].texture
+		
+		new_texture = load(src)
 
 	# if image fails or does not exists, return redacted image
 	if new_texture == null:
