@@ -20,6 +20,7 @@ size_flags_vertical = 0
 layout_mode = 2
 text = "Placement"
 label_settings = ExtResource("2_83yxk")
+uppercase = true
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer"]
 layout_mode = 2

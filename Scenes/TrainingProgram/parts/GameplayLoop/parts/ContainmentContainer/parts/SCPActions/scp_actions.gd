@@ -185,7 +185,7 @@ func on_data_update() -> void:
 			var scp_list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
 			if scp_list.size() > 0:			
 				var active_scp_data:Dictionary = scp_list[0]
-				var can_transfer:bool = true
+				var can_transfer:bool = active_scp_data.current_activity.is_empty()
 				var can_destroy:bool = false
 				
 				if assign_only:
@@ -257,7 +257,7 @@ func on_data_update() -> void:
 								]
 							}
 						)
-							
+						
 						list.push_back(
 							{
 								"title":"Transfer SCP" if can_transfer else "Transfer SCP (Unavailable)",
@@ -265,14 +265,14 @@ func on_data_update() -> void:
 								"onClick": func() -> void:
 									if can_transfer:
 										onAction.call(ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION),
-								"bulletpoints": [] if can_destroy else [
+								"bulletpoints": [] if can_transfer else [
 									{
-										"header": "Missing research:",
+										"header": "Action unavailable",
 										"list": [
 											{
-												"icon": SVGS.TYPE.EMPTY_CHECKBOX, 
+												"icon": SVGS.TYPE.CLEAR, 
 												"text": func() -> String:
-													return "Room Translocation Engine.",
+													return "Testing ongoing.",
 											}	
 										]
 									}
@@ -289,12 +289,12 @@ func on_data_update() -> void:
 										pass,	
 								"bulletpoints": [] if can_destroy else [
 									{
-										"header": "Missing research:",
+										"header": "Action unavailable",
 										"list": [
 											{
-												"icon": SVGS.TYPE.EMPTY_CHECKBOX, 
+												"icon": SVGS.TYPE.CLEAR, 
 												"text": func() -> String:
-													return "Nuclear Detonation Controls",
+													return "Technology missing",
 											}	
 										]
 									}
