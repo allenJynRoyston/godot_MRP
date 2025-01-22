@@ -209,19 +209,19 @@ var resources_data:Dictionary = {
 		"capacity": 0
 	},
 	RESOURCE.TYPE.STAFF: {
-		"amount": 10, 
+		"amount": 0, 
 		"utilized": 0, 
-		"capacity": 20
+		"capacity": 0
 	},
 	RESOURCE.TYPE.SECURITY: {
-		"amount": 10, 
+		"amount": 0, 
 		"utilized": 0, 
-		"capacity": 20
+		"capacity": 0
 	},
 	RESOURCE.TYPE.DCLASS: {
-		"amount": 10, 
+		"amount": 0, 
 		"utilized": 0, 
-		"capacity": 20
+		"capacity": 0
 	},
 }
 
@@ -1443,8 +1443,7 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE
 					
 				ACTION.PURCHASE.FACILITY_ITEM:
-					selected_shop_item = response.selected
-					SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_rooms(selected_shop_item.ref, room_config)			
+					selected_shop_item = response.selected		
 					current_shop_step = SHOP_STEPS.PLACEMENT
 				
 				ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT:
@@ -1452,8 +1451,9 @@ func on_current_shop_step_update() -> void:
 					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE
 		# ---------------
 		SHOP_STEPS.PLACEMENT:		
+			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_rooms(selected_shop_item.ref, room_config)	
 			# sort which rooms can be built in
-			await show_only([Structure3dContainer, LocationContainer])			
+			await show_only([Structure3dContainer, LocationContainer, ActionQueueContainer])			
 			#Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
 			
@@ -1526,7 +1526,7 @@ func on_current_shop_step_update() -> void:
 			})
 			
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.START
+			current_shop_step = SHOP_STEPS.PLACEMENT
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
 			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
@@ -1753,7 +1753,7 @@ func on_current_contain_step_update() -> void:
 					"icon": SVGS.TYPE.CONTAIN,
 				},
 				"completed_at": scp_details.containment_time.call(),
-				"description": "SCP-%s %s." % [selected_contain_item.item_id, "containment in progress" if selected_contain_item.is_new_transfer else "transfer in progress" ],
+				"description": "SCP-%s %s." % [selected_contain_item.item_id, "CONTAINMENT" if selected_contain_item.is_new_transfer else "TRANSFER" ],
 				"location": current_location.duplicate()
 			})			
 			

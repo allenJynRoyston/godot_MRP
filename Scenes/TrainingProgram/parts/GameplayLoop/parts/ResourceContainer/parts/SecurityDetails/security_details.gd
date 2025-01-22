@@ -1,6 +1,121 @@
 extends PanelContainer
 
+@onready var CapacityList:VBoxContainer = $VBoxContainer/HBoxContainer/Capacity/CapacityList
+@onready var UtilizedList:VBoxContainer = $VBoxContainer/HBoxContainer/Utilized/UtilizedList
+
+@onready var TotalCapacity:Label = $VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/TotalCapacity
+@onready var TotalUtilized:Label = $VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2/TotalUtilized
+@onready var TotalAvailable:Label = $VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer4/TotalAvailable
+@onready var TotalFree:Label = $VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3/TotalFree
+
+const DetailBtnPreload:PackedScene = preload("res://UI/Buttons/DetailBtn/DetailBtn.tscn")
+
 var gameplay_node:Control
 
+var resources_data:Dictionary = {}
+
+var purchased_facility_arr:Array = [] 
+
+var action_queue_data:Array = []
+
+var scp_data:Dictionary = {}
+
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_scp_data(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
+	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_scp_data(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
+	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	
 func _ready() -> void:
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
+
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
+	if !is_node_ready():return
+	var rd:Dictionary = resources_data[RESOURCE.TYPE.SECURITY]
+	TotalCapacity.text = "%s" % [rd.capacity]
+	TotalUtilized.text = "%s" % [rd.utilized]
+	TotalAvailable.text = "%s" % [rd.amount + rd.utilized]
+	TotalFree.text = "%s" % [rd.amount]
+
+# -----------------------------------
+func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
+	action_queue_data = new_val
+	if !is_node_ready():return
+	build_list()
+# -----------------------------------
+
+# -----------------------------------
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val
+	if !is_node_ready():return
+	build_list()
+# -----------------------------------
+
+# -----------------------------------
+func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
+	purchased_facility_arr = new_val
+	if !is_node_ready():return
+	build_list()
+# -----------------------------------	
+
+# -----------------------------------
+func build_list() -> void:
+	for node in [CapacityList, UtilizedList]:
+		for child in node.get_children():
+			child.queue_free()			
+			
+	# --- SEARCHES PURCHASED FACILITIES FOR CAPACITY 
+	for item in purchased_facility_arr:
+		var build_complete_list:Array = ROOM_UTIL.return_build_complete(item.data.ref)
+		var details:Dictionary = ROOM_UTIL.return_data(item.data.ref)
+		for i in build_complete_list:
+			if i.resource.ref == RESOURCE.TYPE.SECURITY and i.type == "capacity":
+				var new_node:BtnBase = DetailBtnPreload.instantiate()
+				new_node.title = details.name
+				new_node.icon = i.resource.icon
+				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
+#
+				new_node.onClick = func() -> void:
+					SUBSCRIBE.current_location = item.location.duplicate()
+
+				CapacityList.add_child(new_node)	#
+
+	# --- SEARCHES SCPS FOR CAPACITY 
+	for item in scp_data.contained_list:
+		var list_data:Array = SCP_UTIL.return_initial_containment_rewards(item.ref)
+		var details:Dictionary = SCP_UTIL.return_data(item.ref)
+		for i in list_data:
+			if i.resource.ref == RESOURCE.TYPE.SECURITY and i.type == "capacity":
+				var new_node:BtnBase = DetailBtnPreload.instantiate()
+				new_node.title = "SCP-%s" % [details.item_id]
+				new_node.icon = i.resource.icon
+				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
+				
+				new_node.onClick = func() -> void:
+					# TODO: bug is here - only links to the correct location once you've seen the rooms for some reason
+					SUBSCRIBE.current_location = item.location.duplicate()
+
+				CapacityList.add_child(new_node)
+				
+	for item in action_queue_data:
+		if "props" in item and "utilized_amounts" in item.props:
+			for key in item.props.utilized_amounts:
+				if key == RESOURCE.TYPE.SECURITY:
+					var details:Dictionary = SCP_UTIL.return_data(item.ref)
+					var amount:int = item.props.utilized_amounts[key]
+					var new_node:BtnBase = DetailBtnPreload.instantiate()
+					new_node.title = "SCP-%s" % [details.item_id]
+					new_node.icon = SVGS.TYPE.SECURITY
+					new_node.amount = "%s%s" % ["+" if amount >= 0 else "-", amount]
+					
+					new_node.onClick = func() -> void:
+						SUBSCRIBE.current_location = item.location.duplicate()
+
+					UtilizedList.add_child(new_node)

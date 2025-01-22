@@ -35,6 +35,7 @@ visible = false
 layout_mode = 2
 
 [node name="EnergyDetails" parent="MarginContainer" instance=ExtResource("3_mv5r7")]
+visible = false
 layout_mode = 2
 
 [node name="LeadResearcherDetails" parent="MarginContainer" instance=ExtResource("4_kw3da")]
@@ -43,7 +44,6 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="StaffDetails" parent="MarginContainer" instance=ExtResource("5_saucg")]
-visible = false
 layout_mode = 2
 
 [node name="DClassDetails" parent="MarginContainer" instance=ExtResource("6_st8v5")]

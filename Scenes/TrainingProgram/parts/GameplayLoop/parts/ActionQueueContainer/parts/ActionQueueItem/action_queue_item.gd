@@ -74,45 +74,6 @@ func on_data_update() -> void:
 	DaysLeftLabel.text = "%s DAYS" % [count.completed_at - count.day]
 	ProgressBarUI.value = (count.day*1.0 / count.completed_at*1.0)	
 	
-		#match data.action:
-			#ACTION.AQ.CONTAIN:
-				#item_data = SCP_UTIL.return_data(data.data.ref)
-				#TitleBtn.icon = SVGS.TYPE.CONTAIN
-				#requirements = []
-				#TitleBtn.title = "CONTAINMENT IN PROGRESS"
-				#NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
-			#ACTION.AQ.TRANSFER:
-				#item_data = SCP_UTIL.return_data(data.data.ref)
-				#TitleBtn.icon = SVGS.TYPE.CONTAIN
-				#requirements = []
-				#TitleBtn.title = "TRANSFER IN PROGRESS"
-				#NameLabel.text = "SCP-%s \"%s\"" % [item_data.item_id, item_data.name]
-			#ACTION.AQ.RESEARCH_ITEM:
-				#item_data = RD_UTIL.return_data(data.data.ref)
-				#TitleBtn.icon = SVGS.TYPE.RESEARCH
-				#requirements = RD_UTIL.return_purchase_cost(data.data.ref) 
-				#TitleBtn.title = "RESEARCHING"
-				#NameLabel.text = "%s" % [item_data.name]
-			#ACTION.AQ.BUILD_ITEM:
-				#item_data = ROOM_UTIL.return_data(data.data.ref)
-				#TitleBtn.icon = SVGS.TYPE.BUILD
-				#requirements = ROOM_UTIL.return_purchase_cost(data.data.ref) 
-				#TitleBtn.title = "UNDER CONSTRUCTION"
-				#NameLabel.text = "%s" % [item_data.name]
-			#ACTION.AQ.BASE_ITEM:
-				#item_data = BASE_UTIL.return_data(data.data.ref)
-				#TitleBtn.icon = SVGS.TYPE.CONTAIN
-				#requirements = BASE_UTIL.return_purchase_cost(data.data.ref) 
-				#TitleBtn.title = "CONSTRUCTING"
-				#NameLabel.text = "%s" % [item_data.name]
-			#ACTION.AQ.RESEARCHING:
-				#TitleBtn.icon = SVGS.TYPE.CONTAIN
-				##requirements = BASE_UTIL.return_purchase_cost(data.data.ref) 
-				#TitleBtn.title = "RESEARCHING"
-				#NameLabel.text = "%s" % ["SCP-NAME-GOES-HERE"]
-		#
-		#DaysLeftLabel.text = "%s DAYS LEFT" % [data.build_time - data.days_in_queue]
-		#ProgressBarUI.value = (data.days_in_queue*1.0 / data.build_time*1.0)
 
 func on_requirements_update() -> void:
 	if is_node_ready():

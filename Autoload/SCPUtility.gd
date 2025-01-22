@@ -612,7 +612,7 @@ var SCP_002:Dictionary = {
 				},
 			"capacity": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.STAFF: 5
+					
 				},
 		}	
 	},
@@ -753,13 +753,13 @@ func return_ongoing_containment_rewards(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_initial_containment_bonus(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:
-	return SHARED_UTIL.calculate_resources(return_data(ref), "initial_containment", resources_data, add)
+func calculate_initial_containment_bonus(ref:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:
+	return SHARED_UTIL.calculate_resources(return_data(ref), "initial_containment", resources_data, refund)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_ongoing_containment(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:
-	return SHARED_UTIL.calculate_resources(return_data(ref), "ongoing_containment", resources_data, add)
+func calculate_ongoing_containment(ref:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:
+	return SHARED_UTIL.calculate_resources(return_data(ref), "ongoing_containment", resources_data, refund)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

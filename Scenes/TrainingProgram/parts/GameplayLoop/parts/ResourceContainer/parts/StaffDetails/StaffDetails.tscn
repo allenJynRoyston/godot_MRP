@@ -6,14 +6,14 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkdk1"]
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_nvgkd"]
+color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+grow_begin = -200.0
+
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_tttla"]
 color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 grow_begin = -12.0
 vertical = true
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_nvgkd"]
-color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-grow_begin = -200.0
 
 [node name="StaffDetails" type="PanelContainer"]
 offset_right = 40.0
@@ -23,71 +23,7 @@ script = ExtResource("1_atymr")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 15
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="IncomeContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/IncomeContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/IncomeContainer/HBoxContainer"]
-layout_mode = 2
-text = "Income"
-label_settings = ExtResource("2_v3dm5")
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/IncomeContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="IncomeList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/IncomeContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="DetailBtn2" parent="VBoxContainer/HBoxContainer/IncomeContainer/IncomeList" instance=ExtResource("3_vdt7j")]
-layout_mode = 2
-title = "Item A"
-amount = 99
-icon = 30
-
-[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_tttla")
-
-[node name="ExpenseContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ExpenseContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/ExpenseContainer/HBoxContainer"]
-layout_mode = 2
-text = "Expenses"
-label_settings = ExtResource("2_v3dm5")
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/ExpenseContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ExpenseList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/ExpenseContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="DetailBtn" parent="VBoxContainer/HBoxContainer/ExpenseContainer/ExpenseList" instance=ExtResource("3_vdt7j")]
-layout_mode = 2
-title = "Item A"
-amount = 99
-icon = 30
+theme_override_constants/separation = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -115,10 +51,29 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Total income:"
+text = "Housing available:"
 label_settings = ExtResource("2_v3dm5")
 
-[node name="TotalIncome" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="TotalCapacity" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "99"
+label_settings = ExtResource("2_v3dm5")
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_nvgkd")
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Staff hired:"
+label_settings = ExtResource("2_v3dm5")
+
+[node name="TotalAvailable" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 text = "99"
 label_settings = ExtResource("2_v3dm5")
@@ -130,25 +85,96 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Total expenses:"
+text = "Staff utilized:
+"
 label_settings = ExtResource("2_v3dm5")
 
-[node name="TotalExpense" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="TotalUtilized" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "99"
 label_settings = ExtResource("2_v3dm5")
 horizontal_alignment = 2
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_nvgkd")
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TotalDiff" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Available:"
+label_settings = ExtResource("2_v3dm5")
+
+[node name="TotalFree" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "999"
 label_settings = ExtResource("2_v3dm5")
 horizontal_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Capacity" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Capacity"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Capacity/HBoxContainer"]
+layout_mode = 2
+text = "Housing"
+label_settings = ExtResource("2_v3dm5")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/Capacity/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CapacityList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Capacity"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="DetailBtn2" parent="VBoxContainer/HBoxContainer/Capacity/CapacityList" instance=ExtResource("3_vdt7j")]
+layout_mode = 2
+title = "Item A"
+amount = 99
+icon = 30
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_tttla")
+
+[node name="Utilized" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Utilized"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Utilized/HBoxContainer"]
+layout_mode = 2
+text = "Staffing"
+label_settings = ExtResource("2_v3dm5")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/Utilized/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="UtilizedList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Utilized"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="DetailBtn" parent="VBoxContainer/HBoxContainer/Utilized/UtilizedList" instance=ExtResource("3_vdt7j")]
+layout_mode = 2
+title = "Item A"
+amount = 99
+icon = 30

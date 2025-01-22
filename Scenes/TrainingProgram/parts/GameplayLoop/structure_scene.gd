@@ -48,6 +48,8 @@ var setup_complete:bool = false
 
 var previous_grid_size:Vector2
 
+var previous_location_data:String = "" 
+
 #var previous_location:Dictionary = current_location
 #
 #var room_designations_list:Array = []
@@ -147,33 +149,33 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready():return
 	CursorLabel.text = ">> FLOOR %s" % [current_location.floor]
-	
-	GBL.add_to_animation_queue(self)
-	
-	for index in FloorInstanceContainer.get_child_count():
-		var floor_node:MeshInstance3D = FloorInstanceContainer.get_child(index)
-		var mesh_duplicate = floor_node.mesh.duplicate()
-		var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if index == current_location.floor else RoomMaterialInactive.duplicate()
-		material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-		mesh_duplicate.material = material_copy		
-		#floor_node.show() if index == current_location.floor else floor_node.hide()
-		floor_node.mesh = mesh_duplicate	
-	
-	var RoomNodeContainer:Node3D = RoomScene.find_child("RoomInstance3x3")
-	for index in RoomNodeContainer.get_child_count():
-		var room_node:MeshInstance3D = RoomNodeContainer.get_child(index)
-		var mesh_duplicate = room_node.mesh.duplicate()
-		var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if index == current_location.room else RoomMaterialInactive.duplicate()
-		material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-		mesh_duplicate.material = material_copy				
-		room_node.mesh = mesh_duplicate
+	var location_as_string:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
+	if previous_location_data != location_as_string:
+		previous_location_data = location_as_string
+
+		GBL.add_to_animation_queue(self)
 		
-	await tween_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-15, 18, 0) , 0.2)	
-	GBL.remove_from_animation_queue(self)
-	
-	
-	
-	
+		for index in FloorInstanceContainer.get_child_count():
+			var floor_node:MeshInstance3D = FloorInstanceContainer.get_child(index)
+			var mesh_duplicate = floor_node.mesh.duplicate()
+			var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if index == current_location.floor else RoomMaterialInactive.duplicate()
+			material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+			mesh_duplicate.material = material_copy		
+			floor_node.mesh = mesh_duplicate	
+		
+		var RoomNodeContainer:Node3D = RoomScene.find_child("RoomInstance3x3")
+		for index in RoomNodeContainer.get_child_count():
+			var room_node:MeshInstance3D = RoomNodeContainer.get_child(index)
+			var mesh_duplicate = room_node.mesh.duplicate()
+			var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if index == current_location.room else RoomMaterialInactive.duplicate()
+			material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+			mesh_duplicate.material = material_copy				
+			room_node.mesh = mesh_duplicate
+		
+
+		await tween_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-15, 18, 0) , 0.2)	
+
+		GBL.remove_from_animation_queue(self)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -181,7 +183,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready():return
 	
-	GBL.add_to_animation_queue(self)
+	#GBL.add_to_animation_queue(self)
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -194,7 +196,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			tween_property(ActiveCamera, "rotation", RoomPlaceholderCamera.rotation, 0.5)	
 			await tween_property(ActiveCamera, "position", RoomPlaceholderCamera.position, 0.5)		
 			
-	GBL.remove_from_animation_queue(self)
+	#GBL.remove_from_animation_queue(self)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -608,7 +610,7 @@ func tween_property(node:Node3D, property:String, new_val, duration:float = 0.3)
 func on_process_update(delta: float) -> void:	
 	if !is_node_ready():return
 	
-	FloorScene.rotate_y(0.001)
+	#FloorScene.rotate_y(0.001)
 	## ensures that building rotation cannot be > 360 degrees
 	#normalize_rotation_degrees(Building)
 	#

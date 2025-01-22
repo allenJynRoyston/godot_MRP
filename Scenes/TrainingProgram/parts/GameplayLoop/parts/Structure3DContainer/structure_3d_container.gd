@@ -191,10 +191,10 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 	LineDrawController.draw_keys = []
 # --------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------	
-func update_draw_keys() -> void:
-	LineDrawController.draw_keys =  [active_designation] + bookmarked_rooms
-# --------------------------------------------------------------------------------------------------		
+## --------------------------------------------------------------------------------------------------	
+#func update_draw_keys() -> void:
+	#LineDrawController.draw_keys =  [active_designation] + bookmarked_rooms
+## --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func on_current_step_update() -> void:
@@ -280,11 +280,22 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				current_step = STEPS.SELECT_ROOM
 			elif current_step == STEPS.SELECT_ROOM:
 				current_step = STEPS.SELECT_FLOOR
+		
+		"E":
+			match current_step:
+				STEPS.SELECT_ROOM:			
+					if active_designation not in unavailable_rooms:
+						user_response.emit({"action": ACTION.NEXT})
+					else:
+						print("room unavailable")
 				
 		"ENTER":
 			match current_step:
 				STEPS.SELECT_ROOM:			
-					user_response.emit({"action": ACTION.NEXT})
+					if active_designation not in unavailable_rooms:
+						user_response.emit({"action": ACTION.NEXT})
+					else:
+						print("room unavailable")
 		"BACK":
 			user_response.emit({"action": ACTION.BACK})
 			
@@ -296,9 +307,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	
 
 	current_location.room = grid_array[location_pos.y][location_pos.x]
-	
-	print(current_location)
-		
+
 	
 	SUBSCRIBE.current_location = current_location
 # --------------------------------------------------------------------------------------------------

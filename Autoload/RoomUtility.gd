@@ -160,16 +160,11 @@ var BARRICKS:Dictionary = {
 
 var DORMITORY:Dictionary = {
 	"name": "DORMITORY",
-	"tier": TIER.VAL.ONE,
+	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
 	"placement_restrictions": {
-		"floor": [
-			ROOM.PLACEMENT.SURFACE
-		],
-		"ring": [
-			ROOM.PLACEMENT.RING_B
-		]
+
 	},
 	"own_limit": func() -> int:
 		return 10,	

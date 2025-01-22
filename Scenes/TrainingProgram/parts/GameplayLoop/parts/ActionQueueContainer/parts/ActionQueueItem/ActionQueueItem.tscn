@@ -14,7 +14,7 @@ bg_color = Color(0.206914, 0.206914, 0.206914, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kbi1h"]
 bg_color = Color(0.162141, 0.354946, 0.715275, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_43an0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0vwdl"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="ActionQueueItem" type="PanelContainer"]
@@ -70,7 +70,7 @@ layout_mode = 2
 [node name="TitleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer/HBoxContainer" instance=ExtResource("4_1yfsp")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_43an0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0vwdl")
 panel_color = Color(0.05, 0.05, 0.05, 0)
 title = "Title"
 
