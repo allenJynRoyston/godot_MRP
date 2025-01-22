@@ -73,7 +73,7 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
 	if !is_node_ready():return
 
-	update_readings(room_config.floor[current_location.floor].readings)
+	#update_readings(room_config.floor[current_location.floor].readings)
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
@@ -117,7 +117,7 @@ func reading_to_string(val:int, zero_val:String = "DANGEROUS", low_val:String = 
 # --------------------------------------------------------------------------------------------------			
 func update_readings(readings:Dictionary) -> void:
 	MoraleReading.status = reading_to_string(readings[RESOURCE.BASE.MORALE])
-	SecurityReading.status = reading_to_string(readings[RESOURCE.BASE.SECURITY])
+	SecurityReading.status = reading_to_string(readings[RESOURCE.BASE.SAFETY])
 	ReadinessReading.status = reading_to_string(readings[RESOURCE.BASE.READINESS])
 	HumeReading.status = "%.1f - %s" % [
 		(readings[RESOURCE.BASE.HUME] / 5.0) * 1.0, 

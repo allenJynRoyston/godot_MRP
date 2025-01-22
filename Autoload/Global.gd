@@ -220,18 +220,21 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				var key:String = ""
 
 				match event.keycode:
+					# --------------
 					53:
 						key = "5"
 					56:
 						key = "8"
-						
+					# --------------
+					4194306:
+						key = "TAB"
 					4194309:
 						key = "ENTER"
 					4194308:
 						key = "BACK"
 					32:
 						key = "SPACEBAR"
-					
+					# --------------
 					67:
 						key = "C"
 					66:
@@ -242,7 +245,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "F"
 					82:
 						key = "R"
-
+					# --------------
 					65:
 						key = "A"
 					68:

@@ -1,7 +1,7 @@
 @tool
 extends BtnBase
 
-@export var set_camera_to:CAMERA.ZOOM : 
+@export var set_camera_to:CAMERA.TYPE : 
 	set(val):
 		set_camera_to = val
 		on_set_camera_to_update()
@@ -29,15 +29,16 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_set_camera_to_update() -> void:
 	if !is_node_ready():return
-	match set_camera_to:
-		CAMERA.ZOOM.OVERVIEW:
-			IconBtn.icon = SVGS.TYPE.CONTAIN
-		CAMERA.ZOOM.FLOOR:
-			IconBtn.icon = SVGS.TYPE.CONTAIN
-		CAMERA.ZOOM.RING:
-			IconBtn.icon = SVGS.TYPE.CONTAIN
-		CAMERA.ZOOM.RM:
-			IconBtn.icon = SVGS.TYPE.CONTAIN
+	pass
+	#match set_camera_to:
+		#CAMERA.ZOOM.OVERVIEW:
+			#IconBtn.icon = SVGS.TYPE.CONTAIN
+		#CAMERA.ZOOM.FLOOR:
+			#IconBtn.icon = SVGS.TYPE.CONTAIN
+		#CAMERA.ZOOM.RING:
+			#IconBtn.icon = SVGS.TYPE.CONTAIN
+		#CAMERA.ZOOM.RM:
+			#IconBtn.icon = SVGS.TYPE.CONTAIN
 	
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
@@ -49,17 +50,19 @@ func on_focus(state:bool = is_focused) -> void:
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	super.on_mouse_click(node, btn, on_hover)
-	if on_hover and !camera_settings.is_locked:
-		camera_settings.zoom = set_camera_to
-		SUBSCRIBE.camera_settings = camera_settings
+	pass
+	#if on_hover and !camera_settings.is_locked:
+		#camera_settings.zoom = set_camera_to
+		#SUBSCRIBE.camera_settings = camera_settings
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func update_icons() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return
-	if "is_locked" in camera_settings:
-		IndicatorBtn.icon = SVGS.TYPE.LOCK if camera_settings.is_locked else (SVGS.TYPE.DOT if set_camera_to == camera_settings.zoom else SVGS.TYPE.NONE)
-	IndicatorBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if set_camera_to == camera_settings.zoom else COLORS.TEXT.INACTIVE)
-	IconBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if set_camera_to == camera_settings.zoom else COLORS.TEXT.INACTIVE)
+	pass
+	#if "is_locked" in camera_settings:
+		#IndicatorBtn.icon = SVGS.TYPE.LOCK if camera_settings.is_locked else (SVGS.TYPE.DOT if set_camera_to == camera_settings.zoom else SVGS.TYPE.NONE)
+	#IndicatorBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if set_camera_to == camera_settings.zoom else COLORS.TEXT.INACTIVE)
+	#IconBtn.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if set_camera_to == camera_settings.zoom else COLORS.TEXT.INACTIVE)
 # ------------------------------------------------------------------------------	
 	

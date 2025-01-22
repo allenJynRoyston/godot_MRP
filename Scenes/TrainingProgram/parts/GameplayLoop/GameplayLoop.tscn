@@ -37,7 +37,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-show_location = false
+debug_mode = true
+room_item_status = false
+show_resources = false
 show_dialogue = false
 show_status = true
 
@@ -48,6 +50,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -55,31 +58,35 @@ theme_override_constants/margin_top = 20
 freeze_inputs = true
 
 [node name="RoomStatusContainer" parent="." instance=ExtResource("6_emfl4")]
+visible = false
 layout_mode = 2
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 8
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="ResourceContainer" parent="." instance=ExtResource("8_asqny")]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 5
 
 [node name="LocationContainer" parent="." instance=ExtResource("4_fqcw3")]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 10
-freeze_inputs = true
+theme_override_constants/margin_top = 5
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 freeze_inputs = true
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -87,11 +94,13 @@ theme_override_constants/margin_top = 75
 freeze_inputs = true
 
 [node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -106,10 +115,11 @@ freeze_inputs = true
 [node name="StatusContainer" parent="." instance=ExtResource("13_goe6f")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
 
 [node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -117,11 +127,11 @@ freeze_inputs = true
 
 [node name="InfoContainer" parent="." instance=ExtResource("15_g2w1o")]
 layout_mode = 2
-theme_override_constants/margin_left = 275
-theme_override_constants/margin_top = 10
-freeze_inputs = true
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 100
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

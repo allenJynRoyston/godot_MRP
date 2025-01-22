@@ -4,12 +4,12 @@ extends GameContainer
 @onready var SubviewPanelContainer:PanelContainer = $SubViewport/PanelContainer
 @onready var RoomStatusListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer
 
-@onready var RoomStatusItem1:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem1
-@onready var RoomStatusItem2:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem2
-@onready var RoomStatusItem3:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem3
-@onready var RoomStatusItem4:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem4
-@onready var RoomStatusItem5:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem5
-@onready var RoomStatusItem6:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem6
+#@onready var RoomStatusItem1:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem1
+#@onready var RoomStatusItem2:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem2
+#@onready var RoomStatusItem3:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem3
+#@onready var RoomStatusItem4:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem4
+#@onready var RoomStatusItem5:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem5
+#@onready var RoomStatusItem6:Control = $SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer/RoomStatusItem6
 
 var gameplay_node:Control
 
@@ -44,7 +44,7 @@ func _ready() -> void:
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
 	
-	room_nodes = [RoomStatusItem1, RoomStatusItem2, RoomStatusItem3, RoomStatusItem4, RoomStatusItem5, RoomStatusItem6]
+	#room_nodes = [RoomStatusItem1, RoomStatusItem2, RoomStatusItem3, RoomStatusItem4, RoomStatusItem5, RoomStatusItem6]
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -71,6 +71,8 @@ func get_ring_as_text(val:int) -> String:
 			return "B"
 		2:
 			return "C"
+		3:
+			return "D"
 	return ""
 # --------------------------------------------------------------------------------------------------
 
@@ -79,25 +81,25 @@ func update_room_states() -> void:
 	if room_config.is_empty() or !is_node_ready():return
 	await U.set_timeout(0.0)
 	
-	for index in room_config.floor[current_floor].ring[current_ring].room:
-		var data:Dictionary = room_config.floor[current_floor].ring[current_ring].room[index]
-		room_nodes[index].room_id = int(index)
-		room_nodes[index].raw_designation = "%s%s%s" % [current_floor, current_ring, index] 
-		room_nodes[index].designation = "%s-%s%s" % [current_floor + 1, get_ring_as_text(current_ring), index + 1] 
-		room_nodes[index].data = data
-		room_nodes[index].onClick = func() -> void:
-			gameplay_node.goto_location({"floor": current_floor, "ring": current_ring, "room": index})
-		room_nodes[index].onFocus = func() -> void:
-			gameplay_node.update_tenative_location({"floor": current_floor, "ring": current_ring, "room": index})
+	#for index in room_config.floor[current_floor].ring[current_ring].room:
+		#var data:Dictionary = room_config.floor[current_floor].ring[current_ring].room[index]
+		#room_nodes[index].room_id = int(index)
+		#room_nodes[index].raw_designation = "%s%s%s" % [current_floor, current_ring, index] 
+		#room_nodes[index].designation = "%s-%s%s" % [current_floor + 1, get_ring_as_text(current_ring), index + 1] 
+		#room_nodes[index].data = data
+		#room_nodes[index].onClick = func() -> void:
+			#gameplay_node.goto_location({"floor": current_floor, "ring": current_ring, "room": index})
+		#room_nodes[index].onFocus = func() -> void:
+			#gameplay_node.update_tenative_location({"floor": current_floor, "ring": current_ring, "room": index})
 			
 func highlight_current_room() -> void:
 	if !is_node_ready():return
 	await U.tick()
-	for index in RoomStatusListContainer.get_child_count():
-		room_nodes[index].is_highlighted = index == current_room	
-		room_nodes[index].is_expanded = false
-		if index == current_room:
-			gameplay_node.update_tenative_location({"floor": current_floor, "ring": current_ring, "room": index})
+	#for index in RoomStatusListContainer.get_child_count():
+		#room_nodes[index].is_highlighted = index == current_room	
+		#room_nodes[index].is_expanded = false
+		#if index == current_room:
+			#gameplay_node.update_tenative_location({"floor": current_floor, "ring": current_ring, "room": index})
 # --------------------------------------------------------------------------------------------------
 
 

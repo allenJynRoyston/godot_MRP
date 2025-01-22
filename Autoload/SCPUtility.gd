@@ -255,6 +255,65 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 	"events": {
 		# -------------------------
+		SCP.EVENT_TYPE.DAY_SPECIFIC: [
+			{
+				"trigger_threshold": func(_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					var progress_data:Dictionary = _dict.progress_data
+					match progress_data.day:
+						50:
+							return [
+								func() -> Dictionary:
+									return {
+										"header": "SCP-%s: DAY EVENT" % [details.item_id],
+										"img_src": details.img_src,
+										"text": [
+											"LOREM ISPUM",
+										]
+									},								
+							]
+						_:
+							return []
+					pass,
+			},
+			{
+				"trigger_threshold": func(_count:int) -> int:
+					return 2,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: RANDOM EVENT 1" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"Random event 1.  Times triggered: %s" % [_dict.count]
+								]
+							},
+					],
+			},
+			{
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 2,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "SCP-%s: RANDOM EVENT 2" % [details.item_id],
+								"img_src": details.img_src,
+								"text": [
+									"Random event 2.  Times triggered: %s" % [_dict.count]
+								]
+							},
+					],
+			}						
+		],
+		# -------------------------
+		
+		# -------------------------
 		SCP.EVENT_TYPE.START_TESTING: [
 			{
 				"trigger_threshold": func(_trigger_count:int) -> int:
@@ -780,6 +839,7 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Call
 			"details": scp_details, 
 			"list_details": scp_contained_details,
 			"count":  event_trigger_count,
+			"progress_data": get_self_ref.call().progress_data.call(),
 			"resources_data": get_self_ref.call().resources_data.call(),
 			"research_details": get_self_ref.call().research_details.call(),
 			# ------- functions

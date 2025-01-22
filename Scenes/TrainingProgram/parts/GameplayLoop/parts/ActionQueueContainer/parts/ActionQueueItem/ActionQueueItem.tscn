@@ -6,22 +6,19 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_f2e5b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erjns"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xsw4k"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.130722, 0.0757782, 0.499197, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vu7ry"]
-bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+bg_color = Color(0.206914, 0.206914, 0.206914, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kbi1h"]
-bg_color = Color(0, 0.964706, 0.278431, 1)
+bg_color = Color(0.162141, 0.354946, 0.715275, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_43an0"]
+bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="ActionQueueItem" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 0)
 offset_right = 150.0
 offset_bottom = 61.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_erjns")
@@ -29,10 +26,10 @@ script = ExtResource("1_fgfba")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -47,31 +44,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="TitleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_1yfsp")]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_xsw4k")
-title = "Title"
-
-[node name="CancelBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_820ko")]
-layout_mode = 2
-icon = 1
-debug_me = true
-
-[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-text = "Item name..."
-label_settings = ExtResource("4_f2e5b")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 5)
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -81,16 +55,65 @@ max_value = 1.0
 value = 0.5
 show_percentage = false
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-alignment = 1
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_right = 10
 
-[node name="DaysLeft" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer"]
+layout_mode = 2
+
+[node name="TitleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer/HBoxContainer" instance=ExtResource("4_1yfsp")]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_43an0")
+panel_color = Color(0.05, 0.05, 0.05, 0)
+title = "Title"
+
+[node name="CancelBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer/HBoxContainer" instance=ExtResource("2_820ko")]
+layout_mode = 2
+icon = 1
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 0.698039)
+debug_me = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CONSTRUCTING"
+label_settings = ExtResource("4_f2e5b")
+clip_text = true
+text_overrun_behavior = 1
+uppercase = true
+
+[node name="DaysLeft" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
 size_flags_vertical = 1
 text = "3 DAYS LEFT"
 label_settings = ExtResource("4_f2e5b")
+horizontal_alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
 
 [node name="RequirementContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 visible = false

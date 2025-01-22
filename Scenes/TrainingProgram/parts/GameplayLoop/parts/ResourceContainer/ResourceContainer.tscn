@@ -55,7 +55,7 @@ offset_bottom = 80.0
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(344, 50)
+size = Vector2i(488, 50)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 264.0

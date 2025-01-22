@@ -185,7 +185,7 @@ func on_data_update() -> void:
 			var scp_list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
 			if scp_list.size() > 0:			
 				var active_scp_data:Dictionary = scp_list[0]
-				var can_transfer:bool = active_scp_data.current_activity.is_empty()
+				var can_transfer:bool = active_scp_data.current_testing.is_empty()
 				var can_destroy:bool = false
 				
 				if assign_only:
@@ -226,10 +226,10 @@ func on_data_update() -> void:
 						if !active_scp_data.lead_researcher.is_empty():
 							list.push_back(
 								{
-									"title": "Start Testing" if active_scp_data.current_activity.is_empty() else "Stop Testing",
+									"title": "Start Testing" if active_scp_data.current_testing.is_empty() else "Stop Testing",
 									"title_icon": SVGS.TYPE.RESEARCH,
 									"onClick": func() -> void:
-										onAction.call(ACTION.CONTAINED.START_TESTING if active_scp_data.current_activity.is_empty() else ACTION.CONTAINED.STOP_TESTING),
+										onAction.call(ACTION.CONTAINED.START_TESTING if active_scp_data.current_testing.is_empty() else ACTION.CONTAINED.STOP_TESTING),
 								}		
 							)					
 

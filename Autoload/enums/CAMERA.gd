@@ -1,6 +1,4 @@
 @tool
 extends Node
 
-enum TYPE { PERSPECTIVE, OVERHEAD }
-
-enum ZOOM { RM, RING, FLOOR, OVERVIEW }
+enum TYPE { FLOOR_SELECT, ROOM_SELECT }

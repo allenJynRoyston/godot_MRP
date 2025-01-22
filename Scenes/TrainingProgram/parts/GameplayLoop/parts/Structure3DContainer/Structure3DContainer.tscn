@@ -19,10 +19,10 @@ shader_parameter/laser_color = Color(1, 0, 0, 1)
 shader_parameter/glow_width = 0.05
 shader_parameter/trail_fade = 0.5
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_0ghay"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_becdm"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_qanbp"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_tggw0"]
 viewport_path = NodePath("SubViewport2")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aok4n"]
@@ -41,13 +41,15 @@ script = ExtResource("1_wktvj")
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_vfiyn")
 layout_mode = 2
-texture = SubResource("ViewportTexture_0ghay")
+texture = SubResource("ViewportTexture_becdm")
+expand_mode = 1
 stretch_mode = 6
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_vfiyn")
 layout_mode = 2
-texture = SubResource("ViewportTexture_qanbp")
+texture = SubResource("ViewportTexture_tggw0")
+expand_mode = 1
 stretch_mode = 6
 
 [node name="OverlayContainer" type="PanelContainer" parent="."]
@@ -66,6 +68,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_jmu1m")
 
@@ -77,7 +80,6 @@ theme_override_constants/margin_right = 270
 theme_override_constants/margin_bottom = 15
 
 [node name="SelectLocationInstructions" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -135,23 +137,17 @@ size_flags_vertical = 0
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
-use_taa = true
-use_debanding = true
-use_occlusion_culling = true
-debug_draw = 3
-canvas_cull_mask = 4294966274
-size = Vector2i(640, 480)
+canvas_cull_mask = 4293918720
+size = Vector2i(640, 360)
 
 [node name="Rendering" parent="SubViewport" instance=ExtResource("4_ypl4m")]
-render_layer = 1
 
 [node name="SubViewport2" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
 use_debanding = true
 use_occlusion_culling = true
-canvas_cull_mask = 4294966273
-size = Vector2i(640, 480)
+size = Vector2i(1920, 1080)
 
 [node name="Rendering" parent="SubViewport2" instance=ExtResource("4_ypl4m")]
-enable_change_on_update = true
+sprites_only = true

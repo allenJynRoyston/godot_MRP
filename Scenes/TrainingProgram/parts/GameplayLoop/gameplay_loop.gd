@@ -126,10 +126,8 @@ enum EVENT_STEPS {RESET, START}
 
 # ------------------------------------------------------------------------------ 
 #region SAVABLE DATA
-var previous_camera_settings:CAMERA.ZOOM 
-
 var camera_settings:Dictionary = {
-	"zoom": CAMERA.ZOOM.OVERVIEW,
+	"type": CAMERA.TYPE.FLOOR_SELECT,
 	"is_locked": false
 }
 
@@ -139,9 +137,9 @@ var current_location:Dictionary = {
 	"room": 0
 } 
 var progress_data:Dictionary = { 
-		"day": 1,
-		"days_till_new_hires": 7,
-	} 
+	"day": 1,
+	"days_till_new_hires": 7,
+} 
 
 var scp_data:Dictionary = {
 	"available_list": [
@@ -256,13 +254,13 @@ var tier_unlocked:Dictionary = {
 
 var room_config:Dictionary = {
 	"floor": {
-		0: get_floor_default(false),
-		1: get_floor_default(),
-		2: get_floor_default(),
-		3: get_floor_default(),
-		4: get_floor_default(),
-		5: get_floor_default(),
-		6: get_floor_default(),
+		0: get_floor_default(false, 3),
+		1: get_floor_default(false, 3),
+		2: get_floor_default(false, 3),
+		3: get_floor_default(false, 3),
+		4: get_floor_default(false, 3),
+		5: get_floor_default(false, 3),
+		6: get_floor_default(false, 3),
 	}
 } 
 
@@ -462,46 +460,41 @@ func start(game_data:Dictionary = {}) -> void:
 		start_load_game()
 
 func start_new_game() -> void:
-	after_start()
 	quickload()
 
 func start_load_game() -> void:
 	# load save file
-	after_start()
+	pass
 	
-func after_start() -> void:
-	LocationContainer.goto_location(current_location)	
 #endregion
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 #region defaults functions
-func get_floor_default(is_locked:bool = true) -> Dictionary:
+func get_floor_default(is_locked:bool, array_size:int) -> Dictionary:
 	return { 
 		"is_locked": is_locked,
+		"array_size": array_size,
 		"readings": {
-			RESOURCE.BASE.MORALE: 4,
-			RESOURCE.BASE.SECURITY: 4,
-			RESOURCE.BASE.READINESS: 3,
+			RESOURCE.BASE.MORALE: 5,
+			RESOURCE.BASE.SAFETY: 5,
+			RESOURCE.BASE.READINESS: 5,
 			RESOURCE.BASE.HUME: 5,
 		},
 		"ring": { 
-			0: get_room_default(),
-			1: get_room_default(),
-			2: get_room_default()
+			0: get_room_default(array_size),
+			1: get_room_default(array_size),
+			2: get_room_default(array_size),
+			3: get_room_default(array_size)
 		}
 	}
 
-func get_room_default() -> Dictionary:
+func get_room_default(array_size:int) -> Dictionary:
+	var room:Dictionary
+	for n in range(array_size*array_size):
+		room[n] = get_room_item_default()
 	return {
-		"room": {
-			0: get_room_item_default(),
-			1: get_room_item_default(),
-			2: get_room_item_default(),
-			3: get_room_item_default(),
-			4: get_room_item_default(),
-			5: get_room_item_default(),
-		}
+		"room": room
 	}
 
 func get_room_item_default() -> Dictionary:
@@ -583,8 +576,6 @@ func wait_please(duration:float = 0.5) -> void:
 func update_tenative_location(location:Dictionary) -> void:
 	tenative_location = location	
 			
-func goto_location(location:Dictionary) -> void:
-	LocationContainer.goto_location(location)
 # -----------------------------------
 
 # -----------------------------------
@@ -612,6 +603,8 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 					return {}		
 				return RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr),
 			# -------------------------	
+			"progress_data": func() -> Dictionary:
+				return progress_data.duplicate(true),
 			# get a count of the current resources available
 			"resources_data": func() -> Dictionary:
 				return resources_data.duplicate(true),
@@ -821,13 +814,28 @@ func next_day() -> void:
 	#var event_data_arr = []
 	for index in scp_data.contained_list.size():
 		var data:Dictionary = scp_data.contained_list[index]
+		var event_count:int = 0
+		var event_res:Dictionary = {}
+
 		if data.days_in_containment > 0:
-			if data.current_activity.is_empty():
-				var event_type:int = SCP.EVENT_TYPE.RANDOM_EVENTS if !data.transfer_status.state else SCP.EVENT_TYPE.DURING_TRANSFER
-				await check_events(data.ref, event_type, true)
-			else:
-				var event_type:int = SCP.EVENT_TYPE.DURING_TESTING
-				await check_events(data.ref, event_type, true)
+			# check for specific day event first...
+			event_res = await check_events(data.ref, SCP.EVENT_TYPE.DAY_SPECIFIC, true) 
+			if event_res.is_empty():event_count += 1
+				
+				# ... then check for testing events
+			if !data.current_testing.is_empty():
+				event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TESTING, true)	
+				if event_res.is_empty():event_count += 1
+				
+			# ... then check for transfer events
+			if data.transfer_status.state:	
+				event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TRANSFER, true)	
+				if event_res.is_empty():event_count += 1
+				
+			# ... then check for random events 
+			if event_count == 0:
+				await check_events(data.ref, SCP.EVENT_TYPE.RANDOM_EVENTS, true)
+				
 				
 	processing_next_day = false
 # -----------------------------------
@@ -1018,7 +1026,7 @@ func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
 		"event_type_count": {
 			#["type/event_id"]: count[int]
 		},
-		"current_activity": {
+		"current_testing": {
 			#"research_id": -1,
 			#"progress": -1 			
 		},
@@ -1075,7 +1083,7 @@ func start_scp_testing(ref:int) -> void:
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr)
 	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 	# add placeholder
-	scp_data.contained_list[index].current_activity = { 
+	scp_data.contained_list[index].current_testing = { 
 		"testing_ref": -1,
 		"progress": -1 
 	}	
@@ -1110,13 +1118,13 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 
 	# canceled
 	if testing_ref == -1:
-		scp_data.contained_list[index].current_activity = {}
+		scp_data.contained_list[index].current_testing = {}
 	else:
 		# calculate resources data usage
 		SUBSCRIBE.resources_data = 	SCP_UTIL.calculate_testing_costs(scp_ref, testing_ref, resources_data)
 		
 		# else add research id and being progressZ
-		scp_data.contained_list[index].current_activity = { 
+		scp_data.contained_list[index].current_testing = { 
 			"testing_ref": testing_ref,
 			"progress": 0 
 		}
@@ -1143,7 +1151,7 @@ func stop_scp_testing(ref:int) -> void:
 	var res:Dictionary = find_in_contained(ref)
 	var index:int = res.index
 	
-	scp_data.contained_list[index].current_activity = {}	
+	scp_data.contained_list[index].current_testing = {}	
 
 	SUBSCRIBE.scp_data = scp_data	
 # -----------------------------------
@@ -1419,7 +1427,7 @@ func on_current_shop_step_update() -> void:
 			selected_shop_item = {}
 			
 			StoreContainer.start()
-			await show_only([ResourceContainer, StoreContainer])
+			await show_only([StoreContainer])
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -1445,20 +1453,20 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.PLACEMENT:		
 			# sort which rooms can be built in
-			await show_only([Structure3dContainer, RoomStatusContainer])			
-			Structure3dContainer.select_location()
+			await show_only([Structure3dContainer, LocationContainer])			
+			#Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
 			
 			var structure_response:Dictionary = await Structure3dContainer.user_response
 			Structure3dContainer.placement_instructions = []
-			
+
 			match structure_response.action:
-				ACTION.BACK:					
-					SUBSCRIBE.camera_settings = camera_settings
+				ACTION.BACK:		
+					#SUBSCRIBE.camera_settings = camera_settings
 					SUBSCRIBE.unavailable_rooms = []
 					current_shop_step = SHOP_STEPS.START
 				ACTION.NEXT:
-					SUBSCRIBE.camera_settings = camera_settings
+					#SUBSCRIBE.camera_settings = camera_settings
 					SUBSCRIBE.unavailable_rooms = []
 					current_shop_step = SHOP_STEPS.CONFIRM_BUILD
 		# ---------------
@@ -1518,7 +1526,7 @@ func on_current_shop_step_update() -> void:
 			})
 			
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.HIDE
+			current_shop_step = SHOP_STEPS.START
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
 			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
@@ -1536,7 +1544,7 @@ func on_current_shop_step_update() -> void:
 
 			
 			SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.HIDE			
+			current_shop_step = SHOP_STEPS.START			
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM:
 			var purchase_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
@@ -1553,7 +1561,7 @@ func on_current_shop_step_update() -> void:
 			})
 			
 			SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.HIDE
+			current_shop_step = SHOP_STEPS.START
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
 			# unlock the tier
@@ -1568,7 +1576,7 @@ func on_current_shop_step_update() -> void:
 			# update subscribes
 			SUBSCRIBE.resources_data = resources_data
 			SUBSCRIBE.tier_unlocked = tier_unlocked
-			current_shop_step = SHOP_STEPS.HIDE
+			current_shop_step = SHOP_STEPS.START
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1640,7 +1648,7 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
-			await show_only([Structure3dContainer, RoomStatusContainer])			
+			await show_only([Structure3dContainer, LocationContainer])			
 			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
 			
 			Structure3dContainer.select_location()
@@ -1651,11 +1659,11 @@ func on_current_contain_step_update() -> void:
 			
 			match structure_response.action:
 				ACTION.BACK:					
-					SUBSCRIBE.camera_settings = camera_settings
+					#SUBSCRIBE.camera_settings = camera_settings
 					SUBSCRIBE.unavailable_rooms = []
 					current_contain_step = CONTAIN_STEPS.START
 				ACTION.NEXT:
-					SUBSCRIBE.camera_settings = camera_settings
+					#SUBSCRIBE.camera_settings = camera_settings
 					SUBSCRIBE.unavailable_rooms = []
 					current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
 		# ---------------			
@@ -1683,7 +1691,7 @@ func on_current_contain_step_update() -> void:
 			current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION:
-			await show_only([Structure3dContainer, RoomStatusContainer])
+			await show_only([Structure3dContainer])
 			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
 			
 			Structure3dContainer.select_location()
@@ -1771,7 +1779,7 @@ func on_current_recruit_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			selected_lead_hire = {}
 			selected_support_hire = {}
-			await show_only([ResourceContainer, RecruitmentContainer, ActionQueueContainer, RoomStatusContainer])
+			await show_only([RecruitmentContainer])
 			var response:Dictionary = await RecruitmentContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
@@ -1957,17 +1965,17 @@ func is_occupied() -> bool:
 		return true
 	return false
 
-func on_mouse_scroll(dir:int) -> void:
-	if is_occupied() or camera_settings.is_locked:return
-	match dir:
-		0: #UP
-			if camera_settings.zoom - 1 >= 0:
-				camera_settings.zoom = camera_settings.zoom - 1
-		1: #DOWN
-			if camera_settings.zoom + 1 < CAMERA.ZOOM.size():
-				camera_settings.zoom = camera_settings.zoom + 1
-				
-	SUBSCRIBE.camera_settings = camera_settings
+#func on_mouse_scroll(dir:int) -> void:
+	#if is_occupied() or camera_settings.is_locked:return
+	#match dir:
+		#0: #UP
+			#if camera_settings.zoom - 1 >= 0:
+				#camera_settings.zoom = camera_settings.zoom - 1
+		#1: #DOWN
+			#if camera_settings.zoom + 1 < CAMERA.ZOOM.size():
+				#camera_settings.zoom = camera_settings.zoom + 1
+				#
+	#SUBSCRIBE.camera_settings = camera_settings
 	
 func on_control_input_update(input_data:Dictionary) -> void:
 	if is_occupied():return
@@ -2048,6 +2056,5 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
 
-	goto_location(initial_values.current_location)
 #endregion		
 # ------------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 @tool
 extends GameContainer
 
-@onready var SubviewPanelContainer:PanelContainer = $SubViewport/PanelContainer
-@onready var ListContainer:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/ListContainer
+#@onready var SubviewPanelContainer:PanelContainer = $SubViewport/PanelContainer
+@onready var ListContainer:VBoxContainer = $PanelContainer/MarginContainer/ListContainer
 
 const ActionQueueItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/ActionQueueItem.tscn")
 
@@ -33,9 +33,10 @@ func on_reset() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_max_height_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		Subviewport.get_child(0).size.y = max_height - 1
-		Subviewport.size = Subviewport.get_child(0).size
+	pass
+	#if is_node_ready() or Engine.is_editor_hint():
+		#Subviewport.get_child(0).size.y = max_height - 1
+		#Subviewport.size = Subviewport.get_child(0).size
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -50,7 +51,7 @@ func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 			new_node.data = item_data
 			new_node.onClick = func() -> void:
 				if "location" in item_data:
-					get_parent().goto_location(item_data.location)
+					SUBSCRIBE.current_location = item_data.location
 			new_node.onCancel = func() -> void:
 				get_parent().cancel_action_queue(item_data)
 			ListContainer.add_child(new_node)

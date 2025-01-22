@@ -3,12 +3,12 @@ extends GameContainer
 
 @onready var CheckBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/CheckBtn
 
-@onready var BuildBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/BuildBtn
-@onready var ContainBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ContainBtn
-@onready var RecruitBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/RecruitBtn
-@onready var ResearchersBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResearchersBtn
+@onready var BuildBtn:Control = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/BuildBtn
+@onready var ContainBtn:Control = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ContainBtn
+@onready var RecruitBtn:Control = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/RecruitBtn
+@onready var ResearchersBtn:Control = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResearchersBtn
 
-@onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/NextBtn
+@onready var NextBtn:Control = $PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/NextBtn
 
 var parentNode:Control
 

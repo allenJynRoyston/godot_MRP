@@ -16,30 +16,26 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [node name="DetailPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(250, 0)
 offset_right = 158.0
 offset_bottom = 141.0
-size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8m3dt")
 script = ExtResource("1_sgm8h")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-size_flags_vertical = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="MoneyDetails" parent="MarginContainer" instance=ExtResource("2_n3efn")]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="EnergyDetails" parent="MarginContainer" instance=ExtResource("3_mv5r7")]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 0
+
+[node name="EnergyDetails" parent="MarginContainer" instance=ExtResource("3_mv5r7")]
+layout_mode = 2
 
 [node name="LeadResearcherDetails" parent="MarginContainer" instance=ExtResource("4_kw3da")]
 visible = false
@@ -49,7 +45,6 @@ size_flags_horizontal = 0
 [node name="StaffDetails" parent="MarginContainer" instance=ExtResource("5_saucg")]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 0
 
 [node name="DClassDetails" parent="MarginContainer" instance=ExtResource("6_st8v5")]
 visible = false
@@ -58,3 +53,4 @@ layout_mode = 2
 [node name="SecurityDetails" parent="MarginContainer" instance=ExtResource("7_oxrd0")]
 visible = false
 layout_mode = 2
+size_flags_horizontal = 1

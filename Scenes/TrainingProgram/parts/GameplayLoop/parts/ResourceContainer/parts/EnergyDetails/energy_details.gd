@@ -46,7 +46,7 @@ func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) ->
 				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
 
 				new_node.onClick = func() -> void:
-					gameplay_node.goto_location(item.location)
+					SUBSCRIBE.current_location = item.location
 				if i.amount >= 0:
 					total_income += i.amount
 					IncomeList.add_child(new_node)

@@ -1,12 +1,12 @@
 extends PanelContainer
 
-@onready var TitleBtn:BtnBase = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/TitleBtn
-@onready var CancelBtn:BtnBase = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/CancelBtn
-@onready var NameLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Name
+@onready var TitleBtn:BtnBase = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer/HBoxContainer/TitleBtn
+@onready var CancelBtn:BtnBase = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer/HBoxContainer/CancelBtn
+@onready var NameLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/Name
 
 @onready var RequirementContainer:VBoxContainer = $MarginContainer/VBoxContainer/RequirementContainer
-@onready var ProgressBarUI:ProgressBar = $MarginContainer/VBoxContainer/VBoxContainer/ProgressBar
-@onready var DaysLeftLabel:Label = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/DaysLeft
+@onready var ProgressBarUI:ProgressBar = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar
+@onready var DaysLeftLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DaysLeft
 @onready var RequirementGrid:GridContainer = $MarginContainer/VBoxContainer/RequirementContainer/RequirementGrid
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
@@ -67,11 +67,11 @@ func on_data_update() -> void:
 	var count:Dictionary = data.count
 	
 	TitleBtn.icon = title_btn.icon
-	TitleBtn.title = title_btn.title
+	TitleBtn.title = data.description 
 	
-	NameLabel.text = data.description
+	NameLabel.text = title_btn.title
 	
-	DaysLeftLabel.text = "%s DAYS LEFT" % [count.completed_at - count.day]
+	DaysLeftLabel.text = "%s DAYS" % [count.completed_at - count.day]
 	ProgressBarUI.value = (count.day*1.0 / count.completed_at*1.0)	
 	
 		#match data.action:

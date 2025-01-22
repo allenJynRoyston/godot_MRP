@@ -39,4 +39,4 @@ func on_focus(state:bool = is_focused) -> void:
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if is_focused and btn == MOUSE_BUTTON_LEFT:		
-		GBL.find_node(REFS.GAMEPLAY_LOOP).goto_location(location)	
+		SUBSCRIBE.current_location = location

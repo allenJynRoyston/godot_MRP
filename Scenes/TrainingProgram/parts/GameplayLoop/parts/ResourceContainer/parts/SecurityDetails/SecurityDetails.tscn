@@ -1,14 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://bshu10pnmooj5"]
+[gd_scene load_steps=7 format=3 uid="uid://bshu10pnmooj5"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/SecurityDetails/security_details.gd" id="1_v2ql7"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_3pctg"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_l2mjk"]
+[ext_resource type="PackedScene" uid="uid://colip2v06wa01" path="res://UI/Buttons/DetailBtn/DetailBtn.tscn" id="3_b5mnq"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkdk1"]
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_cr32v"]
+color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+grow_begin = -12.0
+vertical = true
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_iiuhg"]
+color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+grow_begin = -200.0
+
 [node name="SecurityDetails" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 134.0
+offset_bottom = 115.0
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hkdk1")
 script = ExtResource("1_v2ql7")
 
@@ -20,77 +30,126 @@ theme_override_constants/separation = 15
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Security"
-label_settings = ExtResource("2_3pctg")
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="List" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer"]
+[node name="IncomeContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List"]
-layout_mode = 2
-
-[node name="TextBtn" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer" instance=ExtResource("3_l2mjk")]
-layout_mode = 2
-icon = 28
-title = "SCP A"
-
-[node name="TextBtn2" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer" instance=ExtResource("3_l2mjk")]
-layout_mode = 2
-icon = 35
-title = "5/5"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List"]
-layout_mode = 2
-
-[node name="TextBtn" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer2" instance=ExtResource("3_l2mjk")]
-layout_mode = 2
-icon = 28
-title = "SCP B"
-
-[node name="TextBtn2" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer/List/HBoxContainer2" instance=ExtResource("3_l2mjk")]
-layout_mode = 2
-icon = 35
-title = "5/5"
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/IncomeContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/IncomeContainer/HBoxContainer"]
 layout_mode = 2
-text = "Details"
+text = "Income"
 label_settings = ExtResource("2_3pctg")
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/IncomeContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2"]
+[node name="IncomeList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/IncomeContainer"]
 layout_mode = 2
+theme_override_constants/separation = 5
 
-[node name="TextBtn" parent="VBoxContainer/HBoxContainer/VBoxContainer/VBoxContainer2/HBoxContainer" instance=ExtResource("3_l2mjk")]
+[node name="DetailBtn2" parent="VBoxContainer/HBoxContainer/IncomeContainer/IncomeList" instance=ExtResource("3_b5mnq")]
+layout_mode = 2
+title = "Item A"
+amount = 99
+icon = 30
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_cr32v")
+
+[node name="ExpenseContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ExpenseContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/ExpenseContainer/HBoxContainer"]
+layout_mode = 2
+text = "Expenses"
+label_settings = ExtResource("2_3pctg")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/ExpenseContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-icon = 35
-title = "25 Available"
+
+[node name="ExpenseList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/ExpenseContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="DetailBtn" parent="VBoxContainer/HBoxContainer/ExpenseContainer/ExpenseList" instance=ExtResource("3_b5mnq")]
+layout_mode = 2
+title = "Item A"
+amount = 99
+icon = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Totals"
+label_settings = ExtResource("2_3pctg")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Total income:"
+label_settings = ExtResource("2_3pctg")
+
+[node name="TotalIncome" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "99"
+label_settings = ExtResource("2_3pctg")
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Total expenses:"
+label_settings = ExtResource("2_3pctg")
+
+[node name="TotalExpense" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "99"
+label_settings = ExtResource("2_3pctg")
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_iiuhg")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TotalDiff" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "999"
+label_settings = ExtResource("2_3pctg")
+horizontal_alignment = 2

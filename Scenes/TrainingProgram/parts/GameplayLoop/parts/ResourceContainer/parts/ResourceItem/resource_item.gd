@@ -22,6 +22,7 @@ var onDismiss:Callable = func():pass
 func _ready() -> void:
 	super._ready()
 	on_icon_update()
+	on_focus()
 
 func on_icon_update() -> void:
 	if is_node_ready():
@@ -33,14 +34,14 @@ func on_title_update() -> void:
 # --------------------------------------
 
 # --------------------------------------	
-func on_focus(state:bool) -> void:
+func on_focus(state:bool = false) -> void:
 	if !is_node_ready():return
-	IconBtn.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
-	
-	var label_setting:LabelSettings = ItemLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
-	ItemLabel.label_settings = label_setting
-		
+	#IconBtn.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
+	#
+	#var label_setting:LabelSettings = ItemLabel.label_settings.duplicate()
+	#label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
+	#ItemLabel.label_settings = label_setting
+		#
 	if state:
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
 	else:
