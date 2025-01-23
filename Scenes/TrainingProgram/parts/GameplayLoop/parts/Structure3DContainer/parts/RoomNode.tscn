@@ -1,0 +1,257 @@
+[gd_scene load_steps=23 format=4 uid="uid://v15o8px8qi2m"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node.gd" id="1_hmbtm"]
+[ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="2_djoyh"]
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="3_3gwmo"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_705iv"]
+[ext_resource type="Material" uid="uid://c4md77b2j0hgw" path="res://Materials/TEST.tres" id="3_adffu"]
+[ext_resource type="Material" uid="uid://dviok6kg4hh33" path="res://Materials/RoomMaterialUnavailable.tres" id="3_cbfu8"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_q53d1"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_o016d"]
+viewport_path = NodePath("SubViewport/Control/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0uh7t"]
+metallic = 1.0
+rim_enabled = true
+clearcoat_enabled = true
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ysg2w"]
+_surfaces = [{
+"aabb": AABB(-2.05773, -2.05773, -2.05773, 4.11547, 4.11547, 4.11547),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqio/AAAAAKuqqj4AAAAAAACAPwAAAAAAAAAAAAAAP6uqKj8AAAA/q6qqPgAAAD8AAIA/AAAAP6uqqj4AAAAAAAAAAAAAAD+rqio/AAAAAKuqqj4AAAA/q6qqPgAAAD8AAAAAAACAP6uqKj8AAAA/q6qqPgAAgD+rqqo+AAAAP6uqKj8AAAA/q6oqPwAAAD8AAIA/AAAAP6uqqj4AAIA/q6oqPwAAgD+rqio/AACAPwAAgD8AAIA/"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAAEAAIAAgAEAAYAAQAFAAMAAwAFAAcACAAMAAoACgAMAA4ACQANAAsACwANAA8AEAAUABIAEgAUABYAEQAVABMAEwAVABcA"),
+"material": SubResource("StandardMaterial3D_0uh7t"),
+"name": "outline",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("7rEDwO6xA0DusQNA7rEDQO6xA0DusQPA7rEDQO6xA0DusQNA7rEDwO6xA0DusQPA7rEDwO6xA8DusQNA7rEDQO6xA8DusQPA7rEDQO6xA8DusQNA7rEDwO6xA8DusQPA7rEDQO6xA0DusQNA7rEDwO6xA0DusQPA7rEDQO6xA0DusQPA7rEDwO6xA0DusQNA7rEDQO6xA8DusQNA7rEDwO6xA8DusQPA7rEDQO6xA8DusQPA7rEDwO6xA8DusQNA7rEDQO6xA0DusQNA7rEDwO6xA8DusQNA7rEDwO6xA0DusQNA7rEDQO6xA8DusQNA7rEDQO6xA0DusQPA7rEDwO6xA8DusQPA7rEDwO6xA0DusQPA7rEDQO6xA8DusQPA/3//f////7//////AAD/v/9//3////+//////wAA/7//f/9/////v/////8AAP+//3//f////7//////AAD/v///AID/////AAAAgP9//7///wCA/////wAAAID/f/+///8AgP////8AAACA/3//v///AID/////AAAAgP9//78AgP//AAD/vwCAAAD///+/AID//wAA/78AgAAA////vwCA//8AAP+/AIAAAP///78AgP//AAD/vwCAAAD///+/")
+}]
+
+[sub_resource type="BoxMesh" id="BoxMesh_wcp1s"]
+lightmap_size_hint = Vector2i(44, 66)
+material = ExtResource("3_adffu")
+size = Vector3(4, 4, 4)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_kioih"]
+viewport_path = NodePath("SubViewport/Control/SubViewport/RoomNode/PanelOneViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_4a6fo"]
+viewport_path = NodePath("SubViewport/Control/SubViewport/RoomNode/PanelTwoViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_c61fw"]
+viewport_path = NodePath("SubViewport/Control/SubViewport/RoomNode/TextureViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_g5cjs"]
+viewport_path = NodePath("SubViewport/Control/SubViewport/RoomNode/CursorViewport")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d1nxf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_sqr62"]
+font = ExtResource("3_705iv")
+font_size = 45
+
+[sub_resource type="LabelSettings" id="LabelSettings_bm5qn"]
+font = ExtResource("3_705iv")
+font_size = 28
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0uo3r"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_46pnl"]
+font_size = 65
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_348sf"]
+bg_color = Color(0, 0, 0, 0.952941)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_bmj2s"]
+font = ExtResource("3_3gwmo")
+font_size = 34
+
+[node name="Sprite3D" type="Sprite3D"]
+cast_shadow = 2
+gi_mode = 2
+shaded = true
+texture = SubResource("ViewportTexture_q53d1")
+script = ExtResource("1_hmbtm")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(400, 400)
+
+[node name="Control" type="Control" parent="SubViewport"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_o016d")
+
+[node name="SubViewport" type="SubViewport" parent="SubViewport/Control"]
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(400, 400)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/Control/SubViewport"]
+transform = Transform3D(-0.707107, 0.298836, -0.640856, 0, 0.906308, 0.422618, 0.707107, 0.298836, -0.640856, -3.5, 1.5, -3.5)
+projection = 1
+current = true
+fov = 50.0
+size = 8.0
+
+[node name="RoomNode" type="Node3D" parent="SubViewport/Control/SubViewport"]
+transform = Transform3D(0.999958, 0, 0, 0, 1, 0, 0, 0, 0.999958, 0, -1, 0)
+
+[node name="MeshOutline" type="MeshInstance3D" parent="SubViewport/Control/SubViewport/RoomNode"]
+transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, 0, 0, 0)
+layers = 16384
+mesh = SubResource("ArrayMesh_ysg2w")
+skeleton = NodePath("../MainMesh")
+surface_material_override/0 = ExtResource("3_cbfu8")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/Control/SubViewport/RoomNode/MeshOutline"]
+transform = Transform3D(-0.26807, -0.711637, 0.649393, 0.79259, -0.546096, -0.271258, 0.547668, 0.441986, 0.710428, 0, 5, 0)
+layers = 0
+light_color = Color(0.66, 0, 0, 1)
+light_energy = 16.0
+light_cull_mask = 4293935104
+
+[node name="MainMesh" type="MeshInstance3D" parent="SubViewport/Control/SubViewport/RoomNode"]
+mesh = SubResource("BoxMesh_wcp1s")
+
+[node name="PanelOne" type="Sprite3D" parent="SubViewport/Control/SubViewport/RoomNode/MainMesh"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -2)
+no_depth_test = true
+texture = SubResource("ViewportTexture_kioih")
+
+[node name="PanelTwo" type="Sprite3D" parent="SubViewport/Control/SubViewport/RoomNode/MainMesh"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -2.01, 0, 0)
+double_sided = false
+no_depth_test = true
+texture = SubResource("ViewportTexture_4a6fo")
+
+[node name="PanelTexture" type="Sprite3D" parent="SubViewport/Control/SubViewport/RoomNode/MainMesh"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0.8, -0.5, 0.8)
+texture = SubResource("ViewportTexture_c61fw")
+
+[node name="PanelCursor" type="Sprite3D" parent="SubViewport/Control/SubViewport/RoomNode/MainMesh"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 1.41421, -1, 5.96046e-08)
+visible = false
+pixel_size = 0.004
+no_depth_test = true
+fixed_size = true
+texture = SubResource("ViewportTexture_g5cjs")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/Control/SubViewport/RoomNode/MainMesh"]
+transform = Transform3D(0.761046, 0.528204, -0.376576, 0.388061, 0.0944793, 0.916778, 0.519824, -0.843845, -0.133072, 0, 6, 0)
+
+[node name="PanelOneViewport" type="SubViewport" parent="SubViewport/Control/SubViewport/RoomNode"]
+transparent_bg = true
+size = Vector2i(400, 400)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/SubViewport/RoomNode/PanelOneViewport"]
+custom_minimum_size = Vector2(400, 400)
+offset_right = 400.0
+offset_bottom = 400.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_d1nxf")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/Control/SubViewport/RoomNode/PanelOneViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/Control/SubViewport/RoomNode/PanelOneViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="PanelOneLabel" type="Label" parent="SubViewport/Control/SubViewport/RoomNode/PanelOneViewport/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+text = "ROOM NAME"
+label_settings = SubResource("LabelSettings_sqr62")
+horizontal_alignment = 1
+
+[node name="PanelOneLabel2" type="Label" parent="SubViewport/Control/SubViewport/RoomNode/PanelOneViewport/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "EMPY"
+label_settings = SubResource("LabelSettings_sqr62")
+horizontal_alignment = 1
+
+[node name="PanelOneLabel3" type="Label" parent="SubViewport/Control/SubViewport/RoomNode/PanelOneViewport/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "(CONSTRUCTION)"
+label_settings = SubResource("LabelSettings_bm5qn")
+horizontal_alignment = 1
+
+[node name="PanelTwoViewport" type="SubViewport" parent="SubViewport/Control/SubViewport/RoomNode"]
+transparent_bg = true
+size = Vector2i(400, 400)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/SubViewport/RoomNode/PanelTwoViewport"]
+custom_minimum_size = Vector2(400, 400)
+offset_right = 200.0
+offset_bottom = 200.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_0uo3r")
+
+[node name="Label" type="Label" parent="SubViewport/Control/SubViewport/RoomNode/PanelTwoViewport/PanelContainer"]
+layout_mode = 2
+text = "+3"
+label_settings = SubResource("LabelSettings_46pnl")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CursorViewport" type="SubViewport" parent="SubViewport/Control/SubViewport/RoomNode"]
+transparent_bg = true
+size = Vector2i(140, 75)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/SubViewport/RoomNode/CursorViewport"]
+offset_right = 140.0
+offset_bottom = 75.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_348sf")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/Control/SubViewport/RoomNode/CursorViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="SubViewport/Control/SubViewport/RoomNode/CursorViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "PANEL 2"
+label_settings = SubResource("LabelSettings_bmj2s")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureViewport" type="SubViewport" parent="SubViewport/Control/SubViewport/RoomNode"]
+transparent_bg = true
+size = Vector2i(300, 300)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/SubViewport/RoomNode/TextureViewport"]
+offset_right = 300.0
+offset_bottom = 300.0
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/Control/SubViewport/RoomNode/TextureViewport/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("2_djoyh")
+expand_mode = 1
+stretch_mode = 6
+
+[connection signal="item_rect_changed" from="SubViewport/Control/SubViewport/RoomNode/CursorViewport/PanelContainer" to="SubViewport/Control/SubViewport/RoomNode" method="_on_panel_container_item_rect_changed"]

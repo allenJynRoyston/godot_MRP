@@ -234,6 +234,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "BACK"
 					32:
 						key = "SPACEBAR"
+						
 					# --------------
 					67:
 						key = "C"
@@ -254,6 +255,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "W"
 					83:
 						key = "S"
+					91:
+						key = "TL"
+					93: 
+						key = "TR"
 						
 				node.on_control_input_update({"keycode": event.keycode, "key": key})
 # ------------------------------------------------------------------------------

@@ -1,11 +1,68 @@
 @tool
 extends Node
 
+var STARTING_BASE:Dictionary = {
+	"name": "BASE HQ",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Base headquarters.",
+	"prerequisites": [
+
+	],		
+	"placement_restrictions": {
+
+	},
+	"own_limit": func() -> int:
+		return 1,
+	"get_build_time": func() -> int:
+		return 1,
+
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: 0
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.STAFF: 10,
+					RESOURCE.TYPE.SECURITY: 10
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.STAFF: 10,
+					RESOURCE.TYPE.SECURITY: 10
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -5,
+					RESOURCE.TYPE.MONEY: -5
+				},
+			
+		}	
+	}
+}
+
 var R_AND_D_LAB:Dictionary = {
 	"name": "R & D LAB",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Enables research and development.",
+	
+	"prerequisites": [
+		ROOM.TYPE.STARTING_BASE
+	],	
+		
 	"placement_restrictions": {
 		"floor": [
 			ROOM.PLACEMENT.SURFACE,
@@ -16,6 +73,7 @@ var R_AND_D_LAB:Dictionary = {
 			ROOM.PLACEMENT.RING_B
 		]
 	},
+
 	"own_limit": func() -> int:
 		return 3,
 	"get_build_time": func() -> int:
@@ -60,6 +118,11 @@ var CONSTRUCTION_YARD:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/construction_yard.jpg",
 	"description": "Enables base development.",
+	
+	"prerequisites": [
+		ROOM.TYPE.STARTING_BASE
+	],	
+		
 	"placement_restrictions": {
 		"floor": [
 			ROOM.PLACEMENT.SURFACE
@@ -111,6 +174,11 @@ var BARRICKS:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
+	
+	"prerequisites": [
+		ROOM.TYPE.STARTING_BASE
+	],	
+		
 	"placement_restrictions": {
 		"floor": [
 			ROOM.PLACEMENT.SURFACE
@@ -163,6 +231,10 @@ var DORMITORY:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
+	"prerequisites": [
+		ROOM.TYPE.STARTING_BASE
+	],	
+		
 	"placement_restrictions": {
 
 	},
@@ -209,6 +281,11 @@ var HOLDING_CELLS:Dictionary = {
 	"tier": TIER.VAL.TWO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses D-class personel.",
+
+	"prerequisites": [
+		ROOM.TYPE.STARTING_BASE
+	],		
+	
 	"placement_restrictions": {
 		"floor": [
 			ROOM.PLACEMENT.SURFACE
@@ -261,6 +338,9 @@ var STANDARD_LOCKER:Dictionary = {
 	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "A basic room with a high security lock.",
+	"prerequisites": [
+		ROOM.TYPE.STARTING_BASE
+	],		
 	"placement_restrictions": {
 		"floor": [
 			ROOM.PLACEMENT.SURFACE
@@ -305,6 +385,7 @@ var STANDARD_LOCKER:Dictionary = {
 }
 
 var reference_data:Dictionary = {
+	ROOM.TYPE.STARTING_BASE: STARTING_BASE,
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
 	ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	ROOM.TYPE.BARRICKS: BARRICKS,
@@ -416,8 +497,20 @@ func get_tier_dict() -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_paginated_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:
-	return SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
+func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int, purchased_facility_arr:Array) -> Dictionary:
+	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.data.ref))
+	var res:Dictionary = SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
+	res.list = res.list.filter(func(i):
+		return true if i.details.prerequisites.is_empty() else U.array_has_overlap(i.details.prerequisites, facility_refs)
+	)
+	
+	return res
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func has_prerequisites(ref:ROOM.TYPE, arr:Array) -> bool:
+	var room_data:Dictionary = return_data(ref)
+	return	false
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -53,7 +53,6 @@ func open_researchers() -> void:
 	parentNode.current_researcher_step = parentNode.RESEARCHERS_STEPS.START
 # --------------------------------------------------------------------------------------------------		
 
-
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_showing or parentNode.is_occupied():return

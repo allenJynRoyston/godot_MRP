@@ -37,6 +37,7 @@ func on_icon_update() -> void:
 func on_title_update() -> void:
 	if is_node_ready():
 		ItemLabel.text = title
+		BtmItemLabel.text = title
 
 func on_display_at_bottom_update() -> void:
 	if !is_node_ready():return

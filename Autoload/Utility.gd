@@ -39,6 +39,25 @@ func min_max(val:int, min:int, max:int, cycle_back:bool = false) -> int:
 	return new_val
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+func array_find_uniques(arr:Array) -> Array:
+	var unique_array:Array = []
+
+	for element in arr:
+		if element not in unique_array:
+			unique_array.append(element)
+	
+	return unique_array
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func array_has_overlap(arr_one:Array, arr_two:Array) -> bool:
+	for n in arr_one:
+		if n in arr_two:
+			return true
+	return false
+# ------------------------------------------------------------------------------	
+
 
 # ------------------------------------------------------------------------------	
 func convert_to_normalized_position(container_size:Vector2, pos:Vector2) -> Vector2:

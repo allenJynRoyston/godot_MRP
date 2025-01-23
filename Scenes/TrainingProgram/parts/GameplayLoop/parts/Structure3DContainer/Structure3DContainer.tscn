@@ -11,7 +11,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vfiyn"]
 shader = ExtResource("2_wr5lh")
-shader_parameter/percentage = 0.0
+shader_parameter/percentage = 1.0
 shader_parameter/angle_degrees = 0.0
 shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
@@ -40,6 +40,7 @@ script = ExtResource("1_wktvj")
 freeze_inputs = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_vfiyn")
 layout_mode = 2
 texture = SubResource("ViewportTexture_becdm")
@@ -47,7 +48,6 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="TextureRect2" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_vfiyn")
 layout_mode = 2
 texture = SubResource("ViewportTexture_tggw0")
 expand_mode = 1
@@ -142,6 +142,7 @@ canvas_cull_mask = 4293918720
 size = Vector2i(640, 360)
 
 [node name="Rendering" parent="SubViewport" instance=ExtResource("4_ypl4m")]
+visible = false
 
 [node name="SubViewport2" type="SubViewport" parent="."]
 transparent_bg = true
@@ -151,4 +152,3 @@ use_occlusion_culling = true
 size = Vector2i(1920, 1080)
 
 [node name="Rendering" parent="SubViewport2" instance=ExtResource("4_ypl4m")]
-sprites_only = true

@@ -110,13 +110,11 @@ layout_mode = 2
 
 [node name="ResourceItemMoney" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
-size_flags_horizontal = 3
 icon = 30
 title = "999"
 
 [node name="ResourceItemEnergy" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
-size_flags_horizontal = 3
 icon = 31
 title = "999"
 
@@ -130,21 +128,18 @@ theme_override_constants/separation = 10
 
 [node name="ResourceItemStaff" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
-size_flags_horizontal = 3
 icon = 34
 title = "10/10"
 display_at_bottom = true
 
 [node name="ResourceItemSecurity" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
-size_flags_horizontal = 3
 icon = 35
 title = "10/10"
 display_at_bottom = true
 
 [node name="ResourceItemDClass" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
-size_flags_horizontal = 3
 icon = 32
 title = "10/10"
 display_at_bottom = true

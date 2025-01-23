@@ -283,6 +283,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		
 		"E":
 			match current_step:
+				STEPS.SELECT_FLOOR:
+					current_step = STEPS.SELECT_ROOM
 				STEPS.SELECT_ROOM:			
 					if active_designation not in unavailable_rooms:
 						user_response.emit({"action": ACTION.NEXT})
@@ -291,6 +293,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				
 		"ENTER":
 			match current_step:
+				STEPS.SELECT_FLOOR:
+					current_step = STEPS.SELECT_ROOM				
 				STEPS.SELECT_ROOM:			
 					if active_designation not in unavailable_rooms:
 						user_response.emit({"action": ACTION.NEXT})

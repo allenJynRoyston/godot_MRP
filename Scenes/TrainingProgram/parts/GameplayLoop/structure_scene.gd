@@ -10,7 +10,7 @@ extends Node3D
 
 @onready var RoomScene:Node3D = $RoomScene
 @onready var RoomInstance:MeshInstance3D = $RoomScene/RoomInstance
-@onready var RoomInstancesContainer:Node3D = $RoomScene/RoomInstancesContainer
+@onready var RoomColumnContainer:Node3D = $RoomScene/RoomColumnContainer
 @onready var CursorLabel:Label = $ControlSubViewport/ControlPanelContainer/MarginContainer/CursorLabel
 #
 @onready var ActiveCamera:Camera3D = $CameraContainers/ActiveCamera
@@ -25,7 +25,7 @@ extends Node3D
 		sprites_only = val
 		on_sprites_only_update()
 
-const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialActive.tres")
+const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialUnderConstruction.tres")
 const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMaterialInactive.tres")
 #const RoomMaterialUnavailable:StandardMaterial3D = preload("res://Materials/RoomMaterialUnavailable.tres")
 #const RoomMaterialActiveUnavailable:StandardMaterial3D = preload("res://Materials/RoomMaterialActiveUnavailable.tres")
@@ -50,6 +50,8 @@ var previous_grid_size:Vector2
 
 var previous_location_data:String = "" 
 
+var previous_floor:int
+var previous_ring:int
 #var previous_location:Dictionary = current_location
 #
 #var room_designations_list:Array = []
@@ -95,7 +97,6 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_under_construction_rooms(self)
 	SUBSCRIBE.subscribe_to_built_rooms(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
-
 	GBL.subscribe_to_process(self)
 	
 func _exit_tree() -> void:
@@ -105,34 +106,27 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_under_construction_rooms(self)
 	SUBSCRIBE.unsubscribe_to_built_rooms(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
-
 	GBL.unsubscribe_to_process(self)
-	#GBL.remove_from_projected_3d_objects('active_room')
-	#for key in room_node_refs:
-		#GBL.remove_from_projected_3d_objects(key)
-			
+
 func _ready() -> void:
 	on_sprites_only_update()
 	on_grid_array_update()
 	_on_panel_container_item_rect_changed()
+	after_ready.call_deferred()
 
-	#camera_setup()
-	#await building_setup()
-	#after_ready.call_deferred()
-#
-#func after_ready() -> void:
-	#
-	#on_render_layout_update()	
-	#on_camera_settings_update()
+func after_ready() -> void:
+	on_camera_settings_update()
+	on_current_location_update()
 # ------------------------------------------------
 
 # ------------------------------------------------
 func on_sprites_only_update() -> void:
-	if !is_node_ready():return
-	if sprites_only:
-		ActiveCamera.cull_mask = 1 << 19
-	else:
-		ActiveCamera.cull_mask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4)
+	pass
+	#if !is_node_ready():return
+	#if sprites_only:
+		#ActiveCamera.cull_mask = 1 << 19
+	#else:
+		#ActiveCamera.cull_mask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4)
 # ------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -147,43 +141,48 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # ------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if !is_node_ready():return
-	CursorLabel.text = ">> FLOOR %s" % [current_location.floor]
-	var location_as_string:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
-	if previous_location_data != location_as_string:
-		previous_location_data = location_as_string
+	update_cameras()
+# ------------------------------------------------
 
-		GBL.add_to_animation_queue(self)
-		
-		for index in FloorInstanceContainer.get_child_count():
-			var floor_node:MeshInstance3D = FloorInstanceContainer.get_child(index)
-			var mesh_duplicate = floor_node.mesh.duplicate()
-			var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if index == current_location.floor else RoomMaterialInactive.duplicate()
-			material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-			mesh_duplicate.material = material_copy		
-			floor_node.mesh = mesh_duplicate	
-		
-		var RoomNodeContainer:Node3D = RoomScene.find_child("RoomInstance3x3")
-		for index in RoomNodeContainer.get_child_count():
-			var room_node:MeshInstance3D = RoomNodeContainer.get_child(index)
-			var mesh_duplicate = room_node.mesh.duplicate()
-			var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if index == current_location.room else RoomMaterialInactive.duplicate()
-			material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-			mesh_duplicate.material = material_copy				
-			room_node.mesh = mesh_duplicate
-		
+# ------------------------------------------------
+func update_cameras() -> void:
+	if !is_node_ready() or camera_settings.is_empty():return	
+	match camera_settings.type:
+		CAMERA.TYPE.ROOM_SELECT:
+			if previous_ring != current_location.ring:
+				previous_ring = current_location.ring
+				
+				GBL.add_to_animation_queue(self)
+				await tween_property(ActiveCamera, "rotation_degrees:y", -90 * current_location.ring, 0.2)
+				GBL.remove_from_animation_queue(self)	
+				
+				
+		CAMERA.TYPE.FLOOR_SELECT:
+			CursorLabel.text = ">> FLOOR %s" % [current_location.floor]
 
-		await tween_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-15, 18, 0) , 0.2)	
+			if previous_floor != current_location.floor:
+				previous_floor = current_location.floor
+				
+				for index in FloorInstanceContainer.get_child_count():
+					var floor_node:MeshInstance3D = FloorInstanceContainer.get_child(index)
+					var mesh_duplicate = floor_node.mesh.duplicate()
+					var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if index == current_location.floor else RoomMaterialInactive.duplicate()
+					material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+					mesh_duplicate.material = material_copy		
+					floor_node.mesh = mesh_duplicate	
+	
+				GBL.add_to_animation_queue(self)
+				await tween_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-15, 18, 0) , 0.2)	
+				GBL.remove_from_animation_queue(self)	
 
-		GBL.remove_from_animation_queue(self)
 # ------------------------------------------------
 
 # ------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready():return
+	if !is_node_ready() or camera_settings.is_empty():return
 	
-	#GBL.add_to_animation_queue(self)
+	GBL.add_to_animation_queue(self)
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -196,7 +195,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			tween_property(ActiveCamera, "rotation", RoomPlaceholderCamera.rotation, 0.5)	
 			await tween_property(ActiveCamera, "position", RoomPlaceholderCamera.position, 0.5)		
 			
-	#GBL.remove_from_animation_queue(self)
+	GBL.remove_from_animation_queue(self)
 # ------------------------------------------------
 
 # ------------------------------------------------

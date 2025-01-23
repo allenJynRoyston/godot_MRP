@@ -1,0 +1,130 @@
+[gd_scene load_steps=15 format=3 uid="uid://i20apuqnuudg"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_column.gd" id="1_ffm2l"]
+[ext_resource type="PackedScene" uid="uid://v15o8px8qi2m" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode.tscn" id="2_nvnxh"]
+[ext_resource type="Material" uid="uid://c4md77b2j0hgw" path="res://Materials/TEST.tres" id="3_c7nxv"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_6kkky"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_qea5t"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tleab"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_4w8a5"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_v7jv4"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_41lnc"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_pipws"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_mm0lh"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_mfj6m"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dfbmn"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="BoxMesh" id="BoxMesh_kw1d3"]
+material = ExtResource("3_c7nxv")
+size = Vector3(20, 1, 20)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_ffm2l")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_6kkky")
+stretch_mode = 6
+
+[node name="SubViewport" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="RoomColumn" type="Node3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="column1" type="Node3D" parent="SubViewport/RoomColumn"]
+
+[node name="RoomNode" parent="SubViewport/RoomColumn/column1" instance=ExtResource("2_nvnxh")]
+texture = SubResource("ViewportTexture_qea5t")
+ref_index = 0
+
+[node name="RoomNode2" parent="SubViewport/RoomColumn/column1" instance=ExtResource("2_nvnxh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -1)
+texture = SubResource("ViewportTexture_tleab")
+ref_index = 1
+
+[node name="RoomNode3" parent="SubViewport/RoomColumn/column1" instance=ExtResource("2_nvnxh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, -2)
+texture = SubResource("ViewportTexture_4w8a5")
+ref_index = 2
+
+[node name="column2" type="Node3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -1, 2)
+
+[node name="RoomNode" parent="SubViewport/RoomColumn/column2" instance=ExtResource("2_nvnxh")]
+texture = SubResource("ViewportTexture_v7jv4")
+ref_index = 3
+
+[node name="RoomNode2" parent="SubViewport/RoomColumn/column2" instance=ExtResource("2_nvnxh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -1)
+texture = SubResource("ViewportTexture_41lnc")
+ref_index = 4
+
+[node name="RoomNode3" parent="SubViewport/RoomColumn/column2" instance=ExtResource("2_nvnxh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, -2)
+texture = SubResource("ViewportTexture_pipws")
+ref_index = 5
+
+[node name="column3" type="Node3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -2, 3)
+
+[node name="RoomNode" parent="SubViewport/RoomColumn/column3" instance=ExtResource("2_nvnxh")]
+texture = SubResource("ViewportTexture_mm0lh")
+ref_index = 6
+
+[node name="RoomNode2" parent="SubViewport/RoomColumn/column3" instance=ExtResource("2_nvnxh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -1)
+texture = SubResource("ViewportTexture_mfj6m")
+ref_index = 7
+
+[node name="RoomNode3" parent="SubViewport/RoomColumn/column3" instance=ExtResource("2_nvnxh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, -2)
+texture = SubResource("ViewportTexture_dfbmn")
+ref_index = 8
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.11488, 0.80954, 10)
+projection = 1
+size = 12.292
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/Camera3D"]
+transform = Transform3D(0.898871, 0.0727939, 0.432126, -0.0882725, 0.99597, 0.0158404, -0.429232, -0.0523834, 0.901674, -0.17717, 2.66087, -0.581488)
+layers = 31
+light_energy = 1.625
+shadow_enabled = true
+shadow_bias = 5.6
+spot_range = 13.024
+spot_attenuation = -0.01
+spot_angle = 76.74
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(0.746232, 0, 0.665686, 0.470711, 0.707107, -0.527665, -0.470711, 0.707107, 0.527665, 3.85117, -2.49214, 0)
+mesh = SubResource("BoxMesh_kw1d3")

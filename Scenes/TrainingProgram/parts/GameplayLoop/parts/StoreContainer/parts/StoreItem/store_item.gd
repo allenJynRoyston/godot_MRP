@@ -133,7 +133,7 @@ func on_data_update() -> void:
 				AlreadyOwned.hide()
 				InProgress.hide()
 				MaxOwned.show() if at_own_limit else MaxOwned.hide()
-			
+		
 		for item in item_data:
 			var amount:int = abs(item.amount)
 			var resource:Dictionary = item.resource

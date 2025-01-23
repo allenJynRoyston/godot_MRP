@@ -220,7 +220,7 @@ func build_list() -> void:
 		
 	match current_tab:
 		TAB.FACILITY:
-			list_data = ROOM_UTIL.get_paginated_list(current_tier, start_at, limit)
+			list_data = ROOM_UTIL.get_paginated_list(current_tier, start_at, limit, purchased_facility_arr)
 		TAB.RESEARCH_AND_DEVELOPMENT:
 			list_data = RD_UTIL.get_paginated_list(current_tier, start_at, limit)
 		TAB.BASE_DEVELOPMENT:
