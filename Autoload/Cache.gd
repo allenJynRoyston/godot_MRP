@@ -100,7 +100,7 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/next-svgrepo-com.svg")
 		
 		SVGS.TYPE.MONEY:
-			texture = load("res://SVGs/money-bag-change-money-capital-svgrepo-com.svg")
+			texture = load("res://SVGs/money-svgrepo-com.svg")
 		SVGS.TYPE.ENERGY:
 			texture = load("res://SVGs/energy-svgrepo-com.svg")
 		SVGS.TYPE.D_CLASS:

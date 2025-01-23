@@ -1,8 +1,9 @@
 @tool
 extends MouseInteractions
 
-@onready var IconBtn:Control = $IconBtn 
-@onready var ItemLabel:Label = $ItemLabel
+@onready var IconBtn:Control = $HBoxContainer/IconBtn
+@onready var ItemLabel:Label = $HBoxContainer/ItemLabel
+@onready var BtmItemLabel:Label = $ItemLabel
 
 @export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
 	set(val):
@@ -13,7 +14,11 @@ extends MouseInteractions
 	set(val):
 		title = val
 		on_title_update()	
-		
+
+@export var display_at_bottom:bool = false : 
+	set(val):
+		display_at_bottom = val
+		on_display_at_bottom_update()
 		
 var onClick:Callable = func():pass
 var onDismiss:Callable = func():pass
@@ -23,6 +28,7 @@ func _ready() -> void:
 	super._ready()
 	on_icon_update()
 	on_focus()
+	on_display_at_bottom_update()
 
 func on_icon_update() -> void:
 	if is_node_ready():
@@ -31,6 +37,11 @@ func on_icon_update() -> void:
 func on_title_update() -> void:
 	if is_node_ready():
 		ItemLabel.text = title
+
+func on_display_at_bottom_update() -> void:
+	if !is_node_ready():return
+	BtmItemLabel.show() if display_at_bottom else BtmItemLabel.hide()
+	ItemLabel.hide() if display_at_bottom else ItemLabel.show()
 # --------------------------------------
 
 # --------------------------------------	

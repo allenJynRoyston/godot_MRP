@@ -1,27 +1,46 @@
-[gd_scene load_steps=5 format=3 uid="uid://nl3g28hein3g"]
+[gd_scene load_steps=6 format=3 uid="uid://nl3g28hein3g"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/resource_item.gd" id="1_l01xo"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_rami6"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_cw3no"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1v8kt"]
+font = ExtResource("3_cw3no")
+font_size = 14
 
 [sub_resource type="LabelSettings" id="LabelSettings_yocpk"]
 font = ExtResource("3_cw3no")
 font_size = 8
 
 [node name="ResourceItem" type="VBoxContainer"]
+size_flags_horizontal = 3
 script = ExtResource("1_l01xo")
 
-[node name="IconBtn" parent="." instance=ExtResource("2_rami6")]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="IconBtn" parent="HBoxContainer" instance=ExtResource("2_rami6")]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+size_flags_horizontal = 1
 size_flags_vertical = 1
-icon = 3
+theme_override_constants/margin_top = 0
+icon = 30
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.59, 0.59, 0.59, 1)
 is_hoverable = false
 
-[node name="ItemLabel" type="Label" parent="."]
+[node name="ItemLabel" type="Label" parent="HBoxContainer"]
 layout_mode = 2
-text = "10/10 (5)"
+size_flags_vertical = 1
+text = "99"
+label_settings = SubResource("LabelSettings_1v8kt")
+vertical_alignment = 1
+
+[node name="ItemLabel" type="Label" parent="."]
+visible = false
+layout_mode = 2
+text = "999"
 label_settings = SubResource("LabelSettings_yocpk")
 horizontal_alignment = 1

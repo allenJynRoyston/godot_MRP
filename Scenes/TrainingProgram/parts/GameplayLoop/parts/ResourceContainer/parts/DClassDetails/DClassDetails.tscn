@@ -1,16 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://cq8au0rw8x357"]
+[gd_scene load_steps=8 format=3 uid="uid://cq8au0rw8x357"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DClassDetails/d_class_details.gd" id="1_v1mpu"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_5l4pl"]
 [ext_resource type="PackedScene" uid="uid://colip2v06wa01" path="res://UI/Buttons/DetailBtn/DetailBtn.tscn" id="3_bkkb4"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_toxur"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkdk1"]
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_lhdsg"]
-color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-grow_begin = -200.0
+[sub_resource type="LabelSettings" id="LabelSettings_preey"]
+font = ExtResource("3_toxur")
+font_size = 8
+font_color = Color(1, 0.635294, 0.203922, 1)
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_a7eam"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_pol5l"]
 color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 grow_begin = -12.0
 vertical = true
@@ -35,7 +37,7 @@ size_flags_vertical = 0
 
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-text = "Totals"
+text = "D-CLASS"
 label_settings = ExtResource("2_5l4pl")
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
@@ -51,8 +53,9 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Holding cells available:"
+text = "CAPACITY:"
 label_settings = ExtResource("2_5l4pl")
+uppercase = true
 
 [node name="TotalCapacity" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -60,18 +63,15 @@ text = "99"
 label_settings = ExtResource("2_5l4pl")
 horizontal_alignment = 2
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_lhdsg")
-
 [node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "D-Class held:"
+text = "ON site:"
 label_settings = ExtResource("2_5l4pl")
+uppercase = true
 
 [node name="TotalAvailable" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
@@ -85,19 +85,15 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "D-Class utilized:
-"
+text = "WORKING:"
 label_settings = ExtResource("2_5l4pl")
+clip_text = true
 
 [node name="TotalUtilized" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-text = "99"
-label_settings = ExtResource("2_5l4pl")
+text = "-99"
+label_settings = SubResource("LabelSettings_preey")
 horizontal_alignment = 2
-
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_lhdsg")
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -105,7 +101,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Available:"
+text = "AVAILABLE:"
 label_settings = ExtResource("2_5l4pl")
 
 [node name="TotalFree" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
@@ -122,7 +118,8 @@ theme_override_constants/separation = 10
 [node name="Capacity" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_constants/separation = 5
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Capacity"]
 layout_mode = 2
@@ -130,7 +127,7 @@ size_flags_vertical = 0
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Capacity/HBoxContainer"]
 layout_mode = 2
-text = "Housing"
+text = "HOLDING CELLS"
 label_settings = ExtResource("2_5l4pl")
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/Capacity/HBoxContainer"]
@@ -149,12 +146,13 @@ icon = 30
 
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_a7eam")
+theme_override_styles/separator = SubResource("StyleBoxLine_pol5l")
 
 [node name="Utilized" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_constants/separation = 5
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Utilized"]
 layout_mode = 2
@@ -162,7 +160,7 @@ size_flags_vertical = 0
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Utilized/HBoxContainer"]
 layout_mode = 2
-text = "Utilization"
+text = "UTILIZED AT"
 label_settings = ExtResource("2_5l4pl")
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/Utilized/HBoxContainer"]

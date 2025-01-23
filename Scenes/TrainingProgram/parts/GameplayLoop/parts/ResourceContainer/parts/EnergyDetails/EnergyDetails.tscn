@@ -1,19 +1,21 @@
-[gd_scene load_steps=7 format=3 uid="uid://bhyg7mbnhegpb"]
+[gd_scene load_steps=8 format=3 uid="uid://bhyg7mbnhegpb"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/EnergyDetails/energy_details.gd" id="1_10pu4"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_wl4pb"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_1fbh2"]
 [ext_resource type="PackedScene" uid="uid://colip2v06wa01" path="res://UI/Buttons/DetailBtn/DetailBtn.tscn" id="3_1gcg3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yqr41"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jgl2d"]
+font = ExtResource("3_1fbh2")
+font_size = 8
+font_color = Color(1, 0.635294, 0.203922, 1)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_hqskj"]
 color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 grow_begin = -12.0
 vertical = true
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_qdaay"]
-color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-grow_begin = -200.0
 
 [node name="EnergyDetails" type="PanelContainer"]
 theme_override_styles/panel = SubResource("StyleBoxEmpty_yqr41")
@@ -23,6 +25,75 @@ script = ExtResource("1_10pu4")
 layout_mode = 2
 theme_override_constants/separation = 15
 
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "ENERGY"
+label_settings = ExtResource("2_wl4pb")
+uppercase = true
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "GENERATED:"
+label_settings = ExtResource("2_wl4pb")
+uppercase = true
+
+[node name="TotalIncome" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "99"
+label_settings = ExtResource("2_wl4pb")
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "UTILIZED:"
+label_settings = ExtResource("2_wl4pb")
+
+[node name="TotalExpense" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "99"
+label_settings = SubResource("LabelSettings_jgl2d")
+horizontal_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SURPLUS:"
+label_settings = ExtResource("2_wl4pb")
+uppercase = true
+
+[node name="TotalDiff" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "999"
+label_settings = ExtResource("2_wl4pb")
+horizontal_alignment = 2
+
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
@@ -30,7 +101,8 @@ theme_override_constants/separation = 10
 [node name="IncomeContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_constants/separation = 5
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/IncomeContainer"]
 layout_mode = 2
@@ -60,7 +132,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_hqskj")
 [node name="ExpenseContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_constants/separation = 5
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ExpenseContainer"]
 layout_mode = 2
@@ -82,67 +155,3 @@ theme_override_constants/separation = 5
 [node name="DetailBtn" parent="VBoxContainer/HBoxContainer/ExpenseContainer/ExpenseList" instance=ExtResource("3_1gcg3")]
 layout_mode = 2
 script = null
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Totals"
-label_settings = ExtResource("2_wl4pb")
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Energy generated:"
-label_settings = ExtResource("2_wl4pb")
-
-[node name="TotalIncome" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "99"
-label_settings = ExtResource("2_wl4pb")
-horizontal_alignment = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Energy utilized:"
-label_settings = ExtResource("2_wl4pb")
-
-[node name="TotalExpense" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "99"
-label_settings = ExtResource("2_wl4pb")
-horizontal_alignment = 2
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_qdaay")
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="TotalDiff" type="Label" parent="VBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "999"
-label_settings = ExtResource("2_wl4pb")
-horizontal_alignment = 2

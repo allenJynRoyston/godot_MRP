@@ -17,8 +17,8 @@ corner_radius_bottom_left = 10
 
 [node name="DetailPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(250, 0)
-offset_right = 158.0
-offset_bottom = 141.0
+offset_right = 300.0
+offset_bottom = 144.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8m3dt")
 script = ExtResource("1_sgm8h")
@@ -35,7 +35,6 @@ visible = false
 layout_mode = 2
 
 [node name="EnergyDetails" parent="MarginContainer" instance=ExtResource("3_mv5r7")]
-visible = false
 layout_mode = 2
 
 [node name="LeadResearcherDetails" parent="MarginContainer" instance=ExtResource("4_kw3da")]
@@ -44,6 +43,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="StaffDetails" parent="MarginContainer" instance=ExtResource("5_saucg")]
+visible = false
 layout_mode = 2
 
 [node name="DClassDetails" parent="MarginContainer" instance=ExtResource("6_st8v5")]

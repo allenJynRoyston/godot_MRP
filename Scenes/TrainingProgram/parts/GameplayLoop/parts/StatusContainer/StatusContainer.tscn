@@ -55,11 +55,14 @@ texture = SubResource("ViewportTexture_ve1lb")
 layout_mode = 2
 
 [node name="DetailPanel" parent="Control" instance=ExtResource("3_an7ib")]
-layout_mode = 0
-offset_left = -267.0
-offset_top = 55.0
-offset_right = -23.0
-offset_bottom = 185.0
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -477.0
+offset_right = -227.0
+grow_horizontal = 0
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
@@ -130,17 +133,20 @@ layout_mode = 2
 size_flags_horizontal = 3
 icon = 34
 title = "10/10"
+display_at_bottom = true
 
 [node name="ResourceItemSecurity" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 size_flags_horizontal = 3
 icon = 35
 title = "10/10"
+display_at_bottom = true
 
 [node name="ResourceItemDClass" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 size_flags_horizontal = 3
 icon = 32
 title = "10/10"
+display_at_bottom = true
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

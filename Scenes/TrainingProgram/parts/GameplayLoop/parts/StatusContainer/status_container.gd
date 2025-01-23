@@ -98,9 +98,9 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 			#RESOURCE.TYPE.LEAD_RESEARCHERS:
 				#ResourceItemLeadResearchers.title = "%s" % [data.amount]
 			RESOURCE.TYPE.STAFF:
-				ResourceItemStaff.title = "%s%s/%s" % [data.amount, "/%s" % [data.utilized] if data.utilized > 0 else "",  data.capacity]
+				ResourceItemStaff.title = "%s" % [data.amount]
 			RESOURCE.TYPE.SECURITY:
-				ResourceItemSecurity.title = "%s%s/%s" % [data.amount, "/%s" % [data.utilized] if data.utilized > 0 else "",  data.capacity]
+				ResourceItemSecurity.title = "%s" % [data.amount]
 			RESOURCE.TYPE.DCLASS:
-				ResourceItemDClass.title = "%s%s/%s" % [data.amount, "/%s" % [data.utilized] if data.utilized > 0 else "",  data.capacity]
+				ResourceItemDClass.title = "%s" % [data.amount]
 # --------------------------------------------------------------------------------------------------
