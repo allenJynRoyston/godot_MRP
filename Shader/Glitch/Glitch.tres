@@ -4,9 +4,9 @@
 
 [resource]
 shader = ExtResource("1_bdg6d")
-shader_parameter/glitch_intensity = 0.177
-shader_parameter/noise_intensity = 0.657
-shader_parameter/glitch_speed = 4.579
+shader_parameter/glitch_intensity = 0.069
+shader_parameter/noise_intensity = 0.069
+shader_parameter/glitch_speed = 3.394
 shader_parameter/glitch_interval = 20.0
 shader_parameter/min_glitch_duration = 0.351
 shader_parameter/max_glitch_duration = 0.878

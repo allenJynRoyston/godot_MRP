@@ -10,10 +10,11 @@ extends GameContainer
 @onready var TestPoint:Control = $OverlayContainer/FloatingInfo/TestPoint
 @onready var LineDrawController:Control = $OverlayContainer/LineDrawController
 #
-@onready var RenderLayer1:Node3D = $SubViewport/Rendering
+@onready var RenderLayer1:Node3D = $SubViewport2/Rendering
 #@onready var RenderLayer2:Node3D = $SubViewport2/Rendering
 
 enum STEPS { SELECT_FLOOR, SELECT_ROOM, FINALIZE }
+enum DIR {UP, DOWN, LEFT, RIGHT}
 
 const FloatingInfoPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/FloatingItem.tscn")
 const CheckboxPreload:PackedScene = preload("res://UI/Buttons/Checkbox/checkbox.tscn")
@@ -47,6 +48,7 @@ var grid_array:Array = [] :
 		on_grid_array_update()
 
 var location_pos:Vector2 = Vector2(0, 0)
+
 
 signal wait_for_input
 
@@ -125,10 +127,9 @@ func on_placement_instructions_update() -> void:
 		PlacementInstructions.add_child(new_checkbox)
 	
 	PlacementInstructions.show() if placement_instructions.size() > 0 else PlacementInstructions.hide()
-# --------------------------------------------------------------------------------------------------	
+# -----------------------------------------------------------------------------------------------
 
-
-# --------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready() or room_config.is_empty():return
@@ -157,17 +158,16 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 
 	for child in PlacementInstructions.get_children():
 		child.on_condition_check(current_location)
-# --------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
-## --------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 #func on_show_instructions_update() -> void:
 	#if !is_node_ready():return
 	#SelectLocationInstructions.show() if show_instructions else SelectLocationInstructions.hide()
 	#PlacementInstructions.show() if show_instructions else PlacementInstructions.hide()
-## --------------------------------------------------------------------------------------------------	
-	#
+# -----------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 	bookmarked_rooms = new_val
 	if !is_node_ready() or room_config.is_empty():return
@@ -189,14 +189,75 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 	traverse(callback) 
 	
 	LineDrawController.draw_keys = []
-# --------------------------------------------------------------------------------------------------	
+# -----------------------------------------------------------------------------------------------
 
-## --------------------------------------------------------------------------------------------------	
+# -----------------------------------------------------------------------------------------------
+func location_lookup(val:int, dir:DIR) -> int:
+	match val:
+		0:
+			match dir:
+				DIR.UP: return val
+				DIR.DOWN: return 4
+				DIR.LEFT: return 1
+				DIR.RIGHT: return 2
+		1:
+			match dir:
+				DIR.UP: return 0
+				DIR.DOWN: return 6
+				DIR.LEFT: return 3
+				DIR.RIGHT: return 2
+		2:
+			match dir:
+				DIR.UP: return 0
+				DIR.DOWN: return 7
+				DIR.LEFT: return 1
+				DIR.RIGHT: return 5	
+		3:
+			match dir:
+				DIR.UP: return 1
+				DIR.DOWN: return 6
+				DIR.LEFT: return -1
+				DIR.RIGHT: return 4
+		4:
+			match dir:
+				DIR.UP: return 0
+				DIR.DOWN: return 8
+				DIR.LEFT: return 3
+				DIR.RIGHT: return 5
+		5:
+			match dir:
+				DIR.UP: return 2
+				DIR.DOWN: return 7
+				DIR.LEFT: return 4
+				DIR.RIGHT: return -1
+		6:
+			match dir:
+				DIR.UP: return 1
+				DIR.DOWN: return 8
+				DIR.LEFT: return 3
+				DIR.RIGHT: return 7
+		7:
+			match dir:
+				DIR.UP: return 2
+				DIR.DOWN: return 8
+				DIR.LEFT: return 6
+				DIR.RIGHT: return 5
+		8:
+			match dir:
+				DIR.UP: return 4
+				DIR.DOWN: return val
+				DIR.LEFT: return 6
+				DIR.RIGHT: return 7
+	
+	return val
+# -----------------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------------
 #func update_draw_keys() -> void:
 	#LineDrawController.draw_keys =  [active_designation] + bookmarked_rooms
-## --------------------------------------------------------------------------------------------------		
+# -----------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------		
+# -----------------------------------------------------------------------------------------------
 func on_current_step_update() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return
 	match current_step:
@@ -230,10 +291,9 @@ func on_current_step_update() -> void:
 		STEPS.FINALIZE:
 			user_response.emit({"action": ACTION.NEXT})
 
-# --------------------------------------------------------------------------------------------------		
+# -----------------------------------------------------------------------------------------------
 
-
-# --------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue():return
 	
@@ -247,7 +307,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
 					location_pos = Vector2(0, 0)
 				STEPS.SELECT_ROOM:
-					location_pos.y = clampi(location_pos.y - 1, 0, grid_array.size() - 1)
+					current_location.room = location_lookup(current_location.room, DIR.UP)
+					#location_pos.y = clampi(location_pos.y - 1, 0, grid_array.size() - 1)
 
 		"S":
 			match current_step:
@@ -255,25 +316,32 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
 					location_pos = Vector2(0, 0)
 				STEPS.SELECT_ROOM:
-					location_pos.y = clampi(location_pos.y + 1, 0, grid_array.size() - 1)
+					current_location.room = location_lookup(current_location.room, DIR.DOWN)
+					#location_pos.y = clampi(location_pos.y + 1, 0, grid_array.size() - 1)
 
 		"D":
 			match current_step:
 				STEPS.SELECT_ROOM:
-					if location_pos.x == grid_array[location_pos.y].size() - 1:
-						current_location.ring = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-						location_pos.x = 0
+					var room_index:int = location_lookup(current_location.room, DIR.RIGHT)
+					if room_index == -1:
+						if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
+							current_location.ring = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+							current_location.room = 3
 					else:
-						location_pos.x = clampi(location_pos.x + 1, 0, grid_array[location_pos.y].size() - 1)
+						current_location.room = room_index
+
 			
 		"A":
 			match current_step:
 				STEPS.SELECT_ROOM:
-					if location_pos.x == 0:
-						current_location.ring = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-						location_pos.x = grid_array[location_pos.y].size() - 1
+					var room_index:int = location_lookup(current_location.room, DIR.LEFT)
+					if room_index == -1:
+						if current_location.ring > 0:
+							current_location.ring = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+							current_location.room = 5
 					else:
-						location_pos.x = clampi(location_pos.x - 1, 0, grid_array[location_pos.y].size() - 1)
+						current_location.room = room_index
+
 					
 		"TAB":
 			if current_step == STEPS.SELECT_FLOOR:
@@ -304,13 +372,13 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			user_response.emit({"action": ACTION.BACK})
 			
 	# overflow checks
-	if location_pos.y > grid_array.size() - 1:
-		location_pos.y = grid_array.size() - 1
-	if location_pos.x > grid_array[location_pos.y].size() - 1:
-		location_pos.x = grid_array[location_pos.y].size() - 1		
+	#if location_pos.y > grid_array.size() - 1:
+		#location_pos.y = grid_array.size() - 1
+	#if location_pos.x > grid_array[location_pos.y].size() - 1:
+		#location_pos.x = grid_array[location_pos.y].size() - 1		
 	
-
-	current_location.room = grid_array[location_pos.y][location_pos.x]
+	print(current_location.room)
+	#current_location.room = grid_array[location_pos.y][location_pos.x]
 
 	
 	SUBSCRIBE.current_location = current_location

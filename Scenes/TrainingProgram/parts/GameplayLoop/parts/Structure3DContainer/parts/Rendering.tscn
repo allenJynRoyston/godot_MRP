@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="2_6hp44"]
 [ext_resource type="PackedScene" uid="uid://v15o8px8qi2m" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode.tscn" id="2_twpdr"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_sjn22"]
-[ext_resource type="PackedScene" uid="uid://i20apuqnuudg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomColumn.tscn" id="4_ujma6"]
+[ext_resource type="PackedScene" uid="uid://i20apuqnuudg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodes.tscn" id="4_ujma6"]
 
 [sub_resource type="Environment" id="Environment_k53cj"]
 ambient_light_source = 3
@@ -36,14 +36,14 @@ height = 70.0
 [sub_resource type="BoxMesh" id="BoxMesh_fgdu8"]
 size = Vector3(50, 3, 50)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_asfwt"]
-viewport_path = NodePath("RoomScene/MeshInstance3D/Sprite3D/SubViewport")
-
 [sub_resource type="CylinderMesh" id="CylinderMesh_m8spo"]
 flip_faces = true
 top_radius = 55.0
 bottom_radius = 55.0
 height = 20.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_asfwt"]
+viewport_path = NodePath("RoomScene/MeshInstance3D/Sprite3D/SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ftr3"]
 bg_color = Color(0, 0, 0, 0)
@@ -60,10 +60,10 @@ environment = SubResource("Environment_k53cj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.964321, 0.218302, 0.149763, -0.132737, -0.888164, 0.439939, 0.229053, 0.404364, 0.885451, 0, 19.4159, 2.89396)
-visible = false
-layers = 1023
+layers = 0
 light_energy = 1.181
 light_indirect_energy = 0.0
+light_cull_mask = 4293918721
 
 [node name="RoomNode" parent="." instance=ExtResource("2_twpdr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 263.871, -1, 0)
@@ -72,11 +72,11 @@ texture = SubResource("ViewportTexture_rsg4p")
 [node name="CameraContainers" type="Node3D" parent="."]
 
 [node name="ActiveCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 50)
 cull_mask = 1023
 projection = 1
 fov = 8.0
-size = 4.5
+size = 3.8
 
 [node name="FloorPlaceholderCamera" type="Camera3D" parent="CameraContainers"]
 transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 5, 50)
@@ -85,10 +85,10 @@ projection = 1
 size = 100.0
 
 [node name="RoomPlaceholderCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 0, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 0.221096, 50)
 cull_mask = 1023
 projection = 1
-size = 4.5
+size = 4.0
 far = 100.0
 
 [node name="SpriteLayer" type="Node3D" parent="."]
@@ -113,6 +113,7 @@ texture = SubResource("ViewportTexture_175mp")
 
 [node name="FogVolume" type="FogVolume" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.564, -4.77276, -27.8619)
+visible = false
 size = Vector3(20, 10, 10)
 material = SubResource("FogMaterial_gve2b")
 
@@ -141,6 +142,11 @@ mesh = SubResource("BoxMesh_fgdu8")
 [node name="RoomScene" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 150, 0, 0)
 
+[node name="Inner" type="MeshInstance3D" parent="RoomScene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 43.7743)
+layers = 1024
+mesh = SubResource("CylinderMesh_m8spo")
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(0.649131, 0, 0, 0, 0.784599, 0, 0, 0, 1.10754, 0, 0, 0)
 layers = 31
@@ -154,30 +160,12 @@ texture_filter = 0
 texture = SubResource("ViewportTexture_asfwt")
 
 [node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D/Sprite3D"]
+own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 
-[node name="Control" parent="RoomScene/MeshInstance3D/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="RoomScene"]
-transform = Transform3D(-0.649131, 0, -9.68242e-08, 0, 0.784599, 0, 5.67488e-08, 0, -1.10754, 0, 0, 100)
-layers = 31
-skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
-
-[node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D4"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0.0913746, 4.84824)
-pixel_size = 0.0075
-double_sided = false
-texture_filter = 0
-texture = SubResource("ViewportTexture_asfwt")
-
-[node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D4/Sprite3D"]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-
-[node name="Control" parent="RoomScene/MeshInstance3D4/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
+[node name="RoomNodes" parent="RoomScene/MeshInstance3D/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(-2.83744e-08, 0, -1.10754, 0, 0.784599, 0, 0.649131, 0, -4.84121e-08, 50, 0, 50)
@@ -192,11 +180,32 @@ texture_filter = 0
 texture = SubResource("ViewportTexture_asfwt")
 
 [node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D2/Sprite3D"]
+own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 
-[node name="Control" parent="RoomScene/MeshInstance3D2/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
+[node name="RoomNodes" parent="RoomScene/MeshInstance3D2/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="RoomScene"]
+transform = Transform3D(-0.649131, 0, -9.68242e-08, 0, 0.784599, 0, 5.67488e-08, 0, -1.10754, 0, 0, 100)
+layers = 31
+skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
+
+[node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D4"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0.0913746, 4.84824)
+pixel_size = 0.0075
+double_sided = false
+texture_filter = 0
+texture = SubResource("ViewportTexture_asfwt")
+
+[node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D4/Sprite3D"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+
+[node name="RoomNodes" parent="RoomScene/MeshInstance3D4/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(-2.83744e-08, 0, 1.10754, 0, 0.784599, 0, -0.649131, 0, -4.84121e-08, -50, 0, 50)
@@ -211,15 +220,12 @@ texture_filter = 0
 texture = SubResource("ViewportTexture_asfwt")
 
 [node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D3/Sprite3D"]
+own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 
-[node name="Control" parent="RoomScene/MeshInstance3D3/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="RoomScene"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 43.7743)
-mesh = SubResource("CylinderMesh_m8spo")
+[node name="RoomNodes" parent="RoomScene/MeshInstance3D3/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
 
 [node name="ControlSubViewport" type="SubViewport" parent="."]
 transparent_bg = true

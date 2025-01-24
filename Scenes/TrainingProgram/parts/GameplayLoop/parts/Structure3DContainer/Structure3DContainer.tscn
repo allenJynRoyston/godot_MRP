@@ -22,7 +22,7 @@ shader_parameter/trail_fade = 0.5
 [sub_resource type="ViewportTexture" id="ViewportTexture_becdm"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_tggw0"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_h66wl"]
 viewport_path = NodePath("SubViewport2")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aok4n"]
@@ -49,7 +49,7 @@ stretch_mode = 6
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 2
-texture = SubResource("ViewportTexture_tggw0")
+texture = SubResource("ViewportTexture_h66wl")
 expand_mode = 1
 stretch_mode = 6
 
@@ -134,15 +134,6 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
-
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-handle_input_locally = false
-canvas_cull_mask = 4293918720
-size = Vector2i(640, 360)
-
-[node name="Rendering" parent="SubViewport" instance=ExtResource("4_ypl4m")]
-visible = false
 
 [node name="SubViewport2" type="SubViewport" parent="."]
 transparent_bg = true

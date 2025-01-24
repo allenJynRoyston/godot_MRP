@@ -1,4 +1,3 @@
-@tool
 extends Node3D
 
 @onready var ContainerSprite:Sprite3D = $"."
@@ -15,8 +14,8 @@ extends Node3D
 @onready var PanelOneLabel2:Label = $SubViewport/Control/SubViewport/RoomNode/PanelOneViewport/PanelContainer/MarginContainer/VBoxContainer/PanelOneLabel2
 @onready var PanelOneLabel3:Label = $SubViewport/Control/SubViewport/RoomNode/PanelOneViewport/PanelContainer/MarginContainer/VBoxContainer/PanelOneLabel3
 
-@onready var CursorViewport:SubViewport = $SubViewport/Control/SubViewport/RoomNode/CursorViewport
-@onready var CursorViewportPanel:PanelContainer = $SubViewport/Control/SubViewport/RoomNode/CursorViewport/PanelContainer
+@onready var PanelIdViewport:SubViewport = $SubViewport/Control/SubViewport/RoomNode/PanelIdViewport
+@onready var PanelIdLabel:Label = $SubViewport/Control/SubViewport/RoomNode/PanelIdViewport/PanelContainer/MarginContainer/PanelIdLabel
 
 @onready var MeshOutlineLight:DirectionalLight3D = $SubViewport/Control/SubViewport/RoomNode/MeshOutline/DirectionalLight3D
 
@@ -64,14 +63,17 @@ const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMateri
 		opacity = val
 		if !is_node_ready():return
 		ContainerSprite.modulate = Color(1, 1, 1, opacity)
+
+var assigned_floor:int = 0
 		
+var assigned_wing:int = 0
+		
+
 var data:Dictionary = {} : 
 	set(val):
 		data = val
 		on_data_update()
 
-var assigned_floor:int = 0
-var assigned_wing:int = 0
 
 var default_position:Dictionary = {}
 var unavailable_rooms:Array = []
@@ -84,9 +86,13 @@ var is_focused:bool = false :
 		on_is_focused_update()
 
 var current_ref:String
-var room_ref:String
+var room_ref:String : 
+	set(val):
+		room_ref = val
+		on_room_ref_update()
+		
 var is_unavailable:bool = false
-
+var previous_room:int 
 var sister_nodes:Array = []
 
 # ---------------------------------------------------
@@ -107,6 +113,7 @@ func _ready() -> void:
 	default_position["camera_position"] = MainCamera.position
 	default_position["camera_rotation"] = MainCamera.rotation
 	default_position["room_node_rotation"] = RoomNode.rotation
+	default_position["room_node_position"] = RoomNode.position
 	
 	on_current_state_update()
 	on_data_update()
@@ -114,6 +121,8 @@ func _ready() -> void:
 	on_show_internal_update()
 	on_ref_index_update()
 	on_apply_texture_update()
+	build_room_details()
+	
 # ---------------------------------------------------
 
 # ---------------------------------------------------
@@ -159,8 +168,8 @@ func on_apply_texture_update() -> void:
 # ---------------------------------------------------
 func _on_panel_container_item_rect_changed() -> void:
 	if !is_node_ready():return
-	await U.tick()
-	CursorViewport.size = CursorViewportPanel.size
+	#await U.tick()
+	#CursorViewport.size = CursorViewportPanel.size
 # ---------------------------------------------------
 
 # ---------------------------------------------------
@@ -174,9 +183,25 @@ func on_show_internal_update() -> void:
 # ---------------------------------------------------
 func on_ref_index_update() -> void:
 	if !is_node_ready():return
-	PanelOneLabel.text = "%s" % [ref_index + 1]	
+	pass
 # ---------------------------------------------------
 
+# ---------------------------------------------------
+func update_refs(floor:int, wing:int) -> void:
+	assigned_wing = wing
+	assigned_floor = floor
+
+	room_ref = "%s%s%s" % [assigned_floor, assigned_wing, ref_index]
+	PanelIdLabel.text = "%s" % [room_ref]
+	#build_room_details()
+# ---------------------------------------------------
+
+# ---------------------------------------------------
+func on_room_ref_update() -> void:
+	if !is_node_ready():return
+	#PanelIdLabel.text = "%s" % [room_ref]	
+# ---------------------------------------------------
+	
 # ---------------------------------------------------
 func on_data_update() -> void:
 	if !is_node_ready():return
@@ -193,11 +218,12 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready():return
-	var room_index:int = current_location.room
-	var ring_index:int = current_location.ring
 	var floor_index:int = current_location.floor
-
-	build_room_details()
+	var ring_index:int = current_location.ring
+	var room_index:int = current_location.room
+	var check_ref:String = "%s%s%s" % [floor_index, ring_index, room_index]
+	
+	is_focused = room_ref == check_ref
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -224,15 +250,9 @@ func fade_restore() -> void:
 func build_room_details() -> void:
 	if room_config.is_empty() or current_location.is_empty() or ref_index == -1:return
 	
-	var room_index:int = current_location.room
-	var ring_index:int = current_location.ring
-	var floor_index:int = current_location.floor
-	var new_is_focused:bool = (room_index == ref_index) and (ring_index == assigned_wing) and (floor_index == assigned_wing)
 	
-	#room_ref = "%s%s%s" % [use_location.floor, use_location.ring, ref_index]
-	
-	var data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[ref_index]
-	#print(data)
+	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
+
 	if !data.build_data.is_empty():
 		var room_data:Dictionary = ROOM_UTIL.return_data(data.build_data.ref)
 		PanelOneLabel2.text = room_data.name	
@@ -254,7 +274,7 @@ func build_room_details() -> void:
 		#apply_texture = APPLY_TEXTURE.NONE
 	
 	
-	is_focused = new_is_focused
+	
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -264,11 +284,11 @@ func on_is_focused_update() -> void:
 	if current_state != new_state:
 		current_state = STATES.ACTIVE if is_focused else STATES.INACTIVE
 		
-
-		#if is_focused:
-			##tween_property(ContainerSprite, "scale", Vector3(1.1, 1.1, 1.1), 0.2)
-			#if "make_active" in self.get_parent_node_3d():
-				#self.get_parent_node_3d().make_active(self)
+	var default_position:Vector3 = default_position["room_node_position"]
+	#if is_focused:
+	tween_property(RoomNode, "position:y", default_position.y + 0.5 if is_focused else default_position.y, 0.2)
+		#if "make_active" in self.get_parent_node_3d():
+			#self.get_parent_node_3d().make_active(self)
 		#else:
 			#show_side = SIDES.NEUTRAL
 			#if "restore" in self.get_parent_node_3d():

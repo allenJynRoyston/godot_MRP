@@ -186,12 +186,12 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
-			await tween_property(ActiveCamera, "size", FloorPlaceholderCamera.size, 0.3)	
+			tween_property(ActiveCamera, "size", FloorPlaceholderCamera.size, 0.3)	
 			tween_property(ActiveCamera, "rotation", FloorPlaceholderCamera.rotation, 0.5)	
 			await tween_property(ActiveCamera, "position", FloorPlaceholderCamera.position, 0.5)	
 			
 		CAMERA.TYPE.ROOM_SELECT:
-			await tween_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
+			tween_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
 			tween_property(ActiveCamera, "rotation", RoomPlaceholderCamera.rotation, 0.5)	
 			await tween_property(ActiveCamera, "position", RoomPlaceholderCamera.position, 0.5)		
 			
