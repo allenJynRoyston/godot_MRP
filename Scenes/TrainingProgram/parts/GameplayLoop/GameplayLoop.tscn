@@ -1,6 +1,7 @@
-[gd_scene load_steps=22 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=24 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
+[ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
 [ext_resource type="PackedScene" uid="uid://bm6bs0iy51dcc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/LocationContainer.tscn" id="4_fqcw3"]
 [ext_resource type="PackedScene" uid="uid://d04lnq4yhp80o" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/ActionQueueContainer.tscn" id="5_1tp62"]
@@ -19,6 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="15_y8y6g"]
 [ext_resource type="PackedScene" uid="uid://dqxnw3r7jjl1s" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn" id="16_nfnev"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="18_4sn0g"]
+[ext_resource type="PackedScene" uid="uid://be17dg4n3r505" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BackContainer/BackContainer.tscn" id="19_idmig"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxod"]
 
@@ -38,11 +40,12 @@ grow_vertical = 2
 scale = Vector2(0.994072, 1.00471)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-debug_mode = true
 room_item_status = false
 show_resources = false
 show_dialogue = false
 show_status = true
+show_info = true
+show_metrics = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
@@ -77,6 +80,10 @@ theme_override_constants/margin_top = 5
 [node name="LocationContainer" parent="." instance=ExtResource("4_fqcw3")]
 layout_mode = 2
 theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+
+[node name="MetricsContainer" parent="." instance=ExtResource("2_28uuh")]
+layout_mode = 2
 theme_override_constants/margin_top = 5
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
@@ -128,8 +135,10 @@ freeze_inputs = true
 
 [node name="InfoContainer" parent="." instance=ExtResource("15_g2w1o")]
 layout_mode = 2
+size_flags_horizontal = 0
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 100
+freeze_inputs = true
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
 visible = false
@@ -137,6 +146,12 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 freeze_inputs = true
+
+[node name="BackContainer" parent="." instance=ExtResource("19_idmig")]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="WaitContainer" type="PanelContainer" parent="."]
 visible = false

@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://be17dg4n3r505"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BackContainer/back_container.gd" id="1_xve5h"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_uyrgm"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_v0e87"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_popmm"]
+shader = ExtResource("2_v0e87")
+shader_parameter/percentage = 1.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_yngpy"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_crrgc"]
+bg_color = Color(0.05, 0.05, 0.05, 0)
+
+[node name="MarginContainer" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+script = ExtResource("1_xve5h")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_popmm")
+layout_mode = 2
+texture = SubResource("ViewportTexture_yngpy")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(85, 42)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 85.0
+offset_bottom = 42.0
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextBtn" parent="SubViewport/PanelContainer/MarginContainer" instance=ExtResource("2_uyrgm")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_crrgc")
+panel_color = Color(0.05, 0.05, 0.05, 0)
+title = "BACK"
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

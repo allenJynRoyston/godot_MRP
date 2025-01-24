@@ -33,16 +33,16 @@ font_size = 24
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_852f7"]
 color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ftkdx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_osyol"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x1ikd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4qof"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kn17r"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryjcc"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sf823"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iqbay"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="LocationContainer" type="MarginContainer"]
@@ -108,7 +108,7 @@ layout_mode = 2
 [node name="TextBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_ftkdx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_osyol")
 icon = 49
 icon_placement = 1
 title = "A"
@@ -116,7 +116,7 @@ title = "A"
 [node name="TextBtn2" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_x1ikd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_p4qof")
 icon = 49
 icon_placement = 1
 title = "B"
@@ -124,7 +124,7 @@ title = "B"
 [node name="TextBtn3" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_kn17r")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ryjcc")
 icon = 49
 icon_placement = 1
 title = "C"
@@ -132,7 +132,7 @@ title = "C"
 [node name="TextBtn4" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_sf823")
+theme_override_styles/panel = SubResource("StyleBoxFlat_iqbay")
 icon = 49
 icon_placement = 1
 title = "D"

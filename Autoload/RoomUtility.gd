@@ -180,12 +180,7 @@ var BARRICKS:Dictionary = {
 	],	
 		
 	"placement_restrictions": {
-		"floor": [
-			ROOM.PLACEMENT.SURFACE
-		],
-		"ring": [
-			ROOM.PLACEMENT.RING_A
-		]
+
 	},
 	"own_limit": func() -> int:
 		return 10,	
@@ -488,7 +483,7 @@ func calculate_operating_costs(ref:int, resources_data:Dictionary, add:bool = tr
 
 # ------------------------------------------------------------------------------
 func get_count(ref:ROOM.TYPE, arr:Array) -> int:
-	return arr.filter(func(i):return i.data.ref == ref).size()
+	return arr.filter(func(i):return i.ref == ref).size()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -498,11 +493,11 @@ func get_tier_dict() -> Dictionary:
 
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int, purchased_facility_arr:Array) -> Dictionary:
-	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.data.ref))
+	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
 	var res:Dictionary = SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
-	res.list = res.list.filter(func(i):
-		return true if i.details.prerequisites.is_empty() else U.array_has_overlap(i.details.prerequisites, facility_refs)
-	)
+	#res.list = res.list.filter(func(i):
+		#return true if i.details.prerequisites.is_empty() else U.array_has_overlap(i.details.prerequisites, facility_refs)
+	#)
 	
 	return res
 # ------------------------------------------------------------------------------
@@ -516,7 +511,7 @@ func has_prerequisites(ref:ROOM.TYPE, arr:Array) -> bool:
 # ------------------------------------------------------------------------------
 func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
 	var room_data:Dictionary = return_data(ref)
-	var owned_count:int = arr.filter(func(i): return i.data.ref == ref).size()
+	var owned_count:int = arr.filter(func(i): return i.ref == ref).size()
 	var in_progress_count:int = action_queue_data.filter(func(i): return i.ref == ref and i.action == ACTION.PURCHASE.FACILITY_ITEM).size()
 	
 	if room_data.own_limit.call() == -1:

@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://i20apuqnuudg"]
+[gd_scene load_steps=16 format=3 uid="uid://i20apuqnuudg"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
 [ext_resource type="PackedScene" uid="uid://v15o8px8qi2m" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode.tscn" id="2_0i6nv"]
+[ext_resource type="Texture2D" uid="uid://c3h375pis5jae" path="res://SVGs/down-arrow-svgrepo-com.svg" id="2_mq5q8"]
 [ext_resource type="Material" uid="uid://c4md77b2j0hgw" path="res://Materials/TEST.tres" id="3_wm6m7"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_6kkky"]
@@ -59,6 +60,14 @@ size = Vector2i(1920, 1080)
 
 [node name="RoomColumn" type="Node3D" parent="SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="CursorSprite" type="Sprite3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.299828, 3.04513, 5)
+visible = false
+pixel_size = 0.0002
+no_depth_test = true
+fixed_size = true
+texture = ExtResource("2_mq5q8")
 
 [node name="NodeContainer" type="Node3D" parent="SubViewport/RoomColumn"]
 

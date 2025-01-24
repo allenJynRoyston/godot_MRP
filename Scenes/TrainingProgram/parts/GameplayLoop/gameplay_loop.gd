@@ -32,6 +32,8 @@ enum EVENT_STEPS {RESET, START}
 @onready var InfoContainer:MarginContainer = $InfoContainer
 @onready var ResearchersContainer:MarginContainer = $ResearcherContainer
 @onready var EventContainer:MarginContainer = $EventContainer
+@onready var MetricsContainer:MarginContainer = $MetricsContainer
+@onready var BackContainer:MarginContainer = $BackContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
@@ -121,6 +123,16 @@ enum EVENT_STEPS {RESET, START}
 	set(val):
 		show_build_complete = val
 		on_show_build_complete_update()
+		
+@export var show_metrics:bool = false : 
+	set(val):
+		show_metrics = val
+		on_show_metrics_update()
+		
+@export var show_back:bool = false : 
+	set(val):
+		show_back = val
+		on_show_back_update()
 #endregion
 # ------------------------------------------------------------------------------ 
 
@@ -134,7 +146,7 @@ var camera_settings:Dictionary = {
 var current_location:Dictionary = {
 	"floor": 0,
 	"ring": 0,
-	"room": 0
+	"room": 4 # 4 is the center
 } 
 var progress_data:Dictionary = { 
 	"day": 1,
@@ -423,6 +435,8 @@ func setup() -> void:
 	on_show_build_complete_update()
 	on_show_reseachers_update()
 	on_show_store_update()
+	on_show_metrics_update()
+	on_show_back_update()
 	
 	# other
 	on_show_confirm_modal_update()
@@ -517,7 +531,8 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		RoomStatusContainer, ActionContainer, ResourceContainer, 
 		DialogueContainer, StoreContainer, ContainmentContainer, 
 		ConfirmModal, RecruitmentContainer, StatusContainer,
-		BuildCompleteContainer, InfoContainer, EventContainer
+		BuildCompleteContainer, InfoContainer, EventContainer,
+		MetricsContainer, BackContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -683,6 +698,7 @@ func set_room_config() -> void:
 					return SCP_UTIL.return_data(item.ref)
 			}				
 	
+	
 	# mark rooms that are under construction...
 	for item in action_queue_data:
 		match item.action:
@@ -691,23 +707,20 @@ func set_room_config() -> void:
 				var ring:int = item.location.ring
 				var room:int = item.location.room		
 				new_room_config.floor[floor].ring[ring].room[room].build_data = {
-					"ref": item.ref,
-					"get_data": func() -> Dictionary:
-						return ROOM_UTIL.return_data(item.ref)
+					"ref": item.ref
 				}
-
+	
 	# mark rooms that are already built...
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
-			"ref": item.data.ref,
-			"get_data": func() -> Dictionary:
-				return ROOM_UTIL.return_data(item.data.ref)
+			"ref": item.ref
 		}
 		# if facility is built, clear build_data
 		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
+	
 	
 	# mark rooms and push to subscriptions
 	for floor_index in new_room_config.floor.size():
@@ -909,15 +922,15 @@ func on_completed_action(action_item:Dictionary) -> void:
 		# ----------------------------
 		ACTION.AQ.BASE_ITEM:
 			purchased_base_arr.push_back({
-				"data": BASE_UTIL.return_data(action_item.ref),
+				"ref": action_item.ref,
 			})
 			SUBSCRIBE.resources_data = BASE_UTIL.calculate_build_complete(action_item.ref, resources_data)
 			SUBSCRIBE.purchased_base_arr = purchased_base_arr
 		# ----------------------------	
 		ACTION.AQ.BUILD_ITEM:
 			purchased_facility_arr.push_back({
-				"data": ROOM_UTIL.return_data(action_item.ref),
-				"location": action_item.location
+				"ref": action_item.ref,
+				"location": action_item.location.duplicate()
 			})
 
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(action_item.ref, resources_data)
@@ -925,7 +938,7 @@ func on_completed_action(action_item:Dictionary) -> void:
 		# ----------------------------
 		ACTION.AQ.RESEARCH_ITEM:
 			purchased_research_arr.push_back({
-				"data": RD_UTIL.return_data(action_item.ref),
+				"ref": action_item.ref,
 			})
 			SUBSCRIBE.purchased_research_arr = purchased_research_arr
 			
@@ -998,7 +1011,7 @@ func add_action_queue_item(dict:Dictionary, props:Dictionary = {}) -> void:
 			"day": 0,
 			"completed_at": dict.completed_at,
 		},
-		"location": dict.location,
+		"location": dict.location.duplicate(),
 		"props": props
 	})
 	
@@ -1397,11 +1410,20 @@ func on_show_events_update() -> void:
 		EventContainer.is_showing = show_events
 		showing_states[EventContainer] = show_events
 		
-		
 func on_show_build_complete_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
 		BuildCompleteContainer.is_showing = show_build_complete
 		showing_states[BuildCompleteContainer] = show_build_complete
+
+func on_show_metrics_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		MetricsContainer.is_showing = show_metrics
+		showing_states[MetricsContainer] = show_metrics
+
+func on_show_back_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		BackContainer.is_showing = show_back
+		showing_states[BackContainer] = show_back
 
 func _on_container_rect_changed() -> void:	
 	if is_node_ready() or Engine.is_editor_hint():
@@ -1453,7 +1475,7 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.PLACEMENT:		
 			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_rooms(selected_shop_item.ref, room_config)	
 			# sort which rooms can be built in
-			await show_only([Structure3dContainer, LocationContainer, ActionQueueContainer])			
+			await show_only([Structure3dContainer, LocationContainer, ActionQueueContainer, BackContainer])			
 			#Structure3dContainer.select_location()
 			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
 			
@@ -2005,12 +2027,10 @@ func quicksave() -> void:
 		"purchased_research_arr": purchased_research_arr,
 		"hired_lead_researchers_arr": hired_lead_researchers_arr,
 		"resources_data": resources_data,
-		"current_location": current_location,
 		"bookmarked_rooms": bookmarked_rooms,
 		"researcher_hire_list": researcher_hire_list,
 		"tier_unlocked": tier_unlocked,
 		"unavailable_rooms": unavailable_rooms, 
-		"camera_settings": camera_settings
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
@@ -2048,13 +2068,16 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms if no_save else restore_data.bookmarked_rooms
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list if no_save else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr
-	SUBSCRIBE.current_location = initial_values.current_location if no_save else restore_data.current_location
 	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
-	SUBSCRIBE.camera_settings = initial_values.camera_settings if no_save else restore_data.camera_settings	
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms if no_save else restore_data.unavailable_rooms
 
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
 
+	# don't need to be saved, just load from defaults
+	SUBSCRIBE.current_location = initial_values.current_location 
+	SUBSCRIBE.camera_settings = initial_values.camera_settings 
+
+	
 #endregion		
 # ------------------------------------------------------------------------------

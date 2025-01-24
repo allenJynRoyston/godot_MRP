@@ -73,8 +73,8 @@ func build_list() -> void:
 			
 	# --- SEARCHES PURCHASED FACILITIES FOR CAPACITY 
 	for item in purchased_facility_arr:
-		var build_complete_list:Array = ROOM_UTIL.return_build_complete(item.data.ref)
-		var details:Dictionary = ROOM_UTIL.return_data(item.data.ref)
+		var build_complete_list:Array = ROOM_UTIL.return_build_complete(item.ref)
+		var details:Dictionary = ROOM_UTIL.return_data(item.ref)
 		for i in build_complete_list:
 			if i.resource.ref == RESOURCE.TYPE.DCLASS and i.type == "capacity":
 				var new_node:BtnBase = DetailBtnPreload.instantiate()

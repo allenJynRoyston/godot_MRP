@@ -4,19 +4,9 @@ extends GameContainer
 @onready var SelectLocationInstructions:VBoxContainer = $PanelContainer/MarginContainer/SelectLocationInstructions
 @onready var PlacementInstructions:VBoxContainer = $PanelContainer/MarginContainer/PlacementInstructions
 
-@onready var OverlayContainer:Control = $OverlayContainer
-@onready var BookmarkedInfo:Control = $OverlayContainer/BookmarkedInfo
-@onready var FloatingInfo:Control = $OverlayContainer/FloatingInfo
-@onready var TestPoint:Control = $OverlayContainer/FloatingInfo/TestPoint
-@onready var LineDrawController:Control = $OverlayContainer/LineDrawController
-#
-@onready var RenderLayer1:Node3D = $SubViewport2/Rendering
-#@onready var RenderLayer2:Node3D = $SubViewport2/Rendering
-
 enum STEPS { SELECT_FLOOR, SELECT_ROOM, FINALIZE }
 enum DIR {UP, DOWN, LEFT, RIGHT}
 
-const FloatingInfoPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/FloatingItem.tscn")
 const CheckboxPreload:PackedScene = preload("res://UI/Buttons/Checkbox/checkbox.tscn")
 
 var floating_node_refs:Dictionary = {}
@@ -24,13 +14,6 @@ var bookmarked_node_refs:Dictionary = {}
 var tracking_nodes:Array = []
 var unavailable_rooms:Array = []
 var active_designation:String = ""
-
-#var show_instructions:bool = false : 
-	#set(val):
-		#show_instructions = val
-		#on_show_instructions_update()
-
-var on_floor:int = -1
 
 var placement_instructions:Array = [] : 
 	set(val):
@@ -42,11 +25,6 @@ var current_step:STEPS = STEPS.SELECT_FLOOR :
 		current_step = val
 		on_current_step_update()
 		
-var grid_array:Array = [] : 
-	set(val):
-		grid_array = val
-		on_grid_array_update()
-
 var location_pos:Vector2 = Vector2(0, 0)
 
 
@@ -76,6 +54,12 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 	on_placement_instructions_update()
 	on_current_step_update()
+	
+	after_ready.call_deferred()
+
+func after_ready() -> void:
+	await U.set_timeout(0.5)
+	on_current_location_update.call_deferred()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -89,7 +73,6 @@ func traverse(callback:Callable) -> void:
 # --------------------------------------------------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
-	on_bookmarked_rooms_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -132,63 +115,11 @@ func on_placement_instructions_update() -> void:
 # -----------------------------------------------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if !is_node_ready() or room_config.is_empty():return
+	if !is_node_ready() or current_location.is_empty():return
 	active_designation = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
-	
-	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
-		if ref_name in floating_node_refs:			
-			var node:Control = floating_node_refs[ref_name]
-			node.show() if ref_name == active_designation else node.hide() 
-	traverse(callback) 
-	
-	LineDrawController.draw_keys = []
-	
-	if on_floor != current_location.floor:
-		var temp_grid_array := []
-		on_floor = current_location.floor
-		var array_size:int = room_config.floor[current_location.floor].array_size
-		var count:int = 0
-		for x in range(array_size):
-			var row:Array = []
-			for y in range(array_size):
-				row.push_back(count)
-				count += 1
-			temp_grid_array.push_back(row)
-		grid_array = temp_grid_array
 
 	for child in PlacementInstructions.get_children():
 		child.on_condition_check(current_location)
-# -----------------------------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------------------------
-#func on_show_instructions_update() -> void:
-	#if !is_node_ready():return
-	#SelectLocationInstructions.show() if show_instructions else SelectLocationInstructions.hide()
-	#PlacementInstructions.show() if show_instructions else PlacementInstructions.hide()
-# -----------------------------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------------------------
-func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
-	bookmarked_rooms = new_val
-	if !is_node_ready() or room_config.is_empty():return
-	
-	bookmarked_node_refs = {}
-	for child in BookmarkedInfo.get_children():
-		child.queue_free()
-
-	var callback:Callable = func(ref_name:String, floor_index:int, ring_index:int, room_index:int):
-		if ref_name in bookmarked_rooms:
-			var new_floating_node:Control = FloatingInfoPreload.instantiate()
-			BookmarkedInfo.add_child(new_floating_node)
-			new_floating_node.show()
-			
-			bookmarked_node_refs[ref_name] = new_floating_node
-			bookmarked_node_refs[ref_name].data = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data
-			bookmarked_node_refs[ref_name].location = {"floor": floor_index, "ring": ring_index, "room": room_index}
-	
-	traverse(callback) 
-	
-	LineDrawController.draw_keys = []
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
@@ -253,11 +184,6 @@ func location_lookup(val:int, dir:DIR) -> int:
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
-#func update_draw_keys() -> void:
-	#LineDrawController.draw_keys =  [active_designation] + bookmarked_rooms
-# -----------------------------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------------------------
 func on_current_step_update() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return
 	match current_step:
@@ -265,28 +191,10 @@ func on_current_step_update() -> void:
 		STEPS.SELECT_FLOOR:
 			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
 			SUBSCRIBE.camera_settings = camera_settings
-			
-			#var key:String = await wait_for_input
-			#match key:
-				#"BACK":
-					#user_response.emit({"action": ACTION.BACK})
-				#_:
-					#current_step = current_step
 		# ------------------------------------------------
 		STEPS.SELECT_ROOM:
 			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 			SUBSCRIBE.camera_settings = camera_settings
-			
-			#var key:String = await wait_for_input
-#
-			#match key:
-				#"BACK":
-					#pass
-					##user_response.emit({"action": ACTION.BACK})
-				#"ENTER":
-					#print("enter!")
-					##current_step = STEPS.FINALIZE if active_designation not in unavailable_rooms else current_step
-				
 		# ------------------------------------------------
 		STEPS.FINALIZE:
 			user_response.emit({"action": ACTION.NEXT})
@@ -305,19 +213,15 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			match current_step:
 				STEPS.SELECT_FLOOR:
 					current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
-					location_pos = Vector2(0, 0)
 				STEPS.SELECT_ROOM:
 					current_location.room = location_lookup(current_location.room, DIR.UP)
-					#location_pos.y = clampi(location_pos.y - 1, 0, grid_array.size() - 1)
 
 		"S":
 			match current_step:
 				STEPS.SELECT_FLOOR:
 					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
-					location_pos = Vector2(0, 0)
 				STEPS.SELECT_ROOM:
 					current_location.room = location_lookup(current_location.room, DIR.DOWN)
-					#location_pos.y = clampi(location_pos.y + 1, 0, grid_array.size() - 1)
 
 		"D":
 			match current_step:
@@ -326,7 +230,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					if room_index == -1:
 						if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
 							current_location.ring = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-							current_location.room = 3
+							current_location.room = 4
 					else:
 						current_location.room = room_index
 
@@ -338,7 +242,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					if room_index == -1:
 						if current_location.ring > 0:
 							current_location.ring = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-							current_location.room = 5
+							current_location.room = 4
 					else:
 						current_location.room = room_index
 
@@ -377,44 +281,9 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	#if location_pos.x > grid_array[location_pos.y].size() - 1:
 		#location_pos.x = grid_array[location_pos.y].size() - 1		
 	
-	print(current_location.room)
+	#print(current_location.room)
 	#current_location.room = grid_array[location_pos.y][location_pos.x]
 
 	
 	SUBSCRIBE.current_location = current_location
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-func on_grid_array_update() -> void:
-	for node in [RenderLayer1]:
-		node.grid_array = grid_array
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-#func on_process_update(delta:float) -> void:
-	#if !is_node_ready() or current_location.is_empty() or bookmarked_node_refs.is_empty():return	
-	#
-	## display all bookmarked rooms as a floating tag
-	#for index in bookmarked_rooms.size():
-		#var ref_name:String = bookmarked_rooms[index]
-		#var active_room_pos:Vector2 = U.convert_from_normalized_position(FloatingInfo.size, GBL.get_projected_3d_object_normalized_position(ref_name))
-		#var floating_node:Control = bookmarked_node_refs[ref_name]
-		#floating_node.position = Vector2(OverlayContainer.size.x - 150, (((10 + floating_node.size.y) * index) + 10) )
-#
-	#if !floating_node_refs.is_empty():
-		#var ref_name:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
-		#var active_room_pos:Vector2 = U.convert_from_normalized_position(FloatingInfo.size, GBL.get_projected_3d_object_normalized_position(ref_name))
-		#var floating_node:Control = floating_node_refs[ref_name]
-		#floating_node.position = active_room_pos - Vector2(floating_node.size.x, 40)
-		#var line_data:Dictionary = {
-			#"key": ref_name, 
-			#"lines": [
-				#{
-					#"start_point": active_room_pos,
-					#"end_point": floating_node.global_position - LineDrawController.global_position + floating_node.size/2
-				#}
-			#]
-		#}
-		#LineDrawController.update_line_data(line_data)			
-
 # --------------------------------------------------------------------------------------------------

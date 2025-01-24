@@ -64,10 +64,12 @@ const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMateri
 		if !is_node_ready():return
 		ContainerSprite.modulate = Color(1, 1, 1, opacity)
 
+var onBlur:Callable = func():pass
+var onFocus:Callable = func():pass
+
 var assigned_floor:int = 0
-		
 var assigned_wing:int = 0
-		
+var previous_floor:int = -1
 
 var data:Dictionary = {} : 
 	set(val):
@@ -86,11 +88,7 @@ var is_focused:bool = false :
 		on_is_focused_update()
 
 var current_ref:String
-var room_ref:String : 
-	set(val):
-		room_ref = val
-		on_room_ref_update()
-		
+var room_ref:String 
 var is_unavailable:bool = false
 var previous_room:int 
 var sister_nodes:Array = []
@@ -130,18 +128,16 @@ func on_current_state_update() -> void:
 	if !is_node_ready():return
 	var new_color:Color = Color.WHITE
 	
-	if is_unavailable:
-		new_color = Color(0.66, 0, 0, 1)
-	else:
-		match current_state:
-			STATES.NONE:
-				new_color = Color.TRANSPARENT
-			STATES.ACTIVE:
-				new_color = Color(1, 1, 1, 1)
-			STATES.INACTIVE:
-				new_color = Color(0.221, 0.39, 0.255, 1)
-			STATES.UNAVAILABLE:
-				new_color = Color(0.66, 0, 0, 1)
+	match current_state:
+		STATES.NONE:
+			new_color = Color.TRANSPARENT
+		STATES.ACTIVE:
+			new_color = Color(1, 1, 1, 1) if !is_unavailable else  Color(0.66, 0, 0, 1)
+		STATES.INACTIVE:
+			new_color = Color(0.221, 0.39, 0.255, 1)
+		STATES.UNAVAILABLE:
+			new_color = Color(0.66, 0, 0, 1)
+			
 	MeshOutlineLight.light_color = new_color
 # ---------------------------------------------------
 
@@ -193,13 +189,7 @@ func update_refs(floor:int, wing:int) -> void:
 
 	room_ref = "%s%s%s" % [assigned_floor, assigned_wing, ref_index]
 	PanelIdLabel.text = "%s" % [room_ref]
-	#build_room_details()
-# ---------------------------------------------------
-
-# ---------------------------------------------------
-func on_room_ref_update() -> void:
-	if !is_node_ready():return
-	#PanelIdLabel.text = "%s" % [room_ref]	
+	build_room_details()
 # ---------------------------------------------------
 	
 # ---------------------------------------------------
@@ -218,11 +208,7 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready():return
-	var floor_index:int = current_location.floor
-	var ring_index:int = current_location.ring
-	var room_index:int = current_location.room
-	var check_ref:String = "%s%s%s" % [floor_index, ring_index, room_index]
-	
+	var check_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
 	is_focused = room_ref == check_ref
 # --------------------------------------------------------------------------------------------------
 
@@ -231,7 +217,6 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 	unavailable_rooms = new_val
 	if !is_node_ready():return
 	is_unavailable = room_ref in unavailable_rooms
-	
 	on_current_state_update()
 # --------------------------------------------------------------------------------------------------	
 
@@ -248,12 +233,12 @@ func fade_restore() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func build_room_details() -> void:
-	if room_config.is_empty() or current_location.is_empty() or ref_index == -1:return
-	
-	
+	if room_config.is_empty() or ref_index == -1 or room_ref == "":return
 	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
 
+	
 	if !data.build_data.is_empty():
+		#print("build data:", room_ref, assigned_wing)
 		var room_data:Dictionary = ROOM_UTIL.return_data(data.build_data.ref)
 		PanelOneLabel2.text = room_data.name	
 		PanelOneLabel3.text = "CONSTRUCTING"
@@ -282,20 +267,14 @@ func on_is_focused_update() -> void:
 	var new_state:int = STATES.ACTIVE if is_focused else STATES.INACTIVE
 	
 	if current_state != new_state:
+		current_state = new_state
 		current_state = STATES.ACTIVE if is_focused else STATES.INACTIVE
-		
-	var default_position:Vector3 = default_position["room_node_position"]
-	#if is_focused:
-	tween_property(RoomNode, "position:y", default_position.y + 0.5 if is_focused else default_position.y, 0.2)
-		#if "make_active" in self.get_parent_node_3d():
-			#self.get_parent_node_3d().make_active(self)
-		#else:
-			#show_side = SIDES.NEUTRAL
-			#if "restore" in self.get_parent_node_3d():
-				#self.get_parent_node_3d().restore(self)
 		
 	if !is_focused:
 		show_side = SIDES.NEUTRAL
+		onBlur.call()
+	else:
+		onFocus.call()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -355,7 +334,9 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				show_side = SIDES.NEUTRAL if show_side == SIDES.LEFT else SIDES.LEFT
 			"TR":
 				show_side = SIDES.NEUTRAL if show_side == SIDES.RIGHT else SIDES.RIGHT			
-
+			"SPACEBAR":
+				show_side = SIDES.NEUTRAL
+				show_internal = !show_internal
 			
 # --------------------------------------------------------------------------------------------------	
 

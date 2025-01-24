@@ -34,8 +34,8 @@ func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) ->
 	var total_expense:int = 0
 
 	for item in purchased_facility_arr:
-		var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(item.data.ref)
-		var details:Dictionary = ROOM_UTIL.return_data(item.data.ref)
+		var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(item.ref)
+		var details:Dictionary = ROOM_UTIL.return_data(item.ref)
 		for i in operating_cost_list:
 			if i.resource.ref == RESOURCE.TYPE.MONEY and i.type == "amount":
 				var new_node:BtnBase = DetailBtnPreload.instantiate()

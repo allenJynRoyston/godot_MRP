@@ -1,12 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://b2glyeqvwy3vs"]
+[gd_scene load_steps=14 format=3 uid="uid://b2glyeqvwy3vs"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/InfoContainer/info_container.gd" id="1_akslg"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_8kwlr"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_swtif"]
-[ext_resource type="PackedScene" uid="uid://dtpu5w3pyuwgk" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/InfoContainer/parts/InfoZoomItem.tscn" id="4_m42nn"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_u816f"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="5_lgx13"]
-[ext_resource type="PackedScene" uid="uid://4v6dpjwsydkm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/InfoContainer/parts/InfoItem.tscn" id="7_6ga65"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_78yne"]
 shader = ExtResource("2_8kwlr")
@@ -22,7 +19,7 @@ shader_parameter/trail_fade = 0.5
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpj5t"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0, 0, 0, 0.262745)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -30,39 +27,32 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ego76"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wrlxv"]
-bg_color = Color(1, 1, 1, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_45se3"]
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lmad4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wx6w4"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n2l3t"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbcb3"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5yige"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xos5a"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a25xl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gkkl7"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -70,8 +60,9 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="InfoContainer" type="MarginContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(225, 0)
+offset_right = 110.0
+offset_bottom = 276.0
 script = ExtResource("1_akslg")
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -80,189 +71,89 @@ layout_mode = 2
 texture = SubResource("ViewportTexture_t7r15")
 stretch_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
-layout_mode = 2
-size_flags_horizontal = 0
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(225, 118)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+custom_minimum_size = Vector2(225, 0)
+offset_right = 117.0
+offset_bottom = 70.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dpj5t")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="OverlayContainer" type="PanelContainer" parent="PanelContainer/MarginContainer"]
+[node name="OverlayContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ego76")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/OverlayContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="ShowHideLabel" type="Label" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "HIDE INFO"
-label_settings = ExtResource("3_swtif")
-
-[node name="ShowHideCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("5_lgx13")]
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_wrlxv")
-no_bg = true
-is_checked = true
-
-[node name="ContainerVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
+[node name="ContainerVBox" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="CameraVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox"]
+[node name="CameraVBox" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer"]
 layout_mode = 2
-text = "Zoom"
+text = "OBJECTIVES "
 label_settings = ExtResource("3_swtif")
 
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_45se3")
 
-[node name="CameraLockIcon" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer" instance=ExtResource("4_u816f")]
-visible = false
+[node name="ShowHideCB" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
-icon = 43
-flip_h = false
-is_hoverable = false
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox"]
-layout_mode = 2
-
-[node name="OverviewBtn" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("4_m42nn")]
-layout_mode = 2
-set_camera_to = 3
-
-[node name="FloorBtn" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("4_m42nn")]
-layout_mode = 2
-set_camera_to = 2
-
-[node name="RingBtn" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("4_m42nn")]
-layout_mode = 2
-set_camera_to = 1
-
-[node name="RoomBtn" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("4_m42nn")]
-layout_mode = 2
-
-[node name="CheckboxVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/HBoxContainer"]
-layout_mode = 2
-text = "Info"
-label_settings = ExtResource("3_swtif")
-
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxLine_45se3")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="MoraleCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_lmad4")
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_wx6w4")
 no_bg = true
-title = "Morale"
+is_checked = true
 
-[node name="SecurityCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_n2l3t")
+
+[node name="CheckBox" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_mbcb3")
 no_bg = true
-title = "Security"
+title = "Build HQ."
 
-[node name="ReadinessCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
+[node name="CheckBox2" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5yige")
+size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_xos5a")
 no_bg = true
-title = "Readiness"
+title = "Hire a researcher."
 
-[node name="HumeCB" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CheckboxVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
+[node name="CheckBox3" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_a25xl")
+size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_gkkl7")
 no_bg = true
-title = "Hume"
+title = "Contain SCP-001"
 
-[node name="InfoVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox"]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox/HBoxContainer"]
-layout_mode = 2
-text = "Readings"
-label_settings = ExtResource("3_swtif")
-
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxLine_45se3")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="MoraleReading" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox/VBoxContainer" instance=ExtResource("7_6ga65")]
-visible = false
-layout_mode = 2
-title = "M"
-status = "NORMAL"
-
-[node name="SecurityReading" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox/VBoxContainer" instance=ExtResource("7_6ga65")]
-visible = false
-layout_mode = 2
-title = "S"
-status = "NORMAL"
-
-[node name="ReadinessReading" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox/VBoxContainer" instance=ExtResource("7_6ga65")]
-visible = false
-layout_mode = 2
-title = "R"
-status = "NORMAL"
-
-[node name="HumeReading" parent="PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/InfoVBox/VBoxContainer" instance=ExtResource("7_6ga65")]
-visible = false
-layout_mode = 2
-title = "H"
-status = "NORMAL"
-
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(110, 276)
-
-[connection signal="item_rect_changed" from="PanelContainer" to="." method="_on_subviewport_child_changed"]
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

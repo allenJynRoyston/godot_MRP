@@ -1,10 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=19 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_cucwc"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="2_6hp44"]
-[ext_resource type="PackedScene" uid="uid://v15o8px8qi2m" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode.tscn" id="2_twpdr"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_sjn22"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_m0beu"]
 [ext_resource type="PackedScene" uid="uid://i20apuqnuudg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodes.tscn" id="4_ujma6"]
+[ext_resource type="FontFile" uid="uid://ca1uev10lghsn" path="res://Fonts/dogicapixel.ttf" id="5_ptqq7"]
 
 [sub_resource type="Environment" id="Environment_k53cj"]
 ambient_light_source = 3
@@ -15,18 +16,8 @@ volumetric_fog_length = 22.9
 volumetric_fog_detail_spread = 0.5
 volumetric_fog_ambient_inject = 0.84
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_rsg4p"]
-viewport_path = NodePath("SubViewport")
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_175mp"]
 viewport_path = NodePath("ControlSubViewport")
-
-[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_gy8u5"]
-
-[sub_resource type="FogMaterial" id="FogMaterial_gve2b"]
-density = 2.0836
-edge_fade = 0.565686
-density_texture = SubResource("NoiseTexture3D_gy8u5")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_j3nt2"]
 top_radius = 4.0
@@ -45,12 +36,29 @@ height = 20.0
 [sub_resource type="ViewportTexture" id="ViewportTexture_asfwt"]
 viewport_path = NodePath("RoomScene/MeshInstance3D/Sprite3D/SubViewport")
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_7f03p"]
+viewport_path = NodePath("RoomScene/MeshInstance3D2/Sprite3D/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1uk6f"]
+viewport_path = NodePath("RoomScene/MeshInstance3D4/Sprite3D/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ds086"]
+viewport_path = NodePath("RoomScene/MeshInstance3D3/Sprite3D/SubViewport")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ftr3"]
-bg_color = Color(0, 0, 0, 0)
+bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_mxkok"]
+color = Color(1, 1, 1, 1)
+grow_end = -5.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_nf4rx"]
+font = ExtResource("5_ptqq7")
+font_size = 8
 
 [node name="Rendering" type="Node3D"]
 script = ExtResource("1_cucwc")
@@ -64,10 +72,6 @@ layers = 0
 light_energy = 1.181
 light_indirect_energy = 0.0
 light_cull_mask = 4293918721
-
-[node name="RoomNode" parent="." instance=ExtResource("2_twpdr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 263.871, -1, 0)
-texture = SubResource("ViewportTexture_rsg4p")
 
 [node name="CameraContainers" type="Node3D" parent="."]
 
@@ -88,11 +92,11 @@ size = 100.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 0.221096, 50)
 cull_mask = 1023
 projection = 1
-size = 4.0
+size = 6.0
 far = 100.0
 
 [node name="SpriteLayer" type="Node3D" parent="."]
-transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, -5, 2, 20)
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -20, 0, 10)
 
 [node name="CursorSprite" type="Sprite3D" parent="SpriteLayer"]
 transform = Transform3D(-0.422618, 0.906308, 0, -0.906308, -0.422618, 0, 0, 0, 1, 0, 0, 0)
@@ -111,12 +115,6 @@ no_depth_test = true
 fixed_size = true
 texture = SubResource("ViewportTexture_175mp")
 
-[node name="FogVolume" type="FogVolume" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.564, -4.77276, -27.8619)
-visible = false
-size = Vector3(20, 10, 10)
-material = SubResource("FogMaterial_gve2b")
-
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(-0.527423, 0.346123, -0.775902, -0.671074, -0.729795, 0.130611, -0.521042, 0.589575, 0.617185, 216.188, -4.77278, -22.5961)
 light_energy = 11.935
@@ -125,7 +123,7 @@ shadow_enabled = true
 spot_range = 46.5238
 
 [node name="FloorScene" type="Node3D" parent="."]
-transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0, 15, 0)
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0, 11.1006, 0)
 
 [node name="Elevator" type="MeshInstance3D" parent="FloorScene"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28.1906, 0)
@@ -140,7 +138,7 @@ mesh = SubResource("BoxMesh_fgdu8")
 [node name="FloorInstanceContainer" type="Node3D" parent="FloorScene"]
 
 [node name="RoomScene" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 150, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 150, -0.302952, 0)
 
 [node name="Inner" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 43.7743)
@@ -153,8 +151,7 @@ layers = 31
 skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
 [node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0.0913746, 4.84824)
-pixel_size = 0.0075
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
 double_sided = false
 texture_filter = 0
 texture = SubResource("ViewportTexture_asfwt")
@@ -173,11 +170,9 @@ layers = 31
 skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
 [node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D2"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0.0913746, 4.84824)
-pixel_size = 0.0075
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
 double_sided = false
-texture_filter = 0
-texture = SubResource("ViewportTexture_asfwt")
+texture = SubResource("ViewportTexture_7f03p")
 
 [node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D2/Sprite3D"]
 own_world_3d = true
@@ -186,6 +181,7 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 
 [node name="RoomNodes" parent="RoomScene/MeshInstance3D2/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
+assigned_wing = 1
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(-0.649131, 0, -9.68242e-08, 0, 0.784599, 0, 5.67488e-08, 0, -1.10754, 0, 0, 100)
@@ -193,11 +189,8 @@ layers = 31
 skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
 [node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D4"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0.0913746, 4.84824)
-pixel_size = 0.0075
-double_sided = false
-texture_filter = 0
-texture = SubResource("ViewportTexture_asfwt")
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
+texture = SubResource("ViewportTexture_1uk6f")
 
 [node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D4/Sprite3D"]
 own_world_3d = true
@@ -206,6 +199,7 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 
 [node name="RoomNodes" parent="RoomScene/MeshInstance3D4/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
+assigned_wing = 2
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(-2.83744e-08, 0, 1.10754, 0, 0.784599, 0, -0.649131, 0, -4.84121e-08, -50, 0, 50)
@@ -213,11 +207,8 @@ layers = 31
 skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
 [node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D3"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0.0913746, 4.84824)
-pixel_size = 0.0075
-double_sided = false
-texture_filter = 0
-texture = SubResource("ViewportTexture_asfwt")
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
+texture = SubResource("ViewportTexture_ds086")
 
 [node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D3/Sprite3D"]
 own_world_3d = true
@@ -226,6 +217,7 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 
 [node name="RoomNodes" parent="RoomScene/MeshInstance3D3/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
+assigned_wing = 3
 
 [node name="ControlSubViewport" type="SubViewport" parent="."]
 transparent_bg = true
@@ -243,9 +235,39 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="CursorLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CursorLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = ">> FLOOR 1"
+label_settings = ExtResource("4_m0beu")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "CONTAINED"
 label_settings = ExtResource("3_sjn22")
+
+[node name="HSeparator" type="HSeparator" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_mxkok")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "SCP-001"
+label_settings = SubResource("LabelSettings_nf4rx")
+
+[node name="Label2" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "SCP-002"
+label_settings = SubResource("LabelSettings_nf4rx")
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="_on_panel_container_item_rect_changed"]
