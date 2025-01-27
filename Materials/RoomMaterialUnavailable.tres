@@ -1,5 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://dviok6kg4hh33"]
 
 [resource]
-albedo_color = Color(1, 0.2, 0, 1)
+shading_mode = 0
+disable_ambient_light = true
+disable_fog = true
 distance_fade_mode = 1

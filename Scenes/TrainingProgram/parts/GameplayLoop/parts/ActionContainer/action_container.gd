@@ -62,13 +62,13 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	match key:
 		"ENTER":
 			on_next_day()
-		"B":
-			open_shop()
-		"E":
-			open_researchers()
-		"R":
-			open_recruit()
-		"C":
-			open_contain()
+		#"B":
+			#open_shop()
+		#"E":
+			#open_researchers()
+		#"R":
+			#open_recruit()
+		#"C":
+			#open_contain()
 			
 # --------------------------------------------------------------------------------------------------	

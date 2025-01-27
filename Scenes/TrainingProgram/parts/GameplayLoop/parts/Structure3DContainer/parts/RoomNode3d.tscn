@@ -1,0 +1,235 @@
+[gd_scene load_steps=19 format=4 uid="uid://d1copqdrd5j0s"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node_3d.gd" id="1_qihmr"]
+[ext_resource type="LabelSettings" uid="uid://dtqpk6sgxpcni" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodeSidePanel.tres" id="2_fh056"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_mku2i"]
+[ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="3_mmxwi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4uhrp"]
+blend_mode = 4
+cull_mode = 1
+shading_mode = 0
+disable_ambient_light = true
+disable_fog = true
+texture_repeat = false
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_j72em"]
+_surfaces = [{
+"aabb": AABB(-2.05773, -2.05773, -2.05773, 4.11547, 4.11547, 4.11547),
+"attribute_data": PackedByteArray("AAAAAAAAAACrqio/AAAAAKuqqj4AAAAAAACAPwAAAAAAAAAAAAAAP6uqKj8AAAA/q6qqPgAAAD8AAIA/AAAAP6uqqj4AAAAAAAAAAAAAAD+rqio/AAAAAKuqqj4AAAA/q6qqPgAAAD8AAAAAAACAP6uqKj8AAAA/q6qqPgAAgD+rqqo+AAAAP6uqKj8AAAA/q6oqPwAAAD8AAIA/AAAAP6uqqj4AAIA/q6oqPwAAgD+rqio/AACAPwAAgD8AAIA/"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAAEAAIAAgAEAAYAAQAFAAMAAwAFAAcACAAMAAoACgAMAA4ACQANAAsACwANAA8AEAAUABIAEgAUABYAEQAVABMAEwAVABcA"),
+"material": SubResource("StandardMaterial3D_4uhrp"),
+"name": "outline",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("7rEDwO6xA0DusQNA7rEDQO6xA0DusQPA7rEDQO6xA0DusQNA7rEDwO6xA0DusQPA7rEDwO6xA8DusQNA7rEDQO6xA8DusQPA7rEDQO6xA8DusQNA7rEDwO6xA8DusQPA7rEDQO6xA0DusQNA7rEDwO6xA0DusQPA7rEDQO6xA0DusQPA7rEDwO6xA0DusQNA7rEDQO6xA8DusQNA7rEDwO6xA8DusQPA7rEDQO6xA8DusQPA7rEDwO6xA8DusQNA7rEDQO6xA0DusQNA7rEDwO6xA8DusQNA7rEDwO6xA0DusQNA7rEDQO6xA8DusQNA7rEDQO6xA0DusQPA7rEDwO6xA8DusQPA7rEDwO6xA0DusQPA7rEDQO6xA8DusQPA/3//f////7//////AAD/v/9//3////+//////wAA/7//f/9/////v/////8AAP+//3//f////7//////AAD/v///AID/////AAAAgP9//7///wCA/////wAAAID/f/+///8AgP////8AAACA/3//v///AID/////AAAAgP9//78AgP//AAD/vwCAAAD///+/AID//wAA/78AgAAA////vwCA//8AAP+/AIAAAP///78AgP//AAD/vwCAAAD///+/")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ku53p"]
+transparency = 1
+shading_mode = 0
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(0.221, 0.39, 0.255, 1)
+distance_fade_mode = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fiat5"]
+cull_mode = 1
+albedo_color = Color(0, 0, 0, 1)
+metallic = 0.2
+metallic_specular = 0.52
+
+[sub_resource type="BoxMesh" id="BoxMesh_uaacd"]
+lightmap_size_hint = Vector2i(44, 66)
+material = SubResource("StandardMaterial3D_fiat5")
+size = Vector3(4, 4, 4)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_6pfee"]
+viewport_path = NodePath("RoomNode/FrontLeftPanelViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_8xdov"]
+viewport_path = NodePath("RoomNode/FrontRightPanelViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_lkb6v"]
+viewport_path = NodePath("RoomNode/TopPanelViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_bs2pq"]
+viewport_path = NodePath("RoomNode/TopPanelViewport")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fjhpp"]
+size = Vector2(10, 10)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7n1l0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hquau"]
+font = ExtResource("2_mku2i")
+font_size = 72
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j7pko"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ypm4"]
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_qihmr")
+current_state = 1
+
+[node name="RoomNode" type="Node3D" parent="."]
+transform = Transform3D(0.999958, 0, 0, 0, 1, 0, 0, 0, 0.999958, 0, -1, 0)
+
+[node name="MeshOutline" type="MeshInstance3D" parent="RoomNode"]
+transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, 0, 0, 0)
+layers = 16384
+gi_mode = 0
+mesh = SubResource("ArrayMesh_j72em")
+skeleton = NodePath("../MainMesh")
+surface_material_override/0 = SubResource("StandardMaterial3D_ku53p")
+
+[node name="MainMesh" type="MeshInstance3D" parent="RoomNode"]
+mesh = SubResource("BoxMesh_uaacd")
+
+[node name="FrontLeftPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 5.03727e-09, 0, -2.05762)
+double_sided = false
+texture = SubResource("ViewportTexture_6pfee")
+
+[node name="FrontRightPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -2.09207, 0, -3.58718e-09)
+modulate = Color(1, 0, 0, 1)
+double_sided = false
+texture = SubResource("ViewportTexture_8xdov")
+
+[node name="TopPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0.00819385, 2.06043, -0.00828862)
+flip_h = true
+texture = SubResource("ViewportTexture_lkb6v")
+
+[node name="InsidePanel" type="Sprite3D" parent="RoomNode/MainMesh"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0.8, -0.5, 0.8)
+visible = false
+texture = SubResource("ViewportTexture_bs2pq")
+
+[node name="Floor" type="MeshInstance3D" parent="RoomNode"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.21906, 0)
+visible = false
+mesh = SubResource("PlaneMesh_fjhpp")
+
+[node name="FrontLeftPanelViewport" type="SubViewport" parent="RoomNode"]
+transparent_bg = true
+canvas_cull_mask = 4293919743
+size = Vector2i(400, 400)
+
+[node name="PanelContainer" type="PanelContainer" parent="RoomNode/FrontLeftPanelViewport"]
+custom_minimum_size = Vector2(400, 400)
+offset_right = 400.0
+offset_bottom = 400.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7n1l0")
+
+[node name="MarginContainer" type="MarginContainer" parent="RoomNode/FrontLeftPanelViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RoomNode/FrontLeftPanelViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="RoomNode/FrontLeftPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "ROOM 111"
+label_settings = ExtResource("2_fh056")
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="RoomNode/FrontLeftPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "(CONSTRUCTION)"
+label_settings = SubResource("LabelSettings_hquau")
+horizontal_alignment = 1
+
+[node name="FrontRightPanelViewport" type="SubViewport" parent="RoomNode"]
+transparent_bg = true
+size = Vector2i(400, 400)
+
+[node name="PanelContainer" type="PanelContainer" parent="RoomNode/FrontRightPanelViewport"]
+custom_minimum_size = Vector2(400, 400)
+offset_right = 200.0
+offset_bottom = 200.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_j7pko")
+
+[node name="MarginContainer" type="MarginContainer" parent="RoomNode/FrontRightPanelViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RoomNode/FrontRightPanelViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="RoomNode/FrontRightPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "+1 SAFETY"
+label_settings = ExtResource("2_fh056")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopPanelViewport" type="SubViewport" parent="RoomNode"]
+transparent_bg = true
+size = Vector2i(400, 400)
+
+[node name="PanelContainer" type="PanelContainer" parent="RoomNode/TopPanelViewport"]
+offset_right = 140.0
+offset_bottom = 75.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5ypm4")
+
+[node name="MarginContainer" type="MarginContainer" parent="RoomNode/TopPanelViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="RoomNode/TopPanelViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "BARRICKS"
+label_settings = ExtResource("2_fh056")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="RoomNode/TopPanelViewport/PanelContainer/MarginContainer"]
+visible = false
+layout_mode = 2
+text = "(CONSTRUCTION)"
+label_settings = SubResource("LabelSettings_hquau")
+horizontal_alignment = 1
+
+[node name="InsideViewport" type="SubViewport" parent="RoomNode"]
+transparent_bg = true
+size = Vector2i(300, 300)
+
+[node name="PanelContainer" type="PanelContainer" parent="RoomNode/InsideViewport"]
+offset_right = 300.0
+offset_bottom = 300.0
+
+[node name="TextureRect" type="TextureRect" parent="RoomNode/InsideViewport/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("3_mmxwi")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PreviewCamera" type="Camera3D" parent="."]
+transform = Transform3D(-0.707107, 0.298836, -0.640857, 0, 0.906308, 0.422618, 0.707107, 0.298836, -0.640857, -3.5, 1.5, -3.5)
+visible = false
+projection = 1
+size = 20.122
+
+[connection signal="item_rect_changed" from="RoomNode/TopPanelViewport/PanelContainer" to="RoomNode" method="_on_panel_container_item_rect_changed"]

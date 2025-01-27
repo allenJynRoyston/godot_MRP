@@ -17,7 +17,7 @@ shader_parameter/trail_fade = 0.5
 [sub_resource type="ViewportTexture" id="ViewportTexture_yngpy"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_crrgc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scsi2"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="MarginContainer" type="MarginContainer"]
@@ -50,7 +50,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="TextBtn" parent="SubViewport/PanelContainer/MarginContainer" instance=ExtResource("2_uyrgm")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_crrgc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_scsi2")
 panel_color = Color(0.05, 0.05, 0.05, 0)
 title = "BACK"
 

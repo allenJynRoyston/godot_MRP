@@ -89,10 +89,10 @@ projection = 1
 size = 100.0
 
 [node name="RoomPlaceholderCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 0.221096, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 0.219315, 50)
 cull_mask = 1023
 projection = 1
-size = 6.0
+size = 7.0
 far = 100.0
 
 [node name="SpriteLayer" type="Node3D" parent="."]
@@ -123,7 +123,7 @@ shadow_enabled = true
 spot_range = 46.5238
 
 [node name="FloorScene" type="Node3D" parent="."]
-transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0, 11.1006, 0)
+transform = Transform3D(-0.819152, 0, 0.573577, 0, 1, 0, -0.573577, 0, -0.819152, 0, 11.1006, 0)
 
 [node name="Elevator" type="MeshInstance3D" parent="FloorScene"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28.1906, 0)
@@ -151,7 +151,7 @@ layers = 31
 skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
 [node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.819152, -0.573576, 0, 0.573576, 0.819152, 0, 0, 0)
 double_sided = false
 texture_filter = 0
 texture = SubResource("ViewportTexture_asfwt")
@@ -207,7 +207,6 @@ layers = 31
 skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
 [node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D3"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
 texture = SubResource("ViewportTexture_ds086")
 
 [node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D3/Sprite3D"]

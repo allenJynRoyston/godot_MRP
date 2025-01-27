@@ -14,6 +14,8 @@ enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT,
 enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum ACTION_COMPLETE_STEPS {HIDE, START, FINALIZE}
 
+enum SUMMARY_STEPS {RESET, START, DISMISS}
+
 enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
 enum EVENT_STEPS {RESET, START}
 
@@ -34,6 +36,7 @@ enum EVENT_STEPS {RESET, START}
 @onready var EventContainer:MarginContainer = $EventContainer
 @onready var MetricsContainer:MarginContainer = $MetricsContainer
 @onready var BackContainer:MarginContainer = $BackContainer
+@onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
@@ -133,6 +136,12 @@ enum EVENT_STEPS {RESET, START}
 	set(val):
 		show_back = val
 		on_show_back_update()
+		
+@export var show_end_of_phase:bool = false : 
+	set(val):
+		show_end_of_phase = val
+		on_show_end_of_phase_update()
+		
 #endregion
 # ------------------------------------------------------------------------------ 
 
@@ -362,11 +371,16 @@ var current_researcher_step:RESEARCHERS_STEPS = RESEARCHERS_STEPS.RESET :
 		current_researcher_step = val
 		on_current_researcher_step_update()
 
+var current_summary_step:SUMMARY_STEPS = SUMMARY_STEPS.RESET : 
+	set(val):
+		current_summary_step = val
+		on_current_summary_step_update()
 
 signal store_select_location
 signal on_complete_build_complete
 signal on_expired_scp_items_complete
 signal on_events_complete
+signal on_summary_complete
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -437,6 +451,7 @@ func setup() -> void:
 	on_show_store_update()
 	on_show_metrics_update()
 	on_show_back_update()
+	on_show_end_of_phase_update()
 	
 	# other
 	on_show_confirm_modal_update()
@@ -532,7 +547,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		DialogueContainer, StoreContainer, ContainmentContainer, 
 		ConfirmModal, RecruitmentContainer, StatusContainer,
 		BuildCompleteContainer, InfoContainer, EventContainer,
-		MetricsContainer, BackContainer
+		MetricsContainer, BackContainer, EndOfPhaseContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -794,9 +809,14 @@ func next_day() -> void:
 	# show busy modal
 	await wait_please(1.0)	
 	
+	current_summary_step = SUMMARY_STEPS.START
+	await on_summary_complete
+	
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
 	SUBSCRIBE.progress_data = progress_data
+	
+	
 	
 	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
 	action_queue_data = action_queue_data.map(func(i): 
@@ -1336,99 +1356,104 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 # ------------------------------------------------------------------------------	ON_SHOW_UPDATES
 #region on_show_updates
 func on_show_location_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		LocationContainer.is_showing = show_location
-		showing_states[LocationContainer] = show_location
+	if !is_node_ready():return
+	LocationContainer.is_showing = show_location
+	showing_states[LocationContainer] = show_location
 	
 func on_show_structures_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		Structure3dContainer.is_showing = show_structures
-		showing_states[Structure3dContainer] = show_structures
+	if !is_node_ready():return
+	Structure3dContainer.is_showing = show_structures
+	showing_states[Structure3dContainer] = show_structures
 	
 func on_show_actions_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		ActionContainer.is_showing = show_actions
-		showing_states[ActionContainer] = show_actions
+	if !is_node_ready():return
+	ActionContainer.is_showing = show_actions
+	showing_states[ActionContainer] = show_actions
 	
 func on_show_action_queue_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		ActionQueueContainer.is_showing = show_action_queue
-		showing_states[ActionQueueContainer] = show_action_queue
+	if !is_node_ready():return
+	ActionQueueContainer.is_showing = show_action_queue
+	showing_states[ActionQueueContainer] = show_action_queue
 
 func on_show_reseachers_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		ResearchersContainer.is_showing = show_reseachers
-		showing_states[ResearchersContainer] = show_reseachers
+	if !is_node_ready():return
+	ResearchersContainer.is_showing = show_reseachers
+	showing_states[ResearchersContainer] = show_reseachers
 		
 func on_room_item_status_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		RoomStatusContainer.is_showing = room_item_status
-		showing_states[RoomStatusContainer] = room_item_status
+	if !is_node_ready():return
+	RoomStatusContainer.is_showing = room_item_status
+	showing_states[RoomStatusContainer] = room_item_status
 
 func on_show_resources_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		ResourceContainer.is_showing = show_resources
-		showing_states[ResourceContainer] = show_resources
+	if !is_node_ready():return
+	ResourceContainer.is_showing = show_resources
+	showing_states[ResourceContainer] = show_resources
 		
 func on_show_dialogue_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		DialogueContainer.is_showing = show_dialogue
-		showing_states[DialogueContainer] = show_dialogue
+	if !is_node_ready():return
+	DialogueContainer.is_showing = show_dialogue
+	showing_states[DialogueContainer] = show_dialogue
 
 func on_show_store_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		StoreContainer.is_showing = show_store
-		showing_states[StoreContainer] = show_store
+	if !is_node_ready():return
+	StoreContainer.is_showing = show_store
+	showing_states[StoreContainer] = show_store
 
 func on_show_containment_status_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		ContainmentContainer.is_showing = show_containment_status
-		showing_states[ContainmentContainer] = show_containment_status
+	if !is_node_ready():return
+	ContainmentContainer.is_showing = show_containment_status
+	showing_states[ContainmentContainer] = show_containment_status
 
 func on_show_confirm_modal_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		ConfirmModal.is_showing = show_confirm_modal
-		showing_states[ConfirmModal] = show_confirm_modal
+	if !is_node_ready():return
+	ConfirmModal.is_showing = show_confirm_modal
+	showing_states[ConfirmModal] = show_confirm_modal
 
 func on_show_recruit_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		RecruitmentContainer.is_showing = show_recruit
-		showing_states[RecruitmentContainer] = show_recruit
+	if !is_node_ready():return
+	RecruitmentContainer.is_showing = show_recruit
+	showing_states[RecruitmentContainer] = show_recruit
 
 func on_show_status_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		StatusContainer.is_showing = show_status
-		showing_states[StatusContainer] = show_status
+	if !is_node_ready():return
+	StatusContainer.is_showing = show_status
+	showing_states[StatusContainer] = show_status
 
 func on_show_info_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		InfoContainer.is_showing = show_info
-		showing_states[InfoContainer] = show_info
+	if !is_node_ready():return
+	InfoContainer.is_showing = show_info
+	showing_states[InfoContainer] = show_info
 
 func on_show_events_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		EventContainer.is_showing = show_events
-		showing_states[EventContainer] = show_events
+	if !is_node_ready():return
+	EventContainer.is_showing = show_events
+	showing_states[EventContainer] = show_events
 		
 func on_show_build_complete_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		BuildCompleteContainer.is_showing = show_build_complete
-		showing_states[BuildCompleteContainer] = show_build_complete
+	if !is_node_ready():return
+	BuildCompleteContainer.is_showing = show_build_complete
+	showing_states[BuildCompleteContainer] = show_build_complete
 
 func on_show_metrics_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		MetricsContainer.is_showing = show_metrics
-		showing_states[MetricsContainer] = show_metrics
+	if !is_node_ready():return
+	MetricsContainer.is_showing = show_metrics
+	showing_states[MetricsContainer] = show_metrics
 
 func on_show_back_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		BackContainer.is_showing = show_back
-		showing_states[BackContainer] = show_back
+	if !is_node_ready():return
+	BackContainer.is_showing = show_back
+	showing_states[BackContainer] = show_back
+
+func on_show_end_of_phase_update() -> void:
+	if !is_node_ready():return
+	EndOfPhaseContainer.is_showing = show_end_of_phase
+	showing_states[EndOfPhaseContainer] = show_end_of_phase
 
 func _on_container_rect_changed() -> void:	
-	if is_node_ready() or Engine.is_editor_hint():
-		for sidebar in [RoomStatusContainer, ActionQueueContainer]:
-			sidebar.max_height = self.size.y
+	if !is_node_ready():return
+	for sidebar in [RoomStatusContainer, ActionQueueContainer]:
+		sidebar.max_height = self.size.y
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -1436,7 +1461,8 @@ func _on_container_rect_changed() -> void:
 # ------------------------------------------------------------------------------	SHOP STEPS
 #region SHOP STATES
 func on_current_shop_step_update() -> void:
-	if !is_node_ready() and !Engine.is_editor_hint():return
+	if !is_node_ready():return
+	
 	match current_shop_step:
 		# ---------------
 		SHOP_STEPS.HIDE:
@@ -1605,7 +1631,8 @@ func on_current_shop_step_update() -> void:
 # ------------------------------------------------------------------------------	CONTAIN STEPS
 #region CONTAIN STEPS
 func on_current_contain_step_update() -> void:
-	if !is_node_ready() and !Engine.is_editor_hint():return
+	if !is_node_ready():return
+	
 	match current_contain_step:
 		# ---------------
 		CONTAIN_STEPS.HIDE:
@@ -1789,7 +1816,7 @@ func on_current_contain_step_update() -> void:
 # ------------------------------------------------------------------------------	RECRUIT STEPS
 #region RECRUIT STEPS
 func on_current_recruit_step_update() -> void:
-	if !is_node_ready() and !Engine.is_editor_hint():return
+	if !is_node_ready():return
 
 	match current_recruit_step:
 		# ---------------
@@ -1845,7 +1872,7 @@ func on_current_recruit_step_update() -> void:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------	BUILD COMPLETE
-#region BUILD COMPLETE
+#region CURRENT ACTION
 func on_current_action_complete_step_update() -> void:
 	if !is_node_ready():return
 
@@ -1888,9 +1915,9 @@ func on_current_action_complete_step_update() -> void:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
-#region BUILD COMPLETE
+#region CURRENT EVENT STEPS
 func on_current_event_step_update() -> void:
-	if !is_node_ready() and !Engine.is_editor_hint():return
+	if !is_node_ready():return
 
 	match current_event_step:
 		EVENT_STEPS.RESET:
@@ -1912,6 +1939,32 @@ func on_current_event_step_update() -> void:
 			
 #endregion
 # ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------		
+#region SUMMARY STEPS
+func on_current_summary_step_update() -> void:
+	if !is_node_ready():return
+
+	match current_summary_step:
+		SUMMARY_STEPS.RESET:
+			SUBSCRIBE.suppress_click = false
+			await restore_default_state()
+		SUMMARY_STEPS.START:
+			SUBSCRIBE.suppress_click = true
+			await show_only([EndOfPhaseContainer])
+			EndOfPhaseContainer.summary_data = []
+			EndOfPhaseContainer.start()
+			await EndOfPhaseContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			current_summary_step = SUMMARY_STEPS.RESET
+			await U.set_timeout(0.5)
+			# trigger signal
+			on_summary_complete.emit()
+			
+#endregion
+# ------------------------------------------------------------------------------		
+
+
 
 # ------------------------------------------------------------------------------		
 #region RESEARCHER STEPS
