@@ -59,7 +59,10 @@ const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMateri
 		
 @export var opacity:float  = 1.0 
 
-var is_pulsing:bool = false
+var is_pulsing:bool = false : 
+	set(val):
+		is_pulsing =  val
+		on_is_pulsing_update()
 
 var onBlur:Callable = func(_room_data:Dictionary):pass
 var onFocus:Callable = func(_room_data:Dictionary):pass
@@ -109,11 +112,13 @@ func _ready() -> void:
 	on_show_internal_update()
 	on_ref_index_update()
 	on_apply_texture_update()
+	on_is_pulsing_update()
 	build_room_details()
-	
-	PulseEffectFX.hide()
-	
 # ---------------------------------------------------
+
+func on_is_pulsing_update() -> void:
+	if !is_pulsing :
+		PulseEffectFX.hide() 
 
 # ---------------------------------------------------
 func on_current_state_update() -> void:
@@ -238,6 +243,7 @@ func build_room_details() -> void:
 		room_data = ROOM_UTIL.return_data(data.room_data.ref)
 		TopPanelLabel.text = room_data.name	
 		TopPanelLabel2.text = ""
+		is_pulsing = data.room_data.is_activated
 		apply_texture = APPLY_TEXTURE.BUILT
 	
 	else:

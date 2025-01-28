@@ -46,3 +46,18 @@ func return_data(key:int) -> Dictionary:
 	reference_data[key].ref = key
 	return reference_data[key]
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func check_if_have_enough(cost_arr:Array, resources_data:Dictionary) -> bool:
+	var has_enough:bool = true
+	for item in cost_arr:
+		match item.type:
+			"amount":
+				var current_amount:int = resources_data[item.resource.ref].amount 
+				var compare_amount:int = absi(item.amount)
+				if current_amount - compare_amount < 0:
+					has_enough = false
+					break
+	return has_enough
+# ------------------------------------------------------------------------------
+	

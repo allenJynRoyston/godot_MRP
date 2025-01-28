@@ -747,16 +747,22 @@ func set_room_config() -> void:
 
 	# mark rooms and push to subscriptions
 	for floor_index in new_room_config.floor.size():
+		# transfer in_lockdown state
 		new_room_config.floor[floor_index].in_lockdown = room_config.floor[floor_index].in_lockdown
-		#new_room_config.floor[floor_index].in_lockdown = room_config.floor[current_location.floor].in_lockdown
+		
 		#print(floor_index, new_room_config.floor[floor_index].in_lockdown)
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
+				
 				if !config_data.build_data.is_empty():
 					under_construction_rooms.push_back(designation)
 				if !config_data.room_data.is_empty():
+					# transfer is_activated state
+					if !room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.is_empty():
+						new_room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.is_activated = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.is_activated
+				
 					built_rooms.push_back(designation)
 			
 	# mark rooms that are already powered...
@@ -921,9 +927,10 @@ func activate_room(from_location:Dictionary, is_activated:bool) -> void:
 	
 	match response.action:		
 		ACTION.NEXT:
-			print("ACTIVATE ROOM")
+			var room_data:Dictionary = room_config.floor[from_location.floor].ring[from_location.ring].room[from_location.room].room_data
+			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_data.ref, resources_data, is_activated)
 			room_config.floor[from_location.floor].ring[from_location.ring].room[from_location.room].room_data.is_activated = is_activated
-			room_config = room_config
+			SUBSCRIBE.room_config = room_config
 			
 	await restore_default_state()
 	on_activate_room_complete.emit()
@@ -946,9 +953,7 @@ func reset_room(from_location:Dictionary) -> void:
 				var reset_item:Dictionary = reset_arr[0]
 				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
 				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, resources_data, true)
-	
-	print( room_config.floor[current_location.floor].in_lockdown )
-	
+		
 	await restore_default_state()
 	on_reset_room_complete.emit()
 # ---------------------

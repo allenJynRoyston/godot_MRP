@@ -140,6 +140,7 @@ mesh = SubResource("BoxMesh_pum0q")
 
 [node name="PulseEffectFX" type="SpotLight3D" parent="RoomNode/Node3D/MeshInstance3D"]
 transform = Transform3D(-0.185195, 0.676806, -0.712487, -0.000651772, 0.724943, 0.688808, 0.982702, 0.128028, -0.133815, -0.929718, 1.19476, -0.100281)
+visible = false
 light_color = Color(1, 0, 0, 1)
 spot_range = 3.231
 spot_attenuation = -10.0

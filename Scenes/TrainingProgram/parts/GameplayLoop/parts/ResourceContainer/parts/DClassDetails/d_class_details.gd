@@ -20,17 +20,21 @@ var action_queue_data:Array = []
 
 var scp_data:Dictionary = {}
 
+var room_config:Dictionary = {}
+
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	SUBSCRIBE.unsubscribe_to_room_config(self)
 	
 func _ready() -> void:
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
@@ -64,9 +68,30 @@ func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) ->
 	if !is_node_ready():return
 	build_list()
 # -----------------------------------	
+# --------------------------------------------------------------------------------------------------		
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
+	if !is_node_ready():return
+	build_list()
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func traverse(callback:Callable) -> void:
+	for floor_index in room_config.floor:
+		for ring_index in room_config.floor[floor_index].ring:
+			for room_index in room_config.floor[floor_index].ring[ring_index].room:	
+				var room_config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]
+				var location:Dictionary = {
+					"floor": floor_index,
+					"ring": ring_index,
+					"room": room_index
+				}
+				callback.call(room_config_data, location)
+# --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------
 func build_list() -> void:
+	if room_config.is_empty() or scp_data.is_empty():return
 	for node in [CapacityList, UtilizedList]:
 		for child in node.get_children():
 			child.queue_free()			
@@ -119,3 +144,21 @@ func build_list() -> void:
 						SUBSCRIBE.current_location = item.location.duplicate()
 
 					UtilizedList.add_child(new_node)
+
+	# --- SEARCHES FOR ACTIVATED ROOMS 
+	traverse(func(room_config_data:Dictionary, location:Dictionary) -> void:
+		if !room_config_data.room_data.is_empty() and room_config_data.room_data.is_activated:
+			var room_details:Dictionary = ROOM_UTIL.return_data(room_config_data.room_data.ref)
+			var activation_costs:Array = ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref)
+			for item in activation_costs:
+				if item.resource.ref == RESOURCE.TYPE.STAFF:
+					var new_node:BtnBase = DetailBtnPreload.instantiate()
+					new_node.title = "%s" % [room_details.name]
+					new_node.icon = SVGS.TYPE.STAFF
+					new_node.amount = "%s%s" % ["+" if item.amount >= 0 else "-", item.amount]
+					
+					new_node.onClick = func() -> void:
+						SUBSCRIBE.current_location = location.duplicate()
+
+					UtilizedList.add_child(new_node)
+	)		

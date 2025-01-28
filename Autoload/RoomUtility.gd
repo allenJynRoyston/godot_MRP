@@ -33,12 +33,14 @@ var STARTING_BASE:Dictionary = {
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.STAFF: 10,
-					RESOURCE.TYPE.SECURITY: 10
+					RESOURCE.TYPE.SECURITY: 10,
+					RESOURCE.TYPE.DCLASS: 10
 				},
 			"capacity": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.STAFF: 10,
-					RESOURCE.TYPE.SECURITY: 10
+					RESOURCE.TYPE.SECURITY: 10,
+					RESOURCE.TYPE.DCLASS: 10
 				},			
 		}	
 	},	
@@ -205,7 +207,9 @@ var BARRICKS:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.SECURITY: -10
+					RESOURCE.TYPE.DCLASS: -1,
+					RESOURCE.TYPE.STAFF: -1,
+					RESOURCE.TYPE.SECURITY: -5
 				},
 		}	
 	},
@@ -487,6 +491,11 @@ func return_operating_cost(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func return_activation_cost(id:int) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(id), "activation_cost")
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_costs", resources_data, add)
 # ------------------------------------------------------------------------------
@@ -500,6 +509,31 @@ func calculate_build_complete(ref:int, resources_data:Dictionary, add:bool = tru
 func calculate_operating_costs(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "operating_costs", resources_data, add)
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calculate_activation_cost(ref:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
+	var room_data:Dictionary = return_data(ref)
+	var resource_data_copy:Dictionary = resources_data.duplicate(true)
+
+	if "activation_cost" in room_data:
+		var activation_costs:Dictionary = room_data.activation_cost.resources.amount.call()
+		for key in activation_costs:
+			var val:int = activation_costs[key]
+			if refund:
+				resource_data_copy[key].utilized -= val
+				resource_data_copy[key].amount += val
+				if resource_data_copy[key].amount > resources_data[key].capacity:
+					resource_data_copy[key].amount = resources_data[key].capacity
+			else:
+				resource_data_copy[key].utilized += val
+				resource_data_copy[key].amount -= val
+				if resource_data_copy[key].amount < 0:
+					resource_data_copy[key].amount = 0
+	
+	return resource_data_copy
+# ------------------------------------------------------------------------------
+
+
 
 # ------------------------------------------------------------------------------
 func get_count(ref:ROOM.TYPE, arr:Array) -> int:

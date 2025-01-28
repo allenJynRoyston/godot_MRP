@@ -27,6 +27,7 @@ extends Control
 @export var assigned_wing:int = 0
 
 var current_location:Dictionary = {} 
+var resources_data:Dictionary = {} 
 
 var previous_floor:int = -1
 var previous_ring:int = -1
@@ -61,12 +62,14 @@ signal menu_response
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
 	GBL.subscribe_to_mouse_input(self)	
 	GBL.subscribe_to_control_input(self)
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
 
@@ -132,6 +135,14 @@ func update_refs(setup:bool = false) -> void:
 # --------------------------------------------------------
 
 # ------------------------------------------------
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
+	if !is_node_ready():return
+	
+# ------------------------------------------------
+
+
+# ------------------------------------------------
 func on_show_menu_update() -> void:
 	if show_menu:
 		#if room_config.floor[current_location.floor].is_powered:
@@ -175,12 +186,17 @@ func on_show_menu_update() -> void:
 			#var is_scp_empty:bool = room_config.scp_data.is_empty()
 			
 			if can_be_activated:
+				var is_disabled:bool = !RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false
+			
 				menu_actions.push_back({
-					"title": "ACTIVATE ROOM" if !is_activated else "DEACTIVATED ROOM",
+					"title": "DEACTIVATED ROOM" if is_activated else "ACTIVATED ROOM",
+					"is_disabled": is_disabled,
 					"onSelect": func() -> void:
-						menu_response.emit({
-							"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
-						})
+						if !is_disabled:
+							menu_response.emit({
+								"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
+							})
+						pass
 				})
 				
 			#if can_store_scp:
@@ -222,7 +238,9 @@ func on_show_menu_update() -> void:
 		for index in menu_actions.size():
 			var item:Dictionary = menu_actions[index]
 			var new_btn:BtnBase = TextBtnPreload.instantiate()
+			var is_disabled:bool = item.is_disabled if "is_disabled" in item else false
 			new_btn.title = item.title
+			new_btn.is_disabled = is_disabled
 			new_btn.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
 			new_btn.onFocus = func() -> void:
 				pass
