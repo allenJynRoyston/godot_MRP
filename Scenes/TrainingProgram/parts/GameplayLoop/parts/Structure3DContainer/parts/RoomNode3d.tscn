@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://d1copqdrd5j0s"]
+[gd_scene load_steps=21 format=4 uid="uid://d1copqdrd5j0s"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node_3d.gd" id="1_qihmr"]
 [ext_resource type="LabelSettings" uid="uid://dtqpk6sgxpcni" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodeSidePanel.tres" id="2_fh056"]
@@ -63,6 +63,15 @@ viewport_path = NodePath("RoomNode/TopPanelViewport")
 [sub_resource type="PlaneMesh" id="PlaneMesh_fjhpp"]
 size = Vector2(10, 10)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7qdpb"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 0.85
+metallic_specular = 0.47
+
+[sub_resource type="BoxMesh" id="BoxMesh_pum0q"]
+material = SubResource("StandardMaterial3D_7qdpb")
+size = Vector3(0.5, 0.5, 0.5)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7n1l0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hquau"]
@@ -122,6 +131,31 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.21906, 0)
 visible = false
 mesh = SubResource("PlaneMesh_fjhpp")
 
+[node name="Node3D" type="Node3D" parent="RoomNode"]
+transform = Transform3D(1.00004, 0, 0, 0, 1, 0, 0, 0, 1.00004, 0, 1, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RoomNode/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.99941, 0.355896, -1.26458)
+mesh = SubResource("BoxMesh_pum0q")
+
+[node name="PulseEffectFX" type="SpotLight3D" parent="RoomNode/Node3D/MeshInstance3D"]
+transform = Transform3D(-0.185195, 0.676806, -0.712487, -0.000651772, 0.724943, 0.688808, 0.982702, 0.128028, -0.133815, -0.929718, 1.19476, -0.100281)
+light_color = Color(1, 0, 0, 1)
+spot_range = 3.231
+spot_attenuation = -10.0
+spot_angle = 18.1421
+
+[node name="ActivationLight" type="OmniLight3D" parent="RoomNode/Node3D/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.487549, 0.00836182, -0.0198364)
+light_color = Color(0.848652, 1.10701e-06, 0.448674, 1)
+light_energy = 2.0
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.1
+light_specular = 16.0
+shadow_enabled = true
+omni_range = 0.339326
+omni_attenuation = 2.756
+
 [node name="FrontLeftPanelViewport" type="SubViewport" parent="RoomNode"]
 transparent_bg = true
 canvas_cull_mask = 4293919743
@@ -176,7 +210,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="RoomNode/FrontRightPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "+1 SAFETY"
+text = "   active"
 label_settings = ExtResource("2_fh056")
 horizontal_alignment = 1
 vertical_alignment = 1

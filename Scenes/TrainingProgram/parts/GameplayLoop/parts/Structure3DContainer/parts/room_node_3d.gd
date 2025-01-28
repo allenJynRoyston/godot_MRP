@@ -15,6 +15,9 @@ extends Node3D
 @onready var TopPanelLabel2:Label = $RoomNode/TopPanelViewport/PanelContainer/MarginContainer/Label2
 @onready var InsideTextureRect:TextureRect = $RoomNode/InsideViewport/PanelContainer/TextureRect
 
+@onready var ActivationLight:OmniLight3D = $RoomNode/Node3D/MeshInstance3D/ActivationLight
+@onready var PulseEffectFX:SpotLight3D = $RoomNode/Node3D/MeshInstance3D/PulseEffectFX
+
 enum STATES { NONE, ACTIVE, INACTIVE, UNAVAILABLE }
 
 enum SIDES {LEFT, RIGHT, NEUTRAL}
@@ -55,6 +58,8 @@ const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMateri
 		on_ref_index_update()
 		
 @export var opacity:float  = 1.0 
+
+var is_pulsing:bool = false
 
 var onBlur:Callable = func(_room_data:Dictionary):pass
 var onFocus:Callable = func(_room_data:Dictionary):pass
@@ -105,6 +110,8 @@ func _ready() -> void:
 	on_ref_index_update()
 	on_apply_texture_update()
 	build_room_details()
+	
+	PulseEffectFX.hide()
 	
 # ---------------------------------------------------
 
@@ -299,6 +306,32 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 
 # ---------------------------------------------------
+const frequency: float = 0.5    # Frequency of the sine wave (cycles per second)
+const amplitude: float = 1.0    # Amplitude of the sine wave
+const offset: float = 0.0       # Offset for the wave
+var time_elapsed: float = 0.0  # Tracks the elapsed time
+var sine_value: float = 0.0   # Current value of the sine wave
+var binary_value: int = 0     # Rounded value of the sine wave (0 or 1)
+
 func _process(delta: float) -> void:
-	pass
+	if !is_node_ready():return
+	
+	if is_pulsing:
+		# Increment time
+		time_elapsed += delta
+
+		# Calculate the sine wave value
+		sine_value = sin(2.0 * PI * frequency * time_elapsed + offset)
+
+		# Scale sine wave to range between 0 and 1
+		sine_value = (sine_value + 1.0) / 2.0
+		
+		binary_value = round(sine_value)
+		
+		if binary_value == 0:
+			PulseEffectFX.hide()
+		if binary_value == 1:
+			PulseEffectFX.show()
+		
+
 # ---------------------------------------------------
