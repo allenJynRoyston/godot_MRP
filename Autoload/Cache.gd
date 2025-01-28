@@ -137,6 +137,8 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/conversation-fill-svgrepo-com.svg")
 		SVGS.TYPE.QUESTION_MARK:
 			texture = load("res://SVGs/question-square-fill-svgrepo-com.svg")
+		SVGS.TYPE.NO_ELECTRICITY:
+			texture = load("res://SVGs/electricity-caution-svgrepo-com.svg")			
 			
 	svg_cache.push_back({
 		"key": key, 

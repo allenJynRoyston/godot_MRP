@@ -6,6 +6,8 @@ var STARTING_BASE:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Base headquarters.",
+	"can_contain": false,
+	
 	"prerequisites": [
 
 	],		
@@ -58,6 +60,7 @@ var R_AND_D_LAB:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Enables research and development.",
+	"can_contain": false,
 	
 	"prerequisites": [
 		ROOM.TYPE.STARTING_BASE
@@ -118,6 +121,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/construction_yard.jpg",
 	"description": "Enables base development.",
+	"can_contain": false,
 	
 	"prerequisites": [
 		ROOM.TYPE.STARTING_BASE
@@ -174,6 +178,7 @@ var BARRICKS:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
+	"can_contain": false,
 	
 	"prerequisites": [
 		ROOM.TYPE.STARTING_BASE
@@ -192,6 +197,15 @@ var BARRICKS:Dictionary = {
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: -40
+				},
+		}	
+	},
+	
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.SECURITY: -10
 				},
 		}	
 	},
@@ -226,6 +240,8 @@ var DORMITORY:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
+	"can_contain": false,
+	
 	"prerequisites": [
 		ROOM.TYPE.STARTING_BASE
 	],	
@@ -276,7 +292,8 @@ var HOLDING_CELLS:Dictionary = {
 	"tier": TIER.VAL.TWO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses D-class personel.",
-
+	"can_contain": false,
+	
 	"prerequisites": [
 		ROOM.TYPE.STARTING_BASE
 	],		
@@ -333,6 +350,8 @@ var STANDARD_LOCKER:Dictionary = {
 	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "A basic room with a high security lock.",
+	"can_contain": true,
+	
 	"prerequisites": [
 		ROOM.TYPE.STARTING_BASE
 	],		
@@ -345,6 +364,7 @@ var STANDARD_LOCKER:Dictionary = {
 		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
+	
 
 	"purchase_costs": {
 		"resources": {

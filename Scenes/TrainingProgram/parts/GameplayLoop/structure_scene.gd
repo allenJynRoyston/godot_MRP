@@ -3,6 +3,9 @@ extends Node3D
 @onready var SpriteLayer:Node3D = $SpriteLayer
 @onready var ControlSubViewport:SubViewport = $ControlSubViewport
 @onready var ControlPanelContainer:PanelContainer = $ControlSubViewport/ControlPanelContainer
+@onready var ControlMenuSubViewport:SubViewport = $ControlMenuSubViewport
+@onready var ControlMenuContainer:PanelContainer = $ControlMenuSubViewport/ControlMenuContainer
+@onready var ControlMenuList:VBoxContainer = $ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList
 
 @onready var FloorScene:Node3D = $FloorScene
 @onready var FloorInstance:MeshInstance3D = $FloorScene/FloorInstance
@@ -17,7 +20,15 @@ extends Node3D
 @onready var FloorPlaceholderCamera:Camera3D = $CameraContainers/FloorPlaceholderCamera
 @onready var RoomPlaceholderCamera:Camera3D = $CameraContainers/RoomPlaceholderCamera
 
+@onready var RoomNodes0:Control = $RoomScene/MeshInstance3D/Sprite3D/SubViewport/RoomNodes0
+@onready var RoomNodes1:Control = $RoomScene/MeshInstance3D2/Sprite3D/SubViewport/RoomNodes1
+@onready var RoomNodes2:Control = $RoomScene/MeshInstance3D4/Sprite3D/SubViewport/RoomNodes2
+@onready var RoomNodes3:Control = $RoomScene/MeshInstance3D3/Sprite3D/SubViewport/RoomNodes3
 
+
+@onready var ControlLayerSprite:Sprite3D = $SpriteLayer/ControlLayerSprite
+
+const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialUnderConstruction.tres")
 const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMaterialInactive.tres")
 #const RoomMaterialUnavailable:StandardMaterial3D = preload("res://Materials/RoomMaterialUnavailable.tres")
@@ -33,9 +44,19 @@ var previous_grid_size:Vector2
 var previous_location_data:String = "" 
 var previous_floor:int = -1
 var previous_ring:int = -1
+var room_nodes:Dictionary = {}
 
+var menu_index:int = 0
+var menu_actions:Array = []
+var show_menu:bool = false : 
+	set(val):
+		show_menu = val
+		on_show_menu_update()
 
+var freeze_input:bool = false 
 var default_positions:Dictionary = {}
+
+signal menu_response
 
 # ------------------------------------------------
 func _init() -> void:
@@ -46,6 +67,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_built_rooms(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	GBL.subscribe_to_process(self)
+	GBL.subscribe_to_control_input(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
@@ -55,10 +77,18 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_built_rooms(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	GBL.unsubscribe_to_process(self)
-
+	GBL.unsubscribe_to_control_input(self)	
+	
 func _ready() -> void:
 	_on_panel_container_item_rect_changed()
 	after_ready.call_deferred()
+	on_show_menu_update()
+	room_nodes = { 
+		0: RoomNodes0,
+		1: RoomNodes1, 
+		2: RoomNodes2, 
+		3: RoomNodes3
+	}
 
 func after_ready() -> void:
 	on_camera_settings_update()
@@ -90,18 +120,92 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
-			tween_property(ActiveCamera, "size", FloorPlaceholderCamera.size, 0.3)	
-			tween_property(ActiveCamera, "rotation", FloorPlaceholderCamera.rotation, 0.5)	
-			await tween_property(ActiveCamera, "position", FloorPlaceholderCamera.position, 0.5)	
-			
+			await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
+			await U.set_timeout(0.3)
+			ActiveCamera.rotation = FloorPlaceholderCamera.rotation
+			ActiveCamera.position = FloorPlaceholderCamera.position
+			await U.tween_node_property(ActiveCamera, "size", FloorPlaceholderCamera.size, 0.3)	
+						
 		CAMERA.TYPE.ROOM_SELECT:
-			tween_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
-			tween_property(ActiveCamera, "rotation", RoomPlaceholderCamera.rotation, 0.5)	
-			await tween_property(ActiveCamera, "position", RoomPlaceholderCamera.position, 0.5)		
+			await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
+			await U.set_timeout(0.3)
+			ActiveCamera.rotation = RoomPlaceholderCamera.rotation
+			ActiveCamera.position = RoomPlaceholderCamera.position
+			await U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
+
 			
 	GBL.remove_from_animation_queue(self)
+# ------------------------------------------------
+
+# ------------------------------------------------
+func on_show_menu_update() -> void:
+	if show_menu:
+		menu_index = 0
+		menu_actions = []
+		
+		menu_actions.push_back({
+			"title": "INVESTIGATE",
+			"onSelect": func() -> void:
+				show_menu = false
+				menu_response.emit({"action": ACTION.STRUCTURE.GOTO_FLOOR})
+		})
+		
+		if room_config.floor[current_location.floor].is_powered:
+			menu_actions.push_back({
+					"title": "UPGRADE",
+					"onSelect": func() -> void:
+						menu_response.emit({"action": ACTION.STRUCTURE.OPEN_STORE}),
+			})
+			
+			menu_actions.push_back({
+				"title": "INITIATE LOCKDOWN" if !room_config.floor[current_location.floor].in_lockdown else "REMOVE LOCKDOWN",
+				"onSelect": func() -> void:
+					menu_response.emit({"action": ACTION.STRUCTURE.LOCKDOWN})
+					on_back()
+			})
+			
+		else:
+			menu_actions.push_back({
+					"title": "ACTIVATE FLOOR",
+					"onSelect": func():
+						menu_response.emit({"action": ACTION.STRUCTURE.ACTIVATE_FLOOR})
+			})
+
+		menu_actions.push_back({
+			"title": "BACK", 
+			"onSelect": func() -> void:
+				on_back()
+		})
+		
+		for child in ControlMenuList.get_children():
+			child.queue_free()
+		
+		for index in menu_actions.size():
+			var item:Dictionary = menu_actions[index]
+			var new_btn:BtnBase = TextBtnPreload.instantiate()
+			new_btn.title = item.title
+			new_btn.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
+			new_btn.onFocus = func() -> void:
+				pass
+			new_btn.onClick = func() -> void:
+				pass
+			ControlMenuList.add_child(new_btn)
 	
-	
+	else:
+		for child in ControlMenuList.get_children():
+			child.queue_free()		
+			
+	GBL.add_to_animation_queue(self)
+	await U.tween_node_property(ControlLayerSprite, "rotation_degrees:y", -145 if show_menu else -55, 0.3)
+	GBL.remove_from_animation_queue(self)	
+# ------------------------------------------------
+
+# ------------------------------------------------
+func update_menu_index(inc:int) -> void:
+	menu_index = U.min_max(menu_index + inc, 0, menu_actions.size() - 1) 
+	for index in ControlMenuList.get_child_count():
+		var btn_node:BtnBase = ControlMenuList.get_child(index)
+		btn_node.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
 # ------------------------------------------------
 
 
@@ -114,7 +218,7 @@ func update_cameras() -> void:
 			if previous_ring != current_location.ring:
 				previous_ring = current_location.ring
 				GBL.add_to_animation_queue(self)
-				await tween_property(ActiveCamera, "rotation_degrees:y", -90 * current_location.ring, 0.5)
+				await U.tween_node_property(ActiveCamera, "rotation_degrees:y", -90 * current_location.ring, 0.5)
 				GBL.remove_from_animation_queue(self)	
 				
 				
@@ -133,7 +237,7 @@ func update_cameras() -> void:
 					floor_node.mesh = mesh_duplicate	
 	
 				GBL.add_to_animation_queue(self)
-				await tween_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-30, 15, 0) , 0.2)	
+				await U.tween_node_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-30, 15, 0) , 0.2)	
 				GBL.remove_from_animation_queue(self)	
 
 # ------------------------------------------------
@@ -147,15 +251,6 @@ func build_floors() -> void:
 		FloorInstanceContainer.add_child(floor_duplicate)
 # ------------------------------------------------
 
-
-# ------------------------------------------------
-func tween_property(node:Node3D, property:String, new_val, duration:float = 0.3) -> void:
-	var tween_pos:Tween = create_tween()
-	tween_pos.tween_property(node, property, new_val, duration).set_trans(Tween.TRANS_SINE)
-	await tween_pos.finished
-# ------------------------------------------------
-
-
 # ------------------------------------------------
 func on_process_update(delta: float) -> void:	
 	if !is_node_ready():return
@@ -167,3 +262,46 @@ func _on_panel_container_item_rect_changed() -> void:
 	await U.tick()
 	ControlSubViewport.size = ControlPanelContainer.size
 # ------------------------------------------------
+
+# ------------------------------------------------
+func _on_control_menu_container_item_rect_changed() -> void:
+	if !is_node_ready():return
+	await U.tick()
+	ControlMenuSubViewport.size = ControlMenuContainer.size
+# ------------------------------------------------
+
+# ------------------------------------------------
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue() or !show_menu or freeze_input:return
+	
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+
+	
+	match key:
+		"W":
+			update_menu_index(-1)
+
+		"S":
+			update_menu_index(1)
+		
+		"E":
+			on_select()
+		
+		"ENTER":
+			on_select()
+		
+		"B":
+			on_back()
+		
+		"BACK":
+			on_back()
+# ------------------------------------------------	
+
+# ------------------------------------------------	
+func on_select() -> void:
+	menu_actions[menu_index].onSelect.call()
+
+func on_back() -> void:
+	menu_response.emit({"action": ACTION.STRUCTURE.BACK})
+# ------------------------------------------------	

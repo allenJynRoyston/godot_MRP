@@ -41,7 +41,6 @@ grow_vertical = 2
 scale = Vector2(0.994072, 1.00471)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-debug_mode = true
 room_item_status = false
 show_resources = false
 show_dialogue = false

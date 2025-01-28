@@ -164,7 +164,7 @@ func unsubscribe_to_mouse_input(node:Control) -> void:
 	input_subscriptions.erase(node)
 		
 func _input(event:InputEvent) -> void:
-	if event is InputEventGesture:
+	if event is InputEventGesture and event is not InputEventMagnifyGesture:
 		for node in input_subscriptions:
 			if node == null:
 				return

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_wxkle"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_lo85m"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pn3nk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8f3uc"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="TextBtn" type="PanelContainer"]
@@ -12,7 +12,7 @@ offset_left = 2.0
 offset_top = 2.0
 offset_right = 34.0
 offset_bottom = 34.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_pn3nk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8f3uc")
 script = ExtResource("1_53m1w")
 static_color = Color(1, 1, 1, 1)
 active_color = Color(1, 1, 1, 1)

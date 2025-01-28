@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://i20apuqnuudg"]
+[gd_scene load_steps=19 format=3 uid="uid://i20apuqnuudg"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_2d0xm"]
@@ -70,16 +70,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6s3k"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0p4no"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5u12g"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wkds5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mgcd3"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -109,7 +100,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 environment = SubResource("Environment_ngmdl")
 
 [node name="LeftWallLabel" type="Label3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 12.0652, 5.21552, 1.87222)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 12.0652, 4.74885, 0.992581)
 outline_modulate = Color(1, 1, 1, 1)
 text = "WING A"
 font = ExtResource("4_g74p6")
@@ -400,12 +391,13 @@ transparent_bg = true
 size = Vector2i(90, 90)
 
 [node name="ControlMenuContainer" type="PanelContainer" parent="ControlMenuSubviewport"]
-offset_right = 108.0
-offset_bottom = 138.0
+offset_right = 125.0
+offset_bottom = 38.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_puxs3")
 
 [node name="MarginContainer" type="MarginContainer" parent="ControlMenuSubviewport/ControlMenuContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -413,6 +405,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer"]
@@ -428,32 +421,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_nkr4v")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer"]
+[node name="ControlMenuList" type="VBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("7_gytyc")]
+[node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
+visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_c6s3k")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mgcd3")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
-
-[node name="TextBtn2" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("7_gytyc")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0p4no")
-panel_color = Color(0, 0.254902, 0.0823529, 1)
-title = "ASSIGN SCP"
-
-[node name="TextBtn3" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("7_gytyc")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5u12g")
-panel_color = Color(0, 0.254902, 0.0823529, 1)
-title = "REMOVE"
-
-[node name="TextBtn4" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("7_gytyc")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wkds5")
-panel_color = Color(0, 0.254902, 0.0823529, 1)
-title = "POWER"
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="on_label_control_subpanel_rect_changed"]
 [connection signal="item_rect_changed" from="ControlMenuSubviewport/ControlMenuContainer" to="." method="on_menu_control_subpanel_rect_changed"]

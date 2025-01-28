@@ -136,7 +136,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 	
 	# --------------------------
 	if !data.build_data.is_empty():
-		var room_data:Dictionary = data.build_data.get_data.call()
+		var room_data:Dictionary = ROOM_UTIL.return_data(data.build_data.ref)
 		RoomNameLabel.text = "%s" % [room_data.name]
 		RoomImage.texture = CACHE.fetch_image("res://Media/rooms/construction.jpg")
 		StatusLabel.text = ""
@@ -147,7 +147,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 	
 	# --------------------------
 	if !data.room_data.is_empty():
-		var room_data:Dictionary = data.room_data.get_data.call()
+		var room_data:Dictionary = ROOM_UTIL.return_data(data.room_data.ref)
 		RoomNameLabel.text = "%s" % [room_data.name]
 		RoomImage.texture = CACHE.fetch_image(room_data.img_src)
 		StatusLabel.text = ""
@@ -155,7 +155,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 
 	# --------------------------
 	if !data.scp_data.is_empty():
-		var scp_data:Dictionary = data.scp_data.get_data.call()
+		var scp_data:Dictionary = SCP_UTIL.return_data(data.scp_data.ref)
 		ObjectDesignationLabel.text = "SCP-%s" % [scp_data.item_id]
 		ObjectClassLabel.text = "KETER"
 		ObjectNameLabel.text = "%s" % [scp_data.name]

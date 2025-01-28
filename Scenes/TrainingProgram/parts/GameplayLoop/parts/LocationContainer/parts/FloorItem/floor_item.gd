@@ -57,8 +57,8 @@ func _ready() -> void:
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready():return
-	LockBtn.show() if room_config.floor[floor].is_locked else LockBtn.hide()
-	FloorLabel.hide() if room_config.floor[floor].is_locked else FloorLabel.show()
+	LockBtn.hide() if room_config.floor[floor].is_powered else LockBtn.show()
+	FloorLabel.show() if room_config.floor[floor].is_powered else FloorLabel.hide()
 
 
 func on_floor_update() -> void:

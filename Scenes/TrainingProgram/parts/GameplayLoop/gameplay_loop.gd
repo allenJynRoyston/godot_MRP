@@ -1,12 +1,16 @@
 extends PanelContainer
 
 enum SHOP_STEPS {
-	HIDE, START, SHOW, PLACEMENT,
+	HIDE, 
+	START_BASE, 
+	START_ROOM,
+	PLACEMENT,
 	CONFIRM_RESEARCH_ITEM_PURCHASE, CONFIRM_BUILD, CONFIRM_TIER_PURCHASE, CONFIRM_BASE_ITEM_PURCHASE,
 	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
 	REFUND
 }
-enum CONTAIN_STEPS {HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
+enum CONTAIN_STEPS {
+	HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
 	ON_REJECT, ON_TRANSFER_CANCEL, 
 	ON_TRANSFER_TO_NEW_LOCATION, 
 	CONFIRM, FINALIZE
@@ -197,6 +201,8 @@ var scp_data:Dictionary = {
 	],
 }
 
+var shop_revert_step:SHOP_STEPS
+
 var action_queue_data:Array = []
 
 var purchased_facility_arr:Array = [] 
@@ -275,8 +281,8 @@ var tier_unlocked:Dictionary = {
 
 var room_config:Dictionary = {
 	"floor": {
-		0: get_floor_default(false, 3),
-		1: get_floor_default(false, 3),
+		0: get_floor_default(true, 3),
+		1: get_floor_default(true, 3),
 		2: get_floor_default(false, 3),
 		3: get_floor_default(false, 3),
 		4: get_floor_default(false, 3),
@@ -381,6 +387,11 @@ signal on_complete_build_complete
 signal on_expired_scp_items_complete
 signal on_events_complete
 signal on_summary_complete
+signal on_store_closed
+signal on_confirm_complete
+signal on_cancel_construction_complete
+signal on_reset_room_complete
+signal on_activate_room_complete
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -500,9 +511,10 @@ func start_load_game() -> void:
 
 # ------------------------------------------------------------------------------
 #region defaults functions
-func get_floor_default(is_locked:bool, array_size:int) -> Dictionary:
+func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 	return { 
-		"is_locked": is_locked,
+		"is_powered": is_powered,
+		"in_lockdown": false,
 		"array_size": array_size,
 		"readings": {
 			RESOURCE.BASE.MORALE: 5,
@@ -674,7 +686,7 @@ func set_room_config() -> void:
 	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
 	var under_construction_rooms:Array = []
 	var built_rooms:Array = []
-	
+
 	# mark rooms that are being transfered to a room 
 	if "available_list" in scp_data:
 		for item in scp_data.available_list:
@@ -685,8 +697,6 @@ func set_room_config() -> void:
 				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 					"ref": item.ref,
 					"is_transfer": true,
-					"get_data": func() -> Dictionary:
-						return SCP_UTIL.return_data(item.ref)
 				}
 				
 	# ... and mark rooms that are currently contained 
@@ -700,8 +710,6 @@ func set_room_config() -> void:
 				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 					"ref": item.ref,
 					"is_transfer": true,
-					"get_data": func() -> Dictionary:
-						return SCP_UTIL.return_data(item.ref)
 				}			
 			var floor:int = item.location.floor
 			var ring:int = item.location.ring
@@ -709,8 +717,6 @@ func set_room_config() -> void:
 			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 				"ref": item.ref,
 				"is_transfer": item.transfer_status.state,
-				"get_data": func() -> Dictionary:
-					return SCP_UTIL.return_data(item.ref)
 			}				
 	
 	
@@ -730,15 +736,20 @@ func set_room_config() -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
+		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
-			"ref": item.ref
+			"ref": item.ref,
+			# if activation cost not in room, then it's activated
+			"is_activated": !("activation_cost" in room_data),  
 		}
 		# if facility is built, clear build_data
 		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
-	
-	
+
 	# mark rooms and push to subscriptions
 	for floor_index in new_room_config.floor.size():
+		new_room_config.floor[floor_index].in_lockdown = room_config.floor[floor_index].in_lockdown
+		#new_room_config.floor[floor_index].in_lockdown = room_config.floor[current_location.floor].in_lockdown
+		#print(floor_index, new_room_config.floor[floor_index].in_lockdown)
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
@@ -748,10 +759,10 @@ func set_room_config() -> void:
 				if !config_data.room_data.is_empty():
 					built_rooms.push_back(designation)
 			
-	# mark rooms that are already built...
-	new_room_config.floor[1].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) == 0
-	new_room_config.floor[2].is_locked = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) == 0
-			
+	# mark rooms that are already powered...
+	new_room_config.floor[1].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) > 0
+	new_room_config.floor[2].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) > 0
+	
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
@@ -809,14 +820,12 @@ func next_day() -> void:
 	# show busy modal
 	await wait_please(1.0)	
 	
-	current_summary_step = SUMMARY_STEPS.START
-	await on_summary_complete
+	#current_summary_step = SUMMARY_STEPS.START
+	#await on_summary_complete
 	
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
 	SUBSCRIBE.progress_data = progress_data
-	
-	
 	
 	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
 	action_queue_data = action_queue_data.map(func(i): 
@@ -872,6 +881,89 @@ func next_day() -> void:
 				
 	processing_next_day = false
 # -----------------------------------
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+#region GAMEPLAY FUNCS
+func set_floor_lockdown(state:bool) -> void:
+	var title:String = ("Initiate lockdown for floor %s?" if state else "Remove lockdown for floor %s?") % [current_location.floor] 
+	
+	ConfirmModal.set_text(title, "All actions will be frozen." if state else "All actions will resume.")
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var response:Dictionary = await ConfirmModal.user_response
+
+	match response.action:
+		ACTION.NEXT:
+			room_config.floor[current_location.floor].in_lockdown = state
+			SUBSCRIBE.room_config = room_config
+		ACTION.BACK:
+			pass
+
+	on_confirm_complete.emit()
+	await restore_default_state()
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+#region GAMEPLAY FUNCS
+# ---------------------
+func activate_room(from_location:Dictionary, is_activated:bool) -> void:
+	var floor_index:int = from_location.floor
+	var ring_index:int = from_location.ring
+	var room_index:int = from_location.room
+	
+	ConfirmModal.set_text("Activate this room?" if is_activated else "Deactivate this room")
+	
+	# will cost X amount first
+	await show_only([ConfirmModal])	
+	var response:Dictionary = await ConfirmModal.user_response
+	
+	match response.action:		
+		ACTION.NEXT:
+			print("ACTIVATE ROOM")
+			room_config.floor[from_location.floor].ring[from_location.ring].room[from_location.room].room_data.is_activated = is_activated
+			room_config = room_config
+			
+	await restore_default_state()
+	on_activate_room_complete.emit()
+# ---------------------
+
+# ---------------------
+func reset_room(from_location:Dictionary) -> void:
+	var floor_index:int = from_location.floor
+	var ring_index:int = from_location.ring
+	var room_index:int = from_location.room
+	var reset_arr:Array = purchased_facility_arr.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
+	
+	if reset_arr.size() > 0:
+		ConfirmModal.set_text("This room will be reset back to empty.", "Half your resources will be refunded.")
+			
+		await show_only([ConfirmModal])	
+		var response:Dictionary = await ConfirmModal.user_response
+		match response.action:		
+			ACTION.NEXT:
+				var reset_item:Dictionary = reset_arr[0]
+				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
+				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, resources_data, true)
+	
+	print( room_config.floor[current_location.floor].in_lockdown )
+	
+	await restore_default_state()
+	on_reset_room_complete.emit()
+# ---------------------
+
+# ---------------------
+func cancel_construction(from_location:Dictionary) -> void:
+	var floor_index:int = from_location.floor
+	var ring_index:int = from_location.ring
+	var room_index:int = from_location.room
+	
+	var filtered_arr:Array = action_queue_data.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index)and i.action == ACTION.AQ.BUILD_ITEM)
+	await cancel_action_queue(filtered_arr[0])
+
+	on_cancel_construction_complete.emit()
+# ---------------------	
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1009,8 +1101,6 @@ func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) ->
 	
 	if include_restore:
 		await restore_default_state()
-	#selected_refund_item = item_data
-	#current_shop_step = SHOP_STEPS.REFUND
 # -----------------------------------
 
 # -----------------------------------
@@ -1469,12 +1559,14 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 			StoreContainer.end()
+			on_store_closed.emit()
 		# ---------------
-		SHOP_STEPS.START:
+		SHOP_STEPS.START_BASE:
+			shop_revert_step = current_shop_step
 			SUBSCRIBE.suppress_click = true
 			selected_shop_item = {}
 			
-			StoreContainer.start()
+			StoreContainer.start('BASE')
 			await show_only([StoreContainer])
 			var response:Dictionary = await StoreContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
@@ -1498,25 +1590,56 @@ func on_current_shop_step_update() -> void:
 					selected_shop_item = response.selected
 					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE
 		# ---------------
-		SHOP_STEPS.PLACEMENT:		
-			SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_rooms(selected_shop_item.ref, room_config)	
-			# sort which rooms can be built in
-			await show_only([Structure3dContainer, LocationContainer, ActionQueueContainer, BackContainer])			
-			#Structure3dContainer.select_location()
-			Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
+		SHOP_STEPS.START_ROOM:
+			shop_revert_step = current_shop_step
+			SUBSCRIBE.suppress_click = true
+			selected_shop_item = {}
 			
-			var structure_response:Dictionary = await Structure3dContainer.user_response
-			Structure3dContainer.placement_instructions = []
+			StoreContainer.start('ROOM')
+			await show_only([StoreContainer])
+			var response:Dictionary = await StoreContainer.user_response
 
-			match structure_response.action:
-				ACTION.BACK:		
-					#SUBSCRIBE.camera_settings = camera_settings
-					SUBSCRIBE.unavailable_rooms = []
-					current_shop_step = SHOP_STEPS.START
-				ACTION.NEXT:
-					#SUBSCRIBE.camera_settings = camera_settings
-					SUBSCRIBE.unavailable_rooms = []
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			match response.action:
+				ACTION.PURCHASE.BACK:
+					current_shop_step = SHOP_STEPS.HIDE
+					
+				ACTION.PURCHASE.TIER_ITEM:
+					selected_shop_item = response.selected
+					current_shop_step = SHOP_STEPS.CONFIRM_TIER_PURCHASE
+				
+				ACTION.PURCHASE.BASE_ITEM:
+					selected_shop_item = response.selected
+					current_shop_step = SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE
+					
+				ACTION.PURCHASE.FACILITY_ITEM:
+					selected_shop_item = response.selected		
 					current_shop_step = SHOP_STEPS.CONFIRM_BUILD
+				
+				ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT:
+					selected_shop_item = response.selected
+					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE					
+					
+		# ---------------
+		#SHOP_STEPS.PLACEMENT:		
+			#SUBSCRIBE.unavailable_rooms = ROOM_UTIL.return_unavailable_rooms(selected_shop_item.ref, room_config)	
+			## sort which rooms can be built in
+			#await show_only([Structure3dContainer, LocationContainer, ActionQueueContainer, BackContainer])			
+			##Structure3dContainer.select_location()
+			#Structure3dContainer.placement_instructions = ROOM_UTIL.return_placement_instructions(selected_shop_item.ref)
+			#
+			#var structure_response:Dictionary = await Structure3dContainer.user_response
+			#Structure3dContainer.placement_instructions = []
+#
+			#match structure_response.action:
+				#ACTION.BACK:		
+					##SUBSCRIBE.camera_settings = camera_settings
+					#SUBSCRIBE.unavailable_rooms = []
+					#current_shop_step = shop_revert_step
+				#ACTION.NEXT:
+					##SUBSCRIBE.camera_settings = camera_settings
+					#SUBSCRIBE.unavailable_rooms = []
+					#current_shop_step = SHOP_STEPS.CONFIRM_BUILD
 		# ---------------
 		SHOP_STEPS.CONFIRM_TIER_PURCHASE:
 			ConfirmModal.set_text("Confirm TIER purchase?")
@@ -1524,7 +1647,7 @@ func on_current_shop_step_update() -> void:
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
 				ACTION.BACK:
-					current_shop_step = SHOP_STEPS.START
+					current_shop_step = shop_revert_step
 				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_TIER
 		# ---------------
@@ -1534,7 +1657,7 @@ func on_current_shop_step_update() -> void:
 			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:
 				ACTION.BACK:
-					current_shop_step = SHOP_STEPS.START
+					current_shop_step = shop_revert_step
 				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH
 		# ---------------
@@ -1544,7 +1667,7 @@ func on_current_shop_step_update() -> void:
 			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:
 				ACTION.BACK:
-					current_shop_step = SHOP_STEPS.START
+					current_shop_step = shop_revert_step
 				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM
 		# ---------------
@@ -1554,7 +1677,7 @@ func on_current_shop_step_update() -> void:
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
 				ACTION.BACK:
-					current_shop_step = SHOP_STEPS.PLACEMENT
+					current_shop_step = shop_revert_step
 				ACTION.NEXT:
 					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BUILD
 					
@@ -1574,7 +1697,7 @@ func on_current_shop_step_update() -> void:
 			})
 			
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.PLACEMENT
+			current_shop_step = SHOP_STEPS.HIDE
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
 			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
@@ -1592,7 +1715,7 @@ func on_current_shop_step_update() -> void:
 
 			
 			SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.START			
+			current_shop_step = shop_revert_step
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM:
 			var purchase_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
@@ -1609,7 +1732,7 @@ func on_current_shop_step_update() -> void:
 			})
 			
 			SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.START
+			current_shop_step = shop_revert_step
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
 			# unlock the tier
@@ -1624,7 +1747,7 @@ func on_current_shop_step_update() -> void:
 			# update subscribes
 			SUBSCRIBE.resources_data = resources_data
 			SUBSCRIBE.tier_unlocked = tier_unlocked
-			current_shop_step = SHOP_STEPS.START
+			current_shop_step = shop_revert_step
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1700,11 +1823,11 @@ func on_current_contain_step_update() -> void:
 			await show_only([Structure3dContainer, LocationContainer])			
 			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
 			
-			Structure3dContainer.select_location()
+			Structure3dContainer.select_location(true)
 			Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
 			
 			var structure_response:Dictionary = await Structure3dContainer.user_response
-			Structure3dContainer.placement_instructions = []
+			Structure3dContainer.select_location(false)
 			
 			match structure_response.action:
 				ACTION.BACK:					
@@ -1964,8 +2087,6 @@ func on_current_summary_step_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------		
 
-
-
 # ------------------------------------------------------------------------------		
 #region RESEARCHER STEPS
 func on_current_researcher_step_update() -> void:
@@ -2030,7 +2151,6 @@ func on_current_researcher_step_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------		
 
-
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
 func is_occupied() -> bool:
@@ -2072,6 +2192,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 func quicksave() -> void:
 	is_busy = true
 	var save_data = {
+		"room_config": room_config,
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
 		"action_queue_data": action_queue_data,
@@ -2126,10 +2247,12 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
-
+	SUBSCRIBE.room_config = initial_values.room_config if no_save else restore_data.room_config
+	
 	# don't need to be saved, just load from defaults
 	SUBSCRIBE.current_location = initial_values.current_location 
 	SUBSCRIBE.camera_settings = initial_values.camera_settings 
+	
 
 	
 #endregion		

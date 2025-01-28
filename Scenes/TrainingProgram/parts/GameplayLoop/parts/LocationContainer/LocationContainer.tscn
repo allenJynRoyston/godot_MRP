@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://bm6bs0iy51dcc"]
+[gd_scene load_steps=16 format=3 uid="uid://bm6bs0iy51dcc"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/location_container.gd" id="1_ghp6m"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_bm8dv"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_ed473"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_d331o"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="5_0rbbm"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="7_m3rof"]
 
@@ -33,17 +34,17 @@ font_size = 24
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_852f7"]
 color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_osyol"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6n8v6"]
+bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4qof"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v2h15"]
+bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryjcc"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2bh1v"]
+bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iqbay"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_54s44"]
+bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="LocationContainer" type="MarginContainer"]
 offset_right = 200.0
@@ -62,7 +63,7 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(220, 82)
+size = Vector2i(280, 88)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 220.0
@@ -84,17 +85,41 @@ layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 10
 
 [node name="FloorLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "F1"
+text = "FLOOR X"
 label_settings = SubResource("LabelSettings_64sar")
+
+[node name="IsPowered" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_d331o")]
+custom_minimum_size = Vector2(23, 23)
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 31
+is_hoverable = false
+
+[node name="IsLockDown" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_d331o")]
+custom_minimum_size = Vector2(23, 23)
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 43
+is_hoverable = false
 
 [node name="WingLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 10
 text = "WING A"
 label_settings = ExtResource("7_m3rof")
 
@@ -105,36 +130,100 @@ theme_override_styles/separator = SubResource("StyleBoxLine_852f7")
 [node name="WingBtns" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TextBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
+[node name="ColorRect" type="ColorRect" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0, 0, 1)
+
+[node name="WingA" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect" instance=ExtResource("5_0rbbm")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_osyol")
-icon = 49
+theme_override_styles/panel = SubResource("StyleBoxFlat_6n8v6")
+icon = 50
 icon_placement = 1
+panel_color = Color(0.05, 0.05, 0.05, 0)
 title = "A"
 
-[node name="TextBtn2" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
+[node name="ColorRect2" type="ColorRect" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0, 0, 1)
+
+[node name="WingB" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect2" instance=ExtResource("5_0rbbm")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_p4qof")
-icon = 49
+theme_override_styles/panel = SubResource("StyleBoxFlat_v2h15")
+icon = 50
 icon_placement = 1
+panel_color = Color(0.05, 0.05, 0.05, 0)
 title = "B"
 
-[node name="TextBtn3" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
+[node name="ColorRect3" type="ColorRect" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0, 0, 1)
+
+[node name="WingC" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect3" instance=ExtResource("5_0rbbm")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_ryjcc")
-icon = 49
+theme_override_styles/panel = SubResource("StyleBoxFlat_2bh1v")
+icon = 50
 icon_placement = 1
+panel_color = Color(0.05, 0.05, 0.05, 0)
 title = "C"
 
-[node name="TextBtn4" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns" instance=ExtResource("5_0rbbm")]
+[node name="ColorRect4" type="ColorRect" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0, 0, 1)
+
+[node name="WingD" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect4" instance=ExtResource("5_0rbbm")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_iqbay")
-icon = 49
+theme_override_styles/panel = SubResource("StyleBoxFlat_54s44")
+icon = 50
 icon_placement = 1
+panel_color = Color(0.05, 0.05, 0.05, 0)
 title = "D"
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

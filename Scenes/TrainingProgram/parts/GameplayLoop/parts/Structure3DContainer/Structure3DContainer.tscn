@@ -23,7 +23,7 @@ shader_parameter/trail_fade = 0.5
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_h66wl"]
-viewport_path = NodePath("SubViewport2")
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aok4n"]
 
@@ -135,11 +135,11 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
-[node name="SubViewport2" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
 use_debanding = true
 use_occlusion_culling = true
 size = Vector2i(1920, 1080)
 
-[node name="Rendering" parent="SubViewport2" instance=ExtResource("4_ypl4m")]
+[node name="Rendering" parent="SubViewport" instance=ExtResource("4_ypl4m")]

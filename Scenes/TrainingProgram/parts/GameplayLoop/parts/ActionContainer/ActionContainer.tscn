@@ -90,6 +90,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="BuildBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
+visible = false
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_vertical = 6

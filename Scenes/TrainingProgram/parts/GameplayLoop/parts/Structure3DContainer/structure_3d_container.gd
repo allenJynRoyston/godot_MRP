@@ -3,8 +3,9 @@ extends GameContainer
 
 @onready var SelectLocationInstructions:VBoxContainer = $PanelContainer/MarginContainer/SelectLocationInstructions
 @onready var PlacementInstructions:VBoxContainer = $PanelContainer/MarginContainer/PlacementInstructions
+@onready var Rendering:Node3D = $SubViewport/Rendering
 
-enum STEPS { SELECT_FLOOR, SELECT_ROOM, FINALIZE }
+enum STEPS { SELECT_FLOOR, SELECT_ROOM, SELECT_PLACEMENT }
 enum DIR {UP, DOWN, LEFT, RIGHT}
 
 const CheckboxPreload:PackedScene = preload("res://UI/Buttons/Checkbox/checkbox.tscn")
@@ -26,6 +27,7 @@ var current_step:STEPS = STEPS.SELECT_FLOOR :
 		on_current_step_update()
 		
 var location_pos:Vector2 = Vector2(0, 0)
+var freeze_input:bool = false
 
 
 signal wait_for_input
@@ -81,13 +83,12 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func select_location() -> Signal:
-	SelectLocationInstructions.show()	
-	#if current_step != STEPS.SELECT_FLOOR:
-		#camera_settings.is_locked = true
-		#SUBSCRIBE.camera_settings = camera_settings
-		#current_step = STEPS.SELECT_FLOOR
-	return user_response
+func select_location(state:bool) -> void:
+	if state:
+		SelectLocationInstructions.show()	
+		current_step = STEPS.SELECT_PLACEMENT
+	else:
+		current_step = STEPS.SELECT_ROOM
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -195,15 +196,19 @@ func on_current_step_update() -> void:
 		STEPS.SELECT_ROOM:
 			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 			SUBSCRIBE.camera_settings = camera_settings
-		# ------------------------------------------------
-		STEPS.FINALIZE:
-			user_response.emit({"action": ACTION.NEXT})
-
+		# ------------------------------------------------	
+		STEPS.SELECT_PLACEMENT:
+			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+			SUBSCRIBE.camera_settings = camera_settings
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue():return
+func on_control_input_update(input_data:Dictionary) -> void:		
+	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue() or freeze_input:
+		return
+		
+	if Rendering.show_menu or Rendering.room_nodes[current_location.ring].show_menu:
+		return
 	
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
@@ -215,75 +220,188 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
 				STEPS.SELECT_ROOM:
 					current_location.room = location_lookup(current_location.room, DIR.UP)
-
+				STEPS.SELECT_PLACEMENT:
+					current_location.room = location_lookup(current_location.room, DIR.UP)
 		"S":
 			match current_step:
 				STEPS.SELECT_FLOOR:
 					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
 				STEPS.SELECT_ROOM:
 					current_location.room = location_lookup(current_location.room, DIR.DOWN)
-
+				STEPS.SELECT_PLACEMENT:
+					current_location.room = location_lookup(current_location.room, DIR.DOWN)
 		"D":
 			match current_step:
+				STEPS.SELECT_FLOOR:
+					goto_floor()
 				STEPS.SELECT_ROOM:
-					var room_index:int = location_lookup(current_location.room, DIR.RIGHT)
-					if room_index == -1:
-						if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
-							current_location.ring = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-							current_location.room = 4
-					else:
-						current_location.room = room_index
-
+					room_right()
+				STEPS.SELECT_PLACEMENT:
+					room_right()
+				
 			
 		"A":
 			match current_step:
 				STEPS.SELECT_ROOM:
-					var room_index:int = location_lookup(current_location.room, DIR.LEFT)
-					if room_index == -1:
-						if current_location.ring > 0:
-							current_location.ring = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-							current_location.room = 4
-					else:
-						current_location.room = room_index
-
+					room_left()
+				STEPS.SELECT_PLACEMENT:
+					room_left()	
 					
 		"TAB":
-			if current_step == STEPS.SELECT_FLOOR:
-				current_step = STEPS.SELECT_ROOM
-			elif current_step == STEPS.SELECT_ROOM:
-				current_step = STEPS.SELECT_FLOOR
+			if current_step != STEPS.SELECT_PLACEMENT:
+				if current_step == STEPS.SELECT_FLOOR:
+					current_step = STEPS.SELECT_ROOM
+				elif current_step == STEPS.SELECT_ROOM:
+					current_step = STEPS.SELECT_FLOOR
 		
 		"E":
-			match current_step:
-				STEPS.SELECT_FLOOR:
-					current_step = STEPS.SELECT_ROOM
-				STEPS.SELECT_ROOM:			
-					if active_designation not in unavailable_rooms:
-						user_response.emit({"action": ACTION.NEXT})
-					else:
-						print("room unavailable")
-				
-		"ENTER":
-			match current_step:
-				STEPS.SELECT_FLOOR:
-					current_step = STEPS.SELECT_ROOM				
-				STEPS.SELECT_ROOM:			
-					if active_designation not in unavailable_rooms:
-						user_response.emit({"action": ACTION.NEXT})
-					else:
-						print("room unavailable")
-		"BACK":
-			user_response.emit({"action": ACTION.BACK})
+			on_next()
 			
-	# overflow checks
-	#if location_pos.y > grid_array.size() - 1:
-		#location_pos.y = grid_array.size() - 1
-	#if location_pos.x > grid_array[location_pos.y].size() - 1:
-		#location_pos.x = grid_array[location_pos.y].size() - 1		
-	
-	#print(current_location.room)
-	#current_location.room = grid_array[location_pos.y][location_pos.x]
-
+		"ENTER":
+			on_next()
+			
+		"B":
+			on_back()
+			
+		"BACK":
+			on_back()
+			
 	
 	SUBSCRIBE.current_location = current_location
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func room_right() -> void:
+	var room_index:int = location_lookup(current_location.room, DIR.RIGHT)
+	if room_index == -1:
+		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
+			current_location.ring = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+			current_location.room = 4
+	else:
+		current_location.room = room_index	
+
+func room_left() -> void:
+	var room_index:int = location_lookup(current_location.room, DIR.LEFT)
+	if room_index == -1:
+		if current_location.ring > 0:
+			current_location.ring = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+			current_location.room = 4
+	else:
+		current_location.room = room_index	
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func wait_for_floor_response() -> void:
+	var res:Dictionary = await Rendering.menu_response
+	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
+	freeze_input = true
+	Rendering.freeze_input = true
+				
+	match res.action:
+		# -------------------
+		ACTION.STRUCTURE.BACK:
+			Rendering.show_menu = false
+		# -------------------
+		ACTION.STRUCTURE.GOTO_FLOOR:
+			current_step = STEPS.SELECT_ROOM
+		# -------------------
+		ACTION.STRUCTURE.OPEN_STORE:
+			GameplayNode.current_shop_step = GameplayNode.SHOP_STEPS.START_BASE
+			await GameplayNode.on_store_closed
+			Rendering.on_show_menu_update() # update menu if anything changed
+			wait_for_floor_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
+		# -------------------
+		ACTION.STRUCTURE.LOCKDOWN:
+			Rendering.show_menu = false
+			GameplayNode.set_floor_lockdown( !room_config.floor[current_location.floor].in_lockdown )
+			await GameplayNode.on_confirm_complete
+		# ------------------- 
+		ACTION.STRUCTURE.ACTIVATE_FLOOR:
+			Rendering.show_menu = false
+			
+	Rendering.freeze_input = false
+	freeze_input = false
+# --------------------------------------------------------------------------------------------------
+func wait_for_room_node_response() -> void:
+	var RoomNode:Control = Rendering.room_nodes[current_location.ring]
+	var res:Dictionary = await RoomNode.menu_response
+	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
+	freeze_input = true
+	RoomNode.freeze_input = true
+				
+	match res.action:
+		# -------------------
+		ACTION.ROOM_NODE.BACK:
+			RoomNode.show_menu = false
+		# -------------------	
+		ACTION.ROOM_NODE.OPEN_STORE:
+			GameplayNode.current_shop_step = GameplayNode.SHOP_STEPS.START_ROOM
+			await GameplayNode.on_store_closed
+			RoomNode.on_show_menu_update() # update menu if anything changed
+			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
+		# -------------------	
+		ACTION.ROOM_NODE.CANCEL_CONSTRUCTION:
+			GameplayNode.cancel_construction(current_location.duplicate())
+			await GameplayNode.on_cancel_construction_complete
+			RoomNode.on_show_menu_update() # update menu if anything changed
+			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
+		# -------------------	
+		ACTION.ROOM_NODE.RESET_ROOM:
+			GameplayNode.reset_room(current_location.duplicate())
+			await GameplayNode.on_reset_room_complete
+			RoomNode.on_show_menu_update() # update menu if anything changed
+			wait_for_room_node_response()  
+		# -------------------	
+		ACTION.ROOM_NODE.ACTIVATE_ROOM:
+			GameplayNode.activate_room(current_location.duplicate(), true)
+			await GameplayNode.on_activate_room_complete
+			RoomNode.on_show_menu_update() # update menu if anything changed
+			wait_for_room_node_response()  
+		# -------------------	
+		ACTION.ROOM_NODE.DEACTIVATE_ROOM:
+			GameplayNode.activate_room(current_location.duplicate(), false)
+			await GameplayNode.on_activate_room_complete
+			RoomNode.on_show_menu_update() # update menu if anything changed
+			wait_for_room_node_response()  
+		# -------------------	
+			
+	RoomNode.freeze_input = false
+	freeze_input = false
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+
+func goto_floor() -> void:
+	current_step = STEPS.SELECT_ROOM	
+
+# --------------------------------------------------------------------------------------------------
+func on_next() -> void:
+	match current_step:
+		STEPS.SELECT_FLOOR:
+			if !Rendering.show_menu:
+				Rendering.show_menu = true
+				wait_for_floor_response()
+						
+		STEPS.SELECT_ROOM:
+			var RoomNode:Control = Rendering.room_nodes[current_location.ring]
+			if !RoomNode.show_menu:
+				RoomNode.show_menu = true
+				wait_for_room_node_response()
+				
+		STEPS.SELECT_PLACEMENT:
+			if active_designation not in unavailable_rooms:
+				user_response.emit({"action": ACTION.NEXT})
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func on_back() -> void:
+	match current_step:
+		STEPS.SELECT_FLOOR:
+			Rendering.show_menu = false
+			
+		STEPS.SELECT_ROOM:
+			current_step = STEPS.SELECT_FLOOR
+			
+		STEPS.SELECT_PLACEMENT:
+			user_response.emit({"action": ACTION.BACK})
 # --------------------------------------------------------------------------------------------------
