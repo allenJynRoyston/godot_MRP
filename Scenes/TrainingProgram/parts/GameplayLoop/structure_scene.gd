@@ -81,7 +81,6 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	_on_panel_container_item_rect_changed()
-	after_ready.call_deferred()
 	on_show_menu_update()
 	room_nodes = { 
 		0: RoomNodes0,
@@ -90,9 +89,7 @@ func _ready() -> void:
 		3: RoomNodes3
 	}
 
-func after_ready() -> void:
-	on_camera_settings_update()
-	on_current_location_update()
+
 # ------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -214,14 +211,6 @@ func update_cameras() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return	
 
 	match camera_settings.type:
-		CAMERA.TYPE.ROOM_SELECT:
-			if previous_ring != current_location.ring:
-				previous_ring = current_location.ring
-				GBL.add_to_animation_queue(self)
-				await U.tween_node_property(ActiveCamera, "rotation_degrees:y", -90 * current_location.ring, 0.5)
-				GBL.remove_from_animation_queue(self)	
-				
-				
 		CAMERA.TYPE.FLOOR_SELECT:
 			CursorLabel.text = ">> FLOOR %s" % [current_location.floor]
 
@@ -235,10 +224,23 @@ func update_cameras() -> void:
 					material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
 					mesh_duplicate.material = material_copy		
 					floor_node.mesh = mesh_duplicate	
-	
+					
+
 				GBL.add_to_animation_queue(self)
 				await U.tween_node_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-30, 15, 0) , 0.2)	
-				GBL.remove_from_animation_queue(self)	
+				GBL.remove_from_animation_queue(self)			
+		
+		CAMERA.TYPE.ROOM_SELECT:
+			if previous_ring != current_location.ring:
+				previous_ring = current_location.ring
+				var new_value:int = -90 * current_location.ring
+				if ActiveCamera.rotation_degrees.y != new_value:
+					GBL.add_to_animation_queue(self)
+					await U.tween_node_property(ActiveCamera, "rotation_degrees:y", new_value, 0.5)
+					GBL.remove_from_animation_queue(self)	
+				
+				
+
 
 # ------------------------------------------------
 

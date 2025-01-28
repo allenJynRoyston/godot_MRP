@@ -83,6 +83,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready() or current_location.is_empty():return
 	
+	if current_location.ring != assigned_wing:
+		hide()		
+
 	if !is_setup:
 		is_setup = true
 		update_refs(true)
@@ -91,16 +94,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		if previous_floor != current_location.floor or previous_ring != current_location.ring:
 			previous_floor = current_location.floor
 			previous_ring = current_location.ring
-			
-			#for node in [Column1, Column2, Column3]:
-				#node.position.y = 0
-			
-			#tween_property(Column3, "position:y", -0.25)
-			#tween_property(Column1, "position:y", 0.25)
-			
-			
 			update_refs()
 
+	show()	
 	check_lockdown_state()
 # --------------------------------------------------------
 
@@ -133,8 +129,6 @@ func update_refs(setup:bool = false) -> void:
 				node.onFocus = func(room_data:Dictionary) -> void:
 					CursorSprite.global_position = node.global_position + Vector3(-6.5, 6, -4)
 					CursorLabel.text = "EMPTY" if room_data.is_empty() else room_data.name
-				node.onBlur = func() -> void:
-					pass
 # --------------------------------------------------------
 
 # ------------------------------------------------
@@ -240,27 +234,16 @@ func on_show_menu_update() -> void:
 		for child in ControlMenuList.get_children():
 			child.queue_free()		
 		
-			
+	
 	GBL.add_to_animation_queue(self)
 	await U.tween_node_property(CursorSprite, "rotation_degrees:y", 270 if !show_menu else 175, 0.2 if show_menu else 0.2)
 	GBL.remove_from_animation_queue(self)	
 # ------------------------------------------------
 
-
-
 # --------------------------------------------------------
 func on_in_lockdown_update() -> void:
 	if !is_node_ready() or current_location.is_empty():return
-	
-	if current_location.ring != assigned_wing:
-		NormalLights.hide()
-		EmergencyLights.hide()
-		Spotlights.hide()
-		return
-	else:
-		NormalLights.show()
-		EmergencyLights.show()
-		Spotlights.show()
+
 		
 	for child in Spotlights.get_children():
 		var OmniLightNode:OmniLight3D = child.find_child("OmniLight3D")

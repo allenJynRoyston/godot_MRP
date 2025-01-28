@@ -109,6 +109,8 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 26
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 0.898039)
 
 [node name="RecruitBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
 custom_minimum_size = Vector2(0, 30)
@@ -119,6 +121,8 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 25
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 0.898039)
 
 [node name="ContainBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("1_gxny4")]
 custom_minimum_size = Vector2(0, 30)
@@ -129,6 +133,8 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 28
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 0.898039)
 
 [node name="VSeparator" type="VSeparator" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 visible = false
@@ -144,6 +150,8 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 27
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 0.929412)
 
 [node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -165,6 +173,8 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 27
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(1, 1, 1, 0.796078)
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true

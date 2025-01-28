@@ -57,7 +57,7 @@ const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMateri
 @export var opacity:float  = 1.0 
 
 var onBlur:Callable = func(_room_data:Dictionary):pass
-var onFocus:Callable = func():pass
+var onFocus:Callable = func(_room_data:Dictionary):pass
 
 var assigned_floor:int = 0
 var assigned_wing:int = 0
@@ -250,7 +250,7 @@ func on_is_focused_update() -> void:
 		
 	if !is_focused:
 		show_side = SIDES.NEUTRAL
-		onBlur.call()
+		onBlur.call(room_data)
 	else:
 		onFocus.call(room_data)
 # --------------------------------------------------------------------------------------------------	

@@ -23,18 +23,22 @@ func _ready() -> void:
 	Subviewport = $SubViewport
 	
 	WingA.onClick = func() -> void:
+		if GBL.has_animation_in_queue():return
 		current_location.ring = 0
 		SUBSCRIBE.current_location = current_location
 
 	WingB.onClick = func() -> void:
+		if GBL.has_animation_in_queue():return
 		current_location.ring = 1
 		SUBSCRIBE.current_location = current_location
 		
 	WingC.onClick = func() -> void:
+		if GBL.has_animation_in_queue():return
 		current_location.ring = 2
 		SUBSCRIBE.current_location = current_location
 		
 	WingD.onClick = func() -> void:
+		if GBL.has_animation_in_queue():return
 		current_location.ring = 3
 		SUBSCRIBE.current_location = current_location						
 # -----------------------------------------------
