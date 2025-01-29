@@ -153,7 +153,7 @@ func build_list() -> void:
 
 	# --- SEARCHES FOR ACTIVATED ROOMS 
 	traverse(func(room_config_data:Dictionary, location:Dictionary) -> void:
-		if !room_config_data.room_data.is_empty() and room_config_data.room_data.is_activated:
+		if !room_config_data.room_data.is_empty() and room_config_data.room_data.get_is_activated.call():
 			var room_details:Dictionary = ROOM_UTIL.return_data(room_config_data.room_data.ref)
 			var activation_costs:Array = ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref)
 			for item in activation_costs:

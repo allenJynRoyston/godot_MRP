@@ -342,6 +342,27 @@ func unsubscribe_to_room_config(node:Node) -> void:
 	room_config_subscriptions.erase(node)
 # ------------------------------------------------------------	
 
+
+# ------------------------------------------------------------	
+var base_states_subscriptions:Array = [] 
+
+var base_states:Dictionary = {} : 
+	set(val):
+		base_states = val
+		for node in base_states_subscriptions:
+			if "on_base_states_update" in node:
+				node.on_base_states_update.call(base_states)
+
+func subscribe_to_base_states(node:Node) -> void:
+	if node not in base_states_subscriptions:
+		base_states_subscriptions.push_back(node)
+		if "on_base_states_update" in node:
+			node.on_base_states_update.call(base_states)
+			
+func unsubscribe_to_base_states(node:Node) -> void:
+	base_states_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
 # ------------------------------------------------------------	
 var scp_data_subscriptions:Array = []
 

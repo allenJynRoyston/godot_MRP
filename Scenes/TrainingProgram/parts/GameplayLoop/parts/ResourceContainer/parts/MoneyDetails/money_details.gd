@@ -39,17 +39,19 @@ func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) ->
 		for i in operating_cost_list:
 			if i.resource.ref == RESOURCE.TYPE.MONEY and i.type == "amount":
 				var new_node:BtnBase = DetailBtnPreload.instantiate()
+				var amount:int = i.amount
 				new_node.title = details.name
 				new_node.icon = i.resource.icon
-				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
+				new_node.amount = "%s%s" % ["+" if amount >= 0 else "-", amount]
 
 				new_node.onClick = func() -> void:
-					SUBSCRIBE.current_location = item.location
-				if i.amount >= 0:
-					total_income += i.amount
+					SUBSCRIBE.current_location = item.location.duplicate()
+					
+				if amount >= 0:
+					total_income += amount
 					IncomeList.add_child(new_node)
-				if i.amount < 0:
-					total_expense += i.amount
+				if amount < 0:
+					total_expense += amount
 					ExpenseList.add_child(new_node)	
 				
 	var diff:int = total_income + total_expense

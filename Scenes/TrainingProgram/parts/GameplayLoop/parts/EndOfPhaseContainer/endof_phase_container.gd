@@ -3,10 +3,12 @@ extends GameContainer
 
 enum STEP {BASE_SUMMARY, RESEARCHER_SUMMARY}
 
-enum BASE_STEPS {FACILITY, FLOOR, WING}
 
 @onready var BaseSummary:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/BaseSummary
 @onready var ResearcherSummary:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/ResearcherSummary
+
+@onready var FacilityBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/FacilityBtn
+@onready var ResearcherBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/ResearcherBtn
 
 @onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
 
@@ -15,18 +17,17 @@ var current_step:STEP = STEP.BASE_SUMMARY :
 		current_step = val
 		on_current_step_update()
 
-var current_base_step:BASE_STEPS = BASE_STEPS.FACILITY : 
-	set(val):
-		current_base_step = val
-		on_current_base_step_update()
-		
-var summary_data:Array = []
-
 # -----------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
+	
+	FacilityBtn.onClick = func() -> void:
+		current_step = STEP.BASE_SUMMARY
+	
+	ResearcherBtn.onClick = func() -> void:
+		current_step = STEP.RESEARCHER_SUMMARY
 	
 	NextBtn.onClick = func() -> void:
 		match current_step:
@@ -37,14 +38,27 @@ func _ready() -> void:
 			
 	
 	on_current_step_update()
-	on_current_base_step_update()
+	reset()
+# -----------------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------------
+func reset() -> void:
+	current_step = STEP.BASE_SUMMARY
+	BaseSummary.reset()
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
 func start() -> void:
-	print("start...")
+	BaseSummary.start()
 # -----------------------------------------------------------------------------------------------
 
+# -----------------------------------------------------------------------------------------------
+func on_is_showing_update() -> void:
+	super.on_is_showing_update()
+	if !is_showing:
+		await U.set_timeout(0.5)
+		reset()
+# -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
 func on_current_step_update() -> void:
@@ -52,10 +66,9 @@ func on_current_step_update() -> void:
 			STEP.BASE_SUMMARY:
 				BaseSummary.show()
 				ResearcherSummary.hide()
+				NextBtn.title = "CONTINUE"
 			STEP.RESEARCHER_SUMMARY:
 				BaseSummary.hide()
 				ResearcherSummary.show()
-
-func on_current_base_step_update() -> void:
-	pass
+				NextBtn.title = "CLOSE REPORT"
 # -----------------------------------------------------------------------------------------------

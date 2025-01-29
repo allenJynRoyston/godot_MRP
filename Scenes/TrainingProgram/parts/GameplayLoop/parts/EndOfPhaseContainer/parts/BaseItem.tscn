@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://8kbrkwpybxrs"]
+[gd_scene load_steps=6 format=3 uid="uid://8kbrkwpybxrs"]
 
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="1_l40m7"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/base_item.gd" id="1_s0nx1"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_433g5"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nb6uv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3jeh"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_edjmk"]
@@ -11,12 +12,13 @@ bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 [node name="BaseItem" type="HBoxContainer"]
 size_flags_horizontal = 3
 theme_override_constants/separation = 20
+script = ExtResource("1_s0nx1")
 
 [node name="TextBtn" parent="." instance=ExtResource("1_l40m7")]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_nb6uv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_e3jeh")
 title = "FLOOR 1"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -34,7 +36,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_edjmk")
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="MoneyLabel" type="Label" parent="HBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "+100"
@@ -52,7 +54,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_edjmk")
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/PanelContainer2/HBoxContainer"]
+[node name="EnergyLabel" type="Label" parent="HBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "-10"

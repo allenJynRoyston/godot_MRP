@@ -20,11 +20,8 @@ extends Node3D
 @onready var FloorPlaceholderCamera:Camera3D = $CameraContainers/FloorPlaceholderCamera
 @onready var RoomPlaceholderCamera:Camera3D = $CameraContainers/RoomPlaceholderCamera
 
-@onready var RoomNodes0:Control = $RoomScene/MeshInstance3D/Sprite3D/SubViewport/RoomNodes0
-@onready var RoomNodes1:Control = $RoomScene/MeshInstance3D2/Sprite3D/SubViewport/RoomNodes1
-@onready var RoomNodes2:Control = $RoomScene/MeshInstance3D4/Sprite3D/SubViewport/RoomNodes2
-@onready var RoomNodes3:Control = $RoomScene/MeshInstance3D3/Sprite3D/SubViewport/RoomNodes3
-
+@onready var RoomNodeSprite:Sprite3D = $RoomScene/RoomNodeContainer/Sprite3D
+@onready var RoomNode:Control = $RoomScene/RoomNodeContainer/Sprite3D/SubViewport/RoomNode
 
 @onready var ControlLayerSprite:Sprite3D = $SpriteLayer/ControlLayerSprite
 
@@ -56,6 +53,7 @@ var show_menu:bool = false :
 var freeze_input:bool = false 
 var default_positions:Dictionary = {}
 
+signal animate_next_complete
 signal menu_response
 
 # ------------------------------------------------
@@ -82,14 +80,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	_on_panel_container_item_rect_changed()
 	on_show_menu_update()
-	room_nodes = { 
-		0: RoomNodes0,
-		1: RoomNodes1, 
-		2: RoomNodes2, 
-		3: RoomNodes3
-	}
-
-
+	assign_room_node_location(0, 0, false)
 # ------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -180,11 +171,12 @@ func on_show_menu_update() -> void:
 		for index in menu_actions.size():
 			var item:Dictionary = menu_actions[index]
 			var new_btn:BtnBase = TextBtnPreload.instantiate()
+			new_btn.is_hoverable = false
 			new_btn.title = item.title
 			new_btn.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
-			new_btn.onFocus = func() -> void:
+			new_btn.onFocus = func(node:Control) -> void:
 				pass
-			new_btn.onClick = func() -> void:
+			new_btn.onClick = func(node:Control) -> void:
 				pass
 			ControlMenuList.add_child(new_btn)
 	
@@ -205,6 +197,28 @@ func update_menu_index(inc:int) -> void:
 		btn_node.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
 # ------------------------------------------------
 
+# ------------------------------------------------
+func assign_room_node_location(floor_val:int, ring_val:int, animate:bool) -> void:
+	GBL.add_to_animation_queue(self)
+	
+	if animate:
+		U.tween_node_property(ActiveCamera, "size", 1, 0.3)
+		await U.tween_node_property(RoomNodeSprite, "scale:x", 0, 0.3)
+
+		
+	RoomNode.assigned_location = {"floor": floor_val, "ring": ring_val}
+	
+	if animate:
+		await U.set_timeout(0.2)
+		U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)
+		await U.tween_node_property(RoomNodeSprite, "scale:x", 1, 0.3)
+	
+	if !animate:
+		await U.tick()
+		
+	GBL.remove_from_animation_queue(self)	
+	animate_next_complete.emit()
+# ------------------------------------------------
 
 # ------------------------------------------------
 func update_cameras() -> void:
@@ -213,10 +227,9 @@ func update_cameras() -> void:
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
 			CursorLabel.text = ">> FLOOR %s" % [current_location.floor]
-
 			if previous_floor != current_location.floor:
 				previous_floor = current_location.floor
-				
+				assign_room_node_location(current_location.floor, current_location.ring, false)
 				for index in FloorInstanceContainer.get_child_count():
 					var floor_node:MeshInstance3D = FloorInstanceContainer.get_child(index)
 					var mesh_duplicate = floor_node.mesh.duplicate()
@@ -231,17 +244,11 @@ func update_cameras() -> void:
 				GBL.remove_from_animation_queue(self)			
 		
 		CAMERA.TYPE.ROOM_SELECT:
-			if previous_ring != current_location.ring:
+			if previous_ring != current_location.ring or previous_floor != current_location.floor:
 				previous_ring = current_location.ring
-				var new_value:int = -90 * current_location.ring
-				if ActiveCamera.rotation_degrees.y != new_value:
-					GBL.add_to_animation_queue(self)
-					await U.tween_node_property(ActiveCamera, "rotation_degrees:y", new_value, 0.5)
-					GBL.remove_from_animation_queue(self)	
+				previous_floor = current_location.floor
+				assign_room_node_location(current_location.floor, current_location.ring, true)
 				
-				
-
-
 # ------------------------------------------------
 
 # ------------------------------------------------

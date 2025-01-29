@@ -230,7 +230,6 @@ func fade_restore() -> void:
 	tween_property(ContainerSprite, "scale", Vector3(1, 1, 1), 0.1)
 # --------------------------------------------------------------------------------------------------	
 
-
 # --------------------------------------------------------------------------------------------------	
 func build_room_details() -> void:
 	if room_config.is_empty() or ref_index == -1 or room_ref == "":return

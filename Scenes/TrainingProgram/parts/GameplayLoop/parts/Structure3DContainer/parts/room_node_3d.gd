@@ -116,9 +116,11 @@ func _ready() -> void:
 	build_room_details()
 # ---------------------------------------------------
 
+# ---------------------------------------------------
 func on_is_pulsing_update() -> void:
-	if !is_pulsing :
+	if !is_pulsing:
 		PulseEffectFX.hide() 
+# ---------------------------------------------------
 
 # ---------------------------------------------------
 func on_current_state_update() -> void:
@@ -185,10 +187,10 @@ func on_ref_index_update() -> void:
 func update_refs(floor:int, wing:int) -> void:
 	assigned_wing = wing
 	assigned_floor = floor
-
 	room_ref = "%s%s%s" % [assigned_floor, assigned_wing, ref_index]
 	FrontLeftPanelLabel.text = "ROOM %s" % [room_ref]
 	build_room_details()
+	on_current_location_update()
 # ---------------------------------------------------
 	
 # --------------------------------------------------------------------------------------------------
@@ -201,7 +203,7 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # --------------------------------------------------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if !is_node_ready():return
+	if !is_node_ready() or current_location.is_empty():return
 	var check_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
 	is_focused = room_ref == check_ref
 # --------------------------------------------------------------------------------------------------
@@ -231,26 +233,32 @@ func fade_restore() -> void:
 func build_room_details() -> void:
 	if room_config.is_empty() or ref_index == -1 or room_ref == "":return
 	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
-
+	
 	if !data.build_data.is_empty():
 		#print("build data:", room_ref, assigned_wing)
 		room_data = ROOM_UTIL.return_data(data.build_data.ref)
 		TopPanelLabel.text = room_data.name	
 		TopPanelLabel2.text = "CONSTRUCTING"
+		is_pulsing = false
 		apply_texture = APPLY_TEXTURE.UNDER_CONSTRUCTION
+		ActivationLight.light_color = Color.ORANGE
 	
 	elif !data.room_data.is_empty():
+		var is_activated:bool = data.room_data.get_is_activated.call()
 		room_data = ROOM_UTIL.return_data(data.room_data.ref)
 		TopPanelLabel.text = room_data.name	
 		TopPanelLabel2.text = ""
-		is_pulsing = data.room_data.is_activated
+		is_pulsing = is_activated
 		apply_texture = APPLY_TEXTURE.BUILT
+		ActivationLight.light_color = Color.GREEN if is_activated else Color.ORANGE  
 	
 	else:
 		room_data = {}
 		TopPanelLabel.text = "EMPTY"
 		TopPanelLabel2.text = ""
+		is_pulsing = false
 		apply_texture = APPLY_TEXTURE.NONE
+		ActivationLight.light_color = Color.RED
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	

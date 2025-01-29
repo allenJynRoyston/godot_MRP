@@ -1,11 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://ceiftayudibcw"]
+[gd_scene load_steps=10 format=3 uid="uid://ceiftayudibcw"]
 
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/BaseSummary/base_summary.gd" id="1_b6o6w"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_qdnoa"]
 [ext_resource type="PackedScene" uid="uid://8kbrkwpybxrs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/BaseItem.tscn" id="2_6lmhb"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_8v7dv"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_e8y08"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7iesw"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d3raf"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5hlv8"]
 
@@ -13,7 +18,11 @@ bg_color = Color(0, 0.254902, 0.0823529, 1)
 color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="BaseSummary" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 425)
+offset_right = 610.0
+offset_bottom = 600.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_7iesw")
+script = ExtResource("1_b6o6w")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -28,6 +37,12 @@ theme_override_constants/separation = 20
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="BackBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_8v7dv")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_d3raf")
+icon = 27
+title = "BACK"
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 visible = false
@@ -68,25 +83,31 @@ visible = false
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_s76h1")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="BaseItemListContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BaseItem" parent="MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("2_6lmhb")]
+[node name="BaseItem" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
 layout_mode = 2
 
-[node name="BaseItem2" parent="MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("2_6lmhb")]
+[node name="BaseItem2" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
 layout_mode = 2
 
-[node name="BaseItem3" parent="MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("2_6lmhb")]
+[node name="BaseItem3" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
 layout_mode = 2
 
-[node name="BaseItem4" parent="MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("2_6lmhb")]
+[node name="BaseItem4" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
 layout_mode = 2
 
-[node name="BaseItem5" parent="MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("2_6lmhb")]
+[node name="BaseItem5" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
 layout_mode = 2
 
-[node name="BaseItem6" parent="MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("2_6lmhb")]
+[node name="BaseItem6" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
+layout_mode = 2
+
+[node name="BaseItem7" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
+layout_mode = 2
+
+[node name="BaseItem8" parent="MarginContainer/VBoxContainer/BaseItemListContainer" instance=ExtResource("2_6lmhb")]
 layout_mode = 2
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
@@ -97,10 +118,11 @@ theme_override_styles/separator = SubResource("StyleBoxLine_s76h1")
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
-visible = false
+[node name="TotalsLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-text = "RESOURCES"
+size_flags_horizontal = 3
+text = "TOTALS"
+label_settings = ExtResource("3_e8y08")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(400, 0)
@@ -112,7 +134,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5hlv8")
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/PanelContainer"]
+[node name="MoneyDiffLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/PanelContainer"]
 layout_mode = 2
 text = "100 -> 150"
 label_settings = ExtResource("3_e8y08")
@@ -123,7 +145,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5hlv8")
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/PanelContainer2"]
+[node name="EnergyDiffLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer/PanelContainer2"]
 layout_mode = 2
 text = "100 -> 150"
 label_settings = ExtResource("3_e8y08")

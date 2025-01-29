@@ -6,21 +6,22 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_f2e5b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erjns"]
-bg_color = Color(0.130722, 0.0757782, 0.499197, 1)
+bg_color = Color(0, 0.529412, 0.278431, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vu7ry"]
-bg_color = Color(0.206914, 0.206914, 0.206914, 1)
+bg_color = Color(0.724643, 0.724643, 0.724643, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kbi1h"]
-bg_color = Color(0.162141, 0.354946, 0.715275, 1)
+bg_color = Color(1, 0.635294, 0.203922, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0vwdl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3k0l"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="ActionQueueItem" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 150.0
-offset_bottom = 61.0
+offset_right = 200.0
+offset_bottom = 53.0
+scale = Vector2(0.992928, 0.988571)
 theme_override_styles/panel = SubResource("StyleBoxFlat_erjns")
 script = ExtResource("1_fgfba")
 
@@ -38,6 +39,7 @@ alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -45,7 +47,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
 [node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -70,15 +72,19 @@ layout_mode = 2
 [node name="TitleBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer/HBoxContainer" instance=ExtResource("4_1yfsp")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_0vwdl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y3k0l")
 panel_color = Color(0.05, 0.05, 0.05, 0)
+static_color = Color(0, 0, 0, 1)
+active_color = Color(0.0274091, 0.0274092, 0.0274092, 1)
+inactive_color = Color(0, 0, 0, 1)
 title = "Title"
 
 [node name="CancelBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ProgressBar/MarginContainer/HBoxContainer" instance=ExtResource("2_820ko")]
 layout_mode = 2
 icon = 1
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 0.698039)
+static_color = Color(0, 0, 0, 1)
+active_color = Color(0.00960463, 0.00960463, 0.00960463, 1)
+inactive_color = Color(0, 0, 0, 0.698039)
 debug_me = true
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]

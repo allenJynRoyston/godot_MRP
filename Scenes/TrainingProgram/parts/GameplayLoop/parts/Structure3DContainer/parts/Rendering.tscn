@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=20 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_cucwc"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="2_6hp44"]
@@ -38,16 +38,7 @@ bottom_radius = 55.0
 height = 20.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_asfwt"]
-viewport_path = NodePath("RoomScene/MeshInstance3D/Sprite3D/SubViewport")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_7f03p"]
-viewport_path = NodePath("RoomScene/MeshInstance3D2/Sprite3D/SubViewport")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_1uk6f"]
-viewport_path = NodePath("RoomScene/MeshInstance3D4/Sprite3D/SubViewport")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_ds086"]
-viewport_path = NodePath("RoomScene/MeshInstance3D3/Sprite3D/SubViewport")
+viewport_path = NodePath("RoomScene/RoomNodeContainer/Sprite3D/SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ftr3"]
 bg_color = Color(0, 0, 0, 1)
@@ -64,10 +55,10 @@ grow_end = -5.0
 font = ExtResource("5_ptqq7")
 font_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22mot"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j52pf"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scrv7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffn4d"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="Rendering" type="Node3D"]
@@ -90,7 +81,7 @@ transform = Transform3D(0.984808, -0.173648, -7.5904e-09, 0, -4.37114e-08, 1, -0
 cull_mask = 1023
 projection = 1
 fov = 8.0
-size = 100.0
+size = 7.0
 
 [node name="FloorPlaceholderCamera" type="Camera3D" parent="CameraContainers"]
 transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 5, 50)
@@ -162,81 +153,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 150, -0.302952, 0)
 
 [node name="Inner" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 43.7743)
+visible = false
 layers = 1024
 mesh = SubResource("CylinderMesh_m8spo")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RoomScene"]
+[node name="RoomNodeContainer" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(0.649131, 0, 0, 0, 0.784599, 0, 0, 0, 1.10754, 0, 0, 0)
 layers = 31
 skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
-[node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D"]
+[node name="Sprite3D" type="Sprite3D" parent="RoomScene/RoomNodeContainer"]
 transform = Transform3D(1, 0, 0, 0, 0.819152, -0.573576, 0, 0.573576, 0.819152, 0, 0, 0)
 double_sided = false
 texture_filter = 0
 texture = SubResource("ViewportTexture_asfwt")
 
-[node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D/Sprite3D"]
+[node name="SubViewport" type="SubViewport" parent="RoomScene/RoomNodeContainer/Sprite3D"]
 own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 
-[node name="RoomNodes0" parent="RoomScene/MeshInstance3D/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="RoomScene"]
-transform = Transform3D(-2.83744e-08, 0, -1.10754, 0, 0.784599, 0, 0.649131, 0, -4.84121e-08, 50, 0, 50)
-layers = 31
-skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
-
-[node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D2"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
-double_sided = false
-texture = SubResource("ViewportTexture_7f03p")
-
-[node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D2/Sprite3D"]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-
-[node name="RoomNodes1" parent="RoomScene/MeshInstance3D2/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
-assigned_wing = 1
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="RoomScene"]
-transform = Transform3D(-0.649131, 0, -9.68242e-08, 0, 0.784599, 0, 5.67488e-08, 0, -1.10754, 0, 0, 100)
-layers = 31
-skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
-
-[node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D4"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
-texture = SubResource("ViewportTexture_1uk6f")
-
-[node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D4/Sprite3D"]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-
-[node name="RoomNodes2" parent="RoomScene/MeshInstance3D4/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
-assigned_wing = 2
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="RoomScene"]
-transform = Transform3D(-2.83744e-08, 0, 1.10754, 0, 0.784599, 0, -0.649131, 0, -4.84121e-08, -50, 0, 50)
-layers = 31
-skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
-
-[node name="Sprite3D" type="Sprite3D" parent="RoomScene/MeshInstance3D3"]
-texture = SubResource("ViewportTexture_ds086")
-
-[node name="SubViewport" type="SubViewport" parent="RoomScene/MeshInstance3D3/Sprite3D"]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-
-[node name="RoomNodes3" parent="RoomScene/MeshInstance3D3/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
-assigned_wing = 3
+[node name="RoomNode" parent="RoomScene/RoomNodeContainer/Sprite3D/SubViewport" instance=ExtResource("4_ujma6")]
 
 [node name="ControlSubViewport" type="SubViewport" parent="."]
 transparent_bg = true
@@ -327,12 +265,12 @@ layout_mode = 2
 
 [node name="TextBtn" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_22mot")
+theme_override_styles/panel = SubResource("StyleBoxFlat_j52pf")
 title = "ACTION 1"
 
 [node name="TextBtn2" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_scrv7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ffn4d")
 title = "ACTION 1"
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="_on_panel_container_item_rect_changed"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://nfj5ltcydj3b"]
+[gd_scene load_steps=14 format=3 uid="uid://nfj5ltcydj3b"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/endof_phase_container.gd" id="1_wntkl"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_y3442"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_d18d6"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_oji45"]
 [ext_resource type="PackedScene" uid="uid://ceiftayudibcw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/BaseSummary/BaseSummary.tscn" id="4_desha"]
 [ext_resource type="PackedScene" uid="uid://cegeq1hmwtsev" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/ResearcherSummary/ResearcherSummary.tscn" id="5_xgssl"]
@@ -26,14 +27,17 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d0yhh"]
-bg_color = Color(0.05, 0.05, 0.05, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7tsgv"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aw2qx"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_060a7"]
 color = Color(0, 0.529412, 0.278431, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5nmj"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mjqx7"]
+bg_color = Color(0.0708272, 0.0708272, 0.0708272, 1)
 
 [node name="EndofPhaseContainer" type="MarginContainer"]
 offset_right = 40.0
@@ -48,7 +52,7 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(720, 505)
+size = Vector2i(720, 592)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 720.0
@@ -85,15 +89,18 @@ layout_mode = 2
 [node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "BASE / RESEARCHER SUMMARY
-"
+text = "SITE DIRECTOR'S REPORT"
+label_settings = ExtResource("3_d18d6")
 
-[node name="TextBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_oji45")]
-visible = false
+[node name="FacilityBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_oji45")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_d0yhh")
-panel_color = Color(0.05, 0.05, 0.05, 0)
-title = "NEXT DAY"
+theme_override_styles/panel = SubResource("StyleBoxFlat_7tsgv")
+title = "FACILITY REPORT"
+
+[node name="ResearcherBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_oji45")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_aw2qx")
+title = "RESEARCH REPORT"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -103,10 +110,10 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_060a7")
 
 [node name="BaseSummary" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_desha")]
-visible = false
 layout_mode = 2
 
 [node name="ResearcherSummary" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_xgssl")]
+visible = false
 layout_mode = 2
 
 [node name="HSeparator2" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
@@ -119,7 +126,8 @@ alignment = 2
 
 [node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_oji45")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_c5nmj")
-title = "NEXT"
+theme_override_styles/panel = SubResource("StyleBoxFlat_mjqx7")
+panel_color = Color(0.0708272, 0.0708272, 0.0708272, 1)
+title = "CLOSE REPORT"
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

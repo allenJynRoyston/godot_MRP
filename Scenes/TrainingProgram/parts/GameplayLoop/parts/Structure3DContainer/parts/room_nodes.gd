@@ -13,6 +13,7 @@ extends Control
 @onready var ControlMenuContainer:Control = $ControlMenuSubviewport/ControlMenuContainer
 @onready var ControlMenuList:VBoxContainer = $ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList
 
+@onready var NoPowerLights:Node3D = $SubViewport/RoomColumn/NoPowerLights
 @onready var Spotlights:Node3D = $SubViewport/RoomColumn/Spotlights
 @onready var NormalLights:Node3D = $SubViewport/RoomColumn/NormalLights
 @onready var EmergencyLights:Node3D = $SubViewport/RoomColumn/EmergencyLights
@@ -22,9 +23,14 @@ extends Control
 @onready var MenuSprite:Sprite3D = $SubViewport/RoomColumn/SpriteLayer/CursorSprite/MenuSprite
 @onready var LeftWallLabel:Label3D = $SubViewport/RoomColumn/LeftWallLabel
 
+@onready var StatusLabel:Label3D = $SubViewport/RoomColumn/MainCamera/StatusLabel
 @onready var MainCamera:Camera3D = $SubViewport/RoomColumn/MainCamera
 
-@export var assigned_wing:int = 0
+
+@export var assigned_location:Dictionary = {} : 
+	set(val):
+		assigned_location = val
+		on_assigned_location_update()
 
 var current_location:Dictionary = {} 
 var resources_data:Dictionary = {} 
@@ -51,10 +57,15 @@ var room_config:Dictionary = {}
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
-@export var in_lockdown:bool = false : 
+var in_lockdown:bool = false : 
 	set(val):
 		in_lockdown = val
 		on_in_lockdown_update()
+
+var is_powered:bool = false : 
+	set(val):
+		is_powered = val
+		on_is_powered_update()
 
 signal menu_response
 
@@ -74,40 +85,33 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
 
 func _ready() -> void:
-	on_current_location_update()
 	on_show_menu_update()
 	on_label_control_subpanel_rect_changed()
 	on_menu_control_subpanel_rect_changed()
 	on_in_lockdown_update()
+	on_assigned_location_update()
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void:
+	if !is_node_ready() or assigned_location.is_empty():return
+	
+	update_refs()
+	check_lockdown_state()
+	check_is_powered_state()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if !is_node_ready() or current_location.is_empty():return
-	
-	if current_location.ring != assigned_wing:
-		hide()		
-
-	if !is_setup:
-		is_setup = true
-		update_refs(true)
-	else:
-		# wait for changes, assign new floor
-		if previous_floor != current_location.floor or previous_ring != current_location.ring:
-			previous_floor = current_location.floor
-			previous_ring = current_location.ring
-			update_refs()
-
-	show()	
-	check_lockdown_state()
+	on_assigned_location_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return
-	check_lockdown_state()
+	on_assigned_location_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -117,97 +121,92 @@ func check_lockdown_state() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-func update_refs(setup:bool = false) -> void:
-	LeftWallLabel.text = "FLOOR %s WING %s" % [current_location.floor, assigned_wing]
+func check_is_powered_state() -> void:
+	if room_config.is_empty() or current_location.is_empty():return
+	is_powered = room_config.floor[current_location.floor].is_powered
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func update_refs() -> void:
+	LeftWallLabel.text = "FLOOR %s WING %s" % [assigned_location.floor, assigned_location.ring]
+	for child in NodeContainer.get_children():
+		for node in child.get_children():
+			node.update_refs(assigned_location.floor, assigned_location.ring)
 	
 	for child in NodeContainer.get_children():
 		for node in child.get_children():
-			node.update_refs(current_location.floor, assigned_wing)
-	
-	if setup:
-		for child in NodeContainer.get_children():
-			for node in child.get_children():
-				node_refs[node.name] = node
-				node_ref_positions[node.name] = node.position
-				node.onFocus = func(room_data:Dictionary) -> void:
-					CursorSprite.global_position = node.global_position + Vector3(-6.5, 6, -4)
-					CursorLabel.text = "EMPTY" if room_data.is_empty() else room_data.name
+			node_refs[node.name] = node
+			node_ref_positions[node.name] = node.position
+			node.onFocus = func(room_data:Dictionary) -> void:
+				CursorSprite.global_position = node.global_position + Vector3(-6.5, 6, -4)
+				CursorLabel.text = "EMPTY" if room_data.is_empty() else room_data.name
 # --------------------------------------------------------
 
 # ------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 	if !is_node_ready():return
-	
 # ------------------------------------------------
 
 
 # ------------------------------------------------
 func on_show_menu_update() -> void:
 	if show_menu:
-		#if room_config.floor[current_location.floor].is_powered:
-		menu_index = 0
-		menu_actions = []
-		
-		var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]
-		var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
-		var room_under_construction:bool = !room_config_data.build_data.is_empty()
-		var room_can_be_cleared:bool = !room_config_data.room_data.is_empty()
+		if is_powered:
+			menu_index = 0
+			menu_actions = []
+			
+			var room_config_data:Dictionary = room_config.floor[assigned_location.floor].ring[assigned_location.ring].room[current_location.room]
+			var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
+			var room_under_construction:bool = !room_config_data.build_data.is_empty()
+			var room_can_be_cleared:bool = !room_config_data.room_data.is_empty()
 
-		# ------------------- CONVERT, CANCEL OR REMOVE ROOM
-		if can_purchase:
-			menu_actions.push_back({
-				"title": "CONVERT ROOM",
-				"onSelect": func() -> void:
-					menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
-			})
-		
-		if room_under_construction:
-			menu_actions.push_back({
-				"title": "CANCEL CONSTRUCTION",
-				"onSelect": func() -> void:
-					menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONSTRUCTION})
-			})
-		
-		if room_can_be_cleared:
-			menu_actions.push_back({
-				"title": "REMOVE ROOM",
-				"onSelect": func() -> void:
-					menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
-			})
-		# -------------------
-		
-		# -------------------
-		if !room_config_data.room_data.is_empty():
-			var room_details:Dictionary = ROOM_UTIL.return_data(room_config_data.room_data.ref)
-			var can_be_activated:bool = "activation_cost" in room_details
-			var can_store_scp:bool = room_details.can_contain
-			var is_activated:bool = room_config_data.room_data.is_activated
-			#var is_scp_empty:bool = room_config.scp_data.is_empty()
-			
-			if can_be_activated:
-				var is_disabled:bool = !RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false
-			
+			# ------------------- CONVERT, CANCEL OR REMOVE ROOM
+			if can_purchase:
 				menu_actions.push_back({
-					"title": "DEACTIVATED ROOM" if is_activated else "ACTIVATED ROOM",
-					"is_disabled": is_disabled,
+					"title": "CONVERT ROOM",
 					"onSelect": func() -> void:
-						if !is_disabled:
-							menu_response.emit({
-								"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
-							})
-						pass
+						menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
 				})
+			
+			if room_under_construction:
+				menu_actions.push_back({
+					"title": "CANCEL CONSTRUCTION",
+					"onSelect": func() -> void:
+						menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONSTRUCTION})
+				})
+			
+			if room_can_be_cleared:
+				menu_actions.push_back({
+					"title": "REMOVE ROOM",
+					"onSelect": func() -> void:
+						menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
+				})
+			# -------------------
+			
+			# -------------------
+			if !room_config_data.room_data.is_empty():
+				var room_details:Dictionary = ROOM_UTIL.return_data(room_config_data.room_data.ref)
+				var can_be_activated:bool = "activation_cost" in room_details
+				var can_store_scp:bool = room_details.can_contain
+				var is_activated:bool = room_config_data.room_data.get_is_activated.call()
+				#var is_scp_empty:bool = room_config.scp_data.is_empty()
 				
-			#if can_store_scp:
-				#menu_actions.push_back({
-					#"title": "CONTAIN SCP" if !is_activated else "TRANSFER SCP",
-					#"onSelect": func() -> void:
-						#menu_response.emit({
-							#"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
-						#})
-				#})
-		# -------------------
+				if can_be_activated:
+					var is_disabled:bool = !RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false
+				
+					menu_actions.push_back({
+						"title": "DEACTIVATED ROOM" if is_activated else "ACTIVATED ROOM",
+						"is_disabled": is_disabled,
+						"onSelect": func() -> void:
+							if !is_disabled:
+								menu_response.emit({
+									"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
+								})
+							pass
+					})
+					
+			# -------------------
 		
 		# -------------------
 		menu_actions.push_back({
@@ -239,12 +238,13 @@ func on_show_menu_update() -> void:
 			var item:Dictionary = menu_actions[index]
 			var new_btn:BtnBase = TextBtnPreload.instantiate()
 			var is_disabled:bool = item.is_disabled if "is_disabled" in item else false
+			new_btn.is_hoverable = false
 			new_btn.title = item.title
 			new_btn.is_disabled = is_disabled
 			new_btn.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
-			new_btn.onFocus = func() -> void:
+			new_btn.onFocus = func(node:Control) -> void:
 				pass
-			new_btn.onClick = func() -> void:
+			new_btn.onClick = func(node:Control) -> void:
 				pass
 			ControlMenuList.add_child(new_btn)
 	
@@ -254,24 +254,38 @@ func on_show_menu_update() -> void:
 		
 	
 	GBL.add_to_animation_queue(self)
-	await U.tween_node_property(CursorSprite, "rotation_degrees:y", 270 if !show_menu else 175, 0.2 if show_menu else 0.2)
+	await U.tween_node_property(CursorSprite, "rotation_degrees:y", 270 if !show_menu else 175, 0.2 if show_menu else 0)
 	GBL.remove_from_animation_queue(self)	
+# ------------------------------------------------
+
+# ------------------------------------------------
+func on_is_powered_update() -> void:
+	if !is_node_ready():return
+	check_for_lighting_system()
+	
+	StatusLabel.text = "NOT POWERED" if !is_powered else ""
 # ------------------------------------------------
 
 # --------------------------------------------------------
 func on_in_lockdown_update() -> void:
-	if !is_node_ready() or current_location.is_empty():return
-
-		
-	for child in Spotlights.get_children():
-		var OmniLightNode:OmniLight3D = child.find_child("OmniLight3D")
-		var SpotlightNode:SpotLight3D = child.find_child("Spotlight")
-		OmniLightNode.show() if in_lockdown else OmniLightNode.hide()
-		SpotlightNode.show() if in_lockdown else SpotlightNode.hide()
-		
-	NormalLights.hide() if in_lockdown else NormalLights.show()
-	EmergencyLights.show() if in_lockdown else EmergencyLights.hide()
+	if !is_node_ready():return
+	check_for_lighting_system()
 # --------------------------------------------------------
+
+# --------------------------------------------------------
+func check_for_lighting_system() -> void:
+	if in_lockdown:
+		NormalLights.hide() 
+		NoPowerLights.hide() 
+		EmergencyLights.show() 
+		Spotlights.show() 
+	else:
+		EmergencyLights.hide() 
+		Spotlights.hide() 
+		NoPowerLights.hide() if is_powered else NoPowerLights.show()
+		NormalLights.show() if is_powered else NormalLights.hide()	
+# --------------------------------------------------------
+
 
 # ------------------------------------------------
 func on_label_control_subpanel_rect_changed() -> void:
@@ -289,7 +303,7 @@ func on_menu_control_subpanel_rect_changed() -> void:
 
 # --------------------------------------------------------
 func on_mouse_scroll(dir:int) -> void:
-	if !is_node_ready() or GBL.has_animation_in_queue() or current_location.ring != assigned_wing:return
+	if !is_node_ready() or GBL.has_animation_in_queue():return
 	match dir:
 		#UP
 		0: 
@@ -313,7 +327,7 @@ func update_menu_index(inc:int) -> void:
 
 # --------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or GBL.has_animation_in_queue() or current_location.ring != assigned_wing or !show_menu or freeze_input:return
+	if !is_node_ready() or GBL.has_animation_in_queue() or !show_menu or freeze_input:return
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 

@@ -29,7 +29,6 @@ var current_step:STEPS = STEPS.SELECT_FLOOR :
 var location_pos:Vector2 = Vector2(0, 0)
 var freeze_input:bool = false
 
-
 signal wait_for_input
 
 # --------------------------------------------------------------------------------------------------
@@ -128,7 +127,7 @@ func location_lookup(val:int, dir:DIR) -> int:
 	match val:
 		0:
 			match dir:
-				DIR.UP: return val
+				DIR.UP: return -1
 				DIR.DOWN: return 4
 				DIR.LEFT: return 1
 				DIR.RIGHT: return 2
@@ -177,7 +176,7 @@ func location_lookup(val:int, dir:DIR) -> int:
 		8:
 			match dir:
 				DIR.UP: return 4
-				DIR.DOWN: return val
+				DIR.DOWN: return -1
 				DIR.LEFT: return 6
 				DIR.RIGHT: return 7
 	
@@ -207,7 +206,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue() or freeze_input:
 		return
 		
-	if Rendering.show_menu or Rendering.room_nodes[current_location.ring].show_menu:
+	if Rendering.show_menu or Rendering.RoomNode.show_menu:
 		return
 	
 	var key:String = input_data.key
@@ -219,17 +218,17 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				STEPS.SELECT_FLOOR:
 					current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
 				STEPS.SELECT_ROOM:
-					current_location.room = location_lookup(current_location.room, DIR.UP)
+					room_up()
 				STEPS.SELECT_PLACEMENT:
-					current_location.room = location_lookup(current_location.room, DIR.UP)
+					room_up()
 		"S":
 			match current_step:
 				STEPS.SELECT_FLOOR:
 					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
 				STEPS.SELECT_ROOM:
-					current_location.room = location_lookup(current_location.room, DIR.DOWN)
+					room_down()
 				STEPS.SELECT_PLACEMENT:
-					current_location.room = location_lookup(current_location.room, DIR.DOWN)
+					room_down()
 		"D":
 			match current_step:
 				STEPS.SELECT_FLOOR:
@@ -257,8 +256,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"E":
 			on_next()
 			
-		"ENTER":
-			on_next()
 			
 		"B":
 			on_back()
@@ -271,23 +268,46 @@ func on_control_input_update(input_data:Dictionary) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+# TODO: 
+func room_up() -> void:
+	var room_index:int = location_lookup(current_location.room, DIR.UP)
+	if room_index == -1:
+		if current_location.floor - 1 >= 0:
+			var next_val:int = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
+			current_location.floor = next_val
+	else:
+		current_location.room = room_index	
+	SUBSCRIBE.current_location = current_location
+
+func room_down() -> void:
+	var room_index:int = location_lookup(current_location.room, DIR.DOWN)
+	if room_index == -1:
+		if current_location.floor + 1 < room_config.floor.size() - 1:
+			var next_val:int = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
+			current_location.floor = next_val
+	else:
+		current_location.room = room_index	
+	SUBSCRIBE.current_location = current_location
+		
 func room_right() -> void:
 	var room_index:int = location_lookup(current_location.room, DIR.RIGHT)
 	if room_index == -1:
 		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
-			current_location.ring = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-			current_location.room = 4
+			var next_val:int = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+			current_location.ring = next_val
 	else:
 		current_location.room = room_index	
+	SUBSCRIBE.current_location = current_location
 
 func room_left() -> void:
 	var room_index:int = location_lookup(current_location.room, DIR.LEFT)
 	if room_index == -1:
 		if current_location.ring > 0:
-			current_location.ring = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-			current_location.room = 4
+			var next_val:int = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+			current_location.ring = next_val
 	else:
 		current_location.room = room_index	
+	SUBSCRIBE.current_location = current_location
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -313,7 +333,7 @@ func wait_for_floor_response() -> void:
 		# -------------------
 		ACTION.STRUCTURE.LOCKDOWN:
 			Rendering.show_menu = false
-			GameplayNode.set_floor_lockdown( !room_config.floor[current_location.floor].in_lockdown )
+			GameplayNode.set_floor_lockdown( current_location.duplicate(), !room_config.floor[current_location.floor].in_lockdown )
 			await GameplayNode.on_confirm_complete
 		# ------------------- 
 		ACTION.STRUCTURE.ACTIVATE_FLOOR:
@@ -323,7 +343,7 @@ func wait_for_floor_response() -> void:
 	freeze_input = false
 # --------------------------------------------------------------------------------------------------
 func wait_for_room_node_response() -> void:
-	var RoomNode:Control = Rendering.room_nodes[current_location.ring]
+	var RoomNode:Control = Rendering.RoomNode
 	var res:Dictionary = await RoomNode.menu_response
 	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	freeze_input = true
@@ -383,7 +403,7 @@ func on_next() -> void:
 				wait_for_floor_response()
 						
 		STEPS.SELECT_ROOM:
-			var RoomNode:Control = Rendering.room_nodes[current_location.ring]
+			var RoomNode:Control = Rendering.RoomNode
 			if !RoomNode.show_menu:
 				RoomNode.show_menu = true
 				wait_for_room_node_response()

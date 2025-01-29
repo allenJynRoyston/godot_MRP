@@ -31,7 +31,7 @@ func _exit_tree() -> void:
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 	if progress_data.is_empty():return
 	progress_data = new_val
-	NextLabel.text = "More choices available in %s days" % [progress_data.days_till_new_hires]
+	NextLabel.text = "More choices available in %s days" % [progress_data.days_till_report]
 # ------------------------------------
 
 

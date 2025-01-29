@@ -7,7 +7,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fifyy"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a5rbu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_whcms"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="ActionItemBtn" type="PanelContainer"]
@@ -37,7 +37,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_a5rbu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_whcms")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "Action"
 
@@ -49,5 +49,6 @@ active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.477994, 0.492891, 0.497859, 1)
 
 [node name="BulletpointItemContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 20

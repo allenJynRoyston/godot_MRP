@@ -161,9 +161,12 @@ var current_location:Dictionary = {
 	"ring": 0,
 	"room": 4 # 4 is the center
 } 
+
 var progress_data:Dictionary = { 
 	"day": 1,
-	"days_till_new_hires": 7,
+	"days_till_report": 6,
+	"record": [],
+	"previous_records": []
 } 
 
 var scp_data:Dictionary = {
@@ -200,6 +203,7 @@ var scp_data:Dictionary = {
 		#}		
 	],
 }
+
 
 var shop_revert_step:SHOP_STEPS
 
@@ -291,6 +295,15 @@ var room_config:Dictionary = {
 	}
 } 
 
+var base_states:Dictionary = {
+	"floor": {
+		#"0": {"in_lockdown": true/false}
+	},
+	"room": {
+		#"000": {"is_activated": true/false}
+	},
+}
+
 var initial_values:Dictionary = {
 	"current_location": current_location,
 	"scp_data": scp_data,
@@ -306,7 +319,8 @@ var initial_values:Dictionary = {
 	"resources_data": resources_data,
 	"tier_unlocked": tier_unlocked,
 	"room_config": room_config,
-	"camera_settings": camera_settings
+	"camera_settings": camera_settings,
+	"base_states": base_states,
 }.duplicate(true)
 
 
@@ -315,6 +329,9 @@ var initial_values:Dictionary = {
 
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
+const days_week_count:int = 6
+
+var setup_complete:bool = false 
 var is_busy:bool = false : 
 	set(val):
 		is_busy = val
@@ -415,6 +432,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.subscribe_to_current_location(self)	
 	SUBSCRIBE.subscribe_to_scp_data(self)
+	SUBSCRIBE.subscribe_to_base_states(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
@@ -433,7 +451,8 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
-	  
+	SUBSCRIBE.unsubscribe_to_base_states(self)
+	
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		hide()
@@ -441,8 +460,6 @@ func _ready() -> void:
 		set_physics_process(false)	
 	setup()	
 	
-	
-
 func setup() -> void:
 	# first these
 	on_show_structures_update()
@@ -517,10 +534,10 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 		"in_lockdown": false,
 		"array_size": array_size,
 		"readings": {
-			RESOURCE.BASE.MORALE: 5,
-			RESOURCE.BASE.SAFETY: 5,
-			RESOURCE.BASE.READINESS: 5,
-			RESOURCE.BASE.HUME: 5,
+			RESOURCE.BASE_METRICS.MORALE: 2,
+			RESOURCE.BASE_METRICS.SAFETY: 2,
+			RESOURCE.BASE_METRICS.READINESS: 2,
+			RESOURCE.BASE_METRICS.HUME: 1,
 		},
 		"ring": { 
 			0: get_room_default(array_size),
@@ -682,7 +699,13 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 # -----------------------------------
 
 # -----------------------------------
-func set_room_config() -> void:
+func set_room_config(allow_build:bool = false) -> void:
+	# if setup isn't ready, run this so the map gets built correctly
+	if !setup_complete:
+		SUBSCRIBE.room_config = initial_values.room_config.duplicate(true)
+		return
+	
+	# otherwise, run the full script.  This prevents this code from running multiple times
 	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
 	var under_construction_rooms:Array = []
 	var built_rooms:Array = []
@@ -736,21 +759,40 @@ func set_room_config() -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
+		var designation:String = "%s%s%s" % [floor, ring, room]
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
+		
+		# create new room state if it does not exist
+		if designation not in base_states.room:
+			base_states.room[designation] = {
+				"location": item.location.duplicate(),
+				"is_activated": !("activation_cost" in room_data),  
+			}		
+		
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"ref": item.ref,
-			# if activation cost not in room, then it's activated
-			"is_activated": !("activation_cost" in room_data),  
+			"get_room_details": func() -> Dictionary:
+				return ROOM_UTIL.return_data(item.ref),
+			"get_is_activated": func() -> bool:
+				return base_states.room[designation].is_activated,
+			"get_operating_costs": func() -> Array:
+				return ROOM_UTIL.return_operating_cost(item.ref)
 		}
 		# if facility is built, clear build_data
 		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
 
 	# mark rooms and push to subscriptions
 	for floor_index in new_room_config.floor.size():
+		var floor_designation:String = "%s" % [floor_index]
+		# create new floor state if it does not exist
+		if floor_designation not in base_states.floor:
+			base_states.floor[floor_designation] = {
+				"in_lockdown": false
+			}
+			
 		# transfer in_lockdown state
-		new_room_config.floor[floor_index].in_lockdown = room_config.floor[floor_index].in_lockdown
+		new_room_config.floor[floor_index].in_lockdown = base_states.floor[floor_designation].in_lockdown
 		
-		#print(floor_index, new_room_config.floor[floor_index].in_lockdown)
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
@@ -759,12 +801,11 @@ func set_room_config() -> void:
 				if !config_data.build_data.is_empty():
 					under_construction_rooms.push_back(designation)
 				if !config_data.room_data.is_empty():
-					# transfer is_activated state
-					if !room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.is_empty():
-						new_room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.is_activated = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.is_activated
-				
+
 					built_rooms.push_back(designation)
-			
+	
+	
+	
 	# mark rooms that are already powered...
 	new_room_config.floor[1].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) > 0
 	new_room_config.floor[2].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) > 0
@@ -826,12 +867,63 @@ func next_day() -> void:
 	# show busy modal
 	await wait_please(1.0)	
 	
-	#current_summary_step = SUMMARY_STEPS.START
-	#await on_summary_complete
+	# reset report if over 7 days
+	if progress_data.days_till_report <= 0:
+		progress_data.days_till_report = days_week_count + 1
+		# add current record to previous records
+		progress_data.previous_records.push_back(progress_data.record.duplicate(true))
+		# then reset the record
+		progress_data.record = []
+		# update resources data	
+	
+	# create weekly record
+	for floor_index in room_config.floor.size():
+		for ring_index in room_config.floor[floor_index].ring.size():
+			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+				var config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]
+				# if room is built and is activated, get operating costs (per day)
+				if !config_data.room_data.is_empty() and config_data.room_data.get_is_activated.call():
+					var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
+					var costs:Array = config_data.room_data.get_operating_costs.call().map(func(i):
+						return {
+							"amount": i.amount,
+							"resource_ref": i.resource.ref
+						}
+					)
+					progress_data.record.push_back({
+						"day": days_week_count - progress_data.days_till_report,
+						"designation": designation,
+						"location": {
+							"floor": floor_index,
+							"ring": ring_index,
+							"room": room_index,
+						},
+						"costs": costs
+					})
+				
+				if !config_data.scp_data.is_empty():
+					print(config_data.scp_data)
+	
+
 	
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
+	progress_data.days_till_report -= 1
 	SUBSCRIBE.progress_data = progress_data
+	
+	# RUN PROGRESS REPORT
+	if progress_data.days_till_report == 0:
+		for record in progress_data.record:
+			for cost in record.costs:
+				var amount:int = cost.amount
+				var ref:int = cost.resource_ref
+				resources_data[ref].amount += amount
+		SUBSCRIBE.resources_data = resources_data
+		
+
+		
+		
+	
 	
 	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
 	action_queue_data = action_queue_data.map(func(i): 
@@ -852,8 +944,7 @@ func next_day() -> void:
 	completed_actions = action_queue_data.filter(func(i): return i.count.day >=i.count.completed_at)	
 	if completed_actions.size() > 0:
 		await on_complete_build_complete
-	
-	
+
 	# make notification that SCP has expired
 	if expired_scp_items.size() > 0:
 		pass	
@@ -892,7 +983,9 @@ func next_day() -> void:
 
 # ------------------------------------------------------------------------------	
 #region GAMEPLAY FUNCS
-func set_floor_lockdown(state:bool) -> void:
+func set_floor_lockdown(from_location:Dictionary, state:bool) -> void:
+	var floor_index:int = from_location.floor
+	var designation:String = "%s" % [floor_index]	
 	var title:String = ("Initiate lockdown for floor %s?" if state else "Remove lockdown for floor %s?") % [current_location.floor] 
 	
 	ConfirmModal.set_text(title, "All actions will be frozen." if state else "All actions will resume.")
@@ -901,8 +994,9 @@ func set_floor_lockdown(state:bool) -> void:
 
 	match response.action:
 		ACTION.NEXT:
-			room_config.floor[current_location.floor].in_lockdown = state
-			SUBSCRIBE.room_config = room_config
+			base_states.floor[designation].in_lockdown = state
+			#room_config.floor[current_location.floor].in_lockdown = state
+			SUBSCRIBE.base_states = base_states
 		ACTION.BACK:
 			pass
 
@@ -918,10 +1012,9 @@ func activate_room(from_location:Dictionary, is_activated:bool) -> void:
 	var floor_index:int = from_location.floor
 	var ring_index:int = from_location.ring
 	var room_index:int = from_location.room
+	var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 	
 	ConfirmModal.set_text("Activate this room?" if is_activated else "Deactivate this room")
-	
-	# will cost X amount first
 	await show_only([ConfirmModal])	
 	var response:Dictionary = await ConfirmModal.user_response
 	
@@ -929,8 +1022,10 @@ func activate_room(from_location:Dictionary, is_activated:bool) -> void:
 		ACTION.NEXT:
 			var room_data:Dictionary = room_config.floor[from_location.floor].ring[from_location.ring].room[from_location.room].room_data
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_data.ref, resources_data, is_activated)
-			room_config.floor[from_location.floor].ring[from_location.ring].room[from_location.room].room_data.is_activated = is_activated
-			SUBSCRIBE.room_config = room_config
+			# set is activated state here
+			base_states.room[designation].is_activated = is_activated
+			SUBSCRIBE.base_states = base_states
+		
 			
 	await restore_default_state()
 	on_activate_room_complete.emit()
@@ -1126,10 +1221,9 @@ func add_action_queue_item(dict:Dictionary, props:Dictionary = {}) -> void:
 			"day": 0,
 			"completed_at": dict.completed_at,
 		},
-		"location": dict.location.duplicate(),
+		"location": dict.location.duplicate(true),
 		"props": props
 	})
-	
 	
 	SUBSCRIBE.action_queue_data = action_queue_data
 # -----------------------------------
@@ -1428,6 +1522,10 @@ func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 		
 func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> void:
 	researcher_hire_list = new_val
+
+func on_base_states_update(new_val:Dictionary = base_states) -> void:
+	base_states = new_val
+	set_room_config()
 
 func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
 	purchased_facility_arr = new_val
@@ -2080,7 +2178,6 @@ func on_current_summary_step_update() -> void:
 		SUMMARY_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			await show_only([EndOfPhaseContainer])
-			EndOfPhaseContainer.summary_data = []
 			EndOfPhaseContainer.start()
 			await EndOfPhaseContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
@@ -2197,7 +2294,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 func quicksave() -> void:
 	is_busy = true
 	var save_data = {
-		"room_config": room_config,
+		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
+		# OF ALL THE OTHER DATA THAT'S HERE
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
 		"action_queue_data": action_queue_data,
@@ -2209,6 +2307,7 @@ func quicksave() -> void:
 		"bookmarked_rooms": bookmarked_rooms,
 		"researcher_hire_list": researcher_hire_list,
 		"tier_unlocked": tier_unlocked,
+		"base_states": base_states,
 		"unavailable_rooms": unavailable_rooms, 
 	}	
 	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
@@ -2228,6 +2327,7 @@ func quickload() -> void:
 	
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
+	setup_complete = false
 	var no_save:bool = restore_data.is_empty()
 	if debug_mode:
 		no_save = true
@@ -2237,6 +2337,9 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	for node in get_all_container_nodes():
 		if "on_reset" in node:
 			node.on_reset()
+	
+	# non-reactive data that's used but doesn't require a subscription
+	#room_states = initial_values.room_states if no_save else restore_data.room_states
 	
 	SUBSCRIBE.progress_data = initial_values.progress_data if no_save else restore_data.progress_data
 	SUBSCRIBE.scp_data = initial_values.scp_data if no_save else restore_data.scp_data
@@ -2249,15 +2352,18 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr
 	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms if no_save else restore_data.unavailable_rooms
-
+	SUBSCRIBE.base_states = initial_values.base_states if no_save else restore_data.base_states
+	
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
-	SUBSCRIBE.room_config = initial_values.room_config if no_save else restore_data.room_config
 	
 	# don't need to be saved, just load from defaults
 	SUBSCRIBE.current_location = initial_values.current_location 
 	SUBSCRIBE.camera_settings = initial_values.camera_settings 
+	setup_complete = true
 	
+	# runs room config once everything is ready
+	set_room_config()
 
 	
 #endregion		

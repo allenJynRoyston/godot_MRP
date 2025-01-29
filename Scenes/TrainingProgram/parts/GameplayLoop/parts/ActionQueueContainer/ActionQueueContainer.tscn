@@ -31,8 +31,8 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_17s2m")
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 220
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 280
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 20
 
 [node name="ListContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]

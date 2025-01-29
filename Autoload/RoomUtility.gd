@@ -49,8 +49,8 @@ var STARTING_BASE:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.ENERGY: -5,
-					RESOURCE.TYPE.MONEY: -5
+					RESOURCE.TYPE.ENERGY: -1,
+					RESOURCE.TYPE.MONEY: -1
 				},
 			
 		}	
