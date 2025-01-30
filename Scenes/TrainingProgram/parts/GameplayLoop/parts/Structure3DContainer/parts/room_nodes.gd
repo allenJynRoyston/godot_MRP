@@ -5,6 +5,8 @@ extends Control
 @onready var Column2:Node3D = $SubViewport/RoomColumn/NodeContainer/column2
 @onready var Column3:Node3D = $SubViewport/RoomColumn/NodeContainer/column3
 
+@onready var FloorMesh:MeshInstance3D = $SubViewport/RoomColumn/FloorMesh
+
 @onready var ControlPanelViewport:SubViewport = $ControlSubViewport
 @onready var ControlPanelContainer:Control = $ControlSubViewport/ControlPanelContainer
 @onready var CursorLabel:Label = $ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/CursorLabel
@@ -144,6 +146,18 @@ func update_refs() -> void:
 			node.onFocus = func(room_data:Dictionary) -> void:
 				CursorSprite.global_position = node.global_position + Vector3(-6.5, 6, -4)
 				CursorLabel.text = "EMPTY" if room_data.is_empty() else room_data.name
+	
+	var material_copy:StandardMaterial3D = FloorMesh.mesh.material
+	match assigned_location.ring:
+		0:
+			material_copy.albedo_color = Color(0.318, 0.268, 0.108)
+		1:
+			material_copy.albedo_color = Color(0.108, 0.301, 0.349)
+		2:
+			material_copy.albedo_color = Color(0.153, 0.313, 0.197)
+		3:
+			material_copy.albedo_color = Color(0.401, 0.177, 0.347)
+	FloorMesh.mesh.material = material_copy
 # --------------------------------------------------------
 
 # ------------------------------------------------
@@ -155,9 +169,16 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 # ------------------------------------------------
 func on_show_menu_update() -> void:
 	if show_menu:
+		menu_index = 0
+		menu_actions = []
+		
+		menu_actions.push_back({
+			"title": "INVESTIGATE",
+			"onSelect": func() -> void:
+				print("investigate...")
+		})
+				
 		if is_powered:
-			menu_index = 0
-			menu_actions = []
 			
 			var room_config_data:Dictionary = room_config.floor[assigned_location.floor].ring[assigned_location.ring].room[current_location.room]
 			var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()

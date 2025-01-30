@@ -946,9 +946,9 @@ func update_progress_data() -> void:
 		progress_data.previous_records.push_back(progress_data.record.duplicate(true))
 		# then reset the record
 		progress_data.record = []
-		# update resources data	
+		# update new available researchers
 		SUBSCRIBE.researcher_hire_list = RESEARCHER_UTIL.generate_new_researcher_hires() 
-		print(researcher_hire_list)
+
 	
 	# CREATE WEEKLY AUDIT / RUN OPERATING COSTS
 	for floor_index in room_config.floor.size():

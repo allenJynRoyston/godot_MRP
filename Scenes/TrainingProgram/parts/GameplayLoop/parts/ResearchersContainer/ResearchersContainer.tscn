@@ -16,7 +16,7 @@ shader_parameter/line_width = 0.02
 shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
 shader_parameter/laser_color = Color(1, 0, 0, 1)
 shader_parameter/glow_width = 0.05
-shader_parameter/trail_fade = 0.5
+shader_parameter/trail_fade = 0.04
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_bxxpf"]
 viewport_path = NodePath("SubViewport")
@@ -30,13 +30,13 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4nhy"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dso4h"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sr61y"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hr8id"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amyfs"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42eas"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ybfce"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_70itj"]
@@ -56,11 +56,12 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(840, 494)
+size = Vector2i(900, 550)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 840.0
-offset_bottom = 490.0
+custom_minimum_size = Vector2(900, 550)
+offset_right = 900.0
+offset_bottom = 500.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bdxbk")
@@ -97,18 +98,18 @@ size_flags_horizontal = 3
 [node name="AvailableTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("3_teb68")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dso4h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sr61y")
 title = "AVAILABLE"
 
 [node name="OccupiedTab" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("3_teb68")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_hr8id")
+theme_override_styles/panel = SubResource("StyleBoxFlat_amyfs")
 title = "OCCUPIED"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3" instance=ExtResource("3_teb68")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_42eas")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ybfce")
 title = "BACK"
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
@@ -127,6 +128,7 @@ layout_mode = 2
 [node name="Details" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("5_ma56q")]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Actions" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("6_2oso1")]
 custom_minimum_size = Vector2(250, 0)

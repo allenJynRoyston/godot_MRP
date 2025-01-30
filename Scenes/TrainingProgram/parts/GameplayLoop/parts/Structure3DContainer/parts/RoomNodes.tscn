@@ -34,7 +34,7 @@ adjustment_enabled = true
 adjustment_contrast = 1.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hldmr"]
-albedo_color = Color(0.411348, 0.383692, 0.260737, 1)
+albedo_color = Color(0.400614, 0.1771, 0.347313, 1)
 metallic = 0.9
 metallic_specular = 0.0
 clearcoat_enabled = true
@@ -73,7 +73,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_siuia"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l02d2"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -492,7 +492,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_siuia")
+theme_override_styles/panel = SubResource("StyleBoxFlat_l02d2")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

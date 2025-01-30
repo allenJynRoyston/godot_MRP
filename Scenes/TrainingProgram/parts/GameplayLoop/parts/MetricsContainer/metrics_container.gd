@@ -70,7 +70,7 @@ func update_panels() -> void:
 
 # -----------------------------------------------
 func update_status_label() -> void:
-	if base_states.is_empty():return
+	if base_states.is_empty() or current_location.is_empty():return
 	check_lockdown_state()
 	check_is_powered_state()
 	
@@ -85,5 +85,5 @@ func update_status_label() -> void:
 	if in_lockdown:
 		status_label = "LOCKDOWN"
 		
-	StatusLabel.text = status_label 	
+	StatusLabel.text = "%s | %s | %s" % ["F%s" % [current_location.floor], "W%s" % [current_location.ring], status_label] 	
 # -----------------------------------------------

@@ -206,16 +206,16 @@ func assign_room_node_location(floor_val:int, ring_val:int, animate:bool) -> voi
 	GBL.add_to_animation_queue(self)
 	
 	if animate:
-		U.tween_node_property(ActiveCamera, "size", 1, 0.3)
-		await U.tween_node_property(RoomNodeSprite, "scale:x", 0, 0.3)
+		U.tween_node_property(ActiveCamera, "size", 1, 0.2)
+		await U.tween_node_property(RoomNodeSprite, "scale:x", 0, 0.2)
 
 		
 	RoomNode.assigned_location = {"floor": floor_val, "ring": ring_val}
 	
 	if animate:
-		await U.set_timeout(0.2)
-		U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)
-		await U.tween_node_property(RoomNodeSprite, "scale:x", 1, 0.3)
+		await U.set_timeout(0.1)
+		U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.2)
+		await U.tween_node_property(RoomNodeSprite, "scale:x", 1, 0.2)
 	
 	if !animate:
 		await U.tick()
