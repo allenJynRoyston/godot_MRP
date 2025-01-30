@@ -209,6 +209,7 @@ label_settings = SubResource("LabelSettings_sycwh")
 horizontal_alignment = 1
 
 [node name="HumePanel" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7uktg")
 
@@ -237,7 +238,7 @@ expand_mode = 1
 
 [node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "NORMAL"
+text = "1.0"
 label_settings = ExtResource("3_e00qv")
 
 [node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer"]

@@ -82,6 +82,12 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		var keycode:int = input_data.keycode
 		
 		match key:
+			"E":
+				user_response.emit({"action": ACTION.NEXT})
+			"B":
+				if BackBtn.is_visible():
+					user_response.emit({"action": ACTION.BACK})
+					
 			"ENTER":
 				user_response.emit({"action": ACTION.NEXT})
 			"BACK":
