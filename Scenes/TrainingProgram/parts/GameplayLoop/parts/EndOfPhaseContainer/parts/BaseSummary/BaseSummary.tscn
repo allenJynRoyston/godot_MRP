@@ -9,7 +9,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7iesw"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d3raf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_akt0t"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5hlv8"]
@@ -40,7 +40,7 @@ layout_mode = 2
 
 [node name="BackBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_8v7dv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_d3raf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_akt0t")
 icon = 27
 title = "BACK"
 

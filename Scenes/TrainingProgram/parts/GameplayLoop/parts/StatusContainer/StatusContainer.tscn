@@ -1,12 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=12 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StatusContainer/status_container.gd" id="1_luwns"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_et8g1"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_vgalj"]
 [ext_resource type="PackedScene" uid="uid://crk6mkpuid5a3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/DetailPanel.tscn" id="3_an7ib"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="4_3ua1b"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="6_mu2h6"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_4xxoe"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rlssl"]
 shader = ExtResource("2_et8g1")
@@ -39,22 +37,6 @@ color = Color(0, 0.254902, 0.0823529, 1)
 grow_begin = -15.0
 grow_end = -15.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pwbm"]
-bg_color = Color(0, 0, 0, 0.443137)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hg2yu"]
-bg_color = Color(0.633757, 0.633757, 0.633757, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_whqb1"]
-bg_color = Color(0.944402, 0.635925, 0.113609, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e7gh4"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0)
-
 [node name="StatusContainer" type="MarginContainer"]
 anchors_preset = 1
 anchor_left = 1.0
@@ -86,7 +68,7 @@ grow_horizontal = 0
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(202, 266)
+size = Vector2i(202, 186)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 202.0
@@ -99,7 +81,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 15
+theme_override_constants/margin_bottom = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -140,7 +122,6 @@ icon = 31
 title = "999"
 
 [node name="HSeparator2" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_x37c4")
 
@@ -165,62 +146,5 @@ layout_mode = 2
 icon = 32
 title = "10/10"
 display_at_bottom = true
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 10
-
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8pwbm")
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer"]
-custom_minimum_size = Vector2(0, 55)
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 15
-
-[node name="ReportProgressContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ReportProgressLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer/ReportProgressContainer"]
-layout_mode = 2
-text = "Next report in X days:"
-label_settings = ExtResource("6_mu2h6")
-horizontal_alignment = 1
-uppercase = true
-
-[node name="ProgressBar" type="ProgressBar" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer/ReportProgressContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_hg2yu")
-theme_override_styles/fill = SubResource("StyleBoxFlat_whqb1")
-max_value = 1.0
-value = 0.5
-show_percentage = false
-
-[node name="ReportBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer/ReportProgressContainer/ProgressBar" instance=ExtResource("7_4xxoe")]
-custom_minimum_size = Vector2(100, 25)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_e7gh4")
-icon = 7
-panel_color = Color(0.054902, 0.054902, 0.054902, 0)
-static_color = Color(0, 0, 0, 1)
-active_color = Color(0, 0, 0, 1)
-inactive_color = Color(0.00453645, 0.00453645, 0.00453645, 1)
-title = "PREPARING..."
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

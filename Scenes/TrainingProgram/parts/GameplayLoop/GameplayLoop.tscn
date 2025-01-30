@@ -146,6 +146,7 @@ freeze_inputs = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+freeze_inputs = true
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
 visible = false

@@ -54,7 +54,7 @@ func on_data_update() -> void:
 		new_bulletpoint.data = bulletpoint_data
 		BulletpointItemContainer.add_child(new_bulletpoint)
 
-	#show_bulletpoints = data.bulletpoints.size() < 3		
+	show_bulletpoints = true	
 # --------------------------------------		
 
 # --------------------------------------		

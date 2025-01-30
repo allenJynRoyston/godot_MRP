@@ -67,6 +67,8 @@ var is_powered:bool = false :
 		is_powered = val
 		on_is_powered_update()
 
+var base_states:Dictionary = {}
+
 signal menu_response
 
 # --------------------------------------------------------
@@ -74,6 +76,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
+	SUBSCRIBE.subscribe_to_base_states(self)
 	GBL.subscribe_to_mouse_input(self)	
 	GBL.subscribe_to_control_input(self)
 
@@ -81,6 +84,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	SUBSCRIBE.unsubscribe_to_base_states(self)
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
 
@@ -148,7 +152,6 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	if !is_node_ready():return
 # ------------------------------------------------
 
-
 # ------------------------------------------------
 func on_show_menu_update() -> void:
 	if show_menu:
@@ -164,7 +167,7 @@ func on_show_menu_update() -> void:
 			# ------------------- CONVERT, CANCEL OR REMOVE ROOM
 			if can_purchase:
 				menu_actions.push_back({
-					"title": "CONVERT ROOM",
+					"title": "CREATE ROOM...",
 					"onSelect": func() -> void:
 						menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
 				})
@@ -178,18 +181,46 @@ func on_show_menu_update() -> void:
 			
 			if room_can_be_cleared:
 				menu_actions.push_back({
-					"title": "REMOVE ROOM",
+					"title": "DESTROY ROOM",
+					"is_disabled": !room_config_data.scp_data.is_empty(),
 					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
+						if room_config_data.scp_data.is_empty():
+							menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
 				})
 			# -------------------
 			
 			# -------------------
 			if !room_config_data.room_data.is_empty():
-				var room_details:Dictionary = ROOM_UTIL.return_data(room_config_data.room_data.ref)
+				var room_details:Dictionary = room_config_data.room_data.get_room_details.call()
+				var is_activated:bool = room_config_data.room_data.get_is_activated.call()
 				var can_be_activated:bool = "activation_cost" in room_details
 				var can_store_scp:bool = room_details.can_contain
-				var is_activated:bool = room_config_data.room_data.get_is_activated.call()
+				
+				if can_store_scp:
+					var scp_data:Dictionary = room_config_data.scp_data
+					var is_empty:bool = scp_data.is_empty()
+					var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
+					var is_transfer:bool = false if scp_data.is_empty() else room_config_data.scp_data.is_transfer
+					var is_contained:bool = false if scp_data.is_empty() else room_config_data.scp_data.is_contained
+					var is_disabled:bool = false
+					
+	
+					if is_transfer:
+						menu_actions.push_back({
+							"title": "CANCEL CONTAINMENT" if !is_contained else "CANCEL TRANSFER",
+							"onSelect": func() -> void:
+								menu_response.emit({
+									"action": ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP if !is_contained else ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP
+								})
+						})
+					else:
+						menu_actions.push_back({
+							"title": "CONTAIN SCP..." if is_empty else "TRANSFER SCP-%s" % [scp_details.item_id],
+							"onSelect": func() -> void:
+								menu_response.emit({
+									"action": ACTION.ROOM_NODE.CONTAIN_SCP if is_empty else ACTION.ROOM_NODE.TRANSFER_SCP
+								})
+						})
 				#var is_scp_empty:bool = room_config.scp_data.is_empty()
 				
 				if can_be_activated:
@@ -262,8 +293,6 @@ func on_show_menu_update() -> void:
 func on_is_powered_update() -> void:
 	if !is_node_ready():return
 	check_for_lighting_system()
-	
-	StatusLabel.text = "NOT POWERED" if !is_powered else ""
 # ------------------------------------------------
 
 # --------------------------------------------------------
@@ -273,7 +302,26 @@ func on_in_lockdown_update() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+func on_base_states_update(new_val:Dictionary = base_states) -> void:
+	if !is_node_ready():return
+	base_states = new_val
+	check_for_lighting_system()
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func update_status_label() -> void:
+	if base_states.is_empty():return
+	var status_label:String = ""
+	
+	# NOT USED CURRENTLY, NOT SURE WHAT TO USE HERE
+		
+	StatusLabel.text = status_label 
+# --------------------------------------------------------
+
+# --------------------------------------------------------
 func check_for_lighting_system() -> void:
+	if base_states.is_empty():return
+	
 	if in_lockdown:
 		NormalLights.hide() 
 		NoPowerLights.hide() 
@@ -282,8 +330,14 @@ func check_for_lighting_system() -> void:
 	else:
 		EmergencyLights.hide() 
 		Spotlights.hide() 
-		NoPowerLights.hide() if is_powered else NoPowerLights.show()
-		NormalLights.show() if is_powered else NormalLights.hide()	
+		
+		if base_states.status_effects.in_brownout:
+			NoPowerLights.hide() if is_powered else NoPowerLights.show()
+			NormalLights.show() if is_powered else NormalLights.hide()	
+		
+		else:
+			NoPowerLights.hide() if is_powered else NoPowerLights.show()
+			NormalLights.show() if is_powered else NormalLights.hide()	
 # --------------------------------------------------------
 
 
@@ -327,7 +381,9 @@ func update_menu_index(inc:int) -> void:
 
 # --------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or GBL.has_animation_in_queue() or !show_menu or freeze_input:return
+	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP) # 
+	
+	if !is_node_ready() or GBL.has_animation_in_queue() or !show_menu or freeze_input or GameplayNode.is_occupied():return
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 
@@ -361,7 +417,13 @@ func on_back() -> void:
 
 # --------------------------------------------------------
 func _process(delta: float) -> void:
-	if !is_node_ready():return
+	if !is_node_ready() or base_states.is_empty():return
+	
+	if base_states.status_effects.in_brownout:
+		if U.generate_rand(0, 100) < 2:
+			NoPowerLights.hide() if NoPowerLights.is_visible_in_tree() else NoPowerLights.show()
+		if U.generate_rand(0, 100) < 3:
+			NormalLights.hide() if NormalLights.is_visible_in_tree() else NormalLights.show()			
 	
 	if in_lockdown:
 		for child in Spotlights.get_children():

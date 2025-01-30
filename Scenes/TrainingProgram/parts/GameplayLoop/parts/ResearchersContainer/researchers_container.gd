@@ -2,7 +2,7 @@
 extends GameContainer
 
 @onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/BackBtn
-
+@onready var NoResearchers:Control = $SubViewport/PanelContainer/NoResearchersAvailable
 @onready var List:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/List
 @onready var Details:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/Details
 @onready var Actions:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/Actions
@@ -52,6 +52,12 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_details = {}	
 # --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
+func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
+	super.on_hired_lead_researchers_arr_update(new_val)
+	if !is_node_ready():return
+	NoResearchers.show() if new_val.size() == 0 else NoResearchers.hide()
+# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func on_assign_only_update() -> void:

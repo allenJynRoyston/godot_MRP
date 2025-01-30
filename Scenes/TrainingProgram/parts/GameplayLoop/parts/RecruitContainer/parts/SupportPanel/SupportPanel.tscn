@@ -1,11 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://by8lcxk66qelh"]
+[gd_scene load_steps=6 format=3 uid="uid://by8lcxk66qelh"]
 
 [ext_resource type="PackedScene" uid="uid://fkdesfdwlevk" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/parts/SupportSection.tscn" id="1_p22eb"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/support_panel.gd" id="1_seop1"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_q6do0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h7aq7"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vbtjl"]
+bg_color = Color(0, 0, 0, 0.623529)
+
 [node name="SupportPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(800, 450)
 offset_right = 640.0
 offset_bottom = 356.0
 size_flags_horizontal = 3
@@ -29,3 +34,14 @@ option = 1
 layout_mode = 2
 size_flags_horizontal = 3
 option = 2
+
+[node name="MissingPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vbtjl")
+
+[node name="Label" type="Label" parent="MissingPanel"]
+layout_mode = 2
+text = "MISSING: HUMAN RESOURCES DEPARTMENT"
+label_settings = ExtResource("3_q6do0")
+horizontal_alignment = 1
+vertical_alignment = 1

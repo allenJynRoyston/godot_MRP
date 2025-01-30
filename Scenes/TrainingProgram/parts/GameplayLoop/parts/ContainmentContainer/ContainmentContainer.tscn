@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://dw4fw5d1x21qf"]
+[gd_scene load_steps=16 format=3 uid="uid://dw4fw5d1x21qf"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/item_select_container.gd" id="1_ywnyu"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_aslxc"]
 [ext_resource type="PackedScene" uid="uid://c12w8jpic416k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPList/SCPLIST.tscn" id="4_5uscs"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_vorlv"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="7_j57ld"]
 [ext_resource type="PackedScene" uid="uid://drfnsxi54q7yo" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPDetails/SCPDetails.tscn" id="8_emlcs"]
 [ext_resource type="PackedScene" uid="uid://bew0flo0hhy3s" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPActions/SCPActions.tscn" id="9_wcryc"]
 
@@ -29,13 +30,13 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c10u1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3e3si"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ckse"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvycx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7peo2"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djamo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ewr1a"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_r0lcp"]
@@ -94,17 +95,17 @@ size_flags_horizontal = 3
 
 [node name="AvailableTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3e3si")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3ckse")
 title = "AVAILABLE"
 
 [node name="ContainedTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wvycx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7peo2")
 title = "IN CONTAINMENT"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_djamo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ewr1a")
 title = "BACK"
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
@@ -128,5 +129,15 @@ size_flags_horizontal = 1
 [node name="Actions" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("9_wcryc")]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+
+[node name="NothingAvailable" type="PanelContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/NothingAvailable"]
+layout_mode = 2
+text = "NO SCPS AVAILABLE"
+label_settings = ExtResource("7_j57ld")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

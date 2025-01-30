@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bshu10pnmooj5" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/SecurityDetails/SecurityDetails.tscn" id="7_oxrd0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8m3dt"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
+bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10

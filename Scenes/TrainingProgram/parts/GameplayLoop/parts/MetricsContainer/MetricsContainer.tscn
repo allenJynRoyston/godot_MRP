@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://ctkwq86y1xbhs"]
+[gd_scene load_steps=16 format=3 uid="uid://ctkwq86y1xbhs"]
 
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="1_05sbj"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/metrics_container.gd" id="1_jfbub"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_p7chy"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_e00qv"]
+[ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/Oscilliscope.gdshader" id="5_2mash"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="6_gge2t"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ko1uy"]
 shader = ExtResource("1_05sbj")
@@ -36,6 +38,22 @@ corner_radius_bottom_left = 5
 font = ExtResource("2_p7chy")
 font_size = 18
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7uktg"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vi5vs"]
+shader = ExtResource("5_2mash")
+shader_parameter/frequency = 10.0
+shader_parameter/amplitude = 0.1
+shader_parameter/speed = 6.0
+shader_parameter/thickness = 0.2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dswvd"]
+
 [node name="MetricsContainer" type="MarginContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
@@ -55,27 +73,34 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_rqfbj")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+custom_minimum_size = Vector2(330, 0)
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Morale" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
+[node name="MetricsPanel" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Morale" type="PanelContainer" parent="PanelContainer/VBoxContainer/MetricsPanel"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7fnhy")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/Morale"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/Morale/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 7
 
-[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/Morale/VBoxContainer/MarginContainer"]
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "morale"
@@ -83,40 +108,41 @@ label_settings = ExtResource("3_e00qv")
 horizontal_alignment = 1
 uppercase = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer/Morale/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_mdqri")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/Morale/VBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/Morale/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_sycwh")
 horizontal_alignment = 1
 
-[node name="Readiness" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
+[node name="Readiness" type="PanelContainer" parent="PanelContainer/VBoxContainer/MetricsPanel"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7fnhy")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/Readiness"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/Readiness/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 7
 
-[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/Readiness/VBoxContainer/MarginContainer"]
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 5
 text = "READINESS"
@@ -124,40 +150,41 @@ label_settings = ExtResource("3_e00qv")
 horizontal_alignment = 1
 uppercase = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer/Readiness/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_mdqri")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/Readiness/VBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/Readiness/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_sycwh")
 horizontal_alignment = 1
 
-[node name="Safety" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
+[node name="Safety" type="PanelContainer" parent="PanelContainer/VBoxContainer/MetricsPanel"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7fnhy")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/Safety"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/Safety/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 7
 
-[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/Safety/VBoxContainer/MarginContainer"]
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 5
 text = "SAFETY"
@@ -165,22 +192,62 @@ label_settings = ExtResource("3_e00qv")
 horizontal_alignment = 1
 uppercase = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer/Safety/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_mdqri")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/Safety/VBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/Safety/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_sycwh")
 horizontal_alignment = 1
+
+[node name="HumePanel" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7uktg")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/HumePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HumePanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "HUME"
+label_settings = ExtResource("3_e00qv")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_vi5vs")
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("NoiseTexture2D_dswvd")
+expand_mode = 1
+
+[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "NORMAL"
+label_settings = ExtResource("3_e00qv")
+
+[node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "STATUS EFFECT"
+label_settings = ExtResource("6_gge2t")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true

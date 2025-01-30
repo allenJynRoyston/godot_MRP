@@ -10,16 +10,12 @@ extends GameContainer
 @onready var ResourceItemSecurity:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/ResourceItemSecurity
 @onready var ResourceItemDClass:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/ResourceItemDClass
 
-@onready var ReportBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer/ReportProgressContainer/ProgressBar/ReportBtn
-@onready var ReportProgressLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer/ReportProgressContainer/ReportProgressLabel
-@onready var ReportProgressBar:ProgressBar = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer/ReportProgressContainer/ProgressBar
-
 @onready var DetailPanel:Control = $Control/DetailPanel
+
+var GameplayNode:Control
 
 var detail_panel_is_focused:bool = false
 var detail_panel_is_busy:bool = false
-
-
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
@@ -33,6 +29,7 @@ func _ready() -> void:
 	
 	DetailPanel.onBlur = func() -> void:
 		detail_panel_is_focused = false
+		
 	# ResourceItemLeadResearchers, 
 	for node in [ResourceItemMoney, ResourceItemEnergy, ResourceItemStaff, ResourceItemSecurity, ResourceItemDClass]:
 		node.onClick = func() -> void:
@@ -68,18 +65,7 @@ func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 	progress_data = new_val
 	if !is_node_ready():return
 	DayLabel.text = "DAY %s" % [progress_data.day]
-	
-	ReportProgressLabel.text = "NEXT REPORT IN %s DAYS" % [progress_data.days_till_report] if progress_data.days_till_report > 0 else "REPORT READY"
-	ReportBtn.title = "PREPARING REPORT..." if progress_data.days_till_report > 0 else "VIEW REPORT"
-	ReportProgressBar.value = 1 - progress_data.days_till_report / 6.0
-	ReportBtn.onClick = func() -> void:
-		if progress_data.days_till_report == 0:
-			var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
-			GameplayNode.current_summary_step = GameplayNode.SUMMARY_STEPS.START
-			
-	
 # --------------------------------------------------------------------------------------------------			
-
 
 # --------------------------------------------------------------------------------------------------
 func open_detail_panel(node:Control) -> void:

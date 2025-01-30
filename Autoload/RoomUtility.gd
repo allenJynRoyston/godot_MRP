@@ -172,7 +172,6 @@ var CONSTRUCTION_YARD:Dictionary = {
 				},
 		}	
 	}
-
 }
 
 var BARRICKS:Dictionary = {
@@ -235,9 +234,7 @@ var BARRICKS:Dictionary = {
 				},
 		}	
 	}
-
 }
-
 
 var DORMITORY:Dictionary = {
 	"name": "DORMITORY",
@@ -288,7 +285,6 @@ var DORMITORY:Dictionary = {
 				},
 		}	
 	}
-
 }
 
 var HOLDING_CELLS:Dictionary = {
@@ -345,7 +341,108 @@ var HOLDING_CELLS:Dictionary = {
 				},
 		}	
 	}
+}
 
+var HR_DEPARTMENT:Dictionary = {
+	"name": "HUMAN RESOURCES DEPARTMENT",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/images/redacted.png",
+	"description": "Enables recruitment of key staff.",
+	"can_contain": false,
+	
+	"prerequisites": [
+		ROOM.TYPE.STARTING_BASE
+	],		
+	
+	"placement_restrictions": {
+
+	},
+	"own_limit": func() -> int:
+		return 1,	
+	"get_build_time": func() -> int:
+		return 5,
+
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -20
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -2
+				},
+		}	
+	}
+}
+
+var HUME_DETECTOR:Dictionary = {
+	"name": "HUME DETECTOR",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/images/redacted.png",
+	"description": "Makes hume levels visible.",
+	"can_contain": false,
+	
+	"prerequisites": [
+		
+	],		
+	
+	"placement_restrictions": {
+
+	},
+	"own_limit": func() -> int:
+		return 4,	
+	"get_build_time": func() -> int:
+		return 3,
+
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -25
+				},
+		}	
+	},
+	
+	"build_complete": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+			"capacity": func() -> Dictionary:
+				return {
+
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -5
+				},
+		}	
+	}
 }
 
 
@@ -409,20 +506,24 @@ var reference_data:Dictionary = {
 	ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	ROOM.TYPE.BARRICKS: BARRICKS,
 	ROOM.TYPE.DORMITORY: DORMITORY,
+	ROOM.TYPE.HR_DEPARTMENT: HR_DEPARTMENT,
 	ROOM.TYPE.HOLDING_CELLS: HOLDING_CELLS,
-	ROOM.TYPE.STANDARD_LOCKER: STANDARD_LOCKER
+	ROOM.TYPE.STANDARD_LOCKER: STANDARD_LOCKER,
+	
+	ROOM.TYPE.HUME_DETECTOR: HUME_DETECTOR,
+	
 }
 
 var tier_data:Dictionary = {
 	TIER.VAL.ZERO: {
-		"name": "SURFACE",
+		"name": "ADMIN",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
 				RESOURCE.TYPE.MONEY: 0,
 			},
 	},
 	TIER.VAL.ONE: {
-		"name": "BASIC",
+		"name": "CONTAINMENT",
 		"get_unlock_cost": func() -> Dictionary:
 			return {
 				RESOURCE.TYPE.MONEY: 5,

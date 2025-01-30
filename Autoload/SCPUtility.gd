@@ -50,7 +50,8 @@ var SCP_001:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: 15
+					RESOURCE.TYPE.MONEY: 15,
+					RESOURCE.TYPE.ENERGY: 5
 				},
 			"capacity": func() -> Dictionary:
 				return {

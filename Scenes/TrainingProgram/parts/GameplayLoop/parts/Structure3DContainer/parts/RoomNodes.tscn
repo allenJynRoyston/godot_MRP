@@ -73,7 +73,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_betr4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_siuia"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -410,7 +410,7 @@ fixed_size = true
 texture = SubResource("ViewportTexture_yhbag")
 
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866025, 0.5, 0.707107, 0.353553, -0.612373, -17.995, 17, -18.216)
+transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, 0.353553, -0.612373, -17.995, 17.5956, -18.216)
 projection = 1
 current = true
 size = 24.959
@@ -419,8 +419,10 @@ far = 508.7
 
 [node name="StatusLabel" type="Label3D" parent="SubViewport/RoomColumn/MainCamera"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 1.78814e-07, 0, 0, 1, 9.53674e-07, 10.513, -0.703798)
+visible = false
 outline_modulate = Color(0, 1, 0, 1)
-text = "NO POWER"
+text = "
+"
 font = ExtResource("4_gg0ij")
 font_size = 150
 
@@ -490,7 +492,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_betr4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_siuia")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

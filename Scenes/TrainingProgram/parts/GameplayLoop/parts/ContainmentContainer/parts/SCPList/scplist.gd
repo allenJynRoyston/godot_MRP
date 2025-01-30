@@ -19,6 +19,10 @@ var onUpdate:Callable = func(data:Dictionary):pass
 var previous_type:LIST_TYPE
 var active_index:int = -1 
 
+var filter_for_data:Dictionary = {} : 
+	set(val):
+		filter_for_data = val
+		on_filter_for_data_update()
 
 # --------------------------------------------------------------------------------------------------		
 func _init() -> void:
@@ -30,6 +34,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	clear_list()
 	on_list_type_update()
+	on_filter_for_data_update()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -51,6 +56,12 @@ func on_list_type_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func on_filter_for_data_update() -> void:
+	if !is_node_ready():return
+	#on_scp_data_update()
+# --------------------------------------------------------------------------------------------------		
+	
+# --------------------------------------------------------------------------------------------------		
 func clear_list() -> void:
 	for child in SCPItemList.get_children():
 		child.queue_free()	
@@ -63,7 +74,11 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	if !is_node_ready():return
 	
 	clear_list()
+	var room_whitelist:int = -1
 	
+	if !filter_for_data.is_empty():
+		room_whitelist = filter_for_data.ref
+
 	if scp_data.is_empty():
 		return
 
@@ -72,6 +87,9 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 			for index in scp_data.available_list.size():
 				var data:Dictionary = scp_data.available_list[index]
 				var new_item:Control = SCPListItemPreload.instantiate()
+				var scp_details:Dictionary = SCP_UTIL.return_data(data.ref)
+				var is_available:bool = true if room_whitelist == -1 else room_whitelist in scp_details.containment_requirements
+	
 				new_item.data = data
 				new_item.is_active = active_index == index
 				new_item.onClick = func() -> void:

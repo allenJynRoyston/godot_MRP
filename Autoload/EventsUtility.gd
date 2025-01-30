@@ -53,8 +53,101 @@ var DISMISS_RESEARCHER:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var SITEWIDE_BROWNOUT:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+			
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "Event header",
+					"img_src": "res://Media/images/redacted.png",
+					"text": [
+						"The lights begin to flicker as the power in the facility fluctuates.  Your batteries are almost out of juice.",
+					],
+					"options": [
+						{
+							"show": true,
+							"title": "Utilize the emergency backup generators.",
+							"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
+							"title": "Do nothing",
+							"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				props.onSelection.call(option_selected.val)
+				return {
+					"text": [
+						"You selected %s" % [option_selected.val],
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var IN_DEBT_WARNING:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+			
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "Event header",
+					"img_src": "res://Media/images/redacted.png",
+					"text": [
+						"IN DEBT WARNING",
+					],
+					"options": [
+						{
+							"show": true,
+							"title": "Utilize the emergency funds.",
+							"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
+							"title": "Do nothing",
+							"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				props.onSelection.call(option_selected.val)
+				return {
+					"text": [
+						"You selected %s" % [option_selected.val],
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+
 var reference_data:Dictionary = {
-	EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER
+	EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,
+	EVT.TYPE.SITEWIDE_BROWNOUT: SITEWIDE_BROWNOUT,
+	EVT.TYPE.IN_DEBT_WARNING: IN_DEBT_WARNING
 }
 
 # ------------------------------------------------------------------------

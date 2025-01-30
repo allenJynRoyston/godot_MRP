@@ -1,28 +1,5 @@
 extends PanelContainer
 
-enum SHOP_STEPS {
-	HIDE, 
-	START_BASE, 
-	START_ROOM,
-	PLACEMENT,
-	CONFIRM_RESEARCH_ITEM_PURCHASE, CONFIRM_BUILD, CONFIRM_TIER_PURCHASE, CONFIRM_BASE_ITEM_PURCHASE,
-	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
-	REFUND
-}
-enum CONTAIN_STEPS {
-	HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
-	ON_REJECT, ON_TRANSFER_CANCEL, 
-	ON_TRANSFER_TO_NEW_LOCATION, 
-	CONFIRM, FINALIZE
-}
-enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
-enum ACTION_COMPLETE_STEPS {HIDE, START, FINALIZE}
-
-enum SUMMARY_STEPS {RESET, START, DISMISS}
-
-enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
-enum EVENT_STEPS {RESET, START}
-
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var LocationContainer:MarginContainer = $LocationContainer
 @onready var ActionQueueContainer:MarginContainer = $ActionQueueContainer
@@ -45,7 +22,26 @@ enum EVENT_STEPS {RESET, START}
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
 
-@onready var TestPoint:PanelContainer = $Control/TestPoint
+enum SHOP_STEPS {
+	HIDE, 
+	START_BASE, 
+	START_ROOM,
+	PLACEMENT,
+	CONFIRM_RESEARCH_ITEM_PURCHASE, CONFIRM_BUILD, CONFIRM_TIER_PURCHASE, CONFIRM_BASE_ITEM_PURCHASE,
+	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
+	REFUND
+}
+enum CONTAIN_STEPS {
+	HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
+	ON_REJECT, ON_TRANSFER_CANCEL, 
+	ON_TRANSFER_TO_NEW_LOCATION, 
+	CONFIRM, FINALIZE
+}
+enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
+enum ACTION_COMPLETE_STEPS {HIDE, START, FINALIZE}
+enum SUMMARY_STEPS {RESET, START, DISMISS}
+enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
+enum EVENT_STEPS {RESET, START}
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
@@ -164,7 +160,8 @@ var current_location:Dictionary = {
 
 var progress_data:Dictionary = { 
 	"day": 1,
-	"days_till_report": 6,
+	"days_till_report": days_till_report_limit - 1,
+	"show_report": false,
 	"record": [],
 	"previous_records": []
 } 
@@ -225,14 +222,14 @@ var hired_lead_researchers_arr:Array = []
 
 var resources_data:Dictionary = { 
 	RESOURCE.TYPE.MONEY: {
-		"amount": 500, 
+		"amount": 100, 
 		"utilized": 0, 
 		"capacity": 9999
 	},
 	RESOURCE.TYPE.ENERGY: {
-		"amount": 10, 
+		"amount": 50, 
 		"utilized": 0, 
-		"capacity": 50
+		"capacity": 100
 	},
 	RESOURCE.TYPE.LEAD_RESEARCHERS: {
 		"amount": 0, 
@@ -295,7 +292,17 @@ var room_config:Dictionary = {
 	}
 } 
 
+#base_states.status_effects
+
 var base_states:Dictionary = {
+	"status_effects": {
+		"in_brownout": false,
+		"in_debt": false
+	},
+	"status_counts":{
+		"brownout": 0,
+		"in_debt": 0
+	},
 	"floor": {
 		#"0": {"in_lockdown": true/false}
 	},
@@ -329,7 +336,7 @@ var initial_values:Dictionary = {
 
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
-const days_week_count:int = 6
+const days_till_report_limit:int = 7
 
 var setup_complete:bool = false 
 var is_busy:bool = false : 
@@ -409,6 +416,7 @@ signal on_confirm_complete
 signal on_cancel_construction_complete
 signal on_reset_room_complete
 signal on_activate_room_complete
+signal on_contain_scp_complete
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -719,27 +727,39 @@ func set_room_config(allow_build:bool = false) -> void:
 				var room:int = item.transfer_status.location.room	
 				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 					"ref": item.ref,
+					"is_contained": false,
 					"is_transfer": true,
+					"get_scp_details": func() -> Dictionary:
+						return SCP_UTIL.return_data(item.ref)
 				}
 				
 	# ... and mark rooms that are currently contained 
 	if "contained_list" in scp_data:
 		for item in scp_data.contained_list:
-			# ... or in a state of being transfered to another room
-			if item.transfer_status.state:
-				var floor:int = item.transfer_status.location.floor
-				var ring:int = item.transfer_status.location.ring
-				var room:int = item.transfer_status.location.room	
-				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
-					"ref": item.ref,
-					"is_transfer": true,
-				}			
 			var floor:int = item.location.floor
 			var ring:int = item.location.ring
 			var room:int = item.location.room	
+			# ... or in a state of being transfered to another room
+			if item.transfer_status.state:
+				var ifloor:int = item.transfer_status.location.floor
+				var iring:int = item.transfer_status.location.ring
+				var iroom:int = item.transfer_status.location.room	
+				new_room_config.floor[ifloor].ring[iring].room[iroom].scp_data = {
+					"ref": item.ref,
+					"is_contained": true,
+					"is_transfer": true,
+					"get_scp_details": func() -> Dictionary:
+						return SCP_UTIL.return_data(item.ref)
+				}			
+
 			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 				"ref": item.ref,
+				"is_contained": true,
 				"is_transfer": item.transfer_status.state,
+				"get_operating_costs": func() -> Array:
+					return SCP_UTIL.return_ongoing_containment_rewards(item.ref),	
+				"get_scp_details": func() -> Dictionary:
+					return SCP_UTIL.return_data(item.ref)				
 			}				
 	
 	
@@ -860,38 +880,95 @@ func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> Dictionary:
 # -----------------------------------
 
 # -----------------------------------
-func next_day() -> void:		
-	# turn processing next day flag to true
-	processing_next_day = true
-	
-	# show busy modal
-	await wait_please(1.0)	
-	
-	# reset report if over 7 days
+func calculate_daily_costs(costs:Array) -> void:
+	# MINUS RESOURCES
+	for cost in costs:
+		resources_data[cost.resource_ref].amount += cost.amount
+		var capacity:int = resources_data[cost.resource_ref].capacity
+		match cost.resource_ref:
+			#----------------------------
+			# trigger brownout status effect if energy is less < 2
+			RESOURCE.TYPE.ENERGY:
+				var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, 0, capacity)
+				resources_data[cost.resource_ref].amount = new_val
+				base_states.status_effects.in_brownout = new_val == 0
+				# TRIGGER BROWNOUT
+				base_states.status_counts.brownout += 1
+				if new_val == 0:
+					var props:Dictionary = {
+						"count": base_states.status_counts.brownout,
+						"onSelection": func(val:EVT.BROWNOUT_OPTIONS) -> void:
+							match val:
+								EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS:
+									resources_data[cost.resource_ref].amount = 50
+									base_states.status_effects.in_brownout = false
+								EVT.BROWNOUT_OPTIONS.DO_NOTHING:
+									pass
+									
+					}
+					event_data = [EVENT_UTIL.run_event(EVT.TYPE.SITEWIDE_BROWNOUT, props)]
+					await on_events_complete
+			#----------------------------
+			# trigger in debt if less than 50.  
+			RESOURCE.TYPE.MONEY:
+				var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, -50, capacity)
+				resources_data[cost.resource_ref].amount = new_val
+				base_states.status_effects.in_debt = new_val < 0
+				if new_val == -5 and base_states.status_counts.in_debt == 0:
+					var props:Dictionary = {
+						"count": base_states.status_counts.in_debt,
+						"onSelection": func(val:EVT.IN_DEBT_OPTIONS) -> void:
+							match val:
+								EVT.IN_DEBT_OPTIONS.EMERGENCY_FUNDS:
+									base_states.status_counts.in_debt += 1
+									resources_data[cost.resource_ref].amount = 20
+									base_states.status_effects.in_debt = false
+								EVT.IN_DEBT_OPTIONS.DO_NOTHING:
+									pass
+									
+					}
+					event_data = [EVENT_UTIL.run_event(EVT.TYPE.IN_DEBT_WARNING, props)]
+					await on_events_complete
+			#----------------------------
+			# all other resources, minus until 
+			_:
+				var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, 0, capacity)
+				resources_data[cost.resource_ref].amount = new_val	
+# -----------------------------------
+
+# -----------------------------------
+func update_progress_data() -> void:
+	# TRACK PROGRESS REPORT
 	if progress_data.days_till_report <= 0:
-		progress_data.days_till_report = days_week_count + 1
+		progress_data.days_till_report = days_till_report_limit 
+		progress_data.show_report = false
 		# add current record to previous records
 		progress_data.previous_records.push_back(progress_data.record.duplicate(true))
 		# then reset the record
 		progress_data.record = []
 		# update resources data	
+		SUBSCRIBE.researcher_hire_list = RESEARCHER_UTIL.generate_new_researcher_hires() 
+		print(researcher_hire_list)
 	
-	# create weekly record
+	# CREATE WEEKLY AUDIT / RUN OPERATING COSTS
 	for floor_index in room_config.floor.size():
 		for ring_index in room_config.floor[floor_index].ring.size():
 			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]
-				# if room is built and is activated, get operating costs (per day)
-				if !config_data.room_data.is_empty() and config_data.room_data.get_is_activated.call():
-					var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
-					var costs:Array = config_data.room_data.get_operating_costs.call().map(func(i):
+				var room_data:Dictionary = config_data.room_data
+				# ------- GETS ROOM DATA PROFITS/COSTS
+				if !room_data.is_empty() and room_data.get_is_activated.call():
+					var room_details:Dictionary = room_data.get_room_details.call()
+					var costs:Array = room_data.get_operating_costs.call().map(func(i):
 						return {
-							"amount": i.amount,
+							"amount": i.amount, 
 							"resource_ref": i.resource.ref
 						}
 					)
 					progress_data.record.push_back({
-						"day": days_week_count - progress_data.days_till_report,
+						"source": room_details.name,
+						"day": days_till_report_limit - progress_data.days_till_report,
 						"designation": designation,
 						"location": {
 							"floor": floor_index,
@@ -900,37 +977,67 @@ func next_day() -> void:
 						},
 						"costs": costs
 					})
+					
+					calculate_daily_costs(costs)
+					
 				
+				# ------- GETS SCP DATA PROFITS
 				if !config_data.scp_data.is_empty():
-					print(config_data.scp_data)
+					var scp_data:Dictionary = config_data.scp_data
+					if scp_data.is_contained and !scp_data.is_transfer:
+						var scp_details:Dictionary = scp_data.get_scp_details.call()
+						var costs:Array = scp_data.get_operating_costs.call().map(func(i):
+							return {
+								"amount": i.amount, 
+								"resource_ref": i.resource.ref
+							}
+						)
+						
+						progress_data.record.push_back({
+							"source": "SCP-X%s" % [scp_details.item_id],
+							"day": days_till_report_limit - progress_data.days_till_report,
+							"designation": designation,
+							"location": {
+								"floor": floor_index,
+								"ring": ring_index,
+								"room": room_index,
+							},
+							"costs": costs
+						})
+						
+						calculate_daily_costs(costs)
+						
 	
-
 	
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
 	progress_data.days_till_report -= 1
-	SUBSCRIBE.progress_data = progress_data
+	progress_data.show_report = progress_data.days_till_report == 0
+# -----------------------------------
+
+# -----------------------------------
+func next_day() -> void:		
+	# turn processing next day flag to true
+	processing_next_day = true
 	
-	# RUN PROGRESS REPORT
-	if progress_data.days_till_report == 0:
-		for record in progress_data.record:
-			for cost in record.costs:
-				var amount:int = cost.amount
-				var ref:int = cost.resource_ref
-				resources_data[ref].amount += amount
-		SUBSCRIBE.resources_data = resources_data
-		
+	# show busy modal
+	await wait_please(1.0)	
+	
+	# update progress data
+	await update_progress_data()
 
 		
-		
-	
-	
 	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
 	action_queue_data = action_queue_data.map(func(i): 
 		i.count.day += 1
 		return i
 	)
+	
+	# update subscriptions
+	SUBSCRIBE.progress_data = progress_data
+	SUBSCRIBE.resources_data = resources_data	
 	SUBSCRIBE.action_queue_data = action_queue_data	
+	SUBSCRIBE.base_states = base_states
 	
 	# ADDS DAY COUNT TO SCP DATA
 	scp_data.available_list = scp_data.available_list.map(func(i): i.days_until_expire = i.days_until_expire - 1; return i)
@@ -941,7 +1048,7 @@ func next_day() -> void:
 	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
 	
 	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	completed_actions = action_queue_data.filter(func(i): return i.count.day >=i.count.completed_at)	
+	completed_actions = action_queue_data.filter(func(i): return i.count.day >= i.count.completed_at)	
 	if completed_actions.size() > 0:
 		await on_complete_build_complete
 
@@ -1177,7 +1284,7 @@ func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) ->
 		_:
 			ConfirmModal.set_text("Missing instruction...", "Check for errors.")
 			
-	await show_only([ConfirmModal])	
+	await show_only([Structure3dContainer, ConfirmModal])	
 	var response:Dictionary = await ConfirmModal.user_response
 	match response.action:
 		ACTION.NEXT:
@@ -1297,6 +1404,128 @@ func find_in_available(ref:int) -> Dictionary:
 # -----------------------------------	
 
 # -----------------------------------
+func contain_scp(from_location:Dictionary) -> void:
+	var floor_index:int = from_location.floor
+	var ring_index:int = from_location.ring
+	var room_index:int = from_location.room
+	var room_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.get_room_details.call()
+	
+	SUBSCRIBE.suppress_click = true
+	ContainmentContainer.filter_for_data = room_data
+	await show_only([ ContainmentContainer])
+	var response:Dictionary = await ContainmentContainer.user_response
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+	
+	match response.action:	
+		ACTION.CONTAINED.START_CONTAINMENT:
+			var scp_details:Dictionary = response.data
+			scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
+				if i.ref == scp_details.ref:
+					i.transfer_status = {
+						"state": true, 
+						"days_till_complete": scp_details.containment_time.call(),
+						"location": from_location.duplicate(),
+					}
+				return i
+			)
+
+			add_action_queue_item({
+				"action": ACTION.AQ.CONTAIN,
+				"ref": scp_details.ref,
+				"title_btn": {
+					"title": "CONTAINMENT IN PROGRESS",
+					"icon": SVGS.TYPE.CONTAIN,
+				},
+				"completed_at": scp_details.containment_time.call(),
+				"description": "SCP-%s %s." % [scp_details.item_id, "CONTAINMENT"],
+				"location": from_location.duplicate()
+			})			
+			
+			SUBSCRIBE.scp_data = scp_data
+
+	await restore_default_state()		
+	on_contain_scp_complete.emit()
+# -----------------------------------
+
+# -----------------------------------
+func transfer_scp(from_location:Dictionary) -> void:
+	var floor_index:int = from_location.floor
+	var ring_index:int = from_location.ring
+	var room_index:int = from_location.room
+	var scp_details:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].scp_data.get_scp_details.call()
+	
+	Structure3dContainer.select_location(true)
+	Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
+	SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(scp_details.ref, room_config, scp_data)	
+	await show_only([Structure3dContainer, LocationContainer, BackContainer])		
+	var structure_response:Dictionary = await Structure3dContainer.user_response
+	Structure3dContainer.freeze_input = true
+
+	match structure_response.action:
+		ACTION.BACK:					
+			SUBSCRIBE.unavailable_rooms = []
+		ACTION.NEXT:
+			SUBSCRIBE.unavailable_rooms = []
+			ConfirmModal.set_text("Transfer SCP-%s here?" % [scp_details.item_id])
+			await show_only([Structure3dContainer, LocationContainer, ConfirmModal])	
+			var response:Dictionary = await ConfirmModal.user_response	
+			
+			match response.action:
+				ACTION.BACK:
+					transfer_scp(from_location)			
+					return	
+				ACTION.NEXT:	
+					scp_data.contained_list = scp_data.contained_list.map(func(i) -> Dictionary:
+						if i.ref == scp_details.ref:
+							i.transfer_status = {
+								"state": true, 
+								"days_till_complete": scp_details.containment_time.call(),
+								"location": current_location.duplicate(),
+							}
+						return i
+					)				
+							
+					add_action_queue_item({
+						"action": ACTION.AQ.TRANSFER,
+						"ref": scp_details.ref,
+						"title_btn": {
+							"title": "TRANSFER IN PROGRESS",
+							"icon": SVGS.TYPE.CONTAIN,
+						},
+						"completed_at": scp_details.containment_time.call(),
+						"description": "SCP-%s %s." % [scp_details.item_id, "TRANSFER" ],
+						"location": current_location.duplicate()
+					})			
+	
+	Structure3dContainer.select_location(false)
+	await restore_default_state()		
+	on_contain_scp_complete.emit()	
+# -----------------------------------
+
+# -----------------------------------
+func contain_scp_cancel(from_location:Dictionary, action:ACTION.AQ) -> void:
+	ConfirmModal.set_text("Cancel containment?")
+	await show_only([ConfirmModal])	
+	var response:Dictionary = await ConfirmModal.user_response	
+	match response.action:
+		ACTION.NEXT:	
+			var floor_index:int = from_location.floor
+			var ring_index:int = from_location.ring
+			var room_index:int = from_location.room
+			var scp_details:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].scp_data.get_scp_details.call()
+			var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_details.ref and i.action == action)
+			match action:
+				ACTION.AQ.CONTAIN:
+					cancel_scp_containment(scp_details.ref)
+				ACTION.AQ.TRANSFER:
+					cancel_scp_transfer(scp_details.ref)
+			remove_from_action_queue(filtered_arr[0])
+		
+	await restore_default_state()		
+	on_contain_scp_complete.emit()
+# -----------------------------------
+
+# -----------------------------------
 func start_scp_testing(ref:int) -> void:
 	# resets it in the available list
 	var res:Dictionary = find_in_contained(ref)
@@ -1318,7 +1547,7 @@ func start_scp_testing(ref:int) -> void:
 			"icon": SVGS.TYPE.CONTAIN,
 		},
 		"completed_at": 1,
-		"description": "Accessing research for SCP-%s." % [scp_details.item_id],
+		"description": "Accessing SCP-%s." % [scp_details.item_id],
 		"location": list_data.location
 	})	
 	
@@ -1969,19 +2198,19 @@ func on_current_contain_step_update() -> void:
 			await show_only([Structure3dContainer])
 			SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(selected_contain_item.ref, room_config, scp_data)
 			
-			Structure3dContainer.select_location()
+			Structure3dContainer.select_location(true)
 			Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
 			
 			var structure_response:Dictionary = await Structure3dContainer.user_response
 			Structure3dContainer.placement_instructions = []
 			
-			match structure_response.action:
-				ACTION.BACK:					
-					SUBSCRIBE.unavailable_rooms = []
-					current_contain_step = CONTAIN_STEPS.START
-				ACTION.NEXT:
-					SUBSCRIBE.unavailable_rooms = []
-					current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
+			#match structure_response.action:
+				#ACTION.BACK:					
+					#SUBSCRIBE.unavailable_rooms = []
+					#current_contain_step = CONTAIN_STEPS.START
+				#ACTION.NEXT:
+					#SUBSCRIBE.unavailable_rooms = []
+					#current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
 					
 		# ---------------
 		CONTAIN_STEPS.CONFIRM_PLACEMENT:
@@ -2262,17 +2491,6 @@ func is_occupied() -> bool:
 		return true
 	return false
 
-#func on_mouse_scroll(dir:int) -> void:
-	#if is_occupied() or camera_settings.is_locked:return
-	#match dir:
-		#0: #UP
-			#if camera_settings.zoom - 1 >= 0:
-				#camera_settings.zoom = camera_settings.zoom - 1
-		#1: #DOWN
-			#if camera_settings.zoom + 1 < CAMERA.ZOOM.size():
-				#camera_settings.zoom = camera_settings.zoom + 1
-				#
-	#SUBSCRIBE.camera_settings = camera_settings
 	
 func on_control_input_update(input_data:Dictionary) -> void:
 	if is_occupied():return

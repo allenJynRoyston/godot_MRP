@@ -101,10 +101,10 @@ func on_data_update() -> void:
 				var initial_containment_rewards:Array = SCP_UTIL.return_initial_containment_rewards.call(data.ref)
 				var ongoing_containment_rewards:Array = SCP_UTIL.return_ongoing_containment_rewards.call(data.ref)
 				var containment_requirements:Array = data.containment_requirements
-				
+
 				for index in containment_requirements.size():
 					var room_data:Dictionary = ROOM_UTIL.return_data( containment_requirements[index] )
-					var room_count:int = ROOM_UTIL.get_count(index, purchased_facility_arr)
+					var room_count:int = ROOM_UTIL.get_count(room_data.ref, purchased_facility_arr)
 					placement_bullepoints.push_back({
 						"icon": SVGS.TYPE.CLEAR if room_count < 1 else SVGS.TYPE.CHECKBOX, 
 						"text": func() -> String:
@@ -132,53 +132,84 @@ func on_data_update() -> void:
 							ongoing_bulletspoints.push_back({
 								"icon": item.resource.icon, 
 								"text": func() -> String:
-									return '+%s %s [amount] for each week in containment.' % [item.amount, str(item.resource.name).to_upper()],
+									return '+%s %s [amount] per day in containment.' % [item.amount, str(item.resource.name).to_upper()],
 							})
 						"capacity":
 							ongoing_bulletspoints.push_back({
 								"icon": item.resource.icon, 
 								"text": func() -> String:
-									return '+%s %s [capacity] for each week in containment.' % [item.amount, str(item.resource.name).to_upper()],
+									return '+%s %s [capacity] per day in containment.' % [item.amount, str(item.resource.name).to_upper()],
 							})
+				
+				if assign_only:
+					if !active_scp_data.transfer_status.state:
+						list.push_back({
+							"title": "SELECT",
+							"title_icon": SVGS.TYPE.TARGET,
+							"bulletpoints": [
+								{
+									"header": "Placement",
+									"list": placement_bullepoints
+								},
+								{
+									"header": "Initial Bonus",
+									"list": bonus_bulletpoints
+								},
+								{
+									"header": "Ongoing Containment Bonus",
+									"list": ongoing_bulletspoints
+								}								
+							],
+							"onClick": func() -> void:
+								onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
+						})
+					else:
+						list.push_back({
+							"title": "UNAVAILABLE",
+							"title_icon": SVGS.TYPE.CLEAR,
+							"onClick": func() -> void:
+								pass
+						})						
+					
 
-				list = [
-					{
-						"title":"Cancel Containment" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
-						"title_icon": SVGS.TYPE.DELETE,
-						"onClick": func() -> void:
-							if active_scp_data.days_until_expire > 0:
-								onAction.call(ACTION.CONTAINED.STOP_CONTAINMENT)
-							else:
-								onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
-					}		
-				]  if active_scp_data.transfer_status.state else [
-					{
-						"title": "Contain",
-						"title_icon": SVGS.TYPE.TARGET,
-						"bulletpoints": [
-							{
-								"header": "Placement",
-								"list": placement_bullepoints
-							},
-							{
-								"header": "Initial Bonus",
-								"list": bonus_bulletpoints
-							},
-							{
-								"header": "Ongoing Containment Bonus",
-								"list": ongoing_bulletspoints
-							}								
-						],
-						"onClick": func() -> void:
-							onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
-					},
-					{
-						"title":"Reject",
-						"title_icon": SVGS.TYPE.DELETE,
-						"onClick": func() -> void:
-							onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
-					}		
-				] 
+				#list = [
+					#{
+						#"title":"Cancel Containment" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
+						#"title_icon": SVGS.TYPE.DELETE,
+						#"onClick": func() -> void:
+							#if active_scp_data.days_until_expire > 0:
+								#onAction.call(ACTION.CONTAINED.STOP_CONTAINMENT)
+							#else:
+								#onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
+					#}		
+				#]  if active_scp_data.transfer_status.state else [
+					#{
+						#"title": "Contain",
+						#"title_icon": SVGS.TYPE.TARGET,
+						#"bulletpoints": [
+							#{
+								#"header": "Placement",
+								#"list": placement_bullepoints
+							#},
+							#{
+								#"header": "Initial Bonus",
+								#"list": bonus_bulletpoints
+							#},
+							#{
+								#"header": "Ongoing Containment Bonus",
+								#"list": ongoing_bulletspoints
+							#}								
+						#],
+						#"onClick": func() -> void:
+							#onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
+					#},
+					#{
+						#"title":"Reject",
+						#"title_icon": SVGS.TYPE.DELETE,
+						#"onClick": func() -> void:
+							#onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
+					#}		
+				#] 
 				
 		# ----------------------------------------------------------------
 		LIST_TYPE.CONTAINED:
@@ -212,16 +243,16 @@ func on_data_update() -> void:
 						}		
 					)					
 				else:
-					if active_scp_data.transfer_status.state:
-						list.push_back(
-							{
-								"title":"Cancel Transfer",
-								"title_icon": SVGS.TYPE.DELETE,
-								"onClick": func() -> void:
-									onAction.call(ACTION.CONTAINED.CANCEL_TRANSFER),
-							}	
-						)
-					else:
+					#if active_scp_data.transfer_status.state:
+						#list.push_back(
+							#{
+								#"title":"Cancel Transfer",
+								#"title_icon": SVGS.TYPE.DELETE,
+								#"onClick": func() -> void:
+									#onAction.call(ACTION.CONTAINED.CANCEL_TRANSFER),
+							#}	
+						#)
+					#else:
 						
 						if !active_scp_data.lead_researcher.is_empty():
 							list.push_back(
@@ -258,27 +289,27 @@ func on_data_update() -> void:
 							}
 						)
 						
-						list.push_back(
-							{
-								"title":"Transfer SCP" if can_transfer else "Transfer SCP (Unavailable)",
-								"title_icon": SVGS.TYPE.CONTAIN,
-								"onClick": func() -> void:
-									if can_transfer:
-										onAction.call(ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION),
-								"bulletpoints": [] if can_transfer else [
-									{
-										"header": "Action unavailable",
-										"list": [
-											{
-												"icon": SVGS.TYPE.CLEAR, 
-												"text": func() -> String:
-													return "Testing ongoing.",
-											}	
-										]
-									}
-								]										
-							}		
-						)
+						#list.push_back(
+							#{
+								#"title":"Transfer SCP" if can_transfer else "Transfer SCP (Unavailable)",
+								#"title_icon": SVGS.TYPE.CONTAIN,
+								#"onClick": func() -> void:
+									#if can_transfer:
+										#onAction.call(ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION),
+								#"bulletpoints": [] if can_transfer else [
+									#{
+										#"header": "Action unavailable",
+										#"list": [
+											#{
+												#"icon": SVGS.TYPE.CLEAR, 
+												#"text": func() -> String:
+													#return "Testing ongoing.",
+											#}	
+										#]
+									#}
+								#]										
+							#}		
+						#)
 											
 						list.push_back(
 							{

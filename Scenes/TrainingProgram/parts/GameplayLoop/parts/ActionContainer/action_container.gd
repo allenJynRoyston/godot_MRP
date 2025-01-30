@@ -7,13 +7,18 @@ extends GameContainer
 @onready var RecruitBtn:Control = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/RecruitBtn
 @onready var ResearchersBtn:Control = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResearchersBtn
 
-@onready var NextBtn:Control = $PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/NextBtn
+@onready var ReportBtn:BtnBase = $PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/MarginContainer2/PanelContainer/MarginContainer/ReportProgressContainer/ProgressBar/ReportBtn
+@onready var ReportProgressBar:ProgressBar = $PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/MarginContainer2/PanelContainer/MarginContainer/ReportProgressContainer/ProgressBar
+
+@onready var NextBtn:Control = $PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/NextBtn
 
 var parentNode:Control
+var previous_show_report:bool = false
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
+	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
@@ -27,9 +32,14 @@ func _ready() -> void:
 	
 	ResearchersBtn.onClick = func() -> void:
 		open_researchers()
-	
+
 	NextBtn.onClick = func() -> void:
 		on_next_day()
+		
+	ReportBtn.onClick = func() -> void:
+		if !progress_data.show_report: return
+		GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
+		GameplayNode.current_summary_step = GameplayNode.SUMMARY_STEPS.START			
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -44,6 +54,21 @@ func open_contain() -> void:
 
 func open_researchers() -> void:
 	parentNode.current_researcher_step = parentNode.RESEARCHERS_STEPS.START
+	
+func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
+	progress_data = new_val
+	if !is_node_ready():return
+	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
+	
+	ReportBtn.title = "NEXT REPORT IN %s DAYS" % [progress_data.days_till_report] if !progress_data.show_report  else "VIEW REPORT"
+	ReportProgressBar.value = 1 - (progress_data.days_till_report / (GameplayNode.days_till_report_limit * 1.0))
+	ReportBtn.is_hoverable = progress_data.show_report	
+	
+	if previous_show_report != progress_data.show_report:
+		previous_show_report = progress_data.show_report
+		var new_stylebox:StyleBox = StyleBoxFlat.new() 
+		new_stylebox.bg_color =  Color(0, 0.529, 0.278) if !progress_data.show_report else Color(0.712, 0.207, 0)
+		ReportProgressBar.add_theme_stylebox_override('fill', new_stylebox)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -56,7 +81,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			pass
 # --------------------------------------------------------------------------------------------------		
-
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:

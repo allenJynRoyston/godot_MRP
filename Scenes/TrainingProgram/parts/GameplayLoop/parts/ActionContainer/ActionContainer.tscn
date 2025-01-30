@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=14 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_b0vyh"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_gxny4"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_yv6p4"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="5_6ggrg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7egbh"]
 shader = ExtResource("2_yv6p4")
@@ -32,6 +33,20 @@ grow_begin = 0.0
 grow_end = 0.0
 thickness = 2
 vertical = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ou8v6"]
+bg_color = Color(0, 0, 0, 0.443137)
+corner_radius_top_left = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_abckh"]
+bg_color = Color(0.153077, 0.153077, 0.153076, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8utft"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wrj2u"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="ActionContainer" type="MarginContainer"]
 anchors_preset = 10
@@ -158,20 +173,66 @@ layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_csxiv")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/PanelContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/PanelContainer2"]
 layout_mode = 2
-theme_override_constants/margin_left = 15
+
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ou8v6")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/MarginContainer2/PanelContainer"]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 15
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="NextBtn" parent="PanelContainer/HBoxContainer/PanelContainer2/MarginContainer" instance=ExtResource("1_gxny4")]
+[node name="ReportProgressContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/MarginContainer2/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/MarginContainer2/PanelContainer/MarginContainer/ReportProgressContainer"]
+custom_minimum_size = Vector2(175, 30)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_abckh")
+theme_override_styles/fill = SubResource("StyleBoxFlat_8utft")
+max_value = 1.0
+value = 0.5
+show_percentage = false
+
+[node name="ReportBtn" parent="PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/MarginContainer2/PanelContainer/MarginContainer/ReportProgressContainer/ProgressBar" instance=ExtResource("5_6ggrg")]
+custom_minimum_size = Vector2(100, 25)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_wrj2u")
+icon = 7
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "NEXT REPORT IN X DAYS"
+
+[node name="NextBtn" parent="PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer" instance=ExtResource("1_gxny4")]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 icon = 27
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(1, 1, 1, 0.796078)

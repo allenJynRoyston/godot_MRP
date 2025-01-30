@@ -78,14 +78,19 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 func get_floor_metrics(floor:int) -> Dictionary:
 	var money_amount:int = 0
 	var energy_amount:int = 0
+	var source:String = "" 
+	
 	for record in progress_data.record:
 		if record.location.floor == floor:
+			source = record.source
 			for cost in record.costs:
 				if cost.resource_ref == RESOURCE.TYPE.MONEY:
 					money_amount += cost.amount
 				if cost.resource_ref == RESOURCE.TYPE.ENERGY:
 					energy_amount += cost.amount
+					
 	return {
+		"record_name": source,
 		"money_amount": money_amount,
 		"energy_amount": energy_amount
 	}
@@ -95,9 +100,11 @@ func get_floor_metrics(floor:int) -> Dictionary:
 func get_wing_metrics(floor:int, wing:int) -> Dictionary: 
 	var money_amount:int = 0
 	var energy_amount:int = 0
+	var source:String = "" 
 	
 	for record in progress_data.record:
 		if record.location.floor == floor and record.location.ring == wing:
+			source = record.source
 			for cost in record.costs:
 				if cost.resource_ref == RESOURCE.TYPE.MONEY:
 					money_amount += cost.amount
@@ -105,6 +112,7 @@ func get_wing_metrics(floor:int, wing:int) -> Dictionary:
 					energy_amount += cost.amount
 					
 	return {
+		"source": source,
 		"money_amount": money_amount,
 		"energy_amount": energy_amount
 	}
@@ -114,9 +122,10 @@ func get_wing_metrics(floor:int, wing:int) -> Dictionary:
 func get_room_metrics(floor:int, wing:int, room:int) -> Dictionary: 
 	var money_amount:int = 0
 	var energy_amount:int = 0
-	
+	var source:String = "" 
 	for record in progress_data.record:
 		if record.location.floor == floor and record.location.ring == wing and record.location.room == room:
+			source = record.source
 			for cost in record.costs:
 				if cost.resource_ref == RESOURCE.TYPE.MONEY:
 					money_amount += cost.amount
@@ -124,6 +133,7 @@ func get_room_metrics(floor:int, wing:int, room:int) -> Dictionary:
 					energy_amount += cost.amount
 					
 	return {
+		"source": source,
 		"money_amount": money_amount,
 		"energy_amount": energy_amount
 	}
@@ -213,9 +223,10 @@ func on_steps_update() -> void:
 				var res:Dictionary = get_room_metrics(use_location.floor, use_location.wing, index) 
 				var room_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.wing].room[index].room_data
 				var new_node:Control = BaseItemPreload.instantiate()
+
 				if !room_data.is_empty():
 					var room_details:Dictionary = room_data.get_room_details.call()
-					new_node.btn_title = "%s  (ROOM %s)" % [room_details.name, index + 1]
+					new_node.btn_title = "%s  (ROOM %s)" % [res.source, index + 1]
 					new_node.index = index
 					new_node.money_amount = res.money_amount
 					new_node.energy_amount = res.energy_amount

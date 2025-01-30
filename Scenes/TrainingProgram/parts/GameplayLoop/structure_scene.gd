@@ -52,6 +52,7 @@ var show_menu:bool = false :
 
 var freeze_input:bool = false 
 var default_positions:Dictionary = {}
+var previous_camera_type:int = -1 
 
 signal animate_next_complete
 signal menu_response
@@ -102,27 +103,29 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty():return
-	await update_cameras()
-	
-	GBL.add_to_animation_queue(self)
-	
-	match camera_settings.type:
-		CAMERA.TYPE.FLOOR_SELECT:
-			await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
-			await U.set_timeout(0.3)
-			ActiveCamera.rotation = FloorPlaceholderCamera.rotation
-			ActiveCamera.position = FloorPlaceholderCamera.position
-			await U.tween_node_property(ActiveCamera, "size", FloorPlaceholderCamera.size, 0.3)	
-						
-		CAMERA.TYPE.ROOM_SELECT:
-			await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
-			await U.set_timeout(0.3)
-			ActiveCamera.rotation = RoomPlaceholderCamera.rotation
-			ActiveCamera.position = RoomPlaceholderCamera.position
-			await U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
+	if previous_camera_type != camera_settings.type:
+		previous_camera_type = camera_settings.type
+		await update_cameras()
+		
+		GBL.add_to_animation_queue(self)
+		
+		match camera_settings.type:
+			CAMERA.TYPE.FLOOR_SELECT:
+				await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
+				await U.set_timeout(0.3)
+				ActiveCamera.rotation = FloorPlaceholderCamera.rotation
+				ActiveCamera.position = FloorPlaceholderCamera.position
+				await U.tween_node_property(ActiveCamera, "size", FloorPlaceholderCamera.size, 0.3)	
+							
+			CAMERA.TYPE.ROOM_SELECT:
+				await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
+				await U.set_timeout(0.3)
+				ActiveCamera.rotation = RoomPlaceholderCamera.rotation
+				ActiveCamera.position = RoomPlaceholderCamera.position
+				await U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
 
 			
-	GBL.remove_from_animation_queue(self)
+		GBL.remove_from_animation_queue(self)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -178,14 +181,15 @@ func on_show_menu_update() -> void:
 				pass
 			new_btn.onClick = func(node:Control) -> void:
 				pass
-			ControlMenuList.add_child(new_btn)
-	
-	else:
-		for child in ControlMenuList.get_children():
-			child.queue_free()		
+			ControlMenuList.add_child(new_btn)	
 			
 	GBL.add_to_animation_queue(self)
 	await U.tween_node_property(ControlLayerSprite, "rotation_degrees:y", -145 if show_menu else -55, 0.3)
+	
+	if !show_menu:
+		menu_actions = []
+		for child in ControlMenuList.get_children():
+			child.queue_free()			
 	GBL.remove_from_animation_queue(self)	
 # ------------------------------------------------
 
@@ -240,7 +244,7 @@ func update_cameras() -> void:
 					
 
 				GBL.add_to_animation_queue(self)
-				await U.tween_node_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-30, 15, 0) , 0.2)	
+				await U.tween_node_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-20, 5, 0) , 0.2)	
 				GBL.remove_from_animation_queue(self)			
 		
 		CAMERA.TYPE.ROOM_SELECT:
@@ -281,7 +285,9 @@ func _on_control_menu_container_item_rect_changed() -> void:
 
 # ------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue() or !show_menu or freeze_input:return
+	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP) # 
+	
+	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue() or !show_menu or freeze_input or GameplayNode.is_occupied():return
 	
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
