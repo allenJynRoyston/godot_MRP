@@ -113,7 +113,7 @@ func check_for_reset() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-	if scp_data.is_empty():
+	if scp_data.is_empty() or !is_node_ready():
 		return
 		
 	NothingAvailable.show() if scp_data.available_list.size() == 0 and scp_data.contained_list.size() == 0 else NothingAvailable.hide()

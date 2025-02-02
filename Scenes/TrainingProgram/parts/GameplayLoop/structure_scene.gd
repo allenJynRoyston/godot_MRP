@@ -226,7 +226,7 @@ func assign_room_node_location(floor_val:int, ring_val:int, animate:bool) -> voi
 
 # ------------------------------------------------
 func update_cameras() -> void:
-	if !is_node_ready() or camera_settings.is_empty():return	
+	if !is_node_ready() or camera_settings.is_empty() or FloorInstanceContainer.get_child_count() == 0:return	
 
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
