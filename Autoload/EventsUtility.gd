@@ -2,6 +2,51 @@
 extends Node
 
 # ------------------------------------------------------------------------
+var GAME_OVER:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+			
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "FAIL STATE",
+					"img_src": "res://Media/images/redacted.png",
+					"text": [
+						"Your facility has fallen into disarray.",
+					],
+					"options": [
+						{
+							"show": true,
+							"title": "Restart.",
+							"val": EVT.GAME_OVER_OPTIONS.RESTART,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
+							"title": "Restart with random perk.",
+							"val": EVT.GAME_OVER_OPTIONS.RESTART,
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				props.onSelection.call(option_selected.val)
+				return {
+					"text": [
+						"You selected %s" % [option_selected.val],
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
 var DISMISS_RESEARCHER:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
 		var option_selected:Dictionary = {
@@ -145,6 +190,7 @@ var IN_DEBT_WARNING:Dictionary = {
 
 
 var reference_data:Dictionary = {
+	EVT.TYPE.GAME_OVER: GAME_OVER,
 	EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,
 	EVT.TYPE.SITEWIDE_BROWNOUT: SITEWIDE_BROWNOUT,
 	EVT.TYPE.IN_DEBT_WARNING: IN_DEBT_WARNING

@@ -31,16 +31,16 @@ corner_radius_bottom_left = 5
 font = ExtResource("3_ed473")
 font_size = 24
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7nhkt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvvj7"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ogopr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xb38i"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w5udy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mted8"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_74eb2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r2rt6"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="LocationContainer" type="MarginContainer"]
@@ -141,7 +141,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_7nhkt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mvvj7")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -165,7 +165,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_ogopr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xb38i")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -189,7 +189,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_w5udy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mted8")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -213,7 +213,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_74eb2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_r2rt6")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)

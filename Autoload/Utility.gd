@@ -58,6 +58,10 @@ func array_has_overlap(arr_one:Array, arr_two:Array) -> bool:
 	return false
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+func location_to_designation(location:Dictionary) -> String:
+	return "%s%s%s" % [location.floor, location.ring, location.room]
+# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------	
 func convert_to_normalized_position(container_size:Vector2, pos:Vector2) -> Vector2:
@@ -126,4 +130,31 @@ func tween_node_property(node:Node, prop:String, new_val, duration:float = 0.3, 
 	var tween:Tween = create_tween()
 	tween.tween_property(node, prop, new_val, duration).set_trans(Tween.TRANS_QUAD).set_delay(delay)
 	await tween.finished
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func dict_deep_copy(value):
+	var new_dict:Dictionary = {}
+	for key in value:
+		var assign:Callable = func():
+			print(value[key])
+			return value[key]
+		new_dict[key] = assign.call()
+		
+	#if value is Dictionary:
+		#var new_dict:Dictionary = {}
+		#for key in value.keys():
+			#new_dict[key] = dict_deep_copy(value[key])  # Recursively copy values
+		#return new_dict
+	#elif value is Array:
+		#var new_array = []
+		#for item in value:
+			#new_array.append(dict_deep_copy(item))  # Recursively copy items
+		#return new_array
+	#elif value is Object and value.duplicate != null:
+		#return value.duplicate(true)  # Duplicate resources like textures/materials
+	#else:
+		#return value
+		
+	return new_dict
 # --------------------------------------------------------------------------------------------------		

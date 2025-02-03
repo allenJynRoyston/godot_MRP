@@ -21,9 +21,10 @@ extends PanelContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
+@onready var SetupContainer:PanelContainer = $SetupContainer
 
 enum SHOP_STEPS {
-	HIDE, 
+	RESET, 
 	START_BASE, 
 	START_ROOM,
 	PLACEMENT,
@@ -32,13 +33,13 @@ enum SHOP_STEPS {
 	REFUND
 }
 enum CONTAIN_STEPS {
-	HIDE, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
+	RESET, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
 	ON_REJECT, ON_TRANSFER_CANCEL, 
 	ON_TRANSFER_TO_NEW_LOCATION, 
 	CONFIRM, FINALIZE
 }
-enum RECRUIT_STEPS {HIDE, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
-enum ACTION_COMPLETE_STEPS {HIDE, START, FINALIZE}
+enum RECRUIT_STEPS {RESET, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
+enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
 enum SUMMARY_STEPS {RESET, START, DISMISS}
 enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
 enum EVENT_STEPS {RESET, START}
@@ -46,6 +47,7 @@ enum EVENT_STEPS {RESET, START}
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
 @export var debug_mode:bool = false 
+@export var skip_progress_screen:bool = true
 
 @export var show_structures:bool = true: 
 	set(val):
@@ -146,190 +148,201 @@ enum EVENT_STEPS {RESET, START}
 # ------------------------------------------------------------------------------ 
 
 # ------------------------------------------------------------------------------ 
-#region SAVABLE DATA
-var camera_settings:Dictionary = {
-	"type": CAMERA.TYPE.FLOOR_SELECT,
-	"is_locked": false
-}
-
-var current_location:Dictionary = {
-	"floor": 0,
-	"ring": 0,
-	"room": 4 # 4 is the center
-} 
-
-var progress_data:Dictionary = { 
-	"day": 1,
-	"days_till_report": days_till_report_limit - 1,
-	"show_report": false,
-	"record": [],
-	"previous_records": []
-} 
-
-var scp_data:Dictionary = {
-	"available_list": [
-		{
-			"ref": SCP.TYPE.SCP_001, 
-			"days_until_expire": 99, 
-			"is_new": true,
-			"transfer_status": {
-				"state": false, 
-				"days_till_complete": -1,
-				"location": {}
+#region INITIAL DATA
+var initial_values:Dictionary = {
+	# ----------------------------------
+	"current_location": func() -> Dictionary:
+		return {
+			"floor": 0,
+			"ring": 0,
+			"room": 4 # 4 is the center
+		},
+	# ----------------------------------
+	"scp_data": func() -> Dictionary:
+		return {
+			"available_list": [
+				{
+					"ref": SCP.TYPE.SCP_001, 
+					"days_until_expire": 99, 
+					"is_new": true,
+					"transfer_status": {
+						"state": false, 
+						"days_till_complete": -1,
+						"location": {}
+					}
+				},
+				{
+					"ref": SCP.TYPE.SCP_002, 
+					"days_until_expire": 99, 
+					"is_new": true,
+					"transfer_status": {
+						"state": false, 
+						"days_till_complete": -1,
+						"location": {}
+					}
+				}		
+			],
+			"contained_list": [
+				#{ 
+					#"ref": item.data.ref,
+					#"progression": {
+						#"research_level": 0,
+						#"path_unlocks": [],
+						#"progression": {}
+					#}
+				#}		
+			],
+		},
+	# ----------------------------------
+	"progress_data": func() -> Dictionary:
+		return { 
+			"day": 1,
+			"days_till_report": days_till_report_limit - 1,
+			"show_report": false,
+			"record": [],
+			"previous_records": []
+		},
+	# ----------------------------------
+	"resources_data": func() -> Dictionary:
+		return { 
+			RESOURCE.TYPE.MONEY: {
+				"amount": 100, 
+				"utilized": 0, 
+				"capacity": 9999
+			},
+			RESOURCE.TYPE.ENERGY: {
+				"amount": 50, 
+				"utilized": 0, 
+				"capacity": 100
+			},
+			RESOURCE.TYPE.LEAD_RESEARCHERS: {
+				"amount": 0, 
+				"utilized": 0, 
+				"capacity": 0
+			},
+			RESOURCE.TYPE.STAFF: {
+				"amount": 0, 
+				"utilized": 0, 
+				"capacity": 0
+			},
+			RESOURCE.TYPE.SECURITY: {
+				"amount": 0, 
+				"utilized": 0, 
+				"capacity": 0
+			},
+			RESOURCE.TYPE.DCLASS: {
+				"amount": 0, 
+				"utilized": 0, 
+				"capacity": 0
+			},
+		},
+	# ----------------------------------
+	"tier_unlocked": func() -> Dictionary:
+		return {
+			TIER.TYPE.BASE_DEVELOPMENT: {
+				TIER.VAL.ZERO: true,
+				TIER.VAL.ONE: false,
+				TIER.VAL.TWO: false,
+				TIER.VAL.THREE: false,
+				TIER.VAL.FOUR: false,
+				TIER.VAL.FIVE: false
+			},
+			TIER.TYPE.FACILITY: {
+				TIER.VAL.ZERO: true,
+				TIER.VAL.ONE: false,
+				TIER.VAL.TWO: false,
+				TIER.VAL.THREE: false,
+				TIER.VAL.FOUR: false,
+				TIER.VAL.FIVE: false
+			},
+			TIER.TYPE.RESEARCH_AND_DEVELOPMENT: {
+				TIER.VAL.ZERO: true,
+				TIER.VAL.ONE: false,
+				TIER.VAL.TWO: false,
+				TIER.VAL.THREE: false,
+				TIER.VAL.FOUR: false,
+				TIER.VAL.FIVE: false
+			},
+		},
+	# ----------------------------------
+	"room_config": func() -> Dictionary:
+		return {
+			"floor": {
+				0: get_floor_default(true, 3),
+				1: get_floor_default(true, 3),
+				2: get_floor_default(false, 3),
+				3: get_floor_default(false, 3),
+				4: get_floor_default(false, 3),
+				5: get_floor_default(false, 3),
+				6: get_floor_default(false, 3),
 			}
 		},
-		{
-			"ref": SCP.TYPE.SCP_002, 
-			"days_until_expire": 99, 
-			"is_new": true,
-			"transfer_status": {
-				"state": false, 
-				"days_till_complete": -1,
-				"location": {}
-			}
-		}		
-	],
-	"contained_list": [
-		#{ 
-			#"ref": item.data.ref,
-			#"progression": {
-				#"research_level": 0,
-				#"path_unlocks": [],
-				#"progression": {}
-			#}
-		#}		
-	],
+	# ----------------------------------
+	"camera_settings": func() -> Dictionary:
+		return {
+			"type": CAMERA.TYPE.FLOOR_SELECT,
+			"is_locked": false
+		},
+	# ----------------------------------
+	"base_states": func() -> Dictionary:
+		return {
+			"status_effects": {
+				"in_brownout": false,
+				"in_debt": false
+			},
+			"status_counts":{
+				"brownout": 0,
+				"in_debt": 0
+			},
+			"floor": {
+				#"0": {"in_lockdown": true/false}
+			},
+			"room": {
+				#"000": {"is_activated": true/false}
+			},
+		},
+	# ----------------------------------
+	"action_queue_data": func() -> Array:
+		return [],
+	# ----------------------------------
+	"purchased_facility_arr": func() -> Array:
+		return [],
+	# ----------------------------------
+	"purchased_base_arr": func() -> Array:
+		return [],
+	# ----------------------------------
+	"purchased_research_arr": func() -> Array:
+		return [],
+	# ----------------------------------
+	"bookmarked_rooms": func() -> Array:
+		return [],
+	# ----------------------------------
+	"unavailable_rooms": func() -> Array:
+		return [],
+	# ----------------------------------
+	"researcher_hire_list": func() -> Array:
+		return RESEARCHER_UTIL.generate_new_researcher_hires(),
+	# ----------------------------------
+	"hired_lead_researchers_arr": func() -> Array:
+		return [],	
 }
 
-
-var shop_revert_step:SHOP_STEPS
-
-var action_queue_data:Array = []
-
-var purchased_facility_arr:Array = [] 
-
-var purchased_base_arr:Array = []
-
-var purchased_research_arr:Array = []
-
-var bookmarked_rooms:Array = [] # ["000", "201"] <- "floor_index, ring_index, room_index"]
-
-var unavailable_rooms:Array = []
-
-var researcher_hire_list:Array = RESEARCHER_UTIL.generate_new_researcher_hires() 
-
-var hired_lead_researchers_arr:Array = [] 
-
-var resources_data:Dictionary = { 
-	RESOURCE.TYPE.MONEY: {
-		"amount": 100, 
-		"utilized": 0, 
-		"capacity": 9999
-	},
-	RESOURCE.TYPE.ENERGY: {
-		"amount": 50, 
-		"utilized": 0, 
-		"capacity": 100
-	},
-	RESOURCE.TYPE.LEAD_RESEARCHERS: {
-		"amount": 0, 
-		"utilized": 0, 
-		"capacity": 0
-	},
-	RESOURCE.TYPE.STAFF: {
-		"amount": 0, 
-		"utilized": 0, 
-		"capacity": 0
-	},
-	RESOURCE.TYPE.SECURITY: {
-		"amount": 0, 
-		"utilized": 0, 
-		"capacity": 0
-	},
-	RESOURCE.TYPE.DCLASS: {
-		"amount": 0, 
-		"utilized": 0, 
-		"capacity": 0
-	},
-}
-
-var tier_unlocked:Dictionary = {
-	TIER.TYPE.BASE_DEVELOPMENT: {
-		TIER.VAL.ZERO: true,
-		TIER.VAL.ONE: false,
-		TIER.VAL.TWO: false,
-		TIER.VAL.THREE: false,
-		TIER.VAL.FOUR: false,
-		TIER.VAL.FIVE: false
-	},
-	TIER.TYPE.FACILITY: {
-		TIER.VAL.ZERO: true,
-		TIER.VAL.ONE: false,
-		TIER.VAL.TWO: false,
-		TIER.VAL.THREE: false,
-		TIER.VAL.FOUR: false,
-		TIER.VAL.FIVE: false
-	},
-	TIER.TYPE.RESEARCH_AND_DEVELOPMENT: {
-		TIER.VAL.ZERO: true,
-		TIER.VAL.ONE: false,
-		TIER.VAL.TWO: false,
-		TIER.VAL.THREE: false,
-		TIER.VAL.FOUR: false,
-		TIER.VAL.FIVE: false
-	},
-}
-
-var room_config:Dictionary = {
-	"floor": {
-		0: get_floor_default(true, 3),
-		1: get_floor_default(true, 3),
-		2: get_floor_default(false, 3),
-		3: get_floor_default(false, 3),
-		4: get_floor_default(false, 3),
-		5: get_floor_default(false, 3),
-		6: get_floor_default(false, 3),
-	}
-} 
-
-#base_states.status_effects
-
-var base_states:Dictionary = {
-	"status_effects": {
-		"in_brownout": false,
-		"in_debt": false
-	},
-	"status_counts":{
-		"brownout": 0,
-		"in_debt": 0
-	},
-	"floor": {
-		#"0": {"in_lockdown": true/false}
-	},
-	"room": {
-		#"000": {"is_activated": true/false}
-	},
-}
-
-var initial_values:Dictionary = {
-	"current_location": current_location,
-	"scp_data": scp_data,
-	"progress_data": progress_data,
-	"action_queue_data": action_queue_data,
-	"purchased_facility_arr": purchased_facility_arr,
-	"purchased_base_arr": purchased_base_arr,
-	"purchased_research_arr": purchased_research_arr,
-	"bookmarked_rooms": bookmarked_rooms,
-	"unavailable_rooms": unavailable_rooms,
-	"researcher_hire_list": researcher_hire_list,
-	"hired_lead_researchers_arr": hired_lead_researchers_arr,
-	"resources_data": resources_data,
-	"tier_unlocked": tier_unlocked,
-	"room_config": room_config,
-	"camera_settings": camera_settings,
-	"base_states": base_states,
-}.duplicate(true)
-
+var room_config:Dictionary 
+var scp_data:Dictionary
+var progress_data:Dictionary
+var camera_settings:Dictionary
+var current_location:Dictionary
+var base_states:Dictionary
+var resources_data:Dictionary 
+var tier_unlocked:Dictionary 
+var researcher_hire_list:Array
+var action_queue_data:Array
+var purchased_facility_arr:Array 
+var purchased_base_arr:Array
+var purchased_research_arr:Array 
+var bookmarked_rooms:Array # ["000", "201"] <- "floor_index, ring_index, room_index"]
+var unavailable_rooms:Array 
+var hired_lead_researchers_arr:Array
 
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -337,14 +350,19 @@ var initial_values:Dictionary = {
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
 const days_till_report_limit:int = 7
+var shop_revert_step:SHOP_STEPS
 
-var setup_complete:bool = false 
+var processing_next_day:bool = false
+
 var is_busy:bool = false : 
 	set(val):
 		is_busy = val
 		on_is_busy_update()
 		
-var processing_next_day:bool = false
+var setup_complete:bool = false : 
+	set(val):
+		setup_complete = val
+		on_setup_complete_update()
 
 var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
@@ -371,22 +389,22 @@ var event_data:Array = [] :
 		if !event_data.is_empty():
 			current_event_step = EVENT_STEPS.START
 
-var current_shop_step:SHOP_STEPS = SHOP_STEPS.HIDE : 
+var current_shop_step:SHOP_STEPS = SHOP_STEPS.RESET : 
 	set(val):
 		current_shop_step = val
 		on_current_shop_step_update()
 
-var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.HIDE : 
+var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.RESET : 
 	set(val):
 		current_contain_step = val
 		on_current_contain_step_update()
 		
-var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.HIDE : 
+var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.RESET : 
 	set(val):
 		current_recruit_step = val
 		on_current_recruit_step_update()
 		
-var current_action_complete_step:ACTION_COMPLETE_STEPS = ACTION_COMPLETE_STEPS.HIDE : 
+var current_action_complete_step:ACTION_COMPLETE_STEPS = ACTION_COMPLETE_STEPS.RESET : 
 	set(val):
 		current_action_complete_step = val
 		on_current_action_complete_step_update()
@@ -417,6 +435,8 @@ signal on_cancel_construction_complete
 signal on_reset_room_complete
 signal on_activate_room_complete
 signal on_contain_scp_complete
+signal on_assign_researcher_to_scp_complete
+signal on_scp_testing_complete
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -525,7 +545,56 @@ func start(game_data:Dictionary = {}) -> void:
 		start_load_game()
 
 func start_new_game() -> void:
-	quickload()
+	setup_complete = false
+	
+	# reset steps
+	await show_only()
+	current_shop_step = SHOP_STEPS.RESET
+	current_contain_step = CONTAIN_STEPS.RESET
+	current_recruit_step = RECRUIT_STEPS.RESET
+	current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
+	current_summary_step = SUMMARY_STEPS.RESET
+	current_event_step = EVENT_STEPS.RESET
+	current_researcher_step = RESEARCHERS_STEPS.RESET
+		
+	if !skip_progress_screen:
+		SetupContainer.title = "SETTING UP... PLEASE WAIT."
+		SetupContainer.subtitle = "SORTING FILES..."
+		SetupContainer.progressbar_val = 0.1
+		await U.set_timeout(0.5)
+
+	# trigger reset if applicable
+	for node in get_all_container_nodes():
+		if "on_reset" in node:
+			node.on_reset()
+	
+	if !skip_progress_screen:
+		SetupContainer.subtitle = "RESETING THE MATRIX..."
+		SetupContainer.progressbar_val = 0.3
+		await U.set_timeout(0.5)	
+
+		SetupContainer.subtitle = "LOADING SAVE FILE..."
+		SetupContainer.progressbar_val = 0.7
+		await U.set_timeout(0.5)		
+		await quickload()
+	
+		SetupContainer.subtitle = "PREDICTING THE FUTURE..."
+		SetupContainer.progressbar_val = 0.9
+		await U.set_timeout(0.5)			
+	
+		SetupContainer.subtitle = "READY!  PROGRAM STARTING..."
+		SetupContainer.progressbar_val = 1.0	
+		await U.set_timeout(0.5)
+	else:
+		await quickload()
+	
+	set_room_config(true)	
+	await restore_default_state()	
+	# runs room config once everything is ready
+	await U.set_timeout(0.2)
+	setup_complete = true
+
+
 
 func start_load_game() -> void:
 	# load save file
@@ -541,29 +610,35 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 		"is_powered": is_powered,
 		"in_lockdown": false,
 		"array_size": array_size,
-		"readings": {
-			RESOURCE.BASE_METRICS.MORALE: 2,
-			RESOURCE.BASE_METRICS.SAFETY: 2,
-			RESOURCE.BASE_METRICS.READINESS: 2,
+		"metrics": {
 			RESOURCE.BASE_METRICS.HUME: 1,
 		},
+		"scp_refs": [],
 		"ring": { 
-			0: get_room_default(array_size),
-			1: get_room_default(array_size),
-			2: get_room_default(array_size),
-			3: get_room_default(array_size)
+			0: get_ring_defaults(array_size),
+			1: get_ring_defaults(array_size),
+			2: get_ring_defaults(array_size),
+			3: get_ring_defaults(array_size)
 		}
 	}
 
-func get_room_default(array_size:int) -> Dictionary:
+func get_ring_defaults(array_size:int) -> Dictionary:
 	var room:Dictionary
 	for n in range(array_size*array_size):
-		room[n] = get_room_item_default()
-	return {
+		room[n] = get_room_defaults()
+	return {		
+		"metrics": {
+			RESOURCE.BASE_METRICS.MORALE: 2,
+			RESOURCE.BASE_METRICS.SAFETY: 2,
+			RESOURCE.BASE_METRICS.READINESS: 2
+		},
+		"active_buffs": [],
+		"room_refs": [],
+		"scp_refs": [],
 		"room": room
 	}
 
-func get_room_item_default() -> Dictionary:
+func get_room_defaults() -> Dictionary:
 	return {
 		"build_data": {},
 		"room_data": {},
@@ -574,7 +649,13 @@ func get_room_item_default() -> Dictionary:
 
 # ------------------------------------------------------------------------------	SHOW/HIDE CONTAINERS
 #region show/hide functions
+func on_setup_complete_update() -> void:
+	if !is_node_ready():return
+	SetupContainer.show() if !setup_complete else SetupContainer.hide()
+	
+	
 func on_is_busy_update() -> void:
+	if !is_node_ready():return
 	WaitContainer.show() if is_busy else WaitContainer.hide()
 
 func get_all_container_nodes(exclude:Array = []) -> Array:
@@ -707,16 +788,22 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 # -----------------------------------
 
 # -----------------------------------
-func set_room_config(allow_build:bool = false) -> void:
+func set_room_config(force_setup:bool = false) -> void:
 	# if setup isn't ready, run this so the map gets built correctly
-	if !setup_complete:
-		SUBSCRIBE.room_config = initial_values.room_config.duplicate(true)
+	if !setup_complete and !force_setup:
+		SUBSCRIBE.room_config = initial_values.room_config.call()
 		return
 	
 	# otherwise, run the full script.  This prevents this code from running multiple times
-	var new_room_config:Dictionary = initial_values.room_config.duplicate(true)
+	var new_room_config:Dictionary = initial_values.room_config.call()
 	var under_construction_rooms:Array = []
 	var built_rooms:Array = []
+	
+	var update_metrics:Callable = func(floor_val:int, wing_val:int, metrics:Dictionary) -> void:
+		if "wing" in metrics:
+			for key in metrics.wing:
+				var amount:int = metrics.wing[key]
+				new_room_config.floor[floor_val].ring[wing_val].metrics[key] = U.min_max(new_room_config.floor[floor_val].ring[wing_val].metrics[key] + amount, 0, 10)
 
 	# mark rooms that are being transfered to a room 
 	if "available_list" in scp_data:
@@ -736,9 +823,6 @@ func set_room_config(allow_build:bool = false) -> void:
 	# ... and mark rooms that are currently contained 
 	if "contained_list" in scp_data:
 		for item in scp_data.contained_list:
-			var floor:int = item.location.floor
-			var ring:int = item.location.ring
-			var room:int = item.location.room	
 			# ... or in a state of being transfered to another room
 			if item.transfer_status.state:
 				var ifloor:int = item.transfer_status.location.floor
@@ -751,7 +835,13 @@ func set_room_config(allow_build:bool = false) -> void:
 					"get_scp_details": func() -> Dictionary:
 						return SCP_UTIL.return_data(item.ref)
 				}			
-
+			
+			var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
+			var floor:int = item.location.floor
+			var ring:int = item.location.ring
+			var room:int = item.location.room	
+			
+			# update the scp data and utility functions
 			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 				"ref": item.ref,
 				"is_contained": true,
@@ -759,12 +849,25 @@ func set_room_config(allow_build:bool = false) -> void:
 				"get_operating_costs": func() -> Array:
 					return SCP_UTIL.return_ongoing_containment_rewards(item.ref),	
 				"get_scp_details": func() -> Dictionary:
-					return SCP_UTIL.return_data(item.ref)				
-			}				
+					return SCP_UTIL.return_data(item.ref),
+				"get_researcher_details": func() -> Dictionary:
+					return item.lead_researcher,
+				"get_testing_details": func() -> Dictionary:
+					return item.current_testing
+			}
+			
+			# update metrics
+			update_metrics.call(floor, ring, scp_details.metrics)			
+			
+			# first add scp ref to list to both ring and floor			
+			new_room_config.floor[floor].scp_refs.push_back(item.ref)
+			new_room_config.floor[floor].ring[ring].scp_refs.push_back(item.ref)
+
+			
 	
 	
 	# mark rooms that are under construction...
-	for item in action_queue_data:
+	for item in action_queue_data:		
 		match item.action:
 			ACTION.AQ.BUILD_ITEM:
 				var floor:int = item.location.floor
@@ -779,16 +882,30 @@ func set_room_config(allow_build:bool = false) -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
-		var designation:String = "%s%s%s" % [floor, ring, room]
+		var designation:String = U.location_to_designation(item.location)
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
 		
-		# create new room state if it does not exist
+		# if facility is built, clear build_data 
+		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
+				
+		# ... then check if designation is in base_states; 
+		#  (create new room state if it does not exist)
 		if designation not in base_states.room:
 			base_states.room[designation] = {
 				"location": item.location.duplicate(),
-				"is_activated": !("activation_cost" in room_data),  
+				"is_activated": false,  
 			}		
 		
+		# then get is_activated status
+		var is_activated:bool = base_states.room[designation].is_activated
+		
+		# modify ring wide metrics 
+		if is_activated:
+			new_room_config.floor[floor].ring[ring].room_refs.push_back(item.ref)
+			if "metrics" in room_data and "wing" in room_data.metrics:
+				update_metrics.call(floor, ring, room_data.metrics)
+			
+		# updatae room config with ref and utility functions
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"ref": item.ref,
 			"get_room_details": func() -> Dictionary:
@@ -798,9 +915,7 @@ func set_room_config(allow_build:bool = false) -> void:
 			"get_operating_costs": func() -> Array:
 				return ROOM_UTIL.return_operating_cost(item.ref)
 		}
-		# if facility is built, clear build_data
-		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
-
+		
 	# mark rooms and push to subscriptions
 	for floor_index in new_room_config.floor.size():
 		var floor_designation:String = "%s" % [floor_index]
@@ -813,26 +928,28 @@ func set_room_config(allow_build:bool = false) -> void:
 		# transfer in_lockdown state
 		new_room_config.floor[floor_index].in_lockdown = base_states.floor[floor_designation].in_lockdown
 		
-		for ring_index in new_room_config.floor[floor_index].ring.size():
+		for ring_index in new_room_config.floor[floor_index].ring.size():			
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
 				
+				# check all room_refs to see if there any ring wide active buffs
+				#rint(new_room_config.floor[floor].ring[ring].room_refs)
+				
 				if !config_data.build_data.is_empty():
 					under_construction_rooms.push_back(designation)
 				if !config_data.room_data.is_empty():
-
 					built_rooms.push_back(designation)
-	
-	
 	
 	# mark rooms that are already powered...
 	new_room_config.floor[1].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) > 0
 	new_room_config.floor[2].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) > 0
-	
-	SUBSCRIBE.room_config = new_room_config	
+
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
+	SUBSCRIBE.room_config = new_room_config	
+	
+
 # -----------------------------------
 
 # -----------------------------------
@@ -858,7 +975,7 @@ func check_events(ref:int, event_ref:SCP.EVENT_TYPE, skip_wait:bool = false) -> 
 	
 		if !skip_wait:
 			await wait_please()
-			
+		
 		event_data = [event]
 		return await on_events_complete
 		
@@ -906,8 +1023,7 @@ func calculate_daily_costs(costs:Array) -> void:
 									pass
 									
 					}
-					event_data = [EVENT_UTIL.run_event(EVT.TYPE.SITEWIDE_BROWNOUT, props)]
-					await on_events_complete
+					await triggger_event(EVT.TYPE.SITEWIDE_BROWNOUT, props)
 			#----------------------------
 			# trigger in debt if less than 50.  
 			RESOURCE.TYPE.MONEY:
@@ -927,8 +1043,7 @@ func calculate_daily_costs(costs:Array) -> void:
 									pass
 									
 					}
-					event_data = [EVENT_UTIL.run_event(EVT.TYPE.IN_DEBT_WARNING, props)]
-					await on_events_complete
+					await triggger_event(EVT.TYPE.IN_DEBT_WARNING, props)
 			#----------------------------
 			# all other resources, minus until 
 			_:
@@ -1019,9 +1134,17 @@ func update_progress_data() -> void:
 func next_day() -> void:		
 	# turn processing next day flag to true
 	processing_next_day = true
+	var is_game_over:bool = false
 	
 	# show busy modal
 	await wait_please(1.0)	
+	
+	# check for endgame
+	# check for endgame states
+	if is_game_over:
+		game_over()
+		processing_next_day = false
+		return
 	
 	# update progress data
 	await update_progress_data()
@@ -1114,28 +1237,58 @@ func set_floor_lockdown(from_location:Dictionary, state:bool) -> void:
 
 # ------------------------------------------------------------------------------	
 #region GAMEPLAY FUNCS
+# ---------------------o
+func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
+	event_data = [EVENT_UTIL.run_event(event, props)]
+	await on_events_complete
+# ---------------------	
+	
 # ---------------------
-func activate_room(from_location:Dictionary, is_activated:bool) -> void:
+func game_over() -> void:
+	await show_only([])	
+	var props:Dictionary = {
+		"onSelection": func(val:EVT.GAME_OVER_OPTIONS) -> void:
+			match val:
+				EVT.GAME_OVER_OPTIONS.RESTART:
+					start_new_game()
+	}	
+	triggger_event(EVT.TYPE.GAME_OVER, props)
+# ---------------------
+	
+	
+# ---------------------
+func activate_room(from_location:Dictionary, room_ref:int, is_activated:bool, show_confirm_modal:bool = true) -> void:
 	var floor_index:int = from_location.floor
 	var ring_index:int = from_location.ring
 	var room_index:int = from_location.room
 	var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 	
-	ConfirmModal.set_text("Activate this room?" if is_activated else "Deactivate this room")
-	await show_only([ConfirmModal])	
-	var response:Dictionary = await ConfirmModal.user_response
+	# with confirm modal
+	if show_confirm_modal:
+		ConfirmModal.set_text("Activate this room?" if is_activated else "Deactivate this room")
+		await show_only([ConfirmModal])	
+		var response:Dictionary = await ConfirmModal.user_response
 	
-	match response.action:		
-		ACTION.NEXT:
-			var room_data:Dictionary = room_config.floor[from_location.floor].ring[from_location.ring].room[from_location.room].room_data
-			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_data.ref, resources_data, is_activated)
-			# set is activated state here
-			base_states.room[designation].is_activated = is_activated
-			SUBSCRIBE.base_states = base_states
-		
-			
-	await restore_default_state()
-	on_activate_room_complete.emit()
+		match response.action:		
+			ACTION.NEXT:
+				resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, resources_data, is_activated)
+				resources_data = ROOM_UTIL.calculate_activation_effect(room_ref, resources_data, is_activated)
+				SUBSCRIBE.resources_data = resources_data
+				# set is activated state here
+				base_states.room[designation].is_activated = is_activated
+				SUBSCRIBE.base_states = base_states
+
+		await restore_default_state()
+		on_activate_room_complete.emit()
+		return
+	
+	# without confirm modal
+	resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, resources_data, is_activated)
+	resources_data = ROOM_UTIL.calculate_activation_effect(room_ref, resources_data, is_activated)
+	SUBSCRIBE.resources_data = resources_data
+	# set is activated state here
+	base_states.room[designation].is_activated = is_activated
+	SUBSCRIBE.base_states = base_states
 # ---------------------
 
 # ---------------------
@@ -1236,30 +1389,8 @@ func on_completed_action(action_item:Dictionary) -> void:
 			)
 			
 			SUBSCRIBE.scp_data = scp_data
-			
 			await check_events(action_item.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
 		# ----------------------------
-		ACTION.AQ.BASE_ITEM:
-			purchased_base_arr.push_back({
-				"ref": action_item.ref,
-			})
-			SUBSCRIBE.resources_data = BASE_UTIL.calculate_build_complete(action_item.ref, resources_data)
-			SUBSCRIBE.purchased_base_arr = purchased_base_arr
-		# ----------------------------	
-		ACTION.AQ.BUILD_ITEM:
-			purchased_facility_arr.push_back({
-				"ref": action_item.ref,
-				"location": action_item.location.duplicate()
-			})
-
-			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_build_complete(action_item.ref, resources_data)
-			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
-		# ----------------------------
-		ACTION.AQ.RESEARCH_ITEM:
-			purchased_research_arr.push_back({
-				"ref": action_item.ref,
-			})
-			SUBSCRIBE.purchased_research_arr = purchased_research_arr
 			
 	remove_from_action_queue(action_item)
 # -----------------------------------
@@ -1366,6 +1497,24 @@ func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
 		}	
 	}
 # -----------------------------------
+
+# -----------------------------------
+func find_in_contained_via_location(from_location:Dictionary) -> Dictionary:
+	var index:int = -1
+	var res_data:Dictionary = {} 
+
+	for ind in scp_data.contained_list.size():
+		var data:Dictionary = scp_data.contained_list[ind]
+		if data.location.floor == from_location.floor and data.location.ring == from_location.ring and data.location.room == from_location.room:
+			index = ind
+			res_data = data
+			break	
+	
+	return {
+		"index": index,
+		"data": res_data
+	}
+# -----------------------------------	
 
 # -----------------------------------
 func find_in_contained(ref:int) -> Dictionary:
@@ -1526,6 +1675,19 @@ func contain_scp_cancel(from_location:Dictionary, action:ACTION.AQ) -> void:
 # -----------------------------------
 
 # -----------------------------------
+func set_scp_testing_state(from_location:Dictionary, is_testing:bool) -> void:
+	var scp_list_data:Dictionary = find_in_contained_via_location(from_location)
+	if is_testing:
+		await start_scp_testing(scp_list_data.data.ref)
+	else:
+		var filtered_arr:Array = action_queue_data.filter(func(i): return (i.location.floor == from_location.floor and i.location.ring == from_location.ring and i.location.room == from_location.room))
+		await cancel_action_queue(filtered_arr[0])
+		
+	await restore_default_state()
+	on_scp_testing_complete.emit()
+# -----------------------------------	
+
+# -----------------------------------
 func start_scp_testing(ref:int) -> void:
 	# resets it in the available list
 	var res:Dictionary = find_in_contained(ref)
@@ -1668,6 +1830,18 @@ func dismiss_researcher(researcher_data:Dictionary) -> void:
 # -----------------------------------
 
 # -----------------------------------
+func assign_researcher_to_scp(location:Dictionary, assign:bool) -> void:
+	var scp_list_data:Dictionary = find_in_contained_via_location(location)
+	if assign:
+		await assign_researcher_to_scp_find_researcher(scp_list_data.data)
+	else:
+		await unassign_researcher_to_scp(scp_list_data.data.ref)
+		
+	await restore_default_state()
+	on_assign_researcher_to_scp_complete.emit()
+# -----------------------------------	
+
+# -----------------------------------
 func assign_researcher_to_scp_find_researcher(scp_details:Dictionary) -> void:
 	ResearchersContainer.assign_only = true
 	await show_only([ResearchersContainer])
@@ -1699,10 +1873,10 @@ func assign_researcher_to_scp_find_scp(reseacher_details:Dictionary) -> void:
 			SUBSCRIBE.scp_data = scp_data	
 # -----------------------------------
 
-
 # -----------------------------------
-func unassign_researcher_to_scp(scp_details:Dictionary) -> void:
-	var res:Dictionary = find_in_contained(scp_details.ref)
+func unassign_researcher_to_scp(scp_ref:int) -> void:
+	var res:Dictionary = find_in_contained(scp_ref)
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr)
@@ -1765,7 +1939,7 @@ func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 	set_room_config()
 
 func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
-	action_queue_data = new_val
+	action_queue_data = new_val	
 	set_room_config()
 
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
@@ -1887,7 +2061,7 @@ func on_current_shop_step_update() -> void:
 	
 	match current_shop_step:
 		# ---------------
-		SHOP_STEPS.HIDE:
+		SHOP_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 			StoreContainer.end()
@@ -1904,7 +2078,7 @@ func on_current_shop_step_update() -> void:
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.PURCHASE.BACK:
-					current_shop_step = SHOP_STEPS.HIDE
+					current_shop_step = SHOP_STEPS.RESET
 					
 				ACTION.PURCHASE.TIER_ITEM:
 					selected_shop_item = response.selected
@@ -1934,7 +2108,7 @@ func on_current_shop_step_update() -> void:
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.PURCHASE.BACK:
-					current_shop_step = SHOP_STEPS.HIDE
+					current_shop_step = SHOP_STEPS.RESET
 					
 				ACTION.PURCHASE.TIER_ITEM:
 					selected_shop_item = response.selected
@@ -2029,7 +2203,7 @@ func on_current_shop_step_update() -> void:
 			})
 			
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.HIDE
+			current_shop_step = SHOP_STEPS.RESET
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
 			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
@@ -2090,7 +2264,7 @@ func on_current_contain_step_update() -> void:
 	
 	match current_contain_step:
 		# ---------------
-		CONTAIN_STEPS.HIDE:
+		CONTAIN_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 		# ---------------
@@ -2109,7 +2283,7 @@ func on_current_contain_step_update() -> void:
 			match response.action:
 				# --------------------
 				ACTION.CONTAINED.BACK:
-					current_contain_step = CONTAIN_STEPS.HIDE
+					current_contain_step = CONTAIN_STEPS.RESET
 				# --------------------
 				ACTION.CONTAINED.START_CONTAINMENT:
 					selected_contain_item.is_new_transfer = true
@@ -2135,7 +2309,7 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.START
 				# --------------------
 				ACTION.CONTAINED.UNASSIGN_RESEARCHER:
-					await unassign_researcher_to_scp(selected_contain_item)
+					await unassign_researcher_to_scp(selected_contain_item.ref)
 					current_contain_step = CONTAIN_STEPS.START
 				# --------------------
 				ACTION.CONTAINED.START_TESTING:
@@ -2275,7 +2449,7 @@ func on_current_recruit_step_update() -> void:
 
 	match current_recruit_step:
 		# ---------------
-		RECRUIT_STEPS.HIDE:
+		RECRUIT_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 		# ---------------
@@ -2288,7 +2462,7 @@ func on_current_recruit_step_update() -> void:
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
 				ACTION.HIRE.BACK:
-					current_recruit_step = RECRUIT_STEPS.HIDE
+					current_recruit_step = RECRUIT_STEPS.RESET
 				ACTION.HIRE.LEAD:
 					selected_lead_hire = response.data
 					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_LEAD
@@ -2333,7 +2507,7 @@ func on_current_action_complete_step_update() -> void:
 
 	match current_action_complete_step:
 		# ---------------
-		ACTION_COMPLETE_STEPS.HIDE:
+		ACTION_COMPLETE_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 		# ---------------
@@ -2341,30 +2515,49 @@ func on_current_action_complete_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			revert_state_location = current_location
 			BuildCompleteContainer.completed_build_items = completed_actions
-			await show_only([BuildCompleteContainer])
-			var response:Dictionary = await BuildCompleteContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			match response.action:
-				ACTION.DONE:
-					current_action_complete_step = ACTION_COMPLETE_STEPS.HIDE
-				ACTION.SKIP:
-					current_action_complete_step = ACTION_COMPLETE_STEPS.HIDE
 			
+			
+			for item in completed_actions:
+				match item.action:
+					# ----------------------------
+					ACTION.AQ.BASE_ITEM:
+						purchased_base_arr.push_back({
+							"ref": item.ref,
+						})
+						SUBSCRIBE.purchased_base_arr = purchased_base_arr
+					# ----------------------------	
+					ACTION.AQ.BUILD_ITEM:
+						purchased_facility_arr.push_back({
+							"ref": item.ref,
+							"location": item.location.duplicate()
+						})
+						SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+					# ----------------------------
+					ACTION.AQ.RESEARCH_ITEM:
+						purchased_research_arr.push_back({
+							"ref": item.ref,
+						})
+						SUBSCRIBE.purchased_research_arr = purchased_research_arr
+			
+			
+			await show_only([BuildCompleteContainer])
+			await BuildCompleteContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			
+			# move back to current location
 			current_location = revert_state_location
 			
 			# REMOVES FROM QUEUE LIST
 			await ActionQueueContainer.remove_from_queue(completed_actions)
-			
-			# resets event_data 
-			var event_data_arr:Array = []
 		
-			# UPDATE SAVABLE DATA
+			# CHECK FOR EVENTS
 			for item in completed_actions:
 				await on_completed_action(item)
 				
 			# update reactively
 			completed_actions = []
 			on_complete_build_complete.emit()
+			current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
 			
 #endregion
 # ------------------------------------------------------------------------------		
@@ -2449,7 +2642,7 @@ func on_current_researcher_step_update() -> void:
 				ACTION.RESEARCHERS.DISMISS:
 					current_researcher_step = RESEARCHERS_STEPS.DISMISS
 				ACTION.RESEARCHERS.UNASSIGN_FROM_SCP:
-					await unassign_researcher_to_scp(selected_scp_details)
+					await unassign_researcher_to_scp(selected_scp_details.ref)
 					current_researcher_step = RESEARCHERS_STEPS.START
 				ACTION.RESEARCHERS.ASSIGN_TO_SCP:
 					await assign_researcher_to_scp_find_scp(selected_researcher_item)
@@ -2475,8 +2668,7 @@ func on_current_researcher_step_update() -> void:
 						EVT.DISMISS_TYPE.TERMINATE:
 							print('dec morale')
 			}
-			event_data = [EVENT_UTIL.run_event(EVT.TYPE.DISMISS_RESEARCHER, props)]
-			await on_events_complete
+			await triggger_event(EVT.TYPE.DISMISS_RESEARCHER, props)
 			dismiss_researcher(selected_researcher_item)
 			current_researcher_step = RESEARCHERS_STEPS.START
 #endregion
@@ -2487,7 +2679,7 @@ func on_current_researcher_step_update() -> void:
 func is_occupied() -> bool:
 	if is_busy or processing_next_day or GBL.has_animation_in_queue():
 		return true
-	if (current_shop_step != SHOP_STEPS.HIDE) or (current_contain_step != CONTAIN_STEPS.HIDE) or (current_recruit_step != RECRUIT_STEPS.HIDE) or (current_action_complete_step != ACTION_COMPLETE_STEPS.HIDE) or (current_event_step != EVENT_STEPS.RESET):
+	if (current_shop_step != SHOP_STEPS.RESET) or (current_contain_step != CONTAIN_STEPS.RESET) or (current_recruit_step != RECRUIT_STEPS.RESET) or (current_action_complete_step != ACTION_COMPLETE_STEPS.RESET) or (current_event_step != EVENT_STEPS.RESET):
 		return true
 	return false
 
@@ -2542,47 +2734,33 @@ func quickload() -> void:
 	else:
 		print("quickload failed :(")
 	is_busy = false
-	
+
 		
 func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	setup_complete = false
 	var no_save:bool = restore_data.is_empty()
 	if debug_mode:
 		no_save = true
-	await restore_default_state()
-	
-	# trigger on reset in nodes
-	for node in get_all_container_nodes():
-		if "on_reset" in node:
-			node.on_reset()
-	
+		
 	# non-reactive data that's used but doesn't require a subscription
-	#room_states = initial_values.room_states if no_save else restore_data.room_states
-	
-	SUBSCRIBE.progress_data = initial_values.progress_data if no_save else restore_data.progress_data
-	SUBSCRIBE.scp_data = initial_values.scp_data if no_save else restore_data.scp_data
-	SUBSCRIBE.action_queue_data = initial_values.action_queue_data if no_save else restore_data.action_queue_data	
-	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr if no_save else restore_data.purchased_facility_arr  
-	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr if no_save else restore_data.purchased_base_arr
-	SUBSCRIBE.resources_data = initial_values.resources_data if no_save else restore_data.resources_data	
-	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms if no_save else restore_data.bookmarked_rooms
-	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list if no_save else restore_data.researcher_hire_list
-	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr if no_save else restore_data.purchased_research_arr
-	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked if no_save else restore_data.tier_unlocked
-	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms if no_save else restore_data.unavailable_rooms
-	SUBSCRIBE.base_states = initial_values.base_states if no_save else restore_data.base_states
+	SUBSCRIBE.progress_data = initial_values.progress_data.call() if no_save else restore_data.progress_data
+	SUBSCRIBE.scp_data = initial_values.scp_data.call() if no_save else restore_data.scp_data
+	SUBSCRIBE.action_queue_data = initial_values.action_queue_data.call() if no_save else restore_data.action_queue_data	
+	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if no_save else restore_data.purchased_facility_arr  
+	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if no_save else restore_data.purchased_base_arr
+	SUBSCRIBE.resources_data = initial_values.resources_data.call() if no_save else restore_data.resources_data	
+	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if no_save else restore_data.bookmarked_rooms
+	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if no_save else restore_data.researcher_hire_list
+	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if no_save else restore_data.purchased_research_arr
+	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked.call() if no_save else restore_data.tier_unlocked
+	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms.call() if no_save else restore_data.unavailable_rooms
+	SUBSCRIBE.base_states = initial_values.base_states.call() if no_save else restore_data.base_states
 	
 	# comes after purchased_research_arr, fix this later
-	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr if no_save else restore_data.hired_lead_researchers_arr
+	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr.call() if no_save else restore_data.hired_lead_researchers_arr
 	
 	# don't need to be saved, just load from defaults
-	SUBSCRIBE.current_location = initial_values.current_location 
-	SUBSCRIBE.camera_settings = initial_values.camera_settings 
-	setup_complete = true
-	
-	# runs room config once everything is ready
-	set_room_config()
+	SUBSCRIBE.current_location = initial_values.current_location.call() 
+	SUBSCRIBE.camera_settings = initial_values.camera_settings.call() 
 
-	
 #endregion		
 # ------------------------------------------------------------------------------

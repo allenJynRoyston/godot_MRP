@@ -11,23 +11,21 @@ extends PanelContainer
 const DetailBtnPreload:PackedScene = preload("res://UI/Buttons/DetailBtn/DetailBtn.tscn")
 
 var gameplay_node:Control
-
 var resources_data:Dictionary = {}
-
 var purchased_facility_arr:Array = [] 
-
 var action_queue_data:Array = []
-
 var scp_data:Dictionary = {}
-
 var room_config:Dictionary = {}
+var base_states:Dictionary = {}
 
+# --------------------------------------------------------------------------------------------------	
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_action_queue_data(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_base_states(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
@@ -35,39 +33,48 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_base_states(self)
 	
 func _ready() -> void:
 	gameplay_node = GBL.find_node(REFS.GAMEPLAY_LOOP)
+# --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------	
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 	if !is_node_ready():return
-	var rd:Dictionary = resources_data[RESOURCE.TYPE.SECURITY]
+	var rd:Dictionary = resources_data[RESOURCE.TYPE.DCLASS]
 	TotalCapacity.text = "%s" % [rd.capacity]
 	TotalUtilized.text = "%s" % [rd.utilized]
 	TotalAvailable.text = "%s" % [rd.amount + rd.utilized]
 	TotalFree.text = "%s" % [rd.amount]
+# --------------------------------------------------------------------------------------------------	
 
-# -----------------------------------
+# --------------------------------------------------------------------------------------------------	
 func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 	action_queue_data = new_val
 	if !is_node_ready():return
-	build_list()
-# -----------------------------------
+# --------------------------------------------------------------------------------------------------	
 
-# -----------------------------------
+# --------------------------------------------------------------------------------------------------	
+func on_base_states_update(new_val:Dictionary = base_states) -> void:
+	base_states = new_val
+	if !is_node_ready():return
+	build_list()
+# --------------------------------------------------------------------------------------------------	
+# --------------------------------------------------------------------------------------------------	
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
 	if !is_node_ready():return
 	build_list()
-# -----------------------------------
+# --------------------------------------------------------------------------------------------------	
 
-# -----------------------------------
+# --------------------------------------------------------------------------------------------------	
 func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
 	purchased_facility_arr = new_val
 	if !is_node_ready():return
 	build_list()
-# -----------------------------------	
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
@@ -75,7 +82,6 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	if !is_node_ready():return
 	build_list()
 # --------------------------------------------------------------------------------------------------		
-
 
 # --------------------------------------------------------------------------------------------------		
 func traverse(callback:Callable) -> void:
@@ -93,23 +99,27 @@ func traverse(callback:Callable) -> void:
 
 # -----------------------------------
 func build_list() -> void:
-	if room_config.is_empty() or scp_data.is_empty():return
+	if room_config.is_empty() or scp_data.is_empty() or base_states.is_empty():return
 	 
 	for node in [CapacityList, UtilizedList]:
 		for child in node.get_children():
 			child.queue_free()			
 	
 		
-	# --- SEARCHES PURCHASED FACILITIES FOR CAPACITY 
+	# --- SEARCHES PURCHASED FACILITIES FOR CAPACITY 	
 	for item in purchased_facility_arr:
-		var build_complete_list:Array = ROOM_UTIL.return_build_complete(item.ref)
+		var list:Array = ROOM_UTIL.return_activation_effect(item.ref)
 		var details:Dictionary = ROOM_UTIL.return_data(item.ref)
-		for i in build_complete_list:
+		for i in list:
 			if i.resource.ref == RESOURCE.TYPE.SECURITY and i.type == "capacity":
 				var new_node:BtnBase = DetailBtnPreload.instantiate()
+				var designation:String = U.location_to_designation(item.location)
+				var is_activated:bool = base_states.room[designation].is_activated
+				
+				#var designation:String = item
 				new_node.title = details.name
-				new_node.icon = i.resource.icon
-				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
+				new_node.icon = i.resource.icon if is_activated else SVGS.TYPE.NO_ELECTRICITY
+				new_node.amount = ("%s%s" % ["+" if i.amount >= 0 else "-", i.amount]) if is_activated else 0
 #
 				new_node.onClick = func() -> void:
 					SUBSCRIBE.current_location = item.location.duplicate()

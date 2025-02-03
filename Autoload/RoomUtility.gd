@@ -18,23 +18,41 @@ var STARTING_BASE:Dictionary = {
 		return 1,
 	"get_build_time": func() -> int:
 		return 1,
+	
+	# ------------------------------------------
+	"metrics": {
+		"wing": {
+			RESOURCE.BASE_METRICS.MORALE: 2,
+			RESOURCE.BASE_METRICS.READINESS: 2,
+			RESOURCE.BASE_METRICS.SAFETY: 2,
+		}
+	},
+	# ------------------------------------------	
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: 0
+					RESOURCE.TYPE.MONEY: -2
 				},
 		}	
 	},
-	
-	"build_complete": {
+		
+	"activation_cost": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.STAFF: 10,
-					RESOURCE.TYPE.SECURITY: 10,
-					RESOURCE.TYPE.DCLASS: 10
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
+	
+	"activation_effect": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+
 				},
 			"capacity": func() -> Dictionary:
 				return {
@@ -49,12 +67,11 @@ var STARTING_BASE:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.ENERGY: -1,
 					RESOURCE.TYPE.MONEY: -1
 				},
-			
 		}	
-	}
+	}	
+	# ------------------------------------------
 }
 
 var R_AND_D_LAB:Dictionary = {
@@ -82,8 +99,9 @@ var R_AND_D_LAB:Dictionary = {
 	"own_limit": func() -> int:
 		return 3,
 	"get_build_time": func() -> int:
-		return 2,
+		return 1,
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -92,8 +110,17 @@ var R_AND_D_LAB:Dictionary = {
 				},
 		}	
 	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -101,21 +128,20 @@ var R_AND_D_LAB:Dictionary = {
 				},
 			"capacity": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.STAFF: 20
+			
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.ENERGY: -5,
-					RESOURCE.TYPE.MONEY: -5
+					RESOURCE.TYPE.MONEY: -1
 				},
-			
 		}	
-	}
+	}	
+	# ------------------------------------------
 }
 
 var CONSTRUCTION_YARD:Dictionary = {
@@ -142,16 +168,26 @@ var CONSTRUCTION_YARD:Dictionary = {
 	"get_build_time": func() -> int:
 		return 5,
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -30
+					RESOURCE.TYPE.MONEY: -20
 				},
 		}	
 	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -159,19 +195,20 @@ var CONSTRUCTION_YARD:Dictionary = {
 				},
 			"capacity": func() -> Dictionary:
 				return {
-					
+		
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -5
+					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}
+	}	
+	# ------------------------------------------
 }
 
 var BARRICKS:Dictionary = {
@@ -193,27 +230,26 @@ var BARRICKS:Dictionary = {
 	"get_build_time": func() -> int:
 		return 3,
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -40
+					RESOURCE.TYPE.MONEY: -20
 				},
 		}	
 	},
-	
+		
 	"activation_cost": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.DCLASS: -1,
-					RESOURCE.TYPE.STAFF: -1,
-					RESOURCE.TYPE.SECURITY: -5
+					RESOURCE.TYPE.ENERGY: -1,
 				},
 		}	
-	},
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -221,19 +257,20 @@ var BARRICKS:Dictionary = {
 				},
 			"capacity": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.SECURITY: 20
+					RESOURCE.TYPE.SECURITY: 10
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -10
+					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}
+	}	
+	# ------------------------------------------
 }
 
 var DORMITORY:Dictionary = {
@@ -255,6 +292,7 @@ var DORMITORY:Dictionary = {
 	"get_build_time": func() -> int:
 		return 3,
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -263,8 +301,17 @@ var DORMITORY:Dictionary = {
 				},
 		}	
 	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -275,16 +322,19 @@ var DORMITORY:Dictionary = {
 					RESOURCE.TYPE.STAFF: 20
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -10
+					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}
+	}	
+	# ------------------------------------------
+	
+
 }
 
 var HOLDING_CELLS:Dictionary = {
@@ -311,6 +361,7 @@ var HOLDING_CELLS:Dictionary = {
 	"get_build_time": func() -> int:
 		return 3,
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -319,8 +370,17 @@ var HOLDING_CELLS:Dictionary = {
 				},
 		}	
 	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -328,19 +388,20 @@ var HOLDING_CELLS:Dictionary = {
 				},
 			"capacity": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.DCLASS: 20
+					RESOURCE.TYPE.DCLASS: 10
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -5
+					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}
+	}	
+	# ------------------------------------------
 }
 
 var HR_DEPARTMENT:Dictionary = {
@@ -362,6 +423,7 @@ var HR_DEPARTMENT:Dictionary = {
 	"get_build_time": func() -> int:
 		return 5,
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -370,8 +432,17 @@ var HR_DEPARTMENT:Dictionary = {
 				},
 		}	
 	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -379,19 +450,20 @@ var HR_DEPARTMENT:Dictionary = {
 				},
 			"capacity": func() -> Dictionary:
 				return {
-
+					
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -2
+					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}
+	}	
+	# ------------------------------------------
 }
 
 var HUME_DETECTOR:Dictionary = {
@@ -413,16 +485,26 @@ var HUME_DETECTOR:Dictionary = {
 	"get_build_time": func() -> int:
 		return 3,
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -25
+					RESOURCE.TYPE.MONEY: -20
 				},
 		}	
 	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -5,
+				},
+		}	
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -430,19 +512,20 @@ var HUME_DETECTOR:Dictionary = {
 				},
 			"capacity": func() -> Dictionary:
 				return {
-
+					
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -5
+					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}
+	}	
+	# ------------------------------------------
 }
 
 
@@ -467,16 +550,26 @@ var STANDARD_LOCKER:Dictionary = {
 		return 3,
 	
 
+	# ------------------------------------------
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -5
+					RESOURCE.TYPE.MONEY: -20
 				},
 		}	
 	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
 	
-	"build_complete": {
+	"activation_effect": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
@@ -487,7 +580,7 @@ var STANDARD_LOCKER:Dictionary = {
 					
 				},			
 		}	
-	},	
+	},
 	
 	"operating_costs": {
 		"resources": {
@@ -496,7 +589,8 @@ var STANDARD_LOCKER:Dictionary = {
 					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}
+	}	
+	# ------------------------------------------
 
 }
 
@@ -582,8 +676,8 @@ func return_purchase_cost(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_build_complete(id:int) -> Array:
-	return SHARED_UTIL.return_resource_list(return_data(id), "build_complete")
+func return_activation_effect(id:int) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(id), "activation_effect")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -602,8 +696,8 @@ func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = fals
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_build_complete(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
-	return SHARED_UTIL.calculate_resources(return_data(ref), "build_complete", resources_data, !add)
+func calculate_activation_effect(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+	return SHARED_UTIL.calculate_resources(return_data(ref), "activation_effect", resources_data, !add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -633,8 +727,6 @@ func calculate_activation_cost(ref:int, resources_data:Dictionary, refund:bool =
 	
 	return resource_data_copy
 # ------------------------------------------------------------------------------
-
-
 
 # ------------------------------------------------------------------------------
 func get_count(ref:ROOM.TYPE, arr:Array) -> int:

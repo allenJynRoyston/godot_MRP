@@ -118,7 +118,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="MoraleLabel" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_sycwh")
@@ -160,7 +160,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="ReadinessLabel" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_sycwh")
@@ -202,7 +202,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="SafetyLabel" type="Label" parent="PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_sycwh")

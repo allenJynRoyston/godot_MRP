@@ -173,18 +173,18 @@ func on_show_menu_update() -> void:
 		menu_actions = []
 		
 		menu_actions.push_back({
-			"title": "INVESTIGATE",
+			"title": "BACK", 
 			"onSelect": func() -> void:
-				print("investigate...")
+				menu_response.emit({"action": ACTION.ROOM_NODE.BACK})
 		})
 				
 		if is_powered:
-			
 			var room_config_data:Dictionary = room_config.floor[assigned_location.floor].ring[assigned_location.ring].room[current_location.room]
 			var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
 			var room_under_construction:bool = !room_config_data.build_data.is_empty()
-			var room_can_be_cleared:bool = !room_config_data.room_data.is_empty()
-
+			var has_room:bool = !room_config_data.room_data.is_empty()
+			var has_scp_in_room:bool = false
+			
 			# ------------------- CONVERT, CANCEL OR REMOVE ROOM
 			if can_purchase:
 				menu_actions.push_back({
@@ -199,33 +199,37 @@ func on_show_menu_update() -> void:
 					"onSelect": func() -> void:
 						menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONSTRUCTION})
 				})
-			
-			if room_can_be_cleared:
-				menu_actions.push_back({
-					"title": "DESTROY ROOM",
-					"is_disabled": !room_config_data.scp_data.is_empty(),
-					"onSelect": func() -> void:
-						if room_config_data.scp_data.is_empty():
-							menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
-				})
 			# -------------------
 			
 			# -------------------
-			if !room_config_data.room_data.is_empty():
+			if has_room:
 				var room_details:Dictionary = room_config_data.room_data.get_room_details.call()
-				var is_activated:bool = room_config_data.room_data.get_is_activated.call()
-				var can_be_activated:bool = "activation_cost" in room_details
+				var is_activated:bool = room_config_data.room_data.get_is_activated.call()				
+				var is_disabled:bool = !RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false
+				var scp_data:Dictionary = room_config_data.scp_data			
 				var can_store_scp:bool = room_details.can_contain
-				
+				var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}				
+			
+				if !scp_details.is_empty():
+					is_disabled = true 	
+					has_scp_in_room = true
+
+				menu_actions.push_back({
+					"title": "DEACTIVATE ROOM" if is_activated else "ACTIVATE ROOM",
+					"is_disabled": is_disabled,
+					"onSelect": func() -> void:
+						if is_disabled:return
+						menu_response.emit({
+							"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
+						})
+				})				
+								
+
 				if can_store_scp:
-					var scp_data:Dictionary = room_config_data.scp_data
-					var is_empty:bool = scp_data.is_empty()
-					var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
-					var is_transfer:bool = false if scp_data.is_empty() else room_config_data.scp_data.is_transfer
-					var is_contained:bool = false if scp_data.is_empty() else room_config_data.scp_data.is_contained
-					var is_disabled:bool = false
-					
-	
+					var no_scp_data:bool = scp_data.is_empty()
+					var is_transfer:bool = false if no_scp_data else room_config_data.scp_data.is_transfer
+					var is_contained:bool = false if no_scp_data else room_config_data.scp_data.is_contained
+		
 					if is_transfer:
 						menu_actions.push_back({
 							"title": "CANCEL CONTAINMENT" if !is_contained else "CANCEL TRANSFER",
@@ -234,38 +238,49 @@ func on_show_menu_update() -> void:
 									"action": ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP if !is_contained else ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP
 								})
 						})
-					else:
+						
+					
+					menu_actions.push_back({
+						"title": "CONTAIN SCP..." if no_scp_data else "TRANSFER SCP-%s" % [scp_details.item_id],
+						"onSelect": func() -> void:
+							menu_response.emit({
+								"action": ACTION.ROOM_NODE.CONTAIN_SCP if no_scp_data else ACTION.ROOM_NODE.TRANSFER_SCP
+							})
+					})
+						
+					if is_contained:
+						var has_researcher_attached:bool = !room_config_data.scp_data.get_researcher_details.call().is_empty()
 						menu_actions.push_back({
-							"title": "CONTAIN SCP..." if is_empty else "TRANSFER SCP-%s" % [scp_details.item_id],
+							"title": "ASSIGN RESEARCHER" if !has_researcher_attached else "REMOVE RESEARCHER",
 							"onSelect": func() -> void:
 								menu_response.emit({
-									"action": ACTION.ROOM_NODE.CONTAIN_SCP if is_empty else ACTION.ROOM_NODE.TRANSFER_SCP
+									"action": ACTION.ROOM_NODE.REMOVE_RESEARCHER if has_researcher_attached else ACTION.ROOM_NODE.ASSIGN_RESEARCHER
 								})
 						})
-				#var is_scp_empty:bool = room_config.scp_data.is_empty()
-				
-				if can_be_activated:
-					var is_disabled:bool = !RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false
-				
-					menu_actions.push_back({
-						"title": "DEACTIVATED ROOM" if is_activated else "ACTIVATED ROOM",
-						"is_disabled": is_disabled,
-						"onSelect": func() -> void:
-							if !is_disabled:
-								menu_response.emit({
-									"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
-								})
-							pass
-					})
+					
+						if has_researcher_attached:
+							var has_testing_details:bool = !room_config_data.scp_data.get_testing_details.call().is_empty()
+							menu_actions.push_back({
+								"title": "START TESTING" if !has_testing_details else "END TESTING",
+								"onSelect": func() -> void:
+									menu_response.emit({
+										"action": ACTION.ROOM_NODE.STOP_TESTING if has_testing_details else ACTION.ROOM_NODE.START_TESTING
+									})
+							})						
+
+			if has_room:
+				menu_actions.push_back({
+					"title": "DESTROY ROOM",
+					"is_disabled": has_scp_in_room,
+					"onSelect": func() -> void:
+						if !has_scp_in_room:
+							menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
+				})
 					
 			# -------------------
 		
 		# -------------------
-		menu_actions.push_back({
-			"title": "BACK", 
-			"onSelect": func() -> void:
-				menu_response.emit({"action": ACTION.ROOM_NODE.BACK})
-		})
+
 		#else:
 			#menu_actions = [
 				#{

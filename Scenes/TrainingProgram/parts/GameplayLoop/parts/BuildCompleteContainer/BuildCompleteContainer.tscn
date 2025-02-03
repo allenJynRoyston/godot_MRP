@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://85i830v26h73"]
+[gd_scene load_steps=13 format=3 uid="uid://85i830v26h73"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildCompleteContainer/build_complete_container.gd" id="1_0s54v"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_4ryf8"]
@@ -24,10 +24,13 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_j1538"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t11pb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_is8cb"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m8a6h"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kphir"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3qvgt"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="BuildCompleteContainer" type="MarginContainer"]
@@ -40,7 +43,7 @@ texture = SubResource("ViewportTexture_250ra")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(330, 242)
+size = Vector2i(330, 240)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 250.0
@@ -95,15 +98,23 @@ alignment = 1
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_t11pb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_is8cb")
 icon = 8
 title = "Skip"
 
 [node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_knmmc")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_m8a6h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kphir")
 icon = 27
 title = "Close"
+
+[node name="Activate" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_knmmc")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_3qvgt")
+icon = 27
+title = "Activate"
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

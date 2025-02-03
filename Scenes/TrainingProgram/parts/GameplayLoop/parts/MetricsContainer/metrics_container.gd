@@ -5,6 +5,10 @@ extends GameContainer
 @onready var MetricsPanel:HBoxContainer = $PanelContainer/VBoxContainer/MetricsPanel
 @onready var StatusLabel:Label = $PanelContainer/VBoxContainer/StatusLabel
 
+@onready var ReadinessLabel:Label = $PanelContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer/ReadinessLabel
+@onready var SafetyLabel:Label = $PanelContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer/SafetyLabel
+@onready var MoraleLabel:Label = $PanelContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer/MoraleLabel
+
 var in_lockdown:bool = false
 var is_powered:bool = false
 
@@ -35,6 +39,7 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return
 	update_status_label()
+	update_metrics_labels()
 
 func on_purchased_facility_arr_update(new_val:Array) -> void:
 	super.on_purchased_facility_arr_update(new_val)
@@ -56,6 +61,7 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	if !is_node_ready():return
 	update_status_label()
 	update_panels()
+	update_metrics_labels()
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -64,8 +70,24 @@ func update_panels() -> void:
 	var show_metrics:bool = ROOM_UTIL.get_count(ROOM.TYPE.HR_DEPARTMENT, purchased_facility_arr) > 0
 	var show_hume:bool = ROOM_UTIL.get_count(ROOM.TYPE.HUME_DETECTOR, purchased_facility_arr) > 0
 
-	MetricsPanel.show() if show_metrics else MetricsPanel.hide()
-	HumePanel.show()if show_hume else HumePanel.hide()
+	MetricsPanel.show() #if show_metrics else MetricsPanel.hide()
+	HumePanel.show() #if show_hume else HumePanel.hide()
+# -----------------------------------------------
+
+# -----------------------------------------------
+func update_metrics_labels() -> void:
+	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
+	var ring_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+	
+	for key in ring_data.metrics:
+		var amount:int = ring_data.metrics[key]
+		match key:
+			RESOURCE.BASE_METRICS.MORALE:
+				MoraleLabel.text = str(amount) if ring_data.room_refs.size() > 0 else "-"
+			RESOURCE.BASE_METRICS.READINESS:
+				ReadinessLabel.text = str(amount) if ring_data.room_refs.size() > 0 else "-"
+			RESOURCE.BASE_METRICS.SAFETY:
+				SafetyLabel.text = str(amount) if ring_data.room_refs.size() > 0 else "-"
 # -----------------------------------------------
 
 # -----------------------------------------------

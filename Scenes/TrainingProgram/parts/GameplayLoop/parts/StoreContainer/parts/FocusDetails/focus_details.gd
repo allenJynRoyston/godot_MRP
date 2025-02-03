@@ -85,13 +85,13 @@ func on_data_update() -> void:
 			
 			var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(data.ref)
 			var purchase_cost_list:Array = ROOM_UTIL.return_purchase_cost(data.ref)
-			var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.ref)
-
-			for item in build_complete_list:
-				var new_node:BtnBase = TextButtonPreload.instantiate()		
-				new_node.icon = item.resource.icon
-				new_node.title = "+%s [%s]" % [item.amount, item.type]
-				EffectList.add_child(new_node)
+			#var build_complete_list:Array = ROOM_UTIL.return_build_complete(data.ref)
+#
+			#for item in build_complete_list:
+				#var new_node:BtnBase = TextButtonPreload.instantiate()		
+				#new_node.icon = item.resource.icon
+				#new_node.title = "+%s [%s]" % [item.amount, item.type]
+				#EffectList.add_child(new_node)
 				
 			for item in operating_cost_list:
 				var new_node:BtnBase = TextButtonPreload.instantiate()		

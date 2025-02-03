@@ -42,15 +42,11 @@ func _ready() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
 	# ENABLE FOR DESKTOP PC 
-	#on_fullscreen_update(resolution)
-	#toggle_fullscreen()
-	
-	# ENABLE FOR MACBOOK 
-	on_fullscreen_update(Vector2(1280, 720))
-	
-	
-	
+	on_fullscreen_update(resolution)
 
+	# ENABLE FOR MACBOOK 
+	#on_fullscreen_update(Vector2(1280, 720))
+	
 	activate_children.call_deferred()
 # -----------------------------------		
 
@@ -61,6 +57,9 @@ func activate_children() -> void:
 		node.set_process(true)
 		node.set_physics_process(true)
 		node.start()
+		
+	#await U.set_timeout(1.0)
+	#toggle_fullscreen()		
 # -----------------------------------
 
 # -----------------------------------	

@@ -10,13 +10,13 @@ bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_7haf2"]
 color = Color(0.794121, 0.794121, 0.794121, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nd6ps"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcb16"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rytt3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ornly"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u622"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qaied"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="TierUnlock" type="PanelContainer"]
@@ -74,9 +74,8 @@ alignment = 1
 
 [node name="TextBtn" parent="MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer/MarginContainer/ResourceContainer" instance=ExtResource("3_dud44")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nd6ps")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lcb16")
 icon = 30
-is_disabled = false
 title = "Resource"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer"]
@@ -85,12 +84,10 @@ alignment = 2
 
 [node name="BackBtn" parent="MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_dud44")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rytt3")
-is_disabled = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_ornly")
 title = "Back"
 
 [node name="ConfirmBtn" parent="MarginContainer/PanelContainer/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_dud44")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0u622")
-is_disabled = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_qaied")
 title = "Unlock"

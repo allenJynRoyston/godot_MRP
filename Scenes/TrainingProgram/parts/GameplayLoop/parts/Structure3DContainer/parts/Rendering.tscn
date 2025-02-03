@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="2_6hp44"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_sjn22"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_m0beu"]
-[ext_resource type="PackedScene" uid="uid://i20apuqnuudg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodes.tscn" id="4_ujma6"]
+[ext_resource type="PackedScene" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodes.tscn" id="4_ujma6"]
 [ext_resource type="FontFile" uid="uid://ca1uev10lghsn" path="res://Fonts/dogicapixel.ttf" id="5_ptqq7"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_rrca0"]
 
@@ -55,10 +55,10 @@ grow_end = -5.0
 font = ExtResource("5_ptqq7")
 font_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kc5sn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_huaut"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_45rwv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atwov"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="Rendering" type="Node3D"]
@@ -214,15 +214,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_mxkok")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
+[node name="SCPList" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/SCPList"]
 layout_mode = 2
 text = "SCP-001"
 label_settings = SubResource("LabelSettings_nf4rx")
 
-[node name="Label2" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/SCPList"]
 layout_mode = 2
 text = "SCP-002"
 label_settings = SubResource("LabelSettings_nf4rx")
@@ -265,12 +265,12 @@ layout_mode = 2
 
 [node name="TextBtn" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kc5sn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_huaut")
 title = "ACTION 1"
 
 [node name="TextBtn2" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_45rwv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_atwov")
 title = "ACTION 1"
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="_on_panel_container_item_rect_changed"]

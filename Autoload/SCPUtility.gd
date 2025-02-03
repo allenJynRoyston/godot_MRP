@@ -30,6 +30,14 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 	
 	# -----------------------------------
+	"metrics": {
+		"wing": {
+			RESOURCE.BASE_METRICS.MORALE: -1,
+		}
+	},
+	# -----------------------------------
+	
+	# -----------------------------------
 	"initial_containment": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -602,6 +610,15 @@ var SCP_002:Dictionary = {
 			"That person is never seen again."
 		],
 	# -----------------------------------
+	
+	# -----------------------------------
+	"metrics": {
+		"wing": {
+			RESOURCE.BASE_METRICS.READINESS: -1,
+			RESOURCE.BASE_METRICS.MORALE: 1,
+		}
+	},
+	# -----------------------------------	
 	
 	# -----------------------------------
 	"initial_containment": {

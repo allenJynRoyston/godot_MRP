@@ -22,6 +22,7 @@ extends Node3D
 
 @onready var RoomNodeSprite:Sprite3D = $RoomScene/RoomNodeContainer/Sprite3D
 @onready var RoomNode:Control = $RoomScene/RoomNodeContainer/Sprite3D/SubViewport/RoomNode
+@onready var SCPList:VBoxContainer = $ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/SCPList
 
 @onready var ControlLayerSprite:Sprite3D = $SpriteLayer/ControlLayerSprite
 
@@ -87,16 +88,18 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
-	if !is_node_ready():return
+	if !is_node_ready() or room_config.is_empty():return
 	if !setup_complete:
 		setup_complete = true
 		build_floors()
+	update_floor_content_labels()
 # --------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	update_cameras()
+	update_floor_content_labels()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -126,6 +129,21 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 
 			
 		GBL.remove_from_animation_queue(self)
+# ------------------------------------------------
+
+# ------------------------------------------------
+func update_floor_content_labels() -> void:
+	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return 
+	var floor_data:Dictionary = room_config.floor[current_location.floor]
+	for child in SCPList.get_children():
+		child.queue_free()
+	
+	for ref in floor_data.scp_refs:
+		var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+		var new_node:Control = TextBtnPreload.instantiate()
+		new_node.is_hoverable = false
+		new_node.title = scp_details.name
+		SCPList.add_child(new_node)
 # ------------------------------------------------
 
 # ------------------------------------------------

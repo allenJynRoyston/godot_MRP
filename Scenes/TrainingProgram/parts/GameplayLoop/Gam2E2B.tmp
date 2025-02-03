@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=25 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
@@ -22,7 +22,6 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="18_4sn0g"]
 [ext_resource type="PackedScene" uid="uid://nfj5ltcydj3b" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/EndofPhaseContainer.tscn" id="18_p3gf7"]
 [ext_resource type="PackedScene" uid="uid://be17dg4n3r505" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BackContainer/BackContainer.tscn" id="19_idmig"]
-[ext_resource type="PackedScene" uid="uid://bxish5x37ra5e" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn" id="21_jqp8v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxod"]
 
@@ -43,12 +42,26 @@ rotation = -0.000363817
 scale = Vector2(0.992646, 1.01056)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+debug_mode = true
+show_structures = null
+show_location = null
+show_action_queue = null
 room_item_status = false
+show_actions = null
 show_resources = false
 show_dialogue = false
+show_store = null
+show_recruit = null
+show_reseachers = null
+show_containment_status = null
+show_confirm_modal = null
 show_status = true
 show_info = true
+show_events = null
+show_build_complete = null
 show_metrics = true
+show_back = null
+show_end_of_phase = null
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
@@ -161,10 +174,6 @@ custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
-
-[node name="SetupContainer" parent="." instance=ExtResource("21_jqp8v")]
-visible = false
-layout_mode = 2
 
 [node name="WaitContainer" type="PanelContainer" parent="."]
 visible = false
