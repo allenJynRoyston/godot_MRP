@@ -851,7 +851,7 @@ func set_room_config(force_setup:bool = false) -> void:
 				"get_scp_details": func() -> Dictionary:
 					return SCP_UTIL.return_data(item.ref),
 				"get_researcher_details": func() -> Dictionary:
-					return item.lead_researcher,
+					return RESEARCHER_UTIL.return_data_with_uid(item.lead_researcher.uid, hired_lead_researchers_arr) if !item.lead_researcher.is_empty() else {},
 				"get_testing_details": func() -> Dictionary:
 					return item.current_testing
 			}
@@ -1109,7 +1109,7 @@ func update_progress_data() -> void:
 						)
 						
 						progress_data.record.push_back({
-							"source": "SCP-X%s" % [scp_details.item_id],
+							"source": "X%s" % [scp_details.name],
 							"day": days_till_report_limit - progress_data.days_till_report,
 							"designation": designation,
 							"location": {
@@ -1586,7 +1586,7 @@ func contain_scp(from_location:Dictionary) -> void:
 					"icon": SVGS.TYPE.CONTAIN,
 				},
 				"completed_at": scp_details.containment_time.call(),
-				"description": "SCP-%s %s." % [scp_details.item_id, "CONTAINMENT"],
+				"description": "%s %s." % [scp_details.name, "CONTAINMENT"],
 				"location": from_location.duplicate()
 			})			
 			
@@ -1615,7 +1615,7 @@ func transfer_scp(from_location:Dictionary) -> void:
 			SUBSCRIBE.unavailable_rooms = []
 		ACTION.NEXT:
 			SUBSCRIBE.unavailable_rooms = []
-			ConfirmModal.set_text("Transfer SCP-%s here?" % [scp_details.item_id])
+			ConfirmModal.set_text("Transfer %s here?" % [scp_details.name])
 			await show_only([Structure3dContainer, LocationContainer, ConfirmModal])	
 			var response:Dictionary = await ConfirmModal.user_response	
 			
@@ -1642,7 +1642,7 @@ func transfer_scp(from_location:Dictionary) -> void:
 							"icon": SVGS.TYPE.CONTAIN,
 						},
 						"completed_at": scp_details.containment_time.call(),
-						"description": "SCP-%s %s." % [scp_details.item_id, "TRANSFER" ],
+						"description": "%s %s." % [scp_details.name, "TRANSFER" ],
 						"location": current_location.duplicate()
 					})			
 	
@@ -1709,12 +1709,12 @@ func start_scp_testing(ref:int) -> void:
 			"icon": SVGS.TYPE.CONTAIN,
 		},
 		"completed_at": 1,
-		"description": "Accessing SCP-%s." % [scp_details.item_id],
+		"description": "Accessing %s." % [scp_details.name],
 		"location": list_data.location
 	})	
 	
 	ConfirmModal.confirm_only = true
-	ConfirmModal.set_text("Researcher %s begins accessing SCP-%s." % [researcher_details.name, scp_details.item_id])
+	ConfirmModal.set_text("Researcher %s begins accessing %s." % [researcher_details.name, scp_details.name])
 	await show_only([ConfirmModal])	
 	var response:Dictionary = await ConfirmModal.user_response
 	
@@ -1750,7 +1750,7 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 				"icon": SVGS.TYPE.RESEARCH,
 			},
 			"completed_at": 7,
-			"description": "Testing SCP-%s." % [scp_details.item_id],
+			"description": "Testing %s." % [scp_details.name],
 			"location": list_data.location,
 		}, {
 			"testing_ref": testing_ref, 
@@ -1881,7 +1881,7 @@ func unassign_researcher_to_scp(scp_ref:int) -> void:
 	var list_data:Dictionary = res.data
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr)
 
-	ConfirmModal.set_text("Remove %s as Lead Researcher on SCP-%s?" % [researcher_details.name, scp_details.item_id])
+	ConfirmModal.set_text("Remove %s as Lead Researcher on %s?" % [researcher_details.name, scp_details.name])
 	await show_only([ConfirmModal])
 	var response:Dictionary = await ConfirmModal.user_response
 	match response.action:
@@ -2431,7 +2431,7 @@ func on_current_contain_step_update() -> void:
 					"icon": SVGS.TYPE.CONTAIN,
 				},
 				"completed_at": scp_details.containment_time.call(),
-				"description": "SCP-%s %s." % [selected_contain_item.item_id, "CONTAINMENT" if selected_contain_item.is_new_transfer else "TRANSFER" ],
+				"description": "%s %s." % [selected_contain_item.name, "CONTAINMENT" if selected_contain_item.is_new_transfer else "TRANSFER" ],
 				"location": current_location.duplicate()
 			})			
 			

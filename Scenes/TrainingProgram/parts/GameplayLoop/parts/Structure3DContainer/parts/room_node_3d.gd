@@ -15,8 +15,9 @@ extends Node3D
 @onready var TopPanelLabel2:Label = $RoomNode/TopPanelViewport/PanelContainer/MarginContainer/Label2
 @onready var InsideTextureRect:TextureRect = $RoomNode/InsideViewport/PanelContainer/TextureRect
 
-@onready var ActivationLight:OmniLight3D = $RoomNode/Node3D/MeshInstance3D/ActivationLight
-@onready var PulseEffectFX:SpotLight3D = $RoomNode/Node3D/MeshInstance3D/PulseEffectFX
+@onready var ActiveBox:MeshInstance3D = $RoomNode/Node3D/ActiveBox
+@onready var ActivationLight:OmniLight3D = $RoomNode/Node3D/ActiveBox/ActivationLight
+@onready var PulseEffectFX:SpotLight3D = $RoomNode/Node3D/ActiveBox/PulseEffectFX
 
 enum STATES { NONE, ACTIVE, INACTIVE, UNAVAILABLE }
 
@@ -175,6 +176,8 @@ func on_show_internal_update() -> void:
 	MainMesh.mesh.flip_faces = show_internal
 	FrontLeftPanel.show() if !show_internal else FrontLeftPanel.hide()
 	FrontRightPanel.show() if !show_internal else FrontRightPanel.hide()
+	TopPanelLabel.show() if !show_internal else TopPanelLabel.hide()
+	ActiveBox.show() if !show_internal else ActiveBox.hide()
 # ---------------------------------------------------
 
 # ---------------------------------------------------
@@ -301,20 +304,20 @@ func tween_property(node:Node3D, property:String, new_val, duration:float = 0.3)
 # ------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or !is_node_ready():return
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-
-	if is_focused:
-		match key:
-			"TL":
-				show_side = SIDES.NEUTRAL if show_side == SIDES.LEFT else SIDES.LEFT
-			"TR":
-				show_side = SIDES.NEUTRAL if show_side == SIDES.RIGHT else SIDES.RIGHT			
-			"SPACEBAR":
-				show_side = SIDES.NEUTRAL
-				show_internal = !show_internal
+#func on_control_input_update(input_data:Dictionary) -> void:
+	#if !is_visible_in_tree() or !is_node_ready():return
+	#var key:String = input_data.key
+	#var keycode:int = input_data.keycode
+#
+	#if is_focused:
+		#match key:
+			#"TL":
+				#show_side = SIDES.NEUTRAL if show_side == SIDES.LEFT else SIDES.LEFT
+			#"TR":
+				#show_side = SIDES.NEUTRAL if show_side == SIDES.RIGHT else SIDES.RIGHT			
+			#"SPACEBAR":
+				#show_side = SIDES.NEUTRAL
+				#show_internal = !show_internal
 			
 # --------------------------------------------------------------------------------------------------	
 

@@ -133,7 +133,7 @@ func build_list() -> void:
 		for i in list_data:
 			if i.resource.ref == RESOURCE.TYPE.SECURITY and i.type == "capacity":
 				var new_node:BtnBase = DetailBtnPreload.instantiate()
-				new_node.title = "SCP-%s" % [details.item_id]
+				new_node.title = "%s" % [details.name]
 				new_node.icon = i.resource.icon
 				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
 				
@@ -151,7 +151,7 @@ func build_list() -> void:
 					var details:Dictionary = SCP_UTIL.return_data(item.ref)
 					var amount:int = item.props.utilized_amounts[key]
 					var new_node:BtnBase = DetailBtnPreload.instantiate()
-					new_node.title = "SCP-%s" % [details.item_id]
+					new_node.title = "%s" % [details.name]
 					new_node.icon = SVGS.TYPE.SECURITY
 					new_node.amount = "%s%s" % ["+" if amount >= 0 else "-", amount]
 					

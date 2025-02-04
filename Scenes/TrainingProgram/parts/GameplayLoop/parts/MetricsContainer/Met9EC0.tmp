@@ -55,11 +55,7 @@ shader_parameter/thickness = 0.2
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dswvd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xe5fg"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+bg_color = Color(0.395229, 0.00167649, 0.654579, 1)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_fc7q5"]
 color = Color(1, 1, 1, 1)
@@ -67,15 +63,8 @@ grow_begin = 0.0
 grow_end = 0.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_add3q"]
-bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_k5rb5"]
-color = Color(1, 1, 1, 1)
-vertical = true
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rmxjg"]
 
 [node name="MetricsContainer" type="MarginContainer"]
 offset_right = 40.0
@@ -265,80 +254,67 @@ layout_mode = 2
 text = "1.0"
 label_settings = ExtResource("3_e00qv")
 
+[node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "STATUS EFFECT"
+label_settings = ExtResource("6_gge2t")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Details" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 alignment = 1
 
-[node name="RoomContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Details"]
+[node name="Room" type="PanelContainer" parent="PanelContainer/VBoxContainer/Details"]
 layout_mode = 2
-size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_xe5fg")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Details/RoomContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Details/Room"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Details/RoomContainer/MarginContainer"]
-custom_minimum_size = Vector2(150, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Details/Room/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Details/RoomContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="RoomNameLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/RoomContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="RoomNameLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/Room/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = ">> ROOM"
 label_settings = ExtResource("3_e00qv")
+horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RoomStatusLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/RoomContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/Details/Room/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_fc7q5")
+
+[node name="RoomStatusLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/Room/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "- Inactive | No Research -"
 label_settings = ExtResource("6_gge2t")
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/Details/RoomContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_fc7q5")
-
-[node name="RoomEffectsList" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Details/RoomContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 15
-
-[node name="RoomEffectsLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/RoomContainer/MarginContainer/VBoxContainer/RoomEffectsList"]
-layout_mode = 2
-text = "+ 1 MORALE"
-label_settings = ExtResource("6_gge2t")
-horizontal_alignment = 1
-
-[node name="ScpContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Details"]
+[node name="Scp" type="PanelContainer" parent="PanelContainer/VBoxContainer/Details"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_add3q")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Details/ScpContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Details/Scp"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Details/ScpContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Details/Scp/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Details/ScpContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="SCPLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/ScpContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="SCPLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/Scp/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = ">> SCP
 "
@@ -346,30 +322,20 @@ label_settings = ExtResource("3_e00qv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SCPStatusLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/ScpContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "STATUS"
-label_settings = ExtResource("6_gge2t")
-horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/Details/ScpContainer/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/Details/Scp/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fc7q5")
 
-[node name="SCPEffectsList" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Details/ScpContainer/MarginContainer/VBoxContainer"]
+[node name="SCPStatusLabel" type="Label" parent="PanelContainer/VBoxContainer/Details/Scp/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/Details/ScpContainer/MarginContainer/VBoxContainer/SCPEffectsList"]
-visible = false
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_styles/separator = SubResource("StyleBoxLine_k5rb5")
-
-[node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer"]
-layout_mode = 2
-text = "STATUS EFFECT"
+text = "- Inactive | No Research -"
 label_settings = ExtResource("6_gge2t")
 horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="ControlPanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rmxjg")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(220, 82)

@@ -25,6 +25,7 @@ extends Node3D
 @onready var SCPList:VBoxContainer = $ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/SCPList
 
 @onready var ControlLayerSprite:Sprite3D = $SpriteLayer/ControlLayerSprite
+@onready var ControlMenuSprite:Sprite3D = $SpriteLayer/ControlMenuSprite
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialUnderConstruction.tres")
@@ -202,8 +203,12 @@ func on_show_menu_update() -> void:
 			ControlMenuList.add_child(new_btn)	
 			
 	GBL.add_to_animation_queue(self)
-	await U.tween_node_property(ControlLayerSprite, "rotation_degrees:y", -145 if show_menu else -55, 0.3)
-	
+	if show_menu:
+		await U.tween_node_property(ControlLayerSprite, "rotation_degrees:y", -90 if show_menu else 0, 0.2)
+		await U.tween_node_property(ControlMenuSprite, "rotation_degrees:y", 0 if show_menu else 90, 0.2)	
+	else:
+		await U.tween_node_property(ControlMenuSprite, "rotation_degrees:y", 0 if show_menu else 90, 0.2)
+		await U.tween_node_property(ControlLayerSprite, "rotation_degrees:y", -90 if show_menu else 0, 0.2)
 	if !show_menu:
 		menu_actions = []
 		for child in ControlMenuList.get_children():
@@ -262,7 +267,7 @@ func update_cameras() -> void:
 					
 
 				GBL.add_to_animation_queue(self)
-				await U.tween_node_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position + Vector3(-20, 5, 0) , 0.2)	
+				await U.tween_node_property(SpriteLayer, "position", FloorInstanceContainer.get_child(current_location.floor).position, 0.2)	
 				GBL.remove_from_animation_queue(self)			
 		
 		CAMERA.TYPE.ROOM_SELECT:

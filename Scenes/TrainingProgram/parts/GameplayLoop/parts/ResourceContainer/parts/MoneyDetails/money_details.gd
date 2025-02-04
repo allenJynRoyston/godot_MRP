@@ -53,7 +53,7 @@ func update_list() -> void:
 			if i.resource.ref == RESOURCE.TYPE.MONEY and i.type == "amount":
 				var new_node:BtnBase = DetailBtnPreload.instantiate()
 				var amount:int = i.amount
-				new_node.title = "SCP-X%s" % [details.item_id]
+				new_node.title = "X%s" % [details.name]
 				new_node.icon = i.resource.icon
 				new_node.amount = "%s%s" % ["+" if amount >= 0 else "-", amount]
 

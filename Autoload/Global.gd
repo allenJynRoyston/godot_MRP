@@ -1,6 +1,8 @@
 @tool
 extends Node
 
+enum PLACEMENT {LEFT, RIGHT, TOP, BOTTOM}
+
 # ------------------------------------------------------------------------------
 var projected_3D_objects:Dictionary = {}
 
@@ -221,6 +223,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 				match event.keycode:
 					# --------------
+					49:
+						key = "1"
+					50:
+						key = "2"
+					51:
+						key = "3"
+					52:
+						key = "4"
 					53:
 						key = "5"
 					56:

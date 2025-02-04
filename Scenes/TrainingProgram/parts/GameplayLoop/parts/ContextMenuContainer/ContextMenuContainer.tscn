@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://de238y6o15ppf"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/context_menu_container.gd" id="1_egpt7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h75gv"]
+
+[node name="ContextMenuContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_h75gv")
+script = ExtResource("1_egpt7")
+metadata/_edit_horizontal_guides_ = [-893.0]
+
+[node name="ListContainer" type="Control" parent="."]
+layout_mode = 2

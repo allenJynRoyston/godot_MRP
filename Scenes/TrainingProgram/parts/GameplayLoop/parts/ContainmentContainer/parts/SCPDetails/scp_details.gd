@@ -80,7 +80,7 @@ func on_data_update() -> void:
 			child.queue_free()
 
 	
-	ItemLabel.text = "SCP-%s" % [data.item_id]
+	ItemLabel.text = "%s" % [data.name]
 	ObjectLabel.text = "KETER"
 	ImageSrcTextureRect.texture = CACHE.fetch_image(data.img_src)
 	

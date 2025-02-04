@@ -382,3 +382,24 @@ func subscribe_to_scp_data(node:Node) -> void:
 func unsubscribe_to_scp_data(node:Node) -> void:
 	room_config_subscriptions.erase(node)				
 # ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
+var menu_context_subscriptions:Array = []
+
+var menu_context:Dictionary = {} :
+	set(val):
+		menu_context = val 
+		for node in menu_context_subscriptions:
+			if "on_menu_context_update" in node:
+				node.on_menu_context_update.call(menu_context)	
+
+func subscribe_to_menu_context(node:Node) -> void:
+	if node not in menu_context_subscriptions:
+		menu_context_subscriptions.push_back(node)
+		if "on_menu_context_update" in node:
+			node.on_menu_context_update.call(menu_context)
+			
+func unsubscribe_to_menu_context(node:Node) -> void:
+	menu_context_subscriptions.erase(node)				
+# ------------------------------------------------------------	
+	

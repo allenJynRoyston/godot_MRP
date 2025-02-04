@@ -3,8 +3,8 @@ extends Node
 const prefered_greeting:String = "Sir"
 
 var SCP_001:Dictionary = {
-	"item_id": "001",
-	"name": "THE DOOR",
+	"name": "SCP-XX1",
+	"nickname": "THE DOOR",
 	"img_src": "res://Media/scps/the_door.png",
 	
 	# -----------------------------------
@@ -20,11 +20,11 @@ var SCP_001:Dictionary = {
 	# -----------------------------------	
 	"containment_procedures": func(self_ref:Dictionary) -> Array:
 		return [
-			"SCP-%s is to be contained in a locked containment cell." % [self_ref.item_id],
+			"%s is to be contained in a locked containment cell." % [self_ref.name],
 		],
 	"description": func(self_ref:Dictionary) -> Array:
 		return [
-			"SCP-%s is a basic wooden door that remains locked until a human being gets within 3 feet of the door. Door then opens up to an unknown location.  If a person goes through the door, it then shuts." % [self_ref.item_id],
+			"%s is a basic wooden door that remains locked until a human being gets within 3 feet of the door. Door then opens up to an unknown location.  If a person goes through the door, it then shuts." % [self_ref.name],
 			"That person is never seen again."
 		],
 	# -----------------------------------
@@ -95,11 +95,11 @@ var SCP_001:Dictionary = {
 			"add_to": {
 				"testing_log": func(self_ref:Dictionary) -> Array: 
 					return [
-						"" % [self_ref.item_id]
+						"" % [self_ref.name]
 					],
 				"description": func(self_ref:Dictionary) -> Array:
 					return [
-						"SCP-%s research one description added." % [self_ref.item_id]
+						"%s research one description added." % [self_ref.name]
 					],
 			},				
 			# -------------------------
@@ -166,11 +166,11 @@ var SCP_001:Dictionary = {
 				"containment_procedures": func(self_ref:Dictionary) -> Array: 
 					return [
 						"ADDENUMDUM:",
-						"Containment of SCP-%s requires the use of 2 guards stationed outside the door." % [self_ref.item_id]
+						"Containment of %s requires the use of 2 guards stationed outside the door." % [self_ref.name]
 					],
 				"description": func(self_ref:Dictionary) -> Array:
 					return [
-						"SCP-%s should show up now that I've been added." % [self_ref.item_id]
+						"%s should show up now that I've been added." % [self_ref.name]
 					],
 			},
 			
@@ -198,7 +198,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RESEARCH ONE COMPLETE" % [details.item_id],
+								"header": "%s: RESEARCH ONE COMPLETE" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"After many failed attempts to forciably open the door, you have a slight success."
@@ -223,7 +223,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RESEARCH TWO COMPLETE" % [details.item_id],
+								"header": "%s: RESEARCH TWO COMPLETE" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"SOMETHING SOMETHIGN SOMETHING"
@@ -248,7 +248,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RESEARCH THREE COMPLETE" % [details.item_id],
+								"header": "%s: RESEARCH THREE COMPLETE" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"SOMETHING SOMETHIGN SOMETHING"
@@ -276,7 +276,7 @@ var SCP_001:Dictionary = {
 							return [
 								func() -> Dictionary:
 									return {
-										"header": "SCP-%s: DAY EVENT" % [details.item_id],
+										"header": "%s: DAY EVENT" % [details.name],
 										"img_src": details.img_src,
 										"text": [
 											"LOREM ISPUM",
@@ -295,7 +295,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RANDOM EVENT 1" % [details.item_id],
+								"header": "%s: RANDOM EVENT 1" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"Random event 1.  Times triggered: %s" % [_dict.count]
@@ -311,7 +311,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RANDOM EVENT 2" % [details.item_id],
+								"header": "%s: RANDOM EVENT 2" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"Random event 2.  Times triggered: %s" % [_dict.count]
@@ -341,14 +341,14 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: START TESTING EVENT" % [details.item_id],
+								"header": "%s: START TESTING EVENT" % [details.name],
 								"img_src": details.img_src,
 								"portrait": {
 									"title": "RESEARCHER %s" % [research_details.name],
 									"img_src": 	research_details.img_src
 								},
 								"text": [
-									"%s, these are my proposals for SCP-%s." % [prefered_greeting, details.item_id]
+									"%s, these are my proposals for %s." % [prefered_greeting, details.name]
 								],
 								"options": build_event_options_list(_dict, option_selected, onSelected)
 							},
@@ -376,7 +376,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: DURING TESTING EVENT" % [details.item_id],
+								"header": "%s: DURING TESTING EVENT" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"Lorem ipsum."
@@ -397,7 +397,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: AFTER CONTAINMENT EVENT" % [details.item_id],
+								"header": "%s: AFTER CONTAINMENT EVENT" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"After containment text"
@@ -425,7 +425,7 @@ var SCP_001:Dictionary = {
 						# ---------
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: DURING TRANSFER EVENT" % [details.item_id],
+								"header": "%s: DURING TRANSFER EVENT" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"Transfer event.  Times triggered: %s" % [_dict.count],
@@ -474,7 +474,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: AFTER TRANSFER EVENT" % [details.item_id],
+								"header": "%s: AFTER TRANSFER EVENT" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"AFTER transfer event."
@@ -495,7 +495,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RANDOM EVENT 0" % [details.item_id],
+								"header": "%s: RANDOM EVENT 0" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"Random event 0.  Times triggered: %s" % [_dict.count]
@@ -511,7 +511,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RANDOM EVENT 1" % [details.item_id],
+								"header": "%s: RANDOM EVENT 1" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"Random event 1.  Times triggered: %s" % [_dict.count]
@@ -527,7 +527,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: RANDOM EVENT 2" % [details.item_id],
+								"header": "%s: RANDOM EVENT 2" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"Random event 2.  Times triggered: %s" % [_dict.count]
@@ -548,7 +548,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: BEFORE DESTROY EVENT" % [details.item_id],
+								"header": "%s: BEFORE DESTROY EVENT" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"After containment text"
@@ -569,7 +569,7 @@ var SCP_001:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s: AFTER DESTROY EVENT" % [details.item_id],
+								"header": "%s: AFTER DESTROY EVENT" % [details.name],
 								"img_src": details.img_src,
 								"text": [
 									"After containment text"
@@ -585,8 +585,8 @@ var SCP_001:Dictionary = {
 }
 
 var SCP_002:Dictionary = {
-	"item_id": "002",
-	"name": "LSD PAINT",
+	"name": "SCP-XX2",
+	"nickname": "LSD PAINT",
 	"img_src": "res://Media/scps/lsd_paint.png",
 	
 	# -----------------------------------
@@ -602,11 +602,11 @@ var SCP_002:Dictionary = {
 	# -----------------------------------	
 	"containment_procedures": func(self_ref:Dictionary) -> Array:
 		return [
-			"SCP-%s is to be contained in a locked containment cell." % [self_ref.item_id],
+			"%s is to be contained in a locked containment cell." % [self_ref.name],
 		],
 	"description": func(self_ref:Dictionary) -> Array:
 		return [
-			"SCP-%s is a basic wooden door that remains locked until a human being gets within 3 feet of the door. Door then opens up to an unknown location.  If a person goes through the door, it then shuts." % [self_ref.item_id],
+			"%s is a basic wooden door that remains locked until a human being gets within 3 feet of the door. Door then opens up to an unknown location.  If a person goes through the door, it then shuts." % [self_ref.name],
 			"That person is never seen again."
 		],
 	# -----------------------------------
@@ -658,11 +658,11 @@ var SCP_002:Dictionary = {
 				"containment_procedures": func(self_ref:Dictionary) -> Array: 
 					return [
 						"ADDENUMDUM:",
-						"Containment of SCP-%s requires the use of 2 guards stationed outside the door." % [self_ref.item_id]
+						"Containment of %s requires the use of 2 guards stationed outside the door." % [self_ref.name]
 					],
 				"description": func(self_ref:Dictionary) -> Array:
 					return [
-						"SCP-%s should show up now that I've been added." % [self_ref.item_id]
+						"%s should show up now that I've been added." % [self_ref.name]
 					],
 			},
 			
@@ -693,7 +693,7 @@ var SCP_002:Dictionary = {
 					return [
 						func() -> Dictionary:
 							return {
-								"header": "SCP-%s INITIAL CONTAINMENT REPORT" % [details.item_id],
+								"header": "%s INITIAL CONTAINMENT REPORT" % [details.name],
 								"img_src": img_src,
 								"text": [
 									"Upon containment, a knock at the door can audiable be heard.",
@@ -771,6 +771,16 @@ func return_ongoing_containment_rewards(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictionary) -> Array: 
+	return SHARED_UTIL.return_unavailable_rooms(return_data(ref), room_config, scp_data)
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func return_effects(ref:int) -> Array:
+	return SHARED_UTIL.return_effects(return_data(ref))
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
 func calculate_initial_containment_bonus(ref:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:
 	return SHARED_UTIL.calculate_resources(return_data(ref), "initial_containment", resources_data, refund)
 # ------------------------------------------------------------------------------
@@ -825,10 +835,6 @@ func calculate_refunded_utilizied(utilized_data:Dictionary, resources_data:Dicti
 # ------------------------------------------------------------------------------
 
 
-# ------------------------------------------------------------------------------
-func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictionary) -> Array: 
-	return SHARED_UTIL.return_unavailable_rooms(return_data(ref), room_config, scp_data)
-# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
 func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Callable, get_self_ref:Callable) -> Dictionary:
@@ -875,10 +881,10 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Call
 				event_instructions = [
 					func() -> Dictionary:
 						return {
-							"header": "SCP-%s INITIAL CONTAINMENT REPORT" % [data.item_id],
+							"header": "%s INITIAL CONTAINMENT REPORT" % [data.name],
 							"img_src": data.img_src,
 							"text": [
-								"SCP-%s was successfully contained without incident." % [data.item_id]
+								"%s was successfully contained without incident." % [data.name]
 							]
 						}
 				]
@@ -887,10 +893,10 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Call
 				event_instructions = [
 					func() -> Dictionary:
 						return {
-							"header": "SCP-%s TRANSFER REPORT" % [data.item_id],
+							"header": "%s TRANSFER REPORT" % [data.name],
 							"img_src": data.img_src,
 							"text": [
-								"SCP-%s was successfully transfered without incident." % [data.item_id]
+								"%s was successfully transfered without incident." % [data.name]
 							]
 						}
 				]				

@@ -107,7 +107,7 @@ func build_list() -> void:
 								{
 									"icon": SVGS.TYPE.CONTAIN, 
 									"text": func() -> String:
-										return "SCP-%s" % [scp_details.item_id],
+										return "%s" % [scp_details.name],
 								}	
 							]
 						}

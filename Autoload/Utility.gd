@@ -128,7 +128,7 @@ func dict_has_diff(new_val:Dictionary, current:Dictionary, list_property:String,
 # --------------------------------------------------------------------------------------------------		
 func tween_node_property(node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD) -> void:
 	var tween:Tween = create_tween()
-	tween.tween_property(node, prop, new_val, duration).set_trans(Tween.TRANS_QUAD).set_delay(delay)
+	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
 	await tween.finished
 # --------------------------------------------------------------------------------------------------		
 

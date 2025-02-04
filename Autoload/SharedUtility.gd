@@ -282,3 +282,20 @@ func calculate_resources(details:Dictionary, dict_property:String, resources_dat
 						
 	return resource_data_copy
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_effects(data:Dictionary) -> Array:
+	var list:Array = []
+	if "metrics" in data:
+		if "wing" in data.metrics:
+			for key in data.metrics.wing:
+				var amount:int = data.metrics.wing[key]
+				match key:
+					RESOURCE.BASE_METRICS.MORALE:
+						list.push_back({"level": "WING", "name": "MORALE", "amount": amount})
+					RESOURCE.BASE_METRICS.READINESS:
+						list.push_back({"level": "WING", "name": "READINESS", "amount": amount})
+					RESOURCE.BASE_METRICS.SAFETY:
+						list.push_back({"level": "WING", "name": "SAFETY", "amount": amount})	
+	return list
+# ------------------------------------------------------------------------------

@@ -43,7 +43,7 @@ func _ready() -> void:
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
 	var scp_data:Dictionary = SCP_UTIL.return_data(data.ref)
-	NameLabel.text = "SCP-%s:" % [scp_data.item_id]
+	NameLabel.text = "%s:" % [scp_data.name]
 	DangerLabel.text = "UNKNOWN"
 	ItemImage.texture = CACHE.fetch_image(scp_data.img_src)
 	

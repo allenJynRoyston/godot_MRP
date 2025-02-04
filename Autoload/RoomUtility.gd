@@ -655,58 +655,58 @@ func return_tier_data(key:TIER.VAL) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_data(key:int) -> Dictionary:
-	reference_data[key].ref = key
-	return reference_data[key]
+func return_data(ref:ROOM.TYPE) -> Dictionary:
+	reference_data[ref].ref = ref
+	return reference_data[ref]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_placement_instructions(id:int) -> Array:
-	return SHARED_UTIL.return_placement_instructions(return_data(id))
+func return_placement_instructions(ref:ROOM.TYPE) -> Array:
+	return SHARED_UTIL.return_placement_instructions(return_data(ref))
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_unavailable_rooms(id:int, room_config:Dictionary) -> Array: 
-	return SHARED_UTIL.return_unavailable_rooms(return_data(id), room_config)
+func return_unavailable_rooms(ref:ROOM.TYPE, room_config:Dictionary) -> Array: 
+	return SHARED_UTIL.return_unavailable_rooms(return_data(ref), room_config)
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func return_purchase_cost(id:int) -> Array:
-	return SHARED_UTIL.return_resource_list(return_data(id), "purchase_costs")
+func return_purchase_cost(ref:ROOM.TYPE) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(ref), "purchase_costs")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_activation_effect(id:int) -> Array:
-	return SHARED_UTIL.return_resource_list(return_data(id), "activation_effect")
+func return_activation_effect(ref:ROOM.TYPE) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(ref), "activation_effect")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_operating_cost(id:int) -> Array:
-	return SHARED_UTIL.return_resource_list(return_data(id), "operating_costs")
+func return_operating_cost(ref:ROOM.TYPE) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(ref), "operating_costs")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_activation_cost(id:int) -> Array:
-	return SHARED_UTIL.return_resource_list(return_data(id), "activation_cost")
+func return_activation_cost(ref:ROOM.TYPE) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(ref), "activation_cost")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = false) -> Dictionary:		
+func calculate_purchase_cost(ref:ROOM.TYPE, resources_data:Dictionary, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_activation_effect(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_activation_effect(ref:ROOM.TYPE, resources_data:Dictionary, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "activation_effect", resources_data, !add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_operating_costs(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_operating_costs(ref:ROOM.TYPE, resources_data:Dictionary, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "operating_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_activation_cost(ref:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
+func calculate_activation_cost(ref:ROOM.TYPE, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
 	var room_data:Dictionary = return_data(ref)
 	var resource_data_copy:Dictionary = resources_data.duplicate(true)
 
@@ -727,6 +727,11 @@ func calculate_activation_cost(ref:int, resources_data:Dictionary, refund:bool =
 	
 	return resource_data_copy
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_effects(ref:ROOM.TYPE) -> Array:
+	return SHARED_UTIL.return_effects(return_data(ref))
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func get_count(ref:ROOM.TYPE, arr:Array) -> int:
@@ -766,3 +771,54 @@ func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
 	else: 
 		return (owned_count + in_progress_count) >= room_data.own_limit.call()
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func extract_room_details(floor:int, ring:int, room:int, room_config:Dictionary, resources_data:Dictionary) -> Dictionary:
+	var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room]
+	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
+	var room_under_construction:bool  = !room_config_data.build_data.is_empty()
+	var has_room:bool = !room_config_data.room_data.is_empty()
+	
+	var room_details:Dictionary = room_config_data.room_data.get_room_details.call() if has_room else {}
+	var is_activated:bool = room_config_data.room_data.get_is_activated.call() if has_room else false
+	var is_disabled:bool = (!RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if has_room else false
+	var scp_data:Dictionary = room_config_data.scp_data if has_room else {}	
+	var can_store_scp:bool = room_details.can_contain if has_room else false
+	var scp_details:Dictionary = (room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}) if has_room else {}
+
+	var no_scp_data:bool = scp_data.is_empty() if can_store_scp else true
+	var is_transfer:bool = (false if no_scp_data else room_config_data.scp_data.is_transfer) if can_store_scp else false
+	var is_contained:bool = (false if no_scp_data else room_config_data.scp_data.is_contained) if can_store_scp else false	
+	var testing_details:Dictionary = ({} if no_scp_data else room_config_data.scp_data.get_testing_details.call()) if can_store_scp else {}
+	var is_testing:bool = !testing_details.is_empty()
+	var testing_ref:int =  -1 if !is_testing else testing_details.testing_ref
+	var is_accessing:bool = false if !is_testing else testing_details.testing_ref == -1
+	var testing_progress:int = -1 if !is_testing else testing_details.progress
+	
+	var researcher_details:Dictionary = {} if scp_data.is_empty() else scp_data.get_researcher_details.call()
+	var has_researcher:bool = !researcher_details.is_empty()
+	 
+	return {
+		"room": {
+			"has_room": has_room,
+			"room_under_construction": room_under_construction,
+			"room_details": room_details if !room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
+			"is_activated": is_activated,
+			"is_disabled": is_disabled,
+			},
+		"scp": {
+			"can_store_scp": can_store_scp,
+			"scp_details": scp_details,
+			"is_transfer": is_transfer,
+			"is_contained": is_contained,
+			"testing": {
+				"is_accessing": is_accessing,
+				"testing_ref": testing_ref,
+				"progress": testing_progress
+			} if is_testing else {}
+		} if !no_scp_data else {},
+		"researcher": {
+			"details": researcher_details
+		} if has_researcher else {}
+	}
+# ------------------------------------------------------------------------------	

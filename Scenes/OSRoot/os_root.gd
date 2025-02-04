@@ -43,6 +43,7 @@ func _ready() -> void:
 	
 	# ENABLE FOR DESKTOP PC 
 	on_fullscreen_update(resolution)
+	#print("resolution: ", resolution)
 
 	# ENABLE FOR MACBOOK 
 	#on_fullscreen_update(Vector2(1280, 720))

@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=27 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
@@ -22,6 +22,7 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="18_4sn0g"]
 [ext_resource type="PackedScene" uid="uid://nfj5ltcydj3b" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/EndofPhaseContainer.tscn" id="18_p3gf7"]
 [ext_resource type="PackedScene" uid="uid://be17dg4n3r505" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BackContainer/BackContainer.tscn" id="19_idmig"]
+[ext_resource type="PackedScene" uid="uid://de238y6o15ppf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/ContextMenuContainer.tscn" id="20_y4q2f"]
 [ext_resource type="PackedScene" uid="uid://bxish5x37ra5e" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn" id="21_jqp8v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxod"]
@@ -41,6 +42,8 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = -0.000363817
 scale = Vector2(0.992646, 1.01056)
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
 room_item_status = false
@@ -155,6 +158,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 freeze_inputs = true
+
+[node name="ContextMenuContainer" parent="." instance=ExtResource("20_y4q2f")]
+layout_mode = 2
 
 [node name="BackContainer" parent="." instance=ExtResource("19_idmig")]
 custom_minimum_size = Vector2(0, 55)

@@ -31,28 +31,28 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0h65"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0ipk"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nthl1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r65gl"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bvbur"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ofolv"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wublo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lj3tl"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -68,15 +68,16 @@ script = ExtResource("1_akslg")
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_78yne")
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 texture = SubResource("ViewportTexture_t7r15")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(225, 118)
+size = Vector2i(179, 118)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-custom_minimum_size = Vector2(225, 0)
 offset_right = 117.0
 offset_bottom = 70.0
 size_flags_vertical = 0
@@ -128,7 +129,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_45se3")
 [node name="ShowHideCB" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_o0h65")
+theme_override_styles/panel = SubResource("StyleBoxFlat_o0ipk")
 no_bg = true
 is_checked = true
 
@@ -138,21 +139,21 @@ layout_mode = 2
 [node name="CheckBox" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_nthl1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_r65gl")
 no_bg = true
 title = "Build HQ."
 
 [node name="CheckBox2" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_bvbur")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ofolv")
 no_bg = true
 title = "Hire a researcher."
 
 [node name="CheckBox3" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_wublo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lj3tl")
 no_bg = true
 title = "Contain SCP-001"
 

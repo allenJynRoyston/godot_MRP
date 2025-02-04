@@ -156,7 +156,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 	# --------------------------
 	if !data.scp_data.is_empty():
 		var scp_data:Dictionary = SCP_UTIL.return_data(data.scp_data.ref)
-		ObjectDesignationLabel.text = "SCP-%s" % [scp_data.item_id]
+		ObjectDesignationLabel.text = "%s" % [scp_data.name]
 		ObjectClassLabel.text = "KETER"
 		ObjectNameLabel.text = "%s" % [scp_data.name]
 		action_queue_filter = action_queue_data.filter(func(i): return (i.action == ACTION.AQ.CONTAIN or i.action == ACTION.AQ.TRANSFER) and i.ref == scp_data.ref)

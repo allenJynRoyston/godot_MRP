@@ -9,7 +9,7 @@ extends Control
 
 @onready var ControlPanelViewport:SubViewport = $ControlSubViewport
 @onready var ControlPanelContainer:Control = $ControlSubViewport/ControlPanelContainer
-@onready var CursorLabel:Label = $ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/CursorLabel
+
 
 @onready var ControlMenuViewport:SubViewport = $ControlMenuSubviewport
 @onready var ControlMenuContainer:Control = $ControlMenuSubviewport/ControlMenuContainer
@@ -20,14 +20,19 @@ extends Control
 @onready var NormalLights:Node3D = $SubViewport/RoomColumn/NormalLights
 @onready var EmergencyLights:Node3D = $SubViewport/RoomColumn/EmergencyLights
 
-@onready var SpriteLayer:Node3D = $SubViewport/RoomColumn/SpriteLayer
-@onready var CursorSprite:Sprite3D = $SubViewport/RoomColumn/SpriteLayer/CursorSprite
-@onready var MenuSprite:Sprite3D = $SubViewport/RoomColumn/SpriteLayer/CursorSprite/MenuSprite
+@onready var RoomNameLabel:Label = $ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomNameLabel
+@onready var RoomStatusLabel:Label = $ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomStatusLabel
+
+@onready var CursorLabelSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorLabelSprite
+@onready var CursorMenuSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorMenuSprite
+
+#@onready var SpriteLayer:Node3D = $SubViewport/RoomColumn/SpriteLayer
+#@onready var CursorSprite:Sprite3D = $SubViewport/RoomColumn/SpriteLayer/CursorSprite
 @onready var LeftWallLabel:Label3D = $SubViewport/RoomColumn/LeftWallLabel
 
 @onready var StatusLabel:Label3D = $SubViewport/RoomColumn/MainCamera/StatusLabel
 @onready var MainCamera:Camera3D = $SubViewport/RoomColumn/MainCamera
-
+@onready var AccentLights:DirectionalLight3D = $SubViewport/RoomColumn/MainCamera/AccentLights
 
 @export var assigned_location:Dictionary = {} : 
 	set(val):
@@ -51,12 +56,29 @@ var menu_index:int = 0
 var menu_actions:Array = []
 var show_menu:bool = false : 
 	set(val):
-		show_menu = val
-		on_show_menu_update()
+		if show_menu != val:
+			show_menu = val
+			on_show_menu_update()
 		
 var freeze_input:bool = false 
-var room_config:Dictionary = {}
 
+var room_config:Dictionary = {}
+var room_config_data:Dictionary = {}
+var can_purchase:bool
+var room_under_construction:bool 
+var has_room:bool
+var has_scp_in_room:bool
+var room_details:Dictionary 
+var is_activated:bool
+var is_disabled:bool 
+var scp_data:Dictionary 
+var can_store_scp:bool
+var scp_details:Dictionary
+
+var no_scp_data:bool 
+var is_transfer:bool 
+var is_contained:bool 
+		
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var in_lockdown:bool = false : 
@@ -91,7 +113,6 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
 
 func _ready() -> void:
-	on_show_menu_update()
 	on_label_control_subpanel_rect_changed()
 	on_menu_control_subpanel_rect_changed()
 	on_in_lockdown_update()
@@ -110,7 +131,29 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 # --------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
+	if current_location.is_empty():return
+	
+	room_config_data = room_config.floor[assigned_location.floor].ring[assigned_location.ring].room[current_location.room]
+	can_purchase = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
+	room_under_construction = !room_config_data.build_data.is_empty()
+	has_room = !room_config_data.room_data.is_empty()
+	has_scp_in_room = false	
+
+	# has room check
+	room_details = room_config_data.room_data.get_room_details.call() if has_room else {}
+	is_activated = room_config_data.room_data.get_is_activated.call() if has_room else false
+	is_disabled = (!RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if has_room else false
+	scp_data = room_config_data.scp_data if has_room else {}	
+	can_store_scp = room_details.can_contain if has_room else false
+	scp_details = (room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}) if has_room else {}
+	
+	# can store scp check
+	no_scp_data = scp_data.is_empty() if can_store_scp else true
+	is_transfer = (false if no_scp_data else room_config_data.scp_data.is_transfer) if can_store_scp else false
+	is_contained = (false if no_scp_data else room_config_data.scp_data.is_contained) if can_store_scp else false
+	
 	on_assigned_location_update()
+	on_show_menu_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -138,14 +181,26 @@ func update_refs() -> void:
 	for child in NodeContainer.get_children():
 		for node in child.get_children():
 			node.update_refs(assigned_location.floor, assigned_location.ring)
-	
+
 	for child in NodeContainer.get_children():
 		for node in child.get_children():
 			node_refs[node.name] = node
 			node_ref_positions[node.name] = node.position
+
+			node.onBlur = func(room_data:Dictionary) -> void:
+				if node.position.y != 0:
+					U.tween_node_property(node, "position:y", 0)
+					node.show_internal = false
+				
 			node.onFocus = func(room_data:Dictionary) -> void:
-				CursorSprite.global_position = node.global_position + Vector3(-6.5, 6, -4)
-				CursorLabel.text = "EMPTY" if room_data.is_empty() else room_data.name
+				if node.position.y != 2.5:
+					U.tween_node_property(node, "position:y", 2.5)
+				RoomNameLabel.text = "EMPTY" if room_data.is_empty() else room_data.name				
+				RoomStatusLabel.text = "inactive"
+				CursorMenuSprite.global_position = node.global_position - Vector3(9, -4, 0) 
+				CursorMenuSprite.position.z = -2
+
+				
 	
 	var material_copy:StandardMaterial3D = FloorMesh.mesh.material
 	match assigned_location.ring:
@@ -168,10 +223,13 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 
 # ------------------------------------------------
 func on_show_menu_update() -> void:
+	if current_location.is_empty(): return
+	var node:Node3D = node_refs[str(current_location.room)]		
+	node.show_internal = show_menu
+	
 	if show_menu:
 		menu_index = 0
 		menu_actions = []
-		
 		menu_actions.push_back({
 			"title": "BACK", 
 			"onSelect": func() -> void:
@@ -179,12 +237,6 @@ func on_show_menu_update() -> void:
 		})
 				
 		if is_powered:
-			var room_config_data:Dictionary = room_config.floor[assigned_location.floor].ring[assigned_location.ring].room[current_location.room]
-			var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
-			var room_under_construction:bool = !room_config_data.build_data.is_empty()
-			var has_room:bool = !room_config_data.room_data.is_empty()
-			var has_scp_in_room:bool = false
-			
 			# ------------------- CONVERT, CANCEL OR REMOVE ROOM
 			if can_purchase:
 				menu_actions.push_back({
@@ -203,13 +255,6 @@ func on_show_menu_update() -> void:
 			
 			# -------------------
 			if has_room:
-				var room_details:Dictionary = room_config_data.room_data.get_room_details.call()
-				var is_activated:bool = room_config_data.room_data.get_is_activated.call()				
-				var is_disabled:bool = !RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false
-				var scp_data:Dictionary = room_config_data.scp_data			
-				var can_store_scp:bool = room_details.can_contain
-				var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}				
-			
 				if !scp_details.is_empty():
 					is_disabled = true 	
 					has_scp_in_room = true
@@ -226,10 +271,7 @@ func on_show_menu_update() -> void:
 								
 
 				if can_store_scp:
-					var no_scp_data:bool = scp_data.is_empty()
-					var is_transfer:bool = false if no_scp_data else room_config_data.scp_data.is_transfer
-					var is_contained:bool = false if no_scp_data else room_config_data.scp_data.is_contained
-		
+
 					if is_transfer:
 						menu_actions.push_back({
 							"title": "CANCEL CONTAINMENT" if !is_contained else "CANCEL TRANSFER",
@@ -241,7 +283,7 @@ func on_show_menu_update() -> void:
 						
 					
 					menu_actions.push_back({
-						"title": "CONTAIN SCP..." if no_scp_data else "TRANSFER SCP-%s" % [scp_details.item_id],
+						"title": "CONTAIN SCP..." if no_scp_data else "TRANSFER %s" % [scp_details.name],
 						"onSelect": func() -> void:
 							menu_response.emit({
 								"action": ACTION.ROOM_NODE.CONTAIN_SCP if no_scp_data else ACTION.ROOM_NODE.TRANSFER_SCP
@@ -315,13 +357,20 @@ func on_show_menu_update() -> void:
 				pass
 			ControlMenuList.add_child(new_btn)
 	
-	else:
+
+	GBL.add_to_animation_queue(self)
+	await U.set_timeout(0.05)
+
+	#CursorMenuSprite.offset.y = -(ControlMenuViewport.size.y/2) - 35
+
+	#U.tween_node_property(AccentLights, "rotation:y", 3 if show_menu else 5)	
+	await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0 if show_menu else 90)
+	
+	if !show_menu:
 		for child in ControlMenuList.get_children():
 			child.queue_free()		
-		
-	
-	GBL.add_to_animation_queue(self)
-	await U.tween_node_property(CursorSprite, "rotation_degrees:y", 270 if !show_menu else 175, 0.2 if show_menu else 0)
+			
+
 	GBL.remove_from_animation_queue(self)	
 # ------------------------------------------------
 

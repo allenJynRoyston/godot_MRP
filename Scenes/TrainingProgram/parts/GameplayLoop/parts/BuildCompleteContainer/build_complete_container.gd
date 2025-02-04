@@ -114,12 +114,12 @@ func update_display() -> void:
 		# ------------------------------------------------------------------------------------------
 		ACTION.AQ.CONTAIN:
 			var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			TitleLabel.text = "SCP %s successfully contained." % [details.item_id]
+			TitleLabel.text = "SCP %s successfully contained." % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
 		ACTION.AQ.TRANSFER:
 			var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			TitleLabel.text = "SCP %s successfully transfered." % [details.item_id]
+			TitleLabel.text = "SCP %s successfully transfered." % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
 		# ------------------------------------------------------------------------------------------
 		ACTION.AQ.ACCESSING:

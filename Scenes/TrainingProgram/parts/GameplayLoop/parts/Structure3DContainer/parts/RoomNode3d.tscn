@@ -1,7 +1,7 @@
-[gd_scene load_steps=21 format=4 uid="uid://d1copqdrd5j0s"]
+[gd_scene load_steps=21 format=4 uid="uid://wo1fm5yw1mj7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node_3d.gd" id="1_qihmr"]
-[ext_resource type="LabelSettings" uid="uid://dtqpk6sgxpcni" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodeSidePanel.tres" id="2_fh056"]
+[ext_resource type="LabelSettings" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodeSidePanel.tres" id="2_fh056"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_mku2i"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="3_mmxwi"]
 
@@ -133,11 +133,11 @@ mesh = SubResource("PlaneMesh_fjhpp")
 [node name="Node3D" type="Node3D" parent="RoomNode"]
 transform = Transform3D(1.00004, 0, 0, 0, 1, 0, 0, 0, 1.00004, -0.218393, 1, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RoomNode/Node3D"]
+[node name="ActiveBox" type="MeshInstance3D" parent="RoomNode/Node3D"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, -1.84468, 0.355896, -1.26458)
 mesh = SubResource("BoxMesh_pum0q")
 
-[node name="PulseEffectFX" type="SpotLight3D" parent="RoomNode/Node3D/MeshInstance3D"]
+[node name="PulseEffectFX" type="SpotLight3D" parent="RoomNode/Node3D/ActiveBox"]
 transform = Transform3D(-0.185195, 0.676806, -0.712487, -0.000651772, 0.724943, 0.688808, 0.982702, 0.128028, -0.133815, -0.929718, 1.19476, -0.100281)
 visible = false
 light_color = Color(1, 0, 0, 1)
@@ -145,7 +145,7 @@ spot_range = 3.231
 spot_attenuation = -10.0
 spot_angle = 18.1421
 
-[node name="ActivationLight" type="OmniLight3D" parent="RoomNode/Node3D/MeshInstance3D"]
+[node name="ActivationLight" type="OmniLight3D" parent="RoomNode/Node3D/ActiveBox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.487549, 0.00836182, -0.0198364)
 light_color = Color(0.848652, 1.10701e-06, 0.448674, 1)
 light_energy = 0.671

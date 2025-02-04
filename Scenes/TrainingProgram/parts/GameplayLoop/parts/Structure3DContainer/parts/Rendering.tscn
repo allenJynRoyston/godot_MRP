@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="2_6hp44"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_sjn22"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_m0beu"]
-[ext_resource type="PackedScene" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodes.tscn" id="4_ujma6"]
+[ext_resource type="PackedScene" uid="uid://bl0fcbjjnqeux" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodes.tscn" id="4_ujma6"]
 [ext_resource type="FontFile" uid="uid://ca1uev10lghsn" path="res://Fonts/dogicapixel.ttf" id="5_ptqq7"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_rrca0"]
 
@@ -55,10 +55,10 @@ grow_end = -5.0
 font = ExtResource("5_ptqq7")
 font_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_huaut"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rpj7c"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atwov"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_snlpx"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="Rendering" type="Node3D"]
@@ -97,10 +97,10 @@ size = 7.0
 far = 100.0
 
 [node name="SpriteLayer" type="Node3D" parent="."]
-transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -10, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 5, 10)
 
 [node name="CursorSprite" type="Sprite3D" parent="SpriteLayer"]
-transform = Transform3D(-0.422618, 0.906308, 0, -0.906308, -0.422618, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 visible = false
 layers = 524288
 pixel_size = 0.003
@@ -109,17 +109,17 @@ fixed_size = true
 texture = ExtResource("2_6hp44")
 
 [node name="ControlLayerSprite" type="Sprite3D" parent="SpriteLayer"]
-transform = Transform3D(-0.819152, 0, -0.573576, 0, 1, 0, 0.573576, 0, -0.819152, -6.67686, 0, -6.0625)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 10, 0)
 layers = 31
-pixel_size = 0.005
+pixel_size = 0.004
 double_sided = false
 no_depth_test = true
 fixed_size = true
 texture = SubResource("ViewportTexture_175mp")
 
-[node name="ControlMenuSprite" type="Sprite3D" parent="SpriteLayer/ControlLayerSprite"]
-transform = Transform3D(-0.591267, 0, 0.806475, 0, 1, 0, -0.806475, 0, -0.591267, 0, -12.1009, 0)
-pixel_size = 0.004
+[node name="ControlMenuSprite" type="Sprite3D" parent="SpriteLayer"]
+transform = Transform3D(-4.37113e-08, 0, 0.999999, 0, 1, 0, -0.999999, 0, -4.37113e-08, 42, 10, 0)
+pixel_size = 0.003
 transparent = false
 double_sided = false
 no_depth_test = true
@@ -265,12 +265,12 @@ layout_mode = 2
 
 [node name="TextBtn" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_huaut")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rpj7c")
 title = "ACTION 1"
 
 [node name="TextBtn2" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_atwov")
+theme_override_styles/panel = SubResource("StyleBoxFlat_snlpx")
 title = "ACTION 1"
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="_on_panel_container_item_rect_changed"]

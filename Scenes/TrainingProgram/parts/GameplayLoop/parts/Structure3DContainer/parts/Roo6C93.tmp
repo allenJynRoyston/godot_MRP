@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=21 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
 [ext_resource type="FontFile" uid="uid://creilnt01hgub" path="res://Fonts/STENCIL.TTF" id="2_j5w82"]
@@ -56,26 +56,17 @@ emission = Color(0.366596, 0.521587, 0.521014, 1)
 height_falloff = 96.3601
 edge_fade = 1.96982
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_10m8w"]
-viewport_path = NodePath("ControlSubViewport")
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_yhbag"]
 viewport_path = NodePath("ControlMenuSubviewport")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tyf3d"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_wwv44"]
+viewport_path = NodePath("ControlSubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_08svg"]
-bg_color = Color(0.395229, 0.00167649, 0.654579, 1)
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_8f5st"]
-color = Color(1, 1, 1, 1)
-grow_begin = 0.0
-grow_end = 0.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkhf3"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_10m8w"]
+viewport_path = NodePath("ControlSubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_puxs3"]
-bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
+bg_color = Color(1, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -85,7 +76,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyw7i"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5eej"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -115,7 +106,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 environment = SubResource("Environment_ngmdl")
 
 [node name="LeftWallLabel" type="Label3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 12.0652, 7.07891, 0.992581)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 12.0652, 4.74885, 0.992581)
 outline_modulate = Color(1, 1, 1, 1)
 text = "WING A"
 font = ExtResource("2_j5w82")
@@ -401,34 +392,49 @@ shadow_transmittance_bias = -2.347
 shadow_opacity = 0.68
 sky_mode = 1
 
+[node name="Node3D" type="Node3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13, 0)
+visible = false
+
+[node name="CursorSprite2" type="Sprite3D" parent="SubViewport/RoomColumn/Node3D"]
+transform = Transform3D(-0.652919, 0, -0.757429, 0, 1, 0, 0.757429, 0, -0.652919, 0, 0, 0)
+visible = false
+gi_mode = 0
+pixel_size = 0.004
+double_sided = false
+no_depth_test = true
+fixed_size = true
+texture = SubResource("ViewportTexture_yhbag")
+
+[node name="SpriteLayer" type="Node3D" parent="SubViewport/RoomColumn"]
+visible = false
+
+[node name="CursorSprite" type="Sprite3D" parent="SubViewport/RoomColumn/SpriteLayer"]
+transform = Transform3D(-0.828305, 0, -0.560278, 0, 1, 0, 0.560278, 0, -0.828305, 0, 0, 0)
+pixel_size = 0.004
+double_sided = false
+no_depth_test = true
+fixed_size = true
+texture = SubResource("ViewportTexture_wwv44")
+
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, 0.353553, -0.612373, -17.995, 18.5, -18.216)
+transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, 0.353553, -0.612373, -17.995, 17.5956, -18.216)
 projection = 1
 current = true
-size = 24.0
+size = 24.959
 near = 0.002
 far = 508.7
 
 [node name="CursorLabelSprite" type="Sprite3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, -1)
-visible = false
+transform = Transform3D(1, 0, -1.19209e-07, -4.47035e-08, 0.866026, -0.499999, 5.96046e-08, 0.499999, 0.866026, 2.664, 1.942, -1)
+layers = 513
 cast_shadow = 0
 gi_mode = 0
 pixel_size = 0.003
 no_depth_test = true
 fixed_size = true
 alpha_cut = 3
-texture_filter = 1
 texture = SubResource("ViewportTexture_10m8w")
-
-[node name="CursorMenuSprite" type="Sprite3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 7, -2)
-gi_mode = 0
-pixel_size = 0.003
-double_sided = false
-no_depth_test = true
-fixed_size = true
-texture = SubResource("ViewportTexture_yhbag")
 
 [node name="StatusLabel" type="Label3D" parent="SubViewport/RoomColumn/MainCamera"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 1.78814e-07, 0, 0, 1, 9.53674e-07, 10.513, -0.703798)
@@ -451,89 +457,35 @@ sky_mode = 1
 
 [node name="ControlSubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(356, 56)
+size = Vector2i(130, 80)
 
 [node name="ControlPanelContainer" type="PanelContainer" parent="ControlSubViewport"]
-offset_right = 176.0
-offset_bottom = 55.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_tyf3d")
+offset_right = 80.0
+offset_bottom = 28.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_puxs3")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ControlSubViewport/ControlPanelContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="PanelContainer" type="PanelContainer" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_08svg")
-
-[node name="MarginContainer" type="MarginContainer" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ControlSubViewport/ControlPanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
-[node name="RoomNameLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="CursorLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = ">> ROOM"
 label_settings = ExtResource("4_2d0xm")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_8f5st")
-
-[node name="RoomStatusLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "- Inactive | No Research -"
-label_settings = ExtResource("5_312tc")
-horizontal_alignment = 1
-
-[node name="PanelContainer2" type="PanelContainer" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fkhf3")
-
-[node name="MarginContainer" type="MarginContainer" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer2/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="SCPLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = ">> ROOM"
-label_settings = ExtResource("4_2d0xm")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_8f5st")
-
-[node name="SCPStatusLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "- Inactive | No Research -"
-label_settings = ExtResource("5_312tc")
-horizontal_alignment = 1
 
 [node name="ControlMenuSubviewport" type="SubViewport" parent="."]
 transparent_bg = true
 size = Vector2i(90, 90)
 
 [node name="ControlMenuContainer" type="PanelContainer" parent="ControlMenuSubviewport"]
-offset_right = 69.0
+offset_right = 125.0
 offset_bottom = 38.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_puxs3")
 
@@ -569,7 +521,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oyw7i")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t5eej")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 
