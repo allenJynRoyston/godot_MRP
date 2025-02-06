@@ -1,4 +1,4 @@
-extends Node
+extends UtilityWrapper
 
 const prefered_greeting:String = "Sir"
 
@@ -78,7 +78,7 @@ var SCP_001:Dictionary = {
 			"prerequisites": func() -> Dictionary:
 				return {
 					"traits": [],
-					"specializations": []
+					"specializations": [RESEARCHER.SPECALIZATION.ENGINEERING]
 				},
 			"requirements": {
 				"resources": {
@@ -112,7 +112,7 @@ var SCP_001:Dictionary = {
 			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
 				return {
-					"traits": [],
+					"traits": [RESEARCHER.TRAITS.MOTIVATED],
 					"specializations": []
 				},
 			"requirements": {
@@ -123,7 +123,7 @@ var SCP_001:Dictionary = {
 						},
 					"utilized": func() -> Dictionary:
 						return {
-							RESOURCE.TYPE.STAFF: 10
+							#RESOURCE.TYPE.STAFF: 10
 						},
 				}
 			},
@@ -137,7 +137,7 @@ var SCP_001:Dictionary = {
 			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
 				return {
-					"traits": [],
+					"traits": [RESEARCHER.TRAITS.DILIGENT],
 					"specializations": []
 				},
 			"requirements": {
@@ -148,7 +148,7 @@ var SCP_001:Dictionary = {
 						},
 					"utilized": func() -> Dictionary:
 						return {
-							RESOURCE.TYPE.DCLASS: 12
+							#RESOURCE.TYPE.DCLASS: 12
 						},						
 				}
 			},
@@ -328,39 +328,7 @@ var SCP_001:Dictionary = {
 				"trigger_threshold": func(_trigger_count:int) -> int:
 					return 100,
 				"trigger_check": func(_dict:Dictionary) -> Array:
-					var details:Dictionary = _dict.details
-					var list_details:Dictionary = _dict.list_details
-					var resources_data:Dictionary = _dict.resources_data
-					var research_completed:Array = list_details.data.research_completed
-					var research_details:Dictionary = _dict.research_details	
-
-					var option_selected:Dictionary = {"val": null}
-					var onSelected = func(val) -> void:
-						option_selected.val = val
-						
-					return [
-						func() -> Dictionary:
-							return {
-								"header": "%s: START TESTING EVENT" % [details.name],
-								"img_src": details.img_src,
-								"portrait": {
-									"title": "RESEARCHER %s" % [research_details.name],
-									"img_src": 	research_details.img_src
-								},
-								"text": [
-									"%s, these are my proposals for %s." % [prefered_greeting, details.name]
-								],
-								"options": build_event_options_list(_dict, option_selected, onSelected)
-							},
-						func() -> Dictionary:
-							return {
-								"text": [
-									"I'll begin immediately." if option_selected.val != -1 else "Probably for the best."
-								],
-								"set_return_val": func() -> Dictionary:
-									return option_selected,
-							}		
-					],
+					return return_event_testing_template(_dict),
 			}
 		],
 		# -------------------------
@@ -771,8 +739,8 @@ func return_ongoing_containment_rewards(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictionary) -> Array: 
-	return SHARED_UTIL.return_unavailable_rooms(return_data(ref), room_config, scp_data)
+func return_unavailable_rooms(ref:int) -> Array: 
+	return SHARED_UTIL.return_unavailable_rooms(return_data(ref))
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
@@ -865,7 +833,7 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Call
 			"count":  event_trigger_count,
 			"progress_data": get_self_ref.call().progress_data.call(),
 			"resources_data": get_self_ref.call().resources_data.call(),
-			"research_details": get_self_ref.call().research_details.call(),
+			"researcher_details": get_self_ref.call().researcher_details.call(),
 			# ------- functions
 			"perform_action": perform_action,
 			"get_self_ref": get_self_ref,
@@ -928,7 +896,7 @@ func check_for_testing_events(ref:int, testing_ref:SCP.TESTING, get_data_snapsho
 			"list_details": scp_contained_details,
 			"count":  0,
 			"resources_data": get_self_ref.call().resources_data.call(),
-			"research_details": get_self_ref.call().research_details.call(),
+			"researcher_details": get_self_ref.call().researcher_details.call(),
 			# ------- functions
 			"perform_action": perform_action,
 			"get_self_ref": get_self_ref,
@@ -940,13 +908,60 @@ func check_for_testing_events(ref:int, testing_ref:SCP.TESTING, get_data_snapsho
 		"event_instructions": event_instructions
 	}
 # ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func return_event_testing_template(_dict:Dictionary) -> Array:
+	var scp_details:Dictionary = _dict.details
+	var list_details:Dictionary = _dict.list_details
+	var resources_data:Dictionary = _dict.resources_data
+	var research_completed:Array = list_details.data.research_completed
+	var researcher_details:Array = _dict.researcher_details		
+	var option_selected:Dictionary = {"val": null}
+	var onSelected = func(val) -> void:
+		option_selected.val = val
 	
+	var img_src:String = researcher_details[0].img_src
+	var portrait_title_name:String = "RESEARCHER %s" % [researcher_details[0].name]
+	
+	if researcher_details.size() == 2:
+		portrait_title_name = "RESEARCHERS %s and %s" % [researcher_details[0].name, researcher_details[1].name]
+		
+	if researcher_details.size() > 2:
+		portrait_title_name = "RESEARCH TEAM"	
+		# TODO: replace with group of researchers pic
+		img_src = researcher_details[0].img_src
+	
+	return [
+		func() -> Dictionary:
+			return {
+				"header": "UPDATE ON %s" % [scp_details.name],
+				"img_src": img_src,
+				"portrait": {
+					"title": portrait_title_name,
+					"img_src": 	img_src,
+				},
+				"text": [
+					"%s, these are %s proposals for %s." % [prefered_greeting, "my" if researcher_details.size() < 2 else "our", scp_details.name]
+				],
+				"options": build_event_options_list(_dict, option_selected, onSelected)
+			},
+		func() -> Dictionary:
+			return {
+				"text": [
+					"I'll begin immediately." if option_selected.val != -1 else "Probably for the best."
+				],
+				"set_return_val": func() -> Dictionary:
+					return option_selected,
+			}		
+	]
+# ------------------------------------------------------------------------------	
+
 # ------------------------------------------------------------------------------
 func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSelected:Callable) -> Array:
 	var details:Dictionary = _dict.details
 	var list_details:Dictionary = _dict.list_details
 	var resources_data:Dictionary = _dict.resources_data
-	var research_details:Dictionary = _dict.research_details	
+	var researcher_details:Array = _dict.researcher_details	
 	var research_completed:Array = list_details.data.research_completed
 	var testing_options:Dictionary = details.testing_options
 
@@ -964,15 +979,25 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 		var required_specilization:Array = prerequisites.specializations if "specializations" in prerequisites else []
 		var requires_trait:bool = required_traits.size() > 0
 		var requires_specilization:bool = required_specilization.size() > 0
+		var all_traits:Array = []
+		var all_specilization:Array = []
 		
-		var useable_traits:Array = required_traits.filter(func(i): return research_details.traits.has(i)).map(func(i): return RESEARCHER_UTIL.return_trait_data(i))
-		var useable_specilization:Array = required_specilization.filter(func(i): return research_details.specializations.has(i)).map(func(i): return RESEARCHER_UTIL.return_specialization_data(i))
-		var is_missing_traits:bool = false if !requires_trait else required_traits.filter(func(i): return research_details.traits.has(i)).size() == 0
-		var is_missing_specilization:bool = false if !requires_specilization else required_specilization.filter(func(i): return research_details.specializations.has(i)).size() == 0
-		# 
-		var trait_tag:String = "[TRAIT - %s] " % useable_traits[0].fullname if useable_traits.size() > 0 else ""
-		var specilization_tag:String = "[SPECIALIZATION - %s] " % useable_specilization[0].fullname if useable_specilization.size() > 0 else ""
-		var usable_tag_string:String = "%s%s" % [trait_tag, specilization_tag]
+		for researcher in researcher_details:
+			for key in researcher.traits:
+				if key not in all_traits:
+					all_traits.push_back(key)
+			for key in researcher.specializations:
+				if key not in all_specilization:
+					all_specilization.push_back(key)
+
+		var useable_traits:Array = required_traits.filter(func(i): return all_traits.has(i)).map(func(i): return RESEARCHER_UTIL.return_trait_data(i))
+		var useable_specilization:Array = required_specilization.filter(func(i): return all_specilization.has(i)).map(func(i): return RESEARCHER_UTIL.return_specialization_data(i))
+		var is_missing_traits:bool = false if !requires_trait else required_traits.filter(func(i): return all_traits.has(i)).size() == 0
+		var is_missing_specilization:bool = false if !requires_specilization else required_specilization.filter(func(i): return all_specilization.has(i)).size() == 0
+		
+		var trait_tag:String = "[%s] " % useable_traits[0].fullname if useable_traits.size() > 0 else ""
+		var specilization_tag:String = "[%s] " % useable_specilization[0].fullname if useable_specilization.size() > 0 else ""
+		var usable_tag_string:String = "%s %s%s" % ["" if !completed else "[REPEAT]", trait_tag, specilization_tag]
 		# -----------
 		
 		# -----------
@@ -1049,6 +1074,24 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 		"val": -1,
 		"onSelected": onSelected			
 	})
+	
+	options.push_back({
+		"completed": false,
+		"title": "PERMANENTLY CONTAIN",
+		"locked": true,
+		"notes": [
+			{
+				"header": "Prerequisites",
+				"list": [{
+					"is_checked": false,
+					"icon": SVGS.TYPE.CONTAIN, 
+					"text": "At least 3 testing scenarios must be completed successful."
+				}]
+			}					
+		],
+		"val": 100,
+		"onSelected": onSelected			
+	})	
 				
 	return options
 # ------------------------------------------------------------------------------

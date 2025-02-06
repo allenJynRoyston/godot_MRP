@@ -668,7 +668,7 @@ func return_placement_instructions(ref:ROOM.TYPE) -> Array:
 
 # ------------------------------------------------------------------------------
 func return_unavailable_rooms(ref:ROOM.TYPE, room_config:Dictionary) -> Array: 
-	return SHARED_UTIL.return_unavailable_rooms(return_data(ref), room_config)
+	return SHARED_UTIL.return_unavailable_rooms(return_data(ref))
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
@@ -801,7 +801,7 @@ func extract_room_details(current_location:Dictionary) -> Dictionary:
 	var is_accessing:bool = false if !is_testing else testing_details.testing_ref == -1
 	var testing_progress:int = -1 if !is_testing else testing_details.progress
 	
-	print(room_config_data.scp_data)
+	#print(room_config_data.scp_data)
 	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var props:Dictionary = x[8]

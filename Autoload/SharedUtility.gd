@@ -1,4 +1,4 @@
-extends Node
+extends UtilityWrapper
 
 # ------------------------------------------------------------------------------
 func return_placement_instructions(item_data:Dictionary) -> Array:
@@ -118,7 +118,7 @@ func return_placement_instructions(item_data:Dictionary) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary, scp_data:Dictionary = {}) -> Array: 
+func return_unavailable_rooms(item_data:Dictionary) -> Array: 
 	var unavailable_list:Array = []
 
 	for floor_index in room_config.floor.size():
@@ -126,6 +126,13 @@ func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary, scp_
 			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index]	
+				var scp_data:Dictionary = config_data.scp_data
+				
+				# ------------------------------------------
+				if !scp_data.is_empty():
+					if designation not in unavailable_list:
+						unavailable_list.push_back(designation)
+				# ------------------------------------------
 				
 				# ------------------------------------------
 				if "placement_restrictions" in item_data:
@@ -165,32 +172,32 @@ func return_unavailable_rooms(item_data:Dictionary, room_config:Dictionary, scp_
 								unavailable_list.push_back(designation)
 				# ------------------------------------------
 					
-				# ------------------------------------------
-				if "containment_requirements" in item_data:
-					var containment_requirements:Array = item_data.containment_requirements
-					
-					# checks if any other items are being contained or will be contained in a location
-					if !scp_data.is_empty():
-						for item in scp_data.available_list:
-							if item.transfer_status.state:
-								var location:Dictionary = item.transfer_status.location
-								if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
-									unavailable_list.push_back(designation)
-						
-						for item in scp_data.contained_list:
-							var location:Dictionary = item.location
-							if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
-								unavailable_list.push_back(designation)
-							if item.transfer_status.state:
-								location = item.transfer_status.location
-								if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
-									unavailable_list.push_back(designation)
-								
-					if !config_data.room_data.is_empty():
-						if config_data.room_data.ref not in containment_requirements:
-							unavailable_list.push_back(designation)
-					else:
-						unavailable_list.push_back(designation)
+				## ------------------------------------------
+				#if "containment_requirements" in item_data:
+					#var containment_requirements:Array = item_data.containment_requirements
+					#
+					## checks if any other items are being contained or will be contained in a location
+					#if !scp_data.is_empty():
+						#for item in scp_data.available_list:
+							#if item.transfer_status.state:
+								#var location:Dictionary = item.transfer_status.location
+								#if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
+									#unavailable_list.push_back(designation)
+						#
+						#for item in scp_data.contained_list:
+							#var location:Dictionary = item.location
+							#if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
+								#unavailable_list.push_back(designation)
+							#if item.transfer_status.state:
+								#location = item.transfer_status.location
+								#if location.floor == floor_index and location.ring == ring_index and location.room == room_index:
+									#unavailable_list.push_back(designation)
+								#
+					##if !config_data.room_data.is_empty():
+						##if config_data.room_data.ref not in containment_requirements:
+							##unavailable_list.push_back(designation)
+					##else:
+						##unavailable_list.push_back(designation)
 				# ------------------------------------------
 	
 	return unavailable_list

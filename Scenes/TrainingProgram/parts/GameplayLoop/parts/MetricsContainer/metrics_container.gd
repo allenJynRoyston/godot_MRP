@@ -148,12 +148,6 @@ func update_details_panel() -> void:
 	SCPContainer.modulate = Color(1, 1, 1, 0.4 if room_extract.scp.is_empty() else 1)
 	if !room_extract.scp.is_empty():
 		var details:Dictionary = room_extract.scp.details
-		var effects_list:Array = SCP_UTIL.return_effects(details.ref)
-		if effects_list.size() > 0:
-			for item in effects_list:
-				SCPEffectsList.add_child( create_effect_label( "%s%s" % [item.resource_data.name, item.amount]) )
-		else:
-			SCPEffectsList.add_child( create_effect_label("NO BONUS") )		
 
 		SCPNameLabel.text = "%s" % [details.name]
 		var status_label := "CONTAINED"
@@ -163,7 +157,17 @@ func update_details_panel() -> void:
 		
 		if !room_extract.scp.testing.is_empty():
 			status_label = "ACCESSING" if room_extract.scp.testing.is_accessing else "TESTING"
-
+	
+		if !room_extract.scp.is_transfer:
+			var effects_list:Array = SCP_UTIL.return_effects(details.ref)
+			if effects_list.size() > 0:
+				for item in effects_list:
+					SCPEffectsList.add_child( create_effect_label( "%s%s" % [item.resource_data.name, item.amount]) )
+			else:
+				SCPEffectsList.add_child( create_effect_label("NO BONUS") )		
+		else:
+			SCPEffectsList.add_child( create_effect_label("TRANSFERING..." if room_extract.scp.is_contained else "CONTAINING...")  )		
+			
 		SCPStatusLabel.text = status_label
 	else:
 		SCPNameLabel.text = "NO SCP"
@@ -222,11 +226,11 @@ func update_metrics_labels() -> void:
 		var amount:int = ring_data.metrics[key]
 		match key:
 			RESOURCE.BASE_METRICS.MORALE:
-				MoraleLabel.text = str(amount) if ring_data.room_refs.size() > 0 else "-"
+				MoraleLabel.text = str(amount)
 			RESOURCE.BASE_METRICS.READINESS:
-				ReadinessLabel.text = str(amount) if ring_data.room_refs.size() > 0 else "-"
+				ReadinessLabel.text = str(amount) 
 			RESOURCE.BASE_METRICS.SAFETY:
-				SafetyLabel.text = str(amount) if ring_data.room_refs.size() > 0 else "-"
+				SafetyLabel.text = str(amount) 
 # -----------------------------------------------
 
 # -----------------------------------------------

@@ -117,6 +117,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+metadata/_edit_group_ = true
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
 visible = false

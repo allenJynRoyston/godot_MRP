@@ -36,11 +36,14 @@ var trait_data:Dictionary = {
 		"fullname": "MOTIVATED",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0, # 0 IS POSITIVE, 1 IS NEGATIVE
-		"get_effect": func() -> Dictionary:
+		"get_effect": func(location:Dictionary) -> Dictionary:
+			var extract_details:Dictionary = get_details_from_extract(location)
+			var room_ref:int = extract_details.room_ref
+			var scp_ref:int = extract_details.scp_ref
 			return {
 				"metrics":
 					{
-						RESOURCE.BASE_METRICS.MORALE: 1	
+						RESOURCE.BASE_METRICS.MORALE: 1	if room_ref != ROOM.TYPE.R_AND_D_LAB else 2
 					}
 			},
 		"hire_cost": func() -> int:
@@ -51,11 +54,15 @@ var trait_data:Dictionary = {
 		"fullname": "DILIGENT",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
-		"get_effect": func() -> Dictionary:
+		"get_effect":  func(location:Dictionary) -> Dictionary:
+			var extract_details:Dictionary = get_details_from_extract(location)
+			var room_ref:int = extract_details.room_ref
+			var scp_ref:int = extract_details.scp_ref
+			print(room_ref, " > ", ROOM.TYPE.R_AND_D_LAB)
 			return {
 				"metrics":
 					{
-						RESOURCE.BASE_METRICS.MORALE: 1	
+						RESOURCE.BASE_METRICS.MORALE: 0	if room_ref != ROOM.TYPE.R_AND_D_LAB else 2
 					}
 			},
 		"hire_cost": func() -> int:
@@ -66,7 +73,9 @@ var trait_data:Dictionary = {
 		"fullname": "BENEVOLENT",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
-		"get_effect": func() -> Dictionary:
+		"get_effect":  func(location:Dictionary) -> Dictionary:
+			var extract_details:Dictionary = get_details_from_extract(location)
+
 			return {
 				"metrics":
 					{
@@ -81,7 +90,9 @@ var trait_data:Dictionary = {
 		"fullname": "MOODY",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect": func() -> Dictionary:
+		"get_effect":  func(location:Dictionary) -> Dictionary:
+			var extract_details:Dictionary = get_details_from_extract(location)
+			
 			return {
 				"metrics":
 					{
@@ -96,7 +107,9 @@ var trait_data:Dictionary = {
 		"fullname": "PARTICULAR",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect": func() -> Dictionary:
+		"get_effect":  func(location:Dictionary) -> Dictionary:
+			var extract_details:Dictionary = get_details_from_extract(location)
+		
 			return {
 				"metrics":
 					{
@@ -111,7 +124,9 @@ var trait_data:Dictionary = {
 		"fullname": "CRUEL",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect": func() -> Dictionary:
+		"get_effect":  func(location:Dictionary) -> Dictionary:
+			var room_extract:Dictionary = ROOM_UTIL.extract_room_details(location)
+
 			return {
 				"metrics":
 					{
@@ -240,7 +255,7 @@ func return_specialization_data(key:RESEARCHER.SPECALIZATION) -> Dictionary:
 func return_metrics(researcher_data:Dictionary) -> Dictionary:
 	for trait_key in researcher_data.traits:
 		var trait_data:Dictionary = return_trait_data(trait_key)
-		var effects_dict:Dictionary = trait_data.get_effect.call()
+		var effects_dict:Dictionary = trait_data.get_effect.call(researcher_data.props.assigned_to_room)
 		return effects_dict.metrics if "metrics" in effects_dict else {}
 	return {}
 # ------------------------------------------------------------------------------		
@@ -250,7 +265,7 @@ func return_effects(researcher_data:Dictionary) -> Array:
 	var list:Array = []
 	for trait_key in researcher_data.traits:
 		var trait_data:Dictionary = return_trait_data(trait_key)
-		var effects_dict:Dictionary = trait_data.get_effect.call()
+		var effects_dict:Dictionary = trait_data.get_effect.call(researcher_data.props.assigned_to_room)
 		if "metrics" in effects_dict:
 			for key in effects_dict.metrics:
 				var amount:int = effects_dict.metrics[key]
@@ -258,4 +273,20 @@ func return_effects(researcher_data:Dictionary) -> Array:
 				list.push_back({"resource_data": resource_data, "property": "metrics", "amount": "+" if amount > 0 else "-"})
 
 	return list
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func get_details_from_extract(location:Dictionary) -> Dictionary:
+	if !location.is_empty():
+		var room_extract:Dictionary = ROOM_UTIL.extract_room_details(location)			
+
+		return {
+			"room_ref": -1 if room_extract.room.is_empty() else (room_extract.room.details.ref if room_extract.room.is_activated else -1),
+			"scp_ref": -1 if room_extract.scp.is_empty() else (room_extract.scp.details.ref if room_extract.scp.is_contained else -1)
+		}
+		
+	return {
+		"room_ref": -1,
+		"scp_ref": -1
+	}		
 # ------------------------------------------------------------------------------	
