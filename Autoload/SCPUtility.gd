@@ -777,7 +777,7 @@ func return_unavailable_rooms(ref:int, room_config:Dictionary, scp_data:Dictiona
 
 # ------------------------------------------------------------------------------
 func return_effects(ref:int) -> Array:
-	return SHARED_UTIL.return_effects(return_data(ref))
+	return SHARED_UTIL.return_effects(return_data(ref), "ongoing_containment")
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-extends Node
+extends UtilityWrapper
 
 var specialization_data:Dictionary = { 
 	RESEARCHER.SPECALIZATION.PSYCHOLOGY: {
@@ -36,8 +36,13 @@ var trait_data:Dictionary = {
 		"fullname": "MOTIVATED",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0, # 0 IS POSITIVE, 1 IS NEGATIVE
-		"get_effect": func() -> void:
-			return,
+		"get_effect": func() -> Dictionary:
+			return {
+				"metrics":
+					{
+						RESOURCE.BASE_METRICS.MORALE: 1	
+					}
+			},
 		"hire_cost": func() -> int:
 			return 4,		
 	},
@@ -46,8 +51,13 @@ var trait_data:Dictionary = {
 		"fullname": "DILIGENT",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
-		"get_effect": func() -> void:
-			return,
+		"get_effect": func() -> Dictionary:
+			return {
+				"metrics":
+					{
+						RESOURCE.BASE_METRICS.MORALE: 1	
+					}
+			},
 		"hire_cost": func() -> int:
 			return 4,		
 	},
@@ -56,8 +66,13 @@ var trait_data:Dictionary = {
 		"fullname": "BENEVOLENT",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
-		"get_effect": func() -> void:
-			return,
+		"get_effect": func() -> Dictionary:
+			return {
+				"metrics":
+					{
+						RESOURCE.BASE_METRICS.MORALE: 1	
+					}
+			},
 		"hire_cost": func() -> int:
 			return 4,		
 	},
@@ -66,8 +81,13 @@ var trait_data:Dictionary = {
 		"fullname": "MOODY",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect": func() -> void:
-			return,
+		"get_effect": func() -> Dictionary:
+			return {
+				"metrics":
+					{
+						RESOURCE.BASE_METRICS.MORALE: 1	
+					}
+			},
 		"hire_cost": func() -> int:
 			return 4,		
 	},	
@@ -76,8 +96,13 @@ var trait_data:Dictionary = {
 		"fullname": "PARTICULAR",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect": func() -> void:
-			return,
+		"get_effect": func() -> Dictionary:
+			return {
+				"metrics":
+					{
+						RESOURCE.BASE_METRICS.MORALE: 1	
+					}
+			},
 		"hire_cost": func() -> int:
 			return 4,		
 	},
@@ -86,8 +111,13 @@ var trait_data:Dictionary = {
 		"fullname": "CRUEL",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect": func() -> void:
-			return,
+		"get_effect": func() -> Dictionary:
+			return {
+				"metrics":
+					{
+						RESOURCE.BASE_METRICS.MORALE: 1	
+					}
+			},
 		"hire_cost": func() -> int:
 			return 4,		
 	},			
@@ -103,7 +133,7 @@ func generate_new_researcher_hires() -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_data_with_uid(uid:String, hired_lead_researchers_arr:Array) -> Dictionary:
+func return_data_with_uid(uid:String) -> Dictionary:
 	for index in hired_lead_researchers_arr.size():
 		var item:Array = hired_lead_researchers_arr[index]
 		if uid == item[0]:
@@ -142,7 +172,7 @@ func generate_researcher() -> Array:
 	# TODO: add this in later
 	# var img_src:String = "res://Media/images/example_doctor.jpg"
 		
-	return [ uid, lname, traits, specialization, rval, lval, 0, 10]
+	return [ uid, lname, traits, specialization, rval, lval, 0, 10, {"assigned_to_room": null}]
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
@@ -155,6 +185,7 @@ func get_user_object(val:Array) -> Dictionary:
 	var l_val:int = val[5]
 	var stress:int = val[6]
 	var sanity:int = val[7] 
+	var props:Dictionary = val[8]
 	var img_src:String = "res://Media/images/example_doctor.jpg"
 	
 	var lname:String = get_lname(name_val)
@@ -176,7 +207,8 @@ func get_user_object(val:Array) -> Dictionary:
 		"r_val": r_val,
 		"l_val": l_val,
 		"stress": stress,
-		"sanity": sanity
+		"sanity": sanity,
+		"props": props
 	}
 # ------------------------------------------------------------------------------
 
@@ -203,3 +235,27 @@ func return_specialization_data(key:RESEARCHER.SPECALIZATION) -> Dictionary:
 	specialization_data[key].ref = key
 	return specialization_data[key]
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------		
+func return_metrics(researcher_data:Dictionary) -> Dictionary:
+	for trait_key in researcher_data.traits:
+		var trait_data:Dictionary = return_trait_data(trait_key)
+		var effects_dict:Dictionary = trait_data.get_effect.call()
+		return effects_dict.metrics if "metrics" in effects_dict else {}
+	return {}
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------
+func return_effects(researcher_data:Dictionary) -> Array:
+	var list:Array = []
+	for trait_key in researcher_data.traits:
+		var trait_data:Dictionary = return_trait_data(trait_key)
+		var effects_dict:Dictionary = trait_data.get_effect.call()
+		if "metrics" in effects_dict:
+			for key in effects_dict.metrics:
+				var amount:int = effects_dict.metrics[key]
+				var resource_data:Dictionary = RESOURCE_UTIL.return_metric_data(key)
+				list.push_back({"resource_data": resource_data, "property": "metrics", "amount": "+" if amount > 0 else "-"})
+
+	return list
+# ------------------------------------------------------------------------------	

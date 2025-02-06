@@ -79,7 +79,7 @@ func on_assign_only_update() -> void:
 	if !is_node_ready():return
 	
 	if assign_only:
-		list_type = LIST_TYPE.CONTAINED
+		list_type = LIST_TYPE.AVAILABLE
 		AvailableTabBtn.hide()
 		ContainTabBtn.hide()
 	else:

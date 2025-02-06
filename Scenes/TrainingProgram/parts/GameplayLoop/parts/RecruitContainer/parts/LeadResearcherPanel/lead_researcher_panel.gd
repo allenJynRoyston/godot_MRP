@@ -42,7 +42,7 @@ func _ready() -> void:
 func on_purchased_facility_arr_update(new_val:Array) -> void:
 	if !is_node_ready():return
 	purchased_facility_arr = new_val
-	allow_recruitment = ROOM_UTIL.get_count(ROOM.TYPE.HR_DEPARTMENT, new_val) > 0 
+	allow_recruitment = true #ROOM_UTIL.get_count(ROOM.TYPE.HR_DEPARTMENT, new_val) > 0 
 # ------------------------------------
 
 # ------------------------------------

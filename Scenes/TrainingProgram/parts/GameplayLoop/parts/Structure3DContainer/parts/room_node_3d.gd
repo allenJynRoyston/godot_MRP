@@ -73,8 +73,6 @@ var assigned_wing:int = 0
 var previous_floor:int = -1
 
 var room_data:Dictionary = {} 
-
-
 var default_position:Dictionary = {}
 var unavailable_rooms:Array = []
 var current_location:Dictionary = {} 
@@ -93,6 +91,7 @@ var sister_nodes:Array = []
 
 # ---------------------------------------------------
 func _init() -> void:
+	
 	SUBSCRIBE.subscribe_to_unavailable_rooms(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
@@ -220,19 +219,6 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func fade(complete_fade:bool = false) -> void:
-	pass
-	#tween_property(ContainerSprite, "scale", Vector3(1, 1, 1), 0.1)
-	#tween_property(ContainerSprite, "modulate", Color(1, 1, 1, 0.75 if !complete_fade else 0), 0.1)
-	#
-func fade_restore() -> void:
-	pass
-	#tween_property(ContainerSprite, "modulate", Color(1, 1, 1, 1), 0.1)
-	#tween_property(ContainerSprite, "scale", Vector3(1, 1, 1), 0.1)
-# --------------------------------------------------------------------------------------------------	
-
-
-# --------------------------------------------------------------------------------------------------	
 func build_room_details() -> void:
 	if room_config.is_empty() or ref_index == -1 or room_ref == "":return
 	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
@@ -287,40 +273,14 @@ func on_show_side_update() -> void:
 		previous_show_side = show_side
 		match show_side:
 			SIDES.NEUTRAL:
-				tween_property(RoomNode, "rotation", default_position.room_node_rotation, 0.3)
+				U.tween_node_property(RoomNode, "rotation", default_position.room_node_rotation, 0.3)
 					
 			SIDES.LEFT:
-				tween_property(RoomNode, "rotation_degrees:y", 45, 0.3)
+				U.tween_node_property(RoomNode, "rotation_degrees:y", 45, 0.3)
 					
 			SIDES.RIGHT:
-				tween_property(RoomNode, "rotation_degrees:y", -45, 0.3)
+				U.tween_node_property(RoomNode, "rotation_degrees:y", -45, 0.3)
 # ------------------------------------------------
-			
-# ------------------------------------------------
-func tween_property(node:Node3D, property:String, new_val, duration:float = 0.3) -> void:
-	var tween_pos:Tween = create_tween()
-	tween_pos.tween_property(node, property, new_val, duration).set_trans(Tween.TRANS_SINE)
-	await tween_pos.finished
-# ------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------	
-#func on_control_input_update(input_data:Dictionary) -> void:
-	#if !is_visible_in_tree() or !is_node_ready():return
-	#var key:String = input_data.key
-	#var keycode:int = input_data.keycode
-#
-	#if is_focused:
-		#match key:
-			#"TL":
-				#show_side = SIDES.NEUTRAL if show_side == SIDES.LEFT else SIDES.LEFT
-			#"TR":
-				#show_side = SIDES.NEUTRAL if show_side == SIDES.RIGHT else SIDES.RIGHT			
-			#"SPACEBAR":
-				#show_side = SIDES.NEUTRAL
-				#show_internal = !show_internal
-			
-# --------------------------------------------------------------------------------------------------	
-
 
 # ---------------------------------------------------
 const frequency: float = 0.5    # Frequency of the sine wave (cycles per second)

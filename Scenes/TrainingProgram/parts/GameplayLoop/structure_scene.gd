@@ -249,7 +249,7 @@ func assign_room_node_location(floor_val:int, ring_val:int, animate:bool) -> voi
 
 # ------------------------------------------------
 func update_cameras() -> void:
-	if !is_node_ready() or camera_settings.is_empty() or FloorInstanceContainer.get_child_count() == 0:return	
+	if !is_node_ready() or camera_settings.is_empty() or FloorInstanceContainer.get_child_count() == 0 or current_location.is_empty():return	
 
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -315,7 +315,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 
-	
 	match key:
 		"W":
 			update_menu_index(-1)

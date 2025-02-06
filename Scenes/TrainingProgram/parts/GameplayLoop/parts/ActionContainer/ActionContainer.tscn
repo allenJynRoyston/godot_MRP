@@ -45,7 +45,7 @@ bg_color = Color(0.153077, 0.153077, 0.153076, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8utft"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7be6c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2n6a6"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="ActionContainer" type="MarginContainer"]
@@ -219,7 +219,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_7be6c")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2n6a6")
 icon = 7
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "NEXT REPORT IN X DAYS"

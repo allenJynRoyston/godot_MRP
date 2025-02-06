@@ -32,19 +32,49 @@ var DCLASS:Dictionary = {
 	"icon": SVGS.TYPE.D_CLASS
 }
 
+var MORALE:Dictionary = {
+	"name": "MORALE",
+	"icon": SVGS.TYPE.STAFF
+}
+
+var SAFETY:Dictionary = {
+	"name": "SAFETY",
+	"icon": SVGS.TYPE.STAFF
+}
+
+var READINESS:Dictionary = {
+	"name": "READINESS",
+	"icon": SVGS.TYPE.STAFF
+}
+
 var reference_data:Dictionary = {
 	RESOURCE.TYPE.MONEY: MONEY,
 	RESOURCE.TYPE.ENERGY: ENERGY,
 	RESOURCE.TYPE.LEAD_RESEARCHERS: LEAD_RESEARCHERS,
 	RESOURCE.TYPE.STAFF: STAFF,
 	RESOURCE.TYPE.SECURITY: SECURITY,
-	RESOURCE.TYPE.DCLASS: DCLASS
+	RESOURCE.TYPE.DCLASS: DCLASS,
+}
+
+
+
+
+var reference_data_base_metric:Dictionary = {
+	RESOURCE.BASE_METRICS.MORALE: MORALE,
+	RESOURCE.BASE_METRICS.SAFETY: SAFETY,
+	RESOURCE.BASE_METRICS.READINESS: READINESS
 }
 
 # ------------------------------------------------------------------------------
 func return_data(key:int) -> Dictionary:
 	reference_data[key].ref = key
 	return reference_data[key]
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_metric_data(key:int) -> Dictionary:
+	reference_data_base_metric[key].ref = key
+	return reference_data_base_metric[key]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

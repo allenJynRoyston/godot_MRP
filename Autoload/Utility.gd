@@ -90,6 +90,11 @@ func paginate_array(array:Array, start_at: int, limit: int) -> Array:
 	return _list
 # ------------------------------------------------------------------------------		
 
+# ------------------------------------------------------------------------------	
+func dictionaries_equal(dict1: Dictionary, dict2: Dictionary) -> bool:
+	return JSON.stringify(dict1) == JSON.stringify(dict2)
+# ------------------------------------------------------------------------------		
+
 # ------------------------------------------------------------------------------		
 # THIS DOESN'T WORK YET
 func dict_has_diff(new_val:Dictionary, current:Dictionary, list_property:String, properties:Array) -> Dictionary:

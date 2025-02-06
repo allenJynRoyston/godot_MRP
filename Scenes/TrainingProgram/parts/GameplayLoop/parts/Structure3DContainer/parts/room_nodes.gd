@@ -10,7 +10,6 @@ extends Control
 @onready var ControlPanelViewport:SubViewport = $ControlSubViewport
 @onready var ControlPanelContainer:Control = $ControlSubViewport/ControlPanelContainer
 
-
 @onready var ControlMenuViewport:SubViewport = $ControlMenuSubviewport
 @onready var ControlMenuContainer:Control = $ControlMenuSubviewport/ControlMenuContainer
 @onready var ControlMenuList:VBoxContainer = $ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList
@@ -20,8 +19,8 @@ extends Control
 @onready var NormalLights:Node3D = $SubViewport/RoomColumn/NormalLights
 @onready var EmergencyLights:Node3D = $SubViewport/RoomColumn/EmergencyLights
 
-@onready var RoomNameLabel:Label = $ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomNameLabel
-@onready var RoomStatusLabel:Label = $ControlSubViewport/ControlPanelContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomStatusLabel
+@onready var RoomNameLabel:Label = $ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomNameLabel
+@onready var RoomStatusLabel:Label = $ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomStatusLabel
 
 @onready var CursorLabelSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorLabelSprite
 @onready var CursorMenuSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorMenuSprite
@@ -39,19 +38,19 @@ extends Control
 		assigned_location = val
 		on_assigned_location_update()
 
+enum MENU_TYPE {SCP, ROOM, RESEARCHER}
+
 var current_location:Dictionary = {} 
 var resources_data:Dictionary = {} 
-
 var previous_floor:int = -1
 var previous_ring:int = -1
-
 var is_setup:bool = false
 var node_refs:Dictionary = {}
 var node_ref_positions:Dictionary = {}
-
 var camera_size_arr:Array = [20, 24, 28, 32, 36]
 var current_camera_size:int = 0 
-
+var freeze_input:bool = false 
+var room_config:Dictionary = {}
 var menu_index:int = 0
 var menu_actions:Array = []
 var show_menu:bool = false : 
@@ -59,25 +58,15 @@ var show_menu:bool = false :
 		if show_menu != val:
 			show_menu = val
 			on_show_menu_update()
-		
-var freeze_input:bool = false 
-
-var room_config:Dictionary = {}
-var room_config_data:Dictionary = {}
-var can_purchase:bool
-var room_under_construction:bool 
-var has_room:bool
-var has_scp_in_room:bool
-var room_details:Dictionary 
-var is_activated:bool
-var is_disabled:bool 
-var scp_data:Dictionary 
-var can_store_scp:bool
-var scp_details:Dictionary
-
-var no_scp_data:bool 
-var is_transfer:bool 
-var is_contained:bool 
+var is_active:bool = false : 
+	set(val):
+		is_active = val
+		on_is_active_update()
+var current_menu_type:MENU_TYPE = MENU_TYPE.ROOM : 
+	set(val):
+		if current_menu_type != val:
+			current_menu_type = val		
+			on_current_menu_type_update()
 		
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -103,6 +92,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_base_states(self)
 	GBL.subscribe_to_mouse_input(self)	
 	GBL.subscribe_to_control_input(self)
+	GBL.register_node(REFS.ROOM_NODES, self)
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
@@ -111,12 +101,17 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
+	GBL.unregister_node(REFS.ROOM_NODES)
 
 func _ready() -> void:
 	on_label_control_subpanel_rect_changed()
 	on_menu_control_subpanel_rect_changed()
 	on_in_lockdown_update()
 	on_assigned_location_update()
+	on_is_active_update()
+	
+	on_show_menu_update(true)
+	on_current_menu_type_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -133,27 +128,29 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if current_location.is_empty():return
 	
-	room_config_data = room_config.floor[assigned_location.floor].ring[assigned_location.ring].room[current_location.room]
-	can_purchase = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
-	room_under_construction = !room_config_data.build_data.is_empty()
-	has_room = !room_config_data.room_data.is_empty()
-	has_scp_in_room = false	
-
-	# has room check
-	room_details = room_config_data.room_data.get_room_details.call() if has_room else {}
-	is_activated = room_config_data.room_data.get_is_activated.call() if has_room else false
-	is_disabled = (!RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if has_room else false
-	scp_data = room_config_data.scp_data if has_room else {}	
-	can_store_scp = room_details.can_contain if has_room else false
-	scp_details = (room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}) if has_room else {}
+	#room_config_data = room_config.floor[assigned_location.floor].ring[assigned_location.ring].room[current_location.room]
+	#can_purchase = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
+	#room_under_construction = !room_config_data.build_data.is_empty()
+	#has_room = !room_config_data.room_data.is_empty()
+	#has_scp_in_room = false	
+#
+	## has room check
+	#room_details = room_config_data.room_data.get_room_details.call() if has_room else {}
+	#is_activated = room_config_data.room_data.get_is_activated.call() if has_room else false
+	#is_disabled = (!RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if has_room else false
+	#scp_data = room_config_data.scp_data if has_room else {}	
+	#can_store_scp = room_details.can_contain if has_room else false
+	#scp_details = (room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}) if has_room else {}
+	#
+	## can store scp check
+	#no_scp_data = scp_data.is_empty() if can_store_scp else true
+	#is_transfer = (false if no_scp_data else room_config_data.scp_data.is_transfer) if can_store_scp else false
+	#is_contained = (false if no_scp_data else room_config_data.scp_data.is_contained) if can_store_scp else false
 	
-	# can store scp check
-	no_scp_data = scp_data.is_empty() if can_store_scp else true
-	is_transfer = (false if no_scp_data else room_config_data.scp_data.is_transfer) if can_store_scp else false
-	is_contained = (false if no_scp_data else room_config_data.scp_data.is_contained) if can_store_scp else false
-	
+	# reset menu index ONLY when swapping rooms
+	menu_index = 0
+	current_menu_type = MENU_TYPE.ROOM
 	on_assigned_location_update()
-	on_show_menu_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -188,20 +185,14 @@ func update_refs() -> void:
 			node_ref_positions[node.name] = node.position
 
 			node.onBlur = func(room_data:Dictionary) -> void:
-				if node.position.y != 0:
-					U.tween_node_property(node, "position:y", 0)
-					node.show_internal = false
-				
+				pass
 			node.onFocus = func(room_data:Dictionary) -> void:
-				if node.position.y != 2.5:
-					U.tween_node_property(node, "position:y", 2.5)
 				RoomNameLabel.text = "EMPTY" if room_data.is_empty() else room_data.name				
 				RoomStatusLabel.text = "inactive"
-				CursorMenuSprite.global_position = node.global_position - Vector3(9, -4, 0) 
-				CursorMenuSprite.position.z = -2
+				CursorLabelSprite.global_position = node.global_position - Vector3(0, -2, 0)
+				CursorLabelSprite.position.z = -2
 
-				
-	
+
 	var material_copy:StandardMaterial3D = FloorMesh.mesh.material
 	match assigned_location.ring:
 		0:
@@ -215,134 +206,171 @@ func update_refs() -> void:
 	FloorMesh.mesh.material = material_copy
 # --------------------------------------------------------
 
-# ------------------------------------------------
+# --------------------------------------------------------
+func on_is_active_update() -> void:
+	if !is_node_ready() or current_location.is_empty():return
+	var node:Node3D = node_refs[str(current_location.room)]		
+	U.tween_node_property(node, "position:y", 2.5 if is_active else 0)
+	node.show_internal = is_active
+# --------------------------------------------------------
+
+# --------------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 	if !is_node_ready():return
-# ------------------------------------------------
+# --------------------------------------------------------
 
-# ------------------------------------------------
-func on_show_menu_update() -> void:
-	if current_location.is_empty(): return
-	var node:Node3D = node_refs[str(current_location.room)]		
+# --------------------------------------------------------
+func find_node_by_room(room_index:int) -> Node3D:
+	return node_refs[str(room_index)]
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func find_ui_position_of_room(room_index:int) -> Vector2:
+	#camera: Camera3D, world_position: Vector3, control: Control
+	var RoomNode:Node3D = find_node_by_room(room_index)
+	var viewport := MainCamera.get_viewport()
+	var screen_position := MainCamera.unproject_position(RoomNode.position)
+
+	# Convert screen position to Control node's local space
+	return screen_position 
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func on_current_menu_type_update() -> void:
+	if !is_node_ready():return 
+	
+	var new_stylebox = StyleBoxFlat.new()
+	match current_menu_type:
+		MENU_TYPE.ROOM:	
+			new_stylebox.bg_color = Color.BLUE
+		MENU_TYPE.SCP:
+			new_stylebox.bg_color = Color.PURPLE
+		MENU_TYPE.RESEARCHER:
+			new_stylebox.bg_color = Color.RED
+				
+	ControlMenuContainer.add_theme_stylebox_override("panel", new_stylebox)
+		
+	on_show_menu_update()
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func on_show_menu_update(setup:bool = false) -> void:
+	if is_node_ready() and setup:
+		U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0 if show_menu else 90)
+		return
+	
+	if current_location.is_empty(): return	
+	var node:Node3D = find_node_by_room(current_location.room)
 	node.show_internal = show_menu
 	
 	if show_menu:
-		menu_index = 0
+		var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
 		menu_actions = []
+		
 		menu_actions.push_back({
 			"title": "BACK", 
 			"onSelect": func() -> void:
 				menu_response.emit({"action": ACTION.ROOM_NODE.BACK})
-		})
+		})		
+		
+		match current_menu_type:
+			# ------------------
+			MENU_TYPE.ROOM:								
+				var room_is_empty:bool = room_extract.room.is_empty()
 				
-		if is_powered:
-			# ------------------- CONVERT, CANCEL OR REMOVE ROOM
-			if can_purchase:
-				menu_actions.push_back({
-					"title": "CREATE ROOM...",
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
-				})
-			
-			if room_under_construction:
-				menu_actions.push_back({
-					"title": "CANCEL CONSTRUCTION",
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONSTRUCTION})
-				})
-			# -------------------
-			
-			# -------------------
-			if has_room:
-				if !scp_details.is_empty():
-					is_disabled = true 	
-					has_scp_in_room = true
-
-				menu_actions.push_back({
-					"title": "DEACTIVATE ROOM" if is_activated else "ACTIVATE ROOM",
-					"is_disabled": is_disabled,
-					"onSelect": func() -> void:
-						if is_disabled:return
-						menu_response.emit({
-							"action": ACTION.ROOM_NODE.ACTIVATE_ROOM if !is_activated else ACTION.ROOM_NODE.DEACTIVATE_ROOM
-						})
-				})				
-								
-
-				if can_store_scp:
-
-					if is_transfer:
-						menu_actions.push_back({
-							"title": "CANCEL CONTAINMENT" if !is_contained else "CANCEL TRANSFER",
-							"onSelect": func() -> void:
-								menu_response.emit({
-									"action": ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP if !is_contained else ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP
-								})
-						})
-						
-					
+				if room_is_empty:
 					menu_actions.push_back({
-						"title": "CONTAIN SCP..." if no_scp_data else "TRANSFER %s" % [scp_details.name],
+						"title": "CONSTRUCT ROOM...",
 						"onSelect": func() -> void:
-							menu_response.emit({
-								"action": ACTION.ROOM_NODE.CONTAIN_SCP if no_scp_data else ACTION.ROOM_NODE.TRANSFER_SCP
-							})
-					})
-						
-					if is_contained:
-						var has_researcher_attached:bool = !room_config_data.scp_data.get_researcher_details.call().is_empty()
+							menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
+					})							
+				
+				else:
+					if room_extract.room.under_construction:
 						menu_actions.push_back({
-							"title": "ASSIGN RESEARCHER" if !has_researcher_attached else "REMOVE RESEARCHER",
+							"title": "CANCEL CONSTRUCTION",
 							"onSelect": func() -> void:
-								menu_response.emit({
-									"action": ACTION.ROOM_NODE.REMOVE_RESEARCHER if has_researcher_attached else ACTION.ROOM_NODE.ASSIGN_RESEARCHER
-								})
-						})
-					
-						if has_researcher_attached:
-							var has_testing_details:bool = !room_config_data.scp_data.get_testing_details.call().is_empty()
+								menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONSTRUCTION})
+						})		
+
+					else:
+						if !room_extract.room.is_activated:
 							menu_actions.push_back({
-								"title": "START TESTING" if !has_testing_details else "END TESTING",
+								"title": "ACTIVATE ROOM",
+								"is_disabled": !room_extract.room.can_activate,
 								"onSelect": func() -> void:
-									menu_response.emit({
-										"action": ACTION.ROOM_NODE.STOP_TESTING if has_testing_details else ACTION.ROOM_NODE.START_TESTING
-									})
-							})						
-
-			if has_room:
+									if room_extract.room.can_activate:
+										menu_response.emit({"action": ACTION.ROOM_NODE.ACTIVATE_ROOM, "room_details": room_extract.room.details})
+							})		
+						else:
+							menu_actions.push_back({
+								"title": "DEACTIVATE ROOM",
+								"onSelect": func() -> void:
+									menu_response.emit({"action": ACTION.ROOM_NODE.DEACTIVATE_ROOM, "room_details": room_extract.room.details})
+							})		
+													
+						menu_actions.push_back({
+							"title": "DESTROY ROOM",
+							"onSelect": func() -> void:
+								menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
+						})		
+			# ------------------
+			
+			# ------------------
+			MENU_TYPE.RESEARCHER:
 				menu_actions.push_back({
-					"title": "DESTROY ROOM",
-					"is_disabled": has_scp_in_room,
+					"title": "ASSIGN RESEARCHER...",
 					"onSelect": func() -> void:
-						if !has_scp_in_room:
-							menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
-				})
-					
-			# -------------------
-		
-		# -------------------
-
-		#else:
-			#menu_actions = [
-				#{
-					#"title": "INVESTIGATE",
-					#"onSelect": func():
-						#show_menu = false
-						#menu_response.emit({"action": ACTION.STRUCTURE.GOTO_FLOOR}),
-						#
-				#},
-				#{
-					#"title": "ACTIVATE FLOOR",
-					#"onSelect": func():
-						#menu_response.emit({"action": ACTION.STRUCTURE.ACTIVATE_FLOOR}),
-				#}
-			#]
-		
+						menu_response.emit({"action": ACTION.ROOM_NODE.ASSIGN_RESEARCHER})
+				})		
+				
+				if room_extract.researchers.size() > 0:
+					for researcher in room_extract.researchers:
+						menu_actions.push_back({
+							"title": "REMOVE %s" % [researcher.name],
+							"onSelect": func() -> void:
+								menu_response.emit({"action": ACTION.ROOM_NODE.UNASSIGN_RESEARCHER, "researcher": researcher, "room_details": room_extract.room.details if !room_extract.room.is_empty() else {}})
+						})
+			# ------------------
+			
+			# ------------------
+			MENU_TYPE.SCP:
+				var is_scp_empty:bool = room_extract.scp.is_empty()
+				#"details": scp_details,
+				#"is_transfer": is_transfer,
+				#"is_contained": is_contained,
+				#"testing": {
+					#"is_accessing": is_accessing,
+					#"testing_ref": testing_ref,
+					#"progress": testing_progress
+				#} if is_testing else {}
+				if is_scp_empty:
+					menu_actions.push_back({
+						"title": "ASSIGN SCP...",
+						"onSelect": func() -> void:
+							menu_response.emit({"action": ACTION.ROOM_NODE.CONTAIN_SCP})
+					})		
+				else:
+					if room_extract.scp.is_transfer:
+						menu_actions.push_back({
+							"title": "CANCEL CONTAINMENT",
+							"onSelect": func() -> void:
+								menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP})
+						})		
+					else:
+						menu_actions.push_back({
+							"title": "TRANSFER",
+							"onSelect": func() -> void:
+								menu_response.emit({"action": ACTION.ROOM_NODE.TRANSFER_SCP})
+						})	
 		
 		for child in ControlMenuList.get_children():
 			child.queue_free()
-			
+		
+		# keeps place in menu, unless it's over the menu action size
+		menu_index = U.min_max(menu_index, 0, menu_actions.size() - 1)
+		
 		for index in menu_actions.size():
 			var item:Dictionary = menu_actions[index]
 			var new_btn:BtnBase = TextBtnPreload.instantiate()
@@ -358,21 +386,21 @@ func on_show_menu_update() -> void:
 			ControlMenuList.add_child(new_btn)
 	
 
-	GBL.add_to_animation_queue(self)
-	await U.set_timeout(0.05)
-
-	#CursorMenuSprite.offset.y = -(ControlMenuViewport.size.y/2) - 35
-
 	#U.tween_node_property(AccentLights, "rotation:y", 3 if show_menu else 5)	
-	await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0 if show_menu else 90)
+	GBL.add_to_animation_queue(self)	
+	
+	if show_menu:
+		CursorMenuSprite.global_position = node.global_position - Vector3(9, -6, 0) 
+		CursorMenuSprite.position.z = -2
+					
+	await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0 if show_menu else 90)
+	GBL.remove_from_animation_queue(self)	
 	
 	if !show_menu:
 		for child in ControlMenuList.get_children():
 			child.queue_free()		
-			
 
-	GBL.remove_from_animation_queue(self)	
-# ------------------------------------------------
+# --------------------------------------------------------
 
 # ------------------------------------------------
 func on_is_powered_update() -> void:
@@ -467,12 +495,16 @@ func update_menu_index(inc:int) -> void:
 # --------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
 	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP) # 
-	
 	if !is_node_ready() or GBL.has_animation_in_queue() or !show_menu or freeze_input or GameplayNode.is_occupied():return
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 
 	match key:
+		"A":
+			current_menu_type = U.min_max(current_menu_type - 1, 0, 2)
+		"D":
+			current_menu_type = U.min_max(current_menu_type + 1, 0, 2)
+			
 		"W":
 			update_menu_index(-1)
 

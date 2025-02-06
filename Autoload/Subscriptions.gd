@@ -204,6 +204,7 @@ func unsubscribe_to_hired_lead_researchers_arr(node:Node) -> void:
 
 # ------------------------------------------------------------	
 var current_location_subscriptions:Array = []
+var previous_current_location:Dictionary = {}
 
 var current_location:Dictionary = {} : 
 	set(val):

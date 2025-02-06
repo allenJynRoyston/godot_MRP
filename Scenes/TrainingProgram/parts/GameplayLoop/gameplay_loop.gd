@@ -435,7 +435,7 @@ signal on_cancel_construction_complete
 signal on_reset_room_complete
 signal on_activate_room_complete
 signal on_contain_scp_complete
-signal on_assign_researcher_to_scp_complete
+signal on_assign_researcher_complete
 signal on_scp_testing_complete
 
 #endregion
@@ -628,9 +628,9 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 		room[n] = get_room_defaults()
 	return {		
 		"metrics": {
-			RESOURCE.BASE_METRICS.MORALE: 2,
-			RESOURCE.BASE_METRICS.SAFETY: 2,
-			RESOURCE.BASE_METRICS.READINESS: 2
+			RESOURCE.BASE_METRICS.MORALE: 0,
+			RESOURCE.BASE_METRICS.SAFETY: 0,
+			RESOURCE.BASE_METRICS.READINESS: 0
 		},
 		"active_buffs": [],
 		"room_refs": [],
@@ -642,7 +642,8 @@ func get_room_defaults() -> Dictionary:
 	return {
 		"build_data": {},
 		"room_data": {},
-		"scp_data": {}
+		"scp_data": {},
+		"attached_researchers": []
 	}
 #endregion
 # ------------------------------------------------------------------------------
@@ -749,7 +750,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 				var list_data:Dictionary = res.data
 				if list_data.lead_researcher.is_empty():
 					return {}		
-				return RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr),
+				return RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid),
 			# -------------------------	
 			"progress_data": func() -> Dictionary:
 				return progress_data.duplicate(true),
@@ -804,6 +805,10 @@ func set_room_config(force_setup:bool = false) -> void:
 			for key in metrics.wing:
 				var amount:int = metrics.wing[key]
 				new_room_config.floor[floor_val].ring[wing_val].metrics[key] = U.min_max(new_room_config.floor[floor_val].ring[wing_val].metrics[key] + amount, 0, 10)
+		else:
+			for key in metrics:
+				var amount:int = metrics[key]
+				new_room_config.floor[floor_val].ring[wing_val].metrics[key] = U.min_max(new_room_config.floor[floor_val].ring[wing_val].metrics[key] + amount, 0, 10)
 
 	# mark rooms that are being transfered to a room 
 	if "available_list" in scp_data:
@@ -851,12 +856,19 @@ func set_room_config(force_setup:bool = false) -> void:
 				"get_scp_details": func() -> Dictionary:
 					return SCP_UTIL.return_data(item.ref),
 				"get_researcher_details": func() -> Dictionary:
-					return RESEARCHER_UTIL.return_data_with_uid(item.lead_researcher.uid, hired_lead_researchers_arr) if !item.lead_researcher.is_empty() else {},
+					return RESEARCHER_UTIL.return_data_with_uid(item.lead_researcher.uid) if !item.lead_researcher.is_empty() else {},
 				"get_testing_details": func() -> Dictionary:
 					return item.current_testing
 			}
 			
-			# update metrics
+			# get researcher...
+			if !item.lead_researcher.is_empty():
+				var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(item.lead_researcher.uid)
+				var researcher_metrics:Dictionary = RESEARCHER_UTIL.return_metrics(researcher_details)
+				# ... and add their metrics
+				update_metrics.call(floor, ring, researcher_metrics)
+			
+			# ...then add the scp metrics
 			update_metrics.call(floor, ring, scp_details.metrics)			
 			
 			# first add scp ref to list to both ring and floor			
@@ -933,8 +945,16 @@ func set_room_config(force_setup:bool = false) -> void:
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
 				
-				# check all room_refs to see if there any ring wide active buffs
-				#rint(new_room_config.floor[floor].ring[ring].room_refs)
+				# check for researchers added via rooms
+				var attached_researchers:Array = room_config.floor[floor_index].ring[ring_index].room[room_index].attached_researchers 
+				if attached_researchers.size() > 0:
+					print("%s attached_researchers: %s" % [designation, attached_researchers])
+					for uid in attached_researchers:
+						var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)
+						var researcher_metrics:Dictionary = RESEARCHER_UTIL.return_metrics(researcher_details)
+						# ... and add their metrics
+						update_metrics.call(floor_index, ring_index, researcher_metrics)					
+			
 				
 				if !config_data.build_data.is_empty():
 					under_construction_rooms.push_back(designation)
@@ -1554,13 +1574,10 @@ func find_in_available(ref:int) -> Dictionary:
 
 # -----------------------------------
 func contain_scp(from_location:Dictionary) -> void:
-	var floor_index:int = from_location.floor
-	var ring_index:int = from_location.ring
-	var room_index:int = from_location.room
-	var room_data:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].room_data.get_room_details.call()
+	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(from_location)
 	
 	SUBSCRIBE.suppress_click = true
-	ContainmentContainer.filter_for_data = room_data
+	ContainmentContainer.assign_only = true
 	await show_only([ ContainmentContainer])
 	var response:Dictionary = await ContainmentContainer.user_response
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
@@ -1598,14 +1615,12 @@ func contain_scp(from_location:Dictionary) -> void:
 
 # -----------------------------------
 func transfer_scp(from_location:Dictionary) -> void:
-	var floor_index:int = from_location.floor
-	var ring_index:int = from_location.ring
-	var room_index:int = from_location.room
-	var scp_details:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].scp_data.get_scp_details.call()
-	
+	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(from_location)
+	var scp_details:Dictionary = room_extract.scp.details
+
 	Structure3dContainer.select_location(true)
 	Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
-	SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(scp_details.ref, room_config, scp_data)	
+	SUBSCRIBE.unavailable_rooms = [U.location_to_designation(from_location)]
 	await show_only([Structure3dContainer, LocationContainer, BackContainer])		
 	var structure_response:Dictionary = await Structure3dContainer.user_response
 	Structure3dContainer.freeze_input = true
@@ -1693,7 +1708,7 @@ func start_scp_testing(ref:int) -> void:
 	var res:Dictionary = find_in_contained(ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data
-	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr)
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid)
 	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 	# add placeholder
 	scp_data.contained_list[index].current_testing = { 
@@ -1832,29 +1847,47 @@ func dismiss_researcher(researcher_data:Dictionary) -> void:
 # -----------------------------------
 func assign_researcher_to_scp(location:Dictionary, assign:bool) -> void:
 	var scp_list_data:Dictionary = find_in_contained_via_location(location)
-	if assign:
-		await assign_researcher_to_scp_find_researcher(scp_list_data.data)
-	else:
-		await unassign_researcher_to_scp(scp_list_data.data.ref)
-		
+	pass
+	#if assign:
+		#await assign_researcher_to_scp_find_researcher(location)
+	#else:
+		#await unassign_researcher_to_scp(scp_list_data.data.ref)
+		#
+	#await restore_default_state()
+	#on_assign_researcher_to_scp_complete.emit()
+# -----------------------------------	
+
+# -----------------------------------	
+func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) -> void:
+	ConfirmModal.set_text("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
+	await show_only([ConfirmModal])
+	var response:Dictionary = await ConfirmModal.user_response
+	match response.action:
+		ACTION.NEXT:	
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				if i[0] == researcher_data.uid:
+					i[8].assigned_to_room = null
+				return i
+			)
+
 	await restore_default_state()
-	on_assign_researcher_to_scp_complete.emit()
 # -----------------------------------	
 
 # -----------------------------------
-func assign_researcher_to_scp_find_researcher(scp_details:Dictionary) -> void:
+func assign_researcher(location_data:Dictionary) -> void:
 	ResearchersContainer.assign_only = true
 	await show_only([ResearchersContainer])
 	var response:Dictionary = await ResearchersContainer.user_response
 	match response.action:
 		ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
-			var res:Dictionary = find_in_contained(scp_details.ref)
-			var index:int = res.index
-			var list_data:Dictionary = res.data
-			scp_data.contained_list[index].lead_researcher = {
-				"uid": response.data.details.uid
-			}
-			SUBSCRIBE.scp_data = scp_data
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				if i[0] == response.data.details.uid:
+					i[8].assigned_to_room = location_data
+				return i
+			)
+			
+	print(SUBSCRIBE.hired_lead_researchers_arr)
+	await restore_default_state()
 # -----------------------------------
 
 # -----------------------------------
@@ -1871,6 +1904,8 @@ func assign_researcher_to_scp_find_scp(reseacher_details:Dictionary) -> void:
 				"uid": reseacher_details.details.uid
 			}
 			SUBSCRIBE.scp_data = scp_data	
+			
+	await restore_default_state()
 # -----------------------------------
 
 # -----------------------------------
@@ -1879,7 +1914,7 @@ func unassign_researcher_to_scp(scp_ref:int) -> void:
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data
-	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid, hired_lead_researchers_arr)
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid)
 
 	ConfirmModal.set_text("Remove %s as Lead Researcher on %s?" % [researcher_details.name, scp_details.name])
 	await show_only([ConfirmModal])
@@ -2305,8 +2340,9 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
 				# --------------------
 				ACTION.CONTAINED.ASSIGN_RESEARCHER:
-					await assign_researcher_to_scp_find_researcher(selected_contain_item)
-					current_contain_step = CONTAIN_STEPS.START
+					pass
+					#await assign_researcher_to_scp_find_researcher(selected_contain_item)
+					#current_contain_step = CONTAIN_STEPS.START
 				# --------------------
 				ACTION.CONTAINED.UNASSIGN_RESEARCHER:
 					await unassign_researcher_to_scp(selected_contain_item.ref)
@@ -2677,7 +2713,7 @@ func on_current_researcher_step_update() -> void:
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
 func is_occupied() -> bool:
-	if is_busy or processing_next_day or GBL.has_animation_in_queue():
+	if is_busy or processing_next_day:
 		return true
 	if (current_shop_step != SHOP_STEPS.RESET) or (current_contain_step != CONTAIN_STEPS.RESET) or (current_recruit_step != RECRUIT_STEPS.RESET) or (current_action_complete_step != ACTION_COMPLETE_STEPS.RESET) or (current_event_step != EVENT_STEPS.RESET):
 		return true
@@ -2685,7 +2721,7 @@ func is_occupied() -> bool:
 
 	
 func on_control_input_update(input_data:Dictionary) -> void:
-	if is_occupied():return
+	if is_occupied() or GBL.has_animation_in_queue():return
 	
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode

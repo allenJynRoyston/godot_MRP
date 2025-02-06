@@ -1,5 +1,5 @@
 @tool
-extends Node
+extends UtilityWrapper
 
 var STARTING_BASE:Dictionary = {
 	"name": "BASE HQ",
@@ -648,6 +648,7 @@ var tier_data:Dictionary = {
 
 
 
+
 # ------------------------------------------------------------------------------
 func return_tier_data(key:TIER.VAL) -> Dictionary:
 	tier_data[key].ref = key
@@ -730,7 +731,7 @@ func calculate_activation_cost(ref:ROOM.TYPE, resources_data:Dictionary, refund:
 
 # ------------------------------------------------------------------------------
 func return_effects(ref:ROOM.TYPE) -> Array:
-	return SHARED_UTIL.return_effects(return_data(ref))
+	return SHARED_UTIL.return_effects(return_data(ref), "activation_effect")
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
@@ -773,7 +774,12 @@ func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func extract_room_details(floor:int, ring:int, room:int, room_config:Dictionary, resources_data:Dictionary) -> Dictionary:
+func extract_room_details(current_location:Dictionary) -> Dictionary:
+	var designation:String = U.location_to_designation(current_location)
+	var floor:int = current_location.floor
+	var ring:int = current_location.ring
+	var room:int = current_location.room
+	
 	var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room]
 	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
 	var room_under_construction:bool  = !room_config_data.build_data.is_empty()
@@ -781,34 +787,40 @@ func extract_room_details(floor:int, ring:int, room:int, room_config:Dictionary,
 	
 	var room_details:Dictionary = room_config_data.room_data.get_room_details.call() if has_room else {}
 	var is_activated:bool = room_config_data.room_data.get_is_activated.call() if has_room else false
-	var is_disabled:bool = (!RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if has_room else false
-	var scp_data:Dictionary = room_config_data.scp_data if has_room else {}	
-	var can_store_scp:bool = room_details.can_contain if has_room else false
-	var scp_details:Dictionary = (room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}) if has_room else {}
-
-	var no_scp_data:bool = scp_data.is_empty() if can_store_scp else true
-	var is_transfer:bool = (false if no_scp_data else room_config_data.scp_data.is_transfer) if can_store_scp else false
-	var is_contained:bool = (false if no_scp_data else room_config_data.scp_data.is_contained) if can_store_scp else false	
-	var testing_details:Dictionary = ({} if no_scp_data else room_config_data.scp_data.get_testing_details.call()) if can_store_scp else {}
+	var can_activate:bool = (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if has_room else false
+	var can_contain:bool = room_details.can_contain if has_room else false
+	
+	var scp_data:Dictionary = room_config_data.scp_data 
+	var no_scp_data:bool = scp_data.is_empty()
+	var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
+	var is_transfer:bool = (false if no_scp_data else room_config_data.scp_data.is_transfer) 
+	var is_contained:bool = (false if no_scp_data else room_config_data.scp_data.is_contained)
+	var testing_details:Dictionary = {} if no_scp_data else room_config_data.scp_data.get_testing_details.call() if !is_transfer else {}
 	var is_testing:bool = !testing_details.is_empty()
 	var testing_ref:int =  -1 if !is_testing else testing_details.testing_ref
 	var is_accessing:bool = false if !is_testing else testing_details.testing_ref == -1
 	var testing_progress:int = -1 if !is_testing else testing_details.progress
 	
-	var researcher_details:Dictionary = {} if scp_data.is_empty() else scp_data.get_researcher_details.call()
-	var has_researcher:bool = !researcher_details.is_empty()
-	 
+	print(room_config_data.scp_data)
+	
+	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
+		var props:Dictionary = x[8]
+		if (props.assigned_to_room != null and U.location_to_designation(props.assigned_to_room) == designation):
+			return true
+		return false	
+	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
+	
+	
 	return {
-		"room": {
-			"has_room": has_room,
-			"room_under_construction": room_under_construction,
-			"room_details": room_details if !room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
+		"room": {						
+			"details": room_details if !room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
+			"under_construction": room_under_construction,
+			"can_contain": can_contain,		
 			"is_activated": is_activated,
-			"is_disabled": is_disabled,
-			},
+			"can_activate": can_activate,
+		} if has_room or room_under_construction else {},
 		"scp": {
-			"can_store_scp": can_store_scp,
-			"scp_details": scp_details,
+			"details": scp_details,
 			"is_transfer": is_transfer,
 			"is_contained": is_contained,
 			"testing": {
@@ -817,8 +829,6 @@ func extract_room_details(floor:int, ring:int, room:int, room_config:Dictionary,
 				"progress": testing_progress
 			} if is_testing else {}
 		} if !no_scp_data else {},
-		"researcher": {
-			"details": researcher_details
-		} if has_researcher else {}
+		"researchers": researchers
 	}
 # ------------------------------------------------------------------------------	

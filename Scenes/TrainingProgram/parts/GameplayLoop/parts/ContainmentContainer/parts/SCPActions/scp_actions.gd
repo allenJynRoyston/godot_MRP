@@ -234,7 +234,7 @@ func on_data_update() -> void:
 										{
 											"icon": SVGS.TYPE.STAFF, 
 											"text": func() -> String:
-												var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid, hired_lead_researchers_arr)
+												var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid)
 												return "DR %s" % [researcher_details.name],
 										}	
 									]
@@ -280,7 +280,7 @@ func on_data_update() -> void:
 													if active_scp_data.lead_researcher.is_empty():
 														return "NONE ASSIGNED"
 													else:
-														var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid, hired_lead_researchers_arr)
+														var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid)
 														return "DR %s" % [researcher_details.name],
 											}	
 										]

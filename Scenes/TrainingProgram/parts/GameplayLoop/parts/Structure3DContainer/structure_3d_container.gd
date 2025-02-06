@@ -207,7 +207,7 @@ func on_current_step_update() -> void:
 func on_control_input_update(input_data:Dictionary) -> void:		
 	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	
-	if !is_visible_in_tree() or current_location.is_empty() or GBL.has_animation_in_queue() or freeze_input or (GameplayNode.is_occupied() and current_step != STEPS.SELECT_PLACEMENT):
+	if !is_visible_in_tree() or current_location.is_empty() or (GameplayNode.is_occupied() and current_step != STEPS.SELECT_PLACEMENT) or freeze_input: # GBL.has_animation_in_queue()
 		return
 		
 	if Rendering.show_menu or Rendering.RoomNode.show_menu:
@@ -347,10 +347,13 @@ func wait_for_floor_response() -> void:
 # --------------------------------------------------------------------------------------------------
 func wait_for_room_node_response() -> void:
 	var RoomNode:Control = Rendering.RoomNode
+	RoomNode.is_active = true
+	freeze_input = true
+	
 	var res:Dictionary = await RoomNode.menu_response
 	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
-	freeze_input = true
 	RoomNode.freeze_input = true
+	
 				
 	match res.action:
 		# -------------------
@@ -364,64 +367,57 @@ func wait_for_room_node_response() -> void:
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
 		ACTION.ROOM_NODE.CANCEL_CONSTRUCTION:
-			GameplayNode.cancel_construction(current_location.duplicate())
-			await GameplayNode.on_cancel_construction_complete
+			await GameplayNode.cancel_construction(current_location.duplicate())
+			# GameplayNode.on_cancel_construction_complete
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
 		ACTION.ROOM_NODE.RESET_ROOM:
-			GameplayNode.reset_room(current_location.duplicate())
-			await GameplayNode.on_reset_room_complete
+			await GameplayNode.reset_room(current_location.duplicate())
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
 		ACTION.ROOM_NODE.ACTIVATE_ROOM:
-			var room_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room].room_data
-			GameplayNode.activate_room(current_location.duplicate(), room_data.ref, true)
-			await GameplayNode.on_activate_room_complete
+			await GameplayNode.activate_room(current_location.duplicate(), res.room_details.ref, true)
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
 		ACTION.ROOM_NODE.DEACTIVATE_ROOM:
-			var room_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room].room_data
-			GameplayNode.activate_room(current_location.duplicate(), room_data.ref, false)
-			await GameplayNode.on_activate_room_complete
+			await GameplayNode.activate_room(current_location.duplicate(), res.room_details.ref, false)			
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
 		ACTION.ROOM_NODE.CONTAIN_SCP:
-			GameplayNode.contain_scp(current_location.duplicate())
-			await GameplayNode.on_contain_scp_complete
+			await GameplayNode.contain_scp(current_location.duplicate())
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
 		ACTION.ROOM_NODE.TRANSFER_SCP:
-			GameplayNode.transfer_scp(current_location.duplicate())
-			await GameplayNode.on_contain_scp_complete
+			await GameplayNode.transfer_scp(current_location.duplicate())
+			# await GameplayNode.on_contain_scp_complete
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			# DOES NOT NEED A WAIT FOR ROOM NODE RESPONSE 			
 		# -------------------	
 		ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP:
-			GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.AQ.CONTAIN)
-			await GameplayNode.on_contain_scp_complete
+			await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.AQ.CONTAIN)
+			# GameplayNode.on_contain_scp_complete
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
 		ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP:
-			GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.AQ.TRANSFER)
-			await GameplayNode.on_contain_scp_complete
+			await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.AQ.TRANSFER)
+			# GameplayNode.on_contain_scp_complete
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses			
 		# -------------------	
-		ACTION.ROOM_NODE.REMOVE_RESEARCHER:			
-			GameplayNode.assign_researcher_to_scp(current_location.duplicate(), false)
-			await GameplayNode.on_assign_researcher_to_scp_complete
+		ACTION.ROOM_NODE.UNASSIGN_RESEARCHER:
+			await GameplayNode.unassign_researcher(res.researcher, res.room_details)			
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses			
 		# -------------------	
 		ACTION.ROOM_NODE.ASSIGN_RESEARCHER:
-			GameplayNode.assign_researcher_to_scp(current_location.duplicate(), true)
-			await GameplayNode.on_assign_researcher_to_scp_complete
+			await GameplayNode.assign_researcher(current_location.duplicate())
+			#await GameplayNode.on_assign_researcher_complete
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
 		# -------------------	
@@ -436,7 +432,8 @@ func wait_for_room_node_response() -> void:
 			await GameplayNode.on_scp_testing_complete
 			RoomNode.on_show_menu_update() # update menu if anything changed
 			wait_for_room_node_response()  #  only add if you don't close the menu, otherwise will keep stacking responses			
-			
+	
+	RoomNode.is_active = false
 	RoomNode.freeze_input = false
 	freeze_input = false
 # --------------------------------------------------------------------------------------------------

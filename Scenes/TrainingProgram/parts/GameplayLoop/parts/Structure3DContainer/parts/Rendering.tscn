@@ -55,10 +55,10 @@ grow_end = -5.0
 font = ExtResource("5_ptqq7")
 font_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rpj7c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7kdlp"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_snlpx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4ge6"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="Rendering" type="Node3D"]
@@ -100,7 +100,6 @@ far = 100.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 5, 10)
 
 [node name="CursorSprite" type="Sprite3D" parent="SpriteLayer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 visible = false
 layers = 524288
 pixel_size = 0.003
@@ -265,12 +264,12 @@ layout_mode = 2
 
 [node name="TextBtn" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rpj7c")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7kdlp")
 title = "ACTION 1"
 
 [node name="TextBtn2" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_snlpx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_l4ge6")
 title = "ACTION 1"
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="_on_panel_container_item_rect_changed"]
