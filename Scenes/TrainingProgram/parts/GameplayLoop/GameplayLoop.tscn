@@ -147,7 +147,7 @@ freeze_inputs = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 250
 freeze_inputs = true
 
 [node name="EndofPhaseContainer" parent="." instance=ExtResource("18_p3gf7")]

@@ -6,36 +6,39 @@
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_l5hnl"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_y60su"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xtjjg"]
-bg_color = Color(0.455, 0.002, 0.713, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c8xoc"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_pw2km"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_7v4hh"]
 color = Color(1, 1, 1, 1)
 grow_begin = -10.0
 grow_end = -10.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u0ohv"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q6das"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_fhsc0"]
+[sub_resource type="LabelSettings" id="LabelSettings_n2cyk"]
 font = ExtResource("3_l5hnl")
 font_size = 32
 font_color = Color(1, 1, 1, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2bdoh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_85kfd"]
 bg_color = Color(0, 0, 0, 0.560784)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="MetricContainer" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 0)
 size_flags_horizontal = 3
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_xtjjg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_c8xoc")
 script = ExtResource("1_nv6ic")
+type = null
+header = null
+status = null
+items = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -59,7 +62,7 @@ alignment = 1
 [node name="StatusHeader" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 5
-text = "STATUS:"
+text = "ITEM CLASS:"
 label_settings = ExtResource("1_jvgoo")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -67,12 +70,11 @@ vertical_alignment = 1
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_pw2km")
+theme_override_styles/separator = SubResource("StyleBoxLine_7v4hh")
 
 [node name="StatusContent" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 5
-text = "FINE"
 label_settings = ExtResource("3_c7w0c")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -85,21 +87,21 @@ theme_override_constants/separation = 0
 [node name="TitleHeader" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 5
-text = "RESEARCHER:"
+text = "DESIGNATION"
 label_settings = ExtResource("1_jvgoo")
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_u0ohv")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_q6das")
 
 [node name="TitleContentBG" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
-text = "BEWARE"
-label_settings = SubResource("LabelSettings_fhsc0")
+text = "TITLE"
+label_settings = SubResource("LabelSettings_n2cyk")
 horizontal_alignment = 2
 uppercase = true
 
@@ -107,7 +109,7 @@ uppercase = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
-text = "asdf"
+text = "TITLE"
 label_settings = ExtResource("3_y60su")
 horizontal_alignment = 2
 uppercase = true
@@ -117,7 +119,7 @@ visible_ratio = 0.0
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2bdoh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_85kfd")
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2

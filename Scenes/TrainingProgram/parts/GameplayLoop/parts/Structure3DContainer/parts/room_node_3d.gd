@@ -249,7 +249,7 @@ func build_room_details() -> void:
 	else:
 		ScpNotificationNodeLight.omni_attenuation = 0.0
 		ScpNotificationNodeLight.light_color = Color.TRANSPARENT
-
+		is_pulsing = false
 
 		
 

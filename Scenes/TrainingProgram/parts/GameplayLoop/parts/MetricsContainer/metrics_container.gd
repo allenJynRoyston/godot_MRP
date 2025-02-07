@@ -6,9 +6,9 @@ extends GameContainer
 @onready var BreakdownPanel:HBoxContainer = $TopContainer/VBoxContainer/BreakdownPanel
 @onready var StatusLabel:Label = $PanelContainer/VBoxContainer/StatusLabel
 
-@onready var ReadinessLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer/ReadinessLabel
-@onready var SafetyLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer/SafetyLabel
-@onready var MoraleLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer/MoraleLabel
+#@onready var ReadinessLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer/ReadinessLabel
+#@onready var SafetyLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer/SafetyLabel
+#@onready var MoraleLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer/MoraleLabel
 
 #@onready var ConfigBonusContainer:PanelContainer = $PanelContainer/VBoxContainer/ConfigBonus
 @onready var MetricsSCP:Control = $TopContainer/VBoxContainer/BreakdownPanel/MetricsSCP
@@ -229,8 +229,8 @@ func update_panels() -> void:
 	var show_hume:bool = true #ROOM_UTIL.get_count(ROOM.TYPE.HUME_DETECTOR, purchased_facility_arr) > 0
 
 	#ConfigBonusContainer.hide() #if can_show else ConfigBonusContainer.hide()
-	MetricsPanel.show() if can_show and show_metrics else MetricsPanel.hide()
-	HumePanel.show() if can_show and show_hume else HumePanel.hide()
+	#MetricsPanel.show() if can_show and show_metrics else MetricsPanel.hide()
+	#HumePanel.show() if can_show and show_hume else HumePanel.hide()
 	
 	## show details when on wing level
 	#DetailsPanel.show() if can_show else DetailsPanel.hide()
@@ -245,15 +245,15 @@ func update_metrics_labels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
 	var ring_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
 	
-	for key in ring_data.metrics:
-		var amount:int = ring_data.metrics[key]
-		match key:
-			RESOURCE.BASE_METRICS.MORALE:
-				MoraleLabel.text = str(amount)
-			RESOURCE.BASE_METRICS.READINESS:
-				ReadinessLabel.text = str(amount) 
-			RESOURCE.BASE_METRICS.SAFETY:
-				SafetyLabel.text = str(amount) 
+	#for key in ring_data.metrics:
+		#var amount:int = ring_data.metrics[key]
+		#match key:
+			#RESOURCE.BASE_METRICS.MORALE:
+				#MoraleLabel.text = str(amount)
+			#RESOURCE.BASE_METRICS.READINESS:
+				#ReadinessLabel.text = str(amount) 
+			#RESOURCE.BASE_METRICS.SAFETY:
+				#SafetyLabel.text = str(amount) 
 # -----------------------------------------------
 
 # -----------------------------------------------
