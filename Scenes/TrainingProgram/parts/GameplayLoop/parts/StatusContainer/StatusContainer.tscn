@@ -30,7 +30,6 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="LabelSettings" id="LabelSettings_lftaj"]
 font = ExtResource("2_vgalj")
-font_size = 24
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_x37c4"]
 color = Color(0, 0.254902, 0.0823529, 1)

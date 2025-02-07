@@ -71,10 +71,10 @@ func on_selected_researcher_update() -> void:
 	if !is_node_ready() or scp_data.is_empty():return
 	
 	scp_details = {}
-	if "details" in selected_researcher and "uid" in selected_researcher.details:
-		var filter_list:Array = scp_data.contained_list.filter(func(i): return !i.lead_researcher.is_empty() and i.lead_researcher.uid == selected_researcher.details.uid)
-		if filter_list.size() > 0:
-			scp_details = SCP_UTIL.return_data(filter_list[0].ref)	
+	#if "details" in selected_researcher and "uid" in selected_researcher.details:
+		#var filter_list:Array = scp_data.contained_list.filter(func(i): return !i.lead_researcher.is_empty() and i.lead_researcher.uid == selected_researcher.details.uid)
+		#if filter_list.size() > 0:
+			#scp_details = SCP_UTIL.return_data(filter_list[0].ref)	
 	
 	Details.researcher_details = selected_researcher.details if "details" in selected_researcher else {}
 	Actions.researcher_details = selected_researcher.details if "details" in selected_researcher else {}

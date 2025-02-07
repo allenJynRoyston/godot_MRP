@@ -19,6 +19,8 @@ extends Node3D
 @onready var ActivationLight:OmniLight3D = $RoomNode/Node3D/ActiveBox/ActivationLight
 @onready var PulseEffectFX:SpotLight3D = $RoomNode/Node3D/ActiveBox/PulseEffectFX
 
+@onready var ScpNotificationNode:MeshInstance3D = $RoomNode/Node3D/HasSCP
+@onready var ScpNotificationNodeLight:OmniLight3D = $RoomNode/Node3D/HasSCP/ActivationLight
 enum STATES { NONE, ACTIVE, INACTIVE, UNAVAILABLE }
 
 enum SIDES {LEFT, RIGHT, NEUTRAL}
@@ -134,7 +136,7 @@ func on_current_state_update() -> void:
 		STATES.ACTIVE:
 			new_color = Color(1, 1, 1, 1) if !is_unavailable else  Color(0.66, 0, 0, 1)
 		STATES.INACTIVE:
-			new_color = Color(0, 0, 0, 1)
+			new_color = Color(0, 0, 0, 0)
 		STATES.UNAVAILABLE:
 			new_color = Color(0.66, 0, 0, 1)
 	
@@ -146,13 +148,13 @@ func on_current_state_update() -> void:
 func on_apply_texture_update() -> void:
 	if !is_node_ready():return
 	var mesh_duplicate = MainMesh.mesh.duplicate()
-	var material_copy
+	var material_copy = RoomMaterialBuilt.duplicate() 
 	
 	match apply_texture:
-		APPLY_TEXTURE.UNDER_CONSTRUCTION:
-			material_copy = RoomMaterialUnderConstruction.duplicate() 
+		APPLY_TEXTURE.UNDER_CONSTRUCTION:			
+			material_copy.albedo_color = Color.PALE_GOLDENROD
 		APPLY_TEXTURE.BUILT:
-			material_copy = RoomMaterialBuilt.duplicate() 
+			material_copy.albedo_color = Color.RED
 		_:
 			material_copy = RoomMaterialInactive.duplicate() 
 
@@ -173,8 +175,8 @@ func _on_panel_container_item_rect_changed() -> void:
 func on_show_internal_update() -> void:
 	if !is_node_ready():return
 	MainMesh.mesh.flip_faces = show_internal
-	FrontLeftPanel.show() if !show_internal else FrontLeftPanel.hide()
-	FrontRightPanel.show() if !show_internal else FrontRightPanel.hide()
+	#FrontLeftPanel.show() if !show_internal else FrontLeftPanel.hide()
+	#FrontRightPanel.show() if !show_internal else FrontRightPanel.hide()
 	TopPanelLabel.show() if !show_internal else TopPanelLabel.hide()
 	ActiveBox.show() if !show_internal else ActiveBox.hide()
 # ---------------------------------------------------
@@ -190,7 +192,7 @@ func update_refs(floor:int, wing:int) -> void:
 	assigned_wing = wing
 	assigned_floor = floor
 	room_ref = "%s%s%s" % [assigned_floor, assigned_wing, ref_index]
-	FrontLeftPanelLabel.text = "ROOM %s" % [room_ref]
+	FrontLeftPanelLabel.text = "%s" % [room_ref]	
 	build_room_details()
 	on_current_location_update()
 # ---------------------------------------------------
@@ -222,32 +224,37 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 func build_room_details() -> void:
 	if room_config.is_empty() or ref_index == -1 or room_ref == "":return
 	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
-	
-	if !data.build_data.is_empty():
+	var extract_data:Dictionary = ROOM_UTIL.extract_room_details({"floor": assigned_floor, "ring": assigned_wing, "room": ref_index})
+	var mesh_duplicate = MainMesh.mesh.duplicate()
+	var material_copy = RoomMaterialBuilt.duplicate() 
+	material_copy.albedo_color = Color.SLATE_GRAY
+
+	if !extract_data.room.is_empty():
+		#apply_texture = APPLY_TEXTURE.UNDER_CONSTRUCTION
 		#print("build data:", room_ref, assigned_wing)
-		room_data = ROOM_UTIL.return_data(data.build_data.ref)
-		TopPanelLabel.text = room_data.name	
-		TopPanelLabel2.text = "CONSTRUCTING"
-		is_pulsing = false
-		apply_texture = APPLY_TEXTURE.UNDER_CONSTRUCTION
-		ActivationLight.light_color = Color.ORANGE
-	
-	elif !data.room_data.is_empty():
-		var is_activated:bool = data.room_data.get_is_activated.call()
-		room_data = ROOM_UTIL.return_data(data.room_data.ref)
-		TopPanelLabel.text = room_data.name	
-		TopPanelLabel2.text = ""
-		is_pulsing = is_activated
-		apply_texture = APPLY_TEXTURE.BUILT
-		ActivationLight.light_color = Color.GREEN if is_activated else Color.ORANGE  
-	
+		#TopPanelLabel.text = room_data.name	
+		#TopPanelLabel2.text = "CONSTRUCTING"
+		material_copy.albedo_color = Color(0, 0.529, 1)
+		ActivationLight.omni_attenuation = 6.5
+		ActivationLight.light_color = Color.GREEN if extract_data.room.is_activated else Color.ORANGE_RED
 	else:
-		room_data = {}
-		TopPanelLabel.text = "EMPTY"
-		TopPanelLabel2.text = ""
-		is_pulsing = false
-		apply_texture = APPLY_TEXTURE.NONE
-		ActivationLight.light_color = Color.RED
+		ActivationLight.omni_attenuation = 1.0
+		ActivationLight.light_color = Color.TRANSPARENT
+	
+	if !extract_data.scp.is_empty():
+		ScpNotificationNode.show()
+		ScpNotificationNodeLight.omni_attenuation = 6.5
+		ScpNotificationNodeLight.light_color = Color.MEDIUM_PURPLE
+		is_pulsing = true
+	else:
+		ScpNotificationNodeLight.omni_attenuation = 0.0
+		ScpNotificationNodeLight.light_color = Color.TRANSPARENT
+
+
+		
+
+	mesh_duplicate.material = material_copy		
+	MainMesh.mesh = mesh_duplicate			
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -292,6 +299,8 @@ var binary_value: int = 0     # Rounded value of the sine wave (0 or 1)
 
 func _process(delta: float) -> void:
 	if !is_node_ready():return
+	
+	#ScpNotificationNode.rotate_y(0.1)
 	
 	if is_pulsing:
 		# Increment time

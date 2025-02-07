@@ -916,16 +916,16 @@ func set_room_config(force_setup:bool = false) -> void:
 			}
 			
 		# transfer in_lockdown state
-		new_room_config.floor[floor_index].in_lockdown = base_states.floor[floor_designation].in_lockdown
+		new_room_config.floor[floor_index].in_lockdown = base_states.floor[floor_designation].in_lockdown		
 		
-		for ring_index in new_room_config.floor[floor_index].ring.size():			
+		for ring_index in new_room_config.floor[floor_index].ring.size():
+			# carry on previous values
+			new_room_config.floor[floor_index].ring[ring_index].metrics = room_config.floor[floor_index].ring[ring_index].metrics
+			
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
 				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
-				var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index})
-								
-
-
+	
 				if !config_data.build_data.is_empty():
 					under_construction_rooms.push_back(designation)
 				if !config_data.room_data.is_empty():
@@ -934,6 +934,7 @@ func set_room_config(force_setup:bool = false) -> void:
 	# mark rooms that are already powered...
 	new_room_config.floor[1].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) > 0
 	new_room_config.floor[2].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) > 0
+
 
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
@@ -946,27 +947,36 @@ func set_room_config(force_setup:bool = false) -> void:
 # -----------------------------------
 func update_metrics() -> void:
 	# NEED ROOM CONFIG TO BUILD BEFORE DOING THIS PART
-	var update_metrics:Callable = func(floor_val:int, wing_val:int, metrics:Dictionary) -> void:
-		if "wing" in metrics:
-			for key in metrics.wing:
-				var amount:int = metrics.wing[key]
-				room_config.floor[floor_val].ring[wing_val].metrics[key] = U.min_max(room_config.floor[floor_val].ring[wing_val].metrics[key] + amount, -10, 10)
+	var update_wing_effect:Callable = func(floor_val:int, wing_val:int, metrics:Dictionary) -> void:
+		for key in metrics:
+			var amount:int = metrics[key]
+			room_config.floor[floor_val].ring[wing_val].metrics[key] = U.min_max(room_config.floor[floor_val].ring[wing_val].metrics[key] + amount, -10, 10)
 	
 	# now update all metrics once everything has been attached
 	for floor_index in room_config.floor.size():
-		for ring_index in room_config.floor[floor_index].ring.size():			
+		for ring_index in room_config.floor[floor_index].ring.size():
+			# reset metrics before recalcualting them
+			room_config.floor[floor_index].ring[ring_index].metrics = {
+				RESOURCE.BASE_METRICS.MORALE: 0,
+				RESOURCE.BASE_METRICS.SAFETY: 0,
+				RESOURCE.BASE_METRICS.READINESS: 0
+			}
+			
 			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
 				var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index})
 				
 				# TODO: add metrics for rooms
+				if !room_extract.room.is_empty():
+					update_wing_effect.call(floor_index, ring_index, ROOM_UTIL.return_wing_effect(room_extract))
 				
 				# TODO: add metrics for scps
-				
+				if !room_extract.scp.is_empty():
+					update_wing_effect.call(floor_index, ring_index, SCP_UTIL.return_wing_effect(room_extract))
+					
 				# first extract this from the researcher...
 				for researcher in room_extract.researchers:
-					var researcher_metrics:Dictionary = RESEARCHER_UTIL.return_metrics(researcher)
-					# ... and add their metrics					
-					update_metrics.call(floor_index, ring_index, {"wing": researcher_metrics})	
+					# ... add researcher effects to wing data
+					update_wing_effect.call(floor_index, ring_index, RESEARCHER_UTIL.return_wing_effect(researcher))	
 					
 	SUBSCRIBE.room_config = room_config	
 # -----------------------------------
@@ -1251,12 +1261,9 @@ func set_floor_lockdown(from_location:Dictionary, state:bool) -> void:
 
 	on_confirm_complete.emit()
 	await restore_default_state()
-#endregion
-# ------------------------------------------------------------------------------	
+# ---------------------
 
-# ------------------------------------------------------------------------------	
-#region GAMEPLAY FUNCS
-# ---------------------o
+# ---------------------
 func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
 	event_data = [EVENT_UTIL.run_event(event, props)]
 	await on_events_complete
@@ -1274,7 +1281,9 @@ func game_over() -> void:
 	triggger_event(EVT.TYPE.GAME_OVER, props)
 # ---------------------
 #endregion
+# ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
 #region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
 
 						
@@ -1862,6 +1871,7 @@ func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) ->
 	ConfirmModal.set_text("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
 	await show_only([ConfirmModal])
 	var response:Dictionary = await ConfirmModal.user_response
+
 	match response.action:
 		ACTION.NEXT:	
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):

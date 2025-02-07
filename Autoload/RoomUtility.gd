@@ -19,15 +19,6 @@ var STARTING_BASE:Dictionary = {
 	"get_build_time": func() -> int:
 		return 1,
 	
-	# ------------------------------------------
-	"metrics": {
-		"wing": {
-			RESOURCE.BASE_METRICS.MORALE: 2,
-			RESOURCE.BASE_METRICS.READINESS: 2,
-			RESOURCE.BASE_METRICS.SAFETY: 2,
-		}
-	},
-	# ------------------------------------------	
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -229,6 +220,13 @@ var BARRICKS:Dictionary = {
 		return 10,	
 	"get_build_time": func() -> int:
 		return 3,
+
+	# ------------------------------------------
+	"wing_effect": func(extract_data:Dictionary) -> Dictionary:				
+		return {
+			RESOURCE.BASE_METRICS.SAFETY: 3 if extract_data.room.is_activated else 0
+		},
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -729,10 +727,7 @@ func calculate_activation_cost(ref:ROOM.TYPE, resources_data:Dictionary, refund:
 	return resource_data_copy
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func return_effects(ref:ROOM.TYPE) -> Array:
-	return SHARED_UTIL.return_effects(return_data(ref), "activation_effect")
-# ------------------------------------------------------------------------------	
+
 
 # ------------------------------------------------------------------------------
 func get_count(ref:ROOM.TYPE, arr:Array) -> int:
@@ -754,6 +749,20 @@ func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int, purchased_facili
 	
 	return res
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_wing_effects_list(room_extract:Dictionary) -> Array:
+	return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.room.details.ref), room_extract, "activation_effect")
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------		
+func return_wing_effect(extract_data:Dictionary) -> Dictionary:
+	var room_data:Dictionary = return_data(extract_data.room.details.ref)
+	if "wing_effect" in room_data:
+		return room_data.wing_effect.call(extract_data)
+	
+	return {}
+# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func has_prerequisites(ref:ROOM.TYPE, arr:Array) -> bool:

@@ -31,28 +31,28 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7j2br"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dql3"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2y0c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sc35f"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k0108"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1nhjq"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xfk2o"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryb85"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -129,7 +129,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_45se3")
 [node name="ShowHideCB" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/HBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_7j2br")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3dql3")
 no_bg = true
 is_checked = true
 
@@ -139,21 +139,21 @@ layout_mode = 2
 [node name="CheckBox" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_f2y0c")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sc35f")
 no_bg = true
 title = "Build HQ."
 
 [node name="CheckBox2" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_k0108")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1nhjq")
 no_bg = true
 title = "Hire a researcher."
 
 [node name="CheckBox3" parent="SubViewport/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ContainerVBox/CameraVBox/VBoxContainer" instance=ExtResource("5_lgx13")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_xfk2o")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ryb85")
 no_bg = true
 title = "Contain SCP-001"
 

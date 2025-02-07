@@ -67,10 +67,6 @@ size_flags_vertical = 4
 theme_override_constants/margin_top = 20
 freeze_inputs = true
 
-[node name="RoomStatusContainer" parent="." instance=ExtResource("6_emfl4")]
-visible = false
-layout_mode = 2
-
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
 size_flags_vertical = 8
@@ -175,6 +171,10 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="SetupContainer" parent="." instance=ExtResource("21_jqp8v")]
+visible = false
+layout_mode = 2
+
+[node name="RoomStatusContainer" parent="." instance=ExtResource("6_emfl4")]
 visible = false
 layout_mode = 2
 

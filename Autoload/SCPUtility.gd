@@ -30,11 +30,10 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 	
 	# -----------------------------------
-	"metrics": {
-		"wing": {
-			RESOURCE.BASE_METRICS.MORALE: -1,
-		}
-	},
+	"wing_effect": func(extract_data:Dictionary) -> Dictionary:				
+		return {
+			RESOURCE.BASE_METRICS.SAFETY: -4 if extract_data.scp.is_contained else 0
+		},
 	# -----------------------------------
 	
 	# -----------------------------------
@@ -580,15 +579,6 @@ var SCP_002:Dictionary = {
 	# -----------------------------------
 	
 	# -----------------------------------
-	"metrics": {
-		"wing": {
-			RESOURCE.BASE_METRICS.READINESS: -1,
-			RESOURCE.BASE_METRICS.MORALE: 1,
-		}
-	},
-	# -----------------------------------	
-	
-	# -----------------------------------
 	"initial_containment": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -741,12 +731,21 @@ func return_ongoing_containment_rewards(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 func return_unavailable_rooms(ref:int) -> Array: 
 	return SHARED_UTIL.return_unavailable_rooms(return_data(ref))
-# ------------------------------------------------------------------------------	
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_effects(ref:int) -> Array:
-	return SHARED_UTIL.return_effects(return_data(ref), "ongoing_containment")
-# ------------------------------------------------------------------------------	
+func return_wing_effects_list(room_extract:Dictionary) -> Array:
+	return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.scp.details.ref), room_extract, "ongoing_containment")
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------		
+func return_wing_effect(extract_data:Dictionary) -> Dictionary:
+	var scp_data:Dictionary = return_data(extract_data.scp.details.ref)
+	if "wing_effect" in scp_data:
+		return scp_data.wing_effect.call(extract_data)
+	
+	return {}
+# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func calculate_initial_containment_bonus(ref:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:

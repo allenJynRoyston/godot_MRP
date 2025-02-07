@@ -5,8 +5,6 @@ var specialization_data:Dictionary = {
 		"name": "PSY", 
 		"fullname": "PSYCHOLOGY",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func() -> void:
-			return,
 		"hire_cost": func() -> int:
 			return 4,		
 	},
@@ -14,8 +12,6 @@ var specialization_data:Dictionary = {
 		"name": "BIO", 
 		"fullname": "BIOLOGY",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func() -> void:
-			return,
 		"hire_cost": func() -> int:
 			return 4,		
 	},
@@ -23,28 +19,36 @@ var specialization_data:Dictionary = {
 		"name": "ENG", 
 		"fullname": "ENGINEERING",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func() -> void:
-			return,
 		"hire_cost": func() -> int:
 			return 4,					
 	}
 }
 
 var trait_data:Dictionary = {
+	RESEARCHER.TRAITS.FOLLOWER: {
+		"name": "FOLLOWER", 
+		"fullname": "FOLLOWER",
+		"description": "If paired with another researcher, will copy their metrics.",
+		"icon": SVGS.TYPE.ENERGY,
+		"type": 0, # 0 IS POSITIVE, 1 IS NEGATIVE
+		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
+			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
+			var researchers:Array = extract_details.researchers.filter(func(i): return i.uid != self_data.uid)			
+			var metrics:Dictionary = return_wing_effect(researchers[0]) if researchers.size() > 0 else {}			
+			return metrics,
+		"hire_cost": func() -> int:
+			return 4,		
+	},
 	RESEARCHER.TRAITS.MOTIVATED: {
 		"name": "MOT", 
 		"fullname": "MOTIVATED",
+		"description": "Raises morale if the room is not empty.",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0, # 0 IS POSITIVE, 1 IS NEGATIVE
-		"get_effect": func(location:Dictionary) -> Dictionary:
-			var extract_details:Dictionary = get_details_from_extract(location)
-			var room_ref:int = extract_details.room_ref
-			var scp_ref:int = extract_details.scp_ref
+		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
+			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
 			return {
-				"metrics":
-					{
-						RESOURCE.BASE_METRICS.MORALE: 1	if room_ref != ROOM.TYPE.R_AND_D_LAB else 2
-					}
+				RESOURCE.BASE_METRICS.MORALE: 1 if (!extract_details.room.is_empty and extract_details.room.is_activated) else 0
 			},
 		"hire_cost": func() -> int:
 			return 4,		
@@ -52,18 +56,15 @@ var trait_data:Dictionary = {
 	RESEARCHER.TRAITS.DILIGENT: {
 		"name": "DIL", 
 		"fullname": "DILIGENT",
+		"description": "Increases readiness if in a room that also containing an SCP.",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
-		"get_effect":  func(location:Dictionary) -> Dictionary:
-			var extract_details:Dictionary = get_details_from_extract(location)
-			var room_ref:int = extract_details.room_ref
-			var scp_ref:int = extract_details.scp_ref
-			print(room_ref, " > ", ROOM.TYPE.R_AND_D_LAB)
+		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
+			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
+			var scp_ref:int = extract_details.scp.ref
+			var is_contained:bool = extract_details.scp.is_contained
 			return {
-				"metrics":
-					{
-						RESOURCE.BASE_METRICS.MORALE: 0	if room_ref != ROOM.TYPE.R_AND_D_LAB else 2
-					}
+				RESOURCE.BASE_METRICS.READINESS: 2 if (scp_ref > -1 and is_contained) else 0
 			},
 		"hire_cost": func() -> int:
 			return 4,		
@@ -71,16 +72,13 @@ var trait_data:Dictionary = {
 	RESEARCHER.TRAITS.BENEVOLENT: {
 		"name": "BEN", 
 		"fullname": "BENEVOLENT",
+		"description": "Testing that involves D-Class uses 50% less.",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 0,
-		"get_effect":  func(location:Dictionary) -> Dictionary:
-			var extract_details:Dictionary = get_details_from_extract(location)
-
+		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
+			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
 			return {
-				"metrics":
-					{
-						RESOURCE.BASE_METRICS.MORALE: 1	
-					}
+
 			},
 		"hire_cost": func() -> int:
 			return 4,		
@@ -88,16 +86,13 @@ var trait_data:Dictionary = {
 	RESEARCHER.TRAITS.MOODY: {
 		"name": "MDY", 
 		"fullname": "MOODY",
+		"description": "Bad mood brings others down, slightly decreasing morale.",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect":  func(location:Dictionary) -> Dictionary:
-			var extract_details:Dictionary = get_details_from_extract(location)
-			
+		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
+			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
 			return {
-				"metrics":
-					{
-						RESOURCE.BASE_METRICS.MORALE: 1	
-					}
+				RESOURCE.BASE_METRICS.MORALE: -1	
 			},
 		"hire_cost": func() -> int:
 			return 4,		
@@ -105,16 +100,15 @@ var trait_data:Dictionary = {
 	RESEARCHER.TRAITS.PARTICULAR: {
 		"name": "PAR", 
 		"fullname": "PARTICULAR",
+		"description": "Difficult to work with, but has it's benefits.",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect":  func(location:Dictionary) -> Dictionary:
-			var extract_details:Dictionary = get_details_from_extract(location)
-		
+		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
+			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
 			return {
-				"metrics":
-					{
-						RESOURCE.BASE_METRICS.MORALE: 1	
-					}
+				RESOURCE.BASE_METRICS.MORALE: -1,
+				RESOURCE.BASE_METRICS.SAFETY: 1,
+				RESOURCE.BASE_METRICS.READINESS: 1
 			},
 		"hire_cost": func() -> int:
 			return 4,		
@@ -122,17 +116,16 @@ var trait_data:Dictionary = {
 	RESEARCHER.TRAITS.CRUEL: {
 		"name": "CRL", 
 		"fullname": "CRUEL",
+		"description": "D-Class use increases 50% during testing.",
 		"icon": SVGS.TYPE.ENERGY,
 		"type": 1,
-		"get_effect":  func(location:Dictionary) -> Dictionary:
-			var room_extract:Dictionary = ROOM_UTIL.extract_room_details(location)
-
+		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
+			var room_extract:Dictionary = ROOM_UTIL.extract_room_details(self_data.props.assigned_to_room)
 			return {
-				"metrics":
-					{
-						RESOURCE.BASE_METRICS.MORALE: 1	
-					}
+
 			},
+		"testing_effect": func() -> Dictionary:
+			return {},
 		"hire_cost": func() -> int:
 			return 4,		
 	},			
@@ -159,9 +152,10 @@ func return_data_with_uid(uid:String) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+var count:int = 0
 func generate_researcher() -> Array:
 	var uid:String = U.generate_uid()
-	var lname:int = U.generate_rand(0, 5)
+	var lname:int =  U.generate_rand(0, 5)
 	
 	var traits:Array = []
 	for i in [70, 30, 10]:
@@ -187,10 +181,20 @@ func generate_researcher() -> Array:
 	# TODO: add this in later
 	# var img_src:String = "res://Media/images/example_doctor.jpg"
 		
+	if count % 1 == 0:
+		traits = [RESEARCHER.TRAITS.FOLLOWER]
+	if count % 2 != 0:
+		traits = [RESEARCHER.TRAITS.MOTIVATED]
+	if count % 3 == 0:
+		traits = [RESEARCHER.TRAITS.DILIGENT]		
+	count += 1
+
+		
 	return [ uid, lname, traits, specialization, rval, lval, 0, 10, {"assigned_to_room": null}]
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
+
 func get_user_object(val:Array) -> Dictionary:
 	var uid_val:String = val[0]
 	var name_val:int = val[1]
@@ -212,7 +216,7 @@ func get_user_object(val:Array) -> Dictionary:
 	var specializations:Array = []
 	for t in specializations_list:
 		specializations.push_back(t)
-		
+
 	return {
 		"uid": uid_val,
 		"name": "%s" % [lname],
@@ -252,25 +256,24 @@ func return_specialization_data(key:RESEARCHER.SPECALIZATION) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------		
-func return_metrics(researcher_data:Dictionary) -> Dictionary:
+func return_wing_effect(researcher_data:Dictionary) -> Dictionary:
 	for trait_key in researcher_data.traits:
 		var trait_data:Dictionary = return_trait_data(trait_key)
-		var effects_dict:Dictionary = trait_data.get_effect.call(researcher_data.props.assigned_to_room)
-		return effects_dict.metrics if "metrics" in effects_dict else {}
+		return trait_data.wing_effect.call(researcher_data)
 	return {}
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
-func return_effects(researcher_data:Dictionary) -> Array:
+func return_wing_effects_list(researcher_data:Dictionary) -> Array:
 	var list:Array = []
 	for trait_key in researcher_data.traits:
 		var trait_data:Dictionary = return_trait_data(trait_key)
-		var effects_dict:Dictionary = trait_data.get_effect.call(researcher_data.props.assigned_to_room)
-		if "metrics" in effects_dict:
-			for key in effects_dict.metrics:
-				var amount:int = effects_dict.metrics[key]
-				var resource_data:Dictionary = RESOURCE_UTIL.return_metric_data(key)
-				list.push_back({"resource_data": resource_data, "property": "metrics", "amount": "+" if amount > 0 else "-"})
+		var effects_dict:Dictionary = trait_data.wing_effect.call(researcher_data)
+		for key in effects_dict:
+			var amount:int = effects_dict[key]
+			var resource_data:Dictionary = RESOURCE_UTIL.return_metric_data(key)
+			if amount > 0:
+				list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
 
 	return list
 # ------------------------------------------------------------------------------	
@@ -279,13 +282,23 @@ func return_effects(researcher_data:Dictionary) -> Array:
 func get_details_from_extract(location:Dictionary) -> Dictionary:
 	if !location.is_empty():
 		var room_extract:Dictionary = ROOM_UTIL.extract_room_details(location)			
-
+		
 		return {
-			"room_ref": -1 if room_extract.room.is_empty() else (room_extract.room.details.ref if room_extract.room.is_activated else -1),
-			"scp_ref": -1 if room_extract.scp.is_empty() else (room_extract.scp.details.ref if room_extract.scp.is_contained else -1)
+			"researchers": room_extract.researchers,			
+			"room": {
+				"is_empty": room_extract.room.is_empty(),
+				"ref": -1 if room_extract.room.is_empty() else room_extract.room.details.ref,	
+				"is_activated": false if room_extract.room.is_empty() else room_extract.room.is_activated, 
+			},
+			"scp": {
+				"is_empty": room_extract.scp.is_empty(),
+				"ref": -1 if room_extract.scp.is_empty() else room_extract.scp.details.ref,
+				"is_contained": false if room_extract.scp.is_empty() else room_extract.scp.is_contained,
+			}			
 		}
 		
 	return {
+		"researchers": [],
 		"room_ref": -1,
 		"scp_ref": -1
 	}		

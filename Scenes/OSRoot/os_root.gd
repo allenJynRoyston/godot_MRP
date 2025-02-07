@@ -59,8 +59,6 @@ func activate_children() -> void:
 		node.set_physics_process(true)
 		node.start()
 		
-	#await U.set_timeout(1.0)
-	#toggle_fullscreen()		
 # -----------------------------------
 
 # -----------------------------------	

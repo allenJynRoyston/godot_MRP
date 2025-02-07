@@ -20,27 +20,21 @@ shader_parameter/trail_fade = 0.5
 [sub_resource type="ViewportTexture" id="ViewportTexture_3aj50"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w8rt7"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gbyi3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_64sar"]
 font = ExtResource("3_ed473")
-font_size = 24
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvvj7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i3f5h"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xb38i"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jkvu"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mted8"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iewkq"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r2rt6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dk5e0"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="LocationContainer" type="MarginContainer"]
@@ -60,14 +54,14 @@ stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(280, 84)
+size = Vector2i(220, 82)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 220.0
 offset_bottom = 82.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_w8rt7")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_gbyi3")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
@@ -82,7 +76,6 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 10
@@ -93,6 +86,7 @@ text = "FLOOR X"
 label_settings = SubResource("LabelSettings_64sar")
 
 [node name="IsPowered" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_d331o")]
+visible = false
 custom_minimum_size = Vector2(23, 23)
 layout_mode = 2
 size_flags_horizontal = 1
@@ -104,6 +98,7 @@ icon = 31
 is_hoverable = false
 
 [node name="IsLockDown" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_d331o")]
+visible = false
 custom_minimum_size = Vector2(23, 23)
 layout_mode = 2
 size_flags_horizontal = 1
@@ -141,7 +136,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_mvvj7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_i3f5h")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -165,7 +160,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_xb38i")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7jkvu")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -189,7 +184,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_mted8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_iewkq")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -213,7 +208,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_r2rt6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_dk5e0")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)

@@ -90,7 +90,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_so557"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wdntb"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -148,6 +148,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 0)
 ref_index = 6
 
 [node name="8" parent="SubViewport/RoomColumn/NodeContainer/column1" instance=ExtResource("4_b2h6u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 ref_index = 8
 
 [node name="column2" type="Node3D" parent="SubViewport/RoomColumn/NodeContainer"]
@@ -407,7 +408,7 @@ shadow_opacity = 0.68
 sky_mode = 1
 
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, 0.353553, -0.612373, -17.995, 19, -18.216)
+transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -17.995, 17.859, -18.216)
 projection = 1
 current = true
 size = 24.0
@@ -535,11 +536,11 @@ horizontal_alignment = 1
 
 [node name="ControlMenuSubviewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(90, 90)
+size = Vector2i(150, 90)
 
 [node name="ControlMenuContainer" type="PanelContainer" parent="ControlMenuSubviewport"]
-offset_right = 69.0
-offset_bottom = 38.0
+offset_right = 80.0
+offset_bottom = 41.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_puxs3")
 
 [node name="MarginContainer" type="MarginContainer" parent="ControlMenuSubviewport/ControlMenuContainer"]
@@ -551,7 +552,6 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer"]
-custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 10
@@ -575,7 +575,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_so557")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wdntb")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

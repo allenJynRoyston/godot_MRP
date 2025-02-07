@@ -1,7 +1,7 @@
 [gd_scene load_steps=21 format=4 uid="uid://wo1fm5yw1mj7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node_3d.gd" id="1_qihmr"]
-[ext_resource type="LabelSettings" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodeSidePanel.tres" id="2_fh056"]
+[ext_resource type="LabelSettings" uid="uid://c2s10uvu7fffg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodeSidePanel.tres" id="2_fh056"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_mku2i"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="3_mmxwi"]
 
@@ -81,18 +81,19 @@ font_size = 72
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j7pko"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ypm4"]
-bg_color = Color(0, 0, 0, 0)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="Node3D" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.68341, 0, 0.346597)
 script = ExtResource("1_qihmr")
 current_state = 1
 
 [node name="RoomNode" type="Node3D" parent="."]
-transform = Transform3D(0.999958, 0, 0, 0, 1, 0, 0, 0, 0.999958, 0, -1, 0)
+transform = Transform3D(0.999958, 0, 0, 0, 1, 0, 0, 0, 0.999958, 0, -1.28901, 0)
 
 [node name="MeshOutline" type="MeshInstance3D" parent="RoomNode"]
 transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, 0, 0, 0)
@@ -107,17 +108,23 @@ mesh = SubResource("BoxMesh_uaacd")
 
 [node name="FrontLeftPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 5.03727e-09, 0, -2.05762)
+visible = false
 double_sided = false
 texture = SubResource("ViewportTexture_6pfee")
 
 [node name="FrontRightPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -2.09207, 0, -3.58718e-09)
+visible = false
 double_sided = false
 texture = SubResource("ViewportTexture_8xdov")
 
 [node name="TopPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0.00819385, 2.06043, -0.00828862)
+transform = Transform3D(-0.00752233, 0, 0.999972, 0, 1, 0, -0.999972, 0, -0.00752233, -0.146028, 3.21929, -1.6893)
+visible = false
 flip_h = true
+pixel_size = 0.0009
+no_depth_test = true
+fixed_size = true
 texture = SubResource("ViewportTexture_lkb6v")
 
 [node name="InsidePanel" type="Sprite3D" parent="RoomNode/MainMesh"]
@@ -131,14 +138,14 @@ visible = false
 mesh = SubResource("PlaneMesh_fjhpp")
 
 [node name="Node3D" type="Node3D" parent="RoomNode"]
-transform = Transform3D(1.00004, 0, 0, 0, 1, 0, 0, 0, 1.00004, -0.218393, 1, 0)
+transform = Transform3D(0.0420168, 0, -0.999157, 0, 1, 0, 0.999157, 0, 0.0420168, 0.168299, 0.925871, 0)
 
 [node name="ActiveBox" type="MeshInstance3D" parent="RoomNode/Node3D"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, -1.84468, 0.355896, -1.26458)
 mesh = SubResource("BoxMesh_pum0q")
 
 [node name="PulseEffectFX" type="SpotLight3D" parent="RoomNode/Node3D/ActiveBox"]
-transform = Transform3D(-0.185195, 0.676806, -0.712487, -0.000651772, 0.724943, 0.688808, 0.982702, 0.128028, -0.133815, -0.929718, 1.19476, -0.100281)
+transform = Transform3D(-0.185195, 0.676806, -0.712487, -0.000651772, 0.724943, 0.688808, 0.982702, 0.128028, -0.133815, -0.858612, 1.75495, 2.40468)
 visible = false
 light_color = Color(1, 0, 0, 1)
 spot_range = 3.231
@@ -146,15 +153,34 @@ spot_attenuation = -10.0
 spot_angle = 18.1421
 
 [node name="ActivationLight" type="OmniLight3D" parent="RoomNode/Node3D/ActiveBox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.487549, 0.00836182, -0.0198364)
+transform = Transform3D(1, 0, 6.33299e-08, 0, 1, 0, -5.96046e-08, 0, 1, -0.458438, 0.00413728, 0.0430982)
 light_color = Color(0.848652, 1.10701e-06, 0.448674, 1)
-light_energy = 0.671
+light_energy = 0.1
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
 light_specular = 7.282
 shadow_enabled = true
 shadow_bias = 7.11
 shadow_normal_bias = 0.0
-omni_range = 1.117
-omni_attenuation = 5.612
+omni_range = 2.40478
+omni_attenuation = 7.079
+
+[node name="HasSCP" type="MeshInstance3D" parent="RoomNode/Node3D"]
+transform = Transform3D(0.0721415, 0, 0.997393, 0, 1, 0, -0.997393, 0, 0.0721415, 1.16966, 0.355896, 2.21645)
+mesh = SubResource("BoxMesh_pum0q")
+
+[node name="ActivationLight" type="OmniLight3D" parent="RoomNode/Node3D/HasSCP"]
+transform = Transform3D(1, 0, 6.33299e-08, 0, 1, 0, -5.96046e-08, 0, 1, -0.378847, 0.00413728, 0.0430982)
+light_color = Color(0.703621, 0.483991, 1, 1)
+light_energy = 0.1
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+light_specular = 7.282
+shadow_enabled = true
+shadow_bias = 7.11
+shadow_normal_bias = 0.0
+omni_range = 2.40478
+omni_attenuation = 6.854
 
 [node name="FrontLeftPanelViewport" type="SubViewport" parent="RoomNode"]
 transparent_bg = true
@@ -180,7 +206,7 @@ theme_override_constants/separation = 5
 
 [node name="Label" type="Label" parent="RoomNode/FrontLeftPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "ROOM 111"
+text = "111"
 label_settings = ExtResource("2_fh056")
 horizontal_alignment = 1
 
@@ -217,24 +243,24 @@ vertical_alignment = 1
 
 [node name="TopPanelViewport" type="SubViewport" parent="RoomNode"]
 transparent_bg = true
-size = Vector2i(400, 400)
+size = Vector2i(500, 100)
 
 [node name="PanelContainer" type="PanelContainer" parent="RoomNode/TopPanelViewport"]
-offset_right = 140.0
-offset_bottom = 75.0
+offset_right = 500.0
+offset_bottom = 100.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_5ypm4")
 
 [node name="MarginContainer" type="MarginContainer" parent="RoomNode/TopPanelViewport/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="Label" type="Label" parent="RoomNode/TopPanelViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-text = "BARRICKS"
+text = "faciliyt name"
 label_settings = ExtResource("2_fh056")
 horizontal_alignment = 1
 vertical_alignment = 1

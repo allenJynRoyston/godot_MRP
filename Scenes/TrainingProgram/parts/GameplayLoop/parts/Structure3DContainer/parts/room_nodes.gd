@@ -414,7 +414,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 	GBL.add_to_animation_queue(self)	
 	
 	if show_menu:
-		CursorMenuSprite.global_position = node_location - Vector3(9, -6, 0) 
+		CursorMenuSprite.global_position = node_location - Vector3(10, -6, 0) 
 		CursorMenuSprite.position.z = -2
 					
 	await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0 if show_menu else 90)
@@ -525,9 +525,17 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	match key:
 		"A":
+			GBL.add_to_animation_queue(self)
+			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
 			current_menu_type = U.min_max(current_menu_type - 1, 0, 2)
+			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
+			GBL.remove_from_animation_queue(self)
 		"D":
+			GBL.add_to_animation_queue(self)
+			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
 			current_menu_type = U.min_max(current_menu_type + 1, 0, 2)
+			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
+			GBL.remove_from_animation_queue(self)
 			
 		"W":
 			update_menu_index(-1)

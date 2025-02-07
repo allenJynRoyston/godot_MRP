@@ -37,7 +37,7 @@ texture = SubResource("ViewportTexture_m6qwp")
 stretch_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(251, 1080)
+size = Vector2i(238, 1080)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 238.0
@@ -45,6 +45,7 @@ offset_bottom = 1080.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6deti")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 20
@@ -53,18 +54,22 @@ theme_override_constants/margin_bottom = 10
 
 [node name="RoomStatusListContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 4
 theme_override_constants/separation = 10
 
 [node name="RoomStatusItem1" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
 layout_mode = 2
 
 [node name="RoomStatusItem2" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+visible = false
 layout_mode = 2
 
 [node name="RoomStatusItem3" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+visible = false
 layout_mode = 2
 
 [node name="RoomStatusItem4" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
+visible = false
 layout_mode = 2
 
 [node name="RoomStatusItem5" parent="SubViewport/PanelContainer/MarginContainer/RoomStatusListContainer" instance=ExtResource("3_utovy")]
