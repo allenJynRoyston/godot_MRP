@@ -2,13 +2,13 @@
 extends GameContainer
 
 @onready var HumePanel:PanelContainer = $BottomContainer/MarginContainer/VBoxContainer/HumePanel
-@onready var MetricsPanel:HBoxContainer = $BottomContainer/MarginContainer/VBoxContainer/MetricsPanel
+@onready var MetricsPanel:HBoxContainer = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel
 @onready var BreakdownPanel:HBoxContainer = $TopContainer/VBoxContainer/BreakdownPanel
 @onready var StatusLabel:Label = $PanelContainer/VBoxContainer/StatusLabel
 
-@onready var ReadinessLabel:Label = $BottomContainer/MarginContainer/VBoxContainer/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer/ReadinessLabel
-@onready var SafetyLabel:Label = $BottomContainer/MarginContainer/VBoxContainer/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer/SafetyLabel
-@onready var MoraleLabel:Label = $BottomContainer/MarginContainer/VBoxContainer/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer/MoraleLabel
+@onready var ReadinessLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Readiness/VBoxContainer/PanelContainer/MarginContainer/ReadinessLabel
+@onready var SafetyLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Safety/VBoxContainer/PanelContainer/MarginContainer/SafetyLabel
+@onready var MoraleLabel:Label = $TopContainer/VBoxContainer/BreakdownPanel/MetricsPanel/Morale/VBoxContainer/PanelContainer/MarginContainer/MoraleLabel
 
 #@onready var ConfigBonusContainer:PanelContainer = $PanelContainer/VBoxContainer/ConfigBonus
 @onready var MetricsSCP:Control = $TopContainer/VBoxContainer/BreakdownPanel/MetricsSCP
