@@ -69,21 +69,21 @@ bg_color = Color(0, 0, 0, 0.560784)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nfrdm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axv7q"]
 bg_color = Color(0.455, 0.002, 0.713, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3s4po"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p8bl4"]
 bg_color = Color(0, 0.529, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_650fx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1b4rs"]
 bg_color = Color(1, 0.34, 0.307, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -361,12 +361,12 @@ alignment = 1
 
 [node name="MetricsSCP" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nfrdm")
+theme_override_styles/panel = SubResource("StyleBoxFlat_axv7q")
 header = "SCP"
 
 [node name="MetricsRoom" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3s4po")
+theme_override_styles/panel = SubResource("StyleBoxFlat_p8bl4")
 type = 1
 header = "ROOM"
 
@@ -376,7 +376,7 @@ size_flags_horizontal = 3
 
 [node name="MetricsResearcherA" parent="TopContainer/VBoxContainer/BreakdownPanel/ResearcherContainer" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_650fx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1b4rs")
 type = 2
 header = "RESEARCHER"
 

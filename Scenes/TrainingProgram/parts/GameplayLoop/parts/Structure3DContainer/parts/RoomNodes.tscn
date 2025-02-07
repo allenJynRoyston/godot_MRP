@@ -1,7 +1,6 @@
-[gd_scene load_steps=24 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=25 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
-[ext_resource type="FontFile" uid="uid://creilnt01hgub" path="res://Fonts/STENCIL.TTF" id="2_j5w82"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_2d0xm"]
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode3d.tscn" id="4_b2h6u"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_gg0ij"]
@@ -43,6 +42,22 @@ clearcoat_enabled = true
 material = SubResource("StandardMaterial3D_hldmr")
 flip_faces = true
 size = Vector3(30, 8, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_opsu7"]
+albedo_color = Color(0.122252, 0.122252, 0.122252, 1)
+metallic = 1.0
+metallic_specular = 0.43
+emission = Color(0, 1, 0, 1)
+emission_energy_multiplier = 8.7
+emission_operator = 1
+clearcoat = 0.69
+backlight = Color(0, 0.662728, 1.54018e-06, 1)
+refraction_scale = -0.57
+grow = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_n6uvr"]
+material = SubResource("StandardMaterial3D_opsu7")
+size = Vector3(25, 5, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygf5b"]
 albedo_color = Color(0, 0, 0, 1)
@@ -90,7 +105,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wdntb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3iy4g"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -119,19 +134,139 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport/RoomColumn"]
 environment = SubResource("Environment_ngmdl")
 
-[node name="LeftWallLabel" type="Label3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 12.0652, 7.07891, 0.992581)
-outline_modulate = Color(1, 1, 1, 1)
-text = "WING A"
-font = ExtResource("2_j5w82")
-font_size = 200
-uppercase = true
-line_spacing = 20.0
-
 [node name="FloorMesh" type="MeshInstance3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 layers = 16
 mesh = SubResource("BoxMesh_kw1d3")
+
+[node name="RightBoard" type="MeshInstance3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.319073, 3.20563, 15.2335)
+mesh = SubResource("BoxMesh_n6uvr")
+skeleton = NodePath("../../..")
+
+[node name="Node3D" type="Node3D" parent="SubViewport/RoomColumn/RightBoard"]
+transform = Transform3D(1, 0, -1.06581e-14, 0, 1, 0, 1.06581e-14, 0, 1, -2.63778, 4.96908, 3.16779)
+
+[node name="LeftWallLabel" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/Node3D"]
+transform = Transform3D(0.999999, 0, 3.55271e-14, 0, 1, 0, -3.55271e-14, 0, 0.999999, 15.8367, -5.73919, 2.57492e-05)
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.572549, 0.572549, 0.572549, 0.52549)
+text = "SCP DIRECTORY"
+font_size = 200
+uppercase = true
+line_spacing = 20.0
+
+[node name="LeftWallLabel2" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -1.65352, -9.53674e-07)
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.218823, 0.864323, 0, 1)
+outline_modulate = Color(1, 1, 1, 0)
+text = "[1] ROOMNAME          [2] ROOMNAME          [3] ROOMNAME"
+font = ExtResource("4_gg0ij")
+font_size = 288
+uppercase = true
+line_spacing = 20.0
+
+[node name="LeftWallLabel3" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -2.91934, -9.53674e-07)
+visible = false
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.218823, 0.864323, 0, 1)
+outline_modulate = Color(1, 1, 1, 0)
+text = "[1] ROOMNAME          [2] ROOMNAME          [3] ROOMNAME"
+font = ExtResource("4_gg0ij")
+font_size = 288
+uppercase = true
+line_spacing = 20.0
+
+[node name="LeftWallLabel4" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -4.16316, -9.53674e-07)
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.218823, 0.864323, 0, 1)
+outline_modulate = Color(1, 1, 1, 0)
+text = "[1] ROOMNAME          [2] ROOMNAME          [3] ROOMNAME"
+font = ExtResource("4_gg0ij")
+font_size = 288
+uppercase = true
+line_spacing = 20.0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/RightBoard"]
+transform = Transform3D(0.717035, -0.492742, 0.493017, 0.234449, 0.836584, 0.495137, -0.656425, -0.239443, 0.715383, 7.4959, 8.99649, 13.9021)
+light_color = Color(0.221437, 0.825462, 0.584747, 1)
+light_energy = 0.01
+shadow_enabled = true
+spot_range = 21.0229
+spot_attenuation = -3.11
+spot_angle = 8.39
+spot_angle_attenuation = 1.41421
+
+[node name="LeftBoard" type="MeshInstance3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15.233, 3.20563, -0.459461)
+mesh = SubResource("BoxMesh_n6uvr")
+skeleton = NodePath("../../..")
+
+[node name="Node3D" type="Node3D" parent="SubViewport/RoomColumn/LeftBoard"]
+transform = Transform3D(1, 0, -1.06581e-14, 0, 1, 0, 1.06581e-14, 0, 1, -2.63778, 4.96908, 3.16779)
+
+[node name="LeftWallLabel" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.81523, -5.73919, 2.47955e-05)
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.572549, 0.572549, 0.572549, 0.52549)
+text = "wing a directory"
+font_size = 200
+uppercase = true
+line_spacing = 20.0
+
+[node name="LeftWallLabel2" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.65352, 0)
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.218823, 0.864323, 0, 1)
+outline_modulate = Color(1, 1, 1, 0)
+text = "[1] ROOMNAME          [2] ROOMNAME          [3] ROOMNAME"
+font = ExtResource("4_gg0ij")
+font_size = 288
+uppercase = true
+line_spacing = 20.0
+
+[node name="LeftWallLabel3" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.91934, 0)
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.218823, 0.864323, 0, 1)
+outline_modulate = Color(1, 1, 1, 0)
+text = "[1] ROOMNAME          [2] ROOMNAME          [3] ROOMNAME"
+font = ExtResource("4_gg0ij")
+font_size = 288
+uppercase = true
+line_spacing = 20.0
+
+[node name="LeftWallLabel4" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.16316, 0)
+pixel_size = 0.003
+shaded = true
+modulate = Color(0.218823, 0.864323, 0, 1)
+outline_modulate = Color(1, 1, 1, 0)
+text = "[1] ROOMNAME          [2] ROOMNAME          [3] ROOMNAME"
+font = ExtResource("4_gg0ij")
+font_size = 288
+uppercase = true
+line_spacing = 20.0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/LeftBoard"]
+transform = Transform3D(0.717035, -0.492742, 0.493017, 0.234449, 0.836584, 0.495137, -0.656425, -0.239443, 0.715383, 7.4959, 8.99649, 13.9021)
+light_color = Color(0.221437, 0.825462, 0.584747, 1)
+light_energy = 0.01
+shadow_enabled = true
+spot_range = 21.0229
+spot_attenuation = -3.11
+spot_angle = 8.39
+spot_angle_attenuation = 1.41421
 
 [node name="NodeContainer" type="Node3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.6, -3.133)
@@ -575,7 +710,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wdntb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3iy4g")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

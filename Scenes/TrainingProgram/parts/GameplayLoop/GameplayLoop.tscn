@@ -46,6 +46,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+skip_progress_screen = false
 room_item_status = false
 show_resources = false
 show_dialogue = false

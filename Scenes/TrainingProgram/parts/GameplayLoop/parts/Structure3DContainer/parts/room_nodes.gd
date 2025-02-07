@@ -159,7 +159,7 @@ func check_is_powered_state() -> void:
 
 # --------------------------------------------------------
 func update_refs() -> void:
-	LeftWallLabel.text = "FLOOR %s WING %s" % [assigned_location.floor, assigned_location.ring]
+	#LeftWallLabel.text = "FLOOR %s WING %s" % [assigned_location.floor, assigned_location.ring]
 	for child in NodeContainer.get_children():
 		for node in child.get_children():
 			node.update_refs(assigned_location.floor, assigned_location.ring)
