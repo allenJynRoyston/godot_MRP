@@ -14,11 +14,12 @@ font_size = 8
 
 [node name="ResourceItem" type="VBoxContainer"]
 size_flags_horizontal = 3
+theme_override_constants/separation = 5
 script = ExtResource("1_l01xo")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
-text = "TITLE"
+text = "MONEY"
 label_settings = ExtResource("2_m87r8")
 horizontal_alignment = 2
 

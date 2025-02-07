@@ -23,7 +23,7 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxhf4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m4sfl"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
+bg_color = Color(0, 0.53, 0.282667, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -40,21 +40,21 @@ shader_parameter/thickness = 0.2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfbj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtp2p"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tcojp"]
 bg_color = Color(1, 0.34, 0.307, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fi6d3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ivv5p"]
 bg_color = Color(0.455, 0.002, 0.713, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ww3u"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m7siw"]
 bg_color = Color(0, 0.529, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -151,7 +151,7 @@ theme_override_constants/separation = 10
 
 [node name="MetricsResearcherA" parent="TopContainer/VBoxContainer/BreakdownPanel/ResearcherContainer" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qtp2p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tcojp")
 type = 2
 header = "TITLE"
 status = ""
@@ -159,7 +159,7 @@ items = []
 
 [node name="MetricsSCP" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fi6d3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ivv5p")
 type = 0
 header = "TITLE"
 status = ""
@@ -167,7 +167,7 @@ items = []
 
 [node name="MetricsRoom" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3ww3u")
+theme_override_styles/panel = SubResource("StyleBoxFlat_m7siw")
 type = 1
 header = "TITLE"
 status = ""
