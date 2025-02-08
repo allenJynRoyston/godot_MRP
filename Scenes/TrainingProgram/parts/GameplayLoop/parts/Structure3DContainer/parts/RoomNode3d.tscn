@@ -1,7 +1,6 @@
-[gd_scene load_steps=21 format=4 uid="uid://wo1fm5yw1mj7"]
+[gd_scene load_steps=15 format=4 uid="uid://wo1fm5yw1mj7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node_3d.gd" id="1_qihmr"]
-[ext_resource type="LabelSettings" uid="uid://c2s10uvu7fffg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodeSidePanel.tres" id="2_fh056"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_mku2i"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="3_mmxwi"]
 
@@ -48,20 +47,22 @@ lightmap_size_hint = Vector2i(44, 66)
 material = SubResource("StandardMaterial3D_fiat5")
 size = Vector3(4, 4, 4)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_6pfee"]
-viewport_path = NodePath("RoomNode/FrontLeftPanelViewport")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ro31r"]
+albedo_color = Color(0.716296, 0.716296, 0.716296, 1)
+metallic = 0.64
+metallic_specular = 1.0
+rim = 0.06
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_8xdov"]
-viewport_path = NodePath("RoomNode/FrontRightPanelViewport")
+[sub_resource type="BoxMesh" id="BoxMesh_xjphw"]
+material = SubResource("StandardMaterial3D_ro31r")
+size = Vector3(2, 1, 0.25)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_lkb6v"]
-viewport_path = NodePath("RoomNode/TopPanelViewport")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eggqm"]
+albedo_color = Color(0.288518, 0.288518, 0.288518, 1)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_bs2pq"]
-viewport_path = NodePath("RoomNode/TopPanelViewport")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_fjhpp"]
-size = Vector2(10, 10)
+[sub_resource type="BoxMesh" id="BoxMesh_q7wqx"]
+material = SubResource("StandardMaterial3D_eggqm")
+size = Vector3(0.25, 0.25, 0.25)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7qdpb"]
 albedo_color = Color(0, 0, 0, 1)
@@ -71,21 +72,6 @@ metallic_specular = 0.47
 [sub_resource type="BoxMesh" id="BoxMesh_pum0q"]
 material = SubResource("StandardMaterial3D_7qdpb")
 size = Vector3(0.5, 0.5, 0.5)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7n1l0"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_hquau"]
-font = ExtResource("2_mku2i")
-font_size = 72
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j7pko"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ypm4"]
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
 
 [node name="Node3D" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.68341, 0, 0.346597)
@@ -106,45 +92,50 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ku53p")
 [node name="MainMesh" type="MeshInstance3D" parent="RoomNode"]
 mesh = SubResource("BoxMesh_uaacd")
 
-[node name="FrontLeftPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 5.03727e-09, 0, -2.05762)
-visible = false
-double_sided = false
-texture = SubResource("ViewportTexture_6pfee")
+[node name="DoorMesh" type="MeshInstance3D" parent="RoomNode/MainMesh"]
+transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, -0.83107, -1.50984, -2.0235)
+mesh = SubResource("BoxMesh_xjphw")
 
-[node name="FrontRightPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -2.09207, 0, -3.58718e-09)
-visible = false
-double_sided = false
-texture = SubResource("ViewportTexture_8xdov")
+[node name="RoomNumberLabel" type="Label3D" parent="RoomNode/MainMesh/DoorMesh"]
+transform = Transform3D(-0.999999, 0, 8.74227e-08, 0, 0.999999, 0, -8.74226e-08, 0, -0.999999, -0.465734, 2.32829, -0.0438993)
+pixel_size = 0.03
+shaded = true
+text = "1"
+font = ExtResource("2_mku2i")
+font_size = 24
+outline_size = 0
 
-[node name="TopPanel" type="Sprite3D" parent="RoomNode/MainMesh"]
-transform = Transform3D(-0.00752233, 0, 0.999972, 0, 1, 0, -0.999972, 0, -0.00752233, -0.146028, 3.21929, -1.6893)
-visible = false
-flip_h = true
-pixel_size = 0.0009
-no_depth_test = true
-fixed_size = true
-texture = SubResource("ViewportTexture_lkb6v")
+[node name="OverheadLight" type="MeshInstance3D" parent="RoomNode/MainMesh/DoorMesh"]
+transform = Transform3D(-0.999998, 0, 8.74226e-08, 0, 0.999999, 0, -8.74226e-08, 0, -0.999999, -0.465734, 3.19684, -0.0438993)
+mesh = SubResource("BoxMesh_q7wqx")
+skeleton = NodePath("../RoomNumberLabel")
 
-[node name="InsidePanel" type="Sprite3D" parent="RoomNode/MainMesh"]
-transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0.8, -0.5, 0.8)
-visible = false
-texture = SubResource("ViewportTexture_bs2pq")
+[node name="SpotLight3D" type="SpotLight3D" parent="RoomNode/MainMesh/DoorMesh/OverheadLight"]
+transform = Transform3D(0.987838, 0.0382481, 0.151004, -0.155769, 0.24254, 0.957555, -2.6867e-10, -0.96943, 0.245548, 0.111611, 0.948877, 0.309094)
+light_color = Color(1, 1, 0.803922, 1)
+light_energy = 0.4
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.2
+shadow_enabled = true
+spot_attenuation = -3.73
+spot_angle = 22.34
 
-[node name="Floor" type="MeshInstance3D" parent="RoomNode"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.21906, 0)
-visible = false
-mesh = SubResource("PlaneMesh_fjhpp")
+[node name="DoorLabel" type="Label3D" parent="RoomNode/MainMesh/DoorMesh"]
+transform = Transform3D(-0.999999, 0, -8.74227e-08, 0, 1, 0, 8.74227e-08, 0, -0.999999, -1.04828, 0.771639, 0.00132287)
+shaded = true
+text = "ROOM NAME"
+font = ExtResource("2_mku2i")
+font_size = 52
+outline_size = 0
+horizontal_alignment = 2
+uppercase = true
 
-[node name="Node3D" type="Node3D" parent="RoomNode"]
-transform = Transform3D(0.0420168, 0, -0.999157, 0, 1, 0, 0.999157, 0, 0.0420168, 0.168299, 0.925871, 0)
-
-[node name="ActiveBox" type="MeshInstance3D" parent="RoomNode/Node3D"]
-transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, -1.84468, 0.355896, -1.26458)
+[node name="ActivationIndicator" type="MeshInstance3D" parent="RoomNode/MainMesh"]
+transform = Transform3D(0.0420168, 0, -0.999156, 0, 1, 0, 0.999156, 0, 0.0420168, 1.35431, 1.28177, -1.89626)
 mesh = SubResource("BoxMesh_pum0q")
+skeleton = NodePath("")
 
-[node name="PulseEffectFX" type="SpotLight3D" parent="RoomNode/Node3D/ActiveBox"]
+[node name="ActivationIndicatorPulseLight" type="SpotLight3D" parent="RoomNode/MainMesh/ActivationIndicator"]
 transform = Transform3D(-0.185195, 0.676806, -0.712487, -0.000651772, 0.724943, 0.688808, 0.982702, 0.128028, -0.133815, -0.858612, 1.75495, 2.40468)
 visible = false
 light_color = Color(1, 0, 0, 1)
@@ -152,7 +143,7 @@ spot_range = 3.231
 spot_attenuation = -10.0
 spot_angle = 18.1421
 
-[node name="ActivationLight" type="OmniLight3D" parent="RoomNode/Node3D/ActiveBox"]
+[node name="ActivationIndicatorLight" type="OmniLight3D" parent="RoomNode/MainMesh/ActivationIndicator"]
 transform = Transform3D(1, 0, 6.33299e-08, 0, 1, 0, -5.96046e-08, 0, 1, -0.458438, 0.00413728, 0.0430982)
 light_color = Color(0.848652, 1.10701e-06, 0.448674, 1)
 light_energy = 0.1
@@ -165,11 +156,12 @@ shadow_normal_bias = 0.0
 omni_range = 2.40478
 omni_attenuation = 7.079
 
-[node name="HasSCP" type="MeshInstance3D" parent="RoomNode/Node3D"]
-transform = Transform3D(0.0721415, 0, 0.997393, 0, 1, 0, -0.997393, 0, 0.0721415, 1.16966, 0.355896, 2.21645)
+[node name="ScpIndicator" type="MeshInstance3D" parent="RoomNode/MainMesh"]
+transform = Transform3D(0.999583, 0, -0.0301734, 0, 1, 0, 0.0301734, 0, 0.999583, -1.99714, 1.28177, 1.2618)
 mesh = SubResource("BoxMesh_pum0q")
+skeleton = NodePath("")
 
-[node name="ActivationLight" type="OmniLight3D" parent="RoomNode/Node3D/HasSCP"]
+[node name="Light" type="OmniLight3D" parent="RoomNode/MainMesh/ScpIndicator"]
 transform = Transform3D(1, 0, 6.33299e-08, 0, 1, 0, -5.96046e-08, 0, 1, -0.378847, 0.00413728, 0.0430982)
 light_color = Color(0.703621, 0.483991, 1, 1)
 light_energy = 0.1
@@ -181,96 +173,6 @@ shadow_bias = 7.11
 shadow_normal_bias = 0.0
 omni_range = 2.40478
 omni_attenuation = 6.854
-
-[node name="FrontLeftPanelViewport" type="SubViewport" parent="RoomNode"]
-transparent_bg = true
-canvas_cull_mask = 4293919743
-size = Vector2i(400, 400)
-
-[node name="PanelContainer" type="PanelContainer" parent="RoomNode/FrontLeftPanelViewport"]
-custom_minimum_size = Vector2(400, 400)
-offset_right = 400.0
-offset_bottom = 400.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_7n1l0")
-
-[node name="MarginContainer" type="MarginContainer" parent="RoomNode/FrontLeftPanelViewport/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 50
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RoomNode/FrontLeftPanelViewport/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="Label" type="Label" parent="RoomNode/FrontLeftPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "111"
-label_settings = ExtResource("2_fh056")
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="RoomNode/FrontLeftPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "(CONSTRUCTION)"
-label_settings = SubResource("LabelSettings_hquau")
-horizontal_alignment = 1
-
-[node name="FrontRightPanelViewport" type="SubViewport" parent="RoomNode"]
-transparent_bg = true
-size = Vector2i(400, 400)
-
-[node name="PanelContainer" type="PanelContainer" parent="RoomNode/FrontRightPanelViewport"]
-custom_minimum_size = Vector2(400, 400)
-offset_right = 200.0
-offset_bottom = 200.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_j7pko")
-
-[node name="MarginContainer" type="MarginContainer" parent="RoomNode/FrontRightPanelViewport/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RoomNode/FrontRightPanelViewport/PanelContainer/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="RoomNode/FrontRightPanelViewport/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "   active"
-label_settings = ExtResource("2_fh056")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="TopPanelViewport" type="SubViewport" parent="RoomNode"]
-transparent_bg = true
-size = Vector2i(500, 100)
-
-[node name="PanelContainer" type="PanelContainer" parent="RoomNode/TopPanelViewport"]
-offset_right = 500.0
-offset_bottom = 100.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_5ypm4")
-
-[node name="MarginContainer" type="MarginContainer" parent="RoomNode/TopPanelViewport/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Label" type="Label" parent="RoomNode/TopPanelViewport/PanelContainer/MarginContainer"]
-layout_mode = 2
-size_flags_vertical = 1
-text = "faciliyt name"
-label_settings = ExtResource("2_fh056")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label2" type="Label" parent="RoomNode/TopPanelViewport/PanelContainer/MarginContainer"]
-visible = false
-layout_mode = 2
-text = "(CONSTRUCTION)"
-label_settings = SubResource("LabelSettings_hquau")
-horizontal_alignment = 1
 
 [node name="InsideViewport" type="SubViewport" parent="RoomNode"]
 transparent_bg = true
@@ -291,5 +193,3 @@ transform = Transform3D(-0.707107, 0.298836, -0.640857, 0, 0.906308, 0.422618, 0
 visible = false
 projection = 1
 size = 20.122
-
-[connection signal="item_rect_changed" from="RoomNode/TopPanelViewport/PanelContainer" to="RoomNode" method="_on_panel_container_item_rect_changed"]

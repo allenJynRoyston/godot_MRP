@@ -3,6 +3,7 @@ extends UtilityWrapper
 
 var STARTING_BASE:Dictionary = {
 	"name": "BASE HQ",
+	"shortname": "HQ",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Base headquarters.",
@@ -66,7 +67,8 @@ var STARTING_BASE:Dictionary = {
 }
 
 var R_AND_D_LAB:Dictionary = {
-	"name": "R & D LAB",
+	"name": "R&D LAB",
+	"shortname": "R&D LAB",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Enables research and development.",
@@ -137,6 +139,7 @@ var R_AND_D_LAB:Dictionary = {
 
 var CONSTRUCTION_YARD:Dictionary = {
 	"name": "CONSTRUCTION YARD",
+	"shortname": "C.YARD",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/construction_yard.jpg",
 	"description": "Enables base development.",
@@ -204,6 +207,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 
 var BARRICKS:Dictionary = {
 	"name": "BARRICKS",
+	"shortname": "BARRICKS",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
@@ -273,6 +277,7 @@ var BARRICKS:Dictionary = {
 
 var DORMITORY:Dictionary = {
 	"name": "DORMITORY",
+	"shortname": "DORM",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
@@ -331,12 +336,11 @@ var DORMITORY:Dictionary = {
 		}	
 	}	
 	# ------------------------------------------
-	
-
 }
 
 var HOLDING_CELLS:Dictionary = {
 	"name": "HOLDING CELLS",
+	"shortname": "H CELLS",
 	"tier": TIER.VAL.TWO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses D-class personel.",
@@ -404,6 +408,7 @@ var HOLDING_CELLS:Dictionary = {
 
 var HR_DEPARTMENT:Dictionary = {
 	"name": "HUMAN RESOURCES DEPARTMENT",
+	"shortname": "HR DEPT",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Enables recruitment of key staff.",
@@ -466,6 +471,7 @@ var HR_DEPARTMENT:Dictionary = {
 
 var HUME_DETECTOR:Dictionary = {
 	"name": "HUME DETECTOR",
+	"shortname": "HUME DET",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Makes hume levels visible.",
@@ -526,9 +532,9 @@ var HUME_DETECTOR:Dictionary = {
 	# ------------------------------------------
 }
 
-
 var STANDARD_LOCKER:Dictionary = {
 	"name": "STANDARD_LOCKER",
+	"shortname": "S.LOCKER",
 	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "A basic room with a high security lock.",
@@ -589,7 +595,6 @@ var STANDARD_LOCKER:Dictionary = {
 		}	
 	}	
 	# ------------------------------------------
-
 }
 
 var reference_data:Dictionary = {

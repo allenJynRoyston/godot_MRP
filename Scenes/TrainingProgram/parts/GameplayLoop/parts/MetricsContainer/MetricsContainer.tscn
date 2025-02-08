@@ -40,22 +40,22 @@ shader_parameter/thickness = 0.2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfbj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tcojp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avxtm"]
 bg_color = Color(1, 0.34, 0.307, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ivv5p"]
-bg_color = Color(0.455, 0.002, 0.713, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uu0jq"]
+bg_color = Color(0, 0.529, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m7siw"]
-bg_color = Color(0, 0.529, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_okqt5"]
+bg_color = Color(0.455, 0.002, 0.713, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -151,27 +151,17 @@ theme_override_constants/separation = 10
 
 [node name="MetricsResearcherA" parent="TopContainer/VBoxContainer/BreakdownPanel/ResearcherContainer" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tcojp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_avxtm")
 type = 2
-header = "TITLE"
-status = ""
-items = []
-
-[node name="MetricsSCP" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ivv5p")
-type = 0
-header = "TITLE"
-status = ""
-items = []
 
 [node name="MetricsRoom" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_m7siw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_uu0jq")
 type = 1
-header = "TITLE"
-status = ""
-items = []
+
+[node name="MetricsSCP" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_okqt5")
 
 [node name="MetricsPanel" type="HBoxContainer" parent="TopContainer/VBoxContainer/BreakdownPanel"]
 custom_minimum_size = Vector2(325, 0)

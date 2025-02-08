@@ -59,7 +59,9 @@ show_metrics = true
 layout_mode = 2
 
 [node name="ActionQueueContainer" parent="." instance=ExtResource("5_1tp62")]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+theme_override_constants/margin_top = 0
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
 visible = false
@@ -72,9 +74,8 @@ freeze_inputs = true
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
 size_flags_vertical = 8
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_right = 0
 
 [node name="ResourceContainer" parent="." instance=ExtResource("8_asqny")]
 visible = false
@@ -82,6 +83,7 @@ layout_mode = 2
 theme_override_constants/margin_top = 5
 
 [node name="LocationContainer" parent="." instance=ExtResource("4_fqcw3")]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -147,7 +149,7 @@ freeze_inputs = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 250
+theme_override_constants/margin_top = 80
 freeze_inputs = true
 
 [node name="EndofPhaseContainer" parent="." instance=ExtResource("18_p3gf7")]

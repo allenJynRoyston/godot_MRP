@@ -1,14 +1,12 @@
-[gd_scene load_steps=22 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=18 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StatusContainer/status_container.gd" id="1_luwns"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_et8g1"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_vgalj"]
 [ext_resource type="PackedScene" uid="uid://crk6mkpuid5a3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/DetailPanel.tscn" id="3_an7ib"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="4_3ua1b"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="5_tr3tb"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="6_btnsk"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="7_lr6tl"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="8_asbvn"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="9_6ky6o"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rlssl"]
 shader = ExtResource("2_et8g1")
@@ -32,37 +30,31 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dh1uk"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_lftaj"]
-font = ExtResource("2_vgalj")
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_x37c4"]
-color = Color(0, 0.254902, 0.0823529, 1)
-grow_begin = -15.0
-grow_end = -15.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4wyr"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_vdv51"]
-font = ExtResource("7_lr6tl")
-font_size = 32
-font_color = Color(1, 1, 1, 0.796078)
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_1402e"]
-color = Color(1, 1, 1, 0.498039)
-grow_begin = -5.0
-grow_end = -5.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wrnhn"]
-bg_color = Color(0, 0, 0, 0.560784)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5olq"]
 bg_color = Color(0, 0.53, 0.282667, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dh1uk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_47dly"]
+bg_color = Color(0.153077, 0.153077, 0.153076, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nomlx"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk5ec"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4wyr"]
 
 [node name="StatusContainer" type="MarginContainer"]
 custom_minimum_size = Vector2(100, 0)
@@ -83,15 +75,15 @@ texture = SubResource("ViewportTexture_ve1lb")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
+size_flags_horizontal = 8
 
 [node name="DetailPanel" parent="Control" instance=ExtResource("3_an7ib")]
 custom_minimum_size = Vector2(300, 0)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -477.0
-offset_right = -227.0
+layout_mode = 2
+offset_left = -306.0
+offset_top = 136.0
+offset_right = -6.0
+offset_bottom = 263.0
 grow_horizontal = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
@@ -103,303 +95,116 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_cs3fv")
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PanelContainer3" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Resources" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cq7eb")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer3"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_dh1uk")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="DayLabel" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "DAY 1"
-label_settings = SubResource("LabelSettings_lftaj")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_x37c4")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="ResourceItemMoney" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 30
-title = "999"
-
-[node name="ResourceItemEnergy" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 31
-title = "999"
-
-[node name="HSeparator2" type="HSeparator" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_x37c4")
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ResourceItemStaff" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 34
-title = "10/10"
-display_at_bottom = true
-
-[node name="ResourceItemSecurity" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 35
-title = "10/10"
-display_at_bottom = true
-
-[node name="ResourceItemDClass" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 32
-title = "10/10"
-display_at_bottom = true
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2"]
-visible = false
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 0
-
-[node name="TitleHeader" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-size_flags_vertical = 5
-text = "DAY"
-label_settings = ExtResource("6_btnsk")
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_f4wyr")
-
-[node name="TitleContentBG" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
-text = "TITLE"
-label_settings = SubResource("LabelSettings_vdv51")
-horizontal_alignment = 2
-uppercase = true
-
-[node name="TitleContent" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
-text = "10"
-label_settings = ExtResource("8_asbvn")
-horizontal_alignment = 2
-uppercase = true
-
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2"]
-visible = false
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_1402e")
-
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2"]
-visible = false
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wrnhn")
-
-[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Resources"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/PanelContainer/MarginContainer2"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Resources/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
+theme_override_constants/separation = 25
 
-[node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/PanelContainer/MarginContainer2/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "NORMAL"
-label_settings = ExtResource("9_6ky6o")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="ResourceItemStaff" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemStaff" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 34
+header = "STAFF"
 title = "10/10"
 display_at_bottom = true
 
-[node name="ResourceItemSecurity" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemSecurity" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 35
+header = "SECURITY"
 title = "10/10"
 display_at_bottom = true
 
-[node name="ResourceItemDClass" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemDClass" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 32
+header = "D-CLASS"
 title = "10/10"
 display_at_bottom = true
 
-[node name="ResourceItemMoney" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemMoney" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 30
+header = "FUNDS"
 title = "999"
 display_at_bottom = true
 
-[node name="ResourceItemEnergy" parent="PanelContainer/VBoxContainer/PanelContainer3/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemEnergy" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 31
+header = "ENERGY"
 title = "999"
 display_at_bottom = true
 
-[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Status" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_q5olq")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Status"]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_dh1uk")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer"]
-visible = false
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer"]
+[node name="ReportProgressContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
 theme_override_constants/separation = 10
+alignment = 2
 
-[node name="DayLabel" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer"]
+custom_minimum_size = Vector2(175, 25)
 layout_mode = 2
 size_flags_vertical = 3
-text = "DAY 1"
-label_settings = SubResource("LabelSettings_lftaj")
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_47dly")
+theme_override_styles/fill = SubResource("StyleBoxFlat_nomlx")
+max_value = 1.0
+value = 0.5
+show_percentage = false
 
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_x37c4")
+[node name="ReportBtn" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer/ProgressBar" instance=ExtResource("5_tr3tb")]
+custom_minimum_size = Vector2(100, 25)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_rk5ec")
+icon = 7
+panel_color = Color(0.054902, 0.054902, 0.054902, 0)
+title = "NEXT REPORT IN X DAYS"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
-
-[node name="ResourceItemMoney" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 30
-title = "999"
-
-[node name="ResourceItemEnergy" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 31
-title = "999"
-
-[node name="HSeparator2" type="HSeparator" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_x37c4")
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ResourceItemStaff" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 34
-title = "10/10"
-display_at_bottom = true
-
-[node name="ResourceItemSecurity" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 35
-title = "10/10"
-display_at_bottom = true
-
-[node name="ResourceItemDClass" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 32
-title = "10/10"
-display_at_bottom = true
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="TitleHeader" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="TitleHeader" type="Label" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 5
 text = "DAY"
@@ -407,21 +212,11 @@ label_settings = ExtResource("6_btnsk")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_f4wyr")
 
-[node name="TitleContentBG" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
-text = "TITLE"
-label_settings = SubResource("LabelSettings_vdv51")
-horizontal_alignment = 2
-uppercase = true
-
-[node name="TitleContent" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
+[node name="DayLabel" type="Label" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -429,67 +224,6 @@ text = "10"
 label_settings = ExtResource("8_asbvn")
 horizontal_alignment = 2
 uppercase = true
-
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2"]
-visible = false
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_1402e")
-
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2"]
-visible = false
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wrnhn")
-
-[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/PanelContainer/MarginContainer2"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/PanelContainer/MarginContainer2/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "NORMAL"
-label_settings = ExtResource("9_6ky6o")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2"]
-visible = false
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ResourceItemStaff" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 34
-title = "10/10"
-display_at_bottom = true
-
-[node name="ResourceItemSecurity" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 35
-title = "10/10"
-display_at_bottom = true
-
-[node name="ResourceItemDClass" parent="PanelContainer/VBoxContainer/PanelContainer2/MarginContainer/PanelContainer/VBoxContainer2/MarginContainer2/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 32
-title = "10/10"
-display_at_bottom = true
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true

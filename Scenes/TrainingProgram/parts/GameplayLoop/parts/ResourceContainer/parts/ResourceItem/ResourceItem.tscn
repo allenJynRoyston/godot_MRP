@@ -16,8 +16,9 @@ font_size = 8
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 script = ExtResource("1_l01xo")
+header = null
 
-[node name="Label" type="Label" parent="."]
+[node name="HeaderLabel" type="Label" parent="."]
 layout_mode = 2
 text = "MONEY"
 label_settings = ExtResource("2_m87r8")
@@ -46,7 +47,6 @@ label_settings = SubResource("LabelSettings_1v8kt")
 vertical_alignment = 1
 
 [node name="ItemLabel" type="Label" parent="."]
-visible = false
 layout_mode = 2
 text = "999"
 label_settings = SubResource("LabelSettings_yocpk")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cgp6oftk1itbm"]
+[gd_scene load_steps=9 format=3 uid="uid://cgp6oftk1itbm"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/action_queue_item.gd" id="1_fgfba"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_f2e5b"]
@@ -13,14 +13,23 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_koc58"]
 bg_color = Color(0, 0, 0, 0.560784)
-corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_38j34"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rw3no"]
+bg_color = Color(1, 1, 1, 0.603922)
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aqh2l"]
+bg_color = Color(0, 0, 0, 0.839216)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+
 [node name="ActionQueueItem" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 0)
-offset_right = 200.0
-offset_bottom = 18.0
-scale = Vector2(1.004, 1)
+custom_minimum_size = Vector2(150, 0)
+offset_right = 150.0
+offset_bottom = 26.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_erjns")
 script = ExtResource("1_fgfba")
 
@@ -31,54 +40,96 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer2/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="HeaderLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 5
 text = "BARRAICKS"
-label_settings = ExtResource("5_fkkcd")
+label_settings = ExtResource("4_f2e5b")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer2"]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_koc58")
 
-[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer2/PanelContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 7
-theme_override_constants/margin_bottom = 7
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxEmpty_38j34")
+theme_override_styles/fill = SubResource("StyleBoxFlat_rw3no")
+max_value = 1.0
+value = 0.5
+show_percentage = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer2/PanelContainer/MarginContainer2"]
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer2"]
+layout_mode = 2
 alignment = 1
 
-[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer2/PanelContainer/MarginContainer2/HBoxContainer"]
+[node name="StatusLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "CONSTRUCTION"
 label_settings = ExtResource("4_f2e5b")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_aqh2l")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "DAYS"
+label_settings = ExtResource("4_f2e5b")
+horizontal_alignment = 1
+
+[node name="CountLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2"
+label_settings = ExtResource("5_fkkcd")
 horizontal_alignment = 1
 vertical_alignment = 1

@@ -1,9 +1,10 @@
 [gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://gjdqvbphklm4"]
 
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="1_7p5th"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="1_35mp2"]
 
 [resource]
-font = ExtResource("1_7p5th")
+font = ExtResource("1_35mp2")
+font_size = 8
 outline_color = Color(0, 0.529412, 0.278431, 1)
 shadow_size = 0
 shadow_color = Color(0, 0.784314, 0, 1)

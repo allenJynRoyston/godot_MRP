@@ -19,8 +19,10 @@ shader_parameter/trail_fade = 0.5
 viewport_path = NodePath("SubViewport")
 
 [node name="ActionQueueContainer" type="MarginContainer"]
-offset_right = 20.0
-offset_bottom = 200.0
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 15.0
+grow_vertical = 2
 size_flags_horizontal = 8
 script = ExtResource("1_bgvki")
 
@@ -30,10 +32,10 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_17s2m")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 280
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_bottom = 0
 
 [node name="ListContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2

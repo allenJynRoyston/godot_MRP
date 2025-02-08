@@ -1,0 +1,106 @@
+[gd_scene load_steps=7 format=3 uid="uid://dhkyb6t56c2fk"]
+
+[ext_resource type="Script" path="res://UI/Buttons/KeyBtn/key_btn.gd" id="1_5n3hm"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_0ixyl"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_7luo6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xft1f"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_26aci"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wp1od"]
+bg_color = Color(0, 0, 0, 0.560784)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="KeyBtn" type="PanelContainer"]
+offset_right = 56.0
+offset_bottom = 65.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xft1f")
+script = ExtResource("1_5n3hm")
+text_active_color = Color(1, 1, 1, 1)
+text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="TitleHeader" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 5
+text = "LABEL"
+label_settings = ExtResource("3_7luo6")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_26aci")
+
+[node name="IconBtn" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer" instance=ExtResource("2_0ixyl")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 24
+is_hoverable = false
+
+[node name="NewIndicatorBtn" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer" instance=ExtResource("2_0ixyl")]
+visible = false
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 13
+static_color = Color(0, 0, 0, 0)
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wp1od")
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="KeyLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "X"
+label_settings = ExtResource("3_7luo6")
+horizontal_alignment = 1
+vertical_alignment = 1

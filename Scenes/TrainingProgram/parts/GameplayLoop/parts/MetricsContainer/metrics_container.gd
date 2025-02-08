@@ -123,9 +123,7 @@ func update_details_panel() -> void:
 
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
 	var researchers:Array = room_extract.researchers
-	#MetricsSCP
-#MetricsRoom
-#MetricsResearcherContainer
+
 	# ------------------------------------------		
 	MetricsRoom.modulate = Color(1, 1, 1, 0.4 if room_extract.room.is_empty() else 1)
 	if !room_extract.room.is_empty():
@@ -219,6 +217,11 @@ func update_details_panel() -> void:
 		new_node.status = "N/A"
 		new_node.items = [{"title": "NO BONUS"}]			
 		MetricsResearcherContainer.add_child(new_node)
+		
+	var InfoNode:Control = GBL.find_node(REFS.INFO_CONTAINER)
+	
+	await U.tick()
+	InfoNode.add_theme_constant_override("margin_top", MetricsResearcherContainer.size.y + 20)
 # -----------------------------------------------
 
 # -----------------------------------------------

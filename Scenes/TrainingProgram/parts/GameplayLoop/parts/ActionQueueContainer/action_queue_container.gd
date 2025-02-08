@@ -16,12 +16,18 @@ var uid_refs:Dictionary = {}
 signal wait_for_complete
 
 # --------------------------------------------------------------------------------------------------
+func _init() -> void:
+	super._init()
+	GBL.register_node(REFS.ACTION_QUEUE_CONTAINER, self)
+	
+func _exit_tree() -> void:
+	super._exit_tree()
+	GBL.unregister_node(REFS.ACTION_QUEUE_CONTAINER)
+	
 func _ready() -> void:
 	super._ready()
-
 	TextureRectNode = $TextureRect
 	Subviewport = $SubViewport
-	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

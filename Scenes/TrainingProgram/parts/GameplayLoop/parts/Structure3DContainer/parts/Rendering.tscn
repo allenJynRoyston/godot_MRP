@@ -17,11 +17,11 @@ volumetric_fog_length = 22.9
 volumetric_fog_detail_spread = 0.5
 volumetric_fog_ambient_inject = 0.84
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_175mp"]
-viewport_path = NodePath("ControlSubViewport")
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_i0ofm"]
 viewport_path = NodePath("ControlMenuSubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_175mp"]
+viewport_path = NodePath("ControlSubViewport")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_j3nt2"]
 top_radius = 4.0
@@ -55,10 +55,10 @@ grow_end = -5.0
 font = ExtResource("5_ptqq7")
 font_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ypmap"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rh5iy"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e2ot"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m36ch"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="Rendering" type="Node3D"]
@@ -97,7 +97,7 @@ size = 7.0
 far = 100.0
 
 [node name="SpriteLayer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 5, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77.7962, 10.9482, 10)
 
 [node name="CursorSprite" type="Sprite3D" parent="SpriteLayer"]
 visible = false
@@ -107,23 +107,23 @@ no_depth_test = true
 fixed_size = true
 texture = ExtResource("2_6hp44")
 
-[node name="ControlLayerSprite" type="Sprite3D" parent="SpriteLayer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 10, 0)
-layers = 31
-pixel_size = 0.004
-double_sided = false
-no_depth_test = true
-fixed_size = true
-texture = SubResource("ViewportTexture_175mp")
-
 [node name="ControlMenuSprite" type="Sprite3D" parent="SpriteLayer"]
-transform = Transform3D(-4.37113e-08, 0, 0.999999, 0, 1, 0, -0.999999, 0, -4.37113e-08, 42, 10, 0)
+transform = Transform3D(-4.37113e-08, 0, 0.999999, 0, 1, 0, -0.999999, 0, -4.37113e-08, 35.232, 6.08876, 2.95838e-07)
 pixel_size = 0.003
 transparent = false
 double_sided = false
 no_depth_test = true
 fixed_size = true
 texture = SubResource("ViewportTexture_i0ofm")
+
+[node name="ControlLayerSprite" type="Sprite3D" parent="SpriteLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.4629, 8.19906, 0)
+layers = 31
+pixel_size = 0.004
+double_sided = false
+no_depth_test = true
+fixed_size = true
+texture = SubResource("ViewportTexture_175mp")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(-0.527423, 0.346123, -0.775902, -0.671074, -0.729795, 0.130611, -0.521042, 0.589575, 0.617185, 216.188, -4.77278, -22.5961)
@@ -264,12 +264,12 @@ layout_mode = 2
 
 [node name="TextBtn" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ypmap")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rh5iy")
 title = "ACTION 1"
 
 [node name="TextBtn2" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5e2ot")
+theme_override_styles/panel = SubResource("StyleBoxFlat_m36ch")
 title = "ACTION 1"
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="_on_panel_container_item_rect_changed"]

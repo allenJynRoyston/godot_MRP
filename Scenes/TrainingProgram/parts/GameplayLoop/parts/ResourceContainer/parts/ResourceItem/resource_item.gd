@@ -1,6 +1,7 @@
 @tool
 extends MouseInteractions
 
+@onready var HeaderLabel:Label = $HeaderLabel
 @onready var IconBtn:Control = $HBoxContainer/IconBtn
 @onready var ItemLabel:Label = $HBoxContainer/ItemLabel
 @onready var BtmItemLabel:Label = $ItemLabel
@@ -9,7 +10,12 @@ extends MouseInteractions
 	set(val):
 		icon = val
 		on_icon_update()
-		
+
+@export var header:String = "" : 
+	set(val):
+		header = val
+		on_header_update()
+
 @export var title:String = ""	: 
 	set(val):
 		title = val
@@ -26,18 +32,23 @@ var onDismiss:Callable = func():pass
 # --------------------------------------
 func _ready() -> void:
 	super._ready()
+	on_header_update()
 	on_icon_update()
 	on_focus()
 	on_display_at_bottom_update()
 
+func on_header_update() -> void:
+	if !is_node_ready():return
+	HeaderLabel.text = header
+
 func on_icon_update() -> void:
-	if is_node_ready():
-		IconBtn.icon = 	icon
+	if !is_node_ready():return
+	IconBtn.icon = 	icon
 
 func on_title_update() -> void:
-	if is_node_ready():
-		ItemLabel.text = title
-		BtmItemLabel.text = title
+	if !is_node_ready():return	
+	ItemLabel.text = title
+	BtmItemLabel.text = title
 
 func on_display_at_bottom_update() -> void:
 	if !is_node_ready():return

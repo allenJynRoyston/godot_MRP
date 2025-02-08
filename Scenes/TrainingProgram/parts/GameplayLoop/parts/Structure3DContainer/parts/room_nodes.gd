@@ -4,6 +4,8 @@ extends Control
 @onready var Column1:Node3D = $SubViewport/RoomColumn/NodeContainer/column1
 @onready var Column2:Node3D = $SubViewport/RoomColumn/NodeContainer/column2
 @onready var Column3:Node3D = $SubViewport/RoomColumn/NodeContainer/column3
+@onready var LeftBoardRoomLabels:Node3D = $SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels
+@onready var RightBoardRoomLabels:Node3D = $SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels
 
 @onready var FloorMesh:MeshInstance3D = $SubViewport/RoomColumn/FloorMesh
 
@@ -25,9 +27,9 @@ extends Control
 @onready var CursorLabelSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorLabelSprite
 @onready var CursorMenuSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorMenuSprite
 
-#@onready var SpriteLayer:Node3D = $SubViewport/RoomColumn/SpriteLayer
-#@onready var CursorSprite:Sprite3D = $SubViewport/RoomColumn/SpriteLayer/CursorSprite
-@onready var LeftWallLabel:Label3D = $SubViewport/RoomColumn/LeftWallLabel
+
+@onready var LeftFloorLabel:Label3D = $SubViewport/RoomColumn/FloorMesh/LeftFloorLabel
+@onready var RightFloorLabel:Label3D = $SubViewport/RoomColumn/FloorMesh/RightFloorLabel
 
 @onready var StatusLabel:Label3D = $SubViewport/RoomColumn/MainCamera/StatusLabel
 @onready var MainCamera:Camera3D = $SubViewport/RoomColumn/MainCamera
@@ -72,6 +74,7 @@ var current_menu_type:MENU_TYPE = MENU_TYPE.ROOM :
 			on_current_menu_type_update()
 		
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+
 
 var in_lockdown:bool = false : 
 	set(val):
@@ -120,10 +123,16 @@ func _ready() -> void:
 # --------------------------------------------------------
 func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void:
 	if !is_node_ready() or assigned_location.is_empty():return
-	
-	update_refs()
-	check_lockdown_state()
-	check_is_powered_state()
+		
+	if previous_floor != assigned_location.floor or previous_ring != assigned_location.ring:
+		previous_floor = assigned_location.floor
+		previous_ring = assigned_location.ring
+		
+		update_boards()
+		update_refs()
+		check_lockdown_state()
+		check_is_powered_state()
+		check_for_lighting_system()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -143,6 +152,8 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return
 	on_assigned_location_update()
+	update_refs()
+	update_boards()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -158,24 +169,65 @@ func check_is_powered_state() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-func update_refs() -> void:
-	#LeftWallLabel.text = "FLOOR %s WING %s" % [assigned_location.floor, assigned_location.ring]
-	for child in NodeContainer.get_children():
-		for node in child.get_children():
-			node.update_refs(assigned_location.floor, assigned_location.ring)
+func update_boards() -> void:
+	# traverse and mark the wall labels
+	for floor_index in room_config.floor.size():
+		if floor_index == assigned_location.floor:
+			for ring_index in room_config.floor[floor_index].ring.size():
+				if ring_index == assigned_location.ring:
+					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+						var room_node:Node3D = NodeContainer.get_child(room_index)
+						var ref_index:int = room_node.ref_index
+						var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": ref_index})
+						
+						# ----------------------------------------
+						var left_label_3d:Label3D = LeftBoardRoomLabels.find_child(str(ref_index))
+						var left_status_label:Label3D = left_label_3d.get_child(0)
+						for text_node in [left_label_3d, left_status_label]:
+							text_node.modulate = Color(0.984, 0.439, 0.184) if room_extract.room.is_empty() else Color(0.525, 1, 0.443, 1)
+						left_label_3d.text = "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.room.is_empty() else room_extract.room.details.shortname]
+						left_status_label.text = ""
+						if !room_extract.room.is_empty():
+							if room_extract.room.under_construction:
+								left_status_label.text = "UNDER CONSTRUCTION"
+							else:
+								left_status_label.text = "" if room_extract.room.is_activated else "NOT POWERED"
+				
+						# ----------------------------------------
+						var right_label_3d:Label3D = RightBoardRoomLabels.find_child(str(ref_index))
+						var right_status_label:Label3D = right_label_3d.get_child(0)				
+						for text_node in [right_label_3d, right_status_label]:
+							right_label_3d.modulate = Color(0.984, 0.439, 0.184) if room_extract.scp.is_empty() else Color(0.525, 1, 0.443, 1)		
+						right_label_3d.text =  "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.scp.is_empty() else room_extract.scp.details.name] 
+						right_status_label.text = ""
+						if !room_extract.scp.is_empty():							
+							if room_extract.scp.is_transfer:
+								right_status_label.text = "TRANSFERING"
+							right_status_label.text = "CONTAINED" if !room_extract.scp.testing.is_empty() else "TESTING..."	
+# --------------------------------------------------------
 
-	for child in NodeContainer.get_children():
-		for node in child.get_children():
-			node_refs[node.name] = node
-			node_ref_positions[node.name] = node.position
-			node.onBlur = func(room_data:Dictionary) -> void:
-				pass
-			node.onFocus = func(room_data:Dictionary) -> void:
-				RoomNameLabel.text = "EMPTY" if room_data.is_empty() else room_data.name				
-				RoomStatusLabel.text = "inactive"
-				node_location = node.global_position
-				CursorLabelSprite.global_position = node.global_position - Vector3(0, -2, 0)
-				CursorLabelSprite.position.z = -2
+# --------------------------------------------------------
+func update_refs() -> void:
+	LeftFloorLabel.text = "FLOOR %s" % [assigned_location.floor]
+	RightFloorLabel.text = "WING %s" % [assigned_location.ring]
+	
+	var nodeArray:Array = []
+							
+							
+	for node in NodeContainer.get_children():
+		node.update_refs(assigned_location.floor, assigned_location.ring)
+
+	for node in NodeContainer.get_children():
+		node_refs[node.name] = node
+		node_ref_positions[node.name] = node.position
+		node.onBlur = func(room_data:Dictionary) -> void:
+			pass
+		node.onFocus = func(room_data:Dictionary) -> void:
+			RoomNameLabel.text = "EMPTY" if room_data.is_empty() else room_data.name				
+			RoomStatusLabel.text = "inactive"
+			node_location = node.global_position
+			CursorLabelSprite.global_position = node.global_position - Vector3(0, -2, 0)
+			CursorLabelSprite.position.z = -2
 				
 
 	var material_copy:StandardMaterial3D = FloorMesh.mesh.material
@@ -429,20 +481,19 @@ func on_show_menu_update(setup:bool = false) -> void:
 # ------------------------------------------------
 func on_is_powered_update() -> void:
 	if !is_node_ready():return
-	check_for_lighting_system()
+	pass
 # ------------------------------------------------
 
 # --------------------------------------------------------
 func on_in_lockdown_update() -> void:
 	if !is_node_ready():return
-	check_for_lighting_system()
+	pass
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	if !is_node_ready():return
 	base_states = new_val
-	check_for_lighting_system()
 # --------------------------------------------------------
 
 # --------------------------------------------------------

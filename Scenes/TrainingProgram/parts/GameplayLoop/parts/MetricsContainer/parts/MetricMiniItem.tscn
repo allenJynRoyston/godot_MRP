@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://cr4jyhkulokw2"]
+[gd_scene load_steps=9 format=3 uid="uid://cr4jyhkulokw2"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/metric_mini_item.gd" id="1_kfsig"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_5mcnc"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_aujp3"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_avdbg"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_r01ax"]
@@ -56,8 +55,8 @@ theme_override_constants/separation = 0
 [node name="TitleHeader" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 5
-text = "MORALE"
-label_settings = ExtResource("2_5mcnc")
+text = "METRIC"
+label_settings = ExtResource("3_aujp3")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -79,7 +78,7 @@ uppercase = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
-text = "10"
+text = "0"
 label_settings = ExtResource("5_r01ax")
 horizontal_alignment = 1
 uppercase = true
