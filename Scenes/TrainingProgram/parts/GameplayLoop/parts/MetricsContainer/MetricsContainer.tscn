@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="1_05sbj"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/metrics_container.gd" id="1_jfbub"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_e00qv"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_v7ywe"]
 [ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/Oscilliscope.gdshader" id="5_2mash"]
 [ext_resource type="PackedScene" uid="uid://cr4jyhkulokw2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricMiniItem.tscn" id="7_srt4y"]
 [ext_resource type="PackedScene" uid="uid://bppcetyyh0jh7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn" id="7_y31xb"]
@@ -40,21 +40,21 @@ shader_parameter/thickness = 0.2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfbj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avxtm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8g1qs"]
 bg_color = Color(1, 0.34, 0.307, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uu0jq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qlau4"]
 bg_color = Color(0, 0.529, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_okqt5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b412j"]
 bg_color = Color(0.455, 0.002, 0.713, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -113,7 +113,7 @@ theme_override_constants/separation = 10
 [node name="Label" type="Label" parent="BottomContainer/MarginContainer/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "HUME"
-label_settings = ExtResource("3_e00qv")
+label_settings = ExtResource("3_v7ywe")
 
 [node name="TextureRect" type="TextureRect" parent="BottomContainer/MarginContainer/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
 material = SubResource("ShaderMaterial_vi5vs")
@@ -125,7 +125,7 @@ expand_mode = 1
 [node name="Label2" type="Label" parent="BottomContainer/MarginContainer/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "1.0"
-label_settings = ExtResource("3_e00qv")
+label_settings = ExtResource("3_v7ywe")
 
 [node name="TopContainer" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(1010, 0)
@@ -151,17 +151,17 @@ theme_override_constants/separation = 10
 
 [node name="MetricsResearcherA" parent="TopContainer/VBoxContainer/BreakdownPanel/ResearcherContainer" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_avxtm")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8g1qs")
 type = 2
 
 [node name="MetricsRoom" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_uu0jq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qlau4")
 type = 1
 
 [node name="MetricsSCP" parent="TopContainer/VBoxContainer/BreakdownPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_okqt5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b412j")
 
 [node name="MetricsPanel" type="HBoxContainer" parent="TopContainer/VBoxContainer/BreakdownPanel"]
 custom_minimum_size = Vector2(325, 0)

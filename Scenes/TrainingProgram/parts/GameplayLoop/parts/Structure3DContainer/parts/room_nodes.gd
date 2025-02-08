@@ -153,19 +153,23 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	if !is_node_ready() or room_config.is_empty():return
 	on_assigned_location_update()
 	update_refs()
-	update_boards()
+	update_boards()	
+	check_lockdown_state()
+	check_is_powered_state()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func check_lockdown_state() -> void:
 	if room_config.is_empty() or current_location.is_empty():return
 	in_lockdown = room_config.floor[current_location.floor].in_lockdown
+	check_for_lighting_system()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func check_is_powered_state() -> void:
 	if room_config.is_empty() or current_location.is_empty():return
 	is_powered = room_config.floor[current_location.floor].is_powered
+	check_for_lighting_system()
 # --------------------------------------------------------
 
 # --------------------------------------------------------

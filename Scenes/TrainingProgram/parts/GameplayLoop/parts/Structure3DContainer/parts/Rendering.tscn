@@ -41,7 +41,7 @@ height = 20.0
 viewport_path = NodePath("RoomScene/RoomNodeContainer/Sprite3D/SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ftr3"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
