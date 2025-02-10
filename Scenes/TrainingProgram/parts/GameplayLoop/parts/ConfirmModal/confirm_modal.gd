@@ -20,6 +20,11 @@ var confirm_only:bool = false :
 	set(val):
 		confirm_only = val
 		on_confirm_only_update()
+		
+var cancel_only:bool = false : 
+	set(val):
+		cancel_only = val
+		on_cancel_only_update()
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -53,6 +58,7 @@ func on_is_showing_update() -> void:
 	if !is_showing:
 		await U.set_timeout(0.5)
 		confirm_only = false
+		cancel_only = false
 		
 func on_title_update() -> void:
 	if !is_node_ready():return
@@ -66,6 +72,13 @@ func on_subtitle_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func on_cancel_only_update() -> void:
+	if !is_node_ready():return
+	if cancel_only:
+		AcceptBtn.hide()
+	else:
+		AcceptBtn.show()
+		
 func on_confirm_only_update() -> void:
 	if !is_node_ready():return
 	if confirm_only:

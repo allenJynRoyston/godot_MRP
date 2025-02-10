@@ -58,8 +58,6 @@ func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 			new_node.onClick = func() -> void:
 				if "location" in item_data:
 					SUBSCRIBE.current_location = item_data.location.duplicate()
-			new_node.onCancel = func() -> void:
-				get_parent().cancel_action_queue(item_data)
 			ListContainer.add_child(new_node)
 				
 			uid_refs[item_data.uid] = new_node

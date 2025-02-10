@@ -3,6 +3,7 @@ extends GameContainer
 
 @onready var CheckBtn:Control = $SubViewport/PanelContainer/MarginContainer/HBoxContainer/CheckBtn
 
+@onready var ContextBtn:BtnBase = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ContextBtn
 @onready var SCPBtn:BtnBase = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/SCPBtn
 @onready var RecruitBtn:BtnBase = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/RecruitBtn
 @onready var ResearchersBtn:BtnBase = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/ResearchersBtn
@@ -63,29 +64,22 @@ func open_researchers() -> void:
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 	progress_data = new_val
 	if !is_node_ready():return
-	#var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
-	#
-	#ReportBtn.title = "NEXT REPORT IN %s DAYS" % [progress_data.days_till_report] if !progress_data.show_report  else "VIEW REPORT"
-	#ReportProgressBar.value = 1 - (progress_data.days_till_report / (GameplayNode.days_till_report_limit * 1.0))
-	#ReportBtn.is_hoverable = progress_data.show_report	
-	#
-	#if previous_show_report != progress_data.show_report:
-		#previous_show_report = progress_data.show_report
-		#var new_stylebox:StyleBox = StyleBoxFlat.new() 
-		#new_stylebox.bg_color =  Color(0, 0.529, 0.278) if !progress_data.show_report else Color(0.712, 0.207, 0)
-		#ReportProgressBar.add_theme_stylebox_override('fill', new_stylebox)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty():return
+	
+	var nodes:Array = [ContextBtn, RecruitBtn, ResearchersBtn, SCPBtn]
+	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
-			pass
+			ContextBtn.title = "INVESTIGATE"
 		CAMERA.TYPE.ROOM_SELECT:
-			pass
+			ContextBtn.title = "BACK"
 # --------------------------------------------------------------------------------------------------		
+
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:

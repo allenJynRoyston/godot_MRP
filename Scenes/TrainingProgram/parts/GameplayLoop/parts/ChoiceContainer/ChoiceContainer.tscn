@@ -1,0 +1,618 @@
+[gd_scene load_steps=22 format=3 uid="uid://cwowqrsr48d6k"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ChoiceContainer/choice_container.gd" id="1_p5732"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_mk8lt"]
+[ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="2_u2pv2"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_l0c7c"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_as0j6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7xi8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pwxwe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jc70e"]
+bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_0x43v"]
+color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_32qq8"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7wjtd"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wuxg6"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_85p4e"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ltkbw"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fltsr"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2rxq7"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3yei"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_55x1s"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6hpi"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odmrk"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iql22"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[node name="ChoiceContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_y7xi8")
+script = ExtResource("1_p5732")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0, 0, 0, 0.72549)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pwxwe")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SCPCard" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 400)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jc70e")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+texture = ExtResource("2_u2pv2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "DESIGNATION: "
+label_settings = ExtResource("3_l0c7c")
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCP-X01"
+label_settings = ExtResource("2_mk8lt")
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "ITEM CLASS: "
+label_settings = ExtResource("3_l0c7c")
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "UNKNOWN"
+label_settings = ExtResource("2_mk8lt")
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_0x43v")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "KNOWN EFFECT:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer4/MarginContainer"]
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "CONTAINMENT REWARDS:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="List" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="TextBtn" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_32qq8")
+title = "+ 100 on containment"
+
+[node name="TextBtn2" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7wjtd")
+title = "+ 100 on containment"
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer4/MarginContainer"]
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "CONTAINMENT REQUIREMENTS:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="List" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="TextBtn" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wuxg6")
+title = "+ 100 on containment"
+
+[node name="TextBtn2" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_85p4e")
+title = "+ 100 on containment"
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/PanelContainer4/MarginContainer"]
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_0x43v")
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "\"There's somebody or something on the other side.\""
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 3
+
+[node name="SCPCard2" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(250, 400)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jc70e")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+texture = ExtResource("2_u2pv2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "DESIGNATION: "
+label_settings = ExtResource("3_l0c7c")
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCP-X01"
+label_settings = ExtResource("2_mk8lt")
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "ITEM CLASS: "
+label_settings = ExtResource("3_l0c7c")
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "UNKNOWN"
+label_settings = ExtResource("2_mk8lt")
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_0x43v")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "KNOWN EFFECT:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer4/MarginContainer"]
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "CONTAINMENT REWARDS:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="List" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="TextBtn" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ltkbw")
+title = "+ 100 on containment"
+
+[node name="TextBtn2" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fltsr")
+title = "+ 100 on containment"
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer4/MarginContainer"]
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "CONTAINMENT REQUIREMENTS:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="List" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="TextBtn" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2rxq7")
+title = "+ 100 on containment"
+
+[node name="TextBtn2" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s3yei")
+title = "+ 100 on containment"
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/PanelContainer4/MarginContainer"]
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_0x43v")
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard2/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "\"There's somebody or something on the other side.\""
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 3
+
+[node name="SCPCard3" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(250, 400)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jc70e")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+texture = ExtResource("2_u2pv2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "DESIGNATION: "
+label_settings = ExtResource("3_l0c7c")
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCP-X01"
+label_settings = ExtResource("2_mk8lt")
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "ITEM CLASS: "
+label_settings = ExtResource("3_l0c7c")
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "UNKNOWN"
+label_settings = ExtResource("2_mk8lt")
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_0x43v")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "KNOWN EFFECT:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/PanelContainer4/MarginContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "CONTAINMENT REWARDS:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="List" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="TextBtn" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_55x1s")
+title = "+ 100 on containment"
+
+[node name="TextBtn2" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_w6hpi")
+title = "+ 100 on containment"
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer4/MarginContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "CONTAINMENT REQUIREMENTS:"
+label_settings = ExtResource("3_l0c7c")
+
+[node name="List" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="TextBtn" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odmrk")
+title = "+ 100 on containment"
+
+[node name="TextBtn2" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/List" instance=ExtResource("4_as0j6")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_iql22")
+title = "+ 100 on containment"
+
+[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer3/PanelContainer4/MarginContainer"]
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_0x43v")
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SCPCard3/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "\"There's somebody or something on the other side.\""
+label_settings = ExtResource("3_l0c7c")
+autowrap_mode = 3

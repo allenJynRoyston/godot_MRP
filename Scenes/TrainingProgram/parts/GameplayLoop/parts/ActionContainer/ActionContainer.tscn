@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=16 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_b0vyh"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_gxny4"]
@@ -34,49 +34,42 @@ grow_end = 0.0
 thickness = 2
 vertical = true
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y33tb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c35pn"]
 bg_color = Color(0.366595, 0.366595, 0.366595, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ouaxj"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xwvj7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_51tsb"]
 bg_color = Color(1, 0.339692, 0.306841, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkn3h"]
-bg_color = Color(0, 0.529412, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4tpur"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gtnr"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xxu38"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cs8sv"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a34rn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1fnvp"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yjyq2"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -139,50 +132,41 @@ theme_override_styles/separator = SubResource("StyleBoxLine_2sp4n")
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="CameraBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="ContextBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_y33tb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_c35pn")
 title = "SHIFT"
 assigned_key = "TAB"
 icon = 36
 panel_color = Color(0.366595, 0.366595, 0.366595, 1)
 
-[node name="RecruitBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-custom_minimum_size = Vector2(65, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ouaxj")
-title = "RECRUIT"
-assigned_key = "A"
-icon = 25
-panel_color = Color(0, 0.529412, 0.278431, 1)
-
 [node name="ResearchersBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xwvj7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_51tsb")
 title = "RESEARCHERS"
 assigned_key = "B"
 icon = 39
 panel_color = Color(1, 0.339692, 0.306841, 1)
 
-[node name="BuildBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-visible = false
-custom_minimum_size = Vector2(65, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dkn3h")
-title = "BUILD"
-assigned_key = "B"
-panel_color = Color(0, 0.529412, 1, 1)
-
 [node name="SCPBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4tpur")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0gtnr")
 title = "CONTAINMENT"
 assigned_key = "C"
 icon = 28
 panel_color = Color(0.455201, 0.00200917, 0.712752, 1)
+
+[node name="RecruitBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cs8sv")
+title = "RECRUIT"
+assigned_key = "A"
+icon = 25
+panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="VSeparator" type="VSeparator" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 visible = false
@@ -219,7 +203,7 @@ layout_mode = 2
 [node name="ObjectivesBtn" parent="PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_xxu38")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1fnvp")
 title = "OBJECTIVES"
 assigned_key = "TAB"
 icon = 48
@@ -228,7 +212,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 [node name="NextBtn" parent="PanelContainer/HBoxContainer/PanelContainer2/MarginContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_a34rn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_yjyq2")
 title = "NEXT DAY"
 assigned_key = "ENTER"
 icon = 27

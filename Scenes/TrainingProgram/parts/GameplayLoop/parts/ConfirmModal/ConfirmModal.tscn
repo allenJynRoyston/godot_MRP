@@ -28,10 +28,10 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w67u1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v53fl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tolj7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xn012"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7vv77"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="ConfirmModal" type="MarginContainer"]
@@ -100,12 +100,12 @@ alignment = 1
 
 [node name="AcceptBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_v53fl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tolj7")
 title = "Accept"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xn012")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7vv77")
 title = "Back"
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

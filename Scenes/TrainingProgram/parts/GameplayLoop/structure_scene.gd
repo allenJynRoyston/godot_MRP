@@ -81,24 +81,26 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)	
 	
 func _ready() -> void:
+	build_floors()
 	_on_panel_container_item_rect_changed()
 	on_show_menu_update()
 	assign_room_node_location(0, 0, false)
+	await U.set_timeout(0.2)
+	update_cameras()
 # ------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return
-	if !setup_complete:
-		setup_complete = true
-		build_floors()
 	update_floor_content_labels()
 # --------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
+	if !is_node_ready() or current_location.is_empty():return
+	
 	update_cameras()
 	update_floor_content_labels()
 # ------------------------------------------------
@@ -161,14 +163,15 @@ func on_show_menu_update() -> void:
 		})
 		
 		if room_config.floor[current_location.floor].is_powered:
-			menu_actions.push_back({
-					"title": "UPGRADE",
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.STRUCTURE.OPEN_STORE}),
-			})
+			pass
+			#menu_actions.push_back({
+					#"title": "UPGRADE",
+					#"onSelect": func() -> void:
+						#menu_response.emit({"action": ACTION.STRUCTURE.OPEN_STORE}),
+			#})
 			
 			menu_actions.push_back({
-				"title": "INITIATE LOCKDOWN" if !room_config.floor[current_location.floor].in_lockdown else "REMOVE LOCKDOWN",
+				"title": "LOCKDOWN FLOOR" if !room_config.floor[current_location.floor].in_lockdown else "REMOVE LOCKDOWN",
 				"onSelect": func() -> void:
 					menu_response.emit({"action": ACTION.STRUCTURE.LOCKDOWN})
 					on_back()
@@ -232,7 +235,6 @@ func assign_room_node_location(floor_val:int, ring_val:int, animate:bool) -> voi
 		U.tween_node_property(ActiveCamera, "size", 1, 0.2)
 		await U.tween_node_property(RoomNodeSprite, "scale:x", 0, 0.2)
 
-		
 	RoomNode.assigned_location = {"floor": floor_val, "ring": ring_val}
 	
 	if animate:
@@ -248,8 +250,8 @@ func assign_room_node_location(floor_val:int, ring_val:int, animate:bool) -> voi
 # ------------------------------------------------
 
 # ------------------------------------------------
-func update_cameras() -> void:
-	if !is_node_ready() or camera_settings.is_empty() or FloorInstanceContainer.get_child_count() == 0 or current_location.is_empty():return	
+func update_cameras() -> void:	
+	if !is_node_ready() or camera_settings.is_empty() or current_location.is_empty() or FloorInstanceContainer.get_child_count() == 0:return	
 
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -280,7 +282,7 @@ func update_cameras() -> void:
 
 # ------------------------------------------------
 func build_floors() -> void:
-	for n in range(room_config.floor.size() ):
+	for n in range(7):
 		var floor_duplicate:MeshInstance3D = FloorInstance.duplicate()
 		floor_duplicate.show()
 		floor_duplicate.position.y = n * -10

@@ -16,11 +16,6 @@ extends Control
 @onready var ControlMenuContainer:Control = $ControlMenuSubviewport/ControlMenuContainer
 @onready var ControlMenuList:VBoxContainer = $ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList
 
-@onready var NoPowerLights:Node3D = $SubViewport/RoomColumn/NoPowerLights
-@onready var Spotlights:Node3D = $SubViewport/RoomColumn/Spotlights
-@onready var NormalLights:Node3D = $SubViewport/RoomColumn/NormalLights
-@onready var EmergencyLights:Node3D = $SubViewport/RoomColumn/EmergencyLights
-
 @onready var RoomNameLabel:Label = $ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomNameLabel
 @onready var RoomStatusLabel:Label = $ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomStatusLabel
 
@@ -35,13 +30,19 @@ extends Control
 @onready var MainCamera:Camera3D = $SubViewport/RoomColumn/MainCamera
 @onready var AccentLights:DirectionalLight3D = $SubViewport/RoomColumn/MainCamera/AccentLights
 
+@onready var NoPowerLights:Node3D = $SubViewport/RoomColumn/NoPowerLights
+@onready var NormalLights:Node3D = $SubViewport/RoomColumn/NormalLights
+@onready var CautionLights:Node3D = $SubViewport/RoomColumn/CautionLights
+@onready var WarningLights:Node3D = $SubViewport/RoomColumn/WarningLights
+@onready var DangerLights:Node3D = $SubViewport/RoomColumn/DangerLights
+@onready var DangerSpotlights:Node3D = $SubViewport/RoomColumn/DangerLights/Spotlights
+
 @export var assigned_location:Dictionary = {} : 
 	set(val):
 		assigned_location = val
 		on_assigned_location_update()
 
-enum MENU_TYPE {SCP, ROOM, RESEARCHER}
-
+enum MENU_TYPE {RESEARCHER, ROOM, SCP, WING}
 
 var designation:String
 var node_location:Vector3 
@@ -72,21 +73,15 @@ var current_menu_type:MENU_TYPE = MENU_TYPE.ROOM :
 		if current_menu_type != val:
 			current_menu_type = val		
 			on_current_menu_type_update()
-		
+
+var previous_emergency_mode:int = -1
+var in_lockdown:bool = false
+var is_powered:bool = false
+var in_brownout:bool = false
+var emergency_mode:ROOM.EMERGENCY_MODES
+
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
-
-var in_lockdown:bool = false : 
-	set(val):
-		in_lockdown = val
-		on_in_lockdown_update()
-
-var is_powered:bool = false : 
-	set(val):
-		is_powered = val
-		on_is_powered_update()
-
-var base_states:Dictionary = {}
 
 signal menu_response
 
@@ -112,12 +107,25 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_label_control_subpanel_rect_changed()
 	on_menu_control_subpanel_rect_changed()
-	on_in_lockdown_update()
 	on_assigned_location_update()
 	on_is_active_update()
-	
 	on_show_menu_update(true)
 	on_current_menu_type_update()
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func on_current_location_update(new_val:Dictionary = current_location) -> void:
+	current_location = new_val
+	if !is_node_ready() or current_location.is_empty():return
+	
+	if designation != U.location_to_designation(current_location):
+		designation = U.location_to_designation(current_location)
+		
+		menu_index = 0
+		current_menu_type = MENU_TYPE.ROOM
+
+		
+		on_assigned_location_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -128,52 +136,25 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 		previous_floor = assigned_location.floor
 		previous_ring = assigned_location.ring
 		
-		update_boards()
-		update_refs()
-		check_lockdown_state()
-		check_is_powered_state()
-		check_for_lighting_system()
-# --------------------------------------------------------
-
-# --------------------------------------------------------
-func on_current_location_update(new_val:Dictionary = current_location) -> void:
-	current_location = new_val
-	if current_location.is_empty():return
-	if designation != U.location_to_designation(current_location):
-		designation = U.location_to_designation(current_location)
-
-		menu_index = 0
-		current_menu_type = MENU_TYPE.ROOM
-		on_assigned_location_update()
+		previous_emergency_mode = -1
+		
+		update_nodes()
+		update_boards()		
+		update_room_lighting()	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
-	if !is_node_ready() or room_config.is_empty():return
-	on_assigned_location_update()
-	update_refs()
+	if !is_node_ready() or room_config.is_empty():return	
+	update_nodes()
 	update_boards()	
-	check_lockdown_state()
-	check_is_powered_state()
-# --------------------------------------------------------
-
-# --------------------------------------------------------
-func check_lockdown_state() -> void:
-	if room_config.is_empty() or current_location.is_empty():return
-	in_lockdown = room_config.floor[current_location.floor].in_lockdown
-	check_for_lighting_system()
-# --------------------------------------------------------
-
-# --------------------------------------------------------
-func check_is_powered_state() -> void:
-	if room_config.is_empty() or current_location.is_empty():return
-	is_powered = room_config.floor[current_location.floor].is_powered
-	check_for_lighting_system()
+	update_room_lighting(true)	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func update_boards() -> void:
+	if !is_node_ready() or room_config.is_empty():return
 	# traverse and mark the wall labels
 	for floor_index in room_config.floor.size():
 		if floor_index == assigned_location.floor:
@@ -211,7 +192,7 @@ func update_boards() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-func update_refs() -> void:
+func update_nodes() -> void:
 	LeftFloorLabel.text = "FLOOR %s" % [assigned_location.floor]
 	RightFloorLabel.text = "WING %s" % [assigned_location.ring]
 	
@@ -305,11 +286,13 @@ func on_current_menu_type_update() -> void:
 	var new_stylebox = StyleBoxFlat.new()
 	match current_menu_type:
 		MENU_TYPE.ROOM:	
-			new_stylebox.bg_color = Color.BLUE
+			new_stylebox.bg_color = Color(0, 0.529, 1)
 		MENU_TYPE.SCP:
-			new_stylebox.bg_color = Color.PURPLE
+			new_stylebox.bg_color = Color(0.455, 0.002, 0.713)
 		MENU_TYPE.RESEARCHER:
-			new_stylebox.bg_color = Color.RED
+			new_stylebox.bg_color = Color(0.524, 0.087, 0)
+		MENU_TYPE.WING:
+			new_stylebox.bg_color = Color(0, 0.255, 0.082)
 				
 	ControlMenuContainer.add_theme_stylebox_override("panel", new_stylebox)
 		
@@ -328,15 +311,18 @@ func on_show_menu_update(setup:bool = false) -> void:
 	
 	if show_menu:
 		var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
-		var is_testing:bool = !room_extract.scp.testing.is_empty() if !room_extract.scp.is_empty() else false
+		var is_testing:bool = !room_extract.scp.testing.is_empty() if !room_extract.scp.is_empty() else false		
+		var can_take_action:bool = is_powered and (!in_lockdown and !in_brownout)
+		
 		menu_actions = []
 		
 		menu_actions.push_back({
-			"title": "BACK", 
+			"title": "BACK",
 			"onSelect": func() -> void:
 				menu_response.emit({"action": ACTION.ROOM_NODE.BACK})
 		})		
 		
+
 		match current_menu_type:
 			# ------------------
 			MENU_TYPE.ROOM:								
@@ -345,7 +331,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 				if room_is_empty:
 					menu_actions.push_back({
 						"title": "CONSTRUCT ROOM...",
-						"is_disabled": is_testing, 
+						"is_disabled": is_testing or !can_take_action, 
 						"onSelect": func() -> void:
 							menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
 					})							
@@ -362,21 +348,21 @@ func on_show_menu_update(setup:bool = false) -> void:
 						if !room_extract.room.is_activated:
 							menu_actions.push_back({
 								"title": "ACTIVATE ROOM",
-								"is_disabled": !room_extract.room.can_activate or is_testing,
+								"is_disabled": !room_extract.room.can_activate or is_testing or !can_take_action,
 								"onSelect": func() -> void:
 									menu_response.emit({"action": ACTION.ROOM_NODE.ACTIVATE_ROOM, "room_details": room_extract.room.details})
 							})		
 						else:
 							menu_actions.push_back({
 								"title": "DEACTIVATE ROOM",
-								"is_disabled": is_testing,
+								"is_disabled": is_testing or !can_take_action,
 								"onSelect": func() -> void:
 									menu_response.emit({"action": ACTION.ROOM_NODE.DEACTIVATE_ROOM, "room_details": room_extract.room.details})
 							})		
 													
 						menu_actions.push_back({
 							"title": "DESTROY ROOM",
-							"is_disabled": is_testing,
+							"is_disabled": is_testing or !can_take_action,
 							"onSelect": func() -> void:
 								menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
 						})		
@@ -386,7 +372,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 			MENU_TYPE.RESEARCHER:
 				menu_actions.push_back({
 					"title": "ASSIGN RESEARCHER...",
-					"is_disabled": is_testing,
+					"is_disabled": is_testing or !can_take_action,
 					"onSelect": func() -> void:
 						menu_response.emit({"action": ACTION.ROOM_NODE.ASSIGN_RESEARCHER})
 				})		
@@ -395,7 +381,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 					for researcher in room_extract.researchers:
 						menu_actions.push_back({
 							"title": "REMOVE %s" % [researcher.name],
-							"is_disabled": is_testing,
+							"is_disabled": is_testing or !can_take_action,
 							"onSelect": func() -> void:
 								menu_response.emit({"action": ACTION.ROOM_NODE.UNASSIGN_RESEARCHER, "researcher": researcher, "room_details": room_extract.room.details if !room_extract.room.is_empty() else {}})
 						})
@@ -408,6 +394,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 				if is_scp_empty:
 					menu_actions.push_back({
 						"title": "ASSIGN SCP...",
+						"is_disabled": !can_take_action,
 						"onSelect": func() -> void:
 							menu_response.emit({"action": ACTION.ROOM_NODE.CONTAIN_SCP})
 					})		
@@ -415,14 +402,14 @@ func on_show_menu_update(setup:bool = false) -> void:
 					if room_extract.scp.is_transfer:
 						menu_actions.push_back({
 							"title": "CANCEL CONTAINMENT" if !room_extract.scp.is_contained else "CANCEL TRANSFER" ,
-							"is_disabled": is_testing,
+							"is_disabled": is_testing or !can_take_action,
 							"onSelect": func() -> void:
 								menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP if !room_extract.scp.is_contained else ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP})
 						})		
 					else:
 						menu_actions.push_back({
 							"title": "TRANSFER TO...",
-							"is_disabled": is_testing,
+							"is_disabled": is_testing or !can_take_action,
 							"onSelect": func() -> void:
 								menu_response.emit({"action": ACTION.ROOM_NODE.TRANSFER_SCP})
 						})	
@@ -433,7 +420,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 						if testing.is_empty():
 							menu_actions.push_back({
 								"title": "START TESTING",
-								"is_disabled": !can_test,
+								"is_disabled": !can_test or !can_take_action,
 								"onSelect": func() -> void:
 									if can_test:
 										menu_response.emit({"action": ACTION.ROOM_NODE.START_TESTING})
@@ -441,16 +428,48 @@ func on_show_menu_update(setup:bool = false) -> void:
 						else:
 							menu_actions.push_back({
 								"title": "END TESTING",
+								"is_disabled": !can_take_action,
 								"onSelect": func() -> void:
 									menu_response.emit({"action": ACTION.ROOM_NODE.STOP_TESTING})
 							})		
-		
+			# ------------------
+			
+			# ------------------
+			MENU_TYPE.WING:								
+				menu_actions.push_back({
+					"title": "SET MODE: NORMAL",
+					"onSelect": func() -> void:
+						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.NORMAL})
+				})		
+									
+				menu_actions.push_back({
+					"title": "SET MODE: CAUTION",
+					"onSelect": func() -> void:
+						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.CAUTION})
+				})
+				
+				menu_actions.push_back({
+					"title": "SET MODE: WARNING",
+					"onSelect": func() -> void:
+						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.WARNING})
+				})				
+			
+				
+				menu_actions.push_back({
+					"title": "SET MODE: DANGER",
+					"onSelect": func() -> void:
+						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.DANGER})
+				})							
+			# ------------------		
+	
+		# reset and clear
 		for child in ControlMenuList.get_children():
 			child.queue_free()
-		
 		# keeps place in menu, unless it's over the menu action size
 		menu_index = U.min_max(menu_index, 0, menu_actions.size() - 1)
 		
+		
+		# build out menu
 		for index in menu_actions.size():
 			var item:Dictionary = menu_actions[index]
 			var new_btn:BtnBase = TextBtnPreload.instantiate()
@@ -482,54 +501,61 @@ func on_show_menu_update(setup:bool = false) -> void:
 
 # --------------------------------------------------------
 
-# ------------------------------------------------
-func on_is_powered_update() -> void:
-	if !is_node_ready():return
-	pass
-# ------------------------------------------------
+# --------------------------------------------------------
+func update_room_lighting(reset_lights:bool = false) -> void:
+	if room_config.is_empty() or current_location.is_empty():return
+	var lights:Array = [NoPowerLights, NormalLights, CautionLights, WarningLights, DangerLights]
 
-# --------------------------------------------------------
-func on_in_lockdown_update() -> void:
-	if !is_node_ready():return
-	pass
-# --------------------------------------------------------
-
-# --------------------------------------------------------
-func on_base_states_update(new_val:Dictionary = base_states) -> void:
-	if !is_node_ready():return
-	base_states = new_val
-# --------------------------------------------------------
-
-# --------------------------------------------------------
-func update_status_label() -> void:
-	if base_states.is_empty():return
-	var status_label:String = ""
+	in_lockdown = room_config.floor[current_location.floor].in_lockdown
+	is_powered = room_config.floor[current_location.floor].is_powered
+	in_brownout = room_config.floor[current_location.floor].in_brownout
+	emergency_mode = room_config.floor[current_location.floor].ring[current_location.ring].emergency_mode
 	
-	# NOT USED CURRENTLY, NOT SURE WHAT TO USE HERE
-		
-	StatusLabel.text = status_label 
-# --------------------------------------------------------
+	if !is_powered:
+		for light in lights:
+			light.hide()
+		NoPowerLights.show()
+		LeftBoardRoomLabels.hide()
+		RightBoardRoomLabels.hide()
+		return
 
-# --------------------------------------------------------
-func check_for_lighting_system() -> void:
-	if base_states.is_empty():return
+	if in_brownout:
+		return
+	
+	# reset lights
+	if reset_lights and previous_emergency_mode != emergency_mode:		
+		for light in lights:
+			light.hide()			
+		await U.set_timeout(0.5)	
+		
+	previous_emergency_mode = emergency_mode		
+	
+	LeftBoardRoomLabels.show()
+	RightBoardRoomLabels.show()	
 	
 	if in_lockdown:
-		NormalLights.hide() 
-		NoPowerLights.hide() 
-		EmergencyLights.show() 
-		Spotlights.show() 
+		for light in lights:
+			light.hide()
+		DangerLights.show()
 	else:
-		EmergencyLights.hide() 
-		Spotlights.hide() 
-		
-		if base_states.status_effects.in_brownout:
-			NoPowerLights.hide() if is_powered else NoPowerLights.show()
-			NormalLights.show() if is_powered else NormalLights.hide()	
-		
-		else:
-			NoPowerLights.hide() if is_powered else NoPowerLights.show()
-			NormalLights.show() if is_powered else NormalLights.hide()	
+		# floor-wide emergency mode
+		match emergency_mode:
+			ROOM.EMERGENCY_MODES.DANGER:
+				for light in lights:
+					light.hide()
+				DangerLights.show()
+			ROOM.EMERGENCY_MODES.WARNING:
+				for light in lights:
+					light.hide()
+				WarningLights.show()
+			ROOM.EMERGENCY_MODES.CAUTION:
+				for light in lights:
+					light.hide()
+				CautionLights.show()
+			ROOM.EMERGENCY_MODES.NORMAL:
+				for light in lights:
+					light.hide()
+				NormalLights.show()
 # --------------------------------------------------------
 
 
@@ -579,18 +605,20 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var keycode:int = input_data.keycode
 
 	match key:
-		"A":
-			GBL.add_to_animation_queue(self)
-			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
-			current_menu_type = U.min_max(current_menu_type - 1, 0, 2)
-			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
+		"A":			
+			if current_menu_type > 0:
+				GBL.add_to_animation_queue(self)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
+				current_menu_type = U.min_max(current_menu_type - 1, 0, 3)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
 			GBL.remove_from_animation_queue(self)
 		"D":
-			GBL.add_to_animation_queue(self)
-			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
-			current_menu_type = U.min_max(current_menu_type + 1, 0, 2)
-			await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
-			GBL.remove_from_animation_queue(self)
+			if current_menu_type < 3:
+				GBL.add_to_animation_queue(self)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
+				current_menu_type = U.min_max(current_menu_type + 1, 0, 3)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
+				GBL.remove_from_animation_queue(self)
 			
 		"W":
 			update_menu_index(-1)
@@ -621,16 +649,14 @@ func on_back() -> void:
 
 # --------------------------------------------------------
 func _process(delta: float) -> void:
-	if !is_node_ready() or base_states.is_empty():return
+	if !is_node_ready():return
 	
-	if base_states.status_effects.in_brownout:
+	if in_brownout:
 		if U.generate_rand(0, 100) < 2:
 			NoPowerLights.hide() if NoPowerLights.is_visible_in_tree() else NoPowerLights.show()
-		if U.generate_rand(0, 100) < 3:
-			NormalLights.hide() if NormalLights.is_visible_in_tree() else NormalLights.show()			
 	
-	if in_lockdown:
-		for child in Spotlights.get_children():
+	if in_lockdown or emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
+		for child in DangerSpotlights.get_children():
 			child.find_child("Spotlight").rotate_x(0.1)
 			child.find_child("Spotlight").rotate_y(0.01)
 # --------------------------------------------------------

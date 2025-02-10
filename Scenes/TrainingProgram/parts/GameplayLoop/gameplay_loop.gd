@@ -18,6 +18,7 @@ extends PanelContainer
 @onready var MetricsContainer:MarginContainer = $MetricsContainer
 @onready var BackContainer:MarginContainer = $BackContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
+@onready var ChoiceContainer:PanelContainer = $ChoiceContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
@@ -143,6 +144,11 @@ enum EVENT_STEPS {RESET, START}
 	set(val):
 		show_end_of_phase = val
 		on_show_end_of_phase_update()
+		
+@export var show_choices:bool = false : 
+	set(val):
+		show_choices = val
+		on_show_choices_update()		
 		
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -285,21 +291,42 @@ var initial_values:Dictionary = {
 		},
 	# ----------------------------------
 	"base_states": func() -> Dictionary:
+		var floor:Dictionary = {}
+		var ring:Dictionary = {}
+		var room:Dictionary = {} 
+		
+		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
+			floor[str(floor_index)] = {
+				"in_lockdown": false,
+				"is_powered": floor_index == 0,
+			}
+			
+			# ------------------------------
+			for ring_index in [0, 1, 2, 3]:
+				ring[str(floor_index, ring_index)] = {
+					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL
+				}
+				
+				# ------------------------------
+				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+					room[str(floor_index, ring_index, room_index)] = {
+						"is_activated": false,  
+						"is_destroyed": false
+					}						
+		
+		
 		return {
-			"status_effects": {
+			"base": {
 				"in_brownout": false,
 				"in_debt": false
 			},
-			"status_counts":{
-				"brownout": 0,
+			"counts": {
+				"in_brownout": 0,
 				"in_debt": 0
 			},
-			"floor": {
-				#"0": {"in_lockdown": true/false}
-			},
-			"room": {
-				#"000": {"is_activated": true/false}
-			},
+			"floor": floor,
+			"ring": ring,
+			"room": room,
 		},
 	# ----------------------------------
 	"action_queue_data": func() -> Array:
@@ -509,6 +536,7 @@ func setup() -> void:
 	on_show_metrics_update()
 	on_show_back_update()
 	on_show_end_of_phase_update()
+	on_show_choices_update()
 	
 	# other
 	on_show_confirm_modal_update()
@@ -589,10 +617,12 @@ func start_new_game() -> void:
 	else:
 		await quickload()
 	
-	set_room_config(true)	
+	
 	await restore_default_state()	
 	# runs room config once everything is ready
 	await U.set_timeout(0.2)
+	
+	set_room_config()	
 	setup_complete = true
 
 
@@ -609,6 +639,7 @@ func start_load_game() -> void:
 func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 	return { 
 		"is_powered": is_powered,
+		"in_brownout": false,
 		"in_lockdown": false,
 		"array_size": array_size,
 		"metrics": {
@@ -627,7 +658,8 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 	var room:Dictionary
 	for n in range(array_size*array_size):
 		room[n] = get_room_defaults()
-	return {		
+	return {	
+		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,	
 		"metrics": {
 			RESOURCE.BASE_METRICS.MORALE: 0,
 			RESOURCE.BASE_METRICS.SAFETY: 0,
@@ -641,6 +673,7 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 
 func get_room_defaults() -> Dictionary:
 	return {
+		"is_activated": false,
 		"build_data": {},
 		"room_data": {},
 		"scp_data": {},
@@ -667,7 +700,8 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		DialogueContainer, StoreContainer, ContainmentContainer, 
 		ConfirmModal, RecruitmentContainer, StatusContainer,
 		BuildCompleteContainer, InfoContainer, EventContainer,
-		MetricsContainer, BackContainer, EndOfPhaseContainer
+		MetricsContainer, BackContainer, EndOfPhaseContainer,
+		ChoiceContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -787,18 +821,20 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 		}
 # -----------------------------------
 
+
 # -----------------------------------
+
 func set_room_config(force_setup:bool = false) -> void:
 	# if setup isn't ready, run this so the map gets built correctly
-	if !setup_complete and !force_setup:
-		SUBSCRIBE.room_config = initial_values.room_config.call()
-		return
-	
+	#if !setup_complete and (room_config.is_empty() or base_states.is_empty()) and !force_setup:
+		#base_states = initial_values.base_states.call()
+		#room_config = initial_values.room_config.call()		
+		#return
+
 	# otherwise, run the full script.  This prevents this code from running multiple times
-	var new_room_config:Dictionary = initial_values.room_config.call()
+	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var under_construction_rooms:Array = []
 	var built_rooms:Array = []
-	
 
 	# mark rooms that are being transfered to a room 
 	if "available_list" in scp_data:
@@ -877,23 +913,9 @@ func set_room_config(force_setup:bool = false) -> void:
 		
 		# if facility is built, clear build_data 
 		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
-				
-		# ... then check if designation is in base_states; 
-		#  (create new room state if it does not exist)
-		if designation not in base_states.room:
-			base_states.room[designation] = {
-				"location": item.location.duplicate(),
-				"is_activated": false,  
-			}		
-		
+
 		# then get is_activated status
 		var is_activated:bool = base_states.room[designation].is_activated
-		
-		# modify ring wide metrics 
-		#if is_activated:
-			#new_room_config.floor[floor].ring[ring].room_refs.push_back(item.ref)
-			#if "metrics" in room_data and "wing" in room_data.metrics:
-				#update_metrics.call(floor, ring, room_data.metrics)
 			
 		# updatae room config with ref and utility functions
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
@@ -907,78 +929,91 @@ func set_room_config(force_setup:bool = false) -> void:
 		}
 		
 	# mark rooms and push to subscriptions
-	for floor_index in new_room_config.floor.size():
-		var floor_designation:String = "%s" % [floor_index]
-		# create new floor state if it does not exist
-		if floor_designation not in base_states.floor:
-			base_states.floor[floor_designation] = {
-				"in_lockdown": false
-			}
-			
-		# transfer in_lockdown state
-		new_room_config.floor[floor_index].in_lockdown = base_states.floor[floor_designation].in_lockdown		
+	for floor_index in new_room_config.floor.size():		
+		# add brownout state if applicable
+		new_room_config.floor[floor_index].in_brownout = base_states.base.in_brownout
+		new_room_config.floor[floor_index].is_powered = base_states.floor[str(floor_index)].is_powered
+		new_room_config.floor[floor_index].in_lockdown = base_states.floor[str(floor_index)].in_lockdown
 		
-		for ring_index in new_room_config.floor[floor_index].ring.size():
-			# carry on previous values
-			new_room_config.floor[floor_index].ring[ring_index].metrics = room_config.floor[floor_index].ring[ring_index].metrics
+		for ring_index in new_room_config.floor[floor_index].ring.size():					
+			var ring_designation:String = "%s%s" % [floor_index, ring_index]
+
+			## transfer in_lockdown state
+			new_room_config.floor[floor_index].ring[ring_index].emergency_mode = base_states.ring[ring_designation].emergency_mode	
 			
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
-				var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
+				var room_designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 				var config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
 	
 				if !config_data.build_data.is_empty():
-					under_construction_rooms.push_back(designation)
+					under_construction_rooms.push_back(room_designation)
 				if !config_data.room_data.is_empty():
-					built_rooms.push_back(designation)
+					built_rooms.push_back(room_designation)
 	
-	# mark rooms that are already powered...
-	new_room_config.floor[1].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_2, purchased_base_arr) > 0
-	new_room_config.floor[2].is_powered = BASE_UTIL.get_count(BASE.TYPE.UNLOCK_FLOOR_3, purchased_base_arr) > 0
-
 
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
-	SUBSCRIBE.room_config = new_room_config	
-	
-	await U.tick()
-	update_metrics()
+
+	update_metrics(new_room_config)
 # -----------------------------------
 
 # -----------------------------------
-func update_metrics() -> void:
+func update_metrics(new_room_config:Dictionary) -> void:
 	# NEED ROOM CONFIG TO BUILD BEFORE DOING THIS PART
-	var update_wing_effect:Callable = func(floor_val:int, wing_val:int, metrics:Dictionary) -> void:
-		for key in metrics:
-			var amount:int = metrics[key]
-			room_config.floor[floor_val].ring[wing_val].metrics[key] = U.min_max(room_config.floor[floor_val].ring[wing_val].metrics[key] + amount, -10, 10)
+	var update_wing_effect:Callable = func(metric_defaults:Dictionary, new_metrics:Dictionary) -> Dictionary:
+		for key in new_metrics:
+			var amount:int = new_metrics[key]
+			var current_amount:int = metric_defaults[key]
+			metric_defaults[key] = U.min_max(current_amount + amount, -10, 10)
+		return metric_defaults
 	
 	# now update all metrics once everything has been attached
-	for floor_index in room_config.floor.size():
-		for ring_index in room_config.floor[floor_index].ring.size():
+	for floor_index in new_room_config.floor.size():
+		for ring_index in new_room_config.floor[floor_index].ring.size():
 			# reset metrics before recalcualting them
-			room_config.floor[floor_index].ring[ring_index].metrics = {
+			var metric_defaults:Dictionary = {
 				RESOURCE.BASE_METRICS.MORALE: 0,
 				RESOURCE.BASE_METRICS.SAFETY: 0,
 				RESOURCE.BASE_METRICS.READINESS: 0
 			}
-			
-			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
-				var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index})
-				
-				# TODO: add metrics for rooms
+
+			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
+				var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index}, new_room_config)
+
 				if !room_extract.room.is_empty():
-					update_wing_effect.call(floor_index, ring_index, ROOM_UTIL.return_wing_effect(room_extract))
-				
-				# TODO: add metrics for scps
+					metric_defaults = update_wing_effect.call(metric_defaults, ROOM_UTIL.return_wing_effect(room_extract))
+					
+
 				if !room_extract.scp.is_empty():
-					update_wing_effect.call(floor_index, ring_index, SCP_UTIL.return_wing_effect(room_extract))
-					
-				# first extract this from the researcher...
+					metric_defaults = update_wing_effect.call(metric_defaults, SCP_UTIL.return_wing_effect(room_extract))
+									
 				for researcher in room_extract.researchers:
-					# ... add researcher effects to wing data
-					update_wing_effect.call(floor_index, ring_index, RESEARCHER_UTIL.return_wing_effect(researcher))	
+					metric_defaults = update_wing_effect.call(metric_defaults, RESEARCHER_UTIL.return_wing_effect(researcher))	
+			
+			# first, compile all the metrics from rooms, scps and researchers
+			new_room_config.floor[floor_index].ring[ring_index].metrics = metric_defaults
+			
+			var in_lockdown:bool = new_room_config.floor[floor_index].in_lockdown
+			if in_lockdown:
+					metric_defaults[RESOURCE.BASE_METRICS.READINESS] += 3
+					metric_defaults[RESOURCE.BASE_METRICS.MORALE] -= 3
+			else:
+				# then add any bonuses from the emergency states
+				var emergency_mode:int = new_room_config.floor[floor_index].ring[ring_index].emergency_mode
+				match emergency_mode:
+					ROOM.EMERGENCY_MODES.CAUTION:
+						metric_defaults[RESOURCE.BASE_METRICS.SAFETY] += 1
+						metric_defaults[RESOURCE.BASE_METRICS.READINESS] += 1
+						metric_defaults[RESOURCE.BASE_METRICS.MORALE] -= 2
+					ROOM.EMERGENCY_MODES.WARNING:
+						metric_defaults[RESOURCE.BASE_METRICS.SAFETY] += 3
+						metric_defaults[RESOURCE.BASE_METRICS.MORALE] -= 3
+					ROOM.EMERGENCY_MODES.DANGER:
+						metric_defaults[RESOURCE.BASE_METRICS.READINESS] += 3
+						metric_defaults[RESOURCE.BASE_METRICS.MORALE] -= 3
 					
-	SUBSCRIBE.room_config = room_config	
+		
+	SUBSCRIBE.room_config = new_room_config	
 # -----------------------------------
 
 # -----------------------------------
@@ -1037,17 +1072,19 @@ func calculate_daily_costs(costs:Array) -> void:
 			RESOURCE.TYPE.ENERGY:
 				var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, 0, capacity)
 				resources_data[cost.resource_ref].amount = new_val
-				base_states.status_effects.in_brownout = new_val == 0
-				# TRIGGER BROWNOUT
-				base_states.status_counts.brownout += 1
+				
+				# not enough power, enter brownout state
+				base_states.base.in_brownout = new_val == 0
+				base_states.count.in_brownout += 1
+				
 				if new_val == 0:
 					var props:Dictionary = {
-						"count": base_states.status_counts.brownout,
+						"count": base_states.count.in_brownout,
 						"onSelection": func(val:EVT.BROWNOUT_OPTIONS) -> void:
 							match val:
 								EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS:
 									resources_data[cost.resource_ref].amount = 50
-									base_states.status_effects.in_brownout = false
+									base_states.base.in_brownout = false
 								EVT.BROWNOUT_OPTIONS.DO_NOTHING:
 									pass
 									
@@ -1058,16 +1095,18 @@ func calculate_daily_costs(costs:Array) -> void:
 			RESOURCE.TYPE.MONEY:
 				var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, -50, capacity)
 				resources_data[cost.resource_ref].amount = new_val
-				base_states.status_effects.in_debt = new_val < 0
-				if new_val == -5 and base_states.status_counts.in_debt == 0:
+				
+				base_states.base.in_debt = new_val < 0
+				base_states.count.in_debt += 1
+				
+				if new_val < -5:
 					var props:Dictionary = {
-						"count": base_states.status_counts.in_debt,
+						"count": base_states.count.in_debt,
 						"onSelection": func(val:EVT.IN_DEBT_OPTIONS) -> void:
 							match val:
 								EVT.IN_DEBT_OPTIONS.EMERGENCY_FUNDS:
-									base_states.status_counts.in_debt += 1
 									resources_data[cost.resource_ref].amount = 20
-									base_states.status_effects.in_debt = false
+									base_states.base.in_debt = false
 								EVT.IN_DEBT_OPTIONS.DO_NOTHING:
 									pass
 									
@@ -1177,7 +1216,6 @@ func next_day() -> void:
 	
 	# update progress data
 	await update_progress_data()
-
 		
 	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
 	action_queue_data = action_queue_data.map(func(i): 
@@ -1242,27 +1280,6 @@ func next_day() -> void:
 
 # ------------------------------------------------------------------------------	
 #region GAMEPLAY FUNCS
-func set_floor_lockdown(from_location:Dictionary, state:bool) -> void:
-	var floor_index:int = from_location.floor
-	var designation:String = "%s" % [floor_index]	
-	var title:String = ("Initiate lockdown for floor %s?" if state else "Remove lockdown for floor %s?") % [current_location.floor] 
-	
-	ConfirmModal.set_text(title, "All actions will be frozen." if state else "All actions will resume.")
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var response:Dictionary = await ConfirmModal.user_response
-
-	match response.action:
-		ACTION.NEXT:
-			base_states.floor[designation].in_lockdown = state
-			#room_config.floor[current_location.floor].in_lockdown = state
-			SUBSCRIBE.base_states = base_states
-		ACTION.BACK:
-			pass
-
-	on_confirm_complete.emit()
-	await restore_default_state()
-# ---------------------
-
 # ---------------------
 func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
 	event_data = [EVENT_UTIL.run_event(event, props)]
@@ -1284,9 +1301,89 @@ func game_over() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-#region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
+#region ROOM ACTION QUEUE (assign/unassign/dismiss, etc)
+func set_floor_lockdown(from_location:Dictionary, state:bool) -> Dictionary:
+	var title:String
+	var subtitle:String
 
-						
+	title = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
+	subtitle = "All wings will have their actions frozen." if state else ""
+			
+	ConfirmModal.set_text(title, subtitle)
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var response:Dictionary = await ConfirmModal.user_response
+
+	match response.action:
+		ACTION.NEXT:			
+			base_states.floor[str(from_location.floor)].in_lockdown = state
+			SUBSCRIBE.base_states = base_states
+
+	#on_confirm_complete.emit()
+	await restore_default_state()
+	return {"has_changes": response.action == ACTION.NEXT}	
+# ---------------------
+
+# ------------------------------------------------------------------------------	
+func set_wing_emergency_mode(from_location:Dictionary, mode:ROOM.EMERGENCY_MODES) -> Dictionary:
+	var title:String
+	var subtitle:String
+	
+	match mode:
+		ROOM.EMERGENCY_MODES.DANGER:
+			title = "Set to DANGER?" % [current_location.floor] 
+			subtitle = "All actions (research, construction, etc) will be halted.  READINESS will be increased by 5, MORALE will be decreaed by 3."
+		ROOM.EMERGENCY_MODES.WARNING:
+			title = "Set to WARNING?" % [current_location.floor] 
+			subtitle = "All actions will take longer.  SAFETY will be increased by 5, MORALE will be decreaed by 3."			
+		ROOM.EMERGENCY_MODES.CAUTION:
+			title = "Set to CAUTION?" % [current_location.floor] 
+			subtitle = "SAFETY and READINESS will be increased by 1, MORALE will decrease by 1."						
+		ROOM.EMERGENCY_MODES.NORMAL:
+			title = "Set to NORMAL?" % [current_location.floor] 
+			subtitle = "Metrics will be returned to normal."
+
+			
+	ConfirmModal.set_text(title, subtitle)
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var response:Dictionary = await ConfirmModal.user_response
+	
+	match response.action:
+		ACTION.NEXT:			
+			var designation:String = "%s%s" % [from_location.floor, from_location.ring]
+			base_states.ring[designation].emergency_mode = mode
+			SUBSCRIBE.base_states = base_states
+#
+	#on_confirm_complete.emit()
+	await restore_default_state()	
+	return {"has_changes": response.action == ACTION.NEXT}	
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func activate_floor(from_location:Dictionary) -> Dictionary:
+	SUBSCRIBE.suppress_click = true
+
+	var activated_count:int = 0
+	for n in room_config.floor.size():
+		if base_states.floor[str(n)].is_powered:
+			activated_count += 1
+	var activation_cost:int = activated_count * 10
+	var can_purchase:bool = resources_data[RESOURCE.TYPE.ENERGY].amount >= activation_cost
+	
+	ConfirmModal.set_text("Activate this floor?", "It will require %s energy (you have %s available)." % [activation_cost, resources_data[RESOURCE.TYPE.ENERGY].amount])
+	if !can_purchase:
+		ConfirmModal.cancel_only = true
+	await show_only([ConfirmModal])	
+	var response:Dictionary = await ConfirmModal.user_response
+	
+	match response.action:		
+		ACTION.NEXT:
+			base_states.floor[str(from_location.floor)].is_powered = true
+			SUBSCRIBE.base_states = base_states
+			
+	restore_default_state()
+	return {"has_changes": response.action == ACTION.NEXT}	
+# ------------------------------------------------------------------------------
+		
 # ------------------------------------------------------------------------------	
 func construct_room(from_location:Dictionary) -> Dictionary:
 	SUBSCRIBE.suppress_click = true
@@ -1964,7 +2061,8 @@ func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers
 		"amount": hired_lead_researchers_arr.size() 
 	} 
 	SUBSCRIBE.resources_data = resources_data
-	set_room_config()
+	if setup_complete:
+		set_room_config()
 
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
@@ -1977,23 +2075,28 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 
 func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	base_states = new_val
-	set_room_config()
+	if setup_complete:
+		set_room_config()
 
 func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
 	purchased_facility_arr = new_val
-	set_room_config()
+	if setup_complete:
+		set_room_config()
 	
 func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 	purchased_base_arr = new_val	
-	set_room_config()
+	if setup_complete:
+		set_room_config()
 
 func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
 	action_queue_data = new_val	
-	set_room_config()
+	if setup_complete:
+		set_room_config()
 
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-	set_room_config()
+	if setup_complete:
+		set_room_config()
 
 #endregion
 # ------------------------------------------------------------------------------	
@@ -2094,6 +2197,11 @@ func on_show_end_of_phase_update() -> void:
 	if !is_node_ready():return
 	EndOfPhaseContainer.is_showing = show_end_of_phase
 	showing_states[EndOfPhaseContainer] = show_end_of_phase
+	
+func on_show_choices_update() -> void:
+	if !is_node_ready():return
+	ChoiceContainer.is_showing = show_choices
+	showing_states[ChoiceContainer] = show_choices
 
 func _on_container_rect_changed() -> void:	
 	if !is_node_ready():return

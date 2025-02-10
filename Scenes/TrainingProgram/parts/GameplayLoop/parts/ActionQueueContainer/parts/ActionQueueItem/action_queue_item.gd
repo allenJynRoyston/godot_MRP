@@ -1,4 +1,4 @@
-extends PanelContainer
+extends BtnBase
 
 @onready var HeaderLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2/HeaderLabel
 @onready var StatusLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer2/VBoxContainer/StatusLabel
@@ -8,8 +8,6 @@ extends PanelContainer
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var suppress_click:bool = false 
-var onClick:Callable = func():pass
-var onCancel:Callable = func():pass
 
 # --------------------------------------------------
 var item_data:Dictionary = {}
@@ -26,23 +24,18 @@ var requirements:Array = [] :
 
 # --------------------------------------------------
 func _init() -> void:
+	super._init()
 	SUBSCRIBE.subscribe_to_suppress_click(self)
 
 func _exit_tree() -> void:
+	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
 # --------------------------------------------------
 
 # --------------------------------------------------
 func _ready() -> void:
+	super._ready()
 	on_data_update()	
-	
-	#TitleBtn.onClick = func() -> void:
-		#if suppress_click: return
-		#onClick.call()
-	#
-	#CancelBtn.onClick = func() -> void:
-		#if suppress_click: return
-		#onCancel.call()
 # --------------------------------------------------
 
 # --------------------------------------------------
@@ -65,7 +58,14 @@ func on_data_update() -> void:
 	StatusLabel.text = title_btn.title
 	CountLabel.text = "%s" % [count.completed_at - count.day]
 	U.tween_node_property(ProgressBarUI, "value", (count.day*1.0 / count.completed_at*1.0), 0.3, 0.2)
-	
-	
+# --------------------------------------------------
 
-## --------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_focus(state:bool = is_focused) -> void:
+	super.on_focus(state)
+
+func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	super.on_mouse_click(node, btn, on_hover)
+	print('clicked!')
+# ------------------------------------------------------------------------------

@@ -236,7 +236,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"D":
 			match current_step:
 				STEPS.SELECT_FLOOR:
-					goto_floor()
+					current_location.ring = clampi(current_location.ring + 1, 0, 3)
 				STEPS.SELECT_ROOM:
 					room_right()
 				STEPS.SELECT_PLACEMENT:
@@ -245,6 +245,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			
 		"A":
 			match current_step:
+				STEPS.SELECT_FLOOR:
+					current_location.ring = clampi(current_location.ring - 1, 0, 3)				
 				STEPS.SELECT_ROOM:
 					room_left()
 				STEPS.SELECT_PLACEMENT:
@@ -318,6 +320,9 @@ func room_left() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func wait_for_floor_response() -> void:
+	Rendering.freeze_input = false
+	freeze_input = false			
+
 	var res:Dictionary = await Rendering.menu_response
 	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	freeze_input = true
@@ -327,27 +332,33 @@ func wait_for_floor_response() -> void:
 		# -------------------
 		ACTION.STRUCTURE.BACK:
 			Rendering.show_menu = false
+			Rendering.freeze_input = false
+			freeze_input = false
+			return
 		# -------------------
 		ACTION.STRUCTURE.GOTO_FLOOR:
 			current_step = STEPS.SELECT_ROOM
-		# -------------------
-		ACTION.STRUCTURE.OPEN_STORE:
-			GameplayNode.current_shop_step = GameplayNode.SHOP_STEPS.START_BASE
-			await GameplayNode.on_store_closed
-			Rendering.on_show_menu_update() # update menu if anything changed
-			wait_for_floor_response()  #  only add if you don't close the menu, otherwise will keep stacking responses
-		# -------------------
+			#Rendering.show_menu = false
+			Rendering.freeze_input = false
+			freeze_input = false			
+			return
+		# ------------------- 
 		ACTION.STRUCTURE.LOCKDOWN:
-			Rendering.show_menu = false
-			GameplayNode.set_floor_lockdown( current_location.duplicate(), !room_config.floor[current_location.floor].in_lockdown )
-			await GameplayNode.on_confirm_complete
+			var in_lockdown:bool = !(room_config.floor[current_location.floor].in_lockdown)
+			var response:Dictionary = await GameplayNode.set_floor_lockdown( current_location.duplicate(), in_lockdown )	
+			if response.has_changes:
+				Rendering.on_show_menu_update() # update menu if anything changed			
+
+			wait_for_floor_response()			
 		# ------------------- 
 		ACTION.STRUCTURE.ACTIVATE_FLOOR:
-			Rendering.show_menu = false
-			
-	Rendering.freeze_input = false
-	freeze_input = false
-	
+			var response:Dictionary = await GameplayNode.activate_floor( current_location.duplicate() )	
+			if response.has_changes:
+				Rendering.on_show_menu_update() # update menu if anything changed			
+
+			wait_for_floor_response()
+# --------------------------------------------------------------------------------------------------
+
 # --------------------------------------------------------------------------------------------------
 func wait_for_room_node_response() -> void:
 	var RoomNode:Control = Rendering.RoomNode
@@ -355,11 +366,9 @@ func wait_for_room_node_response() -> void:
 	RoomNode.is_active = true
 	freeze_input = true
 	
-	
 	var res:Dictionary = await RoomNode.menu_response
 	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	RoomNode.freeze_input = true
-	
 				
 	match res.action:
 		# -------------------
@@ -445,6 +454,12 @@ func wait_for_room_node_response() -> void:
 		ACTION.ROOM_NODE.STOP_TESTING:
 			await GameplayNode.set_scp_testing_state(current_location.duplicate(), false)
 			RoomNode.on_show_menu_update()
+		# -------------------			
+		ACTION.ROOM_NODE.SET_WING_MODE:
+			# no response here
+			var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), res.mode)
+			if response.has_changes:
+				RoomNode.on_show_menu_update() 		
 		# -------------------	
 		
 	wait_for_room_node_response()
@@ -480,8 +495,8 @@ func on_back() -> void:
 		STEPS.SELECT_FLOOR:
 			Rendering.show_menu = false
 			
-		STEPS.SELECT_ROOM:
-			current_step = STEPS.SELECT_FLOOR
+		#STEPS.SELECT_ROOM:
+			#current_step = STEPS.SELECT_FLOOR
 			
 		STEPS.SELECT_PLACEMENT:
 			user_response.emit({"action": ACTION.BACK})

@@ -76,9 +76,10 @@ func update_labels() -> void:
 
 # -----------------------------------------------
 func check_for_lockdown() -> void:
-	if current_location.is_empty() or room_config.is_empty():return	
-	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
-	IsLockDown.icon = SVGS.TYPE.LOCK if in_lockdown else SVGS.TYPE.NONE
-	IsLockDown.show() if in_lockdown else IsLockDown.hide()
+	pass
+	#if current_location.is_empty() or room_config.is_empty():return	
+	#var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
+	#IsLockDown.icon = SVGS.TYPE.LOCK if in_lockdown else SVGS.TYPE.NONE
+	#IsLockDown.show() if in_lockdown else IsLockDown.hide()
 
 # -----------------------------------------------

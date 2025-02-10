@@ -788,13 +788,13 @@ func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func extract_room_details(current_location:Dictionary) -> Dictionary:
+func extract_room_details(current_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
 	var designation:String = U.location_to_designation(current_location)
 	var floor:int = current_location.floor
 	var ring:int = current_location.ring
 	var room:int = current_location.room
 	
-	var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room]
+	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
 	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
 	var room_under_construction:bool  = !room_config_data.build_data.is_empty()
 	var has_room:bool = !room_config_data.room_data.is_empty()

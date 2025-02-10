@@ -1,13 +1,13 @@
 @tool
 extends PanelContainer
 
-@onready var TitleHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/TitleHeader
-@onready var TitleContent:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/TitleContent
-@onready var TitleContentBG:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/TitleContentBG
+@onready var TitleHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/TitleHeader
+@onready var TitleContent:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/TitleContent
 
 @onready var StatusHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer/StatusHeader
-@onready var StatusContent:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer/StatusContent
+@onready var StatusContent:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/StatusContent
 
+@onready var IconBtn:BtnBase = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/IconBtn
 @onready var ListContainer:VBoxContainer = $VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/List
 
 enum TYPE {SCP, ROOM, RESEARCHER}
@@ -35,6 +35,11 @@ const label_settings:LabelSettings = preload("res://Fonts/game/label_small.tres"
 	set(val):
 		items = val
 		on_items_update()		
+		
+@export var is_selected:bool = false : 
+	set(val):
+		is_selected = val
+		on_is_selected_updated()
 
 # ------------------------------
 func _ready() -> void:
@@ -42,16 +47,13 @@ func _ready() -> void:
 	on_items_update()
 	on_type_update()
 	on_status_update()	
+	on_is_selected_updated()
 # ------------------------------
-
 
 # ------------------------------	
 func on_header_update() -> void:
 	if !is_node_ready():return
-	TitleContent.visible_ratio = 0
 	TitleContent.text = header
-	TitleContentBG.text = header
-	#U.tween_node_property(TitleContent, "visible_ratio", 1, 0.3, 0.5, 4)
 # ------------------------------
 
 # ------------------------------
@@ -84,6 +86,12 @@ func on_type_update() -> void:
 			new_stylebox.bg_color = Color(1, 0.34, 0.307)
 			
 	add_theme_stylebox_override("panel", new_stylebox)
+# ------------------------------
+
+# ------------------------------
+func on_is_selected_updated() -> void:
+	if !is_node_ready():return	
+	IconBtn.hide() if !is_selected else IconBtn.show()
 # ------------------------------
 
 # ------------------------------

@@ -40,21 +40,21 @@ shader_parameter/thickness = 0.2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfbj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pywil"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gn42f"]
 bg_color = Color(1, 0.34, 0.307, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2fx34"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xcw27"]
 bg_color = Color(0, 0.529, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a5fkb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s7je8"]
 bg_color = Color(0.455, 0.002, 0.713, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -147,29 +147,32 @@ theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TopContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 15
 
 [node name="FloorPanel" type="HBoxContainer" parent="TopContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
 
 [node name="FloorMetric" parent="TopContainer/VBoxContainer/HBoxContainer/FloorPanel" instance=ExtResource("7_srt4y")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_horizontal = 1
 header = "FLOOR"
 value = 1
 status = "IS POWERED"
+context_value = -100
 
 [node name="WingMetric" parent="TopContainer/VBoxContainer/HBoxContainer/FloorPanel" instance=ExtResource("7_srt4y")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_horizontal = 1
 header = "WING"
 value = 1
 status = "IS POWERED"
+context_value = -100
 
 [node name="WingPanel" type="HBoxContainer" parent="TopContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="ResearcherContainer" type="VBoxContainer" parent="TopContainer/VBoxContainer/HBoxContainer/WingPanel"]
 layout_mode = 2
@@ -178,37 +181,40 @@ theme_override_constants/separation = 10
 [node name="MetricsResearcherA" parent="TopContainer/VBoxContainer/HBoxContainer/WingPanel/ResearcherContainer" instance=ExtResource("7_y31xb")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_pywil")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gn42f")
 type = 2
 
 [node name="MetricsRoom" parent="TopContainer/VBoxContainer/HBoxContainer/WingPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_2fx34")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xcw27")
 type = 1
 
 [node name="MetricsSCP" parent="TopContainer/VBoxContainer/HBoxContainer/WingPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_a5fkb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s7je8")
 
 [node name="MetricsPanel" type="HBoxContainer" parent="TopContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="Morale" parent="TopContainer/VBoxContainer/HBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 header = "MORALE"
 value = 1
+context_value = -100
 
 [node name="Safety" parent="TopContainer/VBoxContainer/HBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 header = "SAFETY"
+context_value = -100
 
 [node name="Readiness" parent="TopContainer/VBoxContainer/HBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 header = "READINESS"
+context_value = -100

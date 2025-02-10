@@ -62,17 +62,17 @@ grow = true
 material = SubResource("StandardMaterial3D_opsu7")
 size = Vector3(21, 5.5, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygf5b"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_l2d6o"]
-material = SubResource("StandardMaterial3D_ygf5b")
-
 [sub_resource type="FogMaterial" id="FogMaterial_0edq6"]
 density = 1.1734
 emission = Color(0.366596, 0.521587, 0.521014, 1)
 height_falloff = 96.3601
 edge_fade = 1.96982
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygf5b"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_l2d6o"]
+material = SubResource("StandardMaterial3D_ygf5b")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_10m8w"]
 viewport_path = NodePath("ControlSubViewport")
@@ -108,7 +108,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qwnfn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gya8e"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -489,7 +489,6 @@ width = 150.0
 
 [node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-visible = false
 pixel_size = 0.035
 shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
@@ -609,7 +608,6 @@ width = 150.0
 
 [node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-visible = false
 pixel_size = 0.035
 shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
@@ -639,7 +637,6 @@ width = 150.0
 
 [node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-visible = false
 pixel_size = 0.035
 shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
@@ -700,7 +697,6 @@ width = 150.0
 
 [node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-visible = false
 pixel_size = 0.035
 shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
@@ -802,16 +798,163 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 room_number = 3
 ref_index = 8
 
-[node name="Spotlights" type="Node3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(2.74465e-15, 2.18557e-08, -0.5, 0.5, -2.18557e-08, 1.78931e-15, -2.18557e-08, -0.5, -2.18557e-08, 7.06525, 4.20603, 15.0046)
+[node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
 visible = false
 
-[node name="Spotlight" type="MeshInstance3D" parent="SubViewport/RoomColumn/Spotlights"]
+[node name="Frontlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
+transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, -0.42984, 26.3554, -14.8911)
+light_volumetric_fog_energy = 0.02
+light_specular = 0.448
+shadow_enabled = true
+shadow_opacity = 0.37
+omni_range = 32.8872
+omni_attenuation = -1.05
+
+[node name="Backlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
+transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, 4.06079, 26.3554, 7.13662)
+light_volumetric_fog_energy = 0.02
+light_specular = 0.448
+shadow_enabled = true
+shadow_opacity = 0.37
+omni_range = 32.8872
+omni_attenuation = -1.05
+
+[node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/NormalLights"]
+transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
+size = Vector3(32.5796, 3, 39.2004)
+material = SubResource("FogMaterial_0edq6")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/NormalLights"]
+transform = Transform3D(0.690484, -0.714958, -0.10985, -0.430454, -0.528179, 0.73194, -0.581327, -0.458107, -0.672456, 0.107867, 14.8846, -7.84279)
+light_color = Color(0.996723, 1, 0.762783, 1)
+light_energy = 0.05
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.1
+shadow_enabled = true
+distance_fade_shadow = 0.0
+spot_range = 23.56
+spot_attenuation = -2.21
+spot_angle = 59.2
+spot_angle_attenuation = 1.23114
+
+[node name="CautionLights" type="Node3D" parent="SubViewport/RoomColumn"]
+visible = false
+
+[node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/CautionLights"]
+transform = Transform3D(-0.642395, -0.00704604, 0.766341, 0.00275932, 0.99993, 0.0115068, -0.766368, 0.00950655, -0.642331, 5.16973, -0.706925, 6.20134)
+size = Vector3(32.5796, 3, 39.2004)
+material = SubResource("FogMaterial_0edq6")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/CautionLights"]
+transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, 8.10712, 7.04194, 8.01598)
+light_color = Color(0.58416, 0.517015, 3.85046e-07, 1)
+light_energy = 0.769
+light_volumetric_fog_energy = 0.02
+light_specular = 0.448
+shadow_enabled = true
+shadow_opacity = 0.37
+omni_range = 27.206
+omni_attenuation = -1.607
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/RoomColumn/CautionLights"]
+transform = Transform3D(-0.752333, 0.0202338, -0.658472, -0.400038, 0.780113, 0.481033, 0.523416, 0.625311, -0.578811, -1.6585e-10, 2.34798, 2.45522)
+layers = 0
+light_energy = 2.917
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_transmittance_bias = -2.347
+shadow_opacity = 0.68
+sky_mode = 1
+
+[node name="WarningLights" type="Node3D" parent="SubViewport/RoomColumn"]
+visible = false
+
+[node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/WarningLights"]
+transform = Transform3D(-0.642395, -0.00704604, 0.766341, 0.00275932, 0.99993, 0.0115068, -0.766368, 0.00950655, -0.642331, 5.16973, -0.706925, 6.20134)
+size = Vector3(32.5796, 3, 39.2004)
+material = SubResource("FogMaterial_0edq6")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/WarningLights"]
+transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, 8.10712, 7.04194, 8.01598)
+light_color = Color(0.426196, 0, 0.148233, 1)
+light_energy = 1.668
+light_volumetric_fog_energy = 0.02
+light_specular = 0.448
+shadow_enabled = true
+shadow_opacity = 0.37
+omni_range = 27.206
+omni_attenuation = -1.607
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/RoomColumn/WarningLights"]
+transform = Transform3D(-0.752333, 0.0202338, -0.658472, -0.400038, 0.780113, 0.481033, 0.523416, 0.625311, -0.578811, -1.6585e-10, 2.34798, 2.45522)
+layers = 0
+light_energy = 2.917
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_transmittance_bias = -2.347
+shadow_opacity = 0.68
+sky_mode = 1
+
+[node name="DangerLights" type="Node3D" parent="SubViewport/RoomColumn"]
+transform = Transform3D(-0.999195, 0, -0.0401317, 0, 1, 0, 0.0401317, 0, -0.999195, 0, 0, 20)
+visible = false
+
+[node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/DangerLights"]
+transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
+size = Vector3(32.5796, 3, 39.2004)
+material = SubResource("FogMaterial_0edq6")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights"]
+transform = Transform3D(0.619779, -0.784776, -3.43037e-08, 0, -4.37114e-08, 1, -0.784776, -0.619779, -2.70914e-08, -10.493, 13.2612, 9.25635)
+light_color = Color(0.996723, 1, 0.762783, 1)
+light_energy = 0.01
+shadow_enabled = true
+spot_range = 21.641
+spot_attenuation = -2.06
+spot_angle = 43.0215
+spot_angle_attenuation = 1.6245
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights"]
+transform = Transform3D(0.619779, -0.784776, -3.43037e-08, 0, -4.37114e-08, 1, -0.784776, -0.619779, -2.70914e-08, 3.87041, 13.2612, 9.83325)
+light_color = Color(0.996723, 1, 0.762783, 1)
+light_energy = 0.01
+shadow_enabled = true
+spot_range = 21.641
+spot_attenuation = -2.06
+spot_angle = 43.0215
+spot_angle_attenuation = 1.6245
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights"]
+transform = Transform3D(0.619779, -0.784776, -3.43037e-08, 0, -4.37114e-08, 1, -0.784776, -0.619779, -2.70914e-08, -11.0747, 13.2612, 23.7387)
+light_color = Color(0.996723, 1, 0.762783, 1)
+light_energy = 0.01
+shadow_enabled = true
+spot_range = 21.641
+spot_attenuation = -2.06
+spot_angle = 43.0215
+spot_angle_attenuation = 1.6245
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights"]
+transform = Transform3D(0.619779, -0.784776, -3.43037e-08, 0, -4.37114e-08, 1, -0.784776, -0.619779, -2.70914e-08, 3.28874, 13.2612, 24.3156)
+light_color = Color(0.996723, 1, 0.762783, 1)
+light_energy = 0.01
+shadow_enabled = true
+spot_range = 21.641
+spot_attenuation = -2.06
+spot_angle = 43.0215
+spot_angle_attenuation = 1.6245
+
+[node name="Spotlights" type="Node3D" parent="SubViewport/RoomColumn/DangerLights"]
+transform = Transform3D(-8.77108e-10, -0.0200658, 0.499597, 0.5, -2.18557e-08, 1.78931e-15, 2.18381e-08, 0.499597, 0.0200658, -7.26003, 4.20603, 4.70783)
+
+[node name="Spotlight" type="MeshInstance3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights"]
 transform = Transform3D(7.10543e-15, 4.37114e-08, -1, 1, -4.37114e-08, 3.55271e-15, -4.37114e-08, -1, -4.37114e-08, 4.01911, 0.00659752, 1.11846)
 mesh = SubResource("CapsuleMesh_l2d6o")
 skeleton = NodePath("")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight"]
 transform = Transform3D(0.433594, 0.893817, 0.114397, 0.205567, 0.0254902, -0.978311, -0.877347, 0.447706, -0.172687, 0.948898, 0.0649261, 0.677778)
 light_color = Color(1, 0, 0, 1)
 light_energy = 4.231
@@ -819,7 +962,7 @@ shadow_enabled = true
 omni_range = 1.15
 omni_attenuation = 4.007
 
-[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight"]
+[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight"]
 transform = Transform3D(0.501368, 0.1048, -0.858864, 0.581953, -0.775407, 0.245103, -0.640282, -0.622705, -0.449753, 1.67747, 0, 0)
 layers = 31
 light_color = Color(1, 0, 0, 1)
@@ -834,12 +977,12 @@ spot_range = 27.741
 spot_attenuation = -3.4
 spot_angle = 22.86
 
-[node name="Spotlight2" type="MeshInstance3D" parent="SubViewport/RoomColumn/Spotlights"]
+[node name="Spotlight2" type="MeshInstance3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights"]
 transform = Transform3D(7.10543e-15, 4.37114e-08, -1, 1, -4.37114e-08, 3.55271e-15, -4.37114e-08, -1, -4.37114e-08, 4.01911, 0.00659752, 15.6689)
 mesh = SubResource("CapsuleMesh_l2d6o")
 skeleton = NodePath("")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight2"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight2"]
 transform = Transform3D(0.433594, 0.893817, 0.114397, 0.205567, 0.0254902, -0.978311, -0.877347, 0.447706, -0.172687, 0.948898, 0.0649261, 0.677778)
 light_color = Color(1, 0, 0, 1)
 light_energy = 4.231
@@ -847,7 +990,7 @@ shadow_enabled = true
 omni_range = 1.15
 omni_attenuation = 4.007
 
-[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight2"]
+[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight2"]
 transform = Transform3D(0.501368, 0.1048, -0.858864, 0.581953, -0.775407, 0.245103, -0.640282, -0.622705, -0.449753, 1.67747, 0.94552, 0)
 layers = 31
 light_color = Color(1, 0, 0, 1)
@@ -862,12 +1005,12 @@ spot_range = 27.741
 spot_attenuation = -3.4
 spot_angle = 22.86
 
-[node name="Spotlight3" type="MeshInstance3D" parent="SubViewport/RoomColumn/Spotlights"]
+[node name="Spotlight3" type="MeshInstance3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights"]
 transform = Transform3D(-4.43682e-08, 8.74179e-08, -1, -0.0150267, 0.999887, 8.80747e-08, 0.999887, 0.0150267, -4.30496e-08, 4.01911, 18.2766, -15.8343)
 mesh = SubResource("CapsuleMesh_l2d6o")
 skeleton = NodePath("")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight3"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight3"]
 transform = Transform3D(0.433594, 0.893817, 0.114397, 0.205567, 0.0254902, -0.978311, -0.877347, 0.447706, -0.172687, 0.948898, 0.0649261, 0.677778)
 light_color = Color(0.240415, 0.505801, 1, 1)
 light_energy = 4.231
@@ -875,7 +1018,7 @@ shadow_enabled = true
 omni_range = 1.15
 omni_attenuation = 4.007
 
-[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight3"]
+[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight3"]
 transform = Transform3D(0.501368, 0.1048, -0.858864, 0.581953, -0.775407, 0.245103, -0.640282, -0.622705, -0.449753, 1.67747, 0, 0)
 layers = 31
 light_color = Color(0.240415, 0.505801, 1, 1)
@@ -891,12 +1034,12 @@ spot_attenuation = -2.29
 spot_angle = 38.61
 spot_angle_attenuation = 0.466516
 
-[node name="Spotlight4" type="MeshInstance3D" parent="SubViewport/RoomColumn/Spotlights"]
+[node name="Spotlight4" type="MeshInstance3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights"]
 transform = Transform3D(-4.43682e-08, 8.74179e-08, -1, -0.0150267, 0.999887, 8.80747e-08, 0.999887, 0.0150267, -4.30496e-08, 4.01911, 34.194, -15.8343)
 mesh = SubResource("CapsuleMesh_l2d6o")
 skeleton = NodePath("")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight4"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight4"]
 transform = Transform3D(0.433594, 0.893817, 0.114397, 0.205567, 0.0254902, -0.978311, -0.877347, 0.447706, -0.172687, 0.948898, 0.0649261, 0.677778)
 light_color = Color(0.240415, 0.505801, 1, 1)
 light_energy = 4.231
@@ -904,7 +1047,7 @@ shadow_enabled = true
 omni_range = 1.15
 omni_attenuation = 4.007
 
-[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/Spotlights/Spotlight4"]
+[node name="Spotlight" type="SpotLight3D" parent="SubViewport/RoomColumn/DangerLights/Spotlights/Spotlight4"]
 transform = Transform3D(0.501368, 0.1048, -0.858864, 0.581953, -0.775407, 0.245103, -0.640282, -0.622705, -0.449753, 1.67747, 0, 0)
 layers = 31
 light_color = Color(0.240415, 0.505801, 1, 1)
@@ -968,74 +1111,6 @@ spot_range = 21.641
 spot_attenuation = -2.06
 spot_angle = 43.0215
 spot_angle_attenuation = 1.6245
-
-[node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
-
-[node name="Frontlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
-transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, -0.42984, 26.3554, -14.8911)
-light_volumetric_fog_energy = 0.02
-light_specular = 0.448
-shadow_enabled = true
-shadow_opacity = 0.37
-omni_range = 32.8872
-omni_attenuation = -1.05
-
-[node name="Backlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
-transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, 4.06079, 26.3554, 7.13662)
-light_volumetric_fog_energy = 0.02
-light_specular = 0.448
-shadow_enabled = true
-shadow_opacity = 0.37
-omni_range = 32.8872
-omni_attenuation = -1.05
-
-[node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/NormalLights"]
-transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
-size = Vector3(32.5796, 3, 39.2004)
-material = SubResource("FogMaterial_0edq6")
-
-[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/NormalLights"]
-transform = Transform3D(0.690484, -0.714958, -0.10985, -0.430454, -0.528179, 0.73194, -0.581327, -0.458107, -0.672456, 0.107867, 14.8846, -7.84279)
-light_color = Color(0.996723, 1, 0.762783, 1)
-light_energy = 0.05
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 0.1
-shadow_enabled = true
-distance_fade_shadow = 0.0
-spot_range = 23.56
-spot_attenuation = -2.21
-spot_angle = 59.2
-spot_angle_attenuation = 1.23114
-
-[node name="EmergencyLights" type="Node3D" parent="SubViewport/RoomColumn"]
-visible = false
-
-[node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/EmergencyLights"]
-transform = Transform3D(-0.642395, -0.00704604, 0.766341, 0.00275932, 0.99993, 0.0115068, -0.766368, 0.00950655, -0.642331, 5.16973, -0.706925, 6.20134)
-size = Vector3(32.5796, 3, 39.2004)
-material = SubResource("FogMaterial_0edq6")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/EmergencyLights"]
-transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, 8.10712, 7.04194, 8.01598)
-light_color = Color(0.426196, 0, 0.148233, 1)
-light_energy = 1.668
-light_volumetric_fog_energy = 0.02
-light_specular = 0.448
-shadow_enabled = true
-shadow_opacity = 0.37
-omni_range = 27.206
-omni_attenuation = -1.607
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/RoomColumn/EmergencyLights"]
-transform = Transform3D(-0.752333, 0.0202338, -0.658472, -0.400038, 0.780113, 0.481033, 0.523416, 0.625311, -0.578811, -1.6585e-10, 2.34798, 2.45522)
-layers = 0
-light_energy = 2.917
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 0.0
-shadow_enabled = true
-shadow_transmittance_bias = -2.347
-shadow_opacity = 0.68
-sky_mode = 1
 
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -17.995, 17.532, -18.216)
@@ -1205,7 +1280,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qwnfn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gya8e")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 
