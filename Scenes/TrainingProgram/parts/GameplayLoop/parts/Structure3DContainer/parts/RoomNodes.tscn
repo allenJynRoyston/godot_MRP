@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=28 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_batgf"]
@@ -74,6 +74,14 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_l2d6o"]
 material = SubResource("StandardMaterial3D_ygf5b")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wqj7c"]
+transparency = 1
+albedo_color = Color(0.137255, 0.137255, 0.137255, 0.917647)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_d0f4m"]
+material = SubResource("StandardMaterial3D_wqj7c")
+size = Vector2(50, 50)
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_10m8w"]
 viewport_path = NodePath("ControlSubViewport")
 
@@ -108,7 +116,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gya8e"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p8q3n"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -1120,6 +1128,11 @@ size = 24.0
 near = 0.002
 far = 508.7
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/RoomColumn/MainCamera"]
+transform = Transform3D(1, 0, 0, 0, -2.98023e-08, -1, 0, 1, -2.98023e-08, 0, 3.93685e-06, -65.0989)
+visible = false
+mesh = SubResource("PlaneMesh_d0f4m")
+
 [node name="CursorLabelSprite" type="Sprite3D" parent="SubViewport/RoomColumn/MainCamera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, -1)
 visible = false
@@ -1133,7 +1146,7 @@ texture_filter = 1
 texture = SubResource("ViewportTexture_10m8w")
 
 [node name="CursorMenuSprite" type="Sprite3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 7, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 7, -11.7579)
 gi_mode = 0
 pixel_size = 0.003
 double_sided = false
@@ -1280,7 +1293,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gya8e")
+theme_override_styles/panel = SubResource("StyleBoxFlat_p8q3n")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

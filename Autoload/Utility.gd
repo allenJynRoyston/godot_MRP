@@ -142,7 +142,6 @@ func dict_deep_copy(value):
 	var new_dict:Dictionary = {}
 	for key in value:
 		var assign:Callable = func():
-			print(value[key])
 			return value[key]
 		new_dict[key] = assign.call()
 		

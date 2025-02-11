@@ -794,6 +794,8 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var ring:int = current_location.ring
 	var room:int = current_location.room
 	
+	var floor_data:Dictionary = use_config.floor[floor]
+	var wing_data:Dictionary = use_config.floor[floor].ring[ring]
 	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
 	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
 	var room_under_construction:bool  = !room_config_data.build_data.is_empty()
@@ -812,20 +814,19 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var testing_details:Dictionary = {} if no_scp_data else room_config_data.scp_data.get_testing_details.call() if !is_transfer else {}
 	var is_testing:bool = !testing_details.is_empty()
 	var testing_ref:int =  -1 if !is_testing else testing_details.testing_ref
-	var is_accessing:bool = false if !is_testing else testing_details.testing_ref == -1
 	var testing_progress:int = -1 if !is_testing else testing_details.progress
 	
-	#print(room_config_data.scp_data)
-	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
-		var props:Dictionary = x[8]
-		if (props.assigned_to_room != null and U.location_to_designation(props.assigned_to_room) == designation):
+		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
+		if (details.props.assigned_to_room != null and U.location_to_designation(details.props.assigned_to_room) == designation):
 			return true
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
 	
 	return {
+		"floor": floor_data,
+		"wing": wing_data,
 		"room": {						
 			"details": room_details if !room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
 			"under_construction": room_under_construction,
@@ -838,7 +839,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 			"is_transfer": is_transfer,
 			"is_contained": is_contained,
 			"testing": {
-				"is_accessing": is_accessing,
+				"details": scp_details.testing_options[testing_ref],
 				"testing_ref": testing_ref,
 				"progress": testing_progress
 			} if is_testing else {}

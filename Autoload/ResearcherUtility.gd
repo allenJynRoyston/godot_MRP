@@ -190,7 +190,18 @@ func generate_researcher() -> Array:
 	count += 1
 
 		
-	return [ uid, lname, traits, specialization, rval, lval, 0, 10, {"assigned_to_room": null}]
+	return [ 
+		uid, 		 	# 0 UID
+		lname, 			# 1 LASTNAME
+		traits, 		# 2 TRAITS
+		specialization, # 3 SPECS
+		rval, 			# 4 RANDOM VALUE?
+		lval, 			# 5 RANDOM VALUE?
+		0, 				# 6	STRESS
+		0, 				# 7 EXP
+		1, 				# 8 LVL
+		{"assigned_to_room": null, "can_promote": false}	# 9
+	]
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
@@ -203,8 +214,10 @@ func get_user_object(val:Array) -> Dictionary:
 	var r_val:int = val[4]
 	var l_val:int = val[5]
 	var stress:int = val[6]
-	var sanity:int = val[7] 
-	var props:Dictionary = val[8]
+	var experience:int = val[7] 
+	var level:int = val[8]
+	var props:Dictionary = val[9]
+	
 	var img_src:String = "res://Media/images/example_doctor.jpg"
 	
 	var lname:String = get_lname(name_val)
@@ -226,7 +239,8 @@ func get_user_object(val:Array) -> Dictionary:
 		"r_val": r_val,
 		"l_val": l_val,
 		"stress": stress,
-		"sanity": sanity,
+		"experience": experience,
+		"level": level,
 		"props": props
 	}
 # ------------------------------------------------------------------------------
@@ -303,3 +317,18 @@ func get_details_from_extract(location:Dictionary) -> Dictionary:
 		"scp_ref": -1
 	}		
 # ------------------------------------------------------------------------------	
+
+func add_experience(uid:String, amount:int) -> void:
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+		if i[0] == uid:
+			i[7] += amount
+			if i[7] >= 10:
+				i[7] = i[7] - 10
+				i[8] += 1
+				i[9].can_promote = true
+			else:
+				i[9].can_promote = false
+		return i
+	)
+	
+	print(return_data_with_uid(uid))

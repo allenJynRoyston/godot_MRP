@@ -15,6 +15,8 @@ class_name GameContainer
 		freeze_inputs = val
 		on_freeze_inputs_update()
 		
+var GameplayNode:Control 
+
 var resources_data:Dictionary = {} 
 var purchased_facility_arr:Array = [] 
 var purchased_base_arr:Array = []
@@ -88,6 +90,7 @@ func _ready() -> void:
 		is_showing = true
 	on_freeze_inputs_update()
 	on_is_showing_update()
+	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP) 
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -41,8 +41,7 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------
 func on_next() -> void:
 	on_item = on_item + 1
-	if !has_more:
-		print("exit...")
+	if !has_more:		
 		user_response.emit()
 		return
 	update_display()
@@ -76,7 +75,6 @@ func update_display() -> void:
 			Activate.is_disabled = !can_activate
 			Activate.onClick = func() -> void:
 				if can_activate:
-					var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 					GameplayNode.activate_room(data.location, data.ref, true, false)
 					on_next()
 

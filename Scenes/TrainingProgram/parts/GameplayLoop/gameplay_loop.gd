@@ -44,6 +44,7 @@ enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
 enum SUMMARY_STEPS {RESET, START, DISMISS}
 enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
 enum EVENT_STEPS {RESET, START}
+enum SELECT_SCP_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
@@ -167,26 +168,26 @@ var initial_values:Dictionary = {
 	"scp_data": func() -> Dictionary:
 		return {
 			"available_list": [
-				{
-					"ref": SCP.TYPE.SCP_001, 
-					"days_until_expire": 99, 
-					"is_new": true,
-					"transfer_status": {
-						"state": false, 
-						"days_till_complete": -1,
-						"location": {}
-					}
-				},
-				{
-					"ref": SCP.TYPE.SCP_002, 
-					"days_until_expire": 99, 
-					"is_new": true,
-					"transfer_status": {
-						"state": false, 
-						"days_till_complete": -1,
-						"location": {}
-					}
-				}		
+				#{
+					#"ref": SCP.TYPE.SCP_001, 
+					#"days_until_expire": 99, 
+					#"is_new": true,
+					#"transfer_status": {
+						#"state": false, 
+						#"days_till_complete": -1,
+						#"location": {}
+					#}
+				#},
+				#{
+					#"ref": SCP.TYPE.SCP_002, 
+					#"days_until_expire": 99, 
+					#"is_new": true,
+					#"transfer_status": {
+						#"state": false, 
+						#"days_till_complete": -1,
+						#"location": {}
+					#}
+				#}		
 			],
 			"contained_list": [
 				#{ 
@@ -450,6 +451,11 @@ var current_summary_step:SUMMARY_STEPS = SUMMARY_STEPS.RESET :
 	set(val):
 		current_summary_step = val
 		on_current_summary_step_update()
+		
+var current_select_scp_step:SELECT_SCP_STEPS = SELECT_SCP_STEPS.RESET : 
+	set(val):
+		current_select_scp_step = val
+		on_current_select_scp_step_update()
 
 signal store_select_location
 signal on_complete_build_complete
@@ -465,6 +471,7 @@ signal on_activate_room_complete
 signal on_contain_scp_complete
 signal on_assign_researcher_complete
 signal on_scp_testing_complete
+signal on_scp_select_complete
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -953,7 +960,8 @@ func set_room_config(force_setup:bool = false) -> void:
 
 	SUBSCRIBE.under_construction_rooms = under_construction_rooms
 	SUBSCRIBE.built_rooms = built_rooms
-
+	SUBSCRIBE.room_config = new_room_config	
+	
 	update_metrics(new_room_config)
 # -----------------------------------
 
@@ -1050,8 +1058,19 @@ func check_events(ref:int, event_ref:SCP.EVENT_TYPE, skip_wait:bool = false) -> 
 func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> Dictionary:
 	var res:Dictionary = find_in_contained(ref)
 	var index:int = res.index
-	var list_data:Dictionary = res.data
-	var event:Dictionary = SCP_UTIL.check_for_testing_events(ref, testing_ref, get_data_snapshot, get_self_ref_callable(ref))
+	var list_data:Dictionary = res.data	
+	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(list_data.location)
+	
+	# add to testing count
+	if testing_ref not in list_data.testing_count:
+		list_data.testing_count[testing_ref] = 0 
+	list_data.testing_count[testing_ref] += 1
+	var test_count:int = list_data.testing_count[testing_ref]
+		#var res:Dictionary = find_in_contained(scp_ref)
+		#var event_name:String = "%s%s" % [type, event_id]
+		#return 0 if event_name not in res.data.event_type_count else res.data.event_type_count[event_name].count,		
+		
+	var event:Dictionary = SCP_UTIL.check_for_testing_events(ref, testing_ref, room_extract, test_count)
 	var event_arr:Array = []
 	if !event.event_instructions.is_empty():
 		event_data = [event]
@@ -1075,7 +1094,6 @@ func calculate_daily_costs(costs:Array) -> void:
 				
 				# not enough power, enter brownout state
 				base_states.base.in_brownout = new_val == 0
-				base_states.count.in_brownout += 1
 				
 				if new_val == 0:
 					var props:Dictionary = {
@@ -1083,7 +1101,7 @@ func calculate_daily_costs(costs:Array) -> void:
 						"onSelection": func(val:EVT.BROWNOUT_OPTIONS) -> void:
 							match val:
 								EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS:
-									resources_data[cost.resource_ref].amount = 50
+									resources_data[cost.redsource_ref].amount = 50
 									base_states.base.in_brownout = false
 								EVT.BROWNOUT_OPTIONS.DO_NOTHING:
 									pass
@@ -1095,10 +1113,8 @@ func calculate_daily_costs(costs:Array) -> void:
 			RESOURCE.TYPE.MONEY:
 				var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, -50, capacity)
 				resources_data[cost.resource_ref].amount = new_val
-				
 				base_states.base.in_debt = new_val < 0
-				base_states.count.in_debt += 1
-				
+
 				if new_val < -5:
 					var props:Dictionary = {
 						"count": base_states.count.in_debt,
@@ -1248,31 +1264,36 @@ func next_day() -> void:
 	
 	# CHECK FOR RANDOMIZED EVENTS
 	#var event_data_arr = []
-	for index in scp_data.contained_list.size():
-		var data:Dictionary = scp_data.contained_list[index]
-		var event_count:int = 0
-		var event_res:Dictionary = {}
-
-		if data.days_in_containment > 0:
-			# check for specific day event first...
-			event_res = await check_events(data.ref, SCP.EVENT_TYPE.DAY_SPECIFIC, true) 
-			if event_res.is_empty():event_count += 1
+	#for index in scp_data.contained_list.size():
+		#var data:Dictionary = scp_data.contained_list[index]
+		#var event_count:int = 0
+		#var event_res:Dictionary = {}
+#
+		#if data.days_in_containment > 0:
+			## check for specific day event first...
+			#event_res = await check_events(data.ref, SCP.EVENT_TYPE.DAY_SPECIFIC, true) 
+			#if event_res.is_empty():event_count += 1
+				#
+				## ... then check for testing events
+			#if !data.current_testing.is_empty():
+				#event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TESTING, true)	
+				#if event_res.is_empty():event_count += 1
+				#
+			## ... then check for transfer events
+			#if data.transfer_status.state:	
+				#event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TRANSFER, true)	
+				#if event_res.is_empty():event_count += 1
+				#
+			## ... then check for random events 
+			#if event_count == 0:
+				#await check_events(data.ref, SCP.EVENT_TYPE.RANDOM_EVENTS, true)
 				
-				# ... then check for testing events
-			if !data.current_testing.is_empty():
-				event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TESTING, true)	
-				if event_res.is_empty():event_count += 1
-				
-			# ... then check for transfer events
-			if data.transfer_status.state:	
-				event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TRANSFER, true)	
-				if event_res.is_empty():event_count += 1
-				
-			# ... then check for random events 
-			if event_count == 0:
-				await check_events(data.ref, SCP.EVENT_TYPE.RANDOM_EVENTS, true)
-				
-				
+	
+	
+	if progress_data.day == 2:
+		current_select_scp_step = SELECT_SCP_STEPS.START
+		await on_scp_select_complete
+	
 	processing_next_day = false
 # -----------------------------------
 #endregion
@@ -1475,7 +1496,7 @@ func on_completed_action(action_item:Dictionary) -> void:
 			var testing_ref:int = event_res.val			
 			update_scp_testing(action_item.ref, testing_ref)
 		# ----------------------------
-		# RUNS AFTER A TESTING EVENT HAS COMPLETED
+		# RUNS AFTER A TESTING EVENT HAS COMPLETEDperform_action
 		ACTION.AQ.TESTING:  
 			var scp_ref:int = action_item.ref 
 			var testing_ref:int = action_item.props.testing_ref
@@ -1485,19 +1506,18 @@ func on_completed_action(action_item:Dictionary) -> void:
 			
 			# refunds utilized amounts
 			SUBSCRIBE.resources_data = SCP_UTIL.calculate_refunded_utilizied(utilized_amounts, resources_data)
-			
+
 			# trigger post research event
 			await check_testing_events(scp_ref, testing_ref)
 			
 			# update reesearch completed
-			if action_item.ref not in scp_data.contained_list[index].research_completed:
+			if testing_ref not in scp_data.contained_list[index].research_completed:
 				scp_data.contained_list[index].research_completed.push_back(testing_ref)
-			SUBSCRIBE.scp_data = scp_data
+
+			# clear out testing data
+			scp_data.contained_list[index].current_testing = {}
 			
-			# continue testing
-			var event_res:Dictionary = await check_events(scp_ref, SCP.EVENT_TYPE.START_TESTING, true)
-			var new_testing_ref:int = event_res.val
-			update_scp_testing(scp_ref, new_testing_ref)			
+			SUBSCRIBE.scp_data = scp_data
 		# ----------------------------
 		ACTION.AQ.CONTAIN:
 			# first, remove from available list...
@@ -1615,6 +1635,9 @@ func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
 		"location": location,
 		"days_in_containment": 0,
 		"attached_researchers": [],
+		"testing_count": {
+			
+		},
 		"research_completed": [
 			#0, 1 [RESEARCH.ONE, RESEARCH.TWO, etc]
 		],
@@ -1806,41 +1829,44 @@ func set_scp_testing_state(from_location:Dictionary, is_testing:bool) -> void:
 # -----------------------------------	
 
 # -----------------------------------
-func start_scp_testing(ref:int) -> void:
-	# resets it in the available list
-	var res:Dictionary = find_in_contained(ref)
-	var index:int = res.index
-	var list_data:Dictionary = res.data
-	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-	
-	# not a confirmation modal - just a text one
-	ConfirmModal.confirm_only = true
-	ConfirmModal.set_text("Testing on %s has begun." % [scp_details.name])
-	await show_only([ConfirmModal])	
-	var response:Dictionary = await ConfirmModal.user_response	
-	
-	# add placeholder
-	scp_data.contained_list[index].current_testing = { 
-		"testing_ref": -1,
-		"progress": -1 
-	}	
-	
-	add_action_queue_item({
-		"action": ACTION.AQ.ACCESSING,
-		"ref": scp_details.ref,
-		"title_btn": {
-			"title": "ACCESSING",
-			"icon": SVGS.TYPE.CONTAIN,
-		},
-		"completed_at": 1,
-		"description": "Accessing %s." % [scp_details.name],
-		"location": list_data.location
-	})	
-	
-
-	
-	SUBSCRIBE.action_queue_data = action_queue_data
-	SUBSCRIBE.scp_data = scp_data
+func start_scp_testing(scp_ref:int) -> void:
+	var event_res:Dictionary = await check_events(scp_ref, SCP.EVENT_TYPE.START_TESTING, true)
+	var testing_ref:int = event_res.val			
+	update_scp_testing(scp_ref, testing_ref)
+	## resets it in the available list
+	#var res:Dictionary = find_in_contained(ref)
+	#var index:int = res.index
+	#var list_data:Dictionary = res.data
+	#var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+	#
+	## not a confirmation modal - just a text one
+	#ConfirmModal.confirm_only = true
+	#ConfirmModal.set_text("Testing on %s has begun." % [scp_details.name])
+	#await show_only([ConfirmModal])	
+	#var response:Dictionary = await ConfirmModal.user_response	
+	#
+	## add placeholder
+	#scp_data.contained_list[index].current_testing = { 
+		#"testing_ref": -1,
+		#"progress": -1 
+	#}	
+	#
+	#add_action_queue_item({
+		#"action": ACTION.AQ.ACCESSING,
+		#"ref": scp_details.ref,
+		#"title_btn": {
+			#"title": "ACCESSING",
+			#"icon": SVGS.TYPE.CONTAIN,
+		#},
+		#"completed_at": 1,
+		#"description": "Accessing %s." % [scp_details.name],
+		#"location": list_data.location
+	#})	
+	#
+#
+	#
+	#SUBSCRIBE.action_queue_data = action_queue_data
+	#SUBSCRIBE.scp_data = scp_data
 # -----------------------------------
 
 # -----------------------------------
@@ -1857,7 +1883,7 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 		# calculate resources data usage
 		SUBSCRIBE.resources_data = 	SCP_UTIL.calculate_testing_costs(scp_ref, testing_ref, resources_data)
 		
-		# else add research id and being progressZ
+		# else add research id and being progress
 		scp_data.contained_list[index].current_testing = { 
 			"testing_ref": testing_ref,
 			"progress": 0 
@@ -1870,7 +1896,7 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 				"title": "TESTING",
 				"icon": SVGS.TYPE.RESEARCH,
 			},
-			"completed_at": 7,
+			"completed_at": 1,
 			"description": "Testing %s." % [scp_details.name],
 			"location": list_data.location,
 		}, {
@@ -1973,7 +1999,7 @@ func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) ->
 		ACTION.NEXT:	
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 				if i[0] == researcher_data.uid:
-					i[8].assigned_to_room = null
+					i[9].assigned_to_room = null
 				return i
 			)
 
@@ -1990,7 +2016,7 @@ func assign_researcher(location_data:Dictionary) -> Dictionary:
 		ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 				if i[0] == response.data.details.uid:
-					i[8].assigned_to_room = location_data
+					i[9].assigned_to_room = location_data
 				return i
 			)
 			
@@ -2755,6 +2781,41 @@ func on_current_summary_step_update() -> void:
 			
 #endregion
 # ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------	
+func on_current_select_scp_step_update() -> void:
+	if !is_node_ready():return
+
+	match current_select_scp_step:
+		SELECT_SCP_STEPS.RESET:
+			SUBSCRIBE.suppress_click = false
+			await restore_default_state()
+		SELECT_SCP_STEPS.START:
+			SUBSCRIBE.suppress_click = true
+			await show_only([ChoiceContainer])
+			ChoiceContainer.start([0, 0, 0])
+			var res:Dictionary = await ChoiceContainer.user_response
+			
+			scp_data.available_list.push_back({
+				"ref": res.ref, 
+				"days_until_expire": 14, 
+				"is_new": true,
+				"transfer_status": {
+					"state": false, 
+					"days_till_complete": -1,
+					"location": {}
+				}
+			})
+			SUBSCRIBE.scp_data = scp_data
+			
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			current_select_scp_step = SELECT_SCP_STEPS.RESET
+			await U.set_timeout(0.5)
+			
+			
+			# trigger signal
+			on_scp_select_complete.emit()
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------		
 #region RESEARCHER STEPS

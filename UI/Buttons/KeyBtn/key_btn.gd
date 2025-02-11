@@ -4,6 +4,7 @@ extends BtnBase
 @onready var RootPanel:PanelContainer = $"."
 @onready var IconBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/IconBtn
 @onready var IndicatorBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/NewIndicatorBtn
+
 @onready var TitleHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/TitleHeader
 @onready var KeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/KeyLabel
 
@@ -65,17 +66,14 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func update_color(new_color:Color) -> void:
 	if !is_node_ready():return
-	#IconBtnLeft.static_color = new_color
-	#IconBtnRight.static_color = new_color
-	#BtnLabel.modulate = new_color
-		
-func on_focus(state:bool = is_focused) -> void:
-	super.on_focus(state)
-	#if is_node_ready():
-		#update_color(active_color if state else inactive_color)
 
+func on_focus(state:bool = is_focused) -> void:
+	if !is_disabled:
+		super.on_focus(state)
+	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	super.on_mouse_click(node, btn, on_hover)
+	if !is_disabled:
+		super.on_mouse_click(node, btn, on_hover)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

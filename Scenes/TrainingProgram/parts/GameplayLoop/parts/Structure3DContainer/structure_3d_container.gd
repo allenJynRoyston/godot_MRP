@@ -205,8 +205,6 @@ func on_current_step_update() -> void:
 
 # -----------------------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:		
-	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
-	
 	if !is_visible_in_tree() or current_location.is_empty() or (GameplayNode.is_occupied() and current_step != STEPS.SELECT_PLACEMENT) or freeze_input: # GBL.has_animation_in_queue()
 		return
 		
@@ -324,7 +322,6 @@ func wait_for_floor_response() -> void:
 	freeze_input = false			
 
 	var res:Dictionary = await Rendering.menu_response
-	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	freeze_input = true
 	Rendering.freeze_input = true
 				
@@ -367,7 +364,6 @@ func wait_for_room_node_response() -> void:
 	freeze_input = true
 	
 	var res:Dictionary = await RoomNode.menu_response
-	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	RoomNode.freeze_input = true
 				
 	match res.action:

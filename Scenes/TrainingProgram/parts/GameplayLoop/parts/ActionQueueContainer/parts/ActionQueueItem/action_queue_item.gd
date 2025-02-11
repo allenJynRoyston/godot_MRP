@@ -67,5 +67,4 @@ func on_focus(state:bool = is_focused) -> void:
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	super.on_mouse_click(node, btn, on_hover)
-	print('clicked!')
 # ------------------------------------------------------------------------------

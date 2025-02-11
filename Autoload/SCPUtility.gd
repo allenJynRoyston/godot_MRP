@@ -72,12 +72,13 @@ var SCP_001:Dictionary = {
 	"testing_options": {
 		# -------------------------
 		SCP.TESTING.ONE: {
-			"title": "Research one",
+			"name": "Research one",
+			"description": "",
 			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
 				return {
 					"traits": [],
-					"specializations": [RESEARCHER.SPECALIZATION.ENGINEERING]
+					"specializations": []
 				},
 			"requirements": {
 				"resources": {
@@ -91,27 +92,53 @@ var SCP_001:Dictionary = {
 						},
 				}
 			},	
-			"add_to": {
-				"testing_log": func(self_ref:Dictionary) -> Array: 
-					return [
-						"" % [self_ref.name]
-					],
-				"description": func(self_ref:Dictionary) -> Array:
-					return [
-						"%s research one description added." % [self_ref.name]
-					],
-			},				
-			# -------------------------
+			"event_instructions": func(room_extract:Dictionary, count:int) -> Array:
+				var scp_details:Dictionary = room_extract.scp.details
+				var is_success:bool = true
+				
+				var option_selected:Dictionary = {"val": null}
+				var onSelected = func(val:int) -> void:
+					option_selected.val = val
+				
+				
+				var options:Array = [{
+					"completed": false,
+					"title": "Resolve (success).",
+					"val": -1,
+					"onSelected": onSelected			
+				}] if is_success else [{
+					"completed": false,
+					"title": "Resolve (fail).",
+					"val": -1,
+					"onSelected": onSelected			
+				}]
+				
+				
+					
+				return [
+					func() -> Dictionary:
+						return {
+							"header": "%s: RESEARCH ONE COMPLETE" % [scp_details.name],
+							"img_src": scp_details.img_src,
+							"text": [
+								"THIS IS A SUCCESS STATE"
+							] if is_success else [
+								"THIS IS A FAIL STATE"
+							],
+							"options": options
+						},	
+				],
 		},
 		# -------------------------
 		
 		# -------------------------
 		SCP.TESTING.TWO: {
-			"title": "Research two",
+			"name": "Research two",
+			"description": "",
 			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
 				return {
-					"traits": [RESEARCHER.TRAITS.MOTIVATED],
+					"traits": [],
 					"specializations": []
 				},
 			"requirements": {
@@ -126,17 +153,59 @@ var SCP_001:Dictionary = {
 						},
 				}
 			},
+			"event_instructions": func(room_extract:Dictionary, count:int) -> Array:
+				var scp_details:Dictionary = room_extract.scp.details
+				var researchers:Array = room_extract.researchers
+				var testing_details:Dictionary = room_extract.scp.testing
+				var is_success:bool = true
+				print(room_extract.wing.metrics)
+			
+				var option_selected:Dictionary = {"val": null}
+				var onSelected = func(val:int) -> void:
+					option_selected.val = val
+					
+				for researcher in researchers:
+					RESEARCHER_UTIL.add_experience(researcher.uid, 5)
+				
+				
+				var options:Array = [{
+					"completed": false,
+					"title": "Resolve (success).",
+					"val": -1,
+					"onSelected": onSelected			
+				}] if is_success else [{
+					"completed": false,
+					"title": "Resolve (fail).",
+					"val": -1,
+					"onSelected": onSelected			
+				}]
+				
+
+				return [
+					func() -> Dictionary:
+						return {
+							"header": "%s: RESEARCH ONE COMPLETE" % [scp_details.name],
+							"img_src": scp_details.img_src,
+							"text": [
+								"THIS IS A SUCCESS STATE"
+							] if is_success else [
+								"THIS IS A FAIL STATE"
+							],
+							"options": options
+						},	
+				],
 			# -------------------------
 		},
 		# -------------------------
 		
 		# -------------------------
 		SCP.TESTING.THREE: {
-			"title": "Research three",
+			"name": "Research three",
+			"description": "",
 			"repeatable": true,
 			"prerequisites": func() -> Dictionary:
 				return {
-					"traits": [RESEARCHER.TRAITS.DILIGENT],
+					"traits": [],
 					"specializations": []
 				},
 			"requirements": {
@@ -151,6 +220,42 @@ var SCP_001:Dictionary = {
 						},						
 				}
 			},
+			"event_instructions": func(room_extract:Dictionary, count:int) -> Array:
+				var scp_details:Dictionary = room_extract.scp.details
+				var is_success:bool = true
+				
+				var option_selected:Dictionary = {"val": null}
+				var onSelected = func(val:int) -> void:
+					option_selected.val = val
+				
+				
+				var options:Array = [{
+					"completed": false,
+					"title": "Resolve (success).",
+					"val": -1,
+					"onSelected": onSelected			
+				}] if is_success else [{
+					"completed": false,
+					"title": "Resolve (fail).",
+					"val": -1,
+					"onSelected": onSelected			
+				}]
+				
+				
+					
+				return [
+					func() -> Dictionary:
+						return {
+							"header": "%s: RESEARCH ONE COMPLETE" % [scp_details.name],
+							"img_src": scp_details.img_src,
+							"text": [
+								"THIS IS A SUCCESS STATE"
+							] if is_success else [
+								"THIS IS A FAIL STATE"
+							],
+							"options": options
+						},	
+				],
 			# -------------------------
 		}
 		# -------------------------
@@ -158,107 +263,28 @@ var SCP_001:Dictionary = {
 	},
 	# -----------------------------------	
 	
-	# -----------------------------------	
-	"unlockables": {
-		SCP.UNLOCKABLE.ONE: {
-			"add_to": {
-				"containment_procedures": func(self_ref:Dictionary) -> Array: 
-					return [
-						"ADDENUMDUM:",
-						"Containment of %s requires the use of 2 guards stationed outside the door." % [self_ref.name]
-					],
-				"description": func(self_ref:Dictionary) -> Array:
-					return [
-						"%s should show up now that I've been added." % [self_ref.name]
-					],
-			},
-			
-			"event_text": func(self_ref:Dictionary) -> Array:
-				return [
-					"You ignore the knocking."
-				],
-		}
-	},
-	# -----------------------------------
-	
-	# -----------------------------------
-	"testing_events": {
-		# -------------------------
-		SCP.TESTING.ONE: [
-			{
-				"trigger_check": func(_dict:Dictionary) -> Array:
-					var details:Dictionary = _dict.details
-					var list_details:Dictionary = _dict.list_details
-					var research_completed:Array = list_details.data.research_completed
-					var option_selected:Dictionary = {"val": null}
-					var onSelected = func(val) -> void:
-						option_selected.val = val
-						
-					return [
-						func() -> Dictionary:
-							return {
-								"header": "%s: RESEARCH ONE COMPLETE" % [details.name],
-								"img_src": details.img_src,
-								"text": [
-									"After many failed attempts to forciably open the door, you have a slight success."
-								]
-							},	
-					],
-			}
-		],
-		# -------------------------
-		
-		# -------------------------
-		SCP.TESTING.TWO: [
-			{
-				"trigger_check": func(_dict:Dictionary) -> Array:
-					var details:Dictionary = _dict.details
-					var list_details:Dictionary = _dict.list_details
-					var research_completed:Array = list_details.data.research_completed
-					var option_selected:Dictionary = {"val": null}
-					var onSelected = func(val) -> void:
-						option_selected.val = val
-						
-					return [
-						func() -> Dictionary:
-							return {
-								"header": "%s: RESEARCH TWO COMPLETE" % [details.name],
-								"img_src": details.img_src,
-								"text": [
-									"SOMETHING SOMETHIGN SOMETHING"
-								]
-							},	
-					],
-			}
-		],
-		# -------------------------
-		
-		# -------------------------
-		SCP.TESTING.THREE: [
-			{
-				"trigger_check": func(_dict:Dictionary) -> Array:
-					var details:Dictionary = _dict.details
-					var list_details:Dictionary = _dict.list_details
-					var research_completed:Array = list_details.data.research_completed
-					var option_selected:Dictionary = {"val": null}
-					var onSelected = func(val) -> void:
-						option_selected.val = val
-						
-					return [
-						func() -> Dictionary:
-							return {
-								"header": "%s: RESEARCH THREE COMPLETE" % [details.name],
-								"img_src": details.img_src,
-								"text": [
-									"SOMETHING SOMETHIGN SOMETHING"
-								]
-							},	
-					],
-			}
-		],
-		# -------------------------		
-	},
-	# -----------------------------------
+	## -----------------------------------	
+	#"unlockables": {
+		#SCP.UNLOCKABLE.ONE: {
+			#"add_to": {
+				#"containment_procedures": func(self_ref:Dictionary) -> Array: 
+					#return [
+						#"ADDENUMDUM:",
+						#"Containment of %s requires the use of 2 guards stationed outside the door." % [self_ref.name]
+					#],
+				#"description": func(self_ref:Dictionary) -> Array:
+					#return [
+						#"%s should show up now that I've been added." % [self_ref.name]
+					#],
+			#},
+			#
+			#"event_text": func(self_ref:Dictionary) -> Array:
+				#return [
+					#"You ignore the knocking."
+				#],
+		#}
+	#},
+	## -----------------------------------
 	
 	# -----------------------------------
 	"events": {
@@ -331,7 +357,6 @@ var SCP_001:Dictionary = {
 			}
 		],
 		# -------------------------
-
 		
 		# -------------------------
 		SCP.EVENT_TYPE.DURING_TESTING: [
@@ -830,8 +855,8 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Call
 			"details": scp_details, 
 			"list_details": scp_contained_details,
 			"count":  event_trigger_count,
-			"progress_data": get_self_ref.call().progress_data.call(),
-			"resources_data": get_self_ref.call().resources_data.call(),
+			"progress_data": progress_data,
+			"resources_data": resources_data,
 			"researcher_details": get_self_ref.call().researcher_details.call(),
 			# ------- functions
 			"perform_action": perform_action,
@@ -875,33 +900,15 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Call
 # ------------------------------------------------------------------------------	
 	
 # ------------------------------------------------------------------------------	
-func check_for_testing_events(ref:int, testing_ref:SCP.TESTING, get_data_snapshot:Callable, get_self_ref:Callable) -> Dictionary:
+func check_for_testing_events(ref:int, testing_ref:SCP.TESTING, room_extract:Dictionary, test_count:int) -> Dictionary:
 	var data:Dictionary = return_data(ref)
 	var event_arr:Array = []
 	var event_instructions:Array = []
 	
-	if "testing_events" in data and testing_ref in data.testing_events:
-		var events:Array = data.testing_events[testing_ref]
-		for index in events.size():
-			var event:Dictionary = events[index]
-			event_arr.push_back(event) 
-	
-	if event_arr.size() > 0:
-		var scp_details:Dictionary = get_self_ref.call().details
-		var scp_contained_details:Dictionary = get_self_ref.call().contained_list_details.call()
-		var perform_action:Callable = get_self_ref.call().perform_action
-		var combined_dict:Dictionary = {
-			"details": scp_details, 
-			"list_details": scp_contained_details,
-			"count":  0,
-			"resources_data": get_self_ref.call().resources_data.call(),
-			"researcher_details": get_self_ref.call().researcher_details.call(),
-			# ------- functions
-			"perform_action": perform_action,
-			"get_self_ref": get_self_ref,
-			"get_data_snapshot": get_data_snapshot
-		}
-		event_instructions = event_arr[0].trigger_check.call(combined_dict)
+	if "testing_options" in data and testing_ref in data.testing_options:		
+		if "event_instructions" in data.testing_options[testing_ref]:
+			event_instructions = data.testing_options[testing_ref].event_instructions.call(room_extract, test_count)
+
 
 	return {
 		"event_instructions": event_instructions
@@ -1014,7 +1021,6 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 		
 		var missing_resources:Array = []
 		
-	
 		for key in required_resources_amount:
 			var amount:int = required_resources_amount[key]
 			var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
@@ -1053,7 +1059,7 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 				lock_str += " [SPECIALIZATION - %s]" % [data.fullname]
 		
 		if missing_resources.size() > 0 and (!is_missing_traits and !is_missing_specilization) :
-			lock_str = "%s [NOT ENOUGH RESOURCES]" % [option.title]
+			lock_str = "%s [NOT ENOUGH RESOURCES]" % [option.name]
 	
 		if !completed or (completed and repeatable):
 			options.push_back({
@@ -1061,7 +1067,7 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 				"repeatable": repeatable,
 				"locked": locked,
 				"notes": [required_notes, utilized_notes],
-				"title": "%s%s" % ["%s- " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.title] if !locked else "%s" % [lock_str], 
+				"title": "%s%s" % ["%s " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.name] if !locked else "%s" % [lock_str], 
 				"description": "",
 				"val": testing_ref,
 				"onSelected": onSelected			
@@ -1069,28 +1075,11 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 
 	options.push_back({
 		"completed": false,
-		"title": "End testing for now.",
+		"title": "I've changed my mind.",
 		"val": -1,
 		"onSelected": onSelected			
 	})
 	
-	options.push_back({
-		"completed": false,
-		"title": "PERMANENTLY CONTAIN",
-		"locked": true,
-		"notes": [
-			{
-				"header": "Prerequisites",
-				"list": [{
-					"is_checked": false,
-					"icon": SVGS.TYPE.CONTAIN, 
-					"text": "At least 3 testing scenarios must be completed successful."
-				}]
-			}					
-		],
-		"val": 100,
-		"onSelected": onSelected			
-	})	
 				
 	return options
 # ------------------------------------------------------------------------------

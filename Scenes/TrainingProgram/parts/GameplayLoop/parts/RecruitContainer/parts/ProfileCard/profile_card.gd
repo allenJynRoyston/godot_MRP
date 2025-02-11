@@ -75,7 +75,7 @@ func on_data_update() -> void:
 	
 	NameLabel.text = data.name
 	VitalsPanel.stress = data.stress
-	VitalsPanel.sanity = data.sanity
+	#VitalsPanel.sanity = data.sanity
 	
 	for key in data.specializations:
 		var btn_node:BtnBase = TextBtnPreload.instantiate()

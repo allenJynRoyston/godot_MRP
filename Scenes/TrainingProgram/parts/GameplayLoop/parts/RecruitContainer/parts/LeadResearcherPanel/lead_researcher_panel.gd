@@ -74,7 +74,7 @@ func on_allow_recruitment_update() -> void:
 func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> void:
 	if !is_node_ready():return
 	researcher_hire_list = new_val
-
+	
 	var recruit_data = []
 	for researcher in researcher_hire_list:
 		recruit_data.push_back(RESEARCHER_UTIL.get_user_object(researcher))

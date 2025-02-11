@@ -169,14 +169,14 @@ func update_boards() -> void:
 						var left_label_3d:Label3D = LeftBoardRoomLabels.find_child(str(ref_index))
 						var left_status_label:Label3D = left_label_3d.get_child(0)
 						for text_node in [left_label_3d, left_status_label]:
-							text_node.modulate = Color(0.984, 0.439, 0.184) if room_extract.room.is_empty() else Color(0.525, 1, 0.443, 1)
+							text_node.modulate = Color(0.984, 0.439, 0.184) if (room_extract.room.is_empty() or !room_extract.room.is_activated) else Color(0.525, 1, 0.443, 1)
 						left_label_3d.text = "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.room.is_empty() else room_extract.room.details.shortname]
 						left_status_label.text = ""
 						if !room_extract.room.is_empty():
 							if room_extract.room.under_construction:
 								left_status_label.text = "UNDER CONSTRUCTION"
 							else:
-								left_status_label.text = "" if room_extract.room.is_activated else "NOT POWERED"
+								left_status_label.text = "NO ISSUES" if room_extract.room.is_activated else "NOT POWERED"
 				
 						# ----------------------------------------
 						var right_label_3d:Label3D = RightBoardRoomLabels.find_child(str(ref_index))
@@ -188,7 +188,7 @@ func update_boards() -> void:
 						if !room_extract.scp.is_empty():							
 							if room_extract.scp.is_transfer:
 								right_status_label.text = "TRANSFERING"
-							right_status_label.text = "CONTAINED" if !room_extract.scp.testing.is_empty() else "TESTING..."	
+							right_status_label.text = "CONTAINED" #if !room_extract.scp.testing.is_empty() else "TESTING..."	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -608,16 +608,16 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"A":			
 			if current_menu_type > 0:
 				GBL.add_to_animation_queue(self)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 90, 0.2)
 				current_menu_type = U.min_max(current_menu_type - 1, 0, 3)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
-			GBL.remove_from_animation_queue(self)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0, 0.2)
+				GBL.remove_from_animation_queue(self)
 		"D":
 			if current_menu_type < 3:
 				GBL.add_to_animation_queue(self)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 90, 0.2)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 90, 0.2)
 				current_menu_type = U.min_max(current_menu_type + 1, 0, 3)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0, 0.2)
+				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0, 0.2)
 				GBL.remove_from_animation_queue(self)
 			
 		"W":

@@ -156,7 +156,8 @@ func update_details_panel() -> void:
 			status_label = "TRANSFERING"
 		
 		if !room_extract.scp.testing.is_empty():
-			status_label = "ACCESSING" if room_extract.scp.testing.is_accessing else "TESTING"
+			status_label = "TESTING"
+			
 		MetricsSCP.status = "KETER" #status_label
 		
 		var effects_list:Array = SCP_UTIL.return_wing_effects_list(room_extract)

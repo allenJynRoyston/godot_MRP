@@ -37,7 +37,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_w8kjt")
 script = ExtResource("1_wktvj")
-freeze_inputs = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
 visible = false
