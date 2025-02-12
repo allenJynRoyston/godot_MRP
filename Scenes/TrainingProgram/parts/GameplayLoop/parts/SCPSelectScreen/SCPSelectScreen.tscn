@@ -1,29 +1,29 @@
 [gd_scene load_steps=11 format=3 uid="uid://cwowqrsr48d6k"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ChoiceContainer/choice_container.gd" id="1_p5732"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_ct7ak"]
-[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_6yuqa"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_8jxnt"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.gd" id="1_6xgsa"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_edo2j"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_pufuq"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_lyjb2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7xi8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_el5st"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wkyl5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2nal"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rty3f"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8k77v"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lpbav"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jhgd5"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -32,14 +32,14 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pwxwe"]
 
-[node name="ChoiceContainer" type="PanelContainer"]
+[node name="SCPSelectScreen" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_y7xi8")
-script = ExtResource("1_p5732")
+script = ExtResource("1_6xgsa")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 2
@@ -48,7 +48,7 @@ color = Color(0.035962, 0.143211, 0.126395, 0.72549)
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
 
-[node name="SelectIcon" parent="Control" instance=ExtResource("2_ct7ak")]
+[node name="SelectIcon" parent="Control" instance=ExtResource("2_edo2j")]
 visible = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 0
@@ -60,6 +60,7 @@ icon = 50
 is_hoverable = false
 
 [node name="BtnContainer" type="PanelContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
@@ -76,34 +77,34 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="BackBtn" parent="BtnContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_6yuqa")]
+[node name="BackBtn" parent="BtnContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_pufuq")]
 custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_wkyl5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_x2nal")
 title = "BACK"
 assigned_key = "R"
 icon = 16
 panel_color = Color(0, 0.529412, 0.278431, 1)
 
-[node name="Details" parent="BtnContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_6yuqa")]
+[node name="Details" parent="BtnContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_pufuq")]
 custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_rty3f")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8k77v")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 28
 panel_color = Color(0, 0.529412, 0.278431, 1)
 
-[node name="SelectBtn" parent="BtnContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_6yuqa")]
+[node name="SelectBtn" parent="BtnContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_pufuq")]
 custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_lpbav")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jhgd5")
 title = "SELECT"
 assigned_key = "E"
 icon = 28
@@ -129,7 +130,7 @@ theme_override_constants/separation = 25
 [node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "SELECT ONE"
-label_settings = ExtResource("4_8jxnt")
+label_settings = ExtResource("4_lyjb2")
 horizontal_alignment = 1
 
 [node name="List" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]

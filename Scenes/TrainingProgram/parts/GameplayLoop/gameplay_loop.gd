@@ -18,11 +18,13 @@ extends PanelContainer
 @onready var MetricsContainer:MarginContainer = $MetricsContainer
 @onready var BackContainer:MarginContainer = $BackContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
-@onready var ChoiceContainer:PanelContainer = $ChoiceContainer
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
 @onready var SetupContainer:PanelContainer = $SetupContainer
+
+const SCPSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
+const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
 
 enum SHOP_STEPS {
 	RESET, 
@@ -45,6 +47,7 @@ enum SUMMARY_STEPS {RESET, START, DISMISS}
 enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
 enum EVENT_STEPS {RESET, START}
 enum SELECT_SCP_STEPS { RESET, START }
+enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
@@ -146,10 +149,10 @@ enum SELECT_SCP_STEPS { RESET, START }
 		show_end_of_phase = val
 		on_show_end_of_phase_update()
 		
-@export var show_choices:bool = false : 
-	set(val):
-		show_choices = val
-		on_show_choices_update()		
+#@export var show_choices:bool = false : 
+	#set(val):
+		#show_choices = val
+		#on_show_choices_update()		
 		
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -457,6 +460,11 @@ var current_select_scp_step:SELECT_SCP_STEPS = SELECT_SCP_STEPS.RESET :
 		current_select_scp_step = val
 		on_current_select_scp_step_update()
 
+var current_researcher_promotion_step:PROMOTE_RESEARCHER_STEPS = PROMOTE_RESEARCHER_STEPS.RESET : 
+	set(val):
+		current_researcher_promotion_step = val
+		on_current_researcher_promotion_step_update()
+
 signal store_select_location
 signal on_complete_build_complete
 signal on_expired_scp_items_complete
@@ -472,6 +480,8 @@ signal on_contain_scp_complete
 signal on_assign_researcher_complete
 signal on_scp_testing_complete
 signal on_scp_select_complete
+signal on_promote_researcher_complete 
+signal on_promotions_complete
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -543,7 +553,7 @@ func setup() -> void:
 	on_show_metrics_update()
 	on_show_back_update()
 	on_show_end_of_phase_update()
-	on_show_choices_update()
+	#on_show_choices_update()
 	
 	# other
 	on_show_confirm_modal_update()
@@ -708,7 +718,6 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		ConfirmModal, RecruitmentContainer, StatusContainer,
 		BuildCompleteContainer, InfoContainer, EventContainer,
 		MetricsContainer, BackContainer, EndOfPhaseContainer,
-		ChoiceContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -991,7 +1000,6 @@ func update_metrics(new_room_config:Dictionary) -> void:
 				if !room_extract.room.is_empty():
 					metric_defaults = update_wing_effect.call(metric_defaults, ROOM_UTIL.return_wing_effect(room_extract))
 					
-
 				if !room_extract.scp.is_empty():
 					metric_defaults = update_wing_effect.call(metric_defaults, SCP_UTIL.return_wing_effect(room_extract))
 									
@@ -1055,7 +1063,7 @@ func check_events(ref:int, event_ref:SCP.EVENT_TYPE, skip_wait:bool = false) -> 
 # -----------------------------------
 
 # -----------------------------------
-func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> Dictionary:
+func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> void:
 	var res:Dictionary = find_in_contained(ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data	
@@ -1066,17 +1074,12 @@ func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> Dictionary:
 		list_data.testing_count[testing_ref] = 0 
 	list_data.testing_count[testing_ref] += 1
 	var test_count:int = list_data.testing_count[testing_ref]
-		#var res:Dictionary = find_in_contained(scp_ref)
-		#var event_name:String = "%s%s" % [type, event_id]
-		#return 0 if event_name not in res.data.event_type_count else res.data.event_type_count[event_name].count,		
 		
 	var event:Dictionary = SCP_UTIL.check_for_testing_events(ref, testing_ref, room_extract, test_count)
 	var event_arr:Array = []
 	if !event.event_instructions.is_empty():
 		event_data = [event]
-		return await on_events_complete
-		
-	return {}
+		await on_events_complete
 # -----------------------------------
 
 # -----------------------------------
@@ -1513,6 +1516,11 @@ func on_completed_action(action_item:Dictionary) -> void:
 			# update reesearch completed
 			if testing_ref not in scp_data.contained_list[index].research_completed:
 				scp_data.contained_list[index].research_completed.push_back(testing_ref)
+				
+			# promote researchers
+			if RESEARCHER_UTIL.check_for_promotions().size() > 0:
+				promote_researchers()
+				await on_promotions_complete
 
 			# clear out testing data
 			scp_data.contained_list[index].current_testing = {}
@@ -1960,6 +1968,17 @@ func on_expired_scp_items_update() -> void:
 # ------------------------------------------------------------------------------	
 #region RESEARCHER FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
+func promote_researchers() -> void:	
+	var list:Array = RESEARCHER_UTIL.check_for_promotions()	
+	if list.size() == 0:
+		on_promotions_complete.emit()
+		return
+	current_researcher_promotion_step = PROMOTE_RESEARCHER_STEPS.START
+	await on_promote_researcher_complete
+	promote_researchers()
+# -----------------------------------
+
+# -----------------------------------
 func dismiss_researcher(researcher_data:Dictionary) -> void:
 	# first, remove from any projects
 	#scp_data.contained_list = scp_data.contained_list.map(func(i): 
@@ -2224,10 +2243,10 @@ func on_show_end_of_phase_update() -> void:
 	EndOfPhaseContainer.is_showing = show_end_of_phase
 	showing_states[EndOfPhaseContainer] = show_end_of_phase
 	
-func on_show_choices_update() -> void:
-	if !is_node_ready():return
-	ChoiceContainer.is_showing = show_choices
-	showing_states[ChoiceContainer] = show_choices
+#func on_show_choices_update() -> void:
+	#if !is_node_ready():return
+	#ChoiceContainer.is_showing = show_choices
+	#showing_states[ChoiceContainer] = show_choices
 
 func _on_container_rect_changed() -> void:	
 	if !is_node_ready():return
@@ -2787,48 +2806,66 @@ func on_current_select_scp_step_update() -> void:
 	if !is_node_ready():return
 
 	match current_select_scp_step:
+		# ------------------------
 		SELECT_SCP_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
+		# ------------------------
 		SELECT_SCP_STEPS.START:
 			SUBSCRIBE.suppress_click = true
-			await show_only([ChoiceContainer])
-			ChoiceContainer.start([0, 0, 0])
-			var res:Dictionary = await ChoiceContainer.user_response
+			var SCPSelectScreen:Control = SCPSelectScreenPreload.instantiate()
+			add_child(SCPSelectScreen)
 			
-			scp_data.available_list.push_back({
-				"ref": res.ref, 
-				"days_until_expire": 14, 
-				"is_new": true,
-				"transfer_status": {
-					"state": false, 
-					"days_till_complete": -1,
-					"location": {}
-				}
-			})
-			SUBSCRIBE.scp_data = scp_data
-			
+			await show_only([])
+			SCPSelectScreen.start([0, 1])
+			await SCPSelectScreen.user_response
+			SCPSelectScreen.queue_free()
+	
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			current_select_scp_step = SELECT_SCP_STEPS.RESET
 			await U.set_timeout(0.5)
-			
-			
+
 			# trigger signal
 			on_scp_select_complete.emit()
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------		
 #region RESEARCHER STEPS
+func on_current_researcher_promotion_step_update() -> void:
+	if !is_node_ready():return
+	
+	match current_researcher_promotion_step:
+		PROMOTE_RESEARCHER_STEPS.RESET:
+			SUBSCRIBE.suppress_click = false
+			await restore_default_state()
+		PROMOTE_RESEARCHER_STEPS.START:
+			SUBSCRIBE.suppress_click = true
+			var ResearcherPromotionNode:Control = ResearcherPromotionScreenPreload.instantiate()
+			add_child(ResearcherPromotionNode)
+			await show_only([])
+			ResearcherPromotionNode.start()
+			await ResearcherPromotionNode.user_response
+			ResearcherPromotionNode.queue_free()
+
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			current_select_scp_step = SELECT_SCP_STEPS.RESET
+			await U.set_timeout(0.5)
+
+			# trigger signal
+			on_promote_researcher_complete.emit()
+			
+
 func on_current_researcher_step_update() -> void:
-	if !is_node_ready() and !Engine.is_editor_hint():return
+	if !is_node_ready():return
 	
 	match current_researcher_step:
+		# ------------------------
 		RESEARCHERS_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
 			selected_scp_details = {}
 			selected_researcher_item = {}
-			
+		# ------------------------
 		RESEARCHERS_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			ResearchersContainer.assign_only = false

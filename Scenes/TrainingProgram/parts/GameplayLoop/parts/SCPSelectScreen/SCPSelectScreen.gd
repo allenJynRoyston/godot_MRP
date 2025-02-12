@@ -1,16 +1,15 @@
-@tool
 extends GameContainer
 
 @onready var SelectIcon:BtnBase = $Control/SelectIcon
 @onready var List:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/List
 
-@onready var DetailsBtn:BtnBase = $BtnContainer/MarginContainer/HBoxContainer/Details
-@onready var SelectBtn:BtnBase = $BtnContainer/MarginContainer/HBoxContainer/SelectBtn
-@onready var BackBtn:BtnBase = $BtnContainer/MarginContainer/HBoxContainer/BackBtn
+#@onready var DetailsBtn:BtnBase = $BtnContainer/MarginContainer/HBoxContainer/Details
+#@onready var SelectBtn:BtnBase = $BtnContainer/MarginContainer/HBoxContainer/SelectBtn
+#@onready var BackBtn:BtnBase = $BtnContainer/MarginContainer/HBoxContainer/BackBtn
 
 enum MODE { SELECT, CONFIRM }
 
-const ScpCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ScpCard.tscn")
+const ScpCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn")
 
 var select_index:int = -1 : 
 	set(val):
@@ -33,16 +32,16 @@ func _ready() -> void:
 	SelectIcon.hide()
 	on_refs_update()
 	on_select_index_update()
-	
-	SelectBtn.onClick = func() -> void:
-		pass
-		
-	DetailsBtn.onClick = func() -> void:
-		show_details()
-		
-	BackBtn.onClick = func() -> void:
-		if current_mode == MODE.CONFIRM:
-			revert_confirm()
+	#
+	#SelectBtn.onClick = func() -> void:
+		#pass
+		#
+	#DetailsBtn.onClick = func() -> void:
+		#show_details()
+		#
+	#BackBtn.onClick = func() -> void:
+		#if current_mode == MODE.CONFIRM:
+			#revert_confirm()
 	
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP) 
 # -----------------------------------------------
@@ -144,10 +143,11 @@ func confirm_selection() -> void:
 
 # -----------------------------------------------
 func on_current_mode_update() -> void:
-	SelectIcon.icon = SVGS.TYPE.LOCK if current_mode == MODE.CONFIRM else SVGS.TYPE.UP_ARROW
-	SelectBtn.title = "CONFIRM" if current_mode == MODE.CONFIRM else "SELECT"
-	DetailsBtn.show() if current_mode != MODE.CONFIRM else DetailsBtn.hide()
-	BackBtn.show() if current_mode == MODE.CONFIRM else BackBtn.hide()
+	pass
+	#SelectIcon.icon = SVGS.TYPE.LOCK if current_mode == MODE.CONFIRM else SVGS.TYPE.UP_ARROW
+	#SelectBtn.title = "CONFIRM" if current_mode == MODE.CONFIRM else "SELECT"
+	#DetailsBtn.show() if current_mode != MODE.CONFIRM else DetailsBtn.hide()
+	#BackBtn.show() if current_mode == MODE.CONFIRM else BackBtn.hide()
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -160,7 +160,19 @@ func finalize_confirm() -> void:
 		
 	await U.set_timeout(1.0)
 	
-	user_response.emit({"ref": select_index})
+	scp_data.available_list.push_back({
+		"ref": refs[select_index], 
+		"days_until_expire": 14, 
+		"is_new": true,
+		"transfer_status": {
+			"state": false, 
+			"days_till_complete": -1,
+			"location": {}
+		}
+	})
+	SUBSCRIBE.scp_data = scp_data	
+	
+	user_response.emit()
 # -----------------------------------------------	
 
 # -----------------------------------	

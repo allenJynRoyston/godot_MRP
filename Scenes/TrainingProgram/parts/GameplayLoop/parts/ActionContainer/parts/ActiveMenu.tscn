@@ -1,0 +1,80 @@
+[gd_scene load_steps=8 format=3 uid="uid://0wbd87xeuk1l"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/active_menu.gd" id="1_yhadw"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_1mtlm"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_8q8n7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y218p"]
+bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_cxyl8"]
+color = Color(1, 1, 1, 1)
+grow_end = -5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_32r40"]
+bg_color = Color(0, 0.254902, 0.0823529, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gb806"]
+bg_color = Color(0, 0.254902, 0.0823529, 0)
+
+[node name="Submenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yhadw")
+
+[node name="ControlMenuContainer" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 41.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_y218p")
+
+[node name="MarginContainer" type="MarginContainer" parent="ControlMenuContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlMenuContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlMenuContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderLabel" type="Label" parent="ControlMenuContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "HEADER"
+label_settings = ExtResource("2_1mtlm")
+
+[node name="HSeparator" type="HSeparator" parent="ControlMenuContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_cxyl8")
+
+[node name="List" type="VBoxContainer" parent="ControlMenuContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextBtn" parent="ControlMenuContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_32r40")
+icon = 10
+panel_color = Color(0, 0.254902, 0.0823529, 0)
+title = "OPTION 1"
+
+[node name="TextBtn2" parent="ControlMenuContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gb806")
+icon = 51
+panel_color = Color(0, 0.254902, 0.0823529, 0)
+title = "OPTION 2"

@@ -1,13 +1,13 @@
 [gd_scene load_steps=11 format=3 uid="uid://boomisn56mb2k"]
 
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="1_h3ktg"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/profile_card.gd" id="1_lh8q0"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_scb26"]
-[ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="1_xqr2m"]
-[ext_resource type="PackedScene" uid="uid://bghgkext72llt" path="res://UI/Buttons/ToggleBtn/ToggleBtn.tscn" id="2_mstwi"]
-[ext_resource type="PackedScene" uid="uid://brrua5mve6jio" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/VitalPanel/VitalPanel.tscn" id="4_ftwcr"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_jgoh7"]
-[ext_resource type="PackedScene" uid="uid://cl5n6rmrunto2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/NoneAvailable.tscn" id="8_8eo6f"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/researcher_card.gd" id="1_v8702"]
+[ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_dksdv"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_tahe0"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_u67dq"]
+[ext_resource type="PackedScene" uid="uid://brrua5mve6jio" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/VitalPanel/VitalPanel.tscn" id="5_qxgq7"]
+[ext_resource type="PackedScene" uid="uid://bghgkext72llt" path="res://UI/Buttons/ToggleBtn/ToggleBtn.tscn" id="6_e706h"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_yrnmk"]
+[ext_resource type="PackedScene" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/NoneAvailable.tscn" id="8_rth8f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah0ml"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -16,7 +16,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbv6y"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pgup"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="ProfileCard" type="PanelContainer"]
@@ -24,15 +24,15 @@ offset_right = 250.0
 offset_bottom = 429.0
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ah0ml")
-script = ExtResource("1_lh8q0")
+script = ExtResource("1_v8702")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 75)
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
-texture = ExtResource("1_xqr2m")
+texture = ExtResource("2_dksdv")
 expand_mode = 1
 stretch_mode = 6
 
@@ -56,7 +56,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "NAMETAG"
-label_settings = ExtResource("1_h3ktg")
+label_settings = ExtResource("3_tahe0")
 horizontal_alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
@@ -71,18 +71,20 @@ size_flags_vertical = 3
 theme_override_constants/separation = 10
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4"]
 layout_mode = 2
 text = "VITALS"
-label_settings = ExtResource("1_scb26")
+label_settings = ExtResource("4_u67dq")
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VitalsPanel" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("4_ftwcr")]
+[node name="VitalsPanel" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("5_qxgq7")]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2"]
@@ -91,7 +93,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 text = "QUALIFICATIONS"
-label_settings = ExtResource("1_scb26")
+label_settings = ExtResource("4_u67dq")
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
@@ -101,21 +103,21 @@ size_flags_horizontal = 3
 layout_mode = 2
 columns = 2
 
-[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("6_e706h")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
 title = "ENGINEER"
 is_toggled = true
 
-[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("6_e706h")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
 title = "ENGINEER"
 is_toggled = true
 
-[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer" instance=ExtResource("6_e706h")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
@@ -128,7 +130,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
 text = "TRAITS"
-label_settings = ExtResource("1_scb26")
+label_settings = ExtResource("4_u67dq")
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
@@ -141,7 +143,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/PosTraitsList" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/PosTraitsList" instance=ExtResource("6_e706h")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
@@ -152,14 +154,14 @@ is_toggled = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/NegTraitsList" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/NegTraitsList" instance=ExtResource("6_e706h")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
 title = "TRAIT"
 is_toggled = true
 
-[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/NegTraitsList" instance=ExtResource("2_mstwi")]
+[node name="ToggleBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/NegTraitsList" instance=ExtResource("6_e706h")]
 layout_mode = 2
 size_flags_horizontal = 3
 inactive_color = Color(1, 1, 1, 1)
@@ -178,20 +180,20 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HireSection/HBoxContainer"]
 layout_mode = 2
 text = "RECRUITMENT FEE"
-label_settings = ExtResource("1_scb26")
+label_settings = ExtResource("4_u67dq")
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HireSection/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HireBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HireSection" instance=ExtResource("6_jgoh7")]
+[node name="HireBtn" parent="VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HireSection" instance=ExtResource("7_yrnmk")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_mbv6y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5pgup")
 icon = 30
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "25 "
 
-[node name="NoneAvailable" parent="." instance=ExtResource("8_8eo6f")]
+[node name="NoneAvailable" parent="." instance=ExtResource("8_rth8f")]
 visible = false
 layout_mode = 2

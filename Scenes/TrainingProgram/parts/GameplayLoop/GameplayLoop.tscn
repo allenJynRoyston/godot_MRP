@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=27 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
@@ -23,7 +23,6 @@
 [ext_resource type="PackedScene" uid="uid://nfj5ltcydj3b" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/EndofPhaseContainer.tscn" id="18_p3gf7"]
 [ext_resource type="PackedScene" uid="uid://be17dg4n3r505" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BackContainer/BackContainer.tscn" id="19_idmig"]
 [ext_resource type="PackedScene" uid="uid://de238y6o15ppf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/ContextMenuContainer.tscn" id="20_y4q2f"]
-[ext_resource type="PackedScene" uid="uid://cwowqrsr48d6k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ChoiceContainer/ChoiceContainer.tscn" id="21_3ar31"]
 [ext_resource type="PackedScene" uid="uid://bxish5x37ra5e" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn" id="21_jqp8v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxod"]
@@ -47,12 +46,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+debug_mode = true
 show_location = false
 room_item_status = false
 show_resources = false
 show_dialogue = false
 show_status = true
-show_info = true
 show_metrics = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
@@ -63,18 +62,14 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_constants/margin_top = 112
 
-[node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_constants/margin_top = 20
-
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_right = 0
+
+[node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
+layout_mode = 2
 
 [node name="ResourceContainer" parent="." instance=ExtResource("8_asqny")]
 visible = false
@@ -96,12 +91,6 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
 visible = false
 layout_mode = 2
@@ -109,18 +98,17 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/margin_top = 75
 
-[node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
-visible = false
+[node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-metadata/_edit_group_ = true
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+
+[node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
+layout_mode = 2
 
 [node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
 layout_mode = 2
@@ -165,9 +153,6 @@ custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
-
-[node name="ChoiceContainer" parent="." instance=ExtResource("21_3ar31")]
-layout_mode = 2
 
 [node name="SetupContainer" parent="." instance=ExtResource("21_jqp8v")]
 visible = false

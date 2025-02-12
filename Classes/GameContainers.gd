@@ -80,8 +80,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
-	
-	
+
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
 

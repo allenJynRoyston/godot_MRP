@@ -4,7 +4,7 @@ extends PanelContainer
 @onready var CardContainer:HBoxContainer = $VBoxContainer/CardContainer
 @onready var NextLabel:Label = $VBoxContainer/NextLabel
 
-const ProfileCardPreload = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/ProfileCard.tscn")
+const ResearcherCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn")
 
 var researcher_hire_list:Array = [] 
 var hired_lead_researchers_arr:Array = []
@@ -84,7 +84,7 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 		
 	for index in recruit_data.size():
 		var data:Dictionary = recruit_data[index]
-		var card_node:Control = ProfileCardPreload.instantiate()
+		var card_node:Control = ResearcherCardPreload.instantiate()
 		card_node.data = data
 		card_node.addHire = func(cost:int) -> void:
 			if !allow_recruitment:return

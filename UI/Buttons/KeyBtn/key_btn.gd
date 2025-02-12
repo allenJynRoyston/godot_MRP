@@ -49,6 +49,14 @@ extends BtnBase
 		on_has_new_update()		
 
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	super._init()
+	GBL.subscribe_to_control_input(self)
+	
+func _exit_tree() -> void:
+	super._exit_tree()
+	GBL.unsubscribe_to_control_input(self)
+
 func _ready() -> void:
 	super._ready()
 	if is_hoverable:
@@ -110,4 +118,12 @@ func on_title_update() -> void:
 func on_icon_update() -> void:
 	if !is_node_ready():return
 	IconBtn.icon = icon	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_hoverable or is_disabled:return
+	var key:String = input_data.key
+	if key == assigned_key:
+		onClick.call()
 # ------------------------------------------------------------------------------

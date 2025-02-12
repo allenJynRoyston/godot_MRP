@@ -1,23 +1,22 @@
-@tool
 extends GameContainer
 
 @onready var HumePanel:PanelContainer = $BottomContainer/MarginContainer/VBoxContainer/HumePanel
-@onready var MarkerLabel:Label = $BottomContainer/MarginContainer/VBoxContainer/MarkerLabel
 
-@onready var MetricsPanel:HBoxContainer = $TopContainer/VBoxContainer/HBoxContainer/MetricsPanel
-@onready var FloorPanel:HBoxContainer = $TopContainer/VBoxContainer/HBoxContainer/FloorPanel
-@onready var WingPanel:Control = $TopContainer/VBoxContainer/HBoxContainer/WingPanel
+@onready var TopContainer:PanelContainer = $TopContainer
 
-@onready var FloorMetric:Control = $TopContainer/VBoxContainer/HBoxContainer/FloorPanel/FloorMetric
-@onready var WingMetric:Control = $TopContainer/VBoxContainer/HBoxContainer/FloorPanel/WingMetric
+@onready var FloorPanel:HBoxContainer = $TopContainer/FloorPanel
+@onready var FloorMetric:Control = $TopContainer/FloorPanel/FloorMetric
 
-@onready var MoraleNode:Control = $TopContainer/VBoxContainer/HBoxContainer/MetricsPanel/Morale
-@onready var SafeteyNode:Control = $TopContainer/VBoxContainer/HBoxContainer/MetricsPanel/Safety
-@onready var ReadinessNode:Control = $TopContainer/VBoxContainer/HBoxContainer/MetricsPanel/Readiness
+@onready var WingPanel:Control = $TopContainer/WingPanel
+@onready var MoraleNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Morale
+@onready var SafeteyNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Safety
+@onready var ReadinessNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Readiness
+@onready var MarkerLabel:Label = $TopCenter/VBoxContainer/MarkerLabel
 
-@onready var MetricsSCP:Control = $TopContainer/VBoxContainer/HBoxContainer/WingPanel/MetricsSCP
-@onready var MetricsRoom:Control = $TopContainer/VBoxContainer/HBoxContainer/WingPanel/MetricsRoom
-@onready var MetricsResearcherContainer:Control = $TopContainer/VBoxContainer/HBoxContainer/WingPanel/ResearcherContainer
+@onready var MetricsPanel:HBoxContainer = $TopCenter/VBoxContainer/MetricsPanel
+@onready var MetricsSCP:Control = $TopContainer/WingPanel/MetricsSCP
+@onready var MetricsRoom:Control = $TopContainer/WingPanel/MetricsRoom
+@onready var MetricsResearcherContainer:Control = $TopContainer/WingPanel/ResearcherContainer
 
 const MetricsItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn")
 
@@ -26,10 +25,17 @@ var previous_wing:int = -1
 var previous_location:Dictionary = {}
 const label_settings:LabelSettings = preload("res://Fonts/game/label_small.tres")
 
+var show_position:Dictionary = {}
+var hide_position:Dictionary = {}
+
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()
 	update_details_panel()
+	
+	modulate = Color(1, 1, 1, 0)
+	await U.set_timeout(1.5)
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1)	
 # -----------------------------------------------
 
 # --------------------------------------------------------
@@ -45,12 +51,10 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 	update_panels()
 	
 func on_purchased_facility_arr_update(new_val:Array) -> void:
-	super.on_purchased_facility_arr_update(new_val)
-	update_panels()
+	super.on_purchased_facility_arr_update(new_val)	
 
 func on_resources_data_update(new_val:Dictionary) -> void:
-	super.on_resources_data_update(new_val)
-	update_panels()
+	super.on_resources_data_update(new_val)	
 
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	super.on_hired_lead_researchers_arr_update(new_val)
@@ -60,7 +64,6 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	super.on_current_location_update(new_val)
 	if !U.dictionaries_equal(previous_location, current_location):
 		previous_location = new_val.duplicate(true)
-		update_panels()
 		update_metrics_labels()
 		update_details_panel()
 		update_marker()
@@ -76,7 +79,7 @@ func update_marker() -> void:
 	
 	if floor_config.in_lockdown:
 		status_text = "LOCKDOWN"
-		FloorMetric.status = "LOCKDOWN"
+		#FloorMetric.status = "LOCKDOWN"
 	else:				
 		match ring_config.emergency_mode:
 			ROOM.EMERGENCY_MODES.DANGER:
@@ -88,11 +91,8 @@ func update_marker() -> void:
 	
 	MarkerLabel.text = "FLOOR: %s   WING: %s   %s"  % [current_location.floor, current_location.ring, status_text]
 	
-	FloorMetric.value = current_location.floor
-	FloorMetric.status = "POWERED" if floor_config.is_powered else "NOT POWERED"
-
-	WingMetric.value = current_location.ring
-	WingMetric.status = status_text
+	FloorMetric.header = "FLOOR %s" % [current_location.floor]
+	FloorMetric.status = "WING %s" % [current_location.ring]
 	
 # -----------------------------------------------	
 
@@ -220,18 +220,17 @@ func update_details_panel() -> void:
 
 # -----------------------------------------------
 func update_panels() -> void:
-	if !is_node_ready() or current_location.is_empty() or camera_settings.is_empty():return
+	if !is_node_ready() or camera_settings.is_empty():return
+	
+	GBL.add_to_animation_queue(self)
 	match camera_settings.type:
 		CAMERA.TYPE.ROOM_SELECT:
 			FloorPanel.hide()
 			WingPanel.show()
 		CAMERA.TYPE.FLOOR_SELECT:
 			FloorPanel.show()
-			WingPanel.hide()
-			
-	var can_show:bool = camera_settings.type == CAMERA.TYPE.ROOM_SELECT
-	var show_metrics:bool = true #ROOM_UTIL.get_count(ROOM.TYPE.HR_DEPARTMENT, purchased_facility_arr) > 0
-	var show_hume:bool = true #ROOM_UTIL.get_count(ROOM.TYPE.HUME_DETECTOR, purchased_facility_arr) > 0
+			WingPanel.hide()			
+	GBL.remove_from_animation_queue(self)	
 # -----------------------------------------------
 
 # -----------------------------------------------

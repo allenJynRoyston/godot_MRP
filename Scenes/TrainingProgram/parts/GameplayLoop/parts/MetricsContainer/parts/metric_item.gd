@@ -97,9 +97,10 @@ func on_is_selected_updated() -> void:
 # ------------------------------
 func on_items_update() -> void:
 	if !is_node_ready():return
+
 	for child in ListContainer.get_children():
 		child.queue_free()
-	
+
 	for item in items:
 		var new_label:Label = Label.new()
 		new_label.label_settings = label_settings		

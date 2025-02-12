@@ -116,7 +116,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p8q3n"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfugu"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -1121,7 +1121,7 @@ spot_angle = 43.0215
 spot_angle_attenuation = 1.6245
 
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -17.995, 17.532, -18.216)
+transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -18.0355, 17.4328, -18.2565)
 projection = 1
 current = true
 size = 24.0
@@ -1293,7 +1293,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p8q3n")
+theme_override_styles/panel = SubResource("StyleBoxFlat_vfugu")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

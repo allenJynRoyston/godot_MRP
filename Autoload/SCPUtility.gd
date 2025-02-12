@@ -6,6 +6,12 @@ var SCP_001:Dictionary = {
 	"name": "SCP-XX1",
 	"nickname": "THE DOOR",
 	"img_src": "res://Media/scps/the_door.png",
+	"quote": "Quote goes here.",
+	"passive_effect": {
+		"description": "Passive effect description for XX1"
+	},
+	"item_class": func() -> String:
+		return "SAFE",		
 	
 	# -----------------------------------
 	"offered_on_day": func() -> int:
@@ -158,15 +164,13 @@ var SCP_001:Dictionary = {
 				var researchers:Array = room_extract.researchers
 				var testing_details:Dictionary = room_extract.scp.testing
 				var is_success:bool = true
-				print(room_extract.wing.metrics)
-			
+
 				var option_selected:Dictionary = {"val": null}
 				var onSelected = func(val:int) -> void:
 					option_selected.val = val
 					
 				for researcher in researchers:
-					RESEARCHER_UTIL.add_experience(researcher.uid, 5)
-				
+					RESEARCHER_UTIL.add_experience(researcher.uid, 11)
 				
 				var options:Array = [{
 					"completed": false,
@@ -580,7 +584,13 @@ var SCP_002:Dictionary = {
 	"name": "SCP-XX2",
 	"nickname": "LSD PAINT",
 	"img_src": "res://Media/scps/lsd_paint.png",
-	
+	"quote": "Quote goes here.",
+	"passive_effect": {
+		"description": "Passive effect description for XX2."
+	},
+	"item_class": func() -> String:
+		return "KETER",		
+		
 	# -----------------------------------
 	"offered_on_day": func() -> int:
 		return 1,
@@ -760,7 +770,7 @@ func return_unavailable_rooms(ref:int) -> Array:
 
 # ------------------------------------------------------------------------------
 func return_wing_effects_list(room_extract:Dictionary) -> Array:
-	return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.scp.details.ref), room_extract, "ongoing_containment")
+	return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.scp.details.ref), room_extract, "wing_effect")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------		
@@ -825,8 +835,6 @@ func calculate_refunded_utilizied(utilized_data:Dictionary, resources_data:Dicti
 	
 	return resource_data_copy
 # ------------------------------------------------------------------------------
-
-
 
 # ------------------------------------------------------------------------------	
 func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, get_data_snapshot:Callable, get_self_ref:Callable) -> Dictionary:

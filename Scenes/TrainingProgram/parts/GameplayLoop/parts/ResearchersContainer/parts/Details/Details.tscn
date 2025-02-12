@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bse3kl7blgrq2"]
 
-[ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/ProfileCard.tscn" id="1_h01jh"]
+[ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="1_h01jh"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/Details/details.gd" id="1_ynj2b"]
 
 [node name="Details" type="PanelContainer"]

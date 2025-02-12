@@ -250,12 +250,12 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				STEPS.SELECT_PLACEMENT:
 					room_left()	
 					
-		"TAB":
-			if current_step != STEPS.SELECT_PLACEMENT:
-				if current_step == STEPS.SELECT_FLOOR:
-					current_step = STEPS.SELECT_ROOM
-				elif current_step == STEPS.SELECT_ROOM:
-					current_step = STEPS.SELECT_FLOOR
+		#"TAB":
+			#if current_step != STEPS.SELECT_PLACEMENT:
+				#if current_step == STEPS.SELECT_FLOOR:
+					#current_step = STEPS.SELECT_ROOM
+				#elif current_step == STEPS.SELECT_ROOM:
+					#current_step = STEPS.SELECT_FLOOR
 					
 		"E":
 			on_next()
