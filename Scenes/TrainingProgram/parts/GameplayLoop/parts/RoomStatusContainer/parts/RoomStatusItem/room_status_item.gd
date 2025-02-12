@@ -140,7 +140,7 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		RoomNameLabel.text = "%s" % [room_data.name]
 		RoomImage.texture = CACHE.fetch_image("res://Media/rooms/construction.jpg")
 		StatusLabel.text = ""
-		ProgressLabel.text = "UNDER CONSTRUCTION"
+		ProgressLabel.text = "CONSTRUCTING"
 		
 		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.AQ.BUILD_ITEM and i.ref == room_data.ref)
 	# --------------------------

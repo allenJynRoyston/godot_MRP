@@ -123,7 +123,7 @@ func update_details_panel() -> void:
 		var details:Dictionary   = room_extract.room.details
 		
 		MetricsRoom.header = "%s" % [details.shortname]
-		MetricsRoom.status = "UNDER CONSTRUCTION" if room_extract.room.under_construction else "ACTIVE" if room_extract.room.is_activated else "INACTIVE"
+		MetricsRoom.status = "CONSTRUCTING" if room_extract.room.under_construction else "ACTIVE" if room_extract.room.is_activated else "INACTIVE"
 		var is_activated = room_extract.room.is_activated		
 		
 		var effects_list:Array = ROOM_UTIL.return_wing_effects_list(room_extract)

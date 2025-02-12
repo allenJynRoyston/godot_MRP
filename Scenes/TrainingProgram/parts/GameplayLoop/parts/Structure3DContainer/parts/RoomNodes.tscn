@@ -116,7 +116,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfugu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6h6u4"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -1293,7 +1293,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vfugu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6h6u4")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

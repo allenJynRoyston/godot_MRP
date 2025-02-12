@@ -122,7 +122,7 @@ func on_icon_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_hoverable or is_disabled:return
+	if !is_node_ready() or !is_hoverable or is_disabled:return
 	var key:String = input_data.key
 	if key == assigned_key:
 		onClick.call()

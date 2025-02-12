@@ -64,17 +64,17 @@ func on_menu_list_update() -> void:
 	
 	update_active_node()
 # -----------------------------------------------		
-
-# ------------------------------------------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
-	var key:String = input_data.key
-	match key:
-		"1":
-			SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.LEFT}
-		"2":
-			SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.TOP}
-		"3":
-			SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.RIGHT}
-		"4":
-			SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.BOTTOM}	
-# ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func on_control_input_update(input_data:Dictionary) -> void:
+	#var key:String = input_data.key
+	#match key:
+		#"1":
+			#SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.LEFT}
+		#"2":
+			#SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.TOP}
+		#"3":
+			#SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.RIGHT}
+		#"4":
+			#SUBSCRIBE.menu_context = {"placement": GBL.PLACEMENT.BOTTOM}	
+## ------------------------------------------------------------------------------

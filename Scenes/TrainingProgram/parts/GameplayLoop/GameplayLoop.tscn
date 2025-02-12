@@ -64,12 +64,15 @@ theme_override_constants/margin_top = 112
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_vertical = 1
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_right = 0
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
+visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="ResourceContainer" parent="." instance=ExtResource("8_asqny")]
 visible = false
@@ -108,7 +111,10 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
+visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
 layout_mode = 2

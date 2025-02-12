@@ -96,7 +96,31 @@ func select_location(state:bool) -> void:
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready():return
+	
+	match camera_settings.type:
+		CAMERA.TYPE.FLOOR_SELECT:
+			current_step = STEPS.SELECT_FLOOR
+		CAMERA.TYPE.ROOM_SELECT:
+			current_step = STEPS.SELECT_ROOM
 # --------------------------------------------------------------------------------------------------		
+
+# -----------------------------------------------------------------------------------------------
+func on_current_step_update() -> void:
+	if !is_node_ready() or camera_settings.is_empty():return
+	#match current_step:
+		## ------------------------------------------------
+		#STEPS.SELECT_FLOOR:
+			#camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
+			#SUBSCRIBE.camera_settings = camera_settings
+		## ------------------------------------------------
+		#STEPS.SELECT_ROOM:
+			#camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+			#SUBSCRIBE.camera_settings = camera_settings
+		## ------------------------------------------------	
+		#STEPS.SELECT_PLACEMENT:
+			#camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+			#SUBSCRIBE.camera_settings = camera_settings
+# -----------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------	
 func on_placement_instructions_update() -> void:
@@ -186,22 +210,47 @@ func location_lookup(val:int, dir:DIR) -> int:
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
-func on_current_step_update() -> void:
-	if !is_node_ready() or camera_settings.is_empty():return
+func move_up() -> void:
 	match current_step:
-		# ------------------------------------------------
 		STEPS.SELECT_FLOOR:
-			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
-			SUBSCRIBE.camera_settings = camera_settings
-		# ------------------------------------------------
+			current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
+			SUBSCRIBE.current_location = current_location
 		STEPS.SELECT_ROOM:
-			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
-			SUBSCRIBE.camera_settings = camera_settings
-		# ------------------------------------------------	
+			room_up()
 		STEPS.SELECT_PLACEMENT:
-			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
-			SUBSCRIBE.camera_settings = camera_settings
+			room_up()	
+
+func move_down() -> void:
+	match current_step:
+		STEPS.SELECT_FLOOR:
+			current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
+			SUBSCRIBE.current_location = current_location
+		STEPS.SELECT_ROOM:
+			room_down()
+		STEPS.SELECT_PLACEMENT:
+			room_down()
+			
+func move_left() -> void:
+	match current_step:
+		STEPS.SELECT_FLOOR:
+			current_location.ring = clampi(current_location.ring - 1, 0, 3)				
+			SUBSCRIBE.current_location = current_location
+		STEPS.SELECT_ROOM:
+			room_left()
+		STEPS.SELECT_PLACEMENT:
+			room_left()	
+			
+func move_right() -> void:
+	match current_step:
+		STEPS.SELECT_FLOOR:
+			current_location.ring = clampi(current_location.ring + 1, 0, 3)
+			SUBSCRIBE.current_location = current_location
+		STEPS.SELECT_ROOM:
+			room_right()
+		STEPS.SELECT_PLACEMENT:
+			room_right()
 # -----------------------------------------------------------------------------------------------
+	
 
 # -----------------------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:		
@@ -214,41 +263,41 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 	
-	match key:
-		"W":
-			match current_step:
-				STEPS.SELECT_FLOOR:
-					current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
-				STEPS.SELECT_ROOM:
-					room_up()
-				STEPS.SELECT_PLACEMENT:
-					room_up()
-		"S":
-			match current_step:
-				STEPS.SELECT_FLOOR:
-					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
-				STEPS.SELECT_ROOM:
-					room_down()
-				STEPS.SELECT_PLACEMENT:
-					room_down()
-		"D":
-			match current_step:
-				STEPS.SELECT_FLOOR:
-					current_location.ring = clampi(current_location.ring + 1, 0, 3)
-				STEPS.SELECT_ROOM:
-					room_right()
-				STEPS.SELECT_PLACEMENT:
-					room_right()
-				
-			
-		"A":
-			match current_step:
-				STEPS.SELECT_FLOOR:
-					current_location.ring = clampi(current_location.ring - 1, 0, 3)				
-				STEPS.SELECT_ROOM:
-					room_left()
-				STEPS.SELECT_PLACEMENT:
-					room_left()	
+	#match key:
+		#"W":
+			#match current_step:
+				#STEPS.SELECT_FLOOR:
+					#current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
+				#STEPS.SELECT_ROOM:
+					#room_up()
+				#STEPS.SELECT_PLACEMENT:
+					#room_up()
+		#"S":
+			#match current_step:
+				#STEPS.SELECT_FLOOR:
+					#current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
+				#STEPS.SELECT_ROOM:
+					#room_down()
+				#STEPS.SELECT_PLACEMENT:
+					#room_down()
+		#"D":
+			#match current_step:
+				#STEPS.SELECT_FLOOR:
+					#current_location.ring = clampi(current_location.ring + 1, 0, 3)
+				#STEPS.SELECT_ROOM:
+					#room_right()
+				#STEPS.SELECT_PLACEMENT:
+					#room_right()
+				#
+			#
+		#"A":
+			#match current_step:
+				#STEPS.SELECT_FLOOR:
+					#current_location.ring = clampi(current_location.ring - 1, 0, 3)				
+				#STEPS.SELECT_ROOM:
+					#room_left()
+				#STEPS.SELECT_PLACEMENT:
+					#room_left()	
 					
 		#"TAB":
 			#if current_step != STEPS.SELECT_PLACEMENT:
@@ -257,14 +306,14 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				#elif current_step == STEPS.SELECT_ROOM:
 					#current_step = STEPS.SELECT_FLOOR
 					
-		"E":
-			on_next()
-			
-		"B":
-			on_back()
-			
-		"BACK":
-			on_back()
+		#"E":
+			#on_next()
+			#
+		#"B":
+			#on_back()
+			#
+		#"BACK":
+			#on_back()
 			
 	SUBSCRIBE.current_location = current_location
 # --------------------------------------------------------------------------------------------------

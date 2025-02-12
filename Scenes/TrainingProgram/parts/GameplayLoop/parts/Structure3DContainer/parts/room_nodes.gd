@@ -174,7 +174,7 @@ func update_boards() -> void:
 						left_status_label.text = ""
 						if !room_extract.room.is_empty():
 							if room_extract.room.under_construction:
-								left_status_label.text = "UNDER CONSTRUCTION"
+								left_status_label.text = "CONSTRUCTING"
 							else:
 								left_status_label.text = "NO ISSUES" if room_extract.room.is_activated else "NOT POWERED"
 				
@@ -597,47 +597,47 @@ func update_menu_index(inc:int) -> void:
 		btn_node.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
 # ------------------------------------------------
 
-# --------------------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
-	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP) # 
-	if !is_node_ready() or GBL.has_animation_in_queue() or !show_menu or freeze_input or GameplayNode.is_occupied():return
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-
-	match key:
-		"A":			
-			if current_menu_type > 0:
-				GBL.add_to_animation_queue(self)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 90, 0.2)
-				current_menu_type = U.min_max(current_menu_type - 1, 0, 3)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0, 0.2)
-				GBL.remove_from_animation_queue(self)
-		"D":
-			if current_menu_type < 3:
-				GBL.add_to_animation_queue(self)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 90, 0.2)
-				current_menu_type = U.min_max(current_menu_type + 1, 0, 3)
-				await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0, 0.2)
-				GBL.remove_from_animation_queue(self)
-			
-		"W":
-			update_menu_index(-1)
-
-		"S":
-			update_menu_index(1)
-		
-		"E":
-			on_select()
-		
-		"ENTER":
-			on_select()
-		
-		"B":
-			on_back()
-		
-		"BACK":
-			on_back()
-# --------------------------------------------------------
+## --------------------------------------------------------
+#func on_control_input_update(input_data:Dictionary) -> void:
+	#var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP) # 
+	#if !is_node_ready() or GBL.has_animation_in_queue() or !show_menu or freeze_input or GameplayNode.is_occupied():return
+	#var key:String = input_data.key
+	#var keycode:int = input_data.keycode
+#
+	#match key:
+		#"A":			
+			#if current_menu_type > 0:
+				#GBL.add_to_animation_queue(self)
+				#await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 90, 0.2)
+				#current_menu_type = U.min_max(current_menu_type - 1, 0, 3)
+				#await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0, 0.2)
+				#GBL.remove_from_animation_queue(self)
+		#"D":
+			#if current_menu_type < 3:
+				#GBL.add_to_animation_queue(self)
+				#await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 90, 0.2)
+				#current_menu_type = U.min_max(current_menu_type + 1, 0, 3)
+				#await U.tween_node_property(CursorMenuSprite, "rotation_degrees:x", 0, 0.2)
+				#GBL.remove_from_animation_queue(self)
+			#
+		#"W":
+			#update_menu_index(-1)
+#
+		#"S":
+			#update_menu_index(1)
+		#
+		#"E":
+			#on_select()
+		#
+		#"ENTER":
+			#on_select()
+		#
+		#"B":
+			#on_back()
+		#
+		#"BACK":
+			#on_back()
+## --------------------------------------------------------
 
 # --------------------------------------------------------
 func on_select() -> void:

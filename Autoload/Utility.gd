@@ -1,6 +1,8 @@
 @tool
 extends Node
 
+enum DIR {UP, DOWN, LEFT, RIGHT}
+
 # ------------------------------------------------------------------------------
 func generate_rand(min: int, max: int) -> int:
 	return randi() % (max - min + 1) + min
@@ -162,3 +164,64 @@ func dict_deep_copy(value):
 		
 	return new_dict
 # --------------------------------------------------------------------------------------------------		
+
+# -----------------------------------------------------------------------------------------------
+func location_lookup(val:int, dir:DIR) -> int:
+	match val:
+		0:
+			match dir:
+				DIR.UP: return -1
+				DIR.DOWN: return 4
+				DIR.LEFT: return 1
+				DIR.RIGHT: return 2
+		1:
+			match dir:
+				DIR.UP: return 0
+				DIR.DOWN: return 6
+				DIR.LEFT: return 3
+				DIR.RIGHT: return 2
+		2:
+			match dir:
+				DIR.UP: return 0
+				DIR.DOWN: return 7
+				DIR.LEFT: return 1
+				DIR.RIGHT: return 5	
+		3:
+			match dir:
+				DIR.UP: return 1
+				DIR.DOWN: return 6
+				DIR.LEFT: return -1
+				DIR.RIGHT: return 4
+		4:
+			match dir:
+				DIR.UP: return 0
+				DIR.DOWN: return 8
+				DIR.LEFT: return 3
+				DIR.RIGHT: return 5
+		5:
+			match dir:
+				DIR.UP: return 2
+				DIR.DOWN: return 7
+				DIR.LEFT: return 4
+				DIR.RIGHT: return -1
+		6:
+			match dir:
+				DIR.UP: return 1
+				DIR.DOWN: return 8
+				DIR.LEFT: return 3
+				DIR.RIGHT: return 7
+		7:
+			match dir:
+				DIR.UP: return 2
+				DIR.DOWN: return 8
+				DIR.LEFT: return 6
+				DIR.RIGHT: return 5
+		8:
+			match dir:
+				DIR.UP: return 4
+				DIR.DOWN: return -1
+				DIR.LEFT: return 6
+				DIR.RIGHT: return 7
+	
+	return val
+# -----------------------------------------------------------------------------------------------
