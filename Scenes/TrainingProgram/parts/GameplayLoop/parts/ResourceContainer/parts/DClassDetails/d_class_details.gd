@@ -13,7 +13,7 @@ const DetailBtnPreload:PackedScene = preload("res://UI/Buttons/DetailBtn/DetailB
 var gameplay_node:Control
 var resources_data:Dictionary = {}
 var purchased_facility_arr:Array = [] 
-var action_queue_data:Array = []
+var timeline_array:Array = []
 var scp_data:Dictionary = {}
 var room_config:Dictionary = {}
 var base_states:Dictionary = {}
@@ -23,7 +23,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
-	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_timeline_array(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
 	
@@ -31,7 +31,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
-	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	SUBSCRIBE.unsubscribe_to_timeline_array(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	
@@ -51,8 +51,8 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
-	action_queue_data = new_val
+func on_timeline_array_update(new_val:Array = timeline_array) -> void:
+	timeline_array = new_val
 	if !is_node_ready():return
 # --------------------------------------------------------------------------------------------------	
 
@@ -141,7 +141,7 @@ func build_list() -> void:
 
 				CapacityList.add_child(new_node)
 				
-	for item in action_queue_data:
+	for item in timeline_array:
 		if "props" in item and "utilized_amounts" in item.props:
 			for key in item.props.utilized_amounts:
 				if key == RESOURCE.TYPE.DCLASS:

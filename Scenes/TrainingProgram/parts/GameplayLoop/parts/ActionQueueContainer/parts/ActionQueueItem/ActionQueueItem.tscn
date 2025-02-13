@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/action_queue_item.gd" id="1_fgfba"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_xp7dm"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_iff7f"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_f2e5b"]
+[ext_resource type="PackedScene" uid="uid://hlplj21egi7y" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/ActionQueueListItem.tscn" id="3_nx6sn"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cl2rc"]
 
@@ -34,22 +34,16 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 is_hoverable = false
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="ListContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="ActionQueueListItem" parent="MarginContainer/HBoxContainer/ListContainer" instance=ExtResource("3_nx6sn")]
 layout_mode = 2
-text = "TITLE"
-label_settings = ExtResource("4_f2e5b")
-horizontal_alignment = 2
 
-[node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="ActionQueueListItem2" parent="MarginContainer/HBoxContainer/ListContainer" instance=ExtResource("3_nx6sn")]
 layout_mode = 2
-text = "Description goes here"
-label_settings = ExtResource("4_f2e5b")
-horizontal_alignment = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 0)

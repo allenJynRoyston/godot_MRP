@@ -333,7 +333,7 @@ var initial_values:Dictionary = {
 			"room": room,
 		},
 	# ----------------------------------
-	"action_queue_data": func() -> Array:
+	"timeline_array": func() -> Array:
 		return [],
 	# ----------------------------------
 	"purchased_facility_arr": func() -> Array:
@@ -360,6 +360,7 @@ var initial_values:Dictionary = {
 
 var room_config:Dictionary 
 var scp_data:Dictionary
+var timeline_array:Array 
 var progress_data:Dictionary
 var camera_settings:Dictionary
 var current_location:Dictionary
@@ -496,7 +497,6 @@ func _init() -> void:
 	GBL.subscribe_to_control_input(self)
 
 	SUBSCRIBE.subscribe_to_progress_data(self)
-	SUBSCRIBE.subscribe_to_action_queue_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_tier_unlocked(self)
@@ -508,6 +508,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)	
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
+	SUBSCRIBE.subscribe_to_timeline_array(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
@@ -515,7 +516,6 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
 	
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
-	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_tier_unlocked(self)
@@ -527,6 +527,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
+	SUBSCRIBE.unsubscribe_to_timeline_array(self)
 	
 func _ready() -> void:
 	if !Engine.is_editor_hint():
@@ -540,8 +541,7 @@ func setup() -> void:
 	on_show_structures_update()
 	on_show_actions_update()
 	on_show_resources_update()
-	on_show_location_update()
-	on_show_action_queue_update()
+	on_show_location_update()	
 	on_room_item_status_update()
 	on_show_dialogue_update()
 	on_show_containment_status_update()
@@ -811,12 +811,13 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 			# -------------------------	
 			# preform an action (like cancel transfer, stop reserach, etc)
 			"perform_action": func(action:int) -> void:
-				match action:
-					ACTION.CONTAINED.CANCEL_TRANSFER:
-						var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_ref and i.action == ACTION.AQ.TRANSFER)
-						cancel_scp_transfer(scp_ref)
-						remove_from_action_queue(filtered_arr[0])
 				pass,
+				#match action:
+					#ACTION.CONTAINED.CANCEL_TRANSFER:
+						#var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_ref and i.action == ACTION.AQ.TRANSFER)
+						#cancel_scp_transfer(scp_ref)
+						#remove_from_action_queue(filtered_arr[0])
+				#pass,
 			# -------------------------	
 			# get counts for type (randomize, after_contained, etc)
 			"event_type_count": func(type:int, event_id:int) -> int:
@@ -905,18 +906,15 @@ func set_room_config(force_setup:bool = false) -> void:
 
 	
 	# mark rooms that are under construction...
-	for item in action_queue_data:		
+	for item in timeline_array:		
 		match item.action:
 			ACTION.AQ.BUILD_ITEM:				
-				print("item.location: ", item.location)
-				pass
-				#var floor:int = item.location.floor
-				#var ring:int = item.location.ring
-				#var room:int = item.location.room		
-				#new_room_config.floor[floor].ring[ring].room[room].build_data = {
-					#"ref": item.ref
-				#}
-	#
+				var floor:int = item.location.floor
+				var ring:int = item.location.ring
+				var room:int = item.location.room		
+				new_room_config.floor[floor].ring[ring].room[room].build_data = {
+					"ref": item.ref
+				}				
 
 	# mark rooms that are already built...
 	for item in purchased_facility_arr:
@@ -1250,7 +1248,7 @@ func next_day() -> void:
 	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
 	
 	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	completed_actions = action_queue_data.filter(func(i): return i.completed_at == progress_data.day)	
+	completed_actions = timeline_array.filter(func(i): return i.completed_at == progress_data.day)	
 	if completed_actions.size() > 0:
 		await on_complete_build_complete
 
@@ -1416,8 +1414,8 @@ func cancel_construction(from_location:Dictionary) -> Dictionary:
 	var ring_index:int = from_location.ring
 	var room_index:int = from_location.room
 	
-	var filtered_arr:Array = action_queue_data.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index)and i.action == ACTION.AQ.BUILD_ITEM)
-	await cancel_action_queue(filtered_arr[0])
+	var filtered_arr:Array = [] #action_queue_data.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index)and i.action == ACTION.AQ.BUILD_ITEM)
+	#await cancel_action_queue(filtered_arr[0])
 
 	return {"has_changes": true}
 # ---------------------	
@@ -1601,25 +1599,26 @@ func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) ->
 
 # -----------------------------------
 func remove_from_action_queue(action_item:Dictionary) -> void:
-	SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.uid != action_item.uid)
-	await ActionQueueContainer.remove_from_queue([action_item])
+	pass
+	#SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.uid != action_item.uid)
+	#await ActionQueueContainer.remove_from_queue([action_item])
 # -----------------------------------
 
 # -----------------------------------
-func add_action_queue_item(dict:Dictionary, props:Dictionary = {}) -> void:
-	action_queue_data.push_back({
+func add_timeline_item(dict:Dictionary, props:Dictionary = {}) -> void:
+	timeline_array.push_back({
 		"uid": U.generate_uid(),
 		"action": dict.action,
 		"ref": dict.ref,
 		"title": dict.title,
 		"icon": dict.icon,
 		"description": dict.description,
-		"completed_at": dict.completed_at + 1,
+		"completed_at": progress_data.day + dict.completed_at,
 		"location": dict.location,
 		"props": props
 	})
 	
-	SUBSCRIBE.action_queue_data = action_queue_data
+	SUBSCRIBE.timeline_array = timeline_array
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1739,7 +1738,7 @@ func contain_scp(from_location:Dictionary) -> Dictionary:
 				return i
 			)
 
-			add_action_queue_item({
+			add_timeline_item({
 				"action": ACTION.AQ.CONTAIN,
 				"ref": scp_details.ref,
 				"title": scp_details.name, 
@@ -1781,7 +1780,7 @@ func transfer_scp(from_location:Dictionary) -> Dictionary:
 			return i
 		)				
 				
-		add_action_queue_item({
+		add_timeline_item({
 			"action": ACTION.AQ.TRANSFER,
 			"ref": scp_details.ref,
 			"title": "TRANSFER IN PROGRESS",
@@ -1806,13 +1805,13 @@ func contain_scp_cancel(from_location:Dictionary, action:ACTION.AQ) -> Dictionar
 			var ring_index:int = from_location.ring
 			var room_index:int = from_location.room
 			var scp_details:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].scp_data.get_scp_details.call()
-			var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_details.ref and i.action == action)
-			match action:
-				ACTION.AQ.CONTAIN:
-					cancel_scp_containment(scp_details.ref)
-				ACTION.AQ.TRANSFER:
-					cancel_scp_transfer(scp_details.ref)
-			remove_from_action_queue(filtered_arr[0])
+			#var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_details.ref and i.action == action)
+			#match action:
+				#ACTION.AQ.CONTAIN:
+					#cancel_scp_containment(scp_details.ref)
+				#ACTION.AQ.TRANSFER:
+					#cancel_scp_transfer(scp_details.ref)
+			#remove_from_action_queue(filtered_arr[0])
 		
 	restore_default_state()		
 	return {"has_changes": response.action != ACTION.BACK}
@@ -1824,8 +1823,9 @@ func set_scp_testing_state(from_location:Dictionary, is_testing:bool) -> void:
 	if is_testing:
 		await start_scp_testing(scp_list_data.data.ref)
 	else:
-		var filtered_arr:Array = action_queue_data.filter(func(i): return (i.location.floor == from_location.floor and i.location.ring == from_location.ring and i.location.room == from_location.room))
-		await cancel_action_queue(filtered_arr[0])
+		pass
+		#var filtered_arr:Array = action_queue_data.filter(func(i): return (i.location.floor == from_location.floor and i.location.ring == from_location.ring and i.location.room == from_location.room))
+		#await cancel_action_queue(filtered_arr[0])
 		
 	restore_default_state()
 # -----------------------------------	
@@ -1853,7 +1853,7 @@ func start_scp_testing(scp_ref:int) -> void:
 		#"progress": -1 
 	#}	
 	#
-	#add_action_queue_item({
+	#add_timeline_item({
 		#"action": ACTION.AQ.ACCESSING,
 		#"ref": scp_details.ref,
 		#"title_btn": {
@@ -1891,7 +1891,7 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 			"progress": 0 
 		}
 		
-		add_action_queue_item({
+		add_timeline_item({
 			"action": ACTION.AQ.TESTING,
 			"ref": scp_ref,
 			"title": "TESTING",
@@ -2114,7 +2114,6 @@ func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers
 
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	print(action_queue_data)
 		
 func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 	bookmarked_rooms = new_val
@@ -2137,8 +2136,13 @@ func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 	if setup_complete:
 		set_room_config()
 
-func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
-	action_queue_data = new_val	
+#func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
+	#action_queue_data = new_val	
+	#if setup_complete:
+		#set_room_config()
+
+func on_timeline_array_updates(new_val:Array = timeline_array) -> void:
+	timeline_array = new_val	
 	if setup_complete:
 		set_room_config()
 
@@ -2379,7 +2383,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BUILD:
 			var purchase_item_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
-			add_action_queue_item({
+			add_timeline_item({
 				"action": ACTION.AQ.BUILD_ITEM,
 				"ref": selected_shop_item.ref,
 				"title": purchase_item_data.name,
@@ -2395,7 +2399,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
 			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
-			add_action_queue_item({
+			add_timeline_item({
 				"action": ACTION.AQ.RESEARCH_ITEM,
 				"ref": selected_shop_item.ref,
 				"title": purchase_item_data.name,
@@ -2412,7 +2416,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM:
 			var purchase_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
-			add_action_queue_item({
+			add_timeline_item({
 				"action": ACTION.AQ.BASE_ITEM,
 				"ref": selected_shop_item.ref,
 				"title": purchase_item_data.name,
@@ -2542,19 +2546,21 @@ func on_current_contain_step_update() -> void:
 				ACTION.BACK:
 					current_contain_step = CONTAIN_STEPS.START
 				ACTION.NEXT:
-					var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref)[0]
-					cancel_scp_containment(action_queue_item.ref)
-					scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != selected_contain_item.ref)
-					SUBSCRIBE.scp_data = scp_data
-					current_contain_step = CONTAIN_STEPS.START
+					pass
+					#var action_queue_item:Dictionary = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref)[0]
+					#cancel_scp_containment(action_queue_item.ref)
+					#scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != selected_contain_item.ref)
+					#SUBSCRIBE.scp_data = scp_data
+					#current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.ON_TRANSFER_CANCEL:
 			var action_queue_item:Dictionary = {}
-			if selected_contain_item.is_new_transfer:
-				action_queue_item = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref and i.action == ACTION.AQ.CONTAIN)[0]
-			else:
-				action_queue_item = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref and i.action == ACTION.AQ.TRANSFER)[0]
-			await cancel_action_queue(action_queue_item, false)
+			pass
+			#if selected_contain_item.is_new_transfer:
+				#action_queue_item = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref and i.action == ACTION.AQ.CONTAIN)[0]
+			#else:
+				#action_queue_item = action_queue_data.filter(func(i): return i.ref == selected_contain_item.ref and i.action == ACTION.AQ.TRANSFER)[0]
+			#await cancel_action_queue(action_queue_item, false)
 			current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.ON_TRANSFER_TO_NEW_LOCATION:
@@ -2612,7 +2618,7 @@ func on_current_contain_step_update() -> void:
 					return i
 				)				
 			
-			add_action_queue_item({
+			add_timeline_item({
 				"action": ACTION.AQ.CONTAIN if selected_contain_item.is_new_transfer else ACTION.AQ.TRANSFER,
 				"ref": selected_contain_item.ref,
 				"title": selected_contain_item.name,
@@ -2735,7 +2741,7 @@ func on_current_action_complete_step_update() -> void:
 			current_location = revert_state_location
 			
 			# REMOVES FROM QUEUE LIST
-			await ActionQueueContainer.remove_from_queue(completed_actions)
+			#await ActionQueueContainer.remove_from_queue(completed_actions)
 		
 			# CHECK FOR EVENTS
 			for item in completed_actions:
@@ -2950,7 +2956,8 @@ func quicksave() -> void:
 		# OF ALL THE OTHER DATA THAT'S HERE
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
-		"action_queue_data": action_queue_data,
+		#"action_queue_data": action_queue_data,
+		"timeline_array": timeline_array,
 		"purchased_base_arr": purchased_base_arr,
 		"purchased_facility_arr": purchased_facility_arr,
 		"purchased_research_arr": purchased_research_arr,
@@ -2986,7 +2993,8 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	# non-reactive data that's used but doesn't require a subscription
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if no_save else restore_data.progress_data
 	SUBSCRIBE.scp_data = initial_values.scp_data.call() if no_save else restore_data.scp_data
-	SUBSCRIBE.action_queue_data = initial_values.action_queue_data.call() if no_save else restore_data.action_queue_data	
+	SUBSCRIBE.timeline_array = initial_values.timeline_array.call() if no_save else restore_data.timeline_array
+	#SUBSCRIBE.action_queue_data = initial_values.action_queue_data.call() if no_save else restore_data.action_queue_data	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if no_save else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if no_save else restore_data.purchased_base_arr
 	SUBSCRIBE.resources_data = initial_values.resources_data.call() if no_save else restore_data.resources_data	

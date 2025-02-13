@@ -10,7 +10,7 @@ var base_states:Dictionary
 var resources_data:Dictionary 
 var tier_unlocked:Dictionary 
 var researcher_hire_list:Array
-var action_queue_data:Array
+var timeline_array:Array
 var purchased_facility_arr:Array 
 var purchased_base_arr:Array
 var purchased_research_arr:Array 
@@ -20,7 +20,7 @@ var hired_lead_researchers_arr:Array
 
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_progress_data(self)
-	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_timeline_array(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_tier_unlocked(self)
@@ -35,7 +35,7 @@ func _init() -> void:
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
-	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	SUBSCRIBE.unsubscribe_to_timeline_array(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_tier_unlocked(self)
@@ -57,8 +57,8 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
-func on_action_queue_data_update(new_val:Array) -> void:
-	action_queue_data = new_val
+func on_timeline_array_update(new_val:Array) -> void:
+	timeline_array = new_val
 func on_bookmarked_rooms_update(new_val:Array) -> void:
 	bookmarked_rooms = new_val
 func on_researcher_hire_list_update(new_val:Array) -> void:

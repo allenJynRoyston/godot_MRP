@@ -550,7 +550,7 @@ func set_btn_disabled_state(state:bool) -> void:
 		for node in child.get_children():
 			node.is_disabled = state
 	freeze_inputs_local = state
-	U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.4 if state else 0.0))
+	U.tween_node_property(Backdrop, 'color', Color(0, 0.1, 0, 0.4 if state else 0.0))
 
 func on_left_btn_list_update() -> void:
 	if !is_node_ready():return

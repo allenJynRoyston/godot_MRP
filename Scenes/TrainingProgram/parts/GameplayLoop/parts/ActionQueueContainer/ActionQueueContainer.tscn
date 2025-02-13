@@ -1,7 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://d04lnq4yhp80o"]
+[gd_scene load_steps=7 format=3 uid="uid://d04lnq4yhp80o"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/action_queue_container.gd" id="1_bgvki"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/panel_container.gd" id="2_amidr"]
 [ext_resource type="PackedScene" uid="uid://cgp6oftk1itbm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/ActionQueueItem.tscn" id="2_hg1uk"]
+
+[sub_resource type="Gradient" id="Gradient_q3i3u"]
+offsets = PackedFloat32Array(0.0746269, 0.992537)
+colors = PackedColorArray(0.427493, 0.427493, 0.427493, 0.356863, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_r6wmq"]
+gradient = SubResource("Gradient_q3i3u")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lcjmk"]
 
@@ -21,35 +29,32 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 script = ExtResource("1_bgvki")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Gradiant" type="TextureRect" parent="."]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_r6wmq")
+flip_h = true
+
+[node name="DetectorPanel" type="PanelContainer" parent="."]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_lcjmk")
+script = ExtResource("2_amidr")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="DetectorPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -20
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 130
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="ListScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer"]
+[node name="ListScrollContainer" type="ScrollContainer" parent="DetectorPanel/MarginContainer"]
 layout_mode = 2
 vertical_scroll_mode = 3
 
-[node name="ListContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/ListScrollContainer"]
+[node name="ListContainer" type="VBoxContainer" parent="DetectorPanel/MarginContainer/ListScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="ActionQueueItem" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
-layout_mode = 2
-
-[node name="ActionQueueItem2" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
-layout_mode = 2
-
-[node name="ActionQueueItem3" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
-layout_mode = 2
-
-[node name="ActionQueueItem4" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
+[node name="ActionQueueItem" parent="DetectorPanel/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
 layout_mode = 2

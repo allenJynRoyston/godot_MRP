@@ -60,7 +60,7 @@ var progress_bar_value:float = -1.0 :
 		progress_bar_value = val
 		on_progress_bar_value_update()
 		
-var action_queue_data:Array = []
+var timeline_array:Array = []
 var bookmarked_rooms:Array = []
 
 var is_empty:bool = false
@@ -71,12 +71,10 @@ var onFocus:Callable = func():pass
 func _init() -> void:
 	super._init()
 	SUBSCRIBE.subscribe_to_bookmarked_rooms(self)
-	SUBSCRIBE.subscribe_to_action_queue_data(self)
 	
 func _exit_tree() -> void:
 	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_bookmarked_rooms(self)
-	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 
 func _ready() -> void:
 	super._ready()
@@ -101,12 +99,6 @@ func _ready() -> void:
 # --------------------------------------	
 func on_room_id_update() -> void:
 	IndexLabel.text = str(room_id + 1)
-# --------------------------------------	
-
-# --------------------------------------	
-func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
-	action_queue_data = new_val
-	on_data_update()
 # --------------------------------------	
 
 # --------------------------------------	
@@ -142,7 +134,6 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		StatusLabel.text = ""
 		ProgressLabel.text = "CONSTRUCTING"
 		
-		action_queue_filter = action_queue_data.filter(func(i): return i.action == ACTION.AQ.BUILD_ITEM and i.ref == room_data.ref)
 	# --------------------------
 	
 	# --------------------------
@@ -159,7 +150,6 @@ func on_data_update(previous_state:Dictionary = {}) -> void:
 		ObjectDesignationLabel.text = "%s" % [scp_data.name]
 		ObjectClassLabel.text = "KETER"
 		ObjectNameLabel.text = "%s" % [scp_data.name]
-		action_queue_filter = action_queue_data.filter(func(i): return (i.action == ACTION.AQ.CONTAIN or i.action == ACTION.AQ.TRANSFER) and i.ref == scp_data.ref)
 	# --------------------------
 	
 	## -------------------------- 

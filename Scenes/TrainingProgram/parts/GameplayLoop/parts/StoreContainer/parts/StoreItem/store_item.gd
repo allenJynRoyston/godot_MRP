@@ -33,7 +33,7 @@ var resources_data:Dictionary = {}
 var purchased_facility_arr:Array = []
 var purchased_research_arr:Array = []
 var purchased_base_arr:Array = []
-var action_queue_data:Array = []
+#var action_queue_data:Array = []
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -41,7 +41,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
-	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	#SUBSCRIBE.subscribe_to_action_queue_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 
 func _exit_tree() -> void:
@@ -49,7 +49,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_base_arr(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
-	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	#SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 
 func _ready() -> void:
@@ -81,11 +81,6 @@ func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) ->
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_action_queue_data_update(new_val:Array = action_queue_data) -> void:
-	action_queue_data = new_val
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty() and !resources_data.is_empty():
 		NameLabel.text = data.details.name		
@@ -103,7 +98,7 @@ func on_data_update() -> void:
 		match(tab):
 			TIER.TYPE.BASE_DEVELOPMENT:
 				var purchased_ids:Array = purchased_base_arr.map(func(i): return i.data.ref)
-				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.BASE_ITEM).map(func(i): return i.data.ref)
+				var in_progress_ids:Array = [] #action_queue_data.filter(func(i): return i.action == ACTION.BASE_ITEM).map(func(i): return i.data.ref)
 				
 				already_owned = data.ref in purchased_ids
 				in_progress = data.ref in in_progress_ids
@@ -116,7 +111,7 @@ func on_data_update() -> void:
 							
 			TIER.TYPE.RESEARCH_AND_DEVELOPMENT:
 				var purchased_ids:Array = purchased_research_arr.map(func(i): return i.data.ref)
-				var in_progress_ids:Array = action_queue_data.filter(func(i): return i.action == ACTION.AQ.RESEARCH_ITEM).map(func(i): return i.data.ref)
+				var in_progress_ids:Array = [] #action_queue_data.filter(func(i): return i.action == ACTION.AQ.RESEARCH_ITEM).map(func(i): return i.data.ref)
 				
 				already_owned = data.ref in purchased_ids
 				in_progress = data.ref in in_progress_ids
@@ -127,7 +122,7 @@ func on_data_update() -> void:
 				
 				item_data = RD_UTIL.return_purchase_cost(data.ref)
 			TIER.TYPE.FACILITY:
-				at_own_limit = ROOM_UTIL.at_own_limit(data.ref, purchased_facility_arr, action_queue_data)
+				at_own_limit = ROOM_UTIL.at_own_limit(data.ref, purchased_facility_arr, [])
 				item_data = ROOM_UTIL.return_purchase_cost(data.ref)
 
 				AlreadyOwned.hide()

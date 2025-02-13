@@ -41,7 +41,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 rotation = -0.000363817
-scale = Vector2(0.992646, 1.01056)
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
@@ -59,7 +58,10 @@ layout_mode = 2
 
 [node name="ActionQueueContainer" parent="." instance=ExtResource("5_1tp62")]
 layout_mode = 2
-theme_override_constants/margin_top = 320
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2

@@ -102,27 +102,6 @@ func unsubscribe_to_resources_data(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
-var action_queue_data_subscriptions:Array = []
-
-var action_queue_data:Array = [] : 
-	set(val):
-		action_queue_data = val
-		print(val)
-		for node in action_queue_data_subscriptions:
-			if "on_action_queue_data_update" in node:
-				node.on_action_queue_data_update.call(action_queue_data)
-
-func subscribe_to_action_queue_data(node:Node) -> void:
-	if node not in action_queue_data_subscriptions:
-		action_queue_data_subscriptions.push_back(node)
-		if "on_action_queue_data_update" in node:
-			node.on_action_queue_data_update.call(action_queue_data)
-				
-func unsubscribe_to_action_queue_data(node:Node) -> void:
-	action_queue_data_subscriptions.erase(node)
-# ------------------------------------------------------------	
-
-# ------------------------------------------------------------	
 var purchased_research_list_subscriptions:Array = []
 
 var purchased_research_arr:Array = [] : 
@@ -405,3 +384,22 @@ func unsubscribe_to_menu_context(node:Node) -> void:
 	menu_context_subscriptions.erase(node)				
 # ------------------------------------------------------------	
 	
+# ------------------------------------------------------------	
+var timeline_array_subscriptions:Array = []
+
+var timeline_array:Array = [] :
+	set(val):
+		timeline_array = val 
+		for node in timeline_array_subscriptions:
+			if "on_timeline_array_updates" in node:
+				node.on_timeline_array_updates.call( timeline_array)	
+
+func subscribe_to_timeline_array(node:Node) -> void:
+	if node not in timeline_array_subscriptions:
+		timeline_array_subscriptions.push_back(node)
+		if "on_timeline_array_updates" in node:
+			node.on_timeline_array_updates.call( timeline_array)
+			
+func unsubscribe_to_timeline_array(node:Node) -> void:
+	timeline_array_subscriptions.erase(node)				
+# ------------------------------------------------------------	

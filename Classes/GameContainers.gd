@@ -24,7 +24,7 @@ var bookmarked_rooms:Array = []
 var hired_lead_researchers_arr:Array = [] 
 var current_location:Dictionary = {} 
 var progress_data:Dictionary = {}
-var action_queue_data:Array = [] 
+var timeline_array:Array = [] 
 var room_config:Dictionary = {} 
 var researcher_hire_list:Array = [] 
 var tier_unlocked:Dictionary = {}
@@ -44,7 +44,7 @@ signal user_response
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_progress_data(self)
-	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_timeline_array(self)
 	SUBSCRIBE.subscribe_to_bookmarked_rooms(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
@@ -66,7 +66,7 @@ func _init() -> void:
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
-	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
+	SUBSCRIBE.unsubscribe_to_timeline_array(self)
 	SUBSCRIBE.unsubscribe_to_bookmarked_rooms(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
@@ -101,8 +101,8 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
-func on_action_queue_data_update(new_val:Array) -> void:
-	action_queue_data = new_val
+func on_timeline_array_update(new_val:Array) -> void:
+	timeline_array = new_val
 func on_bookmarked_rooms_update(new_val:Array) -> void:
 	bookmarked_rooms = new_val
 func on_researcher_hire_list_update(new_val:Array) -> void:
