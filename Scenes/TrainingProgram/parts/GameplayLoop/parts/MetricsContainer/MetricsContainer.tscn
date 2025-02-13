@@ -24,28 +24,28 @@ viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfbj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l8xuj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kekvp"]
 bg_color = Color(0, 0.529, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxary"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_75ys5"]
 bg_color = Color(1, 0.34, 0.307, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l7mfg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav4l"]
 bg_color = Color(0, 0.529, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_24tts"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bbuc0"]
 bg_color = Color(0.455, 0.002, 0.713, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -116,7 +116,7 @@ layout_mode = 2
 [node name="FloorMetric" parent="TopContainer/FloorPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_l8xuj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kekvp")
 type = 1
 header = "FLOOR X"
 status = "WING A"
@@ -134,19 +134,19 @@ theme_override_constants/separation = 10
 [node name="MetricsResearcherA" parent="TopContainer/WingPanel/ResearcherContainer" instance=ExtResource("7_y31xb")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_sxary")
+theme_override_styles/panel = SubResource("StyleBoxFlat_75ys5")
 type = 2
 
 [node name="MetricsRoom" parent="TopContainer/WingPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_l7mfg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nav4l")
 type = 1
 
 [node name="MetricsSCP" parent="TopContainer/WingPanel" instance=ExtResource("7_y31xb")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_24tts")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bbuc0")
 
 [node name="TopCenter" type="PanelContainer" parent="."]
 layout_mode = 2

@@ -97,7 +97,7 @@ transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, -0.83107, -1.50
 mesh = SubResource("BoxMesh_xjphw")
 
 [node name="RoomNumberLabel" type="Label3D" parent="RoomNode/MainMesh/DoorMesh"]
-transform = Transform3D(-0.999999, 0, 8.74227e-08, 0, 0.999999, 0, -8.74226e-08, 0, -0.999999, -0.465734, 2.32829, -0.0438993)
+transform = Transform3D(-4.37113e-08, 0, -0.999999, 0, 0.999999, 0, 0.999999, 0, -4.37113e-08, -1.1883, 2.58189, 0.618604)
 pixel_size = 0.03
 shaded = true
 text = "1"
@@ -121,11 +121,11 @@ spot_attenuation = -3.73
 spot_angle = 22.34
 
 [node name="DoorLabel" type="Label3D" parent="RoomNode/MainMesh/DoorMesh"]
-transform = Transform3D(-0.999999, 0, -8.74227e-08, 0, 1, 0, 8.74227e-08, 0, -0.999999, -1.04828, 0.771639, 0.00132287)
+transform = Transform3D(-0.999999, 0, -8.74227e-08, 0, 1, 0, 8.74227e-08, 0, -0.999999, -0.891657, 2.27524, -0.000999808)
 shaded = true
 text = "ROOM NAME"
 font = ExtResource("2_mku2i")
-font_size = 52
+font_size = 64
 outline_size = 0
 horizontal_alignment = 2
 uppercase = true

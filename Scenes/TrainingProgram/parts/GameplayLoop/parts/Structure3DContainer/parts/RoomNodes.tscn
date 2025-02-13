@@ -117,7 +117,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7atia"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eajxq"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -1128,7 +1128,7 @@ projection = 1
 current = true
 size = 24.0
 near = 0.002
-far = 60.0
+far = 500.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/RoomColumn/MainCamera"]
 transform = Transform3D(1, 0, 0, 0, -2.98023e-08, -1, 0, 1, -2.98023e-08, 0, 3.93685e-06, -65.0989)
@@ -1295,7 +1295,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7atia")
+theme_override_styles/panel = SubResource("StyleBoxFlat_eajxq")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

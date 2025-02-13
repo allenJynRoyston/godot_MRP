@@ -13,49 +13,49 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1lmj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cyvv6"]
 bg_color = Color(0.366595, 0.366595, 0.366595, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grvao"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w3goq"]
 bg_color = Color(1, 0.339692, 0.306841, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvbsd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5oi6g"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e2llv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ufxve"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11yxg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u30be"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyw14"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8bn8"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xawaa"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qu8ev"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -109,7 +109,7 @@ theme_override_constants/separation = 10
 [node name="ContextBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e1lmj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cyvv6")
 title = "SHIFT"
 assigned_key = "TAB"
 icon = 36
@@ -118,7 +118,7 @@ panel_color = Color(0.366595, 0.366595, 0.366595, 1)
 [node name="ResearchersBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_grvao")
+theme_override_styles/panel = SubResource("StyleBoxFlat_w3goq")
 title = "RESEARCHERS"
 assigned_key = "B"
 icon = 39
@@ -127,7 +127,7 @@ panel_color = Color(1, 0.339692, 0.306841, 1)
 [node name="SCPBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tvbsd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5oi6g")
 title = "CONTAINMENT"
 assigned_key = "C"
 icon = 28
@@ -136,7 +136,7 @@ panel_color = Color(0.455201, 0.00200917, 0.712752, 1)
 [node name="RecruitBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e2llv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ufxve")
 title = "RECRUIT"
 assigned_key = "A"
 icon = 25
@@ -147,7 +147,7 @@ layout_mode = 2
 
 [node name="KeyBtn" parent="PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_n6idl")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_11yxg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_u30be")
 
 [node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -168,7 +168,7 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_uyw14")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s8bn8")
 title = "OBJECTIVES"
 assigned_key = "TAB"
 icon = 48
@@ -178,7 +178,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 visible = false
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_xawaa")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qu8ev")
 title = "NEXT DAY"
 assigned_key = "ENTER"
 icon = 27
