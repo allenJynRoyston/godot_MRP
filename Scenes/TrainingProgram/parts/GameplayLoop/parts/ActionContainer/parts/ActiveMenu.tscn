@@ -15,13 +15,13 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ttmpf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x0rqy"]
 bg_color = Color(0, 0.254902, 0.0823529, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mfde"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d7olm"]
 bg_color = Color(0, 0.254902, 0.0823529, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_13lk5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tdld0"]
 bg_color = Color(0, 0.254902, 0.0823529, 0)
 
 [node name="ActiveMenu" type="PanelContainer"]
@@ -61,21 +61,21 @@ layout_mode = 2
 
 [node name="TextBtn" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ttmpf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_x0rqy")
 icon = 10
 panel_color = Color(0, 0.254902, 0.0823529, 0)
 title = "OPTION 1"
 
 [node name="TextBtn2" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1mfde")
+theme_override_styles/panel = SubResource("StyleBoxFlat_d7olm")
 icon = 51
 panel_color = Color(0, 0.254902, 0.0823529, 0)
 title = "OPTION 2"
 
 [node name="TextBtn3" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_13lk5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tdld0")
 icon = 51
 panel_color = Color(0, 0.254902, 0.0823529, 0)
 title = "OPTION 2"

@@ -1,47 +1,78 @@
 extends BtnBase
 
-@onready var HeaderLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer2/MarginContainer/HBoxContainer/VBoxContainer2/HeaderLabel
-@onready var StatusLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer2/VBoxContainer/StatusLabel
-@onready var CountLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountLabel
-@onready var ProgressBarUI:ProgressBar = $MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/ProgressBar
-
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+@onready var TitleLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/TitleLabel
+@onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/DescriptionLabel
+@onready var DayLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/DayLabel
 
 var suppress_click:bool = false 
-
-# --------------------------------------------------
-var item_data:Dictionary = {}
-
+var progress_data:Dictionary = {}
+var alpha_map:Dictionary = {}
+var forecast_amount:int = 3 : 
+	set(val):
+		forecast_amount = val
+		on_forecast_amount_update()
+var action_queue_data:Array = []
 var data:Dictionary = {} : 
 	set(val):
 		data = val
 		on_data_update()
 		
-var requirements:Array = [] : 
-	set(val):
-		requirements = val
-# --------------------------------------------------
 
 # --------------------------------------------------
 func _init() -> void:
 	super._init()
+	SUBSCRIBE.subscribe_to_action_queue_data(self)
+	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_suppress_click(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_action_queue_data(self)
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
+	SUBSCRIBE.unsubscribe_to_progress_data(self)
 # --------------------------------------------------
 
 # --------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	on_data_update()	
+	DayLabel.text = str(index)
+	on_forecast_amount_update()
 # --------------------------------------------------
 
 # --------------------------------------------------
-func animate_and_complete() -> void:	
-	await U.set_timeout(0.2)
+func on_forecast_amount_update() -> void:
+	var amount:float = 1.0
+	for key in range(1, forecast_amount + 1):
+		alpha_map[key] = amount
+		amount -= 0.2
+	
+	if progress_data.is_empty():return
+	on_progress_data_update()
 # --------------------------------------------------	
+
+# --------------------------------------------------
+func on_action_queue_data_update(new_val:Array) -> void:
+	action_queue_data = new_val
+	var filtered:Array = action_queue_data.filter(func(i): return i.completed_at == index)
+	if filtered.size() > 0:
+		data = filtered[0]
+	else:
+		data = {}
+# --------------------------------------------------
+
+# --------------------------------------------------
+func on_data_update() -> void:
+	if !is_node_ready():
+		return 
+	
+	if data.is_empty():
+		for node in [TitleLabel, DescriptionLabel]:
+			node.text = ""
+		return		
+	
+	TitleLabel.text = data.title
+	DescriptionLabel.text = data.description	
+# --------------------------------------------------
 
 # --------------------------------------------------
 func on_suppress_click_update(new_val:bool) -> void:
@@ -49,22 +80,25 @@ func on_suppress_click_update(new_val:bool) -> void:
 # --------------------------------------------------
 
 # --------------------------------------------------
-func on_data_update() -> void:
-	if !is_node_ready() or data.is_empty():return
-	var title_btn:Dictionary = data.title_btn
-	var count:Dictionary = data.count
-	
-	HeaderLabel.text = data.description 
-	StatusLabel.text = title_btn.title
-	CountLabel.text = "%s" % [count.completed_at - count.day]
-	U.tween_node_property(ProgressBarUI, "value", (count.day*1.0 / count.completed_at*1.0), 0.3, 0.2)
-# --------------------------------------------------
+func get_alpha() -> float:
+	return alpha_map.get(index - progress_data.day, 0.0)
+# --------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------
+func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
+	progress_data = new_val
+	if !is_node_ready():return
+	modulate = Color(1, 1, 1, get_alpha())
+# --------------------------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
-
+	if !is_node_ready() or progress_data.is_empty() or modulate.a == 0:return
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else get_alpha()))
+	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	super.on_mouse_click(node, btn, on_hover)
+	if data.is_empty() or data.location.is_empty():return
+	SUBSCRIBE.current_location = data.location
 # ------------------------------------------------------------------------------

@@ -30,13 +30,13 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4nhy"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sr61y"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffu07"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amyfs"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_diqe2"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ybfce"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5dvwq"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_70itj"]
@@ -98,18 +98,18 @@ size_flags_horizontal = 3
 [node name="AvailableTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("3_teb68")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_sr61y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ffu07")
 title = "AVAILABLE"
 
 [node name="OccupiedTab" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("3_teb68")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_amyfs")
+theme_override_styles/panel = SubResource("StyleBoxFlat_diqe2")
 title = "OCCUPIED"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3" instance=ExtResource("3_teb68")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ybfce")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5dvwq")
 title = "BACK"
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]

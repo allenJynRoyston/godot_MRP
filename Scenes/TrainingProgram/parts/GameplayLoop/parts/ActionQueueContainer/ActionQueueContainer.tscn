@@ -1,53 +1,55 @@
-[gd_scene load_steps=6 format=3 uid="uid://d04lnq4yhp80o"]
+[gd_scene load_steps=4 format=3 uid="uid://d04lnq4yhp80o"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/action_queue_container.gd" id="1_bgvki"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_mfivy"]
+[ext_resource type="PackedScene" uid="uid://cgp6oftk1itbm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/ActionQueueItem.tscn" id="2_hg1uk"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_17s2m"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rolq4"]
-shader = ExtResource("2_mfivy")
-shader_parameter/percentage = 1.0
-shader_parameter/angle_degrees = 0.0
-shader_parameter/line_width = 0.02
-shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
-shader_parameter/laser_color = Color(1, 0, 0, 1)
-shader_parameter/glow_width = 0.03
-shader_parameter/trail_fade = 0.5
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_sbiep"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lcjmk"]
 
 [node name="ActionQueueContainer" type="MarginContainer"]
-anchors_preset = 9
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 15.0
+offset_left = -5.0
+grow_horizontal = 0
 grow_vertical = 2
 size_flags_horizontal = 8
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 script = ExtResource("1_bgvki")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_17s2m")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_lcjmk")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_top = -20
+theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="ListContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="ListScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
+vertical_scroll_mode = 3
+
+[node name="ListContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/ListScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-material = SubResource("ShaderMaterial_rolq4")
+[node name="ActionQueueItem" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
 layout_mode = 2
-texture = SubResource("ViewportTexture_sbiep")
 
-[node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(20, 200)
+[node name="ActionQueueItem2" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
+layout_mode = 2
 
-[connection signal="item_rect_changed" from="PanelContainer" to="." method="_on_subviewport_child_changed"]
+[node name="ActionQueueItem3" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
+layout_mode = 2
+
+[node name="ActionQueueItem4" parent="PanelContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
+layout_mode = 2

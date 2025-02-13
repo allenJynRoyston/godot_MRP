@@ -476,7 +476,9 @@ signal on_confirm_complete
 signal on_cancel_construction_complete
 signal on_reset_room_complete
 signal on_activate_room_complete
-signal on_contain_scp_complete
+signal on_contain_reset
+signal on_recruit_complete
+signal on_researcher_details_complete
 signal on_assign_researcher_complete
 signal on_scp_testing_complete
 signal on_scp_select_complete
@@ -579,7 +581,7 @@ func start(game_data:Dictionary = {}) -> void:
 	show()
 	set_process(true)
 	set_physics_process(true)	
-	_on_container_rect_changed()
+	#_on_container_rect_changed()
 	
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	for node in get_all_container_nodes():
@@ -841,12 +843,6 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 # -----------------------------------
 
 func set_room_config(force_setup:bool = false) -> void:
-	# if setup isn't ready, run this so the map gets built correctly
-	#if !setup_complete and (room_config.is_empty() or base_states.is_empty()) and !force_setup:
-		#base_states = initial_values.base_states.call()
-		#room_config = initial_values.room_config.call()		
-		#return
-
 	# otherwise, run the full script.  This prevents this code from running multiple times
 	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var under_construction_rooms:Array = []
@@ -911,14 +907,17 @@ func set_room_config(force_setup:bool = false) -> void:
 	# mark rooms that are under construction...
 	for item in action_queue_data:		
 		match item.action:
-			ACTION.AQ.BUILD_ITEM:
-				var floor:int = item.location.floor
-				var ring:int = item.location.ring
-				var room:int = item.location.room		
-				new_room_config.floor[floor].ring[ring].room[room].build_data = {
-					"ref": item.ref
-				}
-	
+			ACTION.AQ.BUILD_ITEM:				
+				print("item.location: ", item.location)
+				pass
+				#var floor:int = item.location.floor
+				#var ring:int = item.location.ring
+				#var room:int = item.location.room		
+				#new_room_config.floor[floor].ring[ring].room[room].build_data = {
+					#"ref": item.ref
+				#}
+	#
+
 	# mark rooms that are already built...
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -928,7 +927,7 @@ func set_room_config(force_setup:bool = false) -> void:
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
 		
 		# if facility is built, clear build_data 
-		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
+		#new_room_config.floor[floor].ring[ring].room[room].build_data = {}
 
 		# then get is_activated status
 		var is_activated:bool = base_states.room[designation].is_activated
@@ -1236,16 +1235,10 @@ func next_day() -> void:
 	# update progress data
 	await update_progress_data()
 		
-	# UPDATES ALL THINGS LEFT IN QUEUE THAT REQUIRES MORE TIME
-	action_queue_data = action_queue_data.map(func(i): 
-		i.count.day += 1
-		return i
-	)
-	
+
 	# update subscriptions
 	SUBSCRIBE.progress_data = progress_data
-	SUBSCRIBE.resources_data = resources_data	
-	SUBSCRIBE.action_queue_data = action_queue_data	
+	SUBSCRIBE.resources_data = resources_data		
 	SUBSCRIBE.base_states = base_states
 	
 	# ADDS DAY COUNT TO SCP DATA
@@ -1257,7 +1250,7 @@ func next_day() -> void:
 	scp_data.available_list = scp_data.available_list.filter(func(i): return i.days_until_expire > 0 or i.transfer_status.state)
 	
 	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	completed_actions = action_queue_data.filter(func(i): return i.count.day >= i.count.completed_at)	
+	completed_actions = action_queue_data.filter(func(i): return i.completed_at == progress_data.day)	
 	if completed_actions.size() > 0:
 		await on_complete_build_complete
 
@@ -1618,13 +1611,11 @@ func add_action_queue_item(dict:Dictionary, props:Dictionary = {}) -> void:
 		"uid": U.generate_uid(),
 		"action": dict.action,
 		"ref": dict.ref,
-		"title_btn": dict.title_btn,
+		"title": dict.title,
+		"icon": dict.icon,
 		"description": dict.description,
-		"count":{
-			"day": 0,
-			"completed_at": dict.completed_at,
-		},
-		"location": dict.location.duplicate(true),
+		"completed_at": dict.completed_at + 1,
+		"location": dict.location,
 		"props": props
 	})
 	
@@ -1635,6 +1626,13 @@ func add_action_queue_item(dict:Dictionary, props:Dictionary = {}) -> void:
 
 # ------------------------------------------------------------------------------	
 #region SCP FUNCS (assign/unassign/dismiss, etc)
+# -----------------------------------
+func view_scp_details() -> void:
+	current_contain_step = CONTAIN_STEPS.START
+	await on_contain_reset
+	
+	
+
 # -----------------------------------
 func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
 	return { 
@@ -1744,12 +1742,10 @@ func contain_scp(from_location:Dictionary) -> Dictionary:
 			add_action_queue_item({
 				"action": ACTION.AQ.CONTAIN,
 				"ref": scp_details.ref,
-				"title_btn": {
-					"title": "CONTAINMENT IN PROGRESS",
-					"icon": SVGS.TYPE.CONTAIN,
-				},
+				"title": scp_details.name, 
+				"icon": SVGS.TYPE.CONTAIN,
 				"completed_at": scp_details.containment_time.call(),
-				"description": "%s %s." % [scp_details.name, "CONTAINMENT"],
+				"description": "CONTAINMENT IN PROGRESS",
 				"location": from_location.duplicate()
 			})			
 			
@@ -1788,10 +1784,8 @@ func transfer_scp(from_location:Dictionary) -> Dictionary:
 		add_action_queue_item({
 			"action": ACTION.AQ.TRANSFER,
 			"ref": scp_details.ref,
-			"title_btn": {
-				"title": "TRANSFER IN PROGRESS",
-				"icon": SVGS.TYPE.CONTAIN,
-			},
+			"title": "TRANSFER IN PROGRESS",
+			"icon": SVGS.TYPE.CONTAIN,
 			"completed_at": scp_details.containment_time.call(),
 			"description": "%s %s." % [scp_details.name, "TRANSFER" ],
 			"location": current_location.duplicate()
@@ -1900,10 +1894,8 @@ func update_scp_testing(scp_ref:int, testing_ref:int) -> void:
 		add_action_queue_item({
 			"action": ACTION.AQ.TESTING,
 			"ref": scp_ref,
-			"title_btn": {
-				"title": "TESTING",
-				"icon": SVGS.TYPE.RESEARCH,
-			},
+			"title": "TESTING",
+			"icon": SVGS.TYPE.RESEARCH,
 			"completed_at": 1,
 			"description": "Testing %s." % [scp_details.name],
 			"location": list_data.location,
@@ -1968,6 +1960,16 @@ func on_expired_scp_items_update() -> void:
 # ------------------------------------------------------------------------------	
 #region RESEARCHER FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
+func recruit() -> void:
+	current_recruit_step = RECRUIT_STEPS.START
+	await on_recruit_complete
+
+func open_researcher_details() -> void:
+	current_researcher_step = RESEARCHERS_STEPS.START
+	await on_researcher_details_complete
+	
+
+# -----------------------------------
 func promote_researchers() -> void:	
 	var list:Array = RESEARCHER_UTIL.check_for_promotions()	
 	if list.size() == 0:
@@ -2028,6 +2030,7 @@ func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) ->
 
 # -----------------------------------
 func assign_researcher(location_data:Dictionary) -> Dictionary:
+	
 	ResearchersContainer.assign_only = true
 	await show_only([ResearchersContainer])
 	var response:Dictionary = await ResearchersContainer.user_response
@@ -2111,6 +2114,7 @@ func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers
 
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
+	print(action_queue_data)
 		
 func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 	bookmarked_rooms = new_val
@@ -2248,10 +2252,10 @@ func on_show_end_of_phase_update() -> void:
 	#ChoiceContainer.is_showing = show_choices
 	#showing_states[ChoiceContainer] = show_choices
 
-func _on_container_rect_changed() -> void:	
-	if !is_node_ready():return
-	for sidebar in [RoomStatusContainer, ActionQueueContainer]:
-		sidebar.max_height = self.size.y
+#func _on_container_rect_changed() -> void:	
+	#if !is_node_ready():return
+	#for sidebar in [RoomStatusContainer, ActionQueueContainer]:
+		#sidebar.max_height = self.size.y
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -2378,12 +2382,10 @@ func on_current_shop_step_update() -> void:
 			add_action_queue_item({
 				"action": ACTION.AQ.BUILD_ITEM,
 				"ref": selected_shop_item.ref,
-				"title_btn": {
-					"title": "CONSTRUCTING...", 
-					"icon": SVGS.TYPE.BUILD,
-				},
+				"title": purchase_item_data.name,
+				"icon": SVGS.TYPE.BUILD,
 				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
-				"description": "%s" % [purchase_item_data.name],
+				"description": "CONSTRUCTING",
 				"location": current_location.duplicate()
 			})
 			
@@ -2396,12 +2398,10 @@ func on_current_shop_step_update() -> void:
 			add_action_queue_item({
 				"action": ACTION.AQ.RESEARCH_ITEM,
 				"ref": selected_shop_item.ref,
-				"title_btn": {
-					"title": "RESEARCHING...", 
-					"icon": SVGS.TYPE.RESEARCH,
-				},
+				"title": purchase_item_data.name,
+				"icon": SVGS.TYPE.RESEARCH,
 				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
-				"description": "%s" % [purchase_item_data.name],
+				"description": "RESEARCHING",
 				"location": current_location.duplicate()
 			})
 
@@ -2415,12 +2415,10 @@ func on_current_shop_step_update() -> void:
 			add_action_queue_item({
 				"action": ACTION.AQ.BASE_ITEM,
 				"ref": selected_shop_item.ref,
-				"title_btn": {
-					"title": "UPGRADING...", 
-					"icon": SVGS.TYPE.RESEARCH,
-				},
+				"title": purchase_item_data.name,
+				"icon": SVGS.TYPE.RESEARCH,
 				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
-				"description": "%s" % [purchase_item_data.name],
+				"description": "UPGRADING",
 				"location": current_location.duplicate()
 			})
 			
@@ -2456,6 +2454,7 @@ func on_current_contain_step_update() -> void:
 		CONTAIN_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
+			on_contain_reset.emit()
 		# ---------------
 		CONTAIN_STEPS.START:
 			selected_contain_item = {} 
@@ -2616,12 +2615,10 @@ func on_current_contain_step_update() -> void:
 			add_action_queue_item({
 				"action": ACTION.AQ.CONTAIN if selected_contain_item.is_new_transfer else ACTION.AQ.TRANSFER,
 				"ref": selected_contain_item.ref,
-				"title_btn": {
-					"title": "CONTAINMENT IN PROGRESS" if selected_contain_item.is_new_transfer else "TRANSFER IN PROGRESS",
-					"icon": SVGS.TYPE.CONTAIN,
-				},
+				"title": selected_contain_item.name,
+				"icon": SVGS.TYPE.CONTAIN,
 				"completed_at": scp_details.containment_time.call(),
-				"description": "%s %s." % [selected_contain_item.name, "CONTAINMENT" if selected_contain_item.is_new_transfer else "TRANSFER" ],
+				"description": "CONTAINMENT IN PROGRESS" if selected_contain_item.is_new_transfer else "TRANSFER IN PROGRESS",
 				"location": current_location.duplicate()
 			})			
 			
@@ -2642,8 +2639,9 @@ func on_current_recruit_step_update() -> void:
 		RECRUIT_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
+			on_recruit_complete.emit()
 		# ---------------
-		CONTAIN_STEPS.START:
+		RECRUIT_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			selected_lead_hire = {}
 			selected_support_hire = {}
@@ -2705,8 +2703,7 @@ func on_current_action_complete_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			revert_state_location = current_location
 			BuildCompleteContainer.completed_build_items = completed_actions
-			
-			
+
 			for item in completed_actions:
 				match item.action:
 					# ----------------------------
@@ -2802,6 +2799,7 @@ func on_current_summary_step_update() -> void:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------	
+#region SELECT SCP STEPS
 func on_current_select_scp_step_update() -> void:
 	if !is_node_ready():return
 
@@ -2827,6 +2825,7 @@ func on_current_select_scp_step_update() -> void:
 
 			# trigger signal
 			on_scp_select_complete.emit()
+#endregion
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------		
@@ -2838,6 +2837,8 @@ func on_current_researcher_promotion_step_update() -> void:
 		PROMOTE_RESEARCHER_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_default_state()
+			on_promote_researcher_complete.emit()
+			
 		PROMOTE_RESEARCHER_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			var ResearcherPromotionNode:Control = ResearcherPromotionScreenPreload.instantiate()
@@ -2846,14 +2847,9 @@ func on_current_researcher_promotion_step_update() -> void:
 			ResearcherPromotionNode.start()
 			await ResearcherPromotionNode.user_response
 			ResearcherPromotionNode.queue_free()
-
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			current_select_scp_step = SELECT_SCP_STEPS.RESET
-			await U.set_timeout(0.5)
 
-			# trigger signal
-			on_promote_researcher_complete.emit()
-			
 
 func on_current_researcher_step_update() -> void:
 	if !is_node_ready():return
@@ -2865,6 +2861,7 @@ func on_current_researcher_step_update() -> void:
 			await restore_default_state()
 			selected_scp_details = {}
 			selected_researcher_item = {}
+			on_researcher_details_complete.emit()
 		# ------------------------
 		RESEARCHERS_STEPS.START:
 			SUBSCRIBE.suppress_click = true

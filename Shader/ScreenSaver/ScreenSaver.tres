@@ -1,7 +1,3 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b4dnsatkufi37"]
-
-[ext_resource type="Shader" path="res://Shader/ScreenSaver/ScreenSaver.gdshader" id="1_58ish"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b4dnsatkufi37"]
 
 [resource]
-shader = ExtResource("1_58ish")
-shader_parameter/segments = 6

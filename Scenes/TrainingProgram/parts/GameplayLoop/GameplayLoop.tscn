@@ -58,9 +58,8 @@ show_metrics = true
 layout_mode = 2
 
 [node name="ActionQueueContainer" parent="." instance=ExtResource("5_1tp62")]
-custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_constants/margin_top = 112
+theme_override_constants/margin_top = 320
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2

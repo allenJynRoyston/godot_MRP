@@ -15,7 +15,10 @@ var options_list:Array = [] :
 		options_list = val
 		on_options_list_update()
 
-var freeze_inputs:bool = true 
+var freeze_inputs:bool = true : 
+	set(val):
+		freeze_inputs = val
+		on_freeze_inputs_update()
 
 var onClose:Callable = func():pass
 
@@ -37,13 +40,16 @@ func close() -> void:
 	freeze_inputs = true
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0))	
 	onClose.call()	
-	selected_index = 0
+	selected_index = 0	
+	options_list = []
+	clear_list()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func clear_list() -> void:
 	for child in List.get_children():
 		child.queue_free()	
+	
 
 func on_selected_index_update() -> void:
 	if !is_node_ready() or List.get_child_count() == 0:return
@@ -75,7 +81,11 @@ func on_options_list_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func simulateClick() -> void:
+func on_freeze_inputs_update() -> void:
+	U.tween_node_property(self, "scale:x", 0 if freeze_inputs else 1)
+
+
+func on_action() -> void:
 	if freeze_inputs:return
 	if selected_index != -1:
 		options_list[selected_index].onSelect.call()		
@@ -88,9 +98,9 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	match key:
 		"E":
-			simulateClick()
+			on_action()
 		"ENTER":
-			simulateClick()
+			on_action()
 		"BACKSPACE":
 			close()
 		"B":

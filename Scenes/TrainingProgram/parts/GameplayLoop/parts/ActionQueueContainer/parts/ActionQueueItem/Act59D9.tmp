@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://cgp6oftk1itbm"]
+[gd_scene load_steps=6 format=3 uid="uid://cgp6oftk1itbm"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/action_queue_item.gd" id="1_fgfba"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_xp7dm"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_iff7f"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_f2e5b"]
 
@@ -11,7 +10,7 @@
 bg_color = Color(0, 0, 0, 1)
 
 [node name="ActionQueueItem" type="PanelContainer"]
-offset_right = 200.0
+offset_right = 150.0
 offset_bottom = 32.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_cl2rc")
 script = ExtResource("1_fgfba")
@@ -25,31 +24,19 @@ theme_override_constants/margin_right = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 alignment = 2
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_xp7dm")]
-visible = false
-custom_minimum_size = Vector2(25, 25)
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-is_hoverable = false
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-text = "TITLE"
+size_flags_vertical = 5
+text = "I AM THE DESCRIPTION"
 label_settings = ExtResource("4_f2e5b")
-horizontal_alignment = 2
-
-[node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-text = "Description goes here"
-label_settings = ExtResource("4_f2e5b")
-horizontal_alignment = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+text_overrun_behavior = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 0)

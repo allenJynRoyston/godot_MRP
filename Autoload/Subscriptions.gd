@@ -107,6 +107,7 @@ var action_queue_data_subscriptions:Array = []
 var action_queue_data:Array = [] : 
 	set(val):
 		action_queue_data = val
+		print(val)
 		for node in action_queue_data_subscriptions:
 			if "on_action_queue_data_update" in node:
 				node.on_action_queue_data_update.call(action_queue_data)

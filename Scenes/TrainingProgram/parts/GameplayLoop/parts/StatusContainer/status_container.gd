@@ -69,7 +69,7 @@ func _ready() -> void:
 func on_show_details_update() -> void:
 	var AQNode:Control = GBL.find_node(REFS.ACTION_QUEUE_CONTAINER)
 	await U.tick()
-	AQNode.add_theme_constant_override("margin_top", (DetailPanel.global_position.y + DetailPanel.size.y - 20) if show_details else MainPanel.global_position.y + MainPanel.size.y)	
+	AQNode.add_theme_constant_override("margin_top", MainPanel.global_position.y + MainPanel.size.y)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
