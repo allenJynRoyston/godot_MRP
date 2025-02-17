@@ -3,6 +3,25 @@ extends Node
 
 enum DIR {UP, DOWN, LEFT, RIGHT}
 
+var debounce_timers := {}
+
+# ------------------------------------------------------------------------------
+func debounce(key: String, callback: Callable, delay: float = 0.02):
+	# If there's an existing timer, cancel it
+	if key in debounce_timers and debounce_timers[key]:
+		debounce_timers[key].timeout.disconnect(debounce_timers[key].get_meta("callback"))
+
+	# Create a new timer
+	var timer = get_tree().create_timer(delay)
+	timer.set_meta("callback", callback)
+
+	# Connect the timeout signal to execute the callback
+	timer.timeout.connect(callback)
+
+	# Store the timer in the dictionary
+	debounce_timers[key] = timer
+# ------------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------------
 func generate_rand(min: int, max: int) -> int:
 	return randi() % (max - min + 1) + min

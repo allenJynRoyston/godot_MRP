@@ -1,11 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://cr4jyhkulokw2"]
+[gd_scene load_steps=8 format=3 uid="uid://cr4jyhkulokw2"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/metric_mini_item.gd" id="1_kfsig"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_rtf5u"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_aujp3"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_r01ax"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqb8x"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
+bg_color = Color(0, 1, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -15,12 +21,11 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jtngq"]
 bg_color = Color(0, 0, 0, 0.560784)
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [node name="MetricMiniItem" type="PanelContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(80, 0)
+rotation = 0.000736245
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_tqb8x")
@@ -46,10 +51,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="TitleHeader" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(75, 15)
+layout_mode = 2
+alignment = 1
+
+[node name="IconBtn" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer" instance=ExtResource("2_rtf5u")]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 10
+static_color = Color(0, 0, 0, 1)
+is_hoverable = false
+
+[node name="TitleHeader" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 5
-text = "METRIC"
+text = "MORALE"
 label_settings = ExtResource("3_aujp3")
 horizontal_alignment = 1
 vertical_alignment = 1

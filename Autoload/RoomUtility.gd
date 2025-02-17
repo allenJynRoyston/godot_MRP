@@ -1,8 +1,80 @@
 @tool
 extends UtilityWrapper
 
-var STARTING_BASE:Dictionary = {
-	"name": "BASE HQ",
+var DIRECTORS_OFFICE:Dictionary = {
+	"name": "DIRECTORS OFFICE",
+	"shortname": "D.OFFICE",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "The site directors office.",
+	"can_contain": true,
+	
+	"prerequisites": [
+
+	],		
+	"placement_restrictions": {
+
+	},
+	"own_limit": func() -> int:
+		return 1,
+	"get_build_time": func() -> int:
+		return 1,
+	
+
+	# ------------------------------------------
+	"wing_effect": func(extract_data:Dictionary) -> Dictionary:				
+		return {
+			RESOURCE.BASE_METRICS.SAFETY: -1
+		},
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+		}	
+	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
+	
+	#"activation_effect": {
+		#"resources": {
+			#"amount": func() -> Dictionary:
+				#return {
+#
+				#},
+			#"capacity": func() -> Dictionary:
+				#return {
+					#RESOURCE.TYPE.STAFF: 10,
+					#RESOURCE.TYPE.SECURITY: 10,
+					#RESOURCE.TYPE.DCLASS: 10
+				#},			
+		#}	
+	#},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -1
+				},
+		}	
+	}	
+	# ------------------------------------------
+}
+
+var HQ:Dictionary = {
+	"name": "HEADQUARTERS",
 	"shortname": "HQ",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
@@ -20,6 +92,13 @@ var STARTING_BASE:Dictionary = {
 	"get_build_time": func() -> int:
 		return 1,
 	
+
+	# ------------------------------------------
+	"wing_effect": func(extract_data:Dictionary) -> Dictionary:				
+		return {
+			RESOURCE.BASE_METRICS.SAFETY: -1
+		},
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -75,7 +154,7 @@ var R_AND_D_LAB:Dictionary = {
 	"can_contain": false,
 	
 	"prerequisites": [
-		ROOM.TYPE.STARTING_BASE
+		ROOM.TYPE.HQ
 	],	
 		
 	"placement_restrictions": {
@@ -146,7 +225,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 	"can_contain": false,
 	
 	"prerequisites": [
-		ROOM.TYPE.STARTING_BASE
+		ROOM.TYPE.HQ
 	],	
 		
 	"placement_restrictions": {
@@ -214,7 +293,7 @@ var BARRICKS:Dictionary = {
 	"can_contain": false,
 	
 	"prerequisites": [
-		ROOM.TYPE.STARTING_BASE
+		ROOM.TYPE.HQ
 	],	
 		
 	"placement_restrictions": {
@@ -284,7 +363,7 @@ var DORMITORY:Dictionary = {
 	"can_contain": false,
 	
 	"prerequisites": [
-		ROOM.TYPE.STARTING_BASE
+		ROOM.TYPE.HQ
 	],	
 		
 	"placement_restrictions": {
@@ -347,7 +426,7 @@ var HOLDING_CELLS:Dictionary = {
 	"can_contain": false,
 	
 	"prerequisites": [
-		ROOM.TYPE.STARTING_BASE
+		ROOM.TYPE.HQ
 	],		
 	
 	"placement_restrictions": {
@@ -415,7 +494,7 @@ var HR_DEPARTMENT:Dictionary = {
 	"can_contain": false,
 	
 	"prerequisites": [
-		ROOM.TYPE.STARTING_BASE
+		ROOM.TYPE.HQ
 	],		
 	
 	"placement_restrictions": {
@@ -535,13 +614,13 @@ var HUME_DETECTOR:Dictionary = {
 var STANDARD_LOCKER:Dictionary = {
 	"name": "STANDARD_LOCKER",
 	"shortname": "S.LOCKER",
-	"tier": TIER.VAL.ONE,
+	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "A basic room with a high security lock.",
 	"can_contain": true,
 	
 	"prerequisites": [
-		ROOM.TYPE.STARTING_BASE
+		ROOM.TYPE.HQ
 	],		
 	"placement_restrictions": {
 		"floor": [
@@ -598,7 +677,8 @@ var STANDARD_LOCKER:Dictionary = {
 }
 
 var reference_data:Dictionary = {
-	ROOM.TYPE.STARTING_BASE: STARTING_BASE,
+	ROOM.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE,
+	ROOM.TYPE.HQ: HQ,
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
 	ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	ROOM.TYPE.BARRICKS: BARRICKS,
@@ -797,21 +877,22 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var floor_data:Dictionary = use_config.floor[floor]
 	var wing_data:Dictionary = use_config.floor[floor].ring[ring]
 	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
+	
 	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
-	var room_under_construction:bool  = !room_config_data.build_data.is_empty()
-	var has_room:bool = !room_config_data.room_data.is_empty()
+	var is_room_under_construction:bool  = !room_config_data.build_data.is_empty()
+	var is_room_empty:bool = room_config_data.room_data.is_empty()
 	
-	var room_details:Dictionary = room_config_data.room_data.get_room_details.call() if has_room else {}
-	var is_activated:bool = room_config_data.room_data.get_is_activated.call() if has_room else false
-	var can_activate:bool = (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if has_room else false
-	var can_contain:bool = room_details.can_contain if has_room else false
-	
+	var room_details:Dictionary = room_config_data.room_data.get_room_details.call() if !is_room_empty else {}
+	var is_activated:bool = room_config_data.room_data.get_is_activated.call() if !is_room_empty else false
+	var can_activate:bool = (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if !is_room_empty else false
+	var can_contain:bool = room_details.can_contain if !room_details.is_empty() else false
+
 	var scp_data:Dictionary = room_config_data.scp_data 
-	var no_scp_data:bool = scp_data.is_empty()
+	var is_scp_empty:bool = scp_data.is_empty()
 	var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
-	var is_transfer:bool = (false if no_scp_data else room_config_data.scp_data.is_transfer) 
-	var is_contained:bool = (false if no_scp_data else room_config_data.scp_data.is_contained)
-	var testing_details:Dictionary = {} if no_scp_data else room_config_data.scp_data.get_testing_details.call() if !is_transfer else {}
+	var is_transfer:bool = (false if is_scp_empty else room_config_data.scp_data.is_transfer) 
+	var is_contained:bool = (false if is_scp_empty else room_config_data.scp_data.is_contained)
+	var testing_details:Dictionary = {} if is_scp_empty else room_config_data.scp_data.get_testing_details.call() if !is_transfer else {}
 	var is_testing:bool = !testing_details.is_empty()
 	var testing_ref:int =  -1 if !is_testing else testing_details.testing_ref
 	var testing_progress:int = -1 if !is_testing else testing_details.progress
@@ -823,17 +904,31 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
-	
+
 	return {
 		"floor": floor_data,
 		"wing": wing_data,
+		
+		# -----
+		"is_directors_office": room_details.ref == ROOM.TYPE.DIRECTORS_OFFICE if !room_details.is_empty() else false,
+		"is_hq": room_details.ref == ROOM.TYPE.HQ if !room_details.is_empty() else false,
+		"is_room_empty": room_details.is_empty(),
+		"is_room_under_construction": is_room_under_construction,
+		"is_room_active": is_activated,
+		"room_category": ROOM.CATEGORY.CONTAINMENT_CELL if (!room_details.is_empty() and room_details.can_contain) else ROOM.CATEGORY.FACILITY,
+		"researchers_count": researchers.size(),
+		
+		"is_scp_empty": is_scp_empty,
+		"is_scp_transfering": is_transfer,
+		"is_scp_contained": is_contained,
+
+		# -----
 		"room": {						
-			"details": room_details if !room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
-			"under_construction": room_under_construction,
+			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
 			"can_contain": can_contain,		
 			"is_activated": is_activated,
 			"can_activate": can_activate,
-		} if has_room or room_under_construction else {},
+		} if !is_room_empty or is_room_under_construction else {},
 		"scp": {
 			"details": scp_details,
 			"is_transfer": is_transfer,
@@ -843,7 +938,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 				"testing_ref": testing_ref,
 				"progress": testing_progress
 			} if is_testing else {}
-		} if !no_scp_data else {},
+		} if !is_scp_empty else {},
 		"researchers": researchers
 	}
 # ------------------------------------------------------------------------------	

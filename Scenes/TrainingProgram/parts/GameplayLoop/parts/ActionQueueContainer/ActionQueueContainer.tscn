@@ -41,9 +41,9 @@ script = ExtResource("2_amidr")
 
 [node name="MarginContainer" type="MarginContainer" parent="DetectorPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 130
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 195
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
 [node name="ListScrollContainer" type="ScrollContainer" parent="DetectorPanel/MarginContainer"]

@@ -45,13 +45,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-debug_mode = true
 show_location = false
 room_item_status = false
 show_resources = false
 show_dialogue = false
 show_status = true
 show_metrics = true
+metadata/_edit_group_ = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
@@ -170,16 +170,39 @@ visible = false
 layout_mode = 2
 
 [node name="WaitContainer" type="PanelContainer" parent="."]
-visible = false
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="WaitContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="WaitContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="WaitContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yaxkh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WaitContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_yaxkh")
+theme_override_constants/separation = 10
+alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="WaitContainer/PanelContainer"]
+[node name="IconBtn" parent="WaitContainer/MarginContainer/PanelContainer/VBoxContainer" instance=ExtResource("15_y8y6g")]
+layout_mode = 2
+icon = 18
+is_hoverable = false
+
+[node name="Label" type="Label" parent="WaitContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Please wait..."
+label_settings = ExtResource("18_4sn0g")
+
+[node name="MarginContainer" type="MarginContainer" parent="WaitContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -188,19 +211,25 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="WaitContainer/PanelContainer/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="WaitContainer/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yaxkh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WaitContainer/MarginContainer/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="IconBtn" parent="WaitContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("15_y8y6g")]
+[node name="IconBtn" parent="WaitContainer/MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer" instance=ExtResource("15_y8y6g")]
 layout_mode = 2
 icon = 18
 is_hoverable = false
 
-[node name="Label" type="Label" parent="WaitContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="WaitContainer/MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 text = "Please wait..."
 label_settings = ExtResource("18_4sn0g")

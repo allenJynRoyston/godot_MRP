@@ -4,8 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_0ixyl"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_7luo6"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v55o7"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_weu8b"]
+bg_color = Color(0.169245, 0.169245, 0.169245, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -21,9 +26,10 @@ corner_radius_bottom_left = 5
 [node name="KeyBtn" type="PanelContainer"]
 offset_right = 56.0
 offset_bottom = 65.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_v55o7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_weu8b")
 script = ExtResource("1_5n3hm")
 title = "TITLE"
+panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 text_active_color = Color(1, 1, 1, 1)
 text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 

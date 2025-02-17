@@ -7,9 +7,9 @@ extends GameContainer
 @onready var ResourceItemMoney:Control = $PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
 @onready var ResourceItemEnergy:Control = $PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
 
-@onready var ResourceItemStaff:Control =  $PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
-@onready var ResourceItemSecurity:Control = $PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
-@onready var ResourceItemDClass:Control = $PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
+@onready var ResourceItemStaff:Control =  $PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2/ResourceItemStaff
+@onready var ResourceItemSecurity:Control = $PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2/ResourceItemSecurity
+@onready var ResourceItemDClass:Control = $PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2/ResourceItemDClass
 
 @onready var DetailPanel:Control = $Control/DetailPanel
 

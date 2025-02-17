@@ -1,9 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://ctkwq86y1xbhs"]
+[gd_scene load_steps=23 format=3 uid="uid://ctkwq86y1xbhs"]
 
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="1_05sbj"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/metrics_container.gd" id="1_jfbub"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_v7ywe"]
 [ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/Oscilliscope.gdshader" id="5_2mash"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="5_vocfw"]
 [ext_resource type="PackedScene" uid="uid://cr4jyhkulokw2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricMiniItem.tscn" id="7_srt4y"]
 [ext_resource type="PackedScene" uid="uid://bppcetyyh0jh7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn" id="7_y31xb"]
 
@@ -24,35 +25,91 @@ viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfbj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l8xuj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5oonm"]
 bg_color = Color(0, 0.529, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxary"]
-bg_color = Color(1, 0.34, 0.307, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l7mfg"]
-bg_color = Color(0, 0.529, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_24tts"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2kgap"]
 bg_color = Color(0.455, 0.002, 0.713, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jn7i8"]
+bg_color = Color(1, 0.34, 0.307, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7s7se"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqid3"]
+bg_color = Color(0.36, 0.36, 0.36, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmxqv"]
+bg_color = Color(0.534, 0.538, 0.541, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yohhl"]
+bg_color = Color(0.9, 0.1836, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cfdnv"]
+bg_color = Color(0, 0.6755, 0.1946, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m4sfl"]
 bg_color = Color(0, 0.53, 0.282667, 0)
@@ -110,43 +167,39 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_rqfbj")
 
-[node name="FloorPanel" type="HBoxContainer" parent="TopContainer"]
-layout_mode = 2
-
-[node name="FloorMetric" parent="TopContainer/FloorPanel" instance=ExtResource("7_y31xb")]
-layout_mode = 2
-size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_l8xuj")
-type = 1
-header = "FLOOR X"
-status = "WING A"
-
 [node name="WingPanel" type="HBoxContainer" parent="TopContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 5
-
-[node name="ResearcherContainer" type="VBoxContainer" parent="TopContainer/WingPanel"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 10
 
-[node name="MetricsResearcherA" parent="TopContainer/WingPanel/ResearcherContainer" instance=ExtResource("7_y31xb")]
+[node name="RoomLevelMetrics" type="HBoxContainer" parent="TopContainer/WingPanel"]
+layout_mode = 2
+
+[node name="MetricsRoom" parent="TopContainer/WingPanel/RoomLevelMetrics" instance=ExtResource("7_y31xb")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_5oonm")
+type = 1
+is_active = false
+
+[node name="MetricsSCP" parent="TopContainer/WingPanel/RoomLevelMetrics" instance=ExtResource("7_y31xb")]
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_2kgap")
+is_active = false
+
+[node name="ResearcherContainer" type="VBoxContainer" parent="TopContainer/WingPanel/RoomLevelMetrics"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_sxary")
+theme_override_constants/separation = -45
+
+[node name="MetricsResearcherA" parent="TopContainer/WingPanel/RoomLevelMetrics/ResearcherContainer" instance=ExtResource("7_y31xb")]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_jn7i8")
 type = 2
-
-[node name="MetricsRoom" parent="TopContainer/WingPanel" instance=ExtResource("7_y31xb")]
-layout_mode = 2
-size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_l7mfg")
-type = 1
-
-[node name="MetricsSCP" parent="TopContainer/WingPanel" instance=ExtResource("7_y31xb")]
-layout_mode = 2
-size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_24tts")
+is_active = false
 
 [node name="TopCenter" type="PanelContainer" parent="."]
 layout_mode = 2
@@ -162,24 +215,73 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 5
 
+[node name="PanelContainer" type="PanelContainer" parent="TopCenter/VBoxContainer/MetricsPanel"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gqid3")
+
+[node name="MarginContainer" type="MarginContainer" parent="TopCenter/VBoxContainer/MetricsPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="FloorLabel" type="Label" parent="TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "F1"
+label_settings = ExtResource("5_vocfw")
+horizontal_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "WING"
+label_settings = ExtResource("3_v7ywe")
+horizontal_alignment = 1
+
+[node name="WingLabel" type="Label" parent="TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "A"
+label_settings = ExtResource("3_v7ywe")
+horizontal_alignment = 1
+
 [node name="Morale" parent="TopCenter/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
-header = "MORALE"
-value = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_gmxqv")
 
 [node name="Safety" parent="TopCenter/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
-header = "SAFETY"
+theme_override_styles/panel = SubResource("StyleBoxFlat_yohhl")
+assigned_metric = 1
+value = -4
 
 [node name="Readiness" parent="TopCenter/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
-header = "READINESS"
+theme_override_styles/panel = SubResource("StyleBoxFlat_cfdnv")
+assigned_metric = 2
+value = 2
 
 [node name="HumePanel" type="PanelContainer" parent="TopCenter/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_m4sfl")
 
 [node name="MarginContainer" type="MarginContainer" parent="TopCenter/VBoxContainer/HumePanel"]
@@ -212,6 +314,6 @@ label_settings = ExtResource("3_v7ywe")
 
 [node name="MarkerLabel" type="Label" parent="TopCenter/VBoxContainer"]
 layout_mode = 2
-text = "FLOOR 1   WING A"
+text = "STATUS"
 label_settings = ExtResource("3_v7ywe")
 horizontal_alignment = 1

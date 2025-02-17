@@ -173,7 +173,7 @@ func update_boards() -> void:
 						left_label_3d.text = "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.room.is_empty() else room_extract.room.details.shortname]
 						left_status_label.text = ""
 						if !room_extract.room.is_empty():
-							if room_extract.room.under_construction:
+							if room_extract.is_room_under_construction:
 								left_status_label.text = "CONSTRUCTING"
 							else:
 								left_status_label.text = "NO ISSUES" if room_extract.room.is_activated else "NOT POWERED"
@@ -301,203 +301,204 @@ func on_current_menu_type_update() -> void:
 
 # --------------------------------------------------------
 func on_show_menu_update(setup:bool = false) -> void:
-	if is_node_ready() and setup:
-		U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0 if show_menu else 90)
-		return
-	
-	if current_location.is_empty(): return	
-	var node:Node3D = find_node_by_room(current_location.room)
-	node.show_internal = show_menu
-	
-	if show_menu:
-		var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
-		var is_testing:bool = !room_extract.scp.testing.is_empty() if !room_extract.scp.is_empty() else false		
-		var can_take_action:bool = is_powered and (!in_lockdown and !in_brownout)
-		
-		menu_actions = []
-		
-		menu_actions.push_back({
-			"title": "BACK",
-			"onSelect": func() -> void:
-				menu_response.emit({"action": ACTION.ROOM_NODE.BACK})
-		})		
-		
-
-		match current_menu_type:
-			# ------------------
-			MENU_TYPE.ROOM:								
-				var room_is_empty:bool = room_extract.room.is_empty()
-				
-				if room_is_empty:
-					menu_actions.push_back({
-						"title": "CONSTRUCT ROOM...",
-						"is_disabled": is_testing or !can_take_action, 
-						"onSelect": func() -> void:
-							menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
-					})							
-				
-				else:
-					if room_extract.room.under_construction:
-						menu_actions.push_back({
-							"title": "CANCEL CONSTRUCTION",
-							"onSelect": func() -> void:
-								menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONSTRUCTION})
-						})		
-
-					else:
-						if !room_extract.room.is_activated:
-							menu_actions.push_back({
-								"title": "ACTIVATE ROOM",
-								"is_disabled": !room_extract.room.can_activate or is_testing or !can_take_action,
-								"onSelect": func() -> void:
-									menu_response.emit({"action": ACTION.ROOM_NODE.ACTIVATE_ROOM, "room_details": room_extract.room.details})
-							})		
-						else:
-							menu_actions.push_back({
-								"title": "DEACTIVATE ROOM",
-								"is_disabled": is_testing or !can_take_action,
-								"onSelect": func() -> void:
-									menu_response.emit({"action": ACTION.ROOM_NODE.DEACTIVATE_ROOM, "room_details": room_extract.room.details})
-							})		
-													
-						menu_actions.push_back({
-							"title": "DESTROY ROOM",
-							"is_disabled": is_testing or !can_take_action,
-							"onSelect": func() -> void:
-								menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
-						})		
-			# ------------------
-			
-			# ------------------
-			MENU_TYPE.RESEARCHER:
-				menu_actions.push_back({
-					"title": "ASSIGN RESEARCHER...",
-					"is_disabled": is_testing or !can_take_action,
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.ASSIGN_RESEARCHER})
-				})		
-				
-				if room_extract.researchers.size() > 0:
-					for researcher in room_extract.researchers:
-						menu_actions.push_back({
-							"title": "REMOVE %s" % [researcher.name],
-							"is_disabled": is_testing or !can_take_action,
-							"onSelect": func() -> void:
-								menu_response.emit({"action": ACTION.ROOM_NODE.UNASSIGN_RESEARCHER, "researcher": researcher, "room_details": room_extract.room.details if !room_extract.room.is_empty() else {}})
-						})
-			# ------------------
-			
-			# ------------------
-			MENU_TYPE.SCP:
-				var is_scp_empty:bool = room_extract.scp.is_empty()
-
-				if is_scp_empty:
-					menu_actions.push_back({
-						"title": "ASSIGN SCP...",
-						"is_disabled": !can_take_action,
-						"onSelect": func() -> void:
-							menu_response.emit({"action": ACTION.ROOM_NODE.CONTAIN_SCP})
-					})		
-				else:
-					if room_extract.scp.is_transfer:
-						menu_actions.push_back({
-							"title": "CANCEL CONTAINMENT" if !room_extract.scp.is_contained else "CANCEL TRANSFER" ,
-							"is_disabled": is_testing or !can_take_action,
-							"onSelect": func() -> void:
-								menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP if !room_extract.scp.is_contained else ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP})
-						})		
-					else:
-						menu_actions.push_back({
-							"title": "TRANSFER TO...",
-							"is_disabled": is_testing or !can_take_action,
-							"onSelect": func() -> void:
-								menu_response.emit({"action": ACTION.ROOM_NODE.TRANSFER_SCP})
-						})	
-						
-						var testing:Dictionary = room_extract.scp.testing
-						var can_test:bool = room_extract.researchers.size() > 0  
-						
-						if testing.is_empty():
-							menu_actions.push_back({
-								"title": "START TESTING",
-								"is_disabled": !can_test or !can_take_action,
-								"onSelect": func() -> void:
-									if can_test:
-										menu_response.emit({"action": ACTION.ROOM_NODE.START_TESTING})
-							})		
-						else:
-							menu_actions.push_back({
-								"title": "END TESTING",
-								"is_disabled": !can_take_action,
-								"onSelect": func() -> void:
-									menu_response.emit({"action": ACTION.ROOM_NODE.STOP_TESTING})
-							})		
-			# ------------------
-			
-			# ------------------
-			MENU_TYPE.WING:								
-				menu_actions.push_back({
-					"title": "SET MODE: NORMAL",
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.NORMAL})
-				})		
-									
-				menu_actions.push_back({
-					"title": "SET MODE: CAUTION",
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.CAUTION})
-				})
-				
-				menu_actions.push_back({
-					"title": "SET MODE: WARNING",
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.WARNING})
-				})				
-			
-				
-				menu_actions.push_back({
-					"title": "SET MODE: DANGER",
-					"onSelect": func() -> void:
-						menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.DANGER})
-				})							
-			# ------------------		
-	
-		# reset and clear
-		for child in ControlMenuList.get_children():
-			child.queue_free()
-		# keeps place in menu, unless it's over the menu action size
-		menu_index = U.min_max(menu_index, 0, menu_actions.size() - 1)
-		
-		
-		# build out menu
-		for index in menu_actions.size():
-			var item:Dictionary = menu_actions[index]
-			var new_btn:BtnBase = TextBtnPreload.instantiate()
-			var is_disabled:bool = item.is_disabled if "is_disabled" in item else false
-			new_btn.is_hoverable = false
-			new_btn.title = item.title
-			new_btn.is_disabled = is_disabled
-			new_btn.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
-			new_btn.onFocus = func(node:Control) -> void:
-				pass
-			new_btn.onClick = func(node:Control) -> void:
-				pass
-			ControlMenuList.add_child(new_btn)
-	
-
-	#U.tween_node_property(AccentLights, "rotation:y", 3 if show_menu else 5)	
-	GBL.add_to_animation_queue(self)	
-	
-	if show_menu:
-		CursorMenuSprite.global_position = node_location - Vector3(10, -6, 0) 
-		CursorMenuSprite.position.z = -2
-					
-	await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0 if show_menu else 90)
-	GBL.remove_from_animation_queue(self)	
-	
-	if !show_menu:
-		for child in ControlMenuList.get_children():
-			child.queue_free()		
+	pass
+	#if is_node_ready() and setup:
+		#U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0 if show_menu else 90)
+		#return
+	#
+	#if current_location.is_empty(): return	
+	#var node:Node3D = find_node_by_room(current_location.room)
+	#node.show_internal = show_menu
+	#
+	#if show_menu:
+		#var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+		#var is_testing:bool = !room_extract.scp.testing.is_empty() if !room_extract.scp.is_empty() else false		
+		#var can_take_action:bool = is_powered and (!in_lockdown and !in_brownout)
+		#
+		#menu_actions = []
+		#
+		#menu_actions.push_back({
+			#"title": "BACK",
+			#"onSelect": func() -> void:
+				#menu_response.emit({"action": ACTION.ROOM_NODE.BACK})
+		#})		
+		#
+#
+		#match current_menu_type:
+			## ------------------
+			#MENU_TYPE.ROOM:								
+				#var room_is_empty:bool = room_extract.room.is_empty()
+				#
+				#if room_is_empty:
+					#menu_actions.push_back({
+						#"title": "CONSTRUCT ROOM...",
+						#"is_disabled": is_testing or !can_take_action, 
+						#"onSelect": func() -> void:
+							#menu_response.emit({"action": ACTION.ROOM_NODE.OPEN_STORE})
+					#})							
+				#
+				#else:
+					#if room_extract.room.under_construction:
+						#menu_actions.push_back({
+							#"title": "CANCEL CONSTRUCTION",
+							#"onSelect": func() -> void:
+								#menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONSTRUCTION})
+						#})		
+#
+					#else:
+						#if !room_extract.room.is_activated:
+							#menu_actions.push_back({
+								#"title": "ACTIVATE ROOM",
+								#"is_disabled": !room_extract.room.can_activate or is_testing or !can_take_action,
+								#"onSelect": func() -> void:
+									#menu_response.emit({"action": ACTION.ROOM_NODE.ACTIVATE_ROOM, "room_details": room_extract.room.details})
+							#})		
+						#else:
+							#menu_actions.push_back({
+								#"title": "DEACTIVATE ROOM",
+								#"is_disabled": is_testing or !can_take_action,
+								#"onSelect": func() -> void:
+									#menu_response.emit({"action": ACTION.ROOM_NODE.DEACTIVATE_ROOM, "room_details": room_extract.room.details})
+							#})		
+													#
+						#menu_actions.push_back({
+							#"title": "DESTROY ROOM",
+							#"is_disabled": is_testing or !can_take_action,
+							#"onSelect": func() -> void:
+								#menu_response.emit({"action": ACTION.ROOM_NODE.RESET_ROOM})
+						#})		
+			## ------------------
+			#
+			## ------------------
+			#MENU_TYPE.RESEARCHER:
+				#menu_actions.push_back({
+					#"title": "ASSIGN RESEARCHER...",
+					#"is_disabled": is_testing or !can_take_action,
+					#"onSelect": func() -> void:
+						#menu_response.emit({"action": ACTION.ROOM_NODE.ASSIGN_RESEARCHER})
+				#})		
+				#
+				#if room_extract.researchers.size() > 0:
+					#for researcher in room_extract.researchers:
+						#menu_actions.push_back({
+							#"title": "REMOVE %s" % [researcher.name],
+							#"is_disabled": is_testing or !can_take_action,
+							#"onSelect": func() -> void:
+								#menu_response.emit({"action": ACTION.ROOM_NODE.UNASSIGN_RESEARCHER, "researcher": researcher, "room_details": room_extract.room.details if !room_extract.room.is_empty() else {}})
+						#})
+			## ------------------
+			#
+			## ------------------
+			#MENU_TYPE.SCP:
+				#var is_scp_empty:bool = room_extract.scp.is_empty()
+#
+				#if is_scp_empty:
+					#menu_actions.push_back({
+						#"title": "ASSIGN SCP...",
+						#"is_disabled": !can_take_action,
+						#"onSelect": func() -> void:
+							#menu_response.emit({"action": ACTION.ROOM_NODE.CONTAIN_SCP})
+					#})		
+				#else:
+					#if room_extract.scp.is_transfer:
+						#menu_actions.push_back({
+							#"title": "CANCEL CONTAINMENT" if !room_extract.scp.is_contained else "CANCEL TRANSFER" ,
+							#"is_disabled": is_testing or !can_take_action,
+							#"onSelect": func() -> void:
+								#menu_response.emit({"action": ACTION.ROOM_NODE.CANCEL_CONTAIN_SCP if !room_extract.scp.is_contained else ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP})
+						#})		
+					#else:
+						#menu_actions.push_back({
+							#"title": "TRANSFER TO...",
+							#"is_disabled": is_testing or !can_take_action,
+							#"onSelect": func() -> void:
+								#menu_response.emit({"action": ACTION.ROOM_NODE.TRANSFER_SCP})
+						#})	
+						#
+						#var testing:Dictionary = room_extract.scp.testing
+						#var can_test:bool = room_extract.researchers.size() > 0  
+						#
+						#if testing.is_empty():
+							#menu_actions.push_back({
+								#"title": "START TESTING",
+								#"is_disabled": !can_test or !can_take_action,
+								#"onSelect": func() -> void:
+									#if can_test:
+										#menu_response.emit({"action": ACTION.ROOM_NODE.START_TESTING})
+							#})		
+						#else:
+							#menu_actions.push_back({
+								#"title": "END TESTING",
+								#"is_disabled": !can_take_action,
+								#"onSelect": func() -> void:
+									#menu_response.emit({"action": ACTION.ROOM_NODE.STOP_TESTING})
+							#})		
+			## ------------------
+			#
+			## ------------------
+			#MENU_TYPE.WING:								
+				#menu_actions.push_back({
+					#"title": "SET MODE: NORMAL",
+					#"onSelect": func() -> void:
+						#menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.NORMAL})
+				#})		
+									#
+				#menu_actions.push_back({
+					#"title": "SET MODE: CAUTION",
+					#"onSelect": func() -> void:
+						#menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.CAUTION})
+				#})
+				#
+				#menu_actions.push_back({
+					#"title": "SET MODE: WARNING",
+					#"onSelect": func() -> void:
+						#menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.WARNING})
+				#})				
+			#
+				#
+				#menu_actions.push_back({
+					#"title": "SET MODE: DANGER",
+					#"onSelect": func() -> void:
+						#menu_response.emit({"action": ACTION.ROOM_NODE.SET_WING_MODE, "mode": ROOM.EMERGENCY_MODES.DANGER})
+				#})							
+			## ------------------		
+	#
+		## reset and clear
+		#for child in ControlMenuList.get_children():
+			#child.queue_free()
+		## keeps place in menu, unless it's over the menu action size
+		#menu_index = U.min_max(menu_index, 0, menu_actions.size() - 1)
+		#
+		#
+		## build out menu
+		#for index in menu_actions.size():
+			#var item:Dictionary = menu_actions[index]
+			#var new_btn:BtnBase = TextBtnPreload.instantiate()
+			#var is_disabled:bool = item.is_disabled if "is_disabled" in item else false
+			#new_btn.is_hoverable = false
+			#new_btn.title = item.title
+			#new_btn.is_disabled = is_disabled
+			#new_btn.icon = SVGS.TYPE.MEDIA_PLAY if index == menu_index else SVGS.TYPE.NONE
+			#new_btn.onFocus = func(node:Control) -> void:
+				#pass
+			#new_btn.onClick = func(node:Control) -> void:
+				#pass
+			#ControlMenuList.add_child(new_btn)
+	#
+#
+	##U.tween_node_property(AccentLights, "rotation:y", 3 if show_menu else 5)	
+	#GBL.add_to_animation_queue(self)	
+	#
+	#if show_menu:
+		#CursorMenuSprite.global_position = node_location - Vector3(10, -6, 0) 
+		#CursorMenuSprite.position.z = -2
+					#
+	#await U.tween_node_property(CursorMenuSprite, "rotation_degrees:y", 0 if show_menu else 90)
+	#GBL.remove_from_animation_queue(self)	
+	#
+	#if !show_menu:
+		#for child in ControlMenuList.get_children():
+			#child.queue_free()		
 
 # --------------------------------------------------------
 

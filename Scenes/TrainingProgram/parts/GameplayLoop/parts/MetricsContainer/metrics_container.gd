@@ -4,19 +4,19 @@ extends GameContainer
 
 @onready var TopContainer:PanelContainer = $TopContainer
 
-@onready var FloorPanel:HBoxContainer = $TopContainer/FloorPanel
-@onready var FloorMetric:Control = $TopContainer/FloorPanel/FloorMetric
-
-@onready var WingPanel:Control = $TopContainer/WingPanel
+@onready var FloorLabel:Label = $TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/FloorLabel
+@onready var WingLabel:Label = $TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/WingLabel
+@onready var MetricsPanel:HBoxContainer = $TopCenter/VBoxContainer/MetricsPanel
 @onready var MoraleNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Morale
 @onready var SafeteyNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Safety
 @onready var ReadinessNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Readiness
 @onready var MarkerLabel:Label = $TopCenter/VBoxContainer/MarkerLabel
 
-@onready var MetricsPanel:HBoxContainer = $TopCenter/VBoxContainer/MetricsPanel
-@onready var MetricsSCP:Control = $TopContainer/WingPanel/MetricsSCP
-@onready var MetricsRoom:Control = $TopContainer/WingPanel/MetricsRoom
-@onready var MetricsResearcherContainer:Control = $TopContainer/WingPanel/ResearcherContainer
+@onready var WingPanel:Control = $TopContainer/WingPanel
+@onready var RoomLevelMetrics:Control = $TopContainer/WingPanel/RoomLevelMetrics
+@onready var MetricsSCP:Control = $TopContainer/WingPanel/RoomLevelMetrics/MetricsSCP
+@onready var MetricsRoom:Control = $TopContainer/WingPanel/RoomLevelMetrics/MetricsRoom
+@onready var MetricsResearcherContainer:Control = $TopContainer/WingPanel/RoomLevelMetrics/ResearcherContainer
 
 const MetricsItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn")
 
@@ -89,10 +89,10 @@ func update_marker() -> void:
 			ROOM.EMERGENCY_MODES.CAUTION:
 				status_text = "CAUTION"
 	
-	MarkerLabel.text = "FLOOR: %s   WING: %s   %s"  % [current_location.floor, current_location.ring, status_text]
+	MarkerLabel.text = "%s"  % [status_text]
 	
-	FloorMetric.header = "FLOOR %s" % [current_location.floor]
-	FloorMetric.status = "WING %s" % [current_location.ring]
+	FloorLabel.text = "F%s" % [current_location.floor]
+	WingLabel.text = "%s" % [current_location.ring]
 	
 # -----------------------------------------------	
 
@@ -116,14 +116,28 @@ func update_details_panel() -> void:
 
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
 	var researchers:Array = room_extract.researchers
+	var room_category:int = room_extract.room_category
+	var is_directors_office:bool = room_extract.is_directors_office
 
 	# ------------------------------------------		
-	MetricsRoom.modulate = Color(1, 1, 1, 0.7 if room_extract.room.is_empty() else 1)
+	match room_category:
+		ROOM.CATEGORY.CONTAINMENT_CELL:
+			MetricsRoom.hide()
+			MetricsSCP.show()
+		ROOM.CATEGORY.FACILITY:
+			MetricsRoom.show()
+			MetricsSCP.hide()
+			
+	# SPECIAL EXCEPTION FOR DIRECTORS OFFICE					
+	MetricsResearcherContainer.hide() if is_directors_office else MetricsResearcherContainer.show()
+	
+		
+	MetricsRoom.is_active = !room_extract.room.is_empty()
 	if !room_extract.room.is_empty():
 		var details:Dictionary   = room_extract.room.details
 		
 		MetricsRoom.header = "%s" % [details.shortname]
-		MetricsRoom.status = "CONSTRUCTING" if room_extract.room.under_construction else "ACTIVE" if room_extract.room.is_activated else "INACTIVE"
+		MetricsRoom.status = "CONSTRUCTING" if room_extract.is_room_under_construction else "ACTIVE" if room_extract.room.is_activated else "INACTIVE"
 		var is_activated = room_extract.room.is_activated		
 		
 		var effects_list:Array = ROOM_UTIL.return_wing_effects_list(room_extract)
@@ -145,7 +159,7 @@ func update_details_panel() -> void:
 	# ------------------------------------------
 	#
 	# ------------------------------------------
-	MetricsSCP.modulate = Color(1, 1, 1, 0.7 if room_extract.scp.is_empty() else 1)
+	MetricsSCP.is_active = !room_extract.scp.is_empty()
 	if !room_extract.scp.is_empty():
 		var details:Dictionary = room_extract.scp.details
 
@@ -185,6 +199,7 @@ func update_details_panel() -> void:
 	if !researchers.is_empty():
 		for researcher in researchers:
 			var new_node:Control = MetricsItemPreload.instantiate()
+			new_node.is_active = true
 			new_node.type = 2
 			new_node.header = "%s" % [researcher.name]
 			new_node.status = "NORMAL"
@@ -205,7 +220,7 @@ func update_details_panel() -> void:
 			MetricsResearcherContainer.add_child(new_node)
 	else:
 		var new_node:Control = MetricsItemPreload.instantiate()
-		new_node.modulate = Color(1, 1, 1, 0.7)
+		new_node.is_active = false
 		new_node.type = 2
 		new_node.header = "NONE"
 		new_node.status = "N/A"
@@ -220,17 +235,12 @@ func update_details_panel() -> void:
 
 # -----------------------------------------------
 func update_panels() -> void:
-	if !is_node_ready() or camera_settings.is_empty():return
-	
-	GBL.add_to_animation_queue(self)
+	if !is_node_ready() or camera_settings.is_empty():return	
 	match camera_settings.type:
 		CAMERA.TYPE.ROOM_SELECT:
-			FloorPanel.hide()
-			WingPanel.show()
+			RoomLevelMetrics.show()			
 		CAMERA.TYPE.FLOOR_SELECT:
-			FloorPanel.show()
-			WingPanel.hide()			
-	GBL.remove_from_animation_queue(self)	
+			RoomLevelMetrics.hide()
 # -----------------------------------------------
 
 # -----------------------------------------------

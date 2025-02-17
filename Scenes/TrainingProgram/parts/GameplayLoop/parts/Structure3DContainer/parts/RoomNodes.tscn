@@ -64,10 +64,10 @@ material = SubResource("StandardMaterial3D_opsu7")
 size = Vector3(21, 5.5, 1)
 
 [sub_resource type="FogMaterial" id="FogMaterial_0edq6"]
-density = 1.1734
-emission = Color(0.366596, 0.521587, 0.521014, 1)
-height_falloff = 96.3601
-edge_fade = 1.96982
+density = 0.8218
+emission = Color(0.385469, 0.544101, 0.543483, 1)
+height_falloff = 6.45476
+edge_fade = 7.10118
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygf5b"]
 albedo_color = Color(0, 0, 0, 1)
@@ -117,7 +117,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7atia"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6yjw"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -818,7 +818,7 @@ light_specular = 0.448
 shadow_enabled = true
 shadow_opacity = 0.37
 omni_range = 32.8872
-omni_attenuation = -1.05
+omni_attenuation = -1.0
 
 [node name="Backlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
 transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, 4.06079, 26.3554, 7.13662)
@@ -827,7 +827,7 @@ light_specular = 0.448
 shadow_enabled = true
 shadow_opacity = 0.37
 omni_range = 32.8872
-omni_attenuation = -1.05
+omni_attenuation = -1.0
 
 [node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/NormalLights"]
 transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
@@ -888,7 +888,7 @@ material = SubResource("FogMaterial_0edq6")
 [node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/RoomColumn/WarningLights"]
 transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, 8.10712, 7.04194, 8.01598)
 light_color = Color(0.426196, 0, 0.148233, 1)
-light_energy = 1.668
+light_energy = 1.899
 light_volumetric_fog_energy = 0.02
 light_specular = 0.448
 shadow_enabled = true
@@ -1075,7 +1075,6 @@ spot_angle_attenuation = 0.466516
 
 [node name="NoPowerLights" type="Node3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-0.999195, 0, -0.0401317, 0, 1, 0, 0.0401317, 0, -0.999195, 0, 0, 20)
-visible = false
 
 [node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/NoPowerLights"]
 transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
@@ -1149,6 +1148,7 @@ texture = SubResource("ViewportTexture_10m8w")
 
 [node name="CursorMenuSprite" type="Sprite3D" parent="SubViewport/RoomColumn/MainCamera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 7, -11.7579)
+visible = false
 gi_mode = 0
 pixel_size = 0.003
 double_sided = false
@@ -1295,7 +1295,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7atia")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6yjw")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

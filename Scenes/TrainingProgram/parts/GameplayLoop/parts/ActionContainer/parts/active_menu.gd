@@ -50,7 +50,6 @@ func clear_list() -> void:
 	for child in List.get_children():
 		child.queue_free()	
 	
-
 func on_selected_index_update() -> void:
 	if !is_node_ready() or List.get_child_count() == 0:return
 		
@@ -71,7 +70,9 @@ func on_options_list_update() -> void:
 		var btn_node:Control = TextBtnPreload.instantiate()
 		btn_node.title = item.title
 		btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
-		btn_node.onClick = item.onSelect
+		btn_node.onClick = func() -> void:
+			if !btn_node.is_disabled:
+				item.onSelect
 		btn_node.icon = SVGS.TYPE.MEDIA_PLAY if index == selected_index else SVGS.TYPE.NONE
 		btn_node.onFocus = func(_node:Control) -> void:
 			selected_index = index
@@ -84,11 +85,12 @@ func on_options_list_update() -> void:
 func on_freeze_inputs_update() -> void:
 	U.tween_node_property(self, "scale:x", 0 if freeze_inputs else 1)
 
-
 func on_action() -> void:
 	if freeze_inputs:return
 	if selected_index != -1:
-		options_list[selected_index].onSelect.call()		
+		var btn_node:Control = List.get_child(selected_index)
+		if !btn_node.is_disabled:
+			options_list[selected_index].onSelect.call()		
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------

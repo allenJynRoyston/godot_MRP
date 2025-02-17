@@ -188,12 +188,149 @@ var IN_DEBT_WARNING:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var MORALE:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+			
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "Morale 1 event",
+					"img_src": "res://Media/images/redacted.png",
+					"text": [
+						"MORALE EVENT 1",
+					],
+					"options": [
+						{
+							"show": true,
+							"title": "Option a",
+							"val": 0,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
+							"title": "Do nothing",
+							"val": -1,
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				props.onSelection.call(option_selected.val)
+				return {
+					"text": [
+						"You selected %s" % [option_selected.val],
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var SAFETY:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+			
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "SAFETY 1 event",
+					"img_src": "res://Media/images/redacted.png",
+					"text": [
+						"SAFETY EVENT 1",
+					],
+					"options": [
+						{
+							"show": true,
+							"title": "Option a",
+							"val": 0,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
+							"title": "Do nothing",
+							"val": -1,
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				props.onSelection.call(option_selected.val)
+				return {
+					"text": [
+						"You selected %s" % [option_selected.val],
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var READINESS:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+			
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "READINESS 1 event",
+					"img_src": "res://Media/images/redacted.png",
+					"text": [
+						"READINESS EVENT 1",
+					],
+					"options": [
+						{
+							"show": true,
+							"title": "Option a",
+							"val": 0,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
+							"title": "Do nothing",
+							"val": -1,
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				props.onSelection.call(option_selected.val)
+				return {
+					"text": [
+						"You selected %s" % [option_selected.val],
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
 
 var reference_data:Dictionary = {
 	EVT.TYPE.GAME_OVER: GAME_OVER,
 	EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,
 	EVT.TYPE.SITEWIDE_BROWNOUT: SITEWIDE_BROWNOUT,
-	EVT.TYPE.IN_DEBT_WARNING: IN_DEBT_WARNING
+	EVT.TYPE.IN_DEBT_WARNING: IN_DEBT_WARNING,
+	EVT.TYPE.MORALE: MORALE,
+	EVT.TYPE.SAFETY: SAFETY,
+	EVT.TYPE.READINESS: READINESS
 }
 
 # ------------------------------------------------------------------------

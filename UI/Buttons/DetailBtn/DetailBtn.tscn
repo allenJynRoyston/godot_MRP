@@ -5,17 +5,19 @@
 [ext_resource type="Shader" path="res://Shader/ReColor/ReColor.gdshader" id="3_nv3b4"]
 [ext_resource type="Texture2D" uid="uid://cf3xiua0hdis8" path="res://SVGs/dot-filled-svgrepo-com.svg" id="4_jd2wi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_ai1lp"]
+[sub_resource type="LabelSettings" id="LabelSettings_mhmbm"]
 font = ExtResource("2_m6mqi")
 font_size = 8
 font_color = Color(0.552956, 0.552956, 0.552956, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lg1ku"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y3iy6"]
 shader = ExtResource("3_nv3b4")
 shader_parameter/tint_color = Color(0.552956, 0.552956, 0.552956, 1)
 shader_parameter/alpha = 1.0
 
-[sub_resource type="LabelSettings" id="LabelSettings_mqbxx"]
+[sub_resource type="LabelSettings" id="LabelSettings_jeroo"]
 font = ExtResource("2_m6mqi")
 font_size = 8
 font_color = Color(0.552956, 0.552956, 0.552956, 1)
@@ -43,14 +45,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Title"
-label_settings = SubResource("LabelSettings_ai1lp")
+label_settings = SubResource("LabelSettings_mhmbm")
 vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/HBoxContainer"]
-material = SubResource("ShaderMaterial_lg1ku")
+material = SubResource("ShaderMaterial_y3iy6")
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 size_flags_vertical = 4
@@ -63,5 +65,5 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "0"
-label_settings = SubResource("LabelSettings_mqbxx")
+label_settings = SubResource("LabelSettings_jeroo")
 vertical_alignment = 1

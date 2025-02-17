@@ -23,7 +23,7 @@ extends BtnBase
 		icon = val
 		on_icon_update()
 		
-@export var panel_color:Color = Color("0e0e0ecb") : 
+@export var panel_color:Color = Color(0.169, 0.169, 0.169) : 
 	set(val):
 		panel_color = val
 		on_panel_color_update()		
@@ -80,7 +80,7 @@ func on_focus(state:bool = is_focused) -> void:
 		super.on_focus(state)
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !is_disabled:
+	if !is_disabled and is_visible_in_tree():
 		super.on_mouse_click(node, btn, on_hover)
 # ------------------------------------------------------------------------------
 
@@ -108,6 +108,13 @@ func on_panel_color_update() -> void:
 	new_stylebox.corner_radius_bottom_right = 5
 	new_stylebox.corner_radius_top_left = 5
 	new_stylebox.corner_radius_top_right = 5
+	
+	new_stylebox.border_width_bottom = 2
+	new_stylebox.border_width_left = 2
+	new_stylebox.border_width_right = 2
+	new_stylebox.border_width_top = 2
+	new_stylebox.border_color = Color.DIM_GRAY 
+		
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 		
 
@@ -124,6 +131,6 @@ func on_icon_update() -> void:
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_node_ready() or !is_hoverable or is_disabled:return
 	var key:String = input_data.key
-	if key == assigned_key:
+	if key == assigned_key and is_visible_in_tree():
 		onClick.call()
 # ------------------------------------------------------------------------------

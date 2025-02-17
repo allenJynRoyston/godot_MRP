@@ -208,6 +208,7 @@ var initial_values:Dictionary = {
 		return { 
 			"day": 1,
 			"days_till_report": days_till_report_limit - 1,
+			"next_metric": RESOURCE.BASE_METRICS.MORALE,
 			"show_report": false,
 			"record": [],
 			"previous_records": []
@@ -509,6 +510,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
 	SUBSCRIBE.subscribe_to_timeline_array(self)
+	SUBSCRIBE.subscribe_to_camera_settings(self)	
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
@@ -528,6 +530,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_timeline_array(self)
+	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
 	
 func _ready() -> void:
 	if !Engine.is_editor_hint():
@@ -707,7 +710,6 @@ func on_setup_complete_update() -> void:
 	if !is_node_ready():return
 	SetupContainer.show() if !setup_complete else SetupContainer.hide()
 	
-	
 func on_is_busy_update() -> void:
 	if !is_node_ready():return
 	WaitContainer.show() if is_busy else WaitContainer.hide()
@@ -885,6 +887,9 @@ func set_room_config(force_setup:bool = false) -> void:
 			var ring:int = item.location.ring
 			var room:int = item.location.room	
 			
+			# add to ref count
+			new_room_config.floor[floor].ring[ring].scp_refs.push_back(item.ref)
+			
 			# update the scp data and utility functions
 			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 				"ref": item.ref,
@@ -908,7 +913,7 @@ func set_room_config(force_setup:bool = false) -> void:
 	# mark rooms that are under construction...
 	for item in timeline_array:		
 		match item.action:
-			ACTION.AQ.BUILD_ITEM:				
+			ACTION.AQ.BUILD_ITEM:
 				var floor:int = item.location.floor
 				var ring:int = item.location.ring
 				var room:int = item.location.room		
@@ -923,13 +928,13 @@ func set_room_config(force_setup:bool = false) -> void:
 		var room:int = item.location.room
 		var designation:String = U.location_to_designation(item.location)
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
-		
-		# if facility is built, clear build_data 
-		#new_room_config.floor[floor].ring[ring].room[room].build_data = {}
 
-		# then get is_activated status
-		var is_activated:bool = base_states.room[designation].is_activated
-			
+		# if facility is built, clear build_data 
+		new_room_config.floor[floor].ring[ring].room[room].build_data = {}
+		
+		# add to ref count
+		new_room_config.floor[floor].ring[ring].room_refs.push_back(item.ref)		
+
 		# updatae room config with ref and utility functions
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"ref": item.ref,
@@ -993,11 +998,15 @@ func update_metrics(new_room_config:Dictionary) -> void:
 
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
 				var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index}, new_room_config)
-
-				if !room_extract.room.is_empty():
+				var is_room_under_construction:bool = room_extract.is_room_under_construction
+				var is_room_empty:bool = room_extract.is_room_empty
+				var is_scp_empty:bool = room_extract.is_scp_empty
+				var is_scp_contained:bool = room_extract.is_scp_contained
+				
+				if !is_room_empty and !is_room_under_construction:
 					metric_defaults = update_wing_effect.call(metric_defaults, ROOM_UTIL.return_wing_effect(room_extract))
 					
-				if !room_extract.scp.is_empty():
+				if !is_scp_empty and is_scp_contained:
 					metric_defaults = update_wing_effect.call(metric_defaults, SCP_UTIL.return_wing_effect(room_extract))
 									
 				for researcher in room_extract.researchers:
@@ -1206,12 +1215,29 @@ func update_progress_data() -> void:
 						
 						calculate_daily_costs(costs)
 						
-	
-	
+	# update next metric 
+	progress_data.next_metric = U.min_max(progress_data.next_metric + 1, 0, RESOURCE.BASE_METRICS.size() - 2, true)
+
 	# ADD TO PROGRESS DATA day count
 	progress_data.day += 1
-	progress_data.days_till_report -= 1
+	progress_data.days_till_report -= 1	
 	progress_data.show_report = progress_data.days_till_report == 0
+# -----------------------------------
+
+# -----------------------------------
+func end_of_turn_metrics_event_count() -> int:
+	var count:int = 0
+	for floor_index in room_config.floor.size():
+		for ring_index in room_config.floor[floor_index].ring.size():
+			var ring_data:Dictionary = room_config.floor[floor_index].ring[ring_index]			
+			var room_refs:Array = ring_data.room_refs
+			var scp_refs:Array = ring_data.scp_refs	
+			
+			# IF ANY OF THE METRICS ARE NEGATIVE/POSTIVE
+			if ring_data.metrics[progress_data.next_metric] != 0:
+				count += 1
+	
+	return count
 # -----------------------------------
 
 # -----------------------------------
@@ -1219,10 +1245,48 @@ func next_day() -> void:
 	# turn processing next day flag to true
 	processing_next_day = true
 	var is_game_over:bool = false
-	
-	# show busy modal
+	var current_location_snapshot:Dictionary = current_location.duplicate(true)
+	var camera_settings_snapshot:Dictionary = camera_settings.duplicate(true)
+
+	if end_of_turn_metrics_event_count() > 0:
+		# FIRST ZOOM IN TO ROOM LEVEL
+		if camera_settings_snapshot.type != CAMERA.TYPE.ROOM_SELECT:
+			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+			SUBSCRIBE.camera_settings = camera_settings	
+			await wait_please(1.0)	
+		
+		# SCAN RING FOR ANY ROOM REFS/SCP REFS
+		for floor_index in room_config.floor.size():
+			for ring_index in room_config.floor[floor_index].ring.size():
+				var ring_data:Dictionary = room_config.floor[floor_index].ring[ring_index]			
+				var room_refs:Array = ring_data.room_refs
+				var scp_refs:Array = ring_data.scp_refs	
+				var metric_val:int = ring_data.metrics[progress_data.next_metric]
+				# IF ANY OF THE METRICS ARE NEGATIVE/POSTIVE
+				if metric_val != 0:
+
+					# EVENTS TRIGGER ONLY IF ROOM_REFS OR SCP_REFS ARE AVAILABLE
+					SUBSCRIBE.current_location = {"floor": floor_index, "ring": ring_index, "room": 4}
+					await wait_please(1.0)
+					var event_props:Dictionary = {"metric_val": metric_val, "room_refs": room_refs, "scp_refs": scp_refs, "onSelection": func(val):print(val)}
+					match progress_data.next_metric:
+						RESOURCE.BASE_METRICS.MORALE:
+							await triggger_event(EVT.TYPE.MORALE, event_props)
+						RESOURCE.BASE_METRICS.SAFETY:
+							await triggger_event(EVT.TYPE.SAFETY, event_props)
+						RESOURCE.BASE_METRICS.READINESS:
+							await triggger_event(EVT.TYPE.READINESS, event_props)
+
+
+		# REVERT CAMERA 
+		if camera_settings_snapshot.type != CAMERA.TYPE.ROOM_SELECT:
+			SUBSCRIBE.camera_settings = camera_settings_snapshot
+
+	# AND REVERT LOCATION
+	SUBSCRIBE.current_location = current_location_snapshot
 	await wait_please(1.0)	
-	
+		
+
 	# check for endgame
 	# check for endgame states
 	if is_game_over:
@@ -1233,7 +1297,6 @@ func next_day() -> void:
 	# update progress data
 	await update_progress_data()
 		
-
 	# update subscriptions
 	SUBSCRIBE.progress_data = progress_data
 	SUBSCRIBE.resources_data = resources_data		
@@ -1413,19 +1476,13 @@ func cancel_construction(from_location:Dictionary) -> Dictionary:
 	var floor_index:int = from_location.floor
 	var ring_index:int = from_location.ring
 	var room_index:int = from_location.room
-	
-	var filtered_arr:Array = [] #action_queue_data.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index)and i.action == ACTION.AQ.BUILD_ITEM)
-	#await cancel_action_queue(filtered_arr[0])
-
-	return {"has_changes": true}
+	var filtered_arr:Array = timeline_array.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index) and i.action == ACTION.AQ.BUILD_ITEM)
+	var has_changes:bool = await cancel_action_queue(filtered_arr[0])
+	return {"has_changes": has_changes}
 # ---------------------	
 
 # ---------------------
 func activate_room(from_location:Dictionary, room_ref:int, is_activated:bool, show_confirm_modal:bool = true) -> Dictionary:
-	var floor_index:int = from_location.floor
-	var ring_index:int = from_location.ring
-	var room_index:int = from_location.room
-	var designation:String = "%s%s%s" % [floor_index, ring_index, room_index]
 	var stop:bool = false
 	# with confirm modal
 	if show_confirm_modal:
@@ -1435,15 +1492,18 @@ func activate_room(from_location:Dictionary, room_ref:int, is_activated:bool, sh
 		match response.action:		
 			ACTION.BACK:
 				stop = true
+		
 		restore_default_state()
 
 	# without confirm modal
-	resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, resources_data, is_activated)
-	resources_data = ROOM_UTIL.calculate_activation_effect(room_ref, resources_data, is_activated)
-	SUBSCRIBE.resources_data = resources_data
-	# set is activated state here
-	base_states.room[designation].is_activated = is_activated
-	SUBSCRIBE.base_states = base_states
+	if !stop:
+		resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, resources_data, is_activated)
+		resources_data = ROOM_UTIL.calculate_activation_effect(room_ref, resources_data, is_activated)
+		SUBSCRIBE.resources_data = resources_data
+		# set is activated state here
+		base_states.room[U.location_to_designation(from_location)].is_activated = is_activated
+		SUBSCRIBE.base_states = base_states
+		
 	return {"has_changes": !stop}
 # ---------------------
 
@@ -1552,7 +1612,7 @@ func on_completed_action(action_item:Dictionary) -> void:
 # -----------------------------------
 
 # -----------------------------------
-func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) -> void:
+func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) -> bool:
 	match action_item.action:
 		ACTION.AQ.CONTAIN:
 			ConfirmModal.set_text("Cancel containment?", "There are no costs for this action.")
@@ -1595,12 +1655,13 @@ func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) ->
 	
 	if include_restore:
 		await restore_default_state()
+		
+	return response.action == ACTION.NEXT
 # -----------------------------------
 
 # -----------------------------------
-func remove_from_action_queue(action_item:Dictionary) -> void:
-	pass
-	#SUBSCRIBE.action_queue_data = action_queue_data.filter(func(i): return i.uid != action_item.uid)
+func remove_from_action_queue(action_item:Dictionary) -> void:	
+	SUBSCRIBE.timeline_array = timeline_array.filter(func(i): return i.uid != action_item.uid)
 	#await ActionQueueContainer.remove_from_queue([action_item])
 # -----------------------------------
 
@@ -1763,7 +1824,7 @@ func transfer_scp(from_location:Dictionary) -> Dictionary:
 	Structure3dContainer.select_location(true)
 	Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
 	SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(scp_details.ref)	
-	await show_only([Structure3dContainer, LocationContainer ])		
+	await show_only([Structure3dContainer, LocationContainer ])	
 	var structure_response:Dictionary = await Structure3dContainer.user_response
 	Structure3dContainer.freeze_input = true
 	Structure3dContainer.select_location(false)
@@ -1805,13 +1866,13 @@ func contain_scp_cancel(from_location:Dictionary, action:ACTION.AQ) -> Dictionar
 			var ring_index:int = from_location.ring
 			var room_index:int = from_location.room
 			var scp_details:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].scp_data.get_scp_details.call()
-			#var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_details.ref and i.action == action)
-			#match action:
-				#ACTION.AQ.CONTAIN:
-					#cancel_scp_containment(scp_details.ref)
-				#ACTION.AQ.TRANSFER:
-					#cancel_scp_transfer(scp_details.ref)
-			#remove_from_action_queue(filtered_arr[0])
+			var filtered_arr:Array = timeline_array.filter(func(i): return i.ref == scp_details.ref and i.action == action)
+			match action:
+				ACTION.AQ.CONTAIN:
+					cancel_scp_containment(scp_details.ref)
+				ACTION.AQ.TRANSFER:
+					cancel_scp_transfer(scp_details.ref)
+			remove_from_action_queue(filtered_arr[0])
 		
 	restore_default_state()		
 	return {"has_changes": response.action != ACTION.BACK}
@@ -2114,7 +2175,10 @@ func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers
 
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-		
+
+func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
+	camera_settings = new_val
+
 func on_bookmarked_rooms_update(new_val:Array = bookmarked_rooms) -> void:
 	bookmarked_rooms = new_val
 		
@@ -2250,7 +2314,7 @@ func on_show_end_of_phase_update() -> void:
 	if !is_node_ready():return
 	EndOfPhaseContainer.is_showing = show_end_of_phase
 	showing_states[EndOfPhaseContainer] = show_end_of_phase
-	
+
 #func on_show_choices_update() -> void:
 	#if !is_node_ready():return
 	#ChoiceContainer.is_showing = show_choices
@@ -2766,7 +2830,7 @@ func on_current_event_step_update() -> void:
 			await restore_default_state()
 		EVENT_STEPS.START:
 			SUBSCRIBE.suppress_click = true
-			await show_only([EventContainer])
+			await show_only([Structure3dContainer, EventContainer])
 			EventContainer.event_data = event_data
 			EventContainer.start()
 			var event_res:Dictionary = await EventContainer.user_response

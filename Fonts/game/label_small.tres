@@ -5,3 +5,5 @@
 [resource]
 font = ExtResource("1_si525")
 font_size = 8
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)

@@ -3,6 +3,7 @@ extends Node3D
 @onready var PreviewCamera:Camera3D = $PreviewCamera
 @onready var MainMesh:MeshInstance3D = $RoomNode/MainMesh
 @onready var MeshOutline:MeshInstance3D = $RoomNode/MeshOutline
+@onready var NameLabel:Label3D = $RoomNode/NameLabel
 
 @onready var RoomNode:Node3D = $RoomNode
 @onready var RoomNumberLabel:Label3D = $RoomNode/MainMesh/DoorMesh/RoomNumberLabel
@@ -39,10 +40,10 @@ const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMateri
 		show_side = val
 		on_show_side_update()
 
-@export var apply_texture:APPLY_TEXTURE = APPLY_TEXTURE.NONE : 
-	set(val):
-		apply_texture = val
-		on_apply_texture_update()
+#@export var apply_texture:APPLY_TEXTURE = APPLY_TEXTURE.NONE : 
+	#set(val):
+		#apply_texture = val
+		#on_apply_texture_update()
 
 @export var ref_index:int  = -1 : 
 	set(val):
@@ -104,7 +105,7 @@ func _ready() -> void:
 	on_show_side_update()
 	on_show_internal_update()
 	on_ref_index_update()
-	on_apply_texture_update()
+	#on_apply_texture_update()
 	on_is_pulsing_update()
 	build_room_details()
 # ---------------------------------------------------
@@ -120,12 +121,14 @@ func on_current_state_update() -> void:
 	if !is_node_ready():return
 	var new_color:Color = Color.WHITE
 	var mesh_outline:StandardMaterial3D = MeshOutline.get_surface_override_material(0).duplicate()
-
+	NameLabel.hide()
+	
 	match current_state:
 		STATES.NONE:
 			new_color = Color.TRANSPARENT
 		STATES.ACTIVE:
 			new_color = Color(1, 1, 1, 1) if !is_unavailable else  Color(0.66, 0, 0, 1)
+			NameLabel.show()
 		STATES.INACTIVE:
 			new_color = Color(0, 0, 0, 0)
 		STATES.UNAVAILABLE:
@@ -135,23 +138,23 @@ func on_current_state_update() -> void:
 	MeshOutline.set_surface_override_material(0, mesh_outline)
 # ---------------------------------------------------
 
-# ---------------------------------------------------
-func on_apply_texture_update() -> void:
-	if !is_node_ready():return
-	var mesh_duplicate = MainMesh.mesh.duplicate()
-	var material_copy = RoomMaterialBuilt.duplicate() 
-	
-	match apply_texture:
-		APPLY_TEXTURE.UNDER_CONSTRUCTION:			
-			material_copy.albedo_color = Color.PALE_GOLDENROD
-		APPLY_TEXTURE.BUILT:
-			material_copy.albedo_color = Color.RED
-
-
-	if material_copy != null:
-		mesh_duplicate.material = material_copy		
-		MainMesh.mesh = mesh_duplicate	
-# ---------------------------------------------------
+## ---------------------------------------------------
+#func on_apply_texture_update() -> void:
+	#if !is_node_ready():return
+	#var mesh_duplicate = MainMesh.mesh.duplicate()
+	#var material_copy = RoomMaterialBuilt.duplicate() 
+	#
+	#match apply_texture:
+		#APPLY_TEXTURE.UNDER_CONSTRUCTION:			
+			#material_copy.albedo_color = Color.PALE_GOLDENROD
+		#APPLY_TEXTURE.BUILT:
+			#material_copy.albedo_color = Color.RED
+#
+#
+	#if material_copy != null:
+		#mesh_duplicate.material = material_copy		
+		#MainMesh.mesh = mesh_duplicate	
+## ---------------------------------------------------
 
 
 # ---------------------------------------------------
@@ -193,6 +196,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	if !is_node_ready() or current_location.is_empty():return
 	var check_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
 	is_focused = room_ref == check_ref
+
+	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -205,7 +210,7 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func build_room_details() -> void:
-	if room_config.is_empty() or ref_index == -1 or room_ref == "":return
+	if room_config.is_empty() or current_location.is_empty() or ref_index == -1 or room_ref == "":return
 	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
 	var extract_data:Dictionary = ROOM_UTIL.extract_room_details({"floor": assigned_floor, "ring": assigned_wing, "room": ref_index})
 	var mesh_duplicate = MainMesh.mesh.duplicate()
@@ -213,27 +218,42 @@ func build_room_details() -> void:
 	material_copy.albedo_color = Color.SLATE_GRAY
 
 	RoomNumberLabel.text = "%s" % [room_number]	
+	if extract_data.is_room_under_construction:
+		NameLabel.text = "CONSTRUCTING..." 
+	else:
+		NameLabel.text = "EMPTY" if extract_data.is_room_empty else extract_data.room.details.name
+	
+	var scp_color:Color = Color(0.511, 0.002, 0.717)
+	var room_color:Color = Color(0, 0.529, 1)
+	var special_color:Color = Color(0, 0, 0)
 
-	if !extract_data.room.is_empty():
+	if extract_data.is_room_empty:
+		if extract_data.is_room_under_construction:
+			material_copy.albedo_color = scp_color.darkened(0.75) if extract_data.room.details.can_contain else room_color.darkened(0.75)
+		else:
+			DoorLabel.text = "EMPTY"
+			ActivationIndicatorLight.omni_attenuation = 1.0
+			ActivationIndicatorLight.light_color = Color.TRANSPARENT
+	else:
 		DoorLabel.text = extract_data.room.details.name		
-		material_copy.albedo_color = Color(0, 0.529, 1)
+		match extract_data.room_category:
+			ROOM.CATEGORY.CONTAINMENT_CELL:
+				material_copy.albedo_color = special_color if extract_data.is_directors_office else scp_color
+			ROOM.CATEGORY.FACILITY:
+				material_copy.albedo_color = special_color if extract_data.is_directors_office else room_color
 		ActivationIndicatorLight.omni_attenuation = 6.5
 		ActivationIndicatorLight.light_color = Color.GREEN if extract_data.room.is_activated else Color.ORANGE_RED
-	else:
-		DoorLabel.text = "EMPTY"
-		ActivationIndicatorLight.omni_attenuation = 1.0
-		ActivationIndicatorLight.light_color = Color.TRANSPARENT
 	
-	if !extract_data.scp.is_empty():
+	if extract_data.is_scp_empty:
+		ScpIndicatorLight.omni_attenuation = 0.0
+		ScpIndicatorLight.light_color = Color.TRANSPARENT
+		is_pulsing = false
+	else:
 		DoorLabel.text = extract_data.scp.details.name
 		ScpIndicatorLight.show()
 		ScpIndicatorLight.omni_attenuation = 6.5
 		ScpIndicatorLight.light_color = Color.MEDIUM_PURPLE
 		is_pulsing = true
-	else:
-		ScpIndicatorLight.omni_attenuation = 0.0
-		ScpIndicatorLight.light_color = Color.TRANSPARENT
-		is_pulsing = false
 
 		
 

@@ -19,13 +19,17 @@ const label_settings:LabelSettings = preload("res://Fonts/game/label_small.tres"
 	set(val):
 		type = val
 		on_type_update()
+		
+@export var is_active:bool : 
+	set(val):
+		is_active = val
+		on_is_active_update()		
 
 @export var header:String = "TITLE" : 
 	set(val):
 		header = val
 		on_header_update()
 		
-
 @export var status:String = "" : 
 	set(val):
 		status = val
@@ -61,6 +65,12 @@ func on_status_update() -> void:
 	if !is_node_ready():return
 	StatusContent.text = status
 # ------------------------------
+
+# ------------------------------
+func on_is_active_update() -> void:
+	if !is_node_ready():return
+	on_type_update()
+# ------------------------------	
 	
 # ------------------------------
 func on_type_update() -> void:
@@ -70,6 +80,12 @@ func on_type_update() -> void:
 	new_stylebox.corner_radius_bottom_right = 5
 	new_stylebox.corner_radius_top_left = 5
 	new_stylebox.corner_radius_top_right = 5
+	
+	new_stylebox.border_width_bottom = 2
+	new_stylebox.border_width_left = 2
+	new_stylebox.border_width_right = 2
+	new_stylebox.border_width_top = 2
+	new_stylebox.border_color = Color.WHITE	if is_active else Color.BLACK
 	
 	match type:
 		TYPE.SCP:
