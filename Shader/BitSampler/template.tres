@@ -4,4 +4,4 @@
 
 [resource]
 shader = ExtResource("1_eq4hp")
-shader_parameter/bit_depth = 24.0
+shader_parameter/bit_depth = 32.0

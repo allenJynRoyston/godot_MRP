@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=30 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
 [ext_resource type="Material" uid="uid://b4dnsatkufi37" path="res://Shader/ScreenSaver/ScreenSaver.tres" id="2_7nwk1"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode3d.tscn" id="4_b2h6u"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_gg0ij"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_312tc"]
+[ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="5_b26bj"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_gytyc"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_u0dki"]
@@ -117,7 +118,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6yjw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_84kxb"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -809,6 +810,9 @@ room_number = 3
 ref_index = 8
 
 [node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
+
+[node name="SpinLight" parent="SubViewport/RoomColumn/NormalLights" instance=ExtResource("5_b26bj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7636, 3.23014, 0)
 visible = false
 
 [node name="Frontlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
@@ -1295,7 +1299,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_q6yjw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_84kxb")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

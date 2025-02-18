@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=4 uid="uid://wo1fm5yw1mj7"]
+[gd_scene load_steps=16 format=4 uid="uid://wo1fm5yw1mj7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node_3d.gd" id="1_qihmr"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_mku2i"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="3_mmxwi"]
+[ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="4_ohfms"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4uhrp"]
 blend_mode = 4
@@ -214,3 +215,6 @@ transform = Transform3D(-0.707107, 0.298836, -0.640857, 0, 0.906308, 0.422618, 0
 visible = false
 projection = 1
 size = 20.122
+
+[node name="SpinLight" parent="." instance=ExtResource("4_ohfms")]
+transform = Transform3D(0.088338, 0.996091, 0, -0.996091, 0.088338, 0, 0, 0, 1, 2.23072, -0.323841, 0.525419)

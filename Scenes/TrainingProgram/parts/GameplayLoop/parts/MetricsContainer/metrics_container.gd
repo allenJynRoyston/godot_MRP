@@ -4,21 +4,22 @@ extends GameContainer
 
 @onready var TopContainer:PanelContainer = $TopContainer
 
-@onready var FloorLabel:Label = $TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/FloorLabel
-@onready var WingLabel:Label = $TopCenter/VBoxContainer/MetricsPanel/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/WingLabel
+@onready var FloorLabel:Label = $TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/FloorLabel
+@onready var WingLabel:Label = $TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2/WingLabel
+@onready var RoomLabel:Label = $TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer3/RoomLabel
 @onready var MetricsPanel:HBoxContainer = $TopCenter/VBoxContainer/MetricsPanel
 @onready var MoraleNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Morale
 @onready var SafeteyNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Safety
 @onready var ReadinessNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Readiness
 @onready var MarkerLabel:Label = $TopCenter/VBoxContainer/MarkerLabel
 
-@onready var RoomLevelMetrics:Control = $TopContainer/RoomLevelMetrics
-@onready var MetricsVBox:VBoxContainer = $TopContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox
-@onready var MetricsSCP:Control = $TopContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsSCP
-@onready var MetricsRoom:Control = $TopContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsRoom
-@onready var MetricsResearcherContainer:Control = $TopContainer/RoomLevelMetrics/HBoxContainer/ResearcherContainer
-@onready var SwapBtnA:BtnBase = $TopContainer/RoomLevelMetrics/HBoxContainer2/SwapBtnA
-@onready var SwapBtnB:BtnBase = $TopContainer/RoomLevelMetrics/HBoxContainer/SwapBtnB
+@onready var RoomLevelMetrics:Control = $TopContainer/VBoxContainer/RoomLevelMetrics
+@onready var MetricsVBox:VBoxContainer = $TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox
+@onready var MetricsSCP:Control = $TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsSCP
+@onready var MetricsRoom:Control = $TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsRoom
+@onready var MetricsResearcherContainer:Control = $TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/ResearcherContainer
+@onready var SwapBtnA:BtnBase = $TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/SwapBtnA
+@onready var SwapBtnB:BtnBase = $TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/SwapBtnB
 
 const MetricsItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn")
 const label_settings:LabelSettings = preload("res://Fonts/game/label_small.tres")
@@ -156,7 +157,7 @@ func update_marker() -> void:
 	
 	FloorLabel.text = "%s" % [current_location.floor]
 	WingLabel.text = "%s" % [current_location.ring]
-	
+	RoomLabel.text = "%s" % [current_location.room]
 # -----------------------------------------------	
 
 # -----------------------------------------------

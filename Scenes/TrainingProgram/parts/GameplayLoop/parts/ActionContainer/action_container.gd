@@ -66,7 +66,6 @@ func open_hr_menu() -> void:
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
 	
 	# local vars
-	var is_testing:bool = !room_extract.scp.testing.is_empty() if !room_extract.scp.is_empty() else false		
 	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
 	var options_list := []
 	var room_is_empty:bool = room_extract.room.is_empty()	
@@ -80,7 +79,7 @@ func open_hr_menu() -> void:
 
 	options_list.push_back({
 		"title": "RECRUIT",
-		"is_disabled": is_testing or !can_take_action, 
+		"is_disabled": !can_take_action, 
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true				
 			await GameplayNode.recruit()				
@@ -89,7 +88,7 @@ func open_hr_menu() -> void:
 	
 	options_list.push_back({
 		"title": "RESEARCHER DETAILS",
-		"is_disabled": is_testing or !can_take_action, 
+		"is_disabled": !can_take_action, 
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true				
 			await GameplayNode.open_researcher_details()
@@ -424,8 +423,7 @@ func open_alarm_setting() -> void:
 	set_btn_disabled_state(true)
 	
 	# pull data, create the options list
-	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
-	var is_testing:bool = !room_extract.scp.testing.is_empty() if !room_extract.scp.is_empty() else false		
+	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
 	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
 	var options_list := []
 	var is_scp_empty:bool = room_extract.scp.is_empty()

@@ -139,6 +139,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="MousePointer" type="TextureRect" parent="Control"]
+layout_mode = 0
 offset_right = 1440.0
 offset_bottom = 800.0
 texture = ExtResource("3_ni4fo")
