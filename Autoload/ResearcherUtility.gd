@@ -319,19 +319,25 @@ func get_details_from_extract(location:Dictionary) -> Dictionary:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func add_experience(uid:String, amount:int) -> void:
+func add_experience(uid:String, amount:int) -> bool:
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		if i[0] == uid:
+			# i[7] is xp
 			i[7] += amount
 			if i[7] >= 10:
 				i[7] = i[7] - 10
+				# i[8] is level
 				if i[8] <= 3:
 					i[8] += 1
 					i[9].can_promote = true
 			else:
 				i[9].can_promote = false
 		return i
-	)
+	) 	
+	
+	var researcher:Array = hired_lead_researchers_arr.filter(func(i): return i[0] == uid)[0]
+	# returns if reasearcher leveled up
+	return researcher[9].can_promote
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

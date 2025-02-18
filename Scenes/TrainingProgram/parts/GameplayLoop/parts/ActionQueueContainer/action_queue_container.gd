@@ -74,6 +74,12 @@ func on_progress_data_update(new_val:Dictionary) -> void:
 	U.tween_node_property(ListScrollContainer, "scroll_vertical", new_pos, delay, 0.5)
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------	
+func on_is_showing_update() -> void:
+	super.on_is_showing_update()
+	show() if is_showing else hide()
+# --------------------------------------------------------------------------------------------------	
+
 # --------------------------------------------------------------------------------------------------
 func on_timeline_array_update(new_val:Array = timeline_array) -> void:
 	timeline_array = new_val	
@@ -82,15 +88,3 @@ func on_timeline_array_update(new_val:Array = timeline_array) -> void:
 func on_queue_list_update() -> void:
 	pass
 # --------------------------------------------------------------------------------------------------	
-
-## --------------------------------------------------------------------------------------------------	
-#func remove_from_queue(list:Array) -> void:
-	#for item_data in list:
-		#if item_data.uid in uid_refs:
-			#var action_queue_item:Control = uid_refs[item_data.uid]
-			#await action_queue_item.animate_and_complete()
-			#action_queue_item.queue_free()
-			#uid_refs.erase(item_data.uid)
-	#
-	#wait_for_complete.emit()
-## --------------------------------------------------------------------------------------------------				

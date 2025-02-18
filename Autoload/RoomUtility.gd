@@ -856,15 +856,16 @@ func has_prerequisites(ref:ROOM.TYPE, arr:Array) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func at_own_limit(ref:ROOM.TYPE, arr:Array, action_queue_data:Array) -> bool:
+func at_own_limit(ref:ROOM.TYPE) -> bool:
 	var room_data:Dictionary = return_data(ref)
-	var owned_count:int = arr.filter(func(i): return i.ref == ref).size()
-	var in_progress_count:int = action_queue_data.filter(func(i): return i.ref == ref and i.action == ACTION.PURCHASE.FACILITY_ITEM).size()
+	var owned_count:int = purchased_facility_arr.filter(func(i): return i.ref == ref).size()
+	var in_progress_count:int = timeline_array.filter(func(i): return i.ref == ref and i.action == ACTION.PURCHASE.FACILITY_ITEM).size()
+	var total_count:int = owned_count + in_progress_count
 	
-	if room_data.own_limit.call() == -1:
+	if "own_limit" not in room_data or room_data.own_limit.call() == -1:
 		return false
-	else: 
-		return (owned_count + in_progress_count) >= room_data.own_limit.call()
+		
+	return total_count >= room_data.own_limit.call()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -890,12 +891,8 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var scp_data:Dictionary = room_config_data.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
 	var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
-	var is_transfer:bool = (false if is_scp_empty else room_config_data.scp_data.is_transfer) 
-	var is_contained:bool = (false if is_scp_empty else room_config_data.scp_data.is_contained)
-	var testing_details:Dictionary = {} if is_scp_empty else room_config_data.scp_data.get_testing_details.call() if !is_transfer else {}
-	var is_testing:bool = !testing_details.is_empty()
-	var testing_ref:int =  -1 if !is_testing else testing_details.testing_ref
-	var testing_progress:int = -1 if !is_testing else testing_details.progress
+	var is_transfer:bool = false if is_scp_empty else room_config_data.scp_data.is_transfer
+	var is_contained:bool = false if is_scp_empty else room_config_data.scp_data.is_contained
 	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
@@ -904,11 +901,9 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
-
 	return {
 		"floor": floor_data,
 		"wing": wing_data,
-		
 		# -----
 		"is_directors_office": room_details.ref == ROOM.TYPE.DIRECTORS_OFFICE if !room_details.is_empty() else false,
 		"is_hq": room_details.ref == ROOM.TYPE.HQ if !room_details.is_empty() else false,
@@ -916,12 +911,13 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		"is_room_under_construction": is_room_under_construction,
 		"is_room_active": is_activated,
 		"room_category": ROOM.CATEGORY.CONTAINMENT_CELL if (!room_details.is_empty() and room_details.can_contain) else ROOM.CATEGORY.FACILITY,
-		"researchers_count": researchers.size(),
-		
+		# ------		
 		"is_scp_empty": is_scp_empty,
 		"is_scp_transfering": is_transfer,
 		"is_scp_contained": is_contained,
-
+		"is_scp_testing": !is_transfer and is_contained and researchers.size() > 0,
+		# ------
+		"researchers_count": researchers.size(),
 		# -----
 		"room": {						
 			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
@@ -933,11 +929,6 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 			"details": scp_details,
 			"is_transfer": is_transfer,
 			"is_contained": is_contained,
-			"testing": {
-				"details": scp_details.testing_options[testing_ref],
-				"testing_ref": testing_ref,
-				"progress": testing_progress
-			} if is_testing else {}
 		} if !is_scp_empty else {},
 		"researchers": researchers
 	}

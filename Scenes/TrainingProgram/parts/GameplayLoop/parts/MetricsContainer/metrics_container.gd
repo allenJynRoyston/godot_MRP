@@ -12,31 +12,94 @@ extends GameContainer
 @onready var ReadinessNode:Control = $TopCenter/VBoxContainer/MetricsPanel/Readiness
 @onready var MarkerLabel:Label = $TopCenter/VBoxContainer/MarkerLabel
 
-@onready var WingPanel:Control = $TopContainer/WingPanel
-@onready var RoomLevelMetrics:Control = $TopContainer/WingPanel/RoomLevelMetrics
-@onready var MetricsSCP:Control = $TopContainer/WingPanel/RoomLevelMetrics/MetricsSCP
-@onready var MetricsRoom:Control = $TopContainer/WingPanel/RoomLevelMetrics/MetricsRoom
-@onready var MetricsResearcherContainer:Control = $TopContainer/WingPanel/RoomLevelMetrics/ResearcherContainer
+@onready var RoomLevelMetrics:Control = $TopContainer/RoomLevelMetrics
+@onready var MetricsVBox:VBoxContainer = $TopContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox
+@onready var MetricsSCP:Control = $TopContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsSCP
+@onready var MetricsRoom:Control = $TopContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsRoom
+@onready var MetricsResearcherContainer:Control = $TopContainer/RoomLevelMetrics/HBoxContainer/ResearcherContainer
+@onready var SwapBtnA:BtnBase = $TopContainer/RoomLevelMetrics/HBoxContainer2/SwapBtnA
+@onready var SwapBtnB:BtnBase = $TopContainer/RoomLevelMetrics/HBoxContainer/SwapBtnB
 
 const MetricsItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn")
+const label_settings:LabelSettings = preload("res://Fonts/game/label_small.tres")
 
 var previous_floor:int = -1
 var previous_wing:int = -1
 var previous_location:Dictionary = {}
-const label_settings:LabelSettings = preload("res://Fonts/game/label_small.tres")
 
 var show_position:Dictionary = {}
 var hide_position:Dictionary = {}
+
+var metrics_tween_pos_val:float = 0
+var researcher_tween_pos_val:float = 0
+
+var researcher_pos_locked:bool = false
+var metrics_pos_locked:bool = false
 
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()
 	update_details_panel()
-	
+
 	modulate = Color(1, 1, 1, 0)
 	await U.set_timeout(1.5)
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1)	
+	
+	# get starting value for tween_pos_valtheme_override_constants/
+	metrics_tween_pos_val = MetricsVBox.get_theme_constant('separation')
+	researcher_tween_pos_val = MetricsResearcherContainer.get_theme_constant('separation')
+	
+	SwapBtnA.onClick = func():
+		metrics_pos_locked = !metrics_pos_locked
+		SwapBtnA.icon = SVGS.TYPE.LOCK if metrics_pos_locked else SVGS.TYPE.SWAP
+	
+	SwapBtnA.onFocus = func(_node:Control) -> void:		
+		if !metrics_pos_locked:
+			tween_range(metrics_tween_pos_val, 5, 0.3, func(val:float) -> void:
+				metrics_tween_pos_val = val
+				MetricsVBox.add_theme_constant_override('separation', val)
+			)
+	SwapBtnA.onBlur  = func(_node:Control) -> void:
+		if !metrics_pos_locked:
+			tween_range(metrics_tween_pos_val, -45, 0.3, func(val:float) -> void:
+				metrics_tween_pos_val = val
+				MetricsVBox.add_theme_constant_override('separation', val)
+			)
+		
+	SwapBtnB.onClick = func():
+		researcher_pos_locked = !researcher_pos_locked
+		SwapBtnB.icon = SVGS.TYPE.LOCK if researcher_pos_locked else SVGS.TYPE.SWAP
+	
+	SwapBtnB.onFocus = func(_node:Control) -> void:		
+		if !researcher_pos_locked:
+			tween_range(researcher_tween_pos_val, 5, 0.3, func(val:float) -> void:
+				researcher_tween_pos_val = val
+				MetricsResearcherContainer.add_theme_constant_override('separation', val)
+			)
+	SwapBtnB.onBlur  = func(_node:Control) -> void:		
+		if !researcher_pos_locked:
+			tween_range(researcher_tween_pos_val, -45, 0.3, func(val:float) -> void:
+				researcher_tween_pos_val = val
+				MetricsResearcherContainer.add_theme_constant_override('separation', val)
+			)
+		
+
 # -----------------------------------------------
+
+# -----------------------------------------------
+func tween_range(start_at:float, end_at:float, duration:float, callback:Callable = func(_val):pass) -> Tween:
+	var tween:Tween = create_tween()
+	#tween.set_ease(Tween.EASE_OUT_IN)
+	tween.set_trans(Tween.TRANS_CIRC)
+	tween.tween_method(callback, start_at, end_at, duration)
+	return tween
+# -----------------------------------------------	
+
+# -----------------------------------------------
+func on_is_showing_update() -> void:
+	super.on_is_showing_update()
+	RoomLevelMetrics.show() if is_showing else RoomLevelMetrics.hide()
+# -----------------------------------------------	
 
 # --------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
@@ -91,7 +154,7 @@ func update_marker() -> void:
 	
 	MarkerLabel.text = "%s"  % [status_text]
 	
-	FloorLabel.text = "F%s" % [current_location.floor]
+	FloorLabel.text = "%s" % [current_location.floor]
 	WingLabel.text = "%s" % [current_location.ring]
 	
 # -----------------------------------------------	
@@ -120,14 +183,6 @@ func update_details_panel() -> void:
 	var is_directors_office:bool = room_extract.is_directors_office
 
 	# ------------------------------------------		
-	match room_category:
-		ROOM.CATEGORY.CONTAINMENT_CELL:
-			MetricsRoom.hide()
-			MetricsSCP.show()
-		ROOM.CATEGORY.FACILITY:
-			MetricsRoom.show()
-			MetricsSCP.hide()
-			
 	# SPECIAL EXCEPTION FOR DIRECTORS OFFICE					
 	MetricsResearcherContainer.hide() if is_directors_office else MetricsResearcherContainer.show()
 	
@@ -161,6 +216,8 @@ func update_details_panel() -> void:
 	# ------------------------------------------
 	MetricsSCP.is_active = !room_extract.scp.is_empty()
 	if !room_extract.scp.is_empty():
+		SwapBtnA.show()
+		MetricsSCP.show()		
 		var details:Dictionary = room_extract.scp.details
 
 		MetricsSCP.header = "%s" % [details.name]
@@ -169,8 +226,8 @@ func update_details_panel() -> void:
 		if room_extract.scp.is_transfer:
 			status_label = "TRANSFERING"
 		
-		if !room_extract.scp.testing.is_empty():
-			status_label = "TESTING"
+		#if !room_extract.scp.testing.is_empty():
+			#status_label = "TESTING"
 			
 		MetricsSCP.status = "KETER" #status_label
 		
@@ -187,6 +244,8 @@ func update_details_panel() -> void:
 		else:
 			MetricsSCP.items = [{"title": "NO BONUS"}]			
 	else:
+		SwapBtnA.hide()
+		MetricsSCP.hide()
 		MetricsSCP.header = "EMPTY"
 		MetricsSCP.status = "N/A"
 		MetricsSCP.items = [{"title": "NO BONUS"}]			
@@ -197,12 +256,15 @@ func update_details_panel() -> void:
 		child.queue_free()
 				
 	if !researchers.is_empty():
-		for researcher in researchers:
+		for index in researchers.size():
+			var researcher:Dictionary = researchers[index]
 			var new_node:Control = MetricsItemPreload.instantiate()
 			new_node.is_active = true
 			new_node.type = 2
 			new_node.header = "%s" % [researcher.name]
 			new_node.status = "NORMAL"
+			new_node.z_index = abs(index - researchers.size())
+			new_node.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN if index == 0 else Control.SIZE_SHRINK_END
 				
 			var effects_list:Array = RESEARCHER_UTIL.return_wing_effects_list(researcher)
 			if effects_list.size() > 0:
@@ -227,10 +289,13 @@ func update_details_panel() -> void:
 		new_node.items = [{"title": "NO BONUS"}]			
 		MetricsResearcherContainer.add_child(new_node)
 		
-	var InfoNode:Control = GBL.find_node(REFS.INFO_CONTAINER)
+
+	SwapBtnB.show() if researchers.size() > 1 else SwapBtnB.hide()
 	
-	await U.tick()
-	InfoNode.add_theme_constant_override("margin_top", MetricsResearcherContainer.size.y + 20)
+	#var InfoNode:Control = GBL.find_node(REFS.INFO_CONTAINER)
+	#
+	#await U.tick()
+	#InfoNode.add_theme_constant_override("margin_top", MetricsResearcherContainer.size.y + 20)
 # -----------------------------------------------
 
 # -----------------------------------------------

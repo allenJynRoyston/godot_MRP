@@ -1,13 +1,13 @@
 @tool
 extends GameContainer
 
-@onready var TitleLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
-@onready var DescriptionList:VBoxContainer = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DescriptionList
-@onready var ImageContainer:TextureRect = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
+@onready var TitleLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
+@onready var DescriptionList:VBoxContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DescriptionList
+@onready var ImageContainer:TextureRect = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
 
-@onready var NextBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
-@onready var SkipBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipBtn
-@onready var Activate:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Activate
+@onready var NextBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
+@onready var SkipBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipBtn
+@onready var Activate:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Activate
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
@@ -29,9 +29,6 @@ var completed_build_items:Array = [] :
 func _ready() -> void:
 	super._ready()
 
-	TextureRectNode = $TextureRect
-	Subviewport = $SubViewport
-	
 	NextBtn.onClick = func() -> void:
 		on_next()
 		

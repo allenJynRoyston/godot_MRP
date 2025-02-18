@@ -20,7 +20,10 @@ var SCP_001:Dictionary = {
 		return 3,
 	"containment_requirements": [
 		ROOM.TYPE.STANDARD_LOCKER
-	],	
+	],
+	"researcher_preferences": {
+		RESEARCHER.SPECALIZATION.ENGINEERING: 3,
+	},	
 	# -----------------------------------
 	
 	# -----------------------------------	
@@ -50,10 +53,6 @@ var SCP_001:Dictionary = {
 					RESOURCE.TYPE.MONEY: 50,
 					RESOURCE.TYPE.STAFF: 5	
 				},
-			"capacity": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.STAFF: 5
-				},
 		}	
 	},
 	# -----------------------------------
@@ -65,10 +64,6 @@ var SCP_001:Dictionary = {
 				return {
 					RESOURCE.TYPE.MONEY: 15,
 					RESOURCE.TYPE.ENERGY: 5
-				},
-			"capacity": func() -> Dictionary:
-				return {
-					
 				},
 		}	
 	},
@@ -598,7 +593,10 @@ var SCP_002:Dictionary = {
 		return 3,
 	"containment_requirements": [
 		ROOM.TYPE.STANDARD_LOCKER
-	],	
+	],
+	"researcher_preferences": {
+		RESEARCHER.SPECALIZATION.ENGINEERING: 3,
+	},		
 	# -----------------------------------
 	
 	# -----------------------------------	

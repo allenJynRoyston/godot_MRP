@@ -48,34 +48,49 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	
-	
+
 func on_resources_data_update(new_val:Dictionary) -> void:
 	resources_data = new_val
+	
 func on_progress_data_update(new_val:Dictionary) -> void:
 	progress_data = new_val
+	
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
+	
 func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
+	
 func on_timeline_array_update(new_val:Array) -> void:
 	timeline_array = new_val
+	
 func on_bookmarked_rooms_update(new_val:Array) -> void:
 	bookmarked_rooms = new_val
+	
 func on_researcher_hire_list_update(new_val:Array) -> void:
 	researcher_hire_list = new_val
+	
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	hired_lead_researchers_arr = new_val
+	
 func on_tier_unlocked_update(new_val:Dictionary) -> void:
 	tier_unlocked = new_val
+	
 func on_purchased_research_arr_update(new_val:Array) -> void:
 	purchased_research_arr = new_val
+	
 func on_camera_settings_update(new_val:Dictionary) -> void:
 	camera_settings = new_val
+	
 func on_purchased_base_arr_update(new_val:Array) -> void:
 	purchased_base_arr = new_val	
+	
+	
 func on_purchased_facility_arr_update(new_val:Array) -> void:
 	purchased_facility_arr = new_val
+	
 func on_scp_data_update(new_val:Dictionary) -> void:
 	scp_data = new_val
+	
 func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val	

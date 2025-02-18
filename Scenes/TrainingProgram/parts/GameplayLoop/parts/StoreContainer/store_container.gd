@@ -250,7 +250,6 @@ func build_list() -> void:
 					user_response.emit({
 						"action": ACTION.PURCHASE.BASE_ITEM, 
 						"selected": {
-							#"uid": U.generate_uid(),
 							"ref": item.ref
 						}
 					})
@@ -258,7 +257,6 @@ func build_list() -> void:
 					user_response.emit({
 						"action": ACTION.PURCHASE.FACILITY_ITEM, 
 						"selected": {
-							#"uid": U.generate_uid(),
 							"ref": item.ref
 						}
 					})
@@ -266,7 +264,6 @@ func build_list() -> void:
 					user_response.emit({
 						"action": ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT, 
 						"selected": {
-							#"uid": U.generate_uid(),
 							"ref": item.ref
 						}
 					})

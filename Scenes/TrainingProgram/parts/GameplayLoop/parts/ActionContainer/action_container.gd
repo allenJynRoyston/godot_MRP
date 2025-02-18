@@ -36,6 +36,13 @@ func toggle_camera_view() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func on_is_showing_update() -> void:
+	super.on_is_showing_update()
+	show() if is_showing else hide()
+# --------------------------------------------------------------------------------------------------		
+	
+
+# --------------------------------------------------------------------------------------------------		
 func on_close_active_menu() -> void:
 	pass
 	#set_btn_disabled_state(false)	
@@ -311,6 +318,15 @@ func open_scp_menu() -> void:
 						open_scp_menu(),
 			})			
 
+	options_list.push_back({
+		"title": "UPGRADE",
+		"onSelect": func() -> void:
+			ActiveMenu.freeze_inputs = true
+			var response:Dictionary = await GameplayNode.upgrade_scp(current_location.duplicate())
+			ActiveMenu.freeze_inputs = false
+			if response.has_changes:
+				open_scp_menu(),
+	})			
 
 	ActiveMenu.options_list = options_list		
 	await U.tick()
@@ -555,8 +571,8 @@ func buildout_btns() -> void:
 	var can_contain:bool =  room_extract.room.can_contain if !room_extract.room.is_empty() else false	
 	var room_step_complete:bool = !room_is_empty and !is_room_under_construction
 	var room_category:int = room_extract.room_category
-	var scp_is_empty:bool = room_extract.scp.is_empty() 
-	var scp_is_testing:bool = !room_extract.scp.testing.is_empty() if !scp_is_empty else false
+	var scp_is_empty:bool = room_extract.is_scp_empty
+	#var scp_is_testing:bool = !room_extract.scp.testing.is_empty() if !scp_is_empty else false
 	
 	var new_right_btn_list:Array = [] 
 	var new_left_btn_list:Array = []
@@ -579,8 +595,17 @@ func buildout_btns() -> void:
 			})
 			
 			new_left_btn_list.push_back({
-				"title": "HR",
+				"title": "UPGRADE",
 				"assigned_key": "1",
+				"icon": SVGS.TYPE.TARGET,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						open_hr_menu()
+			})			
+			
+			new_left_btn_list.push_back({
+				"title": "PROMOTE",
+				"assigned_key": "2",
 				"icon": SVGS.TYPE.TARGET,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -589,7 +614,7 @@ func buildout_btns() -> void:
 			
 			new_left_btn_list.push_back({
 				"title": "SCP",
-				"assigned_key": "2",
+				"assigned_key": "3",
 				"icon": SVGS.TYPE.TARGET,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -654,8 +679,9 @@ func buildout_btns() -> void:
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						open_scp_menu()
-			})			
+			})
 			
+
 
 			
 			# ---- RIGHT SIDE

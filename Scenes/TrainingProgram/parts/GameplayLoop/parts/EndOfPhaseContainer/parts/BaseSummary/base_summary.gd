@@ -78,21 +78,28 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 func get_floor_metrics(floor:int) -> Dictionary:
 	var money_amount:int = 0
 	var energy_amount:int = 0
+	var science_amount:int = 0
 	var source:String = "" 
 	
 	for record in progress_data.record:
-		if record.location.floor == floor:
-			source = record.source
-			for cost in record.costs:
-				if cost.resource_ref == RESOURCE.TYPE.MONEY:
-					money_amount += cost.amount
-				if cost.resource_ref == RESOURCE.TYPE.ENERGY:
-					energy_amount += cost.amount
+		if "location" in record.data:
+			if record.data.location.floor == floor:
+				source = record.source
+				if "diff" in record.data:
+					for diff in record.data.diff:
+						match diff.resource_ref:
+							RESOURCE.TYPE.MONEY:
+								money_amount += diff.amount
+							RESOURCE.TYPE.ENERGY:
+								energy_amount += diff.amount
+							RESOURCE.TYPE.SCIENCE:
+								science_amount += diff.amount
 					
 	return {
 		"record_name": source,
 		"money_amount": money_amount,
-		"energy_amount": energy_amount
+		"energy_amount": energy_amount,
+		"science_amount": science_amount
 	}
 # -----------------------------------------------------------------------------------------------
 
@@ -145,8 +152,6 @@ func on_steps_update() -> void:
 	if progress_data.is_empty() or room_config.is_empty() or resources_data.is_empty():return
 	for child in BaseItemListContainer.get_children():
 		child.queue_free()
-	
-
 	
 	match steps:
 		#-----------------

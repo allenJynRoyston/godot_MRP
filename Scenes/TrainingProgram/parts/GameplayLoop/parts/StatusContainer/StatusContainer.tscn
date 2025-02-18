@@ -51,7 +51,7 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dtt3w"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1pfp"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4wyr"]
@@ -80,10 +80,10 @@ size_flags_horizontal = 8
 [node name="DetailPanel" parent="Control" instance=ExtResource("3_an7ib")]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-offset_left = -304.0
-offset_top = 196.0
-offset_right = -4.0
-offset_bottom = 323.0
+offset_left = -359.0
+offset_top = 64.0
+offset_right = -59.0
+offset_bottom = 191.0
 grow_horizontal = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
@@ -91,111 +91,98 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_cs3fv")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
-custom_minimum_size = Vector2(200, 0)
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+alignment = 2
 
-[node name="Resources" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Resources" type="PanelContainer" parent="PanelContainer/HBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cq7eb")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Resources"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer2/Resources"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Resources/MarginContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 15
 
-[node name="ResourceItemEnergy2" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
-layout_mode = 2
-icon = 31
-header = "SCIENCE"
-title = "999"
-display_at_bottom = true
-
-[node name="ResourceItemMoney" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemMoney" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 30
 header = "FUNDS"
 title = "999"
 display_at_bottom = true
 
-[node name="ResourceItemEnergy" parent="PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemEnergy" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 31
 header = "ENERGY"
 title = "999"
 display_at_bottom = true
 
-[node name="Resources2" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="ResourceItemScience" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_cq7eb")
+icon = 39
+header = "SCIENCE"
+title = "999"
+display_at_bottom = true
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Resources2"]
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Resources2/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="ResourceItemStaff" parent="PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemStaff" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 34
 header = "STAFF"
 title = "10/10"
 display_at_bottom = true
 
-[node name="ResourceItemSecurity" parent="PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemSecurity" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 35
 header = "SECURITY"
 title = "10/10"
 display_at_bottom = true
 
-[node name="ResourceItemDClass" parent="PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
+[node name="ResourceItemDClass" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("4_3ua1b")]
 layout_mode = 2
 icon = 32
 header = "D-CLASS"
 title = "10/10"
 display_at_bottom = true
 
-[node name="Status" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Status" type="PanelContainer" parent="PanelContainer/HBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_q5olq")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Status"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer2/Status"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_dh1uk")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="ReportProgressContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer"]
+[node name="ReportProgressContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 8
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer"]
 visible = false
 custom_minimum_size = Vector2(175, 25)
 layout_mode = 2
@@ -206,7 +193,7 @@ max_value = 1.0
 value = 0.5
 show_percentage = false
 
-[node name="ReportBtn" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer/ProgressBar" instance=ExtResource("5_tr3tb")]
+[node name="ReportBtn" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer/ProgressBar" instance=ExtResource("5_tr3tb")]
 custom_minimum_size = Vector2(100, 25)
 layout_mode = 1
 anchors_preset = 15
@@ -219,16 +206,16 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_dtt3w")
+theme_override_styles/panel = SubResource("StyleBoxFlat_m1pfp")
 icon = 7
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "NEXT REPORT IN X DAYS"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleHeader" type="Label" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
+[node name="TitleHeader" type="Label" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 5
@@ -237,15 +224,15 @@ label_settings = ExtResource("6_btnsk")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_f4wyr")
 
-[node name="DayLabel" type="Label" parent="PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
+[node name="DayLabel" type="Label" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
-text = "10"
+text = "DAY XX"
 label_settings = ExtResource("8_asbvn")
 horizontal_alignment = 2
 uppercase = true

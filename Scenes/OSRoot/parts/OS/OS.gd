@@ -664,7 +664,6 @@ func open_taskbar_menu(data:Dictionary) -> void:
 							"title": "Settings"
 						},
 					"onClick": func(_data:Dictionary):
-						print("settings")
 						close_app(APPS.TASKBAR_MENU),
 				},
 				{

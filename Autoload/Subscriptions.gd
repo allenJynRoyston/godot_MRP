@@ -391,14 +391,14 @@ var timeline_array:Array = [] :
 	set(val):
 		timeline_array = val 
 		for node in timeline_array_subscriptions:
-			if "on_timeline_array_updates" in node:
-				node.on_timeline_array_updates.call( timeline_array)	
+			if "on_timeline_array_update" in node:
+				node.on_timeline_array_update.call( timeline_array)	
 
 func subscribe_to_timeline_array(node:Node) -> void:
 	if node not in timeline_array_subscriptions:
 		timeline_array_subscriptions.push_back(node)
-		if "on_timeline_array_updates" in node:
-			node.on_timeline_array_updates.call( timeline_array)
+		if "on_timeline_array_update" in node:
+			node.on_timeline_array_update.call( timeline_array)
 			
 func unsubscribe_to_timeline_array(node:Node) -> void:
 	timeline_array_subscriptions.erase(node)				

@@ -53,7 +53,7 @@ func on_forecast_amount_update() -> void:
 # --------------------------------------------------	
 
 # --------------------------------------------------
-func on_timeline_array_updates(new_val:Array) -> void:
+func on_timeline_array_update(new_val:Array) -> void:
 	timeline_array = new_val
 	items = timeline_array.filter(func(i): return i.completed_at == index)	
 # --------------------------------------------------
@@ -73,7 +73,6 @@ func on_items_update() -> void:
 	
 	if items.size() > 0:
 		await U.tick()
-		print(self.size)
 # --------------------------------------------------
 
 # --------------------------------------------------

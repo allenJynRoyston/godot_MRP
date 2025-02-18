@@ -31,10 +31,10 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="MoneyDetails" parent="MarginContainer" instance=ExtResource("2_n3efn")]
-visible = false
 layout_mode = 2
 
 [node name="EnergyDetails" parent="MarginContainer" instance=ExtResource("3_mv5r7")]
+visible = false
 layout_mode = 2
 
 [node name="LeadResearcherDetails" parent="MarginContainer" instance=ExtResource("4_kw3da")]

@@ -72,13 +72,6 @@ texture = SubResource("ViewportTexture_m3rsi")
 clip_contents = true
 debug_game = true
 
-[node name="MousePointer" type="TextureRect" parent="GameLayer"]
-offset_right = 1440.0
-offset_bottom = 800.0
-texture = ExtResource("3_ni4fo")
-expand_mode = 1
-stretch_mode = 2
-
 [node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
@@ -144,3 +137,10 @@ layout_mode = 2
 texture = SubResource("ViewportTexture_tlu3a")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="MousePointer" type="TextureRect" parent="Control"]
+offset_right = 1440.0
+offset_bottom = 800.0
+texture = ExtResource("3_ni4fo")
+expand_mode = 1
+stretch_mode = 2

@@ -2,14 +2,15 @@
 extends GameContainer
 
 @onready var MainPanel:PanelContainer = $PanelContainer
-@onready var DayLabel:Label = $PanelContainer/VBoxContainer/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer/DayLabel
+@onready var DayLabel:Label = $PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer/DayLabel
 
-@onready var ResourceItemMoney:Control = $PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
-@onready var ResourceItemEnergy:Control = $PanelContainer/VBoxContainer/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
+@onready var ResourceItemMoney:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
+@onready var ResourceItemEnergy:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
+@onready var ResourceItemScience:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemScience
 
-@onready var ResourceItemStaff:Control =  $PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2/ResourceItemStaff
-@onready var ResourceItemSecurity:Control = $PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2/ResourceItemSecurity
-@onready var ResourceItemDClass:Control = $PanelContainer/VBoxContainer/Resources2/MarginContainer/HBoxContainer2/ResourceItemDClass
+@onready var ResourceItemStaff:Control =  $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
+@onready var ResourceItemSecurity:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
+@onready var ResourceItemDClass:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
 
 @onready var DetailPanel:Control = $Control/DetailPanel
 
@@ -35,7 +36,7 @@ func _ready() -> void:
 		detail_panel_is_focused = false
 		
 	# ResourceItemLeadResearchers, 
-	for node in [ResourceItemMoney, ResourceItemEnergy, ResourceItemStaff, ResourceItemSecurity, ResourceItemDClass]:
+	for node in [ResourceItemMoney, ResourceItemEnergy, ResourceItemScience, ResourceItemStaff, ResourceItemSecurity, ResourceItemDClass]:
 		node.onClick = func() -> void:
 			if suppress_click:return
 			match node:
@@ -43,6 +44,8 @@ func _ready() -> void:
 					DetailPanel.show_details(RESOURCE.TYPE.MONEY)
 				ResourceItemEnergy:
 					DetailPanel.show_details(RESOURCE.TYPE.ENERGY)
+				ResourceItemScience:
+					DetailPanel.show_details(RESOURCE.TYPE.SCIENCE)					
 				#ResourceItemLeadResearchers:
 					#DetailPanel.show_details(RESOURCE.TYPE.LEAD_RESEARCHERS)
 				ResourceItemStaff:
@@ -87,16 +90,6 @@ func open_detail_panel(node:Control) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
-	purchased_facility_arr = new_val
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
-	hired_lead_researchers_arr = new_val
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 	if !is_node_ready() or resources_data.is_empty():return
@@ -110,8 +103,9 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 				ResourceItemMoney.title = "%s" % [data.amount]
 			RESOURCE.TYPE.ENERGY:
 				ResourceItemEnergy.title = "%s" % [data.amount]
-			#RESOURCE.TYPE.LEAD_RESEARCHERS:
-				#ResourceItemLeadResearchers.title = "%s" % [data.amount]
+			RESOURCE.TYPE.SCIENCE:
+				ResourceItemScience.title = "%s" % [data.amount]
+
 			RESOURCE.TYPE.STAFF:
 				ResourceItemStaff.title = "%s/%s" % [data.amount, data.capacity]
 			RESOURCE.TYPE.SECURITY:

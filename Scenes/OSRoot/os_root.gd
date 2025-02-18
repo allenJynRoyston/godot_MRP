@@ -1,7 +1,7 @@
 extends PanelContainer
 
 @onready var OSNode:PanelContainer = $GameLayer/OS
-@onready var MousePointer:TextureRect = $GameLayer/MousePointer
+@onready var MousePointer:TextureRect = $Control/MousePointer
 @onready var FinalComposite:TextureRect = $Control/FinalComposite
 
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")

@@ -122,7 +122,7 @@ func on_data_update() -> void:
 				
 				item_data = RD_UTIL.return_purchase_cost(data.ref)
 			TIER.TYPE.FACILITY:
-				at_own_limit = ROOM_UTIL.at_own_limit(data.ref, purchased_facility_arr, [])
+				at_own_limit = ROOM_UTIL.at_own_limit(data.ref)
 				item_data = ROOM_UTIL.return_purchase_cost(data.ref)
 
 				AlreadyOwned.hide()
