@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 enum TAB_OPTIONS {LEAD_RESEARCHERS, SUPPORT}

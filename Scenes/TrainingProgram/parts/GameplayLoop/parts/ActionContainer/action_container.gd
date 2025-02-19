@@ -584,15 +584,6 @@ func buildout_btns() -> void:
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
 			new_left_btn_list.push_back({
-				"title": "PLANNING",
-				"assigned_key": "TAB",
-				"icon": SVGS.TYPE.TARGET,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						toggle_camera_view()
-			})
-			
-			new_left_btn_list.push_back({
 				"title": "UPGRADE",
 				"assigned_key": "1",
 				"icon": SVGS.TYPE.TARGET,
@@ -618,9 +609,27 @@ func buildout_btns() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						open_scp_details()
 			})
-			
+
 			# ---- RIGHT SIDE
-			
+			new_right_btn_list.push_back({
+				"title": "DETAILS",
+				"assigned_key": "E",
+				"icon": SVGS.TYPE.TARGET,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():
+						GBL.find_node(REFS.FLOOR_INFO).activate_toggle()
+					
+			})	
+						
+			new_right_btn_list.push_back({
+				"title": "GOTO WING",
+				"assigned_key": "TAB",
+				"icon": SVGS.TYPE.TARGET,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						toggle_camera_view()
+			})		
+						
 			new_right_btn_list.push_back({
 				"title": "NEXT (%s)" % [end_of_turn_metrics_event_count] if end_of_turn_metrics_event_count > 0 else "NEXT",
 				"assigned_key": "ENTER",
@@ -632,25 +641,6 @@ func buildout_btns() -> void:
 			
 			
 		CAMERA.TYPE.ROOM_SELECT:
-			new_left_btn_list.push_back({
-				"title": "ADMIN",
-				"assigned_key": "TAB",
-				"icon": SVGS.TYPE.TARGET,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-					
-						toggle_camera_view()
-			})
-			
-			new_left_btn_list.push_back({
-				"title": "AUTO",
-				"assigned_key": "E",
-				"icon": SVGS.TYPE.TARGET,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-						auto_order(),
-			})						
-			
 			new_left_btn_list.push_back({
 				"title": "FACILITY",
 				"assigned_key": "1",
@@ -672,27 +662,44 @@ func buildout_btns() -> void:
 			new_left_btn_list.push_back({
 				"title": "CONTAINMENT",
 				"assigned_key": "3",
-				"is_hidden": room_category != ROOM.CATEGORY.CONTAINMENT_CELL,
-				"icon": SVGS.TYPE.CONTAIN,
+				"is_disabled": room_category != ROOM.CATEGORY.CONTAINMENT_CELL,
+				"icon": SVGS.TYPE.CONTAIN if room_category == ROOM.CATEGORY.CONTAINMENT_CELL else SVGS.TYPE.CLEAR,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						open_scp_menu()
 			})
 			
-
-
-			
-			# ---- RIGHT SIDE
-			new_right_btn_list.push_back({
+			new_left_btn_list.push_back({
 				"title": "ALARM",
 				"assigned_key": "X",
+				"is_hidden": false,
 				"icon": SVGS.TYPE.CAUTION,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						open_alarm_setting()
 			})
+
 			
-			
+			# ---- RIGHT SIDE
+			new_right_btn_list.push_back({
+				"title": "AUTO",
+				"assigned_key": "E",
+				"icon": SVGS.TYPE.TARGET,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+						auto_order(),
+			})	
+						
+			new_right_btn_list.push_back({
+				"title": "GOTO FLOOR",
+				"assigned_key": "TAB",
+				"icon": SVGS.TYPE.TARGET,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						toggle_camera_view()
+			})
+
+
 			new_right_btn_list.push_back({
 				"title": "NEXT (%s)" % [end_of_turn_metrics_event_count] if end_of_turn_metrics_event_count > 0 else "NEXT",
 				"assigned_key": "ENTER",

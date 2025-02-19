@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=3 uid="uid://ch2o2250h2fju"]
+
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_ktwyq"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/hume_panel.gd" id="1_rrwo6"]
+[ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/Oscilliscope.gdshader" id="2_2mluu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l6hi5"]
+bg_color = Color(0, 0.53, 0.282667, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_el54n"]
+shader = ExtResource("2_2mluu")
+shader_parameter/frequency = 10.0
+shader_parameter/amplitude = 0.1
+shader_parameter/speed = 6.0
+shader_parameter/thickness = 0.2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lrov0"]
+
+[node name="HumePanel" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_l6hi5")
+script = ExtResource("1_rrwo6")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "HUME"
+label_settings = ExtResource("1_ktwyq")
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_el54n")
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("NoiseTexture2D_lrov0")
+expand_mode = 1
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "1.0"
+label_settings = ExtResource("1_ktwyq")

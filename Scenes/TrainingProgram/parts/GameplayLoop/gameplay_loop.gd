@@ -2,21 +2,24 @@ extends PanelContainer
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
 
-@onready var ActionQueueContainer:MarginContainer = $ActionQueueContainer
+@onready var TimelineContainer:MarginContainer = $TimelineContainer
 @onready var ActionContainer:MarginContainer = $ActionContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var StoreContainer:MarginContainer = $StoreContainer
 @onready var ContainmentContainer:MarginContainer = $ContainmentContainer
 @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
-@onready var StatusContainer:MarginContainer = $StatusContainer
+@onready var ResourceContainer:MarginContainer = $ResourceContainer
 @onready var BuildCompleteContainer:PanelContainer = $BuildCompleteContainer
-@onready var InfoContainer:MarginContainer = $InfoContainer
+@onready var ObjectivesContainer:MarginContainer = $ObjectivesContainer
 @onready var ResearchersContainer:MarginContainer = $ResearcherContainer
 @onready var EventContainer:MarginContainer = $EventContainer
-@onready var MetricsContainer:MarginContainer = $MetricsContainer
-@onready var BackContainer:MarginContainer = $BackContainer
+@onready var MetricsContainer:PanelContainer = $MetricsContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
+@onready var ToastContainer:PanelContainer = $ToastContainer
+
+@onready var RoomInfo:PanelContainer = $RoomInfo
+@onready var FloorInfo:PanelContainer = $FloorInfo
 
 @onready var ConfirmModal:MarginContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
@@ -24,6 +27,8 @@ extends PanelContainer
 
 const SCPSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
 const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
+
+enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, METRIC_EVENTS, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS }
 
 enum SHOP_STEPS {
 	RESET, 
@@ -58,22 +63,27 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 		show_structures = val
 		on_show_structures_update()
 		
-@export var show_action_queue:bool = true : 
+@export var show_timeline:bool = true : 
 	set(val):
-		show_action_queue = val
-		on_show_action_queue_update()
+		show_timeline = val
+		on_show_timeline_update()
 
 @export var show_actions:bool = true : 
 	set(val):
 		show_actions = val
 		on_show_actions_update()
 
-#@export var show_resources:bool = true : 
-	#set(val):
-		#show_resources = val
-		#on_show_resources_update()
+@export var show_objectives:bool = false : 
+	set(val):
+		show_objectives = val
+		on_show_objectives_update()		
+		
+@export var show_metrics:bool = true : 
+	set(val):
+		show_metrics = val
+		on_show_metrics_update()
 
-@export var show_dialogue:bool = true : 
+@export var show_dialogue:bool = false : 
 	set(val):
 		show_dialogue = val
 		on_show_dialogue_update()
@@ -103,15 +113,11 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 		show_confirm_modal = val
 		on_show_confirm_modal_update()
 		
-@export var show_status:bool = false : 
+@export var show_resources:bool = false : 
 	set(val):
-		show_status = val
-		on_show_status_update()
+		show_resources = val
+		on_show_resources_update()
 		
-@export var show_info:bool = false : 
-	set(val):
-		show_info = val
-		on_show_info_update()		
 
 @export var show_events:bool = false : 
 	set(val):
@@ -122,16 +128,7 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 	set(val):
 		show_build_complete = val
 		on_show_build_complete_update()
-		
-@export var show_metrics:bool = false : 
-	set(val):
-		show_metrics = val
-		on_show_metrics_update()
-		
-@export var show_back:bool = false : 
-	set(val):
-		show_back = val
-		on_show_back_update()
+
 		
 @export var show_end_of_phase:bool = false : 
 	set(val):
@@ -400,6 +397,9 @@ var selected_researcher_item:Dictionary = {}
 var selected_scp_details:Dictionary = {} 
 var expired_scp_items:Array = [] 
 
+var current_location_snapshot:Dictionary 
+var camera_settings_snapshot:Dictionary
+
 var showing_states:Dictionary = {} 
 var revert_state_location:Dictionary = {}
 var tenative_location:Dictionary = {}
@@ -407,14 +407,18 @@ var tenative_location:Dictionary = {}
 var completed_actions:Array = [] : 
 	set(val):
 		completed_actions = val
-		if !completed_actions.is_empty():
-			current_action_complete_step = ACTION_COMPLETE_STEPS.START
+
 			
 var event_data:Array = [] : 
 	set(val):
 		event_data = val
 		if !event_data.is_empty():
 			current_event_step = EVENT_STEPS.START
+
+var current_phase:PHASE = PHASE.STARTUP : 
+	set(val):
+		current_phase = val
+		on_current_phase_update()
 
 var current_shop_step:SHOP_STEPS = SHOP_STEPS.RESET : 
 	set(val):
@@ -531,9 +535,13 @@ func _ready() -> void:
 		hide()
 		set_process(false)
 		set_physics_process(false)	
-	setup()	
+	setup()
 	
+		
+
 func setup() -> void:
+	current_phase = PHASE.STARTUP
+	
 	# first these
 	on_show_structures_update()
 	on_show_actions_update()
@@ -541,28 +549,21 @@ func setup() -> void:
 	on_show_dialogue_update()
 	on_show_containment_status_update()
 	on_show_recruit_update()
-	on_show_status_update()
-	on_show_info_update()
+	on_show_resources_update()
+	on_show_objectives_update()
 	on_show_events_update()
 	on_show_build_complete_update()
 	on_show_reseachers_update()
 	on_show_store_update()
 	on_show_metrics_update()
-	on_show_back_update()
 	on_show_end_of_phase_update()
-	#on_show_choices_update()
 	
 	# other
 	on_show_confirm_modal_update()
 	on_is_busy_update()
-	
-	# steps
-	#
-	#on_current_shop_step_update()
-	
+
 	# get default showing state
 	capture_default_showing_state()
-		
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -573,7 +574,6 @@ func start(game_data:Dictionary = {}) -> void:
 	show()
 	set_process(true)
 	set_physics_process(true)	
-	#_on_container_rect_changed()
 	
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	for node in get_all_container_nodes():
@@ -635,6 +635,7 @@ func start_new_game() -> void:
 	
 	set_room_config()	
 	setup_complete = true
+	current_phase = PHASE.PLAYER
 
 
 
@@ -705,12 +706,13 @@ func on_is_busy_update() -> void:
 
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
-		Structure3dContainer, ActionQueueContainer, ResearchersContainer,
+		Structure3dContainer, TimelineContainer, ResearchersContainer,
 		ActionContainer, 
 		DialogueContainer, StoreContainer, ContainmentContainer, 
-		ConfirmModal, RecruitmentContainer, StatusContainer,
-		BuildCompleteContainer, InfoContainer, EventContainer,
-		MetricsContainer, BackContainer, EndOfPhaseContainer,
+		ConfirmModal, RecruitmentContainer, ResourceContainer,
+		BuildCompleteContainer, ObjectivesContainer, EventContainer,
+		MetricsContainer,  EndOfPhaseContainer,
+		RoomInfo, FloorInfo
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -718,6 +720,11 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 func capture_default_showing_state() -> void:
 	for node in get_all_container_nodes():
 		showing_states[node] = node.is_showing
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func restore_player_hud() -> void:	
+	await show_only([Structure3dContainer, TimelineContainer, ActionContainer, MetricsContainer, ResourceContainer, RoomInfo])
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -807,7 +814,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 					#ACTION.CONTAINED.CANCEL_TRANSFER:
 						#var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_ref and i.action == ACTION.AQ.TRANSFER)
 						#cancel_scp_transfer(scp_ref)
-						#remove_from_action_queue(filtered_arr[0])
+						#remove_from_timeline(filtered_arr[0])
 				#pass,
 			# -------------------------	
 			# get counts for type (randomize, after_contained, etc)
@@ -1188,7 +1195,7 @@ func execute_record_audit() -> void:
 					
 					if diff.size() > 0:
 						progress_data.record.push_back({
-							"source": "FACILITY",
+							"source": REFS.SOURCE.FACILITY,
 							"data": {
 								"name": room_details.name,
 								"day": progress_data.day,
@@ -1211,7 +1218,7 @@ func execute_record_audit() -> void:
 					)
 					
 					progress_data.record.push_back({
-						"source": "SCP",
+						"source": REFS.SOURCE.SCPS,
 						"data": {
 							"name": scp_details.name,
 							"day": progress_data.day,
@@ -1237,7 +1244,7 @@ func execute_record_audit() -> void:
 							}]
 							
 							progress_data.record.push_back({
-								"source": "TESTING",
+								"source": REFS.SOURCE.TESTING,
 								"data": {
 									"scp_ref": scp_details,
 									"researcher_uid": researcher.uid,
@@ -1251,7 +1258,7 @@ func execute_record_audit() -> void:
 							# add experience
 							var leveled_up:bool = RESEARCHER_UTIL.add_experience(researcher.uid, xp_amount)
 							progress_data.record.push_back({
-								"source": "RESEARCHER",
+								"source": REFS.SOURCE.RESEARCHERS,
 								"data": {
 									"xp": xp_amount
 								}
@@ -1321,101 +1328,7 @@ func execute_metric_check() -> void:
 
 # -----------------------------------
 func next_day() -> void:
-
-	PhaseAnnouncement.show()
-	await U.set_timeout(1.0)
-	PhaseAnnouncement.hide()
-	# take snapshots
-	var current_location_snapshot:Dictionary = current_location.duplicate(true)
-	var camera_settings_snapshot:Dictionary = camera_settings.duplicate(true)	
-	
-	# show only...
-	await show_only([Structure3dContainer, MetricsContainer, StatusContainer])	
-	
-	# FIRST ZOOM IN TO ROOM LEVEL
-	if camera_settings_snapshot.type != CAMERA.TYPE.ROOM_SELECT:
-		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
-		SUBSCRIBE.camera_settings = camera_settings	
-		await wait_please(1.0)		
-	
-	# turn processing next day flag to true
-	processing_next_day = true
-	var is_game_over:bool = false
-
-	# update progress data
-	PhaseAnnouncement.show()
-	await U.set_timeout(1.0)
-	execute_record_audit()
-	PhaseAnnouncement.hide()
-
-	# does a check for metrics
-	PhaseAnnouncement.show()
-	await U.set_timeout(1.0)
-	await execute_metric_check()
-	PhaseAnnouncement.hide()
-	
-	
-	# does a check for random events
-	# does a check for metrics
-	PhaseAnnouncement.show()
-	await U.set_timeout(1.0)
-	await execute_random_scp_events()
-	PhaseAnnouncement.hide()
-	
-
-	# check for endgame
-	if is_game_over:
-		processing_next_day = false
-		game_over()
-		return
-	
-	
-	
-	
-	# update next metric (goes from MORALE -> 
-	progress_data.next_metric = U.min_max(progress_data.next_metric + 1, 0, RESOURCE.BASE_METRICS.size() - 2, true)
-
-	# ADD TO PROGRESS DATA day count
-	progress_data.day += 1
-		
-	# update subscriptions
-	SUBSCRIBE.progress_data = progress_data
-	SUBSCRIBE.resources_data = resources_data		
-	SUBSCRIBE.base_states = base_states
-	
-	# update new available researchers every week
-	if progress_data.day % 7 == 0:
-		SUBSCRIBE.researcher_hire_list = RESEARCHER_UTIL.generate_new_researcher_hires() 	
-		
-	
-	# ADDS TO COMPLETED BUILD ITEMS LIST IF THEY'RE DONE
-	completed_actions = timeline_array.filter(func(i): return i.completed_at == progress_data.day)	
-	if completed_actions.size() > 0:		
-		PhaseAnnouncement.show()
-		await U.set_timeout(1.0)
-		await on_complete_build_complete
-		PhaseAnnouncement.hide()
-		
-
-	# add check for next scp aquisition
-	if progress_data.day == 2:
-		current_select_scp_step = SELECT_SCP_STEPS.START
-		PhaseAnnouncement.show()
-		await U.set_timeout(1.0)
-		await on_scp_select_complete
-		PhaseAnnouncement.hide()
-		
-	# REVERT CAMERA 
-	if camera_settings_snapshot.type != CAMERA.TYPE.ROOM_SELECT:
-		SUBSCRIBE.camera_settings = camera_settings_snapshot
-
-	# AND REVERT LOCATION
-	SUBSCRIBE.current_location = current_location_snapshot
-		
-	# restore
-	print("restore and start next day")
-	await restore_default_state()
-	processing_next_day = false
+	current_phase = PHASE.RESOURCE_COLLECTION
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1605,20 +1518,20 @@ func reset_room(from_location:Dictionary) -> Dictionary:
 
 # ------------------------------------------------------------------------------	
 #region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
-func on_completed_action(action_item:Dictionary) -> void:
-	match action_item.action:
+func on_completed_action(timeline_item:Dictionary) -> void:
+	match timeline_item.action:
 		# RUNS AFTER TESTING ACCESSMENT IS COMPLETED
 		ACTION.AQ.ACCESSING:
-			var scp_ref:int = action_item.ref 
+			var scp_ref:int = timeline_item.ref 
 			var event_res:Dictionary = await check_events(scp_ref, SCP.EVENT_TYPE.START_TESTING, true)
 			var testing_ref:int = event_res.val			
-			update_scp_testing(action_item.ref, testing_ref)
+			update_scp_testing(timeline_item.ref, testing_ref)
 		# ----------------------------
 		# RUNS AFTER A TESTING EVENT HAS COMPLETEDperform_action
 		ACTION.AQ.TESTING:  
-			var scp_ref:int = action_item.ref 
-			var testing_ref:int = action_item.props.testing_ref
-			var utilized_amounts:Dictionary = action_item.props.utilized_amounts
+			var scp_ref:int = timeline_item.ref 
+			var testing_ref:int = timeline_item.props.testing_ref
+			var utilized_amounts:Dictionary = timeline_item.props.utilized_amounts
 			var res:Dictionary = find_in_contained(scp_ref)
 			var index:int = res.index
 			
@@ -1644,19 +1557,19 @@ func on_completed_action(action_item:Dictionary) -> void:
 		# ----------------------------
 		ACTION.AQ.CONTAIN:
 			# first, remove from available list...
-			scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != action_item.ref)
+			scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != timeline_item.ref)
 			# then add to contained list...
-			var new_contained_item:Dictionary = create_new_contained_item(action_item.ref, action_item.location)
+			var new_contained_item:Dictionary = create_new_contained_item(timeline_item.ref, timeline_item.location)
 			scp_data.contained_list.push_back(new_contained_item)
 
-			SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(action_item.ref, resources_data)
+			SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(timeline_item.ref, resources_data)
 			SUBSCRIBE.scp_data = scp_data
 
-			await check_events(action_item.ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
+			await check_events(timeline_item.ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
 		# ----------------------------
 		ACTION.AQ.TRANSFER:
 			scp_data.contained_list = scp_data.contained_list.map(func(i):
-				if i.ref == action_item.ref:
+				if i.ref == timeline_item.ref:
 					# move to new location
 					i.location = i.transfer_status.location
 					# remove transfer status
@@ -1669,15 +1582,15 @@ func on_completed_action(action_item:Dictionary) -> void:
 			)
 			
 			SUBSCRIBE.scp_data = scp_data
-			await check_events(action_item.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
+			await check_events(timeline_item.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
 		# ----------------------------
 			
-	remove_from_action_queue(action_item)
+	remove_from_timeline(timeline_item)
 # -----------------------------------
 
 # -----------------------------------
-func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) -> bool:
-	match action_item.action:
+func cancel_action_queue(timeline_item:Dictionary, include_restore:bool = true) -> bool:
+	match timeline_item.action:
 		ACTION.AQ.CONTAIN:
 			ConfirmModal.set_text("Cancel containment?", "There are no costs for this action.")
 		ACTION.AQ.TRANSFER:
@@ -1699,23 +1612,23 @@ func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) ->
 	var response:Dictionary = await ConfirmModal.user_response
 	match response.action:
 		ACTION.NEXT:
-			match action_item.action:
+			match timeline_item.action:
 				ACTION.AQ.BUILD_ITEM:
-					SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(action_item.ref, resources_data, true)
+					SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(timeline_item.ref, resources_data, true)
 				ACTION.AQ.RESEARCH_ITEM:
-					SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(action_item.ref, resources_data, true)
+					SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(timeline_item.ref, resources_data, true)
 				ACTION.AQ.BASE_ITEM:
-					SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(action_item.ref, resources_data, true)
+					SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(timeline_item.ref, resources_data, true)
 				ACTION.AQ.CONTAIN:
-					cancel_scp_containment(action_item.ref)
+					cancel_scp_containment(timeline_item.ref)
 				ACTION.AQ.TRANSFER:
-					cancel_scp_transfer(action_item.ref)
+					cancel_scp_transfer(timeline_item.ref)
 				ACTION.AQ.ACCESSING:
-					stop_scp_testing(action_item.ref)
+					stop_scp_testing(timeline_item.ref)
 				ACTION.AQ.TESTING:
-					stop_scp_testing(action_item.ref)
+					stop_scp_testing(timeline_item.ref)
 					
-			await remove_from_action_queue(action_item)
+			await remove_from_timeline(timeline_item)
 	
 	if include_restore:
 		await restore_default_state()
@@ -1724,9 +1637,9 @@ func cancel_action_queue(action_item:Dictionary, include_restore:bool = true) ->
 # -----------------------------------
 
 # -----------------------------------
-func remove_from_action_queue(action_item:Dictionary) -> void:	
-	SUBSCRIBE.timeline_array = timeline_array.filter(func(i): return i.uid != action_item.uid)
-	#await ActionQueueContainer.remove_from_queue([action_item])
+func remove_from_timeline(timeline_item:Dictionary) -> void:	
+	SUBSCRIBE.timeline_array = timeline_array.filter(func(i): return i.uid != timeline_item.uid)
+	#await ActionQueueContainer.remove_from_queue([timeline_item])
 # -----------------------------------
 
 # -----------------------------------
@@ -1949,7 +1862,7 @@ func contain_scp_cancel(from_location:Dictionary, action:ACTION.AQ) -> Dictionar
 					cancel_scp_containment(scp_details.ref)
 				ACTION.AQ.TRANSFER:
 					cancel_scp_transfer(scp_details.ref)
-			remove_from_action_queue(filtered_arr[0])
+			remove_from_timeline(filtered_arr[0])
 		
 	restore_default_state()		
 	return {"has_changes": response.action != ACTION.BACK}
@@ -2303,10 +2216,10 @@ func on_show_actions_update() -> void:
 	ActionContainer.is_showing = show_actions
 	showing_states[ActionContainer] = show_actions
 	
-func on_show_action_queue_update() -> void:
+func on_show_timeline_update() -> void:
 	if !is_node_ready():return
-	ActionQueueContainer.is_showing = show_action_queue
-	showing_states[ActionQueueContainer] = show_action_queue
+	TimelineContainer.is_showing = show_timeline
+	showing_states[TimelineContainer] = show_timeline
 
 func on_show_reseachers_update() -> void:
 	if !is_node_ready():return
@@ -2338,15 +2251,15 @@ func on_show_recruit_update() -> void:
 	RecruitmentContainer.is_showing = show_recruit
 	showing_states[RecruitmentContainer] = show_recruit
 
-func on_show_status_update() -> void:
+func on_show_resources_update() -> void:
 	if !is_node_ready():return
-	StatusContainer.is_showing = show_status
-	showing_states[StatusContainer] = show_status
+	ResourceContainer.is_showing = show_resources
+	showing_states[ResourceContainer] = show_resources
 
-func on_show_info_update() -> void:
+func on_show_objectives_update() -> void:
 	if !is_node_ready():return
-	InfoContainer.is_showing = show_info
-	showing_states[InfoContainer] = show_info
+	ObjectivesContainer.is_showing = show_objectives
+	showing_states[ObjectivesContainer] = show_objectives
 
 func on_show_events_update() -> void:
 	if !is_node_ready():return
@@ -2363,10 +2276,6 @@ func on_show_metrics_update() -> void:
 	MetricsContainer.is_showing = show_metrics
 	showing_states[MetricsContainer] = show_metrics
 
-func on_show_back_update() -> void:
-	if !is_node_ready():return
-	BackContainer.is_showing = show_back
-	showing_states[BackContainer] = show_back
 
 func on_show_end_of_phase_update() -> void:
 	if !is_node_ready():return
@@ -2378,12 +2287,114 @@ func on_show_end_of_phase_update() -> void:
 	#ChoiceContainer.is_showing = show_choices
 	#showing_states[ChoiceContainer] = show_choices
 
-#func _on_container_rect_changed() -> void:	
-	#if !is_node_ready():return
-	#for sidebar in [RoomStatusContainer, ActionQueueContainer]:
-		#sidebar.max_height = self.size.y
-
 #endregion
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------	SHOP STEPS
+func on_current_phase_update() -> void:
+	if !is_node_ready():return
+
+	match current_phase:
+		# ------------------------
+		PHASE.STARTUP:
+			show_only([])
+		# ------------------------
+		PHASE.PLAYER:
+			await PhaseAnnouncement.start("MANAGEMENT PHASE")	
+			await restore_player_hud()
+		# ------------------------
+		PHASE.RESOURCE_COLLECTION:
+			current_location_snapshot = current_location.duplicate(true)
+			camera_settings_snapshot = camera_settings.duplicate(true)
+						
+			await PhaseAnnouncement.start("RESOURCE COLLECTION")	
+			await show_only([Structure3dContainer, ResourceContainer, TimelineContainer])	
+			
+			execute_record_audit()
+			if camera_settings_snapshot.type != CAMERA.TYPE.ROOM_SELECT:
+				camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+				SUBSCRIBE.camera_settings = camera_settings	
+				await U.set_timeout(1.0)
+			
+			for record in progress_data.record:				
+				match record.source:
+					REFS.SOURCE.FACILITY:
+						SUBSCRIBE.current_location = record.data.location
+						for item in record.data.diff:
+							var resource_details:Dictionary = RESOURCE_UTIL.return_data(item.resource_ref)
+							ToastContainer.add("%s %s %s %s" % [record.data.name, "generated" if item.amount > 0 else "spent", item.amount, resource_details.name])				
+							await U.set_timeout(0.5)
+						
+				SUBSCRIBE.resources_data = resources_data		
+				
+			
+			await U.set_timeout(1.0)
+			current_phase = PHASE.METRIC_EVENTS
+		# ------------------------
+		PHASE.METRIC_EVENTS:
+			await PhaseAnnouncement.start("VIBE CHECK")	
+			#await show_only([Structure3dContainer, MetricsContainer])
+			for floor_index in room_config.floor.size():		
+				for ring_index in room_config.floor[floor_index].ring.size():
+					var ring_data:Dictionary = room_config.floor[floor_index].ring[ring_index]
+					# IF ANY OF THE METRICS ARE NEGATIVE/POSTIVE
+					if ring_data.metrics[progress_data.next_metric] != 0:
+						SUBSCRIBE.current_location = {"floor": floor_index, "ring": ring_index, "room": 4}
+					
+						await U.set_timeout(0.2)
+			
+			
+			await U.set_timeout(1.0)
+			current_phase = PHASE.RANDOM_EVENTS
+		# ------------------------
+		PHASE.RANDOM_EVENTS:
+			pass
+			current_phase = PHASE.CALC_NEXT_DAY			
+		# ------------------------
+		PHASE.CALC_NEXT_DAY:
+			# revert
+			SUBSCRIBE.camera_settings = camera_settings_snapshot
+			SUBSCRIBE.current_location = current_location_snapshot			
+						
+			await PhaseAnnouncement.start("ADVANCING THE DAY")	
+			# update next metric (goes from MORALE -> 
+			progress_data.next_metric = U.min_max(progress_data.next_metric + 1, 0, RESOURCE.BASE_METRICS.size() - 2, true)
+
+			# ADD TO PROGRESS DATA day count
+			progress_data.day += 1
+				
+			# update subscriptions
+			SUBSCRIBE.progress_data = progress_data
+			SUBSCRIBE.base_states = base_states
+			
+			var timeline_filter:Array = timeline_array.filter(func(i): return i.completed_at == progress_data.day)	
+			if timeline_filter.size() > 0:				
+				completed_actions = timeline_filter
+				current_action_complete_step = ACTION_COMPLETE_STEPS.START				
+				await on_complete_build_complete	
+			
+			# update new available researchers every week
+			if progress_data.day % 7 == 0:
+				print("new hires available...")
+				SUBSCRIBE.researcher_hire_list = RESEARCHER_UTIL.generate_new_researcher_hires() 	
+			
+			await U.set_timeout(1.0)
+			current_phase = PHASE.SCHEDULED_EVENTS
+		# ------------------------
+		PHASE.SCHEDULED_EVENTS:
+			await PhaseAnnouncement.start("SCHEDULED EVENTS")	
+			if progress_data.day % 14 == 0:
+				current_select_scp_step = SELECT_SCP_STEPS.START
+				await on_scp_select_complete
+			
+			# revert
+			SUBSCRIBE.camera_settings = camera_settings_snapshot
+			SUBSCRIBE.current_location = current_location_snapshot			
+			
+			await U.set_timeout(1.0)
+			current_phase = PHASE.PLAYER
+		# ------------------------
+
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	SHOP STEPS
@@ -2824,12 +2835,10 @@ func on_current_action_complete_step_update() -> void:
 	match current_action_complete_step:
 		# ---------------
 		ACTION_COMPLETE_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-			await restore_default_state()
+			pass
 		# ---------------
 		ACTION_COMPLETE_STEPS.START:
 			SUBSCRIBE.suppress_click = true
-			revert_state_location = current_location
 			BuildCompleteContainer.completed_build_items = completed_actions
 
 			for item in completed_actions:
@@ -2854,17 +2863,14 @@ func on_current_action_complete_step_update() -> void:
 						})
 						SUBSCRIBE.purchased_research_arr = purchased_research_arr
 			
-			
-			await show_only([Structure3dContainer, BuildCompleteContainer])
+			await show_only([BuildCompleteContainer, TimelineContainer])
 			await BuildCompleteContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			await show_only([Structure3dContainer, ResourceContainer, TimelineContainer])
 			
 			# move back to current location
 			current_location = revert_state_location
-			
-			# REMOVES FROM QUEUE LIST
-			#await ActionQueueContainer.remove_from_queue(completed_actions)
-		
+					
 			# CHECK FOR EVENTS
 			for item in completed_actions:
 				await on_completed_action(item)
@@ -3048,6 +3054,8 @@ func on_current_researcher_step_update() -> void:
 #region CONTROL UPDATE
 func is_occupied() -> bool:
 	if is_busy or processing_next_day:
+		return true
+	if current_phase != PHASE.PLAYER:
 		return true
 	if (current_shop_step != SHOP_STEPS.RESET) or (current_contain_step != CONTAIN_STEPS.RESET) or (current_recruit_step != RECRUIT_STEPS.RESET) or (current_action_complete_step != ACTION_COMPLETE_STEPS.RESET) or (current_event_step != EVENT_STEPS.RESET):
 		return true

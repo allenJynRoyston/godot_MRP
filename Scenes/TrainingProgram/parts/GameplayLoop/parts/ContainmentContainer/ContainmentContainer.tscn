@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://dw4fw5d1x21qf"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/item_select_container.gd" id="1_ywnyu"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/containment_container.gd" id="1_gdxd7"]
 [ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_aslxc"]
 [ext_resource type="PackedScene" uid="uid://c12w8jpic416k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPList/SCPLIST.tscn" id="4_5uscs"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_vorlv"]
@@ -30,13 +30,13 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c10u1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ithqg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_21ahd"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0hd11"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pxvm8"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a1rf2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pealq"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_r0lcp"]
@@ -46,7 +46,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
-script = ExtResource("1_ywnyu")
+script = ExtResource("1_gdxd7")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_rx75c")
@@ -95,17 +95,17 @@ size_flags_horizontal = 3
 
 [node name="AvailableTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ithqg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_21ahd")
 title = "AVAILABLE"
 
 [node name="ContainedTabBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0hd11")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pxvm8")
 title = "IN CONTAINMENT"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3" instance=ExtResource("4_vorlv")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_a1rf2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pealq")
 title = "BACK"
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]

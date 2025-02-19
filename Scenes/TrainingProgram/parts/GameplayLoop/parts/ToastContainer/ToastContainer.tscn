@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://3ltyxjadd2yt"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/toast_container.gd" id="1_g8pd4"]
+[ext_resource type="PackedScene" uid="uid://dcdlbq88b7sm2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/parts/ToastItem.tscn" id="2_yop55"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1ktj"]
+
+[node name="ToastContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_o1ktj")
+script = ExtResource("1_g8pd4")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 100
+
+[node name="ListContainer" type="VBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="HBoxContainer" parent="MarginContainer/ListContainer" instance=ExtResource("2_yop55")]
+layout_mode = 2
+alignment = 2

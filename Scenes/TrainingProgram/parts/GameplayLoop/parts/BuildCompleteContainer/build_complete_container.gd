@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 @onready var TitleLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
@@ -44,7 +43,10 @@ func on_next() -> void:
 	update_display()
 # --------------------------------------------------------------------------------------------------
 
-
+func on_is_showing_update() -> void:
+	super.on_is_showing_update()
+	if !is_node_ready():return
+	show() if is_showing else hide()
 
 # --------------------------------------------------------------------------------------------------
 func update_display() -> void:

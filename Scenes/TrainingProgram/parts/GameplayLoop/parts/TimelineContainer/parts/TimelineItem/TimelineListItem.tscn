@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://hlplj21egi7y"]
 
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_l4ani"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/action_queue_list_item.gd" id="1_w6fge"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/timeline_list_item.gd" id="1_vk7wp"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_x3h3b"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_617rb"]
@@ -10,7 +10,7 @@
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_617rb")
-script = ExtResource("1_w6fge")
+script = ExtResource("1_vk7wp")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

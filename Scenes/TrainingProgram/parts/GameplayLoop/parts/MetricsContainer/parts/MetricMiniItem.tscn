@@ -6,7 +6,7 @@
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_r01ax"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqb8x"]
-bg_color = Color(0, 1, 0, 1)
+bg_color = Color(0.270124, 0.365673, 0.409071, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2

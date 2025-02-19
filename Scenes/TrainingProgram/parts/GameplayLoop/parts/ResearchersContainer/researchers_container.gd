@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 @onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/BackBtn

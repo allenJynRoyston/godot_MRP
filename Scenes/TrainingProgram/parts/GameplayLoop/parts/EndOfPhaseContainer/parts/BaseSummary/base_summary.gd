@@ -79,7 +79,7 @@ func get_floor_metrics(floor:int) -> Dictionary:
 	var money_amount:int = 0
 	var energy_amount:int = 0
 	var science_amount:int = 0
-	var source:String = "" 
+	var source:int 
 	
 	for record in progress_data.record:
 		if "location" in record.data:
@@ -96,7 +96,7 @@ func get_floor_metrics(floor:int) -> Dictionary:
 								science_amount += diff.amount
 					
 	return {
-		"record_name": source,
+		"source": source,
 		"money_amount": money_amount,
 		"energy_amount": energy_amount,
 		"science_amount": science_amount

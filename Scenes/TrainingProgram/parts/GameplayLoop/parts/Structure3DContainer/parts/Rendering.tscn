@@ -42,6 +42,11 @@ viewport_path = NodePath("RoomScene/RoomNodeContainer/Sprite3D/SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ftr3"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -55,10 +60,10 @@ grow_end = -5.0
 font = ExtResource("5_ptqq7")
 font_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yasdk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lovd3"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_revod"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_muccg"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="Rendering" type="Node3D"]
@@ -118,6 +123,7 @@ texture = SubResource("ViewportTexture_i0ofm")
 
 [node name="ControlLayerSprite" type="Sprite3D" parent="SpriteLayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.4629, 8.19906, 0)
+visible = false
 layers = 31
 pixel_size = 0.004
 double_sided = false
@@ -201,6 +207,7 @@ text = ">> FLOOR 1"
 label_settings = ExtResource("4_m0beu")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
@@ -214,14 +221,17 @@ size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_mxkok")
 
 [node name="SCPList" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/SCPList"]
+visible = false
 layout_mode = 2
 text = "SCP-001"
 label_settings = SubResource("LabelSettings_nf4rx")
 
 [node name="Label2" type="Label" parent="ControlSubViewport/ControlPanelContainer/MarginContainer/VBoxContainer/SCPList"]
+visible = false
 layout_mode = 2
 text = "SCP-002"
 label_settings = SubResource("LabelSettings_nf4rx")
@@ -264,12 +274,12 @@ layout_mode = 2
 
 [node name="TextBtn" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yasdk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lovd3")
 title = "ACTION 1"
 
 [node name="TextBtn2" parent="ControlMenuSubViewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_rrca0")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_revod")
+theme_override_styles/panel = SubResource("StyleBoxFlat_muccg")
 title = "ACTION 1"
 
 [connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="_on_panel_container_item_rect_changed"]

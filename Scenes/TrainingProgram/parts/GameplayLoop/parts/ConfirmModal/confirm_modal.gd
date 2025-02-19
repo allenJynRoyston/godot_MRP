@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 @onready var TitleLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer/TitleLabel

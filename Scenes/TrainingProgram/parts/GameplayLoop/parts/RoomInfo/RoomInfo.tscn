@@ -1,0 +1,130 @@
+[gd_scene load_steps=9 format=3 uid="uid://caxuubq4dq5yo"]
+
+[ext_resource type="PackedScene" uid="uid://bppcetyyh0jh7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn" id="1_0d8xk"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/room_info.gd" id="1_ngdou"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_a4u88"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_30yoo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_65kjs"]
+bg_color = Color(0, 0.529, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ele7"]
+bg_color = Color(0.455, 0.002, 0.713, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yn6fc"]
+bg_color = Color(1, 0.34, 0.307, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v4h5w"]
+bg_color = Color(1, 0.34, 0.307, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="RoomInfo" type="PanelContainer"]
+offset_right = 372.0
+offset_bottom = 93.0
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_30yoo")
+script = ExtResource("1_ngdou")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="RoomLevelMetrics" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/RoomLevelMetrics"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="MetricsVBox" type="VBoxContainer" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = -45
+
+[node name="MetricsRoom" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox" instance=ExtResource("1_0d8xk")]
+z_index = 2
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_65kjs")
+type = 1
+
+[node name="MetricsSCP" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox" instance=ExtResource("1_0d8xk")]
+z_index = 1
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3ele7")
+status = "STATUS"
+
+[node name="SwapBtnA" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer2" instance=ExtResource("2_a4u88")]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_vertical = 0
+icon = 51
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.69, 0.69, 0.69, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/RoomLevelMetrics"]
+layout_mode = 2
+
+[node name="MetricsResearcherContainer" type="VBoxContainer" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = -45
+
+[node name="MetricsResearcherA" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer/MetricsResearcherContainer" instance=ExtResource("1_0d8xk")]
+z_index = 1
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yn6fc")
+type = 2
+status = "STATUS"
+
+[node name="MetricsResearcherA2" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer/MetricsResearcherContainer" instance=ExtResource("1_0d8xk")]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_v4h5w")
+type = 2
+status = "STATUS"
+
+[node name="SwapBtnB" parent="VBoxContainer/RoomLevelMetrics/HBoxContainer" instance=ExtResource("2_a4u88")]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_vertical = 0
+icon = 51
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.69, 0.69, 0.69, 1)

@@ -1,8 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://d04lnq4yhp80o"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/action_queue_container.gd" id="1_bgvki"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/panel_container.gd" id="2_amidr"]
-[ext_resource type="PackedScene" uid="uid://cgp6oftk1itbm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/ActionQueueItem.tscn" id="2_hg1uk"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/timeline_container.gd" id="1_4mrhk"]
+[ext_resource type="PackedScene" uid="uid://cgp6oftk1itbm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineItem.tscn" id="2_hg1uk"]
 
 [sub_resource type="Gradient" id="Gradient_q3i3u"]
 offsets = PackedFloat32Array(0.0746269, 0.992537)
@@ -13,7 +12,22 @@ gradient = SubResource("Gradient_q3i3u")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lcjmk"]
 
-[node name="ActionQueueContainer" type="MarginContainer"]
+[sub_resource type="GDScript" id="GDScript_2cu2y"]
+script/source = "extends MouseInteractions
+
+var onFocus:Callable = func():pass
+var onBlur:Callable = func():pass
+
+# --------------------------------------	
+func on_focus(state:bool) -> void:
+	if state:
+		onFocus.call()
+	else:
+		onBlur.call()
+# --------------------------------------	
+"
+
+[node name="TimelineContainer" type="MarginContainer"]
 custom_minimum_size = Vector2(400, 0)
 anchors_preset = 11
 anchor_left = 1.0
@@ -27,7 +41,7 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
-script = ExtResource("1_bgvki")
+script = ExtResource("1_4mrhk")
 
 [node name="Gradiant" type="TextureRect" parent="."]
 layout_mode = 2
@@ -37,12 +51,12 @@ flip_h = true
 [node name="DetectorPanel" type="PanelContainer" parent="."]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_lcjmk")
-script = ExtResource("2_amidr")
+script = SubResource("GDScript_2cu2y")
 
 [node name="MarginContainer" type="MarginContainer" parent="DetectorPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 70
+theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
@@ -58,3 +72,4 @@ theme_override_constants/separation = 10
 
 [node name="ActionQueueItem" parent="DetectorPanel/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
 layout_mode = 2
+script = null

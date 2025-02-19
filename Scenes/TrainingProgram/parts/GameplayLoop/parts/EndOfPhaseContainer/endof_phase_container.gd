@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 enum STEP {BASE_SUMMARY, RESEARCHER_SUMMARY}

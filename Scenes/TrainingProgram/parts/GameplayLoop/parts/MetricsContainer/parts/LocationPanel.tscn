@@ -1,0 +1,100 @@
+[gd_scene load_steps=7 format=3 uid="uid://g7smhpnta8gj"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/location_panel.gd" id="1_2cn8n"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_tys7a"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_qf653"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0kun8"]
+bg_color = Color(0.16, 0.16, 0.16, 0.560784)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_8d5v4"]
+font = ExtResource("3_qf653")
+font_color = Color(0, 0, 0, 1)
+outline_size = 8
+shadow_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_qf2cv"]
+font = ExtResource("3_qf653")
+font_color = Color(0, 0, 0, 1)
+outline_size = 8
+shadow_size = 0
+
+[node name="LocationPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(50, 0)
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_0kun8")
+script = ExtResource("1_2cn8n")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -2
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = -2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "FLOOR"
+label_settings = ExtResource("2_tys7a")
+horizontal_alignment = 1
+
+[node name="FloorLabel" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "1"
+label_settings = SubResource("LabelSettings_8d5v4")
+horizontal_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "WING"
+label_settings = ExtResource("2_tys7a")
+horizontal_alignment = 1
+
+[node name="WingLabel" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "A"
+label_settings = SubResource("LabelSettings_qf2cv")
+horizontal_alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "ROOM"
+label_settings = ExtResource("2_tys7a")
+horizontal_alignment = 1
+
+[node name="RoomLabel" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "A"
+label_settings = SubResource("LabelSettings_8d5v4")
+horizontal_alignment = 1

@@ -3,7 +3,7 @@ extends BtnBase
 @onready var DayLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/DayLabel
 @onready var ListContainer:VBoxContainer = $MarginContainer/HBoxContainer/ListContainer
 
-const ActionQueueListItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionQueueContainer/parts/ActionQueueItem/ActionQueueListItem.tscn")
+const TimlineListItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineListItem.tscn")
 
 var suppress_click:bool = false 
 var progress_data:Dictionary = {}
@@ -67,7 +67,7 @@ func on_items_update() -> void:
 		child.queue_free()	
 	
 	for item in items:
-		var list_item:Control = ActionQueueListItemPreload.instantiate()
+		var list_item:Control = TimlineListItemPreload.instantiate()
 		list_item.data = item
 		ListContainer.add_child(list_item)
 	

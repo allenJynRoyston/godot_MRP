@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3ordkbr6lfu6"]
+[gd_scene load_steps=9 format=3 uid="uid://c3ordkbr6lfu6"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/MoneyDetails/money_details.gd" id="1_eybim"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_fywvl"]
@@ -6,6 +6,9 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_5sbpa"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yqr41"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_856mg"]
+color = Color(1, 1, 1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_e8fkm"]
 font = ExtResource("3_5sbpa")
@@ -42,6 +45,7 @@ uppercase = true
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_856mg")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -117,6 +121,7 @@ label_settings = ExtResource("1_fywvl")
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/IncomeContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_856mg")
 
 [node name="IncomeList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/IncomeContainer"]
 layout_mode = 2
@@ -150,6 +155,7 @@ label_settings = ExtResource("1_fywvl")
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/ExpenseContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_856mg")
 
 [node name="ExpenseList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/ExpenseContainer"]
 layout_mode = 2

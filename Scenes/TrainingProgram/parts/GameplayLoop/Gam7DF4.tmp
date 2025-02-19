@@ -1,15 +1,13 @@
-[gd_scene load_steps=26 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=25 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
 [ext_resource type="PackedScene" uid="uid://d04lnq4yhp80o" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/TimelineContainer.tscn" id="5_1tp62"]
 [ext_resource type="PackedScene" uid="uid://caxuubq4dq5yo" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/RoomInfo.tscn" id="6_fbysn"]
-[ext_resource type="PackedScene" uid="uid://c2u54w2kpt6b0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/FloorInfo.tscn" id="7_ceqoy"]
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
 [ext_resource type="PackedScene" uid="uid://d35m668pfaxmj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn" id="9_1cket"]
 [ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
-[ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
 [ext_resource type="PackedScene" uid="uid://dw4fw5d1x21qf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/ContainmentContainer.tscn" id="10_v7mb0"]
 [ext_resource type="PackedScene" uid="uid://dqajtnshjj5i7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn" id="11_kf8f5"]
 [ext_resource type="PackedScene" uid="uid://d0dpehr5pt3xc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/RecruitContainer.tscn" id="12_dw62g"]
@@ -22,6 +20,7 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="18_4sn0g"]
 [ext_resource type="PackedScene" uid="uid://nfj5ltcydj3b" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/EndofPhaseContainer.tscn" id="18_p3gf7"]
 [ext_resource type="PackedScene" uid="uid://btl83p0xrlqoi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/PhaseAnnouncement.tscn" id="20_q3yo6"]
+[ext_resource type="PackedScene" uid="uid://de238y6o15ppf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/ContextMenuContainer.tscn" id="20_y4q2f"]
 [ext_resource type="PackedScene" uid="uid://bxish5x37ra5e" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn" id="21_jqp8v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxod"]
@@ -44,6 +43,11 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+show_objectives = true
+show_dialogue = false
+show_status = true
+show_metrics = true
+metadata/_edit_group_ = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
@@ -71,21 +75,11 @@ theme_override_constants/margin_bottom = 150
 [node name="RoomInfo" parent="." instance=ExtResource("6_fbysn")]
 layout_mode = 2
 
-[node name="FloorInfo" parent="." instance=ExtResource("7_ceqoy")]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
 [node name="MetricsContainer" parent="." instance=ExtResource("2_28uuh")]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="ToastContainer" parent="." instance=ExtResource("9_wx8fv")]
-layout_mode = 2
-
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -104,19 +98,25 @@ theme_override_constants/margin_top = 75
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
 visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
-[node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
-visible = false
-layout_mode = 2
-
-[node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
+[node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
+[node name="ContainmentContainer" parent="." instance=ExtResource("10_v7mb0")]
+visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]
 visible = false
@@ -125,15 +125,19 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="EndofPhaseContainer" parent="." instance=ExtResource("18_p3gf7")]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+
+[node name="ContextMenuContainer" parent="." instance=ExtResource("20_y4q2f")]
+visible = false
+layout_mode = 2
 
 [node name="SetupContainer" parent="." instance=ExtResource("21_jqp8v")]
 visible = false
@@ -210,3 +214,5 @@ is_hoverable = false
 layout_mode = 2
 text = "Please wait..."
 label_settings = ExtResource("18_4sn0g")
+
+[connection signal="item_rect_changed" from="." to="." method="_on_container_rect_changed"]

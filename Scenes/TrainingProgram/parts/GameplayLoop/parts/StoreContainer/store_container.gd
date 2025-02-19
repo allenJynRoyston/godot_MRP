@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 @onready var FacilityBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer/FacilityBtn

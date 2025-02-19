@@ -28,18 +28,19 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wfeoy"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ae3rt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_guog1"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_maff6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a07lc"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yself"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bgxqb"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_wdahj"]
 
 [node name="RecruitmentContainer" type="MarginContainer"]
+visible = false
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource("1_kc8pe")
@@ -96,19 +97,19 @@ size_flags_horizontal = 3
 
 [node name="LeadBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ae3rt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_guog1")
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "LEAD RESEARCHER"
 
 [node name="SupportBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer/HBoxContainer3" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_maff6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_a07lc")
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "SUPPORT"
 
 [node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnContainer" instance=ExtResource("6_4avi5")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yself")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bgxqb")
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 title = "BACK"
 

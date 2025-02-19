@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 @onready var AvailableTabBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer3/HBoxContainer/AvailableTabBtn

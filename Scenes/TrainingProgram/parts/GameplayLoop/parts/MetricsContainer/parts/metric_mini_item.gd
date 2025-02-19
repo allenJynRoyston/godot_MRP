@@ -105,7 +105,7 @@ func on_context_value_update() -> void:
 func update_stylebox() -> void:
 	if !is_node_ready():return
 	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel')
-	var new_color:Color = Color(0.534, 0.538, 0.541) # GRAY
+	var new_color:Color = Color(0.27, 0.366, 0.409) # BLUE
 	
 	if value != 0:
 		new_color = Color(1, 0.204, 0) if value < 0 else Color(0, 0.965, 0.278)

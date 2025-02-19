@@ -42,10 +42,11 @@ font = ExtResource("6_5xty8")
 font_size = 12
 font_color = Color(0.290354, 0.290354, 0.290353, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ch01"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2y8kb"]
 bg_color = Color(0, 0, 0, 0.788235)
 
 [node name="EventContainer" type="MarginContainer"]
+visible = false
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_vx21a")
@@ -61,6 +62,7 @@ transparent_bg = true
 size = Vector2i(980, 385)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(725, 200)
 offset_right = 725.0
 offset_bottom = 200.0
@@ -261,7 +263,7 @@ size_flags_vertical = 0
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_2ch01")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2y8kb")
 icon = 36
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0.788235)

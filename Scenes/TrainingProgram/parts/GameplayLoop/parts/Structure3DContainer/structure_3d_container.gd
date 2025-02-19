@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 @onready var SelectLocationInstructions:VBoxContainer = $PanelContainer/MarginContainer/SelectLocationInstructions

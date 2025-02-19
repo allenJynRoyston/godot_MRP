@@ -1,81 +1,15 @@
-[gd_scene load_steps=25 format=3 uid="uid://ctkwq86y1xbhs"]
+[gd_scene load_steps=10 format=3 uid="uid://ctkwq86y1xbhs"]
 
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="1_05sbj"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/metrics_container.gd" id="1_jfbub"]
+[ext_resource type="PackedScene" uid="uid://ch2o2250h2fju" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/HumePanel.tscn" id="3_cngb5"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_v7ywe"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_uqqmx"]
-[ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/Oscilliscope.gdshader" id="5_2mash"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_m2uaq"]
+[ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="4_s4bdb"]
 [ext_resource type="PackedScene" uid="uid://cr4jyhkulokw2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricMiniItem.tscn" id="7_srt4y"]
-[ext_resource type="PackedScene" uid="uid://bppcetyyh0jh7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn" id="7_y31xb"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ko1uy"]
-shader = ExtResource("1_05sbj")
-shader_parameter/percentage = 1.0
-shader_parameter/angle_degrees = 0.0
-shader_parameter/line_width = 0.02
-shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
-shader_parameter/laser_color = Color(1, 0, 0, 1)
-shader_parameter/glow_width = 0.05
-shader_parameter/trail_fade = 0.5
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_o85rp"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfbj"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k67if"]
-bg_color = Color(0, 0.529, 1, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_80axp"]
-bg_color = Color(0.455, 0.002, 0.713, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1uxqw"]
-bg_color = Color(1, 0.34, 0.307, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pqe2l"]
-bg_color = Color(1, 0.34, 0.307, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7s7se"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmxqv"]
-bg_color = Color(0.534, 0.538, 0.541, 1)
+bg_color = Color(0.27, 0.366, 0.409, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -110,269 +44,55 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m4sfl"]
-bg_color = Color(0, 0.53, 0.282667, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_vi5vs"]
-shader = ExtResource("5_2mash")
-shader_parameter/frequency = 10.0
-shader_parameter/amplitude = 0.1
-shader_parameter/speed = 6.0
-shader_parameter/thickness = 0.2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dswvd"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqid3"]
-bg_color = Color(0.16, 0.16, 0.16, 0.560784)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_eryu7"]
-font = ExtResource("6_m2uaq")
-font_color = Color(0, 0, 0, 1)
-outline_size = 8
-shadow_size = 0
-
-[node name="MetricsContainer" type="MarginContainer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-script = ExtResource("1_jfbub")
-
-[node name="TextureRect" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_ko1uy")
-layout_mode = 2
-texture = SubResource("ViewportTexture_o85rp")
-stretch_mode = 2
-
-[node name="TopContainer" type="PanelContainer" parent="."]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_rqfbj")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TopContainer"]
-layout_mode = 2
-
-[node name="RoomLevelMetrics" type="HBoxContainer" parent="TopContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="TopContainer/VBoxContainer/RoomLevelMetrics"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="MetricsVBox" type="VBoxContainer" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2"]
-layout_mode = 2
-theme_override_constants/separation = -45
-
-[node name="MetricsRoom" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox" instance=ExtResource("7_y31xb")]
-z_index = 2
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_k67if")
-type = 1
-
-[node name="MetricsSCP" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox" instance=ExtResource("7_y31xb")]
-z_index = 1
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_80axp")
-status = "STATUS"
-
-[node name="SwapBtnA" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2" instance=ExtResource("4_uqqmx")]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-size_flags_vertical = 0
-icon = 51
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.69, 0.69, 0.69, 1)
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TopContainer/VBoxContainer/RoomLevelMetrics"]
-layout_mode = 2
-
-[node name="ResearcherContainer" type="VBoxContainer" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = -45
-
-[node name="MetricsResearcherA" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/ResearcherContainer" instance=ExtResource("7_y31xb")]
-z_index = 1
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_1uxqw")
-type = 2
-status = "STATUS"
-
-[node name="MetricsResearcherA2" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/ResearcherContainer" instance=ExtResource("7_y31xb")]
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_pqe2l")
-type = 2
-status = "STATUS"
-
-[node name="SwapBtnB" parent="TopContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer" instance=ExtResource("4_uqqmx")]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-size_flags_vertical = 0
-icon = 51
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.69, 0.69, 0.69, 1)
-
-[node name="TopCenter" type="PanelContainer" parent="."]
-layout_mode = 2
+[node name="MetricsContainer" type="PanelContainer"]
+offset_left = 806.0
+offset_right = 1113.0
+offset_bottom = 1080.0
 size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxEmpty_7s7se")
+script = ExtResource("1_jfbub")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TopCenter"]
+[node name="MetricsContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MetricsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="MetricsPanel" type="HBoxContainer" parent="TopCenter/VBoxContainer"]
+[node name="MetricsPanel" type="HBoxContainer" parent="MetricsContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 5
 
-[node name="Morale" parent="TopCenter/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
+[node name="Morale" parent="MetricsContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_gmxqv")
 
-[node name="Safety" parent="TopCenter/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
+[node name="Safety" parent="MetricsContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_yohhl")
 assigned_metric = 1
 value = -4
 
-[node name="Readiness" parent="TopCenter/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
+[node name="Readiness" parent="MetricsContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_cfdnv")
 assigned_metric = 2
 value = 2
 
-[node name="HumePanel" type="PanelContainer" parent="TopCenter/VBoxContainer"]
+[node name="HumePanel" parent="MetricsContainer/VBoxContainer" instance=ExtResource("3_cngb5")]
 visible = false
-custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_m4sfl")
 
-[node name="MarginContainer" type="MarginContainer" parent="TopCenter/VBoxContainer/HumePanel"]
+[node name="LocationPanel" parent="MetricsContainer/VBoxContainer" instance=ExtResource("4_s4bdb")]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TopCenter/VBoxContainer/HumePanel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Label" type="Label" parent="TopCenter/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "HUME"
-label_settings = ExtResource("3_v7ywe")
-
-[node name="TextureRect" type="TextureRect" parent="TopCenter/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
-material = SubResource("ShaderMaterial_vi5vs")
-layout_mode = 2
-size_flags_horizontal = 3
-texture = SubResource("NoiseTexture2D_dswvd")
-expand_mode = 1
-
-[node name="Label2" type="Label" parent="TopCenter/VBoxContainer/HumePanel/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "1.0"
-label_settings = ExtResource("3_v7ywe")
-
-[node name="PanelContainer" type="PanelContainer" parent="TopCenter/VBoxContainer"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_gqid3")
-
-[node name="MarginContainer" type="MarginContainer" parent="TopCenter/VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -2
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = -2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "FLOOR"
-label_settings = ExtResource("3_v7ywe")
-horizontal_alignment = 1
-
-[node name="FloorLabel" type="Label" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "1"
-label_settings = SubResource("LabelSettings_eryu7")
-horizontal_alignment = 1
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "WING"
-label_settings = ExtResource("3_v7ywe")
-horizontal_alignment = 1
-
-[node name="WingLabel" type="Label" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "A"
-label_settings = SubResource("LabelSettings_eryu7")
-horizontal_alignment = 1
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "ROOM"
-label_settings = ExtResource("3_v7ywe")
-horizontal_alignment = 1
-
-[node name="RoomLabel" type="Label" parent="TopCenter/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer3"]
-layout_mode = 2
-text = "A"
-label_settings = SubResource("LabelSettings_eryu7")
-horizontal_alignment = 1
-
-[node name="MarkerLabel" type="Label" parent="TopCenter/VBoxContainer"]
+[node name="StatusLabel" type="Label" parent="MetricsContainer/VBoxContainer"]
 layout_mode = 2
 text = "STATUS"
 label_settings = ExtResource("3_v7ywe")
