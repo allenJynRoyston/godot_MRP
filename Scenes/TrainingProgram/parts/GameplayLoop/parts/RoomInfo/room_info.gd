@@ -9,6 +9,8 @@ extends GameContainer
 @onready var SwapBtnA:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/SwapBtnA
 @onready var SwapBtnB:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/SwapBtnB
 
+@onready var LocationPanel:Control = $MarginContainer/LocationPanel
+
 const MetricsItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn")
 
 var previous_location:Dictionary = {}
@@ -79,8 +81,11 @@ func on_is_showing_update() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return	
 	if camera_settings.type == CAMERA.TYPE.ROOM_SELECT and is_showing:
 		U.tween_node_property(MainPanel, "position:x", 0, 0.7)
+		LocationPanel.show()
 	else:
 		U.tween_node_property(MainPanel, "position:x", -MainPanel.size.x - 20, 0.7)
+		LocationPanel.hide()
+	
 # -----------------------------------------------	
 
 # --------------------------------------------------------

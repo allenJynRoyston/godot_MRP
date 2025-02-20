@@ -7,19 +7,32 @@
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="5_ruvs2"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_fhyv1"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c8qnu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i5mxd"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_tv1yn"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_863u8"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d7vnt"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh2bu"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rxees"]
-bg_color = Color(0.0431373, 0.0431373, 0.0431373, 0.815686)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mj5bm"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_o08r0"]
 color = Color(1, 1, 1, 1)
@@ -38,9 +51,8 @@ font_color = Color(1, 0, 0, 1)
 offset_right = 40.0
 offset_bottom = 40.0
 pivot_offset = Vector2(125, 225)
-theme_override_styles/panel = SubResource("StyleBoxEmpty_c8qnu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_i5mxd")
 script = ExtResource("1_ppy2u")
-flip = true
 reveal = true
 show_details_btn = true
 
@@ -54,9 +66,10 @@ layout_mode = 2
 texture = SubResource("ViewportTexture_tv1yn")
 
 [node name="DetailsBtn" parent="VBoxContainer" instance=ExtResource("5_ruvs2")]
+visible = false
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_863u8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_d7vnt")
 icon = 50
 title = "DETAILS"
 
@@ -84,19 +97,18 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 18.0
 grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rxees")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_mj5bm")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front/Image/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="NicknameLabel" type="Label" parent="SubViewport/SCPCard/Front/Image/PanelContainer/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
+size_flags_vertical = 8
 text = "\"THE DOOR\""
 label_settings = ExtResource("3_nobte")
 

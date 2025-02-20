@@ -48,7 +48,7 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uvm67"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rm63f"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="ResourceContainer" type="PanelContainer"]
@@ -68,10 +68,10 @@ size_flags_horizontal = 8
 [node name="DetailPanel" parent="Control" instance=ExtResource("3_fwkup")]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-offset_left = -359.0
-offset_top = 64.0
-offset_right = -59.0
-offset_bottom = 191.0
+offset_left = -356.0
+offset_top = 57.0
+offset_right = -56.0
+offset_bottom = 188.0
 grow_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ipeeg")
 
@@ -86,9 +86,11 @@ anchor_right = 1.0
 offset_left = -339.0
 offset_bottom = 43.0
 grow_horizontal = 0
+theme_override_constants/margin_right = 10
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control2/MarginContainer"]
 layout_mode = 2
+alignment = 2
 
 [node name="Resources" type="PanelContainer" parent="Control2/MarginContainer/HBoxContainer2"]
 layout_mode = 2
@@ -151,6 +153,7 @@ title = "10/10"
 display_at_bottom = true
 
 [node name="Status" type="PanelContainer" parent="Control2/MarginContainer/HBoxContainer2"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_q5olq")
 
@@ -201,7 +204,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_uvm67")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rm63f")
 icon = 7
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "NEXT REPORT IN X DAYS"

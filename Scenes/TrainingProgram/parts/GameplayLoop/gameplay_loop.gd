@@ -17,6 +17,7 @@ extends PanelContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
+@onready var SCPSelectScreen:PanelContainer = $SCPSelectScreen
 
 @onready var RoomInfo:PanelContainer = $RoomInfo
 @onready var FloorInfo:PanelContainer = $FloorInfo
@@ -25,7 +26,6 @@ extends PanelContainer
 @onready var WaitContainer:PanelContainer = $WaitContainer
 @onready var SetupContainer:PanelContainer = $SetupContainer
 
-const SCPSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
 const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
 
 enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, METRIC_EVENTS, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE }
@@ -711,7 +711,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		DialogueContainer, StoreContainer, ContainmentContainer, 
 		ConfirmModal, RecruitmentContainer, ResourceContainer,
 		BuildCompleteContainer, ObjectivesContainer, EventContainer,
-		MetricsContainer,  EndOfPhaseContainer,		
+		MetricsContainer,  EndOfPhaseContainer,	SCPSelectScreen,
 		RoomInfo, FloorInfo
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
@@ -1384,19 +1384,18 @@ func set_wing_emergency_mode(from_location:Dictionary, mode:ROOM.EMERGENCY_MODES
 	
 	match mode:
 		ROOM.EMERGENCY_MODES.DANGER:
-			title = "Set to DANGER?" % [current_location.floor] 
+			title = "SET ALERT LEVEL TO DANGER?"
 			subtitle = "All actions (research, construction, etc) will be halted.  READINESS will be increased by 5, MORALE will be decreaed by 3."
 		ROOM.EMERGENCY_MODES.WARNING:
-			title = "Set to WARNING?" % [current_location.floor] 
+			title = "SET ALERT LEVEL WARNING?"
 			subtitle = "All actions will take longer.  SAFETY will be increased by 5, MORALE will be decreaed by 3."			
 		ROOM.EMERGENCY_MODES.CAUTION:
-			title = "Set to CAUTION?" % [current_location.floor] 
+			title = "SET ALERT LEVEL CAUTION?"
 			subtitle = "SAFETY and READINESS will be increased by 1, MORALE will decrease by 1."						
 		ROOM.EMERGENCY_MODES.NORMAL:
-			title = "Set to NORMAL?" % [current_location.floor] 
+			title = "SET ALERT LEVEL BACK TO NORMAL?"
 			subtitle = "Metrics will be returned to normal."
 
-	print(title)
 	ConfirmModal.set_text(title, subtitle)
 	await show_only([ConfirmModal, Structure3dContainer])	
 	var response:Dictionary = await ConfirmModal.user_response
@@ -2299,7 +2298,7 @@ func on_current_phase_update() -> void:
 			show_only([])
 		# ------------------------
 		PHASE.PLAYER:			
-			pass
+			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			current_location_snapshot = current_location.duplicate(true)
@@ -2386,13 +2385,13 @@ func on_current_phase_update() -> void:
 			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
-			if progress_data.day % 14 == 0:
-				await show_only([Structure3dContainer, TimelineContainer, MetricsContainer, ResourceContainer])	
-				PhaseAnnouncement.start("CONTAINMENT REQUEST")	
-				current_select_scp_step = SELECT_SCP_STEPS.START
-				await on_scp_select_complete
-			
-				await U.set_timeout(1.0)
+			#if progress_data.day % 14 == 0:
+			await show_only([Structure3dContainer, TimelineContainer, MetricsContainer, ResourceContainer])	
+			PhaseAnnouncement.start("CONTAINMENT REQUEST")	
+			current_select_scp_step = SELECT_SCP_STEPS.START
+			await on_scp_select_complete
+		
+			await U.set_timeout(1.0)
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
 		PHASE.CONCLUDE:
@@ -2516,7 +2515,8 @@ func on_current_shop_step_update() -> void:
 	
 		# ---------------
 		SHOP_STEPS.CONFIRM_BUILD:
-			ConfirmModal.set_text("Confirm location?")
+			var room_details:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
+			ConfirmModal.set_text("Purchase %s?" % [room_details.name], "Construction will take %s days." % [room_details.get_build_time.call()])
 			await show_only([Structure3dContainer, ConfirmModal])			
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
@@ -2956,10 +2956,7 @@ func on_current_select_scp_step_update() -> void:
 		# ------------------------
 		SELECT_SCP_STEPS.START:
 			SUBSCRIBE.suppress_click = true
-			var SCPSelectScreen:Control = SCPSelectScreenPreload.instantiate()
-			add_child(SCPSelectScreen)
-			
-			await show_only([])
+			await show_only([SCPSelectScreen])
 			SCPSelectScreen.start([0, 1])
 			await SCPSelectScreen.user_response
 			SCPSelectScreen.queue_free()
@@ -3072,19 +3069,7 @@ func is_occupied() -> bool:
 		return true
 	return false
 
-	
-func on_control_input_update(input_data:Dictionary) -> void:
-	if is_occupied() or GBL.has_animation_in_queue():return
-	
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
-	match key:
-		"5":
-			quicksave()
-		"8":
-			quickload()
-		
+
 #endregion
 # ------------------------------------------------------------------------------	
 

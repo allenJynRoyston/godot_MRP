@@ -683,6 +683,24 @@ func buildout_btns() -> void:
 
 			# ---- RIGHT SIDE
 			new_right_btn_list.push_back({
+				"title": "QUICKSAVE",
+				"assigned_key": "F5",
+				"icon": SVGS.TYPE.SAVE,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						GameplayNode.quicksave()
+			})		
+			
+			new_right_btn_list.push_back({
+				"title": "QUICKLOAD",
+				"assigned_key": "F8",
+				"icon": SVGS.TYPE.LOADING,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						GameplayNode.quickload()
+			})					
+						
+			new_right_btn_list.push_back({
 				"title": "GOTO WING",
 				"assigned_key": "TAB",
 				"icon": SVGS.TYPE.TARGET,

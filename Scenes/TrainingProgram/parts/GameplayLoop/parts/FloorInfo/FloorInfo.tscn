@@ -1,22 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2u54w2kpt6b0"]
+[gd_scene load_steps=5 format=3 uid="uid://c2u54w2kpt6b0"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/floor_info.gd" id="1_j6re1"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_hmhjw"]
 [ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="2_wcahk"]
 [ext_resource type="PackedScene" uid="uid://b0b7ca48e8mo8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/parts/WingSummary/WingSummary.tscn" id="2_xu5r8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hofee"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axd0e"]
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [node name="FloorInfo" type="PanelContainer"]
 anchors_preset = 15
@@ -38,6 +26,7 @@ theme_override_constants/margin_top = 5
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+hide_room = true
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
@@ -56,38 +45,6 @@ layout_mode = 2
 [node name="SummaryList" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
-
-[node name="PanelContainer" type="PanelContainer" parent="Control/MarginContainer/HBoxContainer/SummaryList"]
-visible = false
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_axd0e")
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/HBoxContainer/SummaryList/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/HBoxContainer/SummaryList/PanelContainer/MarginContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer/SummaryList/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "FLOOR"
-label_settings = ExtResource("2_hmhjw")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label2" type="Label" parent="Control/MarginContainer/HBoxContainer/SummaryList/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "1"
-label_settings = ExtResource("2_hmhjw")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="WingSummary" parent="Control/MarginContainer/HBoxContainer/SummaryList" instance=ExtResource("2_xu5r8")]
 layout_mode = 2

@@ -1,6 +1,7 @@
 extends GameContainer
 
 @onready var MainPanel:MarginContainer = $Control/MarginContainer
+@onready var LocationPanel:Control = $MarginContainer/LocationPanel
 
 # -----------------------------------------------
 func _init() -> void:
@@ -20,8 +21,11 @@ func on_is_showing_update() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return	
 	if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT and is_showing:
 		U.tween_node_property(MainPanel, "position:x", 0, 0.7)
+		LocationPanel.show() 
 	else:
 		U.tween_node_property(MainPanel, "position:x", -MainPanel.size.x - 20, 0.7)
+		LocationPanel.hide()	
+	
 # -----------------------------------------------	
 
 # --------------------------------------------------------

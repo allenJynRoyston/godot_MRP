@@ -3,6 +3,7 @@ extends GameContainer
 @onready var MainPanel:MarginContainer = $Control/MarginContainer
 @onready var Gradiant:TextureRect = $Control/DetectorPanel/Gradiant
 @onready var DetectorPanel:PanelContainer = $Control/DetectorPanel
+@onready var DayLabel:Label = $Control/MarginContainer/VBoxContainer/DayLabel
 @onready var ListContainer:VBoxContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer/ListContainer
 @onready var ListScrollContainer:ScrollContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer
 
@@ -76,6 +77,8 @@ func on_progress_data_update(new_val:Dictionary) -> void:
 	if !is_setup:
 		is_setup = true
 		await U.set_timeout(1.0)
+		
+	DayLabel.text = "DAY %s" % [progress_data.day]
 
 	U.tween_node_property(ListScrollContainer, "scroll_vertical", new_pos, delay, 0.5)
 # --------------------------------------------------------------------------------------------------	

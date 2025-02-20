@@ -94,7 +94,7 @@ func select_location(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready():return
+	if !is_node_ready() or camera_settings.is_empty():return
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:

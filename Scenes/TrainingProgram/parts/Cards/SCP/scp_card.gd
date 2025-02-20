@@ -1,6 +1,7 @@
 @tool
 extends MouseInteractions
 
+@onready var RootContainer:PanelContainer = $"."
 @onready var NicknameLabelLabel:Label = $SubViewport/SCPCard/Front/Image/PanelContainer/MarginContainer/NicknameLabel
 @onready var DesignationLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Designation/DesignationLabel
 @onready var ItemClassLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ItemClass/ItemClassLabel
@@ -15,7 +16,7 @@ extends MouseInteractions
 @onready var Front:VBoxContainer = $SubViewport/SCPCard/Front
 @onready var Back:VBoxContainer = $SubViewport/SCPCard/Back
 
-@onready var DetailsBtn:BtnBase = $VBoxContainer/DetailsBtn
+#@onready var DetailsBtn:BtnBase = $VBoxContainer/DetailsBtn
 
 @export var ref:int = -1: 
 	set(val):
@@ -63,10 +64,10 @@ func _ready() -> void:
 		for child in node.get_children():
 			child.queue_free()	
 	
-	DetailsBtn.onFocus = func(_node:Control) -> void:
-		should_flip = true
-	DetailsBtn.onBlur = func(_node:Control) -> void:
-		should_flip = false
+	#DetailsBtn.onFocus = func(_node:Control) -> void:
+		#should_flip = true
+	#DetailsBtn.onBlur = func(_node:Control) -> void:
+		#should_flip = false
 
 	on_ref_update()
 	on_reveal_update()
@@ -86,17 +87,21 @@ func on_flip_update() -> void:
 
 func on_show_details_btn_update() -> void:
 	if !is_node_ready():return
-	DetailsBtn.hide() if !show_details_btn else DetailsBtn.show()
+	#DetailsBtn.hide() if !show_details_btn else DetailsBtn.show()
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	U.tween_node_property(CardTextureRect, "modulate", Color(1, 1, 1, 1) if is_selected else Color(1, 1, 1, 0.5))
+	var dup_stylebox:StyleBoxFlat = RootContainer.get_theme_stylebox('panel').duplicate()
+	dup_stylebox.border_color = Color.WHITE if is_selected else Color.BLACK
+	RootContainer.add_theme_stylebox_override('panel', dup_stylebox)
+	
 
 func on_reveal_update() -> void:
 	if !is_node_ready():return
 	await U.tween_node_property(CardTextureRect, "modulate", Color(1, 1, 1, 1) if reveal else Color(1, 1, 1, 0))
-	if show_details_btn:
-		DetailsBtn.hide() if !reveal else DetailsBtn.show()
+	#if show_details_btn:
+	#	DetailsBtn.hide() if !reveal else DetailsBtn.show()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
