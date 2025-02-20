@@ -26,7 +26,6 @@ theme_override_constants/margin_top = 5
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-hide_room = true
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2

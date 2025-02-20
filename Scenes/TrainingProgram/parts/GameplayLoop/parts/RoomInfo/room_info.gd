@@ -81,10 +81,10 @@ func on_is_showing_update() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return	
 	if camera_settings.type == CAMERA.TYPE.ROOM_SELECT and is_showing:
 		U.tween_node_property(MainPanel, "position:x", 0, 0.7)
-		LocationPanel.show()
+		#LocationPanel.show()
 	else:
 		U.tween_node_property(MainPanel, "position:x", -MainPanel.size.x - 20, 0.7)
-		LocationPanel.hide()
+		#LocationPanel.hide()
 	
 # -----------------------------------------------	
 

@@ -2297,8 +2297,9 @@ func on_current_phase_update() -> void:
 		PHASE.STARTUP:
 			show_only([])
 		# ------------------------
-		PHASE.PLAYER:			
-			current_phase = PHASE.SCHEDULED_EVENTS
+		PHASE.PLAYER:
+			pass
+			#current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			current_location_snapshot = current_location.duplicate(true)
