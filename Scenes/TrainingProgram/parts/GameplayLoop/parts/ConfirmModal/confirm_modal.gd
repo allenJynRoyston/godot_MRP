@@ -1,9 +1,15 @@
 extends GameContainer
 
-@onready var TitleLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer/TitleLabel
-@onready var SubLabel:Label = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer/SubLabel
-@onready var AcceptBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/AcceptBtn
-@onready var BackBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/BackBtn
+@onready var ColorRectBG:ColorRect = $ColorRectBG
+@onready var ContentPanelContainer:PanelContainer = $ModalControl/PanelContainer
+@onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/TitleLabel
+@onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/SubLabel
+
+@onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
+@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
+@onready var AcceptBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/AcceptBtn
+@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
+
 
 var title:String = "" : 
 	set(val):
@@ -25,13 +31,11 @@ var cancel_only:bool = false :
 		cancel_only = val
 		on_cancel_only_update()
 
-# --------------------------------------------------------------------------------------------------
-func _init() -> void:
-	GBL.subscribe_to_control_input(self)
-	
-func _exit_tree() -> void:
-	GBL.unsubscribe_to_control_input(self)
+var content_restore_pos:int
+var btn_restore_pos:int
+var is_setup:bool = false
 
+# --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	
@@ -45,6 +49,14 @@ func _ready() -> void:
 		
 	on_title_update()
 	on_subtitle_update()
+	
+	await U.set_timeout(1.0)	
+	content_restore_pos = ContentPanelContainer.position.y			
+	btn_restore_pos = BtnMarginContainer.position.y
+	is_setup = true
+	on_is_showing_update()
+	
+	
 
 func set_text(new_title:String = "", new_subtitle:String = "") -> void:
 	title = new_title
@@ -54,20 +66,27 @@ func set_text(new_title:String = "", new_subtitle:String = "") -> void:
 # --------------------------------------------------------------------------------------------------	
 func on_is_showing_update() -> void:
 	super.on_is_showing_update()
-	if !is_showing:
-		await U.set_timeout(0.5)
-		confirm_only = false
-		cancel_only = false
+	if !is_setup:return
+
+	for btn in RightSideBtnList.get_children():
+		btn.is_disabled = !is_showing
+
+	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0))
+	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.3)
+
+	U.tween_node_property(ContentPanelContainer, "position:y", content_restore_pos if is_showing else content_restore_pos - 5, 0.3)
+	U.tween_node_property(BtnMarginContainer, "position:y", btn_restore_pos if is_showing else BtnMarginContainer.size.y + 20, 0.3)
 		
 func on_title_update() -> void:
 	if !is_node_ready():return
 	TitleLabel.text = title
-	TitleLabel.hide() if title.is_empty() else TitleLabel.show()
+	print(title)
+	#TitleLabel.hide() if title.is_empty() else TitleLabel.show()
 		
 func on_subtitle_update() -> void:
 	if !is_node_ready():return
 	SubLabel.text = subtitle	
-	SubLabel.hide() if subtitle.is_empty() else SubLabel.show()
+	#SubLabel.hide() if subtitle.is_empty() else SubLabel.show()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -85,25 +104,3 @@ func on_confirm_only_update() -> void:
 	else:
 		BackBtn.show()
 # --------------------------------------------------------------------------------------------------		
-
-
-# --------------------------------------------------------------------------------------------------		
-func on_control_input_update(input_data:Dictionary) -> void:
-	if is_visible_in_tree():
-		var key:String = input_data.key
-		var keycode:int = input_data.keycode
-		
-		match key:
-			"E":
-				user_response.emit({"action": ACTION.NEXT})
-			"B":
-				if BackBtn.is_visible():
-					user_response.emit({"action": ACTION.BACK})
-					
-			"ENTER":
-				user_response.emit({"action": ACTION.NEXT})
-			"BACK":
-				if BackBtn.is_visible():
-					user_response.emit({"action": ACTION.BACK})
-# --------------------------------------------------------------------------------------------------		
-	

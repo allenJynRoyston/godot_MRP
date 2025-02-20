@@ -1,15 +1,15 @@
 extends GameContainer
 
-@onready var MainPanel:PanelContainer = $PanelContainer
-@onready var DayLabel:Label = $PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer/DayLabel
+@onready var MainPanel:MarginContainer = $Control2/MarginContainer
+@onready var DayLabel:Label = $Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/DayLabel
 
-@onready var ResourceItemMoney:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
-@onready var ResourceItemEnergy:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
-@onready var ResourceItemScience:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemScience
+@onready var ResourceItemMoney:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
+@onready var ResourceItemEnergy:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
+@onready var ResourceItemScience:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemScience
 
-@onready var ResourceItemStaff:Control =  $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
-@onready var ResourceItemSecurity:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
-@onready var ResourceItemDClass:Control = $PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
+@onready var ResourceItemStaff:Control =  $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
+@onready var ResourceItemSecurity:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
+@onready var ResourceItemDClass:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
 
 @onready var DetailPanel:Control = $Control/DetailPanel
 
@@ -63,6 +63,12 @@ func _ready() -> void:
 				DetailPanel.hide()
 				show_details = false
 # --------------------------------------------------------------------------------------------------
+
+# -----------------------------------------------
+func on_is_showing_update() -> void:	
+	super.on_is_showing_update()
+	U.tween_node_property(MainPanel, "position:y", 0 if is_showing else -MainPanel.size.y, 0.7)
+# -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func on_show_details_update() -> void:

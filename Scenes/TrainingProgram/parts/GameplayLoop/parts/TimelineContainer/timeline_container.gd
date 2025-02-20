@@ -1,10 +1,10 @@
 extends GameContainer
 
-@onready var Gradiant:TextureRect = $Gradiant
-@onready var DetectorPanel:PanelContainer = $DetectorPanel
-@onready var MarginContainerUI:MarginContainer = $DetectorPanel/MarginContainer
-@onready var ListContainer:VBoxContainer = $DetectorPanel/MarginContainer/ListScrollContainer/ListContainer
-@onready var ListScrollContainer:ScrollContainer =$DetectorPanel/MarginContainer/ListScrollContainer
+@onready var MainPanel:MarginContainer = $Control/MarginContainer
+@onready var Gradiant:TextureRect = $Control/DetectorPanel/Gradiant
+@onready var DetectorPanel:PanelContainer = $Control/DetectorPanel
+@onready var ListContainer:VBoxContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer/ListContainer
+@onready var ListScrollContainer:ScrollContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer
 
 const TimelineItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineItem.tscn")
 const delay:float = 0.7
@@ -14,7 +14,7 @@ var current_day:int
 var is_setup:bool = false
 var show_position:Dictionary = {}
 var hide_position:Dictionary = {}
-
+var restore_pos:int
 signal wait_for_complete
 
 # --------------------------------------------------------------------------------------------------
@@ -39,8 +39,10 @@ func _ready() -> void:
 	# move into place
 	U.tween_node_property(Gradiant, "position:x", hide_position[Gradiant].x, 0.02)	
 	
-	await U.set_timeout(1.0)
+	await U.set_timeout(1.0)	
+	restore_pos = MainPanel.position.x
 	on_progress_data_update.call_deferred()
+	on_is_showing_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -78,11 +80,12 @@ func on_progress_data_update(new_val:Dictionary) -> void:
 	U.tween_node_property(ListScrollContainer, "scroll_vertical", new_pos, delay, 0.5)
 # --------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------	
-func on_is_showing_update() -> void:
-	super.on_is_showing_update()
-	show() if is_showing else hide()
-# --------------------------------------------------------------------------------------------------	
+# -----------------------------------------------
+func on_is_showing_update() -> void:	
+	super.on_is_showing_update()	
+	if !is_setup:return
+	U.tween_node_property(MainPanel, "position:x", restore_pos if is_showing else restore_pos + MainPanel.size.x, 0.7)	
+# -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func on_timeline_array_update(new_val:Array = timeline_array) -> void:

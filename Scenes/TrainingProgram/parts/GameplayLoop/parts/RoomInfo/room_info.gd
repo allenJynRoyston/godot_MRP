@@ -1,12 +1,13 @@
 extends GameContainer
 
-@onready var RoomLevelMetrics:Control = $VBoxContainer/RoomLevelMetrics
-@onready var MetricsVBox:VBoxContainer = $VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox
-@onready var MetricsSCP:Control = $VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsSCP
-@onready var MetricsRoom:Control = $VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsRoom
-@onready var MetricsResearcherContainer:Control = $VBoxContainer/RoomLevelMetrics/HBoxContainer/MetricsResearcherContainer
-@onready var SwapBtnA:BtnBase = $VBoxContainer/RoomLevelMetrics/HBoxContainer2/SwapBtnA
-@onready var SwapBtnB:BtnBase = $VBoxContainer/RoomLevelMetrics/HBoxContainer/SwapBtnB
+@onready var MainPanel:MarginContainer = $Control/MarginContainer
+@onready var RoomLevelMetrics:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics
+@onready var MetricsVBox:VBoxContainer = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox
+@onready var MetricsSCP:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsSCP
+@onready var MetricsRoom:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsRoom
+@onready var MetricsResearcherContainer:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/MetricsResearcherContainer
+@onready var SwapBtnA:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/SwapBtnA
+@onready var SwapBtnB:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/SwapBtnB
 
 const MetricsItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn")
 
@@ -74,17 +75,19 @@ func tween_range(start_at:float, end_at:float, duration:float, callback:Callable
 # -----------------------------------------------	
 
 # -----------------------------------------------
-func on_is_showing_update() -> void:
-	super.on_is_showing_update()
-	RoomLevelMetrics.show() if is_showing else RoomLevelMetrics.hide()
+func on_is_showing_update() -> void:	
+	if !is_node_ready() or camera_settings.is_empty():return	
+	if camera_settings.type == CAMERA.TYPE.ROOM_SELECT and is_showing:
+		U.tween_node_property(MainPanel, "position:x", 0, 0.7)
+	else:
+		U.tween_node_property(MainPanel, "position:x", -MainPanel.size.x - 20, 0.7)
 # -----------------------------------------------	
 
 # --------------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary) -> void:
-	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty():return	
-	show() if camera_settings.type == CAMERA.TYPE.ROOM_SELECT else hide()
-	
+	super.on_camera_settings_update(new_val)
+	on_is_showing_update()
+
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return	

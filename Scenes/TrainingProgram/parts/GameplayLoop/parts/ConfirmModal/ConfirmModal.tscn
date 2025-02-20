@@ -1,111 +1,152 @@
-[gd_scene load_steps=12 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=10 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_fp6o0"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_2lprj"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_yaau0"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_fdai8"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_gtk4i"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_fo7i7"]
-shader = ExtResource("2_fp6o0")
-shader_parameter/percentage = 0.0
-shader_parameter/angle_degrees = 0.0
-shader_parameter/line_width = 0.02
-shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
-shader_parameter/laser_color = Color(1, 0, 0, 1)
-shader_parameter/glow_width = 0.05
-shader_parameter/trail_fade = 0.5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_75o2t"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_wb760"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w67u1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5y77r"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lxe8d"]
+bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w67u1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o602e"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xgsso"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ckojb"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[node name="ConfirmModal" type="MarginContainer"]
-offset_right = 175.0
-offset_bottom = 44.0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_75o2t")
 script = ExtResource("1_7tykf")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_fo7i7")
+[node name="ColorRectBG" type="ColorRect" parent="."]
 layout_mode = 2
-texture = SubResource("ViewportTexture_wb760")
-stretch_mode = 2
+color = Color(1, 1, 1, 0.054902)
 
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(197, 83)
+[node name="ModalControl" type="Control" parent="."]
+layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 99.0
-offset_bottom = 44.0
+[node name="PanelContainer" type="PanelContainer" parent="ModalControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_5y77r")
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 15
-
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
-layout_mode = 2
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxEmpty_w67u1")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ModalControl/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ModalControl/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ModalControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
-visible = false
+[node name="TitleLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+text = "TITLE GOES HERE"
 label_settings = ExtResource("3_yaau0")
+horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="SubLabel" type="Label" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/VBoxContainer"]
-visible = false
+[node name="SubLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+text = "subtitle goes here"
 label_settings = ExtResource("4_fdai8")
+horizontal_alignment = 2
 
-[node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+[node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
 layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_hku62")
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
 theme_override_constants/separation = 10
-alignment = 1
 
-[node name="AcceptBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
+[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xgsso")
-title = "Accept"
+size_flags_horizontal = 10
+size_flags_vertical = 8
 
-[node name="BackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_2lprj")]
+[node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ckojb")
-title = "Back"
+theme_override_styles/panel = SubResource("StyleBoxFlat_lxe8d")
+title = "BACK"
+assigned_key = "B"
+icon = 16
+panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
-[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]
+[node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o602e")
+title = "ACCEPT"
+assigned_key = "E"
+icon = 10
+panel_color = Color(0, 0.529412, 0.278431, 1)

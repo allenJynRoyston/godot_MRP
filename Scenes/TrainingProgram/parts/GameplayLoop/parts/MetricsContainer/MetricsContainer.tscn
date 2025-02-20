@@ -1,9 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://ctkwq86y1xbhs"]
+[gd_scene load_steps=9 format=3 uid="uid://ctkwq86y1xbhs"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/metrics_container.gd" id="1_jfbub"]
 [ext_resource type="PackedScene" uid="uid://ch2o2250h2fju" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/HumePanel.tscn" id="3_cngb5"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_v7ywe"]
-[ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="4_s4bdb"]
 [ext_resource type="PackedScene" uid="uid://cr4jyhkulokw2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricMiniItem.tscn" id="7_srt4y"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7s7se"]
@@ -45,54 +44,64 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="MetricsContainer" type="PanelContainer"]
-offset_left = 806.0
-offset_right = 1113.0
-offset_bottom = 1080.0
-size_flags_horizontal = 4
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_7s7se")
 script = ExtResource("1_jfbub")
 
-[node name="MetricsContainer" type="MarginContainer" parent="."]
+[node name="Control" type="Control" parent="."]
 layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -153.5
+offset_right = 153.5
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MetricsContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="MetricsPanel" type="HBoxContainer" parent="MetricsContainer/VBoxContainer"]
+[node name="MetricsPanel" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 5
 
-[node name="Morale" parent="MetricsContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
+[node name="Morale" parent="Control/MarginContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_gmxqv")
 
-[node name="Safety" parent="MetricsContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
+[node name="Safety" parent="Control/MarginContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_yohhl")
 assigned_metric = 1
 value = -4
 
-[node name="Readiness" parent="MetricsContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
+[node name="Readiness" parent="Control/MarginContainer/VBoxContainer/MetricsPanel" instance=ExtResource("7_srt4y")]
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_cfdnv")
 assigned_metric = 2
 value = 2
 
-[node name="HumePanel" parent="MetricsContainer/VBoxContainer" instance=ExtResource("3_cngb5")]
+[node name="HumePanel" parent="Control/MarginContainer/VBoxContainer" instance=ExtResource("3_cngb5")]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="StatusLabel" type="Label" parent="Control/MarginContainer/VBoxContainer"]
 visible = false
-layout_mode = 2
-
-[node name="LocationPanel" parent="MetricsContainer/VBoxContainer" instance=ExtResource("4_s4bdb")]
-layout_mode = 2
-
-[node name="StatusLabel" type="Label" parent="MetricsContainer/VBoxContainer"]
 layout_mode = 2
 text = "STATUS"
 label_settings = ExtResource("3_v7ywe")

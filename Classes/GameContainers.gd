@@ -140,13 +140,13 @@ func on_is_showing_update() -> void:
 func tween_percent() -> void:
 	var tween:Tween = create_tween()
 	if is_showing:
-		show()
+		#show()
 		tween.tween_method(set_percent, 0.0, 1.0, animation_speed)
 	else:
 		tween.tween_method(set_percent, 1.0, 0.0, animation_speed)
 		await tween.finished
-		if !Engine.is_editor_hint():
-			hide()
+		#if !Engine.is_editor_hint():
+			#hide()
 
 func set_percent(percentage: float) -> void:
 	TextureRectNode.material.set_shader_parameter('percentage', percentage)

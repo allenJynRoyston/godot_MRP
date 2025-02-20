@@ -1,11 +1,17 @@
 extends GameContainer
 
+@onready var MainPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
-@onready var LeftSideBtnList:HBoxContainer = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
-@onready var RightSideBtnList:HBoxContainer = $PanelContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
+@onready var Details:PanelContainer = $Details
+@onready var BtnPanel:PanelContainer = $PanelContainer
+@onready var DetailList:HBoxContainer = $Details/MarginContainer/HBoxContainer/VBoxContainer/DetailList
+@onready var ResearcherCount:Label = $Details/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ResearcherCount
+@onready var LeftSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
+@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var Backdrop:ColorRect = $Backdrop
 
-var KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
+const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
+const ResearcherDetailItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ResearcherDetailItem.tscn")
 
 var disable_inputs_while_menu_is_open:bool = false
 var previous_camera_type:int
@@ -13,47 +19,112 @@ var previous_camera_type:int
 var ref_btn:Control
 var left_btn_list:Array = [] 
 var right_btn_list:Array = []
+var is_setup:bool = false
+
+var restore_pos:int
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	
-	for child in [RightSideBtnList, LeftSideBtnList]:
+	Details.hide()
+	
+	for child in [RightSideBtnList, LeftSideBtnList, DetailList]:
 		for node in child.get_children():
 			node.queue_free()	
 	
-	set_btn_disabled_state(false)
+	await U.set_timeout(1.0)	
+	restore_pos = MainPanel.position.y		
 # --------------------------------------------------------------------------------------------------		
+
+
+# --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:
+	set_btn_disabled_state(true)
+	
+	is_showing = false
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
 			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 		CAMERA.TYPE.ROOM_SELECT:
 			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
-	SUBSCRIBE.camera_settings = camera_settings				
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
-func on_is_showing_update() -> void:
-	super.on_is_showing_update()
-	show() if is_showing else hide()
-# --------------------------------------------------------------------------------------------------		
 	
+			
+
+	#GameplayNode.restore_player_hud()
+	SUBSCRIBE.camera_settings = camera_settings	
+	
+	await U.set_timeout(0.2)
+	set_btn_disabled_state(false)
+	is_showing = true
+# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_close_active_menu() -> void:
-	pass
-	#set_btn_disabled_state(false)	
+func on_is_showing_update() -> void:	
+	super.on_is_showing_update()
+	if !is_setup:return	
+	U.tween_node_property(MainPanel, "position:y", restore_pos if is_showing else MainPanel.size.y + 20, 0.7)
+	await U.set_timeout(1.0)
+	MainPanel.set_anchors_preset(Control.PRESET_FULL_RECT)	
+# --------------------------------------------------------------------------------------------------		
+
 # --------------------------------------------------------------------------------------------------			
+func show_details() -> void:
+	# setup cloes behavior
+	ActiveMenu.onClose = func() -> void:
+		for child in DetailList.get_children():
+			child.queue_free()
+		Details.hide()					
+		set_btn_disabled_state(false)
+		
+	Details.show()
+	
+	# enable/disable buttons
+	ActiveMenu.freeze_inputs = false
+	set_btn_disabled_state(true)
+	
+	# update room_extract
+	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
+	
+	# local vars
+	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
+	var options_list := []
+	var room_is_empty:bool = room_extract.room.is_empty()	
+	
+	options_list.push_back({
+		"title": "BACK",
+		"onSelect": func() -> void:
+			GBL.find_node(REFS.ROOM_NODES).is_active = false
+			ActiveMenu.close()
+	})
+	
+	if room_extract.researchers.is_empty():
+		for n in range(0, 2):
+			var new_detail_item:Control = ResearcherDetailItem.instantiate()
+			DetailList.add_child(new_detail_item)
+	else:
+		for researcher in room_extract.researchers:
+			var new_detail_item:Control = ResearcherDetailItem.instantiate()
+			new_detail_item.researcher = researcher
+			DetailList.add_child(new_detail_item)
+	
+	ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]
+	
+	ActiveMenu.options_list = options_list			
+	await U.tick()
+	ActiveMenu.size = Vector2(1, 1)
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+	ActiveMenu.open()
+# --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------		
 func open_hr_menu() -> void:
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:	
 		GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		on_close_active_menu()
+		set_btn_disabled_state(false)
 	
 	# make room nodes active
 	GBL.find_node(REFS.ROOM_NODES).is_active = true
@@ -107,7 +178,7 @@ func open_scp_details() -> void:
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:	
 		GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		on_close_active_menu()
+		set_btn_disabled_state(false)
 	
 	# make room nodes active
 	GBL.find_node(REFS.ROOM_NODES).is_active = true
@@ -560,7 +631,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func buildout_btns() -> void:
-	if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty() or freeze_inputs:return
+	if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty():return
 	var end_of_turn_metrics_event_count:int = GameplayNode.end_of_turn_metrics_event_count()
 	
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
@@ -612,16 +683,6 @@ func buildout_btns() -> void:
 
 			# ---- RIGHT SIDE
 			new_right_btn_list.push_back({
-				"title": "DETAILS",
-				"assigned_key": "E",
-				"icon": SVGS.TYPE.TARGET,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():
-						GBL.find_node(REFS.FLOOR_INFO).activate_toggle()
-					
-			})	
-						
-			new_right_btn_list.push_back({
 				"title": "GOTO WING",
 				"assigned_key": "TAB",
 				"icon": SVGS.TYPE.TARGET,
@@ -642,8 +703,17 @@ func buildout_btns() -> void:
 			
 		CAMERA.TYPE.ROOM_SELECT:
 			new_left_btn_list.push_back({
-				"title": "FACILITY",
+				"title": "DETAILS",
 				"assigned_key": "1",
+				"icon": SVGS.TYPE.MONEY,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						show_details()
+			})
+						
+			new_left_btn_list.push_back({
+				"title": "FACILITY",
+				"assigned_key": "2",
 				"icon": SVGS.TYPE.MONEY,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -652,7 +722,7 @@ func buildout_btns() -> void:
 
 			new_left_btn_list.push_back({
 				"title": "RESEARCHER",
-				"assigned_key": "2",
+				"assigned_key": "3",
 				"icon": SVGS.TYPE.CONTAIN,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -661,7 +731,7 @@ func buildout_btns() -> void:
 			
 			new_left_btn_list.push_back({
 				"title": "CONTAINMENT",
-				"assigned_key": "3",
+				"assigned_key": "4",
 				"is_disabled": room_category != ROOM.CATEGORY.CONTAINMENT_CELL,
 				"icon": SVGS.TYPE.CONTAIN if room_category == ROOM.CATEGORY.CONTAINMENT_CELL else SVGS.TYPE.CLEAR,
 				"onClick": func() -> void:
@@ -671,7 +741,7 @@ func buildout_btns() -> void:
 			
 			new_left_btn_list.push_back({
 				"title": "ALARM",
-				"assigned_key": "X",
+				"assigned_key": "6",
 				"is_hidden": false,
 				"icon": SVGS.TYPE.CAUTION,
 				"onClick": func() -> void:
@@ -712,6 +782,8 @@ func buildout_btns() -> void:
 
 	on_left_btn_list_update(new_left_btn_list, reload)
 	on_right_btn_list_update(new_right_btn_list, reload)
+	await U.tick()
+	is_setup = true
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
@@ -725,10 +797,9 @@ func set_btn_disabled_state(state:bool) -> void:
 
 func on_left_btn_list_update(list:Array, reload:bool) -> void:
 	if !is_node_ready():return
+
 		
 	if reload or LeftSideBtnList.get_child_count() != list.size():
-		for node in LeftSideBtnList.get_children():
-			U.tween_node_property(node, "modulate", Color(1, 1, 1, 0), 0.3)
 		await U.set_timeout(0.5)
 		for node in LeftSideBtnList.get_children():
 			node.queue_free()
@@ -761,8 +832,6 @@ func on_right_btn_list_update(list:Array, reload:bool) -> void:
 	if !is_node_ready():return
 	
 	if reload or RightSideBtnList.get_child_count() != list.size():
-		for node in RightSideBtnList.get_children():
-			U.tween_node_property(node, "modulate", Color(1, 1, 1, 0), 0.3)
 		await U.set_timeout(0.5)
 		for node in RightSideBtnList.get_children():
 			node.queue_free()

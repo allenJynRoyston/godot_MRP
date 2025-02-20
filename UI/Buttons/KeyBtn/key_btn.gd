@@ -48,6 +48,8 @@ extends BtnBase
 		has_new = val
 		on_has_new_update()		
 
+var is_hovered:bool = false
+
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -76,12 +78,14 @@ func update_color(new_color:Color) -> void:
 	if !is_node_ready():return
 
 func on_focus(state:bool = is_focused) -> void:
-	if !is_disabled:
+	if !is_disabled:	
 		super.on_focus(state)
+		on_panel_color_update()
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if !is_disabled and is_visible_in_tree():
 		super.on_mouse_click(node, btn, on_hover)
+		
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -113,7 +117,7 @@ func on_panel_color_update() -> void:
 	new_stylebox.border_width_left = 2
 	new_stylebox.border_width_right = 2
 	new_stylebox.border_width_top = 2
-	new_stylebox.border_color = Color.DIM_GRAY 
+	new_stylebox.border_color = Color.WHITE if is_focused else Color.BLACK
 		
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 		

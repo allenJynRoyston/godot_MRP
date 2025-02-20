@@ -34,6 +34,7 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [node name="GameplayLoop" type="PanelContainer"]
+clip_contents = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -44,22 +45,17 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+show_objectives = true
+show_resources = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
 
 [node name="TimelineContainer" parent="." instance=ExtResource("5_1tp62")]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
-size_flags_vertical = 1
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_right = 0
 
 [node name="ObjectivesContainer" parent="." instance=ExtResource("15_g2w1o")]
 layout_mode = 2
@@ -72,7 +68,6 @@ theme_override_constants/margin_bottom = 150
 layout_mode = 2
 
 [node name="FloorInfo" parent="." instance=ExtResource("7_ceqoy")]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -85,21 +80,15 @@ size_flags_vertical = 0
 layout_mode = 2
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]
 layout_mode = 2
-size_flags_horizontal = 8
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
-visible = false
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-theme_override_constants/margin_top = 75
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
 visible = false
@@ -119,10 +108,7 @@ size_flags_vertical = 4
 layout_mode = 2
 
 [node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]
-visible = false
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
 [node name="EndofPhaseContainer" parent="." instance=ExtResource("18_p3gf7")]
 visible = false

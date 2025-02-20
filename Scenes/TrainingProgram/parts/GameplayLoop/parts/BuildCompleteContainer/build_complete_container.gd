@@ -1,12 +1,18 @@
 extends GameContainer
 
-@onready var TitleLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
-@onready var DescriptionList:VBoxContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DescriptionList
-@onready var ImageContainer:TextureRect = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
+@onready var ColorRectBG:ColorRect = $ColorRectBG
+@onready var ContentMarginContainer:MarginContainer = $ContentControl/MarginContainer
+@onready var TitleLabel:Label = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
+@onready var DescriptionList:VBoxContainer = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DescriptionList
+@onready var ImageContainer:TextureRect = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
 
-@onready var NextBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
-@onready var SkipBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipBtn
-@onready var Activate:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Activate
+@onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
+@onready var NextOrCloseBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/NextOrCloseBtn
+@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
+
+#@onready var NextBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
+#@onready var SkipBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipBtn
+#@onready var Activate:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Activate
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
@@ -22,16 +28,25 @@ var completed_build_items:Array = [] :
 	set(val):
 		completed_build_items = val
 		on_completed_build_items_update()
-	
+
+var content_restore_pos:int
+var btn_restore_pos:int
+var is_setup:bool = false
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 
-	NextBtn.onClick = func() -> void:
+	NextOrCloseBtn.onClick = func() -> void:
 		on_next()
-		
+
 	on_has_more_update()
+	
+	await U.set_timeout(1.0)	
+	content_restore_pos = ContentMarginContainer.position.y			
+	btn_restore_pos = BtnMarginContainer.position.y
+	is_setup = true
+	on_is_showing_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -43,10 +58,22 @@ func on_next() -> void:
 	update_display()
 # --------------------------------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------------------------------
 func on_is_showing_update() -> void:
 	super.on_is_showing_update()
 	if !is_node_ready():return
-	show() if is_showing else hide()
+	if !is_setup:return
+	
+	if !is_showing:
+		for btn in RightSideBtnList.get_children():
+			btn.is_disabled = true
+
+	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0))
+	U.tween_node_property(ContentMarginContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.3)
+
+	U.tween_node_property(ContentMarginContainer, "position:y", content_restore_pos if is_showing else content_restore_pos - 20, 0.3)
+	U.tween_node_property(BtnMarginContainer, "position:y", btn_restore_pos if is_showing else BtnMarginContainer.size.y + 20, 0.3)
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func update_display() -> void:
@@ -56,6 +83,9 @@ func update_display() -> void:
 	
 	for child in DescriptionList.get_children():
 		child.queue_free()
+		
+	for btn in RightSideBtnList.get_children():
+		btn.is_disabled = false		
 		
 	match data.action:
 		# ------------------------------------------------------------------------------------------
@@ -69,13 +99,13 @@ func update_display() -> void:
 			var can_activate:bool = RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(data.ref), resources_data)
 
 			DescriptionList.hide() if activation_requirements.size() == 0 else DescriptionList.show()
-			NextBtn.show()
-			Activate.show()
-			Activate.is_disabled = !can_activate
-			Activate.onClick = func() -> void:
-				if can_activate:
-					GameplayNode.activate_room(data.location, data.ref, true, false)
-					on_next()
+			#NextBtn.show()
+			#Activate.show()
+			#Activate.is_disabled = !can_activate
+			#Activate.onClick = func() -> void:
+				#if can_activate:
+					#GameplayNode.activate_room(data.location, data.ref, true, false)
+					#on_next()
 
 			for item in activation_requirements:
 				var current_amount:int = resources_data[item.resource.ref].amount
@@ -150,18 +180,5 @@ func on_completed_build_items_update() -> void:
 # --------------------------------------------------------------------------------------------------
 func on_has_more_update() -> void:
 	if !is_node_ready():return
-	NextBtn.title = "Next" if has_more else "Close"
+	NextOrCloseBtn.title = "NEXT" if has_more else "CLOSE"
 # --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_showing:return
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
-	match key:
-		"ENTER":
-			on_next()
-		"E":
-			on_next()
-# --------------------------------------------------------------------------------------------------	

@@ -1,12 +1,12 @@
 extends GameContainer
 
-@onready var HumePanel:PanelContainer = $MetricsContainer/VBoxContainer/HumePanel
-
-@onready var MetricsPanel:HBoxContainer = $MetricsContainer/VBoxContainer/MetricsPanel
-@onready var MoraleNode:Control = $MetricsContainer/VBoxContainer/MetricsPanel/Morale
-@onready var SafeteyNode:Control = $MetricsContainer/VBoxContainer/MetricsPanel/Safety
-@onready var ReadinessNode:Control = $MetricsContainer/VBoxContainer/MetricsPanel/Readiness
-@onready var StatusLabel:Label = $MetricsContainer/VBoxContainer/StatusLabel
+@onready var MainPanel:Control = $Control/MarginContainer
+@onready var HumePanel:PanelContainer = $Control/MarginContainer/VBoxContainer/HumePanel
+@onready var MetricsPanel:HBoxContainer = $Control/MarginContainer/VBoxContainer/MetricsPanel
+@onready var MoraleNode:Control = $Control/MarginContainer/VBoxContainer/MetricsPanel/Morale
+@onready var SafeteyNode:Control = $Control/MarginContainer/VBoxContainer/MetricsPanel/Safety
+@onready var ReadinessNode:Control = $Control/MarginContainer/VBoxContainer/MetricsPanel/Readiness
+@onready var StatusLabel:Label = $Control/MarginContainer/VBoxContainer/StatusLabel
 
 const label_settings:LabelSettings = preload("res://Fonts/game/label_small.tres")
 
@@ -14,8 +14,7 @@ var previous_floor:int = -1
 var previous_wing:int = -1
 var previous_location:Dictionary = {}
 
-var show_position:Dictionary = {}
-var hide_position:Dictionary = {}
+var restore_pos:int 
 
 var metrics_tween_pos_val:float = 0
 var researcher_tween_pos_val:float = 0
@@ -29,8 +28,9 @@ func _ready() -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func on_is_showing_update() -> void:
+func on_is_showing_update() -> void:	
 	super.on_is_showing_update()
+	U.tween_node_property(MainPanel, "position:y", 0 if is_showing else -MainPanel.size.y - 20, 0.7)
 # -----------------------------------------------	
 
 # --------------------------------------------------------

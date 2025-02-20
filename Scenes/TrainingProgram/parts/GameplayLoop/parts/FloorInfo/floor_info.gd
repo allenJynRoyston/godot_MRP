@@ -1,8 +1,6 @@
 extends GameContainer
 
-@onready var SummaryList:VBoxContainer = $HBoxContainer/SummaryList
-@onready var DetailsPanel:PanelContainer = $DetailsPanel
-
+@onready var MainPanel:MarginContainer = $Control/MarginContainer
 
 # -----------------------------------------------
 func _init() -> void:
@@ -17,34 +15,22 @@ func _ready() -> void:
 	super._ready()
 # -----------------------------------------------
 
+# -----------------------------------------------
+func on_is_showing_update() -> void:	
+	if !is_node_ready() or camera_settings.is_empty():return	
+	if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT and is_showing:
+		U.tween_node_property(MainPanel, "position:x", 0, 0.7)
+	else:
+		U.tween_node_property(MainPanel, "position:x", -MainPanel.size.x - 20, 0.7)
+# -----------------------------------------------	
+
 # --------------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary) -> void:
 	super.on_camera_settings_update(new_val)
-	if !is_node_ready() or camera_settings.is_empty():return	
-	show() if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else hide()
-	
-func on_room_config_update(new_val:Dictionary = room_config) -> void:
-	super.on_room_config_update(new_val)
-
-func on_purchased_facility_arr_update(new_val:Array) -> void:
-	super.on_purchased_facility_arr_update(new_val)	
-
-func on_resources_data_update(new_val:Dictionary) -> void:
-	super.on_resources_data_update(new_val)	
-
-func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
-	super.on_hired_lead_researchers_arr_update(new_val)
-
-func on_current_location_update(new_val:Dictionary) -> void:
-	super.on_current_location_update(new_val)
+	on_is_showing_update()
 # -----------------------------------------------
 
 # -----------------------------------------------
 func activate_toggle() -> void:
 	var index:int = current_location.ring
 # -----------------------------------------------	
-
-# -----------------------------------------------
-func update_details_panel() -> void:	
-	pass
-# -----------------------------------------------

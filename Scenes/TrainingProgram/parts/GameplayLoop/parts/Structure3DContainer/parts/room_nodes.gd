@@ -236,6 +236,7 @@ func on_is_active_update() -> void:
 
 # --------------------------------------------------------
 func reset_node(room:int, state:bool) -> void:
+	if node_refs.is_empty():return
 	var node:Node3D = node_refs[str(room)]		
 	U.tween_node_property(node, "position:y", 2.5 if state else 0)
 	node.show_internal = state

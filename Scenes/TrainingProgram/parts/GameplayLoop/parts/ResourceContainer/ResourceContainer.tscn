@@ -1,11 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=14 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/resource_container.gd" id="1_qt3uu"]
 [ext_resource type="PackedScene" uid="uid://crk6mkpuid5a3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/DetailPanel.tscn" id="3_fwkup"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_sg6pc"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_ab05e"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="5_ybsai"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="6_rerby"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ljmw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ipeeg"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
@@ -18,8 +19,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cs3fv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cq7eb"]
 bg_color = Color(0, 0.53, 0.282667, 0)
@@ -49,21 +48,17 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t3n4y"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uvm67"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4wyr"]
-
-[node name="ResourceContainer" type="MarginContainer"]
-custom_minimum_size = Vector2(100, 0)
-anchors_preset = 1
-anchor_left = 1.0
+[node name="ResourceContainer" type="PanelContainer"]
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = -202.0
-offset_bottom = 186.0
-grow_horizontal = 0
-size_flags_horizontal = 0
-size_flags_vertical = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_0ljmw")
 script = ExtResource("1_qt3uu")
 
 [node name="Control" type="Control" parent="."]
@@ -80,103 +75,109 @@ offset_bottom = 191.0
 grow_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ipeeg")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Control2" type="Control" parent="."]
 layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_cs3fv")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Control2"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -339.0
+offset_bottom = 43.0
+grow_horizontal = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control2/MarginContainer"]
 layout_mode = 2
-alignment = 2
 
-[node name="Resources" type="PanelContainer" parent="PanelContainer/HBoxContainer2"]
+[node name="Resources" type="PanelContainer" parent="Control2/MarginContainer/HBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cq7eb")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer2/Resources"]
+[node name="MarginContainer" type="MarginContainer" parent="Control2/MarginContainer/HBoxContainer2/Resources"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="ResourceItemMoney" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemMoney" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 icon = 30
 header = "MONEY"
 title = "999"
 display_at_bottom = true
 
-[node name="ResourceItemEnergy" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemEnergy" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 icon = 31
 header = "ENERGY"
 title = "999"
 display_at_bottom = true
 
-[node name="ResourceItemScience" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemScience" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 icon = 39
 header = "SCIENCE"
 title = "999"
 display_at_bottom = true
 
-[node name="VSeparator" type="VSeparator" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
+[node name="VSeparator" type="VSeparator" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
 layout_mode = 2
 
-[node name="ResourceItemStaff" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemStaff" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 icon = 34
 header = "STAFF"
 title = "10/10"
 display_at_bottom = true
 
-[node name="ResourceItemSecurity" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemSecurity" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 icon = 35
 header = "SECURITY"
 title = "10/10"
 display_at_bottom = true
 
-[node name="ResourceItemDClass" parent="PanelContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemDClass" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 icon = 32
 header = "D-CLASS"
 title = "10/10"
 display_at_bottom = true
 
-[node name="Status" type="PanelContainer" parent="PanelContainer/HBoxContainer2"]
+[node name="Status" type="PanelContainer" parent="Control2/MarginContainer/HBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_q5olq")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer2/Status"]
+[node name="MarginContainer" type="MarginContainer" parent="Control2/MarginContainer/HBoxContainer2/Status"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="Control2/MarginContainer/HBoxContainer2/Status/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_dh1uk")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="ReportProgressContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer"]
+[node name="ReportProgressContainer" type="VBoxContainer" parent="Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 8
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer"]
 visible = false
 custom_minimum_size = Vector2(175, 25)
 layout_mode = 2
@@ -187,7 +188,7 @@ max_value = 1.0
 value = 0.5
 show_percentage = false
 
-[node name="ReportBtn" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer/ProgressBar" instance=ExtResource("4_ab05e")]
+[node name="ReportBtn" parent="Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/ReportProgressContainer/ProgressBar" instance=ExtResource("4_ab05e")]
 custom_minimum_size = Vector2(100, 25)
 layout_mode = 1
 anchors_preset = 15
@@ -200,29 +201,17 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_t3n4y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_uvm67")
 icon = 7
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "NEXT REPORT IN X DAYS"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleHeader" type="Label" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
+[node name="DayLabel" type="Label" parent="Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
 visible = false
-layout_mode = 2
-size_flags_vertical = 5
-text = "DAY"
-label_settings = ExtResource("5_ybsai")
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_f4wyr")
-
-[node name="DayLabel" type="Label" parent="PanelContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -230,5 +219,3 @@ text = "DAY XX"
 label_settings = ExtResource("6_rerby")
 horizontal_alignment = 2
 uppercase = true
-
-[connection signal="item_rect_changed" from="PanelContainer" to="." method="_on_subviewport_child_changed"]
