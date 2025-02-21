@@ -73,6 +73,9 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
+[node name="SCPSelectScreen" parent="." instance=ExtResource("13_acjes")]
+layout_mode = 2
+
 [node name="MetricsContainer" parent="." instance=ExtResource("2_28uuh")]
 layout_mode = 2
 size_flags_vertical = 0
@@ -89,9 +92,6 @@ size_flags_vertical = 4
 layout_mode = 2
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
-layout_mode = 2
-
-[node name="SCPSelectScreen" parent="." instance=ExtResource("13_acjes")]
 layout_mode = 2
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]

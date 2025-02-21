@@ -8,8 +8,10 @@ extends GameContainer
 
 @onready var DetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/Details
 @onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
-@onready var SelectResearcherBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectResearcherBtn
-@onready var FinalizeBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/FinalizeBtn
+@onready var SelectScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectScp
+@onready var ConfirmScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmScp
+@onready var SelectResearcher:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectResearcher
+@onready var ConfirmRsearchers:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmResearchers
 
 @onready var ResearcherControlPanel:Control = $ResearcherControl/PanelContainer
 @onready var ResearcherList:HBoxContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/ResearcherList
@@ -19,15 +21,15 @@ extends GameContainer
 @onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
 @onready var BtnPanelContainer:Control = $BtnControl/MarginContainer
 
-enum MODE { SELECT_SCP, SELECT_RESEARCHERS, CONFIRM }
+enum MODE { SELECT_SCP, CONFIRM_SCP, SELECT_RESEARCHERS, CONFIRM_RESEARCHERS, FINALIZE }
 
 const ScpCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn")
 const ResearcherCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn")
 
-var select_index:int = -1 : 
+var scp_active_index:int = -1 : 
 	set(val):
-		select_index = val
-		on_select_index_update()
+		scp_active_index = val
+		on_scp_active_index_update()
 		
 var selected_scp:int = -1 : 
 	set(val):
@@ -55,16 +57,28 @@ var is_setup:bool = false
 func _ready() -> void:
 	super._ready()
 	on_refs_update()
-	on_select_index_update()
+	on_scp_active_index_update()
 
-	SelectResearcherBtn.onClick = func() -> void:
-		current_mode = MODE.SELECT_RESEARCHERS
+	SelectScp.onClick = func() -> void:
+		if current_mode == MODE.SELECT_SCP:
+			mark_scp_as_selected()
+
+	ConfirmScp.onClick = func() -> void:
+		if current_mode == MODE.CONFIRM_SCP:
+			on_confirm_scp()
+			
 	
 	DetailsBtn.onClick = func() -> void:
 		show_details()
 
 	BackBtn.onClick = func() -> void:
-		current_mode = MODE.SELECT_SCP
+		match current_mode:
+			MODE.SELECT_RESEARCHERS:
+				current_mode = MODE.CONFIRM_SCP
+			MODE.CONFIRM_SCP:
+				mark_scp_as_selected(true)
+			MODE.SELECT_RESEARCHERS:
+				current_mode = MODE.CONFIRM_SCP
 
 	await U.set_timeout(1.0)	
 	content_restore_pos = ContentPanelContainer.position.y			
@@ -101,13 +115,18 @@ func on_refs_update() -> void:
 		new_card.onFocus = func(_node:Control):
 			match current_mode:
 				MODE.SELECT_SCP:
-					select_index = index
+					scp_active_index = index
 		new_card.onClick = func():
 			match current_mode:
 				MODE.SELECT_SCP:
 					selected_scp = index
-				#MODE.CONFIRM:
-					#finalize_confirm()
+					mark_scp_as_selected()			
+				MODE.CONFIRM_SCP:
+					if index == selected_scp:
+						on_confirm_scp()
+					else:
+						mark_scp_as_selected(true)
+						scp_active_index = index
 		ScpList.add_child(new_card)
 		new_card.reveal = true
 
@@ -124,8 +143,25 @@ func on_refs_update() -> void:
 		card_node.none_available = already_hired
 		ResearcherList.add_child(card_node)
 		
-	select_index = 0
+	scp_active_index = 0
 # -----------------------------------------------
+
+# -----------------------------------------------
+func mark_scp_as_selected(clear:bool = false) -> void:
+	if !is_node_ready() or refs.size() == 0:return	
+	for index in ScpList.get_child_count():
+		var node:Control = ScpList.get_child(index)
+		if clear:
+			node.is_selected = false
+		else:
+			node.is_selected = scp_active_index == index
+	
+	await U.tick()
+	if clear:
+		current_mode = MODE.SELECT_SCP
+	else:
+		current_mode = MODE.CONFIRM_SCP
+# -----------------------------------------------		
 
 # -----------------------------------------------
 func unflip_cards() -> void:
@@ -141,19 +177,19 @@ func show_details() -> void:
 	if !is_node_ready() or refs.size() == 0:return	
 	for index in ScpList.get_child_count():
 		var node:Control = ScpList.get_child(index)
-		if select_index == index:
+		if scp_active_index == index:
 			node.flip = !node.flip
 # -----------------------------------------------	
 
 # -----------------------------------------------
-func on_select_index_update() -> void:
+func on_scp_active_index_update() -> void:
 	if !is_node_ready() or refs.size() == 0:return		
-	if select_index == -1:return
-	var card_node:Control = ScpList.get_child(select_index)	
+	if scp_active_index == -1:return
+	var card_node:Control = ScpList.get_child(scp_active_index)	
 	
 	for index in ScpList.get_child_count():
 		var node:Control = ScpList.get_child(index)
-		node.is_selected = select_index == index
+		node.is_active = scp_active_index == index
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -183,9 +219,14 @@ func on_is_showing_update() -> void:
 # -----------------------------------------------
 func on_selected_scp_update() -> void:
 	if !is_node_ready():return
-	SelectResearcherBtn.is_disabled = selected_scp == -1
+	pass
+	#SelectResearcherBtn.is_disabled = selected_scp == -1
 # -----------------------------------------------	
-	
+
+# -----------------------------------------------	
+func on_confirm_scp() -> void:
+	current_mode = MODE.SELECT_RESEARCHERS
+# -----------------------------------------------		
 
 ## -----------------------------------------------
 #func revert_confirm() -> void:
@@ -207,31 +248,56 @@ func on_selected_scp_update() -> void:
 			#node.reveal = false
 ## -----------------------------------------------
 
+
 # -----------------------------------------------
 func on_current_mode_update() -> void:
 	if !is_node_ready():return
 	match current_mode:
 		MODE.SELECT_SCP:
-			for btn in [SelectResearcherBtn, FinalizeBtn, DetailsBtn]:
+			print('*select scp')
+			for btn in [SelectScp, ConfirmScp, SelectResearcher, ConfirmRsearchers, DetailsBtn]:
 				btn.is_disabled = false
 				
 			BackBtn.hide()
-			SelectResearcherBtn.show()
-			FinalizeBtn.hide()
+			SelectScp.show()
+			ConfirmScp.hide()
+			ConfirmRsearchers.hide()
+			
+			for index in ScpList.get_child_count():
+				var node:Control = ScpList.get_child(index)
+				node.is_deselected = false
 			
 			U.tween_node_property(ContentPanelContainer, "position:x", 0, 0.3)
 			U.tween_node_property(ResearcherControlPanel, "position:x", ResearcherControlPanel.size.x, 0.3)
-		MODE.SELECT_RESEARCHERS:
+		MODE.CONFIRM_SCP:
 			BackBtn.is_disabled = false
-			ResearcherControlPanel.show()
-			
 			BackBtn.show()
-			SelectResearcherBtn.hide()
-			FinalizeBtn.show()
+			SelectScp.hide()
+			ConfirmScp.show()
+			ConfirmRsearchers.hide()
+			
+			for index in ScpList.get_child_count():
+				var node:Control = ScpList.get_child(index)
+				node.is_deselected = scp_active_index != index			
+			
+			U.tween_node_property(ContentPanelContainer, "position:x", 0, 0.3)
+			U.tween_node_property(ResearcherControlPanel, "position:x", ResearcherControlPanel.size.x, 0.3)			
+			
+		MODE.SELECT_RESEARCHERS:
+			print('select researcher')
+			ConfirmRsearchers.is_disabled = true
+			ResearcherControlPanel.show()
+		
+			ConfirmScp.hide()
+			SelectScp.hide()
+			ConfirmRsearchers.show()
 			
 			U.tween_node_property(ContentPanelContainer, "position:x", ContentPanelContainer.size.x, 0.3)
 			U.tween_node_property(ResearcherControlPanel, "position:x", 0, 0.3)
-
+		MODE.CONFIRM_RESEARCHERS:
+			print('confirm researchers')
+		MODE.FINALIZE:
+			print('confirm all')
 # -----------------------------------------------
 
 ## -----------------------------------------------
@@ -272,11 +338,11 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"A":
 			if current_mode == MODE.SELECT_SCP:
 				unflip_cards()
-				select_index = U.min_max(select_index - 1, 0, ScpList.get_child_count() - 1)
+				scp_active_index = U.min_max(scp_active_index - 1, 0, ScpList.get_child_count() - 1)
 		"D":
 			if current_mode == MODE.SELECT_SCP:
 				unflip_cards()
-				select_index = U.min_max(select_index + 1, 0, ScpList.get_child_count() - 1)
+				scp_active_index = U.min_max(scp_active_index + 1, 0, ScpList.get_child_count() - 1)
 		#"R":
 			#if current_mode == MODE.SELECT:
 				#show_details()

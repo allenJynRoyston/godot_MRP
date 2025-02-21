@@ -1,32 +1,24 @@
-[gd_scene load_steps=15 format=3 uid="uid://dmgj730nihsve"]
+[gd_scene load_steps=14 format=3 uid="uid://dmgj730nihsve"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/SCP/scp_card.gd" id="1_ppy2u"]
 [ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="2_l0yob"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_nobte"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_t7bn4"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_2qlqr"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="5_ruvs2"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_fhyv1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i5mxd"]
-bg_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qha80"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tv1yn"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dmkl0"]
+bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_tv1yn"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d7vnt"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh2bu"]
-bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -51,10 +43,12 @@ font_color = Color(1, 0, 0, 1)
 offset_right = 40.0
 offset_bottom = 40.0
 pivot_offset = Vector2(125, 225)
-theme_override_styles/panel = SubResource("StyleBoxFlat_i5mxd")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qha80")
 script = ExtResource("1_ppy2u")
 reveal = true
-show_details_btn = true
+is_active = null
+show_checkbox = null
+is_selected = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -65,21 +59,13 @@ modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 texture = SubResource("ViewportTexture_tv1yn")
 
-[node name="DetailsBtn" parent="VBoxContainer" instance=ExtResource("5_ruvs2")]
-visible = false
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_d7vnt")
-icon = 50
-title = "DETAILS"
-
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(250, 450)
+size = Vector2i(250, 460)
 
 [node name="SCPCard" type="PanelContainer" parent="SubViewport"]
 offset_right = 250.0
-offset_bottom = 450.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_yh2bu")
+offset_bottom = 460.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dmkl0")
 
 [node name="Front" type="VBoxContainer" parent="SubViewport/SCPCard"]
 layout_mode = 2
@@ -90,6 +76,26 @@ layout_mode = 2
 texture = ExtResource("2_l0yob")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="MarginContainer2" type="MarginContainer" parent="SubViewport/SCPCard/Front/Image"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_bottom = 20.0
+grow_horizontal = 0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="SelectedCheckbox" parent="SubViewport/SCPCard/Front/Image/MarginContainer2" instance=ExtResource("3_t7bn4")]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+icon = 46
+static_color = Color(0.497474, 0.497474, 0.497474, 1)
+is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/SCPCard/Front/Image"]
 layout_mode = 1

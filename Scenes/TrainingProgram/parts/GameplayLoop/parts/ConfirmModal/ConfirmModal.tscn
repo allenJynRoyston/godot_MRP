@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=11 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
+[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_upopm"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_yaau0"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_fdai8"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_gtk4i"]
@@ -12,7 +13,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12dol"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww0aj"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -24,7 +25,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3anv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dhxpd"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -62,6 +63,21 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxEmpty_w67u1")
+
+[node name="MarginContainer2" type="MarginContainer" parent="ModalControl/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextureRect" type="TextureRect" parent="ModalControl/PanelContainer/MarginContainer2"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+texture = ExtResource("2_upopm")
+expand_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="ModalControl/PanelContainer"]
 layout_mode = 2
@@ -137,7 +153,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_12dol")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ww0aj")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -145,7 +161,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_r3anv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_dhxpd")
 title = "ACCEPT"
 assigned_key = "E"
 icon = 10
