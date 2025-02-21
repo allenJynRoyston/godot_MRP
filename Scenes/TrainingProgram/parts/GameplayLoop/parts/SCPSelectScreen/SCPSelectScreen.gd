@@ -155,6 +155,13 @@ func on_refs_update() -> void:
 			match current_mode:
 				MODE.SELECT_RESEARCHERS:
 					researcher_active_index = index
+		new_card.onClick = func() -> void:
+			match current_mode:
+				MODE.SELECT_RESEARCHERS:			
+					mark_researcher_as_selected()
+				MODE.CONFIRM_RESEARCHERS:
+					unmark_researcher(index)
+			
 		ResearcherList.add_child(new_card)
 		new_card.reveal = true
 		
@@ -184,6 +191,16 @@ func mark_scp_as_selected(clear:bool = false) -> void:
 		current_mode = MODE.CONFIRM_SCP
 # -----------------------------------------------		
 
+# -----------------------------------------------		
+func unmark_researcher(marked_index:int) -> void:
+	for index in ResearcherList.get_child_count():
+		var node:Control = ResearcherList.get_child(index)
+		if marked_index == index:
+			node.is_selected = false
+			
+	check_researcher_complete()
+# -----------------------------------------------			
+
 # -----------------------------------------------
 func mark_researcher_as_selected(clear:bool = false) -> void:
 	if !is_node_ready() or refs.size() == 0:return	
@@ -198,8 +215,11 @@ func mark_researcher_as_selected(clear:bool = false) -> void:
 		if node.is_selected:
 			selected_researchers.push_back(index)
 	
-	
-	
+	check_researcher_complete()
+# -----------------------------------------------		
+
+# -----------------------------------------------		
+func check_researcher_complete() -> void:
 	var count:int = 0
 	for node in ResearcherList.get_children():
 		if node.is_selected:
@@ -207,12 +227,21 @@ func mark_researcher_as_selected(clear:bool = false) -> void:
 	
 	ConfirmResearchers.is_disabled = count == 0
 	
-	if count == 2:
-		current_mode = MODE.CONFIRM_RESEARCHERS
-		for index in ResearcherList.get_child_count():
-			var node:Control = ResearcherList.get_child(index)
-			if !node.is_selected:
-				node.is_deselected = true
+	match current_mode:
+		MODE.CONFIRM_RESEARCHERS:
+			if count < 2:
+				current_mode = MODE.SELECT_RESEARCHERS
+				for index in ResearcherList.get_child_count():
+					var node:Control = ResearcherList.get_child(index)
+					node.is_deselected = false
+		MODE.SELECT_RESEARCHERS:
+			if count == 2:
+				current_mode = MODE.CONFIRM_RESEARCHERS
+				for index in ResearcherList.get_child_count():
+					var node:Control = ResearcherList.get_child(index)
+					if !node.is_selected:
+						node.is_deselected = true	
+	
 # -----------------------------------------------		
 
 # -----------------------------------------------		

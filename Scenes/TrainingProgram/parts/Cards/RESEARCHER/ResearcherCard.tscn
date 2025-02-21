@@ -17,7 +17,7 @@ corner_radius_bottom_left = 10
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w82yo"]
-bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
+bg_color = Color(0, 0.529412, 1, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
