@@ -1,106 +1,141 @@
 @tool
-extends PanelContainer
+extends MouseInteractions
 
-@onready var NameLabel:Label = $VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2/NameLabel
-@onready var SpecContainer:GridContainer = $VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/SpecContainer
-@onready var NegTraitsList:VBoxContainer = $VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/NegTraitsList
-@onready var PosTraitsList:VBoxContainer = $VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/PosTraitsList
+@onready var RootContainer:PanelContainer = $SubViewport/PanelContainer
+@onready var CardTextureRect:TextureRect = $VBoxContainer/TextureRect
+@onready var ImageTextureRect:TextureRect = $SubViewport/PanelContainer/Front/Image
+@onready var SelectedCheckbox:BtnBase = $SubViewport/PanelContainer/Front/Image/MarginContainer2/SelectedCheckbox
+@onready var Front:VBoxContainer = $SubViewport/PanelContainer/Front
+@onready var Back:VBoxContainer = $SubViewport/PanelContainer/Back
 
-@onready var HireBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HireSection/HireBtn
-@onready var NoneAvailable:Control = $NoneAvailable
 
-@onready var HireSection:Control = $VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/HireSection
-@onready var VitalsPanel:PanelContainer = $VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer2/VBoxContainer2/VitalsPanel
+const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 
-@export var hide_hire_section:bool = false : 
+@export var ref:int = -1: 
 	set(val):
-		hide_hire_section = val
-		on_hide_hire_section_update()
+		ref = val
+		on_ref_update()
 
+@export var flip:bool = false : 
+	set(val):
+		flip = val
+		on_flip_update()
+		
+@export var reveal:bool = false : 
+	set(val):
+		reveal = val
+		on_reveal_update()		
+
+@export var is_active:bool = false : 
+	set(val):
+		is_active = val
+		on_is_active_update()
+		
+@export var show_checkbox:bool = false : 
+	set(val):
+		show_checkbox = val
+		on_show_checkbox_update()
+		
+@export var is_selected:bool = false : 
+	set(val):
+		is_selected = val
+		on_is_selected_update()
+		
+@export var is_deselected:bool = false : 
+	set(val):
+		is_deselected = val
+		on_is_deselected_update()
+		
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
-var data:Dictionary = {} : 
-	set(val):
-		data = val
-		on_data_update()
-		
-var none_available:bool = false : 
-	set(val):
-		none_available = val
-		on_none_available_update()
-		
-var addHire:Callable = func():pass
+var index:int = -1
+var onFocus:Callable = func(node:Control):pass
+var onBlur:Callable = func(node:Control):pass
+var onClick:Callable = func():pass
 
-var hire_cost:int = 0
-
-var show_hire_section:bool = false
-
-# ------------------------------------
-func _init() -> void:
-	SUBSCRIBE.subscribe_to_resources_data(self)		
-	
-func _exit_tree() -> void:
-	SUBSCRIBE.unsubscribe_to_resources_data(self)
-# ------------------------------------
-
-# ------------------------------------
+# ------------------------------------------------------------------------------
 func _ready() -> void:
-	on_data_update()
-	on_none_available_update()
-	on_hide_hire_section_update()
-	
-	HireBtn.onClick = func() -> void:
-		addHire.call(hire_cost)
-# ------------------------------------
+	super._ready()
+	Front.show()
+	Back.hide()
 
-# ------------------------------------
-func on_none_available_update() -> void:
+	#for node in [RewardsList, MetricsList]:
+		#for child in node.get_children():
+			#child.queue_free()	
+
+	on_ref_update()
+	on_reveal_update()
+	on_is_active_update()
+	on_is_selected_update()
+	on_is_deselected_update()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_flip_update() -> void:
 	if !is_node_ready():return
-	NoneAvailable.show() if none_available else NoneAvailable.hide()
-# ------------------------------------
+	CardTextureRect.pivot_offset = self.size/2
+	await U.tween_node_property(CardTextureRect, "scale:x", 0, 0.1)
+	await U.set_timeout(0.2)
+	Front.hide() if flip else Front.show()
+	Back.show() if flip else Back.hide()
+	U.tween_node_property(CardTextureRect, "scale:x", 1, 0.1)
 
-# ------------------------------------
-func on_hide_hire_section_update() -> void:
+func on_is_active_update() -> void:
 	if !is_node_ready():return
-	HireSection.hide() if hide_hire_section else HireSection.show()
-# ------------------------------------
+	var dup_stylebox:StyleBoxFlat = RootContainer.get_theme_stylebox('panel').duplicate()
+	dup_stylebox.border_color = Color.WHITE if is_active else Color.BLACK
+	RootContainer.add_theme_stylebox_override('panel', dup_stylebox)
 
-# ------------------------------------
-func on_data_update() -> void:
-	if !is_node_ready() or data.is_empty():return
+func on_show_checkbox_update() -> void:
+	if !is_node_ready():return
+	SelectedCheckbox.show() if show_checkbox else SelectedCheckbox.hide()
+
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	SelectedCheckbox.icon = SVGS.TYPE.CHECKBOX if is_selected else SVGS.TYPE.EMPTY_CHECKBOX
+
+func on_is_deselected_update() -> void:
+	if !is_node_ready():return
+	CardTextureRect.material = BlackAndWhiteShader if is_deselected else null
+
+func on_reveal_update() -> void:
+	if !is_node_ready():return
+	await U.tween_node_property(CardTextureRect, "modulate", Color(1, 1, 1, 1) if reveal else Color(1, 1, 1, 0))
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_ref_update() -> void:
+	if !is_node_ready() or ref not in SCP_UTIL.reference_data:return	
+	#var scp_data:Dictionary = SCP_UTIL.return_data(ref)
+	#var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
+#
+	#ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
+	#DesignationLabel.text = scp_data.name
+	#NicknameLabelLabel.text = '"%s"' % [scp_data.nickname]
+	#ItemClassLabel.text = scp_data.item_class.call()
+	#QuoteLabel.text = scp_data.quote
+	#PassiveEffectLabel.text = scp_data.passive_effect.description
+	#
+	#for reward in rewards:
+		#var btn_node:BtnBase = TextBtnPreload.instantiate()
+		#btn_node.title = reward.resource.name
+		#btn_node.icon = reward.resource.icon
+		#btn_node.is_hoverable = false
+		#RewardsList.add_child(btn_node)
+# ------------------------------------------------------------------------------
 	
-	for node in [PosTraitsList, SpecContainer, NegTraitsList]:
-		for child in node.get_children():
-			child.queue_free()
-	
-	NameLabel.text = data.name
-	VitalsPanel.stress = data.stress
-	#VitalsPanel.sanity = data.sanity
-	
-	for key in data.specializations:
-		var btn_node:BtnBase = TextBtnPreload.instantiate()
-		var details:Dictionary = RESEARCHER_UTIL.return_specialization_data(key) 
-		btn_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn_node.title = details.name
-		btn_node.icon = details.icon
-		hire_cost += details.hire_cost.call()
-		SpecContainer.add_child(btn_node)
-	
-	for key in data.traits:
-		var btn_node:BtnBase = TextBtnPreload.instantiate()
-		var details:Dictionary = RESEARCHER_UTIL.return_trait_data(key) 
-		btn_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn_node.title = details.name
-		btn_node.icon = details.icon
-		if details.type == 0:
-			hire_cost += details.hire_cost.call()
-			PosTraitsList.add_child(btn_node)
-		else:
-			hire_cost -= details.hire_cost.call()
-			NegTraitsList.add_child(btn_node)
-			
-	if hire_cost < 0:
-		hire_cost = 2
-		
-	HireBtn.title = str(hire_cost)
-# ------------------------------------
+# ------------------------------------------------------------------------------
+func on_focus(state:bool = is_focused) -> void:	
+	if !is_node_ready():return	
+	is_focused = state
+	onFocus.call(self) if state else onBlur.call(self)	
+	if state:
+		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	else:
+		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+
+
+func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	if on_hover and btn == MOUSE_BUTTON_LEFT:		
+		onClick.call()
+# ------------------------------------------------------------------------------

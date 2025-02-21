@@ -85,16 +85,16 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 	for index in recruit_data.size():
 		var data:Dictionary = recruit_data[index]
 		var card_node:Control = ResearcherCardPreload.instantiate()
-		card_node.data = data
-		card_node.addHire = func(cost:int) -> void:
-			if !allow_recruitment:return
-			if resources_data[RESOURCE.TYPE.MONEY].amount >= cost:
-				addHire.call({
-					"researcher": researcher_hire_list[index], 
-					"cost": cost
-				})
-			# do purchase check first
-		var already_hired:bool = hired_lead_researchers_arr.filter(func(i):return i[0] == data.uid).size() > 0
-		card_node.none_available = already_hired
+		#card_node.data = data
+		#card_node.addHire = func(cost:int) -> void:
+			#if !allow_recruitment:return
+			#if resources_data[RESOURCE.TYPE.MONEY].amount >= cost:
+				#addHire.call({
+					#"researcher": researcher_hire_list[index], 
+					#"cost": cost
+				#})
+			## do purchase check first
+		#var already_hired:bool = hired_lead_researchers_arr.filter(func(i):return i[0] == data.uid).size() > 0
+		#card_node.none_available = already_hired
 		CardContainer.add_child(card_node)
 # ---------------------------------------------------------------	

@@ -2,6 +2,11 @@
 extends MouseInteractions
 
 @onready var RootContainer:PanelContainer = $SubViewport/SCPCard
+@onready var CardTextureRect:TextureRect = $VBoxContainer/TextureRect
+@onready var ImageTextureRect:TextureRect = $SubViewport/SCPCard/Front/Image
+@onready var Front:VBoxContainer = $SubViewport/SCPCard/Front
+@onready var Back:VBoxContainer = $SubViewport/SCPCard/Back
+
 @onready var NicknameLabelLabel:Label = $SubViewport/SCPCard/Front/Image/PanelContainer/MarginContainer/NicknameLabel
 @onready var DesignationLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Designation/DesignationLabel
 @onready var ItemClassLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ItemClass/ItemClassLabel
@@ -10,14 +15,6 @@ extends MouseInteractions
 @onready var RewardsList:VBoxContainer = $SubViewport/SCPCard/Back/MarginContainer/VBoxContainer/Rewards/RewardsList
 @onready var MetricsList:VBoxContainer = $SubViewport/SCPCard/Back/MarginContainer/VBoxContainer/Metrics/MetricsList
 @onready var SelectedCheckbox:BtnBase = $SubViewport/SCPCard/Front/Image/MarginContainer2/SelectedCheckbox
-@onready var CardTextureRect:TextureRect = $VBoxContainer/TextureRect
-@onready var ImageTextureRect:TextureRect = $SubViewport/SCPCard/Front/Image
-
-@onready var Front:VBoxContainer = $SubViewport/SCPCard/Front
-@onready var Back:VBoxContainer = $SubViewport/SCPCard/Back
-
-const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
-#@onready var DetailsBtn:BtnBase = $VBoxContainer/DetailsBtn
 
 @export var ref:int = -1: 
 	set(val):
@@ -54,6 +51,7 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 		is_deselected = val
 		on_is_deselected_update()
 		
+const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var index:int = -1
