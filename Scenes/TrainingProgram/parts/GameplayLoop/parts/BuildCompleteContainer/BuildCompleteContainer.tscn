@@ -23,7 +23,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f38df"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xwwoo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7bmhr"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -35,7 +35,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_na20x"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3lm24"]
 bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
 border_width_left = 2
 border_width_top = 2
@@ -47,7 +47,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n0tgl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xuw7d"]
 bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
 border_width_left = 2
 border_width_top = 2
@@ -171,7 +171,7 @@ size_flags_vertical = 8
 
 [node name="KeyBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xwwoo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7bmhr")
 title = "ACTIVATE"
 assigned_key = "A"
 icon = 31
@@ -179,7 +179,7 @@ panel_color = Color(0.455201, 0.00200917, 0.712752, 1)
 
 [node name="KeyBtn2" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_na20x")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3lm24")
 title = "ACTIVATE ALL"
 assigned_key = "ENTER"
 icon = 31
@@ -187,7 +187,7 @@ panel_color = Color(0.510764, 0.00166744, 0.716704, 1)
 
 [node name="NextOrCloseBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_n0tgl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xuw7d")
 title = "NEXT (SKIP)"
 assigned_key = "E"
 icon = 27

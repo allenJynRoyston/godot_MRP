@@ -8,13 +8,18 @@ extends MouseInteractions
 @onready var Front:VBoxContainer = $SubViewport/PanelContainer/Front
 @onready var Back:VBoxContainer = $SubViewport/PanelContainer/Back
 
+@onready var LevelLabel:Label = $SubViewport/PanelContainer/Front/Image/PanelContainer/MarginContainer/HBoxContainer/LevelLabel
+@onready var ProfileImage:TextureRect = $SubViewport/PanelContainer/Front/Image
+@onready var NameLabel:Label = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Name/NameLabel
+@onready var SpecilizationList:VBoxContainer = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Specilizations/VBoxContainer
+@onready var TraitsList:VBoxContainer = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits/VBoxContainer
 
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 
-@export var ref:int = -1: 
+@export var uid:String = "": 
 	set(val):
-		ref = val
-		on_ref_update()
+		uid = val
+		on_uid_update()
 
 @export var flip:bool = false : 
 	set(val):
@@ -46,6 +51,11 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 		is_deselected = val
 		on_is_deselected_update()
 		
+var researcher_details:Dictionary = {} : 
+	set(val):
+		researcher_details = val
+		on_researcher_details_update()
+		
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var index:int = -1
@@ -59,15 +69,16 @@ func _ready() -> void:
 	Front.show()
 	Back.hide()
 
-	#for node in [RewardsList, MetricsList]:
-		#for child in node.get_children():
-			#child.queue_free()	
+	for node in [SpecilizationList, TraitsList]:
+		for child in node.get_children():
+			child.queue_free()	
 
-	on_ref_update()
+	on_uid_update()
 	on_reveal_update()
 	on_is_active_update()
 	on_is_selected_update()
 	on_is_deselected_update()
+	on_researcher_details_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -93,6 +104,8 @@ func on_show_checkbox_update() -> void:
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	SelectedCheckbox.icon = SVGS.TYPE.CHECKBOX if is_selected else SVGS.TYPE.EMPTY_CHECKBOX
+	SelectedCheckbox.static_color = Color.GREEN if is_selected else Color.DIM_GRAY
+
 
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
@@ -104,26 +117,35 @@ func on_reveal_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_ref_update() -> void:
-	if !is_node_ready() or ref not in SCP_UTIL.reference_data:return	
-	#var scp_data:Dictionary = SCP_UTIL.return_data(ref)
-	#var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
-#
-	#ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
-	#DesignationLabel.text = scp_data.name
-	#NicknameLabelLabel.text = '"%s"' % [scp_data.nickname]
-	#ItemClassLabel.text = scp_data.item_class.call()
-	#QuoteLabel.text = scp_data.quote
-	#PassiveEffectLabel.text = scp_data.passive_effect.description
-	#
-	#for reward in rewards:
-		#var btn_node:BtnBase = TextBtnPreload.instantiate()
-		#btn_node.title = reward.resource.name
-		#btn_node.icon = reward.resource.icon
-		#btn_node.is_hoverable = false
-		#RewardsList.add_child(btn_node)
+func on_uid_update() -> void:
+	if !is_node_ready() or uid == "":return		
+	researcher_details = RESEARCHER_UTIL.return_data_with_uid(uid)
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_researcher_details_update() -> void:
+	if !is_node_ready() or researcher_details.is_empty():return
+	NameLabel.text = researcher_details.name
+	ProfileImage.texture = CACHE.fetch_image(researcher_details.img_src)
+	LevelLabel.text = str(researcher_details.level)
 	
+	for spec_id in researcher_details.specializations:
+		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)
+		var new_btn:BtnBase = TextBtnPreload.instantiate()
+		new_btn.title = dict.name
+		new_btn.icon = dict.icon
+		new_btn.is_hoverable = false
+		SpecilizationList.add_child(new_btn)
+		
+	for trait_id in researcher_details.traits:
+		var dict:Dictionary = RESEARCHER_UTIL.return_trait_data(trait_id)
+		var new_btn:BtnBase = TextBtnPreload.instantiate()
+		new_btn.title = dict.name
+		new_btn.icon = dict.icon
+		new_btn.is_hoverable = false
+		TraitsList.add_child(new_btn)
+# ------------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:	
 	if !is_node_ready():return	

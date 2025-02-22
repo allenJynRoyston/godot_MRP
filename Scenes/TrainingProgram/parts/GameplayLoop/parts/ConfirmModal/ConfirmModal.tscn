@@ -13,7 +13,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww0aj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_15h1e"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -25,7 +25,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dhxpd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1imf6"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -73,37 +73,24 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="TextureRect" type="TextureRect" parent="ModalControl/PanelContainer/MarginContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ModalControl/PanelContainer/MarginContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ImageTextureRect" type="TextureRect" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 texture = ExtResource("2_upopm")
 expand_mode = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="ModalControl/PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 100
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ModalControl/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ModalControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="TitleLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
 text = "TITLE GOES HERE"
 label_settings = ExtResource("3_yaau0")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="SubLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="SubLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
 text = "subtitle goes here"
 label_settings = ExtResource("4_fdai8")
@@ -153,7 +140,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ww0aj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_15h1e")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -161,7 +148,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dhxpd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1imf6")
 title = "ACCEPT"
 assigned_key = "E"
 icon = 10

@@ -1,22 +1,18 @@
-[gd_scene load_steps=11 format=3 uid="uid://boomisn56mb2k"]
+[gd_scene load_steps=18 format=3 uid="uid://boomisn56mb2k"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/researcher_card.gd" id="1_v8702"]
 [ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_dksdv"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_t36oy"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_tahe0"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_u67dq"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_bh6cq"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah0ml"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k6m5t"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_ff5rk"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w82yo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2odc"]
 bg_color = Color(0, 0.529412, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -30,14 +26,32 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4b7c"]
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_bawep"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_n5bfk"]
 color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xjh20"]
+bg_color = Color(0.282667, 0, 0.53, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o7d1m"]
+bg_color = Color(0.282667, 0, 0.53, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t76v5"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wlumi"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2686s"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vrynf"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="ResearcherCard" type="PanelContainer"]
 offset_right = 250.0
 offset_bottom = 429.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ah0ml")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_k6m5t")
 script = ExtResource("1_v8702")
 reveal = true
 
@@ -54,9 +68,9 @@ transparent_bg = true
 size = Vector2i(250, 460)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 250.0
+offset_right = 220.0
 offset_bottom = 460.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_w82yo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_l2odc")
 
 [node name="Front" type="VBoxContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
@@ -85,15 +99,16 @@ theme_override_constants/margin_bottom = 0
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 46
-static_color = Color(0.497474, 0.497474, 0.497474, 1)
+static_color = Color(0.411765, 0.411765, 0.411765, 1)
 is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/Front/Image"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 18.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_e4b7c")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Front/Image/PanelContainer"]
@@ -103,17 +118,26 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="NicknameLabel" type="Label" parent="SubViewport/PanelContainer/Front/Image/PanelContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/Front/Image/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/Front/Image/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "CLEARANCE LEVEL"
+label_settings = ExtResource("4_u67dq")
+
+[node name="LevelLabel" type="Label" parent="SubViewport/PanelContainer/Front/Image/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
-text = "LVL 1"
+text = "X"
 label_settings = ExtResource("3_tahe0")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Front"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 20
 
@@ -121,55 +145,84 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Designation" type="HBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
+[node name="Name" type="HBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Designation"]
+[node name="Label2" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Name"]
 layout_mode = 2
-text = "NAME:"
+text = "RESEARCHER"
 label_settings = ExtResource("4_u67dq")
 
-[node name="DesignationLabel" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Designation"]
+[node name="NameLabel" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Name"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "FIRSTNAME, LASTNAME"
-label_settings = ExtResource("4_u67dq")
-horizontal_alignment = 2
-
-[node name="ItemClass" type="HBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/ItemClass"]
-layout_mode = 2
-text = "CLEARANCE LEVEL:"
-label_settings = ExtResource("4_u67dq")
-
-[node name="ItemClassLabel" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/ItemClass"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "X"
+text = "A. LASTNAME"
 label_settings = ExtResource("3_tahe0")
 horizontal_alignment = 2
 
 [node name="HSeparator" type="HSeparator" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_bawep")
+theme_override_styles/separator = SubResource("StyleBoxLine_n5bfk")
 
-[node name="Quote" type="VBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
+[node name="Specilizations" type="VBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
-alignment = 2
+theme_override_constants/separation = 10
 
-[node name="HSeparator2" type="HSeparator" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Quote"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Specilizations"]
 layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_bawep")
-
-[node name="QuoteLabel" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Quote"]
-custom_minimum_size = Vector2(1, 0)
-layout_mode = 2
-text = "\"There's somebody or something on the other side.\" "
+text = "SPECIALIZATION:"
 label_settings = ExtResource("4_u67dq")
-autowrap_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Specilizations"]
+layout_mode = 2
+
+[node name="TextBtn" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Specilizations/VBoxContainer" instance=ExtResource("6_bh6cq")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xjh20")
+panel_color = Color(0.282667, 0, 0.53, 0.796078)
+title = "SPEC 1"
+
+[node name="TextBtn2" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Specilizations/VBoxContainer" instance=ExtResource("6_bh6cq")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o7d1m")
+panel_color = Color(0.282667, 0, 0.53, 0.796078)
+title = "SPEC 1"
+
+[node name="HSeparator2" type="HSeparator" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_n5bfk")
+
+[node name="Traits" type="VBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits"]
+layout_mode = 2
+text = "PERSONALITY TRAITS:"
+label_settings = ExtResource("4_u67dq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits"]
+layout_mode = 2
+
+[node name="TextBtn" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits/VBoxContainer" instance=ExtResource("6_bh6cq")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_t76v5")
+title = "TRAIT 1"
+
+[node name="TextBtn2" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits/VBoxContainer" instance=ExtResource("6_bh6cq")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wlumi")
+title = "TRAIT 1"
+
+[node name="TextBtn3" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits/VBoxContainer" instance=ExtResource("6_bh6cq")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2686s")
+title = "TRAIT 1"
+
+[node name="TextBtn4" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits/VBoxContainer" instance=ExtResource("6_bh6cq")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vrynf")
+title = "TRAIT 1"
 
 [node name="Back" type="VBoxContainer" parent="SubViewport/PanelContainer"]
 visible = false
@@ -187,44 +240,59 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Rewards" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer"]
+[node name="XP" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/Rewards"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/XP"]
 layout_mode = 2
-text = "CONTAINMENT BONUS:"
+text = "XP:"
 label_settings = ExtResource("4_u67dq")
 
-[node name="RewardsList" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/Rewards"]
+[node name="RewardsList" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/XP"]
 layout_mode = 2
 
-[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/Rewards"]
-visible = false
+[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/XP"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/Rewards/PanelContainer4"]
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/XP/PanelContainer4"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/Rewards/PanelContainer4/MarginContainer"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/XP/PanelContainer4/MarginContainer"]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
-text = "Can foresee 3 days into the future."
+text = "10/100"
 label_settings = ExtResource("4_u67dq")
+horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Metrics" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer"]
+[node name="STRESS" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/Metrics"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/STRESS"]
 layout_mode = 2
-text = "TESTING:"
+text = "STRESS:"
 label_settings = ExtResource("4_u67dq")
 
-[node name="MetricsList" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/Metrics"]
+[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/STRESS"]
 layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/STRESS/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/STRESS/PanelContainer4/MarginContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "10/100"
+label_settings = ExtResource("4_u67dq")
+horizontal_alignment = 1
+autowrap_mode = 2

@@ -99,6 +99,7 @@ func on_show_checkbox_update() -> void:
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	SelectedCheckbox.icon = SVGS.TYPE.CHECKBOX if is_selected else SVGS.TYPE.EMPTY_CHECKBOX
+	SelectedCheckbox.static_color = Color.GREEN if is_selected else Color.DIM_GRAY
 
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return

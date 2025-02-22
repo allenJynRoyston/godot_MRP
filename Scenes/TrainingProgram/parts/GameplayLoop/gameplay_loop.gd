@@ -1363,7 +1363,7 @@ func set_floor_lockdown(from_location:Dictionary, state:bool) -> Dictionary:
 	title = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
 	subtitle = "All wings will have their actions frozen." if state else ""
 			
-	ConfirmModal.set_text(title, subtitle)
+	ConfirmModal.set_props(title, subtitle)
 	await show_only([ConfirmModal, Structure3dContainer])	
 	var response:Dictionary = await ConfirmModal.user_response
 
@@ -1396,7 +1396,7 @@ func set_wing_emergency_mode(from_location:Dictionary, mode:ROOM.EMERGENCY_MODES
 			title = "SET ALERT LEVEL BACK TO NORMAL?"
 			subtitle = "Metrics will be returned to normal."
 
-	ConfirmModal.set_text(title, subtitle)
+	ConfirmModal.set_props(title, subtitle)
 	await show_only([ConfirmModal, Structure3dContainer])	
 	var response:Dictionary = await ConfirmModal.user_response
 	
@@ -1422,7 +1422,7 @@ func activate_floor(from_location:Dictionary) -> Dictionary:
 	var activation_cost:int = activated_count * 10
 	var can_purchase:bool = resources_data[RESOURCE.TYPE.ENERGY].amount >= activation_cost
 	
-	ConfirmModal.set_text("Activate this floor?", "It will require %s energy (you have %s available)." % [activation_cost, resources_data[RESOURCE.TYPE.ENERGY].amount])
+	ConfirmModal.set_props("Activate this floor?", "It will require %s energy (you have %s available)." % [activation_cost, resources_data[RESOURCE.TYPE.ENERGY].amount])
 	if !can_purchase:
 		ConfirmModal.cancel_only = true
 	await show_only([ConfirmModal])	
@@ -1461,7 +1461,7 @@ func activate_room(from_location:Dictionary, room_ref:int, is_activated:bool, sh
 	var stop:bool = false
 	# with confirm modal
 	if show_confirm_modal:
-		ConfirmModal.set_text("Activate this room?" if is_activated else "Deactivate this room")
+		ConfirmModal.set_props("Activate this room?" if is_activated else "Deactivate this room")
 		await show_only([ConfirmModal, Structure3dContainer])	
 		var response:Dictionary = await ConfirmModal.user_response
 		match response.action:		
@@ -1491,7 +1491,7 @@ func reset_room(from_location:Dictionary) -> Dictionary:
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(from_location)
 	
 	if reset_arr.size() > 0:
-		ConfirmModal.set_text("This room will be destroyed.", "Room will be deactivated and resources will be refunded." if room_extract.room.is_activated else "")
+		ConfirmModal.set_props("This room will be destroyed.", "Room will be deactivated and resources will be refunded." if room_extract.room.is_activated else "")
 			
 		await show_only([ConfirmModal, Structure3dContainer])	
 		var response:Dictionary = await ConfirmModal.user_response
@@ -1590,21 +1590,21 @@ func on_completed_action(timeline_item:Dictionary) -> void:
 func cancel_action_queue(timeline_item:Dictionary, include_restore:bool = true) -> bool:
 	match timeline_item.action:
 		ACTION.AQ.CONTAIN:
-			ConfirmModal.set_text("Cancel containment?", "There are no costs for this action.")
+			ConfirmModal.set_props("Cancel containment?", "There are no costs for this action.")
 		ACTION.AQ.TRANSFER:
-			ConfirmModal.set_text("Cancel transfer?", "There are no costs for this action.")					
+			ConfirmModal.set_props("Cancel transfer?", "There are no costs for this action.")					
 		ACTION.AQ.BUILD_ITEM:
-			ConfirmModal.set_text("Cancel construction?", "Resources will be refunded.")
+			ConfirmModal.set_props("Cancel construction?", "Resources will be refunded.")
 		ACTION.AQ.RESEARCH_ITEM:
-			ConfirmModal.set_text("Cancel research?", "Resources will be refunded.")						
+			ConfirmModal.set_props("Cancel research?", "Resources will be refunded.")						
 		ACTION.AQ.BASE_ITEM:
-			ConfirmModal.set_text("Cancel base upgrade?", "Resources will be refunded.")
+			ConfirmModal.set_props("Cancel base upgrade?", "Resources will be refunded.")
 		ACTION.AQ.ACCESSING:
-			ConfirmModal.set_text("Cancel accessing SCP?", "Unspent resources will be refunded.")
+			ConfirmModal.set_props("Cancel accessing SCP?", "Unspent resources will be refunded.")
 		ACTION.AQ.TESTING:
-			ConfirmModal.set_text("Cancel SCP testing?", "Unspent resources will be refunded.")			
+			ConfirmModal.set_props("Cancel SCP testing?", "Unspent resources will be refunded.")			
 		_:
-			ConfirmModal.set_text("Missing instruction...", "Check for errors.")
+			ConfirmModal.set_props("Missing instruction...", "Check for errors.")
 			
 	await show_only([Structure3dContainer, ConfirmModal])	
 	var response:Dictionary = await ConfirmModal.user_response
@@ -1832,7 +1832,7 @@ func transfer_scp(from_location:Dictionary) -> Dictionary:
 
 # -----------------------------------
 func upgrade_scp(from_location:Dictionary) -> Dictionary:
-	ConfirmModal.set_text("Upgrade SCP?")
+	ConfirmModal.set_props("Upgrade SCP?")
 	await show_only([Structure3dContainer, ConfirmModal])
 	var response:Dictionary = await ConfirmModal.user_response	
 	match response.action:
@@ -1845,7 +1845,7 @@ func upgrade_scp(from_location:Dictionary) -> Dictionary:
 
 # -----------------------------------
 func contain_scp_cancel(from_location:Dictionary, action:ACTION.AQ) -> Dictionary:
-	ConfirmModal.set_text("Cancel containment?")
+	ConfirmModal.set_props("Cancel containment?")
 	await show_only([Structure3dContainer, ConfirmModal])
 	var response:Dictionary = await ConfirmModal.user_response	
 	match response.action:
@@ -1892,7 +1892,7 @@ func start_scp_testing(scp_ref:int) -> void:
 	#
 	## not a confirmation modal - just a text one
 	#ConfirmModal.confirm_only = true
-	#ConfirmModal.set_text("Testing on %s has begun." % [scp_details.name])
+	#ConfirmModal.set_props("Testing on %s has begun." % [scp_details.name])
 	#await show_only([ConfirmModal])	
 	#var response:Dictionary = await ConfirmModal.user_response	
 	#
@@ -2049,7 +2049,7 @@ func dismiss_researcher(researcher_data:Dictionary) -> void:
 # -----------------------------------
 func assign_researcher_to_scp(location:Dictionary, assign:bool) -> void:
 	var scp_list_data:Dictionary = find_in_contained_via_location(location)
-	pass
+	print(scp_list_data)
 	#if assign:
 		#await assign_researcher_to_scp_find_researcher(location)
 	#else:
@@ -2061,7 +2061,7 @@ func assign_researcher_to_scp(location:Dictionary, assign:bool) -> void:
 
 # -----------------------------------	
 func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) -> Dictionary:
-	ConfirmModal.set_text("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
+	ConfirmModal.set_props("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
 	await show_only([Structure3dContainer, ConfirmModal])
 	
 	var response:Dictionary = await ConfirmModal.user_response
@@ -2124,7 +2124,7 @@ func unassign_researcher_to_scp(scp_ref:int) -> void:
 	var list_data:Dictionary = res.data
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid)
 
-	ConfirmModal.set_text("Remove %s as Lead Researcher on %s?" % [researcher_details.name, scp_details.name])
+	ConfirmModal.set_props("Remove %s as Lead Researcher on %s?" % [researcher_details.name, scp_details.name])
 	await show_only([Structure3dContainer, ConfirmModal])
 	var response:Dictionary = await ConfirmModal.user_response
 	match response.action:
@@ -2297,8 +2297,9 @@ func on_current_phase_update() -> void:
 		PHASE.STARTUP:
 			show_only([])
 		# ------------------------
-		PHASE.PLAYER:			
-			current_phase = PHASE.SCHEDULED_EVENTS
+		PHASE.PLAYER:
+			pass
+			#current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			current_location_snapshot = current_location.duplicate(true)
@@ -2335,9 +2336,7 @@ func on_current_phase_update() -> void:
 		PHASE.METRIC_EVENTS:
 			PhaseAnnouncement.start("VIBE CHECK")	
 			await show_only([Structure3dContainer, MetricsContainer])	
-			
-			
-			
+
 			for floor_index in room_config.floor.size():		
 				for ring_index in room_config.floor[floor_index].ring.size():
 					var ring_data:Dictionary = room_config.floor[floor_index].ring[ring_index]
@@ -2376,17 +2375,11 @@ func on_current_phase_update() -> void:
 				current_action_complete_step = ACTION_COMPLETE_STEPS.START
 				await on_complete_build_complete	
 			
-			## update new available researchers every week
-			#if progress_data.day % 7 == 0:
-				#print("new hires available...")
-				#SUBSCRIBE.researcher_hire_list = RESEARCHER_UTIL.generate_new_researcher_hires() 	
-			
 			await U.set_timeout(1.0)
 			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
-			#if progress_data.day % 14 == 0:
-			await show_only([Structure3dContainer, TimelineContainer, MetricsContainer, ResourceContainer])	
+			#await show_only([Structure3dContainer, TimelineContainer, MetricsContainer, ResourceContainer])	
 			PhaseAnnouncement.start("CONTAINMENT REQUEST")	
 			current_select_scp_step = SELECT_SCP_STEPS.START
 			await on_scp_select_complete
@@ -2482,7 +2475,7 @@ func on_current_shop_step_update() -> void:
 					
 		# ---------------
 		SHOP_STEPS.CONFIRM_TIER_PURCHASE:
-			ConfirmModal.set_text("Confirm TIER purchase?")
+			ConfirmModal.set_props("Confirm TIER purchase?")
 			await show_only([Structure3dContainer, ConfirmModal])			
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
@@ -2493,7 +2486,7 @@ func on_current_shop_step_update() -> void:
 			
 		# ---------------
 		SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE:
-			ConfirmModal.set_text("Confirm research?")
+			ConfirmModal.set_props("Confirm research?")
 			await show_only([Structure3dContainer, ConfirmModal])
 			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:
@@ -2504,7 +2497,7 @@ func on_current_shop_step_update() -> void:
 
 		# ---------------
 		SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE:
-			ConfirmModal.set_text("Confirm base item purchase?")
+			ConfirmModal.set_props("Confirm base item purchase?")
 			await show_only([Structure3dContainer, ConfirmModal])
 			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:
@@ -2516,7 +2509,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.CONFIRM_BUILD:
 			var room_details:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
-			ConfirmModal.set_text("Purchase %s?" % [room_details.name], "Construction will take %s days." % [room_details.get_build_time.call()])
+			ConfirmModal.set_props("Purchase %s?" % [room_details.name], "Construction will take %s days." % [room_details.get_build_time.call()])
 			await show_only([Structure3dContainer, ConfirmModal])			
 			var confirm_response:Dictionary = await ConfirmModal.user_response			
 			match confirm_response.action:
@@ -2654,7 +2647,7 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.START
 				# --------------------
 				ACTION.CONTAINED.STOP_TESTING:
-					ConfirmModal.set_text("Cancel SCP testing?", "Unspent resources will be refunded.")
+					ConfirmModal.set_props("Cancel SCP testing?", "Unspent resources will be refunded.")
 					await show_only([ConfirmModal, Structure3dContainer])
 					var res:Dictionary = await ConfirmModal.user_response
 					match res.action:
@@ -2683,7 +2676,7 @@ func on_current_contain_step_update() -> void:
 					current_contain_step = CONTAIN_STEPS.CONFIRM_PLACEMENT
 		# ---------------			
 		CONTAIN_STEPS.ON_REJECT:
-			ConfirmModal.set_text("Remove SCP from available list?")
+			ConfirmModal.set_props("Remove SCP from available list?")
 			await show_only([ConfirmModal, Structure3dContainer])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
@@ -2727,7 +2720,7 @@ func on_current_contain_step_update() -> void:
 					
 		# ---------------
 		CONTAIN_STEPS.CONFIRM_PLACEMENT:
-			ConfirmModal.set_text("Contain at this location?")
+			ConfirmModal.set_props("Contain at this location?")
 			await show_only([ConfirmModal, Structure3dContainer])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
@@ -2809,7 +2802,7 @@ func on_current_recruit_step_update() -> void:
 					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT
 		# ---------------
 		RECRUIT_STEPS.CONFIRM_HIRE_LEAD:
-			ConfirmModal.set_text("Confirm hire?")
+			ConfirmModal.set_props("Confirm hire?")
 			await show_only([Structure3dContainer, ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
@@ -2823,7 +2816,7 @@ func on_current_recruit_step_update() -> void:
 					current_recruit_step = RECRUIT_STEPS.START
 		# ---------------
 		RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT:
-			ConfirmModal.set_text("Confirm support?")
+			ConfirmModal.set_props("Confirm support?")
 			await show_only([ConfirmModal])
 			var response:Dictionary = await ConfirmModal.user_response
 			match response.action:
@@ -2959,7 +2952,6 @@ func on_current_select_scp_step_update() -> void:
 			await show_only([SCPSelectScreen])
 			SCPSelectScreen.start([0, 1])
 			await SCPSelectScreen.user_response
-			SCPSelectScreen.queue_free()
 	
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			current_select_scp_step = SELECT_SCP_STEPS.RESET
@@ -3032,7 +3024,7 @@ func on_current_researcher_step_update() -> void:
 					#await assign_researcher_to_scp_find_scp(selected_researcher_item)
 					#current_researcher_step = RESEARCHERS_STEPS.START
 		RESEARCHERS_STEPS.DISMISS:
-			ConfirmModal.set_text("Dismiss DR %s?" % [selected_researcher_item.details.name], "Researcher will be removed permanently.")
+			ConfirmModal.set_props("Dismiss DR %s?" % [selected_researcher_item.details.name], "Researcher will be removed permanently.")
 			await show_only([Structure3dContainer, ConfirmModal])			
 			var confirm_response:Dictionary = await ConfirmModal.user_response
 			match confirm_response.action:

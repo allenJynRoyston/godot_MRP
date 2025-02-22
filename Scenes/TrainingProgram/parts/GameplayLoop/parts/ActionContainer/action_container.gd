@@ -437,15 +437,6 @@ func open_researcher_menu() -> void:
 	})
 
 	options_list.push_back({
-		"title": "HIRE",
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true				
-			await GameplayNode.recruit()				
-			ActiveMenu.freeze_inputs = false
-			open_researcher_menu()
-	})
-	
-	options_list.push_back({
 		"title": "RESEARCHER DETAILS",		
 		"is_disabled": hired_lead_researchers_arr.size() == 0,
 		"onSelect": func() -> void:
