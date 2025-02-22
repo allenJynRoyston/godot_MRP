@@ -336,10 +336,9 @@ func on_is_showing_update() -> void:
 	super.on_is_showing_update()
 	if !is_setup:return
 	
-	if !is_showing:
-		for node in [RightSideBtnList, LeftSideBtnList]:
-			for btn in node.get_children():
-				btn.is_disabled = true
+	for node in [RightSideBtnList, LeftSideBtnList]:
+		for btn in node.get_children():
+			btn.is_disabled = true
 
 	# always hide this
 	ResearcherControlPanel.hide()

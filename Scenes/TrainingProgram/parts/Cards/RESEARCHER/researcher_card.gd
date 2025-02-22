@@ -69,10 +69,6 @@ func _ready() -> void:
 	Front.show()
 	Back.hide()
 
-	for node in [SpecilizationList, TraitsList]:
-		for child in node.get_children():
-			child.queue_free()	
-
 	on_uid_update()
 	on_reveal_update()
 	on_is_active_update()
@@ -106,7 +102,6 @@ func on_is_selected_update() -> void:
 	SelectedCheckbox.icon = SVGS.TYPE.CHECKBOX if is_selected else SVGS.TYPE.EMPTY_CHECKBOX
 	SelectedCheckbox.static_color = Color.GREEN if is_selected else Color.DIM_GRAY
 
-
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
 	CardTextureRect.material = BlackAndWhiteShader if is_deselected else null
@@ -124,7 +119,13 @@ func on_uid_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_researcher_details_update() -> void:
-	if !is_node_ready() or researcher_details.is_empty():return
+	if !is_node_ready():return
+	
+	for node in [SpecilizationList, TraitsList]:
+		for child in node.get_children():
+			child.queue_free()
+			
+	if researcher_details.is_empty():return
 	NameLabel.text = researcher_details.name
 	ProfileImage.texture = CACHE.fetch_image(researcher_details.img_src)
 	LevelLabel.text = str(researcher_details.level)

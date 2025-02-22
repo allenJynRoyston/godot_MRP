@@ -47,6 +47,7 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
 show_objectives = true
+show_reseachers = true
 show_resources = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
@@ -103,10 +104,7 @@ visible = false
 layout_mode = 2
 
 [node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
-visible = false
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
 layout_mode = 2

@@ -2,12 +2,13 @@ extends GameContainer
 
 @onready var MainPanel:MarginContainer = $Control/MarginContainer
 @onready var RoomLevelMetrics:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics
-@onready var MetricsVBox:VBoxContainer = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox
-@onready var MetricsSCP:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsSCP
-@onready var MetricsRoom:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/MetricsVBox/MetricsRoom
-@onready var MetricsResearcherContainer:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/MetricsResearcherContainer
-@onready var SwapBtnA:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer2/SwapBtnA
-@onready var SwapBtnB:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/HBoxContainer/SwapBtnB
+@onready var MetricsVBox:VBoxContainer = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room/MetricsVBox
+@onready var MetricsSCP:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room/MetricsVBox/MetricsSCP
+@onready var MetricsRoom:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room/MetricsVBox/MetricsRoom
+@onready var ResearchersContainer:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Researchers
+@onready var MetricsResearcherContainer:Control = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Researchers/MetricsResearcherContainer
+@onready var SwapBtnA:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room/SwapBtnA
+@onready var SwapBtnB:BtnBase = $Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Researchers/SwapBtnB
 
 @onready var LocationPanel:Control = $MarginContainer/LocationPanel
 
@@ -38,13 +39,13 @@ func _ready() -> void:
 	
 	SwapBtnA.onFocus = func(_node:Control) -> void:		
 		if !metrics_pos_locked:
-			tween_range(metrics_tween_pos_val, 5, 0.3, func(val:float) -> void:
+			U.tween_range(metrics_tween_pos_val, 5, 0.3, func(val:float) -> void:
 				metrics_tween_pos_val = val
 				MetricsVBox.add_theme_constant_override('separation', val)
 			)
 	SwapBtnA.onBlur  = func(_node:Control) -> void:
 		if !metrics_pos_locked:
-			tween_range(metrics_tween_pos_val, -45, 0.3, func(val:float) -> void:
+			U.tween_range(metrics_tween_pos_val, -45, 0.3, func(val:float) -> void:
 				metrics_tween_pos_val = val
 				MetricsVBox.add_theme_constant_override('separation', val)
 			)
@@ -55,26 +56,19 @@ func _ready() -> void:
 	
 	SwapBtnB.onFocus = func(_node:Control) -> void:		
 		if !researcher_pos_locked:
-			tween_range(researcher_tween_pos_val, 5, 0.3, func(val:float) -> void:
+			U.tween_range(researcher_tween_pos_val, 5, 0.3, func(val:float) -> void:
 				researcher_tween_pos_val = val
 				MetricsResearcherContainer.add_theme_constant_override('separation', val)
 			)
 	SwapBtnB.onBlur  = func(_node:Control) -> void:		
 		if !researcher_pos_locked:
-			tween_range(researcher_tween_pos_val, -45, 0.3, func(val:float) -> void:
+			U.tween_range(researcher_tween_pos_val, -45, 0.3, func(val:float) -> void:
 				researcher_tween_pos_val = val
 				MetricsResearcherContainer.add_theme_constant_override('separation', val)
 			)
 # -----------------------------------------------
 
-# -----------------------------------------------
-func tween_range(start_at:float, end_at:float, duration:float, callback:Callable = func(_val):pass) -> Tween:
-	var tween:Tween = create_tween()
-	#tween.set_ease(Tween.EASE_OUT_IN)
-	tween.set_trans(Tween.TRANS_CIRC)
-	tween.tween_method(callback, start_at, end_at, duration)
-	return tween
-# -----------------------------------------------	
+
 
 # -----------------------------------------------
 func on_is_showing_update() -> void:	
@@ -141,8 +135,7 @@ func update_details_panel() -> void:
 	# ------------------------------------------		
 	# SPECIAL EXCEPTION FOR DIRECTORS OFFICE					
 	MetricsResearcherContainer.hide() if is_directors_office else MetricsResearcherContainer.show()
-	
-		
+
 	MetricsRoom.is_active = !room_extract.room.is_empty()
 	if !room_extract.room.is_empty():
 		var details:Dictionary   = room_extract.room.details
@@ -210,7 +203,7 @@ func update_details_panel() -> void:
 	# ------------------------------------------
 	for child in MetricsResearcherContainer.get_children():
 		child.queue_free()
-				
+	
 	if !researchers.is_empty():
 		for index in researchers.size():
 			var researcher:Dictionary = researchers[index]
@@ -247,9 +240,5 @@ func update_details_panel() -> void:
 		
 
 	SwapBtnB.show() if researchers.size() > 1 else SwapBtnB.hide()
-	
-	#var InfoNode:Control = GBL.find_node(REFS.INFO_CONTAINER)
-	#
-	#await U.tick()
-	#InfoNode.add_theme_constant_override("margin_top", MetricsResearcherContainer.size.y + 20)
+	ResearchersContainer.show() if researchers.size() > 0 else ResearchersContainer.hide()	
 # -----------------------------------------------

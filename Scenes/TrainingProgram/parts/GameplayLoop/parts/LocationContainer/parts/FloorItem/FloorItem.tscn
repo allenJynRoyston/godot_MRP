@@ -4,7 +4,7 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_lji61"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_jr8yd"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_nx3lx"]
+[sub_resource type="LabelSettings" id="LabelSettings_856ct"]
 font = ExtResource("2_lji61")
 font_size = 12
 font_color = Color(0.662745, 0.662745, 0.662745, 1)
@@ -45,7 +45,7 @@ is_hoverable = false
 layout_mode = 2
 size_flags_vertical = 1
 text = "1F"
-label_settings = SubResource("LabelSettings_nx3lx")
+label_settings = SubResource("LabelSettings_856ct")
 horizontal_alignment = 1
 vertical_alignment = 1
 

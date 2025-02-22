@@ -391,11 +391,12 @@ func open_scp_menu() -> void:
 	options_list.push_back({
 		"title": "UPGRADE",
 		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true
-			var response:Dictionary = await GameplayNode.upgrade_scp(current_location.duplicate())
-			ActiveMenu.freeze_inputs = false
-			if response.has_changes:
-				open_scp_menu(),
+			pass
+			#ActiveMenu.freeze_inputs = true
+			#var response:Dictionary = await GameplayNode.upgrade_scp(current_location.duplicate())
+			#ActiveMenu.freeze_inputs = false
+			#if response.has_changes:
+				#open_scp_menu(),
 	})			
 
 	ActiveMenu.options_list = options_list		
@@ -456,16 +457,16 @@ func open_researcher_menu() -> void:
 				open_researcher_menu(),
 	})		
 	
-	for researcher in room_extract.researchers:
-		options_list.push_back({
-			"title": "REMOVE %s" % [researcher.name],
-			"onSelect": func() -> void:
-				ActiveMenu.freeze_inputs = true
-				var response:Dictionary = await GameplayNode.unassign_researcher(researcher, room_extract.room.details)
-				ActiveMenu.freeze_inputs = false
-				if response.has_changes:
-					open_researcher_menu(),
-		})
+	#for researcher in room_extract.researchers:
+		#options_list.push_back({
+			#"title": "REMOVE %s" % [researcher.name],
+			#"onSelect": func() -> void:
+				#ActiveMenu.freeze_inputs = true
+				#var response:Dictionary = await GameplayNode.unassign_researcher(researcher, room_extract.room.details)
+				#ActiveMenu.freeze_inputs = false
+				#if response.has_changes:
+					#open_researcher_menu(),
+		#})
 				
 	ActiveMenu.options_list = options_list		
 	await U.tick()
@@ -645,32 +646,33 @@ func buildout_btns() -> void:
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
-			new_left_btn_list.push_back({
-				"title": "UPGRADE",
-				"assigned_key": "1",
-				"icon": SVGS.TYPE.TARGET,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						open_hr_menu()
-			})			
+			pass
+			#new_left_btn_list.push_back({
+				#"title": "UPGRADE",
+				#"assigned_key": "1",
+				#"icon": SVGS.TYPE.TARGET,
+				#"onClick": func() -> void:
+					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						#open_hr_menu()
+			#})			
 			
-			new_left_btn_list.push_back({
-				"title": "PROMOTE",
-				"assigned_key": "2",
-				"icon": SVGS.TYPE.TARGET,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						open_hr_menu()
-			})
-			
-			new_left_btn_list.push_back({
-				"title": "SCP",
-				"assigned_key": "3",
-				"icon": SVGS.TYPE.TARGET,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						open_scp_details()
-			})
+			#new_left_btn_list.push_back({
+				#"title": "PROMOTE",
+				#"assigned_key": "2",
+				#"icon": SVGS.TYPE.TARGET,
+				#"onClick": func() -> void:
+					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						#open_hr_menu()
+			#})
+			#
+			#new_left_btn_list.push_back({
+				#"title": "SCP",
+				#"assigned_key": "3",
+				#"icon": SVGS.TYPE.TARGET,
+				#"onClick": func() -> void:
+					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						#open_scp_details()
+			#})
 
 			# ---- RIGHT SIDE
 			new_right_btn_list.push_back({
@@ -713,7 +715,7 @@ func buildout_btns() -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			new_left_btn_list.push_back({
 				"title": "DETAILS",
-				"assigned_key": "1",
+				"assigned_key": "E",
 				"icon": SVGS.TYPE.MONEY,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -722,7 +724,7 @@ func buildout_btns() -> void:
 						
 			new_left_btn_list.push_back({
 				"title": "FACILITY",
-				"assigned_key": "2",
+				"assigned_key": "1",
 				"icon": SVGS.TYPE.MONEY,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -731,7 +733,7 @@ func buildout_btns() -> void:
 
 			new_left_btn_list.push_back({
 				"title": "RESEARCHER",
-				"assigned_key": "3",
+				"assigned_key": "2",
 				"icon": SVGS.TYPE.CONTAIN,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -740,7 +742,7 @@ func buildout_btns() -> void:
 			
 			new_left_btn_list.push_back({
 				"title": "CONTAINMENT",
-				"assigned_key": "4",
+				"assigned_key": "3",
 				"is_disabled": room_category != ROOM.CATEGORY.CONTAINMENT_CELL,
 				"icon": SVGS.TYPE.CONTAIN if room_category == ROOM.CATEGORY.CONTAINMENT_CELL else SVGS.TYPE.CLEAR,
 				"onClick": func() -> void:
@@ -750,7 +752,7 @@ func buildout_btns() -> void:
 			
 			new_left_btn_list.push_back({
 				"title": "ALARM",
-				"assigned_key": "6",
+				"assigned_key": "4",
 				"is_hidden": false,
 				"icon": SVGS.TYPE.CAUTION,
 				"onClick": func() -> void:
@@ -762,7 +764,7 @@ func buildout_btns() -> void:
 			# ---- RIGHT SIDE
 			new_right_btn_list.push_back({
 				"title": "AUTO",
-				"assigned_key": "E",
+				"assigned_key": "R",
 				"icon": SVGS.TYPE.TARGET,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  

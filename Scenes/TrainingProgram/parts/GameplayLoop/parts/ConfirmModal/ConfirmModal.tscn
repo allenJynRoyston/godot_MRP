@@ -13,7 +13,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_15h1e"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3maae"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -25,7 +25,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1imf6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_idynd"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -82,6 +82,7 @@ custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 texture = ExtResource("2_upopm")
 expand_mode = 1
+stretch_mode = 6
 
 [node name="TitleLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
@@ -140,7 +141,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_15h1e")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3maae")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -148,7 +149,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1imf6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_idynd")
 title = "ACCEPT"
 assigned_key = "E"
 icon = 10

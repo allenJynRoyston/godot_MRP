@@ -11,7 +11,7 @@ extends PanelContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
 @onready var BuildCompleteContainer:PanelContainer = $BuildCompleteContainer
 @onready var ObjectivesContainer:MarginContainer = $ObjectivesContainer
-@onready var ResearchersContainer:MarginContainer = $ResearcherContainer
+@onready var ResearchersContainer:PanelContainer = $ResearcherContainer
 @onready var EventContainer:MarginContainer = $EventContainer
 @onready var MetricsContainer:PanelContainer = $MetricsContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
@@ -48,7 +48,7 @@ enum CONTAIN_STEPS {
 enum RECRUIT_STEPS {RESET, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
 enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
 enum SUMMARY_STEPS {RESET, START, DISMISS}
-enum RESEARCHERS_STEPS {RESET, START, DISMISS, FINALIZE_DISMISS, WAIT_FOR_SELECT}
+enum RESEARCHERS_STEPS {RESET, DETAILS_ONLY, ASSIGN}
 enum EVENT_STEPS {RESET, START}
 enum SELECT_SCP_STEPS { RESET, START }
 enum PROMOTE_RESEARCHER_STEPS { RESET, START }
@@ -478,7 +478,7 @@ signal on_reset_room_complete
 signal on_activate_room_complete
 signal on_contain_reset
 signal on_recruit_complete
-signal on_researcher_details_complete
+signal on_researcher_component_complete
 signal on_assign_researcher_complete
 signal on_scp_testing_complete
 signal on_scp_select_complete
@@ -2013,10 +2013,11 @@ func recruit() -> void:
 	current_recruit_step = RECRUIT_STEPS.START
 	await on_recruit_complete
 
+# -----------------------------------
 func open_researcher_details() -> void:
-	current_researcher_step = RESEARCHERS_STEPS.START
-	await on_researcher_details_complete
-	
+	current_researcher_step = RESEARCHERS_STEPS.DETAILS_ONLY
+	await on_researcher_component_complete
+# -----------------------------------
 
 # -----------------------------------
 func promote_researchers() -> void:	
@@ -2048,8 +2049,9 @@ func dismiss_researcher(researcher_data:Dictionary) -> void:
 
 # -----------------------------------
 func assign_researcher_to_scp(location:Dictionary, assign:bool) -> void:
-	var scp_list_data:Dictionary = find_in_contained_via_location(location)
-	print(scp_list_data)
+	pass
+	#var scp_list_data:Dictionary = find_in_contained_via_location(location)
+	#print(scp_list_data)
 	#if assign:
 		#await assign_researcher_to_scp_find_researcher(location)
 	#else:
@@ -2061,40 +2063,40 @@ func assign_researcher_to_scp(location:Dictionary, assign:bool) -> void:
 
 # -----------------------------------	
 func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) -> Dictionary:
-	ConfirmModal.set_props("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
-	await show_only([Structure3dContainer, ConfirmModal])
-	
-	var response:Dictionary = await ConfirmModal.user_response
-
-	match response.action:
-		ACTION.NEXT:	
-			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-				if i[0] == researcher_data.uid:
-					i[9].assigned_to_room = null
-				return i
-			)
-
+	pass
+	#ConfirmModal.set_props("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
+	#await show_only([Structure3dContainer, ConfirmModal])
+	#
+	#var response:Dictionary = await ConfirmModal.user_response
+#
+	#match response.action:
+		#ACTION.NEXT:	
+			#SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				#if i[0] == researcher_data.uid:
+					#i[9].assigned_to_room = null
+				#return i
+			#)
+#
 	restore_player_hud()
-	return {"has_changes": response.action != ACTION.BACK }
+	return {"has_changes": true}
 # -----------------------------------	
 
 # -----------------------------------
 func assign_researcher(location_data:Dictionary) -> Dictionary:
-	
-	ResearchersContainer.assign_only = true
-	await show_only([ResearchersContainer])
+	current_researcher_step = RESEARCHERS_STEPS.ASSIGN
+	#await show_only([ResearchersContainer])
 	var response:Dictionary = await ResearchersContainer.user_response
-	match response.action:
-		ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
-			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-				if i[0] == response.data.details.uid:
-					i[9].assigned_to_room = location_data
-				return i
-			)
-			
+	#match response.action:
+		#ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
+			#SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				#if i[0] == response.data.details.uid:
+					#i[9].assigned_to_room = location_data
+				#return i
+			#)
+			#
 
 	restore_player_hud()
-	return {"has_changes": response.action != ACTION.RESEARCHERS.BACK }
+	return {"has_changes": true }
 # -----------------------------------
 
 # -----------------------------------
@@ -2968,11 +2970,12 @@ func on_current_researcher_promotion_step_update() -> void:
 	if !is_node_ready():return
 	
 	match current_researcher_promotion_step:
+		# ------------------------
 		PROMOTE_RESEARCHER_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_player_hud()
 			on_promote_researcher_complete.emit()
-			
+		# ------------------------
 		PROMOTE_RESEARCHER_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			var ResearcherPromotionNode:Control = ResearcherPromotionScreenPreload.instantiate()
@@ -2993,60 +2996,56 @@ func on_current_researcher_step_update() -> void:
 		RESEARCHERS_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_player_hud()
-			selected_scp_details = {}
-			selected_researcher_item = {}
-			on_researcher_details_complete.emit()
+			on_researcher_component_complete.emit()
 		# ------------------------
-		RESEARCHERS_STEPS.START:
+		RESEARCHERS_STEPS.DETAILS_ONLY:
 			SUBSCRIBE.suppress_click = true
-			ResearchersContainer.assign_only = false
+			ResearchersContainer.details_only = true
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
-			if "data" in response:
-				selected_researcher_item = response.data
-			
-			if "scp_details" in response:
-				selected_scp_details = response.scp_details
+			match response.action:
+				ACTION.RESEARCHERS.BACK:
+					current_researcher_step = RESEARCHERS_STEPS.RESET
+		# ------------------------
+		RESEARCHERS_STEPS.ASSIGN:
+			SUBSCRIBE.suppress_click = true
+			ResearchersContainer.details_only = false
+			await show_only([ResearchersContainer])
+			var response:Dictionary = await ResearchersContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
 			match response.action:
 				ACTION.RESEARCHERS.BACK:
 					current_researcher_step = RESEARCHERS_STEPS.RESET
-				ACTION.RESEARCHERS.DISMISS:
-					current_researcher_step = RESEARCHERS_STEPS.DISMISS
-				ACTION.RESEARCHERS.UNASSIGN_FROM_SCP:
-					pass
-					#await unassign_researcher_to_scp(selected_scp_details.ref)
+		# ------------------------
+		
+		#RESEARCHERS_STEPS.DISMISS:
+			#ConfirmModal.set_props("Dismiss DR %s?" % [selected_researcher_item.details.name], "Researcher will be removed permanently.")
+			#await show_only([Structure3dContainer, ConfirmModal])			
+			#var confirm_response:Dictionary = await ConfirmModal.user_response
+			#match confirm_response.action:
+				#ACTION.BACK:
 					#current_researcher_step = RESEARCHERS_STEPS.START
-				ACTION.RESEARCHERS.ASSIGN_TO_SCP:
-					pass
-					#await assign_researcher_to_scp_find_scp(selected_researcher_item)
-					#current_researcher_step = RESEARCHERS_STEPS.START
-		RESEARCHERS_STEPS.DISMISS:
-			ConfirmModal.set_props("Dismiss DR %s?" % [selected_researcher_item.details.name], "Researcher will be removed permanently.")
-			await show_only([Structure3dContainer, ConfirmModal])			
-			var confirm_response:Dictionary = await ConfirmModal.user_response
-			match confirm_response.action:
-				ACTION.BACK:
-					current_researcher_step = RESEARCHERS_STEPS.START
-				ACTION.NEXT:
-					current_researcher_step = RESEARCHERS_STEPS.FINALIZE_DISMISS
-		RESEARCHERS_STEPS.FINALIZE_DISMISS:
-			var props:Dictionary = {
-				"name": selected_researcher_item.details.name,
-				"onSelection": func(val:EVT.DISMISS_TYPE) -> void:
-					match val:
-						EVT.DISMISS_TYPE.THANK_AND_DISMISS:
-							print('no change, costs money as severence based')
-						EVT.DISMISS_TYPE.ADMINISTER_AMNESTICS:
-							print('no change')
-						EVT.DISMISS_TYPE.TERMINATE:
-							print('dec morale')
-			}
-			await triggger_event(EVT.TYPE.DISMISS_RESEARCHER, props)
-			dismiss_researcher(selected_researcher_item)
-			current_researcher_step = RESEARCHERS_STEPS.START
+				#ACTION.NEXT:
+					#current_researcher_step = RESEARCHERS_STEPS.FINALIZE_DISMISS
+		## ------------------------
+		#RESEARCHERS_STEPS.FINALIZE_DISMISS:
+			#var props:Dictionary = {
+				#"name": selected_researcher_item.details.name,
+				#"onSelection": func(val:EVT.DISMISS_TYPE) -> void:
+					#match val:
+						#EVT.DISMISS_TYPE.THANK_AND_DISMISS:
+							#print('no change, costs money as severence based')
+						#EVT.DISMISS_TYPE.ADMINISTER_AMNESTICS:
+							#print('no change')
+						#EVT.DISMISS_TYPE.TERMINATE:
+							#print('dec morale')
+			#}
+			#await triggger_event(EVT.TYPE.DISMISS_RESEARCHER, props)
+			#dismiss_researcher(selected_researcher_item)
+			#current_researcher_step = RESEARCHERS_STEPS.START
 #endregion
 # ------------------------------------------------------------------------------		
 

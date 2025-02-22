@@ -23,7 +23,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f38df"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7bmhr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m8mtb"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -35,7 +35,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3lm24"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_biefw"]
 bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
 border_width_left = 2
 border_width_top = 2
@@ -47,8 +47,8 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xuw7d"]
-bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_55uky"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -89,7 +89,7 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="ContentControl/MarginContainer"]
-custom_minimum_size = Vector2(600, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -97,10 +97,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_c1qk5")
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/MarginContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -112,6 +112,9 @@ text = "Title"
 label_settings = ExtResource("2_hppbm")
 vertical_alignment = 1
 uppercase = true
+
+[node name="HSeparator2" type="HSeparator" parent="ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
 
 [node name="ImageContainer" type="TextureRect" parent="ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 material = ExtResource("4_h1hot")
@@ -170,16 +173,18 @@ size_flags_horizontal = 10
 size_flags_vertical = 8
 
 [node name="KeyBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
+visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7bmhr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_m8mtb")
 title = "ACTIVATE"
 assigned_key = "A"
 icon = 31
 panel_color = Color(0.455201, 0.00200917, 0.712752, 1)
 
 [node name="KeyBtn2" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
+visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3lm24")
+theme_override_styles/panel = SubResource("StyleBoxFlat_biefw")
 title = "ACTIVATE ALL"
 assigned_key = "ENTER"
 icon = 31
@@ -187,8 +192,8 @@ panel_color = Color(0.510764, 0.00166744, 0.716704, 1)
 
 [node name="NextOrCloseBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xuw7d")
-title = "NEXT (SKIP)"
+theme_override_styles/panel = SubResource("StyleBoxFlat_55uky")
+title = "NEXT"
 assigned_key = "E"
 icon = 27
-panel_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+panel_color = Color(0, 0.529412, 0.278431, 1)
