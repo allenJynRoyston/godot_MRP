@@ -3,11 +3,9 @@ extends PanelContainer
 @onready var Portrait:TextureRect = $HBoxContainer/Portrait
 @onready var TitleLabel:Label = $HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/TitleLabel
 @onready var SpecLabel:Label = $HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/SpecLabel
-@onready var Description:Label = $HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/DescriptionLabel
-@onready var DetailList:VBoxContainer = $HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DetailList
+@onready var OutputList:VBoxContainer = $HBoxContainer/VBoxContainer/MarginContainer/OutputList
 
-const LineItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/parts/LineItem.tscn")
-const BlankPortrait:CompressedTexture2D = preload("res://Media/images/redacted.png")
+const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var uid:String = "" : 
 	set(val):
@@ -19,9 +17,15 @@ var researcher:Dictionary = {} :
 		researcher = val
 		on_researcher_update()
 		
+var room_extract:Dictionary = {} : 
+	set(val):
+		room_extract = val
+		on_room_extract_update()
+		
 func _ready() -> void:
 	on_uid_update()
 	on_researcher_update()
+	on_room_extract_update()
 	
 func on_uid_update() -> void:
 	if !is_node_ready() or uid.is_empty():return
@@ -30,17 +34,18 @@ func on_uid_update() -> void:
 func on_researcher_update() -> void:
 	if !is_node_ready():return
 	TitleLabel.text = researcher.name if !researcher.is_empty() else "RESEARCHER SLOT AVAILABLE"
-	Portrait.texture = CACHE.fetch_image(researcher.img_src) if !researcher.is_empty() else BlankPortrait
+	Portrait.texture = CACHE.fetch_image("res://Media/images/redacted.png" if researcher.is_empty() else researcher.img_src)
 	SpecLabel.text = "" if researcher.is_empty() else RESEARCHER_UTIL.return_specialization_data(researcher.specializations[0]).name
-	
-	for child in DetailList.get_children():
-		child.queue_free()
-	
-	if researcher.is_empty():return	
-	
-	
-	
-	for trait_id in researcher.traits:
-		var new_line_item:Control = LineItemPreload.instantiate()
-		new_line_item.details = RESEARCHER_UTIL.return_trait_data(trait_id)
-		DetailList.add_child(new_line_item)
+
+func on_room_extract_update() -> void:
+	if !is_node_ready() or room_extract.is_empty() or researcher.is_empty():return
+	for child in OutputList.get_children():
+		child.queue_free()	
+	if !room_extract.is_room_empty:
+		var spec_bonus:Array = ROOM_UTIL.return_specilization_bonus(room_extract.room.details.ref, researcher.specializations)
+		for item in spec_bonus:
+			var new_btn:Control = TextBtnPreload.instantiate()
+			new_btn.is_hoverable = false
+			new_btn.icon = item.resource.icon
+			new_btn.title = "%s%s" % ["+" if item.amount > 0 else "", item.amount]
+			OutputList.add_child(new_btn)

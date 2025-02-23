@@ -2,10 +2,16 @@ extends GameContainer
 
 @onready var MainPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
-@onready var Details:PanelContainer = $Details
+@onready var Details:Control = $Details
+@onready var DetailsPanel:PanelContainer = $Details/PanelContainer
+@onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Researchers/ResearcherList
+@onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Researchers/HBoxContainer/ResearcherCount
+@onready var ScpDetails:VBoxContainer = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/ScpDetails
+@onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/ScpDetails/ScpMiniCard
+@onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Room/RoomMiniCard
+
 @onready var BtnPanel:PanelContainer = $PanelContainer
-@onready var DetailList:VBoxContainer = $Details/MarginContainer/HBoxContainer/VBoxContainer/DetailList
-@onready var ResearcherCount:Label = $Details/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ResearcherCount
+
 @onready var LeftSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var Backdrop:ColorRect = $Backdrop
@@ -22,6 +28,7 @@ var right_btn_list:Array = []
 var is_setup:bool = false
 
 var restore_pos:int
+var details_restore_pos:int
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
@@ -29,16 +36,16 @@ func _ready() -> void:
 	
 	Details.hide()
 	
-	for child in [RightSideBtnList, LeftSideBtnList, DetailList]:
+	for child in [RightSideBtnList, LeftSideBtnList, ResearcherList]:
 		for node in child.get_children():
 			node.queue_free()	
 	
 	await U.set_timeout(1.0)	
 	restore_pos = MainPanel.position.y		
+	details_restore_pos = DetailsPanel.position.x
+	U.tween_node_property(DetailsPanel, "position:x", details_restore_pos - DetailsPanel.size.x)
 # --------------------------------------------------------------------------------------------------		
 
-
-# --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:
@@ -70,22 +77,24 @@ func on_is_showing_update() -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func show_details() -> void:
+	# animate in/out
 	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+	Details.show()
+	U.tween_node_property(DetailsPanel, "position:x", details_restore_pos)	
 	
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:
-		for child in DetailList.get_children():
-			child.queue_free()
-		Details.hide()					
+		await U.tween_node_property(DetailsPanel, "position:x", details_restore_pos - DetailsPanel.size.x)
+		Details.hide()
 		GameplayNode.restore_player_hud()
 		set_btn_disabled_state(false)
-		
-	Details.show()
-	
+		for child in ResearcherList.get_children():
+			child.queue_free()
+
 	# enable/disable buttons
 	ActiveMenu.freeze_inputs = false
 	set_btn_disabled_state(true)
-	
+
 	# update room_extract
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
 	
@@ -101,19 +110,29 @@ func show_details() -> void:
 			ActiveMenu.close()
 	})
 	
+	# ROOM DETAILS
+	if !room_extract.room.is_empty():
+		RoomMiniCard.ref = room_extract.room.details.ref
+	
+	# SCP DETAILS
+	if !room_extract.scp.is_empty():
+		ScpMiniCard.ref = room_extract.scp.details.ref
+	ScpDetails.show() if !room_extract.scp.is_empty() else ScpDetails.hide()
+	
+	# RESEARCHER DETAILS
 	if room_extract.researchers.is_empty():
 		for n in range(0, 2):
 			var mini_card:Control = ResearcherMiniCard.instantiate()
-			DetailList.add_child(mini_card)
+			ResearcherList.add_child(mini_card)
 	else:
 		for researcher in room_extract.researchers:
 			var mini_card:Control = ResearcherMiniCard.instantiate()
 			mini_card.researcher = researcher
-			DetailList.add_child(mini_card)
-	
+			mini_card.room_extract = room_extract
+			ResearcherList.add_child(mini_card)
 	ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]
 	
-	ActiveMenu.options_list = options_list			
+	ActiveMenu.options_list = options_list
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
 	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
@@ -346,11 +365,11 @@ func open_scp_menu() -> void:
 	
 	if is_scp_empty:
 		options_list.push_back({
-			"title": "ASSIGN SCP..." if researchers_count > 0 else "ASSIGN SCP (REQUIRES RESEARCHER)",
-			"is_disabled": researchers_count == 0,
+			"title": "ASSIGN SCP",
+			"is_disabled": scp_data.available_list.size() == 0,
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true
-				var response:Dictionary = await GameplayNode.contain_scp(current_location.duplicate())
+				var response:Dictionary = await GameplayNode.contain_scp(current_location.duplicate(), scp_data.available_list[0].ref)
 				ActiveMenu.freeze_inputs = false
 				if response.has_changes:
 					open_scp_menu(),
@@ -367,27 +386,27 @@ func open_scp_menu() -> void:
 					open_scp_menu(),
 		})							
 
-	if is_scp_contained:
-		if is_scp_transfering:
-			options_list.push_back({
-				"title": "CANCEL TRANSFER" ,
-				"onSelect": func() -> void:
-					ActiveMenu.freeze_inputs = true
-					var response:Dictionary = await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP)
-					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_scp_menu(),
-			})
-		else:
-			options_list.push_back({
-				"title": "TRANSFER TO...",
-				"onSelect": func() -> void:
-					ActiveMenu.freeze_inputs = true
-					var response:Dictionary = await GameplayNode.transfer_scp(current_location.duplicate())
-					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_scp_menu(),
-			})			
+	#if is_scp_contained:
+		#if is_scp_transfering:
+			#options_list.push_back({
+				#"title": "CANCEL TRANSFER" ,
+				#"onSelect": func() -> void:
+					#ActiveMenu.freeze_inputs = true
+					#var response:Dictionary = await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP)
+					#ActiveMenu.freeze_inputs = false
+					#if response.has_changes:
+						#open_scp_menu(),
+			#})
+		#else:
+			#options_list.push_back({
+				#"title": "TRANSFER TO...",
+				#"onSelect": func() -> void:
+					#ActiveMenu.freeze_inputs = true
+					#var response:Dictionary = await GameplayNode.transfer_scp(current_location.duplicate())
+					#ActiveMenu.freeze_inputs = false
+					#if response.has_changes:
+						#open_scp_menu(),
+			#})			
 
 	options_list.push_back({
 		"title": "UPGRADE",

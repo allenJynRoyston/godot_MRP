@@ -630,7 +630,7 @@ var STANDARD_LOCKER:Dictionary = {
 	"own_limit": func() -> int:
 		return 10,	
 	"get_build_time": func() -> int:
-		return 3,
+		return 1,
 	
 
 	# ------------------------------------------
@@ -664,7 +664,7 @@ var STANDARD_LOCKER:Dictionary = {
 				},			
 		}	
 	},
-	
+
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -672,7 +672,18 @@ var STANDARD_LOCKER:Dictionary = {
 					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}	
+	},
+	# ------------------------------------------	
+	"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		if RESEARCHER.SPECALIZATION.BIOLOGY in specilizations:
+			return {
+				RESOURCE.TYPE.ENERGY: 2
+			}
+		if RESEARCHER.SPECALIZATION.PSYCHOLOGY in specilizations:
+			return {
+				RESOURCE.TYPE.MONEY: 1
+			}
+		return {},
 	# ------------------------------------------
 }
 
@@ -773,6 +784,18 @@ func return_operating_cost(ref:ROOM.TYPE) -> Array:
 func return_activation_cost(ref:ROOM.TYPE) -> Array:
 	return SHARED_UTIL.return_resource_list(return_data(ref), "activation_cost")
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_specilization_bonus(ref:ROOM.TYPE, specilizations:Array) -> Array:
+	var data:Dictionary = return_data(ref)	
+	var list:Array = []
+	
+	if "specilization_bonus" in data:
+		var spec_bonus:Dictionary = data.specilization_bonus.call(specilizations)
+		for key in spec_bonus:
+			list.push_back({"type": "amount", "amount": spec_bonus[key], "resource": RESOURCE_UTIL.return_data(key)})	
+	return list
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func calculate_purchase_cost(ref:ROOM.TYPE, resources_data:Dictionary, add:bool = false) -> Dictionary:		

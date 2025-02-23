@@ -732,7 +732,7 @@ func restore_default_state() -> void:
 	for node in get_all_container_nodes():
 		if showing_states[node] != node.is_showing:
 			node.is_showing = showing_states[node]
-	await U.set_timeout(0.3)
+	await U.set_timeout(0.5)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -748,7 +748,7 @@ func show_only(nodes:Array = []) -> void:
 		if node.is_showing != true:
 			node.is_showing = true
 			
-	await U.set_timeout(1.0)
+	await U.set_timeout(0.5)
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1752,23 +1752,27 @@ func find_in_available(ref:int) -> Dictionary:
 # -----------------------------------	
 
 # -----------------------------------
-func contain_scp(from_location:Dictionary) -> Dictionary:
-	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(from_location)
-	
-	SUBSCRIBE.suppress_click = true
-	ContainmentContainer.assign_only = true
-	await show_only([ ContainmentContainer, Structure3dContainer ])
-	var response:Dictionary = await ContainmentContainer.user_response
-	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-	
-	match response.action:	
-		ACTION.CONTAINED.START_CONTAINMENT:
-			var scp_details:Dictionary = response.data
+func contain_scp(from_location:Dictionary, scp_ref:int) -> Dictionary:
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)	
+	ConfirmModal.set_props("Contain %s here?" % [scp_details.name], "", scp_details.img_src)
+	await show_only([Structure3dContainer, ConfirmModal])
+	var response:Dictionary = await ConfirmModal.user_response	
+	match response.action:
+		ACTION.NEXT:	
+			#var new_contained_item:Dictionary = create_new_contained_item(scp_ref, from_location)
+			#scp_data.contained_list.push_back(new_contained_item)
+#
+			#SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref, resources_data)
+			#SUBSCRIBE.scp_data = scp_data
+			#
+			#await check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
+		
+						
 			scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
 				if i.ref == scp_details.ref:
 					i.transfer_status = {
 						"state": true, 
-						"days_till_complete": scp_details.containment_time.call(),
+						"days_till_complete": 1, #scp_details.containment_time.call(),
 						"location": from_location.duplicate(),
 					}
 				return i
@@ -1779,7 +1783,7 @@ func contain_scp(from_location:Dictionary) -> Dictionary:
 				"ref": scp_details.ref,
 				"title": scp_details.name, 
 				"icon": SVGS.TYPE.CONTAIN,
-				"completed_at": scp_details.containment_time.call(),
+				"completed_at": 1, #scp_details.containment_time.call(),
 				"description": "CONTAINMENT IN PROGRESS",
 				"location": from_location.duplicate()
 			})			
@@ -1787,7 +1791,7 @@ func contain_scp(from_location:Dictionary) -> Dictionary:
 			SUBSCRIBE.scp_data = scp_data
 
 	restore_player_hud()		
-	return {"has_changes": response.action != ACTION.CONTAINED.BACK}
+	return {"has_changes": response.action != ACTION.BACK}
 # -----------------------------------
 
 # -----------------------------------
@@ -2382,27 +2386,26 @@ func on_current_phase_update() -> void:
 				completed_actions = timeline_filter
 				current_action_complete_step = ACTION_COMPLETE_STEPS.START
 				await on_complete_build_complete	
-			
-			await U.set_timeout(1.0)
+			else:	
+				await U.set_timeout(1.0)
 			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
-			await show_only([Structure3dContainer])	
-			PhaseAnnouncement.start("CONTAINMENT REQUEST")	
-			current_select_scp_step = SELECT_SCP_STEPS.START
-			await on_scp_select_complete
-		
-			await U.set_timeout(1.0)
+			# EVENT FIRES
+			#await show_only([Structure3dContainer])	
+			#PhaseAnnouncement.start("CONTAINMENT REQUEST")	
+			#current_select_scp_step = SELECT_SCP_STEPS.START
+			#await on_scp_select_complete		
+			#await PhaseAnnouncement.end()
+			
+			# IF NO EVENTS, NO NEED FOR AWAIT
+			PhaseAnnouncement.end()
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
-		PHASE.CONCLUDE:
-			PhaseAnnouncement.end()
-			await U.set_timeout(1.0)
-			
+		PHASE.CONCLUDE:			
 			# revert
 			SUBSCRIBE.camera_settings = camera_settings_snapshot
 			SUBSCRIBE.current_location = current_location_snapshot
-			
 			
 			await restore_player_hud()
 			current_phase = PHASE.PLAYER
@@ -2905,7 +2908,6 @@ func on_current_event_step_update() -> void:
 	match current_event_step:
 		EVENT_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
 		EVENT_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			await show_only([Structure3dContainer, EventContainer])
@@ -2913,13 +2915,11 @@ func on_current_event_step_update() -> void:
 			EventContainer.start()
 			var event_res:Dictionary = await EventContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			# trigger signal
+			on_events_complete.emit(event_res)			
 			# reset and evempty event_data
 			event_data = []
 			current_event_step = EVENT_STEPS.RESET
-			await U.set_timeout(0.5)
-			# trigger signal
-			on_events_complete.emit(event_res)
-			
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -2955,20 +2955,19 @@ func on_current_select_scp_step_update() -> void:
 		# ------------------------
 		SELECT_SCP_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
 		# ------------------------
 		SELECT_SCP_STEPS.START:
 			SUBSCRIBE.suppress_click = true
 			await show_only([SCPSelectScreen])
 			SCPSelectScreen.start([0, 1])
 			await SCPSelectScreen.user_response
-	
+			SCPSelectScreen.is_showing = false
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			current_select_scp_step = SELECT_SCP_STEPS.RESET
-			await U.set_timeout(0.5)
-
+			
 			# trigger signal
 			on_scp_select_complete.emit()
+			current_select_scp_step = SELECT_SCP_STEPS.RESET
+
 #endregion
 # ------------------------------------------------------------------------------	
 

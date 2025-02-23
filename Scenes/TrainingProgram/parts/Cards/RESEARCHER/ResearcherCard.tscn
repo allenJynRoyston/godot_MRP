@@ -11,7 +11,7 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_ff5rk"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ilvf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pumbk"]
 bg_color = Color(0, 0.529412, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -51,7 +51,7 @@ size = Vector2i(250, 460)
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 offset_right = 220.0
 offset_bottom = 460.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_0ilvf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pumbk")
 
 [node name="Front" type="VBoxContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
