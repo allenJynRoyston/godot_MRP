@@ -93,6 +93,13 @@ func _ready() -> void:
 			uids.push_back(researcher_details.uid)
 		user_response.emit({"action": ACTION.RESEARCHERS.SELECT, "uids": uids})
 
+	MoreBtn.onClick = func() -> void:
+		if is_animating:return
+		on_dec()
+	LessBtn.onClick = func() -> void:
+		if is_animating:return
+		on_inc()	
+		
 	
 	DetailsBtn.onClick = func() -> void:
 		show_details()
@@ -230,7 +237,6 @@ func on_researcher_active_index_update() -> void:
 		node.is_active = researcher_active_index == index
 	
 	var relative_index:int = researcher_active_index - overflow_count
-	print('cards in range: ', researcher_active_index, relative_index + cards_in_list)
 
 	if relative_index > 2:
 		if researcher_active_index >= cards_in_list:
@@ -241,7 +247,12 @@ func on_researcher_active_index_update() -> void:
 		if overflow_count > 0:
 			overflow_count -= 1
 			back_set()
-
+			
+	await U.tick()
+	
+	for index in ResearcherList.get_child_count():
+		var node:Control = ResearcherList.get_child(index)
+		node.is_hoverable = index >= overflow_count and index < overflow_count + cards_in_list
 # -----------------------------------------------	
 
 
@@ -412,6 +423,14 @@ func on_current_mode_update() -> void:
 					btn.is_disabled = true
 # -----------------------------------------------
 
+func on_inc() -> void:
+	unflip_cards()
+	researcher_active_index = U.min_max(researcher_active_index - 1, 0, ResearcherList.get_child_count() - 1)	
+
+func on_dec() -> void:
+	unflip_cards()
+	researcher_active_index = U.min_max(researcher_active_index + 1, 0, ResearcherList.get_child_count() - 1)
+
 # -----------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
@@ -422,11 +441,9 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	
 	match key:
 		"A":
-			unflip_cards()
-			researcher_active_index = U.min_max(researcher_active_index - 1, 0, ResearcherList.get_child_count() - 1)
+			on_inc()
 		"D":
-			unflip_cards()
-			researcher_active_index = U.min_max(researcher_active_index + 1, 0, ResearcherList.get_child_count() - 1)
+			on_dec()
 	
 	if current_mode == MODE.DETAILS_ONLY:
 		selected_researchers = [researcher_active_index]

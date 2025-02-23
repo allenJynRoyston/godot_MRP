@@ -121,14 +121,12 @@ horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = -20
 
 [node name="LessBtn" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_7i7in")]
 layout_mode = 2
 icon = 10
 inactive_color = Color(1, 1, 1, 1)
 flip_h = true
-is_hoverable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -168,7 +166,6 @@ layout_mode = 2
 layout_mode = 2
 icon = 10
 inactive_color = Color(1, 1, 1, 1)
-is_hoverable = false
 
 [node name="AvailableLabel" type="Label" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
