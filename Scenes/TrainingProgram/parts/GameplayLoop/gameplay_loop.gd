@@ -2031,6 +2031,30 @@ func promote_researchers() -> void:
 # -----------------------------------
 
 # -----------------------------------
+func assign_researcher(location_data:Dictionary) -> Dictionary:
+	current_researcher_step = RESEARCHERS_STEPS.ASSIGN
+	var response:Dictionary = await ResearchersContainer.user_response
+	
+	match response.action:
+		ACTION.RESEARCHERS.SELECT:
+			# add new researchers
+			hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				# clear out prior researchers
+				if U.dictionaries_equal(i[9].assigned_to_room, location_data):
+					i[9].assigned_to_room = {}
+				# add current users
+				if i[0] in response.uids:
+					i[9].assigned_to_room = location_data.duplicate()
+				return i
+			)
+			
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+			
+	restore_player_hud()
+	return {"has_changes": response.action != ACTION.RESEARCHERS.BACK }
+# -----------------------------------
+
+# -----------------------------------
 func dismiss_researcher(researcher_data:Dictionary) -> void:
 	# first, remove from any projects
 	#scp_data.contained_list = scp_data.contained_list.map(func(i): 
@@ -2080,24 +2104,6 @@ func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) ->
 	restore_player_hud()
 	return {"has_changes": true}
 # -----------------------------------	
-
-# -----------------------------------
-func assign_researcher(location_data:Dictionary) -> Dictionary:
-	current_researcher_step = RESEARCHERS_STEPS.ASSIGN
-	#await show_only([ResearchersContainer])
-	var response:Dictionary = await ResearchersContainer.user_response
-	#match response.action:
-		#ACTION.RESEARCHERS.SELECT_FOR_ASSIGN:
-			#SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-				#if i[0] == response.data.details.uid:
-					#i[9].assigned_to_room = location_data
-				#return i
-			#)
-			#
-
-	restore_player_hud()
-	return {"has_changes": true }
-# -----------------------------------
 
 # -----------------------------------
 func assign_researcher_to_scp_find_scp(reseacher_details:Dictionary) -> void:
@@ -2381,7 +2387,7 @@ func on_current_phase_update() -> void:
 			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
-			#await show_only([Structure3dContainer, TimelineContainer, MetricsContainer, ResourceContainer])	
+			await show_only([Structure3dContainer])	
 			PhaseAnnouncement.start("CONTAINMENT REQUEST")	
 			current_select_scp_step = SELECT_SCP_STEPS.START
 			await on_scp_select_complete
@@ -2391,10 +2397,12 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.CONCLUDE:
 			PhaseAnnouncement.end()
+			await U.set_timeout(1.0)
 			
 			# revert
 			SUBSCRIBE.camera_settings = camera_settings_snapshot
 			SUBSCRIBE.current_location = current_location_snapshot
+			
 			
 			await restore_player_hud()
 			current_phase = PHASE.PLAYER
@@ -2996,14 +3004,16 @@ func on_current_researcher_step_update() -> void:
 		RESEARCHERS_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_player_hud()
-			on_researcher_component_complete.emit()
+			
 		# ------------------------
 		RESEARCHERS_STEPS.DETAILS_ONLY:
 			SUBSCRIBE.suppress_click = true
-			ResearchersContainer.details_only = true
+			ResearchersContainer.start([], true)
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			
+			on_researcher_component_complete.emit()
 			
 			match response.action:
 				ACTION.RESEARCHERS.BACK:
@@ -3012,9 +3022,17 @@ func on_current_researcher_step_update() -> void:
 		RESEARCHERS_STEPS.ASSIGN:
 			SUBSCRIBE.suppress_click = true
 			ResearchersContainer.details_only = false
+			
+			var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
+				return U.dictionaries_equal(i[9].assigned_to_room, current_location)
+			).map(func(i): return i[0])
+			
+			ResearchersContainer.start(assigned_uids, false)
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+
+			on_researcher_component_complete.emit(response)
 			
 			match response.action:
 				ACTION.RESEARCHERS.BACK:

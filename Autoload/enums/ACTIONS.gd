@@ -47,11 +47,7 @@ enum AQ {
 
 enum RESEARCHERS {
 	BACK,
-	SELECT_FOR_ASSIGN,
-	# -------
-	DISMISS,
-	ASSIGN_TO_SCP,
-	UNASSIGN_FROM_SCP,
+	SELECT,
 }
 
 enum CONTAINED {

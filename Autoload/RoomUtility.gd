@@ -896,7 +896,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
-		if (details.props.assigned_to_room != null and U.location_to_designation(details.props.assigned_to_room) == designation):
+		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
 			return true
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))

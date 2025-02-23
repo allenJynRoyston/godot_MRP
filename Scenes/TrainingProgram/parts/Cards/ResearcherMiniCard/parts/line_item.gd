@@ -12,5 +12,5 @@ func _ready() -> void:
 
 func on_details_update() -> void:
 	if !is_node_ready() or details.is_empty():return
-	DescriptionLabel.text = "[%s] %s" % [details.fullname, details.description]
+	DescriptionLabel.text = "%s" % [details.name]
 		

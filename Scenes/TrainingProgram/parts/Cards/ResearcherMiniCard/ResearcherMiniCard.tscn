@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://cyv8vf7k1e1s4"]
 
-[ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="1_iup1h"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/researcher_detail_item.gd" id="1_jguvo"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_8kqvs"]
-[ext_resource type="PackedScene" uid="uid://cudqhv3d68cen" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ResearcherDetailLineItem.tscn" id="4_fpomo"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/researcher_mini_card.gd" id="1_ni348"]
+[ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_lwih7"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_gsawx"]
+[ext_resource type="PackedScene" uid="uid://cudqhv3d68cen" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/parts/LineItem.tscn" id="4_ftwe1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dwfri"]
 bg_color = Color(1, 0.339692, 0.306841, 1)
@@ -11,22 +11,21 @@ bg_color = Color(1, 0.339692, 0.306841, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aud1r"]
 bg_color = Color(0, 0, 0, 0.560784)
 
-[node name="PanelContainer" type="PanelContainer"]
-custom_minimum_size = Vector2(250, 0)
-offset_right = 373.0
-offset_bottom = 36.0
+[node name="ResearcherMiniCard" type="PanelContainer"]
+offset_right = 160.0
+offset_bottom = 38.0
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_dwfri")
-script = ExtResource("1_jguvo")
+script = ExtResource("1_ni348")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="Portrait" type="TextureRect" parent="HBoxContainer"]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
-texture = ExtResource("1_iup1h")
+texture = ExtResource("2_lwih7")
 expand_mode = 1
 stretch_mode = 6
 
@@ -55,7 +54,15 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "RESEARCHER NAME"
-label_settings = ExtResource("2_8kqvs")
+label_settings = ExtResource("3_gsawx")
+vertical_alignment = 1
+
+[node name="SpecLabel" type="Label" parent="HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "SPEC"
+label_settings = ExtResource("3_gsawx")
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
@@ -74,11 +81,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="ResearcherDetailLineItem" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DetailList" instance=ExtResource("4_fpomo")]
+[node name="ResearcherDetailLineItem" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DetailList" instance=ExtResource("4_ftwe1")]
 layout_mode = 2
 
-[node name="ResearcherDetailLineItem2" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DetailList" instance=ExtResource("4_fpomo")]
+[node name="ResearcherDetailLineItem2" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DetailList" instance=ExtResource("4_ftwe1")]
 layout_mode = 2
 
-[node name="ResearcherDetailLineItem3" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DetailList" instance=ExtResource("4_fpomo")]
+[node name="ResearcherDetailLineItem3" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/DetailList" instance=ExtResource("4_ftwe1")]
 layout_mode = 2

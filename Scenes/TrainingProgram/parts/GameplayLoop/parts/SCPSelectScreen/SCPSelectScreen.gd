@@ -490,7 +490,6 @@ func on_current_mode_update() -> void:
 			SUBSCRIBE.scp_data = scp_data
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 			
-			print(SUBSCRIBE.hired_lead_researchers_arr)
 			user_response.emit()
 # -----------------------------------------------
 

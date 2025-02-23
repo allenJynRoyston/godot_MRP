@@ -4,14 +4,14 @@ extends GameContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
 @onready var Details:PanelContainer = $Details
 @onready var BtnPanel:PanelContainer = $PanelContainer
-@onready var DetailList:HBoxContainer = $Details/MarginContainer/HBoxContainer/VBoxContainer/DetailList
+@onready var DetailList:VBoxContainer = $Details/MarginContainer/HBoxContainer/VBoxContainer/DetailList
 @onready var ResearcherCount:Label = $Details/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ResearcherCount
 @onready var LeftSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var Backdrop:ColorRect = $Backdrop
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
-const ResearcherDetailItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ResearcherDetailItem.tscn")
+const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
 
 var disable_inputs_while_menu_is_open:bool = false
 var previous_camera_type:int
@@ -51,8 +51,6 @@ func toggle_camera_view() -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
 	
-			
-
 	#GameplayNode.restore_player_hud()
 	SUBSCRIBE.camera_settings = camera_settings	
 	
@@ -72,11 +70,14 @@ func on_is_showing_update() -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func show_details() -> void:
+	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+	
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:
 		for child in DetailList.get_children():
 			child.queue_free()
 		Details.hide()					
+		GameplayNode.restore_player_hud()
 		set_btn_disabled_state(false)
 		
 	Details.show()
@@ -102,13 +103,13 @@ func show_details() -> void:
 	
 	if room_extract.researchers.is_empty():
 		for n in range(0, 2):
-			var new_detail_item:Control = ResearcherDetailItem.instantiate()
-			DetailList.add_child(new_detail_item)
+			var mini_card:Control = ResearcherMiniCard.instantiate()
+			DetailList.add_child(mini_card)
 	else:
 		for researcher in room_extract.researchers:
-			var new_detail_item:Control = ResearcherDetailItem.instantiate()
-			new_detail_item.researcher = researcher
-			DetailList.add_child(new_detail_item)
+			var mini_card:Control = ResearcherMiniCard.instantiate()
+			mini_card.researcher = researcher
+			DetailList.add_child(mini_card)
 	
 	ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]
 	
@@ -437,18 +438,18 @@ func open_researcher_menu() -> void:
 			set_btn_disabled_state(false)
 	})
 
-	options_list.push_back({
-		"title": "RESEARCHER DETAILS",		
-		"is_disabled": hired_lead_researchers_arr.size() == 0,
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true				
-			await GameplayNode.open_researcher_details()
-			ActiveMenu.freeze_inputs = false
-	})	
+	#options_list.push_back({
+		#"title": "RESEARCHER DETAILS",		
+		#"is_disabled": hired_lead_researchers_arr.size() == 0,
+		#"onSelect": func() -> void:
+			#ActiveMenu.freeze_inputs = true				
+			#await GameplayNode.open_researcher_details()
+			#ActiveMenu.freeze_inputs = false
+	#})	
 
 	options_list.push_back({
 		"title": "ASSIGN RESEARCHER..." if is_room_active else "ASSIGN RESEARCHER (ROOM IS INACTIVE)",
-		"is_disabled": !is_room_active or room_is_empty or researchers_count >= 2,
+		"is_disabled": !is_room_active or room_is_empty,
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true
 			var response:Dictionary = await GameplayNode.assign_researcher(current_location.duplicate())

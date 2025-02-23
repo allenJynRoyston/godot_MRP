@@ -14,7 +14,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1c61"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t1tk1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqseu"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -26,7 +26,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dgbna"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6161m"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -38,7 +38,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uj0vl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5c6kk"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -50,7 +50,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mm7ur"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mce1q"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -62,7 +62,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jycye"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b24p5"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -74,7 +74,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3jg3x"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_svep4"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -91,21 +91,21 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_rdsf8"]
 color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h12lh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_47jgh"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6qkqy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prd6d"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axcax"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpwre"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -246,7 +246,7 @@ custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_t1tk1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oqseu")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23
@@ -260,7 +260,7 @@ size_flags_vertical = 8
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dgbna")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6161m")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -268,7 +268,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="SelectScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_uj0vl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5c6kk")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
@@ -276,7 +276,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="ConfirmScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_mm7ur")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mce1q")
 title = "NEXT"
 assigned_key = "E"
 icon = 10
@@ -285,7 +285,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 [node name="SelectResearcher" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jycye")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b24p5")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
@@ -294,7 +294,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 [node name="ConfirmResearchers" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3jg3x")
+theme_override_styles/panel = SubResource("StyleBoxFlat_svep4")
 title = "FINALIZE"
 assigned_key = "E"
 icon = 10
@@ -308,7 +308,7 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 288.0
+offset_right = 200.0
 grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_y1vge")
@@ -339,19 +339,19 @@ layout_mode = 2
 
 [node name="ScpCheckbox" parent="ConfirmControl/ConfirmPanel/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("5_wg73t")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_h12lh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_47jgh")
 no_bg = true
 title = "SELECT AN SCP"
 
 [node name="R1Checkbox" parent="ConfirmControl/ConfirmPanel/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("5_wg73t")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6qkqy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_prd6d")
 no_bg = true
 title = "RESEARCHER REQUIRED"
 
 [node name="R2Checkbox" parent="ConfirmControl/ConfirmPanel/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("5_wg73t")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_axcax")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tpwre")
 no_bg = true
 title = "RESEARCHER REQUIRED"
 
@@ -365,7 +365,7 @@ anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -168.0
+offset_left = -200.0
 grow_horizontal = 0
 grow_vertical = 2
 size_flags_horizontal = 0
@@ -373,6 +373,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_y1vge")
 
 [node name="MarginContainer" type="MarginContainer" parent="TraitControl/TraitPanel"]
 layout_mode = 2
+size_flags_horizontal = 8
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 10

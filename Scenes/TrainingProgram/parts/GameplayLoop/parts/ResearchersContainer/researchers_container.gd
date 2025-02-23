@@ -12,20 +12,25 @@ extends GameContainer
 @onready var ConfirmBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmBtn
 
 @onready var ResearcherPanel:Control = $ResearcherControl/PanelContainer
-@onready var ResearcherScrollContainer:ScrollContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer
-@onready var ResearcherList:HBoxContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/ResearcherList
+@onready var ResearcherScrollContainer:ScrollContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
+@onready var ResearcherList:HBoxContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList
+@onready var AvailableLabel:Label = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/AvailableLabel
+@onready var LessBtn:BtnBase = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LessBtn
+@onready var MoreBtn:BtnBase = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MoreBtn
 
 @onready var SelectedPanel:Control = $SelectedControl/SelectedPanel
+@onready var SelectedList:VBoxContainer = $SelectedControl/SelectedPanel/MarginContainer/VBoxContainer/SelectedContainer/SelectedList
 
 @onready var TraitPanel:Control = $TraitControl/TraitPanel
 @onready var TraitList:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/TraitContainer/TraitList
 @onready var SynergyContainer:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer
 @onready var SynergyTraitList:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList
 
-enum MODE { SELECT_RESEARCHERS, DETAILS_ONLY }
+enum MODE { SELECT_RESEARCHERS, DETAILS_ONLY, HIDE }
 
 const ResearcherCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn")
 const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
+const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
 const cards_in_list:int = 3
 		
 var researcher_active_index:int = -1 : 
@@ -38,13 +43,11 @@ var selected_researchers:Array = [] :
 		selected_researchers = val
 		on_selected_researchers_update()
 		
-
 var current_mode:MODE = MODE.SELECT_RESEARCHERS : 
 	set(val):
 		current_mode = val
 		on_current_mode_update()
 
-var previous_set_val:int
 var content_restore_pos:int
 var selected_restore_pos:int
 var trait_restore_pos:int
@@ -54,6 +57,8 @@ var is_setup:bool = false
 var details_only:bool = false 
 var is_animating:bool = false
 var custom_min_size:Vector2
+var overflow_count:int
+
 
 # -----------------------------------------------
 func _ready() -> void:
@@ -67,6 +72,8 @@ func _ready() -> void:
 			MODE.SELECT_RESEARCHERS:
 				if researcher_active_index not in selected_researchers:
 					mark_researcher_as_selected()
+				else:
+					unmark_researcher(researcher_active_index)
 	
 	BackBtn.onClick = func() -> void:
 		match current_mode:
@@ -79,7 +86,13 @@ func _ready() -> void:
 				user_response.emit({"action": ACTION.RESEARCHERS.BACK})
 
 	ConfirmBtn.onClick = func() -> void:
-		pass
+		current_mode = MODE.HIDE
+		var uids:Array = []
+		for n in selected_researchers:
+			var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )		
+			uids.push_back(researcher_details.uid)
+		user_response.emit({"action": ACTION.RESEARCHERS.SELECT, "uids": uids})
+
 	
 	DetailsBtn.onClick = func() -> void:
 		show_details()
@@ -95,6 +108,21 @@ func _ready() -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
+func start(mark_uids:Array = [], _details_only:bool = false) -> void:
+	var selected := []
+	details_only = _details_only
+	
+	for index in ResearcherList.get_child_count():
+		var node:Control = ResearcherList.get_child(index)
+		if node.uid in mark_uids:
+			node.is_selected = true
+			selected.push_back(index)
+
+	await U.tick()
+	selected_researchers = selected
+# -----------------------------------------------
+
+# -----------------------------------------------
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	hired_lead_researchers_arr = new_val
 	if !is_node_ready():return
@@ -102,7 +130,7 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	for node in [ResearcherList]:
 		for child in node.get_children():
 			child.queue_free()
-			
+	
 	for index in hired_lead_researchers_arr.size():
 		var researcher:Array = hired_lead_researchers_arr[index]
 		var details:Dictionary = RESEARCHER_UTIL.get_user_object(researcher)		
@@ -128,6 +156,10 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 		await U.tick()
 		if index < cards_in_list:
 			custom_min_size = ResearcherList.size
+	
+	LessBtn.show() if hired_lead_researchers_arr.size() > cards_in_list else LessBtn.hide()
+	MoreBtn.show() if hired_lead_researchers_arr.size() > cards_in_list else MoreBtn.hide()
+	AvailableLabel.text = "Researchers available: %s" % [hired_lead_researchers_arr.size()]
 		
 	ResearcherScrollContainer.custom_minimum_size = custom_min_size
 	researcher_active_index = 0
@@ -189,7 +221,6 @@ func show_details() -> void:
 			node.flip = !node.flip
 # -----------------------------------------------	
 
-
 # -----------------------------------------------	
 func on_researcher_active_index_update() -> void:
 	if !is_node_ready() or researcher_active_index == -1:return		
@@ -198,16 +229,21 @@ func on_researcher_active_index_update() -> void:
 		var node:Control = ResearcherList.get_child(index)
 		node.is_active = researcher_active_index == index
 	
-	var set_val:int = researcher_active_index / cards_in_list
-	var local_index:int = researcher_active_index - (set_val * cards_in_list)
-	
-	if previous_set_val != set_val:
-		if set_val > previous_set_val:
+	var relative_index:int = researcher_active_index - overflow_count
+	print('cards in range: ', researcher_active_index, relative_index + cards_in_list)
+
+	if relative_index > 2:
+		if researcher_active_index >= cards_in_list:
+			overflow_count += 1
 			next_set()
-		if set_val < previous_set_val:
+	
+	if relative_index < 0:
+		if overflow_count > 0:
+			overflow_count -= 1
 			back_set()
-		previous_set_val = set_val
+
 # -----------------------------------------------	
+
 
 # -----------------------------------------------		
 func unmark_last_researcher() -> void:
@@ -226,7 +262,7 @@ func unmark_last_researcher() -> void:
 func next_set() -> void:
 	is_animating = true
 	var current_scroll:int = ResearcherScrollContainer.scroll_horizontal
-	await U.tween_range(current_scroll, current_scroll + custom_min_size.x, 0.3, func(val:float) -> void:
+	await U.tween_range(current_scroll, current_scroll + custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
 		ResearcherScrollContainer.scroll_horizontal = val		
 	).finished  
 	is_animating = false
@@ -236,7 +272,7 @@ func next_set() -> void:
 func back_set() -> void:
 	is_animating = true
 	var current_scroll:int = ResearcherScrollContainer.scroll_horizontal
-	await U.tween_range(current_scroll, current_scroll - custom_min_size.x, 0.3, func(val:float) -> void:
+	await U.tween_range(current_scroll, current_scroll - custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
 		ResearcherScrollContainer.scroll_horizontal = val
 	).finished  
 	is_animating = false
@@ -259,9 +295,6 @@ func on_is_showing_update() -> void:
 		for btn in node.get_children():
 			btn.is_disabled = true
 	
-	# always hide this
-	ConfirmBtn.hide()
-	
 	U.tween_node_property(TraitPanel, "position:x", trait_restore_pos + TraitPanel.size.x + 20) 
 	U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos - SelectedPanel.size.x )
 	
@@ -271,23 +304,29 @@ func on_is_showing_update() -> void:
 	U.tween_node_property(ResearcherPanel, "position:x", content_restore_pos if is_showing else ResearcherPanel.size.x + 20)
 	await U.tween_node_property(BtnPanelContainer, "position:y", btn_restore_pos if is_showing else BtnPanelContainer.size.y + 20)
 	
+	# clear and reset
+
+	# reset scroll
+	ResearcherScrollContainer.scroll_horizontal = 0
+	
+	await U.tick()
+	
+	# reset selected	
+	researcher_active_index = -1 if hired_lead_researchers_arr.is_empty() else 0
+	overflow_count = 0
+	
 	if is_showing:
-		reset_cards()
-		# reset scroll
-		ResearcherScrollContainer.scroll_horizontal = 0
-		await U.tick()
-		# reset selected
-		selected_researchers = []
-		researcher_active_index = -1 if hired_lead_researchers_arr.is_empty() else 0
-		previous_set_val = 0
 		current_mode = MODE.DETAILS_ONLY if details_only else MODE.SELECT_RESEARCHERS
+	else:
+		reset_cards()
+		selected_researchers = []
 # -----------------------------------------------
 
 # -----------------------------------------------	
 func on_selected_researchers_update() -> void:
 	if !is_node_ready():return
 
-	for child in [TraitList, SynergyTraitList]:
+	for child in [TraitList, SynergyTraitList, SelectedList]:
 		for item in child.get_children():
 			item.queue_free()
 		
@@ -295,9 +334,15 @@ func on_selected_researchers_update() -> void:
 	var synergy_traits := []
 	var dup_list := []
 	
-	# get traits from selected researchers
+	# get traits from selected researchers and add to mini list
 	for n in selected_researchers:
+		# add to selected list
 		var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )
+		var mini_card:Control = ResearcherMiniCard.instantiate()
+		mini_card.uid = researcher_details.uid
+		SelectedList.add_child(mini_card)
+		
+		# add selected to selected list	
 		total_traits_list.push_back(researcher_details.traits)
 
 	# presents as list
@@ -323,18 +368,19 @@ func on_selected_researchers_update() -> void:
 		SynergyContainer.hide()
 	
 	# hide/show Trait Panel
-	if total_traits_list.size() > 0:
-		U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos)
-		U.tween_node_property(TraitPanel, "position:x", trait_restore_pos)
-	else:
-		U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos - SelectedPanel.size.x )
-		U.tween_node_property(TraitPanel, "position:x", trait_restore_pos + TraitPanel.size.x + 20)
+	if current_mode == MODE.SELECT_RESEARCHERS:
+		if total_traits_list.size() > 0:
+			U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos)
+			U.tween_node_property(TraitPanel, "position:x", trait_restore_pos)
+		else:
+			U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos - SelectedPanel.size.x )
+			U.tween_node_property(TraitPanel, "position:x", trait_restore_pos + TraitPanel.size.x + 20)
 	
-	# 
-	if current_mode == MODE.SELECT_RESEARCHERS:		
-		SelectBtn.is_disabled = selected_researchers.size() == 2
+	# show/hide button
+	if current_mode == MODE.SELECT_RESEARCHERS:				
 		ConfirmBtn.show() if selected_researchers.size() >= 1 else ConfirmBtn.hide()
 	
+	# add deselected (black/white filter) when at capacity
 	for index in ResearcherList.get_child_count():
 		var node:Control = ResearcherList.get_child(index)
 		if selected_researchers.size() == 2:
@@ -359,6 +405,11 @@ func on_current_mode_update() -> void:
 				btn.is_disabled = false
 			SelectBtn.hide()
 			ConfirmBtn.hide()
+		# ---------------
+		MODE.HIDE:
+			for node in [RightSideBtnList, LeftSideBtnList]:
+				for btn in node.get_children():
+					btn.is_disabled = true
 # -----------------------------------------------
 
 # -----------------------------------	

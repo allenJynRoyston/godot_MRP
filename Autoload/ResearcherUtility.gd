@@ -154,7 +154,7 @@ func generate_researcher() -> Array:
 		0, 				# 6	STRESS
 		0, 				# 7 EXP
 		1, 				# 8 LVL
-		{"assigned_to_room": null, "can_promote": false}	# 9
+		{"assigned_to_room": {}, "can_promote": false}	# 9
 	]
 # ------------------------------------------------------------------------------
 	

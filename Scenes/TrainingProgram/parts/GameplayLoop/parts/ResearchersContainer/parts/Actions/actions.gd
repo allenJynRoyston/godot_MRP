@@ -76,7 +76,8 @@ func build_list() -> void:
 				"title":"Assign Researcher",
 				"title_icon": SVGS.TYPE.CAUTION,
 				"onClick": func() -> void:
-					onAction.call(ACTION.RESEARCHERS.SELECT_FOR_ASSIGN),
+					pass,
+					#onAction.call(ACTION.RESEARCHERS.SELECT_FOR_ASSIGN),
 				#"bulletpoints": [
 					#{
 						#"header": "Prerequisites",
@@ -99,7 +100,8 @@ func build_list() -> void:
 					"title":"Remove as Lead Researcher",
 					"title_icon": SVGS.TYPE.CAUTION,
 					"onClick": func() -> void:
-						onAction.call(ACTION.RESEARCHERS.UNASSIGN_FROM_SCP),
+						pass,
+						#onAction.call(ACTION.RESEARCHERS.UNASSIGN_FROM_SCP),
 					"bulletpoints": [
 						{
 							"header": "Attached to",
@@ -120,7 +122,8 @@ func build_list() -> void:
 					"title":"Assign as Lead Researcher",
 					"title_icon": SVGS.TYPE.CAUTION,
 					"onClick": func() -> void:
-						onAction.call(ACTION.RESEARCHERS.ASSIGN_TO_SCP),
+						pass,
+						#onAction.call(ACTION.RESEARCHERS.ASSIGN_TO_SCP),
 					"bulletpoints": [
 						{
 							"header": "Attached to",
@@ -141,7 +144,8 @@ func build_list() -> void:
 				"title":"Dismiss Researcher",
 				"title_icon": SVGS.TYPE.CAUTION,
 				"onClick": func() -> void:
-					onAction.call(ACTION.RESEARCHERS.DISMISS),
+					pass,
+					#onAction.call(ACTION.RESEARCHERS.DISMISS),
 				#"bulletpoints": [
 					#{
 						#"header": "Prerequisites",
