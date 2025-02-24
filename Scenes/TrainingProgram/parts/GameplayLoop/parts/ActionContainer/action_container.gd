@@ -5,7 +5,7 @@ extends GameContainer
 @onready var Details:Control = $Details
 @onready var DetailsPanel:PanelContainer = $Details/PanelContainer
 
-@onready var Researchers:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers
+@onready var Researchers:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/Researchers
 @onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/Researchers/HBoxContainer/ResearcherCount
 @onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/Researchers/ResearcherList
 @onready var TraitContainer:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/TraitContainer
@@ -48,12 +48,10 @@ func _ready() -> void:
 			node.queue_free()	
 	
 	await U.set_timeout(1.0)	
-	restore_pos = MainPanel.position.x		
-	details_restore_pos = DetailsPanel.position.x
-	#traits_restore_pos = TraitsPanel.position.x
-	
-	U.tween_node_property(DetailsPanel, "position:x", details_restore_pos + DetailsPanel.size.x)
-	#U.tween_node_property(TraitsPanel, "position:x", traits_restore_pos + TraitsPanel.size.x + 10)	
+	restore_pos = MainPanel.position.y		
+	details_restore_pos = DetailsPanel.position.y
+
+	U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
 # --------------------------------------------------------------------------------------------------		
 
 
@@ -80,7 +78,7 @@ func toggle_camera_view() -> void:
 func on_is_showing_update() -> void:	
 	super.on_is_showing_update()
 	if !is_setup:return	
-	U.tween_node_property(MainPanel, "position:x", restore_pos if is_showing else MainPanel.size.x + 20, 0.7)
+	U.tween_node_property(MainPanel, "position:y", restore_pos if is_showing else MainPanel.size.y + 20, 0.7)
 	await U.set_timeout(1.0)
 	MainPanel.set_anchors_preset(Control.PRESET_FULL_RECT)	
 # --------------------------------------------------------------------------------------------------		
@@ -99,13 +97,11 @@ func show_details() -> void:
 	# animate in/out
 	await GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
 	Details.modulate = Color(1, 1, 1, 1)
-	U.tween_node_property(DetailsPanel, "position:x", details_restore_pos)	
-	#U.tween_node_property(TraitsPanel, "position:x", traits_restore_pos)	
-	
+	U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)	
+
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:
-		#U.tween_node_property(TraitsPanel, "position:x", traits_restore_pos + TraitsPanel.size.x + 10)	
-		await U.tween_node_property(DetailsPanel, "position:x", details_restore_pos + DetailsPanel.size.x)
+		await U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
 		GameplayNode.restore_player_hud()
 		set_btn_disabled_state(false)
 		for child in ResearcherList.get_children():
@@ -125,17 +121,19 @@ func show_details() -> void:
 			GBL.find_node(REFS.ROOM_NODES).is_active = false
 			ActiveMenu.close()
 	})
-	
-	# ROOM DETAILS
-	if !room_extract.room.is_empty():
-		RoomMiniCard.ref = room_extract.room.details.ref
-	
+
+	# ROOM DETAILS	
+	RoomMiniCard.is_room_active = room_extract.is_room_active
+	RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
+	RoomMiniCard.ref = room_extract.room.details.ref if !room_is_empty else -1
+
+	#
 	# SCP DETAILS
 	if !room_extract.scp.is_empty():
 		ScpMiniCard.ref = room_extract.scp.details.ref
 	ScpMiniCard.show() if !room_extract.scp.is_empty() else ScpMiniCard.hide()
 	
-	# RESEARCHER DETAILS
+	## RESEARCHER DETAILS
 	if room_extract.researchers.is_empty():
 		Researchers.hide()
 		TraitContainer.hide()

@@ -64,6 +64,10 @@ var DIRECTORS_OFFICE:Dictionary = {
 	
 	"operating_costs": {
 		"resources": {
+			"metrics": func() -> Dictionary:
+				return {
+					RESOURCE.BASE_METRICS.SAFETY: -1
+			},			
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: -1
@@ -339,6 +343,10 @@ var BARRICKS:Dictionary = {
 	
 	"operating_costs": {
 		"resources": {
+			"metrics": func() -> Dictionary:
+				return {
+					RESOURCE.BASE_METRICS.SAFETY: 3
+				},			
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: -1
@@ -916,7 +924,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var is_activated:bool = room_config_data.room_data.get_is_activated.call() if !is_room_empty else false
 	var can_activate:bool = (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if !is_room_empty else false
 	var can_contain:bool = room_details.can_contain if !room_details.is_empty() else false
-	
+
 	var scp_data:Dictionary = room_config_data.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
 	var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
@@ -960,6 +968,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		"total": {},
 	}
 	
+
 	# get resources spent/added by rooms
 	if !is_room_empty:
 		for item in return_operating_cost(room_details.ref):
@@ -971,10 +980,9 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 					resource_details.facility[item.resource.ref] = 0
 				if item.resource.ref not in resource_details.total:
 					resource_details.total[item.resource.ref] = 0
-
-				resource_details.room[item.resource.ref] += item.amount
-				resource_details.facility[item.resource.ref] += item.amount
-				resource_details.total[item.resource.ref] += item.amount
+				resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+				resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+				resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
 			# -----------------------
 			if item.type == "metrics":
 				if item.resource.ref not in metric_details.room:
@@ -984,9 +992,9 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 				if item.resource.ref not in metric_details.total:
 					metric_details.total[item.resource.ref] = 0
 
-				metric_details.room[item.resource.ref] += item.amount
-				metric_details.facility[item.resource.ref] += item.amount
-				metric_details.total[item.resource.ref] += item.amount
+				metric_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+				metric_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+				metric_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
 				
 	
 	# get resources spent/added by scp
@@ -1130,7 +1138,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 						
 			synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
 			#
-
+	
 	return {
 		"floor": floor_data,
 		"wing": wing_data,

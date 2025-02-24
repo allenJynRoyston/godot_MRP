@@ -8,6 +8,9 @@ extends PanelContainer
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
+var is_room_active:bool
+var is_room_under_construction:bool 
+
 var ref:int = -1 : 
 	set(val):
 		ref = val
@@ -23,19 +26,28 @@ func _ready() -> void:
 	on_ref_update()
 	
 func on_ref_update() -> void:
-	if !is_node_ready() or ref == -1:return
+	if !is_node_ready():return
+	
+	for node in [ResourceGrid, MetricsList]:	
+		for child in node.get_children():
+			child.queue_free()	
+	
+	if ref == -1:
+		details = {}
+		ResourceGrid.hide() 
+		MetricsList.hide() 
+		NoBonusLabel.show()
+		return
+	
 	details = ROOM_UTIL.return_data(ref)
 	
 	var operating_costs:Array = ROOM_UTIL.return_operating_cost(ref)	
-	for node in [ResourceGrid, MetricsList]:	
-		for child in node.get_children():
-			child.queue_free()
-	
-	var resource_list:Array = operating_costs.filter(func(i):return i.type == "amount")
-	var metric_list:Array = operating_costs.filter(func(i):return i.type == "metrics")
+	var resource_list:Array = operating_costs.filter(func(i):return i.type == "amount") if is_room_active and !is_room_under_construction else []
+	var metric_list:Array = operating_costs.filter(func(i):return i.type == "metrics") if is_room_active and !is_room_under_construction else []
 	
 	ResourceGrid.columns = U.min_max(resource_list.size(), 1, 2)
 	
+
 	for item in resource_list:
 		var new_btn:Control = TextBtnPreload.instantiate()
 		new_btn.is_hoverable = false
