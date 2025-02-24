@@ -973,14 +973,7 @@ func set_room_config(force_setup:bool = false) -> void:
 
 # -----------------------------------
 func update_metrics(new_room_config:Dictionary) -> void:
-	# NEED ROOM CONFIG TO BUILD BEFORE DOING THIS PART
-	var update_wing_effect:Callable = func(metric_defaults:Dictionary, new_metrics:Dictionary) -> Dictionary:
-		for key in new_metrics:
-			var amount:int = new_metrics[key]
-			var current_amount:int = metric_defaults[key]
-			metric_defaults[key] = U.min_max(current_amount + amount, -10, 10)
-		return metric_defaults
-	
+
 	# now update all metrics once everything has been attached
 	for floor_index in new_room_config.floor.size():
 		for ring_index in new_room_config.floor[floor_index].ring.size():
@@ -993,19 +986,9 @@ func update_metrics(new_room_config:Dictionary) -> void:
 
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
 				var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index}, new_room_config)
-				var is_room_under_construction:bool = room_extract.is_room_under_construction
-				var is_room_empty:bool = room_extract.is_room_empty
-				var is_scp_empty:bool = room_extract.is_scp_empty
-				var is_scp_contained:bool = room_extract.is_scp_contained
-				
-				if !is_room_empty and !is_room_under_construction:
-					metric_defaults = update_wing_effect.call(metric_defaults, ROOM_UTIL.return_wing_effect(room_extract))
-					
-				if !is_scp_empty and is_scp_contained:
-					metric_defaults = update_wing_effect.call(metric_defaults, SCP_UTIL.return_wing_effect(room_extract))
-									
-				for researcher in room_extract.researchers:
-					metric_defaults = update_wing_effect.call(metric_defaults, RESEARCHER_UTIL.return_wing_effect(researcher))	
+				for key in room_extract.metric_details.total:
+					var amount:int = room_extract.metric_details.total[key]
+					metric_defaults[key] += amount
 			
 			# first, compile all the metrics from rooms, scps and researchers
 			new_room_config.floor[floor_index].ring[ring_index].metrics = metric_defaults

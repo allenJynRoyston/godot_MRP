@@ -1,10 +1,11 @@
 @tool
 extends MouseInteractions
 
-@onready var HeaderLabel:Label = $HeaderLabel
-@onready var IconBtn:Control = $HBoxContainer/IconBtn
-@onready var ItemLabel:Label = $HBoxContainer/ItemLabel
-@onready var BtmItemLabel:Label = $ItemLabel
+@onready var RootPanel:PanelContainer = $"."
+@onready var HeaderLabel:Label = $MarginContainer/ResourceItem/HeaderLabel
+@onready var IconBtn:Control = $MarginContainer/ResourceItem/HBoxContainer/IconBtn
+@onready var ItemLabel:Label = $MarginContainer/ResourceItem/HBoxContainer/ItemLabel
+@onready var BtmItemLabel:Label = $MarginContainer/ResourceItem/BtmItemLabel
 
 @export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
 	set(val):
@@ -26,6 +27,11 @@ extends MouseInteractions
 		display_at_bottom = val
 		on_display_at_bottom_update()
 		
+@export var is_negative: bool = false : 
+	set(val):
+		is_negative = val
+		on_is_negative_update()
+		
 var onClick:Callable = func():pass
 var onDismiss:Callable = func():pass
 		
@@ -36,6 +42,7 @@ func _ready() -> void:
 	on_icon_update()
 	on_focus()
 	on_display_at_bottom_update()
+	on_is_negative_update()
 
 func on_header_update() -> void:
 	if !is_node_ready():return
@@ -54,17 +61,21 @@ func on_display_at_bottom_update() -> void:
 	if !is_node_ready():return
 	BtmItemLabel.show() if display_at_bottom else BtmItemLabel.hide()
 	ItemLabel.hide() if display_at_bottom else ItemLabel.show()
+
+func on_is_negative_update() -> void:
+	if !is_node_ready():return
+	var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
+	dupe_stylebox.bg_color = Color(1, 0.204, 0) if is_negative else Color(0, 0.529, 0.278)
+	RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)	
 # --------------------------------------
 
 # --------------------------------------	
 func on_focus(state:bool = false) -> void:
 	if !is_node_ready():return
-	#IconBtn.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
-	#
-	#var label_setting:LabelSettings = ItemLabel.label_settings.duplicate()
-	#label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
-	#ItemLabel.label_settings = label_setting
-		#
+	var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
+	dupe_stylebox.border_color = Color.BLACK if !state else Color.WHITE
+	RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)
+		
 	if state:
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
 	else:

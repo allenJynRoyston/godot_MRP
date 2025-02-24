@@ -4,7 +4,18 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_m87r8"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_rami6"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_cw3no"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_i1pdu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_adcd0"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_yocpk"]
 font = ExtResource("3_cw3no")
@@ -12,22 +23,37 @@ font_size = 8
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
-[node name="ResourceItem" type="VBoxContainer"]
+[node name="ResourceItem" type="PanelContainer"]
+offset_right = 50.0
+offset_bottom = 20.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_adcd0")
+script = ExtResource("1_l01xo")
+is_negative = null
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 4
+
+[node name="ResourceItem" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
-script = ExtResource("1_l01xo")
+alignment = 1
 
-[node name="HeaderLabel" type="Label" parent="."]
+[node name="HeaderLabel" type="Label" parent="MarginContainer/ResourceItem"]
 visible = false
 layout_mode = 2
 label_settings = ExtResource("2_m87r8")
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ResourceItem"]
 layout_mode = 2
 alignment = 1
 
-[node name="IconBtn" parent="HBoxContainer" instance=ExtResource("2_rami6")]
+[node name="IconBtn" parent="MarginContainer/ResourceItem/HBoxContainer" instance=ExtResource("2_rami6")]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 size_flags_horizontal = 1
@@ -35,19 +61,19 @@ size_flags_vertical = 1
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_bottom = 0
-icon = 30
+icon = 3
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.59, 0.59, 0.59, 1)
 is_hoverable = false
 
-[node name="ItemLabel" type="Label" parent="HBoxContainer"]
+[node name="ItemLabel" type="Label" parent="MarginContainer/ResourceItem/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "99"
-label_settings = ExtResource("4_i1pdu")
+label_settings = ExtResource("2_m87r8")
 vertical_alignment = 1
 
-[node name="ItemLabel" type="Label" parent="."]
+[node name="BtmItemLabel" type="Label" parent="MarginContainer/ResourceItem"]
 visible = false
 layout_mode = 2
 text = "999"

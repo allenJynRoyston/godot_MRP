@@ -1,19 +1,31 @@
-[gd_scene load_steps=6 format=3 uid="uid://d1melr1fetrom"]
+[gd_scene load_steps=7 format=3 uid="uid://d1melr1fetrom"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/trait_card.gd" id="1_8b124"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_m3aei"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_q3fly"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7s1e"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4kkh"]
+bg_color = Color(0.315758, 0.249353, 0.370347, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2aow3"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2imb0"]
+bg_color = Color(0.05, 0.05, 0.05, 0.419608)
+
 [node name="TraitCard" type="PanelContainer"]
-offset_right = 170.0
-offset_bottom = 72.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_q7s1e")
+offset_right = 92.0
+offset_bottom = 58.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_g4kkh")
 script = ExtResource("1_8b124")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -26,9 +38,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_2aow3")
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer2"]
@@ -38,11 +50,20 @@ alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TRAIT NAME"
+label_settings = ExtResource("1_m3aei")
+vertical_alignment = 1
 
 [node name="IconBtn" parent="VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/HBoxContainer" instance=ExtResource("2_q3fly")]
 custom_minimum_size = Vector2(12, 12)
 layout_mode = 2
+size_flags_horizontal = 1
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
@@ -50,36 +71,52 @@ theme_override_constants/margin_bottom = 0
 icon = 25
 is_hoverable = false
 
-[node name="NameLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "TRAIT NAME"
-label_settings = ExtResource("1_m3aei")
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
+size_flags_vertical = 0
+theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="DescriptionLabel" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(150, 50)
+[node name="DescriptionLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_vertical = 5
+size_flags_vertical = 1
 text = "The description of the trait goes here.  It has to be kinda short."
 label_settings = ExtResource("1_m3aei")
 vertical_alignment = 1
 autowrap_mode = 2
-text_overrun_behavior = 2
+
+[node name="OutputContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2imb0")
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/OutputContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/OutputContainer/MarginContainer2"]
+layout_mode = 2
+alignment = 1
+
+[node name="ResourceGrid" type="GridContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
+layout_mode = 2
+columns = 2
+
+[node name="MetricList" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
+layout_mode = 2

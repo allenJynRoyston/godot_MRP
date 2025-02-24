@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=20 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/resource_container.gd" id="1_qt3uu"]
 [ext_resource type="PackedScene" uid="uid://crk6mkpuid5a3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/DetailPanel.tscn" id="3_fwkup"]
@@ -27,6 +27,78 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_osqh2"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1e4xn"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3hnc"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_78d8l"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gus0t"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fyy5"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5olq"]
 bg_color = Color(0, 0.53, 0.282667, 0)
 corner_radius_top_left = 5
@@ -48,7 +120,7 @@ bg_color = Color(0, 0.529412, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utww6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gttvn"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="ResourceContainer" type="PanelContainer"]
@@ -105,52 +177,52 @@ theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 5
 
 [node name="ResourceItemMoney" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_osqh2")
 icon = 30
-header = "MONEY"
-title = "999"
 display_at_bottom = true
+is_negative = null
 
 [node name="ResourceItemEnergy" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e4xn")
 icon = 31
-header = "ENERGY"
-title = "999"
 display_at_bottom = true
+is_negative = null
 
 [node name="ResourceItemScience" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_h3hnc")
 icon = 39
-header = "SCIENCE"
-title = "999"
 display_at_bottom = true
+is_negative = null
 
 [node name="VSeparator" type="VSeparator" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
 layout_mode = 2
 
 [node name="ResourceItemStaff" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_78d8l")
 icon = 34
-header = "STAFF"
-title = "10/10"
 display_at_bottom = true
+is_negative = null
 
 [node name="ResourceItemSecurity" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gus0t")
 icon = 35
-header = "SECURITY"
-title = "10/10"
 display_at_bottom = true
+is_negative = null
 
 [node name="ResourceItemDClass" parent="Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3fyy5")
 icon = 32
-header = "D-CLASS"
-title = "10/10"
 display_at_bottom = true
+is_negative = null
 
 [node name="Status" type="PanelContainer" parent="Control2/MarginContainer/HBoxContainer2"]
 visible = false
@@ -204,7 +276,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_utww6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gttvn")
 icon = 7
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "NEXT REPORT IN X DAYS"

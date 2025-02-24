@@ -60,10 +60,14 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 	"ongoing_containment": {
 		"resources": {
+			"metrics": func() -> Dictionary:
+				return {
+					RESOURCE.BASE_METRICS.SAFETY: -4
+			},
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: 15,
-					RESOURCE.TYPE.ENERGY: 5
+					RESOURCE.TYPE.SCIENCE: 5
 				},
 		}	
 	},

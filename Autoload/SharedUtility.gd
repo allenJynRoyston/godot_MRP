@@ -206,7 +206,6 @@ func return_unavailable_rooms(item_data:Dictionary) -> Array:
 # ------------------------------------------------------------------------------
 func return_resource_list(details:Dictionary, dict_property:String) -> Array:
 	var list:Array = []
-	
 	if dict_property in details and "resources" in details[dict_property] :
 		if "amount" in details[dict_property].resources:
 			var amount_dict:Dictionary = details[dict_property].resources.amount.call()
@@ -218,7 +217,11 @@ func return_resource_list(details:Dictionary, dict_property:String) -> Array:
 			for key in capacity_dict:	
 				var amount:int = capacity_dict[key]
 				list.push_back({"type": "capacity", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})	
-	
+		if "metrics" in details[dict_property].resources:
+			var metrics_dict:Dictionary = details[dict_property].resources.metrics.call()
+			for key in metrics_dict:	
+				var amount:int = metrics_dict[key]
+				list.push_back({"type": "metrics", "amount": amount, "resource": RESOURCE_UTIL.return_metric_data(key)})	
 	return list
 # ------------------------------------------------------------------------------
 
@@ -286,6 +289,8 @@ func calculate_resources(details:Dictionary, dict_property:String, resources_dat
 					resource_data_copy[key].amount += amount
 					if resource_data_copy[key].amount > resource_data_copy[key].capacity:
 						resource_data_copy[key].amount = resource_data_copy[key].capacity	
+		
+		#if "amount" in details[dict_property].resources:
 						
 	return resource_data_copy
 # ------------------------------------------------------------------------------

@@ -23,58 +23,60 @@ var specialization_data:Dictionary = {
 var trait_data:Dictionary = {
 	RESEARCHER.TRAITS.HARD_WORKING: {
 		"name": "HARD_WORKING",
-		"description": "HARD_WORKING description goes here.",
+		"description": "Add +2 to whatever the facility outputs.",
 		"icon": SVGS.TYPE.ENERGY,
-		"synergy_check": func(partner_traits:Array) -> Dictionary:
+		"get_effect": func(details:Dictionary) -> Dictionary:		
+			var room_details:Dictionary = details.room_details
+			var scp_details:Dictionary = details.scp_details
+			var resource_details:Dictionary = details.resource_details
+			var resource:Dictionary
+			
+			for key in resource_details.facility:
+				if key not in resource:
+					resource[key] = 0
+				resource[key] = 2
+			
 			return {
-				RESEARCHER.SYNERGY_TRAITS.DREAM_TEAM: RESEARCHER.TRAITS.MOTIVATED in partner_traits
+				"resource": resource,
 			},
-		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
-			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
-			var researchers:Array = extract_details.researchers.filter(func(i): return i.uid != self_data.uid)			
-			var metrics:Dictionary = return_wing_effect(researchers[0]) if researchers.size() > 0 else {}			
-			return metrics,
 	},
 	RESEARCHER.TRAITS.MOTIVATED: {
 		"name": "MOTIVATED",
-		"description": "MOTIVATED description goes here.",
+		"description": "If this room produces at least 5 ENERGY, increase MORALE by 1.",
 		"icon": SVGS.TYPE.ENERGY,
-		"synergy_check": func(partner_traits:Array) -> Dictionary:
-			return {
-				RESEARCHER.SYNERGY_TRAITS.DREAM_TEAM: RESEARCHER.TRAITS.HARD_WORKING in partner_traits
-			},
-		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
-			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
-			return {
-				RESOURCE.BASE_METRICS.MORALE: 1 if (!extract_details.room.is_empty and extract_details.room.is_activated) else 0
-			},
+		"get_effect": func(details:Dictionary) -> Dictionary:		
+			var resource_details:Dictionary = details.resource_details
+			if RESOURCE.TYPE.SCIENCE in resource_details.facility and resource_details.facility[RESOURCE.TYPE.SCIENCE] >= 5:
+				return {
+					"metrics": {
+						RESOURCE.BASE_METRICS.MORALE: 1
+					}
+				}
+			
+			return {},
 	},
 	RESEARCHER.TRAITS.CLEVER: {
 		"name": "CLEVER",
 		"description": "CLEVER description goes here.",
 		"icon": SVGS.TYPE.ENERGY,
-		"synergy_check": func(partner_traits:Array) -> Dictionary:
+		"get_effect": func(details:Dictionary) -> Dictionary:		
+			var room_details:Dictionary = details.room_details
+			var scp_details:Dictionary = details.scp_details
+			var resource_details:Dictionary = details.resource_details			
 			return {
-				
-			},
-		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
-			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
-			return {
-				RESOURCE.BASE_METRICS.MORALE: 1 if (!extract_details.room.is_empty and extract_details.room.is_activated) else 0
+
 			},
 	},	
 	RESEARCHER.TRAITS.STUBBORN: {
 		"name": "STUBBORN",
 		"description": "STUBBORN description goes here.",
 		"icon": SVGS.TYPE.ENERGY,
-		"synergy_check": func(partner_traits:Array) -> Dictionary:
+		"get_effect": func(details:Dictionary) -> Dictionary:		
+			var room_details:Dictionary = details.room_details
+			var scp_details:Dictionary = details.scp_details
+			var resource_details:Dictionary = details.resource_details			
 			return {
-				
-			},
-		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
-			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
-			return {
-				RESOURCE.BASE_METRICS.MORALE: 1 if (!extract_details.room.is_empty and extract_details.room.is_activated) else 0
+
 			},
 	},
 }
@@ -84,12 +86,34 @@ var synergy_trait_data:Dictionary = {
 		"name": "DREAM_TEAM",
 		"description": "DREAM_TEAM description goes here.",
 		"icon": SVGS.TYPE.ENERGY,
-		"wing_effect": func(self_data:Dictionary) -> Dictionary:		
-			var extract_details:Dictionary = get_details_from_extract(self_data.props.assigned_to_room)
+		"get_effect": func(details:Dictionary) -> Dictionary:		
 			return {
-				RESOURCE.BASE_METRICS.MORALE: 1 if (!extract_details.room.is_empty and extract_details.room.is_activated) else 0
+				"resource": {
+					RESOURCE.TYPE.MONEY: 1,
+				},
+				"metrics": {
+					RESOURCE.BASE_METRICS.MORALE: 1
+				}
 			},
-	}
+	},
+	RESEARCHER.SYNERGY_TRAITS.UNRELENTING: {
+		"name": "UNRELENTING",
+		"description": "Adds the same amount of SCIENCE to the highest value this facility outputs.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details:Dictionary) -> Dictionary:		
+			var resource_details:Dictionary = details.resource_details
+			var highest_val:int = 0
+			for key in resource_details.facility:
+				var amount:int = resource_details.facility[key]
+				if amount > highest_val:
+					highest_val = amount	
+			
+			return {
+				"resource": {
+					RESOURCE.TYPE.SCIENCE: highest_val
+				},
+			},
+	}	
 }
 
 # ------------------------------------------------------------------------------
@@ -231,22 +255,23 @@ func return_specialization_data(key:RESEARCHER.SPECALIZATION) -> Dictionary:
 
 # ------------------------------------------------------------------------------		
 func return_wing_effect(researcher_data:Dictionary) -> Dictionary:
-	for trait_key in researcher_data.traits:
-		var trait_data:Dictionary = return_trait_data(trait_key)
-		return trait_data.wing_effect.call(researcher_data)
+	#for trait_key in researcher_data.traits:
+		#var trait_data:Dictionary = return_trait_data(trait_key)
+		#return trait_data.wing_effect.call(researcher_data)
 	return {}
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
 func return_trait_synergy(t1:Array, t2:Array) -> Array:
 	var synergy_traits:Array = []
-	for trait_key in t1:
-		var trait_data:Dictionary = return_trait_data(trait_key)
-		var res:Dictionary = trait_data.synergy_check.call(t2)
-		for key in res:
-			if res[key]:
-				synergy_traits.push_back(return_synergy_trait_data(key))
-				
+	for t1key in t1:
+		for t2key in t2:
+			var match_val:int = t1key + t2key
+			for key in RESEARCHER.SYNERGY_TRAITS:
+				var syn_val:int = RESEARCHER.SYNERGY_TRAITS[key]
+				if syn_val == match_val:					
+					synergy_traits.push_back(return_synergy_trait_data(syn_val))
+
 	return synergy_traits
 # ------------------------------------------------------------------------------		
 

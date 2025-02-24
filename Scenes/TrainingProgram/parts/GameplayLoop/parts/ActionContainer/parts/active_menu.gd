@@ -22,6 +22,8 @@ var freeze_inputs:bool = true :
 
 var onClose:Callable = func():pass
 
+var is_ready:bool = false 
+
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_control_input(self)
@@ -61,6 +63,7 @@ func on_selected_index_update() -> void:
 func on_options_list_update() -> void:
 	if !is_node_ready() or options_list.is_empty():return	
 	clear_list()
+	is_ready = false
 	
 	if selected_index > options_list.size():
 		selected_index = options_list.size() - 1
@@ -79,6 +82,8 @@ func on_options_list_update() -> void:
 		
 		List.add_child(btn_node)
 	
+	await U.tick()
+	is_ready = true
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -89,13 +94,14 @@ func on_action() -> void:
 	if freeze_inputs:return
 	if selected_index != -1:
 		var btn_node:Control = List.get_child(selected_index)
+		if btn_node == null:return
 		if !btn_node.is_disabled:
 			options_list[selected_index].onSelect.call()		
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or selected_index == -1:return
+	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or selected_index == -1 or !is_ready:return
 	var key:String = input_data.key
 
 	match key:

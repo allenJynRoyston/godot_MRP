@@ -3,10 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="1_wd1lp"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_3uing"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpxyt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mrigg"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dsv0u"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yieuo"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_edjmk"]
@@ -22,13 +22,13 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_jpxyt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mrigg")
 icon = 33
 title = "RESEARCHER NAME"
 
 [node name="TextBtn2" parent="HBoxContainer2" instance=ExtResource("1_wd1lp")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dsv0u")
+theme_override_styles/panel = SubResource("StyleBoxFlat_yieuo")
 icon = 14
 title = "LVL UP"
 

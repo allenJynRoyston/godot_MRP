@@ -10,13 +10,13 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pwxwe"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ujemb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kr6uj"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kql2o"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b0is3"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6kru8"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t87uj"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8a863"]
@@ -66,7 +66,6 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-hide_hire_section = true
 
 [node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(600, 0)
@@ -88,17 +87,17 @@ size_flags_vertical = 3
 
 [node name="TextBtn" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/OptionList" instance=ExtResource("4_u81kp")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ujemb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kr6uj")
 title = "Perk A"
 
 [node name="TextBtn2" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/OptionList" instance=ExtResource("4_u81kp")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kql2o")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b0is3")
 title = "Perk A"
 
 [node name="TextBtn3" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/OptionList" instance=ExtResource("4_u81kp")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6kru8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t87uj")
 title = "Perk A"
 
 [node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/VBoxContainer"]

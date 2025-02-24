@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_n5tun"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_y60su"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jlpwm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ptxq8"]
 bg_color = Color(0.455, 0.002, 0.713, 1)
 border_width_left = 2
 border_width_top = 2
@@ -35,7 +35,7 @@ offset_right = 130.0
 offset_bottom = 69.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_jlpwm")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ptxq8")
 script = ExtResource("1_nv6ic")
 status = "STATUS CONTAINER"
 
@@ -119,6 +119,7 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_7v4hh")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_85kfd")
 

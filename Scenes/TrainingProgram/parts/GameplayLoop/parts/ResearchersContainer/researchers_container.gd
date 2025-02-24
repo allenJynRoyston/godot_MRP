@@ -76,14 +76,15 @@ func _ready() -> void:
 					unmark_researcher(researcher_active_index)
 	
 	BackBtn.onClick = func() -> void:
-		match current_mode:
-			MODE.SELECT_RESEARCHERS:
-				if selected_researchers.size() == 0:
-					user_response.emit({"action": ACTION.RESEARCHERS.BACK})
-				else:
-					unmark_last_researcher()
-			MODE.DETAILS_ONLY:
-				user_response.emit({"action": ACTION.RESEARCHERS.BACK})
+		user_response.emit({"action": ACTION.RESEARCHERS.BACK})
+		#match current_mode:
+			#MODE.SELECT_RESEARCHERS:
+				#if selected_researchers.size() == 0:
+					#user_response.emit({"action": ACTION.RESEARCHERS.BACK})
+				#else:
+					#unmark_last_researcher()
+			#MODE.DETAILS_ONLY:
+				#user_response.emit({"action": ACTION.RESEARCHERS.BACK})
 
 	ConfirmBtn.onClick = func() -> void:
 		current_mode = MODE.HIDE

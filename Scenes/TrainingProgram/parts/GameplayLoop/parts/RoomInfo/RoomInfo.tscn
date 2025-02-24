@@ -1,14 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://caxuubq4dq5yo"]
+[gd_scene load_steps=15 format=3 uid="uid://caxuubq4dq5yo"]
 
-[ext_resource type="PackedScene" uid="uid://bppcetyyh0jh7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricItem.tscn" id="1_0d8xk"]
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/room_info.gd" id="1_ngdou"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_a4u88"]
 [ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="2_k1rty"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_2lrx7"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_b5w8r"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_n2rw1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_30yoo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_drfvy"]
-bg_color = Color(0, 0.529, 1, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nsqma"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2nke2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i82nd"]
+bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -19,45 +25,24 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja8vh"]
-bg_color = Color(0.455, 0.002, 0.713, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6721r"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w4lti"]
-bg_color = Color(1, 0.34, 0.307, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lm2p1"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fp41v"]
-bg_color = Color(1, 0.34, 0.307, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fmyws"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e88pb"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="RoomInfo" type="PanelContainer"]
-offset_right = 372.0
-offset_bottom = 93.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_30yoo")
@@ -68,87 +53,115 @@ layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 
-[node name="LocationPanel" parent="MarginContainer" instance=ExtResource("2_k1rty")]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="LocationPanel" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_k1rty")]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+
+[node name="ResearcherIcons" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="RIcon1" parent="MarginContainer/HBoxContainer/ResearcherIcons" instance=ExtResource("2_a4u88")]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 33
+static_color = Color(0.589096, 0.589096, 0.589096, 0.796078)
+is_hoverable = false
+
+[node name="RIcon2" parent="MarginContainer/HBoxContainer/ResearcherIcons" instance=ExtResource("2_a4u88")]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 33
+static_color = Color(0.589096, 0.589096, 0.589096, 0.796078)
+is_hoverable = false
 
 [node name="Control" type="Control" parent="."]
-visible = false
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Control"]
-layout_mode = 0
-offset_top = 25.0
-offset_right = 372.0
-offset_bottom = 123.0
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 178.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nsqma")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
+layout_mode = 2
 theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 30
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_2nke2")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RoomLabel" type="Label" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ROOMNAME"
+label_settings = ExtResource("3_2lrx7")
+
+[node name="ScpContainer" type="PanelContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_i82nd")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/ScpContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer"]
+[node name="ScpLabel" type="Label" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/ScpContainer/MarginContainer"]
 layout_mode = 2
+text = "SCP-X01"
+label_settings = ExtResource("5_n2rw1")
 
-[node name="RoomLevelMetrics" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="ResourceGrid" type="GridContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2"]
 layout_mode = 2
+columns = 4
 
-[node name="Room" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics"]
+[node name="TextBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ResourceGrid" instance=ExtResource("4_b5w8r")]
 layout_mode = 2
-size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6721r")
 
-[node name="MetricsVBox" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room"]
+[node name="TextBtn2" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ResourceGrid" instance=ExtResource("4_b5w8r")]
 layout_mode = 2
-theme_override_constants/separation = -45
+theme_override_styles/panel = SubResource("StyleBoxFlat_lm2p1")
 
-[node name="MetricsRoom" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room/MetricsVBox" instance=ExtResource("1_0d8xk")]
-z_index = 2
+[node name="TextBtn3" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ResourceGrid" instance=ExtResource("4_b5w8r")]
 layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_drfvy")
-type = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_fmyws")
 
-[node name="MetricsSCP" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room/MetricsVBox" instance=ExtResource("1_0d8xk")]
-z_index = 1
+[node name="TextBtn4" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ResourceGrid" instance=ExtResource("4_b5w8r")]
 layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ja8vh")
-status = "STATUS"
-
-[node name="SwapBtnA" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Room" instance=ExtResource("2_a4u88")]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-size_flags_vertical = 0
-icon = 51
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.69, 0.69, 0.69, 1)
-
-[node name="Researchers" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics"]
-visible = false
-layout_mode = 2
-
-[node name="MetricsResearcherContainer" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Researchers"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = -45
-
-[node name="MetricsResearcherA" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Researchers/MetricsResearcherContainer" instance=ExtResource("1_0d8xk")]
-z_index = 1
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_w4lti")
-type = 2
-status = "STATUS"
-
-[node name="MetricsResearcherA2" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Researchers/MetricsResearcherContainer" instance=ExtResource("1_0d8xk")]
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_fp41v")
-type = 2
-status = "STATUS"
-
-[node name="SwapBtnB" parent="Control/MarginContainer/VBoxContainer/RoomLevelMetrics/Researchers" instance=ExtResource("2_a4u88")]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-size_flags_vertical = 0
-icon = 51
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.69, 0.69, 0.69, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_e88pb")

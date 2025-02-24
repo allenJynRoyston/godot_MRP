@@ -1,9 +1,11 @@
 extends PanelContainer
 
-@onready var Portrait:TextureRect = $HBoxContainer/Portrait
-@onready var TitleLabel:Label = $HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/TitleLabel
-@onready var SpecLabel:Label = $HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/SpecLabel
-@onready var OutputList:VBoxContainer = $HBoxContainer/VBoxContainer/MarginContainer/OutputList
+@onready var Portrait:TextureRect = $VBoxContainer/PanelContainer/HBoxContainer/Portrait
+@onready var TitleLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/TitleLabel
+@onready var SpecLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/SpecLabel
+@onready var ResourceGrid:GridContainer = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/ResourceGrid
+@onready var MetricsList:VBoxContainer = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/MetricList
+@onready var NoBonusLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/NoBonusLabel
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -33,19 +35,47 @@ func on_uid_update() -> void:
 
 func on_researcher_update() -> void:
 	if !is_node_ready():return
-	TitleLabel.text = researcher.name if !researcher.is_empty() else "RESEARCHER SLOT AVAILABLE"
+	if researcher.is_empty():
+		hide()
+		return
+	
+	show()
+	TitleLabel.text = researcher.name
 	Portrait.texture = CACHE.fetch_image("res://Media/images/redacted.png" if researcher.is_empty() else researcher.img_src)
 	SpecLabel.text = "" if researcher.is_empty() else RESEARCHER_UTIL.return_specialization_data(researcher.specializations[0]).name
 
 func on_room_extract_update() -> void:
 	if !is_node_ready() or room_extract.is_empty() or researcher.is_empty():return
-	for child in OutputList.get_children():
-		child.queue_free()	
+	
+	for node in [ResourceGrid, MetricsList]:	
+		for child in node.get_children():
+			child.queue_free()
+			
 	if !room_extract.is_room_empty:
 		var spec_bonus:Array = ROOM_UTIL.return_specilization_bonus(room_extract.room.details.ref, researcher.specializations)
-		for item in spec_bonus:
+
+		var resource_list:Array = spec_bonus.filter(func(i):return i.type == "amount")
+		var metric_list:Array = spec_bonus.filter(func(i):return i.type == "metrics")
+
+		ResourceGrid.columns = U.min_max(resource_list.size(), 1, 2)
+		
+		for item in resource_list:
 			var new_btn:Control = TextBtnPreload.instantiate()
 			new_btn.is_hoverable = false
+			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			new_btn.icon = item.resource.icon
 			new_btn.title = "%s%s" % ["+" if item.amount > 0 else "", item.amount]
-			OutputList.add_child(new_btn)
+			ResourceGrid.add_child(new_btn)
+			
+		for item in metric_list:
+			if item.type == "metrics":
+				var new_btn:Control = TextBtnPreload.instantiate()
+				new_btn.is_hoverable = false
+				new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				new_btn.icon = item.resource.icon
+				new_btn.title = "%s%s %s" % ["+" if item.amount > 0 else "", item.amount, item.resource.name]
+				MetricsList.add_child(new_btn)
+				
+		ResourceGrid.hide() if resource_list.is_empty() else ResourceGrid.show()
+		MetricsList.hide() if metric_list.is_empty() else MetricsList.show()
+		NoBonusLabel.show() if resource_list.is_empty() and metric_list.is_empty() else NoBonusLabel.hide()

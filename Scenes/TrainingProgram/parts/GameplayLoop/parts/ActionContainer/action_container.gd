@@ -4,13 +4,18 @@ extends GameContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
 @onready var Details:Control = $Details
 @onready var DetailsPanel:PanelContainer = $Details/PanelContainer
-@onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Researchers/ResearcherList
-@onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Researchers/HBoxContainer/ResearcherCount
-@onready var ScpDetails:VBoxContainer = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/ScpDetails
-@onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/ScpDetails/ScpMiniCard
-@onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Room/RoomMiniCard
 
-@onready var BtnPanel:PanelContainer = $PanelContainer
+@onready var Researchers:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers
+@onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/Researchers/HBoxContainer/ResearcherCount
+@onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/Researchers/ResearcherList
+@onready var TraitContainer:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/TraitContainer
+@onready var TraitList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/TraitContainer/VBoxContainer/TraitList
+@onready var SynergyContainer:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/SynergyContainer
+@onready var SynergyTraitList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/SynergyContainer/SynergyTraitList
+
+@onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/Room/ScpMiniCard
+@onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/Room/RoomMiniCard
+
 
 @onready var LeftSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
@@ -18,6 +23,7 @@ extends GameContainer
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
 const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
+const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
 
 var disable_inputs_while_menu_is_open:bool = false
 var previous_camera_type:int
@@ -29,21 +35,25 @@ var is_setup:bool = false
 
 var restore_pos:int
 var details_restore_pos:int
+var traits_restore_pos:int
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	
-	Details.hide()
+	Details.modulate = Color(1, 1, 1, 0)
 	
-	for child in [RightSideBtnList, LeftSideBtnList, ResearcherList]:
+	for child in [RightSideBtnList, LeftSideBtnList, ResearcherList, SynergyTraitList, TraitList]:
 		for node in child.get_children():
 			node.queue_free()	
 	
 	await U.set_timeout(1.0)	
-	restore_pos = MainPanel.position.y		
+	restore_pos = MainPanel.position.x		
 	details_restore_pos = DetailsPanel.position.x
-	U.tween_node_property(DetailsPanel, "position:x", details_restore_pos - DetailsPanel.size.x)
+	#traits_restore_pos = TraitsPanel.position.x
+	
+	U.tween_node_property(DetailsPanel, "position:x", details_restore_pos + DetailsPanel.size.x)
+	#U.tween_node_property(TraitsPanel, "position:x", traits_restore_pos + TraitsPanel.size.x + 10)	
 # --------------------------------------------------------------------------------------------------		
 
 
@@ -70,31 +80,37 @@ func toggle_camera_view() -> void:
 func on_is_showing_update() -> void:	
 	super.on_is_showing_update()
 	if !is_setup:return	
-	U.tween_node_property(MainPanel, "position:y", restore_pos if is_showing else MainPanel.size.y + 20, 0.7)
+	U.tween_node_property(MainPanel, "position:x", restore_pos if is_showing else MainPanel.size.x + 20, 0.7)
 	await U.set_timeout(1.0)
 	MainPanel.set_anchors_preset(Control.PRESET_FULL_RECT)	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------			
 func show_details() -> void:
+	# enable/disable buttons
+	ActiveMenu.freeze_inputs = false
+	set_btn_disabled_state(true)
+		
+	# clear list
+	for child in [TraitList, SynergyTraitList]:
+		for item in child.get_children():
+			item.queue_free()
+				
 	# animate in/out
-	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
-	Details.show()
+	await GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+	Details.modulate = Color(1, 1, 1, 1)
 	U.tween_node_property(DetailsPanel, "position:x", details_restore_pos)	
+	#U.tween_node_property(TraitsPanel, "position:x", traits_restore_pos)	
 	
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:
-		await U.tween_node_property(DetailsPanel, "position:x", details_restore_pos - DetailsPanel.size.x)
-		Details.hide()
+		#U.tween_node_property(TraitsPanel, "position:x", traits_restore_pos + TraitsPanel.size.x + 10)	
+		await U.tween_node_property(DetailsPanel, "position:x", details_restore_pos + DetailsPanel.size.x)
 		GameplayNode.restore_player_hud()
 		set_btn_disabled_state(false)
 		for child in ResearcherList.get_children():
 			child.queue_free()
-
-	# enable/disable buttons
-	ActiveMenu.freeze_inputs = false
-	set_btn_disabled_state(true)
-
+			
 	# update room_extract
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
 	
@@ -117,20 +133,47 @@ func show_details() -> void:
 	# SCP DETAILS
 	if !room_extract.scp.is_empty():
 		ScpMiniCard.ref = room_extract.scp.details.ref
-	ScpDetails.show() if !room_extract.scp.is_empty() else ScpDetails.hide()
+	ScpMiniCard.show() if !room_extract.scp.is_empty() else ScpMiniCard.hide()
 	
 	# RESEARCHER DETAILS
 	if room_extract.researchers.is_empty():
-		for n in range(0, 2):
-			var mini_card:Control = ResearcherMiniCard.instantiate()
-			ResearcherList.add_child(mini_card)
+		Researchers.hide()
+		TraitContainer.hide()
+		SynergyContainer.hide()
 	else:
+		Researchers.show()
+		
+		var total_traits_list := []
+		var synergy_traits := []
+		var dup_list := []		
+		
 		for researcher in room_extract.researchers:
 			var mini_card:Control = ResearcherMiniCard.instantiate()
 			mini_card.researcher = researcher
 			mini_card.room_extract = room_extract
 			ResearcherList.add_child(mini_card)
-	ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]
+	
+			# add selected to selected list	
+			total_traits_list.push_back(researcher.traits)
+		ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]
+	
+	TraitContainer.show() if !room_extract.trait_list.is_empty() else TraitContainer.hide()
+	for item in room_extract.trait_list:
+		var card:Control = TraitCardPreload.instantiate()
+		card.ref = item.details.ref
+		card.effect = item.effect
+		card.show_output = true
+		TraitList.add_child(card)
+	
+	SynergyContainer.hide() if room_extract.synergy_trait_list.is_empty() else SynergyContainer.show()
+	for item in room_extract.synergy_trait_list:
+		var card:Control = TraitCardPreload.instantiate()
+		card.ref = item.details.ref
+		card.effect = item.effect
+		card.show_output = true
+		card.is_synergy = true
+		SynergyTraitList.add_child(card)
+	
 	
 	ActiveMenu.options_list = options_list
 	await U.tick()

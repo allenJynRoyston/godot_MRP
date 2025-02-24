@@ -1,18 +1,25 @@
-[gd_scene load_steps=8 format=3 uid="uid://mvalbebjx6bu"]
+[gd_scene load_steps=7 format=3 uid="uid://mvalbebjx6bu"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/scp_mini_card.gd" id="1_ca1ce"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_d4li6"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_a6gs7"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_l2kua"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dwfri"]
 bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aud1r"]
-bg_color = Color(0, 0, 0, 0.560784)
+bg_color = Color(0, 0, 0, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnohi"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1v2jg"]
 
 [node name="ScpMiniCard" type="PanelContainer"]
 offset_right = 160.0
@@ -60,16 +67,32 @@ text = "SCP NAME"
 label_settings = ExtResource("3_a6gs7")
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="OutputContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1v2jg")
 
-[node name="OutputList" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/VBoxContainer/OutputContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2"]
+layout_mode = 2
+alignment = 1
+
+[node name="MetricList" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 
-[node name="TextBtn" parent="HBoxContainer/VBoxContainer/MarginContainer/OutputList" instance=ExtResource("4_l2kua")]
+[node name="ResourceGrid" type="GridContainer" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bnohi")
+columns = 2
+
+[node name="NoBonusLabel" type="Label" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
+layout_mode = 2
+text = "NO BONUS"
+label_settings = ExtResource("3_a6gs7")
+horizontal_alignment = 1

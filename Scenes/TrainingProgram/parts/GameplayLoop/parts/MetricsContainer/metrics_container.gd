@@ -39,16 +39,6 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	if !is_node_ready() or room_config.is_empty():return	
 	update_metrics_labels()
 	update_status()
-	
-func on_purchased_facility_arr_update(new_val:Array) -> void:
-	super.on_purchased_facility_arr_update(new_val)	
-
-func on_resources_data_update(new_val:Dictionary) -> void:
-	super.on_resources_data_update(new_val)	
-
-func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
-	super.on_hired_lead_researchers_arr_update(new_val)
-
 
 func on_current_location_update(new_val:Dictionary) -> void:
 	super.on_current_location_update(new_val)
@@ -82,23 +72,30 @@ func update_status() -> void:
 # -----------------------------------------------	
 
 # -----------------------------------------------
-func merge_metric_data(arr:Array) -> Array:
-	var dict:Dictionary = {}
-	for item in arr:
-		if item.resource_data.ref not in dict:
-			dict[item.resource_data.ref] = item
-		dict[item.resource_data.ref].amount += item.amount
-	
-	var return_as_list:Array = []
-	for key in dict:
-		return_as_list.push_back(dict[key])
-	return return_as_list
+#func merge_metric_data(arr:Array) -> Array:
+	#var dict:Dictionary = {}
+	#for item in arr:
+		#if item.resource_data.ref not in dict:
+			#dict[item.resource_data.ref] = item
+		#dict[item.resource_data.ref].amount += item.amount
+	#
+	#var return_as_list:Array = []
+	#for key in dict:
+		#return_as_list.push_back(dict[key])
+	#return return_as_list
 # -----------------------------------------------	
 
 # -----------------------------------------------
 func update_metrics_labels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
 	var ring_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+	var extract_data:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+	
+	# ROOM INDIVIDUAL CHANGES 
+	#MoraleNode.value = extract_data.metric_details.total[RESOURCE.BASE_METRICS.MORALE] if RESOURCE.BASE_METRICS.MORALE in extract_data.metric_details.total else 0
+	#ReadinessNode.value = extract_data.metric_details.total[RESOURCE.BASE_METRICS.READINESS] if RESOURCE.BASE_METRICS.READINESS in extract_data.metric_details.total else 0
+	#SafeteyNode.value = extract_data.metric_details.total[RESOURCE.BASE_METRICS.SAFETY] if RESOURCE.BASE_METRICS.SAFETY in extract_data.metric_details.total else 0
+
 	
 	for key in ring_data.metrics:
 		var amount:int = ring_data.metrics[key]
