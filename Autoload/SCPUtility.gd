@@ -22,7 +22,7 @@ var SCP_001:Dictionary = {
 		ROOM.TYPE.STANDARD_LOCKER
 	],
 	"researcher_preferences": {
-		RESEARCHER.SPECALIZATION.ENGINEERING: 3,
+		#RESEARCHER.SPECIALIZATION.ENGINEERING: 3,
 	},	
 	# -----------------------------------
 	
@@ -599,7 +599,7 @@ var SCP_002:Dictionary = {
 		ROOM.TYPE.STANDARD_LOCKER
 	],
 	"researcher_preferences": {
-		RESEARCHER.SPECALIZATION.ENGINEERING: 3,
+		#RESEARCHER.SPECIALIZATION.ENGINEERING: 3,
 	},		
 	# -----------------------------------
 	

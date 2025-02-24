@@ -1,119 +1,321 @@
 extends UtilityWrapper
 
-	#HARD_WORKING,
-	#MOTIVATED, 
-	#CLEVER,
-	#STUBBORN
-
 var specialization_data:Dictionary = { 
-	RESEARCHER.SPECALIZATION.PSYCHOLOGY: {
+	RESEARCHER.SPECIALIZATION.PSYCHOLOGY: {
 		"name": "PSYCHOLOGY",
 		"icon": SVGS.TYPE.ENERGY,
 	},
-	RESEARCHER.SPECALIZATION.BIOLOGY: {
+	RESEARCHER.SPECIALIZATION.BIOLOGIST: {
 		"name": "BIOLOGY",
 		"icon": SVGS.TYPE.ENERGY,
 	},
-	RESEARCHER.SPECALIZATION.ENGINEERING: {
+	RESEARCHER.SPECIALIZATION.ENGINEERING: {
 		"name": "ENGINEERING",
 		"icon": SVGS.TYPE.ENERGY,
-	}
-}
-
-var trait_data:Dictionary = {
-	RESEARCHER.TRAITS.HARD_WORKING: {
-		"name": "HARD_WORKING",
-		"description": "Add +2 to whatever the facility outputs.",
+	},
+	RESEARCHER.SPECIALIZATION.COMPUTER_SCIENCE: {
+		"name": "COMPUTER SCIENCE",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(details:Dictionary) -> Dictionary:		
-			var room_details:Dictionary = details.room_details
-			var scp_details:Dictionary = details.scp_details
-			var resource_details:Dictionary = details.resource_details
-			var resource:Dictionary
-			
-			for key in resource_details.facility:
-				if key not in resource:
-					resource[key] = 0
-				resource[key] = 2
-			
-			return {
-				"resource": resource,
-			},
+	},
+	RESEARCHER.SPECIALIZATION.MATHEMATICS: {
+		"name": "MATHEMATICS",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.PHYSICS: {
+		"name": "PHYSICS",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.CHEMISTRY: {
+		"name": "CHEMISTRY",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.MEDICINE: {
+		"name": "MEDICINE",
+		"icon": SVGS.TYPE.ENERGY,
+	},	
+	RESEARCHER.SPECIALIZATION.PHARMACOLOGY: {
+		"name": "PHARMACOLOGY",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.NEUROSCIENCE: {
+		"name": "NEUROSCIENCE",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.SOCIOLOGY: {
+		"name": "SOCIOLOGY",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.ANTHROPOLOGY: {
+		"name": "ANTHROPOLOGY",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.PHILOSOPHY: {
+		"name": "PHILOSOPHY",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.PARAZOOLOGIST: {
+		"name": "PARAZOOLOGIST",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.THAUMATURGIC_ANALYST: {
+		"name": "THAUMATURGIC ANALYST",
+		"icon": SVGS.TYPE.ENERGY,
+	},
+	RESEARCHER.SPECIALIZATION.XENOBIOLOGIST: {
+		"name": "XENOBIOLOGIST",
+		"icon": SVGS.TYPE.ENERGY,
+	}
+};
+
+var trait_data: Dictionary = {
+	RESEARCHER.TRAITS.HARD_WORKING: {
+		"name": "HARD WORKING",
+		"description": "Always willing to put in extra effort and time to complete tasks efficiently.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
 	},
 	RESEARCHER.TRAITS.MOTIVATED: {
 		"name": "MOTIVATED",
-		"description": "If this room produces at least 5 ENERGY, increase MORALE by 1.",
+		"description": "Driven to succeed and overcome obstacles, even in challenging situations.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(details:Dictionary) -> Dictionary:		
-			var resource_details:Dictionary = details.resource_details
-			if RESOURCE.TYPE.SCIENCE in resource_details.facility and resource_details.facility[RESOURCE.TYPE.SCIENCE] >= 5:
-				return {
-					"metrics": {
-						RESOURCE.BASE_METRICS.MORALE: 1
-					}
-				}
-			
+		"get_effect": func(details: Dictionary) -> Dictionary:
 			return {},
 	},
 	RESEARCHER.TRAITS.CLEVER: {
 		"name": "CLEVER",
-		"description": "CLEVER description goes here.",
+		"description": "Able to quickly find solutions and think outside the box when faced with problems.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(details:Dictionary) -> Dictionary:		
-			var room_details:Dictionary = details.room_details
-			var scp_details:Dictionary = details.scp_details
-			var resource_details:Dictionary = details.resource_details			
-			return {
-
-			},
-	},	
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
 	RESEARCHER.TRAITS.STUBBORN: {
 		"name": "STUBBORN",
-		"description": "STUBBORN description goes here.",
+		"description": "Refuses to give up even when faced with resistance, often pushing through obstacles.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(details:Dictionary) -> Dictionary:		
-			var room_details:Dictionary = details.room_details
-			var scp_details:Dictionary = details.scp_details
-			var resource_details:Dictionary = details.resource_details			
-			return {
-
-			},
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
 	},
+	RESEARCHER.TRAITS.ADAPTABLE: {
+		"name": "ADAPTABLE",
+		"description": "Quick to adjust and thrive in changing environments or situations.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.CHARISMATIC: {
+		"name": "CHARISMATIC",
+		"description": "Has a magnetic personality that inspires and motivates others to follow.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.EMPATHETIC: {
+		"name": "EMPATHETIC",
+		"description": "Cares about others.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.RESOURCEFUL: {
+		"name": "RESOURCEFUL",
+		"description": "Able to make the most out of limited resources and find creative solutions.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.PATIENT: {
+		"name": "PATIENT",
+		"description": "Willing to wait for the right moment and methodically work toward a goal.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.ASSERTIVE: {
+		"name": "ASSERTIVE",
+		"description": "Able to express one's thoughts, feelings, and beliefs in an open and respectful manner.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.DISCIPLINED: {
+		"name": "DISCIPLINED",
+		"description": "Maintains focus and control over one's actions to achieve long-term goals.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.AMBITIOUS: {
+		"name": "AMBITIOUS",
+		"description": "Has a strong desire to achieve great things and improve oneself.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.INNOVATIVE: {
+		"name": "INNOVATIVE",
+		"description": "Constantly thinking of new and creative solutions to problems.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.LOYAL: {
+		"name": "LOYAL",
+		"description": "Dedicated to and supportive of the organization or people they work with.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.PRAGMATIC: {
+		"name": "PRAGMATIC",
+		"description": "Focused on practical results and making decisions based on reality rather than ideals.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.METICULOUS: {
+		"name": "METICULOUS",
+		"description": "Pays great attention to detail and ensures everything is done precisely.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.OPTIMISTIC: {
+		"name": "OPTIMISTIC",
+		"description": "Maintains a positive outlook and expects the best outcomes.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.REALISTIC: {
+		"name": "REALISTIC",
+		"description": "Has a practical and logical view of situations, with an eye on the current circumstances.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.HUMBLE: {
+		"name": "HUMBLE",
+		"description": "Modest and free of arrogance, often valuing the contributions of others.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.COURAGEOUS: {
+		"name": "COURAGEOUS",
+		"description": "Willing to face danger or difficult situations despite fear or uncertainty.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.STRATEGIC: {
+		"name": "STRATEGIC",
+		"description": "Plans ahead, considering all variables and potential outcomes to achieve a goal.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.IMPULSIVE: {
+		"name": "IMPULSIVE",
+		"description": "Acts quickly and without much thought, often following immediate desires or instincts.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.INDEPENDENT: {
+		"name": "INDEPENDENT",
+		"description": "Works well alone and prefers to take initiative without relying on others.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.CURIOUS: {
+		"name": "CURIOUS",
+		"description": "Always eager to learn new things and discover unknown aspects of the world.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.TRAITS.PESSIMISTIC: {
+		"name": "PESSIMISTIC",
+		"description": "Tends to expect negative outcomes and focuses on the downside of situations.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	}
 }
 
-var synergy_trait_data:Dictionary = {
+var synergy_trait_data: Dictionary = {
 	RESEARCHER.SYNERGY_TRAITS.DREAM_TEAM: {
-		"name": "DREAM_TEAM",
-		"description": "DREAM_TEAM description goes here.",
+		"name": "DREAM TEAM",
+		"description": "Combines cleverness and motivation to overcome challenges with creativity and determination.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(details:Dictionary) -> Dictionary:		
-			return {
-				"resource": {
-					RESOURCE.TYPE.MONEY: 1,
-				},
-				"metrics": {
-					RESOURCE.BASE_METRICS.MORALE: 1
-				}
-			},
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
 	},
-	RESEARCHER.SYNERGY_TRAITS.UNRELENTING: {
-		"name": "UNRELENTING",
-		"description": "Adds the same amount of SCIENCE to the highest value this facility outputs.",
+	RESEARCHER.SYNERGY_TRAITS.ARCHITECTS_OF_SUCCESS: {
+		"name": "ARCHITECTS OF SUCCESS",
+		"description": "Resourcefulness and meticulous planning ensure every project is built to last.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(details:Dictionary) -> Dictionary:		
-			var resource_details:Dictionary = details.resource_details
-			var highest_val:int = 0
-			for key in resource_details.facility:
-				var amount:int = resource_details.facility[key]
-				if amount > highest_val:
-					highest_val = amount	
-			
-			return {
-				"resource": {
-					RESOURCE.TYPE.SCIENCE: highest_val
-				},
-			},
-	}	
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.SYNERGY_TRAITS.BALANCING_ACT: {
+		"name": "BALANCING ACT",
+		"description": "A perfect harmony of pragmatic realism and boundless optimism, keeping projects grounded yet ambitious.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	RESEARCHER.SYNERGY_TRAITS.POWER_PAIR: {
+		"name": "POWER PAIR",
+		"description": "Charisma and strategy combine to lead teams with vision and precision.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+	
+	
+	RESEARCHER.SYNERGY_TRAITS.TRAILBLAZER: {
+		"name": "TRAILBLAZER",
+		"description": "Combines innovation and courage to forge new paths and tackle the unknown head-on.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+
+	RESEARCHER.SYNERGY_TRAITS.SPARK_AND_GRIND: {
+		"name": "SPARK AND GRIND",
+		"description": "Merges cleverness and hard work to achieve breakthroughs through insight and relentless effort.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+
+	RESEARCHER.SYNERGY_TRAITS.ADAPTIVE_THINKER: {
+		"name": "ADAPTIVE THINKER",
+		"description": "Combines adaptability and strategy to navigate challenges with flexible, well-planned approaches.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+
+	RESEARCHER.SYNERGY_TRAITS.VISIONARY: {
+		"name": "VISIONARY",
+		"description": "Blends optimism and curiosity to see possibilities where others see obstacles.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},
+
+	RESEARCHER.SYNERGY_TRAITS.MAD_GENIUS: {
+		"name": "MAD GENIUS",
+		"description": "Combines wild innovation with impulsive action, leading to groundbreaking discoveries—or spectacular failures.",
+		"icon": SVGS.TYPE.ENERGY,
+		"get_effect": func(details: Dictionary) -> Dictionary:
+			return {},
+	},	
+	
 }
 
 # ------------------------------------------------------------------------------
@@ -147,7 +349,7 @@ func generate_researcher() -> Array:
 		var rand:int = U.generate_rand(0, 100)
 		if i < rand:
 			break
-		var val:int = U.generate_rand(0, RESEARCHER.SPECALIZATION.size() - 1)
+		var val:int = U.generate_rand(0, RESEARCHER.SPECIALIZATION.size() - 1)
 		if val not in specialization:
 			specialization.push_back( val )
 		
@@ -248,7 +450,7 @@ func return_synergy_trait_data(key:RESEARCHER.SYNERGY_TRAITS) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_specialization_data(key:RESEARCHER.SPECALIZATION) -> Dictionary:
+func return_specialization_data(key:RESEARCHER.SPECIALIZATION) -> Dictionary:
 	specialization_data[key].ref = key
 	return specialization_data[key]
 # ------------------------------------------------------------------------------

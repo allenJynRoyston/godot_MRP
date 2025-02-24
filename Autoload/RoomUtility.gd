@@ -681,13 +681,13 @@ var STANDARD_LOCKER:Dictionary = {
 	},
 	# ------------------------------------------	
 	"specilization_bonus": func(specilizations:Array) -> Dictionary:
-		if RESEARCHER.SPECALIZATION.BIOLOGY in specilizations:
+		if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
 			return {
 				"resource":{
 					RESOURCE.TYPE.ENERGY: 2
 				},
 			}
-		if RESEARCHER.SPECALIZATION.PSYCHOLOGY in specilizations:
+		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
 			return {
 				"metrics":{
 					RESOURCE.BASE_METRICS.MORALE: 1

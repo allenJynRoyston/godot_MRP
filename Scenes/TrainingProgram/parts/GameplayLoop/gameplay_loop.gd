@@ -2375,14 +2375,15 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
 			# EVENT FIRES
-			#await show_only([Structure3dContainer])	
-			#PhaseAnnouncement.start("CONTAINMENT REQUEST")	
-			#current_select_scp_step = SELECT_SCP_STEPS.START
-			#await on_scp_select_complete		
-			#await PhaseAnnouncement.end()
+			await show_only([Structure3dContainer])	
+			PhaseAnnouncement.start("CONTAINMENT REQUEST")	
+			current_select_scp_step = SELECT_SCP_STEPS.START
+			await on_scp_select_complete		
+			await PhaseAnnouncement.end()
 			
 			# IF NO EVENTS, NO NEED FOR AWAIT
-			PhaseAnnouncement.end()
+			#PhaseAnnouncement.end()
+			
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
 		PHASE.CONCLUDE:			
