@@ -5,7 +5,7 @@ extends PanelContainer
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
-@onready var StoreContainer:MarginContainer = $StoreContainer
+@onready var StoreContainer:PanelContainer = $StoreContainer
 @onready var ContainmentContainer:MarginContainer = $ContainmentContainer
 @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
@@ -2445,7 +2445,7 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			selected_shop_item = {}
 			
-			StoreContainer.start('ROOM')
+			StoreContainer.start()
 			await show_only([StoreContainer, Structure3dContainer])
 			var response:Dictionary = await StoreContainer.user_response
 

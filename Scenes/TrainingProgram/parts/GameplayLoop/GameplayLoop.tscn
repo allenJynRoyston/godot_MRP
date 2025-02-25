@@ -87,8 +87,6 @@ layout_mode = 2
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]
 layout_mode = 2

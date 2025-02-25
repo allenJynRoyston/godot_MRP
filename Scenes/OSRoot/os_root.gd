@@ -42,6 +42,7 @@ func _ready() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
 	# ENABLE FOR DESKTOP PC 
+	print("game resolution: ", resolution)
 	on_fullscreen_update(resolution)
 	#print("resolution: ", resolution)
 
@@ -77,7 +78,7 @@ func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
 func toggle_fullscreen() -> void:
 	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
-		on_fullscreen_update(resolution * .75)
+		on_fullscreen_update(resolution)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
 		on_fullscreen_update(resolution)

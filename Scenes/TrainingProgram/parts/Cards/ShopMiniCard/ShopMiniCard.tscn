@@ -1,0 +1,135 @@
+[gd_scene load_steps=12 format=3 uid="uid://jacix3bun03x"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/shop_mini_card.gd" id="1_7gy44"]
+[ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="1_a1ssm"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_blnkg"]
+[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="4_kx7lq"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_sh3ly"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_v1vnd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4dj8h"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3i7t"]
+bg_color = Color(0, 0.529412, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r7u1y"]
+bg_color = Color(1, 1, 1, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5qkq6"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g27v5"]
+
+[node name="PanelContainer" type="PanelContainer"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_4dj8h")
+script = ExtResource("1_7gy44")
+is_hoverable = false
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("1_a1ssm")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LockPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="LockPanel"]
+layout_mode = 2
+
+[node name="IconBtn" parent="LockPanel/CenterContainer" instance=ExtResource("4_sh3ly")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+icon = 43
+is_hoverable = false
+
+[node name="InfoContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InfoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="PanelContainer" type="PanelContainer" parent="InfoContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r3i7t")
+
+[node name="MarginContainer" type="MarginContainer" parent="InfoContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="InfoContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="InfoContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "HUMAN RESOURCES "
+label_settings = ExtResource("2_blnkg")
+
+[node name="CheckBox" parent="InfoContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_kx7lq")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r7u1y")
+no_bg = true
+
+[node name="MarginContainer" type="MarginContainer" parent="InfoContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="InfoContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 1
+
+[node name="PurchaseBtn" parent="InfoContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_v1vnd")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5qkq6")
+icon = 30
+panel_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+title = "22"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -10.0
+offset_right = 10.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_g27v5")
+
+[node name="IconBtn" parent="Control/PanelContainer" instance=ExtResource("4_sh3ly")]
+visible = false
+layout_mode = 2
+icon = 50
+is_hoverable = false
