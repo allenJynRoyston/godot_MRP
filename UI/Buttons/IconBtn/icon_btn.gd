@@ -28,13 +28,17 @@ extends BtnBase
 		flip_h = val
 		on_flip_h_update()
 		
-
+@export var flip_v:bool = false : 
+	set(val):
+		flip_v = val
+		on_flip_v_update()
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	on_is_hoverable_update()
 	on_flip_h_update()
+	on_flip_v_update()
 	on_icon_update()
 # ------------------------------------------------------------------------------
 
@@ -62,6 +66,10 @@ func on_focus(state:bool = is_focused) -> void:
 func on_flip_h_update() -> void:
 	if !is_node_ready():return
 	Btn.flip_h = flip_h
+	
+func on_flip_v_update() -> void:
+	if !is_node_ready():return
+	Btn.flip_v = flip_v
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	super.on_mouse_click(node, btn, on_hover)

@@ -8,27 +8,34 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "The site directors office.",
 	"can_contain": true,
+	"requires_unlock": false,
 	
-	"prerequisites": [
-
-	],		
-	"placement_restrictions": {
-
-	},
+	# ------------------------------------------
 	"own_limit": func() -> int:
 		return 1,
 	"get_build_time": func() -> int:
 		return 1,
-	
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"prerequisites": [
+
+	],
+	"placement_restrictions": {
+
+	},
+	# ------------------------------------------
 
 	# ------------------------------------------
-	"wing_effect": func(extract_data:Dictionary) -> Dictionary:				
-		return {
-			RESOURCE.BASE_METRICS.SAFETY: -1
-		},
-	# ------------------------------------------
-
-	# ------------------------------------------
+	"unlock_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					
+				},
+		}	
+	},
+		
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -84,7 +91,8 @@ var HQ:Dictionary = {
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Base headquarters.",
 	"can_contain": false,
-	
+	"requires_unlock": true,
+		
 	"prerequisites": [
 
 	],		
@@ -99,11 +107,20 @@ var HQ:Dictionary = {
 
 
 	# ------------------------------------------
+	"unlock_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.SCIENCE: -10
+				},
+		}	
+	},
+		
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -2
+					RESOURCE.TYPE.MONEY: -20
 				},
 		}	
 	},
@@ -146,32 +163,35 @@ var HQ:Dictionary = {
 var R_AND_D_LAB:Dictionary = {
 	"name": "R&D LAB",
 	"shortname": "R&D LAB",
-	"tier": TIER.VAL.ZERO,
+	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Enables research and development.",
 	"can_contain": false,
+	"requires_unlock": true,
 	
 	"prerequisites": [
 		ROOM.TYPE.HQ
 	],	
 		
 	"placement_restrictions": {
-		"floor": [
-			ROOM.PLACEMENT.SURFACE,
-			ROOM.PLACEMENT.B1
-		],
-		"ring": [
-			ROOM.PLACEMENT.RING_A, 
-			ROOM.PLACEMENT.RING_B
-		]
+
 	},
 
 	"own_limit": func() -> int:
-		return 3,
+		return 2,
 	"get_build_time": func() -> int:
 		return 1,
 
 	# ------------------------------------------
+	"unlock_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -30
+				},
+		}	
+	},
+		
 	"purchase_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -698,9 +718,12 @@ var STANDARD_LOCKER:Dictionary = {
 }
 
 var reference_data:Dictionary = {
+	# TIER ZERO
 	ROOM.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE,
 	ROOM.TYPE.HQ: HQ,
-	#ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
+	# TIER ONE
+	
+	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
 	#ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	#ROOM.TYPE.BARRICKS: BARRICKS,
 	#ROOM.TYPE.DORMITORY: DORMITORY,
@@ -712,52 +735,52 @@ var reference_data:Dictionary = {
 	
 }
 
-var tier_data:Dictionary = {
-	TIER.VAL.ZERO: {
-		"name": "ADMIN",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 0,
-			},
-	},
-	TIER.VAL.ONE: {
-		"name": "CONTAINMENT",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 5,
-			},
-	},
-	TIER.VAL.TWO: {
-		"name": "ADVANCED",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 50,
-			},
-	},
-	TIER.VAL.THREE: {
-		"name": "METAPHYSICAL",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 250,
-			},
-	},
-	TIER.VAL.FOUR: {
-		"name": "TECHNOLOGICAL",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 500,
-			},
-	},
-}
+#var tier_data:Dictionary = {
+	#TIER.VAL.ZERO: {
+		#"name": "ADMIN",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 0,
+			#},
+	#},
+	#TIER.VAL.ONE: {
+		#"name": "CONTAINMENT",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 5,
+			#},
+	#},
+	#TIER.VAL.TWO: {
+		#"name": "ADVANCED",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 50,
+			#},
+	#},
+	#TIER.VAL.THREE: {
+		#"name": "METAPHYSICAL",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 250,
+			#},
+	#},
+	#TIER.VAL.FOUR: {
+		#"name": "TECHNOLOGICAL",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 500,
+			#},
+	#},
+#}
 
 
 
-
-# ------------------------------------------------------------------------------
-func return_tier_data(key:TIER.VAL) -> Dictionary:
-	tier_data[key].ref = key
-	return tier_data[key]
-# ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func return_tier_data(key:TIER.VAL) -> Dictionary:
+	#tier_data[key].ref = key
+	#return tier_data[key]
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func return_data(ref:ROOM.TYPE) -> Dictionary:
@@ -778,6 +801,11 @@ func return_unavailable_rooms(ref:ROOM.TYPE, room_config:Dictionary) -> Array:
 # ------------------------------------------------------------------------------
 func return_purchase_cost(ref:ROOM.TYPE) -> Array:
 	return SHARED_UTIL.return_resource_list(return_data(ref), "purchase_costs")
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_unlock_costs(ref:ROOM.TYPE) -> Array:
+	return SHARED_UTIL.return_resource_list(return_data(ref), "unlock_costs")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -812,22 +840,27 @@ func return_specilization_bonus(ref:ROOM.TYPE, specilizations:Array) -> Array:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func calculate_purchase_cost(ref:ROOM.TYPE, resources_data:Dictionary, add:bool = false) -> Dictionary:		
+func calculate_unlock_cost(ref:ROOM.TYPE, add:bool = false) -> Dictionary:		
+	return SHARED_UTIL.calculate_resources(return_data(ref), "unlock_costs", resources_data, add)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func calculate_purchase_cost(ref:ROOM.TYPE, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_activation_effect(ref:ROOM.TYPE, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_activation_effect(ref:ROOM.TYPE, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "activation_effect", resources_data, !add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_operating_costs(ref:ROOM.TYPE, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_operating_costs(ref:ROOM.TYPE, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "operating_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_activation_cost(ref:ROOM.TYPE, resources_data:Dictionary, refund:bool = false) -> Dictionary:	
+func calculate_activation_cost(ref:ROOM.TYPE, refund:bool = false) -> Dictionary:	
 	var room_data:Dictionary = return_data(ref)
 	var resource_data_copy:Dictionary = resources_data.duplicate(true)
 
@@ -856,10 +889,10 @@ func get_count(ref:ROOM.TYPE, arr:Array) -> int:
 	return arr.filter(func(i):return i.ref == ref).size()
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func get_tier_dict() -> Dictionary:
-	return SHARED_UTIL.return_tier_dict(tier_data)
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func get_tier_dict() -> Dictionary:
+	#return SHARED_UTIL.return_tier_dict(tier_data)
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int, purchased_facility_arr:Array) -> Dictionary:
@@ -896,7 +929,8 @@ func has_prerequisites(ref:ROOM.TYPE, arr:Array) -> bool:
 func at_own_limit(ref:ROOM.TYPE) -> bool:
 	var room_data:Dictionary = return_data(ref)
 	var owned_count:int = purchased_facility_arr.filter(func(i): return i.ref == ref).size()
-	var in_progress_count:int = timeline_array.filter(func(i): return i.ref == ref and i.action == ACTION.PURCHASE.FACILITY_ITEM).size()
+
+	var in_progress_count:int = timeline_array.filter(func(i): return i.ref == ref and i.action == ACTION.AQ.BUILD_ITEM).size()
 	var total_count:int = owned_count + in_progress_count
 	
 	if "own_limit" not in room_data or room_data.own_limit.call() == -1:

@@ -38,6 +38,14 @@ var details_restore_pos:int
 var traits_restore_pos:int
 
 # --------------------------------------------------------------------------------------------------
+func _init() -> void:
+	super._init()
+	GBL.register_node(REFS.ACTION_CONTAINER, self)
+	
+func _exit_tree() -> void:
+	super._exit_tree()
+	GBL.unregister_node(REFS.ACTION_CONTAINER)
+	
 func _ready() -> void:
 	super._ready()
 	
@@ -53,7 +61,6 @@ func _ready() -> void:
 
 	U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
 # --------------------------------------------------------------------------------------------------		
-
 
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:
@@ -307,27 +314,27 @@ func open_room_menu() -> void:
 			set_btn_disabled_state(false)
 	})
 	
-	if room_is_empty:
-		if !is_room_under_construction:
-			options_list.push_back({
-				"title": "CONSTRUCT ROOM...",
-				"onSelect": func() -> void:
-					ActiveMenu.freeze_inputs = true				
-					var response:Dictionary = await GameplayNode.construct_room(current_location.duplicate())
-					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_room_menu()
-			})
-		else:
-			options_list.push_back({
-				"title": "CANCEL CONSTRUCTION",
-				"onSelect": func() -> void:
-					ActiveMenu.freeze_inputs = true			
-					var response:Dictionary = await GameplayNode.cancel_construction(current_location.duplicate())
-					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_room_menu()
-			})		
+	options_list.push_back({
+		"title": "CONSTRUCT ROOM...",
+		"onSelect": func() -> void:
+			ActiveMenu.freeze_inputs = true				
+			var response:Dictionary = await GameplayNode.construct_room(current_location.duplicate())
+			await U.set_timeout(0.7)
+			ActiveMenu.freeze_inputs = false
+			if response.has_changes:
+				open_room_menu()
+	})	
+	
+	if is_room_under_construction:
+		options_list.push_back({
+			"title": "CANCEL CONSTRUCTION",
+			"onSelect": func() -> void:
+				ActiveMenu.freeze_inputs = true			
+				var response:Dictionary = await GameplayNode.cancel_construction(current_location.duplicate())
+				ActiveMenu.freeze_inputs = false
+				if response.has_changes:
+					open_room_menu()
+		})		
 
 	if !room_is_empty:
 		if !is_room_active:
@@ -858,6 +865,11 @@ func buildout_btns() -> void:
 	is_setup = true
 # --------------------------------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------------------------------
+func set_backdrop_state(state:bool) -> void:
+	await U.tween_node_property(Backdrop, 'color', Color(0, 0.1, 0, 0.4 if state else 0.0))	
+# --------------------------------------------------------------------------------------------------	
+
 # --------------------------------------------------------------------------------------------------		
 func set_btn_disabled_state(state:bool) -> void:
 	await U.tick() # DO NOT REMOVE
@@ -865,7 +877,7 @@ func set_btn_disabled_state(state:bool) -> void:
 		for node in child.get_children():
 			node.is_disabled = state
 	disable_inputs_while_menu_is_open = state
-	U.tween_node_property(Backdrop, 'color', Color(0, 0.1, 0, 0.4 if state else 0.0))
+	set_backdrop_state(state)	
 
 func on_left_btn_list_update(list:Array, reload:bool) -> void:
 	if !is_node_ready():return
@@ -928,48 +940,6 @@ func on_right_btn_list_update(list:Array, reload:bool) -> void:
 			btn_node.is_disabled = (item.is_disabled if "is_disabled" in item else false) if !disable_inputs_while_menu_is_open else btn_node.is_disabled
 # --------------------------------------------------------------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------
-func room_up() -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.UP)
-	if room_index == -1:
-		if current_location.floor - 1 >= 0:
-			var next_val:int = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
-			current_location.floor = next_val
-			current_location.room = 4
-	else:
-		current_location.room = room_index	
-
-func room_down() -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.DOWN)
-	if room_index == -1:
-		if current_location.floor + 1 < room_config.floor.size() - 1:
-			var next_val:int = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
-			current_location.floor = next_val
-			current_location.room = 4	
-	else:
-		current_location.room = room_index	
-
-func room_right() -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.RIGHT)
-	if room_index == -1:
-		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
-			var next_val:int = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-			current_location.ring = next_val
-			current_location.room = 4	
-	else:
-		current_location.room = room_index	
-
-func room_left() -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.LEFT)
-	if room_index == -1:
-		if current_location.ring > 0:
-			var next_val:int = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
-			current_location.ring = next_val
-			current_location.room = 4
-	else:
-		current_location.room = room_index	
-# --------------------------------------------------------------------------------------------------		
-		
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_showing or GameplayNode.is_occupied() or current_location.is_empty() or room_config.is_empty() or freeze_inputs or disable_inputs_while_menu_is_open:return
@@ -983,25 +953,25 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
 					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
-					room_up()
+					U.room_up()
+					
 		"S":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
 				CAMERA.TYPE.ROOM_SELECT:
-					room_down()
+					U.room_down()
 		"D":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					current_location.ring = clampi(current_location.ring + 1, 0, 3)
 				CAMERA.TYPE.ROOM_SELECT:
-					room_right()
+					U.room_right()
 		"A":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					current_location.ring = clampi(current_location.ring - 1, 0, 3)				
 				CAMERA.TYPE.ROOM_SELECT:
-					room_left()
+					U.room_left()
 					
-	SUBSCRIBE.current_location = current_location
 # --------------------------------------------------------------------------------------------------	

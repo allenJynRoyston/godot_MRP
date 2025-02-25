@@ -32,12 +32,7 @@ enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, METRIC_EVENTS, RANDOM_EVENTS,
 
 enum SHOP_STEPS {
 	RESET, 
-	START_BASE, 
-	START_ROOM,
-	PLACEMENT,
-	CONFIRM_RESEARCH_ITEM_PURCHASE, CONFIRM_BUILD, CONFIRM_TIER_PURCHASE, CONFIRM_BASE_ITEM_PURCHASE,
-	FINALIZE_PURCHASE_BUILD, FINALIZE_PURCHASE_RESEARCH, FINALIZE_PURCHASE_TIER, FINALIZE_PURCHASE_BASE_ITEM,
-	REFUND
+	OPEN
 }
 enum CONTAIN_STEPS {
 	RESET, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
@@ -239,33 +234,8 @@ var initial_values:Dictionary = {
 			},
 		},
 	# ----------------------------------
-	"tier_unlocked": func() -> Dictionary:
-		return {
-			TIER.TYPE.BASE_DEVELOPMENT: {
-				TIER.VAL.ZERO: true,
-				TIER.VAL.ONE: false,
-				TIER.VAL.TWO: false,
-				TIER.VAL.THREE: false,
-				TIER.VAL.FOUR: false,
-				TIER.VAL.FIVE: false
-			},
-			TIER.TYPE.FACILITY: {
-				TIER.VAL.ZERO: true,
-				TIER.VAL.ONE: false,
-				TIER.VAL.TWO: false,
-				TIER.VAL.THREE: false,
-				TIER.VAL.FOUR: false,
-				TIER.VAL.FIVE: false
-			},
-			TIER.TYPE.RESEARCH_AND_DEVELOPMENT: {
-				TIER.VAL.ZERO: true,
-				TIER.VAL.ONE: false,
-				TIER.VAL.TWO: false,
-				TIER.VAL.THREE: false,
-				TIER.VAL.FOUR: false,
-				TIER.VAL.FIVE: false
-			},
-		},
+	"shop_unlock_purchases": func() -> Array:
+		return [],
 	# ----------------------------------
 	"room_config": func() -> Dictionary:
 		return {
@@ -358,7 +328,7 @@ var camera_settings:Dictionary
 var current_location:Dictionary
 var base_states:Dictionary
 var resources_data:Dictionary 
-var tier_unlocked:Dictionary 
+var shop_unlock_purchases:Array 
 var researcher_hire_list:Array
 var action_queue_data:Array
 var purchased_facility_arr:Array 
@@ -470,7 +440,7 @@ signal on_complete_build_complete
 signal on_expired_scp_items_complete
 signal on_events_complete
 signal on_summary_complete
-signal on_store_closed
+signal on_store_closedt
 signal on_store_purchase_complete
 signal on_confirm_complete
 signal on_cancel_construction_complete
@@ -498,7 +468,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
-	SUBSCRIBE.subscribe_to_tier_unlocked(self)
+	SUBSCRIBE.subscribe_to_shop_unlock_purchases(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
@@ -518,7 +488,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
-	SUBSCRIBE.unsubscribe_to_tier_unlocked(self)
+	SUBSCRIBE.unsubscribe_to_shop_unlock_purchases(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
@@ -1423,10 +1393,10 @@ func activate_floor(from_location:Dictionary) -> Dictionary:
 # ------------------------------------------------------------------------------	
 func construct_room(from_location:Dictionary) -> Dictionary:
 	SUBSCRIBE.suppress_click = true
-	current_shop_step = SHOP_STEPS.START_ROOM
-	var made_purchase:bool = await on_store_purchase_complete
+	current_shop_step = SHOP_STEPS.OPEN
+	await on_store_purchase_complete
 	restore_player_hud()
-	return {"has_changes": made_purchase}
+	return {"has_changes": true}
 # ---------------------
 
 # ---------------------
@@ -1455,8 +1425,8 @@ func activate_room(from_location:Dictionary, room_ref:int, is_activated:bool, sh
 
 	# without confirm modal
 	if !stop:
-		resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, resources_data, is_activated)
-		resources_data = ROOM_UTIL.calculate_activation_effect(room_ref, resources_data, is_activated)
+		resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, is_activated)
+		resources_data = ROOM_UTIL.calculate_activation_effect(room_ref, is_activated)
 		SUBSCRIBE.resources_data = resources_data
 		# set is activated state here
 		base_states.room[U.location_to_designation(from_location)].is_activated = is_activated
@@ -1485,7 +1455,7 @@ func reset_room(from_location:Dictionary) -> Dictionary:
 					activate_room(from_location, room_extract.room.details.ref, false, false)
 					
 				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, resources_data, true)
+				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, true)
 		
 		restore_player_hud()
 		
@@ -1595,11 +1565,11 @@ func cancel_action_queue(timeline_item:Dictionary, include_restore:bool = true) 
 		ACTION.NEXT:
 			match timeline_item.action:
 				ACTION.AQ.BUILD_ITEM:
-					SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(timeline_item.ref, resources_data, true)
+					SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(timeline_item.ref, true)
 				ACTION.AQ.RESEARCH_ITEM:
-					SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(timeline_item.ref, resources_data, true)
+					SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(timeline_item.ref, true)
 				ACTION.AQ.BASE_ITEM:
-					SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(timeline_item.ref, resources_data, true)
+					SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(timeline_item.ref, true)
 				ACTION.AQ.CONTAIN:
 					cancel_scp_containment(timeline_item.ref)
 				ACTION.AQ.TRANSFER:
@@ -2145,8 +2115,8 @@ func on_purchased_research_arr_update(new_val:Array = purchased_research_arr) ->
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val 
 
-func on_tier_unlocked_update(new_val:Dictionary = tier_unlocked) -> void:
-	tier_unlocked = new_val
+func on_shop_unlock_purchases_update(new_val:Array = shop_unlock_purchases) -> void:
+	shop_unlock_purchases = new_val
 
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
@@ -2407,178 +2377,25 @@ func on_current_shop_step_update() -> void:
 		SHOP_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
 			await restore_player_hud()
-			StoreContainer.end()
-			on_store_closed.emit()		
-			on_store_purchase_complete.emit(false)	
 		# ---------------
-		SHOP_STEPS.START_BASE:
-			shop_revert_step = current_shop_step
-			SUBSCRIBE.suppress_click = true
-			selected_shop_item = {}
-			
-			StoreContainer.start('BASE')
-			await show_only([StoreContainer, Structure3dContainer])
-			var response:Dictionary = await StoreContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			match response.action:
-				ACTION.PURCHASE.BACK:
-					current_shop_step = SHOP_STEPS.RESET
-					
-				ACTION.PURCHASE.TIER_ITEM:
-					selected_shop_item = response.selected
-					current_shop_step = SHOP_STEPS.CONFIRM_TIER_PURCHASE
-				
-				ACTION.PURCHASE.BASE_ITEM:
-					selected_shop_item = response.selected
-					current_shop_step = SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE
-					
-				ACTION.PURCHASE.FACILITY_ITEM:
-					selected_shop_item = response.selected		
-					current_shop_step = SHOP_STEPS.PLACEMENT
-				
-				ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT:
-					selected_shop_item = response.selected
-					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE
-		# ---------------
-		SHOP_STEPS.START_ROOM:
+		SHOP_STEPS.OPEN:
 			shop_revert_step = current_shop_step
 			SUBSCRIBE.suppress_click = true
 			selected_shop_item = {}
 			
 			StoreContainer.start()
-			await show_only([StoreContainer, Structure3dContainer])
+			await show_only([StoreContainer, Structure3dContainer, ResourceContainer])
 			var response:Dictionary = await StoreContainer.user_response
+			await StoreContainer.end()
 
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			match response.action:
-				ACTION.PURCHASE.BACK:					
+				ACTION.BACK:					
 					current_shop_step = SHOP_STEPS.RESET
 					
-				ACTION.PURCHASE.TIER_ITEM:
-					selected_shop_item = response.selected
-					current_shop_step = SHOP_STEPS.CONFIRM_TIER_PURCHASE
-				
-				ACTION.PURCHASE.BASE_ITEM:
-					selected_shop_item = response.selected
-					current_shop_step = SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE
-					
-				ACTION.PURCHASE.FACILITY_ITEM:
-					selected_shop_item = response.selected		
-					current_shop_step = SHOP_STEPS.CONFIRM_BUILD
-				
-				ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT:
-					selected_shop_item = response.selected
-					current_shop_step = SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE					
-					
-		# ---------------
-		SHOP_STEPS.CONFIRM_TIER_PURCHASE:
-			ConfirmModal.set_props("Confirm TIER purchase?")
-			await show_only([Structure3dContainer, ConfirmModal])			
-			var confirm_response:Dictionary = await ConfirmModal.user_response			
-			match confirm_response.action:
-				ACTION.BACK:
-					current_shop_step = shop_revert_step
-				ACTION.NEXT:
-					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_TIER
-			
-		# ---------------
-		SHOP_STEPS.CONFIRM_RESEARCH_ITEM_PURCHASE:
-			ConfirmModal.set_props("Confirm research?")
-			await show_only([Structure3dContainer, ConfirmModal])
-			var confirm_response:Dictionary = await ConfirmModal.user_response
-			match confirm_response.action:
-				ACTION.BACK:
-					current_shop_step = shop_revert_step
-				ACTION.NEXT:
-					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH
+			on_store_purchase_complete.emit()	
+		## ---------------
 
-		# ---------------
-		SHOP_STEPS.CONFIRM_BASE_ITEM_PURCHASE:
-			ConfirmModal.set_props("Confirm base item purchase?")
-			await show_only([Structure3dContainer, ConfirmModal])
-			var confirm_response:Dictionary = await ConfirmModal.user_response
-			match confirm_response.action:
-				ACTION.BACK:
-					current_shop_step = shop_revert_step
-				ACTION.NEXT:
-					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM
-	
-		# ---------------
-		SHOP_STEPS.CONFIRM_BUILD:
-			var room_details:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
-			ConfirmModal.set_props("Purchase %s?" % [room_details.name], "Construction will take %s days." % [room_details.get_build_time.call()])
-			await show_only([Structure3dContainer, ConfirmModal])			
-			var confirm_response:Dictionary = await ConfirmModal.user_response			
-			match confirm_response.action:
-				ACTION.BACK:
-					current_shop_step = shop_revert_step
-				ACTION.NEXT:
-					current_shop_step = SHOP_STEPS.FINALIZE_PURCHASE_BUILD
-		# ---------------
-		SHOP_STEPS.FINALIZE_PURCHASE_BUILD:
-			var purchase_item_data:Dictionary = ROOM_UTIL.return_data(selected_shop_item.ref)
-			add_timeline_item({
-				"action": ACTION.AQ.BUILD_ITEM,
-				"ref": selected_shop_item.ref,
-				"title": purchase_item_data.name,
-				"icon": SVGS.TYPE.BUILD,
-				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
-				"description": "CONSTRUCTING",
-				"location": current_location.duplicate()
-			})
-			
-			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = SHOP_STEPS.RESET
-			on_store_purchase_complete.emit(true)
-		# ---------------
-		SHOP_STEPS.FINALIZE_PURCHASE_RESEARCH:
-			var purchase_item_data:Dictionary = RD_UTIL.return_data(selected_shop_item.ref)
-			add_timeline_item({
-				"action": ACTION.AQ.RESEARCH_ITEM,
-				"ref": selected_shop_item.ref,
-				"title": purchase_item_data.name,
-				"icon": SVGS.TYPE.RESEARCH,
-				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
-				"description": "RESEARCHING",
-				"location": current_location.duplicate()
-			})
-
-			
-			SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = shop_revert_step
-			on_store_purchase_complete.emit(true)
-		# ---------------
-		SHOP_STEPS.FINALIZE_PURCHASE_BASE_ITEM:
-			var purchase_item_data:Dictionary = BASE_UTIL.return_data(selected_shop_item.ref)
-			add_timeline_item({
-				"action": ACTION.AQ.BASE_ITEM,
-				"ref": selected_shop_item.ref,
-				"title": purchase_item_data.name,
-				"icon": SVGS.TYPE.RESEARCH,
-				"completed_at": purchase_item_data.get_build_time.call() if "get_build_time" in purchase_item_data else 0,
-				"description": "UPGRADING",
-				"location": current_location.duplicate()
-			})
-			
-			SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(selected_shop_item.ref, resources_data)
-			current_shop_step = shop_revert_step
-			on_store_purchase_complete.emit(true)
-		# ---------------
-		SHOP_STEPS.FINALIZE_PURCHASE_TIER:
-			# unlock the tier
-			tier_unlocked[selected_shop_item.tier_type][selected_shop_item.tier_data.ref] = true
-			
-			# remove costs
-			var resource_list:Dictionary = selected_shop_item.tier_data.get_unlock_cost.call()
-			for key in resource_list:
-				var amount:int = resource_list[key]
-				resources_data[key].amount -= amount	
-			
-			# update subscribes
-			SUBSCRIBE.resources_data = resources_data
-			SUBSCRIBE.tier_unlocked = tier_unlocked
-			current_shop_step = shop_revert_step
-			on_store_purchase_complete.emit(true)
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -3083,7 +2900,7 @@ func quicksave() -> void:
 		"resources_data": resources_data,
 		"bookmarked_rooms": bookmarked_rooms,
 		"researcher_hire_list": researcher_hire_list,
-		"tier_unlocked": tier_unlocked,
+		"shop_unlock_purchases": shop_unlock_purchases,
 		"base_states": base_states,
 		"unavailable_rooms": unavailable_rooms, 
 	}	
@@ -3119,7 +2936,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if no_save else restore_data.bookmarked_rooms
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if no_save else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if no_save else restore_data.purchased_research_arr
-	SUBSCRIBE.tier_unlocked = initial_values.tier_unlocked.call() if no_save else restore_data.tier_unlocked
+	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if no_save else restore_data.shop_unlock_purchases
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms.call() if no_save else restore_data.unavailable_rooms
 	SUBSCRIBE.base_states = initial_values.base_states.call() if no_save else restore_data.base_states
 	

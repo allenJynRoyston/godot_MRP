@@ -3,47 +3,239 @@ extends GameContainer
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
-@onready var AcceptBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/AcceptBtn
+
+@onready var UnlockBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/UnlockBtn
+@onready var PurchaseBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/PurchaseBtn
+@onready var PlacementBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/PlacementBtn
+@onready var SelectTabBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectTabBtn
 @onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
 
+
+@onready var Tabs:HBoxContainer = $HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs
+@onready var ActiveHeaderLabel:Label = $ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer/ActiveHeaderLabel
+@onready var GridContent:GridContainer = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
+@onready var ActiveHeaderPanel:PanelContainer = $ActiveHeader/ActiveHeaderPanel
 @onready var HeaderPanel:PanelContainer = $HeaderControl/HeaderPanel
 @onready var MainPanel:PanelContainer = $MainControl/MainPanel
 
 @onready var DetailPanel:PanelContainer = $DetailControl/DetailPanel
 
+enum MODE {HIDE, TAB_SELECT, CONTENT_SELECT, PLACEMENT}
+
+const ShopMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn")
+
+var current_mode:MODE = MODE.HIDE : 
+	set(val):
+		current_mode = val
+		on_current_mode_update()
+
+var tab_index:int = 0 : 
+	set(val):
+		tab_index = val
+		on_tab_index_update()
+		
+var tab_btn_nodes:Array = []
+
+var grid_index:int = 0 : 
+	set(val):
+		grid_index = val
+		on_grid_index_update()
+
+var grid_list_data:Array
+
 var control_pos:Dictionary
 var is_setup:bool = false
+var is_animating:bool = false 
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	
-	AcceptBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.NEXT})
+	SelectTabBtn.onClick = func() -> void:		
+		if current_mode == MODE.TAB_SELECT:
+			await U.tick()
+			current_mode = MODE.CONTENT_SELECT
+	
+	UnlockBtn.onClick = func() -> void:
+		if current_mode == MODE.CONTENT_SELECT:
+			unlock_room()
+	
+	PurchaseBtn.onClick = func() -> void:
+		if current_mode == MODE.CONTENT_SELECT:
+			await U.tick()
+			current_mode = MODE.PLACEMENT
+		
+	PlacementBtn.onClick = func() -> void:
+		if current_mode == MODE.PLACEMENT:
+			purchase_room()
+			
+
+
 	BackBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.BACK})
+		match current_mode:
+			MODE.TAB_SELECT:
+				user_response.emit({"action": ACTION.BACK})
+			MODE.CONTENT_SELECT:
+				await U.tick()
+				current_mode = MODE.TAB_SELECT
+			MODE.PLACEMENT:
+				await U.tick()
+				current_mode = MODE.CONTENT_SELECT
+	
+	for child in GridContent.get_children():
+		child.queue_free()
 		
 	await U.set_timeout(1.0)	
 	control_pos[HeaderPanel]  = {"show": HeaderPanel.position.y, "hide": HeaderPanel.position.y - HeaderPanel.size.y}
-	control_pos[MainPanel] = {"show": MainPanel.position.x, "hide": MainPanel.position.x - MainPanel.size.x}
+	control_pos[ActiveHeaderPanel] = {"show": ActiveHeaderPanel.position.x, "hide": ActiveHeaderPanel.position.x - ActiveHeaderPanel.size.x - 20}
+	control_pos[MainPanel] = {"show": MainPanel.position.x, "hide": MainPanel.position.x - MainPanel.size.x - 20}
+	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + DetailPanel.size.x + 20}
 	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
-	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + DetailPanel.size.x}
 	
 	is_setup = true
 	on_is_showing_update(true)
+	on_tab_index_update()
+	on_current_mode_update()	
+	on_grid_index_update()	
+# --------------------------------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------------------------------
 func start() -> void:
-	pass
+	await U.tick()
+	current_mode = MODE.TAB_SELECT
 	
 func end() -> void:
-	pass
+	current_mode = MODE.HIDE
+	is_showing = false
+	await on_is_showing_update()
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func unlock_room() -> void:
+	# ADD PROMPT
+	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
+	if room_details.ref not in shop_unlock_purchases:
+		shop_unlock_purchases.push_back(room_details.ref)
+		
+	SUBSCRIBE.resources_data = ROOM_UTIL.calculate_unlock_cost(room_details.ref)
+	SUBSCRIBE.shop_unlock_purchases = shop_unlock_purchases
+	
+	await U.tick()
+	on_grid_index_update()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func purchase_room() -> void:
+	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
+	GameplayNode.add_timeline_item({
+		"action": ACTION.AQ.BUILD_ITEM,
+		"ref": room_details.ref,
+		"title": room_details.name,
+		"icon": SVGS.TYPE.BUILD,
+		"completed_at": room_details.get_build_time.call(),
+		"description": "CONSTRUCTING",
+		"location": current_location.duplicate()
+	})
+	SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(room_details.ref)		
+	await U.tick()
+	
+	on_grid_index_update()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_current_location_update(new_val:Dictionary) -> void:
+	current_location = new_val
+	if !is_node_ready():return
+	match current_mode:
+		MODE.PLACEMENT:	
+			on_grid_index_update()
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------
+func on_tab_index_update() -> void:
+	if !is_node_ready():return
+	for index in Tabs.get_child_count():
+		var node:Control = Tabs.get_child(index)
+		node.is_selected = index == tab_index
+		if index == tab_index:
+			ActiveHeaderLabel.text = node.title		
+			update_grid_content(index)
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func update_grid_content(index:int = tab_index) -> void:
+
+	match index:
+		0:
+			grid_list_data = ROOM_UTIL.get_paginated_list(TIER.VAL.ZERO, 0, 9, purchased_facility_arr).list
+		1:
+			grid_list_data = ROOM_UTIL.get_paginated_list(TIER.VAL.ONE, 0, 9, purchased_facility_arr).list
+			
+	for child in GridContent.get_children():
+		child.queue_free()	
+	
+	for list_index in grid_list_data.size():
+		var item:Dictionary = grid_list_data[list_index]
+		var card_node:Control = ShopMiniCardPreload.instantiate()
+		card_node.ref = item.ref
+		card_node.index = list_index
+		GridContent.add_child(card_node)
+	
+	grid_index = 0
+# --------------------------------------------------------------------------------------------------			
+
+# --------------------------------------------------------------------------------------------------			
+func can_afford_check(cost_arr:Array) -> bool:
+	for item in cost_arr:				
+		if abs(item.amount) > resources_data[item.resource.ref].amount:
+			return false
+	return true
+# --------------------------------------------------------------------------------------------------			
+
+# --------------------------------------------------------------------------------------------------			
+func on_grid_index_update() -> void:
+	if !is_node_ready() or room_config.is_empty() or grid_index == -1:return
+	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
+	var at_max_capacity:bool = ROOM_UTIL.at_own_limit(room_details.ref)
+	print(at_max_capacity)
+
+	match current_mode:
+		# -----------
+		MODE.CONTENT_SELECT:
+			if room_details.requires_unlock:
+				if room_details.ref not in shop_unlock_purchases:
+					PurchaseBtn.hide()
+					UnlockBtn.is_disabled = !can_afford_check( ROOM_UTIL.return_unlock_costs(room_details.ref) ) or at_max_capacity
+					UnlockBtn.show()	
+				else:
+					PurchaseBtn.is_disabled = !can_afford_check( ROOM_UTIL.return_purchase_cost(room_details.ref) ) or at_max_capacity
+					PurchaseBtn.show()
+					UnlockBtn.hide()
+			else:
+				PurchaseBtn.is_disabled = !can_afford_check( ROOM_UTIL.return_purchase_cost(room_details.ref) ) or at_max_capacity
+				PurchaseBtn.show()
+				UnlockBtn.hide()
+		# -----------
+		MODE.PLACEMENT:
+			var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+			var allow_build:bool = room_extract.is_room_empty and !room_extract.is_room_under_construction
+			PlacementBtn.is_disabled = !allow_build or at_max_capacity
+		_:
+			PlacementBtn.is_disabled = false
+	
+	for index in GridContent.get_child_count():
+		var card_node:Control = GridContent.get_child(index)
+		card_node.is_highlighted = index == grid_index
+# --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------	
 func on_is_showing_update(fast:bool = false) -> void:
 	super.on_is_showing_update()
-	var duration:float = 0 if fast else 0.3
-	
+	var duration:float = 0.02 if fast else 0.3
 	if !is_setup:return
+	
+	if is_showing:
+		self.modulate = Color(1, 1, 1, 1 if is_showing else 0)
 	
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = !is_showing
@@ -52,324 +244,123 @@ func on_is_showing_update(fast:bool = false) -> void:
 	
 	
 	U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].show if is_showing else control_pos[BtnMarginContainer].hide, duration)
-	await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show if is_showing else control_pos[HeaderPanel].hide, duration)
-	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, duration)
-	
-	U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show if is_showing else control_pos[DetailPanel].hide, duration)
+	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show if is_showing else control_pos[HeaderPanel].hide, duration)
+	await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, duration)
 	
 
-#
-#@onready var FacilityBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer/FacilityBtn
-#@onready var BaseBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer/BaseBtn
-#@onready var RDBtn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer/RDBtn 
-#@onready var CloseBtn:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/CloseBtn
-#@onready var GridItemContainer:GridContainer = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
-#@onready var FocusDetails:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/FocusDetails
-#@onready var CategoryContainer:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/CategoryContainer
-#
-#@onready var T0Btn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/T0Btn
-#@onready var T1Btn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/T1Btn
-#@onready var T2Btn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/T2Btn
-#@onready var T3Btn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/T3Btn
-#@onready var T4Btn:BtnBase = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer/T4Btn
-#
-#@onready var TierUnlock:PanelContainer = $SubViewport/PanelContainer/TierUnlock
-#@onready var TierBtnContainer:HBoxContainer = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/TierBtnContainer
-#
-#@onready var PaginationBack:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/PaginationBackBtn
-#@onready var PaginationMore:Control = $SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/PaginationMoreBtn
-#
-#const StoreItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/StoreItem/StoreItem.tscn")
-#const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
-#
-#enum TAB { FACILITY, BASE_DEVELOPMENT, RESEARCH_AND_DEVELOPMENT }
-#
-#var focus_data:Dictionary = {} : 
-	#set(val):
-		#focus_data = val
-		#on_focus_data_update()
-#
-#var filters:Dictionary = {} : 
-	#set(val):
-		#filters = val
-		#on_filters_update()
-#
-#var active_filters:Array = [] : 
-	#set(val):
-		#active_filters = val
-		#
-#var is_busy:bool = false
-#var pagination:int = 0 : 
-	#set(val):
-		#pagination = val
-		#on_pagination_update()
-#
-#var current_tab:TAB = TAB.FACILITY : 
-	#set(val):
-		#current_tab = val
-		#on_current_tab_update()
-#
-#var current_tier:TIER.VAL = TIER.VAL.ZERO : 
-	#set(val):
-		#current_tier = val
-		#on_current_tier_update()
-		#
-#var tier_unlock_data:Dictionary = {} : 
-	#set(val): 
-		#tier_unlock_data = val
-		#on_tier_unlock_data_update()
-		#
-#var limit:int = 6
-#
-## --------------------------------------------------------------------------------------------------
-#func _ready() -> void:
-	#super._ready()
-	#
-	#TextureRectNode = $TextureRect
-	#Subviewport = $SubViewport
-#
-	#CloseBtn.onClick = func() -> void:
-		#user_response.emit({"action": ACTION.PURCHASE.BACK})
-	#
-	#PaginationBack.onClick = func() -> void:
-		#pagination = pagination - 1
-	#
-	#PaginationMore.onClick = func() -> void:
-		#pagination = pagination + 1
-	#
-	#FacilityBtn.onClick = func() -> void:
-		#current_tab = TAB.FACILITY
-		#
-	#BaseBtn.onClick = func() -> void:
-		#if ROOM_UTIL.get_count(ROOM.TYPE.CONSTRUCTION_YARD, purchased_facility_arr) > 0:
-			#current_tab = TAB.BASE_DEVELOPMENT
-	#
-	#RDBtn.onClick = func() -> void:
-		#if ROOM_UTIL.get_count(ROOM.TYPE.R_AND_D_LAB, purchased_facility_arr) > 0:
-			#current_tab = TAB.RESEARCH_AND_DEVELOPMENT
-		#
-	#TierUnlock.onConfirm = func(data:Dictionary) -> void:
-		#tier_unlock_data = {}
-		#user_response.emit({
-			#"action": ACTION.PURCHASE.TIER_ITEM, 
-			#"selected": {
-				#"tier_data": data,
-				#"tier_type": current_tab
-			#}
-		#})
-		#
-	#on_focus_data_update()
-	#on_filters_update()
-	#on_current_tab_update()
-## --------------------------------------------------------------------------------------------------		
-#
-## --------------------------------------------------------------------------------------------------		
-#func start(type:String) -> void:	
-	#build_list()
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------			
-#func end() -> void:
-	#for child in GridItemContainer.get_children():
-		#child.queue_free()
-## --------------------------------------------------------------------------------------------------
-#
-## --------------------------------------------------------------------------------------------------
-#func on_purchased_facility_arr_update(new_val:Array) -> void:
-	#purchased_facility_arr = new_val
-	#if !is_node_ready():return
-	#var has_rd_prereq:bool = ROOM_UTIL.get_count(ROOM.TYPE.R_AND_D_LAB, purchased_facility_arr) > 0 
-	#var has_base_prereq:bool = ROOM_UTIL.get_count(ROOM.TYPE.CONSTRUCTION_YARD, purchased_facility_arr) > 0
-	#
-	#RDBtn.is_disabled = !has_rd_prereq
-	#RDBtn.icon = SVGS.TYPE.DOT if has_rd_prereq else SVGS.TYPE.LOCK
-	#
-	#BaseBtn.is_disabled = !has_base_prereq
-	#BaseBtn.icon = SVGS.TYPE.DOT if has_base_prereq else SVGS.TYPE.LOCK	
-## --------------------------------------------------------------------------------------------------
-#
-## --------------------------------------------------------------------------------------------------			
-#func on_tier_unlocked_update(new_val:Dictionary) -> void:
-	#super.on_tier_unlocked_update(new_val)
-	#on_current_tab_update()
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------			
-#func on_current_tab_update() -> void:
-	#if !is_node_ready():return
-	#if tier_unlocked.is_empty():return
-	#pagination = 0
-	#current_tier = TIER.VAL.ZERO
-	#
-	#for child in TierBtnContainer.get_children():
-		#child.queue_free()	
-	#
-	#match current_tab:
-		#TAB.FACILITY:
-			#FocusDetails.tab = TIER.TYPE.FACILITY
-			#
-			#for item in ROOM_UTIL.get_tier_dict().list:
-				#var btn_node:BtnBase = TextBtnPreload.instantiate()
-				#btn_node.title = item.details.name
-				#btn_node.is_disabled = !tier_unlocked[TIER.TYPE.FACILITY][item.ref]
-				#btn_node.icon = SVGS.TYPE.DOT if tier_unlocked[TIER.TYPE.FACILITY][item.ref] else SVGS.TYPE.LOCK
-				#btn_node.onClick = func() -> void:
-					#if btn_node.is_disabled:
-						#tier_unlock_data = ROOM_UTIL.return_tier_data(item.ref)
-					#else:
-						#current_tier = item.ref
-				#TierBtnContainer.add_child(btn_node)
-								#
-		#TAB.BASE_DEVELOPMENT:
-			#FocusDetails.tab = TIER.TYPE.BASE_DEVELOPMENT
-			#
-			#for item in BASE_UTIL.get_tier_dict().list:
-				#var btn_node:BtnBase = TextBtnPreload.instantiate()
-				#btn_node.title = item.details.name
-				#btn_node.is_disabled = !tier_unlocked[TIER.TYPE.BASE_DEVELOPMENT][item.ref]
-				#btn_node.onClick = func() -> void:
-					#if btn_node.is_disabled:
-						#tier_unlock_data = BASE_UTIL.return_tier_data(item.ref)
-					#else:
-						#current_tier = item.ref
-				#TierBtnContainer.add_child(btn_node)
-							#
-		#TAB.RESEARCH_AND_DEVELOPMENT:
-			#FocusDetails.tab = TIER.TYPE.RESEARCH_AND_DEVELOPMENT
-			#
-			#for item in RD_UTIL.get_tier_dict().list:
-				#var btn_node:BtnBase = TextBtnPreload.instantiate()
-				#btn_node.title = item.details.name
-				#btn_node.is_disabled = !tier_unlocked[TIER.TYPE.RESEARCH_AND_DEVELOPMENT][item.ref]
-				#btn_node.onClick = func() -> void:
-					#if btn_node.is_disabled:
-						#tier_unlock_data = RD_UTIL.return_tier_data(item.ref)
-					#else:
-						#current_tier = item.ref
-				#TierBtnContainer.add_child(btn_node)
-	#
-	#build_list()
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------			
-#func on_current_tier_update() -> void:
-	#build_list()	
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------			
-#func on_pagination_update() -> void:
-	#build_list()
-## --------------------------------------------------------------------------------------------------				
-#
-## --------------------------------------------------------------------------------------------------			
-#func on_tier_unlock_data_update() -> void:
-	#TierUnlock.data = tier_unlock_data
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------			
-#func is_tier_unlocked() -> bool:
-	#return false
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------			
-#func build_list() -> void:
-	#var start_at:int = pagination * limit
-	#var list_data:Dictionary = {}
-		#
-	#match current_tab:
-		#TAB.FACILITY:
-			#list_data = ROOM_UTIL.get_paginated_list(current_tier, start_at, limit, purchased_facility_arr)
-		#TAB.RESEARCH_AND_DEVELOPMENT:
-			#list_data = RD_UTIL.get_paginated_list(current_tier, start_at, limit)
-		#TAB.BASE_DEVELOPMENT:
-			#list_data = BASE_UTIL.get_paginated_list(current_tier, start_at, limit)
-			#
-	#PaginationBack.hide() if pagination == 0 else PaginationBack.show()
-	#PaginationMore.show() if list_data.has_more else PaginationMore.hide()
-	#
-	#for child in GridItemContainer.get_children():
-		#child.queue_free()
-#
-	#for item in list_data.list:
-		#var new_node:Control = StoreItemPreload.instantiate()
-		#new_node.resources_data = resources_data
-		#new_node.data = item
-		#match current_tab:
-			#TAB.FACILITY:
-				#new_node.tab = TAB.FACILITY
-			#TAB.RESEARCH_AND_DEVELOPMENT:
-				#new_node.tab = TAB.RESEARCH_AND_DEVELOPMENT
-			#TAB.BASE_DEVELOPMENT:
-				#new_node.tab = TAB.BASE_DEVELOPMENT
-#
-		#new_node.onClick = func() -> void:
-			#match current_tab:
-				#TAB.BASE_DEVELOPMENT:
-					#user_response.emit({
-						#"action": ACTION.PURCHASE.BASE_ITEM, 
-						#"selected": {
-							#"ref": item.ref
-						#}
-					#})
-				#TAB.FACILITY:
-					#user_response.emit({
-						#"action": ACTION.PURCHASE.FACILITY_ITEM, 
-						#"selected": {
-							#"ref": item.ref
-						#}
-					#})
-				#TAB.RESEARCH_AND_DEVELOPMENT:
-					#user_response.emit({
-						#"action": ACTION.PURCHASE.RESEARCH_AND_DEVELOPMENT, 
-						#"selected": {
-							#"ref": item.ref
-						#}
-					#})
-		#
-		#new_node.onFocus = func(node:Control) -> void:		
-			#update_focus_data.call_deferred(item)
-		#
-		#new_node.onBlur = func(node:Control) -> void:
-			#update_focus_data.call({})
-			#
-		#GridItemContainer.add_child(new_node)	
-		#
-	#await U.tick()
-	#is_busy = false		
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------		
-#func update_focus_data(new_state:Dictionary):
-	#focus_data = new_state
-## --------------------------------------------------------------------------------------------------		
-		#
-## --------------------------------------------------------------------------------------------------
-#func on_filters_update() -> void:
-	#var _active_filters = []
-	#for key in filters:
-		#var item:Dictionary = filters[key]
-		#item.node_ref.icon = SVGS.TYPE.PLUS if item.active else SVGS.TYPE.MINUS
-		#if item.active:
-			#_active_filters.push_back(key)
-			#
-	#active_filters = _active_filters
-## --------------------------------------------------------------------------------------------------				
-#
-## --------------------------------------------------------------------------------------------------		
-#func on_focus_data_update() -> void:
-	#if !is_node_ready(): return
-	#FocusDetails.data = focus_data
-## --------------------------------------------------------------------------------------------------			
-#
-## --------------------------------------------------------------------------------------------------	
-#func on_control_input_update(input_data:Dictionary) -> void:
-	#if !is_showing:return
-	#var key:String = input_data.key
-	#var keycode:int = input_data.keycode
-#
-	#match key:
-		#"BACK":
-			#user_response.emit({"action": ACTION.PURCHASE.BACK})
-		#"B":
-			#user_response.emit({"action": ACTION.PURCHASE.BACK})
-## --------------------------------------------------------------------------------------------------	
+	if !is_showing:
+		self.modulate = Color(1, 1, 1, 1 if is_showing else 0)	
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func on_current_mode_update() -> void:
+	if !is_node_ready() or control_pos.is_empty():return
+	is_animating = true
+	match current_mode:
+		# -------------------
+		MODE.TAB_SELECT:
+			PurchaseBtn.hide()
+			UnlockBtn.hide()
+			PlacementBtn.hide()
+			SelectTabBtn.show()
+			
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide)
+			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide)
+			
+			for index in GridContent.get_child_count():
+				var card_node:Control = GridContent.get_child(index)
+				card_node.is_highlighted = false
+				card_node.is_selected = false
+				card_node.is_deselected = false
+					
+			GridContent.modulate = Color(1, 1, 1, 0.5)			
+			
+			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show)
+		# -------------------
+		MODE.CONTENT_SELECT:			
+			SelectTabBtn.hide()
+			PlacementBtn.hide()
+
+			GBL.find_node(REFS.ROOM_NODES).is_active = true
+			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
+			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show)
+
+			for index in GridContent.get_child_count():
+				var card_node:Control = GridContent.get_child(index)
+				card_node.is_highlighted = false
+				card_node.is_selected = false
+				card_node.is_deselected = false
+			
+			grid_index = grid_index if grid_list_data.size() >= 0 else -1			
+			
+			GridContent.modulate = Color(1, 1, 1, 1)			
+			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
+			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].show)
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show)
+		# -------------------
+		MODE.PLACEMENT:
+			UnlockBtn.hide()
+			PurchaseBtn.hide()
+			PlacementBtn.show()
+			
+			for index in GridContent.get_child_count():
+				var card_node:Control = GridContent.get_child(index)
+				card_node.is_highlighted = false
+				card_node.is_selected = false			
+				card_node.is_deselected = index != grid_index
+			
+			GBL.find_node(REFS.ROOM_NODES).is_active = false
+			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(false)
+			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0) )
+			await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)
+			
+			on_grid_index_update()
+		# -------------------
+		
+			
+	await U.tick()
+	is_animating = false
+# --------------------------------------------------------------------------------------------------			
+
+
+
+# -----------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
+		return
+
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+	
+	match key:
+		"W":
+			match current_mode:
+				MODE.PLACEMENT:
+					U.room_up()
+					
+		"S":
+			match current_mode:
+				MODE.PLACEMENT:
+					U.room_down()
+		"A":
+			match current_mode:
+				MODE.TAB_SELECT:
+					tab_index = U.min_max(tab_index - 1, 0, Tabs.get_child_count() - 1, true)	
+				MODE.CONTENT_SELECT:
+					if grid_list_data.size() > 0:
+						grid_index = U.min_max(grid_index - 1, 0, grid_list_data.size() - 1, true)
+				MODE.PLACEMENT:
+					U.room_left()
+		"D":
+			match current_mode:
+				MODE.TAB_SELECT:
+					tab_index = U.min_max(tab_index + 1, 0, Tabs.get_child_count() - 1, true)	
+				MODE.CONTENT_SELECT:
+					if grid_list_data.size() > 0:
+						grid_index = U.min_max(grid_index + 1, 0, grid_list_data.size() - 1, true)	
+				MODE.PLACEMENT:
+					U.room_right()
+	
+
+#  -----------------------------------		

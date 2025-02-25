@@ -27,7 +27,7 @@ var progress_data:Dictionary = {}
 var timeline_array:Array = [] 
 var room_config:Dictionary = {} 
 var researcher_hire_list:Array = [] 
-var tier_unlocked:Dictionary = {}
+var shop_unlock_purchases:Array = []
 var purchased_research_arr:Array = []
 var suppress_click:bool = false 
 var camera_settings:Dictionary = {}
@@ -50,7 +50,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
-	SUBSCRIBE.subscribe_to_tier_unlocked(self)
+	SUBSCRIBE.subscribe_to_shop_unlock_purchases(self)
 	SUBSCRIBE.subscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.subscribe_to_suppress_click(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
@@ -72,7 +72,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
-	SUBSCRIBE.unsubscribe_to_tier_unlocked(self)
+	SUBSCRIBE.unsubscribe_to_shop_unlock_purchases(self)
 	SUBSCRIBE.unsubscribe_to_purchased_research_arr(self)
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
@@ -109,8 +109,8 @@ func on_researcher_hire_list_update(new_val:Array) -> void:
 	researcher_hire_list = new_val
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	hired_lead_researchers_arr = new_val
-func on_tier_unlocked_update(new_val:Dictionary) -> void:
-	tier_unlocked = new_val
+func on_shop_unlock_purchases_update(new_val:Array) -> void:
+	shop_unlock_purchases = new_val
 func on_purchased_research_arr_update(new_val:Array) -> void:
 	purchased_research_arr = new_val
 func on_suppress_click_update(new_val:bool) -> void:

@@ -1,5 +1,4 @@
-extends Node
-
+extends UtilityWrapper
 
 var UNLOCK_FLOOR_2:Dictionary = {
 	"ref": BASE.TYPE.UNLOCK_FLOOR_2,
@@ -67,55 +66,55 @@ var UNLOCK_FLOOR_3:Dictionary = {
 	},		
 }
 
-
-var tier_data:Dictionary = {
-	TIER.VAL.ZERO: {
-		"name": "BASE ZERO",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 0,
-			},
-	},
-	TIER.VAL.ONE: {
-		"name": "BASE ONE",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 5,
-			},
-	},
-	TIER.VAL.TWO: {
-		"name": "BASE TWO",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 100,
-			},
-	},
-	TIER.VAL.THREE: {
-		"name": "BASE THREE",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 250,
-			},
-	},
-	TIER.VAL.FOUR: {
-		"name": "BASE FOUR",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 500,
-			},
-	},
-}
+#
+#var tier_data:Dictionary = {
+	#TIER.VAL.ZERO: {
+		#"name": "BASE ZERO",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 0,
+			#},
+	#},
+	#TIER.VAL.ONE: {
+		#"name": "BASE ONE",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 5,
+			#},
+	#},
+	#TIER.VAL.TWO: {
+		#"name": "BASE TWO",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 100,
+			#},
+	#},
+	#TIER.VAL.THREE: {
+		#"name": "BASE THREE",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 250,
+			#},
+	#},
+	#TIER.VAL.FOUR: {
+		#"name": "BASE FOUR",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 500,
+			#},
+	#},
+#}
 
 var reference_data:Dictionary = {
 	BASE.TYPE.UNLOCK_FLOOR_2: UNLOCK_FLOOR_2,
 	BASE.TYPE.UNLOCK_FLOOR_3: UNLOCK_FLOOR_3
 }
 
-# ------------------------------------------------------------------------------
-func return_tier_data(key:TIER.VAL) -> Dictionary:
-	tier_data[key].ref = key
-	return tier_data[key]
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func return_tier_data(key:TIER.VAL) -> Dictionary:
+	#tier_data[key].ref = key
+	#return tier_data[key]
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func get_count(ref:BASE.TYPE, arr:Array) -> int:
@@ -138,19 +137,19 @@ func return_build_complete(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = false) -> Dictionary:		
+func calculate_purchase_cost(ref:int, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_costs", resources_data, add)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_build_complete(ref:int, resources_data:Dictionary, add:bool = true) -> Dictionary:		
+func calculate_build_complete(ref:int, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "build_complete", resources_data, add)
 # ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func get_tier_dict() -> Dictionary:
-	return SHARED_UTIL.return_tier_dict(tier_data)
-# ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func get_tier_dict() -> Dictionary:
+	#return SHARED_UTIL.return_tier_dict(tier_data)
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:

@@ -1,4 +1,4 @@
-extends Node
+extends UtilityWrapper
 
 
 var RESEARCH_ONE:Dictionary = {
@@ -39,56 +39,56 @@ var RESEARCH_TWO:Dictionary = {
 	},				
 }
 
-
-var tier_data:Dictionary = {
-	TIER.VAL.ZERO: {
-		"name": "RD ZERO",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 0,
-			},
-	},
-	TIER.VAL.ONE: {
-		"name": "RD ONE",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 5,
-			},
-	},
-	TIER.VAL.TWO: {
-		"name": "RD TWO",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 100,
-			},
-	},
-	TIER.VAL.THREE: {
-		"name": "RD THREE",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 250,
-			},
-	},
-	TIER.VAL.FOUR: {
-		"name": "RD FOUR",
-		"get_unlock_cost": func() -> Dictionary:
-			return {
-				RESOURCE.TYPE.MONEY: 500,
-			},
-	},
-}
+#
+#var tier_data:Dictionary = {
+	#TIER.VAL.ZERO: {
+		#"name": "RD ZERO",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 0,
+			#},
+	#},
+	#TIER.VAL.ONE: {
+		#"name": "RD ONE",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 5,
+			#},
+	#},
+	#TIER.VAL.TWO: {
+		#"name": "RD TWO",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 100,
+			#},
+	#},
+	#TIER.VAL.THREE: {
+		#"name": "RD THREE",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 250,
+			#},
+	#},
+	#TIER.VAL.FOUR: {
+		#"name": "RD FOUR",
+		#"get_unlock_cost": func() -> Dictionary:
+			#return {
+				#RESOURCE.TYPE.MONEY: 500,
+			#},
+	#},
+#}
 
 var reference_data:Dictionary = {
 	RD.TYPE.RD_ONE: RESEARCH_ONE,
 	RD.TYPE.RD_TWO: RESEARCH_TWO
 }
 
-
-# ------------------------------------------------------------------------------
-func return_tier_data(key:TIER.VAL) -> Dictionary:
-	tier_data[key].ref = key
-	return tier_data[key]
-# ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func return_tier_data(key:TIER.VAL) -> Dictionary:
+	#tier_data[key].ref = key
+	#return tier_data[key]
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func return_data(key:int) -> Dictionary:
@@ -102,14 +102,14 @@ func return_purchase_cost(id:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_purchase_cost(ref:int, resources_data:Dictionary, add:bool = false) -> Dictionary:		
+func calculate_purchase_cost(ref:int, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "purchase_cost", resources_data, add)
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func get_tier_dict() -> Dictionary:
-	return SHARED_UTIL.return_tier_dict(tier_data)
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func get_tier_dict() -> Dictionary:
+	#return SHARED_UTIL.return_tier_dict(tier_data)
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:

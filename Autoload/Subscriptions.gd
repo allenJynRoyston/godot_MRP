@@ -42,23 +42,23 @@ func unsubscribe_to_suppress_click(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
-var tier_unlocked_subscriptions:Array = []
+var shop_unlock_purchases_subscriptions:Array = []
 
-var tier_unlocked:Dictionary = {} : 
+var shop_unlock_purchases:Array = [] : 
 	set(val):
-		tier_unlocked = val
-		for node in tier_unlocked_subscriptions:
-			if "on_tier_unlocked_update" in node:
-				node.on_tier_unlocked_update.call(tier_unlocked)
+		shop_unlock_purchases = val
+		for node in shop_unlock_purchases_subscriptions:
+			if "on_shop_unlock_purchases_update" in node:
+				node.on_shop_unlock_purchases_update.call(shop_unlock_purchases)
 
-func subscribe_to_tier_unlocked(node:Node) -> void:
-	if node not in tier_unlocked_subscriptions:
-		tier_unlocked_subscriptions.push_back(node)
-		if "on_tier_unlocked_update" in node:
-			node.on_tier_unlocked_update.call(tier_unlocked)
+func subscribe_to_shop_unlock_purchases(node:Node) -> void:
+	if node not in shop_unlock_purchases_subscriptions:
+		shop_unlock_purchases_subscriptions.push_back(node)
+		if "on_shop_unlock_purchases_update" in node:
+			node.on_shop_unlock_purchases_update.call(shop_unlock_purchases)
 			
-func unsubscribe_to_tier_unlocked(node:Node) -> void:
-	tier_unlocked_subscriptions.erase(node)
+func unsubscribe_to_shop_unlock_purchases(node:Node) -> void:
+	shop_unlock_purchases_subscriptions.erase(node)
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------

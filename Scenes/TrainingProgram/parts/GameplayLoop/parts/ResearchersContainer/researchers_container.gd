@@ -424,6 +424,7 @@ func on_current_mode_update() -> void:
 					btn.is_disabled = true
 # -----------------------------------------------
 
+# -----------------------------------------------
 func on_inc() -> void:
 	unflip_cards()
 	researcher_active_index = U.min_max(researcher_active_index - 1, 0, ResearcherList.get_child_count() - 1)	
@@ -431,6 +432,7 @@ func on_inc() -> void:
 func on_dec() -> void:
 	unflip_cards()
 	researcher_active_index = U.min_max(researcher_active_index + 1, 0, ResearcherList.get_child_count() - 1)
+# -----------------------------------------------
 
 # -----------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:

@@ -63,6 +63,7 @@ theme_override_constants/margin_bottom = 0
 icon = 3
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.59, 0.59, 0.59, 1)
+flip_v = null
 is_hoverable = false
 
 [node name="ItemLabel" type="Label" parent="MarginContainer/ResourceItem/HBoxContainer"]

@@ -42,7 +42,6 @@ func _ready() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
 	# ENABLE FOR DESKTOP PC 
-	print("game resolution: ", resolution)
 	on_fullscreen_update(resolution)
 	#print("resolution: ", resolution)
 
@@ -74,6 +73,12 @@ func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
 				MousePointer.texture = mouse_pointer
 # -----------------------------------	
 
+# -----------------------------------
+func get_max_resolution():
+	var display_index = DisplayServer.window_get_current_screen()
+	return DisplayServer.screen_get_size(display_index)
+# -----------------------------------
+
 # -----------------------------------	
 func toggle_fullscreen() -> void:
 	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
@@ -81,7 +86,7 @@ func toggle_fullscreen() -> void:
 		on_fullscreen_update(resolution)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
-		on_fullscreen_update(resolution)
+		on_fullscreen_update( get_max_resolution() )
 # -----------------------------------	
 
 # -----------------------------------	
@@ -89,6 +94,8 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	for node in get_children():
 		if node is SubViewport:
 			node.size = use_resolution	
+	
+	print("Game resolution set to: %s" % [use_resolution])
 	
 	# start children nodes
 	var screen_size = DisplayServer.screen_get_size()

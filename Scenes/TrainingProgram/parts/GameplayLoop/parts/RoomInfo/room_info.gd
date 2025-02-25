@@ -3,6 +3,7 @@ extends GameContainer
 @onready var MainPanel:PanelContainer = $Control/PanelContainer
 @onready var LocationPanel:Control = $MarginContainer/HBoxContainer/LocationPanel
 @onready var RoomLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/RoomLabel
+@onready var UnderConstruction:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/UnderConstruction
 @onready var ScpContainer:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/ScpContainer
 @onready var ScpLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/ScpContainer/MarginContainer/ScpLabel
 @onready var ResourceGrid:GridContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ResourceGrid
@@ -100,8 +101,18 @@ func update_details_panel() -> void:
 		new_btn.title = "%s%s" % ["+" if amount > 0 else "", amount]
 		ResourceGrid.add_child(new_btn)
 	ResourceGrid.hide() if room_extract.resource_details.total.is_empty() else ResourceGrid.show()
-
-	RoomLabel.text = "NOTHING ASSIGNED" if room_extract.is_room_empty else room_extract.room.details.name
+	
+	if room_extract.is_room_empty:
+		if room_extract.is_room_under_construction:
+			UnderConstruction.show()
+			RoomLabel.text = room_extract.room.details.name
+		else:
+			UnderConstruction.hide()
+			RoomLabel.text = "NOTHING ASSIGNED"
+	else:
+		UnderConstruction.hide()
+		RoomLabel.text = room_extract.room.details.name
+		
 	ScpLabel.text = "" if room_extract.is_scp_empty else room_extract.scp.details.name
 	ScpContainer.hide() if room_extract.is_scp_empty else ScpContainer.show()
 	

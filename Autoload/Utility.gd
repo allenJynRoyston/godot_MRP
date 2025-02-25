@@ -1,5 +1,5 @@
 @tool
-extends Node
+extends UtilityWrapper
 
 enum DIR {UP, DOWN, LEFT, RIGHT}
 
@@ -191,6 +191,52 @@ func dict_deep_copy(value):
 		#return value
 		
 	return new_dict
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------
+func room_up() -> void:
+	var room_index:int = U.location_lookup(current_location.room, U.DIR.UP)
+	if room_index == -1:
+		if current_location.floor - 1 >= 0:
+			var next_val:int = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
+			current_location.floor = next_val
+			current_location.room = 4
+	else:
+		current_location.room = room_index
+	SUBSCRIBE.current_location = current_location
+
+func room_down() -> void:
+	var room_index:int = U.location_lookup(current_location.room, U.DIR.DOWN)
+	if room_index == -1:
+		if current_location.floor + 1 < room_config.floor.size() - 1:
+			var next_val:int = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
+			current_location.floor = next_val
+			current_location.room = 4	
+	else:
+		current_location.room = room_index
+	SUBSCRIBE.current_location = current_location
+
+func room_right() -> void:
+	var room_index:int = U.location_lookup(current_location.room, U.DIR.RIGHT)
+	if room_index == -1:
+		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
+			var next_val:int = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+			current_location.ring = next_val
+			current_location.room = 4	
+	else:
+		current_location.room = room_index	
+	SUBSCRIBE.current_location = current_location
+
+func room_left() -> void:
+	var room_index:int = U.location_lookup(current_location.room, U.DIR.LEFT)
+	if room_index == -1:
+		if current_location.ring > 0:
+			var next_val:int = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
+			current_location.ring = next_val
+			current_location.room = 4
+	else:
+		current_location.room = room_index	
+	SUBSCRIBE.current_location = current_location
 # --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------------------------------------------------------------------
