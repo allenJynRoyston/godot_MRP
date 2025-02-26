@@ -1,32 +1,60 @@
-[gd_scene load_steps=12 format=3 uid="uid://jacix3bun03x"]
+[gd_scene load_steps=22 format=3 uid="uid://jacix3bun03x"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/shop_mini_card.gd" id="1_7gy44"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="1_a1ssm"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_blnkg"]
+[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="2_kq0y7"]
+[ext_resource type="Shader" path="res://Shader/CurveTextureRect/CurveTextureRect.gdshader" id="2_w6kfh"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="4_kx7lq"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_noi03"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_sh3ly"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_v1vnd"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urdsm"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i4yqh"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7qley"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6qs1s"]
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_7qley"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k23dc"]
+shader = ExtResource("2_w6kfh")
+shader_parameter/corner_scale = 0.33
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tjhnb"]
+viewport_path = NodePath("SubViewport/PanelContainer/SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3i7t"]
 bg_color = Color(0, 0.529412, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aqero"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sdn5m"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hey62"]
+bg_color = Color(0, 0, 0, 0.796078)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xfe5u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_od1qd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_588oh"]
+bg_color = Color(0, 0, 0, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g27v5"]
 
@@ -34,11 +62,13 @@ corner_radius_bottom_left = 5
 custom_minimum_size = Vector2(150, 150)
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_urdsm")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_i4yqh")
 script = ExtResource("1_7gy44")
+flip = true
 ref = 0
 
 [node name="CardTextureRect" type="TextureRect" parent="."]
+material = ExtResource("2_kq0y7")
 layout_mode = 2
 texture = SubResource("ViewportTexture_7qley")
 stretch_mode = 6
@@ -47,89 +77,87 @@ stretch_mode = 6
 transparent_bg = true
 size = Vector2i(150, 150)
 
-[node name="ProfileImage" type="TextureRect" parent="SubViewport"]
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 148.0
-offset_bottom = 148.0
-texture = ExtResource("1_a1ssm")
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 150.0
+offset_bottom = 150.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6qs1s")
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer"]
+material = SubResource("ShaderMaterial_k23dc")
+layout_mode = 2
+texture = SubResource("ViewportTexture_tjhnb")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="LockPanel" type="PanelContainer" parent="SubViewport"]
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 148.0
-offset_bottom = 148.0
+[node name="SubViewport" type="SubViewport" parent="SubViewport/PanelContainer"]
+transparent_bg = true
+size = Vector2i(150, 150)
 
-[node name="CenterContainer" type="CenterContainer" parent="SubViewport/LockPanel"]
+[node name="ProfileImage" type="TextureRect" parent="SubViewport/PanelContainer/SubViewport"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 146.0
+offset_bottom = 146.0
+texture = ExtResource("1_a1ssm")
+expand_mode = 4
+stretch_mode = 6
+
+[node name="AtMaxPanel" type="PanelContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
 
-[node name="IconBtn" parent="SubViewport/LockPanel/CenterContainer" instance=ExtResource("4_sh3ly")]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-icon = 43
-flip_v = false
-is_hoverable = false
-
-[node name="AtMaxPanel" type="PanelContainer" parent="SubViewport"]
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 148.0
-offset_bottom = 148.0
-
-[node name="CenterContainer" type="CenterContainer" parent="SubViewport/AtMaxPanel"]
+[node name="CenterContainer" type="CenterContainer" parent="SubViewport/PanelContainer/AtMaxPanel"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SubViewport/AtMaxPanel/CenterContainer"]
+[node name="Label" type="Label" parent="SubViewport/PanelContainer/AtMaxPanel/CenterContainer"]
 layout_mode = 2
 text = "MAX
 CAPACITY"
 label_settings = ExtResource("4_noi03")
 horizontal_alignment = 1
 
-[node name="InfoContainer" type="MarginContainer" parent="SubViewport"]
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 148.0
-offset_bottom = 148.0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+[node name="Front" type="VBoxContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/InfoContainer"]
+[node name="Header" type="MarginContainer" parent="SubViewport/PanelContainer/Front"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/Front/Header"]
 layout_mode = 2
 theme_override_constants/separation = 50
 
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport/InfoContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_r3i7t")
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/InfoContainer/VBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 3
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/InfoContainer/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer/PanelContainer/MarginContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="SubViewport/InfoContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
+[node name="NameLabel" type="Label" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "FACILITY NAME"
 label_settings = ExtResource("2_blnkg")
 
-[node name="CheckBox" parent="SubViewport/InfoContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_kx7lq")]
+[node name="CheckBox" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_kx7lq")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_aqero")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sdn5m")
 no_bg = true
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/InfoContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
@@ -137,31 +165,118 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="PurchaseList" type="HBoxContainer" parent="SubViewport/InfoContainer/VBoxContainer/MarginContainer"]
+[node name="PurchaseList" type="HBoxContainer" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 10
 alignment = 1
 
-[node name="Control" type="Control" parent="."]
+[node name="PanelContainer" parent="SubViewport/PanelContainer/Front/Header/VBoxContainer/MarginContainer/PurchaseList" instance=ExtResource("6_v1vnd")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_hey62")
+icon = 39
+panel_color = Color(0, 0, 0, 0.796078)
+title = "99"
+
+[node name="Back" type="VBoxContainer" parent="SubViewport/PanelContainer"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="Control"]
+[node name="MarginContainer2" type="MarginContainer" parent="SubViewport/PanelContainer/Back"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_bottom = 9
+
+[node name="LockPanel" type="PanelContainer" parent="SubViewport/PanelContainer/Back/MarginContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xfe5u")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer2/LockPanel"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_od1qd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="BackNameLabel" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "ROOMNAME"
+label_settings = ExtResource("2_blnkg")
+horizontal_alignment = 1
+
+[node name="IconBtn" parent="SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/PanelContainer/VBoxContainer" instance=ExtResource("4_sh3ly")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = 43
+static_color = Color(0, 0, 0, 1)
+flip_v = false
+is_hoverable = false
+
+[node name="UnlockList" type="HBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 1
+
+[node name="PanelContainer" parent="SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/UnlockList" instance=ExtResource("6_v1vnd")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_588oh")
+icon = 39
+panel_color = Color(0, 0, 0, 0.796078)
+title = "99"
+
+[node name="CursorContainer" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CursorContainer"]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -10.0
-offset_right = 10.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 0
+offset_left = 3.0
+offset_top = 66.0
+offset_right = 23.0
+offset_bottom = 86.0
+rotation = 1.5708
 theme_override_styles/panel = SubResource("StyleBoxEmpty_g27v5")
 
-[node name="IconBtn" parent="Control/PanelContainer" instance=ExtResource("4_sh3ly")]
-visible = false
+[node name="CursorImage" parent="CursorContainer/PanelContainer" instance=ExtResource("4_sh3ly")]
 layout_mode = 2
 icon = 50
 flip_v = false
+is_hoverable = false
+
+[node name="PanelContainer2" type="PanelContainer" parent="CursorContainer"]
+layout_mode = 1
+offset_left = 167.0
+offset_top = 66.0
+offset_right = 187.0
+offset_bottom = 86.0
+rotation = 1.5708
+theme_override_styles/panel = SubResource("StyleBoxEmpty_g27v5")
+
+[node name="CursorImage" parent="CursorContainer/PanelContainer2" instance=ExtResource("4_sh3ly")]
+layout_mode = 2
+icon = 50
+flip_v = true
+is_hoverable = false
+
+[node name="PanelContainer3" type="PanelContainer" parent="CursorContainer"]
+layout_mode = 1
+offset_left = 167.0
+offset_top = 66.0
+offset_right = 187.0
+offset_bottom = 86.0
+rotation = 1.5708
+theme_override_styles/panel = SubResource("StyleBoxEmpty_g27v5")
+
+[node name="CursorImage" parent="CursorContainer/PanelContainer3" instance=ExtResource("4_sh3ly")]
+layout_mode = 2
+icon = 50
+flip_v = true
 is_hoverable = false

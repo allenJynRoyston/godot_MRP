@@ -1,12 +1,3 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cgpps4s7b2f56"]
-
-[ext_resource type="Shader" path="res://Shader/_template/template.gdshader" id="1_ui2el"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cgpps4s7b2f56"]
 
 [resource]
-shader = ExtResource("1_ui2el")
-shader_parameter/amplitude_x = 0.05
-shader_parameter/amplitude_y = 0.05
-shader_parameter/frequency = 7.5
-shader_parameter/speed = 2.0
-shader_parameter/overlay_color = Color(1, 1, 1, 1)
-shader_parameter/texture_size = Vector2(64, 64)

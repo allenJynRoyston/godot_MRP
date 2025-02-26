@@ -80,7 +80,24 @@ var DIRECTORS_OFFICE:Dictionary = {
 					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}	
+	},
+	
+	# ------------------------------------------	
+	"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
+			return {
+				"resource":{
+					RESOURCE.TYPE.ENERGY: 2
+				},
+			}
+		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			return {
+				"metrics":{
+					RESOURCE.BASE_METRICS.MORALE: 1
+				}
+			}
+		return {},
+	# ------------------------------------------	
 	# ------------------------------------------
 }
 
@@ -158,6 +175,99 @@ var HQ:Dictionary = {
 		}	
 	}	
 	# ------------------------------------------
+}
+
+var AQUISITION_DEPARTMENT:Dictionary = {
+	"name": "AQUISITIONS DEPARTMENT",
+	"shortname": "AQUISITIONS DEPT.",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Allows you to view any REDACTED room profiles before unlocking them.",
+	"can_contain": false,
+	"requires_unlock": false,
+		
+	"prerequisites": [
+
+	],		
+	"placement_restrictions": {
+
+	},
+	"own_limit": func() -> int:
+		return 1,
+	"get_build_time": func() -> int:
+		return 1,
+	
+
+
+	# ------------------------------------------
+	"unlock_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+
+				},
+		}	
+	},
+		
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -20
+				},
+		}	
+	},
+		
+	"activation_cost": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.ENERGY: -1,
+				},
+		}	
+	},		
+	
+	"activation_effect": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.STAFF: 10,
+					RESOURCE.TYPE.SECURITY: 10,
+					RESOURCE.TYPE.DCLASS: 10
+				},			
+		}	
+	},	
+	
+	"operating_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -1
+				},
+		}	
+	},
+	# ------------------------------------------	
+	
+	# ------------------------------------------	
+	"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		if RESEARCHER.SPECIALIZATION.PHARMACOLOGY in specilizations:
+			return {
+				"resource":{
+					RESOURCE.TYPE.ENERGY: 2
+				},
+			}
+		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			return {
+				"metrics":{
+					RESOURCE.BASE_METRICS.MORALE: 1
+				}
+			}
+		return {},
+	# ------------------------------------------		
 }
 
 var R_AND_D_LAB:Dictionary = {
@@ -721,9 +831,27 @@ var reference_data:Dictionary = {
 	# TIER ZERO
 	ROOM.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE,
 	ROOM.TYPE.HQ: HQ,
-	# TIER ONE
+	ROOM.TYPE.AQUISITION_DEPARTMENT: AQUISITION_DEPARTMENT,
+	## TIER ONE
 	
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
+	#3: DIRECTORS_OFFICE,
+	#4: DIRECTORS_OFFICE,
+	#5: DIRECTORS_OFFICE,
+	#6: DIRECTORS_OFFICE,
+	#7: DIRECTORS_OFFICE,
+	#8: DIRECTORS_OFFICE,
+	#9: DIRECTORS_OFFICE,
+	#10: DIRECTORS_OFFICE,
+	#11: DIRECTORS_OFFICE,
+	#12: DIRECTORS_OFFICE,
+	#13: DIRECTORS_OFFICE,
+	#14: DIRECTORS_OFFICE,
+	#15: DIRECTORS_OFFICE,
+	#16: DIRECTORS_OFFICE,
+	#17: DIRECTORS_OFFICE,
+	#18: DIRECTORS_OFFICE,
+	
 	#ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	#ROOM.TYPE.BARRICKS: BARRICKS,
 	#ROOM.TYPE.DORMITORY: DORMITORY,
@@ -839,6 +967,30 @@ func return_specilization_bonus(ref:ROOM.TYPE, specilizations:Array) -> Array:
 	return list
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+var room_speclization_lookup:Dictionary = {} # makes it so this only has to do the lookup once
+func return_room_speclization_preferences(ref:ROOM.TYPE) -> Array:
+	if ref in room_speclization_lookup:
+		return room_speclization_lookup[ref]
+	
+	var list:Array = []
+	var room_data:Dictionary = return_data(ref)
+	if "specilization_bonus" not in room_data:
+		room_speclization_lookup[ref] = []
+		return list
+	
+	for key in RESEARCHER.SPECIALIZATION:
+		var enum_val:int = RESEARCHER.SPECIALIZATION[key]
+		var spec_bonus:Dictionary = room_data.specilization_bonus.call([enum_val])
+		if !spec_bonus.is_empty():
+			var details:Dictionary = RESEARCHER_UTIL.return_specialization_data(enum_val)
+			var bonus_list:Array = return_specilization_bonus(ref, [enum_val])
+			list.push_back({"details": details, "bonus": bonus_list})
+	
+	room_speclization_lookup[ref] = list
+	return list
+# ------------------------------------------------------------------------------			
+
 # ------------------------------------------------------------------------------
 func calculate_unlock_cost(ref:ROOM.TYPE, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "unlock_costs", resources_data, add)
@@ -882,12 +1034,19 @@ func calculate_activation_cost(ref:ROOM.TYPE, refund:bool = false) -> Dictionary
 	return resource_data_copy
 # ------------------------------------------------------------------------------
 
-
+# ------------------------------------------------------------------------------
+func get_count(ref:ROOM.TYPE) -> int:
+	return purchased_facility_arr.filter(func(i):return i.ref == ref).size()
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_count(ref:ROOM.TYPE, arr:Array) -> int:
-	return arr.filter(func(i):return i.ref == ref).size()
-# ------------------------------------------------------------------------------
+func owns_and_is_active(ref:ROOM.TYPE) -> bool:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
+	if filter.size() == 0:
+		return false
+	var room_extract:Dictionary = extract_room_details(filter[0].location)
+	return room_extract.is_room_active
+# ------------------------------------------------------------------------------	
 
 ## ------------------------------------------------------------------------------
 #func get_tier_dict() -> Dictionary:
@@ -897,12 +1056,7 @@ func get_count(ref:ROOM.TYPE, arr:Array) -> int:
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int, purchased_facility_arr:Array) -> Dictionary:
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
-	var res:Dictionary = SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
-	#res.list = res.list.filter(func(i):
-		#return true if i.details.prerequisites.is_empty() else U.array_has_overlap(i.details.prerequisites, facility_refs)
-	#)
-	
-	return res
+	return SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -928,14 +1082,12 @@ func has_prerequisites(ref:ROOM.TYPE, arr:Array) -> bool:
 # ------------------------------------------------------------------------------
 func at_own_limit(ref:ROOM.TYPE) -> bool:
 	var room_data:Dictionary = return_data(ref)
+	if "own_limit" not in room_data or room_data.own_limit.call() == -1:
+		return false
 	var owned_count:int = purchased_facility_arr.filter(func(i): return i.ref == ref).size()
-
 	var in_progress_count:int = timeline_array.filter(func(i): return i.ref == ref and i.action == ACTION.AQ.BUILD_ITEM).size()
 	var total_count:int = owned_count + in_progress_count
 	
-	if "own_limit" not in room_data or room_data.own_limit.call() == -1:
-		return false
-		
 	return total_count >= room_data.own_limit.call()
 # ------------------------------------------------------------------------------
 

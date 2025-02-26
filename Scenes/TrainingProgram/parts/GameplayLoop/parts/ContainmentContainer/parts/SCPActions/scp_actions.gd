@@ -104,7 +104,7 @@ func on_data_update() -> void:
 
 				for index in containment_requirements.size():
 					var room_data:Dictionary = ROOM_UTIL.return_data( containment_requirements[index] )
-					var room_count:int = ROOM_UTIL.get_count(room_data.ref, purchased_facility_arr)
+					var room_count:int = ROOM_UTIL.get_count(room_data.ref)
 					placement_bullepoints.push_back({
 						"icon": SVGS.TYPE.CLEAR if room_count < 1 else SVGS.TYPE.CHECKBOX, 
 						"text": func() -> String:

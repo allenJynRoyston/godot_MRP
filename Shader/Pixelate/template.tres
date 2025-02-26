@@ -1,3 +1,9 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://dsv8nn10bcabo"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dsv8nn10bcabo"]
+
+[ext_resource type="Shader" path="res://Shader/Pixelate/template.gdshader" id="1_m80x1"]
 
 [resource]
+shader = ExtResource("1_m80x1")
+shader_parameter/pixel_sc = 64.0
+shader_parameter/edge_threshold = 1e-05
+shader_parameter/bender = 0.0

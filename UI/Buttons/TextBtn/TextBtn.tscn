@@ -4,15 +4,19 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_wxkle"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_u5i6s"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mll7b"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gid0y"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="TextBtn" type="PanelContainer"]
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 34.0
 offset_bottom = 34.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_mll7b")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gid0y")
 script = ExtResource("1_53m1w")
 static_color = Color(1, 1, 1, 1)
 active_color = Color(1, 1, 1, 1)
@@ -34,11 +38,11 @@ custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
+flip_v = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "BTN TITLE"
 label_settings = ExtResource("3_u5i6s")
 
 [node name="IconBtnRight" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wxkle")]
@@ -46,4 +50,5 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
+flip_v = false
 is_hoverable = false

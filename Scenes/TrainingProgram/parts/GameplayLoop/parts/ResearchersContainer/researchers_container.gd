@@ -144,7 +144,7 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 		var details:Dictionary = RESEARCHER_UTIL.get_user_object(researcher)		
 		var new_card:Control = ResearcherCardPreload.instantiate()
 		new_card.uid = details.uid
-		new_card.index = index		
+		new_card.index = index
 		new_card.onFocus = func(_node:Control):
 			if is_animating:return
 			match current_mode:
@@ -352,6 +352,7 @@ func on_selected_researchers_update() -> void:
 		var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )
 		var mini_card:Control = ResearcherMiniCard.instantiate()
 		mini_card.uid = researcher_details.uid
+		mini_card.room_extract = ROOM_UTIL.extract_room_details(current_location)
 		SelectedList.add_child(mini_card)
 		
 		# add selected to selected list	

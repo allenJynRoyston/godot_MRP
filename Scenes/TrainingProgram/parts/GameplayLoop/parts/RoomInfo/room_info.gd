@@ -2,15 +2,19 @@ extends GameContainer
 
 @onready var MainPanel:PanelContainer = $Control/PanelContainer
 @onready var LocationPanel:Control = $MarginContainer/HBoxContainer/LocationPanel
-@onready var RoomLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/RoomLabel
-@onready var UnderConstruction:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/UnderConstruction
-@onready var ScpContainer:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/ScpContainer
-@onready var ScpLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/ScpContainer/MarginContainer/ScpLabel
-@onready var ResourceGrid:GridContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ResourceGrid
-@onready var RIcon1:Control = $MarginContainer/HBoxContainer/ResearcherIcons/RIcon1
-@onready var RIcon2:Control = $MarginContainer/HBoxContainer/ResearcherIcons/RIcon2
+@onready var RoomLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/RoomLabel
+@onready var ResearcherIconContainer:HBoxContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ResearcherIcons
+@onready var RIcon1:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ResearcherIcons/RIcon1
+@onready var RIcon2:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ResearcherIcons/RIcon2
+@onready var ResourceDiffContainer:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ResourceDiffContainer
+@onready var ResourceGrid:GridContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ResourceDiffContainer/PanelContainer/MarginContainer/ResourceGrid
+@onready var StatusTag:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/MarginContainer/StatusTag
+@onready var StatusLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/MarginContainer/StatusTag/MarginContainer/StatusLabel
+@onready var ImageContainer:VBoxContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer
+@onready var ProfileImage:TextureRect = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/SubViewport/ProfileImage
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+const StaticShader:ShaderMaterial = preload("res://Shader/Static.tres")
 
 var previous_location:Dictionary = {}
 var metrics_tween_pos_val:float = 0
@@ -101,23 +105,45 @@ func update_details_panel() -> void:
 		new_btn.title = "%s%s" % ["+" if amount > 0 else "", amount]
 		ResourceGrid.add_child(new_btn)
 	ResourceGrid.hide() if room_extract.resource_details.total.is_empty() else ResourceGrid.show()
-	
+
 	if room_extract.is_room_empty:
 		if room_extract.is_room_under_construction:
-			UnderConstruction.show()
+			StatusTag.show()
+			StatusLabel.text = "UNDER CONSTRUCTION"
 			RoomLabel.text = room_extract.room.details.name
+			ImageContainer.show()
+			ResourceDiffContainer.hide()
+			ResearcherIconContainer.hide()
+			ProfileImage.material = null
+			ProfileImage.texture = CACHE.fetch_image(room_extract.room.details.img_src)
 		else:
-			UnderConstruction.hide()
-			RoomLabel.text = "NOTHING ASSIGNED"
-	else:
-		UnderConstruction.hide()
+			StatusTag.hide()
+			RoomLabel.text = "NOTHING ASSIGNED" 
+			ProfileImage.material = StaticShader
+			ProfileImage.texture = CACHE.fetch_image("")
+			ResourceDiffContainer.hide()
+			ResearcherIconContainer.hide()
+	else:		
+		ResourceDiffContainer.hide() if room_extract.resource_details.total.is_empty() else ResourceDiffContainer.show()
 		RoomLabel.text = room_extract.room.details.name
+		ProfileImage.texture = CACHE.fetch_image(room_extract.room.details.img_src)
+		ImageContainer.show()
+		ProfileImage.material = null
 		
-	ScpLabel.text = "" if room_extract.is_scp_empty else room_extract.scp.details.name
-	ScpContainer.hide() if room_extract.is_scp_empty else ScpContainer.show()
+		if !room_extract.is_room_active:
+			StatusTag.show()
+			StatusLabel.text = "INACTIVE"
+			ResourceDiffContainer.hide()
+		else:
+			StatusTag.hide()
+			
+			
+		
+	#ScpLabel.text = "" if room_extract.is_scp_empty else room_extract.scp.details.name
+	#ScpContainer.hide() if room_extract.is_scp_empty else ScpContainer.show()
 	
 
-	RIcon1.static_color = Color.WHITE if room_extract.researchers.size()>= 1 else Color.DIM_GRAY
-	RIcon2.static_color = Color.WHITE if room_extract.researchers.size()>= 2 else Color.DIM_GRAY
+	RIcon1.static_color = Color.WHITE if room_extract.researchers.size()>= 1 else Color.RED
+	RIcon2.static_color = Color.WHITE if room_extract.researchers.size()>= 2 else Color.RED
 	
 # -----------------------------------------------

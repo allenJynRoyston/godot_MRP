@@ -87,7 +87,7 @@ func on_is_disabled_updated() -> void:
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = StyleBoxFlat.new()
+	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
 	new_stylebox.bg_color = panel_color
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 		

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cwowqrsr48d6k"]
+[gd_scene load_steps=24 format=3 uid="uid://cwowqrsr48d6k"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.gd" id="1_6xgsa"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_pufuq"]
@@ -14,7 +14,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1c61"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqseu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_owlhq"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -26,7 +26,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6161m"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y28hr"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -38,7 +38,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5c6kk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2nfr"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -50,7 +50,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mce1q"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sl0ya"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -62,7 +62,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b24p5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avtbk"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -74,7 +74,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_svep4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rpocf"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -91,22 +91,58 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_rdsf8"]
 color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_47jgh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gnx02"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prd6d"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_snrip"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpwre"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvyyc"]
 bg_color = Color(1, 1, 1, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ufji"]
+bg_color = Color(0.316, 0.249, 0.37, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btcwy"]
+bg_color = Color(0.316, 0.249, 0.37, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cpgp3"]
+bg_color = Color(0.316, 0.249, 0.37, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -246,7 +282,7 @@ custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_oqseu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_owlhq")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23
@@ -260,7 +296,7 @@ size_flags_vertical = 8
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6161m")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y28hr")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -268,7 +304,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="SelectScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5c6kk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_g2nfr")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
@@ -276,7 +312,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="ConfirmScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_mce1q")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sl0ya")
 title = "NEXT"
 assigned_key = "E"
 icon = 10
@@ -285,7 +321,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 [node name="SelectResearcher" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_b24p5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_avtbk")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
@@ -294,7 +330,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 [node name="ConfirmResearchers" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_svep4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rpocf")
 title = "FINALIZE"
 assigned_key = "E"
 icon = 10
@@ -315,8 +351,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_y1vge")
 
 [node name="MarginContainer" type="MarginContainer" parent="ConfirmControl/ConfirmPanel"]
 layout_mode = 2
+size_flags_vertical = 4
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 0
 
@@ -339,19 +376,19 @@ layout_mode = 2
 
 [node name="ScpCheckbox" parent="ConfirmControl/ConfirmPanel/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("5_wg73t")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_47jgh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gnx02")
 no_bg = true
 title = "SELECT AN SCP"
 
 [node name="R1Checkbox" parent="ConfirmControl/ConfirmPanel/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("5_wg73t")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_prd6d")
+theme_override_styles/panel = SubResource("StyleBoxFlat_snrip")
 no_bg = true
 title = "RESEARCHER REQUIRED"
 
 [node name="R2Checkbox" parent="ConfirmControl/ConfirmPanel/MarginContainer/VBoxContainer/VBoxContainer" instance=ExtResource("5_wg73t")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tpwre")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hvyyc")
 no_bg = true
 title = "RESEARCHER REQUIRED"
 
@@ -374,8 +411,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_y1vge")
 [node name="MarginContainer" type="MarginContainer" parent="TraitControl/TraitPanel"]
 layout_mode = 2
 size_flags_horizontal = 8
+size_flags_vertical = 4
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 0
 
@@ -402,6 +440,7 @@ layout_mode = 2
 
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/TraitContainer/TraitList" instance=ExtResource("6_plw5i")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ufji")
 
 [node name="SynergyContainer" type="VBoxContainer" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -421,6 +460,8 @@ layout_mode = 2
 
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("6_plw5i")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_btcwy")
 
 [node name="TraitCard2" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("6_plw5i")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cpgp3")

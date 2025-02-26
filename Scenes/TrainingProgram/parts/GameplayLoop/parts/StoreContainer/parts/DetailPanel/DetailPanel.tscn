@@ -1,0 +1,112 @@
+[gd_scene load_steps=8 format=3 uid="uid://cxkkni8jbnrqq"]
+
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_4rx15"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/detail_panel.gd" id="1_ifskr"]
+[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_v1d8f"]
+[ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="3_u3dak"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jtmyx"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_bpbdd"]
+viewport_path = NodePath("MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport")
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_3t2rt"]
+color = Color(1, 1, 1, 1)
+
+[node name="DetailPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 0)
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 200.0
+grow_vertical = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jtmyx")
+script = ExtResource("1_ifskr")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SynergyContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Metadata" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/SynergyContainer/Metadata"]
+material = ExtResource("3_u3dak")
+custom_minimum_size = Vector2(190, 150)
+layout_mode = 2
+texture = SubResource("ViewportTexture_bpbdd")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="MarginContainer/VBoxContainer/SynergyContainer/Metadata"]
+size = Vector2i(190, 150)
+
+[node name="ProfileImage" type="TextureRect" parent="MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport"]
+offset_right = 190.0
+offset_bottom = 150.0
+texture = ExtResource("2_v1d8f")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Description" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Description"]
+layout_mode = 2
+text = "NAME LABEL"
+label_settings = ExtResource("1_4rx15")
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Description"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Description"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "The description goes here.  It should wrap correctly."
+label_settings = ExtResource("1_4rx15")
+autowrap_mode = 2
+
+[node name="Effects" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+layout_mode = 2
+text = "EFFECT"
+label_settings = ExtResource("1_4rx15")
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
+
+[node name="EffectList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Syncs" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
+layout_mode = 2
+text = "PAIRS WITH"
+label_settings = ExtResource("1_4rx15")
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
+
+[node name="SyncList" type="GridContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
+layout_mode = 2
+columns = 2

@@ -46,7 +46,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-debug_mode = true
 show_objectives = true
 show_reseachers = true
 show_resources = true
@@ -81,9 +80,6 @@ layout_mode = 2
 [node name="MetricsContainer" parent="." instance=ExtResource("2_28uuh")]
 layout_mode = 2
 size_flags_vertical = 0
-
-[node name="ToastContainer" parent="." instance=ExtResource("9_wx8fv")]
-layout_mode = 2
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
 layout_mode = 2
@@ -129,6 +125,9 @@ layout_mode = 2
 
 [node name="PhaseAnnouncement" parent="." instance=ExtResource("20_q3yo6")]
 visible = false
+layout_mode = 2
+
+[node name="ToastContainer" parent="." instance=ExtResource("9_wx8fv")]
 layout_mode = 2
 
 [node name="WaitContainer" type="PanelContainer" parent="."]
