@@ -153,5 +153,7 @@ func calculate_build_complete(ref:int, add:bool = true) -> Dictionary:
 
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL = TIER.VAL.ZERO, start_at:int = 0, limit:int = 10) -> Dictionary:
-	return SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
+	var filter:Callable = func(list) -> void:
+		return list.filter(func(i): return i.details.tier == tier)		
+	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------

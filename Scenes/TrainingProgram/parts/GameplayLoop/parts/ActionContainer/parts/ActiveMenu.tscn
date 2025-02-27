@@ -2,39 +2,50 @@
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/active_menu.gd" id="1_yhadw"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_1mtlm"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_8q8n7"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_casfw"]
+[ext_resource type="PackedScene" uid="uid://dmjokg2svoddw" path="res://UI/Buttons/MenuBtn/MenuBtn.tscn" id="3_tmn8y"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y218p"]
-bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bres3"]
+bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_cxyl8"]
-color = Color(1, 1, 1, 1)
-grow_end = -5.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tpv5"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tlepk"]
-bg_color = Color(0, 0.254902, 0.0823529, 0)
+[sub_resource type="LabelSettings" id="LabelSettings_hpek8"]
+font = ExtResource("3_casfw")
+font_size = 8
+font_color = Color(0, 0, 0, 1)
+outline_size = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n63my"]
-bg_color = Color(0, 0.254902, 0.0823529, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mnuel"]
-bg_color = Color(0, 0.254902, 0.0823529, 0)
+[sub_resource type="LabelSettings" id="LabelSettings_xiti1"]
+font = ExtResource("3_casfw")
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
 
 [node name="ActiveMenu" type="PanelContainer"]
 offset_right = 80.0
 offset_bottom = 41.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_y218p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bres3")
 script = ExtResource("1_yhadw")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
@@ -45,37 +56,58 @@ theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 15
 
 [node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "HEADER"
 label_settings = ExtResource("2_1mtlm")
+horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ApContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxLine_cxyl8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0tpv5")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = -5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "AP"
+label_settings = SubResource("LabelSettings_hpek8")
+horizontal_alignment = 1
+
+[node name="ApLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "xx"
+label_settings = SubResource("LabelSettings_xiti1")
+horizontal_alignment = 1
 
 [node name="List" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TextBtn" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
+[node name="MenuBtn" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tlepk")
-icon = 10
-panel_color = Color(0, 0.254902, 0.0823529, 0)
-title = "OPTION 1"
+title = "ITEM A"
+icon = 52
+is_selected = true
 
-[node name="TextBtn2" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
+[node name="MenuBtn2" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_n63my")
-icon = 51
-panel_color = Color(0, 0.254902, 0.0823529, 0)
-title = "OPTION 2"
+title = "ITEM B"
+icon = 52
 
-[node name="TextBtn3" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_8q8n7")]
+[node name="MenuBtn3" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_mnuel")
-icon = 51
-panel_color = Color(0, 0.254902, 0.0823529, 0)
-title = "OPTION 2"
+title = "ITEM C"
+icon = 52

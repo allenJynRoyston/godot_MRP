@@ -1,0 +1,325 @@
+[gd_scene load_steps=15 format=3 uid="uid://de6y6tnltq8d"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/build_container.gd" id="1_h7ayo"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_mq6a8"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_2fbgh"]
+[ext_resource type="PackedScene" uid="uid://jacix3bun03x" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn" id="5_08bo1"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="6_yjay7"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="7_t7lao"]
+[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="8_et4l3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_my8xt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ij55"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3mux"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bxm2a"]
+bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oxoj4"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yq3h"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="BuildContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_d3jd6")
+script = ExtResource("1_h7ayo")
+
+[node name="ColorRectBG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[node name="HeaderControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="HeaderPanel" type="PanelContainer" parent="HeaderControl"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -253.0
+offset_right = 253.0
+offset_bottom = 86.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_my8xt")
+
+[node name="MarginContainer" type="MarginContainer" parent="HeaderControl/HeaderPanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="TitleLabel" type="Label" parent="HeaderControl/HeaderPanel/MarginContainer"]
+layout_mode = 2
+text = "BUILD"
+label_settings = ExtResource("4_2fbgh")
+horizontal_alignment = 1
+
+[node name="MainControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="MainPanel" type="PanelContainer" parent="MainControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6ij55")
+
+[node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = -10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LessBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mq6a8")]
+layout_mode = 2
+icon = 10
+inactive_color = Color(1, 1, 1, 1)
+flip_h = true
+flip_v = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(700, 550)
+layout_mode = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = 10
+columns = 4
+
+[node name="ShopMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+flip = false
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard10" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+flip = false
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard11" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+flip = false
+show_already_unlocked = null
+ref = -1
+
+[node name="ShopMiniCard12" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+flip = false
+show_already_unlocked = null
+ref = -1
+
+[node name="MoreBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mq6a8")]
+layout_mode = 2
+icon = 10
+inactive_color = Color(1, 1, 1, 1)
+flip_v = false
+
+[node name="AvailableLabel" type="Label" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "0/1"
+label_settings = ExtResource("6_yjay7")
+horizontal_alignment = 1
+
+[node name="BtnControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_r3mux")
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+
+[node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bxm2a")
+title = "BACK"
+assigned_key = "B"
+icon = 16
+panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+
+[node name="PurchaseBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_oxoj4")
+title = "PURCHASE"
+assigned_key = "E"
+icon = 10
+panel_color = Color(0, 0.529412, 0.278431, 1)
+
+[node name="PlacementBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7yq3h")
+title = "PLACE"
+assigned_key = "E"
+icon = 10
+panel_color = Color(0, 0.529412, 0.278431, 1)
+
+[node name="DetailControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="DetailPanel" parent="DetailControl" instance=ExtResource("8_et4l3")]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_right = 0.0
+grow_horizontal = 0

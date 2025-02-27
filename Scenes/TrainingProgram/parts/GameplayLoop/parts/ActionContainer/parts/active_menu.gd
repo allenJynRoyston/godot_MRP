@@ -2,13 +2,35 @@ extends Control
 
 @onready var HeaderLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderLabel
 @onready var List:VBoxContainer = $MarginContainer/VBoxContainer/List
+@onready var ApContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/ApContainer
+@onready var ApLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/ApLabel
 
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
+
+var header:String = "" : 
+	set(val):
+		header = val
+		on_header_update()
+
+var show_ap:bool = false : 
+	set(val):
+		show_ap = val
+		on_show_ap_update()
+
+var ap_val:int = 0 : 
+	set(val):
+		ap_val = val
+		on_ap_val_update()
 
 var selected_index:int = 0 : 
 	set(val):
 		selected_index = val
 		on_selected_index_update()
+
+var use_color:Color = Color.GREEN : 
+	set(val):
+		use_color = val
+		on_use_color_update()
 			
 var options_list:Array = [] : 
 	set(val):
@@ -34,6 +56,10 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	on_options_list_update()
+	on_header_update()
+	on_use_color_update()
+	on_show_ap_update()
+	on_ap_val_update()
 	
 func open() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
@@ -57,33 +83,60 @@ func on_selected_index_update() -> void:
 		
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
-		btn_node.icon = SVGS.TYPE.MEDIA_PLAY if index == selected_index else SVGS.TYPE.NONE
+		btn_node.is_selected = index == selected_index
 		
-
-func on_options_list_update() -> void:
+func on_options_list_update(recolor:bool = false) -> void:
 	if !is_node_ready() or options_list.is_empty():return	
-	clear_list()
-	is_ready = false
 	
-	if selected_index > options_list.size():
-		selected_index = options_list.size() - 1
+	if !recolor:
+		clear_list()
+		is_ready = false
 		
-	for index in options_list.size():
-		var item:Dictionary = options_list[index]		
-		var btn_node:Control = TextBtnPreload.instantiate()
-		btn_node.title = item.title
-		btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
-		btn_node.onClick = func() -> void:
-			if !btn_node.is_disabled:
-				item.onSelect
-		btn_node.icon = SVGS.TYPE.MEDIA_PLAY if index == selected_index else SVGS.TYPE.NONE
-		btn_node.onFocus = func(_node:Control) -> void:
-			selected_index = index
+		if selected_index > options_list.size():
+			selected_index = options_list.size() - 1
+			
+		for index in options_list.size():
+			var item:Dictionary = options_list[index]		
+			var btn_node:Control = MenuBtnPreload.instantiate()
+			
+			btn_node.title = item.title
+			btn_node.icon = item.icon if "icon" in item else SVGS.TYPE.NONE
+			btn_node.btn_color = use_color
+			btn_node.is_selected = index == selected_index
+			btn_node.cost = item.cost if "cost" in item else -1
+			btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
+			btn_node.onClick = func() -> void:
+				if !btn_node.is_disabled:
+					item.onSelect
+			btn_node.onFocus = func(_node:Control) -> void:
+				selected_index = index
+			
+			List.add_child(btn_node)
 		
-		List.add_child(btn_node)
+		await U.tick()
+		is_ready = true
+	else:
+		for child in List.get_children():
+			child.btn_color = use_color
+
+func on_ap_val_update() -> void:
+	if !is_node_ready():return
+	ApLabel.text = str(ap_val)
+			
+func on_show_ap_update() -> void:
+	if !is_node_ready():return
+	ApContainer.show() if show_ap else ApContainer.hide()
 	
-	await U.tick()
-	is_ready = true
+func on_header_update() -> void:
+	if !is_node_ready():return
+	HeaderLabel.text = header
+
+func on_use_color_update() -> void:
+	if !is_node_ready():return
+	var label_settings:LabelSettings = HeaderLabel.label_settings.duplicate()
+	label_settings.font_color = use_color.lightened(0.4)
+	HeaderLabel.label_settings = label_settings
+	on_options_list_update(true)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

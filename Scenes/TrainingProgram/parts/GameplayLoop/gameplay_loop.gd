@@ -6,6 +6,7 @@ extends PanelContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var StoreContainer:PanelContainer = $StoreContainer
+@onready var BuildContainer:PanelContainer = $BuildContainer
 @onready var ContainmentContainer:MarginContainer = $ContainmentContainer
 @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
@@ -34,6 +35,12 @@ enum SHOP_STEPS {
 	RESET, 
 	OPEN
 }
+
+enum BUILDER_STEPS {
+	RESET, 
+	OPEN
+}
+
 enum CONTAIN_STEPS {
 	RESET, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
 	ON_REJECT, ON_TRANSFER_CANCEL, 
@@ -87,6 +94,12 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 	set(val):
 		show_store = val
 		on_show_store_update()		
+		
+@export var show_build:bool = false : 
+	set(val):
+		show_build = val
+		on_show_build_update()
+		
 		
 @export var show_recruit:bool = false : 
 	set(val):
@@ -277,7 +290,9 @@ var initial_values:Dictionary = {
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 					room[str(floor_index, ring_index, room_index)] = {
 						"is_activated": false,  
-						"is_destroyed": false
+						"is_destroyed": false,
+						"upgrade_level": 0,
+						"ap": 0,
 					}						
 		
 		
@@ -394,6 +409,11 @@ var current_shop_step:SHOP_STEPS = SHOP_STEPS.RESET :
 	set(val):
 		current_shop_step = val
 		on_current_shop_step_update()
+		
+var current_builder_step:BUILDER_STEPS = BUILDER_STEPS.RESET : 
+	set(val):
+		current_builder_step = val
+		on_current_builder_step_update()		
 
 var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.RESET : 
 	set(val):
@@ -656,6 +676,8 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 func get_room_defaults() -> Dictionary:
 	return {
 		"is_activated": false,
+		"ap": 3,
+		"upgrade_level": 0,
 		"build_data": {},
 		"room_data": {},
 		"scp_data": {},
@@ -678,13 +700,31 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, TimelineContainer, ResearchersContainer,
 		ActionContainer, 
-		DialogueContainer, StoreContainer, ContainmentContainer, 
+		DialogueContainer, StoreContainer, ContainmentContainer, BuildContainer,
 		ConfirmModal, RecruitmentContainer, ResourceContainer,
 		BuildCompleteContainer, ObjectivesContainer, EventContainer,
 		MetricsContainer,  EndOfPhaseContainer,	SCPSelectScreen,
 		RoomInfo, FloorInfo
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+var current_show_state:Dictionary = {}
+func capture_current_showing_state() -> void:
+	current_show_state = {}
+	for node in get_all_container_nodes():
+		current_show_state[node] = node.is_showing		
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func restore_showing_state() -> void:	
+	var visible_nodes:Array = []
+	for node in current_show_state:
+		if current_show_state[node]:
+			visible_nodes.push_back(node)
+	await show_only(visible_nodes)
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func capture_default_showing_state() -> void:
@@ -903,6 +943,8 @@ func set_room_config(force_setup:bool = false) -> void:
 		# updatae room config with ref and utility functions
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"ref": item.ref,
+			"ap": base_states.room[designation].ap,
+			"upgrade_level": base_states.room[designation].upgrade_level,
 			"get_room_details": func() -> Dictionary:
 				return ROOM_UTIL.return_data(item.ref),
 			"get_is_activated": func() -> bool:
@@ -1391,11 +1433,18 @@ func activate_floor(from_location:Dictionary) -> Dictionary:
 # ------------------------------------------------------------------------------
 		
 # ------------------------------------------------------------------------------	
-func construct_room(from_location:Dictionary) -> Dictionary:
+func construct_room() -> Dictionary:
+	SUBSCRIBE.suppress_click = true	
+	current_builder_step = BUILDER_STEPS.OPEN
+	await on_store_purchase_complete	
+	return {"has_changes": true}
+# ---------------------
+
+# ------------------------------------------------------------------------------	
+func open_store() -> Dictionary:
 	SUBSCRIBE.suppress_click = true
 	current_shop_step = SHOP_STEPS.OPEN
 	await on_store_purchase_complete
-	restore_player_hud()
 	return {"has_changes": true}
 # ---------------------
 
@@ -2199,6 +2248,11 @@ func on_show_store_update() -> void:
 	StoreContainer.is_showing = show_store
 	showing_states[StoreContainer] = show_store
 
+func on_show_build_update() -> void:
+	if !is_node_ready():return
+	BuildContainer.is_showing = show_build
+	showing_states[BuildContainer] = show_build
+
 func on_show_containment_status_update() -> void:
 	if !is_node_ready():return
 	ContainmentContainer.is_showing = show_containment_status
@@ -2369,6 +2423,39 @@ func on_current_phase_update() -> void:
 
 # ------------------------------------------------------------------------------	SHOP STEPS
 #region SHOP STATES
+func on_current_builder_step_update() -> void:
+	if !is_node_ready():return
+	
+	match current_builder_step:
+		# ---------------
+		BUILDER_STEPS.RESET:
+			SUBSCRIBE.suppress_click = false
+			restore_showing_state()
+		# ---------------
+		BUILDER_STEPS.OPEN:
+			shop_revert_step = current_shop_step
+			SUBSCRIBE.suppress_click = true
+			selected_shop_item = {}
+			
+			BuildContainer.start()
+			capture_current_showing_state()
+			await show_only([BuildContainer, Structure3dContainer, ResourceContainer])
+			var response:Dictionary = await BuildContainer.user_response
+			await BuildContainer.end()
+
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			match response.action:
+				ACTION.BACK:					
+					current_builder_step = BUILDER_STEPS.RESET
+					
+			on_store_purchase_complete.emit()	
+		## ---------------
+
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	SHOP STEPS
+#region SHOP STATES
 func on_current_shop_step_update() -> void:
 	if !is_node_ready():return
 	
@@ -2376,7 +2463,7 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
+			restore_showing_state()
 		# ---------------
 		SHOP_STEPS.OPEN:
 			shop_revert_step = current_shop_step

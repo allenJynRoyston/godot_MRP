@@ -237,7 +237,7 @@ func return_tier_dict(tier_data:Dictionary) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_tier_paginated(reference_data:Dictionary, tier:int, start_at:int, limit:int) -> Dictionary:
+func return_tier_paginated(reference_data:Dictionary, filter:Callable, start_at:int, limit:int) -> Dictionary:
 	var list:Array = []
 	
 	for ref in reference_data:
@@ -247,7 +247,7 @@ func return_tier_paginated(reference_data:Dictionary, tier:int, start_at:int, li
 		})
 
 	# filter for tier
-	list = list.filter(func(i): return i.details.tier == tier)
+	list = filter.call(list)
 	
 	var paginated_array:Array = U.paginate_array(list, start_at, limit)
 	

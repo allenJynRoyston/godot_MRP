@@ -91,7 +91,7 @@ func on_is_showing_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------			
-func show_details() -> void:
+func show_details(skip_resposition:bool = false) -> void:
 	# enable/disable buttons
 	ActiveMenu.freeze_inputs = false
 	set_btn_disabled_state(true)
@@ -120,7 +120,7 @@ func show_details() -> void:
 	# local vars
 	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
 	var options_list := []
-	var room_is_empty:bool = room_extract.room.is_empty()	
+	var is_room_empty:bool = room_extract.is_room_empty
 	
 	options_list.push_back({
 		"title": "BACK",
@@ -128,11 +128,55 @@ func show_details() -> void:
 			GBL.find_node(REFS.ROOM_NODES).is_active = false
 			ActiveMenu.close()
 	})
+	
+	var abilities:Array = [] if is_room_empty else room_extract.room.abilities
+	var current_ap:int = 0 if is_room_empty else room_extract.room.ap
+	var upgrade_level:int = 0 if is_room_empty else room_extract.room.upgrade_level
+	var available_upgrade_levels:int = 2
+	
+	if !is_room_empty:
+		if room_extract.is_room_active:
+			for n in abilities.size():
+				var ability:Dictionary = abilities[n]
+				var can_use:bool = upgrade_level >= ability.available_at_lvl
+				var enough_ap_to_use:bool = current_ap < ability.ap_cost
+				if available_upgrade_levels > n:
+					options_list.push_back({
+						"title": "%s %s" % [ability.name, "" if !enough_ap_to_use else ""] if can_use else "%s [UPGRADE REQUIRED]" % [ability.name],
+						"is_disabled": current_ap < ability.ap_cost or !can_use,
+						"cost": ability.ap_cost if can_use else -1,
+						"onSelect": func() -> void:				
+							U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
+							ActiveMenu.freeze_inputs = true				
+							await ability.effect.call(GameplayNode)														
+							U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)
+							ActiveMenu.freeze_inputs = false
+							show_details(true),
+					})
+		else:
+				options_list.push_back({
+					"title": "ACTIVATE ROOM",
+					"onSelect": func() -> void:
+						ActiveMenu.freeze_inputs = true	
+						var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, true)
+						ActiveMenu.freeze_inputs = false
+						if response.has_changes:
+							open_room_menu()
+				})				
+	
+		#print(room_extract.room)	
+		options_list.push_back({
+			"title": "UPGRADE",
+			"icon": SVGS.TYPE.UP_ARROW,
+			"is_disabled": false,
+			"onSelect": func() -> void:
+				pass
+		})
 
 	# ROOM DETAILS	
 	RoomMiniCard.is_room_active = room_extract.is_room_active
 	RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
-	RoomMiniCard.ref = room_extract.room.details.ref if !room_is_empty else -1
+	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1
 
 	#
 	# SCP DETAILS
@@ -179,11 +223,16 @@ func show_details() -> void:
 		card.is_synergy = true
 		SynergyTraitList.add_child(card)
 	
-	
+	ActiveMenu.ap_val = current_ap
+	ActiveMenu.show_ap = abilities.size() > 0
+	ActiveMenu.header = "EMPTY" if is_room_empty else "%s" % [room_extract.room.details.name]
+	ActiveMenu.use_color = Color(1, 0.745, 0.381)
 	ActiveMenu.options_list = options_list
-	await U.tick()
-	ActiveMenu.size = Vector2(1, 1)
-	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+	print(skip_resposition)
+	if !skip_resposition:
+		await U.tick()
+		ActiveMenu.size = Vector2(1, 1)
+		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
 	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------				
 
@@ -283,7 +332,7 @@ func open_scp_details() -> void:
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
-func open_room_menu() -> void:
+func open_room_menu(skip_resposition:bool = false) -> void:
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:	
 		GBL.find_node(REFS.ROOM_NODES).is_active = false	
@@ -314,16 +363,15 @@ func open_room_menu() -> void:
 			set_btn_disabled_state(false)
 	})
 	
-	options_list.push_back({
-		"title": "CONSTRUCT ROOM...",
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true				
-			var response:Dictionary = await GameplayNode.construct_room(current_location.duplicate())
-			await U.set_timeout(0.7)
-			ActiveMenu.freeze_inputs = false
-			if response.has_changes:
-				open_room_menu()
-	})	
+	if room_is_empty:
+		options_list.push_back({
+			"title": "CONSTRUCT ROOM...",
+			"onSelect": func() -> void:
+				ActiveMenu.freeze_inputs = true				
+				var response:Dictionary = await GameplayNode.construct_room()				
+				ActiveMenu.freeze_inputs = false				
+				open_room_menu(true)
+		})	
 	
 	if is_room_under_construction:
 		options_list.push_back({
@@ -349,8 +397,7 @@ func open_room_menu() -> void:
 			})		
 		else:
 			options_list.push_back({
-				"title": "DEACTIVATE ROOM" if researchers_count == 0 and is_scp_empty else "DEACTIVATE ROOM (ROOM IS BUSY)",
-				"is_disabled": researchers_count > 0 or !is_scp_empty,
+				"title": "DEACTIVATE ROOM",
 				"onSelect": func() -> void:
 					ActiveMenu.freeze_inputs = true	
 					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, false)
@@ -360,7 +407,7 @@ func open_room_menu() -> void:
 			})				
 
 		options_list.push_back({
-			"title": "DESTROY AND CLEAR ROOM",
+			"title": "DESTROY ROOM",
 			"is_disabled": !is_scp_empty,
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true	
@@ -368,12 +415,16 @@ func open_room_menu() -> void:
 				ActiveMenu.freeze_inputs = false	
 				if response.has_changes:
 					open_room_menu()
-		})		
+		})
 
+	ActiveMenu.show_ap = false
+	ActiveMenu.header = "FACILITY"
+	ActiveMenu.use_color = Color(0, 0.529, 1)
 	ActiveMenu.options_list = options_list		
-	await U.tick()
-	ActiveMenu.size = Vector2(1, 1)
-	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+	if !skip_resposition:
+		await U.tick()
+		ActiveMenu.size = Vector2(1, 1)
+		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
 	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------			
 
@@ -434,27 +485,27 @@ func open_scp_menu() -> void:
 					open_scp_menu(),
 		})							
 
-	#if is_scp_contained:
-		#if is_scp_transfering:
-			#options_list.push_back({
-				#"title": "CANCEL TRANSFER" ,
-				#"onSelect": func() -> void:
-					#ActiveMenu.freeze_inputs = true
-					#var response:Dictionary = await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP)
-					#ActiveMenu.freeze_inputs = false
-					#if response.has_changes:
-						#open_scp_menu(),
-			#})
-		#else:
-			#options_list.push_back({
-				#"title": "TRANSFER TO...",
-				#"onSelect": func() -> void:
-					#ActiveMenu.freeze_inputs = true
-					#var response:Dictionary = await GameplayNode.transfer_scp(current_location.duplicate())
-					#ActiveMenu.freeze_inputs = false
-					#if response.has_changes:
-						#open_scp_menu(),
-			#})			
+	if is_scp_contained:
+		if is_scp_transfering:
+			options_list.push_back({
+				"title": "CANCEL TRANSFER" ,
+				"onSelect": func() -> void:
+					ActiveMenu.freeze_inputs = true
+					var response:Dictionary = await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP)
+					ActiveMenu.freeze_inputs = false
+					if response.has_changes:
+						open_scp_menu(),
+			})
+		else:
+			options_list.push_back({
+				"title": "TRANSFER TO...",
+				"onSelect": func() -> void:
+					ActiveMenu.freeze_inputs = true
+					var response:Dictionary = await GameplayNode.transfer_scp(current_location.duplicate())
+					ActiveMenu.freeze_inputs = false
+					if response.has_changes:
+						open_scp_menu(),
+			})			
 
 	options_list.push_back({
 		"title": "UPGRADE",
@@ -467,6 +518,9 @@ func open_scp_menu() -> void:
 				#open_scp_menu(),
 	})			
 
+	ActiveMenu.show_ap = false
+	ActiveMenu.header = "CONTAINMENT"
+	ActiveMenu.use_color = Color(0.511, 0.002, 0.717)
 	ActiveMenu.options_list = options_list		
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
@@ -505,18 +559,9 @@ func open_researcher_menu() -> void:
 			set_btn_disabled_state(false)
 	})
 
-	#options_list.push_back({
-		#"title": "RESEARCHER DETAILS",		
-		#"is_disabled": hired_lead_researchers_arr.size() == 0,
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true				
-			#await GameplayNode.open_researcher_details()
-			#ActiveMenu.freeze_inputs = false
-	#})	
-
 	options_list.push_back({
-		"title": "ASSIGN RESEARCHER..." if is_room_active else "ASSIGN RESEARCHER (ROOM IS INACTIVE)",
-		"is_disabled": !is_room_active or room_is_empty,
+		"title": "ASSIGN RESEARCHER...",
+		"is_disabled": room_is_empty,
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true
 			var response:Dictionary = await GameplayNode.assign_researcher(current_location.duplicate())
@@ -525,17 +570,20 @@ func open_researcher_menu() -> void:
 				open_researcher_menu(),
 	})		
 	
-	#for researcher in room_extract.researchers:
-		#options_list.push_back({
-			#"title": "REMOVE %s" % [researcher.name],
-			#"onSelect": func() -> void:
-				#ActiveMenu.freeze_inputs = true
-				#var response:Dictionary = await GameplayNode.unassign_researcher(researcher, room_extract.room.details)
-				#ActiveMenu.freeze_inputs = false
-				#if response.has_changes:
-					#open_researcher_menu(),
-		#})
-				
+	for researcher in room_extract.researchers:
+		options_list.push_back({
+			"title": "REMOVE %s" % [researcher.name],
+			"onSelect": func() -> void:
+				ActiveMenu.freeze_inputs = true
+				var response:Dictionary = await GameplayNode.unassign_researcher(researcher, room_extract.room.details)
+				ActiveMenu.freeze_inputs = false
+				if response.has_changes:
+					open_researcher_menu(),
+		})
+
+	ActiveMenu.show_ap = false
+	ActiveMenu.header = "RESEARCHER"
+	ActiveMenu.use_color = Color(0, 0.965, 0.278)
 	ActiveMenu.options_list = options_list		
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
@@ -782,9 +830,9 @@ func buildout_btns() -> void:
 			
 		CAMERA.TYPE.ROOM_SELECT:
 			new_left_btn_list.push_back({
-				"title": "DETAILS",
+				"title": "ABILITIES",
 				"assigned_key": "E",
-				"icon": SVGS.TYPE.MONEY,
+				"icon": SVGS.TYPE.TARGET,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						show_details()
@@ -808,6 +856,7 @@ func buildout_btns() -> void:
 						open_researcher_menu()
 			})
 			
+
 			new_left_btn_list.push_back({
 				"title": "CONTAINMENT",
 				"assigned_key": "3",
@@ -818,15 +867,15 @@ func buildout_btns() -> void:
 						open_scp_menu()
 			})
 			
-			new_left_btn_list.push_back({
-				"title": "ALARM",
-				"assigned_key": "4",
-				"is_hidden": false,
-				"icon": SVGS.TYPE.CAUTION,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						open_alarm_setting()
-			})
+			#new_left_btn_list.push_back({
+				#"title": "ALARM",
+				#"assigned_key": "4",
+				#"is_hidden": false,
+				#"icon": SVGS.TYPE.CAUTION,
+				#"onClick": func() -> void:
+					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						#open_alarm_setting()
+			#})
 
 			
 			# ---- RIGHT SIDE
@@ -857,7 +906,6 @@ func buildout_btns() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						GameplayNode.next_day(),
 			})
-	
 
 	on_left_btn_list_update(new_left_btn_list, reload)
 	on_right_btn_list_update(new_right_btn_list, reload)
@@ -871,24 +919,30 @@ func set_backdrop_state(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
-func set_btn_disabled_state(state:bool) -> void:
+func set_btn_disabled_state(state:bool) -> void:	
 	await U.tick() # DO NOT REMOVE
-	for child in [LeftSideBtnList, RightSideBtnList]:
-		for node in child.get_children():
-			node.is_disabled = state
+	
+	for index in LeftSideBtnList.get_child_count():
+		var btn_node:Control = LeftSideBtnList.get_child(index)
+		var is_disabled_state:bool = left_btn_list[index].is_disabled if "is_disabled" in left_btn_list[index] else false
+		btn_node.is_disabled = true if state else is_disabled_state
+		
+	for index in RightSideBtnList.get_child_count():
+		var btn_node:Control = RightSideBtnList.get_child(index)
+		btn_node.is_disabled = true if state else right_btn_list[index].is_disabled if "is_disabled" in right_btn_list[index] else false
+		
 	disable_inputs_while_menu_is_open = state
 	set_backdrop_state(state)	
 
-func on_left_btn_list_update(list:Array, reload:bool) -> void:
+func on_left_btn_list_update(new_list:Array, reload:bool) -> void:
 	if !is_node_ready():return
 
-		
-	if reload or LeftSideBtnList.get_child_count() != list.size():
+	if reload or LeftSideBtnList.get_child_count() != new_list.size():
 		await U.set_timeout(0.5)
 		for node in LeftSideBtnList.get_children():
 			node.queue_free()
 		
-		for item in list:
+		for item in new_list:
 			var new_btn:BtnBase = KeyBtnPreload.instantiate()
 			new_btn.title = item.title
 			new_btn.assigned_key = item.assigned_key
@@ -899,28 +953,28 @@ func on_left_btn_list_update(list:Array, reload:bool) -> void:
 				if !new_btn.is_disabled:
 					ref_btn = new_btn
 					item.onClick.call()
-			
 			LeftSideBtnList.add_child(new_btn)
-	
-	else:
-		for index in list.size():
-			var item:Dictionary = list[index]
+		left_btn_list = new_list.duplicate()
+	else:		
+		for index in new_list.size():
+			var item:Dictionary = new_list[index]
 			var btn_node:BtnBase = LeftSideBtnList.get_child(index)
+			var is_disabled_state:bool = new_list[index].is_disabled if "is_disabled" in new_list[index] else false
 			btn_node.title = item.title
 			btn_node.icon = item.icon
-			btn_node.is_disabled = (item.is_disabled if "is_disabled" in item else false) if !disable_inputs_while_menu_is_open else btn_node.is_disabled
+			btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
 			btn_node.hide() if ("is_hidden" in item and item.is_hidden) else btn_node.show()
 	
 
-func on_right_btn_list_update(list:Array, reload:bool) -> void:
+func on_right_btn_list_update(new_list:Array, reload:bool) -> void:
 	if !is_node_ready():return
 	
-	if reload or RightSideBtnList.get_child_count() != list.size():
+	if reload or RightSideBtnList.get_child_count() != new_list.size():
 		await U.set_timeout(0.5)
 		for node in RightSideBtnList.get_children():
 			node.queue_free()
 		
-		for item in list:
+		for item in new_list:
 			var new_btn:BtnBase = KeyBtnPreload.instantiate()
 			new_btn.title = item.title
 			new_btn.assigned_key = item.assigned_key
@@ -929,15 +983,17 @@ func on_right_btn_list_update(list:Array, reload:bool) -> void:
 			new_btn.onClick = func() -> void:			
 				ref_btn = new_btn
 				item.onClick.call()
-			
 			RightSideBtnList.add_child(new_btn)
+			
+		right_btn_list = new_list		
 	else:
-		for index in list.size():
-			var item:Dictionary = list[index]
+		for index in new_list.size():
+			var item:Dictionary = new_list[index]
 			var btn_node:BtnBase = RightSideBtnList.get_child(index)
+			var is_disabled_state:bool = new_list[index].is_disabled if "is_disabled" in new_list[index] else false
 			btn_node.title = item.title
 			btn_node.icon = item.icon
-			btn_node.is_disabled = (item.is_disabled if "is_disabled" in item else false) if !disable_inputs_while_menu_is_open else btn_node.is_disabled
+			#btn_node.is_disabled = (item.is_disabled if "is_disabled" in item else false) if !disable_inputs_while_menu_is_open else btn_node.is_disabled
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	

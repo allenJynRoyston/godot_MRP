@@ -12,6 +12,7 @@ extends MouseInteractions
 @onready var UnlockBtn:Control = $SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/UnlockBtn
 @onready var LockPanel:PanelContainer = $SubViewport/PanelContainer/Back/MarginContainer2/LockPanel
 @onready var AtMaxPanel:PanelContainer = $SubViewport/PanelContainer/AtMaxPanel
+@onready var AlreadyUnlocked:PanelContainer = $SubViewport/PanelContainer/AlreadyUnlocked
 
 @onready var Front:Control = $SubViewport/PanelContainer/Front
 @onready var Back:Control = $SubViewport/PanelContainer/Back
@@ -35,6 +36,11 @@ extends MouseInteractions
 	set(val):
 		is_deselected = val
 		on_is_deselected_update()		
+
+@export var show_already_unlocked:bool = false : 
+	set(val):
+		show_already_unlocked = val
+		on_show_already_unlocked()
 		
 @export var ref:int = -1: 
 	set(val):
@@ -93,6 +99,7 @@ func _ready() -> void:
 	on_is_selected_update()
 	on_is_deselected_update()
 	on_ref_update()
+	on_show_already_unlocked()
 # --------------------------------------
 
 # --------------------------------------
@@ -223,6 +230,13 @@ func build_cost(cost_arr:Array, show_free:bool, parent_node:Control) -> void:
 		new_btn.icon = SVGS.TYPE.MONEY
 		parent_node.add_child(new_btn)		
 # --------------------------------------		
+
+# --------------------------------------		
+func on_show_already_unlocked() -> void:
+	if !is_node_ready():return
+	PurchaseList.hide() if show_already_unlocked else PurchaseList.show()
+	AlreadyUnlocked.show() if show_already_unlocked else AlreadyUnlocked.hide() 
+# --------------------------------------			
 
 # --------------------------------------		
 func on_can_afford_update() -> void:

@@ -1,0 +1,113 @@
+[gd_scene load_steps=9 format=3 uid="uid://dmjokg2svoddw"]
+
+[ext_resource type="Script" path="res://UI/Buttons/MenuBtn/menu_btn.gd" id="1_b56nf"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_yu543"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_fvhk1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_asb5s"]
+bg_color = Color(0, 0, 0, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_81em5"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.964706, 0.278431, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="LabelSettings" id="LabelSettings_77xnj"]
+font = ExtResource("3_fvhk1")
+font_size = 8
+font_color = Color(0, 0.964706, 0.278431, 1)
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j5o2t"]
+bg_color = Color(0, 0.964706, 0.278431, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_onky5"]
+font = ExtResource("3_fvhk1")
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="MenuBtn" type="PanelContainer"]
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 34.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_asb5s")
+script = ExtResource("1_b56nf")
+btn_color = Color(0.510764, 0.00166744, 0.716704, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="InnerPanel" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_81em5")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="IconBtn" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer" instance=ExtResource("2_yu543")]
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+icon = 27
+inactive_color = Color(0, 0.964706, 0.278431, 1)
+flip_v = false
+is_hoverable = false
+
+[node name="BtnLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TEXT GOES IN HERE"
+label_settings = SubResource("LabelSettings_77xnj")
+vertical_alignment = 1
+
+[node name="CostPanel" type="PanelContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_j5o2t")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = -2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="CostLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "50"
+label_settings = SubResource("LabelSettings_onky5")

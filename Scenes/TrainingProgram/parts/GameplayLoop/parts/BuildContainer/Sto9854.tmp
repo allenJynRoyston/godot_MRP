@@ -1,0 +1,213 @@
+[gd_scene load_steps=17 format=3 uid="uid://d35m668pfaxmj"]
+
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_sgoc5"]
+[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_417gh"]
+[ext_resource type="PackedScene" uid="uid://bv44can1xyvh1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/FocusDetails/FocusDetails.tscn" id="3_4l4wr"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_exv6b"]
+[ext_resource type="PackedScene" uid="uid://cy8nluju7hwvu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/TierUnlockPanel.tscn" id="5_onij2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d15tv"]
+shader = ExtResource("2_417gh")
+shader_parameter/percentage = 1.0
+shader_parameter/angle_degrees = 0.0
+shader_parameter/line_width = 0.02
+shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
+shader_parameter/laser_color = Color(1, 0, 0, 1)
+shader_parameter/glow_width = 0.05
+shader_parameter/trail_fade = 0.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jvtta"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmlwr"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6drsp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dy4i2"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_38jdb"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m5wrr"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_856tl"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pa75o"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m55ag"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0kxuk"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[node name="StoreContainer" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_sgoc5")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_d15tv")
+layout_mode = 2
+texture = SubResource("ViewportTexture_jvtta")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(955, 504)
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+offset_right = 700.0
+offset_bottom = 504.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_rmlwr")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6drsp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FacilityBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dy4i2")
+is_disabled = false
+title = "FACILITY"
+
+[node name="RDBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_38jdb")
+icon = 43
+is_disabled = true
+title = "RESEARCH AND DEVELOPMENT"
+
+[node name="BaseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("3_exv6b")]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_m5wrr")
+icon = 43
+is_disabled = true
+title = "BASE"
+
+[node name="CloseBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_856tl")
+icon = 16
+is_disabled = false
+title = "Back"
+debug_me = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="FocusDetails" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_4l4wr")]
+layout_mode = 2
+
+[node name="PanelContainer2" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 450)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TierBtnContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_pa75o")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="GridContainer" type="GridContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 2
+
+[node name="PaginationBackBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_m55ag")
+icon = 16
+is_disabled = false
+title = "Previous"
+
+[node name="PaginationMoreBtn" parent="SubViewport/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_exv6b")]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0kxuk")
+is_disabled = false
+title = "More"
+
+[node name="TierUnlock" parent="SubViewport/PanelContainer" instance=ExtResource("5_onij2")]
+layout_mode = 2
+
+[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="." method="_on_subviewport_child_changed"]

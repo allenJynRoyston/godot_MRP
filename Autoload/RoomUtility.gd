@@ -18,12 +18,36 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 		
 	# ------------------------------------------
-	"prerequisites": [
-
-	],
-	"placement_restrictions": {
-
-	},
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "ABILITY 1",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(GameplayNode:Control) -> void:
+					var response:Dictionary = await GameplayNode.open_store(),
+			},
+			{
+				"name": "ABILITY 2",
+				"available_at_lvl": 1, 
+				"ap_cost":  5, 
+				"effect": func() -> void:
+					pass,
+			},
+			{
+				"name": "ABILITY 2",
+				"available_at_lvl": 2, 
+				"ap_cost":  5, 
+				"effect": func() -> void:
+					pass,
+			}
+		],	
+	#"prerequisites": [
+#
+	#],
+	#"placement_restrictions": {
+#
+	#},
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -835,22 +859,21 @@ var reference_data:Dictionary = {
 	## TIER ONE
 	
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
-	#3: DIRECTORS_OFFICE,
-	#4: DIRECTORS_OFFICE,
-	#5: DIRECTORS_OFFICE,
-	#6: DIRECTORS_OFFICE,
-	#7: DIRECTORS_OFFICE,
-	#8: DIRECTORS_OFFICE,
-	#9: DIRECTORS_OFFICE,
-	#10: DIRECTORS_OFFICE,
-	#11: DIRECTORS_OFFICE,
-	#12: DIRECTORS_OFFICE,
-	#13: DIRECTORS_OFFICE,
-	#14: DIRECTORS_OFFICE,
-	#15: DIRECTORS_OFFICE,
-	#16: DIRECTORS_OFFICE,
-	#17: DIRECTORS_OFFICE,
-	#18: DIRECTORS_OFFICE,
+	4: DIRECTORS_OFFICE,
+	5: DIRECTORS_OFFICE,
+	6: DIRECTORS_OFFICE,
+	7: DIRECTORS_OFFICE,
+	8: DIRECTORS_OFFICE,
+	9: DIRECTORS_OFFICE,
+	10: DIRECTORS_OFFICE,
+	11: DIRECTORS_OFFICE,
+	12: DIRECTORS_OFFICE,
+	13: DIRECTORS_OFFICE,
+	14: DIRECTORS_OFFICE,
+	15: DIRECTORS_OFFICE,
+	16: DIRECTORS_OFFICE,
+	17: DIRECTORS_OFFICE,
+	18: DIRECTORS_OFFICE,
 	
 	#ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	#ROOM.TYPE.BARRICKS: BARRICKS,
@@ -1054,10 +1077,24 @@ func owns_and_is_active(ref:ROOM.TYPE) -> bool:
 ## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int, purchased_facility_arr:Array) -> Dictionary:
+func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
-	return SHARED_UTIL.return_tier_paginated(reference_data, tier, start_at, limit)
+	var filter:Callable = func(list:Array) -> Array:
+		return list.filter(func(i): return i.details.tier == tier)
+	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:
+	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
+	var filter:Callable = func(list:Array) -> Array:
+		return list.filter(func(i): 
+			if "requires_unlock" not in i.details:
+				return true
+			return true if !i.details.requires_unlock else i.ref in shop_unlock_purchases
+		)
+	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func return_wing_effects_list(room_extract:Dictionary) -> Array:
@@ -1324,7 +1361,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 						
 			synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
 			#
-	
+
 	return {
 		"floor": floor_data,
 		"wing": wing_data,
@@ -1345,9 +1382,12 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		# -----
 		"room": {						
 			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
+			"abilities": room_details.abilities.call() if "abilities" in room_details else [],
 			"can_contain": can_contain,		
 			"is_activated": is_activated,
 			"can_activate": can_activate,
+			"upgrade_level": room_config_data.upgrade_level,
+			"ap": room_config_data.ap,
 		} if !is_room_empty or is_room_under_construction else {},
 		"scp": {
 			"details": scp_details,

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=30 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_v8p8x"]
 [ext_resource type="PackedScene" uid="uid://cd46j3ltrkmdv" path="res://UI/Buttons/TabBtn/TabBtn.tscn" id="2_jvnhf"]
@@ -7,8 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://jacix3bun03x" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn" id="4_huwd4"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_iga2a"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="6_uluvn"]
-[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="8_xyqc8"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="9_7676q"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
 
@@ -16,10 +14,94 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ij55"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uwa7g"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vftua"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y6j7o"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2f4am"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6p0fu"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wd3lf"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k6sci"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_orwyk"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqo1j"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_esg1i"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_olxy1"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axuw8"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3mux"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_adq6h"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t6031"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -31,7 +113,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p60vi"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rj6wq"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -43,7 +125,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dawbw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r0okb"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -55,13 +137,22 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25tt0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fahd3"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hljm"]
-bg_color = Color(0, 0, 0, 1)
-border_width_top = 3
-border_width_bottom = 3
-border_color = Color(0.8, 0, 0, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u6tag"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_0qn0w"]
+color = Color(1, 1, 1, 1)
 
 [node name="StoreContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -214,73 +305,57 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_constants/h_separation = 25
+theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 4
 
-[node name="ShopMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_uwa7g")
 
-[node name="ShopMiniCard2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_vftua")
 
-[node name="ShopMiniCard3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_y6j7o")
 
-[node name="ShopMiniCard4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_2f4am")
 
-[node name="ShopMiniCard5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_6p0fu")
 
-[node name="ShopMiniCard6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_wd3lf")
 
-[node name="ShopMiniCard7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_k6sci")
 
-[node name="ShopMiniCard8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_orwyk")
 
-[node name="ShopMiniCard9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-flip = false
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_lqo1j")
 
-[node name="ShopMiniCard10" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer10" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-flip = false
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_esg1i")
 
-[node name="ShopMiniCard11" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer11" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-flip = false
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_olxy1")
 
-[node name="ShopMiniCard12" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
+[node name="PanelContainer12" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 layout_mode = 2
-flip = false
-ref = -1
+theme_override_styles/panel = SubResource("StyleBoxFlat_axuw8")
 
 [node name="MoreBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_3ph48")]
 layout_mode = 2
@@ -339,23 +414,31 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_adq6h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t6031")
 title = "BACK"
 assigned_key = "B"
 icon = 16
 panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
-[node name="SelectTabBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
+[node name="SelectBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p60vi")
-title = "NEXT"
+theme_override_styles/panel = SubResource("StyleBoxFlat_rj6wq")
+title = "SELECTB"
+assigned_key = "E"
+icon = 10
+panel_color = Color(0, 0.529412, 0.278431, 1)
+
+[node name="PurchaseBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r0okb")
+title = "PURCHASE"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="UnlockBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dawbw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fahd3")
 title = "UNLOCK"
 assigned_key = "E"
 icon = 10
@@ -364,41 +447,39 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 [node name="DetailControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="DetailPanel" parent="DetailControl" instance=ExtResource("8_xyqc8")]
+[node name="DetailPanel" type="PanelContainer" parent="DetailControl"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -200.0
-offset_right = 0.0
-grow_horizontal = 0
-
-[node name="SplashControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="SplashPanelContainer" type="PanelContainer" parent="SplashControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_left = -52.0
+grow_horizontal = 0
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_25tt0")
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_u6tag")
 
-[node name="PanelContainer" type="PanelContainer" parent="SplashControl/SplashPanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="DetailControl/DetailPanel"]
 layout_mode = 2
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_1hljm")
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="SplashControl/SplashPanelContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DetailControl/DetailPanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/separation = 20
 
-[node name="SplashLabel" type="Label" parent="SplashControl/SplashPanelContainer/PanelContainer/MarginContainer"]
+[node name="SynergyContainer" type="VBoxContainer" parent="DetailControl/DetailPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "UNLOCK?"
-label_settings = ExtResource("9_7676q")
-horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="DetailControl/DetailPanel/MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+text = "DETAILS"
+label_settings = ExtResource("4_iga2a")
+horizontal_alignment = 2
+
+[node name="HSeparator2" type="HSeparator" parent="DetailControl/DetailPanel/MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_0qn0w")

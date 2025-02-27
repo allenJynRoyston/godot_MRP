@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=28 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
 [ext_resource type="PackedScene" uid="uid://dw4fw5d1x21qf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/ContainmentContainer.tscn" id="10_v7mb0"]
+[ext_resource type="PackedScene" uid="uid://de6y6tnltq8d" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn" id="11_2mss3"]
 [ext_resource type="PackedScene" uid="uid://dqajtnshjj5i7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn" id="11_kf8f5"]
 [ext_resource type="PackedScene" uid="uid://d0dpehr5pt3xc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/RecruitContainer.tscn" id="12_dw62g"]
 [ext_resource type="PackedScene" uid="uid://cwowqrsr48d6k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn" id="13_acjes"]
@@ -82,6 +83,9 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
+layout_mode = 2
+
+[node name="BuildContainer" parent="." instance=ExtResource("11_2mss3")]
 layout_mode = 2
 
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]

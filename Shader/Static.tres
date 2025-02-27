@@ -4,5 +4,5 @@
 
 [resource]
 shader = ExtResource("1_80yy2")
-shader_parameter/noise_strength = 0.444
+shader_parameter/noise_strength = 0.241
 shader_parameter/speed = 0.01
