@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=29 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
 [ext_resource type="PackedScene" uid="uid://d35m668pfaxmj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn" id="9_1cket"]
 [ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
+[ext_resource type="PackedScene" uid="uid://dbghsxudvxi5i" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SCPSelectScreen.tscn" id="9_e8e1f"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
 [ext_resource type="PackedScene" uid="uid://dw4fw5d1x21qf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/ContainmentContainer.tscn" id="10_v7mb0"]
 [ext_resource type="PackedScene" uid="uid://de6y6tnltq8d" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn" id="11_2mss3"]
@@ -47,6 +48,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+debug_mode = true
 show_objectives = true
 show_reseachers = true
 show_resources = true
@@ -76,6 +78,9 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="SCPSelectScreen" parent="." instance=ExtResource("13_acjes")]
+layout_mode = 2
+
+[node name="SelectResearcherScreen" parent="." instance=ExtResource("9_e8e1f")]
 layout_mode = 2
 
 [node name="MetricsContainer" parent="." instance=ExtResource("2_28uuh")]

@@ -319,12 +319,11 @@ var synergy_trait_data: Dictionary = {
 }
 
 # ------------------------------------------------------------------------------
-func generate_new_researcher_hires() -> Array:
-	return [
-		generate_researcher(),
-		generate_researcher(),
-		generate_researcher(),	
-	]
+func generate_new_researcher_hires(number:int) -> Array:
+	var researchers:Array = []
+	for n in range(0, number):
+		researchers.push_back(generate_researcher())
+	return researchers
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -19,6 +19,7 @@ extends PanelContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
 @onready var SCPSelectScreen:PanelContainer = $SCPSelectScreen
+@onready var SelectResearcherScreen:PanelContainer = $SelectResearcherScreen
 
 @onready var RoomInfo:PanelContainer = $RoomInfo
 @onready var FloorInfo:PanelContainer = $FloorInfo
@@ -41,13 +42,18 @@ enum BUILDER_STEPS {
 	OPEN
 }
 
+enum RECRUIT_STEPS {
+	RESET, 
+	OPEN
+}
+
 enum CONTAIN_STEPS {
 	RESET, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
 	ON_REJECT, ON_TRANSFER_CANCEL, 
 	ON_TRANSFER_TO_NEW_LOCATION, 
 	CONFIRM, FINALIZE
 }
-enum RECRUIT_STEPS {RESET, START, SHOW, CONFIRM_HIRE_LEAD, CONFIRM_HIRE_SUPPORT, FINALIZE}
+
 enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
 enum SUMMARY_STEPS {RESET, START, DISMISS}
 enum RESEARCHERS_STEPS {RESET, DETAILS_ONLY, ASSIGN}
@@ -99,8 +105,7 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 	set(val):
 		show_build = val
 		on_show_build_update()
-		
-		
+	
 @export var show_recruit:bool = false : 
 	set(val):
 		show_recruit = val
@@ -247,6 +252,9 @@ var initial_values:Dictionary = {
 			},
 		},
 	# ----------------------------------
+	"researcher_hire_list": func() -> Array:
+		return [],
+	# ----------------------------------
 	"shop_unlock_purchases": func() -> Array:
 		return [],
 	# ----------------------------------
@@ -292,7 +300,7 @@ var initial_values:Dictionary = {
 						"is_activated": false,  
 						"is_destroyed": false,
 						"upgrade_level": 0,
-						"ap": 0,
+						"ap": 3,
 					}						
 		
 		
@@ -327,9 +335,6 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"unavailable_rooms": func() -> Array:
 		return [],
-	# ----------------------------------
-	"researcher_hire_list": func() -> Array:
-		return RESEARCHER_UTIL.generate_new_researcher_hires(),
 	# ----------------------------------
 	"hired_lead_researchers_arr": func() -> Array:
 		return [],	
@@ -676,8 +681,6 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 func get_room_defaults() -> Dictionary:
 	return {
 		"is_activated": false,
-		"ap": 3,
-		"upgrade_level": 0,
 		"build_data": {},
 		"room_data": {},
 		"scp_data": {},
@@ -701,7 +704,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		Structure3dContainer, TimelineContainer, ResearchersContainer,
 		ActionContainer, 
 		DialogueContainer, StoreContainer, ContainmentContainer, BuildContainer,
-		ConfirmModal, RecruitmentContainer, ResourceContainer,
+		ConfirmModal, SelectResearcherScreen, ResourceContainer,
 		BuildCompleteContainer, ObjectivesContainer, EventContainer,
 		MetricsContainer,  EndOfPhaseContainer,	SCPSelectScreen,
 		RoomInfo, FloorInfo
@@ -784,7 +787,6 @@ func wait_please(duration:float = 0.5) -> void:
 
 func update_tenative_location(location:Dictionary) -> void:
 	tenative_location = location	
-			
 # -----------------------------------
 
 # -----------------------------------
@@ -847,9 +849,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 		}
 # -----------------------------------
 
-
 # -----------------------------------
-
 func set_room_config(force_setup:bool = false) -> void:
 	# otherwise, run the full script.  This prevents this code from running multiple times
 	var new_room_config:Dictionary = initial_values.room_config.call()	
@@ -939,7 +939,7 @@ func set_room_config(force_setup:bool = false) -> void:
 		
 		# add to ref count
 		new_room_config.floor[floor].ring[ring].room_refs.push_back(item.ref)		
-
+		
 		# updatae room config with ref and utility functions
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"ref": item.ref,
@@ -1664,11 +1664,17 @@ func add_timeline_item(dict:Dictionary, props:Dictionary = {}) -> void:
 # ------------------------------------------------------------------------------	
 #region SCP FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
+func get_new_scp() -> Dictionary:
+	current_select_scp_step = SELECT_SCP_STEPS.START
+	await on_scp_select_complete		
+	return {"has_changes": false}
+# -----------------------------------
+
+# -----------------------------------
 func view_scp_details() -> void:
 	current_contain_step = CONTAIN_STEPS.START
 	await on_contain_reset
-	
-	
+# -----------------------------------
 
 # -----------------------------------
 func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
@@ -1755,85 +1761,87 @@ func find_in_available(ref:int) -> Dictionary:
 
 # -----------------------------------
 func contain_scp(from_location:Dictionary, scp_ref:int) -> Dictionary:
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)	
-	ConfirmModal.set_props("Contain %s here?" % [scp_details.name], "", scp_details.img_src)
-	await show_only([Structure3dContainer, ConfirmModal])
-	var response:Dictionary = await ConfirmModal.user_response	
-	match response.action:
-		ACTION.NEXT:	
-			#var new_contained_item:Dictionary = create_new_contained_item(scp_ref, from_location)
-			#scp_data.contained_list.push_back(new_contained_item)
+	return {}
+	#var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)	
+	#ConfirmModal.set_props("Contain %s here?" % [scp_details.name], "", scp_details.img_src)
+	#await show_only([Structure3dContainer, ConfirmModal])
+	#var response:Dictionary = await ConfirmModal.user_response	
+	#match response.action:
+		#ACTION.NEXT:	
+			##var new_contained_item:Dictionary = create_new_contained_item(scp_ref, from_location)
+			##scp_data.contained_list.push_back(new_contained_item)
+##
+			##SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref, resources_data)
+			##SUBSCRIBE.scp_data = scp_data
+			##
+			##await check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
+		#
+						#
+			#scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
+				#if i.ref == scp_details.ref:
+					#i.transfer_status = {
+						#"state": true, 
+						#"days_till_complete": 1, #scp_details.containment_time.call(),
+						#"location": from_location.duplicate(),
+					#}
+				#return i
+			#)
 #
-			#SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref, resources_data)
-			#SUBSCRIBE.scp_data = scp_data
+			#add_timeline_item({
+				#"action": ACTION.AQ.CONTAIN,
+				#"ref": scp_details.ref,
+				#"title": scp_details.name, 
+				#"icon": SVGS.TYPE.CONTAIN,
+				#"completed_at": 1, #scp_details.containment_time.call(),
+				#"description": "CONTAINMENT IN PROGRESS",
+				#"location": from_location.duplicate()
+			#})			
 			#
-			#await check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
-		
-						
-			scp_data.available_list = scp_data.available_list.map(func(i) -> Dictionary:
-				if i.ref == scp_details.ref:
-					i.transfer_status = {
-						"state": true, 
-						"days_till_complete": 1, #scp_details.containment_time.call(),
-						"location": from_location.duplicate(),
-					}
-				return i
-			)
-
-			add_timeline_item({
-				"action": ACTION.AQ.CONTAIN,
-				"ref": scp_details.ref,
-				"title": scp_details.name, 
-				"icon": SVGS.TYPE.CONTAIN,
-				"completed_at": 1, #scp_details.containment_time.call(),
-				"description": "CONTAINMENT IN PROGRESS",
-				"location": from_location.duplicate()
-			})			
-			
-			SUBSCRIBE.scp_data = scp_data
-
-	restore_player_hud()		
-	return {"has_changes": response.action != ACTION.BACK}
+			#SUBSCRIBE.scp_data = scp_data
+#
+	#restore_player_hud()		
+	#return {"has_changes": response.action != ACTION.BACK}
 # -----------------------------------
 
 # -----------------------------------
 func transfer_scp(from_location:Dictionary) -> Dictionary:
-	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(from_location)
-	var scp_details:Dictionary = room_extract.scp.details
-	var is_looped:bool = false
-	
-	Structure3dContainer.select_location(true)
-	Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
-	SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(scp_details.ref)	
-	await show_only([Structure3dContainer ])	
-	var structure_response:Dictionary = await Structure3dContainer.user_response
-	Structure3dContainer.freeze_input = true
-	Structure3dContainer.select_location(false)
-	SUBSCRIBE.unavailable_rooms = []
-	
-	if structure_response.action == ACTION.NEXT:
-		scp_data.contained_list = scp_data.contained_list.map(func(i) -> Dictionary:
-			if i.ref == scp_details.ref:
-				i.transfer_status = {
-					"state": true, 
-					"days_till_complete": scp_details.containment_time.call(),
-					"location": current_location.duplicate(),
-				}
-			return i
-		)				
-				
-		add_timeline_item({
-			"action": ACTION.AQ.TRANSFER,
-			"ref": scp_details.ref,
-			"title": "TRANSFER IN PROGRESS",
-			"icon": SVGS.TYPE.CONTAIN,
-			"completed_at": scp_details.containment_time.call(),
-			"description": "%s %s." % [scp_details.name, "TRANSFER" ],
-			"location": current_location.duplicate()
-		})			
-	
-	await restore_player_hud()		
-	return {"has_changes": structure_response.action == ACTION.NEXT}
+	return {}
+	#var room_extract:Dictionary = ROOM_UTIL.extract_room_details(from_location)
+	#var scp_details:Dictionary = room_extract.scp.details
+	#var is_looped:bool = false
+	#
+	#Structure3dContainer.select_location(true)
+	#Structure3dContainer.placement_instructions = [] #ROOM_UTIL.return_placement_instructions(selected_shop_item.id)
+	#SUBSCRIBE.unavailable_rooms = SCP_UTIL.return_unavailable_rooms(scp_details.ref)	
+	#await show_only([Structure3dContainer ])	
+	#var structure_response:Dictionary = await Structure3dContainer.user_response
+	#Structure3dContainer.freeze_input = true
+	#Structure3dContainer.select_location(false)
+	#SUBSCRIBE.unavailable_rooms = []
+	#
+	#if structure_response.action == ACTION.NEXT:
+		#scp_data.contained_list = scp_data.contained_list.map(func(i) -> Dictionary:
+			#if i.ref == scp_details.ref:
+				#i.transfer_status = {
+					#"state": true, 
+					#"days_till_complete": scp_details.containment_time.call(),
+					#"location": current_location.duplicate(),
+				#}
+			#return i
+		#)				
+				#
+		#add_timeline_item({
+			#"action": ACTION.AQ.TRANSFER,
+			#"ref": scp_details.ref,
+			#"title": "TRANSFER IN PROGRESS",
+			#"icon": SVGS.TYPE.CONTAIN,
+			#"completed_at": scp_details.containment_time.call(),
+			#"description": "%s %s." % [scp_details.name, "TRANSFER" ],
+			#"location": current_location.duplicate()
+		#})			
+	#
+	#await restore_player_hud()		
+	#return {"has_changes": structure_response.action == ACTION.NEXT}
 # -----------------------------------
 
 # -----------------------------------
@@ -2015,9 +2023,12 @@ func on_expired_scp_items_update() -> void:
 # ------------------------------------------------------------------------------	
 #region RESEARCHER FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
-func recruit() -> void:
-	current_recruit_step = RECRUIT_STEPS.START
-	await on_recruit_complete
+func recruit_new_researcher(options_available:int) -> Dictionary:
+	SelectResearcherScreen.start(options_available)
+	current_recruit_step = RECRUIT_STEPS.OPEN
+	await on_recruit_complete		
+	return {"has_changes": false}
+# -----------------------------------
 
 # -----------------------------------
 func open_researcher_details() -> void:
@@ -2265,8 +2276,8 @@ func on_show_confirm_modal_update() -> void:
 
 func on_show_recruit_update() -> void:
 	if !is_node_ready():return
-	RecruitmentContainer.is_showing = show_recruit
-	showing_states[RecruitmentContainer] = show_recruit
+	SelectResearcherScreen.is_showing = show_recruit
+	showing_states[SelectResearcherScreen] = show_recruit
 
 func on_show_resources_update() -> void:
 	if !is_node_ready():return
@@ -2382,6 +2393,16 @@ func on_current_phase_update() -> void:
 
 			# ADD TO PROGRESS DATA day count
 			progress_data.day += 1
+			
+			# mark rooms and push to subscriptions
+			for floor_index in room_config.floor.size():		
+				for ring_index in room_config.floor[floor_index].ring.size():					
+					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+						var location:Dictionary = {"floor": floor_index, "ring": ring_index, "room": room_index}
+						var extract_data:Dictionary = ROOM_UTIL.extract_room_details(location)
+						if !extract_data.is_room_empty and extract_data.is_room_active:
+							base_states.room[U.location_to_designation(location)].ap += 1
+							
 				
 			# update subscriptions
 			SUBSCRIBE.progress_data = progress_data
@@ -2398,15 +2419,10 @@ func on_current_phase_update() -> void:
 			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
-			# EVENT FIRES
-			await show_only([Structure3dContainer])	
-			PhaseAnnouncement.start("CONTAINMENT REQUEST")	
-			current_select_scp_step = SELECT_SCP_STEPS.START
-			await on_scp_select_complete		
-			await PhaseAnnouncement.end()
+			# EVENT FIRES			
 			
 			# IF NO EVENTS, NO NEED FOR AWAIT
-			#PhaseAnnouncement.end()
+			PhaseAnnouncement.end()
 			
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
@@ -2682,52 +2698,20 @@ func on_current_recruit_step_update() -> void:
 		# ---------------
 		RECRUIT_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
 			on_recruit_complete.emit()
 		# ---------------
-		RECRUIT_STEPS.START:
+		RECRUIT_STEPS.OPEN:
 			SUBSCRIBE.suppress_click = true
-			selected_lead_hire = {}
-			selected_support_hire = {}
-			await show_only([Structure3dContainer, RecruitmentContainer])
-			var response:Dictionary = await RecruitmentContainer.user_response
+			await show_only([SelectResearcherScreen])
+			await SelectResearcherScreen.user_response
+			SelectResearcherScreen.is_showing = false
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			match response.action:
-				ACTION.HIRE.BACK:
-					current_recruit_step = RECRUIT_STEPS.RESET
-				ACTION.HIRE.LEAD:
-					selected_lead_hire = response.data
-					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_LEAD
-				ACTION.HIRE.SUPPORT:
-					selected_support_hire = response.data
-					current_recruit_step = RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT
+			
+			# trigger signal
+			on_recruit_complete.emit()
+			current_recruit_step = RECRUIT_STEPS.RESET
+
 		# ---------------
-		RECRUIT_STEPS.CONFIRM_HIRE_LEAD:
-			ConfirmModal.set_props("Confirm hire?")
-			await show_only([Structure3dContainer, ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response
-			match response.action:
-				ACTION.BACK:
-					current_recruit_step = RECRUIT_STEPS.START
-				ACTION.NEXT:
-					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_lead_hire.cost
-					hired_lead_researchers_arr.push_back(selected_lead_hire.researcher)
-					SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
-					# subtract hire costs and change status from of recruit data to empty
-					current_recruit_step = RECRUIT_STEPS.START
-		# ---------------
-		RECRUIT_STEPS.CONFIRM_HIRE_SUPPORT:
-			ConfirmModal.set_props("Confirm support?")
-			await show_only([ConfirmModal])
-			var response:Dictionary = await ConfirmModal.user_response
-			match response.action:
-				ACTION.BACK:
-					current_recruit_step = RECRUIT_STEPS.START
-				ACTION.NEXT:
-					resources_data[RESOURCE.TYPE.MONEY].amount -= selected_support_hire.cost
-					resources_data[selected_support_hire.resource].amount += selected_support_hire.amount
-					SUBSCRIBE.resources_data = resources_data
-					current_recruit_step = RECRUIT_STEPS.START
 
 #endregion
 # ------------------------------------------------------------------------------		

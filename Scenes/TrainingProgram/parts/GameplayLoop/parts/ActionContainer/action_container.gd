@@ -148,7 +148,9 @@ func show_details(skip_resposition:bool = false) -> void:
 						"onSelect": func() -> void:				
 							U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
 							ActiveMenu.freeze_inputs = true				
-							await ability.effect.call(GameplayNode)														
+							await ability.effect.call(GameplayNode)
+							base_states.room[U.location_to_designation(current_location)].ap -= ability.ap_cost
+							SUBSCRIBE.base_states = base_states
 							U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)
 							ActiveMenu.freeze_inputs = false
 							show_details(true),
@@ -228,7 +230,6 @@ func show_details(skip_resposition:bool = false) -> void:
 	ActiveMenu.header = "EMPTY" if is_room_empty else "%s" % [room_extract.room.details.name]
 	ActiveMenu.use_color = Color(1, 0.745, 0.381)
 	ActiveMenu.options_list = options_list
-	print(skip_resposition)
 	if !skip_resposition:
 		await U.tick()
 		ActiveMenu.size = Vector2(1, 1)
@@ -270,7 +271,7 @@ func open_hr_menu() -> void:
 		"is_disabled": !can_take_action, 
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true				
-			await GameplayNode.recruit()				
+			await GameplayNode.recruit_new_researcher()				
 			ActiveMenu.freeze_inputs = false
 	})
 	
@@ -464,7 +465,7 @@ func open_scp_menu() -> void:
 	
 	if is_scp_empty:
 		options_list.push_back({
-			"title": "ASSIGN SCP",
+			"title": "CONTAIN SCP",
 			"is_disabled": scp_data.available_list.size() == 0,
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true

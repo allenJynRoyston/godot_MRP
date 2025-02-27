@@ -21,11 +21,11 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			{
-				"name": "ABILITY 1",
+				"name": "AQUIRE SCP",
 				"available_at_lvl": 0, 
-				"ap_cost":  1, 
+				"ap_cost":  10, 
 				"effect": func(GameplayNode:Control) -> void:
-					var response:Dictionary = await GameplayNode.open_store(),
+					await GameplayNode.get_new_scp(),
 			},
 			{
 				"name": "ABILITY 2",
@@ -42,12 +42,6 @@ var DIRECTORS_OFFICE:Dictionary = {
 					pass,
 			}
 		],	
-	#"prerequisites": [
-#
-	#],
-	#"placement_restrictions": {
-#
-	#},
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -132,20 +126,41 @@ var HQ:Dictionary = {
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Base headquarters.",
 	"can_contain": false,
-	"requires_unlock": true,
+	"requires_unlock": false,
 		
-	"prerequisites": [
-
-	],		
-	"placement_restrictions": {
-
-	},
+	# ------------------------------------------
 	"own_limit": func() -> int:
 		return 1,
 	"get_build_time": func() -> int:
 		return 1,
-	
-
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "HIRE RESEARCHER (1 OPTION)",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(GameplayNode:Control) -> void:
+					await GameplayNode.recruit_new_researcher(1),
+			},
+			{
+				"name": "HIRE RESEARCHER (1 OPTION)",
+				"available_at_lvl": 0, 
+				"ap_cost":  5, 
+				"effect": func(GameplayNode:Control) -> void:
+					await GameplayNode.recruit_new_researcher(2),
+			},
+			{
+				"name": "HIRE RESEARCHER (1 OPTION)",
+				"available_at_lvl": 0, 
+				"ap_cost":  5, 
+				"effect": func(GameplayNode:Control) -> void:
+					await GameplayNode.recruit_new_researcher(3),
+			}
+		],	
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"unlock_costs": {
@@ -210,18 +225,25 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 	"can_contain": false,
 	"requires_unlock": false,
 		
-	"prerequisites": [
-
-	],		
-	"placement_restrictions": {
-
-	},
+	# ------------------------------------------
 	"own_limit": func() -> int:
 		return 1,
 	"get_build_time": func() -> int:
 		return 1,
-	
-
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "UNLOCK FACILITIES",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(GameplayNode:Control) -> void:
+					await GameplayNode.open_store(),
+			}
+		],	
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"unlock_costs": {
@@ -301,20 +323,44 @@ var R_AND_D_LAB:Dictionary = {
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Enables research and development.",
 	"can_contain": false,
-	"requires_unlock": true,
+	"requires_unlock": false,
 	
-	"prerequisites": [
-		ROOM.TYPE.HQ
-	],	
-		
-	"placement_restrictions": {
-
-	},
-
+	# ------------------------------------------
 	"own_limit": func() -> int:
-		return 2,
+		return 1,
 	"get_build_time": func() -> int:
 		return 1,
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "UPGRADE FACILITIES (LVL 1)",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(GameplayNode:Control) -> void:
+					pass,
+					#await GameplayNode.recruit_new_researcher(1),
+			},
+			{
+				"name": "UPGRADE FACILITIES (LVL 2)",
+				"available_at_lvl": 1, 
+				"ap_cost":  5, 
+				"effect": func(GameplayNode:Control) -> void:
+					pass,
+					#await GameplayNode.recruit_new_researcher(2),
+			},
+			{
+				"name": "UPGRADE FACILITIES (LVL 3)",
+				"available_at_lvl": 2, 
+				"ap_cost":  5, 
+				"effect": func(GameplayNode:Control) -> void:
+					pass,
+					#await GameplayNode.recruit_new_researcher(3),
+			}
+		],	
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"unlock_costs": {
@@ -380,18 +426,26 @@ var CONSTRUCTION_YARD:Dictionary = {
 		ROOM.TYPE.HQ
 	],	
 		
-	"placement_restrictions": {
-		"floor": [
-			ROOM.PLACEMENT.SURFACE
-		],
-		"ring": [
-			ROOM.PLACEMENT.RING_C
-		]
-	},
+	# ------------------------------------------
 	"own_limit": func() -> int:
-		return 1,	
+		return 1,
 	"get_build_time": func() -> int:
-		return 5,
+		return 1,
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "ABILITY X",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(GameplayNode:Control) -> void:
+					pass,
+					#await GameplayNode.recruit_new_researcher(1),
+			},
+		],	
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -443,24 +497,27 @@ var BARRICKS:Dictionary = {
 	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
 	"can_contain": false,
+	"requires_unlock": false,
 	
-	"prerequisites": [
-		ROOM.TYPE.HQ
-	],	
-		
-	"placement_restrictions": {
-
-	},
-	"own_limit": func() -> int:
-		return 10,	
-	"get_build_time": func() -> int:
-		return 3,
-
 	# ------------------------------------------
-	"wing_effect": func(extract_data:Dictionary) -> Dictionary:				
-		return {
-			RESOURCE.BASE_METRICS.SAFETY: 3 if extract_data.room.is_activated else 0
-		},
+	"own_limit": func() -> int:
+		return 1,
+	"get_build_time": func() -> int:
+		return 1,
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "HIRE 10 SECURITY",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(GameplayNode:Control) -> void:
+					pass,
+					#await GameplayNode.recruit_new_researcher(1),
+			},
+		],	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -477,6 +534,7 @@ var BARRICKS:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
+					RESOURCE.TYPE.SECURITY: -10,
 					RESOURCE.TYPE.ENERGY: -1,
 				},
 		}	
@@ -484,6 +542,10 @@ var BARRICKS:Dictionary = {
 	
 	"activation_effect": {
 		"resources": {
+			"metrics": func() -> Dictionary:
+				return {
+					RESOURCE.BASE_METRICS.SAFETY: 3
+				},
 			"amount": func() -> Dictionary:
 				return {
 					
@@ -497,10 +559,6 @@ var BARRICKS:Dictionary = {
 	
 	"operating_costs": {
 		"resources": {
-			"metrics": func() -> Dictionary:
-				return {
-					RESOURCE.BASE_METRICS.SAFETY: 3
-				},			
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: -1
@@ -649,17 +707,39 @@ var HR_DEPARTMENT:Dictionary = {
 	"description": "Enables recruitment of key staff.",
 	"can_contain": false,
 	
-	"prerequisites": [
-		ROOM.TYPE.HQ
-	],		
-	
-	"placement_restrictions": {
-
-	},
+	# ------------------------------------------
 	"own_limit": func() -> int:
-		return 1,	
+		return 1,
 	"get_build_time": func() -> int:
-		return 5,
+		return 1,
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "HIRE 5 STAFF",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(GameplayNode:Control) -> void:
+					#await GameplayNode.aquite_new_scp(),
+			},
+			{
+				"name": "HIRE 10 STAFF",
+				"available_at_lvl": 1, 
+				"ap_cost":  5, 
+				"effect": func() -> void:
+					pass,
+			},
+			{
+				"name": "HIRE 20 STAFF",
+				"available_at_lvl": 2, 
+				"ap_cost":  5, 
+				"effect": func() -> void:
+					pass,
+			}
+		],	
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -856,24 +936,25 @@ var reference_data:Dictionary = {
 	ROOM.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE,
 	ROOM.TYPE.HQ: HQ,
 	ROOM.TYPE.AQUISITION_DEPARTMENT: AQUISITION_DEPARTMENT,
+	ROOM.TYPE.BARRICKS: BARRICKS,
 	## TIER ONE
 	
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
-	4: DIRECTORS_OFFICE,
-	5: DIRECTORS_OFFICE,
-	6: DIRECTORS_OFFICE,
-	7: DIRECTORS_OFFICE,
-	8: DIRECTORS_OFFICE,
-	9: DIRECTORS_OFFICE,
-	10: DIRECTORS_OFFICE,
-	11: DIRECTORS_OFFICE,
-	12: DIRECTORS_OFFICE,
-	13: DIRECTORS_OFFICE,
-	14: DIRECTORS_OFFICE,
-	15: DIRECTORS_OFFICE,
-	16: DIRECTORS_OFFICE,
-	17: DIRECTORS_OFFICE,
-	18: DIRECTORS_OFFICE,
+	#4: DIRECTORS_OFFICE,
+	#5: DIRECTORS_OFFICE,
+	#6: DIRECTORS_OFFICE,
+	#7: DIRECTORS_OFFICE,
+	#8: DIRECTORS_OFFICE,
+	#9: DIRECTORS_OFFICE,
+	#10: DIRECTORS_OFFICE,
+	#11: DIRECTORS_OFFICE,
+	#12: DIRECTORS_OFFICE,
+	#13: DIRECTORS_OFFICE,
+	#14: DIRECTORS_OFFICE,
+	#15: DIRECTORS_OFFICE,
+	#16: DIRECTORS_OFFICE,
+	#17: DIRECTORS_OFFICE,
+	#18: DIRECTORS_OFFICE,
 	
 	#ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	#ROOM.TYPE.BARRICKS: BARRICKS,
@@ -1386,8 +1467,8 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 			"can_contain": can_contain,		
 			"is_activated": is_activated,
 			"can_activate": can_activate,
-			"upgrade_level": room_config_data.upgrade_level,
-			"ap": room_config_data.ap,
+			"upgrade_level": room_config_data.room_data.upgrade_level if !is_room_empty else 0,
+			"ap": room_config_data.room_data.ap if !is_room_empty else 0
 		} if !is_room_empty or is_room_under_construction else {},
 		"scp": {
 			"details": scp_details,
