@@ -71,7 +71,7 @@ func _ready() -> void:
 	BackBtn.onClick = func() -> void:
 		match current_mode:
 			MODE.SELECT_RESEARCHERS:
-				end()
+				end(false)
 			MODE.CONFIRM_RESEARCHERS:
 				revert_confirm()
 				await U.tick()
@@ -95,9 +95,9 @@ func start(_total_options:int = 1) -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func end() -> void:
+func end(response:bool) -> void:
 	current_mode = MODE.HIDE
-	user_response.emit()
+	user_response.emit(response)
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -300,7 +300,7 @@ func on_current_mode_update() -> void:
 			# subscribe
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 			
-			end()
+			end(true)
 			
 	await U.set_timeout(0.3)
 	is_animating = false

@@ -107,7 +107,8 @@ func build_list() -> void:
 			
 	# --- SEARCHES PURCHASED FACILITIES FOR CAPACITY 	
 	for item in purchased_facility_arr:
-		var list:Array = ROOM_UTIL.return_activation_effect(item.ref)
+		# TODO FIND MORE RELIABLE WAY TO GET THE NUMBERS HERE
+		var list:Array = [] #ROOM_UTIL.return_activation_effect(item.ref)
 		var details:Dictionary = ROOM_UTIL.return_data(item.ref)
 		for i in list:
 			if i.resource.ref == RESOURCE.TYPE.STAFF and i.type == "capacity":
@@ -160,8 +161,8 @@ func build_list() -> void:
 
 	# --- SEARCHES FOR ACTIVATED ROOMS 
 	traverse(func(room_config_data:Dictionary, location:Dictionary) -> void:
-		if !room_config_data.room_data.is_empty() and room_config_data.room_data.get_is_activated.call():
-			var room_details:Dictionary = ROOM_UTIL.return_data(room_config_data.room_data.ref)
+		if !room_config_data.room_data.is_empty() and room_config_data.room_data.base_state.is_activated:
+			var room_details:Dictionary = room_config_data.room_data.details
 			var activation_costs:Array = ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref)
 			for item in activation_costs:
 				if item.resource.ref == RESOURCE.TYPE.STAFF:

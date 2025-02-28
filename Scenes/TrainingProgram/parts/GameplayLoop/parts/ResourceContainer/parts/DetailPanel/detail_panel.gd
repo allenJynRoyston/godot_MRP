@@ -40,8 +40,8 @@ func show_details(type:RESOURCE.TYPE) -> void:
 			MoneyDetails.show()
 		RESOURCE.TYPE.ENERGY:
 			EnergyDetails.show()
-		RESOURCE.TYPE.LEAD_RESEARCHERS:
-			LeadResearcherDetails.show()
+		#RESOURCE.TYPE.TECHNICIANS:
+			#LeadResearcherDetails.show()
 		RESOURCE.TYPE.STAFF:
 			StaffDetails.show()
 		RESOURCE.TYPE.SECURITY:

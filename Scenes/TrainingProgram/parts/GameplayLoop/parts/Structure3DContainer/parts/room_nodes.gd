@@ -508,9 +508,9 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 	if room_config.is_empty() or current_location.is_empty():return
 	var lights:Array = [NoPowerLights, NormalLights, CautionLights, WarningLights, DangerLights]
 
+	in_brownout = room_config.base.in_brownout
 	in_lockdown = room_config.floor[current_location.floor].in_lockdown
 	is_powered = room_config.floor[current_location.floor].is_powered
-	in_brownout = room_config.floor[current_location.floor].in_brownout
 	emergency_mode = room_config.floor[current_location.floor].ring[current_location.ring].emergency_mode
 	
 	if !is_powered:

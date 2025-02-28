@@ -166,6 +166,8 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 		
 	AtMaxPanel.show() if max_capacity else AtMaxPanel.hide()
 	PurchaseList.hide() if max_capacity else PurchaseList.show()	
+	if max_capacity:
+		AlreadyUnlocked.hide()
 
 func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	shop_unlock_purchase = new_val
@@ -235,7 +237,7 @@ func build_cost(cost_arr:Array, show_free:bool, parent_node:Control) -> void:
 func on_show_already_unlocked() -> void:
 	if !is_node_ready():return
 	PurchaseList.hide() if show_already_unlocked else PurchaseList.show()
-	AlreadyUnlocked.show() if show_already_unlocked else AlreadyUnlocked.hide() 
+	AlreadyUnlocked.show() if show_already_unlocked and !max_capacity else AlreadyUnlocked.hide() 
 # --------------------------------------			
 
 # --------------------------------------		

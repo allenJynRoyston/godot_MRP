@@ -1,5 +1,6 @@
 extends GameContainer
 
+@onready var RootPanel:PanelContainer = $"."
 @onready var MainPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
 @onready var Details:Control = $Details
@@ -33,6 +34,7 @@ var left_btn_list:Array = []
 var right_btn_list:Array = []
 var is_setup:bool = false
 
+var control_pos:Dictionary
 var restore_pos:int
 var details_restore_pos:int
 var traits_restore_pos:int
@@ -58,6 +60,7 @@ func _ready() -> void:
 	await U.set_timeout(1.0)	
 	restore_pos = MainPanel.position.y		
 	details_restore_pos = DetailsPanel.position.y
+	control_pos[LeftSideBtnList] = {"global": LeftSideBtnList.global_position.y, "show": LeftSideBtnList.position.y, "hide": LeftSideBtnList.position.y + LeftSideBtnList.size.y}
 
 	U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
 # --------------------------------------------------------------------------------------------------		
@@ -90,8 +93,13 @@ func on_is_showing_update() -> void:
 	MainPanel.set_anchors_preset(Control.PRESET_FULL_RECT)	
 # --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
+func get_menu_y_pos() -> int:
+	return control_pos[LeftSideBtnList].global - ActiveMenu.size.y - LeftSideBtnList.size.y - 10	
 # --------------------------------------------------------------------------------------------------			
-func show_details(skip_resposition:bool = false) -> void:
+
+# --------------------------------------------------------------------------------------------------			
+func show_details() -> void:
 	# update room_extract
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
 	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
@@ -154,7 +162,7 @@ func show_details(skip_resposition:bool = false) -> void:
 							# updates toggle state in the base states
 							SUBSCRIBE.base_states = base_states
 							# rerenders the menu
-							show_details(true)
+							show_details()
 					})
 			# ----------------------- ACTIVE ABILITIES
 			for n in abilities.size():
@@ -169,22 +177,22 @@ func show_details(skip_resposition:bool = false) -> void:
 						"onSelect": func() -> void:				
 							U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
 							ActiveMenu.freeze_inputs = true				
-							await ability.effect.call(GameplayNode)
-							base_states.room[U.location_to_designation(current_location)].ap -= ability.ap_cost
-							SUBSCRIBE.base_states = base_states
+							var response:bool = await ability.effect.call(GameplayNode)
+							if response:
+								base_states.room[U.location_to_designation(current_location)].ap -= ability.ap_cost
+								SUBSCRIBE.base_states = base_states
 							U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)
 							ActiveMenu.freeze_inputs = false
-							show_details(true),
+							show_details(),
 					})
 		else:
 			options_list.push_back({
 				"title": "ACTIVATE ROOM",
 				"onSelect": func() -> void:
 					ActiveMenu.freeze_inputs = true	
-					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, true)
+					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref)
 					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_room_menu()
+					show_details()
 			})				
 	
 		#print(room_extract.room)	
@@ -251,67 +259,12 @@ func show_details(skip_resposition:bool = false) -> void:
 	ActiveMenu.header = "EMPTY" if is_room_empty else "%s" % [room_extract.room.details.name]
 	ActiveMenu.use_color = Color(1, 0.745, 0.381)
 	ActiveMenu.options_list = options_list
-	if !skip_resposition:
-		await U.tick()
-		ActiveMenu.size = Vector2(1, 1)
-		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)		
-	
-	ActiveMenu.open()
-# --------------------------------------------------------------------------------------------------				
-
-# --------------------------------------------------------------------------------------------------		
-func open_hr_menu() -> void:
-	# setup cloes behavior
-	ActiveMenu.onClose = func() -> void:	
-		GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		set_btn_disabled_state(false)
-	
-	# make room nodes active
-	GBL.find_node(REFS.ROOM_NODES).is_active = true
-	
-	# enable/disable buttons
-	ActiveMenu.freeze_inputs = false
-	set_btn_disabled_state(true)
-	
-	# update room_extract
-	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
-	
-	# local vars
-	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
-	var options_list := []
-	var room_is_empty:bool = room_extract.room.is_empty()	
-	
-	options_list.push_back({
-		"title": "BACK",
-		"onSelect": func() -> void:
-			GBL.find_node(REFS.ROOM_NODES).is_active = false
-			ActiveMenu.close()
-	})
-
-	options_list.push_back({
-		"title": "RECRUIT",
-		"is_disabled": !can_take_action, 
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true				
-			await GameplayNode.recruit_new_researcher()				
-			ActiveMenu.freeze_inputs = false
-	})
-	
-	options_list.push_back({
-		"title": "RESEARCHER DETAILS",
-		"is_disabled": !can_take_action, 
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true				
-			await GameplayNode.open_researcher_details()
-			ActiveMenu.freeze_inputs = false
-	})	
-
-	ActiveMenu.options_list = options_list			
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
-	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+	ActiveMenu.custom_minimum_size = Vector2(1, 1)
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
 	ActiveMenu.open()
-# --------------------------------------------------------------------------------------------------		
+# --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------		
 func open_scp_details() -> void:
@@ -350,12 +303,13 @@ func open_scp_details() -> void:
 	ActiveMenu.options_list = options_list			
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
-	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+	ActiveMenu.custom_minimum_size = Vector2(1, 1)
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
 	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
-func open_room_menu(skip_resposition:bool = false) -> void:
+func open_room_menu() -> void:
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:	
 		GBL.find_node(REFS.ROOM_NODES).is_active = false	
@@ -391,9 +345,9 @@ func open_room_menu(skip_resposition:bool = false) -> void:
 			"title": "CONSTRUCT ROOM...",
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true				
-				var response:Dictionary = await GameplayNode.construct_room()				
+				var response:Dictionary = await GameplayNode.construct_room()
 				ActiveMenu.freeze_inputs = false				
-				open_room_menu(true)
+				open_room_menu()
 		})	
 	
 	if is_room_under_construction:
@@ -403,8 +357,7 @@ func open_room_menu(skip_resposition:bool = false) -> void:
 				ActiveMenu.freeze_inputs = true			
 				var response:Dictionary = await GameplayNode.cancel_construction(current_location.duplicate())
 				ActiveMenu.freeze_inputs = false
-				if response.has_changes:
-					open_room_menu()
+				open_room_menu()
 		})		
 
 	if !room_is_empty:
@@ -413,20 +366,18 @@ func open_room_menu(skip_resposition:bool = false) -> void:
 				"title": "ACTIVATE ROOM",
 				"onSelect": func() -> void:
 					ActiveMenu.freeze_inputs = true	
-					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, true)
+					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref)
 					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_room_menu()
+					open_room_menu()
 			})		
 		else:
 			options_list.push_back({
 				"title": "DEACTIVATE ROOM",
 				"onSelect": func() -> void:
 					ActiveMenu.freeze_inputs = true	
-					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, false)
+					var response:Dictionary =  await GameplayNode.deactivate_room(current_location.duplicate(), room_extract.room.details.ref)
 					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_room_menu()
+					open_room_menu()
 			})				
 
 		options_list.push_back({
@@ -436,18 +387,20 @@ func open_room_menu(skip_resposition:bool = false) -> void:
 				ActiveMenu.freeze_inputs = true	
 				var response:Dictionary = await GameplayNode.reset_room(current_location.duplicate())
 				ActiveMenu.freeze_inputs = false	
-				if response.has_changes:
-					open_room_menu()
+				open_room_menu()
 		})
+	
 
+	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+	
 	ActiveMenu.show_ap = false
 	ActiveMenu.header = "FACILITY"
 	ActiveMenu.use_color = Color(0, 0.529, 1)
-	ActiveMenu.options_list = options_list		
-	if !skip_resposition:
-		await U.tick()
-		ActiveMenu.size = Vector2(1, 1)
-		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+	ActiveMenu.options_list = options_list
+	await U.tick()
+	ActiveMenu.size = Vector2(1, 1)
+	ActiveMenu.custom_minimum_size = Vector2(1, 1)
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
 	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------			
 
@@ -547,8 +500,9 @@ func open_scp_menu() -> void:
 	ActiveMenu.options_list = options_list		
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
-	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
-	ActiveMenu.open()				
+	ActiveMenu.custom_minimum_size = Vector2(1, 1)
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
+	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------				
@@ -610,79 +564,80 @@ func open_researcher_menu() -> void:
 	ActiveMenu.options_list = options_list		
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
-	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
-	ActiveMenu.open()				
+	ActiveMenu.custom_minimum_size = Vector2(1, 1)
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
+	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------				
 
-# --------------------------------------------------------------------------------------------------
-func open_alarm_setting() -> void:
-	# setup cloes behavior
-	ActiveMenu.onClose = func() -> void:			
-		set_btn_disabled_state(false)
-
-	# enable/disable buttons
-	ActiveMenu.freeze_inputs = false
-	set_btn_disabled_state(true)
-	
-	# pull data, create the options list
-	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
-	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
-	var options_list := []
-	var is_scp_empty:bool = room_extract.scp.is_empty()
-	
-	options_list.push_back({
-		"title": "BACK",
-		"onSelect": func() -> void:
-			ActiveMenu.close()
-			set_btn_disabled_state(false)
-	})	
-	
-	options_list.push_back({
-		"title": "NORMAL",
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true
-			var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.NORMAL)
-			ActiveMenu.freeze_inputs = false
-			if response.has_changes:
-				open_alarm_setting()
-	})		
-						
-	options_list.push_back({
-		"title": "CAUTION",
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true
-			var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.CAUTION)
-			ActiveMenu.freeze_inputs = false
-			if response.has_changes:
-				open_alarm_setting()			
-	})
-	
-	options_list.push_back({
-		"title": "WARNING",
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true
-			var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.WARNING)
-			ActiveMenu.freeze_inputs = false
-			if response.has_changes:
-				open_alarm_setting()			
-	})	
-
-	options_list.push_back({
-		"title": "DANGER",
-		"onSelect": func() -> void:
-			ActiveMenu.freeze_inputs = true
-			var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.DANGER)
-			ActiveMenu.freeze_inputs = false
-			if response.has_changes:
-				open_alarm_setting()	
-	})	
-
-	ActiveMenu.options_list = options_list		
-	await U.tick()
-	ActiveMenu.size = Vector2(1, 1)
-	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
-	ActiveMenu.open()				
-# --------------------------------------------------------------------------------------------------
+## --------------------------------------------------------------------------------------------------
+#func open_alarm_setting() -> void:
+	## setup cloes behavior
+	#ActiveMenu.onClose = func() -> void:			
+		#set_btn_disabled_state(false)
+#
+	## enable/disable buttons
+	#ActiveMenu.freeze_inputs = false
+	#set_btn_disabled_state(true)
+	#
+	## pull data, create the options list
+	#var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
+	#var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
+	#var options_list := []
+	#var is_scp_empty:bool = room_extract.scp.is_empty()
+	#
+	#options_list.push_back({
+		#"title": "BACK",
+		#"onSelect": func() -> void:
+			#ActiveMenu.close()
+			#set_btn_disabled_state(false)
+	#})	
+	#
+	#options_list.push_back({
+		#"title": "NORMAL",
+		#"onSelect": func() -> void:
+			#ActiveMenu.freeze_inputs = true
+			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.NORMAL)
+			#ActiveMenu.freeze_inputs = false
+			#if response.has_changes:
+				#open_alarm_setting()
+	#})		
+						#
+	#options_list.push_back({
+		#"title": "CAUTION",
+		#"onSelect": func() -> void:
+			#ActiveMenu.freeze_inputs = true
+			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.CAUTION)
+			#ActiveMenu.freeze_inputs = false
+			#if response.has_changes:
+				#open_alarm_setting()			
+	#})
+	#
+	#options_list.push_back({
+		#"title": "WARNING",
+		#"onSelect": func() -> void:
+			#ActiveMenu.freeze_inputs = true
+			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.WARNING)
+			#ActiveMenu.freeze_inputs = false
+			#if response.has_changes:
+				#open_alarm_setting()			
+	#})	
+#
+	#options_list.push_back({
+		#"title": "DANGER",
+		#"onSelect": func() -> void:
+			#ActiveMenu.freeze_inputs = true
+			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.DANGER)
+			#ActiveMenu.freeze_inputs = false
+			#if response.has_changes:
+				#open_alarm_setting()	
+	#})	
+#
+	#ActiveMenu.options_list = options_list		
+	#await U.tick()
+	#ActiveMenu.size = Vector2(1, 1)
+	#ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+	#ActiveMenu.open()				
+## --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func auto_order() -> void:
@@ -700,13 +655,13 @@ func auto_order() -> void:
 		if is_room_under_construction:
 			await GameplayNode.cancel_construction(current_location.duplicate())
 		else:
-			await GameplayNode.construct_room(current_location.duplicate())
+			await GameplayNode.construct_room()
 		set_btn_disabled_state(false)
 		return
 	
 	# if it's not activated, activate it 
 	if !is_room_active:
-		await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, true)
+		await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref)
 		set_btn_disabled_state(false)
 		return
 		
@@ -1034,22 +989,26 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_up()
 					
+					
 		"S":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
+					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_down()
 		"D":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					current_location.ring = clampi(current_location.ring + 1, 0, 3)
+					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_right()
 		"A":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					current_location.ring = clampi(current_location.ring - 1, 0, 3)				
+					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_left()
 					

@@ -78,7 +78,12 @@ func on_is_showing_update() -> void:
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.3)
 
 	U.tween_node_property(ContentPanelContainer, "position:y", content_restore_pos if is_showing else content_restore_pos - 5, 0.3)
-	U.tween_node_property(BtnMarginContainer, "position:y", btn_restore_pos if is_showing else BtnMarginContainer.size.y + 20, 0.3)
+	await U.tween_node_property(BtnMarginContainer, "position:y", btn_restore_pos if is_showing else BtnMarginContainer.size.y + 20, 0.3)
+	
+	# reset confirm only state
+	if !is_showing:
+		confirm_only = false
+	
 
 func on_image_update() -> void:
 	if !is_node_ready():return	

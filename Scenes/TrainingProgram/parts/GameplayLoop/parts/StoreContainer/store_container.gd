@@ -46,6 +46,7 @@ var grid_list_data:Array
 var control_pos:Dictionary
 var is_setup:bool = false
 var is_animating:bool = false 
+var made_a_purchase:bool = false
 
 var page_tracker:Dictionary = {
 	0:0,
@@ -86,7 +87,7 @@ func _ready() -> void:
 			return
 		match current_mode:
 			MODE.TAB_SELECT:
-				user_response.emit({"action": ACTION.BACK})
+				user_response.emit(made_a_purchase)
 			MODE.CONTENT_SELECT:
 				await U.tick()
 				current_mode = MODE.TAB_SELECT
@@ -115,7 +116,8 @@ func end() -> void:
 	await on_is_showing_update()
 	current_mode = MODE.HIDE
 	grid_index = 0
-	tab_index = 0	
+	tab_index = 0
+	made_a_purchase = false	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -161,6 +163,7 @@ func purchase_room() -> void:
 	SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(room_details.ref)		
 	await U.tick()
 	GameplayNode.ToastContainer.add("%s purchased!" % [room_details.name])
+	made_a_purchase = true
 	on_grid_index_update()
 # --------------------------------------------------------------------------------------------------	
 

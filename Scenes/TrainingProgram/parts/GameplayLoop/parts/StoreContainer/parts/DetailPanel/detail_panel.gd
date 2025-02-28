@@ -50,8 +50,9 @@ func on_ref_update() -> void:
 	for node in [EffectsList, SyncList]:
 		for child in node.get_children():
 			child.queue_free()
-	
-	var activation_effects:Array = ROOM_UTIL.return_activation_effect(ref)
+
+	# TODO FIND MORE RELIABLE WAY TO GET THE NUMBERS HERE
+	var activation_effects:Array = [] #ROOM_UTIL.return_activation_effect(item.ref)		
 	Effects.hide() if is_locked or activation_effects.is_empty() else Effects.show()
 	for item in activation_effects:
 		var btn_node:Control = TextBtnPreload.instantiate()

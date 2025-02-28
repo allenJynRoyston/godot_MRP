@@ -78,12 +78,6 @@ var DIRECTORS_OFFICE:Dictionary = {
 				return {
 
 				},
-			"capacity": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.STAFF: 10,
-					RESOURCE.TYPE.SECURITY: 10,
-					RESOURCE.TYPE.DCLASS: 10
-				},			
 		}	
 	},	
 	
@@ -129,23 +123,23 @@ var HQ:Dictionary = {
 			{
 				"name": "HIRE RESEARCHER (1 OPTION)",
 				"available_at_lvl": 0, 
-				"ap_cost":  1, 
-				"effect": func(GameplayNode:Control) -> void:
-					await GameplayNode.recruit_new_researcher(1),
+				"ap_cost":  5, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.recruit_new_researcher(1),
 			},
 			{
 				"name": "HIRE RESEARCHER (1 OPTION)",
-				"available_at_lvl": 0, 
-				"ap_cost":  5, 
-				"effect": func(GameplayNode:Control) -> void:
-					await GameplayNode.recruit_new_researcher(2),
+				"available_at_lvl": 1, 
+				"ap_cost":  7, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return GameplayNode.recruit_new_researcher(2),
 			},
 			{
 				"name": "HIRE RESEARCHER (1 OPTION)",
-				"available_at_lvl": 0, 
-				"ap_cost":  5, 
-				"effect": func(GameplayNode:Control) -> void:
-					await GameplayNode.recruit_new_researcher(3),
+				"available_at_lvl": 2, 
+				"ap_cost":  10, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.recruit_new_researcher(3),
 			}
 		],	
 	# ------------------------------------------
@@ -184,12 +178,6 @@ var HQ:Dictionary = {
 				return {
 
 				},
-			"capacity": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.STAFF: 10,
-					RESOURCE.TYPE.SECURITY: 10,
-					RESOURCE.TYPE.DCLASS: 10
-				},			
 		}	
 	},	
 	
@@ -245,8 +233,8 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 				"name": "UNLOCK FACILITIES",
 				"available_at_lvl": 0, 
 				"ap_cost":  1, 
-				"effect": func(GameplayNode:Control) -> void:
-					await GameplayNode.open_store(),
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.open_store(),
 			}
 		],	
 	# ------------------------------------------
@@ -285,12 +273,6 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 				return {
 
 				},
-			"capacity": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.STAFF: 10,
-					RESOURCE.TYPE.SECURITY: 10,
-					RESOURCE.TYPE.DCLASS: 10
-				},			
 		}	
 	},	
 	
@@ -402,10 +384,7 @@ var R_AND_D_LAB:Dictionary = {
 				return {
 					
 				},
-			"capacity": func() -> Dictionary:
-				return {
 			
-				},			
 		}	
 	},
 	
@@ -478,11 +457,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 				return {
 					
 				},
-			"capacity": func() -> Dictionary:
-				return {
-		
-				},			
-		}	
+			}	
 	},
 	
 	"operating_costs": {
@@ -513,16 +488,41 @@ var BARRICKS:Dictionary = {
 	# ------------------------------------------
 		
 	# ------------------------------------------
-	"abilities": func() -> Array: 
+	"passive_abilities": func() -> Array: 
 		return [
 			{
-				"name": "HIRE 10 SECURITY",
+				"name": "TRAIN (INCREASE READINESS)",
 				"available_at_lvl": 0, 
 				"ap_cost":  1, 
-				"effect": func(GameplayNode:Control) -> void:
-					pass,
-					#await GameplayNode.recruit_new_researcher(1),
+				"effect": func() -> Dictionary:
+					return {
+						"metrics":{
+							RESOURCE.BASE_METRICS.READINESS: 1
+						}
+					},
 			},
+			{
+				"name": "TRAIN (INCREASE SAFETY)",
+				"available_at_lvl": 0, 
+				"ap_cost":  2, 
+				"effect": func() -> Dictionary:
+					return {
+						"metrics":{
+							RESOURCE.BASE_METRICS.SAFETY: 1
+						}
+					},
+			},
+			{
+				"name": "TRAIN (INCREASE MORALE)",
+				"available_at_lvl": 0, 
+				"ap_cost":  3, 
+				"effect": func() -> Dictionary:
+					return {
+						"metrics":{
+							RESOURCE.BASE_METRICS.MORALE: 1
+						}
+					},
+			}
 		],	
 	# ------------------------------------------
 
@@ -538,10 +538,9 @@ var BARRICKS:Dictionary = {
 		
 	"activation_cost": {
 		"resources": {
-			"amount": func() -> Dictionary:
+			"personnel": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.SECURITY: -10,
-					RESOURCE.TYPE.ENERGY: -1,
+					RESOURCE.TYPE.STAFF: -7,
 				},
 		}	
 	},		
@@ -556,10 +555,6 @@ var BARRICKS:Dictionary = {
 				return {
 					
 				},
-			"capacity": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.SECURITY: 10
-				},			
 		}	
 	},
 	
@@ -597,22 +592,28 @@ var DORMITORY:Dictionary = {
 				"name": "HOUSE 10",
 				"available_at_lvl": 0, 
 				"ap_cost":  1, 
-				"effect": func(is_active:bool) -> void:
-					pass,
+				"capacity": func() -> Dictionary:
+					return {
+						RESOURCE.TYPE.STAFF: 10,
+					},
 			},
 			{
 				"name": "HOUSE 20",
 				"available_at_lvl": 0, 
 				"ap_cost":  2, 
-				"effect": func(is_active:bool) -> void:
-					pass,
+				"capacity": func() -> Dictionary:
+					return {
+						RESOURCE.TYPE.STAFF: 20,
+					},
 			},
 			{
 				"name": "HOUSE 30",
 				"available_at_lvl": 0, 
 				"ap_cost":  3, 
-				"effect": func(is_active:bool) -> void:
-					pass,
+				"capacity": func() -> Dictionary:
+					return {
+						RESOURCE.TYPE.STAFF: 30,
+					},
 			}
 		],	
 	# ------------------------------------------
@@ -642,10 +643,6 @@ var DORMITORY:Dictionary = {
 				return {
 					
 				},
-			"capacity": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.STAFF: 20
-				},			
 		}	
 	},
 	
@@ -710,10 +707,6 @@ var HOLDING_CELLS:Dictionary = {
 				return {
 					
 				},
-			"capacity": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.DCLASS: 10
-				},			
 		}	
 	},
 	
@@ -735,7 +728,8 @@ var HR_DEPARTMENT:Dictionary = {
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Enables recruitment of key staff.",
 	"can_contain": false,
-	
+	"requires_unlock": false,
+		
 	# ------------------------------------------
 	"own_limit": func() -> int:
 		return 1,
@@ -747,25 +741,32 @@ var HR_DEPARTMENT:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			{
-				"name": "HIRE 5 STAFF",
+				"name": "HIRE STAFF",
 				"available_at_lvl": 0, 
-				"ap_cost":  1, 
-				"effect": func(GameplayNode:Control) -> void:
-					#await GameplayNode.aquite_new_scp(),
+				"ap_cost":  7, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.STAFF, 10),
 			},
 			{
-				"name": "HIRE 10 STAFF",
+				"name": "FIRE STAFF",
+				"available_at_lvl": 0, 
+				"ap_cost":  7, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.fire_personel(RESOURCE.TYPE.STAFF, 10),
+			},			
+			{
+				"name": "HIRE SECURITY",
+				"available_at_lvl": 0, 
+				"ap_cost":  7, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.SECURITY, 10),
+			},
+			{
+				"name": "HIRE TECHNICANS",
 				"available_at_lvl": 1, 
-				"ap_cost":  5, 
-				"effect": func() -> void:
-					pass,
-			},
-			{
-				"name": "HIRE 20 STAFF",
-				"available_at_lvl": 2, 
-				"ap_cost":  5, 
-				"effect": func() -> void:
-					pass,
+				"ap_cost":  7, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.TECHNICIANS, 10),
 			}
 		],	
 	# ------------------------------------------
@@ -789,19 +790,7 @@ var HR_DEPARTMENT:Dictionary = {
 		}	
 	},		
 	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-			"capacity": func() -> Dictionary:
-				return {
-					
-				},			
-		}	
-	},
-	
+
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -851,19 +840,6 @@ var HUME_DETECTOR:Dictionary = {
 				},
 		}	
 	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-			"capacity": func() -> Dictionary:
-				return {
-					
-				},			
-		}	
-	},
 	
 	"operating_costs": {
 		"resources": {
@@ -916,19 +892,6 @@ var STANDARD_LOCKER:Dictionary = {
 				},
 		}	
 	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-			"capacity": func() -> Dictionary:
-				return {
-					
-				},			
-		}	
-	},
 
 	"operating_costs": {
 		"resources": {
@@ -967,6 +930,7 @@ var reference_data:Dictionary = {
 	ROOM.TYPE.AQUISITION_DEPARTMENT: AQUISITION_DEPARTMENT,
 	ROOM.TYPE.BARRICKS: BARRICKS,
 	ROOM.TYPE.DORMITORY: DORMITORY,
+	ROOM.TYPE.HR_DEPARTMENT: HR_DEPARTMENT,
 	## TIER ONE
 	
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
@@ -989,7 +953,7 @@ var reference_data:Dictionary = {
 	#ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	#ROOM.TYPE.BARRICKS: BARRICKS,
 	#ROOM.TYPE.DORMITORY: DORMITORY,
-	#ROOM.TYPE.HR_DEPARTMENT: HR_DEPARTMENT,
+	
 	#ROOM.TYPE.HOLDING_CELLS: HOLDING_CELLS,
 	#ROOM.TYPE.STANDARD_LOCKER: STANDARD_LOCKER,
 	
@@ -1071,11 +1035,6 @@ func return_unlock_costs(ref:ROOM.TYPE) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_activation_effect(ref:ROOM.TYPE) -> Array:
-	return SHARED_UTIL.return_resource_list(return_data(ref), "activation_effect")
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 func return_operating_cost(ref:ROOM.TYPE) -> Array:
 	return SHARED_UTIL.return_resource_list(return_data(ref), "operating_costs")
 # ------------------------------------------------------------------------------
@@ -1138,11 +1097,6 @@ func calculate_purchase_cost(ref:ROOM.TYPE, add:bool = false) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_activation_effect(ref:ROOM.TYPE, add:bool = true) -> Dictionary:		
-	return SHARED_UTIL.calculate_resources(return_data(ref), "activation_effect", resources_data, !add)
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 func calculate_operating_costs(ref:ROOM.TYPE, add:bool = true) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "operating_costs", resources_data, add)
 # ------------------------------------------------------------------------------
@@ -1153,19 +1107,15 @@ func calculate_activation_cost(ref:ROOM.TYPE, refund:bool = false) -> Dictionary
 	var resource_data_copy:Dictionary = resources_data.duplicate(true)
 
 	if "activation_cost" in room_data:
-		var activation_costs:Dictionary = room_data.activation_cost.resources.amount.call()
-		for key in activation_costs:
-			var val:int = activation_costs[key]
-			if refund:
-				resource_data_copy[key].utilized -= val
-				resource_data_copy[key].amount += val
-				if resource_data_copy[key].amount > resources_data[key].capacity:
-					resource_data_copy[key].amount = resources_data[key].capacity
-			else:
-				resource_data_copy[key].utilized += val
-				resource_data_copy[key].amount -= val
-				if resource_data_copy[key].amount < 0:
-					resource_data_copy[key].amount = 0
+		for prop in ["amount", "personnel"]:
+			if prop in room_data.activation_cost.resources:
+				var dict:Dictionary = room_data.activation_cost.resources[prop].call()
+				for key in dict:
+					var amount:int = absi(dict[key])
+					resource_data_copy[key].utilized += amount if !refund else -amount
+					resource_data_copy[key].amount -= amount if !refund else -amount
+					if resource_data_copy[key].amount < 0:
+						resource_data_copy[key].amount = 0
 	
 	return resource_data_copy
 # ------------------------------------------------------------------------------
@@ -1210,8 +1160,10 @@ func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
+# remove this later
 func return_wing_effects_list(room_extract:Dictionary) -> Array:
-	return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.room.details.ref), room_extract, "activation_effect")
+	return []
+	#return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.room.details.ref), room_extract, "activation_effect")
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------		
@@ -1251,17 +1203,17 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var floor_data:Dictionary = use_config.floor[floor]
 	var wing_data:Dictionary = use_config.floor[floor].ring[ring]
 	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
-
+	var is_room_empty:bool = room_config_data.room_data.is_empty()
 	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
 	var is_room_under_construction:bool  = !room_config_data.build_data.is_empty()
-	var is_room_empty:bool = room_config_data.room_data.is_empty()
+	var room_details:Dictionary = {} if is_room_empty else room_config_data.room_data.details 
+	var room_base_state:Dictionary = {} if is_room_empty else room_config_data.room_data.base_state 
 	
-	var room_details:Dictionary = room_config_data.room_data.get_room_details.call() if !is_room_empty else {}
-	var is_activated:bool = room_config_data.room_data.get_is_activated.call() if !is_room_empty else false
-	var can_activate:bool = (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if !is_room_empty else false
+	var is_activated:bool = false if is_room_empty else room_base_state.is_activated 
+	var can_activate:bool = false if is_room_empty else (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false)
 	var can_contain:bool = false if is_room_empty else room_details.can_contain
 	var passive_abilities:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
-	var passives_enabled:Array = room_config_data.room_data.passives_enabled if !is_room_empty else []
+	var passives_enabled:Array = [] if is_room_empty else room_base_state.passives_enabled
 	
 	var scp_data:Dictionary = room_config_data.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
@@ -1509,6 +1461,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		"is_scp_testing": !is_transfer and is_contained and researchers.size() > 0,
 		# ------
 		"researchers_count": researchers.size(),
+		"room_base_state": room_base_state, 
 		# -----
 		"room": {						
 			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
@@ -1518,11 +1471,12 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 			"can_contain": can_contain,		
 			"is_activated": is_activated,
 			"can_activate": can_activate,
-			"upgrade_level": room_config_data.room_data.upgrade_level if !is_room_empty else 0,
 			# current amount
-			"ap": room_config_data.room_data.ap if !is_room_empty else 0,
+			"ap": 0 if room_base_state.is_empty() else room_base_state.ap,
 			# charge rate
-			"ap_diff": ap_diff_amount,
+			"ap_diff": 0 if room_base_state.is_empty() else ap_diff_amount,
+			# upgrade level
+			"upgrade_level": 0 if room_base_state.is_empty() else room_base_state.upgrade_level,
 		} if !is_room_empty or is_room_under_construction else {},
 		"scp": {
 			"details": scp_details,
