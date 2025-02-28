@@ -53,6 +53,10 @@ var specialization_data:Dictionary = {
 		"name": "PHILOSOPHY",
 		"icon": SVGS.TYPE.ENERGY,
 	},
+	RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
+		"name": "ADMINISTRATION",
+		"icon": SVGS.TYPE.ENERGY,
+	},	
 	RESEARCHER.SPECIALIZATION.PARAZOOLOGIST: {
 		"name": "PARAZOOLOGIST",
 		"icon": SVGS.TYPE.ENERGY,

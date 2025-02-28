@@ -92,17 +92,28 @@ func on_is_showing_update() -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func show_details(skip_resposition:bool = false) -> void:
+	# update room_extract
+	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
+	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
+	var options_list := []
+	var is_room_empty:bool = room_extract.is_room_empty
+	var abilities:Array = [] if is_room_empty else room_extract.room.abilities
+	var passive_abilities:Array = [] if is_room_empty else room_extract.room.passive_abilities
+	var ap_val:int = 0 if is_room_empty else room_extract.room.ap
+	var ap_diff:int = 0 if is_room_empty else room_extract.room.ap_diff
+	var upgrade_level:int = 0 if is_room_empty else room_extract.room.upgrade_level
+	var available_upgrade_levels:int = 2
+	
 	# enable/disable buttons
 	ActiveMenu.freeze_inputs = false
 	set_btn_disabled_state(true)
 		
 	# clear list
-	for child in [TraitList, SynergyTraitList]:
+	for child in [TraitList, SynergyTraitList, ResearcherList]:
 		for item in child.get_children():
 			item.queue_free()
 				
 	# animate in/out
-	await GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
 	Details.modulate = Color(1, 1, 1, 1)
 	U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)	
 
@@ -113,15 +124,7 @@ func show_details(skip_resposition:bool = false) -> void:
 		set_btn_disabled_state(false)
 		for child in ResearcherList.get_children():
 			child.queue_free()
-			
-	# update room_extract
-	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)	
-	
-	# local vars
-	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
-	var options_list := []
-	var is_room_empty:bool = room_extract.is_room_empty
-	
+
 	options_list.push_back({
 		"title": "BACK",
 		"onSelect": func() -> void:
@@ -129,21 +132,39 @@ func show_details(skip_resposition:bool = false) -> void:
 			ActiveMenu.close()
 	})
 	
-	var abilities:Array = [] if is_room_empty else room_extract.room.abilities
-	var current_ap:int = 0 if is_room_empty else room_extract.room.ap
-	var upgrade_level:int = 0 if is_room_empty else room_extract.room.upgrade_level
-	var available_upgrade_levels:int = 2
-	
 	if !is_room_empty:
 		if room_extract.is_room_active:
-			for n in abilities.size():
-				var ability:Dictionary = abilities[n]
+			# ----------------------- PASSIVE ABILITIES
+			for n in passive_abilities.size():
+				var ability:Dictionary = passive_abilities[n]
 				var can_use:bool = upgrade_level >= ability.available_at_lvl
-				var enough_ap_to_use:bool = current_ap < ability.ap_cost
+				var enough_ap_to_use:bool = ap_val < ability.ap_cost				
 				if available_upgrade_levels > n:
 					options_list.push_back({
 						"title": "%s %s" % [ability.name, "" if !enough_ap_to_use else ""] if can_use else "%s [UPGRADE REQUIRED]" % [ability.name],
-						"is_disabled": current_ap < ability.ap_cost or !can_use,
+						"is_disabled": ap_val < ability.ap_cost or !can_use,
+						"cost": ability.ap_cost if can_use else -1,
+						"is_togglable": true,
+						"is_checked": n in base_states.room[U.location_to_designation(current_location)].passives_enabled,
+						"onSelect": func() -> void:
+							if n not in base_states.room[U.location_to_designation(current_location)].passives_enabled:
+								base_states.room[U.location_to_designation(current_location)].passives_enabled.push_back(n)
+							else:
+								base_states.room[U.location_to_designation(current_location)].passives_enabled.erase(n)
+							# updates toggle state in the base states
+							SUBSCRIBE.base_states = base_states
+							# rerenders the menu
+							show_details(true)
+					})
+			# ----------------------- ACTIVE ABILITIES
+			for n in abilities.size():
+				var ability:Dictionary = abilities[n]
+				var can_use:bool = upgrade_level >= ability.available_at_lvl
+				var enough_ap_to_use:bool = ap_val < ability.ap_cost
+				if available_upgrade_levels > n:
+					options_list.push_back({
+						"title": "%s %s" % [ability.name, "" if !enough_ap_to_use else ""] if can_use else "%s [UPGRADE REQUIRED]" % [ability.name],
+						"is_disabled": ap_val < ability.ap_cost or !can_use,
 						"cost": ability.ap_cost if can_use else -1,
 						"onSelect": func() -> void:				
 							U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
@@ -156,15 +177,15 @@ func show_details(skip_resposition:bool = false) -> void:
 							show_details(true),
 					})
 		else:
-				options_list.push_back({
-					"title": "ACTIVATE ROOM",
-					"onSelect": func() -> void:
-						ActiveMenu.freeze_inputs = true	
-						var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, true)
-						ActiveMenu.freeze_inputs = false
-						if response.has_changes:
-							open_room_menu()
-				})				
+			options_list.push_back({
+				"title": "ACTIVATE ROOM",
+				"onSelect": func() -> void:
+					ActiveMenu.freeze_inputs = true	
+					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref, true)
+					ActiveMenu.freeze_inputs = false
+					if response.has_changes:
+						open_room_menu()
+			})				
 	
 		#print(room_extract.room)	
 		options_list.push_back({
@@ -193,17 +214,13 @@ func show_details(skip_resposition:bool = false) -> void:
 		SynergyContainer.hide()
 	else:
 		Researchers.show()
-		
 		var total_traits_list := []
-		var synergy_traits := []
-		var dup_list := []		
 		
 		for researcher in room_extract.researchers:
 			var mini_card:Control = ResearcherMiniCard.instantiate()
 			mini_card.researcher = researcher
 			mini_card.room_extract = room_extract
 			ResearcherList.add_child(mini_card)
-	
 			# add selected to selected list	
 			total_traits_list.push_back(researcher.traits)
 		ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]
@@ -225,15 +242,20 @@ func show_details(skip_resposition:bool = false) -> void:
 		card.is_synergy = true
 		SynergyTraitList.add_child(card)
 	
-	ActiveMenu.ap_val = current_ap
-	ActiveMenu.show_ap = abilities.size() > 0
+	
+	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+	
+	ActiveMenu.ap_diff_val = ap_diff
+	ActiveMenu.ap_val = ap_val
+	ActiveMenu.show_ap = abilities.size() > 0 or passive_abilities.size() > 0
 	ActiveMenu.header = "EMPTY" if is_room_empty else "%s" % [room_extract.room.details.name]
 	ActiveMenu.use_color = Color(1, 0.745, 0.381)
 	ActiveMenu.options_list = options_list
 	if !skip_resposition:
 		await U.tick()
 		ActiveMenu.size = Vector2(1, 1)
-		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
+		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)		
+	
 	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------				
 

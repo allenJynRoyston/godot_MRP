@@ -56,6 +56,7 @@ func on_room_extract_update() -> void:
 
 		var resource_list:Array = spec_bonus.filter(func(i):return i.type == "amount")
 		var metric_list:Array = spec_bonus.filter(func(i):return i.type == "metrics")
+		var ap_list:Array = spec_bonus.filter(func(i):return i.type == "ap")
 
 		ResourceGrid.columns = U.min_max(resource_list.size(), 1, 2)
 		
@@ -68,14 +69,20 @@ func on_room_extract_update() -> void:
 			ResourceGrid.add_child(new_btn)
 			
 		for item in metric_list:
-			if item.type == "metrics":
-				var new_btn:Control = TextBtnPreload.instantiate()
-				new_btn.is_hoverable = false
-				new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				new_btn.icon = item.resource.icon
-				new_btn.title = "%s%s %s" % ["+" if item.amount > 0 else "", item.amount, item.resource.name]
-				MetricsList.add_child(new_btn)
-				
-		ResourceGrid.hide() if resource_list.is_empty() else ResourceGrid.show()
-		MetricsList.hide() if metric_list.is_empty() else MetricsList.show()
-		NoBonusLabel.show() if resource_list.is_empty() and metric_list.is_empty() else NoBonusLabel.hide()
+			var new_btn:Control = TextBtnPreload.instantiate()
+			new_btn.is_hoverable = false
+			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			new_btn.icon = item.resource.icon
+			new_btn.title = "%s%s %s" % ["+" if item.amount > 0 else "", item.amount, item.resource.name]
+			MetricsList.add_child(new_btn)
+		
+		for item in ap_list:
+			var new_btn:Control = TextBtnPreload.instantiate()
+			new_btn.is_hoverable = false
+			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			new_btn.title = "%s%s AP" % ["+" if item.amount > 0 else "", item.amount]
+			MetricsList.add_child(new_btn)			
+		
+		ResourceGrid.hide() if ResourceGrid.get_child_count() == 0 else ResourceGrid.show()
+		MetricsList.hide() if MetricsList.get_child_count() == 0 else MetricsList.show()
+		NoBonusLabel.show() if resource_list.is_empty() and metric_list.is_empty() and ap_list.is_empty() else NoBonusLabel.hide()

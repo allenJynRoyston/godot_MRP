@@ -236,14 +236,14 @@ var initial_values:Dictionary = {
 				"capacity": 0
 			},
 			RESOURCE.TYPE.STAFF: {
-				"amount": 0, 
+				"amount": 10, 
 				"utilized": 0, 
-				"capacity": 0
+				"capacity": 10
 			},
 			RESOURCE.TYPE.SECURITY: {
-				"amount": 0, 
+				"amount": 10, 
 				"utilized": 0, 
-				"capacity": 0
+				"capacity": 10
 			},
 			RESOURCE.TYPE.DCLASS: {
 				"amount": 0, 
@@ -301,6 +301,7 @@ var initial_values:Dictionary = {
 						"is_destroyed": false,
 						"upgrade_level": 0,
 						"ap": 3,
+						"passives_enabled": [],
 					}						
 		
 		
@@ -944,6 +945,7 @@ func set_room_config(force_setup:bool = false) -> void:
 		new_room_config.floor[floor].ring[ring].room[room].room_data = {
 			"ref": item.ref,
 			"ap": base_states.room[designation].ap,
+			"passives_enabled": base_states.room[designation].passives_enabled,
 			"upgrade_level": base_states.room[designation].upgrade_level,
 			"get_room_details": func() -> Dictionary:
 				return ROOM_UTIL.return_data(item.ref),
@@ -2400,9 +2402,20 @@ func on_current_phase_update() -> void:
 					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
 						var location:Dictionary = {"floor": floor_index, "ring": ring_index, "room": room_index}
 						var extract_data:Dictionary = ROOM_UTIL.extract_room_details(location)
+						var designation:String = U.location_to_designation(location)
 						if !extract_data.is_room_empty and extract_data.is_room_active:
-							base_states.room[U.location_to_designation(location)].ap += 1
-							
+							base_states.room[designation].ap += extract_data.room.ap_diff
+						
+							var ap:int = base_states.room[designation].ap							
+							for index in extract_data.room.passive_abilities.size():
+								var ability:Dictionary = extract_data.room.passive_abilities[index]
+								# if you don't have enough ap for it, remove it
+								if ap < ability.ap_cost and index in base_states.room[designation].passives_enabled:
+									base_states.room[designation].passives_enabled.erase(index)
+									ToastContainer.add("Not enough AP to continue [%s] in %s!" % [ability.name, extract_data.room.details.name])				
+									# then refund ap cost, iterate
+									ap += ability.ap_cost
+
 				
 			# update subscriptions
 			SUBSCRIBE.progress_data = progress_data

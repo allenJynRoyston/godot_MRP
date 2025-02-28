@@ -8,6 +8,7 @@ extends BtnBase
 @onready var CostLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer/CostLabel 
 @onready var IconBtn:Control = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/IconBtn
 @onready var BtnLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/BtnLabel
+@onready var Checkbox:BtnBase = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CheckBox
 
 @export var title:String = "" : 
 	set(val): 
@@ -38,7 +39,16 @@ extends BtnBase
 	set(val):
 		is_selected = val
 		on_is_selected_update()
-	
+
+@export var is_togglable:bool = false : 
+	set(val):
+		is_togglable = val
+		on_is_togglable_update()
+		
+@export var is_checked:bool = false : 
+	set(val):
+		is_checked = val
+		on_is_checked_update()		
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -53,6 +63,8 @@ func _ready() -> void:
 	on_is_disabled_updated()
 	on_is_selected_update()
 	on_cost_update()
+	on_is_togglable_update()
+	on_is_checked_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -95,6 +107,14 @@ func on_is_selected_update() -> void:
 	
 func on_is_disabled_updated() -> void:
 	update_color()
+
+func on_is_togglable_update() -> void:
+	if !is_node_ready():return
+	Checkbox.show() if is_togglable else Checkbox.hide()
+
+func on_is_checked_update() -> void:
+	if !is_node_ready():return
+	Checkbox.is_checked = is_checked
 
 func on_cost_update() -> void:
 	if !is_node_ready():return

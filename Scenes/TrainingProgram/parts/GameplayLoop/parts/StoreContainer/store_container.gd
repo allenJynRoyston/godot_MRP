@@ -225,10 +225,11 @@ func update_grid_content(index:int = tab_index) -> void:
 		else:			
 			var room_details:Dictionary = grid_list_data[n]
 			var is_locked:bool = false
-
-			if room_details.details.requires_unlock:		
-				if room_details.ref not in shop_unlock_purchases:	
-					is_locked = true
+			
+			if "requires_unlock" in room_details.details:
+				if room_details.details.requires_unlock:		
+					if room_details.ref not in shop_unlock_purchases:	
+						is_locked = true
 			
 			card_node.index = n
 			card_node.no_animation = true	

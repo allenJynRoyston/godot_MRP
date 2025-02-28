@@ -72,20 +72,20 @@ var DIRECTORS_OFFICE:Dictionary = {
 		}	
 	},		
 	
-	#"activation_effect": {
-		#"resources": {
-			#"amount": func() -> Dictionary:
-				#return {
-#
-				#},
-			#"capacity": func() -> Dictionary:
-				#return {
-					#RESOURCE.TYPE.STAFF: 10,
-					#RESOURCE.TYPE.SECURITY: 10,
-					#RESOURCE.TYPE.DCLASS: 10
-				#},			
-		#}	
-	#},	
+	"activation_effect": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+
+				},
+			"capacity": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.STAFF: 10,
+					RESOURCE.TYPE.SECURITY: 10,
+					RESOURCE.TYPE.DCLASS: 10
+				},			
+		}	
+	},	
 	
 	"operating_costs": {
 		"resources": {
@@ -99,24 +99,12 @@ var DIRECTORS_OFFICE:Dictionary = {
 				},
 		}	
 	},
+	# ------------------------------------------
 	
 	# ------------------------------------------	
 	"specilization_bonus": func(specilizations:Array) -> Dictionary:
-		if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
-			return {
-				"resource":{
-					RESOURCE.TYPE.ENERGY: 2
-				},
-			}
-		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
-			return {
-				"metrics":{
-					RESOURCE.BASE_METRICS.MORALE: 1
-				}
-			}
 		return {},
 	# ------------------------------------------	
-	# ------------------------------------------
 }
 
 var HQ:Dictionary = {
@@ -185,7 +173,7 @@ var HQ:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.ENERGY: -1,
+					RESOURCE.TYPE.STAFF: 10,
 				},
 		}	
 	},		
@@ -212,8 +200,26 @@ var HQ:Dictionary = {
 					RESOURCE.TYPE.MONEY: -1
 				},
 		}	
-	}	
+	},
 	# ------------------------------------------
+	
+	# ------------------------------------------	
+	"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		if RESEARCHER.SPECIALIZATION.CHEMISTRY in specilizations:
+			return {
+				"ap": 1,
+				"metrics":{
+					RESOURCE.BASE_METRICS.MORALE: 1
+				}				
+			}
+		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			return {
+				"metrics":{
+					RESOURCE.BASE_METRICS.MORALE: 1
+				}
+			}
+		return {}
+	# ------------------------------------------		
 }
 
 var AQUISITION_DEPARTMENT:Dictionary = {
@@ -575,18 +581,41 @@ var DORMITORY:Dictionary = {
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
 	"can_contain": false,
-	
-	"prerequisites": [
-		ROOM.TYPE.HQ
-	],	
+	"requires_unlock": false,
 		
-	"placement_restrictions": {
-
-	},
+	# ------------------------------------------
 	"own_limit": func() -> int:
-		return 10,	
+		return 1,
 	"get_build_time": func() -> int:
-		return 3,
+		return 1,
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			{
+				"name": "HOUSE 10",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func(is_active:bool) -> void:
+					pass,
+			},
+			{
+				"name": "HOUSE 20",
+				"available_at_lvl": 0, 
+				"ap_cost":  2, 
+				"effect": func(is_active:bool) -> void:
+					pass,
+			},
+			{
+				"name": "HOUSE 30",
+				"available_at_lvl": 0, 
+				"ap_cost":  3, 
+				"effect": func(is_active:bool) -> void:
+					pass,
+			}
+		],	
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -937,6 +966,7 @@ var reference_data:Dictionary = {
 	ROOM.TYPE.HQ: HQ,
 	ROOM.TYPE.AQUISITION_DEPARTMENT: AQUISITION_DEPARTMENT,
 	ROOM.TYPE.BARRICKS: BARRICKS,
+	ROOM.TYPE.DORMITORY: DORMITORY,
 	## TIER ONE
 	
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
@@ -1062,6 +1092,8 @@ func return_specilization_bonus(ref:ROOM.TYPE, specilizations:Array) -> Array:
 	
 	if "specilization_bonus" in data:
 		var spec_bonus:Dictionary = data.specilization_bonus.call(specilizations)
+		if "ap" in spec_bonus:
+			list.push_back({"type": "ap", "amount": spec_bonus.ap})	
 		if "resource" in spec_bonus:
 			for key in spec_bonus.resource:
 				list.push_back({"type": "amount", "amount": spec_bonus.resource[key], "resource": RESOURCE_UTIL.return_data(key)})	
@@ -1219,7 +1251,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var floor_data:Dictionary = use_config.floor[floor]
 	var wing_data:Dictionary = use_config.floor[floor].ring[ring]
 	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
-	
+
 	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
 	var is_room_under_construction:bool  = !room_config_data.build_data.is_empty()
 	var is_room_empty:bool = room_config_data.room_data.is_empty()
@@ -1227,8 +1259,10 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var room_details:Dictionary = room_config_data.room_data.get_room_details.call() if !is_room_empty else {}
 	var is_activated:bool = room_config_data.room_data.get_is_activated.call() if !is_room_empty else false
 	var can_activate:bool = (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false) if !is_room_empty else false
-	var can_contain:bool = room_details.can_contain if !room_details.is_empty() else false
-
+	var can_contain:bool = false if is_room_empty else room_details.can_contain
+	var passive_abilities:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
+	var passives_enabled:Array = room_config_data.room_data.passives_enabled if !is_room_empty else []
+	
 	var scp_data:Dictionary = room_config_data.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
 	var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
@@ -1242,6 +1276,8 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
+	var ap_diff_amount:int = 1 if is_activated else 0
+
 	# tracks 
 	var resource_details:Dictionary = {
 		# captures just for room
@@ -1276,58 +1312,60 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	# get resources spent/added by rooms
 	if !is_room_empty:
 		for item in return_operating_cost(room_details.ref):
-			# -----------------------
-			if item.type == "amount":
-				if item.resource.ref not in resource_details.room:
-					resource_details.room[item.resource.ref] = 0
-				if item.resource.ref not in resource_details.facility:
-					resource_details.facility[item.resource.ref] = 0
-				if item.resource.ref not in resource_details.total:
-					resource_details.total[item.resource.ref] = 0
-				resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-			# -----------------------
-			if item.type == "metrics":
-				if item.resource.ref not in metric_details.room:
-					metric_details.room[item.resource.ref] = 0
-				if item.resource.ref not in metric_details.facility:
-					metric_details.facility[item.resource.ref] = 0
-				if item.resource.ref not in metric_details.total:
-					metric_details.total[item.resource.ref] = 0
+			match item.type:
+				# -----------------------
+				"amount":
+					if item.resource.ref not in resource_details.room:
+						resource_details.room[item.resource.ref] = 0
+					if item.resource.ref not in resource_details.facility:
+						resource_details.facility[item.resource.ref] = 0
+					if item.resource.ref not in resource_details.total:
+						resource_details.total[item.resource.ref] = 0
+					resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+					resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+					resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+				# -----------------------
+				"metrics":
+					if item.resource.ref not in metric_details.room:
+						metric_details.room[item.resource.ref] = 0
+					if item.resource.ref not in metric_details.facility:
+						metric_details.facility[item.resource.ref] = 0
+					if item.resource.ref not in metric_details.total:
+						metric_details.total[item.resource.ref] = 0
 
-				metric_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				metric_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				metric_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+					metric_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+					metric_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+					metric_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
 				
 	
 	# get resources spent/added by scp
 	if !is_scp_empty:
 		for item in SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref):
-			# -----------------------
-			if item.type == "amount":
-				if item.resource.ref not in resource_details.scp:
-					resource_details.scp[item.resource.ref] = 0
-				if item.resource.ref not in resource_details.facility:
-					resource_details.facility[item.resource.ref] = 0
-				if item.resource.ref not in resource_details.total:
-					resource_details.total[item.resource.ref] = 0
-					
-				resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
-				resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
-				resource_details.total[item.resource.ref] += item.amount if is_contained else 0
-			# -----------------------
-			if item.type == "metrics":
-				if item.resource.ref not in metric_details.scp:
-					metric_details.scp[item.resource.ref] = 0
-				if item.resource.ref not in metric_details.facility:
-					metric_details.facility[item.resource.ref] = 0
-				if item.resource.ref not in metric_details.total:
-					metric_details.total[item.resource.ref] = 0
+			match item.type:
+				# -----------------------
+				"amount":
+					if item.resource.ref not in resource_details.scp:
+						resource_details.scp[item.resource.ref] = 0
+					if item.resource.ref not in resource_details.facility:
+						resource_details.facility[item.resource.ref] = 0
+					if item.resource.ref not in resource_details.total:
+						resource_details.total[item.resource.ref] = 0
+						
+					resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
+					resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
+					resource_details.total[item.resource.ref] += item.amount if is_contained else 0
+				# -----------------------
+				"metrics":
+					if item.resource.ref not in metric_details.scp:
+						metric_details.scp[item.resource.ref] = 0
+					if item.resource.ref not in metric_details.facility:
+						metric_details.facility[item.resource.ref] = 0
+					if item.resource.ref not in metric_details.total:
+						metric_details.total[item.resource.ref] = 0
 
-				metric_details.scp[item.resource.ref] += item.amount if is_contained else 0
-				metric_details.facility[item.resource.ref] += item.amount if is_contained else 0
-				metric_details.total[item.resource.ref] += item.amount if is_contained else 0
+					metric_details.scp[item.resource.ref] += item.amount if is_contained else 0
+					metric_details.facility[item.resource.ref] += item.amount if is_contained else 0
+					metric_details.total[item.resource.ref] += item.amount if is_contained else 0
 	
 
 	var total_traits_list := []
@@ -1341,30 +1379,34 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		if !is_room_empty:
 			var spec_bonus:Array = ROOM_UTIL.return_specilization_bonus(room_details.ref, researcher.specializations)
 			for item in spec_bonus:
-				# -----------------------
-				if item.type == "resource":
-					if item.resource.ref not in resource_details.researchers:
-						resource_details.researchers[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.facility:
-						resource_details.facility[item.resource.ref] = 0					
-					if item.resource.ref not in resource_details.total:
-						resource_details.total[item.resource.ref] = 0
-						
-					resource_details.researchers[item.resource.ref] += item.amount
-					resource_details.facility[item.resource.ref] += item.amount
-					resource_details.total[item.resource.ref] += item.amount
-				# -----------------------
-				if item.type == "metrics":
-					if item.resource.ref not in metric_details.researchers:
-						metric_details.researchers[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.facility:
-						metric_details.facility[item.resource.ref] = 0					
-					if item.resource.ref not in metric_details.total:
-						metric_details.total[item.resource.ref] = 0
-						
-					metric_details.researchers[item.resource.ref] += item.amount
-					metric_details.facility[item.resource.ref] += item.amount
-					metric_details.total[item.resource.ref] += item.amount					
+				match item.type:
+					"ap":
+					# -----------------------
+						ap_diff_amount += item.amount
+					# -----------------------
+					"resource":
+						if item.resource.ref not in resource_details.researchers:
+							resource_details.researchers[item.resource.ref] = 0
+						if item.resource.ref not in resource_details.facility:
+							resource_details.facility[item.resource.ref] = 0					
+						if item.resource.ref not in resource_details.total:
+							resource_details.total[item.resource.ref] = 0
+							
+						resource_details.researchers[item.resource.ref] += item.amount
+						resource_details.facility[item.resource.ref] += item.amount
+						resource_details.total[item.resource.ref] += item.amount
+					# -----------------------
+					"metrics":
+						if item.resource.ref not in metric_details.researchers:
+							metric_details.researchers[item.resource.ref] = 0
+						if item.resource.ref not in metric_details.facility:
+							metric_details.facility[item.resource.ref] = 0					
+						if item.resource.ref not in metric_details.total:
+							metric_details.total[item.resource.ref] = 0
+							
+						metric_details.researchers[item.resource.ref] += item.amount
+						metric_details.facility[item.resource.ref] += item.amount
+						metric_details.total[item.resource.ref] += item.amount					
 
 		# add selected to selected list	
 		total_traits_list.push_back(researcher.traits)
@@ -1441,7 +1483,14 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 					metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})		
 						
 			synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-			#
+			
+			
+	# change ap_diff value for enabled passives
+	for index in passive_abilities.size():
+		var ability:Dictionary = passive_abilities[index]
+		if index in passives_enabled:
+			ap_diff_amount -= ability.ap_cost
+
 
 	return {
 		"floor": floor_data,
@@ -1464,11 +1513,16 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		"room": {						
 			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
 			"abilities": room_details.abilities.call() if "abilities" in room_details else [],
+			"passive_abilities": room_details.passive_abilities.call() if "passive_abilities" in room_details else [],
+			"passives_enabled": passives_enabled,
 			"can_contain": can_contain,		
 			"is_activated": is_activated,
 			"can_activate": can_activate,
 			"upgrade_level": room_config_data.room_data.upgrade_level if !is_room_empty else 0,
-			"ap": room_config_data.room_data.ap if !is_room_empty else 0
+			# current amount
+			"ap": room_config_data.room_data.ap if !is_room_empty else 0,
+			# charge rate
+			"ap_diff": ap_diff_amount,
 		} if !is_room_empty or is_room_under_construction else {},
 		"scp": {
 			"details": scp_details,

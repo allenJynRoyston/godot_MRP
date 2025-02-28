@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://0wbd87xeuk1l"]
+[gd_scene load_steps=10 format=3 uid="uid://0wbd87xeuk1l"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/active_menu.gd" id="1_yhadw"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_1mtlm"]
@@ -28,10 +28,17 @@ corner_radius_bottom_left = 5
 font = ExtResource("3_casfw")
 font_size = 8
 font_color = Color(0, 0, 0, 1)
-outline_size = 4
+outline_size = 8
 
 [sub_resource type="LabelSettings" id="LabelSettings_xiti1"]
 font = ExtResource("3_casfw")
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_kd8cu"]
+font = ExtResource("3_casfw")
+font_size = 8
+font_color = Color(0, 0.964706, 0.278431, 1)
 outline_size = 5
 outline_color = Color(0, 0, 0, 1)
 
@@ -72,13 +79,13 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_0tpv5")
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = -5
+theme_override_constants/margin_top = -4
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 4
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 5
 alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer"]
@@ -87,11 +94,21 @@ text = "AP"
 label_settings = SubResource("LabelSettings_hpek8")
 horizontal_alignment = 1
 
-[node name="ApLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ApLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "xx"
 label_settings = SubResource("LabelSettings_xiti1")
 horizontal_alignment = 1
+
+[node name="ApDiffLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "+1"
+label_settings = SubResource("LabelSettings_kd8cu")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="List" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -101,13 +118,19 @@ layout_mode = 2
 title = "ITEM A"
 icon = 52
 is_selected = true
+is_togglable = false
+is_checked = false
 
 [node name="MenuBtn2" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
 layout_mode = 2
 title = "ITEM B"
 icon = 52
+is_togglable = false
+is_checked = false
 
 [node name="MenuBtn3" parent="MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
 layout_mode = 2
 title = "ITEM C"
 icon = 52
+is_togglable = false
+is_checked = false
