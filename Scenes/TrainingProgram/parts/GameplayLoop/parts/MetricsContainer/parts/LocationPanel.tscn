@@ -30,7 +30,7 @@ shadow_size = 0
 
 [node name="LocationPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(50, 0)
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_0kun8")
 script = ExtResource("1_2cn8n")
 
