@@ -2,16 +2,18 @@ extends GameContainer
 
 @onready var MainPanel:PanelContainer = $Control/PanelContainer
 @onready var LocationPanel:Control = $MarginContainer/HBoxContainer/LocationPanel
-@onready var RoomLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/RoomLabel
-@onready var ResearcherIconContainer:HBoxContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ResearcherIcons
-@onready var RIcon1:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ResearcherIcons/RIcon1
-@onready var RIcon2:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ResearcherIcons/RIcon2
+
+@onready var ImageContainer:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails
+@onready var ProfileImage:TextureRect = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/SubViewport/ProfileImage
+@onready var RoomLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/MarginContainer2/HBoxContainer/RoomLabel
+@onready var ResearcherIconContainer:MarginContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/ResearcherIconContainers
+@onready var RIcon1:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/ResearcherIconContainers/ResearcherIcons/RIcon1
+@onready var RIcon2:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/ResearcherIconContainers/ResearcherIcons/RIcon2
+@onready var StatusTag:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/StatusContainer/StatusTag
+@onready var StatusLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/StatusContainer/StatusTag/MarginContainer/StatusLabel
+
 @onready var ResourceDiffContainer:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ResourceDiffContainer
-@onready var ResourceGrid:GridContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ResourceDiffContainer/PanelContainer/MarginContainer/ResourceGrid
-@onready var StatusTag:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/MarginContainer/StatusTag
-@onready var StatusLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/PanelContainer/TextureRect/MarginContainer/StatusTag/MarginContainer/StatusLabel
-@onready var ImageContainer:VBoxContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer
-@onready var ProfileImage:TextureRect = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ImageContainer/SubViewport/ProfileImage
+@onready var ResourceGrid:GridContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/StaffingContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 const StaticShader:ShaderMaterial = preload("res://Shader/Static.tres")
@@ -53,8 +55,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
-	if !is_node_ready() or room_config.is_empty():return	
-	update_details_panel()
+	if !is_node_ready() or room_config.is_empty():return		
+	U.debounce("update_details_panel", update_details_panel)
 
 func on_purchased_facility_arr_update(new_val:Array) -> void:
 	super.on_purchased_facility_arr_update(new_val)	
@@ -64,13 +66,13 @@ func on_resources_data_update(new_val:Dictionary) -> void:
 
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	super.on_hired_lead_researchers_arr_update(new_val)
-	update_details_panel()
+	U.debounce("update_details_panel", update_details_panel)
 
 func on_current_location_update(new_val:Dictionary) -> void:
 	super.on_current_location_update(new_val)
 	if !U.dictionaries_equal(previous_location, current_location):
 		previous_location = new_val.duplicate(true)
-		update_details_panel()
+		U.debounce("update_details_panel", update_details_panel)
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -110,7 +112,7 @@ func update_details_panel() -> void:
 		if room_extract.is_room_under_construction:
 			StatusTag.show()
 			StatusLabel.text = "UNDER CONSTRUCTION"
-			RoomLabel.text = room_extract.room.details.name
+			RoomLabel.text = " %s " % [room_extract.room.details.shortname]
 			ImageContainer.show()
 			ResourceDiffContainer.hide()
 			ResearcherIconContainer.hide()
@@ -118,14 +120,14 @@ func update_details_panel() -> void:
 			ProfileImage.texture = CACHE.fetch_image(room_extract.room.details.img_src)
 		else:
 			StatusTag.hide()
-			RoomLabel.text = "NOTHING ASSIGNED" 
+			RoomLabel.text = " NOTHING ASSIGNED " 
 			ProfileImage.material = StaticShader
 			ProfileImage.texture = CACHE.fetch_image("")
 			ResourceDiffContainer.hide()
 			ResearcherIconContainer.hide()
 	else:		
 		ResourceDiffContainer.hide() if room_extract.resource_details.total.is_empty() else ResourceDiffContainer.show()
-		RoomLabel.text = room_extract.room.details.name
+		RoomLabel.text = " %s " % [room_extract.room.details.shortname]
 		ProfileImage.texture = CACHE.fetch_image(room_extract.room.details.img_src)
 		ImageContainer.show()
 		ProfileImage.material = null

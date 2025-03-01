@@ -193,7 +193,7 @@ func on_use_color_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_freeze_inputs_update() -> void:
-	U.tween_node_property(self, "scale:y", 0 if freeze_inputs else 1)
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if freeze_inputs else 1)  )
 
 func on_action() -> void:
 	if freeze_inputs:return

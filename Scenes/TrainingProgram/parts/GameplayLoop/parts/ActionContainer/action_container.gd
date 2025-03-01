@@ -188,16 +188,6 @@ func show_details() -> void:
 						show_details(),
 				})
 
-	
-		if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_UPGRADES]:
-			options_list.push_back({
-				"title": "UPGRADE",
-				"icon": SVGS.TYPE.UP_ARROW,
-				"is_disabled": false,
-				"onSelect": func() -> void:
-					pass
-			})
-
 	# ROOM DETAILS	
 	RoomMiniCard.is_activated = is_activated
 	RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
@@ -365,6 +355,16 @@ func open_room_menu() -> void:
 					open_room_menu()
 			})				
 	
+	if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_UPGRADES]:
+		options_list.push_back({
+			"title": "UPGRADE",
+			"icon": SVGS.TYPE.UP_ARROW,
+			"is_disabled": false,
+			"onSelect": func() -> void:
+				pass
+		})
+		
+	
 	if !room_is_empty:
 		options_list.push_back({
 			"title": "CANNOT DESTROY ROOM" if !is_scp_empty or !can_destroy else "DESTROY ROOM",
@@ -375,7 +375,8 @@ func open_room_menu() -> void:
 				ActiveMenu.freeze_inputs = false	
 				open_room_menu()
 		})
-	
+
+
 
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:	
@@ -808,6 +809,16 @@ func buildout_btns() -> void:
 			
 			
 		CAMERA.TYPE.ROOM_SELECT:	
+			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTION_DETAILS] and is_activated:
+				new_left_btn_list.push_back({
+					"title": "ABILITIES",
+					"assigned_key": "E",
+					"icon": SVGS.TYPE.TARGET,
+					"onClick": func() -> void:
+						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+							show_details()
+				})						
+			
 			new_left_btn_list.push_back({
 				"title": "FACILITY",
 				"assigned_key": "1",
@@ -837,15 +848,7 @@ func buildout_btns() -> void:
 							open_scp_menu()
 				})
 			
-			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTION_DETAILS] and is_activated:
-				new_left_btn_list.push_back({
-					"title": "ABILITIES",
-					"assigned_key": "E",
-					"icon": SVGS.TYPE.TARGET,
-					"onClick": func() -> void:
-						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-							show_details()
-				})			
+
 			#new_left_btn_list.push_back({
 				#"title": "ALARM",
 				#"assigned_key": "4",

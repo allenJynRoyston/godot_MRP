@@ -74,25 +74,25 @@ theme_override_constants/separation = 15
 [node name="HeaderContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_0tpv5")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = -6
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "LVL X"
 label_settings = SubResource("LabelSettings_hpek8")
-horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
