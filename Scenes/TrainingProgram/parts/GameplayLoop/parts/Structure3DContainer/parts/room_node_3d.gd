@@ -242,7 +242,7 @@ func build_room_details() -> void:
 			ROOM.CATEGORY.FACILITY:
 				material_copy.albedo_color = special_color if extract_data.is_directors_office else room_color
 		ActivationIndicatorLight.omni_attenuation = 6.5
-		ActivationIndicatorLight.light_color = Color.GREEN if extract_data.room.is_activated else Color.ORANGE_RED
+		ActivationIndicatorLight.light_color = Color.GREEN if extract_data.is_activated else Color.ORANGE_RED
 	
 	if extract_data.is_scp_empty:
 		ScpIndicatorLight.omni_attenuation = 0.0

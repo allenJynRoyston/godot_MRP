@@ -33,6 +33,7 @@ var suppress_click:bool = false
 var camera_settings:Dictionary = {}
 var scp_data:Dictionary = {}
 var base_states:Dictionary = {}
+var gameplay_conditionals:Dictionary
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 
@@ -58,6 +59,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
 	SUBSCRIBE.subscribe_to_scp_data(self)
+	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
@@ -80,6 +82,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
+	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
 
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
@@ -125,7 +128,9 @@ func on_scp_data_update(new_val:Dictionary) -> void:
 	scp_data = new_val
 func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val
-
+func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+	gameplay_conditionals = new_val
+	
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass
 # ------------------------------------------------------------------------------

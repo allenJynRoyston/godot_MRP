@@ -2,14 +2,17 @@ extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var ContentMarginContainer:MarginContainer = $ContentControl/MarginContainer
+@onready var StatusLabel:Label = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/StatusLabel
 @onready var TitleLabel:Label = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
-@onready var DescriptionList:VBoxContainer = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DescriptionList
+@onready var DescriptionList:VBoxContainer = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/DescriptionList
 @onready var ImageContainer:TextureRect = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
 
 @onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var NextOrCloseBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/NextOrCloseBtn
 
+@onready var ActivateBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ActivateBtn
+@onready var SkipBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SkipBtn
 #@onready var NextBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
 #@onready var SkipBtn:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipBtn
 #@onready var Activate:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Activate
@@ -38,6 +41,9 @@ func _ready() -> void:
 	super._ready()
 
 	NextOrCloseBtn.onClick = func() -> void:
+		on_next()
+	
+	SkipBtn.onClick = func() -> void:
 		on_next()
 
 	on_has_more_update()
@@ -87,26 +93,29 @@ func update_display() -> void:
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = false		
 		
+		
 	match data.action:
 		# ------------------------------------------------------------------------------------------
 		ACTION.AQ.BUILD_ITEM:
-			var details:Dictionary = ROOM_UTIL.return_data(data.ref)
+			# update
+			purchased_facility_arr.push_back({
+				"ref": data.ref,
+				"location": data.location.duplicate()
+			})
+			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+			# wait for data to update
+			await U.tick()
+			
+			# now extract and populate
+			var extract_data:Dictionary = ROOM_UTIL.extract_room_details(data.location)
+			var details:Dictionary = extract_data.room.details
+			var can_activate:bool = extract_data.can_activate
 			var activation_requirements:Array = ROOM_UTIL.return_activation_cost(data.ref)
-
-			TitleLabel.text = "%s Built!" % [details.name]
+			
+			StatusLabel.text = "CONSTRUCTION COMPLETE"
+			TitleLabel.text = "%s" % [details.name]
 			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-
-			var can_activate:bool = RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(data.ref), resources_data)
-
-			DescriptionList.hide() if activation_requirements.size() == 0 else DescriptionList.show()
-			#NextBtn.show()
-			#Activate.show()
-			#Activate.is_disabled = !can_activate
-			#Activate.onClick = func() -> void:
-				#if can_activate:
-					#GameplayNode.activate_room(data.location, data.ref, true, false)
-					#on_next()
-
+			
 			for item in activation_requirements:
 				var current_amount:int = resources_data[item.resource.ref].amount
 				var has_enough:bool = current_amount + item.amount < 0
@@ -114,51 +123,63 @@ func update_display() -> void:
 				new_node.is_hoverable = false
 				new_node.no_bg = true
 				new_node.is_checked = !has_enough
-				new_node.title =  "%s required: %s (you have %s)" % [item.resource.name, abs(item.amount), current_amount]
+				new_node.modulate = Color(1, 0, 0, 1) if has_enough else Color(1, 1, 1, 1)
+				new_node.title =  "%s REQUIRED: %s (YOU HAVE %s)" % [item.resource.name, abs(item.amount), current_amount]
 				DescriptionList.add_child(new_node)
-		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.BASE_ITEM:			
-			var details:Dictionary = BASE_UTIL.return_data(data.ref)
-			var build_complete_list:Array = BASE_UTIL.return_build_complete(data.ref)
-
-			TitleLabel.text = "%s Built!" % [details.name]
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
+				
+			ActivateBtn.onClick = func() -> void:
+				GameplayNode.activate_room(data.location, details.ref, true)
+				on_next()				
+						
+			SkipBtn.show()
+			ActivateBtn.show()
+			DescriptionList.hide() if activation_requirements.size() == 0 else DescriptionList.show()
 			
-
+			ActivateBtn.is_disabled = !can_activate
 			
-			
+		## ------------------------------------------------------------------------------------------
+		#ACTION.AQ.BASE_ITEM:			
+			#var details:Dictionary = BASE_UTIL.return_data(data.ref)
+			#var build_complete_list:Array = BASE_UTIL.return_build_complete(data.ref)
+#
+			#TitleLabel.text = "%s Built!" % [details.name]
+			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
+			#
+#
+			#
+			#
 			#for item in build_complete_list:
 				#var label_node:Control = TextBtnPreload.instantiate()
 				#label_node.is_hoverable = false
 				#label_node.icon = item.resource.icon
 				#label_node.title =  "+%s [%s]" % [item.amount, item.type]
 				#DescriptionList.add_child(label_node)
-		# ------------------------------------------------------------------------------------------		
-		ACTION.AQ.RESEARCH_ITEM:
-			var details:Dictionary = RD_UTIL.return_data(data.ref)
-			TitleLabel.text = "Research complete: %s" % [details.name]
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)		
-		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.CONTAIN:
-			var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			TitleLabel.text = "SCP %s successfully contained." % [details.name]
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.TRANSFER:
-			var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			TitleLabel.text = "SCP %s successfully transfered." % [details.name]
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.ACCESSING:
-			var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			TitleLabel.text = "Accessing complete."
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.TESTING:
-			var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			TitleLabel.text = "Testing complete."
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		# ------------------------------------------------------------------------------------------	
+		## ------------------------------------------------------------------------------------------		
+		#ACTION.AQ.RESEARCH_ITEM:
+			#var details:Dictionary = RD_UTIL.return_data(data.ref)
+			#TitleLabel.text = "Research complete: %s" % [details.name]
+			#ImageContainer.texture = CACHE.fetch_image(details.img_src)		
+		## ------------------------------------------------------------------------------------------
+		#ACTION.AQ.CONTAIN:
+			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			#TitleLabel.text = "SCP %s successfully contained." % [details.name]
+			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		## ------------------------------------------------------------------------------------------
+		#ACTION.AQ.TRANSFER:
+			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			#TitleLabel.text = "SCP %s successfully transfered." % [details.name]
+			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		## ------------------------------------------------------------------------------------------
+		#ACTION.AQ.ACCESSING:
+			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			#TitleLabel.text = "Accessing complete."
+			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		## ------------------------------------------------------------------------------------------
+		#ACTION.AQ.TESTING:
+			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
+			#TitleLabel.text = "Testing complete."
+			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
+		## ------------------------------------------------------------------------------------------	
 					
 	if "location" in data:
 		SUBSCRIBE.current_location = data.location

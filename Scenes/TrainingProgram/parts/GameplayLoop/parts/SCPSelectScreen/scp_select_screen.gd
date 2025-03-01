@@ -70,7 +70,7 @@ func _ready() -> void:
 		if is_animating:return
 		match current_mode:
 			MODE.SELECT_SCP:
-				end()
+				end(false)
 				
 			MODE.CONFIRM_SCP:
 				mark_scp_as_selected(true)
@@ -89,9 +89,9 @@ func start(new_refs:Array) -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func end() -> void:
+func end(made_selection:bool) -> void:
 	current_mode = MODE.HIDE
-	user_response.emit()
+	user_response.emit(made_selection)
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -248,7 +248,7 @@ func on_current_mode_update() -> void:
 
 			# subscribe
 			SUBSCRIBE.scp_data = scp_data
-			end()
+			end(true)
 	
 	await U.set_timeout(0.3)
 	is_animating = false

@@ -169,14 +169,14 @@ func update_boards() -> void:
 						var left_label_3d:Label3D = LeftBoardRoomLabels.find_child(str(ref_index))
 						var left_status_label:Label3D = left_label_3d.get_child(0)
 						for text_node in [left_label_3d, left_status_label]:
-							text_node.modulate = Color(0.984, 0.439, 0.184) if (room_extract.room.is_empty() or !room_extract.room.is_activated) else Color(0.525, 1, 0.443, 1)
+							text_node.modulate = Color(0.984, 0.439, 0.184) if (room_extract.room.is_empty() or !room_extract.is_activated) else Color(0.525, 1, 0.443, 1)
 						left_label_3d.text = "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.room.is_empty() else room_extract.room.details.shortname]
 						left_status_label.text = ""
 						if !room_extract.room.is_empty():
 							if room_extract.is_room_under_construction:
 								left_status_label.text = "CONSTRUCTING"
 							else:
-								left_status_label.text = "NO ISSUES" if room_extract.room.is_activated else "NOT POWERED"
+								left_status_label.text = "NO ISSUES" if room_extract.is_activated else "NOT POWERED"
 				
 						# ----------------------------------------
 						var right_label_3d:Label3D = RightBoardRoomLabels.find_child(str(ref_index))
@@ -347,7 +347,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 						#})		
 #
 					#else:
-						#if !room_extract.room.is_activated:
+						#if !room_extract.is_activated:
 							#menu_actions.push_back({
 								#"title": "ACTIVATE ROOM",
 								#"is_disabled": !room_extract.room.can_activate or is_testing or !can_take_action,

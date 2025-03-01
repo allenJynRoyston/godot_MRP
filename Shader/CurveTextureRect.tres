@@ -4,4 +4,4 @@
 
 [resource]
 shader = ExtResource("1_d04wt")
-shader_parameter/corner_scale = 0.088
+shader_parameter/corner_scale = 0.04

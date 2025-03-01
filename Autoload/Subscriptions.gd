@@ -403,3 +403,23 @@ func subscribe_to_timeline_array(node:Node) -> void:
 func unsubscribe_to_timeline_array(node:Node) -> void:
 	timeline_array_subscriptions.erase(node)				
 # ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
+var gameplay_conditionals_subscriptions:Array = []
+
+var gameplay_conditionals:Dictionary = {} :
+	set(val):
+		gameplay_conditionals = val 
+		for node in gameplay_conditionals_subscriptions:
+			if "on_gameplay_conditionals_update" in node:
+				node.on_gameplay_conditionals_update.call( gameplay_conditionals)	
+
+func subscribe_to_gameplay_conditionals(node:Node) -> void:
+	if node not in gameplay_conditionals_subscriptions:
+		gameplay_conditionals_subscriptions.push_back(node)
+		if "on_gameplay_conditionals_update" in node:
+			node.on_gameplay_conditionals_update.call( gameplay_conditionals)
+			
+func unsubscribe_to_gameplay_conditionals(node:Node) -> void:
+	gameplay_conditionals_subscriptions.erase(node)				
+# ------------------------------------------------------------	

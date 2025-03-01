@@ -102,7 +102,7 @@ func purchase_room() -> void:
 		"ref": room_details.ref,
 		"title": room_details.name,
 		"icon": SVGS.TYPE.BUILD,
-		"completed_at": room_details.get_build_time.call(),
+		"completed_at": room_details.build_time,
 		"description": "CONSTRUCTING",
 		"location": current_location.duplicate()
 	})

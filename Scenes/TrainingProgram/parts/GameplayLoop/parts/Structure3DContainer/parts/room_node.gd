@@ -239,14 +239,14 @@ func build_room_details() -> void:
 	if !data.build_data.is_empty():
 		#print("build data:", room_ref, assigned_wing)
 		var room_data:Dictionary = ROOM_UTIL.return_data(data.build_data.ref)
-		PanelOneLabel2.text = room_data.name	
+		PanelOneLabel2.text = room_data.shortname	
 		PanelOneLabel3.text = "CONSTRUCTING"
 		PanelOneLabel3.show()
 		apply_texture = APPLY_TEXTURE.UNDER_CONSTRUCTION
 	
 	if !data.room_data.is_empty():
 		var room_data:Dictionary = ROOM_UTIL.return_data(data.room_data.ref)
-		PanelOneLabel2.text = room_data.name	
+		PanelOneLabel2.text = room_data.shortname	
 		PanelOneLabel3.hide()
 		apply_texture = APPLY_TEXTURE.BUILT
 		

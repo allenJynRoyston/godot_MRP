@@ -2,19 +2,20 @@
 extends UtilityWrapper
 
 var DIRECTORS_OFFICE:Dictionary = {
+	# ------------------------------------------
 	"name": "DIRECTORS OFFICE",
 	"shortname": "D.OFFICE",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "The site directors office.",
-	"can_contain": true,
-	"requires_unlock": false,
-	
 	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
+
+	# ------------------------------------------
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -23,20 +24,20 @@ var DIRECTORS_OFFICE:Dictionary = {
 			{
 				"name": "AQUIRE SCP",
 				"available_at_lvl": 0, 
-				"ap_cost":  10, 
-				"effect": func(GameplayNode:Control) -> void:
-					await GameplayNode.get_new_scp(),
+				"ap_cost":  5, 
+				"effect": func(GameplayNode:Control) -> bool:
+					return await GameplayNode.get_new_scp(),
 			},
 			{
 				"name": "ABILITY 2",
-				"available_at_lvl": 1, 
+				"available_at_lvl": 2, 
 				"ap_cost":  5, 
 				"effect": func() -> void:
 					pass,
 			},
 			{
 				"name": "ABILITY 2",
-				"available_at_lvl": 2, 
+				"available_at_lvl": 3, 
 				"ap_cost":  5, 
 				"effect": func() -> void:
 					pass,
@@ -107,14 +108,13 @@ var HQ:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Base headquarters.",
-	"can_contain": false,
-	"requires_unlock": false,
 		
 	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -167,7 +167,7 @@ var HQ:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.STAFF: 10,
+					
 				},
 		}	
 	},		
@@ -216,14 +216,13 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Allows you to view any REDACTED room profiles before unlocking them.",
-	"can_contain": false,
-	"requires_unlock": false,
-		
+
 	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -310,43 +309,42 @@ var R_AND_D_LAB:Dictionary = {
 	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Enables research and development.",
-	"can_contain": false,
-	"requires_unlock": false,
-	
+
 	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
 	# ------------------------------------------
 		
 	# ------------------------------------------
-	"abilities": func() -> Array: 
+	"passive_abilities": func() -> Array: 
 		return [
 			{
-				"name": "UPGRADE FACILITIES (LVL 1)",
+				"name": "ENABLE UPGRADES",
 				"available_at_lvl": 0, 
 				"ap_cost":  1, 
-				"effect": func(GameplayNode:Control) -> void:
-					pass,
-					#await GameplayNode.recruit_new_researcher(1),
+				"conditional": func(gpc:Dictionary) -> Dictionary:
+					gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = true
+					return gpc,
 			},
 			{
-				"name": "UPGRADE FACILITIES (LVL 2)",
+				"name": "UPGRADE +",
 				"available_at_lvl": 1, 
-				"ap_cost":  5, 
-				"effect": func(GameplayNode:Control) -> void:
-					pass,
-					#await GameplayNode.recruit_new_researcher(2),
+				"ap_cost":  2, 
+				"conditional": func(gpc:Dictionary) -> Dictionary:
+					gpc[CONDITIONALS.TYPE.UPGRADE_LEVEL] += 1
+					return gpc,
 			},
 			{
-				"name": "UPGRADE FACILITIES (LVL 3)",
+				"name": "UPGRADE ++",
 				"available_at_lvl": 2, 
-				"ap_cost":  5, 
-				"effect": func(GameplayNode:Control) -> void:
-					pass,
-					#await GameplayNode.recruit_new_researcher(3),
-			}
+				"ap_cost":  3, 
+				"conditional": func(gpc:Dictionary) -> Dictionary:
+					gpc[CONDITIONALS.TYPE.UPGRADE_LEVEL] += 1
+					return gpc,
+			},
 		],	
 	# ------------------------------------------
 
@@ -405,17 +403,13 @@ var CONSTRUCTION_YARD:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/construction_yard.jpg",
 	"description": "Enables base development.",
-	"can_contain": false,
-	
-	"prerequisites": [
-		ROOM.TYPE.HQ
-	],	
-		
+
 	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -423,7 +417,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 		return [
 			{
 				"name": "ABILITY X",
-				"available_at_lvl": 0, 
+				"available_at_lvl": 1, 
 				"ap_cost":  1, 
 				"effect": func(GameplayNode:Control) -> void:
 					pass,
@@ -477,22 +471,21 @@ var BARRICKS:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/barricks.jpg",
 	"description": "Houses security forces.",
-	"can_contain": false,
-	"requires_unlock": false,
+
+	# ------------------------------------------
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
+	# ------------------------------------------
 	
-	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
-	# ------------------------------------------
-		
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
 			{
 				"name": "TRAIN (INCREASE READINESS)",
-				"available_at_lvl": 0, 
+				"available_at_lvl": 1, 
 				"ap_cost":  1, 
 				"effect": func() -> Dictionary:
 					return {
@@ -503,7 +496,7 @@ var BARRICKS:Dictionary = {
 			},
 			{
 				"name": "TRAIN (INCREASE SAFETY)",
-				"available_at_lvl": 0, 
+				"available_at_lvl": 2, 
 				"ap_cost":  2, 
 				"effect": func() -> Dictionary:
 					return {
@@ -514,7 +507,7 @@ var BARRICKS:Dictionary = {
 			},
 			{
 				"name": "TRAIN (INCREASE MORALE)",
-				"available_at_lvl": 0, 
+				"available_at_lvl": 3, 
 				"ap_cost":  3, 
 				"effect": func() -> Dictionary:
 					return {
@@ -575,14 +568,13 @@ var DORMITORY:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses facility staff.",
-	"can_contain": false,
-	"requires_unlock": false,
-		
+	
 	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -599,7 +591,7 @@ var DORMITORY:Dictionary = {
 			},
 			{
 				"name": "HOUSE 20",
-				"available_at_lvl": 0, 
+				"available_at_lvl": 1, 
 				"ap_cost":  2, 
 				"capacity": func() -> Dictionary:
 					return {
@@ -608,7 +600,7 @@ var DORMITORY:Dictionary = {
 			},
 			{
 				"name": "HOUSE 30",
-				"available_at_lvl": 0, 
+				"available_at_lvl": 2, 
 				"ap_cost":  3, 
 				"capacity": func() -> Dictionary:
 					return {
@@ -663,24 +655,14 @@ var HOLDING_CELLS:Dictionary = {
 	"tier": TIER.VAL.TWO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Houses D-class personel.",
-	"can_contain": false,
 	
-	"prerequisites": [
-		ROOM.TYPE.HQ
-	],		
-	
-	"placement_restrictions": {
-		"floor": [
-			ROOM.PLACEMENT.SURFACE
-		],
-		"ring": [
-			ROOM.PLACEMENT.RING_A
-		]
-	},
-	"own_limit": func() -> int:
-		return 10,	
-	"get_build_time": func() -> int:
-		return 3,
+	# ------------------------------------------
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -727,14 +709,13 @@ var HR_DEPARTMENT:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Enables recruitment of key staff.",
-	"can_contain": false,
-	"requires_unlock": false,
-		
+	
 	# ------------------------------------------
-	"own_limit": func() -> int:
-		return 1,
-	"get_build_time": func() -> int:
-		return 1,
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -747,23 +728,23 @@ var HR_DEPARTMENT:Dictionary = {
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.STAFF, 10),
 			},
-			{
-				"name": "FIRE STAFF",
-				"available_at_lvl": 0, 
-				"ap_cost":  7, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.fire_personel(RESOURCE.TYPE.STAFF, 10),
-			},			
+			#{
+				#"name": "FIRE STAFF",
+				#"available_at_lvl": 0, 
+				#"ap_cost":  7, 
+				#"effect": func(GameplayNode:Control) -> bool:
+					#return await GameplayNode.fire_personel(RESOURCE.TYPE.STAFF, 10),
+			#},			
 			{
 				"name": "HIRE SECURITY",
-				"available_at_lvl": 0, 
+				"available_at_lvl": 1, 
 				"ap_cost":  7, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.SECURITY, 10),
 			},
 			{
 				"name": "HIRE TECHNICANS",
-				"available_at_lvl": 1, 
+				"available_at_lvl": 2, 
 				"ap_cost":  7, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.TECHNICIANS, 10),
@@ -808,19 +789,14 @@ var HUME_DETECTOR:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Makes hume levels visible.",
-	"can_contain": false,
 	
-	"prerequisites": [
-		
-	],		
-	
-	"placement_restrictions": {
-
-	},
-	"own_limit": func() -> int:
-		return 4,	
-	"get_build_time": func() -> int:
-		return 3,
+	# ------------------------------------------
+	"can_contain": true,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -858,21 +834,14 @@ var STANDARD_LOCKER:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
 	"description": "A basic room with a high security lock.",
+	
+	# ------------------------------------------
 	"can_contain": true,
-	
-	"prerequisites": [
-		ROOM.TYPE.HQ
-	],		
-	"placement_restrictions": {
-		"floor": [
-			ROOM.PLACEMENT.SURFACE
-		],
-	},
-	"own_limit": func() -> int:
-		return 10,	
-	"get_build_time": func() -> int:
-		return 1,
-	
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -1131,7 +1100,7 @@ func owns_and_is_active(ref:ROOM.TYPE) -> bool:
 	if filter.size() == 0:
 		return false
 	var room_extract:Dictionary = extract_room_details(filter[0].location)
-	return room_extract.is_room_active
+	return room_extract.is_activated
 # ------------------------------------------------------------------------------	
 
 ## ------------------------------------------------------------------------------
@@ -1151,11 +1120,16 @@ func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
 func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
 	var filter:Callable = func(list:Array) -> Array:
-		return list.filter(func(i): 
-			if "requires_unlock" not in i.details:
-				return true
-			return true if !i.details.requires_unlock else i.ref in shop_unlock_purchases
-		)
+		# once base is setup, should return all unlocked
+		if gameplay_conditionals[CONDITIONALS.TYPE.BASE_IS_SETUP]:	
+			return list.filter(func(i): 
+				if "requires_unlock" not in i.details:
+					return true
+				return true if !i.details.requires_unlock else i.ref in shop_unlock_purchases
+			)
+		# else, just the directors office and hq
+		else:
+			return list.filter(func(i): return i.ref in [ROOM.TYPE.DIRECTORS_OFFICE, ROOM.TYPE.HQ])
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------	
 
@@ -1184,13 +1158,13 @@ func has_prerequisites(ref:ROOM.TYPE, arr:Array) -> bool:
 # ------------------------------------------------------------------------------
 func at_own_limit(ref:ROOM.TYPE) -> bool:
 	var room_data:Dictionary = return_data(ref)
-	if "own_limit" not in room_data or room_data.own_limit.call() == -1:
+	if "own_limit" not in room_data or room_data.own_limit == -1:
 		return false
 	var owned_count:int = purchased_facility_arr.filter(func(i): return i.ref == ref).size()
 	var in_progress_count:int = timeline_array.filter(func(i): return i.ref == ref and i.action == ACTION.AQ.BUILD_ITEM).size()
 	var total_count:int = owned_count + in_progress_count
 	
-	return total_count >= room_data.own_limit.call()
+	return total_count >= room_data.own_limit
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -1212,6 +1186,8 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var is_activated:bool = false if is_room_empty else room_base_state.is_activated 
 	var can_activate:bool = false if is_room_empty else (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref), resources_data) if !is_activated else false)
 	var can_contain:bool = false if is_room_empty else room_details.can_contain
+	var can_destroy:bool = false if is_room_empty else room_details.can_destroy
+	var ap_diff_amount:int = 1 if is_activated else 0
 	var passive_abilities:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
 	var passives_enabled:Array = [] if is_room_empty else room_base_state.passives_enabled
 	
@@ -1228,7 +1204,6 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
-	var ap_diff_amount:int = 1 if is_activated else 0
 
 	# tracks 
 	var resource_details:Dictionary = {
@@ -1443,7 +1418,6 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		if index in passives_enabled:
 			ap_diff_amount -= ability.ap_cost
 
-
 	return {
 		"floor": floor_data,
 		"wing": wing_data,
@@ -1452,7 +1426,10 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		"is_hq": room_details.ref == ROOM.TYPE.HQ if !room_details.is_empty() else false,
 		"is_room_empty": room_details.is_empty(),
 		"is_room_under_construction": is_room_under_construction,
-		"is_room_active": is_activated,
+		"is_activated": is_activated,
+		"can_activate": can_activate,
+		"can_contain": can_contain,
+		"can_destroy": can_destroy,
 		"room_category": ROOM.CATEGORY.CONTAINMENT_CELL if (!room_details.is_empty() and room_details.can_contain) else ROOM.CATEGORY.FACILITY,
 		# ------		
 		"is_scp_empty": is_scp_empty,
@@ -1467,10 +1444,8 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
 			"abilities": room_details.abilities.call() if "abilities" in room_details else [],
 			"passive_abilities": room_details.passive_abilities.call() if "passive_abilities" in room_details else [],
-			"passives_enabled": passives_enabled,
-			"can_contain": can_contain,		
-			"is_activated": is_activated,
-			"can_activate": can_activate,
+			"passives_enabled": passives_enabled,			
+			
 			# current amount
 			"ap": 0 if room_base_state.is_empty() else room_base_state.ap,
 			# charge rate

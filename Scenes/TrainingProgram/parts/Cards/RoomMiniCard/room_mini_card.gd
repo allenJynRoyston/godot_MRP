@@ -8,7 +8,7 @@ extends PanelContainer
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
-var is_room_active:bool
+var is_activated:bool
 var is_room_under_construction:bool 
 
 var ref:int = -1 : 
@@ -42,8 +42,8 @@ func on_ref_update() -> void:
 	details = ROOM_UTIL.return_data(ref)
 	
 	var operating_costs:Array = ROOM_UTIL.return_operating_cost(ref)	
-	var resource_list:Array = operating_costs.filter(func(i):return i.type == "amount") if is_room_active and !is_room_under_construction else []
-	var metric_list:Array = operating_costs.filter(func(i):return i.type == "metrics") if is_room_active and !is_room_under_construction else []
+	var resource_list:Array = operating_costs.filter(func(i):return i.type == "amount") if is_activated and !is_room_under_construction else []
+	var metric_list:Array = operating_costs.filter(func(i):return i.type == "metrics") if is_activated and !is_room_under_construction else []
 	
 	ResourceGrid.columns = U.min_max(resource_list.size(), 1, 2)
 	

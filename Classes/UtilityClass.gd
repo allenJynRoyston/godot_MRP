@@ -6,6 +6,7 @@ var scp_data:Dictionary
 var progress_data:Dictionary
 var camera_settings:Dictionary
 var current_location:Dictionary
+var gameplay_conditionals:Dictionary
 var base_states:Dictionary
 var resources_data:Dictionary 
 var shop_unlock_purchases:Array 
@@ -17,6 +18,7 @@ var purchased_research_arr:Array
 var bookmarked_rooms:Array 
 var unavailable_rooms:Array 
 var hired_lead_researchers_arr:Array	
+
 
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_progress_data(self)
@@ -32,6 +34,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)	
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
+	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
@@ -47,6 +50,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
+	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
 	
 
 func on_resources_data_update(new_val:Dictionary) -> void:
@@ -84,7 +88,9 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 	
 func on_purchased_base_arr_update(new_val:Array) -> void:
 	purchased_base_arr = new_val	
-	
+
+func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+	gameplay_conditionals = new_val
 	
 func on_purchased_facility_arr_update(new_val:Array) -> void:
 	purchased_facility_arr = new_val

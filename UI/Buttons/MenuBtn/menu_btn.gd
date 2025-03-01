@@ -8,7 +8,7 @@ extends BtnBase
 @onready var CostLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer/CostLabel 
 @onready var IconBtn:Control = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/IconBtn
 @onready var BtnLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/BtnLabel
-@onready var Checkbox:BtnBase = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CheckBox
+@onready var Checkbox:BtnBase = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer/CheckBox
 
 @export var title:String = "" : 
 	set(val): 

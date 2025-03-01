@@ -1,10 +1,16 @@
 extends Control
 
-@onready var HeaderLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderLabel
 @onready var List:VBoxContainer = $MarginContainer/VBoxContainer/List
-@onready var ApContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/ApContainer
-@onready var ApLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApLabel
-@onready var ApDiffLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApDiffLabel
+@onready var ApContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer
+@onready var ApLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApLabel
+@onready var ApDiffLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApDiffLabel
+
+@onready var ApChargeContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer
+@onready var ApChargeLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer/MarginContainer/VBoxContainer/HBoxContainer/ApChargeLabel
+
+@onready var LevelLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer/LevelLabel
+@onready var HeaderLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer/HBoxContainer/HeaderLabel
+
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
 
@@ -17,17 +23,26 @@ var show_ap:bool = false :
 	set(val):
 		show_ap = val
 		on_show_ap_update()
+		
+var show_ap_charge:bool = false : 
+	set(val):
+		show_ap_charge = val
+		on_show_ap_charge_update()		
+
+var level:int = -1 : 
+	set(val):
+		level = val
+		on_level_update()
 
 var ap_val:int = 0 : 
 	set(val):
 		ap_val = val
 		on_ap_val_update()
 
-var ap_diff_val:int = 0 : 
+var ap_charge_val:int = 0 : 
 	set(val):
-		ap_diff_val = val
-		on_ap_diff_val_update()
-
+		ap_charge_val = val
+		on_ap_charge_val_update()
 
 var selected_index:int = 0 : 
 	set(val):
@@ -64,10 +79,12 @@ func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	on_options_list_update()
 	on_header_update()
-	on_use_color_update()
-	on_show_ap_update()
+	on_use_color_update()	
 	on_ap_val_update()
-	on_ap_diff_val_update()
+	on_ap_charge_val_update()
+	on_show_ap_update()
+	on_show_ap_charge_update()
+	on_level_update()
 	
 func open() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
@@ -76,7 +93,12 @@ func close() -> void:
 	freeze_inputs = true
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0))	
 	onClose.call()	
+	show_ap = false
+	show_ap_charge = false
+	ap_charge_val = 0
+	ap_val = 0
 	selected_index = 0	
+	level = -1
 	options_list = []
 	clear_list()
 # ------------------------------------------------------------------------------
@@ -137,16 +159,25 @@ func on_ap_val_update() -> void:
 	if !is_node_ready():return
 	ApLabel.text = str(ap_val)
 
-func on_ap_diff_val_update() -> void:
+func on_ap_charge_val_update() -> void:
 	if !is_node_ready():return
 	var label_settings:LabelSettings = ApDiffLabel.label_settings
-	label_settings.font_color = Color.GREEN if ap_diff_val > 0 else (Color.ORANGE if ap_diff_val == 0 else Color.RED)
+	label_settings.font_color = Color.GREEN if ap_charge_val > 0 else (Color.ORANGE if ap_charge_val == 0 else Color.RED)
 	ApDiffLabel.label_settings = label_settings
-	ApDiffLabel.text = "%s%s" % ["+" if ap_diff_val > 0 else "", ap_diff_val]
-			
+	ApDiffLabel.text = "%s%s" % ["+" if ap_charge_val > 0 else "", ap_charge_val]
+	ApChargeLabel.text = "%s%s" % ["" if ap_charge_val > 0 else "", ap_charge_val]
+	
+func on_level_update() -> void:
+	if !is_node_ready():return	
+	LevelLabel.text = "%s" % ["LVL %s" % [level] if level != -1  else ""]
+	
 func on_show_ap_update() -> void:
 	if !is_node_ready():return
 	ApContainer.show() if show_ap else ApContainer.hide()
+	
+func on_show_ap_charge_update() -> void:
+	if !is_node_ready():return
+	ApChargeContainer.show() if show_ap_charge else ApChargeContainer.hide()
 	
 func on_header_update() -> void:
 	if !is_node_ready():return

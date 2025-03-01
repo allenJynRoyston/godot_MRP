@@ -505,7 +505,7 @@ func get_details_from_extract(location:Dictionary) -> Dictionary:
 			"room": {
 				"is_empty": room_extract.room.is_empty(),
 				"ref": -1 if room_extract.room.is_empty() else room_extract.room.details.ref,	
-				"is_activated": false if room_extract.room.is_empty() else room_extract.room.is_activated, 
+				"is_activated": false if room_extract.room.is_empty() else room_extract.is_activated, 
 			},
 			"scp": {
 				"is_empty": room_extract.scp.is_empty(),

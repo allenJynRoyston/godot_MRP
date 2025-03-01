@@ -130,7 +130,7 @@ func update_details_panel() -> void:
 		ImageContainer.show()
 		ProfileImage.material = null
 		
-		if !room_extract.is_room_active:
+		if !room_extract.is_activated:
 			StatusTag.show()
 			StatusLabel.text = "INACTIVE"
 			ResourceDiffContainer.hide()
