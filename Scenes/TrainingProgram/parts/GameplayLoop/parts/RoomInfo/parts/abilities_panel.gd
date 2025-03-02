@@ -45,6 +45,7 @@ func on_extract_data_update() -> void:
 		if upgrade_level >= ability.available_at_lvl:
 			var new_btn:Control = TextBtnPreload.instantiate()
 			new_btn.is_hoverable = false
+			new_btn.panel_color = Color.TRANSPARENT
 			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			new_btn.title = ability.name if ability.name.length() <= str_len else str(ability.name.substr(0, str_len), "...")
 			new_btn.is_disabled = ap < ability.ap_cost
@@ -56,6 +57,7 @@ func on_extract_data_update() -> void:
 		if upgrade_level >= ability.available_at_lvl:
 			var new_btn:Control = TextBtnPreload.instantiate()
 			new_btn.is_hoverable = false
+			new_btn.panel_color = Color.TRANSPARENT
 			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			new_btn.title = ability.name if ability.name.length() <= str_len else str(ability.name.substr(0, 20), "...")
 			new_btn.is_disabled = ability.available_at_lvl < upgrade_level

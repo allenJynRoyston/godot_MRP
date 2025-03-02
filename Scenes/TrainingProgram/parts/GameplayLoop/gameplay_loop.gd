@@ -347,10 +347,15 @@ var initial_values:Dictionary = {
 			CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP: false,
 			# enables the "upgrade" ability in rooms
 			CONDITIONALS.TYPE.ENABLE_UPGRADES: false,
+			# enables btns in action menu
+			CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN: false,
+			CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN: false,
+			CONDITIONALS.TYPE.ENABLE_DATABASE_BTN: false,
+			
 			# enables the "scp btn" in the action menu
 			CONDITIONALS.TYPE.UPGRADE_LEVEL: -1,
 			# enables the "scp btn" in the action menu
-			CONDITIONALS.TYPE.AP_ROOM_LIMIT: 10,			
+			CONDITIONALS.TYPE.AP_ROOM_LIMIT: 10,
 		},
 	# ----------------------------------
 	"timeline_array": func() -> Array:
@@ -2745,7 +2750,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if no_save else restore_data.progress_data
 	SUBSCRIBE.scp_data = initial_values.scp_data.call() if no_save else restore_data.scp_data
 	SUBSCRIBE.timeline_array = initial_values.timeline_array.call() if no_save else restore_data.timeline_array
-	SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() if no_save else restore_data.gameplay_conditionals	
+	SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() #if no_save else restore_data.gameplay_conditionals	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if no_save else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if no_save else restore_data.purchased_base_arr
 	SUBSCRIBE.resources_data = initial_values.resources_data.call() if no_save else restore_data.resources_data	

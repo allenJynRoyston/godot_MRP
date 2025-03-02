@@ -48,9 +48,24 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
+debug_mode = null
+skip_progress_screen = null
+show_structures = null
+show_timeline = null
+show_actions = null
 show_objectives = true
+show_metrics = null
+show_dialogue = null
+show_store = null
+show_build = null
+show_recruit = null
 show_reseachers = true
+show_containment_status = null
+show_confirm_modal = null
 show_resources = true
+show_events = null
+show_build_complete = null
+show_end_of_phase = null
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2

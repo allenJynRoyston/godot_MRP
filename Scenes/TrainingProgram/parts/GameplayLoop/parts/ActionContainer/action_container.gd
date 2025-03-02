@@ -882,33 +882,36 @@ func buildout_btns() -> void:
 						#ActiveMenu.freeze_inputs = false
 						#show_details(),			
 			
-			new_right_btn_list.push_back({
-				"title": "DATABASE",
-				"assigned_key": "-",
-				"icon": SVGS.TYPE.CONVERSATION,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-						await GameplayNode.open_scp_database()
-			})				
-						
-			new_right_btn_list.push_back({
-				"title": "OBJECTIVES",
-				"assigned_key": "O",
-				"icon": SVGS.TYPE.TXT_FILE,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-						pass
-			})				
+			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_DATABASE_BTN]:
+				new_right_btn_list.push_back({
+					"title": "DATABASE",
+					"assigned_key": "-",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"onClick": func() -> void:
+						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+							await GameplayNode.open_scp_database()
+				})				
 			
-			new_right_btn_list.push_back({
-				"title": "%s DETAILS" % ["HIDE" if GBL.find_node(REFS.ROOM_INFO).expand else "SHOW"],
-				"assigned_key": "SPACEBAR",
-				"icon": SVGS.TYPE.SETTINGS,
-				"onClick": func() -> void:
-					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-						GBL.find_node(REFS.ROOM_INFO).toggle_expand()
-						buildout_btns()
-			})	
+			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN]:
+				new_right_btn_list.push_back({
+					"title": "OBJECTIVES",
+					"assigned_key": "O",
+					"icon": SVGS.TYPE.TXT_FILE,
+					"onClick": func() -> void:
+						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+							pass
+				})				
+			
+			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN]:
+				new_right_btn_list.push_back({
+					"title": "%s DETAILS" % ["HIDE" if GBL.find_node(REFS.ROOM_INFO).expand else "SHOW"],
+					"assigned_key": "SPACEBAR",
+					"icon": SVGS.TYPE.SETTINGS,
+					"onClick": func() -> void:
+						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+							GBL.find_node(REFS.ROOM_INFO).toggle_expand()
+							buildout_btns()
+				})	
 						
 			new_right_btn_list.push_back({
 				"title": "GOTO FLOOR",

@@ -40,6 +40,7 @@ func on_list_update() -> void:
 	for item in list:
 		var btn_node:Control = TextBtnPreload.instantiate()
 		btn_node.is_hoverable = false
+		btn_node.panel_color = Color.TRANSPARENT
 		btn_node.title = "%s%s" % ["+" if item.amount > 0 else "", item.amount]
 		btn_node.icon = item.resource.icon
 		ResourceGrid.add_child(btn_node)

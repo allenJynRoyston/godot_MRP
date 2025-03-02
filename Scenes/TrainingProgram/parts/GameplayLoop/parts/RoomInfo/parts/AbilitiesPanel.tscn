@@ -7,7 +7,7 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_bbpax"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tud4s"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0, 0, 0, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -24,21 +24,21 @@ font_size = 8
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vuwv3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk6po"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kbejj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eixod"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1qhy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4ixr"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -97,14 +97,14 @@ layout_mode = 2
 
 [node name="TextBtn" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vuwv3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rk6po")
 icon = 14
 title = "ABILITY 1  (5)"
 
 [node name="TextBtn2" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kbejj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_eixod")
 icon = 1
 is_disabled = true
 title = "ABILITY 1  (5)"
@@ -112,7 +112,7 @@ title = "ABILITY 1  (5)"
 [node name="TextBtn3" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p1qhy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y4ixr")
 icon = 1
 is_disabled = true
 title = "ABILITY 1  (5)"

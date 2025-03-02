@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_x7eon"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lg55a"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0, 0, 0, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -16,21 +16,21 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8qqtx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqhfp"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sn6oo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_luosp"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jxc1p"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3pgtj"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -83,20 +83,20 @@ columns = 3
 [node name="TextBtn" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_8qqtx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gqhfp")
 icon = 30
 title = "5"
 
 [node name="TextBtn2" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_sn6oo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_luosp")
 icon = 31
 title = "5"
 
 [node name="TextBtn3" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_jxc1p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3pgtj")
 icon = 32
 title = "5"
