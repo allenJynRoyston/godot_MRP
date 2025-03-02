@@ -18,17 +18,17 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
+border_color = Color(0.641934, 0.641934, 0.641934, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_hpek8"]
+[sub_resource type="LabelSettings" id="LabelSettings_kci6w"]
 font = ExtResource("3_casfw")
 font_size = 8
-font_color = Color(0, 0, 0, 1)
 outline_size = 8
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_xiti1"]
 font = ExtResource("3_casfw")
@@ -71,34 +71,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="HeaderContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tpv5")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "LVL X"
-label_settings = SubResource("LabelSettings_hpek8")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "HEADER"
@@ -106,6 +79,40 @@ label_settings = ExtResource("2_1mtlm")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+
+[node name="LvlContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0tpv5")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "LVL"
+label_settings = SubResource("LabelSettings_kci6w")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="LvlLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "xx"
+label_settings = SubResource("LabelSettings_xiti1")
+horizontal_alignment = 1
 
 [node name="ApContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
@@ -127,7 +134,7 @@ alignment = 1
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "AP"
-label_settings = SubResource("LabelSettings_hpek8")
+label_settings = SubResource("LabelSettings_kci6w")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer"]
@@ -169,7 +176,7 @@ alignment = 1
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "APT"
-label_settings = SubResource("LabelSettings_hpek8")
+label_settings = SubResource("LabelSettings_kci6w")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer/MarginContainer/VBoxContainer"]

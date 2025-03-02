@@ -1,29 +1,36 @@
+@tool
 extends GameContainer
 
 @onready var MainPanel:PanelContainer = $Control/PanelContainer
 @onready var LocationPanel:Control = $MarginContainer/HBoxContainer/LocationPanel
+@onready var MainControlPanel:PanelContainer = $Control/PanelContainer
 
-@onready var ImageContainer:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails
-@onready var ProfileImage:TextureRect = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/SubViewport/ProfileImage
-@onready var RoomLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/MarginContainer2/HBoxContainer/RoomLabel
-@onready var ResearcherIconContainer:MarginContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/ResearcherIconContainers
-@onready var RIcon1:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/ResearcherIconContainers/ResearcherIcons/RIcon1
-@onready var RIcon2:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/ResearcherIconContainers/ResearcherIcons/RIcon2
-@onready var StatusTag:PanelContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/StatusContainer/StatusTag
-@onready var StatusLabel:Label = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetails/TextureRect/VBoxContainer/StatusContainer/StatusTag/MarginContainer/StatusLabel
+@onready var ExpandListContainer:VBoxContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer
+@onready var RoomDetailsPanel:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/RoomDetailsPanel
+@onready var StaffingPanel:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/StaffingPanel
+@onready var ResourcePanel:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ResourcePanel
+@onready var Abilities:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/Abilities
 
-@onready var ResourceDiffContainer:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/ResourceDiffContainer
-@onready var ResourceGrid:GridContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/StaffingContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid
-
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
-const StaticShader:ShaderMaterial = preload("res://Shader/Static.tres")
-
+var control_pos:Dictionary 
 var previous_location:Dictionary = {}
 var metrics_tween_pos_val:float = 0
 var panel_restore_pos:int
 var is_ready:bool = false
 
+@export var expand:bool = false : 
+	set(val):
+		expand = val
+		on_expand_update()
+
 # -----------------------------------------------
+func _init() -> void:
+	super._init()
+	GBL.register_node(REFS.ROOM_INFO, self)
+	
+func _exit_tree() -> void:
+	super._exit_tree()
+	GBL.unregister_node(REFS.ROOM_INFO)
+	
 func _ready() -> void:
 	super._ready()
 
@@ -34,11 +41,15 @@ func _ready() -> void:
 	is_ready = true
 	update_details_panel()
 	on_camera_settings_update()
+	
+	control_pos[MainControlPanel] = {"show": MainControlPanel.position.x, "hide": MainControlPanel.position.x - MainControlPanel.size.x}
+	print(control_pos)
 # -----------------------------------------------
 
 # -----------------------------------------------
 func on_is_showing_update() -> void:	
-	if !is_node_ready() or camera_settings.is_empty():return	
+	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return	
+	U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show if is_showing else control_pos[MainControlPanel].hide)
 # -----------------------------------------------	
 
 # --------------------------------------------------------
@@ -92,60 +103,29 @@ func merge_metric_data(arr:Array) -> Array:
 # -----------------------------------------------
 func update_details_panel() -> void:	
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or resources_data.is_empty():return
-	
-	for child in ResourceGrid.get_children():
-		child.queue_free()
-
-	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
-	for key in room_extract.resource_details.total:
-		var amount:int = room_extract.resource_details.total[key]
-		var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
-		var new_btn:Control = TextBtnPreload.instantiate()
-		new_btn.is_hoverable = false
-		new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		new_btn.icon = resource_details.icon
-		new_btn.title = "%s%s" % ["+" if amount > 0 else "", amount]
-		ResourceGrid.add_child(new_btn)
-	ResourceGrid.hide() if room_extract.resource_details.total.is_empty() else ResourceGrid.show()
-
-	if room_extract.is_room_empty:
-		if room_extract.is_room_under_construction:
-			StatusTag.show()
-			StatusLabel.text = "UNDER CONSTRUCTION"
-			RoomLabel.text = " %s " % [room_extract.room.details.shortname]
-			ImageContainer.show()
-			ResourceDiffContainer.hide()
-			ResearcherIconContainer.hide()
-			ProfileImage.material = null
-			ProfileImage.texture = CACHE.fetch_image(room_extract.room.details.img_src)
-		else:
-			StatusTag.hide()
-			RoomLabel.text = " NOTHING ASSIGNED " 
-			ProfileImage.material = StaticShader
-			ProfileImage.texture = CACHE.fetch_image("")
-			ResourceDiffContainer.hide()
-			ResearcherIconContainer.hide()
-	else:		
-		ResourceDiffContainer.hide() if room_extract.resource_details.total.is_empty() else ResourceDiffContainer.show()
-		RoomLabel.text = " %s " % [room_extract.room.details.shortname]
-		ProfileImage.texture = CACHE.fetch_image(room_extract.room.details.img_src)
-		ImageContainer.show()
-		ProfileImage.material = null
-		
-		if !room_extract.is_activated:
-			StatusTag.show()
-			StatusLabel.text = "INACTIVE"
-			ResourceDiffContainer.hide()
-		else:
-			StatusTag.hide()
-			
-			
-		
-	#ScpLabel.text = "" if room_extract.is_scp_empty else room_extract.scp.details.name
-	#ScpContainer.hide() if room_extract.is_scp_empty else ScpContainer.show()
+	var extract_data:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+	var is_room_empty:bool = extract_data.is_room_empty
+	var is_activated:bool = extract_data.is_activated
 	
 
-	RIcon1.static_color = Color.WHITE if room_extract.researchers.size()>= 1 else Color.RED
-	RIcon2.static_color = Color.WHITE if room_extract.researchers.size()>= 2 else Color.RED
+	RoomDetailsPanel.extract_data = extract_data	
+	Abilities.extract_data = extract_data
 	
+	StaffingPanel.list = [] if is_room_empty else ROOM_UTIL.return_activation_cost(extract_data.room.details.ref)
+	ResourcePanel.list = extract_data.resources_as_list
+	
+	StaffingPanel.show() if is_activated else StaffingPanel.hide()
+	Abilities.show() if is_activated else Abilities.hide()
+# -----------------------------------------------
+
+# -----------------------------------------------
+func on_expand_update() -> void:
+	if !is_node_ready():return
+	var current_val:float = ExpandListContainer.get('theme_override_constants/separation')
+	await U.tween_range(current_val, 10 if expand else -45, 0.2, func(val:float) -> void:
+		ExpandListContainer.set("theme_override_constants/separation", val)
+	).finished  
+
+func toggle_expand() -> void:
+	expand = !expand
 # -----------------------------------------------

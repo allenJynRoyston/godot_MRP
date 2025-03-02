@@ -20,11 +20,10 @@ script = ExtResource("1_j6re1")
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 10
 
 [node name="LocationPanel" parent="MarginContainer" instance=ExtResource("2_wcahk")]
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="Control" type="Control" parent="."]
@@ -36,7 +35,7 @@ offset_top = 25.0
 offset_right = 250.0
 offset_bottom = 229.0
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer"]
 layout_mode = 2

@@ -2,10 +2,11 @@
 extends PanelContainer
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var IconBtn:BtnBase = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/IconBtn
+@onready var IconBtn:BtnBase = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/IconBtn
+@onready var IconBtn2:BtnBase = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/IconBtn2
 @onready var TitleHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/TitleHeader
-@onready var TotalAmount:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/TotalAmount
-@onready var ContextAmount:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/ContextAmount
+@onready var TotalAmount:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/HBoxContainer/TotalAmount
+@onready var ContextAmount:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/HBoxContainer/ContextAmount
 @onready var StatusLabel:Label = $VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/StatusLabel
 
 @export var assigned_metric:RESOURCE.BASE_METRICS : 
@@ -92,6 +93,7 @@ func on_status_update() -> void:
 func on_is_active_update() -> void:
 	if !is_node_ready():return
 	IconBtn.show() if is_active else IconBtn.hide()
+	IconBtn2.show() if is_active else IconBtn2.hide()
 
 func on_context_value_update() -> void:
 	if !is_node_ready():return

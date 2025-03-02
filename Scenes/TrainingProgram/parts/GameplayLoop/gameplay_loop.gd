@@ -58,7 +58,7 @@ enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
 enum SUMMARY_STEPS {RESET, START, DISMISS}
 enum RESEARCHERS_STEPS {RESET, DETAILS_ONLY, ASSIGN}
 enum EVENT_STEPS {RESET, START}
-enum SELECT_SCP_STEPS { RESET, START }
+enum SELECT_SCP_STEPS { RESET, START, DATABASE }
 enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
@@ -1329,11 +1329,12 @@ func activate_room(from_location:Dictionary, room_ref:int, skip_prompt:bool = fa
 	# first, check if you have enough resources to activate room
 	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
 	var can_activate:bool = extract_details.can_activate
-
+	var activation_requirements:Array = ROOM_UTIL.return_activation_cost(extract_details.room.details.ref)
 	# --------------
 	if !can_activate:
 		# does not have enough to activate
 		ConfirmModal.confirm_only = true
+		ConfirmModal.activation_requirements = activation_requirements
 		ConfirmModal.set_props("You don't have enough personel to staff this room.")
 		await show_only([ConfirmModal, Structure3dContainer])	
 		await ConfirmModal.user_response
@@ -1550,6 +1551,12 @@ func add_timeline_item(dict:Dictionary, props:Dictionary = {}) -> void:
 
 # ------------------------------------------------------------------------------	
 #region SCP FUNCS (assign/unassign/dismiss, etc)
+# -----------------------------------
+func open_scp_database() -> bool:
+	current_select_scp_step = SELECT_SCP_STEPS.DATABASE
+	return await on_scp_select_complete		
+# -----------------------------------
+	
 # -----------------------------------
 func get_new_scp() -> bool:
 	current_select_scp_step = SELECT_SCP_STEPS.START
@@ -2554,17 +2561,29 @@ func on_current_select_scp_step_update() -> void:
 		# ------------------------
 		SELECT_SCP_STEPS.START:
 			SUBSCRIBE.suppress_click = true
+			capture_current_showing_state()
 			await show_only([SCPSelectScreen])
+			
 			SCPSelectScreen.start([0, 1])
 			var response:bool = await SCPSelectScreen.user_response
-			SCPSelectScreen.is_showing = false
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			
+			await restore_showing_state()	
 			# trigger signal
-			print(response)
 			on_scp_select_complete.emit(response)
 			current_select_scp_step = SELECT_SCP_STEPS.RESET
-
+		# ------------------------
+		SELECT_SCP_STEPS.DATABASE:			
+			SUBSCRIBE.suppress_click = true
+			capture_current_showing_state()
+			await show_only([SCPSelectScreen])
+			
+			SCPSelectScreen.start_database()
+			var response:bool = await SCPSelectScreen.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			await restore_showing_state()	
+			# trigger signal
+			on_scp_select_complete.emit(response)
+			current_select_scp_step = SELECT_SCP_STEPS.RESET
 #endregion
 # ------------------------------------------------------------------------------	
 

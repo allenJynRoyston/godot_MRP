@@ -12,6 +12,11 @@ extends MouseInteractions
 		icon = val
 		on_icon_update()
 
+@export var no_bg:bool = false : 
+	set(val):
+		no_bg = val
+		on_no_bg_update()
+
 @export var header:String = "" : 
 	set(val):
 		header = val
@@ -64,17 +69,20 @@ func on_display_at_bottom_update() -> void:
 
 func on_is_negative_update() -> void:
 	if !is_node_ready():return
-	var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	dupe_stylebox.bg_color = Color(1, 0.204, 0) if is_negative else Color(0, 0.529, 0.278)
-	RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)	
+	#var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
+	#dupe_stylebox.bg_color = Color(1, 0.204, 0) if is_negative else Color(0, 0.529, 0.278)
+	#RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)	
+	
+func on_no_bg_update() -> void:
+	pass
 # --------------------------------------
 
 # --------------------------------------	
 func on_focus(state:bool = false) -> void:
 	if !is_node_ready():return
-	var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	dupe_stylebox.border_color = Color.BLACK if !state else Color.WHITE
-	RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)
+	#var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
+	#dupe_stylebox.border_color = Color.BLACK if !state else Color.WHITE
+	#RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)
 		
 	if state:
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)

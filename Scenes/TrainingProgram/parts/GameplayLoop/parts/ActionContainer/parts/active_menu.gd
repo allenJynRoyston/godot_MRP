@@ -1,6 +1,9 @@
 extends Control
 
 @onready var List:VBoxContainer = $MarginContainer/VBoxContainer/List
+@onready var HeaderLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderLabel
+
+@onready var ApPanel:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer
 @onready var ApContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer
 @onready var ApLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApLabel
 @onready var ApDiffLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApDiffLabel
@@ -8,8 +11,8 @@ extends Control
 @onready var ApChargeContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer
 @onready var ApChargeLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer/MarginContainer/VBoxContainer/HBoxContainer/ApChargeLabel
 
-@onready var LevelLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer/LevelLabel
-@onready var HeaderLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderContainer/MarginContainer/VBoxContainer/HBoxContainer/HeaderLabel
+@onready var LevelContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer
+@onready var LevelLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer/HBoxContainer/LvlLabel
 
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
@@ -169,16 +172,22 @@ func on_ap_charge_val_update() -> void:
 	
 func on_level_update() -> void:
 	if !is_node_ready():return	
-	LevelLabel.text = "%s" % ["LVL %s" % [level] if level != -1  else ""]
+	LevelLabel.text = "%s" % ["%s" % [level] if level != -1  else ""]
 	
 func on_show_ap_update() -> void:
 	if !is_node_ready():return
 	ApContainer.show() if show_ap else ApContainer.hide()
+	check_ap_panel()
 	
 func on_show_ap_charge_update() -> void:
 	if !is_node_ready():return
 	ApChargeContainer.show() if show_ap_charge else ApChargeContainer.hide()
+	check_ap_panel()
 	
+func check_ap_panel() -> void:
+	ApPanel.hide() if (!show_ap_charge and !show_ap) else ApPanel.show()	
+	LevelContainer.hide() if (!show_ap_charge and !show_ap) else LevelContainer.show()	
+
 func on_header_update() -> void:
 	if !is_node_ready():return
 	HeaderLabel.text = header

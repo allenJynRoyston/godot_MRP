@@ -33,7 +33,7 @@ outline_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f38df"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o7hwv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ff2ym"]
 bg_color = Color(1, 0.203922, 0, 1)
 border_width_left = 2
 border_width_top = 2
@@ -45,7 +45,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gcjci"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5p346"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -57,7 +57,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bgbs6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2i6mb"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -109,19 +109,21 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_c1qk5")
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = -3
+theme_override_constants/margin_top = -7
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 30
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 15
 
 [node name="StatusLabel" type="Label" parent="ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 text = "STATUS GOES HERE"
 label_settings = SubResource("LabelSettings_8s2t1")
 horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="TitleLabel" type="Label" parent="ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -202,7 +204,7 @@ size_flags_vertical = 8
 
 [node name="SkipBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_o7hwv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ff2ym")
 title = "SKIP"
 assigned_key = "B"
 icon = 1
@@ -210,7 +212,7 @@ panel_color = Color(1, 0.203922, 0, 1)
 
 [node name="ActivateBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gcjci")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5p346")
 title = "ACTIVATE"
 assigned_key = "E"
 icon = 31
@@ -219,7 +221,7 @@ panel_color = Color(0.455201, 0.00200917, 0.712752, 1)
 [node name="NextOrCloseBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("5_q0c1y")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bgbs6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2i6mb")
 title = "NEXT"
 assigned_key = "E"
 icon = 27

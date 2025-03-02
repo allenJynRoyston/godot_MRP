@@ -1,18 +1,18 @@
 extends GameContainer
 
-@onready var MainPanel:MarginContainer = $Control2/MarginContainer
-@onready var DayLabel:Label = $Control2/MarginContainer/HBoxContainer2/Status/MarginContainer/PanelContainer/HBoxContainer/VBoxContainer2/DayLabel
+@onready var MainPanel:PanelContainer = $Control2/PanelContainer
 
-@onready var ResourceItemMoney:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
-@onready var ResourceItemEnergy:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
-@onready var ResourceItemScience:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemScience
+@onready var ResourceItemMoney:Control = $Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
+@onready var ResourceItemEnergy:Control = $Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
+@onready var ResourceItemScience:Control = $Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemScience
 
-@onready var ResourceItemStaff:Control =  $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
-@onready var ResourceItemSecurity:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
-@onready var ResourceItemDClass:Control = $Control2/MarginContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
+@onready var ResourceItemStaff:Control =  $Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
+@onready var ResourceItemSecurity:Control = $Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
+@onready var ResourceItemDClass:Control = $Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
 
 @onready var DetailPanel:Control = $Control/DetailPanel
 
+var control_pos:Dictionary
 var detail_panel_is_focused:bool = false
 var detail_panel_is_busy:bool = false
 var show_details:bool = false : 
@@ -24,7 +24,7 @@ var show_details:bool = false :
 func _ready() -> void:
 	super._ready()
 	on_show_details_update()
-
+	
 	DetailPanel.onFocus = func() -> void:
 		detail_panel_is_focused = true
 	
@@ -62,28 +62,24 @@ func _ready() -> void:
 			if !detail_panel_is_focused and DetailPanel.is_visible_in_tree():
 				DetailPanel.hide()
 				show_details = false
+				
+	await U.set_timeout(1.0)
+	control_pos[MainPanel] = {"show": MainPanel.position.y, "hide": MainPanel.position.y - MainPanel.size.y - 20}
+
 # --------------------------------------------------------------------------------------------------
 
 # -----------------------------------------------
 func on_is_showing_update() -> void:	
 	super.on_is_showing_update()
-	U.tween_node_property(MainPanel, "position:y", 0 if is_showing else -MainPanel.size.y, 0.7)
+	if !is_node_ready() or control_pos.is_empty():return
+	print(control_pos)
+	U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, 0.7)
 # -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func on_show_details_update() -> void:
 	pass
-	#var AQNode:Control = GBL.find_node(REFS.ACTION_QUEUE_CONTAINER)
-	#await U.tick()
-	#AQNode.add_theme_constant_override("margin_top", MainPanel.global_position.y + MainPanel.size.y)	
 # --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------		
-func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
-	progress_data = new_val
-	if !is_node_ready():return
-	DayLabel.text = "DAY %s" % [progress_data.day]
-# --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------
 func open_detail_panel(node:Control) -> void:

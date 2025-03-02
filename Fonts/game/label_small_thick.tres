@@ -1,0 +1,9 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://nrxe2mbka1e4"]
+
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="1_fdb0p"]
+
+[resource]
+font = ExtResource("1_fdb0p")
+font_size = 8
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)

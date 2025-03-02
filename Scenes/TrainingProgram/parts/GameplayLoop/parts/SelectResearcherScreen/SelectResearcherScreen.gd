@@ -268,6 +268,8 @@ func on_current_mode_update() -> void:
 			U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide, 0)
 		# ---------------------
 		MODE.SELECT_RESEARCHERS:
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1))
+			
 			for btn in [SelectResearcher, ConfirmResearchers]:
 				btn.is_disabled = false
 

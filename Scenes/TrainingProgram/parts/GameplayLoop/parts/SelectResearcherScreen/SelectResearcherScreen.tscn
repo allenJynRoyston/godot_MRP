@@ -1,7 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://dbghsxudvxi5i"]
+[gd_scene load_steps=19 format=3 uid="uid://dbghsxudvxi5i"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.gd" id="1_46ons"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_7k740"]
+[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_tgxgy"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_xvjka"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_2l2gt"]
 [ext_resource type="PackedScene" uid="uid://d1melr1fetrom" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn" id="5_jtc7n"]
@@ -13,7 +14,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1c61"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m5yig"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yslqg"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -25,7 +26,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1ik5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hd8mb"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -37,7 +38,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jnftp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jlsg8"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -49,7 +50,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dip4d"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d3sg2"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -66,7 +67,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_rdsf8"]
 color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_edb2p"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4i6ts"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
 border_width_left = 2
 border_width_top = 2
@@ -78,7 +79,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5uv7s"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hs1xl"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
 border_width_left = 2
 border_width_top = 2
@@ -90,7 +91,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xmvk3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1v45f"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
 border_width_left = 2
 border_width_top = 2
@@ -112,8 +113,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_y7xi8")
 script = ExtResource("1_46ons")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
+material = ExtResource("2_tgxgy")
 layout_mode = 2
-color = Color(0.52, 0.0866667, 0, 0.603922)
+color = Color(0.158472, 0.158472, 0.158472, 0.333333)
 
 [node name="ResearcherControl" type="Control" parent="."]
 layout_mode = 2
@@ -195,7 +197,7 @@ custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_m5yig")
+theme_override_styles/panel = SubResource("StyleBoxFlat_yslqg")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23
@@ -208,7 +210,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_xvjka")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e1ik5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hd8mb")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -216,7 +218,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="SelectResearcher" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_xvjka")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jnftp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jlsg8")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
@@ -224,7 +226,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="ConfirmResearchers" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_xvjka")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dip4d")
+theme_override_styles/panel = SubResource("StyleBoxFlat_d3sg2")
 title = "FINALIZE"
 assigned_key = "E"
 icon = 10
@@ -278,7 +280,7 @@ layout_mode = 2
 
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/TraitContainer/TraitList" instance=ExtResource("5_jtc7n")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_edb2p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4i6ts")
 
 [node name="SynergyContainer" type="VBoxContainer" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -298,8 +300,8 @@ layout_mode = 2
 
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("5_jtc7n")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5uv7s")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hs1xl")
 
 [node name="TraitCard2" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("5_jtc7n")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xmvk3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1v45f")

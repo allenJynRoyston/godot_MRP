@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://btxy5mypwrlao"]
 
 [ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
-[ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="2_ar35n"]
+[ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="2_1nkh6"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_21r5r"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_hm80f"]
 [ext_resource type="PackedScene" uid="uid://b2xiva1hpi0f4" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/EmailAttachment.tscn" id="5_mf5du"]
@@ -43,7 +43,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VList" parent="HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer" instance=ExtResource("2_ar35n")]
+[node name="VList" parent="HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer" instance=ExtResource("2_1nkh6")]
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]

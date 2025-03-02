@@ -1417,10 +1417,17 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		var ability:Dictionary = passive_abilities[index]
 		if index in passives_enabled:
 			ap_diff_amount -= ability.ap_cost
+	
+	# convert resource as a dict to a list form for easy reading
+	var resources_as_list:Array = []
+	for key in resource_details.total:
+		var amount:int = resource_details.total[key]
+		resources_as_list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
 
 	return {
-		"floor": floor_data,
-		"wing": wing_data,
+		"floor_config_data": floor_data,
+		"wing_config_data": wing_data,
+		"room_config_data": room_config_data,
 		# -----
 		"is_directors_office": room_details.ref == ROOM.TYPE.DIRECTORS_OFFICE if !room_details.is_empty() else false,
 		"is_hq": room_details.ref == ROOM.TYPE.HQ if !room_details.is_empty() else false,
@@ -1460,6 +1467,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		} if !is_scp_empty else {},
 		"trait_list": trait_list,
 		"synergy_trait_list": synergy_trait_list,
+		"resources_as_list": resources_as_list,
 		"resource_details": resource_details,
 		"metric_details": metric_details,
 		"researchers": researchers

@@ -6,11 +6,16 @@ extends GameContainer
 @onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/TitleLabel
 @onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/SubLabel
 
+@onready var StaffingControl:Control = $StaffingControl
+@onready var StaffingControlPanel:PanelContainer = $StaffingControl/StaffingControlPanel
+@onready var StaffingList:VBoxContainer = $StaffingControl/StaffingControlPanel/MarginContainer/VBoxContainer/List
+
 @onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var AcceptBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/AcceptBtn
 @onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
 
+const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 
 var title:String = "" : 
 	set(val):
@@ -37,8 +42,14 @@ var cancel_only:bool = false :
 		cancel_only = val
 		on_cancel_only_update()
 
-var content_restore_pos:int
-var btn_restore_pos:int
+var activation_requirements:Array = [] : 
+	set(val): 
+		activation_requirements = val
+		on_activation_requirements_update()
+
+
+var control_pos:Dictionary
+
 var is_setup:bool = false
 
 # --------------------------------------------------------------------------------------------------
@@ -55,8 +66,10 @@ func _ready() -> void:
 	on_image_update()
 	
 	await U.set_timeout(1.0)	
-	content_restore_pos = ContentPanelContainer.position.y			
-	btn_restore_pos = BtnMarginContainer.position.y
+	control_pos[ContentPanelContainer] = {"show": ContentPanelContainer.position.x, "hide": ContentPanelContainer.position.x + ContentPanelContainer.size.x}
+	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.x + BtnMarginContainer.size.x}
+	control_pos[StaffingControlPanel] = {"show": StaffingControlPanel.position.y, "hide": StaffingControlPanel.position.x + StaffingControlPanel.size.x}
+	
 	is_setup = true
 	on_is_showing_update()
 
@@ -76,13 +89,17 @@ func on_is_showing_update() -> void:
 
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0))
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.3)
-
-	U.tween_node_property(ContentPanelContainer, "position:y", content_restore_pos if is_showing else content_restore_pos - 5, 0.3)
-	await U.tween_node_property(BtnMarginContainer, "position:y", btn_restore_pos if is_showing else BtnMarginContainer.size.y + 20, 0.3)
+	
+	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide)
+	U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide)
+	await U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].show if is_showing else control_pos[BtnMarginContainer].hide)
 	
 	# reset confirm only state
 	if !is_showing:
 		confirm_only = false
+		activation_requirements = []
+		U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
+
 	
 
 func on_image_update() -> void:
@@ -96,6 +113,33 @@ func on_title_update() -> void:
 func on_subtitle_update() -> void:
 	if !is_node_ready():return
 	SubLabel.text = subtitle	
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_activation_requirements_update() -> void:
+	if !is_node_ready():return
+
+	for child in StaffingList.get_children():
+		child.free()
+		
+	if activation_requirements.is_empty():
+		StaffingControl.hide()
+		return
+		
+	StaffingControl.show()
+	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show)
+
+		
+	for item in activation_requirements:
+		var current_amount:int = resources_data[item.resource.ref].amount
+		var has_enough:bool = current_amount + item.amount < 0
+		var new_node:Control = CheckboxBtnPreload.instantiate()
+		new_node.is_hoverable = false
+		new_node.no_bg = true
+		new_node.is_checked = !has_enough
+		new_node.modulate = Color(1, 0, 0, 1) if has_enough else Color(1, 1, 1, 1)
+		new_node.title =  "%s REQUIRED: %s (YOU HAVE %s)" % [item.resource.name, abs(item.amount), current_amount]
+		StaffingList.add_child(new_node)		
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		

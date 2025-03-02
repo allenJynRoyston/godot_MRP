@@ -4,12 +4,7 @@ extends GameContainer
 
 @onready var LeftSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
 @onready var RightSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
-
-@onready var ListScrollContainer:ScrollContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
-@onready var ScpList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ScpList
-@onready var AvailableLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/AvailableLabel
-@onready var LessBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LessBtn
-@onready var MoreBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MoreBtn
+@onready var ScpList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/ScpList
 
 @onready var DetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/Details
 @onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
@@ -22,12 +17,12 @@ extends GameContainer
 enum MODE { HIDE, SELECT_SCP, CONFIRM_SCP, FINALIZE }
 
 const ScpCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn")
-const cards_in_list:int = 3
 
 var scp_active_index:int = -1 : 
 	set(val):
 		scp_active_index = val
 		on_scp_active_index_update()
+
 		
 var selected_scp:int = -1 : 
 	set(val):
@@ -44,11 +39,12 @@ var current_mode:MODE = MODE.HIDE :
 		current_mode = val
 		on_current_mode_update()
 
+var content_restore_pos:int
+var confirm_restore_pos:int
+var trait_restore_pos:int
 var btn_restore_pos:int
 var control_pos:Dictionary
 var is_animating:bool = true
-var custom_min_size:Vector2
-var overflow_count:int
 
 # -----------------------------------------------
 func _ready() -> void:
@@ -93,21 +89,8 @@ func start(new_refs:Array) -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func start_database() -> void:
-	refs = [0, 0, 0, 0, 0]
-	current_mode = MODE.SELECT_SCP
-# -----------------------------------------------	
-
-# -----------------------------------------------
-func end(made_selection:bool) -> void:	
-	for btn in [SelectScp, ConfirmScp, DetailsBtn]:
-		btn.is_disabled = true
-					
-	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-	U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
-	await U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide)
-	
-	current_mode = MODE.HIDE	
+func end(made_selection:bool) -> void:
+	current_mode = MODE.HIDE
 	user_response.emit(made_selection)
 # -----------------------------------------------	
 
@@ -146,17 +129,7 @@ func on_refs_update() -> void:
 						scp_active_index = index
 		ScpList.add_child(new_card)
 		new_card.reveal = true
-		
-		await U.tick()
-		if index < cards_in_list:
-			custom_min_size = ScpList.size + Vector2(10, 0)
 	
-	LessBtn.show() if refs.size() > cards_in_list else LessBtn.hide()
-	MoreBtn.show() if refs.size() > cards_in_list else MoreBtn.hide()
-	AvailableLabel.text = "Entries available: %s" % [refs.size()]
-		
-	ListScrollContainer.custom_minimum_size = custom_min_size
-	scp_active_index = 0
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -200,47 +173,11 @@ func show_details() -> void:
 
 # -----------------------------------------------
 func on_scp_active_index_update() -> void:
-	if !is_node_ready() or refs.size() == 0 or scp_active_index == -1:return		
-
+	if !is_node_ready() or refs.size() == 0:return		
+	if scp_active_index == -1:return
 	for index in ScpList.get_child_count():
 		var node:Control = ScpList.get_child(index)
 		node.is_active = scp_active_index == index
-		
-	var relative_index:int = scp_active_index - overflow_count		
-	
-	if relative_index > 2:
-		if scp_active_index >= cards_in_list:
-			overflow_count += 1
-			next_set()
-	
-	if relative_index < 0:
-		if overflow_count > 0:
-			overflow_count -= 1
-			back_set()
-					
-	for index in ScpList.get_child_count():
-		var node:Control = ScpList.get_child(index)
-		node.is_hoverable = index >= overflow_count and index < overflow_count + cards_in_list
-# -----------------------------------------------	
-
-# -----------------------------------------------
-func next_set() -> void:
-	is_animating = true
-	var current_scroll:int = ListScrollContainer.scroll_horizontal
-	await U.tween_range(current_scroll, current_scroll + custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
-		ListScrollContainer.scroll_horizontal = val		
-	).finished  
-	is_animating = false
-# -----------------------------------------------	
-
-# -----------------------------------------------
-func back_set() -> void:
-	is_animating = true
-	var current_scroll:int = ListScrollContainer.scroll_horizontal
-	await U.tween_range(current_scroll, current_scroll - custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
-		ListScrollContainer.scroll_horizontal = val
-	).finished  
-	is_animating = false
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -317,16 +254,6 @@ func on_current_mode_update() -> void:
 	is_animating = false
 # -----------------------------------------------
 
-# -----------------------------------------------
-func on_inc() -> void:
-	unflip_cards()
-	scp_active_index = U.min_max(scp_active_index - 1, 0, ScpList.get_child_count() - 1)
-
-func on_dec() -> void:
-	unflip_cards()
-	scp_active_index = U.min_max(scp_active_index + 1, 0, ScpList.get_child_count() - 1)
-# -----------------------------------------------
-
 # -----------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
@@ -338,8 +265,10 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	match key:
 		"A":
 			if current_mode == MODE.SELECT_SCP:
-				on_inc()
+				unflip_cards()
+				scp_active_index = U.min_max(scp_active_index - 1, 0, ScpList.get_child_count() - 1)
 		"D":
 			if current_mode == MODE.SELECT_SCP:
-				on_dec()
+				unflip_cards()
+				scp_active_index = U.min_max(scp_active_index + 1, 0, ScpList.get_child_count() - 1)
 #  -----------------------------------		

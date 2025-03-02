@@ -1,20 +1,18 @@
-[gd_scene load_steps=14 format=3 uid="uid://cwowqrsr48d6k"]
+[gd_scene load_steps=12 format=3 uid="uid://beu68i2synr71"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/scp_select_screen.gd" id="1_gm8am"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_qnb0j"]
-[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_pufuq"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_4n0e7"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_lyjb2"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_hgv5f"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPDetailScreen/scp_detail_screen.gd" id="1_rf76u"]
+[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_yjnew"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_xhy1u"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_gmyeb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7xi8"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_24078"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pwxwe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1c61"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eydpo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqway"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -26,7 +24,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nf40p"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eol62"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -38,7 +36,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eanu4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fa8a3"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -50,7 +48,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b20vy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t8c2x"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -69,10 +67,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_y7xi8")
-script = ExtResource("1_gm8am")
+script = ExtResource("1_rf76u")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_qnb0j")
+material = ExtResource("2_yjnew")
 layout_mode = 2
 color = Color(0.52, 0.0866667, 0, 0.603922)
 
@@ -86,65 +84,30 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_24078")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pwxwe")
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 100
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 25
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-
-[node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-text = "SELECT AN SCP"
-label_settings = ExtResource("4_lyjb2")
+text = "SELECT ONE"
+label_settings = ExtResource("3_xhy1u")
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ScpList" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-
-[node name="LessBtn" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4n0e7")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
-flip_h = true
-flip_v = false
-
-[node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-
-[node name="ScrollContainer" type="ScrollContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(250, 460)
-layout_mode = 2
-horizontal_scroll_mode = 3
-
-[node name="ScpList" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="MoreBtn" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4n0e7")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
-flip_v = false
-
-[node name="AvailableLabel" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "0/1"
-label_settings = ExtResource("5_hgv5f")
-horizontal_alignment = 1
-metadata/_edit_group_ = true
+theme_override_constants/separation = 50
 
 [node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
@@ -183,12 +146,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_override_constants/separation = 10
 
-[node name="Details" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("3_pufuq")]
+[node name="Details" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("4_gmyeb")]
 custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_eydpo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rqway")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23
@@ -199,25 +162,25 @@ layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 8
 
-[node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
+[node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gmyeb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nf40p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_eol62")
 title = "BACK"
 assigned_key = "B"
 icon = 16
 panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
-[node name="SelectScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
+[node name="SelectScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gmyeb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_eanu4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fa8a3")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
 
-[node name="ConfirmScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("3_pufuq")]
+[node name="ConfirmScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gmyeb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_b20vy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t8c2x")
 title = "CONFIRM"
 assigned_key = "E"
 icon = 10

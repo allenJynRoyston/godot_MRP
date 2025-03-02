@@ -281,7 +281,7 @@ func open_scp_details() -> void:
 		"title": "VIEW DETAILS",
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true				
-			await GameplayNode.view_scp_details()				
+			await GameplayNode.view_scp_details()
 			ActiveMenu.freeze_inputs = false
 	})
 	
@@ -401,8 +401,7 @@ func open_room_menu() -> void:
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
 	ActiveMenu.custom_minimum_size = Vector2(1, 1)
-	if ref_btn != null:
-		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
 	ActiveMenu.open()
 # --------------------------------------------------------------------------------------------------			
 
@@ -544,8 +543,7 @@ func open_researcher_menu() -> void:
 			ActiveMenu.freeze_inputs = true
 			var response:Dictionary = await GameplayNode.assign_researcher(current_location.duplicate())
 			ActiveMenu.freeze_inputs = false
-			if response.has_changes:
-				open_researcher_menu(),
+			open_researcher_menu(),
 	})		
 	
 	for researcher in room_extract.researchers:
@@ -555,8 +553,7 @@ func open_researcher_menu() -> void:
 				ActiveMenu.freeze_inputs = true
 				var response:Dictionary = await GameplayNode.unassign_researcher(researcher, room_extract.room.details)
 				ActiveMenu.freeze_inputs = false
-				if response.has_changes:
-					open_researcher_menu(),
+				open_researcher_menu(),
 		})
 
 	ActiveMenu.header = "RESEARCHER"
@@ -706,6 +703,7 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
+	await U.set_timeout(0.3)
 	U.debounce("build_btns", buildout_btns)
 # --------------------------------------------------------------------------------------------------		
 
@@ -809,15 +807,15 @@ func buildout_btns() -> void:
 			
 			
 		CAMERA.TYPE.ROOM_SELECT:	
-			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTION_DETAILS] and is_activated:
-				new_left_btn_list.push_back({
-					"title": "ABILITIES",
-					"assigned_key": "E",
-					"icon": SVGS.TYPE.TARGET,
-					"onClick": func() -> void:
-						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-							show_details()
-				})						
+			new_left_btn_list.push_back({
+				"title": "ABILITIES",
+				"assigned_key": "E",
+				"is_disabled": !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTION_DETAILS] or !is_activated,
+				"icon": SVGS.TYPE.TARGET,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						show_details()
+			})						
 			
 			new_left_btn_list.push_back({
 				"title": "FACILITY",
@@ -828,25 +826,27 @@ func buildout_btns() -> void:
 						open_room_menu()
 			})
 			
-			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_RESEARCHER]:
-				new_left_btn_list.push_back({
-					"title": "RESEARCHER",
-					"assigned_key": "2",
-					"icon": SVGS.TYPE.CONTAIN,
-					"onClick": func() -> void:
-						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-							open_researcher_menu()
-				})
+			
+			new_left_btn_list.push_back({
+				"title": "RESEARCHER",
+				"is_disabled": !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_RESEARCHER],
+				"assigned_key": "2",
+				"icon": SVGS.TYPE.CONTAIN,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						open_researcher_menu()
+			})
 				
-			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP] and can_contain:
-				new_left_btn_list.push_back({
-					"title": "CONTAINMENT",
-					"assigned_key": "3",
-					"icon": SVGS.TYPE.CONTAIN if room_category == ROOM.CATEGORY.CONTAINMENT_CELL else SVGS.TYPE.CLEAR,
-					"onClick": func() -> void:
-						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-							open_scp_menu()
-				})
+			
+			new_left_btn_list.push_back({
+				"title": "CONTAINMENT",
+				"is_disabled": !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP] or !can_contain,
+				"assigned_key": "3",
+				"icon": SVGS.TYPE.CONTAIN if room_category == ROOM.CATEGORY.CONTAINMENT_CELL else SVGS.TYPE.CLEAR,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						open_scp_menu()
+			})
 			
 
 			#new_left_btn_list.push_back({
@@ -869,6 +869,46 @@ func buildout_btns() -> void:
 					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
 						#auto_order(),
 			#})	
+			
+			
+						#U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
+						#ActiveMenu.freeze_inputs = true	
+						#if "effect" in ability:
+							#var response:bool = await ability.effect.call(GameplayNode)
+							#if response:
+								#base_states.room[U.location_to_designation(current_location)].ap -= ability.ap_cost
+								#SUBSCRIBE.base_states = base_states
+						#U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)
+						#ActiveMenu.freeze_inputs = false
+						#show_details(),			
+			
+			new_right_btn_list.push_back({
+				"title": "DATABASE",
+				"assigned_key": "-",
+				"icon": SVGS.TYPE.CONVERSATION,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+						await GameplayNode.open_scp_database()
+			})				
+						
+			new_right_btn_list.push_back({
+				"title": "OBJECTIVES",
+				"assigned_key": "O",
+				"icon": SVGS.TYPE.TXT_FILE,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+						pass
+			})				
+			
+			new_right_btn_list.push_back({
+				"title": "%s DETAILS" % ["HIDE" if GBL.find_node(REFS.ROOM_INFO).expand else "SHOW"],
+				"assigned_key": "SPACEBAR",
+				"icon": SVGS.TYPE.SETTINGS,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+						GBL.find_node(REFS.ROOM_INFO).toggle_expand()
+						buildout_btns()
+			})	
 						
 			new_right_btn_list.push_back({
 				"title": "GOTO FLOOR",

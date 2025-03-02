@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=12 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_upopm"]
@@ -10,10 +10,22 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w67u1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_squyj"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cw8kv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s02bt"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -25,7 +37,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_16h7l"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_smagn"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -102,6 +114,48 @@ label_settings = ExtResource("4_fdai8")
 horizontal_alignment = 2
 autowrap_mode = 2
 
+[node name="StaffingControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="StaffingControlPanel" type="PanelContainer" parent="StaffingControl"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_squyj")
+
+[node name="MarginContainer" type="MarginContainer" parent="StaffingControl/StaffingControlPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="StaffingControl/StaffingControlPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="StaffingControl/StaffingControlPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="StaffingControl/StaffingControlPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "ACTIVATION REQUIREMENTS "
+label_settings = ExtResource("4_fdai8")
+
+[node name="HSeparator" type="HSeparator" parent="StaffingControl/StaffingControlPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="List" type="VBoxContainer" parent="StaffingControl/StaffingControlPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
 
@@ -146,7 +200,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_cw8kv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s02bt")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -154,7 +208,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_16h7l")
+theme_override_styles/panel = SubResource("StyleBoxFlat_smagn")
 title = "ACCEPT"
 assigned_key = "E"
 icon = 10
