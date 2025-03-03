@@ -7,6 +7,11 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bres3"]
 bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -58,7 +63,7 @@ script = ExtResource("1_yhadw")
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 15
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 

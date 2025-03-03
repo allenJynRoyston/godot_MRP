@@ -1,0 +1,141 @@
+[gd_scene load_steps=11 format=3 uid="uid://c7j2nka1uvvlq"]
+
+[ext_resource type="Script" path="res://UI/ScpPanel/scp_panel.gd" id="1_a32cm"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_s1rv1"]
+[ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="3_j5r41"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_f845s"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exx5w"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pq3bk"]
+bg_color = Color(0, 0.53, 0.282667, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Shader" id="Shader_ux8j3"]
+code = "shader_type canvas_item;
+
+uniform float corner_scale: hint_range(0., 1.) = 0.;
+
+bool isOut(float x, float y) {
+    return pow(x, 2.) + pow(y, 2.) > pow(corner_scale * .5, 2.);
+}
+
+void fragment() {
+    float s = corner_scale * .5;
+
+    if (
+        (UV.x < s      && UV.y < s      && isOut(UV.x - s,      UV.y - s)) ||
+        (UV.x < s      && UV.y > 1. - s && isOut(UV.x - s,      UV.y - 1. + s)) ||
+        (UV.x > 1. - s && UV.y < s      && isOut(UV.x - 1. + s, UV.y - s)) ||
+        (UV.x > 1. - s && UV.y > 1. - s && isOut(UV.x - 1. + s, UV.y - 1. + s))
+    ) {
+        COLOR.a = 0.;
+    }
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6lab1"]
+shader = SubResource("Shader_ux8j3")
+shader_parameter/corner_scale = 0.178
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_mpeqf"]
+viewport_path = NodePath("MarginContainer/VBoxContainer/Resources/SubViewport")
+
+[sub_resource type="LabelSettings" id="LabelSettings_kokcl"]
+font = ExtResource("4_f845s")
+font_size = 8
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[node name="ScpPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(50, 0)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_exx5w")
+script = ExtResource("1_a32cm")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = -7
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = -7
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+z_index = 1
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+text = " SCP "
+label_settings = ExtResource("2_s1rv1")
+vertical_alignment = 1
+
+[node name="LvlLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+text = " LVL 1"
+label_settings = ExtResource("2_s1rv1")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Resources" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_pq3bk")
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Resources"]
+material = SubResource("ShaderMaterial_6lab1")
+layout_mode = 2
+texture = SubResource("ViewportTexture_mpeqf")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="SubViewport" type="SubViewport" parent="MarginContainer/VBoxContainer/Resources"]
+size = Vector2i(76, 51)
+
+[node name="ScpProfileImage" type="TextureRect" parent="MarginContainer/VBoxContainer/Resources/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_j5r41")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+z_index = 1
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 2
+
+[node name="ReadyLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+text = " READY! "
+label_settings = SubResource("LabelSettings_kokcl")
+horizontal_alignment = 2
+vertical_alignment = 1

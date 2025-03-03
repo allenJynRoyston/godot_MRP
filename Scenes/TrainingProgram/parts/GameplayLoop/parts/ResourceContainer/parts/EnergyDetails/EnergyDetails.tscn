@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhyg7mbnhegpb"]
+[gd_scene load_steps=9 format=3 uid="uid://bhyg7mbnhegpb"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/EnergyDetails/energy_details.gd" id="1_10pu4"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_eu3yc"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_wl4pb"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_1fbh2"]
 [ext_resource type="PackedScene" uid="uid://colip2v06wa01" path="res://UI/Buttons/DetailBtn/DetailBtn.tscn" id="3_1gcg3"]
@@ -36,12 +37,8 @@ size_flags_vertical = 0
 [node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "ENERGY"
-label_settings = ExtResource("2_wl4pb")
+label_settings = ExtResource("2_eu3yc")
 uppercase = true
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer"]
 layout_mode = 2

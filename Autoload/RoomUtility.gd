@@ -842,6 +842,23 @@ var STANDARD_LOCKER:Dictionary = {
 	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			{
+				"name": "STATION GUARDS",
+				"available_at_lvl": 0, 
+				"ap_cost":  1, 
+				"effect": func() -> Dictionary:
+					return {
+						"metrics":{
+							RESOURCE.BASE_METRICS.READINESS: 1
+						}
+					},
+			}
+		],	
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -857,7 +874,7 @@ var STANDARD_LOCKER:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.ENERGY: -1,
+					
 				},
 		}	
 	},		
@@ -924,7 +941,7 @@ var reference_data:Dictionary = {
 	#ROOM.TYPE.DORMITORY: DORMITORY,
 	
 	#ROOM.TYPE.HOLDING_CELLS: HOLDING_CELLS,
-	#ROOM.TYPE.STANDARD_LOCKER: STANDARD_LOCKER,
+	ROOM.TYPE.STANDARD_LOCKER: STANDARD_LOCKER,
 	
 	#ROOM.TYPE.HUME_DETECTOR: HUME_DETECTOR,
 	
@@ -1193,9 +1210,9 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	
 	var scp_data:Dictionary = room_config_data.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
-	var scp_details:Dictionary = room_config_data.scp_data.get_scp_details.call() if !scp_data.is_empty() else {}
-	var is_transfer:bool = false if is_scp_empty else room_config_data.scp_data.is_transfer
-	var is_contained:bool = false if is_scp_empty else room_config_data.scp_data.is_contained
+	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(scp_data.ref)
+	var is_transfer:bool = false #if is_scp_empty else room_config_data.scp_data.is_transfer
+	var is_contained:bool = false #if is_scp_empty else room_config_data.scp_data.is_contained
 	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
@@ -1440,9 +1457,9 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		"room_category": ROOM.CATEGORY.CONTAINMENT_CELL if (!room_details.is_empty() and room_details.can_contain) else ROOM.CATEGORY.FACILITY,
 		# ------		
 		"is_scp_empty": is_scp_empty,
-		"is_scp_transfering": is_transfer,
-		"is_scp_contained": is_contained,
-		"is_scp_testing": !is_transfer and is_contained and researchers.size() > 0,
+		#"is_scp_transfering": is_transfer,
+		#"is_scp_contained": is_contained,
+		#"is_scp_testing": !is_transfer and is_contained and researchers.size() > 0,
 		# ------
 		"researchers_count": researchers.size(),
 		"room_base_state": room_base_state, 
@@ -1462,8 +1479,8 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		} if !is_room_empty or is_room_under_construction else {},
 		"scp": {
 			"details": scp_details,
-			"is_transfer": is_transfer,
-			"is_contained": is_contained,
+			#"is_transfer": is_transfer,
+			#"is_contained": is_contained,
 		} if !is_scp_empty else {},
 		"trait_list": trait_list,
 		"synergy_trait_list": synergy_trait_list,

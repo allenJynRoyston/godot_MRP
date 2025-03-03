@@ -785,7 +785,7 @@ func return_wing_effect(extract_data:Dictionary) -> Dictionary:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
-func calculate_initial_containment_bonus(ref:int, resources_data:Dictionary, refund:bool = false) -> Dictionary:
+func calculate_initial_containment_bonus(ref:int, refund:bool = false) -> Dictionary:
 	return SHARED_UTIL.calculate_resources(return_data(ref), "initial_containment", resources_data, refund)
 # ------------------------------------------------------------------------------
 

@@ -67,8 +67,8 @@ func _ready() -> void:
 	
 	await U.set_timeout(1.0)	
 	control_pos[ContentPanelContainer] = {"show": ContentPanelContainer.position.x, "hide": ContentPanelContainer.position.x + ContentPanelContainer.size.x}
-	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.x + BtnMarginContainer.size.x}
-	control_pos[StaffingControlPanel] = {"show": StaffingControlPanel.position.y, "hide": StaffingControlPanel.position.x + StaffingControlPanel.size.x}
+	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
+	control_pos[StaffingControlPanel] = {"show": StaffingControlPanel.position.y, "hide": StaffingControlPanel.position.x + StaffingControlPanel.size.y}
 	
 	is_setup = true
 	on_is_showing_update()

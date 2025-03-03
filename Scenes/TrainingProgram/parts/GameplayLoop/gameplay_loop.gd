@@ -11,9 +11,9 @@ extends PanelContainer
 @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
 @onready var BuildCompleteContainer:PanelContainer = $BuildCompleteContainer
-@onready var ObjectivesContainer:MarginContainer = $ObjectivesContainer
+@onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
 @onready var ResearchersContainer:PanelContainer = $ResearcherContainer
-@onready var EventContainer:MarginContainer = $EventContainer
+@onready var EventContainer:PanelContainer = $EventContainer
 @onready var MetricsContainer:PanelContainer = $MetricsContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
@@ -31,6 +31,11 @@ extends PanelContainer
 const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
 
 enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, METRIC_EVENTS, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE }
+
+enum OBJECTIVES_STATE {
+	HIDE, 
+	SHOW
+}
 
 enum SHOP_STEPS {
 	RESET, 
@@ -344,13 +349,13 @@ var initial_values:Dictionary = {
 			# enables the "researcher btn" in the action menu
 			CONDITIONALS.TYPE.ENABLE_ACTIONS_RESEARCHER: false,
 			# enables the "scp btn" in the action menu
-			CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP: false,
+			CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP: true,
 			# enables the "upgrade" ability in rooms
 			CONDITIONALS.TYPE.ENABLE_UPGRADES: false,
 			# enables btns in action menu
-			CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN: false,
-			CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN: false,
-			CONDITIONALS.TYPE.ENABLE_DATABASE_BTN: false,
+			CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN: true,
+			CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN: true,
+			CONDITIONALS.TYPE.ENABLE_DATABASE_BTN: true,
 			
 			# enables the "scp btn" in the action menu
 			CONDITIONALS.TYPE.UPGRADE_LEVEL: -1,
@@ -501,6 +506,11 @@ var current_researcher_promotion_step:PROMOTE_RESEARCHER_STEPS = PROMOTE_RESEARC
 		current_researcher_promotion_step = val
 		on_current_researcher_promotion_step_update()
 
+var current_objective_state:OBJECTIVES_STATE = OBJECTIVES_STATE.HIDE : 
+	set(val):
+		current_objective_state = val
+		on_current_objective_state_update()
+
 signal store_select_location
 signal on_complete_build_complete
 signal on_expired_scp_items_complete
@@ -520,6 +530,7 @@ signal on_scp_testing_complete
 signal on_scp_select_complete
 signal on_promote_researcher_complete 
 signal on_promotions_complete
+signal on_objective_signal
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -1030,9 +1041,9 @@ func execute_record_audit() -> void:
 				var is_room_empty:bool = extract_data.is_room_empty
 				var is_room_active:bool = extract_data.is_activated
 				var is_scp_empty:bool = extract_data.is_scp_empty
-				var is_scp_contained:bool = extract_data.is_scp_contained
-				var is_scp_transfering:bool = extract_data.is_scp_transfering
-				var is_scp_testing:bool = extract_data.is_scp_testing
+				#var is_scp_contained:bool = extract_data.is_scp_contained
+				#var is_scp_transfering:bool = extract_data.is_scp_transfering
+				#var is_scp_testing:bool = extract_data.is_scp_testing
 				var researchers:Array = extract_data.researchers
 				var location:Dictionary = {
 					"designation": "%s%s%s" % [floor_index, ring_index, room_index],
@@ -1066,7 +1077,7 @@ func execute_record_audit() -> void:
 					
 
 				# ------- GETS SCP DATA PROFITS
-				if !is_scp_empty and is_scp_contained and !is_scp_transfering:
+				if !is_scp_empty:
 					var scp_details:Dictionary = extract_data.scp.details
 					var diff:Array = SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref).map(func(i):
 						return {
@@ -1088,41 +1099,40 @@ func execute_record_audit() -> void:
 					calculate_daily_costs(diff)
 					
 					# CALUCLATE SCIENCE FROM SCP's
-					if is_scp_testing:
-						for researcher in researchers:
-							var science_amount:int = 1
-							var xp_amount:int = 2 - (researchers.size() - 1)   # 2xp if 1 researcher attached, 1xp if 2 are attached
-							for specilization in researcher.specializations:
-								if specilization in scp_details.researcher_preferences:
-									science_amount = scp_details.researcher_preferences[specilization]
-							
-							var science_diff:Array = [{
-								"amount": science_amount, 
-								"resource_ref": RESOURCE.TYPE.SCIENCE
-							}]
-							
-							progress_data.record.push_back({
-								"source": REFS.SOURCE.TESTING,
-								"data": {
-									"scp_ref": scp_details,
-									"researcher_uid": researcher.uid,
-									"name": researcher.name,
-									"day": progress_data.day,
-									"location": location,
-									"diff": science_diff
-								}
-							})
-							
-							# add experience
-							var leveled_up:bool = RESEARCHER_UTIL.add_experience(researcher.uid, xp_amount)
-							progress_data.record.push_back({
-								"source": REFS.SOURCE.RESEARCHERS,
-								"data": {
-									"xp": xp_amount
-								}
-							})
-							
-							calculate_daily_costs(science_diff)
+					for researcher in researchers:
+						var science_amount:int = 1
+						var xp_amount:int = 2 - (researchers.size() - 1)   # 2xp if 1 researcher attached, 1xp if 2 are attached
+						for specilization in researcher.specializations:
+							if specilization in scp_details.researcher_preferences:
+								science_amount = scp_details.researcher_preferences[specilization]
+						
+						var science_diff:Array = [{
+							"amount": science_amount, 
+							"resource_ref": RESOURCE.TYPE.SCIENCE
+						}]
+						
+						progress_data.record.push_back({
+							"source": REFS.SOURCE.TESTING,
+							"data": {
+								"scp_ref": scp_details,
+								"researcher_uid": researcher.uid,
+								"name": researcher.name,
+								"day": progress_data.day,
+								"location": location,
+								"diff": science_diff
+							}
+						})
+						
+						# add experience
+						var leveled_up:bool = RESEARCHER_UTIL.add_experience(researcher.uid, xp_amount)
+						progress_data.record.push_back({
+							"source": REFS.SOURCE.RESEARCHERS,
+							"data": {
+								"xp": xp_amount
+							}
+						})
+						
+						calculate_daily_costs(science_diff)
 # -----------------------------------
 
 # -----------------------------------
@@ -1554,24 +1564,34 @@ func add_timeline_item(dict:Dictionary, props:Dictionary = {}) -> void:
 #endregion	
 # ------------------------------------------------------------------------------	
 
+# -----------------------------------
+func open_objectives() -> bool:
+	current_objective_state = OBJECTIVES_STATE.SHOW
+	return await on_objective_signal
+# -----------------------------------
+
 # ------------------------------------------------------------------------------	
 #region SCP FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
-func open_scp_database() -> bool:
-	current_select_scp_step = SELECT_SCP_STEPS.DATABASE
-	return await on_scp_select_complete		
-# -----------------------------------
-	
-# -----------------------------------
 func get_new_scp() -> bool:
+	# TODO: add something to determine next set of SCPs
+	SCPSelectScreen.start_selection([0, 1])
 	current_select_scp_step = SELECT_SCP_STEPS.START
-	return await on_scp_select_complete		
+	return await on_scp_select_complete
 # -----------------------------------
 
 # -----------------------------------
-func view_scp_details() -> void:
-	current_contain_step = CONTAIN_STEPS.START
-	await on_contain_reset
+func open_scp_database() -> bool:
+	SCPSelectScreen.start_read_only(scp_data.contained_list.map(func(i):return i.ref))
+	current_select_scp_step = SELECT_SCP_STEPS.DATABASE
+	return await on_scp_select_complete
+# -----------------------------------
+	
+# -----------------------------------
+func view_scp_details(ref) -> bool:
+	SCPSelectScreen.start_read_only([ref])
+	current_select_scp_step = SELECT_SCP_STEPS.DATABASE
+	return await on_scp_select_complete
 # -----------------------------------
 
 # -----------------------------------
@@ -1582,24 +1602,9 @@ func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
 		"location": location,
 		"days_in_containment": 0,
 		"attached_researchers": [],
-		"testing_count": {
-			
-		},
-		"research_completed": [
-			#0, 1 [RESEARCH.ONE, RESEARCH.TWO, etc]
-		],
 		"event_type_count": {
 			#["type/event_id"]: count[int]
 		},
-		"current_testing": {
-			#"research_id": -1,
-			#"progress": -1 			
-		},
-		"transfer_status": {
-			"state": false, 
-			"days_till_complete": -1,
-			"location": {}
-		}	
 	}
 # -----------------------------------
 
@@ -1658,8 +1663,23 @@ func find_in_available(ref:int) -> Dictionary:
 # -----------------------------------	
 
 # -----------------------------------
-func contain_scp(from_location:Dictionary, scp_ref:int) -> Dictionary:
-	return {}
+func contain_scp(from_location:Dictionary, scp_ref:int) -> void:
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	ConfirmModal.set_props("Contain %s here?" % [scp_details.name], "", scp_details.img_src)
+	await show_only([Structure3dContainer, ConfirmModal])
+	var response:Dictionary = await ConfirmModal.user_response	
+	match response.action:
+		ACTION.NEXT:	
+			# first, remove from available list...
+			scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != scp_ref)
+			# then add to contained list...
+			var new_contained_item:Dictionary = create_new_contained_item(scp_ref, from_location)
+			scp_data.contained_list.push_back(new_contained_item)
+			print(scp_data)
+			SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
+			SUBSCRIBE.scp_data = scp_data
+		
+	restore_player_hud()		
 # -----------------------------------
 
 # -----------------------------------
@@ -2246,6 +2266,34 @@ func on_current_builder_step_update() -> void:
 
 # ------------------------------------------------------------------------------	SHOP STEPS
 #region SHOP STATES
+func on_current_objective_state_update() -> void:
+	if !is_node_ready():return
+	
+	match current_objective_state:
+		# ---------------
+		OBJECTIVES_STATE.HIDE:
+			SUBSCRIBE.suppress_click = false
+			restore_showing_state()
+		# ---------------
+		OBJECTIVES_STATE.SHOW:
+			SUBSCRIBE.suppress_click = true
+
+			capture_current_showing_state()			
+			await show_only([ObjectivesContainer, Structure3dContainer, ResourceContainer, MetricsContainer])
+			ObjectivesContainer.start()
+			await ObjectivesContainer.user_response
+
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			current_objective_state = OBJECTIVES_STATE.HIDE
+			await U.set_timeout(0.3)
+			on_objective_signal.emit(true)	
+		## ---------------
+
+#endregion
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	SHOP STEPS
+#region SHOP STATES
 func on_current_shop_step_update() -> void:
 	if !is_node_ready():return
 	
@@ -2261,6 +2309,7 @@ func on_current_shop_step_update() -> void:
 			selected_shop_item = {}
 			
 			StoreContainer.start()
+			capture_current_showing_state()
 			await show_only([StoreContainer, Structure3dContainer, ResourceContainer])
 			var response:bool = await StoreContainer.user_response
 			await StoreContainer.end()
@@ -2487,7 +2536,6 @@ func on_current_action_complete_step_update() -> void:
 			completed_actions = []
 		# ---------------
 		ACTION_COMPLETE_STEPS.START:
-			print("here?")
 			SUBSCRIBE.suppress_click = true
 			BuildCompleteContainer.completed_build_items = completed_actions
 
@@ -2516,8 +2564,11 @@ func on_current_event_step_update() -> void:
 	match current_event_step:
 		EVENT_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
+			restore_showing_state()
 		EVENT_STEPS.START:
 			SUBSCRIBE.suppress_click = true
+			
+			capture_current_showing_state()			
 			await show_only([Structure3dContainer, EventContainer])
 			EventContainer.event_data = event_data
 			EventContainer.start()
@@ -2569,7 +2620,6 @@ func on_current_select_scp_step_update() -> void:
 			capture_current_showing_state()
 			await show_only([SCPSelectScreen])
 			
-			SCPSelectScreen.start([0, 1])
 			var response:bool = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			await restore_showing_state()	
@@ -2582,7 +2632,6 @@ func on_current_select_scp_step_update() -> void:
 			capture_current_showing_state()
 			await show_only([SCPSelectScreen])
 			
-			SCPSelectScreen.start_database()
 			var response:bool = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			await restore_showing_state()	
@@ -2753,7 +2802,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() #if no_save else restore_data.gameplay_conditionals	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if no_save else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if no_save else restore_data.purchased_base_arr
-	SUBSCRIBE.resources_data = initial_values.resources_data.call() if no_save else restore_data.resources_data	
+	SUBSCRIBE.resources_data = initial_values.resources_data.call() #if no_save else restore_data.resources_data	
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if no_save else restore_data.bookmarked_rooms
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if no_save else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if no_save else restore_data.purchased_research_arr
@@ -2807,27 +2856,12 @@ func set_room_config(force_setup:bool = false) -> void:
 				var room:int = item.transfer_status.location.room	
 				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 					"ref": item.ref,
-					"is_contained": false,
-					"is_transfer": true,
-					"get_scp_details": func() -> Dictionary:
-						return SCP_UTIL.return_data(item.ref)
 				}
 				
 	# ... and mark rooms that are currently contained 
 	if "contained_list" in scp_data:
 		for item in scp_data.contained_list:
 			# ... or in a state of being transfered to another room
-			if item.transfer_status.state:
-				var ifloor:int = item.transfer_status.location.floor
-				var iring:int = item.transfer_status.location.ring
-				var iroom:int = item.transfer_status.location.room	
-				new_room_config.floor[ifloor].ring[iring].room[iroom].scp_data = {
-					"ref": item.ref,
-					"details": SCP_UTIL.return_data(item.ref),
-					"is_contained": true,
-					"is_transfer": true,
-				}			
-			
 			var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
 			var floor:int = item.location.floor
 			var ring:int = item.location.ring
@@ -2839,9 +2873,6 @@ func set_room_config(force_setup:bool = false) -> void:
 			# update the scp data and utility functions
 			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 				"ref": item.ref,
-				"details": SCP_UTIL.return_data(item.ref),
-				"is_contained": true,
-				"is_transfer": item.transfer_status.state,
 			}
 
 			# first add scp ref to list to both ring and floor			

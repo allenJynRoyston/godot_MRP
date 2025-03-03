@@ -1,6 +1,7 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
+@onready var TitleLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/TitleLabel
 
 @onready var LeftSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
 @onready var RightSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
@@ -49,6 +50,7 @@ var control_pos:Dictionary
 var is_animating:bool = true
 var custom_min_size:Vector2
 var overflow_count:int
+var read_only:bool = false
 
 # -----------------------------------------------
 func _ready() -> void:
@@ -57,12 +59,12 @@ func _ready() -> void:
 	on_scp_active_index_update()
 
 	SelectScp.onClick = func() -> void:
-		if is_animating:return
+		if is_animating or read_only:return
 		if current_mode == MODE.SELECT_SCP:
 			mark_scp_as_selected()
 
 	ConfirmScp.onClick = func() -> void:
-		if is_animating:return
+		if is_animating or read_only:return
 		if current_mode == MODE.CONFIRM_SCP:
 			on_confirm_scp()
 			
@@ -87,15 +89,20 @@ func _ready() -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func start(new_refs:Array) -> void:
+func start_selection(new_refs:Array) -> void:
+	# TODO:  add soemthing here to determine the next set of available SCPs
 	refs = new_refs
+	TitleLabel.text = "SELECT AN SCP"
 	current_mode = MODE.SELECT_SCP
+	read_only = false
 # -----------------------------------------------
 
 # -----------------------------------------------
-func start_database() -> void:
-	refs = [0, 0, 0, 0, 0]
+func start_read_only(new_refs:Array) -> void:	
+	refs = new_refs 
+	TitleLabel.text = "DETAILS"
 	current_mode = MODE.SELECT_SCP
+	read_only = true
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -134,7 +141,7 @@ func on_refs_update() -> void:
 				MODE.SELECT_SCP:
 					scp_active_index = index
 		new_card.onClick = func():
-			if is_animating:return
+			if is_animating or read_only:return
 			match current_mode:
 				MODE.SELECT_SCP:
 					mark_scp_as_selected()
@@ -278,7 +285,7 @@ func on_current_mode_update() -> void:
 				var node:Control = ScpList.get_child(index)
 				node.is_deselected = false
 			
-			SelectScp.show()
+			SelectScp.show() if !read_only else SelectScp.hide()
 			ConfirmScp.hide()			
 							
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1))

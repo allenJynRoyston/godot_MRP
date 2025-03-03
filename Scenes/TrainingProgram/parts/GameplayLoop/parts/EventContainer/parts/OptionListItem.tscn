@@ -5,12 +5,22 @@
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_aisjx"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_w80op"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8svpj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0f73"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0h4i7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_phusf"]
 bg_color = Color(0, 0, 0, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0ucg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kklww"]
 bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_hghmq"]
@@ -20,7 +30,7 @@ font_size = 8
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_8svpj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_e0f73")
 script = ExtResource("1_j7po5")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -36,17 +46,19 @@ layout_mode = 2
 [node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_ryuwo")]
 layout_mode = 2
 icon = 49
+flip_v = false
 is_hoverable = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
+alignment = 1
 
 [node name="LockedTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
 visible = false
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0h4i7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_phusf")
 icon = 43
 panel_color = Color(0, 0, 0, 0)
 is_disabled = true
@@ -54,15 +66,17 @@ title = "[PREREQUISITES MISSING]"
 
 [node name="OptionTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_t0ucg")
-icon = 49
+theme_override_styles/panel = SubResource("StyleBoxFlat_kklww")
+icon = 52
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0)
 inactive_color = Color(0.448712, 0.448712, 0.448712, 1)
 title = "Option title goes here"
 
 [node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-text = "     Description goes here AND IT CAN GET VERY LONG."
+size_flags_vertical = 1
+text = "Description goes here AND IT CAN GET VERY LONG."
 label_settings = SubResource("LabelSettings_hghmq")
 uppercase = true

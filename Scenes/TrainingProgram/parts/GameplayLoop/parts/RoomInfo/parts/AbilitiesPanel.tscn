@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://ck8ttsctrjixj"]
+[gd_scene load_steps=13 format=3 uid="uid://ck8ttsctrjixj"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/abilities_panel.gd" id="1_ca3oi"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_5xkpy"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_8kspe"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_3y3wk"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_72r62"]
@@ -18,27 +19,21 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_w2clb"]
-font = ExtResource("2_8kspe")
-font_size = 8
-outline_size = 8
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk6po"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q73qc"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eixod"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ynjwk"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4ixr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t7ytq"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -48,6 +43,12 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7nh3o"]
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_w2clb"]
+font = ExtResource("2_8kspe")
+font_size = 8
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Abilities" type="VBoxContainer"]
 theme_override_constants/separation = 8
@@ -81,7 +82,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = " ABILITIES"
-label_settings = SubResource("LabelSettings_w2clb")
+label_settings = ExtResource("2_5xkpy")
 vertical_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
@@ -97,14 +98,14 @@ layout_mode = 2
 
 [node name="TextBtn" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rk6po")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q73qc")
 icon = 14
 title = "ABILITY 1  (5)"
 
 [node name="TextBtn2" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_eixod")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ynjwk")
 icon = 1
 is_disabled = true
 title = "ABILITY 1  (5)"
@@ -112,7 +113,7 @@ title = "ABILITY 1  (5)"
 [node name="TextBtn3" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_y4ixr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t7ytq")
 icon = 1
 is_disabled = true
 title = "ABILITY 1  (5)"

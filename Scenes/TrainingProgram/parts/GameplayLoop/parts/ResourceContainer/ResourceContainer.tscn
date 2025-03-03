@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=16 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/resource_container.gd" id="1_qt3uu"]
+[ext_resource type="PackedScene" uid="uid://c7j2nka1uvvlq" path="res://UI/ScpPanel/ScpPanel.tscn" id="3_6lc06"]
 [ext_resource type="PackedScene" uid="uid://crk6mkpuid5a3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/DetailPanel.tscn" id="3_fwkup"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_glskr"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_sg6pc"]
@@ -62,46 +63,58 @@ script = ExtResource("1_qt3uu")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
-size_flags_horizontal = 8
 
 [node name="DetailPanel" parent="Control" instance=ExtResource("3_fwkup")]
 custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-offset_left = -551.0
-offset_top = 11.0
-offset_right = -251.0
-offset_bottom = 142.0
-grow_horizontal = 0
+layout_direction = 2
+layout_mode = 1
+offset_left = -307.0
+offset_top = 78.0
+offset_right = -7.0
+offset_bottom = 209.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ipeeg")
 
 [node name="Control2" type="Control" parent="."]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="Control2"]
+[node name="ScpPanel" parent="Control2" instance=ExtResource("3_6lc06")]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -329.0
+offset_top = 10.0
+offset_right = -255.0
+offset_bottom = 66.0
+grow_horizontal = 0
+hide_level = true
+
+[node name="ResourcePanel" type="PanelContainer" parent="Control2"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -248.0
-offset_top = 11.0
+offset_top = 10.0
 offset_right = -8.0
-offset_bottom = 67.0
+offset_bottom = 66.0
 grow_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_k0xqh")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control2/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Control2/ResourcePanel"]
 layout_mode = 2
 theme_override_constants/margin_top = -6
 theme_override_constants/margin_right = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control2/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control2/ResourcePanel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = -5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control2/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -109,69 +122,69 @@ text = " RESOURCES "
 label_settings = ExtResource("3_glskr")
 vertical_alignment = 1
 
-[node name="Label2" type="Label" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Label2" type="Label" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
-text = "PERSONNEL "
+size_flags_horizontal = 3
+text = " PERSONNEL "
 label_settings = ExtResource("3_glskr")
-horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Control2/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="Resources" type="PanelContainer" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="Resources" type="PanelContainer" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cq7eb")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources"]
+[node name="MarginContainer" type="MarginContainer" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="ResourceItemMoney" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemMoney" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_23dn8")
 icon = 30
 display_at_bottom = true
 
-[node name="ResourceItemEnergy" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemEnergy" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ma8sc")
 icon = 31
 no_bg = true
 display_at_bottom = true
 
-[node name="ResourceItemScience" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemScience" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_vkppb")
 icon = 39
 no_bg = true
 display_at_bottom = true
 
-[node name="VSeparator" type="VSeparator" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
+[node name="VSeparator" type="VSeparator" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
 layout_mode = 2
 
-[node name="ResourceItemStaff" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemStaff" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_lnuhb")
 icon = 34
 display_at_bottom = true
 
-[node name="ResourceItemSecurity" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemSecurity" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6qwbu")
 icon = 35
 display_at_bottom = true
 
-[node name="ResourceItemDClass" parent="Control2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
+[node name="ResourceItemDClass" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_h3pbi")
 icon = 32

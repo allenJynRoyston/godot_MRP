@@ -1,7 +1,27 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://yyon0s8snla2"]
 
-[ext_resource type="Shader" path="res://Shader/CurveTextureRect/CurveTextureRect.gdshader" id="1_d04wt"]
+[sub_resource type="Shader" id="Shader_1kmfr"]
+code = "shader_type canvas_item;
+
+uniform float corner_scale: hint_range(0., 1.) = 0.;
+
+bool isOut(float x, float y) {
+    return pow(x, 2.) + pow(y, 2.) > pow(corner_scale * .5, 2.);
+}
+
+void fragment() {
+    float s = corner_scale * .5;
+
+    if (
+        (UV.x < s      && UV.y < s      && isOut(UV.x - s,      UV.y - s)) ||
+        (UV.x < s      && UV.y > 1. - s && isOut(UV.x - s,      UV.y - 1. + s)) ||
+        (UV.x > 1. - s && UV.y < s      && isOut(UV.x - 1. + s, UV.y - s)) ||
+        (UV.x > 1. - s && UV.y > 1. - s && isOut(UV.x - 1. + s, UV.y - 1. + s))
+    ) {
+        COLOR.a = 0.;
+    }
+}"
 
 [resource]
-shader = ExtResource("1_d04wt")
-shader_parameter/corner_scale = 0.04
+shader = SubResource("Shader_1kmfr")
+shader_parameter/corner_scale = 0.242

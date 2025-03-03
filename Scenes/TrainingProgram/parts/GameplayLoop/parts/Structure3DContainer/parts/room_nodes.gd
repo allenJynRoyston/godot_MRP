@@ -186,8 +186,8 @@ func update_boards() -> void:
 						right_label_3d.text =  "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.scp.is_empty() else room_extract.scp.details.name] 
 						right_status_label.text = ""
 						if !room_extract.scp.is_empty():							
-							if room_extract.scp.is_transfer:
-								right_status_label.text = "TRANSFERING"
+							#if room_extract.scp.is_transfer:
+								#right_status_label.text = "TRANSFERING"
 							right_status_label.text = "CONTAINED" #if !room_extract.scp.testing.is_empty() else "TESTING..."	
 # --------------------------------------------------------
 

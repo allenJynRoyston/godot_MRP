@@ -426,8 +426,8 @@ func open_scp_menu() -> void:
 	var is_room_active:bool = room_extract.is_activated
 	var room_category:int = room_extract.room_category
 	var is_scp_empty:bool = room_extract.is_scp_empty
-	var	is_scp_transfering:bool = room_extract.is_scp_transfering
-	var is_scp_contained:bool = room_extract.is_scp_contained
+	#var	is_scp_transfering:bool = room_extract.is_scp_transfering
+	#var is_scp_contained:bool = room_extract.is_scp_contained
 	var researchers_count:int = room_extract.researchers_count	
 	var options_list:Array = []
 			
@@ -445,55 +445,20 @@ func open_scp_menu() -> void:
 			"is_disabled": scp_data.available_list.size() == 0,
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true
-				var response:Dictionary = await GameplayNode.contain_scp(current_location.duplicate(), scp_data.available_list[0].ref)
+				await GameplayNode.contain_scp(current_location.duplicate(), scp_data.available_list[0].ref)
 				ActiveMenu.freeze_inputs = false
-				if response.has_changes:
-					open_scp_menu(),
-		})		
-		
-	if is_scp_transfering:
+				open_scp_menu()
+		})
+	else:
 		options_list.push_back({
-			"title": "CANCEL CONTAINMENT",
+			"title": "DETAILS",
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true
-				var response:Dictionary = await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.AQ.CONTAIN)
+				await GameplayNode.view_scp_details(room_extract.scp.details.ref)
 				ActiveMenu.freeze_inputs = false
-				if response.has_changes:
-					open_scp_menu(),
-		})							
-
-	if is_scp_contained:
-		if is_scp_transfering:
-			options_list.push_back({
-				"title": "CANCEL TRANSFER" ,
-				"onSelect": func() -> void:
-					ActiveMenu.freeze_inputs = true
-					var response:Dictionary = await GameplayNode.contain_scp_cancel(current_location.duplicate(), ACTION.ROOM_NODE.CANCEL_TRANSFER_SCP)
-					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_scp_menu(),
-			})
-		else:
-			options_list.push_back({
-				"title": "TRANSFER TO...",
-				"onSelect": func() -> void:
-					ActiveMenu.freeze_inputs = true
-					var response:Dictionary = await GameplayNode.transfer_scp(current_location.duplicate())
-					ActiveMenu.freeze_inputs = false
-					if response.has_changes:
-						open_scp_menu(),
-			})			
-
-	options_list.push_back({
-		"title": "UPGRADE",
-		"onSelect": func() -> void:
-			pass
-			#ActiveMenu.freeze_inputs = true
-			#var response:Dictionary = await GameplayNode.upgrade_scp(current_location.duplicate())
-			#ActiveMenu.freeze_inputs = false
-			#if response.has_changes:
-				#open_scp_menu(),
-	})			
+				open_scp_menu()
+		})					
+		
 
 	ActiveMenu.show_ap = false
 	ActiveMenu.header = "CONTAINMENT"
@@ -558,6 +523,58 @@ func open_researcher_menu() -> void:
 
 	ActiveMenu.header = "RESEARCHER"
 	ActiveMenu.use_color = Color(0, 0.965, 0.278)
+	ActiveMenu.options_list = options_list		
+	await U.tick()
+	ActiveMenu.size = Vector2(1, 1)
+	ActiveMenu.custom_minimum_size = Vector2(1, 1)
+	ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
+	ActiveMenu.open()
+# --------------------------------------------------------------------------------------------------				
+
+# --------------------------------------------------------------------------------------------------				
+func open_debug_menu() -> void:
+	# setup cloes behavior
+	ActiveMenu.onClose = func() -> void:	
+		GBL.find_node(REFS.ROOM_NODES).is_active = false	
+		set_btn_disabled_state(false)
+	
+	# make room nodes active
+	GBL.find_node(REFS.ROOM_NODES).is_active = true
+	
+	# enable/disable buttons
+	ActiveMenu.freeze_inputs = false
+	set_btn_disabled_state(true)
+	
+	# pull data, create the options list
+	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
+	var room_is_empty:bool = room_extract.is_room_empty
+	var researchers_count:int = room_extract.researchers_count
+	var is_room_active:bool = room_extract.is_activated
+	var room_is_active
+	
+	var options_list := []
+	options_list.push_back({
+		"title": "BACK",
+		"onSelect": func() -> void:	
+			GBL.find_node(REFS.ROOM_NODES).is_active = false
+			ActiveMenu.close()
+			set_btn_disabled_state(false)
+	})
+	
+	options_list.push_back({
+		"title": "TRIGGER MORALE EVENT...",
+		"onSelect": func() -> void:
+			ActiveMenu.freeze_inputs = true
+			var props:Dictionary = {"onSelection": func(selected):print(selected)}
+			await GameplayNode.triggger_event(EVT.TYPE.MORALE, props)
+			ActiveMenu.freeze_inputs = false
+			open_debug_menu(),
+	})		
+	
+
+	ActiveMenu.header = "DEBUG"
+	ActiveMenu.use_color = Color.WHITE
 	ActiveMenu.options_list = options_list		
 	await U.tick()
 	ActiveMenu.size = Vector2(1, 1)
@@ -740,34 +757,6 @@ func buildout_btns() -> void:
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
-			pass
-			#new_left_btn_list.push_back({
-				#"title": "UPGRADE",
-				#"assigned_key": "1",
-				#"icon": SVGS.TYPE.TARGET,
-				#"onClick": func() -> void:
-					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						#open_hr_menu()
-			#})			
-			
-			#new_left_btn_list.push_back({
-				#"title": "PROMOTE",
-				#"assigned_key": "2",
-				#"icon": SVGS.TYPE.TARGET,
-				#"onClick": func() -> void:
-					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						#open_hr_menu()
-			#})
-			#
-			#new_left_btn_list.push_back({
-				#"title": "SCP",
-				#"assigned_key": "3",
-				#"icon": SVGS.TYPE.TARGET,
-				#"onClick": func() -> void:
-					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						#open_scp_details()
-			#})
-
 			# ---- RIGHT SIDE
 			new_right_btn_list.push_back({
 				"title": "QUICKSAVE",
@@ -881,6 +870,14 @@ func buildout_btns() -> void:
 						#U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)
 						#ActiveMenu.freeze_inputs = false
 						#show_details(),			
+			new_right_btn_list.push_back({
+				"title": "DEBUG",
+				"assigned_key": "-",
+				"icon": SVGS.TYPE.DOWNLOAD,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+						open_debug_menu()
+			})							
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_DATABASE_BTN]:
 				new_right_btn_list.push_back({
@@ -889,7 +886,7 @@ func buildout_btns() -> void:
 					"icon": SVGS.TYPE.CONVERSATION,
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-							await GameplayNode.open_scp_database()
+							GameplayNode.open_scp_database()
 				})				
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN]:
@@ -899,7 +896,7 @@ func buildout_btns() -> void:
 					"icon": SVGS.TYPE.TXT_FILE,
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-							pass
+							GameplayNode.open_objectives()
 				})				
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN]:

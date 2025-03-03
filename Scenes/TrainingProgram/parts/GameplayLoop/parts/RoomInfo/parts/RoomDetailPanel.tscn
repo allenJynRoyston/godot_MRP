@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://biv0mqroc6kax"]
+[gd_scene load_steps=13 format=3 uid="uid://biv0mqroc6kax"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/room_detail_panel.gd" id="1_jnfvn"]
-[ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="2_wii5y"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_tv0lg"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_a1e2a"]
+[ext_resource type="Shader" path="res://Shader/Static.gdshader" id="5_27vul"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_sy5tt"]
-[ext_resource type="Material" uid="uid://dt5rnlt5lhsnj" path="res://Shader/Static.tres" id="6_533ma"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5ihl"]
 bg_color = Color(0, 0, 0, 1)
@@ -18,6 +17,32 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="Shader" id="Shader_1kmfr"]
+code = "shader_type canvas_item;
+
+uniform float corner_scale: hint_range(0., 1.) = 0.;
+
+bool isOut(float x, float y) {
+    return pow(x, 2.) + pow(y, 2.) > pow(corner_scale * .5, 2.);
+}
+
+void fragment() {
+    float s = corner_scale * .5;
+
+    if (
+        (UV.x < s      && UV.y < s      && isOut(UV.x - s,      UV.y - s)) ||
+        (UV.x < s      && UV.y > 1. - s && isOut(UV.x - s,      UV.y - 1. + s)) ||
+        (UV.x > 1. - s && UV.y < s      && isOut(UV.x - 1. + s, UV.y - s)) ||
+        (UV.x > 1. - s && UV.y > 1. - s && isOut(UV.x - 1. + s, UV.y - 1. + s))
+    ) {
+        COLOR.a = 0.;
+    }
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_he85d"]
+shader = SubResource("Shader_1kmfr")
+shader_parameter/corner_scale = 0.038
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_ht6pm"]
 viewport_path = NodePath("SubViewport")
@@ -34,6 +59,11 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dl052"]
+shader = ExtResource("5_27vul")
+shader_parameter/noise_strength = 0.241
+shader_parameter/speed = 0.01
+
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_66sit"]
 
 [node name="RoomDetailsPanel" type="PanelContainer"]
@@ -42,7 +72,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_q5ihl")
 script = ExtResource("1_jnfvn")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = ExtResource("2_wii5y")
+material = SubResource("ShaderMaterial_he85d")
 layout_mode = 2
 texture = SubResource("ViewportTexture_ht6pm")
 stretch_mode = 2
@@ -151,7 +181,7 @@ transparent_bg = true
 size = Vector2i(185, 75)
 
 [node name="ProfileImage" type="TextureRect" parent="SubViewport"]
-material = ExtResource("6_533ma")
+material = SubResource("ShaderMaterial_dl052")
 offset_right = 185.0
 offset_bottom = 75.0
 texture = SubResource("PlaceholderTexture2D_66sit")

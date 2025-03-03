@@ -31,11 +31,11 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Control"]
 layout_mode = 0
-offset_top = 25.0
-offset_right = 250.0
-offset_bottom = 229.0
+offset_top = 20.0
+offset_right = 255.0
+offset_bottom = 341.0
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 13
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer"]
 layout_mode = 2

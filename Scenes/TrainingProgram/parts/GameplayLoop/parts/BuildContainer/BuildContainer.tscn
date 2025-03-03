@@ -17,7 +17,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3mux"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3tfw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3tkl"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -29,7 +29,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s2ecq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h7wld"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -41,7 +41,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i84rb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ty6ju"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -155,82 +155,26 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/h_separation = 25
 theme_override_constants/v_separation = 10
-columns = 4
+columns = 6
 
 [node name="ShopMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-show_already_unlocked = false
 ref = -1
 
 [node name="ShopMiniCard2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-show_already_unlocked = false
 ref = -1
 
 [node name="ShopMiniCard3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-show_already_unlocked = false
 ref = -1
 
 [node name="ShopMiniCard4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-flip = false
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard10" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-flip = false
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard11" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-flip = false
-show_already_unlocked = false
-ref = -1
-
-[node name="ShopMiniCard12" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-flip = false
-show_already_unlocked = false
 ref = -1
 
 [node name="MoreBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mq6a8")]
@@ -290,7 +234,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e3tfw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_p3tkl")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -298,7 +242,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="PurchaseBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s2ecq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_h7wld")
 title = "PURCHASE"
 assigned_key = "E"
 icon = 10
@@ -306,7 +250,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="PlacementBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_i84rb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ty6ju")
 title = "PLACE"
 assigned_key = "E"
 icon = 10

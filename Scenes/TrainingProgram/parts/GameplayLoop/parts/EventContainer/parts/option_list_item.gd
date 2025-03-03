@@ -1,5 +1,6 @@
 extends MouseInteractions
 
+@onready var RootPanel:PanelContainer = $"."
 @onready var MarginContainerPanel:MarginContainer = $MarginContainer
 @onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
 @onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/DescriptionLabel
@@ -42,9 +43,9 @@ func _ready() -> void:
 
 # ----------------------	
 func fade_out() -> void:
-	tween_option_color(DescriptionLabel, "modulate", Color.TRANSPARENT, 0.3)
+	tween_option_color(DescriptionLabel, "modulate", Color(1, 0, 0, 0.3), 0.3)
 	for node in [IconBtn, LockedTextBtn, OptionTextBtn]:
-		tween_option_color(node, "static_color", Color.TRANSPARENT, 0.3)
+		tween_option_color(node, "static_color", Color(1, 1, 1, 0.3), 0.3)
 		
 # ----------------------		
 
@@ -64,6 +65,9 @@ func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	IconBtn.icon = (SVGS.TYPE.CLEAR if is_locked else SVGS.TYPE.NEXT) if is_selected else SVGS.TYPE.NONE
 	OptionTextBtn.inactive_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if is_selected else COLORS.TEXT.INACTIVE)
+	var stylebox:StyleBoxFlat = RootPanel.get("theme_override_styles/panel").duplicate()
+	stylebox.border_color = Color.WHITE if is_selected else Color.WEB_GRAY
+	RootPanel.set('theme_override_styles/panel', stylebox)
 	
 func on_show_description_update() -> void:
 	if !is_node_ready():return

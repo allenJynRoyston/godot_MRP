@@ -66,6 +66,10 @@ layout_mode = 2
 
 [node name="ObjectivesContainer" parent="." instance=ExtResource("15_g2w1o")]
 layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_bottom = 150
 
 [node name="RoomInfo" parent="." instance=ExtResource("6_fbysn")]
 layout_mode = 2
@@ -118,7 +122,10 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
+visible = true
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="SetupContainer" parent="." instance=ExtResource("21_jqp8v")]
 visible = false

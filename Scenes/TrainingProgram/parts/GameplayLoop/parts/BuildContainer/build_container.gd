@@ -19,7 +19,7 @@ extends GameContainer
 
 enum MODE {HIDE, CONTENT_SELECT, PLACEMENT}
 
-const ShopMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn")
+const cards_on_screen:int = 4
 
 var current_mode:MODE = MODE.HIDE : 
 	set(val):
@@ -124,8 +124,8 @@ func on_current_location_update(new_val:Dictionary) -> void:
 # --------------------------------------------------------------------------------------------------		
 func update_grid_content() -> void:
 	var query:Dictionary
-	var start_at:int = page_tracker * 12
-	var end_at:int = start_at + 12
+	var start_at:int = page_tracker * cards_on_screen
+	var end_at:int = start_at + cards_on_screen
 
 	query = ROOM_UTIL.get_all_unlocked_paginated_list(start_at, end_at)
 

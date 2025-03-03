@@ -203,6 +203,10 @@ var MORALE:Dictionary = {
 				return {
 					"header": "Morale 1 event",
 					"img_src": "res://Media/images/redacted.png",
+					"portrait": {
+						"title": "DR SMITHERS",
+						"img_src": 	"res://Media/images/example_doctor.jpg",
+					},					
 					"text": [
 						"MORALE EVENT 1",
 					],
@@ -228,7 +232,15 @@ var MORALE:Dictionary = {
 					"text": [
 						"You selected %s" % [option_selected.val],
 					]
-				}	
+				},
+			# ---------
+			func() -> Dictionary:
+				return {
+					"text": [
+						"And yet they soldiered on.",
+					]
+				}					
+				
 		],
 }
 # ------------------------------------------------------------------------

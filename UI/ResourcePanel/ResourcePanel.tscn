@@ -16,21 +16,21 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqhfp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pjij5"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_luosp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjebh"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3pgtj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yv7vr"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -83,20 +83,20 @@ columns = 3
 [node name="TextBtn" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_gqhfp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pjij5")
 icon = 30
 title = "5"
 
 [node name="TextBtn2" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_luosp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qjebh")
 icon = 31
 title = "5"
 
 [node name="TextBtn3" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_3pgtj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_yv7vr")
 icon = 32
 title = "5"
