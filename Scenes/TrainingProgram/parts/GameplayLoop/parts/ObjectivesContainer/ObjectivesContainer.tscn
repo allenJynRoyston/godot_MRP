@@ -69,7 +69,7 @@ layout_mode = 2
 offset_right = 250.0
 offset_bottom = 86.0
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 200
+theme_override_constants/margin_top = 100
 
 [node name="PanelContainer" type="PanelContainer" parent="ObjectivesControl/MarginContainer"]
 custom_minimum_size = Vector2(250, 0)
