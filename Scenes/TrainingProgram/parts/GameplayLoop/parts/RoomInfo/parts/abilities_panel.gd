@@ -38,31 +38,31 @@ func on_extract_data_update() -> void:
 	var room_state:Dictionary = extract_data.room_base_state
 	var ap:int = extract_data.room.ap
 	var ap_diff:int = extract_data.room.ap_diff
-	var upgrade_level:int = extract_data.room.upgrade_level
+	#var upgrade_level:int = extract_data.room.upgrade_level
 
 	for index in active_abilities.size():
 		var ability:Dictionary = active_abilities[index]
-		if upgrade_level >= ability.available_at_lvl:
-			var new_btn:Control = TextBtnPreload.instantiate()
-			new_btn.is_hoverable = false
-			new_btn.panel_color = Color.TRANSPARENT
-			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			new_btn.title = ability.name if ability.name.length() <= str_len else str(ability.name.substr(0, str_len), "...")
-			new_btn.is_disabled = ap < ability.ap_cost
-			new_btn.icon = SVGS.TYPE.CLEAR if ap < ability.ap_cost else SVGS.TYPE.NEXT
-			List.add_child(new_btn)
+		#if upgrade_level >= ability.available_at_lvl:
+		var new_btn:Control = TextBtnPreload.instantiate()
+		new_btn.is_hoverable = false
+		new_btn.panel_color = Color.TRANSPARENT
+		new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		new_btn.title = ability.name if ability.name.length() <= str_len else str(ability.name.substr(0, str_len), "...")
+		new_btn.is_disabled = ap < ability.ap_cost
+		new_btn.icon = SVGS.TYPE.CLEAR if ap < ability.ap_cost else SVGS.TYPE.NEXT
+		List.add_child(new_btn)
 		
 	for index in passive_abilities.size():
 		var ability:Dictionary = passive_abilities[index]
-		if upgrade_level >= ability.available_at_lvl:
-			var new_btn:Control = TextBtnPreload.instantiate()
-			new_btn.is_hoverable = false
-			new_btn.panel_color = Color.TRANSPARENT
-			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			new_btn.title = ability.name if ability.name.length() <= str_len else str(ability.name.substr(0, 20), "...")
-			new_btn.is_disabled = ability.available_at_lvl < upgrade_level
-			new_btn.icon = SVGS.TYPE.CHECKBOX if index in room_state.passives_enabled else SVGS.TYPE.EMPTY_CHECKBOX
-			List.add_child(new_btn)		
+		#if upgrade_level >= ability.available_at_lvl:
+		var new_btn:Control = TextBtnPreload.instantiate()
+		new_btn.is_hoverable = false
+		new_btn.panel_color = Color.TRANSPARENT
+		new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		new_btn.title = ability.name if ability.name.length() <= str_len else str(ability.name.substr(0, 20), "...")
+		#new_btn.is_disabled = ability.available_at_lvl < upgrade_level
+		new_btn.icon = SVGS.TYPE.CHECKBOX if index in room_state.passives_enabled else SVGS.TYPE.EMPTY_CHECKBOX
+		List.add_child(new_btn)		
 	
 	TitleLabel.text =  " %s" % ["PASSIVE ABILITIES" if passive_abilities.size() > 0 else "ABILITIES"]
 	

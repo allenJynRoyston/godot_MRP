@@ -85,40 +85,6 @@ label_settings = ExtResource("2_1mtlm")
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="LvlContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tpv5")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = -4
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "LVL"
-label_settings = SubResource("LabelSettings_kci6w")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="LvlLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 1
-text = "xx"
-label_settings = SubResource("LabelSettings_xiti1")
-horizontal_alignment = 1
-
 [node name="ApContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2

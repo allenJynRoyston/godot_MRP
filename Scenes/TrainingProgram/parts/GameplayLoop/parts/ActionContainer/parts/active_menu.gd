@@ -11,8 +11,6 @@ extends Control
 @onready var ApChargeContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer
 @onready var ApChargeLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer/MarginContainer/VBoxContainer/HBoxContainer/ApChargeLabel
 
-@onready var LevelContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer
-@onready var LevelLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/LvlContainer/MarginContainer/VBoxContainer/HBoxContainer/LvlLabel
 
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
@@ -172,7 +170,7 @@ func on_ap_charge_val_update() -> void:
 	
 func on_level_update() -> void:
 	if !is_node_ready():return	
-	LevelLabel.text = "%s" % ["%s" % [level] if level != -1  else ""]
+	#LevelLabel.text = "%s" % ["%s" % [level] if level != -1  else ""]
 	
 func on_show_ap_update() -> void:
 	if !is_node_ready():return
@@ -186,7 +184,7 @@ func on_show_ap_charge_update() -> void:
 	
 func check_ap_panel() -> void:
 	ApPanel.hide() if (!show_ap_charge and !show_ap) else ApPanel.show()	
-	LevelContainer.hide() if (!show_ap_charge and !show_ap) else LevelContainer.show()	
+	#LevelContainer.hide() if (!show_ap_charge and !show_ap) else LevelContainer.show()	
 
 func on_header_update() -> void:
 	if !is_node_ready():return

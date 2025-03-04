@@ -74,27 +74,23 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 
 	# -----------------------------------
-	"testing_options": {
+	"testing_options": [
 		# -------------------------
-		SCP.TESTING.ONE: {
+		{
 			"name": "Research one",
 			"description": "",
-			"repeatable": true,
-			"prerequisites": func() -> Dictionary:
-				return {
-					"traits": [],
-					"specializations": []
-				},
 			"requirements": {
 				"resources": {
 					"amount": func() -> Dictionary:
 						return {
 							RESOURCE.TYPE.MONEY: 50,
+							RESOURCE.TYPE.SCIENCE: 50,
+							RESOURCE.TYPE.ENERGY: 50,
 						},
-					"utilized": func() -> Dictionary:
-						return {
-							RESOURCE.TYPE.STAFF: 5
-						},
+					#"utilized": func() -> Dictionary:
+						#return {
+							#RESOURCE.TYPE.STAFF: 5
+						#},
 				}
 			},	
 			"event_instructions": func(room_extract:Dictionary, count:int) -> Array:
@@ -135,159 +131,10 @@ var SCP_001:Dictionary = {
 				],
 		},
 		# -------------------------
-		
-		# -------------------------
-		SCP.TESTING.TWO: {
-			"name": "Research two",
-			"description": "",
-			"repeatable": true,
-			"prerequisites": func() -> Dictionary:
-				return {
-					"traits": [],
-					"specializations": []
-				},
-			"requirements": {
-				"resources": {
-					"amount": func() -> Dictionary:
-						return {
-							RESOURCE.TYPE.MONEY: 50,
-						},
-					"utilized": func() -> Dictionary:
-						return {
-							#RESOURCE.TYPE.STAFF: 10
-						},
-				}
-			},
-			"event_instructions": func(room_extract:Dictionary, count:int) -> Array:
-				var scp_details:Dictionary = room_extract.scp.details
-				var researchers:Array = room_extract.researchers
-				var testing_details:Dictionary = room_extract.scp.testing
-				var is_success:bool = true
-
-				var option_selected:Dictionary = {"val": null}
-				var onSelected = func(val:int) -> void:
-					option_selected.val = val
-					
-				for researcher in researchers:
-					RESEARCHER_UTIL.add_experience(researcher.uid, 11)
-				
-				var options:Array = [{
-					"completed": false,
-					"title": "Resolve (success).",
-					"val": -1,
-					"onSelected": onSelected			
-				}] if is_success else [{
-					"completed": false,
-					"title": "Resolve (fail).",
-					"val": -1,
-					"onSelected": onSelected			
-				}]
-				
-
-				return [
-					func() -> Dictionary:
-						return {
-							"header": "%s: RESEARCH ONE COMPLETE" % [scp_details.name],
-							"img_src": scp_details.img_src,
-							"text": [
-								"THIS IS A SUCCESS STATE"
-							] if is_success else [
-								"THIS IS A FAIL STATE"
-							],
-							"options": options
-						},	
-				],
-			# -------------------------
-		},
-		# -------------------------
-		
-		# -------------------------
-		SCP.TESTING.THREE: {
-			"name": "Research three",
-			"description": "",
-			"repeatable": true,
-			"prerequisites": func() -> Dictionary:
-				return {
-					"traits": [],
-					"specializations": []
-				},
-			"requirements": {
-				"resources": {
-					"amount": func() -> Dictionary:
-						return {
-							RESOURCE.TYPE.MONEY: 50,
-						},
-					"utilized": func() -> Dictionary:
-						return {
-							#RESOURCE.TYPE.DCLASS: 12
-						},						
-				}
-			},
-			"event_instructions": func(room_extract:Dictionary, count:int) -> Array:
-				var scp_details:Dictionary = room_extract.scp.details
-				var is_success:bool = true
-				
-				var option_selected:Dictionary = {"val": null}
-				var onSelected = func(val:int) -> void:
-					option_selected.val = val
-				
-				
-				var options:Array = [{
-					"completed": false,
-					"title": "Resolve (success).",
-					"val": -1,
-					"onSelected": onSelected			
-				}] if is_success else [{
-					"completed": false,
-					"title": "Resolve (fail).",
-					"val": -1,
-					"onSelected": onSelected			
-				}]
-				
-				
-					
-				return [
-					func() -> Dictionary:
-						return {
-							"header": "%s: RESEARCH ONE COMPLETE" % [scp_details.name],
-							"img_src": scp_details.img_src,
-							"text": [
-								"THIS IS A SUCCESS STATE"
-							] if is_success else [
-								"THIS IS A FAIL STATE"
-							],
-							"options": options
-						},	
-				],
-			# -------------------------
-		}
-		# -------------------------
-		
-	},
-	# -----------------------------------	
 	
-	## -----------------------------------	
-	#"unlockables": {
-		#SCP.UNLOCKABLE.ONE: {
-			#"add_to": {
-				#"containment_procedures": func(self_ref:Dictionary) -> Array: 
-					#return [
-						#"ADDENUMDUM:",
-						#"Containment of %s requires the use of 2 guards stationed outside the door." % [self_ref.name]
-					#],
-				#"description": func(self_ref:Dictionary) -> Array:
-					#return [
-						#"%s should show up now that I've been added." % [self_ref.name]
-					#],
-			#},
-			#
-			#"event_text": func(self_ref:Dictionary) -> Array:
-				#return [
-					#"You ignore the knocking."
-				#],
-		#}
-	#},
-	## -----------------------------------
+		
+	],
+	# -----------------------------------	
 	
 	# -----------------------------------
 	"events": {
@@ -795,18 +642,31 @@ func calculate_ongoing_containment(ref:int, resources_data:Dictionary, refund:bo
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_utilized_amounts(scp_ref:int, testing_ref:int) -> Dictionary:
+func return_testing_requirements(scp_ref:int, testing_index:int) -> Array:
 	var scp_data:Dictionary = return_data(scp_ref)
-	var resource_requirements:Dictionary = scp_data.testing_options[testing_ref].requirements.resources
+	var list:Array = []
+
+	var resource_requirements:Dictionary = scp_data.testing_options[testing_index].requirements.resources
+	if "amount" in resource_requirements:
+		var amount_dict:Dictionary = resource_requirements.amount.call()
+		for key in amount_dict:
+			var amount:int = amount_dict[key]
+			list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})	
 	
-	return resource_requirements.utilized.call() if "utilized" in resource_requirements else {}
+	if "utilized" in resource_requirements:
+		var utilized_dict:Dictionary = resource_requirements.utilized.call()
+		for key in utilized_dict:
+			var amount:int = utilized_dict[key]
+			list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})			
+
+	return list
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_testing_costs(scp_ref:int, testing_ref:int, resources_data:Dictionary) -> Dictionary:
+func calculate_testing_costs(scp_ref:int, testing_index:int) -> Dictionary:
 	var scp_data:Dictionary = return_data(scp_ref)
 	var resource_data_copy:Dictionary = resources_data.duplicate(true)
-	var resource_requirements:Dictionary = scp_data.testing_options[testing_ref].requirements.resources
+	var resource_requirements:Dictionary = scp_data.testing_options[testing_index].requirements.resources
 	
 	if "utilized" in resource_requirements:
 		var dict:Dictionary = resource_requirements.utilized.call()

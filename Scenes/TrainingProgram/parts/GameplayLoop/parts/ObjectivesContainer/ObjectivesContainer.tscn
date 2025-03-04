@@ -65,17 +65,22 @@ script = ExtResource("1_5mn2c")
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl"]
-layout_mode = 2
-offset_right = 250.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -130.0
+offset_right = 130.0
 offset_bottom = 86.0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 100
+grow_horizontal = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 150
 
 [node name="PanelContainer" type="PanelContainer" parent="ObjectivesControl/MarginContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 0
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_dpj5t")
 
 [node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl/MarginContainer/PanelContainer"]

@@ -32,7 +32,7 @@ func _ready() -> void:
 
 # -----------------------------------------------
 func start() -> void:	
-	uid = RESEARCHER_UTIL.check_for_promotions()[0].uid
+	uid = hired_lead_researchers_arr[0][0]
 	refs = [0, 1, 2]
 # -----------------------------------------------
 

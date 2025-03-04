@@ -61,7 +61,7 @@ enum CONTAIN_STEPS {
 
 enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
 enum SUMMARY_STEPS {RESET, START, DISMISS}
-enum RESEARCHERS_STEPS {RESET, DETAILS_ONLY, ASSIGN}
+enum RESEARCHERS_STEPS {RESET, DETAILS_ONLY, ASSIGN, PROMOTE}
 enum EVENT_STEPS {RESET, START}
 enum SELECT_SCP_STEPS { RESET, START, DATABASE }
 enum PROMOTE_RESEARCHER_STEPS { RESET, START }
@@ -230,7 +230,7 @@ var initial_values:Dictionary = {
 				"capacity": 100
 			},
 			RESOURCE.TYPE.SCIENCE: {
-				"amount": 20, 
+				"amount": 100, 
 				"utilized": 0, 
 				"capacity": 9999
 			},
@@ -314,7 +314,9 @@ var initial_values:Dictionary = {
 					room[str(floor_index, ring_index, room_index)] = {
 						"is_activated": false,  
 						"is_destroyed": false,
-						"upgrade_level": 0,		#	default level
+						"abilities_unlocked": [],
+						"passives_unlocked": [],
+						#"upgrade_level": 0,		#	default level
 						"ap": 7,				#	default ap available
 						"passives_enabled": [],	#	no passives enabled 
 					}						
@@ -803,6 +805,8 @@ func restore_default_state() -> void:
 
 # ------------------------------------------------------------------------------
 func show_only(nodes:Array = []) -> void:
+	capture_current_showing_state()
+	
 	var show_filter:Array = get_all_container_nodes().filter(func(node): return node in nodes)
 	var hide_filter:Array = get_all_container_nodes().filter(func(node): return node not in nodes)
 	
@@ -813,8 +817,9 @@ func show_only(nodes:Array = []) -> void:
 	for node in show_filter:
 		if node.is_showing != true:
 			node.is_showing = true
-			
+	
 	await U.set_timeout(0.5)
+	
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1223,7 +1228,7 @@ func game_over() -> void:
 #endregion
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------	
+# -----------------------------------------------------------------------------
 #region ROOM ACTION QUEUE (assign/unassign/dismiss, etc)
 func set_floor_lockdown(from_location:Dictionary, state:bool) -> Dictionary:
 	var title:String
@@ -1283,8 +1288,7 @@ func set_wing_emergency_mode(from_location:Dictionary, mode:ROOM.EMERGENCY_MODES
 # ------------------------------------------------------------------------------
 func activate_floor(from_location:Dictionary) -> bool:
 	SUBSCRIBE.suppress_click = true
-	capture_current_showing_state()
-	
+
 	var activated_count:int = 0
 	for n in room_config.floor.size():
 		if base_states.floor[str(n)].is_powered:
@@ -1294,19 +1298,15 @@ func activate_floor(from_location:Dictionary) -> bool:
 	
 	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.ENERGY)}]
 	ConfirmModal.set_props("Activate this floor?")
-	
-	if !can_purchase:
-		ConfirmModal.cancel_only = true
 	await show_only([ConfirmModal, Structure3dContainer])	
-	var response:Dictionary = await ConfirmModal.user_response
+	var confirm:bool = await ConfirmModal.user_response
 	
-	match response.action:		
-		ACTION.NEXT:
-			base_states.floor[str(from_location.floor)].is_powered = true
-			SUBSCRIBE.base_states = base_states
+	if confirm:
+		base_states.floor[str(from_location.floor)].is_powered = true
+		SUBSCRIBE.base_states = base_states
 			
-	await restore_showing_state()
-	return response.action == ACTION.NEXT
+	restore_showing_state()	
+	return confirm
 # ------------------------------------------------------------------------------
 		
 # ------------------------------------------------------------------------------	
@@ -1335,68 +1335,68 @@ func cancel_construction(from_location:Dictionary) -> Dictionary:
 # ---------------------	
 
 # ---------------------
-func activate_room(from_location:Dictionary, room_ref:int, skip_prompt:bool = false) -> Dictionary:
+func activate_room(from_location:Dictionary, skip_prompt:bool = false) -> bool:
+	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
+	var room_ref:int = extract_details.room.details.ref
+	
+		
 	if skip_prompt:
 		base_states.room[U.location_to_designation(from_location)].is_activated = true
 		SUBSCRIBE.base_states = base_states
 		SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, false)
-		return {}		
-			
-	capture_current_showing_state()
-			
+		return false	
+
 	# first, check if you have enough resources to activate room
-	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
+	SUBSCRIBE.suppress_click = true
 	var can_activate:bool = extract_details.can_activate
-	var activation_requirements:Array = ROOM_UTIL.return_activation_cost(extract_details.room.details.ref)
+	var activation_requirements:Array = ROOM_UTIL.return_activation_cost(room_ref)
 	# --------------
-	if !can_activate:
-		# does not have enough to activate
-		ConfirmModal.confirm_only = true
+	if !can_activate:		
 		ConfirmModal.activation_requirements = activation_requirements
 		ConfirmModal.set_props("You don't have enough personel to staff this room.")
 		await show_only([ConfirmModal, Structure3dContainer])	
-		await ConfirmModal.user_response
-		await restore_showing_state()
-		
-		return {"has_changes": false}
+		var confirm:bool = await ConfirmModal.user_response
+		restore_showing_state()
+		SUBSCRIBE.suppress_click = false
+		return false
 	
 	# -------------- ACTIVATE UPDATE
-	ConfirmModal.set_props("Activate %s?" % [extract_details.room.details.name])
+	ConfirmModal.set_props("Activate %s?" % [extract_details.room.details.name])	
 	await show_only([ConfirmModal, Structure3dContainer])	
-	var response:Dictionary = await ConfirmModal.user_response
-
-	base_states.room[U.location_to_designation(from_location)].is_activated = true
-	SUBSCRIBE.base_states = base_states
-	SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, false)
-
-	await restore_showing_state()
-	
-	return {"has_changes": response.action == ACTION.NEXT}
+	var confirm:bool = await ConfirmModal.user_response
+	if confirm:
+		base_states.room[U.location_to_designation(from_location)].is_activated = true
+		SUBSCRIBE.base_states = base_states
+		SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, false)	
+	SUBSCRIBE.suppress_click = false
+	restore_showing_state()
+	return confirm
 # ---------------------
 
 # ---------------------
-func deactivate_room(from_location:Dictionary, room_ref:int) -> Dictionary:
-	capture_current_showing_state()
-			
-	# first, check if you have enough resources to activate room
+func deactivate_room(from_location:Dictionary) -> bool:
 	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
-
+	var room_ref:int = extract_details.room.details.ref
+		
 	# -------------- ACTIVATE UPDATE
 	ConfirmModal.set_props("Deactivate %s?" % [extract_details.room.details.name], "Personnel [COUNT] will be made available.")
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var response:Dictionary = await ConfirmModal.user_response
-
-	base_states.room[U.location_to_designation(from_location)].is_activated = false
-	SUBSCRIBE.base_states = base_states
-	SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, true)
+	SUBSCRIBE.suppress_click = true
 	
-	await restore_showing_state()	
-	return {"has_changes": response.action == ACTION.NEXT}
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var confirm:bool = await ConfirmModal.user_response
+	if confirm:
+		base_states.room[U.location_to_designation(from_location)].is_activated = false
+		SUBSCRIBE.base_states = base_states
+		SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, true)
+	SUBSCRIBE.suppress_click = false
+	
+	restore_showing_state()	
+	
+	return confirm
 # ---------------------
 
 # ---------------------
 func reset_room(from_location:Dictionary) -> Dictionary:
-	capture_current_showing_state()
 	
 	var floor_index:int = from_location.floor
 	var ring_index:int = from_location.ring
@@ -1406,146 +1406,171 @@ func reset_room(from_location:Dictionary) -> Dictionary:
 	
 	# ---------------------
 	if reset_arr.size() > 0:
+		SUBSCRIBE.suppress_click = true
 		ConfirmModal.set_props("This room will be destroyed.", "Personnel [COUNT] will be made available." if room_extract.is_activated else "")
-			
+		SUBSCRIBE.suppress_click = true
 		await show_only([ConfirmModal, Structure3dContainer])	
 		var response:Dictionary = await ConfirmModal.user_response
 		match response.action:		
 			ACTION.NEXT:
 				var reset_item:Dictionary = reset_arr[0]
 				if room_extract.is_activated:
-					deactivate_room(from_location, room_extract.room.details.ref)
+					deactivate_room(from_location)
 					
 				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
 				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, true)
-		
+		SUBSCRIBE.suppress_click = false
 		await restore_showing_state()
 		return {"has_changes": response.action == ACTION.NEXT}
-	
-	
 	# ---------------------
 	await restore_showing_state()
 	
 	return {"has_changes": false}		
 # ---------------------
 
+# ------------------------------------------------------------------------------
+func unlock_ability(from_location:Dictionary, ability_index:int) -> bool:
+	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
+	var room_details:Dictionary = extract_details.room.details
+	var room_ref:int = extract_details.room.details.ref
+	var ability_details:Dictionary = extract_details.room.abilities[ability_index]
+	var unlock_costs:Array = ROOM_UTIL.return_ability_cost(room_details.ref, ability_index)
+
+	ConfirmModal.activation_requirements = unlock_costs
+	ConfirmModal.set_props("Unlock [%s]?" % [ability_details.name])
+	
+	#if !can_purchase:
+		#ConfirmModal.cancel_only = true
+	SUBSCRIBE.suppress_click = true		
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var confirm:bool = await ConfirmModal.user_response
+	if confirm:
+			var designation:String = U.location_to_designation(from_location)
+			# add ability
+			if ability_index not in base_states.room[designation].abilities_unlocked:
+				base_states.room[designation].abilities_unlocked.push_back(ability_index)
+			SUBSCRIBE.base_states = base_states
+			
+			# SUBTRACT UPGRADES RESOURCES
+			RESOURCE_UTIL.subtract_costs(unlock_costs)
+			
+	restore_showing_state()
+	SUBSCRIBE.suppress_click = false
+	return confirm
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func unlock_passive_ability(from_location:Dictionary, ability_index:int) -> bool:
+	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
+	var room_details:Dictionary = extract_details.room.details
+	var room_ref:int = extract_details.room.details.ref
+	var ability_details:Dictionary = extract_details.room.passive_abilities[ability_index]
+	var unlock_costs:Array = ROOM_UTIL.return_passive_abilities_cost(room_details.ref, ability_index)
+
+	ConfirmModal.activation_requirements = unlock_costs
+	ConfirmModal.set_props("Unlock [%s]?" % [ability_details.name])
+	
+	#if !can_purchase:
+		#ConfirmModal.cancel_only = true
+	SUBSCRIBE.suppress_click = true		
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var response:Dictionary = await ConfirmModal.user_response
+	match response.action:		
+		ACTION.NEXT:
+			var designation:String = U.location_to_designation(from_location)
+			# add ability
+			if ability_index not in base_states.room[designation].passives_unlocked:
+				base_states.room[designation].passives_unlocked.push_back(ability_index)
+			SUBSCRIBE.base_states = base_states
+			
+			# SUBTRACT UPGRADES RESOURCES
+			RESOURCE_UTIL.subtract_costs(unlock_costs)
+			
+	await restore_showing_state()
+	SUBSCRIBE.suppress_click = false
+	return response.action == ACTION.NEXT
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
+	SUBSCRIBE.suppress_click = true
+	var contained_data:Dictionary = find_in_contained(scp_ref)
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	var testing_index:int = scp_data.contained_list[contained_data.index].testing_completed
+	
+	if testing_index >= scp_details.testing_options.size():
+		ConfirmModal.set_props("There's no additional test scenarios available.")
+		await show_only([ConfirmModal, Structure3dContainer])	
+		await ConfirmModal.user_response
+		restore_showing_state()	
+		return true
+	
+	var testing_event:Dictionary = scp_details.testing_options[testing_index]
+	ConfirmModal.activation_requirements = SCP_UTIL.return_testing_requirements(scp_ref, testing_index)
+	ConfirmModal.set_props("Begin testing on %s?" % [scp_details.name], "THERE ARE RISKS ASSOCIATED WITH TESTING.", scp_details.img_src)
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var confirm:bool = await ConfirmModal.user_response
+	
+	#TODO: ADD EVENT 	
+	if confirm:
+		SUBSCRIBE.resources_data = SCP_UTIL.calculate_testing_costs(scp_ref, testing_index)
+		var extract_data:Dictionary = ROOM_UTIL.extract_room_details(from_location)		
+		event_data = [{"event_instructions": testing_event.event_instructions.call(extract_data, 0)}]
+		await on_events_complete
+		# increament and save
+		scp_data.contained_list[contained_data.index].testing_completed = U.min_max( contained_data.data.testing_completed + 1, 0, scp_details.testing_options.size())
+		SUBSCRIBE.scp_data = scp_data		
+		# need to restore hud here
+		await U.tick()
+		restore_player_hud()
+		
+	else:
+		restore_showing_state()	
+	
+
+	return confirm
+# ------------------------------------------------------------------------------
+	
 #endregion
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
 #region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
-#func on_completed_action(timeline_item:Dictionary) -> void:
-	#match timeline_item.action:
-		## ----------------------------
-		## RUNS AFTER A TESTING EVENT HAS COMPLETEDperform_action
-		#ACTION.AQ.TESTING:  
-			#var scp_ref:int = timeline_item.ref 
-			#var testing_ref:int = timeline_item.props.testing_ref
-			#var utilized_amounts:Dictionary = timeline_item.props.utilized_amounts
-			#var res:Dictionary = find_in_contained(scp_ref)
-			#var index:int = res.index
-			#
-			## refunds utilized amounts
-			#SUBSCRIBE.resources_data = SCP_UTIL.calculate_refunded_utilizied(utilized_amounts, resources_data)
-#
-			## trigger post research event
-			#await check_testing_events(scp_ref, testing_ref)
-			#
-			## update reesearch completed
-			#if testing_ref not in scp_data.contained_list[index].research_completed:
-				#scp_data.contained_list[index].research_completed.push_back(testing_ref)
-				#
-			## promote researchers
-			#if RESEARCHER_UTIL.check_for_promotions().size() > 0:
-				#promote_researchers()
-				#await on_promotions_complete
-#
-			## clear out testing data
-			#scp_data.contained_list[index].current_testing = {}
-			#
-			#SUBSCRIBE.scp_data = scp_data
-		## ----------------------------
-		#ACTION.AQ.CONTAIN:
-			## first, remove from available list...
-			#scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != timeline_item.ref)
-			## then add to contained list...
-			#var new_contained_item:Dictionary = create_new_contained_item(timeline_item.ref, timeline_item.location)
-			#scp_data.contained_list.push_back(new_contained_item)
-#
-			#SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(timeline_item.ref, resources_data)
-			#SUBSCRIBE.scp_data = scp_data
-#
-			#await check_events(timeline_item.ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT)
-		## ----------------------------
-		#ACTION.AQ.TRANSFER:
-			#scp_data.contained_list = scp_data.contained_list.map(func(i):
-				#if i.ref == timeline_item.ref:
-					## move to new location
-					#i.location = i.transfer_status.location
-					## remove transfer status
-					#i.transfer_status = {
-						#"state": false, 
-						#"days_till_complete": -1,
-						#"location": {}	
-					#}
-				#return i
-			#)
-			#
-			#SUBSCRIBE.scp_data = scp_data
-			#await check_events(timeline_item.ref, SCP.EVENT_TYPE.AFTER_TRANSFER)
-		## ----------------------------
-			#
-	#remove_from_timeline(timeline_item)
-## -----------------------------------
-
 # -----------------------------------
 func cancel_action_queue(timeline_item:Dictionary, include_restore:bool = true) -> bool:
 	match timeline_item.action:
 		ACTION.AQ.CONTAIN:
 			ConfirmModal.set_props("Cancel containment?", "There are no costs for this action.")
 		ACTION.AQ.TRANSFER:
-			ConfirmModal.set_props("Cancel transfer?", "There are no costs for this action.")					
+			ConfirmModal.set_props("Cancel transfer?", "There are no costs for this action.")
 		ACTION.AQ.BUILD_ITEM:
 			ConfirmModal.set_props("Cancel construction?", "Resources will be refunded.")
-		ACTION.AQ.RESEARCH_ITEM:
-			ConfirmModal.set_props("Cancel research?", "Resources will be refunded.")						
-		ACTION.AQ.BASE_ITEM:
-			ConfirmModal.set_props("Cancel base upgrade?", "Resources will be refunded.")
-		ACTION.AQ.ACCESSING:
-			ConfirmModal.set_props("Cancel accessing SCP?", "Unspent resources will be refunded.")
-		ACTION.AQ.TESTING:
-			ConfirmModal.set_props("Cancel SCP testing?", "Unspent resources will be refunded.")			
 		_:
 			ConfirmModal.set_props("Missing instruction...", "Check for errors.")
 			
 	await show_only([Structure3dContainer, ConfirmModal])	
-	var response:Dictionary = await ConfirmModal.user_response
-	match response.action:
-		ACTION.NEXT:
-			match timeline_item.action:
-				ACTION.AQ.BUILD_ITEM:
-					SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(timeline_item.ref, true)
-				ACTION.AQ.RESEARCH_ITEM:
-					SUBSCRIBE.resources_data = RD_UTIL.calculate_purchase_cost(timeline_item.ref, true)
-				ACTION.AQ.BASE_ITEM:
-					SUBSCRIBE.resources_data = BASE_UTIL.calculate_purchase_cost(timeline_item.ref, true)
-				ACTION.AQ.CONTAIN:
-					cancel_scp_containment(timeline_item.ref)
-				ACTION.AQ.TRANSFER:
-					cancel_scp_transfer(timeline_item.ref)
-					
-			await remove_from_timeline(timeline_item)
+	var confirm:bool = await ConfirmModal.user_response
+	if confirm:
+		match timeline_item.action:
+			ACTION.AQ.BUILD_ITEM:
+				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(timeline_item.ref, true)
+			ACTION.AQ.CONTAIN:
+				cancel_scp_containment(timeline_item.ref)
+			ACTION.AQ.TRANSFER:
+				cancel_scp_transfer(timeline_item.ref)
+				
+		await remove_from_timeline(timeline_item)
 	
 	if include_restore:
 		await restore_player_hud()
 		
-	return response.action == ACTION.NEXT
+	return confirm
 # -----------------------------------
 
 # -----------------------------------
 func remove_from_timeline(timeline_item:Dictionary) -> void:	
 	SUBSCRIBE.timeline_array = timeline_array.filter(func(i): return i.uid != timeline_item.uid)
-	#await ActionQueueContainer.remove_from_queue([timeline_item])
+	await U.tick()
 # -----------------------------------
 
 # -----------------------------------
@@ -1577,6 +1602,20 @@ func open_objectives() -> bool:
 # ------------------------------------------------------------------------------	
 #region SCP FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
+func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
+	return { 
+		"ref": ref,
+		"location": location,
+		"days_in_containment": 0,
+		"testing_completed": 0,
+		"event_type_count": {
+			#["type/event_id"]: count[int]
+		},
+	}
+# -----------------------------------
+
+
+# -----------------------------------
 func get_new_scp() -> bool:
 	# TODO: add something to determine next set of SCPs
 	SCPSelectScreen.start_selection([0, 1])
@@ -1598,19 +1637,6 @@ func view_scp_details(ref) -> bool:
 	return await on_scp_select_complete
 # -----------------------------------
 
-# -----------------------------------
-func create_new_contained_item(ref:int, location:Dictionary) -> Dictionary:
-	return { 
-		"ref": ref,
-		"unlocked": [],
-		"location": location,
-		"days_in_containment": 0,
-		"attached_researchers": [],
-		"event_type_count": {
-			#["type/event_id"]: count[int]
-		},
-	}
-# -----------------------------------
 
 # -----------------------------------
 func find_in_contained_via_location(from_location:Dictionary) -> Dictionary:
@@ -1667,41 +1693,27 @@ func find_in_available(ref:int) -> Dictionary:
 # -----------------------------------	
 
 # -----------------------------------
-func contain_scp(from_location:Dictionary, scp_ref:int) -> void:
+func contain_scp(from_location:Dictionary, scp_ref:int) -> bool:
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	ConfirmModal.set_props("Contain %s here?" % [scp_details.name], "", scp_details.img_src)
 	await show_only([Structure3dContainer, ConfirmModal])
-	var response:Dictionary = await ConfirmModal.user_response	
-	match response.action:
-		ACTION.NEXT:	
-			# first, remove from available list...
-			scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != scp_ref)
-			# then add to contained list...
-			var new_contained_item:Dictionary = create_new_contained_item(scp_ref, from_location)
-			scp_data.contained_list.push_back(new_contained_item)
-			print(scp_data)
-			SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
-			SUBSCRIBE.scp_data = scp_data
+	var confirm:bool = await ConfirmModal.user_response	
+	if confirm:
+		# first, remove from available list...
+		scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != scp_ref)
+		# then add to contained list...
+		var new_contained_item:Dictionary = create_new_contained_item(scp_ref, from_location)
+		scp_data.contained_list.push_back(new_contained_item)
+		SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
+		SUBSCRIBE.scp_data = scp_data
 		
-	restore_player_hud()		
+	restore_showing_state()		
+	return confirm
 # -----------------------------------
 
 # -----------------------------------
 func transfer_scp(from_location:Dictionary) -> Dictionary:
 	return {}
-# -----------------------------------
-
-# -----------------------------------
-func upgrade_scp(from_location:Dictionary) -> Dictionary:
-	ConfirmModal.set_props("Upgrade SCP?")
-	await show_only([Structure3dContainer, ConfirmModal])
-	var response:Dictionary = await ConfirmModal.user_response	
-	match response.action:
-		ACTION.NEXT:	
-			pass
-		
-	restore_player_hud()		
-	return {"has_changes": response.action != ACTION.BACK}
 # -----------------------------------
 
 # -----------------------------------
@@ -1771,75 +1783,17 @@ func on_expired_scp_items_update() -> void:
 # ------------------------------------------------------------------------------	
 #region RESEARCHER FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
-func recruit_new_researcher(options_available:int) -> bool:
-	SelectResearcherScreen.start(options_available)
+func recruit_new_researcher(total_options:int) -> bool:
+	SelectResearcherScreen.total_options = total_options 
 	current_recruit_step = RECRUIT_STEPS.OPEN
 	return await on_recruit_complete		
 # -----------------------------------
 
 # -----------------------------------
-func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
-	var dict:Dictionary = RESOURCE_UTIL.return_data(type)
-	
-	ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
-	await show_only([Structure3dContainer, ConfirmModal])
-	
-	var response:Dictionary = await ConfirmModal.user_response
-	match response.action:
-		ACTION.NEXT:	
-			resources_data[type].amount += amount
-			SUBSCRIBE.resources_data = resources_data
-			ToastContainer.add("Hired %s %s!" % [amount, dict.name])
-		
-	return response.action == ACTION.NEXT
-# -----------------------------------	
-
-# -----------------------------------	
-func fire_personel(type:RESOURCE.TYPE, amount:int) -> bool:
-	var dict:Dictionary = RESOURCE_UTIL.return_data(type)	
-	# NOT ENOUGH
-	if resources_data[type].amount == 0:
-		ConfirmModal.confirm_only = true
-		ConfirmModal.set_props("You don't have any %s." % [dict.name], "Oopsie.")
-		await show_only([Structure3dContainer, ConfirmModal])
-		var response:Dictionary = await ConfirmModal.user_response
-		await U.set_timeout(0.3)
-		return false
-		
-	# CONTINUE AND RELEASE
-	var fire_val:int = amount if amount > resources_data[type].amount else resources_data[type].amount
-	ConfirmModal.set_props("Fire %s %s?" % [fire_val, dict.name])
-	await show_only([Structure3dContainer, ConfirmModal])
-	
-	var response:Dictionary = await ConfirmModal.user_response
-	match response.action:
-		ACTION.NEXT:	
-			resources_data[type].amount = U.min_max(resources_data[type].amount - amount, 0, resources_data[type].capacity)
-			SUBSCRIBE.resources_data = resources_data
-			ToastContainer.add("Fired %s %s." % [amount, dict.name])
-		
-	await U.set_timeout(0.3)
-	return response.action == ACTION.NEXT
-# -----------------------------------		
-	
-	
-
-# -----------------------------------
-func promote_researchers() -> void:	
-	var list:Array = RESEARCHER_UTIL.check_for_promotions()	
-	if list.size() == 0:
-		on_promotions_complete.emit()
-		return
-	current_researcher_promotion_step = PROMOTE_RESEARCHER_STEPS.START
-	await on_promote_researcher_complete
-	promote_researchers()
-# -----------------------------------
-
-# -----------------------------------
-func assign_researcher(location_data:Dictionary) -> Dictionary:
+func assign_researcher(location_data:Dictionary) -> bool:
 	current_researcher_step = RESEARCHERS_STEPS.ASSIGN
-	var response:Dictionary = await ResearchersContainer.user_response
-	
+	var response:Dictionary = await on_researcher_component_complete
+
 	match response.action:
 		ACTION.RESEARCHERS.SELECT:
 			# add new researchers
@@ -1852,43 +1806,37 @@ func assign_researcher(location_data:Dictionary) -> Dictionary:
 					i[9].assigned_to_room = location_data.duplicate()
 				return i
 			)
-			
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 			
-	restore_player_hud()
-	return {"has_changes": response.action != ACTION.RESEARCHERS.BACK }
+#
+	return response.action == ACTION.RESEARCHERS.SELECT
 # -----------------------------------
 
 # -----------------------------------
-func dismiss_researcher(researcher_data:Dictionary) -> void:
-	# first, remove from any projects
-	#scp_data.contained_list = scp_data.contained_list.map(func(i): 
-		#if !i.lead_researcher.is_empty() and (i.lead_researcher.uid == researcher_data.details.uid):
-			#i.lead_researcher = {}
-		#return i
-	#)
+func promote_researchers() -> bool:	
+	current_researcher_step = RESEARCHERS_STEPS.PROMOTE	
+	var response:Dictionary = await ResearchersContainer.user_response
+
+	match response.action:
+		ACTION.RESEARCHERS.SELECT:
+			print("promote this researcher...")
+			# add new researchers
+			#hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				## clear out prior researchers
+				#if U.dictionaries_equal(i[9].assigned_to_room, location_data):
+					#i[9].assigned_to_room = {}
+				## add current users
+				#if i[0] in response.uids:
+					#i[9].assigned_to_room = location_data.duplicate()
+				#return i
+			#)
+			
+			#SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 	
-	hired_lead_researchers_arr = hired_lead_researchers_arr.filter(func(i):
-		return i[0] != researcher_data.details.uid	
-	)
-	
-	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
-	SUBSCRIBE.scp_data = scp_data
+	return false
 # -----------------------------------
 
-# -----------------------------------
-func assign_researcher_to_scp(location:Dictionary, assign:bool) -> void:
-	pass
-	#var scp_list_data:Dictionary = find_in_contained_via_location(location)
-	#print(scp_list_data)
-	#if assign:
-		#await assign_researcher_to_scp_find_researcher(location)
-	#else:
-		#await unassign_researcher_to_scp(scp_list_data.data.ref)
-		#
-	#await restore_player_hud()
-	#on_assign_researcher_to_scp_complete.emit()
-# -----------------------------------	
+
 
 # -----------------------------------	
 func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) -> Dictionary:
@@ -1911,40 +1859,69 @@ func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) ->
 # -----------------------------------	
 
 # -----------------------------------
-func assign_researcher_to_scp_find_scp(reseacher_details:Dictionary) -> void:
-	pass
-	#ContainmentContainer.assign_only = true
-	#await show_only([ContainmentContainer])
-	#var response:Dictionary = await ContainmentContainer.user_response
-	#match response.action:
-		#ACTION.CONTAINED.SELECT_FOR_ASSIGN:
-			#var res:Dictionary = find_in_contained(response.data.ref)
-			#var index:int = res.index
-			#var list_data:Dictionary = res.data
-			#scp_data.contained_list[index].lead_researcher = {
-				#"uid": reseacher_details.details.uid
-			#}
-			#SUBSCRIBE.scp_data = scp_data	
-			#
-	#await restore_player_hud()
+func dismiss_researcher(researcher_data:Dictionary) -> void:
+	# first, remove from any projects
+	#scp_data.contained_list = scp_data.contained_list.map(func(i): 
+		#if !i.lead_researcher.is_empty() and (i.lead_researcher.uid == researcher_data.details.uid):
+			#i.lead_researcher = {}
+		#return i
+	#)
+	
+	hired_lead_researchers_arr = hired_lead_researchers_arr.filter(func(i):
+		return i[0] != researcher_data.details.uid	
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+	SUBSCRIBE.scp_data = scp_data
 # -----------------------------------
 
 # -----------------------------------
-func unassign_researcher_to_scp(scp_ref:int) -> void:
-	var res:Dictionary = find_in_contained(scp_ref)
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	var index:int = res.index
-	var list_data:Dictionary = res.data
-	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(list_data.lead_researcher.uid)
-
-	ConfirmModal.set_props("Remove %s as Lead Researcher on %s?" % [researcher_details.name, scp_details.name])
+func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
+	var dict:Dictionary = RESOURCE_UTIL.return_data(type)
+	
+	ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
 	await show_only([Structure3dContainer, ConfirmModal])
+	
 	var response:Dictionary = await ConfirmModal.user_response
 	match response.action:
 		ACTION.NEXT:	
-			scp_data.contained_list[index].lead_researcher = {}
-			SUBSCRIBE.scp_data = scp_data
+			resources_data[type].amount += amount
+			SUBSCRIBE.resources_data = resources_data
+			ToastContainer.add("Hired %s %s!" % [amount, dict.name])
+	
+	restore_showing_state()
+	return response.action == ACTION.NEXT
 # -----------------------------------	
+
+# -----------------------------------	
+func fire_personel(type:RESOURCE.TYPE, amount:int) -> bool:
+	var dict:Dictionary = RESOURCE_UTIL.return_data(type)	
+	# NOT ENOUGH
+	if resources_data[type].amount == 0:
+		ConfirmModal.confirm_only = true
+		ConfirmModal.set_props("You don't have any %s." % [dict.name], "Oopsie.")
+		
+		await show_only([Structure3dContainer, ConfirmModal])
+		var response:Dictionary = await ConfirmModal.user_response
+		await restore_showing_state()
+		return false
+		
+	# CONTINUE AND RELEASE
+	var fire_val:int = amount if amount > resources_data[type].amount else resources_data[type].amount	
+	ConfirmModal.set_props("Fire %s %s?" % [fire_val, dict.name])
+	
+	await show_only([Structure3dContainer, ConfirmModal])
+	
+	var response:Dictionary = await ConfirmModal.user_response
+	match response.action:
+		ACTION.NEXT:	
+			resources_data[type].amount = U.min_max(resources_data[type].amount - amount, 0, resources_data[type].capacity)
+			SUBSCRIBE.resources_data = resources_data
+			ToastContainer.add("Fired %s %s." % [amount, dict.name])
+		
+	await restore_showing_state()
+	return response.action == ACTION.NEXT
+# -----------------------------------		
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -2253,7 +2230,7 @@ func on_current_builder_step_update() -> void:
 			selected_shop_item = {}
 			
 			BuildContainer.start()
-			capture_current_showing_state()
+			
 			await show_only([BuildContainer, Structure3dContainer, ResourceContainer])
 			var response:Dictionary = await BuildContainer.user_response
 			await BuildContainer.end()
@@ -2277,19 +2254,15 @@ func on_current_objective_state_update() -> void:
 		# ---------------
 		OBJECTIVES_STATE.HIDE:
 			SUBSCRIBE.suppress_click = false
-			restore_showing_state()
 		# ---------------
 		OBJECTIVES_STATE.SHOW:
 			SUBSCRIBE.suppress_click = true
-
-			capture_current_showing_state()			
-			await show_only([ObjectivesContainer, Structure3dContainer, ResourceContainer, MetricsContainer])
+			show_only([ObjectivesContainer, Structure3dContainer, ResourceContainer, MetricsContainer])
 			ObjectivesContainer.start()
 			await ObjectivesContainer.user_response
-
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			restore_showing_state()
 			current_objective_state = OBJECTIVES_STATE.HIDE
-			await U.set_timeout(0.3)
 			on_objective_signal.emit(true)	
 		## ---------------
 
@@ -2313,7 +2286,7 @@ func on_current_shop_step_update() -> void:
 			selected_shop_item = {}
 			
 			StoreContainer.start()
-			capture_current_showing_state()
+			
 			await show_only([StoreContainer, Structure3dContainer, ResourceContainer])
 			var response:bool = await StoreContainer.user_response
 			await StoreContainer.end()
@@ -2381,7 +2354,7 @@ func on_current_contain_step_update() -> void:
 					#current_contain_step = CONTAIN_STEPS.START
 				# --------------------
 				ACTION.CONTAINED.UNASSIGN_RESEARCHER:
-					await unassign_researcher_to_scp(selected_contain_item.ref)
+					#await unassign_researcher_to_scp(selected_contain_item.ref)
 					current_contain_step = CONTAIN_STEPS.START
 		# ---------------
 		CONTAIN_STEPS.PLACEMENT:
@@ -2503,26 +2476,7 @@ func on_current_contain_step_update() -> void:
 
 # ------------------------------------------------------------------------------	RECRUIT STEPS
 #region RECRUIT STEPS
-func on_current_recruit_step_update() -> void:
-	if !is_node_ready():return
 
-	match current_recruit_step:
-		# ---------------
-		RECRUIT_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-		# ---------------
-		RECRUIT_STEPS.OPEN:
-			SUBSCRIBE.suppress_click = true
-			await show_only([SelectResearcherScreen])
-			var response:bool = await SelectResearcherScreen.user_response
-			SelectResearcherScreen.is_showing = false
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			
-			# trigger signal
-			on_recruit_complete.emit(response)
-			current_recruit_step = RECRUIT_STEPS.RESET
-
-		# ---------------
 
 #endregion
 # ------------------------------------------------------------------------------		
@@ -2567,12 +2521,9 @@ func on_current_event_step_update() -> void:
 
 	match current_event_step:
 		EVENT_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-			restore_showing_state()
+			SUBSCRIBE.suppress_click = false			
 		EVENT_STEPS.START:
-			SUBSCRIBE.suppress_click = true
-			
-			capture_current_showing_state()			
+			SUBSCRIBE.suppress_click = true			
 			await show_only([Structure3dContainer, EventContainer])
 			EventContainer.event_data = event_data
 			EventContainer.start()
@@ -2582,6 +2533,7 @@ func on_current_event_step_update() -> void:
 			on_events_complete.emit(event_res)			
 			# reset and evempty event_data
 			event_data = []
+			restore_showing_state()
 			current_event_step = EVENT_STEPS.RESET
 #endregion
 # ------------------------------------------------------------------------------		
@@ -2621,9 +2573,8 @@ func on_current_select_scp_step_update() -> void:
 		# ------------------------
 		SELECT_SCP_STEPS.START:
 			SUBSCRIBE.suppress_click = true
-			capture_current_showing_state()
-			await show_only([SCPSelectScreen])
 			
+			await show_only([SCPSelectScreen])			
 			var response:bool = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			await restore_showing_state()	
@@ -2633,9 +2584,8 @@ func on_current_select_scp_step_update() -> void:
 		# ------------------------
 		SELECT_SCP_STEPS.DATABASE:			
 			SUBSCRIBE.suppress_click = true
-			capture_current_showing_state()
-			await show_only([SCPSelectScreen])
 			
+			await show_only([SCPSelectScreen])			
 			var response:bool = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			await restore_showing_state()	
@@ -2647,6 +2597,28 @@ func on_current_select_scp_step_update() -> void:
 
 # ------------------------------------------------------------------------------		
 #region RESEARCHER STEPS
+func on_current_recruit_step_update() -> void:
+	if !is_node_ready():return
+
+	match current_recruit_step:
+		# ---------------
+		RECRUIT_STEPS.RESET:
+			SUBSCRIBE.suppress_click = false
+		# ---------------
+		RECRUIT_STEPS.OPEN:
+			SUBSCRIBE.suppress_click = true
+			
+			await show_only([SelectResearcherScreen])
+			SelectResearcherScreen.start()
+			var response:bool = await SelectResearcherScreen.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			
+			# trigger signal
+			on_recruit_complete.emit(response)
+			await restore_showing_state()
+			current_recruit_step = RECRUIT_STEPS.RESET
+
+
 func on_current_researcher_promotion_step_update() -> void:
 	if !is_node_ready():return
 	
@@ -2654,8 +2626,6 @@ func on_current_researcher_promotion_step_update() -> void:
 		# ------------------------
 		PROMOTE_RESEARCHER_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
-			on_promote_researcher_complete.emit()
 		# ------------------------
 		PROMOTE_RESEARCHER_STEPS.START:
 			SUBSCRIBE.suppress_click = true
@@ -2664,8 +2634,10 @@ func on_current_researcher_promotion_step_update() -> void:
 			await show_only([])
 			ResearcherPromotionNode.start()
 			await ResearcherPromotionNode.user_response
-			ResearcherPromotionNode.queue_free()
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			ResearcherPromotionNode.queue_free()
+			on_promote_researcher_complete.emit(true)
+			await restore_showing_state()
 			current_select_scp_step = SELECT_SCP_STEPS.RESET
 
 
@@ -2676,67 +2648,51 @@ func on_current_researcher_step_update() -> void:
 		# ------------------------
 		RESEARCHERS_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
-			
 		# ------------------------
 		RESEARCHERS_STEPS.DETAILS_ONLY:
 			SUBSCRIBE.suppress_click = true
+
 			ResearchersContainer.start([], true)
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
+			await restore_showing_state()
 			on_researcher_component_complete.emit()
-			
-			match response.action:
-				ACTION.RESEARCHERS.BACK:
-					current_researcher_step = RESEARCHERS_STEPS.RESET
+			current_researcher_step = RESEARCHERS_STEPS.RESET
 		# ------------------------
 		RESEARCHERS_STEPS.ASSIGN:
 			SUBSCRIBE.suppress_click = true
-			ResearchersContainer.details_only = false
 			
 			var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
 				return U.dictionaries_equal(i[9].assigned_to_room, current_location)
 			).map(func(i): return i[0])
 			
+			
 			ResearchersContainer.start(assigned_uids, false)
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-
+	
+			await restore_showing_state()
 			on_researcher_component_complete.emit(response)
+			current_researcher_step = RESEARCHERS_STEPS.RESET
+		# --------------------------------------
+		RESEARCHERS_STEPS.PROMOTE:
+			SUBSCRIBE.suppress_click = true
 			
-			match response.action:
-				ACTION.RESEARCHERS.BACK:
-					current_researcher_step = RESEARCHERS_STEPS.RESET
+			var uids:Array =  hired_lead_researchers_arr.map(func(i): return i[0])
+			#TODO: THIS NEEDS WORK
+			ResearchersContainer.promote(uids)
+			await show_only([ResearchersContainer])
+			var response:Dictionary = await ResearchersContainer.user_response
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+
+			await restore_showing_state()
+			on_researcher_component_complete.emit(response)
+			current_researcher_step = RESEARCHERS_STEPS.RESET
 		# ------------------------
-		
-		#RESEARCHERS_STEPS.DISMISS:
-			#ConfirmModal.set_props("Dismiss DR %s?" % [selected_researcher_item.details.name], "Researcher will be removed permanently.")
-			#await show_only([Structure3dContainer, ConfirmModal])			
-			#var confirm_response:Dictionary = await ConfirmModal.user_response
-			#match confirm_response.action:
-				#ACTION.BACK:
-					#current_researcher_step = RESEARCHERS_STEPS.START
-				#ACTION.NEXT:
-					#current_researcher_step = RESEARCHERS_STEPS.FINALIZE_DISMISS
-		## ------------------------
-		#RESEARCHERS_STEPS.FINALIZE_DISMISS:
-			#var props:Dictionary = {
-				#"name": selected_researcher_item.details.name,
-				#"onSelection": func(val:EVT.DISMISS_TYPE) -> void:
-					#match val:
-						#EVT.DISMISS_TYPE.THANK_AND_DISMISS:
-							#print('no change, costs money as severence based')
-						#EVT.DISMISS_TYPE.ADMINISTER_AMNESTICS:
-							#print('no change')
-						#EVT.DISMISS_TYPE.TERMINATE:
-							#print('dec morale')
-			#}
-			#await triggger_event(EVT.TYPE.DISMISS_RESEARCHER, props)
-			#dismiss_researcher(selected_researcher_item)
-			#current_researcher_step = RESEARCHERS_STEPS.START
+
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -2916,7 +2872,7 @@ func set_room_config(force_setup:bool = false) -> void:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for n in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[n]
-				if n >= ability.available_at_lvl and n in room_base_state.passives_enabled:
+				if n in room_base_state.passives_enabled:
 					if "conditional" in ability:
 						new_gameplay_conditionals = ability.conditional.call(new_gameplay_conditionals)
 						
@@ -3016,7 +2972,8 @@ func trigger_room_conditionals(ref:int, new_gameplay_conditionals:Dictionary) ->
 			#new_gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP] = true	
 		# -------------------
 		ROOM.TYPE.R_AND_D_LAB:
-			new_gameplay_conditionals[CONDITIONALS.TYPE.UPGRADE_LEVEL] = 0
+			pass
+			#new_gameplay_conditionals[CONDITIONALS.TYPE.UPGRADE_LEVEL] = 0
 		# -------------------
 			
 	return new_gameplay_conditionals

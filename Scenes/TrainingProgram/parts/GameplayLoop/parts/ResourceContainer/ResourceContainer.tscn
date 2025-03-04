@@ -68,9 +68,9 @@ layout_mode = 2
 custom_minimum_size = Vector2(300, 0)
 layout_direction = 2
 layout_mode = 1
-offset_left = -307.0
+offset_left = -310.0
 offset_top = 78.0
-offset_right = -7.0
+offset_right = -10.0
 offset_bottom = 209.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ipeeg")
 

@@ -128,7 +128,7 @@ func update_display() -> void:
 				DescriptionList.add_child(new_node)
 				
 			ActivateBtn.onClick = func() -> void:
-				GameplayNode.activate_room(data.location, details.ref, true)
+				GameplayNode.activate_room(data.location, true)
 				on_next()				
 						
 			SkipBtn.show()

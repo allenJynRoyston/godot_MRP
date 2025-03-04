@@ -107,7 +107,7 @@ func start_read_only(new_refs:Array) -> void:
 
 # -----------------------------------------------
 func end(made_selection:bool) -> void:	
-	for btn in [SelectScp, ConfirmScp, DetailsBtn]:
+	for btn in [SelectScp, ConfirmScp, DetailsBtn, BackBtn]:
 		btn.is_disabled = true
 					
 	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
@@ -278,12 +278,13 @@ func on_current_mode_update() -> void:
 			U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide, 0)
 		# --------------
 		MODE.SELECT_SCP:
-			for btn in [SelectScp, ConfirmScp, DetailsBtn]:
+			for btn in [SelectScp, ConfirmScp, DetailsBtn, BackBtn]:
 				btn.is_disabled = false
 
 			for index in ScpList.get_child_count():
 				var node:Control = ScpList.get_child(index)
 				node.is_deselected = false
+			
 			
 			SelectScp.show() if !read_only else SelectScp.hide()
 			ConfirmScp.hide()			

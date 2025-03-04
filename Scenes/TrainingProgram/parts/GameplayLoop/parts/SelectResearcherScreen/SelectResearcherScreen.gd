@@ -35,14 +35,11 @@ var current_mode:MODE = MODE.HIDE :
 		current_mode = val
 		on_current_mode_update()
 
-var content_restore_pos:int
-var confirm_restore_pos:int
-var trait_restore_pos:int
-var btn_restore_pos:int
 var new_hire_list:Array 
 var is_animating:bool = true
 var control_pos:Dictionary
 var total_options:int = 2
+
 
 # -----------------------------------------------
 func _ready() -> void:
@@ -82,22 +79,37 @@ func _ready() -> void:
 	control_pos[ResearcherControlPanel] = {"show": ResearcherControlPanel.position.x, "hide": ResearcherControlPanel.position.x - ResearcherControlPanel.size.x}
 	control_pos[TraitPanel] = {"show": TraitPanel.position.x, "hide": TraitPanel.position.x + TraitPanel.size.x}
 	control_pos[BtnPanelContainer] = {"show": BtnPanelContainer.position.y, "hide": BtnPanelContainer.position.y + BtnPanelContainer.size.y}
-	
-	on_current_mode_update()
+	on_is_showing_update(true)
 # -----------------------------------------------
 
 # -----------------------------------------------
-func start(_total_options:int = 1) -> void:		
+func start() -> void:		
 	researcher_active_index = 0
-	total_options = 3 #_total_options
 	current_mode = MODE.SELECT_RESEARCHERS
 	create_researchers()
 # -----------------------------------------------
 
 # -----------------------------------------------
 func end(response:bool) -> void:
-	current_mode = MODE.HIDE
+	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
+	U.tween_node_property(ResearcherControlPanel, "position:x", control_pos[ResearcherControlPanel].hide)
+	U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide)
+	await U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide)
+
+	current_mode = MODE.HIDE	
 	user_response.emit(response)
+# -----------------------------------------------	
+
+# -----------------------------------------------
+func on_is_showing_update(skip_animation:bool = false) -> void:
+	super.on_is_showing_update()
+	if !is_node_ready() or control_pos.is_empty():return
+	
+	if !is_showing:
+		U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
+		U.tween_node_property(ResearcherControlPanel, "position:x", control_pos[ResearcherControlPanel].hide, 0 if skip_animation else 0.3)
+		U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide, 0 if skip_animation else 0.3)
+		U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide, 0 if skip_animation else 0.3)	
 # -----------------------------------------------	
 
 # -----------------------------------------------

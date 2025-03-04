@@ -48,7 +48,7 @@ func on_extract_data_update() -> void:
 		TitleLabel.text = " %s " % [extract_data.room.details.shortname]
 		ProfileImage.texture = CACHE.fetch_image(extract_data.room.details.img_src)
 		ProfileImage.material = null
-		LevelLabel.text = "LVL %s " % [extract_data.room.upgrade_level]
+		#LevelLabel.text = "LVL %s " % [extract_data.room.upgrade_level]
 		if !extract_data.is_activated:
 			StatusTag.show()
 			StatusLabel.text = "INACTIVE"

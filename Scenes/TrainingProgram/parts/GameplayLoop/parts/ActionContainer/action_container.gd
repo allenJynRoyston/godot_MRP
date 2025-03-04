@@ -1,7 +1,7 @@
 extends GameContainer
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var MainPanel:MarginContainer = $BtnControl/MarginContainer
+@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
 @onready var Details:Control = $Details
 @onready var DetailsPanel:PanelContainer = $Details/PanelContainer
@@ -35,9 +35,6 @@ var right_btn_list:Array = []
 var is_setup:bool = false
 
 var control_pos:Dictionary
-var restore_pos:int
-var details_restore_pos:int
-var traits_restore_pos:int
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -58,17 +55,15 @@ func _ready() -> void:
 			node.queue_free()	
 	
 	await U.set_timeout(1.0)	
-	restore_pos = MainPanel.position.y		
-	details_restore_pos = DetailsPanel.position.y
+	control_pos[BtnControlPanel] = {"global": BtnControlPanel.position.y, "show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
 	control_pos[LeftSideBtnList] = {"global": LeftSideBtnList.global_position.y, "show": LeftSideBtnList.position.y, "hide": LeftSideBtnList.position.y + LeftSideBtnList.size.y}
-
-	U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
+	control_pos[DetailsPanel] = {"show": DetailsPanel.position.y, "hide": DetailsPanel.position.y - DetailsPanel.size.y}
+	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:
 	set_btn_disabled_state(true)
-	
 	is_showing = false
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -79,18 +74,20 @@ func toggle_camera_view() -> void:
 	#GameplayNode.restore_player_hud()
 	SUBSCRIBE.camera_settings = camera_settings	
 	
-	await U.set_timeout(0.2)
+	await U.set_timeout(0.3)
 	set_btn_disabled_state(false)
 	is_showing = true
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_is_showing_update() -> void:	
+func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
-	if !is_setup:return	
-	U.tween_node_property(MainPanel, "position:y", restore_pos if is_showing else MainPanel.size.y + 20, 0.7)
-	await U.set_timeout(1.0)
-	MainPanel.set_anchors_preset(Control.PRESET_FULL_RECT)	
+	if !is_node_ready() or control_pos.is_empty():return
+		
+	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0.3 if !skip_animation else 0)
+	
+	if !is_showing:
+		U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -108,31 +105,34 @@ func show_details() -> void:
 	var is_activated:bool = room_extract.is_activated
 	var abilities:Array = [] if is_room_empty else room_extract.room.abilities
 	var passive_abilities:Array = [] if is_room_empty else room_extract.room.passive_abilities
+	var abilities_unlocked:Array = [] if is_room_empty else room_extract.room.abilities_unlocked
+	var passives_unlocked:Array = [] if is_room_empty else room_extract.room.passives_unlocked
 	var ap_val:int = 0 if is_room_empty else room_extract.room.ap
 	var ap_charge_val:int = 0 if is_room_empty else room_extract.room.ap_diff
-	var upgrade_level:int = 0 if is_room_empty else room_extract.room.upgrade_level
-	var available_upgrade_levels:int = gameplay_conditionals[CONDITIONALS.TYPE.UPGRADE_LEVEL]
+	#var upgrade_level:int = 0 if is_room_empty else room_extract.room.upgrade_level
+	#var available_upgrade_levels:int = gameplay_conditionals[CONDITIONALS.TYPE.UPGRADE_LEVEL]
 
 	# enable/disable buttons
+	await U.tick()	# DO NOT REMOVE, PREVENTS DOUBLE KEY PRESS
 	ActiveMenu.freeze_inputs = false
 	set_btn_disabled_state(true)
 		
 	# clear list
 	for child in [TraitList, SynergyTraitList, ResearcherList]:
 		for item in child.get_children():
-			item.queue_free()
+			item.free()
 				
 	# animate in/out
 	Details.modulate = Color(1, 1, 1, 1)
-	U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)	
+	U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].show)	
 
 	# setup cloes behavior
 	ActiveMenu.onClose = func() -> void:
-		await U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
+		await U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide)
 		GameplayNode.restore_player_hud()
 		set_btn_disabled_state(false)
 		for child in ResearcherList.get_children():
-			child.queue_free()
+			child.free()
 
 	options_list.push_back({
 		"title": "BACK",
@@ -145,11 +145,12 @@ func show_details() -> void:
 		# ----------------------- PASSIVE ABILITIES
 		for n in passive_abilities.size():
 			var ability:Dictionary = passive_abilities[n]
-			var can_use:bool = upgrade_level >= ability.available_at_lvl
+			var can_use:bool = n in passives_unlocked
 			var enough_ap_to_use:bool = ap_charge_val < ability.ap_cost				
-			if available_upgrade_levels >= n:
+			
+			if can_use:
 				options_list.push_back({
-					"title": "%s %s" % [ability.name, "" if !enough_ap_to_use else ""] if can_use else "[UPGRADE AVAILABLE]",
+					"title": ability.name,
 					"is_disabled": (ap_charge_val < ability.ap_cost and n not in base_states.room[U.location_to_designation(current_location)].passives_enabled) or !can_use,
 					"cost": ability.ap_cost if can_use else -1,
 					"is_togglable": true,
@@ -161,31 +162,53 @@ func show_details() -> void:
 							base_states.room[U.location_to_designation(current_location)].passives_enabled.erase(n)
 						# updates toggle state in the base states
 						SUBSCRIBE.base_states = base_states
-						# rerenders the menu
-						await U.tick()
 						show_details()
+				})
+			else:
+				options_list.push_back({
+					"title": "%s [UNLOCK]" % [ability.name],
+					"icon": SVGS.TYPE.LOCK,
+					"is_disabled": false,
+					"onSelect": func() -> void:
+						ActiveMenu.freeze_inputs = true
+						await GameplayNode.unlock_passive_ability(current_location.duplicate(), n)
+						ActiveMenu.freeze_inputs = false
+						show_details()
+						
 				})
 		# ----------------------- ACTIVE ABILITIES
 		for n in abilities.size():
 			var ability:Dictionary = abilities[n]
-			var can_use:bool = upgrade_level >= ability.available_at_lvl
+			var can_use:bool = n in abilities_unlocked
 			var enough_ap_to_use:bool = ap_val < ability.ap_cost
-			if available_upgrade_levels >= n:
+			
+			if can_use:
 				options_list.push_back({
-					"title": "%s %s" % [ability.name, "" if !enough_ap_to_use else ""] if can_use else "%s [UPGRADE REQUIRED]" % [ability.name],
+					"title": ability.name,
 					"is_disabled": ap_val < ability.ap_cost or !can_use,
 					"cost": ability.ap_cost if can_use else -1,
 					"onSelect": func() -> void:				
-						U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
-						ActiveMenu.freeze_inputs = true	
+						U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide)
+						ActiveMenu.freeze_inputs = true
 						if "effect" in ability:
 							var response:bool = await ability.effect.call(GameplayNode)
 							if response:
 								base_states.room[U.location_to_designation(current_location)].ap -= ability.ap_cost
-								SUBSCRIBE.base_states = base_states
-						U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)
+								SUBSCRIBE.base_states = base_states						
+						U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].show)						
 						ActiveMenu.freeze_inputs = false
 						show_details(),
+				})
+			else:
+				options_list.push_back({
+					"title": "%s [UNLOCK]" % [ability.name],
+					"icon": SVGS.TYPE.LOCK,
+					"is_disabled": false,
+					"onSelect": func() -> void:
+						ActiveMenu.freeze_inputs = true
+						await GameplayNode.unlock_ability(current_location.duplicate(), n)
+						ActiveMenu.freeze_inputs = false
+						show_details()
 				})
 
 	# ROOM DETAILS	
@@ -235,10 +258,10 @@ func show_details() -> void:
 		SynergyTraitList.add_child(card)
 	
 	
-	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo])
 	
 	ActiveMenu.ap_charge_val = ap_charge_val
-	ActiveMenu.level = upgrade_level
+	#ActiveMenu.level = upgrade_level
 	ActiveMenu.ap_val = ap_val
 	ActiveMenu.show_ap = abilities.size() > 0 and is_activated
 	ActiveMenu.show_ap_charge = passive_abilities.size() > 0 and is_activated
@@ -320,7 +343,7 @@ func open_room_menu() -> void:
 			"title": "CONSTRUCT ROOM...",
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true				
-				var response:Dictionary = await GameplayNode.construct_room()
+				await GameplayNode.construct_room()
 				ActiveMenu.freeze_inputs = false				
 				open_room_menu()
 		})	
@@ -330,7 +353,7 @@ func open_room_menu() -> void:
 			"title": "CANCEL CONSTRUCTION",
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true			
-				var response:Dictionary = await GameplayNode.cancel_construction(current_location.duplicate())
+				await GameplayNode.cancel_construction(current_location.duplicate())
 				ActiveMenu.freeze_inputs = false
 				open_room_menu()
 		})		
@@ -341,7 +364,7 @@ func open_room_menu() -> void:
 				"title": "ACTIVATE ROOM",
 				"onSelect": func() -> void:
 					ActiveMenu.freeze_inputs = true	
-					var response:Dictionary =  await GameplayNode.activate_room(current_location.duplicate(), room_extract.room.details.ref)
+					await GameplayNode.activate_room(current_location.duplicate())
 					ActiveMenu.freeze_inputs = false
 					open_room_menu()
 			})		
@@ -350,20 +373,11 @@ func open_room_menu() -> void:
 				"title": "DEACTIVATE ROOM",
 				"onSelect": func() -> void:
 					ActiveMenu.freeze_inputs = true	
-					var response:Dictionary =  await GameplayNode.deactivate_room(current_location.duplicate(), room_extract.room.details.ref)
+					await GameplayNode.deactivate_room(current_location.duplicate())
 					ActiveMenu.freeze_inputs = false
 					open_room_menu()
 			})				
-	
-	if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_UPGRADES]:
-		options_list.push_back({
-			"title": "UPGRADE",
-			"icon": SVGS.TYPE.UP_ARROW,
-			"is_disabled": false,
-			"onSelect": func() -> void:
-				pass
-		})
-		
+	#
 	
 	if !room_is_empty:
 		options_list.push_back({
@@ -371,7 +385,7 @@ func open_room_menu() -> void:
 			"is_disabled": !is_scp_empty or !can_destroy,
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true	
-				var response:Dictionary = await GameplayNode.reset_room(current_location.duplicate())
+				await GameplayNode.reset_room(current_location.duplicate())
 				ActiveMenu.freeze_inputs = false	
 				open_room_menu()
 		})
@@ -451,6 +465,16 @@ func open_scp_menu() -> void:
 		})
 	else:
 		options_list.push_back({
+			"title": "CONDUCT TESTING",
+			"onSelect": func() -> void:
+				ActiveMenu.freeze_inputs = true
+				await GameplayNode.upgrade_scp_level(current_location.duplicate(), room_extract.scp.details.ref)
+				print("upgrade complete...")
+				ActiveMenu.freeze_inputs = false
+				open_scp_menu()
+		})		
+				
+		options_list.push_back({
 			"title": "DETAILS",
 			"onSelect": func() -> void:
 				ActiveMenu.freeze_inputs = true
@@ -506,10 +530,20 @@ func open_researcher_menu() -> void:
 		"title": "ASSIGN RESEARCHER...",
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true
-			var response:Dictionary = await GameplayNode.assign_researcher(current_location.duplicate())
+			set_btn_disabled_state(true)
+			await GameplayNode.assign_researcher(current_location.duplicate())
+			ActiveMenu.freeze_inputs = false
+			restore_btn_disable_state()
+	})		
+	
+	options_list.push_back({
+		"title": "PROMOTE RESEARCHER",
+		"onSelect": func() -> void:
+			ActiveMenu.freeze_inputs = true
+			await GameplayNode.promote_researchers()
 			ActiveMenu.freeze_inputs = false
 			open_researcher_menu(),
-	})		
+	})			
 	
 	for researcher in room_extract.researchers:
 		options_list.push_back({
@@ -566,12 +600,14 @@ func open_debug_menu() -> void:
 		"title": "TRIGGER MORALE EVENT...",
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true
+			set_btn_disabled_state(true)
 			var props:Dictionary = {"onSelection": func(selected):print(selected)}
 			await GameplayNode.triggger_event(EVT.TYPE.MORALE, props)
 			ActiveMenu.freeze_inputs = false
-			open_debug_menu(),
+			restore_btn_disable_state()
 	})		
 	
+
 
 	ActiveMenu.header = "DEBUG"
 	ActiveMenu.use_color = Color.WHITE
@@ -755,8 +791,6 @@ func buildout_btns() -> void:
 		previous_camera_type = camera_settings.type	
 		reload = true
 		
-	print("is_disabled: ", floor_is_powered)
-	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
 			# ---- LEFT SIDE
@@ -767,12 +801,10 @@ func buildout_btns() -> void:
 				"icon": SVGS.TYPE.TARGET,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						ActiveMenu.freeze_inputs = true
 						set_btn_disabled_state(true)
-						var has_changes:bool = await GameplayNode.activate_floor(current_location.duplicate())
-						ActiveMenu.freeze_inputs = false
-						await set_btn_disabled_state(false)						
-						buildout_btns()
+						await GameplayNode.activate_floor(current_location.duplicate())
+						restore_btn_disable_state(true)
+						
 			})						
 						
 			# ---- RIGHT SIDE
@@ -875,7 +907,9 @@ func buildout_btns() -> void:
 					"icon": SVGS.TYPE.CONVERSATION,
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-							GameplayNode.open_scp_database()
+							set_btn_disabled_state(true)
+							await GameplayNode.open_scp_database()
+							restore_btn_disable_state(true)
 				})				
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN]:
@@ -885,7 +919,9 @@ func buildout_btns() -> void:
 					"icon": SVGS.TYPE.TXT_FILE,
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-							GameplayNode.open_objectives()
+							set_btn_disabled_state(true)
+							await GameplayNode.open_objectives()							
+							restore_btn_disable_state(true)
 				})				
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN]:
@@ -930,21 +966,34 @@ func set_backdrop_state(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
+var restore_state:Dictionary 
 func set_btn_disabled_state(state:bool) -> void:	
 	await U.tick() # DO NOT REMOVE
-	
+	restore_state = {}
 	for index in LeftSideBtnList.get_child_count():
 		var btn_node:Control = LeftSideBtnList.get_child(index)
-		var is_disabled_state:bool = left_btn_list[index].is_disabled if "is_disabled" in left_btn_list[index] else false
-		btn_node.is_disabled = true if state else is_disabled_state
+		restore_state[btn_node] = btn_node.is_disabled
+		btn_node.is_disabled = true if state else left_btn_list[index].is_disabled if "is_disabled" in left_btn_list[index] else false		
 		
 	for index in RightSideBtnList.get_child_count():
 		var btn_node:Control = RightSideBtnList.get_child(index)
+		restore_state[btn_node] = btn_node.is_disabled
 		btn_node.is_disabled = true if state else right_btn_list[index].is_disabled if "is_disabled" in right_btn_list[index] else false
+		
 		
 	disable_inputs_while_menu_is_open = state
 	set_backdrop_state(state)	
-	
+
+func restore_btn_disable_state(restore_controls:bool = false) -> void:
+	await U.tick()	
+	for btn in restore_state:
+		var restore_state:bool = restore_state[btn]
+		btn.is_disabled = restore_state
+	restore_state = {}	
+	set_backdrop_state(false)
+	if restore_controls:
+		disable_inputs_while_menu_is_open = false
+		
 
 func on_left_btn_list_update(new_list:Array, reload:bool) -> void:
 	if !is_node_ready():return

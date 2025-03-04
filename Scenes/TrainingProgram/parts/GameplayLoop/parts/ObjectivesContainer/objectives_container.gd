@@ -31,7 +31,7 @@ func _ready() -> void:
 		end()
 	
 	await U.set_timeout(1.0)
-	control_pos[ObjectivesControlPanel] = {"show": ObjectivesControlPanel.position.x, "hide": ObjectivesControlPanel.position.x - ObjectivesControlPanel.size.x - 20}
+	control_pos[ObjectivesControlPanel] = {"show": ObjectivesControlPanel.position.y, "hide": ObjectivesControlPanel.position.y - ObjectivesControlPanel.size.y - 20}
 	control_pos[BtnControlPanel] = {"show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------		
@@ -53,12 +53,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		MODE.HIDE:
 			BackBtn.is_disabled = true
-			U.tween_node_property(ObjectivesControlPanel, "position:x", control_pos[ObjectivesControlPanel].hide, 0 if skip_animation else 0.3)
+			U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].hide, 0 if skip_animation else 0.3)
 			await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)			
 			hide()
 		MODE.ACTIVE:
 			show()
 			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show)
-			await U.tween_node_property(ObjectivesControlPanel, "position:x", control_pos[ObjectivesControlPanel].show)	
+			await U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].show)	
 			BackBtn.is_disabled = false
 # --------------------------------------------------------------------------------------------------		

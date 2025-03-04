@@ -48,24 +48,18 @@ var current_mode:MODE = MODE.SELECT_RESEARCHERS :
 		current_mode = val
 		on_current_mode_update()
 
-var content_restore_pos:int
-var selected_restore_pos:int
-var trait_restore_pos:int
-var btn_restore_pos:int
 var scroll_pos:int 
 var is_setup:bool = false
 var details_only:bool = false 
 var is_animating:bool = false
 var custom_min_size:Vector2
 var overflow_count:int
-
+var control_pos:Dictionary
 
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()
 	on_researcher_active_index_update()
-	
-	SynergyContainer.hide() 
 	
 	SelectBtn.onClick = func() -> void:		
 		match current_mode:
@@ -76,23 +70,20 @@ func _ready() -> void:
 					unmark_researcher(researcher_active_index)
 	
 	BackBtn.onClick = func() -> void:
-		user_response.emit({"action": ACTION.RESEARCHERS.BACK})
-		#match current_mode:
-			#MODE.SELECT_RESEARCHERS:
-				#if selected_researchers.size() == 0:
-					#user_response.emit({"action": ACTION.RESEARCHERS.BACK})
-				#else:
-					#unmark_last_researcher()
-			#MODE.DETAILS_ONLY:
-				#user_response.emit({"action": ACTION.RESEARCHERS.BACK})
+		match current_mode:
+			MODE.SELECT_RESEARCHERS:
+				end({"action": ACTION.RESEARCHERS.BACK})
 
 	ConfirmBtn.onClick = func() -> void:
-		current_mode = MODE.HIDE
-		var uids:Array = []
-		for n in selected_researchers:
-			var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )		
-			uids.push_back(researcher_details.uid)
-		user_response.emit({"action": ACTION.RESEARCHERS.SELECT, "uids": uids})
+		match current_mode:
+			MODE.SELECT_RESEARCHERS:		
+				current_mode = MODE.HIDE
+				var uids:Array = []
+				for n in selected_researchers:
+					var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )		
+					uids.push_back(researcher_details.uid)
+				end({"action": ACTION.RESEARCHERS.SELECT, "uids": uids})
+
 
 	MoreBtn.onClick = func() -> void:
 		if is_animating:return
@@ -101,18 +92,50 @@ func _ready() -> void:
 		if is_animating:return
 		on_inc()	
 		
-	
 	DetailsBtn.onClick = func() -> void:
 		show_details()
 
 	await U.set_timeout(1.0)	
-	selected_restore_pos = SelectedPanel.position.x
-	content_restore_pos = ResearcherPanel.position.x
-	trait_restore_pos = TraitPanel.position.x
-	btn_restore_pos = BtnPanelContainer.position.y
-	
+	control_pos[SelectedPanel] = {"show": SelectedPanel.position.x, "hide": SelectedPanel.position.x - SelectedPanel.size.x}
+	control_pos[ResearcherPanel] = {"show": ResearcherPanel.position.x, "hide": ResearcherPanel.position.x - ResearcherPanel.size.x}
+	control_pos[TraitPanel] = {"show": TraitPanel.position.x, "hide": TraitPanel.position.x + TraitPanel.size.x}
+	control_pos[BtnPanelContainer] = {"show": BtnPanelContainer.position.y, "hide": BtnPanelContainer.position.y + BtnPanelContainer.size.y}	
 	is_setup = true
-	on_is_showing_update()	
+	on_is_showing_update(true)	
+# -----------------------------------------------
+
+# -----------------------------------------------
+func on_is_showing_update(skip_animation:bool = false) -> void:
+	super.on_is_showing_update()
+	if !is_setup:return
+
+	for node in [RightSideBtnList, LeftSideBtnList]:
+		for btn in node.get_children():
+			btn.is_disabled = true
+	
+	U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide, 0 if skip_animation else 0.3) 
+	U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide, 0 if skip_animation else 0.3 )
+	
+	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
+	U.tween_node_property(ResearcherPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
+
+	U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].show if is_showing else control_pos[ResearcherPanel].hide, 0 if skip_animation else 0.3)
+	await U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].show if is_showing else control_pos[BtnPanelContainer].hide, 0 if skip_animation else 0.3)
+	
+	# reset scroll
+	ResearcherScrollContainer.scroll_horizontal = 0
+	
+	await U.tick()
+	
+	# reset selected	
+	researcher_active_index = -1 if hired_lead_researchers_arr.is_empty() else 0
+	overflow_count = 0
+	
+	if is_showing:
+		current_mode = MODE.DETAILS_ONLY if details_only else MODE.SELECT_RESEARCHERS
+	else:
+		reset_cards()
+		selected_researchers = []
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -129,6 +152,24 @@ func start(mark_uids:Array = [], _details_only:bool = false) -> void:
 	await U.tick()
 	selected_researchers = selected
 # -----------------------------------------------
+
+# -----------------------------------------------
+func end(response:Dictionary) -> void:
+	current_mode = MODE.HIDE	
+				
+	U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide) 
+	U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide) 
+	U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].hide) 
+	await U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide) 	
+	
+	user_response.emit(response)
+# -----------------------------------------------
+
+# -----------------------------------------------
+func promote(uids:Array) -> void:
+	selected_researchers = []
+# -----------------------------------------------
+	
 
 # -----------------------------------------------
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
@@ -298,45 +339,12 @@ func clear_marked_researchers() -> void:
 		node.is_deselected = false
 # -----------------------------------------------			
 
-# -----------------------------------------------
-func on_is_showing_update() -> void:
-	super.on_is_showing_update()
-	if !is_setup:return
-	
-	for node in [RightSideBtnList, LeftSideBtnList]:
-		for btn in node.get_children():
-			btn.is_disabled = true
-	
-	U.tween_node_property(TraitPanel, "position:x", trait_restore_pos + TraitPanel.size.x + 20) 
-	U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos - SelectedPanel.size.x )
-	
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0))
-	U.tween_node_property(ResearcherPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0))
 
-	U.tween_node_property(ResearcherPanel, "position:x", content_restore_pos if is_showing else ResearcherPanel.size.x + 20)
-	await U.tween_node_property(BtnPanelContainer, "position:y", btn_restore_pos if is_showing else BtnPanelContainer.size.y + 20)
-	
-	# clear and reset
-
-	# reset scroll
-	ResearcherScrollContainer.scroll_horizontal = 0
-	
-	await U.tick()
-	
-	# reset selected	
-	researcher_active_index = -1 if hired_lead_researchers_arr.is_empty() else 0
-	overflow_count = 0
-	
-	if is_showing:
-		current_mode = MODE.DETAILS_ONLY if details_only else MODE.SELECT_RESEARCHERS
-	else:
-		reset_cards()
-		selected_researchers = []
-# -----------------------------------------------
 
 # -----------------------------------------------	
 func on_selected_researchers_update() -> void:
 	if !is_node_ready():return
+	print('selected searchers updated...')
 
 	for child in [TraitList, SynergyTraitList, SelectedList]:
 		for item in child.get_children():
@@ -347,7 +355,7 @@ func on_selected_researchers_update() -> void:
 	var dup_list := []
 	
 	# get traits from selected researchers and add to mini list
-	for n in selected_researchers:
+	for n in selected_researchers.size():
 		# add to selected list
 		var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )
 		var mini_card:Control = ResearcherMiniCard.instantiate()
@@ -382,17 +390,10 @@ func on_selected_researchers_update() -> void:
 	
 	# hide/show Trait Panel
 	if current_mode == MODE.SELECT_RESEARCHERS:
-		if total_traits_list.size() > 0:
-			U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos)
-			U.tween_node_property(TraitPanel, "position:x", trait_restore_pos)
-		else:
-			U.tween_node_property(SelectedPanel, "position:x", selected_restore_pos - SelectedPanel.size.x )
-			U.tween_node_property(TraitPanel, "position:x", trait_restore_pos + TraitPanel.size.x + 20)
-	
-	# show/hide button
-	if current_mode == MODE.SELECT_RESEARCHERS:				
-		ConfirmBtn.show() if selected_researchers.size() >= 1 else ConfirmBtn.hide()
-	
+		U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].show if total_traits_list.size() > 0 else control_pos[SelectedPanel].hide)
+		U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].show if total_traits_list.size() > 0 else control_pos[TraitPanel].hide)
+
+
 	# add deselected (black/white filter) when at capacity
 	for index in ResearcherList.get_child_count():
 		var node:Control = ResearcherList.get_child(index)
@@ -401,12 +402,24 @@ func on_selected_researchers_update() -> void:
 				node.is_deselected = true
 		else:
 			node.is_deselected = false	
+			
+	
+	# show/hide button
+	await U.tick()	
+	if !details_only:
+		ConfirmBtn.hide() if selected_researchers.is_empty()  else ConfirmBtn.show()			
 # -----------------------------------------------		
 
 # -----------------------------------------------
 func on_current_mode_update() -> void:
 	if !is_node_ready():return
 	match current_mode:
+		# ---------------
+		MODE.HIDE:
+			for node in [RightSideBtnList, LeftSideBtnList]:
+				for btn in node.get_children():
+					btn.is_disabled = true
+			
 		# ---------------
 		MODE.SELECT_RESEARCHERS:
 			for btn in [DetailsBtn, BackBtn, SelectBtn, ConfirmBtn]:
@@ -418,11 +431,6 @@ func on_current_mode_update() -> void:
 				btn.is_disabled = false
 			SelectBtn.hide()
 			ConfirmBtn.hide()
-		# ---------------
-		MODE.HIDE:
-			for node in [RightSideBtnList, LeftSideBtnList]:
-				for btn in node.get_children():
-					btn.is_disabled = true
 # -----------------------------------------------
 
 # -----------------------------------------------

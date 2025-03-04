@@ -1,5 +1,5 @@
 @tool
-extends Node
+extends UtilityWrapper
 
 var MONEY:Dictionary = {
 	"id": RESOURCE.TYPE.MONEY,
@@ -82,7 +82,7 @@ func return_metric_data(key:int) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func check_if_have_enough(cost_arr:Array, resources_data:Dictionary) -> bool:
+func check_if_have_enough(cost_arr:Array) -> bool:
 	var has_enough:bool = true
 	for item in cost_arr:
 		match item.type:
@@ -93,5 +93,13 @@ func check_if_have_enough(cost_arr:Array, resources_data:Dictionary) -> bool:
 					has_enough = false
 					break
 	return has_enough
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func subtract_costs(cost_array:Array) -> void:
+	for item in cost_array:
+		var amount:int = item.amount
+		resources_data[item.resource.ref].amount = U.min_max(resources_data[item.resource.ref].amount - absi(amount), 0, resources_data[item.resource.ref].capacity)
+	SUBSCRIBE.resources_data = resources_data
 # ------------------------------------------------------------------------------
 	

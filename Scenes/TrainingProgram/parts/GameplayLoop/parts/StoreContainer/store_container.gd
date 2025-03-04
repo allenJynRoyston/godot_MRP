@@ -282,11 +282,10 @@ func on_grid_index_update() -> void:
 		# -----------
 		MODE.CONTENT_SELECT:
 			DetailPanel.ref = grid_list_data[grid_index].ref
-
 			if room_details.requires_unlock:
 				if room_details.ref not in shop_unlock_purchases:					
 					UnlockBtn.is_disabled = !can_afford_check( ROOM_UTIL.return_unlock_costs(room_details.ref) ) or at_max_capacity
-					UnlockBtn.show()	
+					
 				else:
 					UnlockBtn.is_disabled = true
 			else:
@@ -350,6 +349,8 @@ func on_current_mode_update() -> void:
 		# -------------------
 		MODE.CONTENT_SELECT:			
 			SelectTabBtn.hide()
+			UnlockBtn.show()	
+			
 
 			GBL.find_node(REFS.ROOM_NODES).is_active = true
 			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)

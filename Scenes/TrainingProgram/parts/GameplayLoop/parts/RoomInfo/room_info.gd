@@ -1,7 +1,6 @@
 @tool
 extends GameContainer
 
-@onready var MainPanel:PanelContainer = $Control/PanelContainer
 @onready var LocationPanel:Control = $MarginContainer/HBoxContainer/LocationPanel
 @onready var MainControlPanel:PanelContainer = $Control/PanelContainer
 
@@ -36,7 +35,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 
-	MainPanel.modulate = Color(1, 1, 1, 0)	
+	MainControlPanel.modulate = Color(1, 1, 1, 0)	
 
 	update_details_panel()
 	on_camera_settings_update()
@@ -44,18 +43,32 @@ func _ready() -> void:
 	
 	control_pos[MainControlPanel] = {"show": MainControlPanel.position.x, "hide": MainControlPanel.position.x - MainControlPanel.size.x}
 	is_ready = true
+	on_is_showing_update(true)
 # -----------------------------------------------
+
+# -----------------------------------------------
+func on_is_showing_update(skip_animation:bool = false) -> void:	
+	super.on_is_showing_update()
+	if !is_node_ready() or control_pos.is_empty() or camera_settings.is_empty():return
+	
+	U.tween_node_property(MainControlPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.7 if !skip_animation else 0)
+	
+	if is_showing and camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
+		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show, 0.7 if !skip_animation else 0)
+	
+	if !is_showing:
+		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].hide, 0.7 if !skip_animation else 0)
+# -----------------------------------------------	
 
 # --------------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	super.on_camera_settings_update(new_val)
 	if !is_node_ready() or camera_settings.is_empty() or !is_ready:return	
 	if camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
-		MainPanel.modulate = Color(1, 1, 1, 1)
-		U.tween_node_property(MainPanel, "position:x", control_pos[MainControlPanel].show, 0.7)
+		is_showing = true
 		LocationPanel.show()
 	else:
-		U.tween_node_property(MainPanel, "position:x", control_pos[MainControlPanel].hide, 0.7)
+		is_showing = false
 		LocationPanel.hide()
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:

@@ -534,7 +534,7 @@ func add_experience(uid:String, amount:int) -> bool:
 					i[8] += 1
 					i[9].can_promote = true
 			else:
-				i[9].can_promote = false
+				i[9].can_promote = true
 		return i
 	) 	
 	

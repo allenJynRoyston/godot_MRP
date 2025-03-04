@@ -51,6 +51,7 @@ script = ExtResource("1_15jbj")
 show_objectives = true
 show_reseachers = true
 show_resources = true
+metadata/_edit_group_ = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2

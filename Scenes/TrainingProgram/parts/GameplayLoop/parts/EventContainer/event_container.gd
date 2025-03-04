@@ -210,6 +210,8 @@ func next_instruction(inc:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func next_text(inc:bool = false) -> void:
+	if text_reveal_tween == null:return
+	
 	if text_reveal_tween.is_running():
 		text_reveal_tween.stop()
 		BodyLabelTop.visible_ratio = 1.0
