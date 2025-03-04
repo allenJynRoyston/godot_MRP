@@ -133,7 +133,7 @@ func update_details_panel() -> void:
 func on_expand_update() -> void:
 	if !is_node_ready():return
 	var expand_current_val:float = ExpandListContainer.get('theme_override_constants/separation')
-	U.tween_range(expand_current_val, 10 if expand else -45, 0.2, func(val:float) -> void:
+	U.tween_range(expand_current_val, 10 if expand else -60, 0.2, func(val:float) -> void:
 		ExpandListContainer.set("theme_override_constants/separation", val)
 	) 
 	
@@ -141,6 +141,10 @@ func on_expand_update() -> void:
 	U.tween_range(expandsub_current_val, 10 if expand else -45, 0.2, func(val:float) -> void:
 		ExpandSubListContainer.set("theme_override_constants/separation", val)
 	)  	
+	
+	for node in [StaffingPanel, ResourcePanel, Abilities]:
+		U.tween_node_property(node, "modulate", Color(1, 1, 1, 1 if expand else 0), 0.2)
+
 
 func toggle_expand() -> void:
 	expand = !expand
