@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://yyon0s8snla2"]
 
-[sub_resource type="Shader" id="Shader_1kmfr"]
+[sub_resource type="Shader" id="Shader_8b8w4"]
 code = "shader_type canvas_item;
 
 uniform float corner_scale: hint_range(0., 1.) = 0.;
@@ -23,5 +23,5 @@ void fragment() {
 }"
 
 [resource]
-shader = SubResource("Shader_1kmfr")
-shader_parameter/corner_scale = 0.242
+shader = SubResource("Shader_8b8w4")
+shader_parameter/corner_scale = 0.255

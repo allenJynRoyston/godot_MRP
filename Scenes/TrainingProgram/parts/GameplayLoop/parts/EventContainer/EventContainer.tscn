@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=26 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_q4n71"]
@@ -8,6 +8,7 @@
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_amr3s"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_5xty8"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_fgcdw"]
+[ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="7_3dcps"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="11_6solj"]
 
@@ -39,10 +40,13 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_cbyqt"]
+viewport_path = NodePath("ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ke4bq"]
 
@@ -184,6 +188,7 @@ label_settings = ExtResource("4_6n6tl")
 horizontal_alignment = 2
 
 [node name="LeftControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="LeftControl"]
@@ -283,14 +288,14 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_fm7wk")
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = -9
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = -10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 3
 
 [node name="Header" type="HBoxContainer" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
@@ -299,7 +304,7 @@ size_flags_horizontal = 3
 
 [node name="ContentHeaderLabel" type="Label" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
-text = " INCOMING TRANSMISSION"
+text = "RESEARCHER NAME"
 label_settings = ExtResource("5_amr3s")
 vertical_alignment = 1
 uppercase = true
@@ -307,6 +312,28 @@ uppercase = true
 [node name="HBoxContainer" type="HBoxContainer" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="ProfileOutput" type="TextureRect" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("ViewportTexture_cbyqt")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SubViewport" type="SubViewport" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput"]
+transparent_bg = true
+size = Vector2i(100, 175)
+
+[node name="ContentProfileTextureRect" type="TextureRect" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport"]
+material = ExtResource("3_v6l8k")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_3dcps")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="BodyContainer" type="VBoxContainer" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -324,7 +351,7 @@ layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 0
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -5
+theme_override_constants/margin_top = -2
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 48
@@ -358,6 +385,7 @@ layout_mode = 2
 alignment = 2
 
 [node name="NextBtn" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Footer" instance=ExtResource("7_xorcm")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10

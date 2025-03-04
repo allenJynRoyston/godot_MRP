@@ -1203,13 +1203,13 @@ func next_day() -> void:
 
 # ------------------------------------------------------------------------------	
 #region GAMEPLAY FUNCS
-# ---------------------
+# -----------------------------------
 func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
 	event_data = [EVENT_UTIL.run_event(event, props)]
 	await on_events_complete
-# ---------------------	
-	
-# ---------------------
+# -----------------------------------
+
+# -----------------------------------
 func game_over() -> void:
 	await show_only([])	
 	var props:Dictionary = {
@@ -1219,7 +1219,7 @@ func game_over() -> void:
 					start_new_game()
 	}	
 	triggger_event(EVT.TYPE.GAME_OVER, props)
-# ---------------------
+# -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1281,20 +1281,23 @@ func set_wing_emergency_mode(from_location:Dictionary, mode:ROOM.EMERGENCY_MODES
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func activate_floor(from_location:Dictionary) -> Dictionary:
+func activate_floor(from_location:Dictionary) -> bool:
 	SUBSCRIBE.suppress_click = true
-
+	capture_current_showing_state()
+	
 	var activated_count:int = 0
 	for n in room_config.floor.size():
 		if base_states.floor[str(n)].is_powered:
 			activated_count += 1
-	var activation_cost:int = activated_count * 10
+	var activation_cost:int = activated_count * 50
 	var can_purchase:bool = resources_data[RESOURCE.TYPE.ENERGY].amount >= activation_cost
 	
-	ConfirmModal.set_props("Activate this floor?", "It will require %s energy (you have %s available)." % [activation_cost, resources_data[RESOURCE.TYPE.ENERGY].amount])
+	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.ENERGY)}]
+	ConfirmModal.set_props("Activate this floor?")
+	
 	if !can_purchase:
 		ConfirmModal.cancel_only = true
-	await show_only([ConfirmModal])	
+	await show_only([ConfirmModal, Structure3dContainer])	
 	var response:Dictionary = await ConfirmModal.user_response
 	
 	match response.action:		
@@ -1302,8 +1305,8 @@ func activate_floor(from_location:Dictionary) -> Dictionary:
 			base_states.floor[str(from_location.floor)].is_powered = true
 			SUBSCRIBE.base_states = base_states
 			
-	restore_player_hud()
-	return {"has_changes": response.action == ACTION.NEXT}	
+	await restore_showing_state()
+	return response.action == ACTION.NEXT
 # ------------------------------------------------------------------------------
 		
 # ------------------------------------------------------------------------------	
@@ -1569,6 +1572,7 @@ func open_objectives() -> bool:
 	current_objective_state = OBJECTIVES_STATE.SHOW
 	return await on_objective_signal
 # -----------------------------------
+
 
 # ------------------------------------------------------------------------------	
 #region SCP FUNCS (assign/unassign/dismiss, etc)

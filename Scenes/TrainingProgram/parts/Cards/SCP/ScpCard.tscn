@@ -12,7 +12,7 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_tv1yn"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_px7xs"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kj5t8"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -62,7 +62,7 @@ size = Vector2i(250, 460)
 [node name="SCPCard" type="PanelContainer" parent="SubViewport"]
 offset_right = 250.0
 offset_bottom = 460.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_px7xs")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kj5t8")
 
 [node name="Front" type="VBoxContainer" parent="SubViewport/SCPCard"]
 layout_mode = 2
@@ -183,6 +183,7 @@ theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="PassiveEffectLabel" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1, 0)
@@ -191,7 +192,22 @@ text = "Can foresee 3 days into the future."
 label_settings = SubResource("LabelSettings_7v4rc")
 autowrap_mode = 2
 
+[node name="PassiveEffectLabel2" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = SubResource("LabelSettings_7v4rc")
+autowrap_mode = 2
+
+[node name="PassiveEffectLabel3" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "Can foresee 3 days into the future."
+label_settings = SubResource("LabelSettings_7v4rc")
+autowrap_mode = 2
+
 [node name="Rewards" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 

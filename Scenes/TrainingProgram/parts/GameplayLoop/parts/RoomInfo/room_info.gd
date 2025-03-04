@@ -46,12 +46,6 @@ func _ready() -> void:
 	is_ready = true
 # -----------------------------------------------
 
-# -----------------------------------------------
-func on_is_showing_update() -> void:	
-	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return	
-	U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show if is_showing else control_pos[MainControlPanel].hide)
-# -----------------------------------------------	
-
 # --------------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	super.on_camera_settings_update(new_val)

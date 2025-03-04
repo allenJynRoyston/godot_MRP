@@ -17,6 +17,7 @@ extends GameContainer
 @onready var DialogBtn:Control = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
 @onready var ContentVBox:VBoxContainer = $ContentControl/MarginContainer/VBoxContainer
 @onready var ContentHeaderLabel:Label = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header/ContentHeaderLabel
+@onready var ContentProfileTextureRect:TextureRect = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport/ContentProfileTextureRect
 @onready var BodyContainer:Control = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
 @onready var BodyLabelBtm:Label = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
 @onready var BodyLabelTop:Label = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
@@ -263,15 +264,15 @@ func on_current_instruction_update() -> void:
 		RightTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
 		RightHeaderLabel.text = "VIDEO FEED"
 		RightFooterLabel.text = "" # not currently used
+		print("here?")
 		await U.tween_node_property(RightControlPanel, "position:x", control_pos[RightControlPanel].show)
 	# -----------------------------------
 	
 	# -----------------------------------
 	if "portrait" in current_instruction:
 		var p_details:Dictionary = current_instruction.portrait
-		LeftTextureRect.texture = CACHE.fetch_image(p_details.img_src if "img_src" in p_details else "")
-		LeftHeaderLabel.text = p_details.title if "title" in p_details else "[REDACTED]"
-		LeftFooterLabel.text = "" # not currently used
+		ContentProfileTextureRect.texture = CACHE.fetch_image(p_details.img_src if "img_src" in p_details else "")
+		ContentHeaderLabel.text = p_details.title if "title" in p_details else "[REDACTED]"
 		await U.tween_node_property(LeftControlPanel, "position:x", control_pos[LeftControlPanel].show)
 	# -----------------------------------
 

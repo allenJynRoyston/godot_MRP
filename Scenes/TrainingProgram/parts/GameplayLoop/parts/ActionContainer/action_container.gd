@@ -736,6 +736,8 @@ func buildout_btns() -> void:
 	var end_of_turn_metrics_event_count:int = GameplayNode.end_of_turn_metrics_event_count()
 	
 	var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+	var floor_is_powered:bool = room_extract.floor_config_data.is_powered
+
 	var room_is_empty:bool = room_extract.room.is_empty()	
 	var is_activated:bool = room_extract.is_activated
 	var room_can_contain
@@ -744,8 +746,7 @@ func buildout_btns() -> void:
 	var room_step_complete:bool = !room_is_empty and !is_room_under_construction
 	var room_category:int = room_extract.room_category
 	var scp_is_empty:bool = room_extract.is_scp_empty
-	#var scp_is_testing:bool = !room_extract.scp.testing.is_empty() if !scp_is_empty else false
-	
+
 	var new_right_btn_list:Array = [] 
 	var new_left_btn_list:Array = []
 	var reload:bool = false
@@ -754,9 +755,26 @@ func buildout_btns() -> void:
 		previous_camera_type = camera_settings.type	
 		reload = true
 		
+	print("is_disabled: ", floor_is_powered)
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
+			# ---- LEFT SIDE
+			new_left_btn_list.push_back({
+				"title": "UNLOCK",
+				"assigned_key": "E",
+				"is_disabled": floor_is_powered,
+				"icon": SVGS.TYPE.TARGET,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						ActiveMenu.freeze_inputs = true
+						set_btn_disabled_state(true)
+						var has_changes:bool = await GameplayNode.activate_floor(current_location.duplicate())
+						ActiveMenu.freeze_inputs = false
+						await set_btn_disabled_state(false)						
+						buildout_btns()
+			})						
+						
 			# ---- RIGHT SIDE
 			new_right_btn_list.push_back({
 				"title": "QUICKSAVE",
@@ -796,6 +814,7 @@ func buildout_btns() -> void:
 			
 			
 		CAMERA.TYPE.ROOM_SELECT:	
+			# ---- LEFT SIDE
 			new_left_btn_list.push_back({
 				"title": "ABILITIES",
 				"assigned_key": "E",
@@ -838,38 +857,8 @@ func buildout_btns() -> void:
 			})
 			
 
-			#new_left_btn_list.push_back({
-				#"title": "ALARM",
-				#"assigned_key": "4",
-				#"is_hidden": false,
-				#"icon": SVGS.TYPE.CAUTION,
-				#"onClick": func() -> void:
-					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						#open_alarm_setting()
-			#})
-
 			
 			# ---- RIGHT SIDE
-			#new_right_btn_list.push_back({
-				#"title": "AUTO",
-				#"assigned_key": "R",
-				#"icon": SVGS.TYPE.TARGET,
-				#"onClick": func() -> void:
-					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-						#auto_order(),
-			#})	
-			
-			
-						#U.tween_node_property(DetailsPanel, "position:y", details_restore_pos - DetailsPanel.size.y)
-						#ActiveMenu.freeze_inputs = true	
-						#if "effect" in ability:
-							#var response:bool = await ability.effect.call(GameplayNode)
-							#if response:
-								#base_states.room[U.location_to_designation(current_location)].ap -= ability.ap_cost
-								#SUBSCRIBE.base_states = base_states
-						#U.tween_node_property(DetailsPanel, "position:y", details_restore_pos)
-						#ActiveMenu.freeze_inputs = false
-						#show_details(),			
 			new_right_btn_list.push_back({
 				"title": "DEBUG",
 				"assigned_key": "-",
@@ -901,9 +890,9 @@ func buildout_btns() -> void:
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN]:
 				new_right_btn_list.push_back({
-					"title": "%s DETAILS" % ["HIDE" if GBL.find_node(REFS.ROOM_INFO).expand else "SHOW"],
+					"title": "DETAILS",
 					"assigned_key": "SPACEBAR",
-					"icon": SVGS.TYPE.SETTINGS,
+					"icon": SVGS.TYPE.CHECKBOX if GBL.find_node(REFS.ROOM_INFO).expand else SVGS.TYPE.EMPTY_CHECKBOX,
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
 							GBL.find_node(REFS.ROOM_INFO).toggle_expand()
@@ -911,9 +900,9 @@ func buildout_btns() -> void:
 				})	
 						
 			new_right_btn_list.push_back({
-				"title": "GOTO FLOOR",
+				"title": "GOTO",
 				"assigned_key": "TAB",
-				"icon": SVGS.TYPE.TARGET,
+				"icon": SVGS.TYPE.CAMERA_B,
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						toggle_camera_view()
@@ -955,6 +944,7 @@ func set_btn_disabled_state(state:bool) -> void:
 		
 	disable_inputs_while_menu_is_open = state
 	set_backdrop_state(state)	
+	
 
 func on_left_btn_list_update(new_list:Array, reload:bool) -> void:
 	if !is_node_ready():return

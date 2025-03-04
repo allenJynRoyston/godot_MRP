@@ -7,8 +7,8 @@ extends GameContainer
 @onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/SubLabel
 
 @onready var StaffingControl:Control = $StaffingControl
-@onready var StaffingControlPanel:PanelContainer = $StaffingControl/StaffingControlPanel
-@onready var StaffingList:VBoxContainer = $StaffingControl/StaffingControlPanel/MarginContainer/VBoxContainer/List
+@onready var StaffingControlPanel:MarginContainer = $StaffingControl/StaffingControlPanel
+@onready var StaffingList:VBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/List
 
 @onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
@@ -131,13 +131,16 @@ func on_activation_requirements_update() -> void:
 
 		
 	for item in activation_requirements:
-		var current_amount:int = resources_data[item.resource.ref].amount
-		var has_enough:bool = current_amount + item.amount < 0
+		var current_amount:int = resources_data[item.resource.ref].amount		
+		var has_enough:bool = current_amount - absi(item.amount) >= 0
 		var new_node:Control = CheckboxBtnPreload.instantiate()
+		
+		print("current_amount: ", current_amount - absi(item.amount), "  has_enough: ", has_enough)
+		
 		new_node.is_hoverable = false
 		new_node.no_bg = true
-		new_node.is_checked = !has_enough
-		new_node.modulate = Color(1, 0, 0, 1) if has_enough else Color(1, 1, 1, 1)
+		new_node.is_checked = has_enough
+		new_node.modulate = Color(1, 0, 0, 1) if !has_enough else Color(1, 1, 1, 1)
 		new_node.title =  "%s REQUIRED: %s (YOU HAVE %s)" % [item.resource.name, abs(item.amount), current_amount]
 		StaffingList.add_child(new_node)		
 # --------------------------------------------------------------------------------------------------		
