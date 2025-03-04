@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cp63njwa3niv7"]
 
-[ext_resource type="Script" path="res://UI/Buttons/Checkbox/checkbox.gd" id="1_wmtyv"]
+[ext_resource type="Script" uid="uid://bxh1yjy0l6jr5" path="res://UI/Buttons/Checkbox/checkbox.gd" id="1_wmtyv"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_kiejb"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_ygnts"]
 

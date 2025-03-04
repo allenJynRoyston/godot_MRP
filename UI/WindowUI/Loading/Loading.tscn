@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://528j86gp5aj2"]
 
-[ext_resource type="Script" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
+[ext_resource type="Script" uid="uid://dq5icchnwt717" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_0kr8o"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_chhwg"]
 

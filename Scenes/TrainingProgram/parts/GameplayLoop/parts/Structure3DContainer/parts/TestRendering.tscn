@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://ctvye40f4h4uh"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/test_rendering.gd" id="1_bj8va"]
+[ext_resource type="Script" uid="uid://cjy4qkm57tka1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/test_rendering.gd" id="1_bj8va"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_hn2d4"]
 top_radius = 4.0

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://j1m287c37id8"]
 
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_7fbql"]
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Installer/parts/installer_item.gd" id="1_ikxjo"]
+[ext_resource type="Script" uid="uid://bbsahsab6j27c" path="res://Scenes/OSRoot/parts/OS/Installer/parts/installer_item.gd" id="1_ikxjo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4orv"]
 bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)

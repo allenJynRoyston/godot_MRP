@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dobbsixb8ju58"]
 
-[ext_resource type="Script" path="res://UI/VList/parts/v_list_item.gd" id="1_5qhby"]
+[ext_resource type="Script" uid="uid://d4dwon4ng3x51" path="res://UI/VList/parts/v_list_item.gd" id="1_5qhby"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_t3wb0"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_gb1kg"]
 

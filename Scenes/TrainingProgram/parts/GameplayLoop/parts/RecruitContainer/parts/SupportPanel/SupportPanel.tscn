@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://by8lcxk66qelh"]
 
 [ext_resource type="PackedScene" uid="uid://fkdesfdwlevk" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/parts/SupportSection.tscn" id="1_p22eb"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/support_panel.gd" id="1_seop1"]
+[ext_resource type="Script" uid="uid://dyjv8rwjosfwn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/support_panel.gd" id="1_seop1"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_q6do0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h7aq7"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://biu7hvraky4ie"]
 
-[ext_resource type="Script" path="res://UI/ResourcePanel/resource_panel.gd" id="1_166i6"]
+[ext_resource type="Script" uid="uid://bkv2hecqu5w4m" path="res://UI/ResourcePanel/resource_panel.gd" id="1_166i6"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_ser8d"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_x7eon"]
 
@@ -16,21 +16,21 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8vem4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ca1n"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5vudh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7y1q"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o50n2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i33qc"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -83,20 +83,20 @@ columns = 3
 [node name="TextBtn" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_8vem4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ca1n")
 icon = 30
 title = "5"
 
 [node name="TextBtn2" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_5vudh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q7y1q")
 icon = 31
 title = "5"
 
 [node name="TextBtn3" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_o50n2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_i33qc")
 icon = 32
 title = "5"

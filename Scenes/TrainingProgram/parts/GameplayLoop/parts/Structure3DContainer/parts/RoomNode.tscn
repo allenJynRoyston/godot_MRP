@@ -1,6 +1,6 @@
 [gd_scene load_steps=23 format=4 uid="uid://bq87jpxbc5bph"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node.gd" id="1_hmbtm"]
+[ext_resource type="Script" uid="uid://5y1oddudqvnf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_node.gd" id="1_hmbtm"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="2_djoyh"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_705iv"]
 [ext_resource type="Material" uid="uid://dviok6kg4hh33" path="res://Materials/RoomMaterialUnavailable.tres" id="3_cbfu8"]

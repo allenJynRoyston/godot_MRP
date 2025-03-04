@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://boomisn56mb2k"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/researcher_card.gd" id="1_v8702"]
+[ext_resource type="Script" uid="uid://cmyh4x10di83s" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/researcher_card.gd" id="1_v8702"]
 [ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_dksdv"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_t36oy"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_tahe0"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://d1melr1fetrom"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/trait_card.gd" id="1_8b124"]
+[ext_resource type="Script" uid="uid://dhv37hwpslkb5" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/trait_card.gd" id="1_8b124"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_m3aei"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_q3fly"]
 

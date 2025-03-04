@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://b2glyeqvwy3vs"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/objectives_container.gd" id="1_5mn2c"]
+[ext_resource type="Script" uid="uid://cama33xd6387p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/objectives_container.gd" id="1_5mn2c"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_q73ge"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="3_hbjce"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_gobkj"]
@@ -16,21 +16,21 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ego76"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wsyrp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6d11"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avfe2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h6i7u"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4qyx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3s3v"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -40,7 +40,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1toqg"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffjny"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubjmu"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -117,7 +117,7 @@ theme_override_constants/separation = 0
 [node name="CheckBox" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList" instance=ExtResource("3_hbjce")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_wsyrp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6d11")
 no_bg = true
 is_checked = true
 title = "BUILD HQ"
@@ -125,14 +125,14 @@ title = "BUILD HQ"
 [node name="CheckBox2" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList" instance=ExtResource("3_hbjce")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_avfe2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_h6i7u")
 no_bg = true
 title = "BUILD DIRECTORS OFFICE"
 
 [node name="CheckBox3" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList" instance=ExtResource("3_hbjce")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_p4qyx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s3s3v")
 no_bg = true
 title = "CONTAIN ONE SCP"
 
@@ -182,7 +182,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gobkj")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ffjny")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ubjmu")
 title = "BACK"
 assigned_key = "B"
 icon = 16

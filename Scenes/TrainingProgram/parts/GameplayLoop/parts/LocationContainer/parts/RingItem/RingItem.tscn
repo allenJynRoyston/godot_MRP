@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dsteq6330sqab"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/parts/RingItem/ring_item.gd" id="1_s4yq2"]
+[ext_resource type="Script" uid="uid://vhv6gwfifx77" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/parts/RingItem/ring_item.gd" id="1_s4yq2"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_lip7y"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_0y83s"]
 

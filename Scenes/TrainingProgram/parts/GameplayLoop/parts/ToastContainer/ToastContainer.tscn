@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://3ltyxjadd2yt"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/toast_container.gd" id="1_g8pd4"]
+[ext_resource type="Script" uid="uid://djiyu6lvdexqs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/toast_container.gd" id="1_g8pd4"]
 [ext_resource type="PackedScene" uid="uid://dcdlbq88b7sm2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/parts/ToastItem.tscn" id="2_yop55"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1ktj"]

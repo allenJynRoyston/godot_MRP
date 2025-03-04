@@ -1,10 +1,10 @@
 [gd_scene load_steps=21 format=3 uid="uid://jacix3bun03x"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/shop_mini_card.gd" id="1_7gy44"]
+[ext_resource type="Script" uid="uid://cy177bercus4u" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/shop_mini_card.gd" id="1_7gy44"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="1_a1ssm"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_blnkg"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="2_kq0y7"]
-[ext_resource type="Shader" path="res://Shader/CurveTextureRect/CurveTextureRect.gdshader" id="2_w6kfh"]
+[ext_resource type="Shader" uid="uid://dqmho66wiosou" path="res://Shader/CurveTextureRect/CurveTextureRect.gdshader" id="2_w6kfh"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="4_kx7lq"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_noi03"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_sh3ly"]

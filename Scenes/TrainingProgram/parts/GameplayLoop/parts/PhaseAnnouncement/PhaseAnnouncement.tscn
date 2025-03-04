@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://btl83p0xrlqoi"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/phase_announcement.gd" id="1_6ijd8"]
+[ext_resource type="Script" uid="uid://bfbjtjenaho3v" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/phase_announcement.gd" id="1_6ijd8"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_8757y"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_un7wr"]
 

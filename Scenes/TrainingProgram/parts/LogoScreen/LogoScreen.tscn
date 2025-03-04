@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dbbfm67s1r6vm"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/LogoScreen/logo_screen.gd" id="1_hhjxh"]
+[ext_resource type="Script" uid="uid://ct60vhtup6174" path="res://Scenes/TrainingProgram/parts/LogoScreen/logo_screen.gd" id="1_hhjxh"]
 [ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_jqr35"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_kkl0i"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="3_n7hac"]

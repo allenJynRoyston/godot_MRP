@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dl5qwg47wln3a"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/spin_light.gd" id="1_nrm1j"]
+[ext_resource type="Script" uid="uid://dkfx2nmlgd5mn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/spin_light.gd" id="1_nrm1j"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7bloh"]
 

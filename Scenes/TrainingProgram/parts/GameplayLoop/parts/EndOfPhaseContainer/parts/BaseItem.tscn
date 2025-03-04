@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://8kbrkwpybxrs"]
 
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="1_l40m7"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/base_item.gd" id="1_s0nx1"]
+[ext_resource type="Script" uid="uid://cjgomvgbnvwhh" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/base_item.gd" id="1_s0nx1"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_433g5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3jeh"]

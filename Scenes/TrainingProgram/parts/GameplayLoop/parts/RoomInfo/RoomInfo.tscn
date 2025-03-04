@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://caxuubq4dq5yo"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/room_info.gd" id="1_ngdou"]
+[ext_resource type="Script" uid="uid://bfin6ekpokh60" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/room_info.gd" id="1_ngdou"]
 [ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="2_k1rty"]
 [ext_resource type="PackedScene" uid="uid://biv0mqroc6kax" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/RoomDetailPanel.tscn" id="3_xwga5"]
 [ext_resource type="PackedScene" uid="uid://c7j2nka1uvvlq" path="res://UI/ScpPanel/ScpPanel.tscn" id="4_g7ml8"]

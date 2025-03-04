@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bm7p6y12er84x"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/mod_app.gd" id="1_xh4up"]
+[ext_resource type="Script" uid="uid://damkx2w7akpqh" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/mod_app.gd" id="1_xh4up"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_2mlbq"]
 [ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="3_lkft3"]
 [ext_resource type="PackedScene" uid="uid://bg4f5xqrobe7" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/parts/ModComponent.tscn" id="4_x6k0l"]

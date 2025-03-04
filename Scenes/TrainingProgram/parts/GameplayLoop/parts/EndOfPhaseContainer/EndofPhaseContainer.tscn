@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://nfj5ltcydj3b"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/endof_phase_container.gd" id="1_wntkl"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_y3442"]
+[ext_resource type="Script" uid="uid://bb7tiitm4cnd6" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/endof_phase_container.gd" id="1_wntkl"]
+[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="2_y3442"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_d18d6"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_oji45"]
 [ext_resource type="PackedScene" uid="uid://ceiftayudibcw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/parts/BaseSummary/BaseSummary.tscn" id="4_desha"]

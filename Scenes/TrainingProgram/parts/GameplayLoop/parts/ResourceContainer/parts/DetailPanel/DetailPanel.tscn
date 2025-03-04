@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://crk6mkpuid5a3"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/detail_panel.gd" id="1_sgm8h"]
+[ext_resource type="Script" uid="uid://bm0hrx6mh4pv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/DetailPanel/detail_panel.gd" id="1_sgm8h"]
 [ext_resource type="PackedScene" uid="uid://c3ordkbr6lfu6" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/MoneyDetails/MoneyDetails.tscn" id="2_n3efn"]
 [ext_resource type="PackedScene" uid="uid://bhyg7mbnhegpb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/EnergyDetails/EnergyDetails.tscn" id="3_mv5r7"]
 [ext_resource type="PackedScene" uid="uid://fu2lmorso4n" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/LeadResearcherDetails/LeadResearcherDetails.tscn" id="4_kw3da"]

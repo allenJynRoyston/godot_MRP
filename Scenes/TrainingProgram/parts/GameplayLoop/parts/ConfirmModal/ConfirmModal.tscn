@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://dqajtnshjj5i7"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
+[ext_resource type="Script" uid="uid://d3rdbn88vaa70" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_upopm"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_yaau0"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_fdai8"]
@@ -26,7 +26,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ddrg1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xjw5"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -38,7 +38,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7wkhb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s2p2r"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -205,7 +205,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ddrg1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2xjw5")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -213,7 +213,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7wkhb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s2p2r")
 title = "ACCEPT"
 assigned_key = "E"
 icon = 10

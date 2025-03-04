@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://ck8ttsctrjixj"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/abilities_panel.gd" id="1_ca3oi"]
+[ext_resource type="Script" uid="uid://8c1w7sxywjh5" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/abilities_panel.gd" id="1_ca3oi"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_5xkpy"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_8kspe"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_3y3wk"]

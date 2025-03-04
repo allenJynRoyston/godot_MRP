@@ -1,9 +1,9 @@
 [gd_scene load_steps=13 format=3 uid="uid://biv0mqroc6kax"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/room_detail_panel.gd" id="1_jnfvn"]
+[ext_resource type="Script" uid="uid://y1dhw2i4aqwo" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/room_detail_panel.gd" id="1_jnfvn"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_tv0lg"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_a1e2a"]
-[ext_resource type="Shader" path="res://Shader/Static.gdshader" id="5_27vul"]
+[ext_resource type="Shader" uid="uid://b7sc0hobt4vm5" path="res://Shader/Static.gdshader" id="5_27vul"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_sy5tt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5ihl"]

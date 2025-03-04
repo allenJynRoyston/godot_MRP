@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://fkdesfdwlevk"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/parts/support_section.gd" id="1_hucwp"]
+[ext_resource type="Script" uid="uid://djvocejcjg3ml" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/parts/support_section.gd" id="1_hucwp"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="2_ci03c"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_tjoko"]
 [ext_resource type="Texture2D" uid="uid://yxrw4k62dvvm" path="res://Media/images/researcher.jpg" id="3_h34ux"]

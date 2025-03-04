@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://ibxjb8ivu013"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/Actions/actions.gd" id="1_32ndb"]
+[ext_resource type="Script" uid="uid://bc71bdmuvlfb8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/Actions/actions.gd" id="1_32ndb"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_uphru"]
 [ext_resource type="PackedScene" uid="uid://drnfm1tcsmcad" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPActions/parts/ActionItemBtn/ActionItemBtn.tscn" id="2_3qw1l"]
 

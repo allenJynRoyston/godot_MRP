@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://colip2v06wa01"]
 
-[ext_resource type="Script" path="res://UI/Buttons/DetailBtn/detail_btn.gd" id="1_cadc2"]
+[ext_resource type="Script" uid="uid://cnd8ykb2xrqm6" path="res://UI/Buttons/DetailBtn/detail_btn.gd" id="1_cadc2"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_m6mqi"]
-[ext_resource type="Shader" path="res://Shader/ReColor/ReColor.gdshader" id="3_nv3b4"]
+[ext_resource type="Shader" uid="uid://b6aj377ryrxsw" path="res://Shader/ReColor/ReColor.gdshader" id="3_nv3b4"]
 [ext_resource type="Texture2D" uid="uid://cf3xiua0hdis8" path="res://SVGs/dot-filled-svgrepo-com.svg" id="4_jd2wi"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mhmbm"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://biaw18jevnkx5"]
 
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_1ymrv"]
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/ContextMenuApp/context_menu_app.gd" id="1_3ideg"]
+[ext_resource type="Script" uid="uid://cykq071tmtgga" path="res://Scenes/OSRoot/parts/OS/Apps/ContextMenuApp/context_menu_app.gd" id="1_3ideg"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="3_fqj27"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_81oon"]

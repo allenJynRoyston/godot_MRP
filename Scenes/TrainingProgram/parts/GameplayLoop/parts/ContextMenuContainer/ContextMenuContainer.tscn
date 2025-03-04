@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://de238y6o15ppf"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/context_menu_container.gd" id="1_egpt7"]
+[ext_resource type="Script" uid="uid://bemyctxpecnjc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/context_menu_container.gd" id="1_egpt7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h75gv"]
 

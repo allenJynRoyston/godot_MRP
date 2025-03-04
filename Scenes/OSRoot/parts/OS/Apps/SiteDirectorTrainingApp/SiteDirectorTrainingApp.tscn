@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bluesleu6wl4v"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/SiteDirectorTrainingApp/site_director_training_app.gd" id="1_5dlsa"]
+[ext_resource type="Script" uid="uid://doiyfiyvndsgw" path="res://Scenes/OSRoot/parts/OS/Apps/SiteDirectorTrainingApp/site_director_training_app.gd" id="1_5dlsa"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_08334"]
 [ext_resource type="PackedScene" uid="uid://dam3228oxnp8k" path="res://Scenes/TrainingProgram/TrainingProgram.tscn" id="3_68i6h"]
 [ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="4_ys1py"]

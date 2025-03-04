@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://c0wfb2ox3yxkt"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/researcher_promotion_screen.gd" id="1_u0h2p"]
+[ext_resource type="Script" uid="uid://bfvv1dywoldel" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/researcher_promotion_screen.gd" id="1_u0h2p"]
 [ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="3_7sif0"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_b7n4o"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_u81kp"]

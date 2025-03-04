@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://b4pwrpvr3osgb"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/OS.gd" id="1_rk64t"]
+[ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/OSRoot/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/OSRoot/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn" id="4_e3kl5"]
 [ext_resource type="PackedScene" uid="uid://8hxxm66kio4n" path="res://Scenes/OSRoot/parts/OS/Installer/Installer.tscn" id="6_dhnyo"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://dwhtysap0bsna"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/room_mini_card.gd" id="1_0jit3"]
+[ext_resource type="Script" uid="uid://dacwtt350g61n" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/room_mini_card.gd" id="1_0jit3"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_fhq3g"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_bbdx2"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_ksj6n"]

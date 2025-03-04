@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://btxy5mypwrlao"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
+[ext_resource type="Script" uid="uid://cytp5e5onlqj6" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="2_1nkh6"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_21r5r"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_hm80f"]

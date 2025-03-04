@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://b61dv5ws7o2c5"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/TextFileApp/text_file_app.gd" id="1_ycmlw"]
+[ext_resource type="Script" uid="uid://go7m3m3do6ue" path="res://Scenes/OSRoot/parts/OS/Apps/TextFileApp/text_file_app.gd" id="1_ycmlw"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_d2y37"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_6bivp"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_1kg77"]

@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://be17dg4n3r505"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BackContainer/back_container.gd" id="1_xve5h"]
+[ext_resource type="Script" uid="uid://cnp0b5qvwpaly" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BackContainer/back_container.gd" id="1_xve5h"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_uyrgm"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_v0e87"]
+[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="2_v0e87"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_popmm"]
 shader = ExtResource("2_v0e87")

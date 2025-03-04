@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://48t1auawg8qm"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/floating_item.gd" id="1_23m2p"]
+[ext_resource type="Script" uid="uid://bk46xbfwbltck" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/floating_item.gd" id="1_23m2p"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_dkso4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2reox"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://bm8c5ebs0ue3"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/parts/context_menu_item.gd" id="1_5llqf"]
+[ext_resource type="Script" uid="uid://cx30ip3yh8j5p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContextMenuContainer/parts/context_menu_item.gd" id="1_5llqf"]
 [ext_resource type="Material" uid="uid://du77bmgt0y0fw" path="res://Shader/Sephia/template.tres" id="2_4pgwa"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_7se75"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_te5fk"]

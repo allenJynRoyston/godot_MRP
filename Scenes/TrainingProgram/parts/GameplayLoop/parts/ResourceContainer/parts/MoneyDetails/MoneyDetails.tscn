@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://c3ordkbr6lfu6"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/MoneyDetails/money_details.gd" id="1_eybim"]
+[ext_resource type="Script" uid="uid://b3s2cxci6cciu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/MoneyDetails/money_details.gd" id="1_eybim"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_fywvl"]
 [ext_resource type="PackedScene" uid="uid://colip2v06wa01" path="res://UI/Buttons/DetailBtn/DetailBtn.tscn" id="2_hyts2"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_5sbpa"]

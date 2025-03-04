@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dkq7qr452bxjl"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/MediaPlayerMiniApp/media_player_mini_app.gd" id="1_0gr4a"]
+[ext_resource type="Script" uid="uid://ceb7jkant5c4p" path="res://Scenes/OSRoot/parts/OS/Apps/MediaPlayerMiniApp/media_player_mini_app.gd" id="1_0gr4a"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_4wqjg"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="3_s0vrx"]
 

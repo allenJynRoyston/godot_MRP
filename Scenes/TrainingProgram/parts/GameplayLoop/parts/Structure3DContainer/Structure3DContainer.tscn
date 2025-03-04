@@ -1,10 +1,10 @@
 [gd_scene load_steps=13 format=3 uid="uid://dl5rw8mq2i0dp"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_wktvj"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_wr5lh"]
+[ext_resource type="Script" uid="uid://hrqaxm2a60en" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_wktvj"]
+[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="2_wr5lh"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_vv08h"]
 [ext_resource type="PackedScene" uid="uid://c60d3ymkiaiyy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/Rendering.tscn" id="4_ypl4m"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/LineController.gd" id="5_5cekg"]
+[ext_resource type="Script" uid="uid://c5r1w5dtsadiu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/LineController.gd" id="5_5cekg"]
 [ext_resource type="LabelSettings" uid="uid://cl0raoi8pa3g5" path="res://Fonts/game/label_small_black.tres" id="5_p7elo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w8kjt"]

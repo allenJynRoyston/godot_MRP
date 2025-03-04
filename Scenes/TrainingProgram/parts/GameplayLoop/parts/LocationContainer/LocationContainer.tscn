@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://bm6bs0iy51dcc"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/location_container.gd" id="1_ghp6m"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_bm8dv"]
+[ext_resource type="Script" uid="uid://cotep2koewckd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationContainer/location_container.gd" id="1_ghp6m"]
+[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="2_bm8dv"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_ed473"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_d331o"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="5_0rbbm"]

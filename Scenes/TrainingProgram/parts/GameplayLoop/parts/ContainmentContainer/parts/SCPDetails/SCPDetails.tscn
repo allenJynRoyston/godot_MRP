@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://drfnsxi54q7yo"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPDetails/scp_details.gd" id="1_msblh"]
+[ext_resource type="Script" uid="uid://cai7gbi8whpe4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPDetails/scp_details.gd" id="1_msblh"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_x8ud6"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_a402l"]
 [ext_resource type="Texture2D" uid="uid://ci63y150nrl57" path="res://Media/images/safe-euclid-keter-icons-v0-bk4m6sye843c1.png" id="4_683d7"]

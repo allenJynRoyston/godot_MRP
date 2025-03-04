@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://bg4f5xqrobe7"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/parts/mod_component.gd" id="1_fuktp"]
+[ext_resource type="Script" uid="uid://b645mprwaodgj" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/parts/mod_component.gd" id="1_fuktp"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="1_ihp10"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_vywlc"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_85cpi"]

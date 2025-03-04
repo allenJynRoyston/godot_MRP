@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://ch2o2250h2fju"]
 
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_ktwyq"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/hume_panel.gd" id="1_rrwo6"]
-[ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/Oscilliscope.gdshader" id="2_2mluu"]
+[ext_resource type="Script" uid="uid://feew23lmu81n" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/hume_panel.gd" id="1_rrwo6"]
+[ext_resource type="Shader" uid="uid://b37a0tavqqe45" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/Oscilliscope.gdshader" id="2_2mluu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l6hi5"]
 bg_color = Color(0, 0.53, 0.282667, 0)

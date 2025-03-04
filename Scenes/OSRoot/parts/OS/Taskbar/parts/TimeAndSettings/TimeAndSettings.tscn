@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dqoykb187y44p"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/TimeAndSettings/time_and_settings.gd" id="1_tpk6f"]
+[ext_resource type="Script" uid="uid://cnob6mr30e1y6" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/TimeAndSettings/time_and_settings.gd" id="1_tpk6f"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_0ajsd"]
 
 [node name="TimeDisplay" type="HBoxContainer"]

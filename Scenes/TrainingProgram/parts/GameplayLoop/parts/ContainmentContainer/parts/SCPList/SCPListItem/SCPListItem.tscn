@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://diocnqmhc5hee"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPList/SCPListItem/scp_list_item.gd" id="1_3qu5a"]
+[ext_resource type="Script" uid="uid://b0kwn3ewq17fp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPList/SCPListItem/scp_list_item.gd" id="1_3qu5a"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_fe5mp"]
-[ext_resource type="LabelSettings" uid="uid://dnk5qeem6x4ca" path="res://Fonts/game/label_small_black.tres" id="2_71gnb"]
+[ext_resource type="LabelSettings" uid="uid://cl0raoi8pa3g5" path="res://Fonts/game/label_small_black.tres" id="2_71gnb"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="3_x88dd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4syw7"]

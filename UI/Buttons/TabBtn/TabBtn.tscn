@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cd46j3ltrkmdv"]
 
-[ext_resource type="Script" path="res://UI/Buttons/TabBtn/tab_btn.gd" id="1_sg587"]
+[ext_resource type="Script" uid="uid://cskr6npsncjh3" path="res://UI/Buttons/TabBtn/tab_btn.gd" id="1_sg587"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_51oxl"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_mfhg8"]
 

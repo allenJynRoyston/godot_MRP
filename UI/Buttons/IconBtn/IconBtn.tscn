@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://c5ld7n1ycuql2"]
 
-[ext_resource type="Shader" path="res://Shader/ReColor/ReColor.gdshader" id="2_ilvdr"]
+[ext_resource type="Shader" uid="uid://b6aj377ryrxsw" path="res://Shader/ReColor/ReColor.gdshader" id="2_ilvdr"]
 [ext_resource type="Texture2D" uid="uid://bcsulh43i1bt1" path="res://SVGs/bin-xmark-fill-svgrepo-com.svg" id="3_4f0o4"]
-[ext_resource type="Script" path="res://UI/Buttons/IconBtn/icon_btn.gd" id="3_y66qb"]
+[ext_resource type="Script" uid="uid://je1fhfhxowkp" path="res://UI/Buttons/IconBtn/icon_btn.gd" id="3_y66qb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k3bap"]
 shader = ExtResource("2_ilvdr")

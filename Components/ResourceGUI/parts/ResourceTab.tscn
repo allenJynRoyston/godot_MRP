@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dfdy81fob4qxq"]
 
-[ext_resource type="Script" path="res://Components/ResourceGUI/parts/resource_tab.gd" id="1_l2rcw"]
+[ext_resource type="Script" uid="uid://b11203gaoledm" path="res://Components/ResourceGUI/parts/resource_tab.gd" id="1_l2rcw"]
 
 [node name="ResourceTab" type="PanelContainer"]
 offset_right = 40.0

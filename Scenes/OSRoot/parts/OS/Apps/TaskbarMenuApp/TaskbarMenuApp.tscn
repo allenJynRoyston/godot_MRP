@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bgerooqlfg28l"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/TaskbarMenuApp/taskbar_menu_app.gd" id="1_nabms"]
+[ext_resource type="Script" uid="uid://bqwu4jlwv1fku" path="res://Scenes/OSRoot/parts/OS/Apps/TaskbarMenuApp/taskbar_menu_app.gd" id="1_nabms"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_5eisg"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="3_j533a"]
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://d0dpehr5pt3xc"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/recruit_container.gd" id="1_kc8pe"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="2_tdc6v"]
+[ext_resource type="Script" uid="uid://drw8ir4a2d08q" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/recruit_container.gd" id="1_kc8pe"]
+[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="2_tdc6v"]
 [ext_resource type="PackedScene" uid="uid://by8lcxk66qelh" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/SupportPanel/SupportPanel.tscn" id="4_6lkj4"]
 [ext_resource type="PackedScene" uid="uid://lgmqxg5r5bg4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/LeadResearcherPanel/LeadResearcherPanel.tscn" id="5_4equ8"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_4avi5"]

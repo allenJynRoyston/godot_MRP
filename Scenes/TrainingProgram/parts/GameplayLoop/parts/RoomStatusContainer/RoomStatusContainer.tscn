@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://b6yaqlrk4nisj"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/RoomStatusContainer.gd" id="1_2lqot"]
-[ext_resource type="Shader" path="res://Shader/Reveal/reveal.gdshader" id="1_l62r5"]
+[ext_resource type="Script" uid="uid://cbxffesgj3fwf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/RoomStatusContainer.gd" id="1_2lqot"]
+[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="1_l62r5"]
 [ext_resource type="PackedScene" uid="uid://hftdmqe4eykf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomStatusContainer/parts/RoomStatusItem/RoomStatusItem.tscn" id="3_utovy"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gxhv6"]

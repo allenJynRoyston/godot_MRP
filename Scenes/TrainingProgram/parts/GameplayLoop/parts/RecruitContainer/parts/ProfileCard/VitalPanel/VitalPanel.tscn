@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://brrua5mve6jio"]
 
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_osjdb"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/VitalPanel/vital_panel.gd" id="1_s7pmh"]
+[ext_resource type="Script" uid="uid://cr1dfg7tyydhn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RecruitContainer/parts/ProfileCard/VitalPanel/vital_panel.gd" id="1_s7pmh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dtdwx"]
 

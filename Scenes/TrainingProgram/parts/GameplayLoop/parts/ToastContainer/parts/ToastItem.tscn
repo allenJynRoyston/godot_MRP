@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dcdlbq88b7sm2"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/parts/toast_item.gd" id="1_2wopy"]
+[ext_resource type="Script" uid="uid://cuumijibwe0l1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/parts/toast_item.gd" id="1_2wopy"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_qea1g"]
 
 [node name="ToastItem" type="HBoxContainer"]

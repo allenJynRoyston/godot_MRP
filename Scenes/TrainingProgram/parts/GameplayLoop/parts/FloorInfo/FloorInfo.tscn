@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c2u54w2kpt6b0"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/floor_info.gd" id="1_j6re1"]
+[ext_resource type="Script" uid="uid://cmdqgeqlbeq7c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/floor_info.gd" id="1_j6re1"]
 [ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="2_wcahk"]
 [ext_resource type="PackedScene" uid="uid://b0b7ca48e8mo8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/parts/WingSummary/WingSummary.tscn" id="2_xu5r8"]
 

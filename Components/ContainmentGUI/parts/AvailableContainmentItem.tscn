@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://b5hl1x5y5ly0o"]
 
-[ext_resource type="Script" path="res://Components/ContainmentGUI/parts/AvailableContainmentItem.gd" id="1_kws75"]
+[ext_resource type="Script" uid="uid://6swye255jua3" path="res://Components/ContainmentGUI/parts/AvailableContainmentItem.gd" id="1_kws75"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_7qttf"]
 font_size = 10

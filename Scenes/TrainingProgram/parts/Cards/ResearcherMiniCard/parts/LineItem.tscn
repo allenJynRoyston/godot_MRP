@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cudqhv3d68cen"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/parts/line_item.gd" id="1_ixy0v"]
+[ext_resource type="Script" uid="uid://8ys4y6dex8cd" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/parts/line_item.gd" id="1_ixy0v"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_i2iii"]
 
 [node name="ResearcherDetailLineItem" type="PanelContainer"]

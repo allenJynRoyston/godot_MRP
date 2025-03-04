@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cxkkni8jbnrqq"]
 
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_4rx15"]
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/detail_panel.gd" id="1_ifskr"]
+[ext_resource type="Script" uid="uid://b121casmumllb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/detail_panel.gd" id="1_ifskr"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_v1d8f"]
 [ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="3_u3dak"]
 

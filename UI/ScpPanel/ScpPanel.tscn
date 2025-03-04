@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://c7j2nka1uvvlq"]
 
-[ext_resource type="Script" path="res://UI/ScpPanel/scp_panel.gd" id="1_a32cm"]
+[ext_resource type="Script" uid="uid://cc0c0m04ywt8g" path="res://UI/ScpPanel/scp_panel.gd" id="1_a32cm"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_s1rv1"]
 [ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="3_j5r41"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_f845s"]

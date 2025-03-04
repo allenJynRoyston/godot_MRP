@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://c12w8jpic416k"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPList/scplist.gd" id="1_1e2pm"]
+[ext_resource type="Script" uid="uid://j8oojw1j30av" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPList/scplist.gd" id="1_1e2pm"]
 [ext_resource type="PackedScene" uid="uid://diocnqmhc5hee" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentContainer/parts/SCPList/SCPListItem/SCPListItem.tscn" id="1_3e12v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f5xl8"]

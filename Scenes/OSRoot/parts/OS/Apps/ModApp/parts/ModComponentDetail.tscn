@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dnorrfg4ejqdh"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/parts/mod_component_detail.gd" id="1_pnsla"]
+[ext_resource type="Script" uid="uid://cd4wb7x72j3pk" path="res://Scenes/OSRoot/parts/OS/Apps/ModApp/parts/mod_component_detail.gd" id="1_pnsla"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_3nk5l"]
 
 [node name="Difficulty" type="HBoxContainer"]

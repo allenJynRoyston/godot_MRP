@@ -1,6 +1,6 @@
 [gd_scene load_steps=30 format=3 uid="uid://bl0fcbjjnqeux"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
+[ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
 [ext_resource type="Material" uid="uid://b4dnsatkufi37" path="res://Shader/ScreenSaver/ScreenSaver.tres" id="2_7nwk1"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_batgf"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_2d0xm"]

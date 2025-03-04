@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://doexmbeotqsd4"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
+[ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_ryuwo"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_aisjx"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_w80op"]
@@ -17,10 +17,10 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_phusf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvfea"]
 bg_color = Color(0, 0, 0, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kklww"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4l8vf"]
 bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_hghmq"]
@@ -58,7 +58,7 @@ alignment = 1
 visible = false
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_phusf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hvfea")
 icon = 43
 panel_color = Color(0, 0, 0, 0)
 is_disabled = true
@@ -66,7 +66,7 @@ title = "[PREREQUISITES MISSING]"
 
 [node name="OptionTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kklww")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4l8vf")
 icon = 52
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0)

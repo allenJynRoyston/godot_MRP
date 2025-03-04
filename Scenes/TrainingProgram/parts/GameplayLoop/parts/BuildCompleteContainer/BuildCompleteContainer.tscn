@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://85i830v26h73"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildCompleteContainer/build_complete_container.gd" id="1_0s54v"]
+[ext_resource type="Script" uid="uid://bbk8s6syt8n3l" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildCompleteContainer/build_complete_container.gd" id="1_0s54v"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_1k6n6"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_hppbm"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_jpbjq"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://b0b7ca48e8mo8"]
 
-[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/parts/WingSummary/wing_summary.gd" id="1_4bc0r"]
+[ext_resource type="Script" uid="uid://caehhip0au61l" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/parts/WingSummary/wing_summary.gd" id="1_4bc0r"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_wont5"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_4yst4"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_mp7bc"]

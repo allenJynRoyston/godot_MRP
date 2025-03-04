@@ -13,7 +13,7 @@ config_version=5
 config/name="SCP-001: Memory Recovery Protocol"
 run/main_scene="res://Scenes/OSRoot/OSRoot.tscn"
 run/print_header=false
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 run/size/viewport_height=720
 
 [autoload]

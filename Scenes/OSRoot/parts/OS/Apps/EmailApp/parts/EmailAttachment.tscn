@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://b2xiva1hpi0f4"]
 
-[ext_resource type="Script" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
+[ext_resource type="Script" uid="uid://b60uuqkimgfwr" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_7ovhd"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="4_2gnm4"]
 

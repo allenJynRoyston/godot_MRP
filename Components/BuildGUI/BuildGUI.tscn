@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dhspj3n5kam3h"]
 
-[ext_resource type="Script" path="res://Components/BuildGUI/BuildGUI.gd" id="1_thu40"]
+[ext_resource type="Script" uid="uid://d0ru8h5fph8ku" path="res://Components/BuildGUI/BuildGUI.gd" id="1_thu40"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_hkvxh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhviv"]
