@@ -65,11 +65,14 @@ func _ready() -> void:
 	on_title_update()
 	on_subtitle_update()
 	on_image_update()
+	on_activation_requirements_update()
 	
 	await U.set_timeout(1.0)
 	control_pos[ContentPanelContainer] = {"show": ContentPanelContainer.position.x, "hide": ContentPanelContainer.position.x + ContentPanelContainer.size.x}
 	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
-	control_pos[StaffingControlPanel] = {"show": StaffingControlPanel.position.y, "hide": StaffingControlPanel.position.x + StaffingControlPanel.size.y}	
+	control_pos[StaffingControlPanel] = {"show": StaffingControlPanel.position.y, "hide": StaffingControlPanel.position.y - StaffingControlPanel.size.y}	
+	print(control_pos[StaffingControlPanel])
+
 	on_is_showing_update(true)
 
 func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "") -> void:
@@ -83,7 +86,6 @@ func end(made_changes:bool) -> void:
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = true
 		#
-	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
 	U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
 	await U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].hide)
@@ -102,7 +104,7 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 		
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = !is_showing
-	
+
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  0 if skip_animation else 0.3)
 	
@@ -111,8 +113,6 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	await U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].show if is_showing else control_pos[BtnMarginContainer].hide,  0 if skip_animation else 0.3)
 	
 	# reset confirm only state
-	if !is_showing:
-		U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide,  0 if skip_animation else 0.3)
 	allow_input = true
 
 func on_image_update() -> void:
@@ -138,7 +138,7 @@ func on_activation_requirements_update() -> void:
 	if activation_requirements.is_empty():
 		StaffingControl.hide()
 		return
-		
+	
 	StaffingControl.show()
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show)
 	
@@ -166,17 +166,15 @@ func on_activation_requirements_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_cancel_only_update() -> void:
 	if !is_node_ready():return
-	pass
-	#if cancel_only:
-		#AcceptBtn.hide()
-	#else:
-		#AcceptBtn.show()
+	if cancel_only:
+		AcceptBtn.hide()
+	else:
+		AcceptBtn.show()
 		
 func on_confirm_only_update() -> void:
 	if !is_node_ready():return
-	pass
-	#if confirm_only:
-		#BackBtn.hide()
-	#else:
-		#BackBtn.show()
+	if confirm_only:
+		BackBtn.hide()
+	else:
+		BackBtn.show()
 # --------------------------------------------------------------------------------------------------		
