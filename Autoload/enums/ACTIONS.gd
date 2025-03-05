@@ -48,6 +48,7 @@ enum AQ {
 enum RESEARCHERS {
 	BACK,
 	SELECT,
+	PROMOTED
 }
 
 enum CONTAINED {

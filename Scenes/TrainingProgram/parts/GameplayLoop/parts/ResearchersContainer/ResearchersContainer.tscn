@@ -1,22 +1,43 @@
-[gd_scene load_steps=21 format=3 uid="uid://bqjbewhv2mf4t"]
+[gd_scene load_steps=29 format=3 uid="uid://bqjbewhv2mf4t"]
 
 [ext_resource type="Script" uid="uid://c7eagduyswmvv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/researchers_container.gd" id="1_u5c0a"]
+[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_18rtl"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_qpt25"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_veau8"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_7f8j1"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_7i7in"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_7j1yh"]
 [ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="3_e6lkj"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_dots1"]
+[ext_resource type="PackedScene" uid="uid://ied6qtqemnsg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/TraitItem/TraitItem.tscn" id="5_7j1yh"]
 [ext_resource type="PackedScene" uid="uid://d1melr1fetrom" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn" id="5_bwwfb"]
 [ext_resource type="PackedScene" uid="uid://cyv8vf7k1e1s4" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn" id="8_2blr1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gm34h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_86ytk"]
+bg_color = Color(0, 0, 0, 0.796078)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f7l2i"]
+bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gotsv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yclny"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xudhu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_18rtl"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -28,7 +49,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d8g8h"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oj23j"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -40,7 +61,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qpt25"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ywibd"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -52,8 +73,20 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7j1yh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pppvx"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bhvgm"]
+bg_color = Color(1, 0.745178, 0.380506, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -69,14 +102,17 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_wvonr"]
 color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_18rtl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lv48a"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
+border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oj23j"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vc3n2"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
+border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ywibd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2lw03"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
+border_color = Color(0, 0, 0, 1)
 
 [node name="ResearcherContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -90,6 +126,104 @@ script = ExtResource("1_u5c0a")
 [node name="ColorRectBG" type="ColorRect" parent="."]
 layout_mode = 2
 color = Color(0.52, 0.0866667, 0, 0.603922)
+
+[node name="PromoteControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PromoteControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PromoteControl/MarginContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_86ytk")
+
+[node name="ColorRect" type="ColorRect" parent="PromoteControl/MarginContainer/PanelContainer"]
+material = ExtResource("2_18rtl")
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PromoteControl/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ResearcherCardContainer" type="PanelContainer" parent="PromoteControl/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxEmpty_18rtl")
+
+[node name="PromotionCard" parent="PromoteControl/MarginContainer/HBoxContainer/ResearcherCardContainer" instance=ExtResource("3_e6lkj")]
+layout_mode = 2
+reveal = false
+promotion_preview = true
+
+[node name="PanelContainer2" type="PanelContainer" parent="PromoteControl/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_f7l2i")
+
+[node name="MarginContainer" type="MarginContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PROMOTION BONUS"
+label_settings = ExtResource("2_qpt25")
+horizontal_alignment = 2
+
+[node name="PromotionLabel" type="Label" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "DR. LASTNAME HAS PROMOTED TO LEVEL 2!"
+label_settings = ExtResource("3_7j1yh")
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "SELECT A NEW TRAIT:"
+label_settings = ExtResource("3_7f8j1")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="NewTraitList" type="VBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="HBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/MarginContainer/NewTraitList" instance=ExtResource("5_7j1yh")]
+layout_mode = 2
+is_selected = true
 
 [node name="ResearcherControl" type="Control" parent="."]
 layout_mode = 2
@@ -150,24 +284,32 @@ theme_override_constants/separation = 0
 
 [node name="ResearcherCard" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 layout_mode = 2
+promotion_preview = false
 
 [node name="ResearcherCard2" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 layout_mode = 2
+promotion_preview = false
 
 [node name="ResearcherCard3" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
+visible = false
 layout_mode = 2
+reveal = false
+promotion_preview = false
 
 [node name="ResearcherCard4" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 visible = false
 layout_mode = 2
+promotion_preview = false
 
 [node name="ResearcherCard5" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 visible = false
 layout_mode = 2
+promotion_preview = false
 
 [node name="ResearcherCard6" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 visible = false
 layout_mode = 2
+promotion_preview = false
 
 [node name="MoreBtn" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_7i7in")]
 layout_mode = 2
@@ -225,7 +367,7 @@ custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_xudhu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_18rtl")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23
@@ -238,7 +380,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_dots1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_d8g8h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oj23j")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -246,7 +388,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="SelectBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_dots1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qpt25")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ywibd")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
@@ -254,11 +396,19 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="ConfirmBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_dots1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7j1yh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pppvx")
 title = "CONFIRM"
 assigned_key = "ENTER"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
+
+[node name="PromoteBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_dots1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bhvgm")
+title = "PROMOTE"
+assigned_key = "ENTER"
+icon = 15
+panel_color = Color(1, 0.745178, 0.380506, 1)
 
 [node name="TraitControl" type="Control" parent="."]
 layout_mode = 2
@@ -306,7 +456,8 @@ theme_override_constants/separation = 10
 
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/TraitContainer/TraitList" instance=ExtResource("5_bwwfb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_18rtl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lv48a")
+is_highlighted = false
 
 [node name="SynergyContainer" type="VBoxContainer" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -327,11 +478,13 @@ theme_override_constants/separation = 10
 
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("5_bwwfb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oj23j")
+theme_override_styles/panel = SubResource("StyleBoxFlat_vc3n2")
+is_highlighted = false
 
 [node name="TraitCard2" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("5_bwwfb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ywibd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2lw03")
+is_highlighted = false
 
 [node name="SelectedControl" type="Control" parent="."]
 layout_mode = 2

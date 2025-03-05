@@ -39,17 +39,29 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_23dn8"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umctv"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ma8sc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5xs2u"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vkppb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7q6wh"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lnuhb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xre08"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6qwbu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0dffn"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h3pbi"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bsj2a"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
 [node name="ResourceContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -151,22 +163,26 @@ theme_override_constants/separation = 5
 
 [node name="ResourceItemMoney" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_23dn8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_umctv")
 icon = 30
+no_bg = true
+title = "0"
 display_at_bottom = true
 
 [node name="ResourceItemEnergy" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_ma8sc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5xs2u")
 icon = 31
 no_bg = true
+title = "0"
 display_at_bottom = true
 
 [node name="ResourceItemScience" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_vkppb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7q6wh")
 icon = 39
 no_bg = true
+title = "0"
 display_at_bottom = true
 
 [node name="VSeparator" type="VSeparator" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
@@ -174,18 +190,24 @@ layout_mode = 2
 
 [node name="ResourceItemStaff" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_lnuhb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xre08")
 icon = 34
+no_bg = true
+title = "0"
 display_at_bottom = true
 
 [node name="ResourceItemSecurity" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_6qwbu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
 icon = 35
+no_bg = true
+title = "0"
 display_at_bottom = true
 
 [node name="ResourceItemDClass" parent="Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_sg6pc")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_h3pbi")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
 icon = 32
+no_bg = true
+title = "0"
 display_at_bottom = true

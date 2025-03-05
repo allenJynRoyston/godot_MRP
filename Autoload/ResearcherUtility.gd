@@ -521,20 +521,39 @@ func get_details_from_extract(location:Dictionary) -> Dictionary:
 	}		
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+func get_randomized_traits(amount:int, exclude:Array) -> Array:
+	var traits:Array = []
+	while traits.size() < amount:
+		var val:int = U.generate_rand(0, RESEARCHER.TRAITS.size() - 1)
+		if val not in traits and val not in exclude:
+			traits.push_back( val )	
+	
+	return traits
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------	
+func promote_researcher(researcher_details:Dictionary, new_trait:int) -> void:
+	var new_trait_list:Array = researcher_details.traits + [new_trait]
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+		if i[0] == researcher_details.uid:
+			# i[7] is xp
+			i[7] -= 10
+			i[2] = new_trait_list
+			i[8] += 1
+			i[9].can_promote = i[7] > 10
+		return i
+	) 		
+# ------------------------------------------------------------------------------		
+
 # ------------------------------------------------------------------------------
 func add_experience(uid:String, amount:int) -> bool:
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		if i[0] == uid:
 			# i[7] is xp
 			i[7] += amount
-			if i[7] >= 10:
-				i[7] = i[7] - 10
-				# i[8] is level
-				if i[8] <= 3:
-					i[8] += 1
-					i[9].can_promote = true
-			else:
-				i[9].can_promote = true
+			i[9].can_promote = i[7] > 10
 		return i
 	) 	
 	

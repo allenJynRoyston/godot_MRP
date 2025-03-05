@@ -4,8 +4,8 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_m3aei"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_q3fly"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4kkh"]
-bg_color = Color(0.315758, 0.249353, 0.370347, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xfi55"]
+bg_color = Color(0.316, 0.249, 0.37, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -25,8 +25,9 @@ bg_color = Color(0.05, 0.05, 0.05, 0.419608)
 [node name="TraitCard" type="PanelContainer"]
 offset_right = 92.0
 offset_bottom = 58.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_g4kkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xfi55")
 script = ExtResource("1_8b124")
+is_highlighted = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -61,6 +62,7 @@ label_settings = ExtResource("1_m3aei")
 vertical_alignment = 1
 
 [node name="IconBtn" parent="VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/HBoxContainer" instance=ExtResource("2_q3fly")]
+visible = false
 custom_minimum_size = Vector2(12, 12)
 layout_mode = 2
 size_flags_horizontal = 1
@@ -69,6 +71,7 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 25
+flip_v = false
 is_hoverable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
@@ -100,6 +103,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="OutputContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2imb0")
 

@@ -307,21 +307,36 @@ func on_current_instruction_update() -> void:
 		NextBtn.hide()
 		SelectBtn.show()
 
-		
 		for child in OptionsListContainer.get_children():
-			child.free()			
+			child.queue_free()			
 		
+		var readiness_level:int = 1 #room_config.floor[current_location.floor].ring[current_location.ring].metrics[RESOURCE.BASE_METRICS.READINESS]
 		var options:Array = current_instruction.options
+		
+
+		var compromised_count:int = 0
 		for index in options.size():
 			var option:Dictionary = options[index]
 			var new_node:Control = OptionListItem.instantiate()
 			var include:bool = option.include if "include" in option else true
 			var completed:bool = option.completed if "completed" in option else false
 			var locked:bool = option.locked if "locked" in option else false
+			var show_description:bool = readiness_level >= 1
 			
+			# AT READINESS BELOW 0, OPTIONS HAVE DEBUFFS
+			if readiness_level < 0 and options.size() > 1 and option.val != -1:
+				if index <= absi(readiness_level):
+					option.title = "??? [READINESS COMPROMISED]"
+					option.icon = SVGS.TYPE.LOCK
+					if readiness_level <= -3:
+						option.title = "UNAVAILABLE [READINESS COMPROMISED]"
+						locked = true
+				
 			if include:
 				new_node.data = option
 				new_node.index = index 
+				new_node.is_locked = locked
+				new_node.show_description = show_description
 				new_node.is_selected = option_selected_index == index
 				new_node.onFocus = func(node:Control) -> void:
 					if node == new_node:
@@ -329,8 +344,10 @@ func on_current_instruction_update() -> void:
 				new_node.onClick = func() -> void:
 					on_option_select()
 				OptionsListContainer.add_child(new_node)
-
+		
+		await U.tick()
 		var expand_current_val:float = ContentVBox.get('theme_override_constants/separation')
+		U.tween_node_property(OptionsContainer, "modulate", Color(1, 1, 1, 1))
 		await U.tween_range(expand_current_val, 10.0, 0.7, func(val:float) -> void:
 			ContentVBox.set("theme_override_constants/separation", val)
 		).finished 		
@@ -345,8 +362,9 @@ func on_current_instruction_update() -> void:
 		NextBtn.show()
 		SelectBtn.hide()
 		var expand_current_val:float = ContentVBox.get('theme_override_constants/separation')
-		if expand_current_val != -180:
-			await U.tween_range(expand_current_val, -180, 0.7, func(val:float) -> void:
+		if expand_current_val != -200:
+			U.tween_node_property(OptionsContainer, "modulate", Color(1, 1, 1, 0))
+			await U.tween_range(expand_current_val, -200, 0.7, func(val:float) -> void:
 				ContentVBox.set("theme_override_constants/separation", val)
 			).finished 
 			
@@ -357,6 +375,8 @@ func on_current_instruction_update() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func on_option_select() -> void:
+	if option_selected_index == -1 or OptionsListContainer.get_child(option_selected_index).is_locked:return
+	
 	current_controls = CONTROLS.FREEZE
 	update_next_btn(false)
 	
@@ -372,14 +392,10 @@ func on_option_select() -> void:
 		if index != option_selected_index:
 			node.fade_out() 
 
-	if "onSelected" in option:			
+	if "onSelected" in option:
 		# if selected val property is available, send it
-		if "val" in current_instruction.options[option_selected_index]:
-			var val = current_instruction.options[option_selected_index].val
-			current_instruction.options[option_selected_index].onSelected.call(val)
-		# else, send the index
-		else:
-			current_instruction.options[option_selected_index].onSelected.call(option_selected_index)
+		option.onSelected.call({"index": option_selected_index, "option": option})
+		
 	
 	await U.set_timeout(0.3)
 	

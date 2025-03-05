@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=21 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" uid="uid://d3rdbn88vaa70" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_upopm"]
@@ -6,6 +6,9 @@
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_fdai8"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_gtk4i"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_eu6o6"]
+[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="6_kq5a2"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="7_t4xaw"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="8_qglm5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_75o2t"]
 
@@ -23,10 +26,33 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kq5a2"]
+bg_color = Color(1, 1, 1, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qglm5"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t8u6m"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pmqqh"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xjw5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnqas"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -38,7 +64,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s2p2r"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y32nm"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -140,13 +166,16 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_squyj")
 [node name="MarginContainer" type="MarginContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
+theme_override_constants/margin_top = -20
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
@@ -160,6 +189,71 @@ label_settings = ExtResource("5_eu6o6")
 
 [node name="List" type="VBoxContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="CheckBox" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("6_kq5a2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
+no_bg = true
+title = "1 energy required (you have X)"
+
+[node name="HSeparator" type="HSeparator" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BeforeAndAfter" type="HBoxContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="before" type="HBoxContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter"]
+layout_mode = 2
+
+[node name="ResourceItem" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
+icon = 31
+no_bg = true
+title = "99"
+display_at_bottom = true
+is_negative = true
+
+[node name="ResourceItem2" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
+icon = 30
+no_bg = true
+title = "99"
+display_at_bottom = true
+is_negative = true
+
+[node name="IconBtn" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter" instance=ExtResource("8_qglm5")]
+layout_mode = 2
+icon = 27
+inactive_color = Color(1, 1, 1, 1)
+flip_v = false
+is_hoverable = false
+
+[node name="after" type="HBoxContainer" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter"]
+layout_mode = 2
+
+[node name="ResourceItem" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_t8u6m")
+icon = 31
+no_bg = true
+title = "99"
+display_at_bottom = true
+
+[node name="ResourceItem2" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pmqqh")
+icon = 30
+no_bg = true
+title = "99d"
+display_at_bottom = true
 
 [node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
@@ -205,7 +299,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2xjw5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bnqas")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -213,7 +307,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s2p2r")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y32nm")
 title = "ACCEPT"
 assigned_key = "E"
 icon = 10

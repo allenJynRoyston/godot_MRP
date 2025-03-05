@@ -192,10 +192,11 @@ var IN_DEBT_WARNING:Dictionary = {
 var MORALE:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
 		var option_selected:Dictionary = {
-			"val": null
+			"selected": null
 		}
-		var onSelected = func(val) -> void:
-			option_selected.val = val
+		var onSelected = func(option:Dictionary) -> void:
+			option_selected.selected = option
+			#option_selected.val = val
 			
 		return [
 			# ---------
@@ -214,12 +215,35 @@ var MORALE:Dictionary = {
 						{
 							"show": true,
 							"title": "Option a",
+							"description": "Description goes here.",
+							"success_rate": func() -> int:
+								return 60,
 							"val": 0,
 							"onSelected": onSelected
 						},
 						{
 							"show": true,
+							"title": "Option b",
+							"description": "Description goes here.",
+							"success_rate": func() -> int:
+								return 80,
+							"val": 1,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
+							"title": "Option c",
+							"description": "Description goes here.",
+							"success_rate": func() -> int:
+								return 90,
+							"val": 2,
+							"onSelected": onSelected
+						},
+						{
+							"show": true,
 							"title": "Do nothing",
+							"success_rate": func() -> int:
+								return 100,
 							"val": -1,
 							"onSelected": onSelected
 						}
@@ -227,10 +251,11 @@ var MORALE:Dictionary = {
 				},
 			# ---------
 			func() -> Dictionary:
-				props.onSelection.call(option_selected.val)
+				print(option_selected)
+				props.onSelection.call(option_selected)
 				return {
 					"text": [
-						"You selected %s" % [option_selected.val],
+						"You selected %s" % [option_selected.selected.option.title],
 					]
 				},
 			# ---------

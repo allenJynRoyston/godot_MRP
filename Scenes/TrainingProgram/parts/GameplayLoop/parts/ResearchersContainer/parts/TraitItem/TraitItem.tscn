@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://ied6qtqemnsg"]
+
+[ext_resource type="Script" uid="uid://cdw8saj702hh4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/TraitItem/trait_item.gd" id="1_vl2bo"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_f722k"]
+[ext_resource type="PackedScene" uid="uid://d1melr1fetrom" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn" id="3_c1jnh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vl2bo"]
+bg_color = Color(0.316, 0.249, 0.37, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="HBoxContainer" type="HBoxContainer"]
+script = ExtResource("1_vl2bo")
+
+[node name="IconBtn" parent="." instance=ExtResource("2_f722k")]
+layout_mode = 2
+icon = 27
+flip_v = false
+is_hoverable = false
+
+[node name="TraitCard" parent="." instance=ExtResource("3_c1jnh")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_vl2bo")

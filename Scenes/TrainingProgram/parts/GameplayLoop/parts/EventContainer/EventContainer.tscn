@@ -62,13 +62,13 @@ outline_size = 8
 outline_color = Color(0.332881, 0.332881, 0.332881, 1)
 shadow_size = 0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jcklh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h7wp5"]
 bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6pjea"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jjvei"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1e555"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -80,7 +80,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0r6oy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fi0y4"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -270,7 +270,7 @@ offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -180
+theme_override_constants/margin_top = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/MarginContainer"]
 layout_mode = 2
@@ -389,7 +389,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_jcklh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_h7wp5")
 icon = 36
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0)
@@ -402,7 +402,7 @@ label_settings = ExtResource("5_amr3s")
 vertical_alignment = 1
 
 [node name="OptionsContainer" type="VBoxContainer" parent="ContentControl/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
+custom_minimum_size = Vector2(0, 400)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
@@ -467,7 +467,7 @@ size_flags_vertical = 8
 
 [node name="NextBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("11_6solj")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jjvei")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e555")
 title = "NEXT"
 assigned_key = "E"
 icon = 10
@@ -475,7 +475,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="SelectBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("11_6solj")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0r6oy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fi0y4")
 title = "SELECT"
 assigned_key = "E"
 icon = 45

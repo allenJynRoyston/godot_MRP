@@ -147,7 +147,7 @@ var HQ:Dictionary = {
 					},
 				"ap_cost":  7, 
 				"effect": func(GameplayNode:Control) -> bool:
-					return GameplayNode.recruit_new_researcher(2),
+					return await GameplayNode.recruit_new_researcher(2),
 			},
 			{
 				"name": "HIRE RESEARCHER (1 OPTION)",

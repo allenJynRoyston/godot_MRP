@@ -5,6 +5,8 @@ extends GameContainer
 @onready var ImageTextureRect:TextureRect = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect
 @onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/TitleLabel
 @onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/SubLabel
+@onready var BeforeList:HBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before
+@onready var AfterList:HBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after
 
 @onready var StaffingControl:Control = $StaffingControl
 @onready var StaffingControlPanel:MarginContainer = $StaffingControl/StaffingControlPanel
@@ -16,6 +18,7 @@ extends GameContainer
 @onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
 
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
+const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
 var title:String = "" : 
 	set(val):
@@ -55,6 +58,8 @@ var allow_input:bool = false
 func _ready() -> void:
 	super._ready()
 	
+	
+	
 	AcceptBtn.onClick = func() -> void:
 		if is_showing and allow_input:
 			end(true)
@@ -71,7 +76,6 @@ func _ready() -> void:
 	control_pos[ContentPanelContainer] = {"show": ContentPanelContainer.position.x, "hide": ContentPanelContainer.position.x + ContentPanelContainer.size.x}
 	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
 	control_pos[StaffingControlPanel] = {"show": StaffingControlPanel.position.y, "hide": StaffingControlPanel.position.y - StaffingControlPanel.size.y}	
-	print(control_pos[StaffingControlPanel])
 
 	on_is_showing_update(true)
 
@@ -131,9 +135,10 @@ func on_subtitle_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_activation_requirements_update() -> void:
 	if !is_node_ready():return
-
-	for child in StaffingList.get_children():
-		child.free()
+	
+	for node in [BeforeList, AfterList, StaffingList]:
+		for child in node.get_children():
+			child.free()
 		
 	if activation_requirements.is_empty():
 		StaffingControl.hide()
@@ -148,6 +153,8 @@ func on_activation_requirements_update() -> void:
 		var current_amount:int = resources_data[item.resource.ref].amount		
 		var has_enough:bool = current_amount - absi(item.amount) >= 0
 		var new_node:Control = CheckboxBtnPreload.instantiate()
+		var new_resource_node:Control = ResourceItemPreload.instantiate()
+		
 		if !disable_btn and !has_enough:
 			disable_btn = true
 		
@@ -157,7 +164,18 @@ func on_activation_requirements_update() -> void:
 		new_node.modulate = Color(1, 0, 0, 1) if !has_enough else Color(1, 1, 1, 1)
 		new_node.title =  "%s REQUIRED: %s (YOU HAVE %s)" % [item.resource.name, abs(item.amount), current_amount]
 		StaffingList.add_child(new_node)
-	
+		
+		new_resource_node.is_hoverable = false
+		new_resource_node.no_bg = true
+		new_resource_node.display_at_bottom = true
+		new_resource_node.icon = item.resource.icon
+		new_resource_node.title = str(current_amount)
+		BeforeList.add_child(new_resource_node)
+		
+		var after_node:Control = new_resource_node.duplicate()
+		after_node.title = str(current_amount - abs(item.amount))
+		after_node.is_negative = disable_btn
+		AfterList.add_child(after_node) 
 
 	await U.tick()
 	AcceptBtn.is_disabled = disable_btn

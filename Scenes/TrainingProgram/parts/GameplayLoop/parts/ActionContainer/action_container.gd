@@ -601,7 +601,7 @@ func open_debug_menu() -> void:
 		"onSelect": func() -> void:
 			ActiveMenu.freeze_inputs = true
 			set_btn_disabled_state(true)
-			var props:Dictionary = {"onSelection": func(selected):print(selected)}
+			var props:Dictionary = {"onSelection": func(selected):print(selected), "current_location": current_location}
 			await GameplayNode.triggger_event(EVT.TYPE.MORALE, props)
 			ActiveMenu.freeze_inputs = false
 			restore_btn_disable_state()

@@ -51,6 +51,11 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 		is_deselected = val
 		on_is_deselected_update()
 		
+@export var promotion_preview:bool = false : 
+	set(val):
+		promotion_preview = val
+		on_promotion_preview_update()
+		
 var researcher_details:Dictionary = {} : 
 	set(val):
 		researcher_details = val
@@ -74,7 +79,7 @@ func _ready() -> void:
 	on_is_active_update()
 	on_is_selected_update()
 	on_is_deselected_update()
-	on_researcher_details_update()
+	on_researcher_details_update()	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -118,6 +123,12 @@ func on_uid_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_promotion_preview_update() -> void:
+	if !is_node_ready():return
+	on_researcher_details_update()
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
 func on_researcher_details_update() -> void:
 	if !is_node_ready():return
 	
@@ -128,7 +139,7 @@ func on_researcher_details_update() -> void:
 	if researcher_details.is_empty():return
 	NameLabel.text = researcher_details.name
 	ProfileImage.texture = CACHE.fetch_image(researcher_details.img_src)
-	LevelLabel.text = str(researcher_details.level)
+	LevelLabel.text = str(researcher_details.level + 1 if promotion_preview else 0)
 	
 	for spec_id in researcher_details.specializations:
 		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)

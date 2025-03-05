@@ -96,6 +96,139 @@ func check_if_have_enough(cost_arr:Array) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func return_morale_data(value:int) -> Dictionary:
+	var dict:Dictionary = {}
+	match value:
+		-3: 
+			dict = {
+				"title": "-5 AP", 
+				"amount": -5
+			}
+		-2: 
+			dict = {
+				"title": "-3 AP", 
+				"amount": -3
+			}
+		-1: 
+			dict = {
+				"title": "-1 AP", 
+				"amount": -1
+			}
+		0: 
+			dict = {
+				"title": "NO BONUS", 
+				"amount": 0
+			}			
+		1: 
+			dict = {
+				"title": "+1 AP", 
+				"amount": 1
+			}						
+		2: 
+			dict = {
+				"title": "+3 AP", 
+				"amount": 3
+			}
+		3: 
+			dict = {
+				"title": "+5 AP", 
+				"amount": 5
+			}
+		_:
+			dict = {
+				"title": "UNKNOWN",
+				"amount": 5
+			}						
+	return dict
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_readiness_data(value:int) -> Dictionary:
+	var dict:Dictionary = {}
+	match value:
+		-3: 
+			dict = {
+				"title": "OPTIONS DISABLED", 
+			}
+		-2: 
+			dict = {
+				"title": "2 OPTIONS HIDDEN",
+			}
+		-1: 
+			dict = {
+				"title": "1 OPTION HIDDEN",
+			}
+		0: 
+			dict = {
+				"title": "NO BONUS",
+			}			
+		1: 
+			dict = {
+				"title": "VISIBLE ODDS", 
+			}						
+		2: 
+			dict = {
+				"title": "VISIBLE OUTCOMES", 
+			}
+		3: 
+			dict = {
+				"title": "ALWAYS LUCKY", 
+			}				
+		_:
+			dict = {
+				"title": "UNKNOWN"
+			}			
+	return dict
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_safety_data(value:int) -> Dictionary:
+	var dict:Dictionary = {}
+	match value:
+		-3: 
+			dict = {
+				"title": "CONTAINMENT BREACH", 
+				"value": 0,
+			}
+		-2: 
+			dict = {
+				"title": "TIMELINE HIDDEN",
+				"value": 0,
+			}
+		-1: 
+			dict = {
+				"title": "SHORTENED TIMELINE",
+				"value": 0,
+			}
+		0: 
+			dict = {
+				"title": "NO BONUS",
+				"value": 0,
+			}			
+		1: 
+			dict = {
+				"title": "1 DAY FORESIGHT", 
+				"value": 1,
+			}						
+		2: 
+			dict = {
+				"title": "3 DAYS FORESIGHT", 
+				"value": 3,
+			}
+		3: 
+			dict = {
+				"title": "5 DAYS FORESIGHT", 
+				"value": 5,
+			}
+		_:
+			dict = {
+				"title": "UNKNOWN", 
+				"value": 0,
+			}
+	return dict
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func subtract_costs(cost_array:Array) -> void:
 	for item in cost_array:
 		var amount:int = item.amount

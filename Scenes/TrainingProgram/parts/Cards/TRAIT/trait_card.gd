@@ -21,6 +21,11 @@ const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tsc
 		is_synergy = val
 		on_is_synergy_update()
 		
+@export var is_highlighted: bool = false : 
+	set(val):
+		is_highlighted = val
+		on_is_highlighted_update()
+		
 var ref:int = -1 : 
 	set(val):
 		ref = val
@@ -36,6 +41,7 @@ func _ready() -> void:
 	on_ref_update()
 	on_effect_update()
 	on_is_synergy_update()
+	on_is_highlighted_update()
 	
 
 func on_show_output_update() -> void:
@@ -50,7 +56,14 @@ func on_is_synergy_update() -> void:
 
 	IconBtn.show() if is_synergy else IconBtn.hide()
 	RootPanel.add_theme_stylebox_override('panel', copy_stylebox)
-
+	
+func on_is_highlighted_update() -> void:
+	if !is_node_ready():return
+	var copy_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
+	copy_stylebox.border_color = Color.WHITE if is_highlighted else Color.BLACK
+	copy_stylebox.bg_color = Color(0.0, 0.529, 1.0) if is_highlighted else Color(0.316, 0.249, 0.37)
+	RootPanel.add_theme_stylebox_override('panel', copy_stylebox)
+	
 func on_effect_update() -> void:
 	if !is_node_ready() or effect.is_empty():return
 	var resource_list:Array = effect.resource_list

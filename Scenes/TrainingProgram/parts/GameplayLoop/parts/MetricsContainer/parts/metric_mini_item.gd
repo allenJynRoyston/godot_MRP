@@ -68,21 +68,14 @@ func on_value_update() -> void:
 	if !is_node_ready():return
 	TotalAmount.text = str(value)
 	
-	match value:
-		-3:
-			StatusLabel.text = "DANGEROUS"		
-		-2:
-			StatusLabel.text = "CAUTION"
-		-1:
-			StatusLabel.text = "STRAINED"
-		0:
-			StatusLabel.text = "NORMAL"
-		1:
-			StatusLabel.text = "GOOD"
-		2:
-			StatusLabel.text = "GREAT"
-		3:
-			StatusLabel.text = "EXCELLENT"
+	match assigned_metric:
+		RESOURCE.BASE_METRICS.MORALE:
+			StatusLabel.text = RESOURCE_UTIL.return_morale_data(value).title
+		RESOURCE.BASE_METRICS.SAFETY:
+			StatusLabel.text = RESOURCE_UTIL.return_safety_data(value).title
+		RESOURCE.BASE_METRICS.READINESS:
+			StatusLabel.text = RESOURCE_UTIL.return_readiness_data(value).title
+
 	
 	update_stylebox()
 

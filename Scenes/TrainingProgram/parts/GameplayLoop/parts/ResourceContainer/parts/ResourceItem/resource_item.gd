@@ -47,7 +47,9 @@ func _ready() -> void:
 	on_icon_update()
 	on_focus()
 	on_display_at_bottom_update()
-	on_is_negative_update()
+	on_is_negative_update()	
+	on_title_update()
+	on_no_bg_update.call_deferred()
 
 func on_header_update() -> void:
 	if !is_node_ready():return
@@ -69,20 +71,27 @@ func on_display_at_bottom_update() -> void:
 
 func on_is_negative_update() -> void:
 	if !is_node_ready():return
-	#var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	#dupe_stylebox.bg_color = Color(1, 0.204, 0) if is_negative else Color(0, 0.529, 0.278)
-	#RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)	
+	IconBtn.static_color = Color.RED if is_negative else Color.WHITE
+	var label_settings_btm:LabelSettings = BtmItemLabel.label_settings.duplicate()
+	var label_settings:LabelSettings = ItemLabel.label_settings.duplicate() 
+	label_settings.font_color = Color.RED if is_negative else Color.WHITE
+	label_settings_btm.font_color = Color.RED if is_negative else Color.WHITE
+	ItemLabel.label_settings = label_settings
+	BtmItemLabel.label_settings = label_settings_btm
 	
 func on_no_bg_update() -> void:
-	pass
+	if !is_node_ready():return	
+	var dupe_stylebox:StyleBoxFlat = StyleBoxFlat.new()
+	dupe_stylebox.border_color = Color.TRANSPARENT if no_bg else Color.WHITE
+	dupe_stylebox.bg_color = Color.TRANSPARENT  if no_bg else Color.BLACK
+	RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)	
 # --------------------------------------
 
 # --------------------------------------	
 func on_focus(state:bool = false) -> void:
 	if !is_node_ready():return
-	#var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	#dupe_stylebox.border_color = Color.BLACK if !state else Color.WHITE
-	#RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)
+	ItemLabel.modulate = Color(1, 1, 1, 0.6 if state else 1)
+	BtmItemLabel.modulate = Color(1, 1, 1, 0.6 if state else 1)
 		
 	if state:
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)

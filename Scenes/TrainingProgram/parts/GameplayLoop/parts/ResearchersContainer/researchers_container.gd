@@ -10,6 +10,7 @@ extends GameContainer
 @onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
 @onready var SelectBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectBtn
 @onready var ConfirmBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmBtn
+@onready var PromoteBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/PromoteBtn
 
 @onready var ResearcherPanel:Control = $ResearcherControl/PanelContainer
 @onready var ResearcherScrollContainer:ScrollContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
@@ -26,13 +27,26 @@ extends GameContainer
 @onready var SynergyContainer:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer
 @onready var SynergyTraitList:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList
 
-enum MODE { SELECT_RESEARCHERS, DETAILS_ONLY, HIDE }
+@onready var PromoteControlPanel:Control = $PromoteControl/MarginContainer
+@onready var PromotionCard:Control = $PromoteControl/MarginContainer/HBoxContainer/ResearcherCardContainer/PromotionCard
+@onready var PromotionLabel:Label = $PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PromotionLabel
+@onready var NewTraitList:VBoxContainer = $PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/MarginContainer/NewTraitList
+
+enum MODE { SELECT_RESEARCHERS, DETAILS_ONLY, PROMOTE, CONFIRM_PROMOTE, HIDE }
 
 const ResearcherCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn")
 const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
 const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
+const TraitItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/TraitItem/TraitItem.tscn")
 const cards_in_list:int = 3
-		
+
+var new_trait_arr:Array = []
+
+var trait_selected_index:int = 0 : 
+	set(val):
+		trait_selected_index = val
+		on_trait_selected_index_update()
+
 var researcher_active_index:int = -1 : 
 	set(val):
 		researcher_active_index = val
@@ -49,8 +63,11 @@ var current_mode:MODE = MODE.SELECT_RESEARCHERS :
 		on_current_mode_update()
 
 var scroll_pos:int 
+
+		
 var is_setup:bool = false
 var details_only:bool = false 
+var promote_mode:bool = false
 var is_animating:bool = false
 var custom_min_size:Vector2
 var overflow_count:int
@@ -61,6 +78,9 @@ func _ready() -> void:
 	super._ready()
 	on_researcher_active_index_update()
 	
+	for node in NewTraitList.get_children():
+		node.queue_free()
+	
 	SelectBtn.onClick = func() -> void:		
 		match current_mode:
 			MODE.SELECT_RESEARCHERS:
@@ -68,11 +88,16 @@ func _ready() -> void:
 					mark_researcher_as_selected()
 				else:
 					unmark_researcher(researcher_active_index)
+			MODE.PROMOTE:
+				current_mode = MODE.CONFIRM_PROMOTE
 	
 	BackBtn.onClick = func() -> void:
 		match current_mode:
 			MODE.SELECT_RESEARCHERS:
 				end({"action": ACTION.RESEARCHERS.BACK})
+			MODE.CONFIRM_PROMOTE:
+				await U.tick()
+				current_mode = MODE.PROMOTE
 
 	ConfirmBtn.onClick = func() -> void:
 		match current_mode:
@@ -83,7 +108,23 @@ func _ready() -> void:
 					var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )		
 					uids.push_back(researcher_details.uid)
 				end({"action": ACTION.RESEARCHERS.SELECT, "uids": uids})
-
+			MODE.CONFIRM_PROMOTE:
+				# update promote researcher data
+				var details:Dictionary = RESEARCHER_UTIL.get_user_object(hired_lead_researchers_arr[selected_researchers[0]])		
+				RESEARCHER_UTIL.promote_researcher(details, new_trait_arr[trait_selected_index])
+				
+				await U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].hide)
+				await U.set_timeout(0.2)
+				await U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].hide) 
+ 
+				end({"action": ACTION.RESEARCHERS.PROMOTED})
+	
+	PromoteBtn.onClick = func() -> void:
+		match current_mode:
+			MODE.SELECT_RESEARCHERS:	
+				await setup_promotion_screen()
+				await U.tick()
+				current_mode = MODE.PROMOTE
 
 	MoreBtn.onClick = func() -> void:
 		if is_animating:return
@@ -100,6 +141,7 @@ func _ready() -> void:
 	control_pos[ResearcherPanel] = {"show": ResearcherPanel.position.x, "hide": ResearcherPanel.position.x - ResearcherPanel.size.x}
 	control_pos[TraitPanel] = {"show": TraitPanel.position.x, "hide": TraitPanel.position.x + TraitPanel.size.x}
 	control_pos[BtnPanelContainer] = {"show": BtnPanelContainer.position.y, "hide": BtnPanelContainer.position.y + BtnPanelContainer.size.y}	
+	control_pos[PromoteControlPanel] = {"show": PromoteControlPanel.position.y, "hide": PromoteControlPanel.position.y - PromoteControlPanel.size.y}
 	is_setup = true
 	on_is_showing_update(true)	
 # -----------------------------------------------
@@ -113,6 +155,9 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 		for btn in node.get_children():
 			btn.is_disabled = true
 	
+	PromotionCard.reveal = false
+	
+	U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].hide, 0 if skip_animation else 0.3) 
 	U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide, 0 if skip_animation else 0.3) 
 	U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide, 0 if skip_animation else 0.3 )
 	
@@ -141,10 +186,11 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 # -----------------------------------------------
 func start(mark_uids:Array = [], _details_only:bool = false) -> void:
 	var selected := []
-	details_only = _details_only
+	details_only = _details_only	
 	
 	for index in ResearcherList.get_child_count():
 		var node:Control = ResearcherList.get_child(index)
+		node.is_deselected = false
 		if node.uid in mark_uids:
 			node.is_selected = true
 			selected.push_back(index)
@@ -154,21 +200,35 @@ func start(mark_uids:Array = [], _details_only:bool = false) -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
+func promote(uids:Array) -> void:
+	await U.tick()
+	trait_selected_index = 0
+	promote_mode = true
+	ConfirmBtn.hide()
+	selected_researchers = []
+	new_trait_arr = []
+# -----------------------------------------------
+
+
+# -----------------------------------------------
 func end(response:Dictionary) -> void:
 	current_mode = MODE.HIDE	
-				
+	trait_selected_index = 0
+	promote_mode = false
+	
+	U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].hide) 
 	U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide) 
 	U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide) 
 	U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].hide) 
 	await U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide) 	
 	
+	for node in NewTraitList.get_children():
+		node.queue_free()	
+	
 	user_response.emit(response)
 # -----------------------------------------------
 
-# -----------------------------------------------
-func promote(uids:Array) -> void:
-	selected_researchers = []
-# -----------------------------------------------
+
 	
 
 # -----------------------------------------------
@@ -184,8 +244,10 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 		var researcher:Array = hired_lead_researchers_arr[index]
 		var details:Dictionary = RESEARCHER_UTIL.get_user_object(researcher)		
 		var new_card:Control = ResearcherCardPreload.instantiate()
+
 		new_card.uid = details.uid
 		new_card.index = index
+		
 		new_card.onFocus = func(_node:Control):
 			if is_animating:return
 			match current_mode:
@@ -194,10 +256,16 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 		new_card.onClick = func() -> void:
 			match current_mode:
 				MODE.SELECT_RESEARCHERS:
-					if researcher_active_index not in selected_researchers:
-						mark_researcher_as_selected()
+					if promote_mode:
+						if selected_researchers.is_empty():	
+							mark_researcher_as_selected()
+						else:
+							unmark_researcher(researcher_active_index)
 					else:
-						unmark_researcher(researcher_active_index)
+						if researcher_active_index not in selected_researchers:
+							mark_researcher_as_selected()
+						else:
+							unmark_researcher(researcher_active_index)
 			
 		ResearcherList.add_child(new_card)
 		new_card.reveal = true
@@ -339,12 +407,41 @@ func clear_marked_researchers() -> void:
 		node.is_deselected = false
 # -----------------------------------------------			
 
-
+# -----------------------------------------------	
+func setup_promotion_screen() -> void:
+	var FreeControl:Control 
+	for index in ResearcherList.get_child_count():
+		var node:Control = ResearcherList.get_child(index)
+		node.reveal = false
+		node.flip = false
+	
+	if new_trait_arr.is_empty():
+		var details:Dictionary = RESEARCHER_UTIL.get_user_object(hired_lead_researchers_arr[selected_researchers[0]])
+		new_trait_arr = RESEARCHER_UTIL.get_randomized_traits(3, details.traits)
+	
+						
+	var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[selected_researchers[0]]  )
+	PromotionLabel.text = "RESEARCHER %s HAS PROMOTED TO LEVEL %s!" % [researcher_details.name, researcher_details.level + 1]
+	PromotionCard.uid = researcher_details.uid
+	PromotionCard.reveal = true
+	
+	for node in NewTraitList.get_children():
+		node.free()
+	
+	for index in new_trait_arr.size():
+		var trait_item:Control = TraitItemPreload.instantiate()
+		var trait_ref:int = new_trait_arr[index]
+		trait_item.trait_ref = trait_ref
+		trait_item.is_selected = index == trait_selected_index
+		trait_item.onFocus = func(_node:Control) -> void:
+			if current_mode != MODE.PROMOTE:return
+			trait_selected_index = index
+		NewTraitList.add_child(trait_item)	
+# -----------------------------------------------	
 
 # -----------------------------------------------	
 func on_selected_researchers_update() -> void:
 	if !is_node_ready():return
-	print('selected searchers updated...')
 
 	for child in [TraitList, SynergyTraitList, SelectedList]:
 		for item in child.get_children():
@@ -397,17 +494,21 @@ func on_selected_researchers_update() -> void:
 	# add deselected (black/white filter) when at capacity
 	for index in ResearcherList.get_child_count():
 		var node:Control = ResearcherList.get_child(index)
-		if selected_researchers.size() == 2:
+		if selected_researchers.size() == (1 if promote_mode else 2):
 			if index not in selected_researchers:
 				node.is_deselected = true
 		else:
 			node.is_deselected = false	
 			
-	
 	# show/hide button
 	await U.tick()	
-	if !details_only:
-		ConfirmBtn.hide() if selected_researchers.is_empty()  else ConfirmBtn.show()			
+	
+	if promote_mode:
+		PromoteBtn.hide() if selected_researchers.is_empty() else PromoteBtn.show()	
+	
+	else:
+		if !details_only:
+			ConfirmBtn.hide() if selected_researchers.is_empty() else ConfirmBtn.show()			
 # -----------------------------------------------		
 
 # -----------------------------------------------
@@ -419,21 +520,56 @@ func on_current_mode_update() -> void:
 			for node in [RightSideBtnList, LeftSideBtnList]:
 				for btn in node.get_children():
 					btn.is_disabled = true
-			
 		# ---------------
 		MODE.SELECT_RESEARCHERS:
-			for btn in [DetailsBtn, BackBtn, SelectBtn, ConfirmBtn]:
+			for btn in [DetailsBtn, BackBtn, SelectBtn, ConfirmBtn, PromoteBtn]:
 				btn.is_disabled = false
 			SelectBtn.show()
+			PromoteBtn.hide()
 		# ---------------
 		MODE.DETAILS_ONLY:
 			for btn in [DetailsBtn, BackBtn, SelectBtn, ConfirmBtn]:
 				btn.is_disabled = false
 			SelectBtn.hide()
 			ConfirmBtn.hide()
+		# ---------------
+		MODE.PROMOTE:
+			for btn in [DetailsBtn, BackBtn, SelectBtn, ConfirmBtn, PromoteBtn]:
+				btn.is_disabled = false	
+				
+			for index in NewTraitList.get_child_count():
+				var trait_item:Control = NewTraitList.get_child(index)
+				trait_item.is_highlighted = false
+			
+			DetailsBtn.hide()
+			BackBtn.hide()
+			ConfirmBtn.hide()
+			PromoteBtn.hide()
+			SelectBtn.show()
+			
+			U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide) 
+			U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide) 
+			await U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].hide) 
+			U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].show) 
+		# ---------------
+		MODE.CONFIRM_PROMOTE:
+			for index in NewTraitList.get_child_count():
+				var trait_item:Control = NewTraitList.get_child(index)
+				trait_item.is_highlighted = index == trait_selected_index
+			
+			SelectBtn.hide()
+			BackBtn.show()
+			ConfirmBtn.show()
+			
 # -----------------------------------------------
 
 # -----------------------------------------------
+func on_trait_selected_index_update() -> void:
+	if !is_node_ready():return
+	for index in NewTraitList.get_child_count():
+		var trait_item:Control = NewTraitList.get_child(index)
+		trait_item.is_selected = index == trait_selected_index
+	
 func on_inc() -> void:
 	unflip_cards()
 	researcher_active_index = U.min_max(researcher_active_index - 1, 0, ResearcherList.get_child_count() - 1)	
@@ -452,10 +588,26 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var keycode:int = input_data.keycode
 	
 	match key:
+		"W":
+			if current_mode != MODE.PROMOTE:return
+			trait_selected_index = U.min_max(trait_selected_index - 1, 0, NewTraitList.get_child_count() - 1, true )
+		"S":
+			if current_mode != MODE.PROMOTE:return
+			trait_selected_index = U.min_max(trait_selected_index + 1, 0, NewTraitList.get_child_count() - 1, true )
 		"A":
-			on_inc()
+			if current_mode == MODE.PROMOTE or current_mode == MODE.CONFIRM_PROMOTE:return			
+			if promote_mode:
+				if selected_researchers.is_empty():
+					on_inc()
+			else:
+				on_inc()
 		"D":
-			on_dec()
+			if current_mode == MODE.PROMOTE or current_mode == MODE.CONFIRM_PROMOTE:return
+			if promote_mode:
+				if selected_researchers.is_empty():
+					on_dec()
+			else:
+				on_dec()
 	
 	if current_mode == MODE.DETAILS_ONLY:
 		selected_researchers = [researcher_active_index]

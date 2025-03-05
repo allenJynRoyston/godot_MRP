@@ -23,9 +23,10 @@ bg_color = Color(0, 0, 0, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4l8vf"]
 bg_color = Color(0, 0, 0, 0)
 
-[sub_resource type="LabelSettings" id="LabelSettings_hghmq"]
+[sub_resource type="LabelSettings" id="LabelSettings_hvfea"]
 font = ExtResource("4_w80op")
 font_size = 8
+font_color = Color(0, 0.964706, 0.278431, 1)
 
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
@@ -38,16 +39,17 @@ layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 15
 
 [node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_ryuwo")]
 layout_mode = 2
 icon = 49
+inactive_color = Color(1, 1, 1, 1)
 flip_v = false
-is_hoverable = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -72,11 +74,18 @@ icon_placement = 1
 panel_color = Color(0, 0, 0, 0)
 inactive_color = Color(0.448712, 0.448712, 0.448712, 1)
 title = "Option title goes here"
+is_hoverable = false
 
-[node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-visible = false
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 size_flags_vertical = 1
-text = "Description goes here AND IT CAN GET VERY LONG."
-label_settings = SubResource("LabelSettings_hghmq")
+text = "Description goes here AND IT CAN GET VERY LONG.  "
+label_settings = SubResource("LabelSettings_hvfea")
+autowrap_mode = 2
 uppercase = true
+metadata/_edit_group_ = true

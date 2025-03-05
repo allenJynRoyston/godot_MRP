@@ -3,7 +3,7 @@ extends MouseInteractions
 @onready var RootPanel:PanelContainer = $"."
 @onready var MarginContainerPanel:MarginContainer = $MarginContainer
 @onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
-@onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/DescriptionLabel
+@onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionLabel
 
 @onready var LockedTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/LockedTextBtn
 @onready var OptionTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/OptionTextBtn
@@ -17,6 +17,7 @@ var index:int
 var is_locked:bool = false
 
 var is_enabled:bool = true
+
 
 var is_selected:bool = false : 
 	set(val):
@@ -52,7 +53,8 @@ func fade_out() -> void:
 # ----------------------
 func on_focus(state:bool) -> void:
 	if state and is_enabled:
-		onFocus.call(self)
+		if !is_locked and is_enabled:
+			onFocus.call(self)
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and node == self:
@@ -63,10 +65,11 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ----------------------	
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	IconBtn.icon = (SVGS.TYPE.CLEAR if is_locked else SVGS.TYPE.NEXT) if is_selected else SVGS.TYPE.NONE
-	OptionTextBtn.inactive_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if is_selected else COLORS.TEXT.INACTIVE)
+	IconBtn.icon = SVGS.TYPE.LOCK if is_locked and !is_selected else  SVGS.TYPE.MEDIA_PLAY if is_selected else SVGS.TYPE.NONE
+	IconBtn.static_color = Color.RED if is_locked else COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if is_selected else COLORS.TEXT.INACTIVE)
+	OptionTextBtn.static_color = Color.RED if is_locked else COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if is_selected else COLORS.TEXT.INACTIVE)
 	var stylebox:StyleBoxFlat = RootPanel.get("theme_override_styles/panel").duplicate()
-	stylebox.border_color = Color.WHITE if is_selected else Color.WEB_GRAY
+	stylebox.border_color = Color.RED if is_locked else (Color.WHITE if is_selected else Color.WEB_GRAY)
 	RootPanel.set('theme_override_styles/panel', stylebox)
 	
 func on_show_description_update() -> void:
@@ -77,7 +80,6 @@ func on_show_description_update() -> void:
 
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
-	show_description = false
 	OptionTextBtn.title = data.title
 	LockedTextBtn.title = data.title
 	
@@ -88,8 +90,8 @@ func on_data_update() -> void:
 		on_is_selected_update()
 	
 	if "description" in data and data.description.length() > 0:
-		DescriptionLabel.text = "     %s" % data.description
-		show_description = true
+		DescriptionLabel.text = "%s %s" % ["[%s SUCCESS] -" % [str(data.success_rate.call(),'%')] if "success_rate" in data else "", data.description]
+		show_description = show_description
 # ----------------------
 
 # --------------------------------------------------------------------------------------------------		
