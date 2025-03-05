@@ -13,6 +13,7 @@ extends GameContainer
 @onready var PromoteBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/PromoteBtn
 
 @onready var ResearcherPanel:Control = $ResearcherControl/PanelContainer
+@onready var ResearcherLabel:Label = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/Label
 @onready var ResearcherScrollContainer:ScrollContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
 @onready var ResearcherList:HBoxContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList
 @onready var AvailableLabel:Label = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/AvailableLabel
@@ -188,6 +189,8 @@ func start(mark_uids:Array = [], _details_only:bool = false) -> void:
 	var selected := []
 	details_only = _details_only	
 	
+	ResearcherLabel.text = "RESEARCHER DETAILS" if details_only else "SELECT RESEARCHER"
+	
 	for index in ResearcherList.get_child_count():
 		var node:Control = ResearcherList.get_child(index)
 		node.is_deselected = false
@@ -202,6 +205,9 @@ func start(mark_uids:Array = [], _details_only:bool = false) -> void:
 # -----------------------------------------------
 func promote(uids:Array) -> void:
 	await U.tick()
+	
+	ResearcherLabel.text = "PROMOTE RESEARCHER"
+	
 	trait_selected_index = 0
 	promote_mode = true
 	ConfirmBtn.hide()
