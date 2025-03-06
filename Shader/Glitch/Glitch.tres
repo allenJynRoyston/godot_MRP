@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cvsboqb84qqah"]
 
-[ext_resource type="Shader" path="res://Shader/Glitch/Glitch.gdshader" id="1_bdg6d"]
+[ext_resource type="Shader" uid="uid://c3ckkfwim24nu" path="res://Shader/Glitch/Glitch.gdshader" id="1_bdg6d"]
 
 [resource]
 shader = ExtResource("1_bdg6d")

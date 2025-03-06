@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=26 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://b8tjlqidemn2y" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
 [ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="3_rjxom"]
 [ext_resource type="Material" uid="uid://b23ed7ev8b5v8" path="res://Shader/CRT/CRT.tres" id="4_fet0s"]
-[ext_resource type="PackedScene" uid="uid://c4jcka6l73m7c" path="res://Scenes/IntroAndTitleScreen/IntroAndTitleScreen.tscn" id="5_a2e5w"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="8_8iit3"]
@@ -36,9 +35,6 @@ viewport_path = NodePath("Screenbend")
 [sub_resource type="ViewportTexture" id="ViewportTexture_e7if0"]
 viewport_path = NodePath("Empty")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_yhfgh"]
-viewport_path = NodePath("ColorDepthShader")
-
 [sub_resource type="Environment" id="Environment_tgmfl"]
 background_mode = 2
 
@@ -49,10 +45,10 @@ background_mode = 2
 [sub_resource type="BoxMesh" id="BoxMesh_linol"]
 size = Vector3(4, 4, 1)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_tgmfl"]
-viewport_path = NodePath("FinalComposition")
+[sub_resource type="ViewportTexture" id="ViewportTexture_14y6p"]
+viewport_path = NodePath("ColorDepthShader")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_a2e5w"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_yhfgh"]
 viewport_path = NodePath("3dViewport")
 
 [node name="OSRoot" type="PanelContainer"]
@@ -88,8 +84,6 @@ texture = SubResource("ViewportTexture_m3rsi")
 [node name="OS" parent="GameLayer" instance=ExtResource("2_hsa0l")]
 clip_contents = true
 debug_game = true
-
-[node name="IntroAndTitleScreen" parent="GameLayer" instance=ExtResource("5_a2e5w")]
 
 [node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
@@ -147,19 +141,6 @@ offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_e7if0")
 stretch_mode = 2
 
-[node name="FinalComposition" type="SubViewport" parent="."]
-size = Vector2i(1920, 1080)
-
-[node name="FinalComposite" type="TextureRect" parent="FinalComposition"]
-material = ExtResource("10_fsu2y")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("ViewportTexture_yhfgh")
-stretch_mode = 2
-
 [node name="3dViewport" type="SubViewport" parent="."]
 own_world_3d = true
 size = Vector2i(1920, 1080)
@@ -180,25 +161,24 @@ mesh = SubResource("BoxMesh_linol")
 skeleton = NodePath("../Camera3D")
 
 [node name="Sprite3D" type="Sprite3D" parent="3dViewport/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.87501)
-pixel_size = 0.0017
-transparent = false
-double_sided = false
-no_depth_test = true
-texture = SubResource("ViewportTexture_tgmfl")
+texture = SubResource("ViewportTexture_14y6p")
 
 [node name="Camera3D" type="Camera3D" parent="3dViewport/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
-fov = 46.6
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.67487)
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
 
-[node name="Output" type="TextureRect" parent="Control"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("ViewportTexture_a2e5w")
+[node name="FinalComposite" type="TextureRect" parent="Control"]
+material = ExtResource("10_fsu2y")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_yhfgh")
+expand_mode = 1
 
 [node name="MousePointer" type="TextureRect" parent="Control"]
 layout_mode = 0

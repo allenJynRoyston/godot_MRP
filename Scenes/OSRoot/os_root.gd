@@ -2,7 +2,10 @@ extends PanelContainer
 
 @onready var OSNode:PanelContainer = $GameLayer/OS
 @onready var MousePointer:TextureRect = $Control/MousePointer
-@onready var FinalComposite:TextureRect = $Control/FinalComposite
+@onready var Output:TextureRect = $Control/Output
+@onready var IntroAndTitleScreen:PanelContainer = $GameLayer/IntroAndTitleScreen
+@onready var Camera3d:Camera3D = $"3dViewport/Node3D/Camera3D"
+
 
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
@@ -10,6 +13,8 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
+var is_animating:bool = false
+
 
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
@@ -47,19 +52,31 @@ func _ready() -> void:
 
 	# ENABLE FOR MACBOOK 
 	#on_fullscreen_update(Vector2(1280, 720))
-	
-	activate_children.call_deferred()
-# -----------------------------------		
+	reset()
+# -----------------------------------	
 
 # -----------------------------------	
-func activate_children() -> void:
+func reset() -> void:
+	await play_intro()
+	start_gameplay()
+# -----------------------------------		
+
+# -----------------------------------		
+func play_intro() -> void:
+	IntroAndTitleScreen.start()
+	await IntroAndTitleScreen.on_finish
+	await U.set_timeout(0.3)
+# -----------------------------------		
+
+# -----------------------------------		
+func start_gameplay() -> void:
 	for node in [OSNode]:
 		node.visible = true
 		node.set_process(true)
 		node.set_physics_process(true)
 		node.start()
-		
 # -----------------------------------
+
 
 # -----------------------------------	
 func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
@@ -94,9 +111,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	for node in get_children():
 		if node is SubViewport:
 			node.size = use_resolution	
-	
-	print("Game resolution set to: %s" % [use_resolution])
-	
+
 	# start children nodes
 	var screen_size = DisplayServer.screen_get_size()
 	var window_position = (screen_size - use_resolution) / 2
@@ -105,19 +120,34 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	
 	match DisplayServer.window_get_mode():
 		DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
-			FinalComposite.stretch_mode = TextureRect.STRETCH_SCALE
-			FinalComposite.size = screen_size
-			FinalComposite.custom_minimum_size = screen_size
+			Output.stretch_mode = TextureRect.STRETCH_SCALE
+			Output.size = screen_size
+			Output.custom_minimum_size = screen_size
 			GBL.update_fullscreen_mode(true)
 		DisplayServer.WindowMode.WINDOW_MODE_WINDOWED:
-			FinalComposite.stretch_mode = TextureRect.STRETCH_KEEP
+			Output.stretch_mode = TextureRect.STRETCH_KEEP
 			GBL.update_fullscreen_mode(false)
+			
+		
+	var fov_val:float = 0
+	if use_resolution.x == 1280:
+		fov_val = 32.0
+	if use_resolution.x == 1920:
+		fov_val = 46.6
+	Camera3d.fov = fov_val + 1
+	
+	is_animating = true
+	await U.tween_node_property(Camera3d, "fov", fov_val, 0.3, 0, Tween.TRANS_SPRING)			
+	is_animating = false
 # -----------------------------------	
 
 # -----------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_node_ready() or is_animating:return
 	var key:String = input_data.key
 	match key:
+		"R":
+			reset()
 		"F":
 			toggle_fullscreen()
 # -----------------------------------		
