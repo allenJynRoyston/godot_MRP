@@ -54,10 +54,10 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	U.tween_node_property(MainControlPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.7 if !skip_animation else 0)
 	
 	if is_showing and camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
-		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show, 0.7 if !skip_animation else 0)
+		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show, 0.4 if !skip_animation else 0, 0.4)
 	
 	if !is_showing:
-		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].hide, 0.7 if !skip_animation else 0)
+		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].hide, 0.4 if !skip_animation else 0)
 # -----------------------------------------------	
 
 # --------------------------------------------------------

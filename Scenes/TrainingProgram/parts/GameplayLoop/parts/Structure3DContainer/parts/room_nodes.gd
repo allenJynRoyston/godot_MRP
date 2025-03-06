@@ -653,12 +653,12 @@ func on_back() -> void:
 func _process(delta: float) -> void:
 	if !is_node_ready():return
 	
-	if in_brownout:
-		if U.generate_rand(0, 100) < 2:
-			NoPowerLights.hide() if NoPowerLights.is_visible_in_tree() else NoPowerLights.show()
-	
-	if in_lockdown or emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
-		for child in DangerSpotlights.get_children():
-			child.find_child("Spotlight").rotate_x(0.1)
-			child.find_child("Spotlight").rotate_y(0.01)
+	#if in_brownout:
+		#if U.generate_rand(0, 100) < 2:
+			#NoPowerLights.hide() if NoPowerLights.is_visible_in_tree() else NoPowerLights.show()
+	#
+	#if in_lockdown or emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
+	for child in DangerSpotlights.get_children():
+		child.find_child("Spotlight").rotate_x(0.1)
+		child.find_child("Spotlight").rotate_y(0.01)
 # --------------------------------------------------------

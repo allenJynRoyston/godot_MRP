@@ -4,12 +4,9 @@ extends GameContainer
 @onready var PlacementInstructions:VBoxContainer = $PanelContainer/MarginContainer/PlacementInstructions
 @onready var Rendering:Node3D = $SubViewport/Rendering
 
-
 var placement_instructions:Array = [] : 
 	set(val):
 		placement_instructions = val
-
-		
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:

@@ -18,9 +18,11 @@ color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvjm1"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bk83u"]
-bg_color = Color(1, 0.745, 0.381, 1)
+bg_color = Color(0.316, 0.249, 0.37, 1)
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k4k3x"]
 
@@ -237,6 +239,7 @@ theme_override_constants/separation = 10
 [node name="TraitCard" parent="Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers/TraitContainer/VBoxContainer/TraitList" instance=ExtResource("6_5fkrn")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tvjm1")
+is_highlighted = false
 
 [node name="SynergyContainer" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer/RoomAndResearchers"]
 layout_mode = 2
@@ -263,6 +266,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bk83u")
 is_synergy = true
+is_highlighted = false
 
 [node name="Totals" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]
 visible = false

@@ -118,7 +118,7 @@ corner_radius_bottom_left = 5
 color = Color(1, 1, 1, 1)
 grow_end = -5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbel3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2fgd"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
 
 [node name="RoomNodes" type="Control"]
@@ -810,6 +810,7 @@ room_number = 3
 ref_index = 8
 
 [node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
+visible = false
 
 [node name="SpinLight" parent="SubViewport/RoomColumn/NormalLights" instance=ExtResource("5_b26bj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7636, 3.23014, 0)
@@ -913,7 +914,6 @@ sky_mode = 1
 
 [node name="DangerLights" type="Node3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-0.999195, 0, -0.0401317, 0, 1, 0, 0.0401317, 0, -0.999195, 0, 0, 20)
-visible = false
 
 [node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/DangerLights"]
 transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
@@ -1299,7 +1299,7 @@ layout_mode = 2
 [node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xbel3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_h2fgd")
 panel_color = Color(0, 0.254902, 0.0823529, 1)
 title = "BUILD"
 

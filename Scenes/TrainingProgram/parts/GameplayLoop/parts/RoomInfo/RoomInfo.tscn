@@ -76,7 +76,7 @@ theme_override_constants/separation = 5
 
 [node name="ExpandListContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2"]
 layout_mode = 2
-theme_override_constants/separation = -45
+theme_override_constants/separation = -60
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer"]
 layout_mode = 2
@@ -99,18 +99,21 @@ size_flags_horizontal = 0
 theme_override_constants/separation = -45
 
 [node name="StaffingPanel" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer/ExpandSubListContainer" instance=ExtResource("4_ry2yn")]
+modulate = Color(1, 1, 1, 0)
 z_index = 4
 z_as_relative = false
 layout_mode = 2
 title = "STAFFING"
 
 [node name="ResourcePanel" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer/ExpandSubListContainer" instance=ExtResource("4_ry2yn")]
+modulate = Color(1, 1, 1, 0)
 z_index = 3
 z_as_relative = false
 layout_mode = 2
 title = "RESOURCES"
 
 [node name="Abilities" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer/ExpandSubListContainer" instance=ExtResource("5_a7by7")]
+modulate = Color(1, 1, 1, 0)
 z_index = 2
 z_as_relative = false
 layout_mode = 2

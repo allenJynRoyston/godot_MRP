@@ -1,10 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://c2u54w2kpt6b0"]
+[gd_scene load_steps=8 format=3 uid="uid://c2u54w2kpt6b0"]
 
 [ext_resource type="Script" uid="uid://cmdqgeqlbeq7c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/floor_info.gd" id="1_j6re1"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_muw6v"]
 [ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="2_wcahk"]
-[ext_resource type="PackedScene" uid="uid://b0b7ca48e8mo8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/parts/WingSummary/WingSummary.tscn" id="2_xu5r8"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_mj2rb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hofee"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y1mj7"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mj2rb"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="FloorInfo" type="PanelContainer"]
 anchors_preset = 15
@@ -16,6 +41,89 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hofee")
 script = ExtResource("1_j6re1")
+expand = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control"]
+layout_mode = 0
+offset_left = -5.0
+offset_top = 33.0
+offset_right = 270.0
+offset_bottom = 549.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer"]
+layout_mode = 2
+
+[node name="ExpandListContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer"]
+z_index = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_y1mj7")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = -10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = " STATUS "
+label_settings = ExtResource("2_muw6v")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="PreviewTextureRect" type="TextureRect" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Control" type="Control" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/Control" instance=ExtResource("3_mj2rb")]
+layout_mode = 0
+offset_left = 227.0
+offset_top = 6.0
+offset_right = 252.0
+offset_bottom = 31.0
+icon = 49
+inactive_color = Color(1, 1, 1, 1)
+flip_v = false
+
+[node name="ExpandSubListContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DetailsPanel" type="PanelContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/ExpandSubListContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mj2rb")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/ExpandSubListContainer/DetailsPanel"]
+layout_mode = 2
+theme_override_constants/margin_top = -10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/ExpandSubListContainer/DetailsPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer/ExpandSubListContainer/DetailsPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = " DETAILS"
+label_settings = ExtResource("2_muw6v")
+vertical_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -25,37 +133,3 @@ theme_override_constants/margin_top = 10
 [node name="LocationPanel" parent="MarginContainer" instance=ExtResource("2_wcahk")]
 layout_mode = 2
 size_flags_vertical = 0
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Control"]
-layout_mode = 0
-offset_top = 20.0
-offset_right = 255.0
-offset_bottom = 341.0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 13
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer"]
-layout_mode = 2
-
-[node name="SummaryList" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="WingSummary" parent="Control/MarginContainer/HBoxContainer/SummaryList" instance=ExtResource("2_xu5r8")]
-layout_mode = 2
-assigned_wing = 0
-
-[node name="WingSummary2" parent="Control/MarginContainer/HBoxContainer/SummaryList" instance=ExtResource("2_xu5r8")]
-layout_mode = 2
-assigned_wing = 1
-
-[node name="WingSummary3" parent="Control/MarginContainer/HBoxContainer/SummaryList" instance=ExtResource("2_xu5r8")]
-layout_mode = 2
-assigned_wing = 2
-
-[node name="WingSummary4" parent="Control/MarginContainer/HBoxContainer/SummaryList" instance=ExtResource("2_xu5r8")]
-layout_mode = 2
-assigned_wing = 3

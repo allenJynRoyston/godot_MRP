@@ -824,7 +824,18 @@ func buildout_btns() -> void:
 				"onClick": func() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						GameplayNode.quickload()
-			})					
+			})	
+			
+			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN]:
+				new_right_btn_list.push_back({
+					"title": "DETAILS",
+					"assigned_key": "SPACEBAR",
+					"icon": SVGS.TYPE.CHECKBOX if GBL.find_node(REFS.FLOOR_INFO).expand else SVGS.TYPE.EMPTY_CHECKBOX,
+					"onClick": func() -> void:
+						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
+							GBL.find_node(REFS.FLOOR_INFO).toggle_expand()
+							buildout_btns()
+				})				
 						
 			new_right_btn_list.push_back({
 				"title": "GOTO WING",
@@ -1068,7 +1079,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"W":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
-					current_location.floor = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
+					current_location.floor = U.min_max(current_location.floor - 1, 0, room_config.floor.size() - 1, true)
 					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_up()
@@ -1077,21 +1088,21 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"S":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
-					current_location.floor = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
+					current_location.floor = U.min_max(current_location.floor + 1, 0, room_config.floor.size() - 1, true)
 					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_down()
 		"D":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
-					current_location.ring = clampi(current_location.ring + 1, 0, 3)
+					current_location.ring = U.min_max(current_location.ring + 1, 0, 3, true)
 					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_right()
 		"A":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
-					current_location.ring = clampi(current_location.ring - 1, 0, 3)				
+					current_location.ring = U.min_max(current_location.ring - 1, 0, 3, true)
 					SUBSCRIBE.current_location = current_location
 				CAMERA.TYPE.ROOM_SELECT:
 					U.room_left()
