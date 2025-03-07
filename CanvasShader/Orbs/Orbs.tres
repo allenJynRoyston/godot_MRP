@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://6swfwcdwjfgf"]
+
+[ext_resource type="Shader" uid="uid://cmy56qgkugeae" path="res://Shaders/Orbs.gdshader" id="1_j7cst"]
+
+[resource]
+shader = ExtResource("1_j7cst")
+shader_parameter/EPS = 0.002
+shader_parameter/mouse = Vector2(0, 0)

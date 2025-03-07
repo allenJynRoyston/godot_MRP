@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bbb1iurub67bv"]
+
+[ext_resource type="Shader" uid="uid://bcrh5uqekbvm6" path="res://Shaders/Hexagon.gdshader" id="1_ywbb7"]
+
+[resource]
+shader = ExtResource("1_ywbb7")
+shader_parameter/color1 = Color(1, 0, 0, 1)
+shader_parameter/color2 = Color(1, 1, 1, 1)
+shader_parameter/speed1 = 2.0
+shader_parameter/speed2 = 3.79

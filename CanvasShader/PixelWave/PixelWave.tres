@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b6kvijwhe5plv"]
+
+[ext_resource type="Shader" uid="uid://d5q5atrr275u" path="res://Shaders/pixelWave.gdshader" id="1_jnqyy"]
+
+[resource]
+shader = ExtResource("1_jnqyy")
+shader_parameter/amplitude_x = 0.05
+shader_parameter/amplitude_y = 0.05
+shader_parameter/frequency = 1.0
+shader_parameter/speed = 2.0
+shader_parameter/overlay_color = Color(1, 1, 1, 1)
+shader_parameter/texture_size = Vector2(128, 128)

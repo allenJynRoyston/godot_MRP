@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=26 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_f7wb2"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://27mgphkrarqr" path="res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn" id="3_pusk1"]
 [ext_resource type="Script" uid="uid://dt3k1f4p0t5j7" path="res://Scenes/IntroAndTitleScreen/spot_light_3d.gd" id="3_shiyv"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="4_4urbo"]
+[ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="5_5hhmy"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="7_pusk1"]
 
@@ -251,6 +252,7 @@ cast_shadow = 0
 mesh = SubResource("PlaneMesh_5hhmy")
 
 [node name="TextureRender" type="TextureRect" parent="."]
+material = ExtResource("4_ryx00")
 layout_mode = 2
 texture = SubResource("ViewportTexture_pusk1")
 stretch_mode = 5

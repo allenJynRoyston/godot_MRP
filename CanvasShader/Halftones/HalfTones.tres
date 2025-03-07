@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://yeprohyubuxc"]
+
+[ext_resource type="Shader" uid="uid://gsqxkro8b0ea" path="res://Shaders/halftones.gdshader" id="1_lej54"]
+
+[resource]
+shader = ExtResource("1_lej54")
+shader_parameter/size = 64
+shader_parameter/dot_size = 2.0
+shader_parameter/value_multiplier = 1.0
+shader_parameter/invert = false

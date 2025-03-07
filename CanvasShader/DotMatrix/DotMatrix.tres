@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b8ifqn773nd0p"]
+
+[ext_resource type="Shader" uid="uid://ba5bkep03w1lu" path="res://Shaders/DotMatrix.gdshader" id="1_8w1ee"]
+
+[resource]
+shader = ExtResource("1_8w1ee")
+shader_parameter/size = 64.0
+shader_parameter/color = Color(0, 0, 0, 1)

@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cwmk46blkfl8l"]
+
+[ext_resource type="Shader" uid="uid://c8radrll5ai3t" path="res://Shaders/LightWavey.gdshader" id="1_46f28"]
+
+[resource]
+shader = ExtResource("1_46f28")

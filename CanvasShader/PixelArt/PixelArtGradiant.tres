@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://djtcke3d2fn1u"]
+
+[ext_resource type="Shader" path="res://Shaders/ghost.gdshader" id="1_t8883"]
+
+[resource]
+shader = ExtResource("1_t8883")
+shader_parameter/rect_size = Vector2(0.1, 0.1)
+shader_parameter/bness = 1.0
+shader_parameter/fall_off_scale = 3.0
+shader_parameter/b_offset = 0.0

@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://ckauace8ojg4a"]
+
+[ext_resource type="Shader" uid="uid://bp73fqcrk3fdo" path="res://Shaders/Crystalize/crystalize.gdshader" id="1_ubgue"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_nwqvo"]
+viewport_path = NodePath("PanelContainer/CenterContainer/HBoxContainer/TextureRect/SubViewport")
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_ubgue")
+shader_parameter/iChannel0 = SubResource("ViewportTexture_nwqvo")
+shader_parameter/iMouse = Vector4(0, 0, 0, 0)

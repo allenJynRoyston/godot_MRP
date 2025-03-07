@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://o2twhf81a77d"]
+
+[ext_resource type="Shader" uid="uid://ccsc1p4hx02pa" path="res://manga.gdshader" id="1_g5vnp"]
+
+[resource]
+shader = ExtResource("1_g5vnp")
+shader_parameter/hue = 1.0
+shader_parameter/saturation = 10.0
+shader_parameter/value = 1.4

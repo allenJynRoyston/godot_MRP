@@ -1,0 +1,21 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://crigssiq4w78h"]
+
+[ext_resource type="Shader" path="res://Shaders/card_shader.gdshader" id="1_b7xss"]
+
+[resource]
+shader = ExtResource("1_b7xss")
+shader_parameter/mouse_position = Vector2(1388.55, 845.654)
+shader_parameter/sprite_position = Vector2(226, 174)
+shader_parameter/fov = 47.0
+shader_parameter/cull_back = true
+shader_parameter/inset = 0.0
+shader_parameter/max_tilt = 1.0
+shader_parameter/max_distance = 500.0
+shader_parameter/foilcolor = Color(0.772549, 0, 0, 1)
+shader_parameter/threshold = 0.1
+shader_parameter/fuzziness = 0.1
+shader_parameter/period = 1.0
+shader_parameter/scroll = 1.0
+shader_parameter/normal_strength = 0.1
+shader_parameter/effect_alpha_mult = 1.0
+shader_parameter/direction = 0.5

@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cdgmx8nnq58ed"]
+
+[ext_resource type="Shader" uid="uid://dowf2spl8aawh" path="res://Shaders/flagDistort.gdshader" id="1_iwlwt"]
+
+[resource]
+shader = ExtResource("1_iwlwt")
+shader_parameter/center = Vector2(50, 50)
+shader_parameter/amplitude = 0.611
+shader_parameter/frequency = 2.0

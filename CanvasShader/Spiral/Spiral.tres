@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://crvn43gx1fvpq"]
+
+[ext_resource type="Shader" uid="uid://eleb6epyu3fs" path="res://Shaders/spirtal.gdshader" id="1_xw3l3"]
+
+[resource]
+shader = ExtResource("1_xw3l3")
+shader_parameter/resolution = Vector2(640, 480)
+shader_parameter/spiral_color = Color(0.2, 0.6, 0.3, 1)
+shader_parameter/frequency = 2.8
+shader_parameter/speed = 4.8
+shader_parameter/brightness = 1.2
+shader_parameter/balance = 0.2
+shader_parameter/octaves = 6.0

@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bimgw2v607237"]
+
+[ext_resource type="Shader" path="res://Shaders/ghost.gdshader" id="1_irhre"]
+
+[resource]
+shader = ExtResource("1_irhre")
+shader_parameter/rect_size = Vector2(0.1, 0.1)
+shader_parameter/bness = 1.0
+shader_parameter/fall_off_scale = 3.0
+shader_parameter/b_offset = 0.0
