@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://27mgphkrarqr"]
+
+[ext_resource type="Script" uid="uid://cm0kkmuw8wevx" path="res://Scenes/IntroAndTitleScreen/parts/blur_in_letter.gd" id="1_vl1d6"]
+[ext_resource type="Material" uid="uid://cgpps4s7b2f56" path="res://Shader/_template/Wavey.tres" id="2_2ce20"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_qboto"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2ce20"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_twhvf"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="LabelSettings" id="LabelSettings_ftv28"]
+font = ExtResource("2_qboto")
+outline_size = 16
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_right = 10.0
+offset_bottom = 23.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_2ce20")
+script = ExtResource("1_vl1d6")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = ExtResource("2_2ce20")
+layout_mode = 2
+texture = SubResource("ViewportTexture_twhvf")
+stretch_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(30, 30)
+
+[node name="Label" type="Label" parent="SubViewport"]
+custom_minimum_size = Vector2(30, 30)
+offset_right = 30.0
+offset_bottom = 30.0
+text = "X"
+label_settings = SubResource("LabelSettings_ftv28")
+horizontal_alignment = 1
+vertical_alignment = 1

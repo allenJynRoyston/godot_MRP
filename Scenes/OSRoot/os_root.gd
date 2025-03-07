@@ -46,12 +46,14 @@ func _ready() -> void:
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
+
 	# ENABLE FOR DESKTOP PC 
 	on_fullscreen_update(resolution)
 	#print("resolution: ", resolution)
 
 	# ENABLE FOR MACBOOK 
 	#on_fullscreen_update(Vector2(1280, 720))
+	await U.set_timeout(1.2)
 	reset()
 # -----------------------------------	
 
@@ -118,6 +120,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	DisplayServer.window_set_size(use_resolution)
 	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())			
 	
+
 	match DisplayServer.window_get_mode():
 		DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			Output.stretch_mode = TextureRect.STRETCH_SCALE

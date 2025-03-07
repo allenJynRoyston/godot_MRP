@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://4rhangikf6nd"]
+
+[ext_resource type="Shader" uid="uid://btemtmy1l34kg" path="res://Shader/BitSampler/template.gdshader" id="1_awmrf"]
+
+[resource]
+shader = ExtResource("1_awmrf")
+shader_parameter/bit_depth = 32.0

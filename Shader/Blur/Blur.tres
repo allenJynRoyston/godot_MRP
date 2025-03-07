@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dsolqlfe6iupb"]
+
+[ext_resource type="Shader" uid="uid://csrr4kxdx10yi" path="res://Shader/ScreenBend/screen_bend.gdshader" id="1_rhw3y"]
+
+[resource]
+shader = ExtResource("1_rhw3y")
+shader_parameter/bend_amount = 0.1
+shader_parameter/bend_offset = 0.2
