@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://cwowqrsr48d6k"]
 
 [ext_resource type="Script" uid="uid://bg8kefvvqfmkp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/scp_select_screen.gd" id="1_gm8am"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_qnb0j"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_rj7tl"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_pufuq"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_4n0e7"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_lyjb2"]
@@ -14,7 +14,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1c61"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rj7tl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c0hdb"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -72,7 +72,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_y7xi8")
 script = ExtResource("1_gm8am")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_qnb0j")
+material = ExtResource("2_rj7tl")
 layout_mode = 2
 color = Color(0.52, 0.0866667, 0, 0.603922)
 
@@ -188,7 +188,7 @@ custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_rj7tl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_c0hdb")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23

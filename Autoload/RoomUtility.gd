@@ -137,6 +137,7 @@ var HQ:Dictionary = {
 					},
 				"ap_cost":  5, 
 				"effect": func(GameplayNode:Control) -> bool:
+					print("triggered.")
 					return await GameplayNode.recruit_new_researcher(1),
 			},
 			{

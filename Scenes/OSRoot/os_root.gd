@@ -11,6 +11,9 @@ const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-selec
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
 
+# DEFAULTS
+const skip_intro:bool = true
+
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
 var is_animating:bool = false
@@ -49,7 +52,7 @@ func _ready() -> void:
 
 	# ENABLE FOR DESKTOP PC 
 	on_fullscreen_update(resolution)
-	#print("resolution: ", resolution)
+	
 
 	# ENABLE FOR MACBOOK 
 	#on_fullscreen_update(Vector2(1280, 720))
@@ -59,7 +62,8 @@ func _ready() -> void:
 
 # -----------------------------------	
 func reset() -> void:
-	await play_intro()
+	if !skip_intro:
+		await play_intro()
 	start_gameplay()
 # -----------------------------------		
 
@@ -120,6 +124,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	DisplayServer.window_set_size(use_resolution)
 	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())			
 	
+	print("resolution: ", resolution)
 
 	match DisplayServer.window_get_mode():
 		DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:

@@ -48,8 +48,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-debug_mode = true
-skip_progress_screen = false
 show_objectives = true
 show_reseachers = true
 show_resources = true
@@ -96,7 +94,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
-visible = false
 layout_mode = 2
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]

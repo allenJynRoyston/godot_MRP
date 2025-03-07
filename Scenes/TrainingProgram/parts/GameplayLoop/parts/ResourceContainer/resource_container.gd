@@ -64,8 +64,7 @@ func _ready() -> void:
 			if !detail_panel_is_focused and DetailPanel.is_visible_in_tree():
 				DetailPanel.hide()
 				show_details = false
-	print(ScpPanel.size, ScpPanel.position)
-	print(ResourcePanel.size, ResourcePanel.position)
+
 	control_pos[ResourcePanel] = {"show": ResourcePanel.position.y, "hide": ResourcePanel.position.y - ResourcePanel.size.y - 20}
 	control_pos[ScpPanel] = {"show": ScpPanel.position.y, "hide": ScpPanel.position.y - ScpPanel.size.y - 20}
 # --------------------------------------------------------------------------------------------------

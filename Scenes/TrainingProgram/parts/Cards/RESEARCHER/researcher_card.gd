@@ -1,4 +1,3 @@
-@tool
 extends MouseInteractions
 
 @onready var RootContainer:PanelContainer = $SubViewport/PanelContainer
@@ -172,4 +171,13 @@ func on_focus(state:bool = is_focused) -> void:
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:		
 		onClick.call()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func _process(delta:float) -> void:
+	if !is_node_ready() or !is_visible_in_tree():return
+	#print(CardTextureRect.material.shader)
+	##CardTextureRect.set_instance_shader_parameter("mouse_position", get_global_mouse_position())
+	#CardTextureRect.material.set_shader_parameter("mouse_position",get_global_mouse_position())
+	#CardTextureRect.material.set_shader_parameter("sprite_position",global_position)
 # ------------------------------------------------------------------------------

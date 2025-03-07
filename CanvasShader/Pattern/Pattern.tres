@@ -1,11 +1,10 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://6hb6emoweehl"]
 
-[ext_resource type="Shader" uid="uid://8icl8le1k4g3" path="res://newtest.gdshader" id="1_d7awc"]
+[ext_resource type="Shader" uid="uid://dexjow3fexrpm" path="res://CanvasShader/Pattern/pattern.gdshader" id="1_6ldmx"]
 
 [resource]
-shader = ExtResource("1_d7awc")
-shader_parameter/disp_ = Vector2(0.5, 0.5)
-shader_parameter/speed = 3.0
-shader_parameter/color1 = Vector3(0.005, 0.045, 0.075)
-shader_parameter/color2 = Vector3(0.033, 0.07, 0.03)
-shader_parameter/m3 = Basis(0.65, 1.12, -1.43, -1.75, 0.65, -0.3, 0.3, 1.4, 1.22)
+shader = ExtResource("1_6ldmx")
+shader_parameter/size = 7.0
+shader_parameter/speed1 = 2.0
+shader_parameter/speed2 = 1.0
+shader_parameter/color = Vector3(1, 1, 1)

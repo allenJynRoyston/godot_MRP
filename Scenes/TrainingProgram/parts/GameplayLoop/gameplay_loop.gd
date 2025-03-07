@@ -1786,6 +1786,7 @@ func on_expired_scp_items_update() -> void:
 #region RESEARCHER FUNCS (assign/unassign/dismiss, etc)
 # -----------------------------------
 func recruit_new_researcher(total_options:int) -> bool:
+	print('here?')
 	SelectResearcherScreen.total_options = total_options 
 	current_recruit_step = RECRUIT_STEPS.OPEN
 	return await on_recruit_complete		

@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cdypjyfyas2o5"]
 
-[ext_resource type="Shader" uid="uid://hxyv1sfb11ee" path="res://Shaders/plasmaWave.gdshader" id="1_t04gb"]
+[ext_resource type="Shader" uid="uid://hxyv1sfb11ee" path="res://CanvasShader/PlasmaWave/plasmaWave.gdshader" id="1_t04gb"]
 
 [resource]
 shader = ExtResource("1_t04gb")

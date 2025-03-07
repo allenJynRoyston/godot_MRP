@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://0hb7d3u4g6hi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.gd" id="1_46ons"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_7k740"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_tgxgy"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_xe5a1"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_xvjka"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_2l2gt"]
 [ext_resource type="PackedScene" uid="uid://d1melr1fetrom" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn" id="5_jtc7n"]
@@ -113,8 +113,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_y7xi8")
 script = ExtResource("1_46ons")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-visible = false
-material = ExtResource("2_tgxgy")
+material = ExtResource("2_xe5a1")
 layout_mode = 2
 color = Color(0.158472, 0.158472, 0.158472, 0.333333)
 
@@ -284,6 +283,7 @@ layout_mode = 2
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/TraitContainer/TraitList" instance=ExtResource("5_jtc7n")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_77r7t")
+is_highlighted = false
 
 [node name="SynergyContainer" type="VBoxContainer" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -304,7 +304,9 @@ layout_mode = 2
 [node name="TraitCard" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("5_jtc7n")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3kweu")
+is_highlighted = false
 
 [node name="TraitCard2" parent="TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList" instance=ExtResource("5_jtc7n")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_enh4n")
+is_highlighted = false

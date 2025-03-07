@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b8dnd3shagyfh"]
 
-[ext_resource type="Shader" uid="uid://cu3uuwhpbjjf2" path="res://Shaders/CornerVoid.gdshader" id="1_vav1d"]
+[ext_resource type="Shader" uid="uid://cu3uuwhpbjjf2" path="res://CanvasShader/CornerVoid/CornerVoid.gdshader" id="1_vav1d"]
 
 [resource]
 shader = ExtResource("1_vav1d")
