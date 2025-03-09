@@ -62,39 +62,48 @@ func _ready() -> void:
 func activate() -> void:
 	show()
 	await U.tick()
-	update_control_pos(false)
-	on_is_showing_update(true)
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------
-var restore_control_pos:Dictionary
-func before_fullscreen_update() -> void:
-	for node in control_pos:
-		restore_control_pos[node] = {"is_showing": node.position == control_pos[node].default}
-		node.position.y = control_pos[node].show
+	
+	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	control_pos_default[DetailsPanel] = DetailsPanel.position
+	
+	update_control_pos()
+	on_is_showing_update()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
-	update_control_pos(true)
+	update_control_pos()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
-func update_control_pos(restore_state:bool) -> void:	
+func update_control_pos() -> void:	
 	await U.tick()
-
-	control_pos[BtnControlPanel] = {"default": BtnControlPanel.position, "show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
-	control_pos[LeftSideBtnList] = {"default": LeftSideBtnList.position, "global": LeftSideBtnList.global_position.y, "show": LeftSideBtnList.position.y, "hide": LeftSideBtnList.position.y + LeftSideBtnList.size.y}
-	control_pos[DetailsPanel] = {"default": DetailsPanel.position,  "show": DetailsPanel.position.y, "hide": DetailsPanel.position.y + DetailsPanel.size.y}
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
 	
-	print(DetailsPanel.position)
+	control_pos[LeftSideBtnList] = {
+		"global": LeftSideBtnList.global_position.y + 50
+	}
+		
+	# for elements in the bottom left corner
+	control_pos[BtnControlPanel] = {
+		"global": BtnControlPanel.global_position.y,
+		"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	}
 	
-	if restore_state:
-		for node in restore_control_pos:
-			var is_showing:bool = restore_control_pos[node].is_showing	
-			node.position.y = control_pos[node].show if is_showing else control_pos[node].hide
-			
+	# for eelements in the top right
+	control_pos[DetailsPanel] = {
+		"global": BtnControlPanel.global_position.y,
+		"show": control_pos_default[DetailsPanel].y, 
+		"hide": control_pos_default[DetailsPanel].y - DetailsPanel.size.y
+	}	
 	
+	
+	if ref_btn != null:
+		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
+	
+	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
@@ -107,7 +116,7 @@ func toggle_camera_view() -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
 	
-	#GameplayNode.restore_player_hud()
+
 	SUBSCRIBE.camera_settings = camera_settings	
 	
 	await U.set_timeout(0.3)
@@ -121,9 +130,10 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 		
 	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0.3 if !skip_animation else 0)
-	U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
-	await U.tick()
 	
+	await U.tick()
+	if !is_showing:
+		U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
 	
 # --------------------------------------------------------------------------------------------------		
 
@@ -1145,7 +1155,3 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					U.room_left()
 					
 # --------------------------------------------------------------------------------------------------	
-
-
-func _on_item_rect_changed() -> void:
-	pass # Replace with function body.

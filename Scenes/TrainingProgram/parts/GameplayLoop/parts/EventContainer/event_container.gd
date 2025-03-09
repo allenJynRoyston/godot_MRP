@@ -73,6 +73,8 @@ var current_controls:CONTROLS = CONTROLS.FREEZE
 var event_output:Dictionary = {}
 var has_more:bool = true
 var text_reveal_tween:Tween
+
+var control_pos_default:Dictionary
 var control_pos:Dictionary
 
 
@@ -100,19 +102,58 @@ func _ready() -> void:
 func activate() -> void:
 	show()
 	await U.tick()
-	control_pos[RightControlPanel] = {"show": RightControlPanel.position.x, "hide": RightControlPanel.position.x + RightControlPanel.size.x}
-	control_pos[LeftControlPanel] = {"show": LeftControlPanel.position.x, "hide": LeftControlPanel.position.x - LeftControlPanel.size.x}
-	control_pos[ContentControlPanel] = {"show": ContentControlPanel.position.y, "hide": ContentControlPanel.position.y - ContentControlPanel.size.y - 200}
-	control_pos[BtnControlPanel] = {"show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
+	
+	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	control_pos_default[RightControlPanel] = RightControlPanel.position
+	control_pos_default[LeftControlPanel] = LeftControlPanel.position
+	control_pos_default[ContentControlPanel] = ContentControlPanel.position
+	
+	update_control_pos()
+	on_is_showing_update()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	# center elements
+	control_pos[ContentControlPanel] = {
+		"show": control_pos_default[ContentControlPanel].y, 
+		"hide": control_pos_default[ContentControlPanel].y - ContentControlPanel.size.y
+	}
+		
+	# for elements in the bottom left corner
+	control_pos[BtnControlPanel] = {
+		"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	}
+	
+	control_pos[LeftControlPanel] = {
+		"show": control_pos_default[LeftControlPanel].y + y_diff, 
+		"hide": control_pos_default[LeftControlPanel].y + y_diff + LeftControlPanel.size.y
+	}
+	
+	# for eelements in the top right
+	control_pos[RightControlPanel] = {
+		"show": control_pos_default[RightControlPanel].y, 
+		"hide": control_pos_default[RightControlPanel].y - RightControlPanel.size.y
+	}	
+
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------		
 func on_is_showing_update() -> void:
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return	
-	
-	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -122,8 +163,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.HIDE:
 			for btn in [SelectBtn, NextBtn]:
 				btn.is_disabled = true
-			await U.tween_node_property(RightControlPanel, "position:x", control_pos[RightControlPanel].hide, 0 if skip_animation else 0.3)
-			await U.tween_node_property(LeftControlPanel, "position:x", control_pos[LeftControlPanel].hide, 0 if skip_animation else 0.3)
+			await U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide, 0 if skip_animation else 0.3)
+			await U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide, 0 if skip_animation else 0.3)
 			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide, 0 if skip_animation else 0.3)
 			await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
@@ -132,9 +173,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for btn in [SelectBtn, NextBtn]:
 				btn.is_disabled = false				
 			SelectBtn.hide()
-			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1))				
-			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show)			
-			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show)
+			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)				
+			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show, 0 if skip_animation else 0.3)			
+			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, 0 if skip_animation else 0.3)
+
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -272,8 +314,7 @@ func on_current_instruction_update() -> void:
 		RightTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
 		RightHeaderLabel.text = "VIDEO FEED"
 		RightFooterLabel.text = "" # not currently used
-		print("here?")
-		await U.tween_node_property(RightControlPanel, "position:x", control_pos[RightControlPanel].show)
+		await U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].show)
 	# -----------------------------------
 	
 	# -----------------------------------
@@ -281,7 +322,7 @@ func on_current_instruction_update() -> void:
 		var p_details:Dictionary = current_instruction.portrait
 		ContentProfileTextureRect.texture = CACHE.fetch_image(p_details.img_src if "img_src" in p_details else "")
 		ContentHeaderLabel.text = p_details.title if "title" in p_details else "[REDACTED]"
-		await U.tween_node_property(LeftControlPanel, "position:x", control_pos[LeftControlPanel].show)
+		await U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].show)
 	# -----------------------------------
 
 	# -----------------------------------
@@ -319,7 +360,6 @@ func on_current_instruction_update() -> void:
 		var readiness_level:int = 1 #room_config.floor[current_location.floor].ring[current_location.ring].metrics[RESOURCE.BASE_METRICS.READINESS]
 		var options:Array = current_instruction.options
 		
-
 		var compromised_count:int = 0
 		for index in options.size():
 			var option:Dictionary = options[index]

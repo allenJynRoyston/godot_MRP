@@ -11,7 +11,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3e5bh"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h0xt1"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tvjm1"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_083vi"]
 color = Color(1, 1, 1, 1)
@@ -133,7 +133,7 @@ offset_left = -859.0
 offset_bottom = 125.0
 grow_horizontal = 0
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_h0xt1")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
 
 [node name="MarginContainer" type="MarginContainer" parent="Details/PanelContainer"]
 custom_minimum_size = Vector2(200, 0)

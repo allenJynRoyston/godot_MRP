@@ -320,8 +320,7 @@ func start() -> void:
 	load_state()	
 	on_simulated_busy_update()
 	
-	# finish this part
-	print(event_switches)
+	# finish this part	
 	if event_switches.show_status_on_boot:
 		show_status_notice(true)
 

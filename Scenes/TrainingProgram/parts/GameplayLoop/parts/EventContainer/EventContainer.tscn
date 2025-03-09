@@ -1,7 +1,7 @@
 [gd_scene load_steps=26 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" uid="uid://d14ehnxlj0jud" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_q4n71"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_h7wp5"]
 [ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="3_v6l8k"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_6n6tl"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="4_kdo1o"]
@@ -102,7 +102,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_t5faq")
 script = ExtResource("1_vx21a")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_q4n71")
+material = ExtResource("2_h7wp5")
 layout_mode = 2
 color = Color(0, 0, 0, 1)
 
@@ -258,15 +258,12 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl"]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 13
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -372.5
-offset_top = -110.0
-offset_right = 322.5
-offset_bottom = 110.0
+anchor_bottom = 1.0
+offset_left = -290.0
+offset_right = 290.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 0
@@ -428,11 +425,13 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -72.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
 layout_mode = 2

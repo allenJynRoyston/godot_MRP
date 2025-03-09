@@ -63,8 +63,8 @@ func _ready() -> void:
 
 	# ENABLE FOR DESKTOP PC 
 	# start full screen
-	#on_fullscreen_update(resolution)
-	#toggle_fullscreen()
+	on_fullscreen_update(resolution)
+	toggle_fullscreen()
 	
 	# start at debug	
 	#on_fullscreen_update(Vector2(1280, 720))	

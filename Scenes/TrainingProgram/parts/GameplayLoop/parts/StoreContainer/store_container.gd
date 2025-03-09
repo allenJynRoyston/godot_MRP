@@ -93,13 +93,7 @@ func _ready() -> void:
 				current_mode = MODE.TAB_SELECT
 	
 
-	await U.set_timeout(1.0)	
-	control_pos[HeaderPanel]  = {"show": HeaderPanel.position.y, "hide": HeaderPanel.position.y - HeaderPanel.size.y}
-	control_pos[ActiveHeaderPanel] = {"show": ActiveHeaderPanel.position.x, "hide": ActiveHeaderPanel.position.x - ActiveHeaderPanel.size.x - 20}
-	control_pos[MainPanel] = {"show": MainPanel.position.x, "hide": MainPanel.position.x - MainPanel.size.x - 20}
-	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + DetailPanel.size.x + 20}
-	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
-	control_pos[SplashPanelContainer] = {"show": SplashPanelContainer.position.y, "hide": SplashPanelContainer.position.y + SplashPanelContainer.size.y}
+
 	
 	is_setup = true
 	on_is_showing_update(true)
@@ -119,6 +113,65 @@ func end() -> void:
 	tab_index = 0
 	made_a_purchase = false	
 # --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+	
+	# TODO: this is the original
+	control_pos[HeaderPanel]  = {"show": HeaderPanel.position.y, "hide": HeaderPanel.position.y - HeaderPanel.size.y}
+	control_pos[ActiveHeaderPanel] = {"show": ActiveHeaderPanel.position.x, "hide": ActiveHeaderPanel.position.x - ActiveHeaderPanel.size.x - 20}
+	control_pos[MainPanel] = {"show": MainPanel.position.x, "hide": MainPanel.position.x - MainPanel.size.x - 20}
+	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + DetailPanel.size.x + 20}
+	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
+	control_pos[SplashPanelContainer] = {"show": SplashPanelContainer.position.y, "hide": SplashPanelContainer.position.y + SplashPanelContainer.size.y}	
+	#
+	#control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	#control_pos_default[RightControlPanel] = RightControlPanel.position
+	#control_pos_default[LeftControlPanel] = LeftControlPanel.position
+	#control_pos_default[ContentControlPanel] = ContentControlPanel.position
+	
+	update_control_pos()
+	on_is_showing_update()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	## center elements
+	#control_pos[ContentControlPanel] = {
+		#"show": control_pos_default[ContentControlPanel].y, 
+		#"hide": control_pos_default[ContentControlPanel].y - ContentControlPanel.size.y
+	#}
+		#
+	## for elements in the bottom left corner
+	#control_pos[BtnControlPanel] = {
+		#"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		#"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	#}
+	#
+	#control_pos[LeftControlPanel] = {
+		#"show": control_pos_default[LeftControlPanel].y + y_diff, 
+		#"hide": control_pos_default[LeftControlPanel].y + y_diff + LeftControlPanel.size.y
+	#}
+	#
+	## for eelements in the top right
+	#control_pos[RightControlPanel] = {
+		#"show": control_pos_default[RightControlPanel].y, 
+		#"hide": control_pos_default[RightControlPanel].y - RightControlPanel.size.y
+	#}	
+
+	on_current_mode_update(true)
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func unlock_room() -> void:
@@ -301,6 +354,7 @@ func on_grid_index_update() -> void:
 # --------------------------------------------------------------------------------------------------	
 func on_is_showing_update(fast:bool = false) -> void:
 	super.on_is_showing_update()
+	if !is_node_ready() or control_pos.is_empty():return
 	var duration:float = 0.02 if fast else 0.3
 	if !is_setup:return
 	
@@ -320,7 +374,7 @@ func on_is_showing_update(fast:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
-func on_current_mode_update() -> void:
+func on_current_mode_update(reset_position:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	is_animating = true
 	match current_mode:
@@ -335,39 +389,40 @@ func on_current_mode_update() -> void:
 			UnlockBtn.hide()
 			SelectTabBtn.show()
 			
-			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide)
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide)
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, 0 if reset_position else 0.3)
+			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, 0 if reset_position else 0.3)
 			
-			for index in GridContent.get_child_count():
-				var card_node:Control = GridContent.get_child(index)
-				card_node.reset()
-				card_node.is_deselected = false
-					
-			GridContent.modulate = Color(1, 1, 1, 0.5)
+			if !reset_position:
+				for index in GridContent.get_child_count():
+					var card_node:Control = GridContent.get_child(index)
+					card_node.reset()
+					card_node.is_deselected = false
+						
+				GridContent.modulate = Color(1, 1, 1, 0.5)
 			
-			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show)
+			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show, 0 if reset_position else 0.3)
 		# -------------------
 		MODE.CONTENT_SELECT:			
 			SelectTabBtn.hide()
 			UnlockBtn.show()	
 			
+			if !reset_position:
+				GBL.find_node(REFS.ROOM_NODES).is_active = true
+				GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
+				U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
+				U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show)
 
-			GBL.find_node(REFS.ROOM_NODES).is_active = true
-			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
-			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show)
-
-			for index in GridContent.get_child_count():
-				var card_node:Control = GridContent.get_child(index)
-				card_node.reset()
-				card_node.is_deselected = false
-			
-			grid_index = grid_index if grid_list_data.size() >= 0 else -1			
+				for index in GridContent.get_child_count():
+					var card_node:Control = GridContent.get_child(index)
+					card_node.reset()
+					card_node.is_deselected = false
+				
+				grid_index = grid_index if grid_list_data.size() >= 0 else -1			
 			
 			GridContent.modulate = Color(1, 1, 1, 1)			
-			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].show)
-			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show)
+			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, 0 if reset_position else 0.3)
+			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].show, 0 if reset_position else 0.3)
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show, 0 if reset_position else 0.3)
 
 		
 			
