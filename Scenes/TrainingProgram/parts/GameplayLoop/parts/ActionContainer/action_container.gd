@@ -34,6 +34,7 @@ var left_btn_list:Array = []
 var right_btn_list:Array = []
 var is_setup:bool = false
 
+var control_pos_default:Dictionary
 var control_pos:Dictionary
 
 # --------------------------------------------------------------------------------------------------
@@ -61,16 +62,40 @@ func _ready() -> void:
 func activate() -> void:
 	show()
 	await U.tick()
-	print(BtnControlPanel.position / GBL.game_resolution)
-	control_pos[BtnControlPanel] = {"global": BtnControlPanel.position.y, "show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
-	control_pos[LeftSideBtnList] = {"global": LeftSideBtnList.global_position.y, "show": LeftSideBtnList.position.y, "hide": LeftSideBtnList.position.y + LeftSideBtnList.size.y}
-	control_pos[DetailsPanel] = {"show": DetailsPanel.position.y, "hide": DetailsPanel.position.y - DetailsPanel.size.y}	
+	update_control_pos(false)
 	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------
+var restore_control_pos:Dictionary
+func before_fullscreen_update() -> void:
+	for node in control_pos:
+		restore_control_pos[node] = {"is_showing": node.position == control_pos[node].default}
+		node.position.y = control_pos[node].show
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
-	print(GBL.game_resolution)
-	#print(control_pos[BtnControlPanel])
+	update_control_pos(true)
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos(restore_state:bool) -> void:	
+	await U.tick()
+
+	control_pos[BtnControlPanel] = {"default": BtnControlPanel.position, "show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
+	control_pos[LeftSideBtnList] = {"default": LeftSideBtnList.position, "global": LeftSideBtnList.global_position.y, "show": LeftSideBtnList.position.y, "hide": LeftSideBtnList.position.y + LeftSideBtnList.size.y}
+	control_pos[DetailsPanel] = {"default": DetailsPanel.position,  "show": DetailsPanel.position.y, "hide": DetailsPanel.position.y + DetailsPanel.size.y}
+	
+	print(DetailsPanel.position)
+	
+	if restore_state:
+		for node in restore_control_pos:
+			var is_showing:bool = restore_control_pos[node].is_showing	
+			node.position.y = control_pos[node].show if is_showing else control_pos[node].hide
+			
+	
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:
@@ -96,9 +121,10 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 		
 	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0.3 if !skip_animation else 0)
+	U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
+	await U.tick()
 	
-	if !is_showing:
-		U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
+	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1119,3 +1145,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					U.room_left()
 					
 # --------------------------------------------------------------------------------------------------	
+
+
+func _on_item_rect_changed() -> void:
+	pass # Replace with function body.

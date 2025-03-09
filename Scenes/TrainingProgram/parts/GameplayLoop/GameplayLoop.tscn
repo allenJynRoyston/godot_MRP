@@ -105,6 +105,7 @@ visible = false
 layout_mode = 2
 
 [node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
+visible = false
 layout_mode = 2
 
 [node name="RecruitmentContainer" parent="." instance=ExtResource("12_dw62g")]
@@ -120,6 +121,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
+visible = false
 layout_mode = 2
 
 [node name="SetupContainer" parent="." instance=ExtResource("21_jqp8v")]
@@ -131,6 +133,7 @@ visible = false
 layout_mode = 2
 
 [node name="ToastContainer" parent="." instance=ExtResource("9_wx8fv")]
+visible = false
 layout_mode = 2
 
 [node name="WaitContainer" type="PanelContainer" parent="."]

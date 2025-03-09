@@ -17,8 +17,7 @@ const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourgla
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
 
 # DEFAULTS
-@export var skip_intro:bool = false
-@export var skip_door:bool = false 
+@export var skip_intro:bool = false 
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
@@ -68,8 +67,8 @@ func _ready() -> void:
 	#toggle_fullscreen()
 	
 	# start at debug	
-	on_fullscreen_update(Vector2(1280, 720))	
-	on_current_layer_update()
+	#on_fullscreen_update(Vector2(1280, 720))	
+	#on_current_layer_update()
 	
 	reset()
 	
@@ -80,9 +79,10 @@ func _ready() -> void:
 # -----------------------------------	
 func reset() -> void:
 	await U.set_timeout(1.2)
-	if !skip_door:
+	if !skip_intro:
 		await play_door()	
-	start_os_layer()
+	else:
+		start_os_layer()
 # -----------------------------------		
 
 # -----------------------------------		
@@ -143,6 +143,9 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	DisplayServer.window_set_size(use_resolution)
 	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())			
 	
+	GBL.trigger_fullscreen_prechange()
+	await U.tick()
+	
 	# set as reference
 	GBL.game_resolution = use_resolution
 	
@@ -175,10 +178,12 @@ func on_current_layer_update() -> void:
 	match current_layer:
 		# -----------
 		LAYER.STARTUP:
+			print("startup")
 			for node in [DoorScene, OSNode, Background]:
 				node.hide()
 		# -----------
 		LAYER.DOOR_LAYER:
+			print("door")
 			for node in [DoorScene, OSNode, Background]:
 				if node == DoorScene:
 					node.show()

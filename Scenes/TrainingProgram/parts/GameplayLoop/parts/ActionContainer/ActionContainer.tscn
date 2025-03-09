@@ -399,3 +399,5 @@ offset_top = 881.0
 offset_right = 112.0
 offset_bottom = 993.0
 grow_vertical = 1
+
+[connection signal="item_rect_changed" from="." to="." method="_on_item_rect_changed"]

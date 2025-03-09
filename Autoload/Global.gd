@@ -110,6 +110,11 @@ func update_fullscreen_mode(state:bool) -> void:
 	for node in fullscreen_nodes:
 		if "on_fullscreen_update" in node:
 			node.on_fullscreen_update.call(state)
+
+func trigger_fullscreen_prechange() -> void:
+	for node in fullscreen_nodes:
+		if "before_fullscreen_update" in node:
+			node.before_fullscreen_update.call()
 # ------------------------------------------------------------------------------
 
 

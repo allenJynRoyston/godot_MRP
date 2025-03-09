@@ -36,6 +36,7 @@ var base_states:Dictionary = {}
 var gameplay_conditionals:Dictionary
 
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
+var initalized_at_fullscreen:bool
 
 const is_container:bool = true
 
@@ -95,6 +96,7 @@ func _ready() -> void:
 	on_freeze_inputs_update()
 	on_is_showing_update()
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP) 
+	initalized_at_fullscreen = GBL.is_fullscreen
 
 func activate() -> void:
 	pass

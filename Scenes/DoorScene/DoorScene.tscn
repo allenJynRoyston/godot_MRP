@@ -250,10 +250,6 @@ transparent_bg = true
 size = Vector2i(1920, 1080)
 
 [node name="IntroAndTitleScreen" parent="SubViewport" instance=ExtResource("4_y10y4")]
-skip_logo = true
-skip_title = true
-skip_sequence = true
-skip_start_at = true
 
 [node name="RenderSubviewport" type="SubViewport" parent="."]
 own_world_3d = true
