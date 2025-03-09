@@ -1,23 +1,34 @@
 extends PanelContainer
 
-@onready var OSNode:PanelContainer = $GameLayer/OS
 @onready var MousePointer:TextureRect = $Control/MousePointer
 @onready var Output:TextureRect = $Control/Output
-@onready var IntroAndTitleScreen:PanelContainer = $GameLayer/IntroAndTitleScreen
+
+@onready var Background:TextureRect = $GameLayer/BG
+@onready var DoorScene:PanelContainer = $GameLayer/DoorScene
+@onready var OSNode:PanelContainer = $GameLayer/OS
+
+
 @onready var Camera3d:Camera3D = $"3dViewport/Node3D/Camera3D"
 
+enum LAYER {STARTUP, INTRO_LAYER, DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
 
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
 
 # DEFAULTS
-const skip_intro:bool = true
+@export var skip_intro:bool = false
+@export var skip_door:bool = false 
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
 var is_animating:bool = false
 
+
+var current_layer:LAYER = LAYER.STARTUP : 
+	set(val):
+		current_layer = val
+		on_current_layer_update()
 
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
@@ -46,43 +57,51 @@ func _exit_tree() -> void:
 
 # -----------------------------------	
 func _ready() -> void:
+	Background.hide()
+	
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	
 
 	# ENABLE FOR DESKTOP PC 
-	on_fullscreen_update(resolution)
+	# start full screen
+	#on_fullscreen_update(resolution)
+	#toggle_fullscreen()
 	
-
-	# ENABLE FOR MACBOOK 
-	#on_fullscreen_update(Vector2(1280, 720))
-	await U.set_timeout(1.2)
+	# start at debug	
+	on_fullscreen_update(Vector2(1280, 720))	
+	on_current_layer_update()
+	
 	reset()
+	
+	DoorScene.on_login = func():
+		start_os_layer()		
 # -----------------------------------	
 
 # -----------------------------------	
 func reset() -> void:
-	if !skip_intro:
-		await play_intro()
-	start_gameplay()
+	await U.set_timeout(1.2)
+	if !skip_door:
+		await play_door()	
+	start_os_layer()
 # -----------------------------------		
 
 # -----------------------------------		
-func play_intro() -> void:
-	IntroAndTitleScreen.start()
-	await IntroAndTitleScreen.on_finish
-	await U.set_timeout(0.3)
-# -----------------------------------		
+func play_door() -> void:
+	current_layer = LAYER.DOOR_LAYER	
+	await U.tick()
+	DoorScene.start()
+# -----------------------------------			
 
 # -----------------------------------		
-func start_gameplay() -> void:
+func start_os_layer() -> void:
+	current_layer = LAYER.OS_lAYER		
+	await U.tick()
 	for node in [OSNode]:
 		node.visible = true
 		node.set_process(true)
 		node.set_physics_process(true)
 		node.start()
 # -----------------------------------
-
 
 # -----------------------------------	
 func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
@@ -106,7 +125,7 @@ func get_max_resolution():
 func toggle_fullscreen() -> void:
 	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
-		on_fullscreen_update(resolution)
+		on_fullscreen_update(Vector2(1280, 720))
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
 		on_fullscreen_update( get_max_resolution() )
@@ -124,8 +143,9 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	DisplayServer.window_set_size(use_resolution)
 	DisplayServer.window_set_position(window_position, DisplayServer.get_primary_screen())			
 	
-	print("resolution: ", resolution)
-
+	# set as reference
+	GBL.game_resolution = use_resolution
+	
 	match DisplayServer.window_get_mode():
 		DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			Output.stretch_mode = TextureRect.STRETCH_SCALE
@@ -147,6 +167,30 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 	is_animating = true
 	await U.tween_node_property(Camera3d, "fov", fov_val, 0.3, 0, Tween.TRANS_SPRING)			
 	is_animating = false
+# -----------------------------------	
+
+# -----------------------------------
+func on_current_layer_update() -> void:
+	if !is_node_ready():return
+	match current_layer:
+		# -----------
+		LAYER.STARTUP:
+			for node in [DoorScene, OSNode, Background]:
+				node.hide()
+		# -----------
+		LAYER.DOOR_LAYER:
+			for node in [DoorScene, OSNode, Background]:
+				if node == DoorScene:
+					node.show()
+				else: 
+					node.hide()
+		# -----------
+		LAYER.OS_lAYER:
+			for node in [DoorScene, OSNode, Background]:
+				if node == OSNode or node == Background:
+					node.show() 
+				else: 
+					node.hide()		
 # -----------------------------------	
 
 # -----------------------------------	

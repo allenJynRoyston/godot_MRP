@@ -91,6 +91,12 @@ func change_resolution(new_resolution:Vector2i) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+var is_fullscreen:bool 
+var game_resolution:Vector2 : 
+	set(val):
+		game_resolution = val
+		print("Resolution set to %s." % game_resolution)
+		
 var fullscreen_nodes:Array[Control] = []
 func subscribe_to_fullscreen(node:Control) -> void:
 	if node not in fullscreen_nodes:
@@ -100,8 +106,9 @@ func unsubscribe_to_fullscreen(node:Control) -> void:
 	fullscreen_nodes.erase(node)
 	
 func update_fullscreen_mode(state:bool) -> void:
+	is_fullscreen = state
 	for node in fullscreen_nodes:
-		if "on_fullscreen_update":
+		if "on_fullscreen_update" in node:
 			node.on_fullscreen_update.call(state)
 # ------------------------------------------------------------------------------
 

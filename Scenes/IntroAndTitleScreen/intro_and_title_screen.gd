@@ -26,8 +26,9 @@ enum MODE {INIT, START, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_TEXT, WAIT_FOR
 @export var skip_logo:bool = false
 @export var skip_title:bool = false
 @export var skip_sequence:bool = false
+@export var skip_start_at:bool = false
 
-const game_title:String = "MEMORY RECOVERY PROTOCOL"
+const game_title:String = "THE VOID LAYER"
 const BlurInLetterPreload:PackedScene = preload("res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn")
 
 var control_pos:Dictionary = {}
@@ -38,7 +39,9 @@ var current_mode:MODE = MODE.INIT :
 		on_current_mode_update()
 
 signal user_input
-signal on_finish
+signal on_continue
+
+var on_end:Callable = func():pass
 
 # ---------------------------------------------
 func _init() -> void:
@@ -47,11 +50,15 @@ func _init() -> void:
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
 
+
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	TitleBGLabel.modulate = Color(1, 1, 1, 0)
 	PressStartGameLabel.text = "SCP: %s" % [game_title]
 	ColorBG.show()
+	
+	for child in TitleLetterContainers.get_children():
+		child.queue_free()
 	
 	for letter in game_title:
 		var new_label:Control = BlurInLetterPreload.instantiate()
@@ -59,7 +66,7 @@ func _ready() -> void:
 		new_label.modulate = Color(1, 1, 1, 0)
 		TitleLetterContainers.add_child(new_label)
 	
-	await U.set_timeout(1.0)
+	await U.tick()
 	control_pos[CreditsMarginPanel] = {"hide": CreditsMarginPanel.position.y, "show": CreditsMarginPanel.position.y - 10}
 	control_pos[PressStartMainPanel] = {"hide": PressStartMainPanel.position.y, "show": PressStartMainPanel.position.y - 10}
 	
@@ -68,13 +75,15 @@ func _ready() -> void:
 
 # ---------------------------------------------
 func start() -> void:
+	set_process(true)
 	show()
 	current_mode = MODE.START
 
 func end() -> void:
+	set_process(false)
 	hide()
+	on_end.call()
 	current_mode = MODE.INIT
-	on_finish.emit()
 # ---------------------------------------------
 
 # ---------------------------------------------
@@ -84,13 +93,15 @@ func on_current_mode_update() -> void:
 		# ---------
 		MODE.INIT:
 			RenderSubviewport.set_process(false)
+			RenderSubviewport.get_child(0).hide()
 			
 			for node in [ColorBG, TextureRender]:
 				node.show()
 
 			ColorBG.color = Color.BLACK			
 		# ---------
-		MODE.START:		
+		MODE.START:	
+			RenderSubviewport.get_child(0).show()
 			SceneCamera.fov = 100
 			for node in [LogoPanel, TitlePanel, CreditsPanel, PressStartPanel]:
 				node.modulate = Color(1, 1, 1, 0)
@@ -115,7 +126,6 @@ func on_current_mode_update() -> void:
 			current_mode = MODE.DISPLAY_TITLE
 		# ---------
 		MODE.DISPLAY_TITLE:
-			
 			RenderSubviewport.set_process(true)
 			TextureRender.show()
 			TitlePanel.get_parent().show()
@@ -140,37 +150,44 @@ func on_current_mode_update() -> void:
 		# ---------
 		MODE.DISPLAY_SIDE_TEXT:
 			CreditsPanel.get_parent().show()
-
-			for item in [{"text": 'A GAME BY ALLEN ROYSTON', "wait": 0.6}, {"text": 'CREATING SAVE FILE', "wait": 0.8}, {"text": 'SAVE FILE LOADED.', "wait": 0.8}]:
-				CreditsMarginPanel.position.y = control_pos[CreditsMarginPanel].hide
-				CreditLabel.text = item.text
-				CreditLabel.modulate = Color(1, 1, 1, 0)
+			
+			if !skip_sequence:
+				for item in [{"text": 'A GAME BY ALLEN ROYSTON', "wait": 0.6}, {"text": 'CREATING SAVE FILE', "wait": 0.8}, {"text": 'SAVE FILE LOADED.', "wait": 0.8}]:
+					CreditsMarginPanel.position.y = control_pos[CreditsMarginPanel].hide
+					CreditLabel.text = item.text
+					CreditLabel.modulate = Color(1, 1, 1, 0)
+					
+					await U.tick()
+					U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 1), 0.4)
+					U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 1), 0.7)
+					await U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show, 0.4, Tween.TRANS_LINEAR)
+					await U.set_timeout(item.wait)
+					U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show - 10, 0.4, Tween.TRANS_LINEAR)
+					await U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 0), 0.4)
 				
-				await U.tick()
-				U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 1), 0.4)
-				U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 1), 0.7)
-				await U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show, 0.4, Tween.TRANS_LINEAR)
-				await U.set_timeout(item.wait)
-				U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show - 10, 0.4, Tween.TRANS_LINEAR)
-				await U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 0), 0.4)
-			
-			U.tween_node_property(SceneCamera, 'fov', 60, 4.0)
-			await U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 0), 0.5)
-			
+				U.tween_node_property(SceneCamera, 'fov', 60, 4.0)
+				await U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 0), 0.5)
+				
 			CreditsPanel.get_parent().hide()
 			current_mode = MODE.WAIT_FOR_INPUT
 		# ---------
 		MODE.WAIT_FOR_INPUT:
 			PressStartPanel.get_parent().show()
 			
+			
 			U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].show, 0.7)
-			await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 1), 0.7)
-			await user_input
-			U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide, 0.7)
-			await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.7)
+			if !skip_start_at:
+				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 1), 0.7)
+				await user_input
+			
+			U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide, 0.7)			
+			U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.7, 0.3)
 			await U.set_timeout(1.0)
 			U.tween_node_property(SceneCamera, 'fov', 100, 4.0)
+			await U.set_timeout(1.0)
+			on_continue.emit()			
 			await U.tween_node_property(ColorBG, 'modulate', Color(1, 1, 1, 1), 3.0)
+			
 			current_mode = MODE.EXIT
 		# ---------
 		MODE.EXIT:

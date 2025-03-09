@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
 [ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="3_rjxom"]
-[ext_resource type="PackedScene" uid="uid://c4jcka6l73m7c" path="res://Scenes/IntroAndTitleScreen/IntroAndTitleScreen.tscn" id="5_a2e5w"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
+[ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="5_tgmfl"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="8_8iit3"]
 [ext_resource type="Material" uid="uid://wrbhauo7j8f6" path="res://Shader/_template/template.tres" id="10_fsu2y"]
@@ -63,6 +63,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_67w08")
+skip_intro = true
+skip_door = true
 
 [node name="SubViewportBG" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
@@ -77,17 +79,24 @@ offset_bottom = 1080.0
 [node name="GameLayer" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="GameLayer"]
+[node name="SolidBlackBG" type="ColorRect" parent="GameLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="BG" type="TextureRect" parent="GameLayer"]
 material = ExtResource("3_rjxom")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_m3rsi")
 
+[node name="DoorScene" parent="GameLayer" instance=ExtResource("5_tgmfl")]
+
 [node name="OS" parent="GameLayer" instance=ExtResource("2_hsa0l")]
 clip_contents = true
-debug_game = true
-
-[node name="IntroAndTitleScreen" parent="GameLayer" instance=ExtResource("5_a2e5w")]
 
 [node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)

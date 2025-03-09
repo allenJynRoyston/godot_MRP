@@ -4,10 +4,10 @@
 
 [resource]
 shader = ExtResource("1_ycs1d")
-shader_parameter/spread = 0.0
-shader_parameter/size = 0.259
+shader_parameter/spread = 0.3
+shader_parameter/size = 0.05
 shader_parameter/snow_color = Color(1, 1, 1, 1)
-shader_parameter/snow_transparency = -0.139
+shader_parameter/snow_transparency = 0.019
 shader_parameter/speed = 0.742
-shader_parameter/wind = -0.487
-shader_parameter/num_of_layers = 20
+shader_parameter/wind = 1.366
+shader_parameter/num_of_layers = 10

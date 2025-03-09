@@ -12,7 +12,7 @@ class_name Layout
 @onready var DesktopIconContainer:Control = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
-@export var debug_game:bool = false
+@export var skip_to_game:bool = false
 
 const AppItemPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
@@ -321,6 +321,7 @@ func start() -> void:
 	on_simulated_busy_update()
 	
 	# finish this part
+	print(event_switches)
 	if event_switches.show_status_on_boot:
 		show_status_notice(true)
 
@@ -341,7 +342,7 @@ func start() -> void:
 				},					
 			})
 			
-	if debug_game:
+	if skip_to_game:
 		open_app(find_in_app_list(APPS.SDT).details, true, true, true)
 # -----------------------------------	
 
@@ -552,7 +553,8 @@ func show_status_notice(show_dismiss:bool = false) -> void:
 				"title": "Do not show again", 
 				"show": show_dismiss,
 				"onClick": func():
-					event_switches.show_status_on_boot = false,
+					event_switches.show_status_on_boot = false
+					save_state(),
 			},
 			{
 				"title": "Dismiss", 

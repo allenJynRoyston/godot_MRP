@@ -54,12 +54,23 @@ func _ready() -> void:
 		for node in child.get_children():
 			node.queue_free()	
 	
-	await U.set_timeout(1.0)	
+	hide()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+	print(BtnControlPanel.position / GBL.game_resolution)
 	control_pos[BtnControlPanel] = {"global": BtnControlPanel.position.y, "show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
 	control_pos[LeftSideBtnList] = {"global": LeftSideBtnList.global_position.y, "show": LeftSideBtnList.position.y, "hide": LeftSideBtnList.position.y + LeftSideBtnList.size.y}
-	control_pos[DetailsPanel] = {"show": DetailsPanel.position.y, "hide": DetailsPanel.position.y - DetailsPanel.size.y}
+	control_pos[DetailsPanel] = {"show": DetailsPanel.position.y, "hide": DetailsPanel.position.y - DetailsPanel.size.y}	
 	on_is_showing_update(true)
-# --------------------------------------------------------------------------------------------------		
+# --------------------------------------------------------------------------------------------------	
+
+func on_fullscreen_update(state:bool) -> void:
+	print(GBL.game_resolution)
+	#print(control_pos[BtnControlPanel])
 
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:

@@ -63,6 +63,7 @@ func _init() -> void:
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
+	GBL.subscribe_to_fullscreen(self)
 	freeze_inputs = false	
 	
 func _exit_tree() -> void:
@@ -86,6 +87,7 @@ func _exit_tree() -> void:
 
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
+	GBL.unsubscribe_to_fullscreen(self)
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -93,6 +95,11 @@ func _ready() -> void:
 	on_freeze_inputs_update()
 	on_is_showing_update()
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP) 
+
+func activate() -> void:
+	pass
+
+func on_fullscreen_update(state:bool):pass
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

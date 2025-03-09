@@ -93,13 +93,19 @@ func _ready() -> void:
 				CONTROLS.OPTIONS:					
 					on_option_select()
 	
-	await U.set_timeout(1.0)
+	hide()
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
 	control_pos[RightControlPanel] = {"show": RightControlPanel.position.x, "hide": RightControlPanel.position.x + RightControlPanel.size.x}
 	control_pos[LeftControlPanel] = {"show": LeftControlPanel.position.x, "hide": LeftControlPanel.position.x - LeftControlPanel.size.x}
 	control_pos[ContentControlPanel] = {"show": ContentControlPanel.position.y, "hide": ContentControlPanel.position.y - ContentControlPanel.size.y - 200}
 	control_pos[BtnControlPanel] = {"show": BtnControlPanel.position.y, "hide": BtnControlPanel.position.y + BtnControlPanel.size.y}
 	on_current_mode_update(true)
-# --------------------------------------------------------------------------------------------------		
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
 func on_is_showing_update() -> void:

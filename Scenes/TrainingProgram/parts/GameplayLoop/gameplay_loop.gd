@@ -587,7 +587,11 @@ func _ready() -> void:
 		set_process(false)
 		set_physics_process(false)	
 	setup()
-	
+
+	# initially all animation speed is set to 0 but after this is all ready, set animation speed
+	for node in get_all_container_nodes():
+		node.set_process(false)
+		node.set_physics_process(false)		
 		
 
 func setup() -> void:
@@ -623,23 +627,28 @@ func setup() -> void:
 #region START GAME
 func start(game_data:Dictionary = {}) -> void:
 	show()
-	set_process(true)
-	set_physics_process(true)	
-	
-	# initially all animation speed is set to 0 but after this is all ready, set animation speed
-	for node in get_all_container_nodes():
-		node.animation_speed = 0.3
 
+	# initially all animation speed is set to 0 but after this is all ready, set animation speed
+	set_process(true)
+	set_physics_process(true)		
+	for node in get_all_container_nodes():
+		node.set_process(false)
+		node.set_physics_process(false)
+		node.activate()
+		
 	if game_data.is_empty():
 		start_new_game()
 	else:
 		start_load_game()
 
+
+
+
 func start_new_game() -> void:
 	setup_complete = false
 	
 	# reset steps
-	await show_only()
+	await restore_player_hud()
 	current_shop_step = SHOP_STEPS.RESET
 	current_contain_step = CONTAIN_STEPS.RESET
 	current_recruit_step = RECRUIT_STEPS.RESET
@@ -682,10 +691,10 @@ func start_new_game() -> void:
 	
 	await restore_player_hud()	
 	# runs room config once everything is ready
-	await U.set_timeout(0.2)
+	await U.set_timeout(1.0)
+	setup_complete = true
 	
 	set_room_config()	
-	setup_complete = true
 	current_phase = PHASE.PLAYER
 
 
@@ -2724,7 +2733,8 @@ func quickload() -> void:
 		await parse_restore_data(res.filedata.data)
 		print("quickload success!")
 	else:
-		print("quickload failed :(")
+		await parse_restore_data({})
+		print("quickload failed - creating new file")
 	is_busy = false
 
 		
@@ -2763,6 +2773,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 # NOTE: THIS IS THE MAIN LOGIC THAT HAPPENS WHEN GAMEPLAY ESSENTIAL DATA IS UPDATED
 # ------------------------------------------------------------------------------
 func set_room_config(force_setup:bool = false) -> void:
+	if !setup_complete:return
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()
