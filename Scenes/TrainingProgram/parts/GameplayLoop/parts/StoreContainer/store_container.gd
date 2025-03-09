@@ -1,7 +1,7 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-@onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
+@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 
 @onready var UnlockBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/UnlockBtn
@@ -43,7 +43,7 @@ var grid_index:int = 0 :
 
 var has_more:bool = false
 var grid_list_data:Array
-var control_pos:Dictionary
+
 var is_setup:bool = false
 var is_animating:bool = false 
 var made_a_purchase:bool = false
@@ -59,6 +59,9 @@ var grid_as_array:Array = [
 	[4, 5, 6, 7],
 	[8, 9, 10, 11],
 ]
+
+var control_pos:Dictionary
+var control_pos_default:Dictionary
 
 var await_confirm:bool = false
 signal on_confirm
@@ -118,19 +121,13 @@ func end() -> void:
 func activate() -> void:
 	show()
 	await U.tick()
-	
-	# TODO: this is the original
-	control_pos[HeaderPanel]  = {"show": HeaderPanel.position.y, "hide": HeaderPanel.position.y - HeaderPanel.size.y}
-	control_pos[ActiveHeaderPanel] = {"show": ActiveHeaderPanel.position.x, "hide": ActiveHeaderPanel.position.x - ActiveHeaderPanel.size.x - 20}
-	control_pos[MainPanel] = {"show": MainPanel.position.x, "hide": MainPanel.position.x - MainPanel.size.x - 20}
-	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + DetailPanel.size.x + 20}
-	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
-	control_pos[SplashPanelContainer] = {"show": SplashPanelContainer.position.y, "hide": SplashPanelContainer.position.y + SplashPanelContainer.size.y}	
-	#
-	#control_pos_default[BtnControlPanel] = BtnControlPanel.position
-	#control_pos_default[RightControlPanel] = RightControlPanel.position
-	#control_pos_default[LeftControlPanel] = LeftControlPanel.position
-	#control_pos_default[ContentControlPanel] = ContentControlPanel.position
+
+	control_pos_default[HeaderPanel] = HeaderPanel.position
+	control_pos_default[ActiveHeaderPanel] = ActiveHeaderPanel.position
+	control_pos_default[MainPanel] = MainPanel.position
+	control_pos_default[DetailPanel] = DetailPanel.position
+	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	control_pos_default[SplashPanelContainer] = SplashPanelContainer.position
 	
 	update_control_pos()
 	on_is_showing_update()
@@ -147,18 +144,41 @@ func update_control_pos() -> void:
 	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
 	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
 	
+	# TODO: ORIGINALS
+	control_pos[HeaderPanel]  = {
+		"show": HeaderPanel.position.y, 
+		"hide": HeaderPanel.position.y - HeaderPanel.size.y
+	}
+	control_pos[ActiveHeaderPanel] = {
+		"show": ActiveHeaderPanel.position.x, 
+		"hide": ActiveHeaderPanel.position.x - ActiveHeaderPanel.size.x - 20
+	}
+	control_pos[MainPanel] = {
+		"show": MainPanel.position.x, 
+		"hide": MainPanel.position.x - MainPanel.size.x - 20
+	}
+	control_pos[DetailPanel] = {
+		"show": DetailPanel.position.x,
+		"hide": DetailPanel.position.x + DetailPanel.size.x + 20
+	}
+	control_pos[SplashPanelContainer] = {
+		"show": SplashPanelContainer.position.y, 
+		"hide": SplashPanelContainer.position.y + SplashPanelContainer.size.y
+	}	
+	# TODO: ORIGINALS
+	
 	## center elements
 	#control_pos[ContentControlPanel] = {
 		#"show": control_pos_default[ContentControlPanel].y, 
 		#"hide": control_pos_default[ContentControlPanel].y - ContentControlPanel.size.y
 	#}
-		#
-	## for elements in the bottom left corner
-	#control_pos[BtnControlPanel] = {
-		#"show": control_pos_default[BtnControlPanel].y + y_diff, 
-		#"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
-	#}
-	#
+
+	# for elements in the bottom left corner
+	control_pos[BtnControlPanel] = {
+		"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	}
+	
 	#control_pos[LeftControlPanel] = {
 		#"show": control_pos_default[LeftControlPanel].y + y_diff, 
 		#"hide": control_pos_default[LeftControlPanel].y + y_diff + LeftControlPanel.size.y
@@ -364,11 +384,11 @@ func on_is_showing_update(fast:bool = false) -> void:
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = !is_showing
 	
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
-	U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].show if is_showing else control_pos[BtnMarginContainer].hide, duration)
-	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show if is_showing else control_pos[HeaderPanel].hide, duration)
-	await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, duration)
-	
+	#await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
+	#U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, duration)
+	#U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show if is_showing else control_pos[HeaderPanel].hide, duration)
+	#await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, duration)
+	#
 	if !is_showing:
 		self.modulate = Color(1, 1, 1, 1 if is_showing else 0)	
 # --------------------------------------------------------------------------------------------------	
@@ -380,6 +400,9 @@ func on_current_mode_update(reset_position:bool = false) -> void:
 	match current_mode:
 		# -------------------
 		MODE.HIDE:
+			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, 0)
+			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, 0)
+			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0)
 			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, 0)
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, 0)
 			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, 0)
