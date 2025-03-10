@@ -10,6 +10,12 @@ extends PanelContainer
 @onready var BtnPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var LoginBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/LoginBtn
 
+@export var skip_logo:bool = false
+@export var skip_title:bool = false
+@export var skip_sequence:bool = false
+@export var skip_start_at:bool = false
+
+
 enum MODE {INIT, START}
 
 var control_pos:Dictionary = {}
@@ -35,20 +41,28 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_fullscreen(self)
 
 func _ready() -> void:
+	on_current_mode_update()	
+	_after_ready.call_deferred()
+# ---------------------------------------------
+
+# ---------------------------------------------
+func _after_ready() -> void:
 	BtnPanel.modulate = Color(1, 1, 1, 0)
 	
 	IntroAndTitleScreen.on_end = func() -> void:
 		IntroSubviewport.set_process(false)
 		IntroSubviewport.get_child(0).hide()
-	on_current_mode_update()
-	
 	
 	LoginBtn.onClick = func() -> void:
 		if !is_ready:return
 		on_login.call()
-		
 	
+	IntroAndTitleScreen.skip_logo = skip_logo
+	IntroAndTitleScreen.skip_title = skip_title
+	IntroAndTitleScreen.skip_sequence = skip_sequence
+	IntroAndTitleScreen.skip_start_at = skip_start_at
 # ---------------------------------------------
+		
 
 # ---------------------------------------------
 func start() -> void:

@@ -10,21 +10,33 @@ extends PanelContainer
 
 @onready var Camera3d:Camera3D = $"3dViewport/Node3D/Camera3D"
 
-enum LAYER {STARTUP, INTRO_LAYER, DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
+enum LAYER {DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
 
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
 
 # DEFAULTS
+@export_category("Startup")
 @export var skip_intro:bool = false 
+@export var skip_to_game:bool = false
+
+# INTRODUCTION
+@export_category("Introduction")
+@export var intro_skip_logo:bool = false
+@export var intro_skip_title:bool = false
+@export var intro_skip_sequence:bool = false
+@export var intro_skip_start_at:bool = false
+
+@export_category("Options")
+@export var start_at_fullscreen:bool = false
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
 var is_animating:bool = false
 
 
-var current_layer:LAYER = LAYER.STARTUP : 
+var current_layer:LAYER : 
 	set(val):
 		current_layer = val
 		on_current_layer_update()
@@ -58,27 +70,30 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	Background.hide()
 	
+	DoorScene.on_login = func():
+		start_os_layer()
+	
+	OSNode.skip_to_game = skip_to_game
+	
+	DoorScene.skip_logo = intro_skip_logo
+	DoorScene.skip_title = intro_skip_title
+	DoorScene.skip_sequence = intro_skip_sequence
+	DoorScene.skip_start_at = intro_skip_start_at
+
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
-	# ENABLE FOR DESKTOP PC 
-	# start full screen
-	on_fullscreen_update(resolution)
-	toggle_fullscreen()
-	
-	# start at debug	
-	#on_fullscreen_update(Vector2(1280, 720))	
-	#on_current_layer_update()
-	
+	if start_at_fullscreen:
+		on_fullscreen_update(resolution)
+		toggle_fullscreen()
+	else:		
+		on_fullscreen_update(Vector2(1280, 720))	
+		
 	reset()
-	
-	DoorScene.on_login = func():
-		start_os_layer()		
 # -----------------------------------	
 
 # -----------------------------------	
 func reset() -> void:
-	await U.set_timeout(1.2)
 	if !skip_intro:
 		await play_door()	
 	else:
@@ -178,13 +193,7 @@ func on_current_layer_update() -> void:
 	if !is_node_ready():return
 	match current_layer:
 		# -----------
-		LAYER.STARTUP:
-			print("startup")
-			for node in [DoorScene, OSNode, Background]:
-				node.hide()
-		# -----------
 		LAYER.DOOR_LAYER:
-			print("door")
 			for node in [DoorScene, OSNode, Background]:
 				if node == DoorScene:
 					node.show()

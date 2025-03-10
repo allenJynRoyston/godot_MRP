@@ -1,8 +1,9 @@
 extends GameContainer
 
 @onready var MainPanel:MarginContainer = $Control/MarginContainer
-@onready var Gradiant:TextureRect = $Control/DetectorPanel/Gradiant
 @onready var DetectorPanel:PanelContainer = $Control/DetectorPanel
+
+@onready var Gradiant:TextureRect = $Control/DetectorPanel/Gradiant
 @onready var DayLabel:Label = $Control/MarginContainer/VBoxContainer/DayLabel
 @onready var ListContainer:VBoxContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer/ListContainer
 @onready var ListScrollContainer:ScrollContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer
@@ -13,9 +14,11 @@ const delay:float = 0.7
 var uid_refs:Dictionary = {}
 var current_day:int 
 var is_setup:bool = false
-var show_position:Dictionary = {}
-var hide_position:Dictionary = {}
+
 var restore_pos:int
+var control_pos_default:Dictionary
+var control_pos:Dictionary
+
 signal wait_for_complete
 
 # --------------------------------------------------------------------------------------------------
@@ -29,24 +32,16 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	super._ready()	
-	show_position[Gradiant] = Gradiant.position
-	hide_position[Gradiant] = Gradiant.position + Vector2(500, 0)
 	
 	DetectorPanel.onFocus = func() -> void:
-		U.tween_node_property(Gradiant, "position:x", show_position[Gradiant].x)
+		if control_pos.is_empty():return
+		U.tween_node_property(Gradiant, "position:x", control_pos[Gradiant].show)
 	DetectorPanel.onBlur = func() -> void:
-		U.tween_node_property(Gradiant, "position:x", hide_position[Gradiant].x)		
+		if control_pos.is_empty():return
+		U.tween_node_property(Gradiant, "position:x", control_pos[Gradiant].hide)		
 		
-	# move into place
-	U.tween_node_property(Gradiant, "position:x", hide_position[Gradiant].x, 0.02)	
-	
-	await U.set_timeout(1.0)	
-	restore_pos = MainPanel.position.x
-	on_progress_data_update.call_deferred()
-	on_is_showing_update()
-# --------------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------
+	
 func on_reset() -> void:
 	for child in ListContainer.get_children():
 		child.queue_free()
@@ -56,10 +51,59 @@ func on_reset() -> void:
 		var item_node:Control = TimelineItemPreload.instantiate()
 		item_node.index = index
 		item_node.delay = delay
-		ListContainer.add_child(item_node)
+		ListContainer.add_child(item_node)		
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
 	
+	control_pos_default[Gradiant] = Gradiant.position
+	control_pos_default[MainPanel] = MainPanel.position
+	control_pos_default[DetectorPanel] = DetectorPanel.position
+	
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	control_pos[Gradiant] = {
+		"show": Gradiant.position.x, 
+		"hide": Gradiant.position.x - Gradiant.size.x
+	}
+	
+	control_pos[MainPanel] = {
+		"show": MainPanel.position.x, 
+		"hide": MainPanel.position.x + MainPanel.size.x
+	}	
+	
+	control_pos[DetectorPanel] = {
+		"show": DetectorPanel.position.x, 
+		"hide": DetectorPanel.position.x + DetectorPanel.size.x
+	}		
+	
+	on_is_showing_update(true)
+# --------------------------------------------------------------------------------------------------	
+
+# -----------------------------------------------
+func on_is_showing_update(skip_animation:bool = false) -> void:	
+	super.on_is_showing_update()	
+	if !is_node_ready() or control_pos.is_empty():return
+
+	U.tween_node_property(Gradiant, "position:x", control_pos[Gradiant].show if is_showing else control_pos[Gradiant].hide, 0 if skip_animation else 0.3)	
+	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, 0 if skip_animation else 0.7)	
+# -----------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------
 func on_progress_data_update(new_val:Dictionary) -> void:
@@ -74,27 +118,14 @@ func on_progress_data_update(new_val:Dictionary) -> void:
 			var node:Control = ListContainer.get_child(index)
 			new_pos += node.size.y + 10
 	
-	if !is_setup:
-		is_setup = true
-		await U.set_timeout(1.0)
 		
 	DayLabel.text = "DAY %s" % [progress_data.day]
 
 	U.tween_node_property(ListScrollContainer, "scroll_vertical", new_pos, delay, 0.5)
 # --------------------------------------------------------------------------------------------------	
 
-# -----------------------------------------------
-func on_is_showing_update() -> void:	
-	super.on_is_showing_update()	
-	if !is_setup:return
-	U.tween_node_property(MainPanel, "position:x", restore_pos if is_showing else restore_pos + MainPanel.size.x, 0.7)	
-# -----------------------------------------------	
-
 # --------------------------------------------------------------------------------------------------
 func on_timeline_array_update(new_val:Array = timeline_array) -> void:
 	timeline_array = new_val	
 	if !is_node_ready():return
-
-func on_queue_list_update() -> void:
-	pass
 # --------------------------------------------------------------------------------------------------	

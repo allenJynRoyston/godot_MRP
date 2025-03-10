@@ -52,6 +52,12 @@ func _exit_tree() -> void:
 
 
 func _ready() -> void:
+	_after_ready.call_deferred()
+	on_current_mode_update()
+# ---------------------------------------------
+
+# ---------------------------------------------
+func _after_ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	TitleBGLabel.modulate = Color(1, 1, 1, 0)
 	PressStartGameLabel.text = "SCP: %s" % [game_title]
@@ -69,9 +75,7 @@ func _ready() -> void:
 	await U.tick()
 	control_pos[CreditsMarginPanel] = {"hide": CreditsMarginPanel.position.y, "show": CreditsMarginPanel.position.y - 10}
 	control_pos[PressStartMainPanel] = {"hide": PressStartMainPanel.position.y, "show": PressStartMainPanel.position.y - 10}
-	
-	on_current_mode_update()
-# ---------------------------------------------
+# ---------------------------------------------	
 
 # ---------------------------------------------
 func start() -> void:

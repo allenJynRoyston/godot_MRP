@@ -12,7 +12,7 @@ extends GameContainer
 @onready var StaffingControlPanel:MarginContainer = $StaffingControl/StaffingControlPanel
 @onready var StaffingList:VBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/List
 
-@onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
+@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var AcceptBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/AcceptBtn
 @onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
@@ -50,16 +50,14 @@ var activation_requirements:Array = [] :
 		activation_requirements = val
 		on_activation_requirements_update()
 
-
+var control_pos_default:Dictionary
 var control_pos:Dictionary
 var allow_input:bool = false
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	
-	
-	
+
 	AcceptBtn.onClick = func() -> void:
 		if is_showing and allow_input:
 			end(true)
@@ -72,12 +70,7 @@ func _ready() -> void:
 	on_image_update()
 	on_activation_requirements_update()
 	
-	await U.set_timeout(1.0)
-	control_pos[ContentPanelContainer] = {"show": ContentPanelContainer.position.x, "hide": ContentPanelContainer.position.x + ContentPanelContainer.size.x}
-	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
-	control_pos[StaffingControlPanel] = {"show": StaffingControlPanel.position.y, "hide": StaffingControlPanel.position.y - StaffingControlPanel.size.y}	
 
-	on_is_showing_update(true)
 
 func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "") -> void:
 	title = new_title
@@ -90,15 +83,58 @@ func end(made_changes:bool) -> void:
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = true
 		#
-	U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
+	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
-	await U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].hide)
+	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
 	
 	confirm_only = false
 	activation_requirements = []
 			
 	user_response.emit(made_changes)
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+	
+	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
+	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	control_pos_default[StaffingControlPanel] = StaffingControlPanel.position
+	
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	control_pos[ContentPanelContainer] = {
+		"show": ContentPanelContainer.position.y, 
+		"hide": ContentPanelContainer.position.y - ContentPanelContainer.size.y
+	}
+	
+	control_pos[BtnControlPanel] = {
+		"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	}
+	
+	control_pos[StaffingControlPanel] = {
+		"show": StaffingControlPanel.position.y, 
+		"hide": StaffingControlPanel.position.y - StaffingControlPanel.size.y
+	}	
+	
+
+	
+	on_is_showing_update(true)
+# --------------------------------------------------------------------------------------------------	
 	
 # --------------------------------------------------------------------------------------------------	
 func on_is_showing_update(skip_animation:bool = false) -> void:
@@ -113,8 +149,8 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  0 if skip_animation else 0.3)
 	
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide,  0 if skip_animation else 0.3)
-	U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide,  0 if skip_animation else 0.3)
-	await U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].show if is_showing else control_pos[BtnMarginContainer].hide,  0 if skip_animation else 0.3)
+	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide,  0 if skip_animation else 0.3)
+	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide,  0 if skip_animation else 0.3)
 	
 	# reset confirm only state
 	allow_input = true

@@ -383,11 +383,7 @@ func on_is_showing_update(fast:bool = false) -> void:
 	
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = !is_showing
-	
-	#await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
-	#U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, duration)
-	#U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show if is_showing else control_pos[HeaderPanel].hide, duration)
-	#await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, duration)
+
 	#
 	if !is_showing:
 		self.modulate = Color(1, 1, 1, 1 if is_showing else 0)	

@@ -18,7 +18,7 @@ extends GameContainer
 @onready var ConfirmScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmScp
 
 @onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
-@onready var BtnPanelContainer:Control = $BtnControl/MarginContainer
+@onready var BtnControlPanel:Control = $BtnControl/MarginContainer
 
 enum MODE { HIDE, SELECT_SCP, CONFIRM_SCP, FINALIZE }
 
@@ -46,6 +46,7 @@ var current_mode:MODE = MODE.HIDE :
 		on_current_mode_update()
 
 var btn_restore_pos:int
+var control_pos_default:Dictionary
 var control_pos:Dictionary
 var is_animating:bool = true
 var custom_min_size:Vector2
@@ -81,11 +82,6 @@ func _ready() -> void:
 			MODE.CONFIRM_SCP:
 				mark_scp_as_selected(true)
 
-	await U.set_timeout(1.0)	
-	control_pos[ContentPanelContainer] = {"show": ContentPanelContainer.position.x, "hide": ContentPanelContainer.position.x - ContentPanelContainer.size.x}
-	control_pos[BtnPanelContainer] = {"show": BtnPanelContainer.position.y, "hide": BtnPanelContainer.position.y + BtnPanelContainer.size.y}
-
-	on_current_mode_update()
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -112,7 +108,7 @@ func end(made_selection:bool) -> void:
 					
 	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 	U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
-	await U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide)
+	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
 	
 	current_mode = MODE.HIDE	
 	user_response.emit(made_selection)
@@ -262,8 +258,46 @@ func on_confirm_scp() -> void:
 	current_mode = MODE.FINALIZE
 # -----------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+
+	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
+	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+
+	update_control_pos()
+	on_is_showing_update()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func update_control_pos() -> void:
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+
+	control_pos[ContentPanelContainer] = {
+		"show": control_pos_default[ContentPanelContainer].x, 
+		"hide": control_pos_default[ContentPanelContainer].x - ContentPanelContainer.size.x
+	}
+	
+	# for elements in the bottom left corner
+	control_pos[BtnControlPanel] = {
+		"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	}
+
+	
+	on_current_mode_update(true)
+# --------------------------------------------------------------------------------------------------		
+
 # -----------------------------------------------
-func on_current_mode_update() -> void:
+func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	is_animating = true
 
@@ -273,9 +307,9 @@ func on_current_mode_update() -> void:
 			for btn in [SelectScp, ConfirmScp, DetailsBtn]:
 				btn.is_disabled = true
 							
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0)
-			U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide, 0)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
+			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0 if skip_animation else 0.3)
+			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 		# --------------
 		MODE.SELECT_SCP:
 			for btn in [SelectScp, ConfirmScp, DetailsBtn, BackBtn]:
@@ -289,9 +323,9 @@ func on_current_mode_update() -> void:
 			SelectScp.show() if !read_only else SelectScp.hide()
 			ConfirmScp.hide()			
 							
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1))
-			U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].show )
-			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
+			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, 0 if skip_animation else 0.3 )
+			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show, 0 if skip_animation else 0.3)
 		# --------------
 		MODE.CONFIRM_SCP:
 			SelectScp.hide()
@@ -303,8 +337,8 @@ func on_current_mode_update() -> void:
 
 		# --------------
 		MODE.FINALIZE:
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-			await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)			
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
+			await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0 if skip_animation else 0.3)			
 
 			# update scp data
 			scp_data.available_list.push_back({
@@ -335,7 +369,7 @@ func on_dec() -> void:
 	scp_active_index = U.min_max(scp_active_index + 1, 0, ScpList.get_child_count() - 1)
 # -----------------------------------------------
 
-# -----------------------------------	
+# -----------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
 		return
@@ -350,4 +384,4 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"D":
 			if current_mode == MODE.SELECT_SCP:
 				on_dec()
-#  -----------------------------------		
+# -----------------------------------------------

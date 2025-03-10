@@ -1,7 +1,6 @@
-[gd_scene load_steps=22 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=21 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" uid="uid://d3rdbn88vaa70" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
-[ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="2_t4xaw"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_upopm"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_yaau0"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_fdai8"]
@@ -87,7 +86,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_75o2t")
 script = ExtResource("1_7tykf")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_t4xaw")
 layout_mode = 2
 color = Color(1, 1, 1, 0.054902)
 
@@ -261,11 +259,13 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -72.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
 layout_mode = 2
