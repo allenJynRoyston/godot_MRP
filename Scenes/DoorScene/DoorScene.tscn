@@ -73,6 +73,30 @@ tracks/3/keys = {
 "update": 1,
 "values": [false, true]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../../RenderSubviewport/Node3D/BackWall/SpotLight3D:light_energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(-0.433333, 4.76667, 4.83333, 9.53333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.0, 0.5]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../../RenderSubviewport/Node3D/BackWall/OmniLight3D:light_energy")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(-0.1, 5.26667, 9.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.2]
+}
 
 [sub_resource type="Animation" id="Animation_y10y4"]
 length = 0.001
@@ -123,6 +147,30 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../../RenderSubviewport/Node3D/BackWall/SpotLight3D:light_energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.5]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../../RenderSubviewport/Node3D/BackWall/OmniLight3D:light_energy")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_oq4hm"]
@@ -258,7 +306,6 @@ size = Vector2i(1920, 1080)
 [node name="Node3D" type="Node3D" parent="RenderSubviewport"]
 
 [node name="SceneAnimationPlayer" type="AnimationPlayer" parent="RenderSubviewport/Node3D"]
-active = false
 root_node = NodePath("../../../SubViewport/IntroAndTitleScreen")
 libraries = {
 &"": SubResource("AnimationLibrary_oq4hm")
@@ -266,9 +313,8 @@ libraries = {
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(-0.0353491, 0.994205, -0.101526, 0.303616, 0.107471, 0.946714, 0.952138, 0.0026406, -0.305655, 1.12125, 3.2137, 0.29774)
-visible = false
 light_color = Color(0.894118, 1, 1, 1)
-light_energy = 0.0
+light_energy = 1.539
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 16.0
 light_size = 0.101
@@ -280,8 +326,7 @@ spot_range = 6.39943
 
 [node name="SpotLight3D" type="SpotLight3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(0.989143, 0.134751, 0.0586271, -0.131921, 0.63847, 0.758256, 0.0647445, -0.757758, 0.649315, 0.340838, 1.46493, 0.951244)
-visible = false
-light_energy = 0.0
+light_energy = 0.64
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.0
 light_specular = 6.073
@@ -379,7 +424,7 @@ spot_angle_attenuation = 0.105112
 [node name="OmniLight3D" type="OmniLight3D" parent="RenderSubviewport/Node3D/BackWall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4266, 0.0518589, 0.499054)
 light_color = Color(0.704139, 0.131311, 4.81307e-07, 1)
-light_energy = 0.5
+light_energy = 0.0
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 2.079
 light_specular = 1.579
@@ -390,6 +435,6 @@ omni_attenuation = 0.776
 [node name="Camera3D" type="Camera3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(0.927184, 0, 0.374606, 0, 1, 0, -0.374606, 0, 0.927184, 0.085, 0, 0)
 current = true
-fov = 36.2
+fov = 25.5
 size = 3.105
 far = 89.32

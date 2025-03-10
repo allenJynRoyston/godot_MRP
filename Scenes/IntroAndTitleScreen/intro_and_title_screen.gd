@@ -184,7 +184,7 @@ func on_current_mode_update() -> void:
 			U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.7, 0.3)
 			await U.set_timeout(1.0)
 			U.tween_node_property(SceneCamera, 'fov', 100, 4.0)
-			await U.set_timeout(1.0)
+			await U.set_timeout(2.5)
 			on_continue.emit()			
 			await U.tween_node_property(ColorBG, 'modulate', Color(1, 1, 1, 1), 3.0)
 			

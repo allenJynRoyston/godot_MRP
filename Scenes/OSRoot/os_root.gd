@@ -160,7 +160,8 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 			GBL.update_fullscreen_mode(false)
 			
 		
-	var fov_val:float = 0
+	var fov_val:float = 46.6
+
 	if use_resolution.x == 1280:
 		fov_val = 32.0
 	if use_resolution.x == 1920:
