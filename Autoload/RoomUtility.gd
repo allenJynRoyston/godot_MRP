@@ -247,7 +247,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			{
-				"name": "UNLOCK FACILITIES",
+				"name": "UNLOCK FACILITIES", 
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
@@ -282,7 +282,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.ENERGY: -1,
+					
 				},
 		}	
 	},		
@@ -1073,6 +1073,13 @@ func return_unavailable_rooms(ref:ROOM.TYPE, room_config:Dictionary) -> Array:
 	return SHARED_UTIL.return_unavailable_rooms(return_data(ref))
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+func return_ability(ref:ROOM.TYPE, ability_index:int) -> Dictionary:
+	var room_data:Dictionary = return_data(ref)
+	var abilities:Array = room_data.abilities.call() if "abilities" in room_data else []
+	return abilities[ability_index]
+# ------------------------------------------------------------------------------		
+	
 # ------------------------------------------------------------------------------
 func return_ability_cost(ref:ROOM.TYPE, ability_index:int) -> Array:
 	var room_data:Dictionary = return_data(ref)
@@ -1275,6 +1282,37 @@ func at_own_limit(ref:ROOM.TYPE) -> bool:
 	var total_count:int = owned_count + in_progress_count
 	
 	return total_count >= room_data.own_limit
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func extract_wing_details() -> Dictionary:	
+	var floor:int = current_location.floor
+	var ring:int = current_location.ring
+	
+	var wing_data:Dictionary = room_config.floor[floor].ring[ring]
+	var room_refs:Array = wing_data.room_refs
+	var abilities:Dictionary = {}
+	var ab_level:int = 0  #TODO: find what level the upgrade level is at
+	
+	for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+		var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room_index]
+		var designation:String = U.location_to_designation({"floor": floor, "ring": ring, "room": room_index})
+
+		if !room_config_data.room_data.is_empty():
+			var base_state:Dictionary = room_config_data.room_data.base_state
+			if base_state.is_activated:
+				var room_details:Dictionary = room_config_data.room_data.details
+				abilities[room_details.ref] = []
+				if "abilities" in room_details:
+					var ability_list:Array = room_details.abilities.call()
+					for index in ability_list.size():
+						if index >= ab_level:
+							abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
+	
+	return {
+		"room_refs": wing_data.room_refs,
+		"abilities": abilities
+	}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

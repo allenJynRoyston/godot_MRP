@@ -1,7 +1,7 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-@onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
+@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 
 @onready var PurchaseBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/PurchaseBtn
@@ -33,7 +33,7 @@ var grid_index:int = 0 :
 
 var has_more:bool = false
 var grid_list_data:Array
-var control_pos:Dictionary
+
 var is_setup:bool = false
 var is_animating:bool = false 
 
@@ -72,13 +72,9 @@ func _ready() -> void:
 	
 
 	await U.set_timeout(1.0)	
-	control_pos[HeaderPanel]  = {"show": HeaderPanel.position.y, "hide": HeaderPanel.position.y - HeaderPanel.size.y}
-	control_pos[MainPanel] = {"show": MainPanel.position.x, "hide": MainPanel.position.x - MainPanel.size.x - 20}
-	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + DetailPanel.size.x + 20}
-	control_pos[BtnMarginContainer] = {"show": BtnMarginContainer.position.y, "hide": BtnMarginContainer.position.y + BtnMarginContainer.size.y}
+
 	
 	is_setup = true
-	on_is_showing_update(true)
 	on_current_mode_update()	
 	on_grid_index_update()	
 
@@ -87,12 +83,68 @@ func start() -> void:
 	current_mode = MODE.CONTENT_SELECT
 	update_grid_content()
 	
-func end() -> void:
-	is_showing = false
-	await on_is_showing_update()
+func end() -> void:	
+	for btn in RightSideBtnList.get_children():
+		btn.is_disabled = true	
+
+	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
+	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
+	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)	
+	U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide)
+	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0.3, 0.3)
+	
 	current_mode = MODE.HIDE
 	grid_index = 0
 # --------------------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+
+	control_pos_default[HeaderPanel] = HeaderPanel.position
+	control_pos_default[MainPanel] = MainPanel.position
+	control_pos_default[DetailPanel] = DetailPanel.position
+	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	
+	update_control_pos()	
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	control_pos[HeaderPanel]  = {
+		"show": control_pos_default[HeaderPanel].y, 
+		"hide": control_pos_default[HeaderPanel].y - HeaderPanel.size.y
+	}
+
+	control_pos[MainPanel] = {
+		"show": control_pos_default[MainPanel].x, 
+		"hide": control_pos_default[MainPanel].x - MainPanel.size.x - 20
+	}
+	
+	control_pos[DetailPanel] = {
+		"show": control_pos_default[DetailPanel].x,
+		"hide": control_pos_default[DetailPanel].x + DetailPanel.size.x
+	}
+
+	control_pos[BtnControlPanel] = {
+		"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	}
+
+	on_current_mode_update(true)
+# --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------	
 func purchase_room() -> void:	
@@ -215,45 +267,34 @@ func on_grid_index_update() -> void:
 			card_node.is_highlighted = index == grid_index
 # --------------------------------------------------------------------------------------------------				
 
-# --------------------------------------------------------------------------------------------------	
-func on_is_showing_update(fast:bool = false) -> void:
-	super.on_is_showing_update()
-	var duration:float = 0.02 if fast else 0.3
-	if !is_setup:return
-	
-	if is_showing:
-		self.modulate = Color(1, 1, 1, 1 if is_showing else 0)
-	
-	for btn in RightSideBtnList.get_children():
-		btn.is_disabled = !is_showing
-	
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
-	U.tween_node_property(BtnMarginContainer, "position:y", control_pos[BtnMarginContainer].show if is_showing else control_pos[BtnMarginContainer].hide, duration)
-	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show if is_showing else control_pos[HeaderPanel].hide, duration)
-	await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, duration)
-	
-	if !is_showing:
-		self.modulate = Color(1, 1, 1, 1 if is_showing else 0)	
-# --------------------------------------------------------------------------------------------------	
-
 # --------------------------------------------------------------------------------------------------		
-func on_current_mode_update() -> void:
+func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	is_animating = true
+	var duration:float = 0 if skip_animation else 0.3
 	match current_mode:
 		# -------------------
 		MODE.HIDE:
-			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, 0)
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 )
+			for btn in RightSideBtnList.get_children():
+				btn.is_disabled = true
+					
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
+			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, duration)
+			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
+			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)	
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, duration)
 		# -------------------
 		MODE.CONTENT_SELECT:		
+			for btn in RightSideBtnList.get_children():
+				btn.is_disabled = false
+							
 			PurchaseBtn.show()	
 			PlacementBtn.hide()
 
-			GBL.find_node(REFS.ROOM_NODES).is_active = true
+			#GBL.find_node(REFS.ROOM_NODES).is_active = true
 			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
-			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration )
+			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show, duration)
 
 			for index in GridContent.get_child_count():
 				var card_node:Control = GridContent.get_child(index)
@@ -263,8 +304,9 @@ func on_current_mode_update() -> void:
 			grid_index = grid_index if grid_list_data.size() >= 0 else -1			
 			
 			GridContent.modulate = Color(1, 1, 1, 1)			
-			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
-			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show)
+			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, duration)
+			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show, duration)
 		# -------------------
 		MODE.PLACEMENT:
 			PurchaseBtn.hide()
@@ -276,10 +318,10 @@ func on_current_mode_update() -> void:
 				card_node.is_selected = false			
 				card_node.is_deselected = index != grid_index
 			
-			GBL.find_node(REFS.ROOM_NODES).is_active = false
+			#GBL.find_node(REFS.ROOM_NODES).is_active = false
 			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(false)
-			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0) )
-			await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)
+			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration )
+			await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)
 			
 			on_grid_index_update()
 		# -------------------

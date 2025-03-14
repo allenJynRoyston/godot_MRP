@@ -74,9 +74,6 @@ var event_output:Dictionary = {}
 var has_more:bool = true
 var text_reveal_tween:Tween
 
-var control_pos_default:Dictionary
-var control_pos:Dictionary
-
 
 signal text_phase_complete
 

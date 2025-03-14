@@ -11,8 +11,6 @@ extends Control
 @onready var ApChargeContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer
 @onready var ApChargeLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer/MarginContainer/VBoxContainer/HBoxContainer/ApChargeLabel
 
-
-
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
 
 var header:String = "" : 
@@ -66,8 +64,7 @@ var freeze_inputs:bool = true :
 		on_freeze_inputs_update()
 
 var onClose:Callable = func():pass
-
-var is_ready:bool = false 
+var onBookmark:Callable = func(_index:int):pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -88,11 +85,12 @@ func _ready() -> void:
 	on_level_update()
 	
 func open() -> void:
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
+	freeze_inputs = false
+	set_fade(true)
 
 func close() -> void:	
 	freeze_inputs = true
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0))	
+	await set_fade(false)
 	onClose.call()	
 	show_ap = false
 	show_ap_charge = false
@@ -102,6 +100,9 @@ func close() -> void:
 	level = -1
 	options_list = []
 	clear_list()
+	
+func set_fade(state:bool) -> void:
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else 0))	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -114,8 +115,7 @@ func update_checkbox_option(index:int, is_checked:bool) -> void:
 	btn_node.is_checked = is_checked
 	
 func on_selected_index_update() -> void:
-	if !is_node_ready() or List.get_child_count() == 0:return
-		
+	if !is_node_ready() or List.get_child_count() == 0:return		
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
@@ -125,8 +125,7 @@ func on_options_list_update(recolor:bool = false) -> void:
 	
 	if !recolor:
 		clear_list()
-		is_ready = false
-		
+				
 		if selected_index > options_list.size():
 			selected_index = options_list.size() - 1
 			
@@ -142,19 +141,22 @@ func on_options_list_update(recolor:bool = false) -> void:
 			btn_node.is_selected = index == selected_index
 			btn_node.cost = item.cost if "cost" in item else -1
 			btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
+			
 			btn_node.onClick = func() -> void:
 				if !btn_node.is_disabled:
-					item.onSelect
+					item.onSelect.call(selected_index)
 			btn_node.onFocus = func(_node:Control) -> void:
 				selected_index = index
 			
 			List.add_child(btn_node)
 		
 		await U.tick()
-		is_ready = true
+		
 	else:
 		for child in List.get_children():
 			child.btn_color = use_color
+	
+
 
 func on_ap_val_update() -> void:
 	if !is_node_ready():return
@@ -200,30 +202,30 @@ func on_use_color_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_freeze_inputs_update() -> void:
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if freeze_inputs else 1)  )
+	pass
+	#U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if freeze_inputs else 1)  )
 
 func on_action() -> void:
 	if freeze_inputs:return
 	if selected_index != -1:
 		var btn_node:Control = List.get_child(selected_index)
+		
 		if btn_node == null:return
 		if !btn_node.is_disabled:
-			options_list[selected_index].onSelect.call()
+			options_list[selected_index].onSelect.call(selected_index)
 			
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or selected_index == -1 or !is_ready:return
+	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or selected_index == -1:return
 	var key:String = input_data.key
 
 	match key:
+		"T":
+			onBookmark.call(selected_index)
 		"E":
 			on_action()
-		"ENTER":
-			on_action()
-		"BACKSPACE":
-			close()
 		"B":
 			close()
 		"W":

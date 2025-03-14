@@ -13,7 +13,7 @@ extends GameContainer
 @onready var ResourcePanel:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer/ExpandSubListContainer/ResourcePanel
 @onready var Abilities:Control = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer/ExpandSubListContainer/Abilities
 
-var control_pos:Dictionary 
+
 var previous_location:Dictionary = {}
 var metrics_tween_pos_val:float = 0
 var is_ready:bool = false
@@ -51,13 +51,13 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty() or camera_settings.is_empty():return
 	
-	U.tween_node_property(MainControlPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.7 if !skip_animation else 0)
+	U.tween_node_property(MainControlPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.3 if !skip_animation else 0)
 	
 	if is_showing and camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
-		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show, 0.4 if !skip_animation else 0, 0.4)
+		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show, 0.3 if !skip_animation else 0)
 	
 	if !is_showing:
-		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].hide, 0.4 if !skip_animation else 0)
+		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].hide, 0.3 if !skip_animation else 0)
 # -----------------------------------------------	
 
 # --------------------------------------------------------

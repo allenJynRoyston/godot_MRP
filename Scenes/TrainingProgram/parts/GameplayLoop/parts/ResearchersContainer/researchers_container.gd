@@ -72,7 +72,6 @@ var promote_mode:bool = false
 var is_animating:bool = false
 var custom_min_size:Vector2
 var overflow_count:int
-var control_pos:Dictionary
 
 # -----------------------------------------------
 func _ready() -> void:
@@ -137,20 +136,68 @@ func _ready() -> void:
 	DetailsBtn.onClick = func() -> void:
 		show_details()
 
-	await U.set_timeout(1.0)	
-	control_pos[SelectedPanel] = {"show": SelectedPanel.position.x, "hide": SelectedPanel.position.x - SelectedPanel.size.x}
-	control_pos[ResearcherPanel] = {"show": ResearcherPanel.position.x, "hide": ResearcherPanel.position.x - ResearcherPanel.size.x}
-	control_pos[TraitPanel] = {"show": TraitPanel.position.x, "hide": TraitPanel.position.x + TraitPanel.size.x}
-	control_pos[BtnPanelContainer] = {"show": BtnPanelContainer.position.y, "hide": BtnPanelContainer.position.y + BtnPanelContainer.size.y}	
-	control_pos[PromoteControlPanel] = {"show": PromoteControlPanel.position.y, "hide": PromoteControlPanel.position.y - PromoteControlPanel.size.y}
 	is_setup = true
 	on_is_showing_update(true)	
 # -----------------------------------------------
 
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+	
+	control_pos_default[BtnPanelContainer] = BtnPanelContainer.position
+	control_pos_default[SelectedPanel] = SelectedPanel.position
+	control_pos_default[ResearcherPanel] = ResearcherPanel.position
+	control_pos_default[TraitPanel] = TraitPanel.position
+	control_pos_default[PromoteControlPanel] = PromoteControlPanel.position
+	
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	control_pos[BtnPanelContainer] = {
+		"show": control_pos_default[BtnPanelContainer].y + y_diff, 
+		"hide": control_pos_default[BtnPanelContainer].y + y_diff + BtnPanelContainer.size.y
+	}
+		
+	control_pos[SelectedPanel] = {
+		"show": control_pos_default[SelectedPanel].y, 
+		"hide": control_pos_default[SelectedPanel].y - SelectedPanel.size.y
+	}
+	
+	control_pos[ResearcherPanel] = {
+		"show": control_pos_default[ResearcherPanel].x,
+		"hide": control_pos_default[ResearcherPanel].x - ResearcherPanel.size.x
+	}
+	
+	control_pos[TraitPanel] = {
+		"show": control_pos_default[TraitPanel].x,
+		"hide": control_pos_default[TraitPanel].x - TraitPanel.size.x
+	}	
+	
+	control_pos[PromoteControlPanel] = {
+		"show": control_pos_default[PromoteControlPanel].x,
+		"hide": control_pos_default[PromoteControlPanel].x - PromoteControlPanel.size.x
+	}	
+	
+	on_is_showing_update(true)
+# --------------------------------------------------------------------------------------------------	
+
+
 # -----------------------------------------------
 func on_is_showing_update(skip_animation:bool = false) -> void:
 	super.on_is_showing_update()
-	if !is_setup:return
+	if !is_setup or control_pos.is_empty():return
 
 	for node in [RightSideBtnList, LeftSideBtnList]:
 		for btn in node.get_children():

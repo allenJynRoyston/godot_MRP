@@ -13,7 +13,6 @@ extends GameContainer
 
 @onready var DetailPanel:Control = $Control/DetailPanel
 
-var control_pos:Dictionary
 var detail_panel_is_focused:bool = false
 var detail_panel_is_busy:bool = false
 var scp_available:bool = false

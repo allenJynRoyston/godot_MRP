@@ -7,7 +7,7 @@ extends GameContainer
 @onready var DescriptionList:VBoxContainer = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/DescriptionList
 @onready var ImageContainer:TextureRect = $ContentControl/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ImageContainer
 
-@onready var BtnMarginContainer:MarginContainer = $BtnControl/MarginContainer
+@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var NextOrCloseBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/NextOrCloseBtn
 
@@ -34,7 +34,7 @@ var completed_build_items:Array = [] :
 
 var content_restore_pos:int
 var btn_restore_pos:int
-var is_setup:bool = false
+
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
@@ -45,15 +45,46 @@ func _ready() -> void:
 	
 	SkipBtn.onClick = func() -> void:
 		on_next()
-
-	on_has_more_update()
-	
-	await U.set_timeout(1.0)	
-	content_restore_pos = ContentMarginContainer.position.y			
-	btn_restore_pos = BtnMarginContainer.position.y
-	is_setup = true
-	on_is_showing_update()
 # --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+	
+	control_pos_default[ContentMarginContainer] = ContentMarginContainer.position
+	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	
+	
+	update_control_pos()
+	on_has_more_update()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	# for elements in the bottom left corner
+	control_pos[BtnControlPanel] = {
+		"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	}
+	
+	# for eelements in the top right
+	control_pos[ContentMarginContainer] = {
+		"show": control_pos_default[ContentMarginContainer].y, 
+		"hide": control_pos_default[ContentMarginContainer].y - ContentMarginContainer.size.y
+	}	
+	
+	on_is_showing_update(true)
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func on_next() -> void:
@@ -65,20 +96,19 @@ func on_next() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_is_showing_update() -> void:
+func on_is_showing_update(skip_animation:bool = false) -> void:
 	super.on_is_showing_update()
-	if !is_node_ready():return
-	if !is_setup:return
+	if !is_node_ready() or control_pos.is_empty():return
 	
 	if !is_showing:
 		for btn in RightSideBtnList.get_children():
 			btn.is_disabled = true
 
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0))
-	U.tween_node_property(ContentMarginContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.3)
+	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
+	U.tween_node_property(ContentMarginContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
 
-	U.tween_node_property(ContentMarginContainer, "position:y", content_restore_pos if is_showing else content_restore_pos - 20, 0.3)
-	U.tween_node_property(BtnMarginContainer, "position:y", btn_restore_pos if is_showing else BtnMarginContainer.size.y + 20, 0.3)
+	U.tween_node_property(ContentMarginContainer, "position:y", control_pos[ContentMarginContainer].show if is_showing else control_pos[ContentMarginContainer].hide, 0 if skip_animation else 0.3)
+	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------

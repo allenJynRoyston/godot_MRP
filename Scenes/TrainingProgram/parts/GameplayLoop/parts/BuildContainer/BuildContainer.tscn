@@ -17,7 +17,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3mux"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3tkl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kqrcq"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -29,7 +29,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h7wld"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xw5jb"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -41,7 +41,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ty6ju"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ecmk"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -234,7 +234,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p3tkl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kqrcq")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -242,7 +242,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="PurchaseBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_h7wld")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xw5jb")
 title = "PURCHASE"
 assigned_key = "E"
 icon = 10
@@ -250,7 +250,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="PlacementBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("7_t7lao")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ty6ju")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ecmk")
 title = "PLACE"
 assigned_key = "E"
 icon = 10
@@ -261,9 +261,3 @@ layout_mode = 2
 
 [node name="DetailPanel" parent="DetailControl" instance=ExtResource("8_et4l3")]
 layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_right = 0.0
-grow_horizontal = 0

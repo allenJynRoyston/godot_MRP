@@ -26,12 +26,16 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kq5a2"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qglm5"]
 bg_color = Color(1, 1, 1, 0)
@@ -45,14 +49,10 @@ border_color = Color(1, 1, 1, 0)
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnqas"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hku62"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y32nm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnqas"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -64,7 +64,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0thfp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y32nm"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -191,7 +191,7 @@ layout_mode = 2
 
 [node name="CheckBox" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("6_kq5a2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
 no_bg = true
 title = "1 energy required (you have X)"
 
@@ -209,7 +209,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
 icon = 31
 no_bg = true
 title = "99"
@@ -219,7 +219,7 @@ is_negative = true
 [node name="ResourceItem2" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_t8u6m")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
 icon = 30
 no_bg = true
 title = "99"
@@ -239,7 +239,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_pmqqh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t8u6m")
 icon = 31
 no_bg = true
 title = "99"
@@ -248,7 +248,7 @@ display_at_bottom = true
 [node name="ResourceItem2" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_bnqas")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pmqqh")
 icon = 30
 no_bg = true
 title = "99d"
@@ -300,7 +300,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_y32nm")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bnqas")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -308,7 +308,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="AcceptBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gtk4i")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0thfp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y32nm")
 title = "ACCEPT"
 assigned_key = "E"
 icon = 10

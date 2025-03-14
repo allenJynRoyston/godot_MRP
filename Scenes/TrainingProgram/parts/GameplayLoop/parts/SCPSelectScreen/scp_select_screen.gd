@@ -46,8 +46,6 @@ var current_mode:MODE = MODE.HIDE :
 		on_current_mode_update()
 
 var btn_restore_pos:int
-var control_pos_default:Dictionary
-var control_pos:Dictionary
 var is_animating:bool = true
 var custom_min_size:Vector2
 var overflow_count:int

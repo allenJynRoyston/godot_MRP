@@ -35,6 +35,8 @@ var scp_data:Dictionary = {}
 var base_states:Dictionary = {}
 var gameplay_conditionals:Dictionary
 
+var control_pos_default:Dictionary
+var control_pos:Dictionary
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 var initalized_at_fullscreen:bool
 
@@ -150,6 +152,7 @@ func on_is_showing_update() -> void:
 		TextureRectNode.material.set_shader_parameter('angle_degrees', 0 if is_showing else 180)
 		tween_percent()
 	freeze_inputs = !is_showing
+	show() if is_showing else hide()
 	
 func tween_percent() -> void:
 	var tween:Tween = create_tween()

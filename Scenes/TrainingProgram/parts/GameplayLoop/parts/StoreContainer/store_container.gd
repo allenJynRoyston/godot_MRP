@@ -60,9 +60,6 @@ var grid_as_array:Array = [
 	[8, 9, 10, 11],
 ]
 
-var control_pos:Dictionary
-var control_pos_default:Dictionary
-
 var await_confirm:bool = false
 signal on_confirm
 
@@ -146,49 +143,31 @@ func update_control_pos() -> void:
 	
 	# TODO: ORIGINALS
 	control_pos[HeaderPanel]  = {
-		"show": HeaderPanel.position.y, 
-		"hide": HeaderPanel.position.y - HeaderPanel.size.y
+		"show": control_pos_default[HeaderPanel].y, 
+		"hide": control_pos_default[HeaderPanel].y - HeaderPanel.size.y
 	}
 	control_pos[ActiveHeaderPanel] = {
-		"show": ActiveHeaderPanel.position.x, 
-		"hide": ActiveHeaderPanel.position.x - ActiveHeaderPanel.size.x - 20
+		"show": control_pos_default[ActiveHeaderPanel].x, 
+		"hide": control_pos_default[ActiveHeaderPanel].x - ActiveHeaderPanel.size.x - 20
 	}
 	control_pos[MainPanel] = {
-		"show": MainPanel.position.x, 
-		"hide": MainPanel.position.x - MainPanel.size.x - 20
+		"show": control_pos_default[MainPanel].x, 
+		"hide": control_pos_default[MainPanel].x - MainPanel.size.x - 20
 	}
 	control_pos[DetailPanel] = {
-		"show": DetailPanel.position.x,
-		"hide": DetailPanel.position.x + DetailPanel.size.x + 20
+		"show": control_pos_default[DetailPanel].x,
+		"hide": control_pos_default[DetailPanel].x + DetailPanel.size.x + 20
 	}
-	control_pos[SplashPanelContainer] = {
-		"show": SplashPanelContainer.position.y, 
-		"hide": SplashPanelContainer.position.y + SplashPanelContainer.size.y
-	}	
-	# TODO: ORIGINALS
 	
-	## center elements
-	#control_pos[ContentControlPanel] = {
-		#"show": control_pos_default[ContentControlPanel].y, 
-		#"hide": control_pos_default[ContentControlPanel].y - ContentControlPanel.size.y
-	#}
+	control_pos[SplashPanelContainer] = {
+		"show": control_pos_default[SplashPanelContainer].y, 
+		"hide": control_pos_default[SplashPanelContainer].y + SplashPanelContainer.size.y
+	}	
 
-	# for elements in the bottom left corner
 	control_pos[BtnControlPanel] = {
 		"show": control_pos_default[BtnControlPanel].y + y_diff, 
 		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
 	}
-	
-	#control_pos[LeftControlPanel] = {
-		#"show": control_pos_default[LeftControlPanel].y + y_diff, 
-		#"hide": control_pos_default[LeftControlPanel].y + y_diff + LeftControlPanel.size.y
-	#}
-	#
-	## for eelements in the top right
-	#control_pos[RightControlPanel] = {
-		#"show": control_pos_default[RightControlPanel].y, 
-		#"hide": control_pos_default[RightControlPanel].y - RightControlPanel.size.y
-	#}	
 
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------	

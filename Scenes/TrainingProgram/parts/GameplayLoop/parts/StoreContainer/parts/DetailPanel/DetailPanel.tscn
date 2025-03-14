@@ -15,16 +15,16 @@ color = Color(1, 1, 1, 1)
 
 [node name="DetailPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
-anchors_preset = 9
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 200.0
+grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_jtmyx")
 script = ExtResource("1_ifskr")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 0
@@ -39,14 +39,17 @@ theme_override_constants/separation = 20
 [node name="SynergyContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
+alignment = 2
 
 [node name="Metadata" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
+alignment = 2
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/SynergyContainer/Metadata"]
 material = ExtResource("3_u3dak")
 custom_minimum_size = Vector2(190, 150)
 layout_mode = 2
+size_flags_horizontal = 8
 texture = SubResource("ViewportTexture_bpbdd")
 stretch_mode = 2
 
@@ -67,6 +70,7 @@ layout_mode = 2
 layout_mode = 2
 text = "NAME LABEL"
 label_settings = ExtResource("1_4rx15")
+horizontal_alignment = 2
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Description"]
 layout_mode = 2
@@ -77,6 +81,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "The description goes here.  It should wrap correctly."
 label_settings = ExtResource("1_4rx15")
+horizontal_alignment = 2
 autowrap_mode = 2
 
 [node name="Effects" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
@@ -86,6 +91,7 @@ layout_mode = 2
 layout_mode = 2
 text = "EFFECT"
 label_settings = ExtResource("1_4rx15")
+horizontal_alignment = 2
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
 layout_mode = 2
@@ -102,6 +108,7 @@ layout_mode = 2
 layout_mode = 2
 text = "PAIRS WITH"
 label_settings = ExtResource("1_4rx15")
+horizontal_alignment = 2
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
 layout_mode = 2
@@ -109,4 +116,4 @@ theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
 [node name="SyncList" type="GridContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
 layout_mode = 2
-columns = 2
+size_flags_horizontal = 8

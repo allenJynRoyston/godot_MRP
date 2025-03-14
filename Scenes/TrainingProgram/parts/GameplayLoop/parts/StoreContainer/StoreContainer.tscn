@@ -370,12 +370,6 @@ layout_mode = 2
 
 [node name="DetailPanel" parent="DetailControl" instance=ExtResource("8_xyqc8")]
 layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_right = 0.0
-grow_horizontal = 0
 
 [node name="SplashControl" type="Control" parent="."]
 layout_mode = 2

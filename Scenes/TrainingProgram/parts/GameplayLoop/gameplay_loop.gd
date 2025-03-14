@@ -7,8 +7,8 @@ extends PanelContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var StoreContainer:PanelContainer = $StoreContainer
 @onready var BuildContainer:PanelContainer = $BuildContainer
-@onready var ContainmentContainer:MarginContainer = $ContainmentContainer
-@onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
+# @onready var ContainmentContainer:MarginContainer = $ContainmentContainer
+# @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
 @onready var BuildCompleteContainer:PanelContainer = $BuildCompleteContainer
 @onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
@@ -71,83 +71,82 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 @export var debug_mode:bool = false 
 @export var skip_progress_screen:bool = true
 
-@export var show_structures:bool = true: 
+var show_structures:bool = true: 
 	set(val):
 		show_structures = val
 		on_show_structures_update()
 		
-@export var show_timeline:bool = true : 
+var show_timeline:bool = true : 
 	set(val):
 		show_timeline = val
 		on_show_timeline_update()
 
-@export var show_actions:bool = true : 
+var show_actions:bool = true : 
 	set(val):
 		show_actions = val
 		on_show_actions_update()
 
-@export var show_objectives:bool = false : 
+var show_objectives:bool = false : 
 	set(val):
 		show_objectives = val
 		on_show_objectives_update()		
 		
-@export var show_metrics:bool = true : 
+var show_metrics:bool = true : 
 	set(val):
 		show_metrics = val
 		on_show_metrics_update()
 
-@export var show_dialogue:bool = false : 
+var show_dialogue:bool = false : 
 	set(val):
 		show_dialogue = val
 		on_show_dialogue_update()
 		
-@export var show_store:bool = false : 
+var show_store:bool = false : 
 	set(val):
 		show_store = val
 		on_show_store_update()		
 		
-@export var show_build:bool = false : 
+var show_build:bool = false : 
 	set(val):
 		show_build = val
 		on_show_build_update()
 	
-@export var show_recruit:bool = false : 
+var show_recruit:bool = false : 
 	set(val):
 		show_recruit = val
 		on_show_recruit_update()		
 
-@export var show_reseachers:bool = false : 
+var show_reseachers:bool = false : 
 	set(val):
 		show_reseachers = val
 		on_show_reseachers_update()
 
-@export var show_containment_status:bool = false : 
+var show_containment_status:bool = false : 
 	set(val):
 		show_containment_status = val
 		on_show_containment_status_update()
 		
-@export var show_confirm_modal:bool = false : 
+var show_confirm_modal:bool = false : 
 	set(val):
 		show_confirm_modal = val
 		on_show_confirm_modal_update()
 		
-@export var show_resources:bool = false : 
+var show_resources:bool = false : 
 	set(val):
 		show_resources = val
 		on_show_resources_update()
 		
-@export var show_events:bool = false : 
+var show_events:bool = false : 
 	set(val):
 		show_events = val
 		on_show_events_update()		
 
-@export var show_build_complete:bool = false : 
+var show_build_complete:bool = false : 
 	set(val):
 		show_build_complete = val
 		on_show_build_complete_update()
 
-		
-@export var show_end_of_phase:bool = false : 
+var show_end_of_phase:bool = false : 
 	set(val):
 		show_end_of_phase = val
 		on_show_end_of_phase_update()
@@ -595,7 +594,7 @@ func _ready() -> void:
 		
 
 func setup() -> void:
-	current_phase = PHASE.STARTUP
+	current_phase = PHASE.STARTUP	
 	
 	# first these
 	on_show_structures_update()
@@ -767,11 +766,12 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, TimelineContainer, ResearchersContainer,
 		ActionContainer, 
-		DialogueContainer, StoreContainer, ContainmentContainer, BuildContainer,
+		DialogueContainer, StoreContainer, 
+		BuildContainer,
 		ConfirmModal, SelectResearcherScreen, ResourceContainer,
 		BuildCompleteContainer, ObjectivesContainer, EventContainer,
 		MetricsContainer,  EndOfPhaseContainer,	SCPSelectScreen,
-		RoomInfo, FloorInfo
+		RoomInfo, FloorInfo, PhaseAnnouncement
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -1385,30 +1385,31 @@ func activate_room(from_location:Dictionary, skip_prompt:bool = false) -> bool:
 # ---------------------
 
 # ---------------------
-func deactivate_room(from_location:Dictionary) -> bool:
+func deactivate_room(from_location:Dictionary, skip_confirm:bool = false) -> bool:
 	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
 	var room_ref:int = extract_details.room.details.ref
-		
-	# -------------- ACTIVATE UPDATE
-	ConfirmModal.set_props("Deactivate %s?" % [extract_details.room.details.name], "Personnel [COUNT] will be made available.")
-	SUBSCRIBE.suppress_click = true
+	var confirm:bool = skip_confirm
 	
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
+	# -------------- ACTIVATE UPDATE
+	if !skip_confirm:
+		ConfirmModal.set_props("Deactivate %s?" % [extract_details.room.details.name], "Personnel [COUNT] will be made available.")
+		SUBSCRIBE.suppress_click = true
+		
+		await show_only([ConfirmModal, Structure3dContainer])	
+		confirm = await ConfirmModal.user_response
+		SUBSCRIBE.suppress_click = false
+		restore_showing_state()	
+
 	if confirm:
 		base_states.room[U.location_to_designation(from_location)].is_activated = false
 		SUBSCRIBE.base_states = base_states
 		SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, true)
-	SUBSCRIBE.suppress_click = false
-	
-	restore_showing_state()	
-	
+		
 	return confirm
 # ---------------------
 
 # ---------------------
-func reset_room(from_location:Dictionary) -> Dictionary:
-	
+func reset_room(from_location:Dictionary) -> bool:
 	var floor_index:int = from_location.floor
 	var ring_index:int = from_location.ring
 	var room_index:int = from_location.room
@@ -1421,22 +1422,22 @@ func reset_room(from_location:Dictionary) -> Dictionary:
 		ConfirmModal.set_props("This room will be destroyed.", "Personnel [COUNT] will be made available." if room_extract.is_activated else "")
 		SUBSCRIBE.suppress_click = true
 		await show_only([ConfirmModal, Structure3dContainer])	
-		var response:Dictionary = await ConfirmModal.user_response
-		match response.action:		
-			ACTION.NEXT:
-				var reset_item:Dictionary = reset_arr[0]
-				if room_extract.is_activated:
-					deactivate_room(from_location)
-					
-				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, true)
+		var response:bool = await ConfirmModal.user_response
+		if response:
+			var reset_item:Dictionary = reset_arr[0]
+			if room_extract.is_activated:
+				deactivate_room(from_location, true)
+				
+			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
+			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, true)
+			
 		SUBSCRIBE.suppress_click = false
 		await restore_showing_state()
-		return {"has_changes": response.action == ACTION.NEXT}
+		return response
+		
 	# ---------------------
 	await restore_showing_state()
-	
-	return {"has_changes": false}		
+	return false	
 # ---------------------
 
 # ------------------------------------------------------------------------------
@@ -2024,8 +2025,8 @@ func on_show_build_update() -> void:
 
 func on_show_containment_status_update() -> void:
 	if !is_node_ready():return
-	ContainmentContainer.is_showing = show_containment_status
-	showing_states[ContainmentContainer] = show_containment_status
+	#ContainmentContainer.is_showing = show_containment_status
+	#showing_states[ContainmentContainer] = show_containment_status
 
 func on_show_confirm_modal_update() -> void:
 	if !is_node_ready():return
@@ -2216,15 +2217,12 @@ func on_current_builder_step_update() -> void:
 			selected_shop_item = {}
 			
 			BuildContainer.start()
-			
 			await show_only([BuildContainer, Structure3dContainer, ResourceContainer])
 			var response:Dictionary = await BuildContainer.user_response
 			await BuildContainer.end()
-			restore_showing_state()
-
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			current_builder_step = BUILDER_STEPS.RESET
-			await U.set_timeout(0.3)
+			await restore_showing_state()
 			on_store_purchase_complete.emit(response)	
 		## ---------------
 

@@ -49,6 +49,7 @@ extends BtnBase
 		on_has_new_update()		
 
 var is_hovered:bool = false
+var uid:String 
 
 # ------------------------------------------------------------------------------
 func _init() -> void:

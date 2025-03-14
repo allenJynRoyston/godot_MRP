@@ -15,9 +15,6 @@ var uid_refs:Dictionary = {}
 var current_day:int 
 var is_setup:bool = false
 
-var restore_pos:int
-var control_pos_default:Dictionary
-var control_pos:Dictionary
 
 signal wait_for_complete
 
@@ -78,18 +75,18 @@ func update_control_pos() -> void:
 	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
 	
 	control_pos[Gradiant] = {
-		"show": Gradiant.position.x, 
-		"hide": Gradiant.position.x - Gradiant.size.x
+		"show": control_pos_default[Gradiant].x, 
+		"hide": control_pos_default[Gradiant].x - Gradiant.size.x
 	}
 	
 	control_pos[MainPanel] = {
-		"show": MainPanel.position.x, 
-		"hide": MainPanel.position.x + MainPanel.size.x
+		"show": control_pos_default[MainPanel].x, 
+		"hide": control_pos_default[MainPanel].x + MainPanel.size.x
 	}	
 	
 	control_pos[DetectorPanel] = {
-		"show": DetectorPanel.position.x, 
-		"hide": DetectorPanel.position.x + DetectorPanel.size.x
+		"show": control_pos_default[DetectorPanel].x, 
+		"hide": control_pos_default[DetectorPanel].x + DetectorPanel.size.x
 	}		
 	
 	on_is_showing_update(true)

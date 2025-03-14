@@ -37,8 +37,6 @@ var current_mode:MODE = MODE.HIDE :
 
 var new_hire_list:Array 
 var is_animating:bool = true
-var control_pos_default:Dictionary
-var control_pos:Dictionary
 var total_options:int = 2
 
 

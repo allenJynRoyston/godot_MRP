@@ -14,6 +14,7 @@ extends MouseInteractions
 @onready var TraitsList:VBoxContainer = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits/VBoxContainer
 
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
+const CardShader:ShaderMaterial = preload("res://CanvasShader/CardShader/CardShader.tres")
 
 @export var uid:String = "": 
 	set(val):
@@ -108,7 +109,7 @@ func on_is_selected_update() -> void:
 
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
-	CardTextureRect.material = BlackAndWhiteShader if is_deselected else null
+	CardTextureRect.material = BlackAndWhiteShader if is_deselected else CardShader
 
 func on_reveal_update() -> void:
 	if !is_node_ready():return
@@ -175,9 +176,8 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 
 # ------------------------------------------------------------------------------
 func _process(delta:float) -> void:
-	if !is_node_ready() or !is_visible_in_tree():return
-	#print(CardTextureRect.material.shader)
-	##CardTextureRect.set_instance_shader_parameter("mouse_position", get_global_mouse_position())
-	#CardTextureRect.material.set_shader_parameter("mouse_position",get_global_mouse_position())
-	#CardTextureRect.material.set_shader_parameter("sprite_position",global_position)
+	if !is_node_ready() or !is_visible_in_tree() or CardTextureRect.material == null:return
+	
+	CardTextureRect.material.set_shader_parameter("mouse_position", GBL.mouse_pos)
+	CardTextureRect.material.set_shader_parameter("sprite_position",global_position)
 # ------------------------------------------------------------------------------

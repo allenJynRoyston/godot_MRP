@@ -14,8 +14,6 @@ var current_mode:MODE = MODE.HIDE :
 		current_mode = val
 		on_current_mode_update()
 		
-var control_pos:Dictionary = {} 
-
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()

@@ -39,11 +39,6 @@ var current_mode:MODE = MODE.HIDE :
 		current_mode = val
 		on_current_mode_update()
 
-var content_restore_pos:int
-var confirm_restore_pos:int
-var trait_restore_pos:int
-var btn_restore_pos:int
-var control_pos:Dictionary
 var is_animating:bool = true
 
 # -----------------------------------------------

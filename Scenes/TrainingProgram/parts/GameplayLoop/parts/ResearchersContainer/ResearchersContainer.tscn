@@ -284,32 +284,26 @@ theme_override_constants/separation = 0
 
 [node name="ResearcherCard" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 layout_mode = 2
-promotion_preview = false
 
 [node name="ResearcherCard2" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 layout_mode = 2
-promotion_preview = false
 
 [node name="ResearcherCard3" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 visible = false
 layout_mode = 2
 reveal = false
-promotion_preview = false
 
 [node name="ResearcherCard4" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 visible = false
 layout_mode = 2
-promotion_preview = false
 
 [node name="ResearcherCard5" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 visible = false
 layout_mode = 2
-promotion_preview = false
 
 [node name="ResearcherCard6" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
 visible = false
 layout_mode = 2
-promotion_preview = false
 
 [node name="MoreBtn" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_7i7in")]
 layout_mode = 2
@@ -415,18 +409,17 @@ layout_mode = 2
 
 [node name="TraitPanel" type="PanelContainer" parent="TraitControl"]
 layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -200.0
-grow_horizontal = 0
+grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pqfc2")
 
 [node name="MarginContainer" type="MarginContainer" parent="TraitControl/TraitPanel"]
 layout_mode = 2
+size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
@@ -492,15 +485,18 @@ layout_mode = 2
 [node name="SelectedPanel" type="PanelContainer" parent="SelectedControl"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 1
-anchors_preset = 9
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 200.0
+grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pqfc2")
 
 [node name="MarginContainer" type="MarginContainer" parent="SelectedControl/SelectedPanel"]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 0

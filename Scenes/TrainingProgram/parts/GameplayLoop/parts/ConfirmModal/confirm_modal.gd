@@ -50,8 +50,7 @@ var activation_requirements:Array = [] :
 		activation_requirements = val
 		on_activation_requirements_update()
 
-var control_pos_default:Dictionary
-var control_pos:Dictionary
+
 var allow_input:bool = false
 
 # --------------------------------------------------------------------------------------------------
@@ -117,8 +116,8 @@ func update_control_pos() -> void:
 	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
 	
 	control_pos[ContentPanelContainer] = {
-		"show": ContentPanelContainer.position.y, 
-		"hide": ContentPanelContainer.position.y - ContentPanelContainer.size.y
+		"show": control_pos_default[ContentPanelContainer].y, 
+		"hide": control_pos_default[ContentPanelContainer].y - ContentPanelContainer.size.y
 	}
 	
 	control_pos[BtnControlPanel] = {
@@ -127,8 +126,8 @@ func update_control_pos() -> void:
 	}
 	
 	control_pos[StaffingControlPanel] = {
-		"show": StaffingControlPanel.position.y, 
-		"hide": StaffingControlPanel.position.y - StaffingControlPanel.size.y
+		"show": control_pos_default[StaffingControlPanel].y , 
+		"hide": control_pos_default[StaffingControlPanel].y - StaffingControlPanel.size.y
 	}	
 	
 
