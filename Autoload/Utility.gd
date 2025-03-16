@@ -197,6 +197,24 @@ func dict_deep_copy(value):
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
+func inc_floor() -> void:
+	current_location.floor = U.min_max(current_location.floor - 1, 0, room_config.floor.size() - 1, true)
+	SUBSCRIBE.current_location = current_location	
+	
+func dec_floor() -> void:
+	current_location.floor = U.min_max(current_location.floor + 1, 0, room_config.floor.size() - 1, true)
+	SUBSCRIBE.current_location = current_location
+	
+func inc_ring() -> void:
+	current_location.ring = U.min_max(current_location.ring + 1, 0, 3, true)
+	SUBSCRIBE.current_location = current_location	
+	
+func dec_ring() -> void:
+	current_location.ring = U.min_max(current_location.ring - 1, 0, 3, true)
+	SUBSCRIBE.current_location = current_location		
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------
 func room_up() -> void:
 	var room_index:int = U.location_lookup(current_location.room, U.DIR.UP)
 	if room_index == -1:

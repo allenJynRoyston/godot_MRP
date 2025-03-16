@@ -36,8 +36,7 @@ func on_extract_data_update() -> void:
 	var active_abilities:Array = extract_data.room.abilities
 	var passive_abilities:Array = extract_data.room.passive_abilities
 	var room_state:Dictionary = extract_data.room_base_state
-	var ap:int = extract_data.room.ap
-	var ap_diff:int = extract_data.room.ap_diff
+
 	#var upgrade_level:int = extract_data.room.upgrade_level
 
 	for index in active_abilities.size():
@@ -48,8 +47,8 @@ func on_extract_data_update() -> void:
 		new_btn.panel_color = Color.TRANSPARENT
 		new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		new_btn.title = ability.name if ability.name.length() <= str_len else str(ability.name.substr(0, str_len), "...")
-		new_btn.is_disabled = ap < ability.ap_cost
-		new_btn.icon = SVGS.TYPE.CLEAR if ap < ability.ap_cost else SVGS.TYPE.NEXT
+		#new_btn.is_disabled = ap < ability.ap_cost
+		#new_btn.icon = SVGS.TYPE.CLEAR if ap < ability.ap_cost else SVGS.TYPE.NEXT
 		List.add_child(new_btn)
 		
 	for index in passive_abilities.size():
@@ -66,8 +65,8 @@ func on_extract_data_update() -> void:
 	
 	TitleLabel.text =  " %s" % ["PASSIVE ABILITIES" if passive_abilities.size() > 0 else "ABILITIES"]
 	
-	ApLabel.text = str(ap)
-	ApDiffLabel.text = str(ap_diff)
+	#ApLabel.text = str(ap)
+	#ApDiffLabel.text = str(ap_diff)
 # --------------------
 
 # --------------------

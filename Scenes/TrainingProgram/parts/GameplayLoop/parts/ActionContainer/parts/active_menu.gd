@@ -1,15 +1,10 @@
 extends Control
 
-@onready var List:VBoxContainer = $MarginContainer/VBoxContainer/List
-@onready var HeaderLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HeaderLabel
+@onready var List:VBoxContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List
+@onready var HeaderLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HeaderLabel
 
-@onready var ApPanel:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer
-@onready var ApContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer
-@onready var ApLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApLabel
-@onready var ApDiffLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApDiffLabel
-
-@onready var ApChargeContainer:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer
-@onready var ApChargeLabel:Label = $MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApChargeContainer/MarginContainer/VBoxContainer/HBoxContainer/ApChargeLabel
+@onready var ApContainer:PanelContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer
+@onready var ApLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApLabel
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
 
@@ -22,11 +17,6 @@ var show_ap:bool = false :
 	set(val):
 		show_ap = val
 		on_show_ap_update()
-		
-var show_ap_charge:bool = false : 
-	set(val):
-		show_ap_charge = val
-		on_show_ap_charge_update()		
 
 var level:int = -1 : 
 	set(val):
@@ -37,11 +27,6 @@ var ap_val:int = 0 :
 	set(val):
 		ap_val = val
 		on_ap_val_update()
-
-var ap_charge_val:int = 0 : 
-	set(val):
-		ap_charge_val = val
-		on_ap_charge_val_update()
 
 var selected_index:int = 0 : 
 	set(val):
@@ -63,8 +48,10 @@ var freeze_inputs:bool = true :
 		freeze_inputs = val
 		on_freeze_inputs_update()
 
+var onPrev:Callable = func():pass
+var onNext:Callable = func():pass
 var onClose:Callable = func():pass
-var onBookmark:Callable = func(_index:int):pass
+var onBookmark:Callable = func(_index:int, _target:int):pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -79,9 +66,7 @@ func _ready() -> void:
 	on_header_update()
 	on_use_color_update()	
 	on_ap_val_update()
-	on_ap_charge_val_update()
 	on_show_ap_update()
-	on_show_ap_charge_update()
 	on_level_update()
 	
 func open() -> void:
@@ -93,8 +78,6 @@ func close() -> void:
 	await set_fade(false)
 	onClose.call()	
 	show_ap = false
-	show_ap_charge = false
-	ap_charge_val = 0
 	ap_val = 0
 	selected_index = 0	
 	level = -1
@@ -102,7 +85,7 @@ func close() -> void:
 	clear_list()
 	
 func set_fade(state:bool) -> void:
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else 0))	
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else 0), 0.2)	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -120,55 +103,55 @@ func on_selected_index_update() -> void:
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
 		
-func on_options_list_update(recolor:bool = false) -> void:
-	if !is_node_ready() or options_list.is_empty():return	
+func on_options_list_update() -> void:
+	if !is_node_ready():return	
+	clear_list()
 	
-	if !recolor:
-		clear_list()
-				
-		if selected_index > options_list.size():
-			selected_index = options_list.size() - 1
-			
-		for index in options_list.size():
-			var item:Dictionary = options_list[index]		
-			var btn_node:Control = MenuBtnPreload.instantiate()
-			
-			btn_node.title = item.title
-			btn_node.icon = item.icon if "icon" in item else SVGS.TYPE.NONE
-			btn_node.btn_color = use_color
-			btn_node.is_togglable = item.is_togglable if "is_togglable" in item else false
-			btn_node.is_checked = item.is_checked if "is_checked" in item else false
-			btn_node.is_selected = index == selected_index
-			btn_node.cost = item.cost if "cost" in item else -1
-			btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
-			
-			btn_node.onClick = func() -> void:
-				if !btn_node.is_disabled:
-					item.onSelect.call(selected_index)
-			btn_node.onFocus = func(_node:Control) -> void:
-				selected_index = index
-			
-			List.add_child(btn_node)
-		
-		await U.tick()
-		
-	else:
-		for child in List.get_children():
-			child.btn_color = use_color
+
 	
+	# ---- IF EMPTY
+	if options_list.is_empty():
+		var btn_node:Control = MenuBtnPreload.instantiate()
+		btn_node.title = "NO ACTIONS AVAILABLE"
+		btn_node.icon = SVGS.TYPE.CLEAR
+		btn_node.btn_color = use_color
+		List.add_child(btn_node)		
+		return
+	
+	if selected_index > options_list.size():
+		selected_index = options_list.size() - 1
+		
+	for index in options_list.size():
+		var item:Dictionary = options_list[index]		
+		var btn_node:Control = MenuBtnPreload.instantiate()
+		
+		btn_node.title = item.title
+		btn_node.icon = item.icon if "icon" in item else SVGS.TYPE.NONE
+		btn_node.btn_color = use_color
+		btn_node.is_togglable = item.is_togglable if "is_togglable" in item else false
+		btn_node.is_checked = item.is_checked if "is_checked" in item else false
+		btn_node.is_selected = index == selected_index
+		btn_node.cooldown_duration = item.cooldown_duration if "cooldown_duration" in item else -1
+		btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
+		
+		btn_node.onClick = func() -> void:
+			if !btn_node.is_disabled:
+				item.onSelect.call(selected_index)
+		btn_node.onFocus = func(_node:Control) -> void:
+			selected_index = index
+		
+		List.add_child(btn_node)
+	
+	self.size.y = 1	
+	
+
 
 
 func on_ap_val_update() -> void:
 	if !is_node_ready():return
 	ApLabel.text = str(ap_val)
 
-func on_ap_charge_val_update() -> void:
-	if !is_node_ready():return
-	var label_settings:LabelSettings = ApDiffLabel.label_settings
-	label_settings.font_color = Color.GREEN if ap_charge_val > 0 else (Color.ORANGE if ap_charge_val == 0 else Color.RED)
-	ApDiffLabel.label_settings = label_settings
-	ApDiffLabel.text = "%s%s" % ["+" if ap_charge_val > 0 else "", ap_charge_val]
-	ApChargeLabel.text = "%s%s" % ["" if ap_charge_val > 0 else "", ap_charge_val]
+
 	
 func on_level_update() -> void:
 	if !is_node_ready():return	
@@ -177,16 +160,7 @@ func on_level_update() -> void:
 func on_show_ap_update() -> void:
 	if !is_node_ready():return
 	ApContainer.show() if show_ap else ApContainer.hide()
-	check_ap_panel()
-	
-func on_show_ap_charge_update() -> void:
-	if !is_node_ready():return
-	ApChargeContainer.show() if show_ap_charge else ApChargeContainer.hide()
-	check_ap_panel()
-	
-func check_ap_panel() -> void:
-	ApPanel.hide() if (!show_ap_charge and !show_ap) else ApPanel.show()	
-	#LevelContainer.hide() if (!show_ap_charge and !show_ap) else LevelContainer.show()	
+
 
 func on_header_update() -> void:
 	if !is_node_ready():return
@@ -197,7 +171,8 @@ func on_use_color_update() -> void:
 	var label_settings:LabelSettings = HeaderLabel.label_settings.duplicate()
 	label_settings.font_color = use_color.lightened(0.4)
 	HeaderLabel.label_settings = label_settings
-	on_options_list_update(true)
+	for child in List.get_children():
+		child.btn_color = use_color
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -222,12 +197,22 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 
 	match key:
-		"T":
-			onBookmark.call(selected_index)
+		"1":
+			onBookmark.call(selected_index, 0)
+		"2":
+			onBookmark.call(selected_index, 1)
+		"3":
+			onBookmark.call(selected_index, 2)
+		"4":
+			onBookmark.call(selected_index, 3)			
 		"E":
 			on_action()
 		"B":
 			close()
+		"A":
+			onPrev.call()
+		"D":
+			onNext.call()
 		"W":
 			selected_index = U.min_max(selected_index - 1, 0, options_list.size() - 1)
 		"S":

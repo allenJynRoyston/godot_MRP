@@ -27,7 +27,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  5, 
+				"cooldown_duration":  5, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.get_new_scp(),
 			},
@@ -37,17 +37,17 @@ var DIRECTORS_OFFICE:Dictionary = {
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  5, 
+				"cooldown_duration":  5, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.promote_researchers(),
 			},
 			{
-				"name": "ABILITY 2",
+				"name": "ABILITY 3",
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  5, 
+				"cooldown_duration":  5, 
 				"effect": func() -> void:
 					pass,
 			}
@@ -130,32 +130,32 @@ var HQ:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			{
-				"name": "HIRE RESEARCHER (1 OPTION)",
+				"name": "HIRE ONE",
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  5, 
+				"cooldown_duration":  5, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_researcher(1),
 			},
 			{
-				"name": "HIRE RESEARCHER (1 OPTION)",
+				"name": "HIRE TWO",
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  7, 
+				"cooldown_duration":  7, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_researcher(2),
 			},
 			{
-				"name": "HIRE RESEARCHER (1 OPTION)",
+				"name": "HIRE THREE",
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  10, 
+				"cooldown_duration":  10, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_researcher(3),
 			}
@@ -248,11 +248,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 		return [
 			{
 				"name": "UNLOCK FACILITIES", 
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"ap_cost":  1, 
+				"cooldown_duration":  1, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.open_store(),
 			}
@@ -344,33 +340,30 @@ var R_AND_D_LAB:Dictionary = {
 		return [
 			{
 				"name": "ENABLE UPGRADES",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  1, 
 				"conditional": func(gpc:Dictionary) -> Dictionary:
 					gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = true
 					return gpc,
 			},
 			{
 				"name": "UPGRADE +",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  2, 
 				"conditional": func(gpc:Dictionary) -> Dictionary:
 					gpc[CONDITIONALS.TYPE.UPGRADE_LEVEL] += 1
 					return gpc,
 			},
 			{
 				"name": "UPGRADE ++",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  3, 
 				"conditional": func(gpc:Dictionary) -> Dictionary:
 					gpc[CONDITIONALS.TYPE.UPGRADE_LEVEL] += 1
 					return gpc,
@@ -451,7 +444,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  1, 
+				"cooldown_duration":  1, 
 				"effect": func(GameplayNode:Control) -> void:
 					pass,
 					#await GameplayNode.recruit_new_researcher(1),
@@ -518,11 +511,10 @@ var BARRICKS:Dictionary = {
 		return [
 			{
 				"name": "TRAIN (INCREASE READINESS)",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  1, 
 				"effect": func() -> Dictionary:
 					return {
 						"metrics":{
@@ -532,11 +524,10 @@ var BARRICKS:Dictionary = {
 			},
 			{
 				"name": "TRAIN (INCREASE SAFETY)",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  2, 
 				"effect": func() -> Dictionary:
 					return {
 						"metrics":{
@@ -546,11 +537,10 @@ var BARRICKS:Dictionary = {
 			},
 			{
 				"name": "TRAIN (INCREASE MORALE)",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  3, 
 				"effect": func() -> Dictionary:
 					return {
 						"metrics":{
@@ -624,40 +614,15 @@ var DORMITORY:Dictionary = {
 		return [
 			{
 				"name": "HOUSE 10",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  1, 
 				"capacity": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.STAFF: 10,
 					},
 			},
-			{
-				"name": "HOUSE 20",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"ap_cost":  2, 
-				"capacity": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.STAFF: 20,
-					},
-			},
-			{
-				"name": "HOUSE 30",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"ap_cost":  3, 
-				"capacity": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.STAFF: 30,
-					},
-			}
 		],	
 	# ------------------------------------------
 
@@ -778,24 +743,17 @@ var HR_DEPARTMENT:Dictionary = {
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  7, 
+				"cooldown_duration":  7, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.STAFF, 10),
 			},
-			#{
-				#"name": "FIRE STAFF",
-				#"available_at_lvl": 0, 
-				#"ap_cost":  7, 
-				#"effect": func(GameplayNode:Control) -> bool:
-					#return await GameplayNode.fire_personel(RESOURCE.TYPE.STAFF, 10),
-			#},			
 			{
 				"name": "HIRE SECURITY",
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  7, 
+				"cooldown_duration":  7, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.SECURITY, 10),
 			},
@@ -805,7 +763,7 @@ var HR_DEPARTMENT:Dictionary = {
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  7, 
+				"cooldown_duration":  7, 
 				"effect": func(GameplayNode:Control) -> bool:
 					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.TECHNICIANS, 10),
 			}
@@ -908,11 +866,10 @@ var STANDARD_LOCKER:Dictionary = {
 		return [
 			{
 				"name": "STATION GUARDS",
-				"unlock_cost": func() -> Dictionary:
+				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"ap_cost":  1, 
 				"effect": func() -> Dictionary:
 					return {
 						"metrics":{
@@ -1101,7 +1058,7 @@ func return_passive_abilities_cost(ref:ROOM.TYPE, ability_index:int) -> Array:
 	var abilities:Array = room_data.passive_abilities.call() if "passive_abilities" in room_data else []
 	if abilities.size() >= ability_index:
 		var list:Array = []
-		var unlock_cost:Dictionary = abilities[ability_index].unlock_cost.call()
+		var unlock_cost:Dictionary = abilities[ability_index].use_cost.call()
 		for key in unlock_cost:
 			var amount:int = unlock_cost[key]
 			list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
@@ -1292,7 +1249,9 @@ func extract_wing_details() -> Dictionary:
 	var wing_data:Dictionary = room_config.floor[floor].ring[ring]
 	var room_refs:Array = wing_data.room_refs
 	var abilities:Dictionary = {}
+	var passive_abilities:Dictionary = {}
 	var ab_level:int = 0  #TODO: find what level the upgrade level is at
+	
 	
 	for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room_index]
@@ -1308,6 +1267,12 @@ func extract_wing_details() -> Dictionary:
 					for index in ability_list.size():
 						if index >= ab_level:
 							abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
+				
+				if "passive_abilities" in room_details:
+					var ability_list:Array = room_details.passive_abilities.call()
+					for index in ability_list.size():
+						if index >= ab_level:
+							passive_abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
 	
 	return {
 		"room_refs": wing_data.room_refs,
@@ -1339,9 +1304,7 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 	var abilities:Array = [] if (is_room_empty or "abilities" not in room_details) else room_details.abilities.call()	
 	var passive_abilities:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
 	var passives_enabled:Array = [] if is_room_empty else room_base_state.passives_enabled
-	var abilities_unlocked:Array = [] if is_room_empty else room_base_state.abilities_unlocked
-	var passives_unlocked:Array = [] if is_room_empty else room_base_state.passives_unlocked
-	
+
 	var scp_data:Dictionary = room_config_data.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
 	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(scp_data.ref)
@@ -1564,10 +1527,10 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 			
 			
 	# change ap_diff value for enabled passives
-	for index in passive_abilities.size():
-		var ability:Dictionary = passive_abilities[index]
-		if index in passives_enabled:
-			ap_diff_amount -= ability.ap_cost
+	#for index in passive_abilities.size():
+		#var ability:Dictionary = passive_abilities[index]
+		#if index in passives_enabled:
+			#ap_diff_amount -= ability.ap_cost
 	
 	# convert resource as a dict to a list form for easy reading
 	var resources_as_list:Array = []
@@ -1600,17 +1563,9 @@ func extract_room_details(current_location:Dictionary, use_config:Dictionary = r
 		# -----
 		"room": {						
 			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
-			"abilities_unlocked": abilities_unlocked,
-			"passives_unlocked": passives_unlocked,
 			"abilities": abilities,
 			"passive_abilities": passive_abilities,
-			"passives_enabled": passives_enabled,						
-			# current amount
-			"ap": 0 if room_base_state.is_empty() else room_base_state.ap,
-			# charge rate
-			"ap_diff": 0 if room_base_state.is_empty() else ap_diff_amount,
-			# upgrade level
-			#"upgrade_level": 0 if room_base_state.is_empty() else room_base_state.upgrade_level,
+			"passives_enabled": passives_enabled,
 		} if !is_room_empty or is_room_under_construction else {},
 		"scp": {
 			"details": scp_details,

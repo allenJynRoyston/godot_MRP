@@ -305,7 +305,8 @@ var initial_values:Dictionary = {
 			# ------------------------------
 			for ring_index in [0, 1, 2, 3]:
 				ring[str(floor_index, ring_index)] = {
-					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL
+					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
+					"ability_on_cooldown": {}
 				}
 				
 				# ------------------------------
@@ -313,9 +314,6 @@ var initial_values:Dictionary = {
 					room[str(floor_index, ring_index, room_index)] = {
 						"is_activated": false,  
 						"is_destroyed": false,
-						"abilities_unlocked": [],
-						"passives_unlocked": [],
-						#"upgrade_level": 0,		#	default level
 						"ap": 7,				#	default ap available
 						"passives_enabled": [],	#	no passives enabled 
 					}						
@@ -771,7 +769,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		ConfirmModal, SelectResearcherScreen, ResourceContainer,
 		BuildCompleteContainer, ObjectivesContainer, EventContainer,
 		MetricsContainer,  EndOfPhaseContainer,	SCPSelectScreen,
-		RoomInfo, FloorInfo, PhaseAnnouncement
+		RoomInfo, FloorInfo, PhaseAnnouncement, ToastContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -1441,69 +1439,6 @@ func reset_room(from_location:Dictionary) -> bool:
 # ---------------------
 
 # ------------------------------------------------------------------------------
-func unlock_ability(from_location:Dictionary, ability_index:int) -> bool:
-	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
-	var room_details:Dictionary = extract_details.room.details
-	var room_ref:int = extract_details.room.details.ref
-	var ability_details:Dictionary = extract_details.room.abilities[ability_index]
-	var unlock_costs:Array = ROOM_UTIL.return_ability_cost(room_details.ref, ability_index)
-
-	ConfirmModal.activation_requirements = unlock_costs
-	ConfirmModal.set_props("Unlock [%s]?" % [ability_details.name])
-	
-	#if !can_purchase:
-		#ConfirmModal.cancel_only = true
-	SUBSCRIBE.suppress_click = true		
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
-	if confirm:
-			var designation:String = U.location_to_designation(from_location)
-			# add ability
-			if ability_index not in base_states.room[designation].abilities_unlocked:
-				base_states.room[designation].abilities_unlocked.push_back(ability_index)
-			SUBSCRIBE.base_states = base_states
-			
-			# SUBTRACT UPGRADES RESOURCES
-			RESOURCE_UTIL.subtract_costs(unlock_costs)
-			
-	restore_showing_state()
-	SUBSCRIBE.suppress_click = false
-	return confirm
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func unlock_passive_ability(from_location:Dictionary, ability_index:int) -> bool:
-	var extract_details:Dictionary = ROOM_UTIL.extract_room_details(from_location)
-	var room_details:Dictionary = extract_details.room.details
-	var room_ref:int = extract_details.room.details.ref
-	var ability_details:Dictionary = extract_details.room.passive_abilities[ability_index]
-	var unlock_costs:Array = ROOM_UTIL.return_passive_abilities_cost(room_details.ref, ability_index)
-
-	ConfirmModal.activation_requirements = unlock_costs
-	ConfirmModal.set_props("Unlock [%s]?" % [ability_details.name])
-	
-	#if !can_purchase:
-		#ConfirmModal.cancel_only = true
-	SUBSCRIBE.suppress_click = true		
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var response:Dictionary = await ConfirmModal.user_response
-	match response.action:		
-		ACTION.NEXT:
-			var designation:String = U.location_to_designation(from_location)
-			# add ability
-			if ability_index not in base_states.room[designation].passives_unlocked:
-				base_states.room[designation].passives_unlocked.push_back(ability_index)
-			SUBSCRIBE.base_states = base_states
-			
-			# SUBTRACT UPGRADES RESOURCES
-			RESOURCE_UTIL.subtract_costs(unlock_costs)
-			
-	await restore_showing_state()
-	SUBSCRIBE.suppress_click = false
-	return response.action == ACTION.NEXT
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	SUBSCRIBE.suppress_click = true
 	var contained_data:Dictionary = find_in_contained(scp_ref)
@@ -2101,7 +2036,7 @@ func on_current_phase_update() -> void:
 				await U.set_timeout(1.0)
 			
 			
-			await show_only([Structure3dContainer, ResourceContainer])	
+			await show_only([Structure3dContainer, ResourceContainer, ToastContainer])	
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 
 
@@ -2130,7 +2065,7 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
 			PhaseAnnouncement.start("ADVANCING THE DAY")	
-			await show_only([Structure3dContainer, TimelineContainer])	
+			await show_only([Structure3dContainer, TimelineContainer, ToastContainer])	
 			
 			# update next metric (goes from MORALE -> 
 			#progress_data.next_metric = U.min_max(progress_data.next_metric + 1, 0, RESOURCE.BASE_METRICS.size() - 2, true)
@@ -2140,7 +2075,14 @@ func on_current_phase_update() -> void:
 			
 			# mark rooms and push to subscriptions
 			for floor_index in room_config.floor.size():		
-				for ring_index in room_config.floor[floor_index].ring.size():					
+				for ring_index in room_config.floor[floor_index].ring.size():
+					var floor_ring_designation:String = str(floor_index, ring_index)
+					for key in base_states.ring[floor_ring_designation].ability_on_cooldown:
+						if base_states.ring[floor_ring_designation].ability_on_cooldown[key] > 0:
+							base_states.ring[floor_ring_designation].ability_on_cooldown[key] -= 1
+							if base_states.ring[floor_ring_designation].ability_on_cooldown[key] == 0:
+								ToastContainer.add("[%s] is ready!" % [key])
+					
 					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
 						var metrics:Dictionary = room_config.floor[floor_index].ring[ring_index].metrics
 						var location:Dictionary = {"floor": floor_index, "ring": ring_index, "room": room_index}
@@ -2148,24 +2090,15 @@ func on_current_phase_update() -> void:
 						var designation:String = U.location_to_designation(location)
 						
 						if !extract_data.is_room_empty and extract_data.is_activated:
-							var ap_current_amount:int = base_states.room[designation].ap
-							var ap_from_traits:int = extract_data.room.ap_diff
-							var ap_from_morale_amount:int = RESOURCE_UTIL.return_morale_data(metrics[RESOURCE.BASE_METRICS.MORALE]).amount
-							var ap_gain_amount_total:int = base_states.room[designation].ap + extract_data.room.ap_diff + ap_from_morale_amount
-			
-							#add ap charge to ap points
-							base_states.room[designation].ap = U.min_max(ap_gain_amount_total, -gameplay_conditionals[CONDITIONALS.TYPE.AP_ROOM_LIMIT], gameplay_conditionals[CONDITIONALS.TYPE.AP_ROOM_LIMIT])
-							
 							# checks passives to ensure there's enough ap available
-							var ap:int = base_states.room[designation].ap
 							for index in extract_data.room.passive_abilities.size():
 								var ability:Dictionary = extract_data.room.passive_abilities[index]
 								# if you don't have enough ap for it, remove it
-								if ap < ability.ap_cost and index in base_states.room[designation].passives_enabled:
-									base_states.room[designation].passives_enabled.erase(index)
-									ToastContainer.add("Not enough AP to continue [%s] in %s!" % [ability.name, extract_data.room.details.name])				
-									# then refund ap cost, iterate
-									ap += ability.ap_cost
+								#if ap < ability.ap_cost and index in base_states.room[designation].passives_enabled:
+									#base_states.room[designation].passives_enabled.erase(index)
+									#ToastContainer.add("Not enough AP to continue [%s] in %s!" % [ability.name, extract_data.room.details.name])				
+									## then refund ap cost, iterate
+									#ap += ability.ap_cost
 
 				
 			# update subscriptions

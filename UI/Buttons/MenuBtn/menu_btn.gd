@@ -15,10 +15,10 @@ extends BtnBase
 		title = val
 		on_title_update()
 
-@export var cost:int = -1 : 
+@export var cooldown_duration:int = -1 : 
 	set(val):
-		cost = val
-		on_cost_update()
+		cooldown_duration = val
+		on_cooldown_duration_update()
 		
 @export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
 	set(val):
@@ -62,7 +62,7 @@ func _ready() -> void:
 	on_title_update()
 	on_is_disabled_updated()
 	on_is_selected_update()
-	on_cost_update()
+	on_cooldown_duration_update()
 	on_is_togglable_update()
 	on_is_checked_update()
 # ------------------------------------------------------------------------------
@@ -116,11 +116,11 @@ func on_is_checked_update() -> void:
 	if !is_node_ready():return
 	Checkbox.is_checked = is_checked
 
-func on_cost_update() -> void:
+func on_cooldown_duration_update() -> void:
 	if !is_node_ready():return
-	CostPanel.hide() if cost == -1 else CostPanel.show()
-	CostLabel.text = str(cost)
-	InnerPanelMarginContainer.add_theme_constant_override('margin_right', 5 if cost == -1 else 0)
+	CostPanel.hide() if cooldown_duration == -1 else CostPanel.show()
+	CostLabel.text = "RDY" if cooldown_duration == 0 else str(cooldown_duration)
+	InnerPanelMarginContainer.add_theme_constant_override('margin_right', 5 if cooldown_duration == -1 else 0)
 	
 func on_title_update() -> void:
 	if !is_node_ready():return

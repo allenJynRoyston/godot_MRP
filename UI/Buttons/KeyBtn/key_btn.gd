@@ -49,7 +49,8 @@ extends BtnBase
 		on_has_new_update()		
 
 var is_hovered:bool = false
-var uid:String 
+var check_disabled:Callable = func() -> bool:
+	return false
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
