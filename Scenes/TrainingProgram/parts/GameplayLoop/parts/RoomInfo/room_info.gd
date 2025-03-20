@@ -110,7 +110,7 @@ func merge_metric_data(arr:Array) -> Array:
 # -----------------------------------------------
 func update_details_panel() -> void:	
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or resources_data.is_empty():return
-	var extract_data:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+	var extract_data:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var is_room_empty:bool = extract_data.is_room_empty
 	var is_activated:bool = extract_data.is_activated
 	var is_scp_empty:bool = extract_data.is_scp_empty
@@ -118,8 +118,8 @@ func update_details_panel() -> void:
 	RoomDetailsPanel.extract_data = extract_data	
 	Abilities.extract_data = extract_data
 	
-	StaffingPanel.list = [] if is_room_empty else ROOM_UTIL.return_activation_cost(extract_data.room.details.ref)
-	ResourcePanel.list = extract_data.resources_as_list
+	#StaffingPanel.list = [] if is_room_empty else [] #ROOM_UTIL.return_activation_cost(extract_data.room.details.ref)
+	#ResourcePanel.list = extract_data.resources_as_list
 	
 	if !is_scp_empty:
 		ScpPanel.ref = extract_data.scp.details.ref

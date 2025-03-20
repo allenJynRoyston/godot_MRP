@@ -4,11 +4,18 @@ extends BtnBase
 @onready var OuterPanel:PanelContainer = $"."
 @onready var InnerPanel:PanelContainer = $MarginContainer/InnerPanel
 @onready var InnerPanelMarginContainer:MarginContainer = $MarginContainer/InnerPanel/MarginContainer
-@onready var CostPanel:PanelContainer = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel
-@onready var CostLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer/CostLabel 
-@onready var IconBtn:Control = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/IconBtn
+
 @onready var BtnLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/BtnLabel
-@onready var Checkbox:BtnBase = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer/CheckBox
+
+@onready var EnergyPanel:HBoxContainer = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel
+@onready var EnergyAmountLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel/EnergyAmountLabel
+@onready var EnergyIconBtn:Control = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel/EnergyIconBtn
+
+@onready var CooldownPanel:PanelContainer = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel
+@onready var CooldownLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel/MarginContainer/HBoxContainer/CooldownLabel
+
+@onready var TogglePanel:PanelContainer = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel
+@onready var Checkbox:BtnBase = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer/HBoxContainer/CheckBox
 
 @export var title:String = "" : 
 	set(val): 
@@ -20,11 +27,11 @@ extends BtnBase
 		cooldown_duration = val
 		on_cooldown_duration_update()
 		
-@export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
+@export var energy_cost:int = -1 : 
 	set(val):
-		icon = val
-		on_icon_update()
-		
+		energy_cost = val
+		on_energy_cost_update()
+
 @export var btn_color:Color = Color(0, 0.965, 0.278) : 
 	set(val): 
 		btn_color = val
@@ -49,6 +56,11 @@ extends BtnBase
 	set(val):
 		is_checked = val
 		on_is_checked_update()		
+		
+@export var is_empty:bool = false : 
+	set(val):
+		is_empty = val
+		on_is_empty_update()
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -58,13 +70,14 @@ func _ready() -> void:
 	else:
 		update_color(btn_color)
 
-	on_icon_update()
 	on_title_update()
+	on_energy_cost_update()
 	on_is_disabled_updated()
 	on_is_selected_update()
 	on_cooldown_duration_update()
 	on_is_togglable_update()
 	on_is_checked_update()
+	on_is_empty_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -77,19 +90,20 @@ func update_color(new_color:Color = btn_color) -> void:
 	new_stylebox.border_color = new_color if is_selected else Color.BLACK
 	InnerPanel.add_theme_stylebox_override("panel", new_stylebox)	
 	
-	var new_stylebox_cost:StyleBoxFlat = CostPanel.get_theme_stylebox('panel').duplicate()
-	new_stylebox_cost.bg_color = new_color if is_selected else new_color.darkened(0.3)
-	new_stylebox_cost.corner_radius_bottom_left = 0 if is_selected else 5
-	new_stylebox_cost.corner_radius_bottom_right = 0 if is_selected else 5
-	new_stylebox_cost.corner_radius_top_left = 0 if is_selected else 5
-	new_stylebox_cost.corner_radius_top_right = 0 if is_selected else 5
-	CostPanel.add_theme_stylebox_override("panel", new_stylebox_cost)		
+	for panel in [CooldownPanel, TogglePanel]:
+		var new_stylebox_cost:StyleBoxFlat = panel.get_theme_stylebox('panel').duplicate()
+		new_stylebox_cost.bg_color = new_color if is_selected else new_color.darkened(0.3)
+		new_stylebox_cost.corner_radius_bottom_left = 0 if is_selected else 5
+		new_stylebox_cost.corner_radius_bottom_right = 0 if is_selected else 5
+		new_stylebox_cost.corner_radius_top_left = 0 if is_selected else 5
+		new_stylebox_cost.corner_radius_top_right = 0 if is_selected else 5
+		panel.add_theme_stylebox_override("panel", new_stylebox_cost)		
 	
 	var label_settings:LabelSettings = BtnLabel.label_settings.duplicate()
 	label_settings.font_color = new_color
 	BtnLabel.label_settings = label_settings
 	
-	IconBtn.static_color = new_color	
+	EnergyIconBtn.static_color = new_color	
 	
 		
 func on_focus(state:bool = is_focused) -> void:
@@ -109,8 +123,10 @@ func on_is_disabled_updated() -> void:
 	update_color()
 
 func on_is_togglable_update() -> void:
-	if !is_node_ready():return
-	Checkbox.show() if is_togglable else Checkbox.hide()
+	if !is_node_ready() or is_empty:return
+	TogglePanel.show() if is_togglable else TogglePanel.hide()
+	EnergyPanel.show() if is_togglable else EnergyPanel.hide()
+	CooldownPanel.hide() if is_togglable else CooldownPanel.show()
 
 func on_is_checked_update() -> void:
 	if !is_node_ready():return
@@ -118,16 +134,23 @@ func on_is_checked_update() -> void:
 
 func on_cooldown_duration_update() -> void:
 	if !is_node_ready():return
-	CostPanel.hide() if cooldown_duration == -1 else CostPanel.show()
-	CostLabel.text = "RDY" if cooldown_duration == 0 else str(cooldown_duration)
+	if cooldown_duration == -1:return
+	CooldownLabel.show()
+	CooldownLabel.text = "RDY" if cooldown_duration == 0 else str(cooldown_duration)
 	InnerPanelMarginContainer.add_theme_constant_override('margin_right', 5 if cooldown_duration == -1 else 0)
+
+func on_energy_cost_update() -> void:
+	if !is_node_ready():return
+	EnergyAmountLabel.text = str(absi(energy_cost))
 	
+func on_is_empty_update() -> void:
+	if !is_node_ready():return
+	if is_empty:
+		TogglePanel.hide()
+		EnergyPanel.hide()
+		CooldownPanel.hide()
+
 func on_title_update() -> void:
 	if !is_node_ready():return
 	BtnLabel.text = title
-
-func on_icon_update() -> void:
-	if !is_node_ready():return
-	IconBtn.icon = icon
-	IconBtn.hide() if icon == SVGS.TYPE.NONE else IconBtn.show()
 # ------------------------------------------------------------------------------

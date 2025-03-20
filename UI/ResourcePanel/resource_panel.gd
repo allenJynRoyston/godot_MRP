@@ -1,47 +1,33 @@
-@tool
-extends VBoxContainer
+extends SubscribeWrapper
 
-@onready var TitleLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/TitleLabel
-@onready var ResourceGrid:GridContainer = $PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid
+@onready var ResourceItemTech:Control = $MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemTech
+@onready var ResourceItemStaff:Control = $MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
+@onready var ResourceItemSecurity:Control = $MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
+@onready var ResourceItemDClass:Control = $MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
 
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+func on_room_config_update(new_val:Dictionary) -> void:
+	super.on_room_config_update(new_val)
+	U.debounce("update_resource_nodes", update_nodes)
 
-@export var title:String = "TITLE" : 
-	set(val):
-		title = val
-		on_title_update()
-		
-@export var list:Array = [] : 
-	set(val):
-		list = val
-		on_list_update()
+func on_ring_changed() -> void:
+	U.debounce("update_resource_nodes", update_nodes)
 
-# --------------------
-func _ready() -> void:	
-	on_title_update()
-	on_list_update()
-# --------------------
 
-# --------------------
-func clear_list() -> void:
-	if !is_node_ready() or Engine.is_editor_hint():return
-	for child in ResourceGrid.get_children():
-		child.free()
-# --------------------
-
-# --------------------
-func on_title_update() -> void:
-	if !is_node_ready():return
-	TitleLabel.text = " %s" % [title]
-
-func on_list_update() -> void:
-	if !is_node_ready():return
-	clear_list()
-	for item in list:
-		var btn_node:Control = TextBtnPreload.instantiate()
-		btn_node.is_hoverable = false
-		btn_node.panel_color = Color.TRANSPARENT
-		btn_node.title = "%s%s" % ["+" if item.amount > 0 else "", item.amount]
-		btn_node.icon = item.resource.icon
-		ResourceGrid.add_child(btn_node)
-# --------------------
+func update_nodes() -> void:
+	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
+	var available_resources:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].available_resources
+	for key in available_resources:
+		var is_active:bool = available_resources[key]
+		match key:
+			RESOURCE.TYPE.TECHNICIANS:
+				ResourceItemTech.title = "TCH"
+				ResourceItemTech.is_negative = !is_active
+			RESOURCE.TYPE.STAFF: 
+				ResourceItemStaff.title = "STF"
+				ResourceItemStaff.is_negative = !is_active
+			RESOURCE.TYPE.SECURITY: 
+				ResourceItemSecurity.title = "SEC"
+				ResourceItemSecurity.is_negative = !is_active
+			RESOURCE.TYPE.DCLASS: 
+				ResourceItemDClass.title = "DCL"
+				ResourceItemDClass.is_negative = !is_active	

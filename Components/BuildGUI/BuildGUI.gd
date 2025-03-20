@@ -123,11 +123,12 @@ func on_key_input(keycode: int) -> void:
 				assign_selected()
 		# e btn
 		69: 
-			if selected != BUILDING_TYPE.NONE:
-				data.purchase_list.push_back({
-					"type": selected, 
-					"on_floor": on_floor
-				})
+			pass
+			#if selected != BUILDING_TYPE.NONE:
+				#data.purchase_list.push_back({
+					#"type": selected, 
+					#"on_floor": on_floor
+				#})
 		# back
 		4194308:
 			data.purchase_list.pop_back()

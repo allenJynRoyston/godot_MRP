@@ -1,13 +1,13 @@
 extends Node
-class_name UtilityWrapper
+class_name SubscribeWrapper
 
 var room_config:Dictionary 
 var scp_data:Dictionary
 var progress_data:Dictionary
+var base_states:Dictionary
 var camera_settings:Dictionary
 var current_location:Dictionary
 var gameplay_conditionals:Dictionary
-var base_states:Dictionary
 var resources_data:Dictionary 
 var shop_unlock_purchases:Array 
 var researcher_hire_list:Array
@@ -18,6 +18,9 @@ var purchased_research_arr:Array
 var bookmarked_rooms:Array 
 var unavailable_rooms:Array 
 var hired_lead_researchers_arr:Array	
+
+var previous_floor:int = -1
+var previous_ring:int = -1
 
 
 func _init() -> void:
@@ -61,6 +64,16 @@ func on_progress_data_update(new_val:Dictionary) -> void:
 	
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
+	if current_location.is_empty():return
+	if previous_floor != current_location.floor:
+		previous_floor = current_location.floor
+		if !is_node_ready():return
+		on_floor_changed()
+		
+	if previous_ring != current_location.ring:
+		previous_ring = current_location.ring
+		if !is_node_ready():return
+		on_ring_changed()
 	
 func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
@@ -100,3 +113,9 @@ func on_scp_data_update(new_val:Dictionary) -> void:
 	
 func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val	
+
+
+
+func on_floor_changed() -> void:pass
+func on_ring_changed() -> void:pass
+func on_room_changed() -> void:pass

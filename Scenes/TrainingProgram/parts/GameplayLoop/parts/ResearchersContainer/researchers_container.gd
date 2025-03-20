@@ -510,7 +510,7 @@ func on_selected_researchers_update() -> void:
 		var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( hired_lead_researchers_arr[n] )
 		var mini_card:Control = ResearcherMiniCard.instantiate()
 		mini_card.uid = researcher_details.uid
-		mini_card.room_extract = ROOM_UTIL.extract_room_details(current_location)
+		mini_card.room_extract = GAME_UTIL.extract_room_details(current_location)
 		SelectedList.add_child(mini_card)
 		
 		# add selected to selected list	

@@ -1,4 +1,4 @@
-extends UtilityWrapper
+extends SubscribeWrapper
 
 
 var RESEARCH_ONE:Dictionary = {

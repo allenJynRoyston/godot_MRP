@@ -13,7 +13,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ciwur"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oae0j"]
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 2
 border_width_top = 2
@@ -25,21 +25,21 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="LabelSettings" id="LabelSettings_oae0j"]
+[sub_resource type="LabelSettings" id="LabelSettings_nqoss"]
 font = ExtResource("3_fvhk1")
 font_size = 8
 font_color = Color(0.357535, 0.00116721, 0.501693, 1)
 outline_size = 5
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqoss"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6dxlc"]
 bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6dxlc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqoss"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -53,8 +53,9 @@ offset_right = 34.0
 offset_bottom = 34.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_asb5s")
 script = ExtResource("1_b56nf")
-cooldown_duration = null
+energy_cost = null
 btn_color = Color(0.510764, 0.00166744, 0.716704, 1)
+is_empty = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -65,14 +66,14 @@ theme_override_constants/margin_bottom = 3
 
 [node name="InnerPanel" type="PanelContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ciwur")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oae0j")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer"]
@@ -83,48 +84,47 @@ theme_override_constants/separation = 5
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-label_settings = SubResource("LabelSettings_oae0j")
+text = "BTN LABEL"
+label_settings = SubResource("LabelSettings_nqoss")
 vertical_alignment = 1
 
-[node name="IconBtn" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer" instance=ExtResource("2_yu543")]
+[node name="EnergyPanel" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="EnergyAmountLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel"]
+layout_mode = 2
+text = "3"
+label_settings = ExtResource("5_oae0j")
+vertical_alignment = 1
+
+[node name="EnergyIconBtn" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel" instance=ExtResource("2_yu543")]
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-icon = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 31
 static_color = Color(0.357535, 0.00116721, 0.501693, 1)
 inactive_color = Color(0, 0.964706, 0.278431, 1)
 flip_v = false
 is_hoverable = false
 
-[node name="CostPanel" type="PanelContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+[node name="CooldownPanel" type="PanelContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_nqoss")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = -2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer"]
-layout_mode = 2
-
-[node name="CheckBox" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer" instance=ExtResource("2_aglnc")]
-visible = false
-layout_mode = 2
-size_flags_vertical = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
-no_bg = true
-is_hoverable = false
-
-[node name="CostLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer"]
+[node name="CooldownLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 size_flags_vertical = 5
@@ -132,3 +132,26 @@ text = "-1"
 label_settings = ExtResource("5_oae0j")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TogglePanel" type="PanelContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = -2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer"]
+layout_mode = 2
+
+[node name="CheckBox" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer/HBoxContainer" instance=ExtResource("2_aglnc")]
+layout_mode = 2
+size_flags_vertical = 5
+theme_override_styles/panel = SubResource("StyleBoxFlat_nqoss")
+no_bg = true
+bg_color = Color(0, 0, 0, 0.796)
+checkbox_color = Color(0, 0, 0, 1)
+is_hoverable = false

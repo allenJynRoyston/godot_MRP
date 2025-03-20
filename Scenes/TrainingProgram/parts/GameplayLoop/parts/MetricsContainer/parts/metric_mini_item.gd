@@ -60,9 +60,7 @@ func on_assigned_metric_update() -> void:
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 	progress_data = new_val	
 	if !is_node_ready() or progress_data.is_empty():return
-	is_active = assigned_metric == progress_data.next_metric
-	if !is_active:
-		update_stylebox()
+	update_stylebox()
 
 func on_value_update() -> void:
 	if !is_node_ready():return
@@ -76,7 +74,6 @@ func on_value_update() -> void:
 		RESOURCE.BASE_METRICS.READINESS:
 			StatusLabel.text = RESOURCE_UTIL.return_readiness_data(value).title
 
-	
 	update_stylebox()
 
 func on_status_update() -> void:

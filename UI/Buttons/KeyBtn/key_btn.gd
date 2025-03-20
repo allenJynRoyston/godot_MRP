@@ -49,8 +49,12 @@ extends BtnBase
 		on_has_new_update()		
 
 var is_hovered:bool = false
-var check_disabled:Callable = func() -> bool:
+
+var get_disable:Callable = func() -> bool:
 	return false
+
+var get_icon:Callable = func() -> SVGS.TYPE:
+	return icon
 
 # ------------------------------------------------------------------------------
 func _init() -> void:

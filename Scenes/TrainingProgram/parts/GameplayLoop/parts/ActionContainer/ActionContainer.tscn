@@ -199,12 +199,14 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_3e5bh")
 script = ExtResource("1_co4u3")
+metadata/_edit_group_ = true
 
 [node name="Backdrop" type="ColorRect" parent="."]
 layout_mode = 2
 color = Color(0, 0, 0, 0.0980392)
 
 [node name="Details" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Details"]
@@ -429,7 +431,7 @@ custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "ACTIONS"
+title = "ACTIVE"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0.366595, 0.366595, 0.366595, 1)
@@ -462,7 +464,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 5
-text = "SHORTCUTS"
+text = "ACTIVE HOTKEYS"
 label_settings = ExtResource("2_i3yab")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -476,28 +478,28 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_58xi4")
 title = "EMPTY"
 assigned_key = "1"
-icon = 52
+icon = 62
 
 [node name="KeyBtn2" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/LeftSideBtnList" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_x63m5")
 title = "EMPTY"
 assigned_key = "2"
-icon = 52
+icon = 62
 
 [node name="KeyBtn3" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/LeftSideBtnList" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
 title = "EMPTY"
 assigned_key = "3"
-icon = 52
+icon = 62
 
 [node name="KeyBtn4" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/LeftSideBtnList" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
 title = "EMPTY"
 assigned_key = "4"
-icon = 52
+icon = 62
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide"]
 layout_mode = 2
@@ -547,7 +549,7 @@ alignment = 2
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 5
-text = "SHORTCUTS"
+text = "PASSIVE HOTKEYS"
 label_settings = ExtResource("2_i3yab")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -560,35 +562,35 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
 title = "EMPTY"
-assigned_key = "1"
-icon = 52
+assigned_key = "5"
+icon = 62
 
 [node name="KeyBtn2" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/RightSideBtnList" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
 title = "EMPTY"
-assigned_key = "2"
-icon = 52
+assigned_key = "6"
+icon = 62
 
 [node name="KeyBtn3" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/RightSideBtnList" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
 title = "EMPTY"
-assigned_key = "3"
-icon = 52
+assigned_key = "7"
+icon = 62
 
 [node name="KeyBtn4" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/RightSideBtnList" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_txh3k")
 title = "EMPTY"
-assigned_key = "4"
-icon = 52
+assigned_key = "8"
+icon = 62
 
 [node name="ToggleBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_l3pfk")
-title = "MODIFIERS"
+title = "PASSIVE"
 assigned_key = "T"
 
 [node name="ConfirmBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide" instance=ExtResource("4_n6idl")]

@@ -340,7 +340,6 @@ func on_selected_researchers_update(force_check:bool = false) -> void:
 		else:
 			SynergyContainer.hide()
 	
-	print(total_traits_list)
 	if control_pos.is_empty():return
 	if total_traits_list.size() > 0:
 		U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].show)

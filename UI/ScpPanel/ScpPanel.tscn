@@ -18,7 +18,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pq3bk"]
-bg_color = Color(0, 0.53, 0.282667, 0)
+bg_color = Color(0, 0, 0, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -82,21 +82,13 @@ theme_override_constants/separation = -5
 z_index = 1
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 size_flags_horizontal = 3
 text = " SCP "
 label_settings = ExtResource("2_s1rv1")
-vertical_alignment = 1
-
-[node name="LvlLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 12)
-layout_mode = 2
-size_flags_horizontal = 3
-text = " LVL 1"
-label_settings = ExtResource("2_s1rv1")
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Resources" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
@@ -110,7 +102,7 @@ material = SubResource("ShaderMaterial_6lab1")
 layout_mode = 2
 texture = SubResource("ViewportTexture_mpeqf")
 expand_mode = 2
-stretch_mode = 6
+stretch_mode = 5
 
 [node name="SubViewport" type="SubViewport" parent="MarginContainer/VBoxContainer/Resources"]
 size = Vector2i(76, 51)
@@ -131,11 +123,11 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 2
 
-[node name="ReadyLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 size_flags_horizontal = 3
-text = " READY! "
+text = "NAME"
 label_settings = SubResource("LabelSettings_kokcl")
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1

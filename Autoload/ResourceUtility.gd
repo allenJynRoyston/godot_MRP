@@ -1,5 +1,5 @@
 @tool
-extends UtilityWrapper
+extends SubscribeWrapper
 
 var MONEY:Dictionary = {
 	"id": RESOURCE.TYPE.MONEY,

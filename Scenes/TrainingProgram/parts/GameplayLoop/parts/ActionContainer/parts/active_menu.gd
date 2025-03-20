@@ -1,10 +1,8 @@
 extends Control
 
 @onready var List:VBoxContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List
-@onready var HeaderLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HeaderLabel
-
-@onready var ApContainer:PanelContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer
-@onready var ApLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/ApContainer/MarginContainer/VBoxContainer/HBoxContainer/ApLabel
+@onready var HeaderLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/HeaderLabel
+@onready var LvlContainer:HBoxContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
 
@@ -106,15 +104,14 @@ func on_selected_index_update() -> void:
 func on_options_list_update() -> void:
 	if !is_node_ready():return	
 	clear_list()
-	
 
-	
 	# ---- IF EMPTY
 	if options_list.is_empty():
 		var btn_node:Control = MenuBtnPreload.instantiate()
 		btn_node.title = "NO ACTIONS AVAILABLE"
-		btn_node.icon = SVGS.TYPE.CLEAR
 		btn_node.btn_color = use_color
+		btn_node.is_empty = true
+		
 		List.add_child(btn_node)		
 		return
 	
@@ -126,7 +123,6 @@ func on_options_list_update() -> void:
 		var btn_node:Control = MenuBtnPreload.instantiate()
 		
 		btn_node.title = item.title
-		btn_node.icon = item.icon if "icon" in item else SVGS.TYPE.NONE
 		btn_node.btn_color = use_color
 		btn_node.is_togglable = item.is_togglable if "is_togglable" in item else false
 		btn_node.is_checked = item.is_checked if "is_checked" in item else false
@@ -137,6 +133,9 @@ func on_options_list_update() -> void:
 		btn_node.onClick = func() -> void:
 			if !btn_node.is_disabled:
 				item.onSelect.call(selected_index)
+				if btn_node.is_togglable:
+					btn_node.is_checked = item.get_checked_state.call()
+				
 		btn_node.onFocus = func(_node:Control) -> void:
 			selected_index = index
 		
@@ -145,21 +144,20 @@ func on_options_list_update() -> void:
 	self.size.y = 1	
 	
 
-
-
 func on_ap_val_update() -> void:
 	if !is_node_ready():return
-	ApLabel.text = str(ap_val)
 
+			
 
-	
 func on_level_update() -> void:
 	if !is_node_ready():return	
-	#LevelLabel.text = "%s" % ["%s" % [level] if level != -1  else ""]
+	for index in LvlContainer.get_child_count():
+		var node:Control = LvlContainer.get_child(index)
+		node.modulate = Color(1, 1, 1, 1 if index == level else 0.6) 
 	
 func on_show_ap_update() -> void:
 	if !is_node_ready():return
-	ApContainer.show() if show_ap else ApContainer.hide()
+	LvlContainer.show() if show_ap else LvlContainer.hide()
 
 
 func on_header_update() -> void:
@@ -181,14 +179,18 @@ func on_freeze_inputs_update() -> void:
 	#U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if freeze_inputs else 1)  )
 
 func on_action() -> void:
-	if freeze_inputs:return
+	if freeze_inputs or options_list.is_empty():return
 	if selected_index != -1:
 		var btn_node:Control = List.get_child(selected_index)
-		
 		if btn_node == null:return
 		if !btn_node.is_disabled:
-			options_list[selected_index].onSelect.call(selected_index)
+			await options_list[selected_index].onSelect.call(selected_index)
 			
+			if "get_cooldown_duration" in options_list[selected_index]:
+				btn_node.cooldown_duration = options_list[selected_index].get_cooldown_duration.call()
+				
+			if "get_checked_state" in options_list[selected_index]:
+				btn_node.is_checked = options_list[selected_index].get_checked_state.call()
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------

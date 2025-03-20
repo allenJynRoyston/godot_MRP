@@ -1,4 +1,4 @@
-extends UtilityWrapper
+extends SubscribeWrapper
 
 var specialization_data:Dictionary = { 
 	RESEARCHER.SPECIALIZATION.PSYCHOLOGY: {
@@ -498,7 +498,7 @@ func return_wing_effects_list(researcher_data:Dictionary) -> Array:
 # ------------------------------------------------------------------------------	
 func get_details_from_extract(location:Dictionary) -> Dictionary:
 	if !location.is_empty():
-		var room_extract:Dictionary = ROOM_UTIL.extract_room_details(location)			
+		var room_extract:Dictionary = GAME_UTIL.extract_room_details(location)			
 		
 		return {
 			"researchers": room_extract.researchers,			

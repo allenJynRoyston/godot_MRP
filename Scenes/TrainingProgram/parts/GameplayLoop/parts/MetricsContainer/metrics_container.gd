@@ -89,7 +89,7 @@ func update_status() -> void:
 func update_metrics_labels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
 	var ring_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
-	var extract_data:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+	var extract_data:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	
 	# ROOM INDIVIDUAL CHANGES 
 	#MoraleNode.value = extract_data.metric_details.total[RESOURCE.BASE_METRICS.MORALE] if RESOURCE.BASE_METRICS.MORALE in extract_data.metric_details.total else 0

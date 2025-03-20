@@ -137,7 +137,7 @@ func update_display() -> void:
 			await U.tick()
 			
 			# now extract and populate
-			var extract_data:Dictionary = ROOM_UTIL.extract_room_details(data.location)
+			var extract_data:Dictionary = GAME_UTIL.extract_room_details(data.location)
 			var details:Dictionary = extract_data.room.details
 			var can_activate:bool = extract_data.can_activate
 			var activation_requirements:Array = ROOM_UTIL.return_activation_cost(data.ref)
@@ -158,7 +158,7 @@ func update_display() -> void:
 				DescriptionList.add_child(new_node)
 				
 			ActivateBtn.onClick = func() -> void:
-				GameplayNode.activate_room(data.location, true)
+				# GAME_UTIL.activate_room(data.location, true)
 				on_next()				
 						
 			SkipBtn.show()
@@ -166,50 +166,7 @@ func update_display() -> void:
 			DescriptionList.hide() if activation_requirements.size() == 0 else DescriptionList.show()
 			
 			ActivateBtn.is_disabled = !can_activate
-			
-		## ------------------------------------------------------------------------------------------
-		#ACTION.AQ.BASE_ITEM:			
-			#var details:Dictionary = BASE_UTIL.return_data(data.ref)
-			#var build_complete_list:Array = BASE_UTIL.return_build_complete(data.ref)
-#
-			#TitleLabel.text = "%s Built!" % [details.name]
-			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
-			#
-#
-			#
-			#
-			#for item in build_complete_list:
-				#var label_node:Control = TextBtnPreload.instantiate()
-				#label_node.is_hoverable = false
-				#label_node.icon = item.resource.icon
-				#label_node.title =  "+%s [%s]" % [item.amount, item.type]
-				#DescriptionList.add_child(label_node)
-		## ------------------------------------------------------------------------------------------		
-		#ACTION.AQ.RESEARCH_ITEM:
-			#var details:Dictionary = RD_UTIL.return_data(data.ref)
-			#TitleLabel.text = "Research complete: %s" % [details.name]
-			#ImageContainer.texture = CACHE.fetch_image(details.img_src)		
-		## ------------------------------------------------------------------------------------------
-		#ACTION.AQ.CONTAIN:
-			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			#TitleLabel.text = "SCP %s successfully contained." % [details.name]
-			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		## ------------------------------------------------------------------------------------------
-		#ACTION.AQ.TRANSFER:
-			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			#TitleLabel.text = "SCP %s successfully transfered." % [details.name]
-			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		## ------------------------------------------------------------------------------------------
-		#ACTION.AQ.ACCESSING:
-			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			#TitleLabel.text = "Accessing complete."
-			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		## ------------------------------------------------------------------------------------------
-		#ACTION.AQ.TESTING:
-			#var details:Dictionary = SCP_UTIL.return_data(data.ref)
-			#TitleLabel.text = "Testing complete."
-			#ImageContainer.texture = CACHE.fetch_image(details.img_src)
-		## ------------------------------------------------------------------------------------------	
+
 					
 	if "location" in data:
 		SUBSCRIBE.current_location = data.location

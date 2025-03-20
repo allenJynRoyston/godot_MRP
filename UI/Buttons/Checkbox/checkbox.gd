@@ -14,6 +14,11 @@ extends BtnBase
 	set(val):
 		bg_color = val
 		bg_color_update()
+		
+@export var checkbox_color:Color = Color(1.0, 1.0, 1.0) : 
+	set(val):
+		checkbox_color = val
+		checkbox_color_update()		
 
 @export var is_checked:bool = false : 
 	set(val):
@@ -41,6 +46,7 @@ func _ready() -> void:
 	on_is_checked_update()
 	on_title_update()
 	bg_color_update()	
+	checkbox_color_update()
 	onChange.call(is_checked)
 # ------------------------------------------------------------------------------
 
@@ -60,6 +66,10 @@ func on_condition_check(props:Dictionary = {}) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func checkbox_color_update() -> void:
+	if is_node_ready() or Engine.is_editor_hint():
+		IconBtn.static_color = checkbox_color
+
 func bg_color_update() -> void:
 	if is_node_ready() or Engine.is_editor_hint():
 		var new_stylebox = RootPanel.get_theme_stylebox('panel').duplicate()

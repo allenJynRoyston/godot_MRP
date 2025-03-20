@@ -1,11 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://biu7hvraky4ie"]
+[gd_scene load_steps=10 format=3 uid="uid://biu7hvraky4ie"]
 
 [ext_resource type="Script" uid="uid://bkv2hecqu5w4m" path="res://UI/ResourcePanel/resource_panel.gd" id="1_166i6"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_ser8d"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_x7eon"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_8ca1n"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lg55a"]
-bg_color = Color(0, 0, 0, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7y1q"]
+bg_color = Color(0, 0, 0, 0.572549)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -16,87 +16,106 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ca1n"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7y1q"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i33qc"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0, 0.53, 0.282667, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="ResourcePanel" type="VBoxContainer"]
-theme_override_constants/separation = 8
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ca1n"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kl0j5"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j636g"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wft7u"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[node name="Resources" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_q7y1q")
 script = ExtResource("1_166i6")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_lg55a")
+theme_override_constants/margin_top = -6
+theme_override_constants/margin_right = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
+theme_override_constants/separation = -5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "RESOURCES"
+label_settings = ExtResource("2_ser8d")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Resources" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_styles/panel = SubResource("StyleBoxFlat_i33qc")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ResourceItemTech" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_8ca1n")]
 layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = " TITLE"
-label_settings = ExtResource("2_ser8d")
-vertical_alignment = 1
-clip_text = true
-text_overrun_behavior = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
-
-[node name="ResourceGrid" type="GridContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-columns = 3
-
-[node name="TextBtn" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
-layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_8ca1n")
-icon = 30
-title = "5"
+icon = 33
+no_bg = true
+title = "OK"
+display_at_bottom = true
 
-[node name="TextBtn2" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
+[node name="ResourceItemStaff" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_8ca1n")]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_q7y1q")
-icon = 31
-title = "5"
+theme_override_styles/panel = SubResource("StyleBoxFlat_kl0j5")
+icon = 34
+no_bg = true
+title = "-"
+display_at_bottom = true
+is_negative = true
 
-[node name="TextBtn3" parent="PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ResourceGrid" instance=ExtResource("3_x7eon")]
+[node name="ResourceItemSecurity" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_8ca1n")]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_i33qc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_j636g")
+icon = 35
+no_bg = true
+title = "-"
+display_at_bottom = true
+is_negative = true
+
+[node name="ResourceItemDClass" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_8ca1n")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wft7u")
 icon = 32
-title = "5"
+no_bg = true
+title = "-"
+display_at_bottom = true
+is_negative = true
+metadata/_edit_group_ = true

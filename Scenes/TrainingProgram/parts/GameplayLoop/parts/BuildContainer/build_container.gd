@@ -65,7 +65,7 @@ func _ready() -> void:
 	BackBtn.onClick = func() -> void:
 		match current_mode:
 			MODE.CONTENT_SELECT:
-				user_response.emit({"action": ACTION.BACK})
+				end()
 			MODE.PLACEMENT:
 				await U.tick()
 				current_mode = MODE.CONTENT_SELECT
@@ -95,6 +95,8 @@ func end() -> void:
 	
 	current_mode = MODE.HIDE
 	grid_index = 0
+	
+	user_response.emit()
 # --------------------------------------------------------------------------------------------------
 
 
@@ -149,17 +151,30 @@ func update_control_pos() -> void:
 # --------------------------------------------------------------------------------------------------	
 func purchase_room() -> void:	
 	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
-	GameplayNode.add_timeline_item({
-		"action": ACTION.AQ.BUILD_ITEM,
+	# update
+	purchased_facility_arr.push_back({
 		"ref": room_details.ref,
-		"title": room_details.name,
-		"icon": SVGS.TYPE.BUILD,
-		"completed_at": room_details.build_time,
-		"description": "CONSTRUCTING",
 		"location": current_location.duplicate()
 	})
+	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr	
 	SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(room_details.ref)		
+	
 	await U.tick()
+	
+	# GAME_UTIL.activate_room(current_location, true)
+	# enable this to add a construction time, but I don't know if I like this...
+	#GameplayNode.add_timeline_item({
+		#"action": ACTION.AQ.BUILD_ITEM,
+		#"ref": room_details.ref,
+		#"title": room_details.name,
+		#"icon": SVGS.TYPE.BUILD,
+		#"completed_at": room_details.build_time,
+		#"description": "CONSTRUCTING",
+		#"location": current_location.duplicate()
+	#})
+	#SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(room_details.ref)		
+	#await U.tick()
+	
 	GameplayNode.ToastContainer.add("%s purchased!" % [room_details.name])
 	on_grid_index_update()
 # --------------------------------------------------------------------------------------------------	
@@ -252,10 +267,9 @@ func on_grid_index_update() -> void:
 		MODE.CONTENT_SELECT:
 			DetailPanel.ref = grid_list_data[grid_index].ref
 	
-
 		# -----------
 		MODE.PLACEMENT:
-			var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 			var allow_build:bool = room_extract.is_room_empty and !room_extract.is_room_under_construction
 			PlacementBtn.is_disabled = !allow_build or at_max_capacity
 		_:
@@ -292,7 +306,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			PlacementBtn.hide()
 
 			#GBL.find_node(REFS.ROOM_NODES).is_active = true
-			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration )
 			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show, duration)
 
@@ -319,7 +332,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				card_node.is_deselected = index != grid_index
 			
 			#GBL.find_node(REFS.ROOM_NODES).is_active = false
-			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(false)
 			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration )
 			await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)
 			

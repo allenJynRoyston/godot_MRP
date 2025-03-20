@@ -1,4 +1,4 @@
-extends UtilityWrapper
+extends SubscribeWrapper
 
 # ------------------------------------------------------------------------------
 func return_placement_instructions(item_data:Dictionary) -> Array:

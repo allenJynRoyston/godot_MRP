@@ -144,6 +144,27 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 		SVGS.TYPE.SWAP:
 			texture = load("res://SVGs/swap-fill-svgrepo-com.svg")
 			
+		SVGS.TYPE.ZERO:
+			texture = load("res://SVGs/number-small-0-svgrepo-com.svg")
+		SVGS.TYPE.ONE:
+			texture = load("res://SVGs/number-small-1-svgrepo-com.svg")
+		SVGS.TYPE.TWO:
+			texture = load("res://SVGs/number-small-2-svgrepo-com.svg")
+		SVGS.TYPE.THREE:
+			texture = load("res://SVGs/number-small-3-svgrepo-com.svg")
+		SVGS.TYPE.FOUR:
+			texture = load("res://SVGs/number-small-4-svgrepo-com.svg")
+		SVGS.TYPE.FIVE:
+			texture = load("res://SVGs/number-small-5-svgrepo-com.svg")
+		SVGS.TYPE.SIX:
+			texture = load("res://SVGs/number-small-6-svgrepo-com.svg")
+		SVGS.TYPE.SEVEN:
+			texture = load("res://SVGs/number-small-7-svgrepo-com.svg")
+		SVGS.TYPE.EIGHT:
+			texture = load("res://SVGs/number-small-8-svgrepo-com.svg")
+		SVGS.TYPE.NINE:
+			texture = load("res://SVGs/number-small-9-svgrepo-com.svg")			
+			
 	svg_cache.push_back({
 		"key": key, 
 		"texture": texture

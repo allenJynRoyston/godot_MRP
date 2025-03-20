@@ -1,4 +1,4 @@
-extends UtilityWrapper
+extends SubscribeWrapper
 
 const prefered_greeting:String = "Sir"
 
@@ -19,7 +19,7 @@ var SCP_001:Dictionary = {
 	"containment_time": func() -> int:
 		return 3,
 	"containment_requirements": [
-		ROOM.TYPE.STANDARD_LOCKER
+		ROOM.TYPE.CONTAINMENT_CELL
 	],
 	"researcher_preferences": {
 		#RESEARCHER.SPECIALIZATION.ENGINEERING: 3,
@@ -443,7 +443,7 @@ var SCP_002:Dictionary = {
 	"containment_time": func() -> int:
 		return 3,
 	"containment_requirements": [
-		ROOM.TYPE.STANDARD_LOCKER
+		ROOM.TYPE.CONTAINMENT_CELL
 	],
 	"researcher_preferences": {
 		#RESEARCHER.SPECIALIZATION.ENGINEERING: 3,

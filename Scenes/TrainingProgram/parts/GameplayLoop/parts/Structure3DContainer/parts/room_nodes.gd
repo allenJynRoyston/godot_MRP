@@ -22,7 +22,6 @@ extends Control
 @onready var CursorLabelSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorLabelSprite
 @onready var CursorMenuSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorMenuSprite
 
-
 @onready var LeftFloorLabel:Label3D = $SubViewport/RoomColumn/FloorMesh/LeftFloorLabel
 @onready var RightFloorLabel:Label3D = $SubViewport/RoomColumn/FloorMesh/RightFloorLabel
 
@@ -59,15 +58,23 @@ var freeze_input:bool = false
 var room_config:Dictionary = {}
 var menu_index:int = 0
 var menu_actions:Array = []
+
 var show_menu:bool = false : 
 	set(val):
 		if show_menu != val:
 			show_menu = val
 			on_show_menu_update()
+			
 var is_active:bool = false : 
 	set(val):
 		is_active = val
 		on_is_active_update()
+		
+var enable_room_focus:bool = false : 
+	set(val):
+		enable_room_focus = val
+		on_enable_room_focus()
+
 var current_menu_type:MENU_TYPE = MENU_TYPE.ROOM : 
 	set(val):
 		if current_menu_type != val:
@@ -81,7 +88,6 @@ var in_brownout:bool = false
 var emergency_mode:ROOM.EMERGENCY_MODES
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
-
 
 signal menu_response
 
@@ -111,6 +117,7 @@ func _ready() -> void:
 	on_is_active_update()
 	on_show_menu_update(true)
 	on_current_menu_type_update()
+	on_enable_room_focus()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -153,6 +160,13 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+func on_enable_room_focus() -> void:
+	for node in NodeContainer.get_children():
+		node.enable_focus = enable_room_focus
+# --------------------------------------------------------	
+	
+
+# --------------------------------------------------------
 func update_boards() -> void:
 	if !is_node_ready() or room_config.is_empty():return
 	# traverse and mark the wall labels
@@ -163,7 +177,7 @@ func update_boards() -> void:
 					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
 						var room_node:Node3D = NodeContainer.get_child(room_index)
 						var ref_index:int = room_node.ref_index
-						var room_extract:Dictionary = ROOM_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": ref_index})
+						var room_extract:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": ref_index})
 						
 						# ----------------------------------------
 						var left_label_3d:Label3D = LeftBoardRoomLabels.find_child(str(ref_index))
@@ -193,20 +207,18 @@ func update_boards() -> void:
 
 # --------------------------------------------------------
 func update_nodes() -> void:
+	var nodeArray:Array = []
+	
 	LeftFloorLabel.text = "FLOOR %s" % [assigned_location.floor]
 	RightFloorLabel.text = "WING %s" % [assigned_location.ring]
 	
-	var nodeArray:Array = []
-							
-							
 	for node in NodeContainer.get_children():
 		node.update_refs(assigned_location.floor, assigned_location.ring)
 
 	for node in NodeContainer.get_children():
 		node_refs[node.name] = node
 		node_ref_positions[node.name] = node.position
-		node.onBlur = func(room_data:Dictionary) -> void:
-			pass
+		
 		node.onFocus = func(room_data:Dictionary) -> void:
 			RoomNameLabel.text = "EMPTY" if room_data.is_empty() else room_data.name				
 			RoomStatusLabel.text = "inactive"
@@ -312,7 +324,7 @@ func on_show_menu_update(setup:bool = false) -> void:
 	#node.show_internal = show_menu
 	#
 	#if show_menu:
-		#var room_extract:Dictionary = ROOM_UTIL.extract_room_details(current_location)
+		#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 		#var is_testing:bool = !room_extract.scp.testing.is_empty() if !room_extract.scp.is_empty() else false		
 		#var can_take_action:bool = is_powered and (!in_lockdown and !in_brownout)
 		#

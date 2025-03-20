@@ -1,4 +1,4 @@
-extends UtilityWrapper
+extends SubscribeWrapper
 
 var UNLOCK_FLOOR_2:Dictionary = {
 	"ref": BASE.TYPE.UNLOCK_FLOOR_2,

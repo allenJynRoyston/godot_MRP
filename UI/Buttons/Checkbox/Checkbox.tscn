@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_kiejb"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_ygnts"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_td4n6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sh7tv"]
 bg_color = Color(0.055, 0.055, 0.055, 0.796)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -15,8 +15,9 @@ corner_radius_bottom_left = 5
 offset_right = 20.0
 offset_bottom = 20.0
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_td4n6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sh7tv")
 script = ExtResource("1_wmtyv")
+checkbox_color = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -33,6 +34,7 @@ layout_mode = 2
 icon = 46
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(1, 1, 1, 1)
+flip_v = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]

@@ -1,5 +1,5 @@
 @tool
-extends UtilityWrapper
+extends SubscribeWrapper
 
 enum DIR {UP, DOWN, LEFT, RIGHT}
 

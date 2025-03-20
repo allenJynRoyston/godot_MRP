@@ -1,15 +1,7 @@
 extends GameContainer
 
-@onready var ResourcePanel:PanelContainer = $Control2/ResourcePanel
+@onready var ResourcePanel:MarginContainer = $Control2/ResourcePanel
 @onready var ScpPanel:PanelContainer = $Control2/ScpPanel
-
-@onready var ResourceItemMoney:Control = $Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemMoney
-@onready var ResourceItemEnergy:Control = $Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemEnergy
-@onready var ResourceItemScience:Control = $Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemScience
-
-@onready var ResourceItemStaff:Control =  $Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemStaff
-@onready var ResourceItemSecurity:Control = $Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemSecurity
-@onready var ResourceItemDClass:Control = $Control2/ResourcePanel/MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/ResourceItemDClass
 
 @onready var DetailPanel:Control = $Control/DetailPanel
 
@@ -25,99 +17,87 @@ var show_details:bool = false :
 func _ready() -> void:
 	super._ready()
 	on_show_details_update()
-	
-	DetailPanel.onFocus = func() -> void:
-		detail_panel_is_focused = true
-	
-	DetailPanel.onBlur = func() -> void:
-		detail_panel_is_focused = false
-		
-	# ResourceItemLeadResearchers, 
-	for node in [ResourceItemMoney, ResourceItemEnergy, ResourceItemScience, ResourceItemStaff, ResourceItemSecurity, ResourceItemDClass]:
-		node.onClick = func() -> void:
-			if suppress_click:return
-			match node:
-				ResourceItemMoney:
-					DetailPanel.show_details(RESOURCE.TYPE.MONEY)
-				ResourceItemEnergy:
-					DetailPanel.show_details(RESOURCE.TYPE.ENERGY)
-				ResourceItemScience:
-					DetailPanel.show_details(RESOURCE.TYPE.SCIENCE)					
-				#ResourceItemLeadResearchers:
-					#DetailPanel.show_details(RESOURCE.TYPE.LEAD_RESEARCHERS)
-				ResourceItemStaff:
-					DetailPanel.show_details(RESOURCE.TYPE.STAFF)
-				ResourceItemSecurity:
-					DetailPanel.show_details(RESOURCE.TYPE.SECURITY)
-				ResourceItemDClass:
-					DetailPanel.show_details(RESOURCE.TYPE.DCLASS)
-			show_details = true	
-			detail_panel_is_busy = true
-			DetailPanel.show()
-			open_detail_panel(node)
-			await U.set_timeout(0.1)
-			detail_panel_is_busy = false
-		node.onDismiss = func() -> void:
-			if detail_panel_is_busy:
-				return
-			if !detail_panel_is_focused and DetailPanel.is_visible_in_tree():
-				DetailPanel.hide()
-				show_details = false
-
-	control_pos[ResourcePanel] = {"show": ResourcePanel.position.y, "hide": ResourcePanel.position.y - ResourcePanel.size.y - 20}
-	control_pos[ScpPanel] = {"show": ScpPanel.position.y, "hide": ScpPanel.position.y - ScpPanel.size.y - 20}
 # --------------------------------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+	
+	control_pos_default[ResourcePanel] = ResourcePanel.position
+	
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos() -> void:	
+	await U.tick()
+	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
+	
+	# for eelements in the top right
+	control_pos[ResourcePanel] = {
+		"show": control_pos_default[ResourcePanel].y, 
+		"hide": control_pos_default[ResourcePanel].y - ResourcePanel.size.y
+	}	
+	
+	on_is_showing_update(true)
+# --------------------------------------------------------------------------------------------------	
+
 # -----------------------------------------------
-func on_is_showing_update() -> void:	
+func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
-	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, 0.7)
-	U.tween_node_property(ScpPanel, "position:y", control_pos[ScpPanel].show if (is_showing and scp_available) else control_pos[ScpPanel].hide, 0.7)
+	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, 0 if skip_animation else 0.7)
 # -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func on_show_details_update() -> void:
 	pass
 # --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-func open_detail_panel(node:Control) -> void:
-	pass
-	#DetailPanel.position.y = node.global_position.y + 100
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func on_scp_data_update(new_val:Dictionary) -> void:
-	super.on_scp_data_update(new_val)
-	if !is_node_ready():return
-	scp_available = scp_data.available_list.size() > 0	
-	if scp_available:
-		ScpPanel.ref = scp_data.available_list[0].ref
-	on_is_showing_update()
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------
-func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
-	resources_data = new_val
-	if !is_node_ready() or resources_data.is_empty():return
-	DetailPanel.resources_data = resources_data
-
-	for key in resources_data:
-		var data:Dictionary = resources_data[key]
-		
-		match key:
-			RESOURCE.TYPE.MONEY:
-				ResourceItemMoney.title = "%s" % [data.amount]
-			RESOURCE.TYPE.ENERGY:
-				ResourceItemEnergy.title = "%s" % [data.amount]
-			RESOURCE.TYPE.SCIENCE:
-				ResourceItemScience.title = "%s" % [data.amount]
-
-			RESOURCE.TYPE.STAFF:
-				ResourceItemStaff.title = "%s/%s" % [data.amount, data.capacity]
-			RESOURCE.TYPE.SECURITY:
-				ResourceItemSecurity.title = "%s/%s" % [data.amount, data.capacity]
-			RESOURCE.TYPE.DCLASS:
-				ResourceItemDClass.title = "%s/%s" % [data.amount, data.capacity]
-# --------------------------------------------------------------------------------------------------
+#
+## --------------------------------------------------------------------------------------------------
+#func open_detail_panel(node:Control) -> void:
+	#pass
+	##DetailPanel.position.y = node.global_position.y + 100
+## --------------------------------------------------------------------------------------------------	
+#
+## --------------------------------------------------------------------------------------------------	
+#func on_scp_data_update(new_val:Dictionary) -> void:
+	#super.on_scp_data_update(new_val)
+	#if !is_node_ready():return
+	#scp_available = scp_data.available_list.size() > 0	
+	#if scp_available:
+		#ScpPanel.ref = scp_data.available_list[0].ref
+	#on_is_showing_update()
+## --------------------------------------------------------------------------------------------------	
+#
+## --------------------------------------------------------------------------------------------------
+#func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	#resources_data = new_val
+	#if !is_node_ready() or resources_data.is_empty():return
+	#DetailPanel.resources_data = resources_data
+#
+	#for key in resources_data:
+		#var data:Dictionary = resources_data[key]
+		#
+		#match key:
+			#RESOURCE.TYPE.MONEY:
+				#ResourceItemMoney.title = "%s" % [data.amount]
+			#RESOURCE.TYPE.ENERGY:
+				#ResourceItemEnergy.title = "%s" % [data.amount]
+			#RESOURCE.TYPE.SCIENCE:
+				#ResourceItemScience.title = "%s" % [data.amount]
+#
+			#RESOURCE.TYPE.STAFF:
+				#ResourceItemStaff.title = "%s/%s" % [data.amount, data.capacity]
+			#RESOURCE.TYPE.SECURITY:
+				#ResourceItemSecurity.title = "%s/%s" % [data.amount, data.capacity]
+			#RESOURCE.TYPE.DCLASS:
+				#ResourceItemDClass.title = "%s/%s" % [data.amount, data.capacity]
+## --------------------------------------------------------------------------------------------------

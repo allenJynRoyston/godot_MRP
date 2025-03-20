@@ -23,6 +23,7 @@ enum SIDES {LEFT, RIGHT, NEUTRAL}
 enum APPLY_TEXTURE { NONE, BUILT, UNDER_CONSTRUCTION }
 
 const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMaterialBuilt.tres")
+
 @export var room_number:int = -1
 
 @export var show_internal:bool = false : 
@@ -39,11 +40,6 @@ const RoomMaterialBuilt:StandardMaterial3D = preload("res://Materials/RoomMateri
 	set(val):
 		show_side = val
 		on_show_side_update()
-
-#@export var apply_texture:APPLY_TEXTURE = APPLY_TEXTURE.NONE : 
-	#set(val):
-		#apply_texture = val
-		#on_apply_texture_update()
 
 @export var ref_index:int  = -1 : 
 	set(val):
@@ -70,6 +66,12 @@ var unavailable_rooms:Array = []
 var current_location:Dictionary = {} 
 var room_config:Dictionary = {} 
 var previous_show_side:SIDES
+
+var enable_focus:bool = false : 
+	set(val):
+		enable_focus = val
+		on_is_focused_update()
+
 var is_focused:bool = false : 
 	set(val):
 		is_focused = val
@@ -193,11 +195,9 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # --------------------------------------------------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if !is_node_ready() or current_location.is_empty():return
-	var check_ref:String = "%s%s%s" % [current_location.floor, current_location.ring, current_location.room]
+	if current_location.is_empty():return
+	var check_ref:String = U.location_to_designation(current_location)
 	is_focused = room_ref == check_ref
-
-	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 func build_room_details() -> void:
 	if room_config.is_empty() or current_location.is_empty() or ref_index == -1 or room_ref == "":return
 	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
-	var extract_data:Dictionary = ROOM_UTIL.extract_room_details({"floor": assigned_floor, "ring": assigned_wing, "room": ref_index})
+	var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": assigned_floor, "ring": assigned_wing, "room": ref_index})
 	var mesh_duplicate = MainMesh.mesh.duplicate()
 	var material_copy = RoomMaterialBuilt.duplicate() 
 	material_copy.albedo_color = Color.SLATE_GRAY
@@ -263,6 +263,10 @@ func build_room_details() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_is_focused_update() -> void:
+	if !enable_focus:
+		current_state = STATES.INACTIVE
+		return
+		
 	var new_state:int = STATES.ACTIVE if is_focused else STATES.INACTIVE
 	
 	if current_state != new_state:

@@ -1,5 +1,5 @@
 @tool
-extends UtilityWrapper
+extends SubscribeWrapper
 
 var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
@@ -17,7 +17,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
-		
+	
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
@@ -28,28 +28,8 @@ var DIRECTORS_OFFICE:Dictionary = {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
 				"cooldown_duration":  5, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.get_new_scp(),
-			},
-			{
-				"name": "PROMOTE RESEARCHER",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  5, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.promote_researchers(),
-			},
-			{
-				"name": "ABILITY 3",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  5, 
-				"effect": func() -> void:
-					pass,
+				"effect": func() -> bool:
+					return await GAME_UTIL.get_new_scp(),
 			}
 		],	
 	# ------------------------------------------
@@ -72,31 +52,9 @@ var DIRECTORS_OFFICE:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.ENERGY: -1,
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
 
-				},
-		}	
-	},	
-	
 	"operating_costs": {
 		"resources": {
-			"metrics": func() -> Dictionary:
-				return {
-					RESOURCE.BASE_METRICS.SAFETY: -1
-			},			
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: -1
@@ -119,7 +77,7 @@ var HQ:Dictionary = {
 	"description": "Base headquarters.",
 		
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
@@ -130,34 +88,24 @@ var HQ:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			{
-				"name": "HIRE ONE",
+				"name": "HIRE RESEARCHER",
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
 				"cooldown_duration":  5, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.recruit_new_researcher(1),
+				"effect": func() -> bool:
+					return await GAME_UTIL.recruit_new_researcher(1),
 			},
 			{
-				"name": "HIRE TWO",
+				"name": "PROMOTE RESEARCHER",
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"cooldown_duration":  7, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.recruit_new_researcher(2),
-			},
-			{
-				"name": "HIRE THREE",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  10, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.recruit_new_researcher(3),
+				"cooldown_duration":  5, 
+				"effect": func() -> bool:
+					return await GAME_UTIL.promote_researchers(),
 			}
 		],	
 	# ------------------------------------------
@@ -180,25 +128,7 @@ var HQ:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
 
-				},
-		}	
-	},	
-	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -236,7 +166,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 	"description": "Allows you to view any REDACTED room profiles before unlocking them.",
 
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
@@ -249,8 +179,8 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 			{
 				"name": "UNLOCK FACILITIES", 
 				"cooldown_duration":  1, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.open_store(),
+				"effect": func() -> bool:
+					return await GAME_UTIL.open_store(),
 			}
 		],	
 	# ------------------------------------------
@@ -273,25 +203,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
 
-				},
-		}	
-	},	
-	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -328,7 +240,7 @@ var R_AND_D_LAB:Dictionary = {
 	"description": "Enables research and development.",
 
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
@@ -339,35 +251,15 @@ var R_AND_D_LAB:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			{
-				"name": "ENABLE UPGRADES",
+				"name": "UPGRADE +1",
 				"use_cost": func() -> Dictionary:
 					return {
-						RESOURCE.TYPE.SCIENCE: -20
+						RESOURCE.TYPE.ENERGY: -1
 					},
 				"conditional": func(gpc:Dictionary) -> Dictionary:
-					gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = true
+					gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = 1
 					return gpc,
-			},
-			{
-				"name": "UPGRADE +",
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"conditional": func(gpc:Dictionary) -> Dictionary:
-					gpc[CONDITIONALS.TYPE.UPGRADE_LEVEL] += 1
-					return gpc,
-			},
-			{
-				"name": "UPGRADE ++",
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"conditional": func(gpc:Dictionary) -> Dictionary:
-					gpc[CONDITIONALS.TYPE.UPGRADE_LEVEL] += 1
-					return gpc,
-			},
+			}
 		],	
 	# ------------------------------------------
 
@@ -387,25 +279,6 @@ var R_AND_D_LAB:Dictionary = {
 				return {
 					RESOURCE.TYPE.MONEY: -20
 				},
-		}	
-	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.ENERGY: -1,
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-			
 		}	
 	},
 	
@@ -428,11 +301,14 @@ var CONSTRUCTION_YARD:Dictionary = {
 	"description": "Enables base development.",
 
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
 	"build_time": 1,
+	"resource_requirements": [
+		RESOURCE.TYPE.SECURITY
+	],	
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -445,7 +321,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
 				"cooldown_duration":  1, 
-				"effect": func(GameplayNode:Control) -> void:
+				"effect": func() -> void:
 					pass,
 					#await GameplayNode.recruit_new_researcher(1),
 			},
@@ -460,24 +336,6 @@ var CONSTRUCTION_YARD:Dictionary = {
 					RESOURCE.TYPE.MONEY: -20
 				},
 		}	
-	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.ENERGY: -1,
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-			}	
 	},
 	
 	"operating_costs": {
@@ -499,54 +357,26 @@ var BARRICKS:Dictionary = {
 	"description": "Houses security forces.",
 
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
 	"build_time": 1,
+	"resource_requirements": [],	
 	# ------------------------------------------
 	
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
 			{
-				"name": "TRAIN (INCREASE READINESS)",
+				"name": "SUPPLY SECURITY",
 				"use_cost": func() -> Dictionary:
 					return {
-						RESOURCE.TYPE.SCIENCE: -20
+						RESOURCE.TYPE.ENERGY: -1
 					},
-				"effect": func() -> Dictionary:
-					return {
-						"metrics":{
-							RESOURCE.BASE_METRICS.READINESS: 1
-						}
-					},
-			},
-			{
-				"name": "TRAIN (INCREASE SAFETY)",
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"effect": func() -> Dictionary:
-					return {
-						"metrics":{
-							RESOURCE.BASE_METRICS.SAFETY: 1
-						}
-					},
-			},
-			{
-				"name": "TRAIN (INCREASE MORALE)",
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"effect": func() -> Dictionary:
-					return {
-						"metrics":{
-							RESOURCE.BASE_METRICS.MORALE: 1
-						}
-					},
+				"provides": [
+					RESOURCE.TYPE.SECURITY
+				]
 			}
 		],	
 	# ------------------------------------------
@@ -561,28 +391,6 @@ var BARRICKS:Dictionary = {
 		}	
 	},
 		
-	"activation_cost": {
-		"resources": {
-			"personnel": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.STAFF: -7,
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"metrics": func() -> Dictionary:
-				return {
-					RESOURCE.BASE_METRICS.SAFETY: 3
-				},
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},
-	
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -602,7 +410,7 @@ var DORMITORY:Dictionary = {
 	"description": "Houses facility staff.",
 	
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
@@ -613,16 +421,15 @@ var DORMITORY:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			{
-				"name": "HOUSE 10",
+				"name": "SUPPLY STAFF",
 				"use_cost": func() -> Dictionary:
 					return {
-						RESOURCE.TYPE.SCIENCE: -20
+						RESOURCE.TYPE.ENERGY: -1
 					},
-				"capacity": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.STAFF: 10,
-					},
-			},
+				"provides": [
+					RESOURCE.TYPE.STAFF,
+				]
+			}
 		],	
 	# ------------------------------------------
 
@@ -635,25 +442,7 @@ var DORMITORY:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.ENERGY: -1,
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},
-	
+
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -673,12 +462,28 @@ var HOLDING_CELLS:Dictionary = {
 	"description": "Houses D-class personel.",
 	
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			{
+				"name": "SUPPLY DCLASS",
+				"use_cost": func() -> Dictionary:
+					return {
+						RESOURCE.TYPE.ENERGY: -1
+					},
+				"provides": [
+					RESOURCE.TYPE.DCLASS,
+				]
+			}
+		],	
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"purchase_costs": {
@@ -689,25 +494,7 @@ var HOLDING_CELLS:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.ENERGY: -1,
-				},
-		}	
-	},		
-	
-	"activation_effect": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},
-	
+
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -727,7 +514,7 @@ var HR_DEPARTMENT:Dictionary = {
 	"description": "Enables recruitment of key staff.",
 	
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
@@ -744,8 +531,8 @@ var HR_DEPARTMENT:Dictionary = {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
 				"cooldown_duration":  7, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.STAFF, 10),
+				"effect": func() -> bool:
+					return await GAME_UTIL.recruit_new_personel(RESOURCE.TYPE.STAFF, 10),
 			},
 			{
 				"name": "HIRE SECURITY",
@@ -754,8 +541,8 @@ var HR_DEPARTMENT:Dictionary = {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
 				"cooldown_duration":  7, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.SECURITY, 10),
+				"effect": func() -> bool:
+					return await GAME_UTIL.recruit_new_personel(RESOURCE.TYPE.SECURITY, 10),
 			},
 			{
 				"name": "HIRE TECHNICANS",
@@ -764,8 +551,8 @@ var HR_DEPARTMENT:Dictionary = {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
 				"cooldown_duration":  7, 
-				"effect": func(GameplayNode:Control) -> bool:
-					return await GameplayNode.recruit_new_personel(RESOURCE.TYPE.TECHNICIANS, 10),
+				"effect": func() -> bool:
+					return await GAME_UTIL.recruit_new_personel(RESOURCE.TYPE.TECHNICIANS, 10),
 			}
 		],	
 	# ------------------------------------------
@@ -779,16 +566,6 @@ var HR_DEPARTMENT:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.ENERGY: -1,
-				},
-		}	
-	},		
-	
 
 	"operating_costs": {
 		"resources": {
@@ -809,7 +586,7 @@ var HUME_DETECTOR:Dictionary = {
 	"description": "Makes hume levels visible.",
 	
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
 	"own_limit": 1,
@@ -825,16 +602,7 @@ var HUME_DETECTOR:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.ENERGY: -5,
-				},
-		}	
-	},		
-	
+
 	"operating_costs": {
 		"resources": {
 			"amount": func() -> Dictionary:
@@ -846,12 +614,12 @@ var HUME_DETECTOR:Dictionary = {
 	# ------------------------------------------
 }
 
-var STANDARD_LOCKER:Dictionary = {
-	"name": "STANDARD_LOCKER",
-	"shortname": "S.LOCKER",
+var CONTAINMENT_CELL:Dictionary = {
+	"name": "CONTAINMENT_CELL",
+	"shortname": "C.CELL",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/images/redacted.png",
-	"description": "A basic room with a high security lock.",
+	"description": "A basic room with a high security lock.  Used to contain SCPs.",
 	
 	# ------------------------------------------
 	"can_contain": true,
@@ -860,6 +628,22 @@ var STANDARD_LOCKER:Dictionary = {
 	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			{
+				"name": "CONTAIN",
+				"unlock_cost": func() -> Dictionary:
+					return {
+						RESOURCE.TYPE.SCIENCE: -20
+					},
+				"cooldown_duration":  7, 
+				"effect": func() -> bool:
+					return await GAME_UTIL.contain_scp(),
+			}
+		],	
+	# ------------------------------------------	
 	
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
@@ -889,15 +673,6 @@ var STANDARD_LOCKER:Dictionary = {
 				},
 		}	
 	},
-		
-	"activation_cost": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},		
 
 	"operating_costs": {
 		"resources": {
@@ -937,6 +712,7 @@ var reference_data:Dictionary = {
 	ROOM.TYPE.BARRICKS: BARRICKS,
 	ROOM.TYPE.DORMITORY: DORMITORY,
 	ROOM.TYPE.HR_DEPARTMENT: HR_DEPARTMENT,
+	ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
 	## TIER ONE
 	
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,
@@ -961,7 +737,7 @@ var reference_data:Dictionary = {
 	#ROOM.TYPE.DORMITORY: DORMITORY,
 	
 	#ROOM.TYPE.HOLDING_CELLS: HOLDING_CELLS,
-	ROOM.TYPE.STANDARD_LOCKER: STANDARD_LOCKER,
+	ROOM.TYPE.CONTAINMENT_CELL: CONTAINMENT_CELL,
 	
 	#ROOM.TYPE.HUME_DETECTOR: HUME_DETECTOR,
 	
@@ -1034,6 +810,13 @@ func return_unavailable_rooms(ref:ROOM.TYPE, room_config:Dictionary) -> Array:
 func return_ability(ref:ROOM.TYPE, ability_index:int) -> Dictionary:
 	var room_data:Dictionary = return_data(ref)
 	var abilities:Array = room_data.abilities.call() if "abilities" in room_data else []
+	return abilities[ability_index]
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------	
+func return_passive_ability(ref:ROOM.TYPE, ability_index:int) -> Dictionary:
+	var room_data:Dictionary = return_data(ref)
+	var abilities:Array = room_data.passive_abilities.call() if "passive_abilities" in room_data else []
 	return abilities[ability_index]
 # ------------------------------------------------------------------------------		
 	
@@ -1145,22 +928,22 @@ func calculate_operating_costs(ref:ROOM.TYPE, add:bool = true) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_activation_cost(ref:ROOM.TYPE, refund:bool = false) -> Dictionary:	
-	var room_data:Dictionary = return_data(ref)
-	var resource_data_copy:Dictionary = resources_data.duplicate(true)
-
-	if "activation_cost" in room_data:
-		for prop in ["amount", "personnel"]:
-			if prop in room_data.activation_cost.resources:
-				var dict:Dictionary = room_data.activation_cost.resources[prop].call()
-				for key in dict:
-					var amount:int = absi(dict[key])
-					resource_data_copy[key].utilized += amount if !refund else -amount
-					resource_data_copy[key].amount -= amount if !refund else -amount
-					if resource_data_copy[key].amount < 0:
-						resource_data_copy[key].amount = 0
-	
-	return resource_data_copy
+#func calculate_activation_cost(ref:ROOM.TYPE, refund:bool = false) -> Dictionary:	
+	#var room_data:Dictionary = return_data(ref)
+	#var resource_data_copy:Dictionary = resources_data.duplicate(true)
+#
+	#if "activation_cost" in room_data:
+		#for prop in ["amount", "personnel"]:
+			#if prop in room_data.activation_cost.resources:
+				#var dict:Dictionary = room_data.activation_cost.resources[prop].call()
+				#for key in dict:
+					#var amount:int = absi(dict[key])
+					#resource_data_copy[key].utilized += amount if !refund else -amount
+					#resource_data_copy[key].amount -= amount if !refund else -amount
+					#if resource_data_copy[key].amount < 0:
+						#resource_data_copy[key].amount = 0
+	#
+	#return resource_data_copy
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -1173,7 +956,7 @@ func owns_and_is_active(ref:ROOM.TYPE) -> bool:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
 	if filter.size() == 0:
 		return false
-	var room_extract:Dictionary = extract_room_details(filter[0].location)
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(filter[0].location)
 	return room_extract.is_activated
 # ------------------------------------------------------------------------------	
 
@@ -1240,343 +1023,3 @@ func at_own_limit(ref:ROOM.TYPE) -> bool:
 	
 	return total_count >= room_data.own_limit
 # ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func extract_wing_details() -> Dictionary:	
-	var floor:int = current_location.floor
-	var ring:int = current_location.ring
-	
-	var wing_data:Dictionary = room_config.floor[floor].ring[ring]
-	var room_refs:Array = wing_data.room_refs
-	var abilities:Dictionary = {}
-	var passive_abilities:Dictionary = {}
-	var ab_level:int = 0  #TODO: find what level the upgrade level is at
-	
-	
-	for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
-		var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room_index]
-		var designation:String = U.location_to_designation({"floor": floor, "ring": ring, "room": room_index})
-
-		if !room_config_data.room_data.is_empty():
-			var base_state:Dictionary = room_config_data.room_data.base_state
-			if base_state.is_activated:
-				var room_details:Dictionary = room_config_data.room_data.details
-				abilities[room_details.ref] = []
-				if "abilities" in room_details:
-					var ability_list:Array = room_details.abilities.call()
-					for index in ability_list.size():
-						if index >= ab_level:
-							abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
-				
-				if "passive_abilities" in room_details:
-					var ability_list:Array = room_details.passive_abilities.call()
-					for index in ability_list.size():
-						if index >= ab_level:
-							passive_abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
-	
-	return {
-		"room_refs": wing_data.room_refs,
-		"abilities": abilities
-	}
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func extract_room_details(current_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
-	var designation:String = U.location_to_designation(current_location)
-	var floor:int = current_location.floor
-	var ring:int = current_location.ring
-	var room:int = current_location.room
-
-	var floor_data:Dictionary = use_config.floor[floor]
-	var wing_data:Dictionary = use_config.floor[floor].ring[ring]
-	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
-	var is_room_empty:bool = room_config_data.room_data.is_empty()
-	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
-	var is_room_under_construction:bool  = !room_config_data.build_data.is_empty()
-	var room_details:Dictionary = {} if is_room_empty else room_config_data.room_data.details 
-	var room_base_state:Dictionary = {} if is_room_empty else room_config_data.room_data.base_state 
-	
-	var is_activated:bool = false if is_room_empty else room_base_state.is_activated 
-	var can_activate:bool = false if is_room_empty else (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref)) if !is_activated else false)
-	var can_contain:bool = false if is_room_empty else room_details.can_contain
-	var can_destroy:bool = false if is_room_empty else room_details.can_destroy
-	var ap_diff_amount:int = 1 if is_activated else 0
-	var abilities:Array = [] if (is_room_empty or "abilities" not in room_details) else room_details.abilities.call()	
-	var passive_abilities:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
-	var passives_enabled:Array = [] if is_room_empty else room_base_state.passives_enabled
-
-	var scp_data:Dictionary = room_config_data.scp_data 
-	var is_scp_empty:bool = scp_data.is_empty()
-	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(scp_data.ref)
-	var is_transfer:bool = false #if is_scp_empty else room_config_data.scp_data.is_transfer
-	var is_contained:bool = false #if is_scp_empty else room_config_data.scp_data.is_contained
-	
-	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
-		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
-		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
-			return true
-		return false	
-	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-	
-
-	# tracks 
-	var resource_details:Dictionary = {
-		# captures just for room
-		"room": {},
-		# all resources for scp
-		"scp": {},
-		# 
-		"researchers": {},
-		# combines room, scp and researchers 
-		"facility": {},
-		#
-		"traits": {},
-		"synergy_traits": {},
-		"total": {},
-	}
-	var metric_details:Dictionary = {
-		# captures just for room
-		"room": {},
-		# all resources for scp
-		"scp": {},
-		# 
-		"researchers": {},
-		# combines room, scp and researchers 
-		"facility": {},
-		#
-		"traits": {},
-		"synergy_traits": {},
-		"total": {},
-	}
-	
-
-	# get resources spent/added by rooms
-	if !is_room_empty:
-		for item in return_operating_cost(room_details.ref):
-			match item.type:
-				# -----------------------
-				"amount":
-					if item.resource.ref not in resource_details.room:
-						resource_details.room[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.facility:
-						resource_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.total:
-						resource_details.total[item.resource.ref] = 0
-					resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				# -----------------------
-				"metrics":
-					if item.resource.ref not in metric_details.room:
-						metric_details.room[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.facility:
-						metric_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.total:
-						metric_details.total[item.resource.ref] = 0
-
-					metric_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					metric_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					metric_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				
-	
-	# get resources spent/added by scp
-	if !is_scp_empty:
-		for item in SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref):
-			match item.type:
-				# -----------------------
-				"amount":
-					if item.resource.ref not in resource_details.scp:
-						resource_details.scp[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.facility:
-						resource_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.total:
-						resource_details.total[item.resource.ref] = 0
-						
-					resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
-					resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
-					resource_details.total[item.resource.ref] += item.amount if is_contained else 0
-				# -----------------------
-				"metrics":
-					if item.resource.ref not in metric_details.scp:
-						metric_details.scp[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.facility:
-						metric_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.total:
-						metric_details.total[item.resource.ref] = 0
-
-					metric_details.scp[item.resource.ref] += item.amount if is_contained else 0
-					metric_details.facility[item.resource.ref] += item.amount if is_contained else 0
-					metric_details.total[item.resource.ref] += item.amount if is_contained else 0
-	
-
-	var total_traits_list := []
-	var synergy_traits := []
-	var dup_list := []		
-	var trait_list := []
-	var synergy_trait_list := []
-
-	for researcher in researchers:
-		# records researcher profession bonus (I.E. ECONOMIST, PSYCHOLOGIST, etc)
-		if !is_room_empty:
-			var spec_bonus:Array = ROOM_UTIL.return_specilization_bonus(room_details.ref, researcher.specializations)
-			for item in spec_bonus:
-				match item.type:
-					"ap":
-					# -----------------------
-						ap_diff_amount += item.amount
-					# -----------------------
-					"resource":
-						if item.resource.ref not in resource_details.researchers:
-							resource_details.researchers[item.resource.ref] = 0
-						if item.resource.ref not in resource_details.facility:
-							resource_details.facility[item.resource.ref] = 0					
-						if item.resource.ref not in resource_details.total:
-							resource_details.total[item.resource.ref] = 0
-							
-						resource_details.researchers[item.resource.ref] += item.amount
-						resource_details.facility[item.resource.ref] += item.amount
-						resource_details.total[item.resource.ref] += item.amount
-					# -----------------------
-					"metrics":
-						if item.resource.ref not in metric_details.researchers:
-							metric_details.researchers[item.resource.ref] = 0
-						if item.resource.ref not in metric_details.facility:
-							metric_details.facility[item.resource.ref] = 0					
-						if item.resource.ref not in metric_details.total:
-							metric_details.total[item.resource.ref] = 0
-							
-						metric_details.researchers[item.resource.ref] += item.amount
-						metric_details.facility[item.resource.ref] += item.amount
-						metric_details.total[item.resource.ref] += item.amount					
-
-		# add selected to selected list	
-		total_traits_list.push_back(researcher.traits)
-
-	# records bonus from traits
-	for traits in total_traits_list:
-		for t in traits:
-			if t not in dup_list:
-				var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(t)
-				var effect:Dictionary = traits_detail.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-				var resource_list:Array = []
-				var metric_list:Array = []
-				# -------------------
-				if "resource" in effect:
-					for key in effect.resource:
-						var amount:int = effect.resource[key]
-						
-						if key not in resource_details.traits:
-							resource_details.traits[key] = 0
-						if key not in resource_details.total:
-							resource_details.total[key] = 0
-						resource_details.traits[key] += amount
-						resource_details.total[key] += amount
-						
-						resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
-				# -------------------
-				if "metrics" in effect:
-					for key in effect.metrics:
-						var amount:int = effect.metrics[key]
-						
-						if key not in metric_details.traits:
-							metric_details.traits[key] = 0
-						if key not in metric_details.total:
-							metric_details.total[key] = 0
-						metric_details.traits[key] += amount
-						metric_details.total[key] += amount
-						
-						metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})						
-							
-				trait_list.push_back({"details": traits_detail, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-	
-	# records bonus from synergy traits
-	if total_traits_list.size() == 2:
-		var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
-		for details in list:
-			var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-			var resource_list:Array = []
-			var metric_list:Array = []
-			# -------------------
-			if "resource" in effect:
-				for key in effect.resource:
-					var amount:int = effect.resource[key]
-					
-					if key not in resource_details.synergy_traits:
-						resource_details.synergy_traits[key] = 0
-					if key not in resource_details.total:
-						resource_details.total[key] = 0
-					resource_details.synergy_traits[key] += amount
-					resource_details.total[key] += amount
-					
-					resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
-			# -------------------
-			if "metrics" in effect:
-				for key in effect.metrics:
-					var amount:int = effect.metrics[key]
-
-					if key not in metric_details.traits:
-						metric_details.traits[key] = 0
-					if key not in metric_details.total:
-						metric_details.total[key] = 0
-					metric_details.traits[key] += amount
-					metric_details.total[key] += amount					
-					
-					metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})		
-						
-			synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-			
-			
-	# change ap_diff value for enabled passives
-	#for index in passive_abilities.size():
-		#var ability:Dictionary = passive_abilities[index]
-		#if index in passives_enabled:
-			#ap_diff_amount -= ability.ap_cost
-	
-	# convert resource as a dict to a list form for easy reading
-	var resources_as_list:Array = []
-	for key in resource_details.total:
-		var amount:int = resource_details.total[key]
-		resources_as_list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-
-	return {
-		"floor_config_data": floor_data,
-		"wing_config_data": wing_data,
-		"room_config_data": room_config_data,
-		# -----
-		"is_directors_office": room_details.ref == ROOM.TYPE.DIRECTORS_OFFICE if !room_details.is_empty() else false,
-		"is_hq": room_details.ref == ROOM.TYPE.HQ if !room_details.is_empty() else false,
-		"is_room_empty": room_details.is_empty(),
-		"is_room_under_construction": is_room_under_construction,
-		"is_activated": is_activated,
-		"can_activate": can_activate,
-		"can_contain": can_contain,
-		"can_destroy": can_destroy,
-		"room_category": ROOM.CATEGORY.CONTAINMENT_CELL if (!room_details.is_empty() and room_details.can_contain) else ROOM.CATEGORY.FACILITY,
-		# ------		
-		"is_scp_empty": is_scp_empty,
-		#"is_scp_transfering": is_transfer,
-		#"is_scp_contained": is_contained,
-		#"is_scp_testing": !is_transfer and is_contained and researchers.size() > 0,
-		# ------
-		"researchers_count": researchers.size(),
-		"room_base_state": room_base_state, 
-		# -----
-		"room": {						
-			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
-			"abilities": abilities,
-			"passive_abilities": passive_abilities,
-			"passives_enabled": passives_enabled,
-		} if !is_room_empty or is_room_under_construction else {},
-		"scp": {
-			"details": scp_details,
-			#"is_transfer": is_transfer,
-			#"is_contained": is_contained,
-		} if !is_scp_empty else {},
-		"trait_list": trait_list,
-		"synergy_trait_list": synergy_trait_list,
-		"resources_as_list": resources_as_list,
-		"resource_details": resource_details,
-		"metric_details": metric_details,
-		"researchers": researchers
-	}
-# ------------------------------------------------------------------------------	

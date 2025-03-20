@@ -91,7 +91,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 1
-hide_status = true
 
 [node name="ExpandSubListContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer"]
 custom_minimum_size = Vector2(189, 0)
@@ -104,14 +103,12 @@ modulate = Color(1, 1, 1, 0)
 z_index = 4
 z_as_relative = false
 layout_mode = 2
-title = "STAFFING"
 
 [node name="ResourcePanel" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer/ExpandSubListContainer" instance=ExtResource("4_ry2yn")]
 modulate = Color(1, 1, 1, 0)
 z_index = 3
 z_as_relative = false
 layout_mode = 2
-title = "RESOURCES"
 
 [node name="Abilities" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer2/ExpandListContainer/ExpandSubListContainer" instance=ExtResource("5_a7by7")]
 modulate = Color(1, 1, 1, 0)

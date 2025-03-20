@@ -251,7 +251,6 @@ var MORALE:Dictionary = {
 				},
 			# ---------
 			func() -> Dictionary:
-				print(option_selected)
 				props.onSelection.call(option_selected)
 				return {
 					"text": [
