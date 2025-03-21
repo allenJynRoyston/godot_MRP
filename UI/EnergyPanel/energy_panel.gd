@@ -16,3 +16,4 @@ func update_nodes() -> void:
 	var available:int = energy.available
 	var used:int = energy.used
 	ResourceItem.title = "%s/%s" % [available - used, available]	
+	ResourceItem.is_negative = available == used

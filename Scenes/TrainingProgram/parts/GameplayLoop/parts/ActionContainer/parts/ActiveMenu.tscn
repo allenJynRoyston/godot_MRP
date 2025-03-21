@@ -92,7 +92,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="IconBtn2" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
+[node name="PrevIcon" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -109,7 +109,7 @@ layout_mode = 2
 text = "HEADER"
 label_settings = ExtResource("2_epm40")
 
-[node name="IconBtn" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
+[node name="NextIcon" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0

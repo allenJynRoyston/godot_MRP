@@ -33,6 +33,19 @@ var DIRECTORS_OFFICE:Dictionary = {
 			}
 		],	
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			{
+				"name": "TEST +1",
+				"use_cost": func() -> Dictionary:
+					return {
+						RESOURCE.TYPE.ENERGY: -1
+					},
+			}
+		],	
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"unlock_costs": {
@@ -377,7 +390,7 @@ var BARRICKS:Dictionary = {
 				"provides": [
 					RESOURCE.TYPE.SECURITY
 				]
-			}
+			},
 		],	
 	# ------------------------------------------
 
@@ -704,6 +717,102 @@ var CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
 }
 
+var ENGINEERING_BAY:Dictionary = {
+	"name": "ENGINEERING BAY",
+	"shortname": "ENG. BAY",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/images/redacted.png",
+	"description": "Increases the upgrade level of the entire wing.",
+	
+	# ------------------------------------------
+	"can_contain": false,
+	"can_destroy": false,
+	"requires_unlock": false,	
+	"own_limit": 2,
+	"build_time": 1,
+	"resource_requirements": [
+		# RESOURCE.TYPE.TECHNICIANS
+	],		
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	#"abilities": func() -> Array: 
+		#return [
+			#{
+				#"name": "CONTAIN",
+				#"unlock_cost": func() -> Dictionary:
+					#return {
+						#RESOURCE.TYPE.SCIENCE: -20
+					#},
+				#"cooldown_duration":  7, 
+				#"effect": func() -> bool:
+					#return await GAME_UTIL.contain_scp(),
+			#}
+		#],	
+	# ------------------------------------------	
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			{
+				"name": "UPGRADE LVL 2",
+				"energy_cost": 3,
+				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
+					if ring_config_data.ability_level < 1:
+						ring_config_data.ability_level = 1
+					return ring_config_data,
+			},
+			{
+				"name": "UPGRADE LVL 3",
+				"energy_cost": 1,
+				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
+					if ring_config_data.ability_level == 1:
+						ring_config_data.ability_level = 2
+					return ring_config_data,
+			}			
+		],	
+	# ------------------------------------------	
+
+	# ------------------------------------------
+	"purchase_costs": {
+		"resources": {
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -20
+				},
+		}	
+	},
+
+	"operating_costs": {
+		"resources": {
+			"metrics": func() -> Dictionary:
+				return {
+					RESOURCE.BASE_METRICS.SAFETY: 2
+			},
+			"amount": func() -> Dictionary:
+				return {
+					RESOURCE.TYPE.MONEY: -1
+				},
+		}	
+	},
+	# ------------------------------------------	
+	"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
+			return {
+				"resource":{
+					RESOURCE.TYPE.ENERGY: 2
+				},
+			}
+		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			return {
+				"metrics":{
+					RESOURCE.BASE_METRICS.MORALE: 1
+				}
+			}
+		return {},
+	# ------------------------------------------
+}
+
 var reference_data:Dictionary = {
 	# TIER ZERO
 	ROOM.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE,
@@ -713,6 +822,7 @@ var reference_data:Dictionary = {
 	ROOM.TYPE.DORMITORY: DORMITORY,
 	ROOM.TYPE.HR_DEPARTMENT: HR_DEPARTMENT,
 	ROOM.TYPE.CONSTRUCTION_YARD: CONSTRUCTION_YARD,
+	ROOM.TYPE.ENGINEERING_BAY: ENGINEERING_BAY,
 	## TIER ONE
 	
 	ROOM.TYPE.R_AND_D_LAB: R_AND_D_LAB,

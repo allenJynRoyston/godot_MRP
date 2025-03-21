@@ -53,8 +53,11 @@ var left_btn_list:Array = []
 var right_btn_list:Array = []
 var action_list_options:Array = []
 var passive_list_options:Array = []
+
 var restore_state:Dictionary 
 var shortcuts:Dictionary = {}
+#var inactive_shortcuts:Dictionary = {}
+
 var active_menu_is_open:bool = false
 var is_setup:bool = false
 var enable_update_details:bool = false
@@ -101,7 +104,7 @@ func _ready() -> void:
 		show_passives()
 		
 	ActiveMenu.onNext = func() -> void:
-		ability_level_index = U.min_max(ability_level_index + 1, 0, 2, true)
+		ability_level_index = U.min_max(ability_level_index + 1, 0, GAME_UTIL.get_ring_ability_level())
 		match current_menu_type:
 			MENU_TYPE.ACTIVES:
 				show_actives(true)
@@ -109,7 +112,7 @@ func _ready() -> void:
 				show_passives(true)
 		
 	ActiveMenu.onPrev = func() -> void:
-		ability_level_index = U.min_max(ability_level_index - 1, 0, 2, true)
+		ability_level_index = U.min_max(ability_level_index - 1, 0, GAME_UTIL.get_ring_ability_level())
 		match current_menu_type:
 			MENU_TYPE.ACTIVES:
 				show_actives(true)
@@ -340,18 +343,18 @@ func open_debug_menu() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func toggle_passive(room_ref:int, ability_index:int) -> void:
-	GAME_UTIL.toggle_passive_ability(room_ref, ability_index)
+func toggle_passive(room_ref:int, ability_level:int, ignore_disable:bool = false) -> void:
+	GAME_UTIL.toggle_passive_ability(room_ref, ability_level)
 	
-	var designation:String = str(current_location.floor, current_location.ring)
+	#var designation:String = str(current_location.floor, current_location.ring)
+	#
+	#for index in RightSideBtnList.get_child_count():
+		#var btn:Control = RightSideBtnList.get_child(index)
+		#if btn.title in base_states.ring[designation].passives_enabled:
+			#var is_checked:bool = base_states.ring[designation].passives_enabled[btn.title] 
+			#btn.icon = SVGS.TYPE.CHECKBOX if is_checked else SVGS.TYPE.EMPTY_CHECKBOX
 	
-	for index in RightSideBtnList.get_child_count():
-		var btn:Control = RightSideBtnList.get_child(index)
-		if btn.title in base_states.ring[designation].passives_enabled:
-			var is_checked:bool = base_states.ring[designation].passives_enabled[btn.title] 
-			btn.icon = SVGS.TYPE.CHECKBOX if is_checked else SVGS.TYPE.EMPTY_CHECKBOX
-	
-	update_passive_bookmarked()
+	#update_passive_bookmarked(ignore_disable)
 # --------------------------------------------------------------------------------------------------	
 	
 # --------------------------------------------------------------------------------------------------
@@ -365,7 +368,7 @@ func show_actives(skip_animation:bool = false) -> void:
 	# pull data, create the options list
 	var designation:String = str(current_location.floor, current_location.ring)	
 	var extract_wing_data:Dictionary = GAME_UTIL.extract_wing_details()	
-	var wing_max_level:int = GAME_UTIL.get_wing_max_level()
+	var wing_max_level:int = GAME_UTIL.get_ring_ability_level()
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
 	
 	if is_powered:
@@ -375,24 +378,28 @@ func show_actives(skip_animation:bool = false) -> void:
 			for ability in abilities:
 				if ability_level_index == ability.level:
 					
-					var cooldown_duration:int = 0
-					if ability.details.name in base_states.ring[designation].ability_on_cooldown:
-						cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.details.name]
+					var get_cooldown_duration:Callable = func() -> int:
+						await U.tick()
+						var cooldown_duration:int = 0
+						if ability.details.name in base_states.ring[designation].ability_on_cooldown:
+							cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.details.name]
+						return cooldown_duration
+						
+					var is_disabled:Callable = func() -> bool:
+						await U.tick()
+						var cooldown_duration:int = await get_cooldown_duration.call() 
+						return cooldown_duration != 0
 					
 					action_list_options.push_back({
-						"bookmark_data": {"ref": room_ref, "ability_index": ability.index},
+						"bookmark_data": {"ref": room_ref, "ability_level": ability.index},
 						"title": ability.details.name,
-						"cooldown_duration": cooldown_duration, 
-						"is_disabled": cooldown_duration != 0,
-						"get_cooldown_duration": func() -> SVGS.TYPE:
-							print(base_states.ring[designation])
-							var cd:int = 0
-							if ability.details.name in base_states.ring[designation].ability_on_cooldown:
-								cd = base_states.ring[designation].ability_on_cooldown[ability.details.name]
-							return cd,
+						"cooldown_duration": await get_cooldown_duration.call(), 
+						"is_disabled": await is_disabled.call(),
+						"get_disabled_state": is_disabled,
+						"get_cooldown_duration": get_cooldown_duration,
 						"action": func() -> void:
 							await GAME_UTIL.use_active_ability(ability.details)
-							update_active_bookmarked(),
+							update_active_bookmarked(true),
 						"onSelect": func(index:int) -> void:
 							await action_list_options[index].action.call(),
 					})				
@@ -433,27 +440,41 @@ func show_passives(skip_animation:bool = false) -> void:
 	var extract_wing_data:Dictionary = GAME_UTIL.extract_wing_details()
 	var designation:String = str(current_location.floor, current_location.ring)
 	var passives_enabled:Dictionary = base_states.ring[designation].passives_enabled
-	
+
 	for room_ref in extract_wing_data.passive_abilities:
 		var abilities:Array = extract_wing_data.passive_abilities[room_ref]
 
-		for ability_index in abilities.size():
-			var ability:Dictionary = abilities[ability_index]
+		for ability_level in abilities.size():
+			var ability:Dictionary = abilities[ability_level]
 			if ability_level_index == ability.level:
-				var ability_uid:String = str(room_ref, ability_index)
-				var is_checked:bool = passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
- 
+				var ability_uid:String = str(room_ref, ability_level)
+				var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
+				
+				var is_checked:Callable = func() -> bool: 
+					await U.tick()
+					return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
+					
+				var is_disabled:Callable = func() -> bool: 
+					var _is_checked:bool = await is_checked.call()
+					var energy:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].energy
+					var energy_remaining:int = energy.available - energy.used
+					var has_enough:bool = energy_remaining - energy_cost >= 0
+					
+					return !has_enough and !_is_checked
+				
+				
 				passive_list_options.push_back({
-					"bookmark_data": {"ref": room_ref, "ability_index": ability.index},
+					"bookmark_data": {"ref": room_ref, "ability_level": ability.index},
 					"title": ability.details.name,
 					"icon": SVGS.TYPE.RESEARCH,
+					"energy_cost": energy_cost, 
 					"is_togglable": true,
-					"is_checked": is_checked,
-					"is_disabled": false,
-					"get_checked_state": func() -> bool:
-						return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false,
+					"is_checked": await is_checked.call(),
+					"is_disabled": await is_disabled.call(),
+					"get_disabled_state": is_disabled,
+					"get_checked_state": is_checked,
 					"action": func() -> void:
-						toggle_passive(room_ref, ability_index),
+						toggle_passive(room_ref, ability_level),
 					"onSelect": func(index:int) -> void:
 						await passive_list_options[index].action.call(),
 				})				
@@ -486,6 +507,7 @@ func update_active_menu(header:String, color:Color, options_list:Array, xpos:int
 	ActiveMenu.header = header
 	ActiveMenu.use_color = color
 	ActiveMenu.options_list = options_list		
+	ActiveMenu.max_level = GAME_UTIL.get_ring_ability_level()
 
 	ActiveMenu.size.y = 1
 	ActiveMenu.custom_minimum_size.y = 1	
@@ -526,8 +548,10 @@ func get_number_icon(val:int) -> SVGS.TYPE:
 ## --------------------------------------------------------------------------------------------------		
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
-	if !in_clear_mode and !in_contain_mode:
-		U.debounce("verify_actions", verify_available_actions)
+	#if !in_clear_mode and !in_contain_mode:
+		#U.debounce("verify_actions", verify_available_actions)
+	if !is_setup:
+		U.debounce("build_btns", buildout_btns)		
 ## --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -562,7 +586,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		check_if_contain_is_valid()
 		return
 		
-
 	if previous_designation != designation:
 		previous_designation = designation
 		U.debounce("build_btns", buildout_btns)
@@ -582,9 +605,10 @@ func render_shorcut_container() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func buildout_btns() -> void:
-	if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty():return	
+	if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty():return
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var floor_is_powered:bool = room_extract.floor_config_data.is_powered
+	
 
 	var room_is_empty:bool = room_extract.room.is_empty()	
 	var is_activated:bool = room_extract.is_activated
@@ -615,7 +639,7 @@ func buildout_btns() -> void:
 
 	match camera_settings.type:
 		# ------------------------------------
-		CAMERA.TYPE.FLOOR_SELECT:			
+		CAMERA.TYPE.FLOOR_SELECT:
 			for node in [LeftSideShortcutContainer, RightSideShortcutContainer]:
 				node.hide()
 			
@@ -692,7 +716,7 @@ func buildout_btns() -> void:
 								
 								enable_room_focus(false)
 								unlock_menu(true)							
-								verify_available_actions()
+								#verify_available_actions()
 								
 				})	
 			
@@ -772,7 +796,7 @@ func buildout_btns() -> void:
 			if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 				GameplayNode.next_day(),
 	})
-			
+	
 	btn_list_update(CenterBtnList, new_center_btn_list, reload, func(): center_btn_list = new_center_btn_list)
 	build_action_shortcut(false)
 	build_passive_shortcut(false)
@@ -785,51 +809,57 @@ func buildout_btns() -> void:
 # --------------------------------------------------------------------------------------------------
 func verify_available_actions() -> void:
 	if current_location.is_empty():return
-	var designation:String = str(current_location.floor, current_location.ring)
-	var extract_wing_data:Dictionary = GAME_UTIL.extract_wing_details()  #TODO: replace this with current level
-	
-	var available_list:Array = []
-	for room_ref in extract_wing_data.abilities:
-		var abilities:Array = extract_wing_data.abilities[room_ref]
-		for ability in abilities:
-			available_list.push_back(str(room_ref,ability.index))
-	
-	for index in shortcuts[designation].actives:
-		var shortcuts_data:Dictionary = shortcuts[designation].actives[index]
-		if !shortcuts_data.is_empty():
-			var ref_string:String = str(shortcuts_data.ref, shortcuts_data.ability_index)
-			if ref_string not in available_list:
-				shortcuts[designation].actives[index] = {}
-		
-	#U.debounce("build_btns", buildout_btns)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func update_active_bookmarked() -> void:
-	var designation:String = str(current_location.floor, current_location.ring)
-	for index in LeftSideBtnList.get_child_count():		
-		var btn:Control = LeftSideBtnList.get_child(index) 
-		if index in shortcuts[designation].actives:
-			var shortcut_data:Dictionary = shortcuts[designation].actives[index]		
-			var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.ref, shortcut_data.ability_index)
-			var cooldown_duration:int = 0
-			if ability.name in base_states.ring[designation].ability_on_cooldown:
-				cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.name]
-			btn.icon = get_number_icon(cooldown_duration)
+func update_active_bookmarked(ignore_disable_check:bool) -> void:
+	if !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIVE_ABILITY_SHORTCUTS]:return
+	#var designation:String = str(current_location.floor, current_location.ring)
+	#var ring_ability_level:int = GAME_UTIL.get_ring_ability_level()
+#
+	#for index in LeftSideBtnList.get_child_count():		
+		#var btn:Control = LeftSideBtnList.get_child(index) 
+		#if index in shortcuts[designation].actives:
+			#var shortcut_data:Dictionary = shortcuts[designation].actives[index]
+			#if shortcut_data.is_empty():
+				#btn.is_disabled = true
+				#return
+			#
+			#var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.ref, shortcut_data.ability_level)
+			#var cooldown_duration:int = 0
+			#var at_level_requirement:bool = ring_ability_level >= shortcut_data.ability_level
+			#
+			#if ability.name in base_states.ring[designation].ability_on_cooldown:
+				#cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.name]
+			#btn.icon = get_number_icon(cooldown_duration)
+			#
+			#if !ignore_disable_check:
+				#btn.is_disabled = !at_level_requirement			
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
-func update_passive_bookmarked() -> void:
-	var designation:String = str(current_location.floor, current_location.ring)
-	for index in RightSideBtnList.get_child_count():		
-		var btn:Control = RightSideBtnList.get_child(index) 
-		if index in shortcuts[designation].passives:
-			var shortcut_data:Dictionary = shortcuts[designation].passives[index]
-			var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.ref, shortcut_data.ability_index)
-			var passives_enabled:Dictionary = base_states.ring[designation].passives_enabled
-			var ability_uid:String = str(shortcut_data.ref, shortcut_data.ability_index)
-			var is_checked:bool = passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false			
-			btn.icon = SVGS.TYPE.CHECKBOX if is_checked else SVGS.TYPE.EMPTY_CHECKBOX
+func update_passive_bookmarked(ignore_disable_check:bool) -> void:
+	if !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_PASSIVE_ABILITY_SHORTCUTS]:return	
+	#await U.tick()
+	#var designation:String = str(current_location.floor, current_location.ring)
+	#var ring_ability_level:int = GAME_UTIL.get_ring_ability_level()
+#
+	#for index in RightSideBtnList.get_child_count():		
+		#var btn:Control = RightSideBtnList.get_child(index) 
+		#if index in shortcuts[designation].passives:
+			#var shortcut_data:Dictionary = shortcuts[designation].passives[index]
+			#var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.ref, shortcut_data.ability_level)
+			#var passives_enabled:Dictionary = base_states.ring[designation].passives_enabled
+			#var ability_uid:String = str(shortcut_data.ref, shortcut_data.ability_level)
+			#var is_checked:bool = passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false			
+			#var at_level_requirement:bool = ring_ability_level >= shortcut_data.ability_level
+			#
+			#btn.icon = SVGS.TYPE.DELETE if !at_level_requirement else (SVGS.TYPE.CHECKBOX if is_checked else SVGS.TYPE.EMPTY_CHECKBOX)
+			#
+			#if !ignore_disable_check:
+				#btn.is_disabled = !at_level_requirement
+				#
+	#update_active_bookmarked(ignore_disable_check)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -847,35 +877,19 @@ func build_action_shortcut(is_disabled:bool) -> void:
 			return
 								
 		# ------
+
+		# ------
 		var shortcut_data:Dictionary = shortcuts[designation].actives[index]
 		if shortcut_data.is_empty():
 			btn.title = "EMPTY"
 			btn.icon = SVGS.TYPE.NONE
 			btn.is_disabled = is_disabled
 			btn.onClick = func() -> void:pass
+			
 		# ------
 		else:
-			var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.ref, shortcut_data.ability_index)
-			var cooldown_duration:int = 0
-			if ability.name in base_states.ring[designation].ability_on_cooldown:
-				cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.name]
-									
-			btn.title = ability.name
-			btn.is_disabled = is_disabled
-			btn.icon = get_number_icon(cooldown_duration)
-			
-			btn.get_icon = func() -> SVGS.TYPE:
-				var cd:int = 0
-				if ability.name in base_states.ring[designation].ability_on_cooldown:
-					cd = base_states.ring[designation].ability_on_cooldown[ability.name]
-				return get_number_icon(cd)
-			
-			btn.get_disable = func() -> bool:
-				var cd:int = 0
-				if ability.name in base_states.ring[designation].ability_on_cooldown:
-					cd = base_states.ring[designation].ability_on_cooldown[ability.name]
-				return cd > 0
-				
+			var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.ref, shortcut_data.ability_level)			
+			btn.set_refs('active', shortcut_data.ref, shortcut_data.ability_level)
 			btn.onClick = func() -> void:
 				await lock_menu()
 				await GAME_UTIL.use_active_ability(ability)
@@ -905,21 +919,11 @@ func build_passive_shortcut(is_disabled:bool) -> void:
 			btn.onClick = func() -> void:pass
 		# ------
 		else:
-			var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.ref, shortcut_data.ability_index)
-			var passives_enabled:Dictionary = base_states.ring[designation].passives_enabled
-			var ability_uid:String = str(shortcut_data.ref, shortcut_data.ability_index)
-			var is_checked:bool = passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
-			
-			btn.title = ability.name
-			btn.is_disabled = is_disabled
-			btn.icon = SVGS.TYPE.CHECKBOX if is_checked else SVGS.TYPE.EMPTY_CHECKBOX
-			
-			btn.get_icon = func() -> SVGS.TYPE:
-				var _is_checked:bool = passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
-				return SVGS.TYPE.CHECKBOX if _is_checked else SVGS.TYPE.EMPTY_CHECKBOX
-
+			btn.set_refs('passive', shortcut_data.ref, shortcut_data.ability_level)
 			btn.onClick = func() -> void:
-				toggle_passive(shortcut_data.ref, shortcut_data.ability_index)
+				toggle_passive(shortcut_data.ref, shortcut_data.ability_level)
+
+				
 				
 # --------------------------------------------------------------------------------------------------		
 
@@ -943,8 +947,10 @@ func unlock_menu(skip_disable:bool = false) -> void:
 		disable_inputs_while_menu_is_open = false
 	for node in [LeftSideBtnList, RightSideBtnList, CenterBtnList]:
 		for child in node.get_children():
-			child.is_disabled = child.get_disable.call()
-			child.icon = child.get_icon.call()
+			if "get_disable" in child:
+				child.is_disabled = child.get_disable.call()
+			if "get_icon" in child:
+				child.icon = child.get_icon.call()
 
 func open_menu() -> void:	
 	active_menu_is_open = true
@@ -965,11 +971,11 @@ func restore_menu() -> void:
 	
 	for btn in [ActionBtn, ToggleBtn]:
 		btn.is_disabled = false
-		
+	
 	for node in [LeftSideBtnList, RightSideBtnList, CenterBtnList]:
 		for child in node.get_children():
-			child.is_disabled = child.get_disable.call()
-			child.icon = child.get_icon.call()
+			child.is_disabled = await child.get_disable.call()
+			child.icon = await child.get_icon.call()
 
 	ActiveMenu.freeze_inputs = true
 	set_backdrop_state(false)	
@@ -992,9 +998,6 @@ func btn_list_update(container:Control, new_list:Array, reload:bool, callback:Ca
 			new_btn.size_flags_vertical = Control.SIZE_SHRINK_END
 			new_btn.hide() if ("is_hidden" in item and item.is_hidden) else new_btn.show()
 			
-			if "get_disable" in item:
-				new_btn.get_disable = item.get_disable
-
 			new_btn.onFocus = func(_node:Control) -> void:
 				ref_btn = new_btn
 			

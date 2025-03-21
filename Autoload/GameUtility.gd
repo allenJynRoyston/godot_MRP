@@ -18,12 +18,10 @@ func assign_nodes() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_wing_max_level() -> int:
-	var floor:int = current_location.floor
-	var ring:int = current_location.ring
-	var room:int = current_location.room
-	var wing_max_level:int = 0  #TODO: find what level the upgrade level is at
-	return wing_max_level
+func get_ring_ability_level(use_location:Dictionary = current_location) -> int:
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring	
+	return room_config.floor[floor].ring[ring].ability_level
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -36,9 +34,8 @@ func extract_wing_details() -> Dictionary:
 	var room_refs:Array = wing_data.room_refs
 	var abilities:Dictionary = {}
 	var passive_abilities:Dictionary = {}
-	var wing_max_level:int = get_wing_max_level()
-	
-	
+	var ring_ability_level:int = get_ring_ability_level()
+
 	for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room_index]
 		var designation:String = U.location_to_designation({"floor": floor, "ring": ring, "room": room_index})
@@ -53,17 +50,16 @@ func extract_wing_details() -> Dictionary:
 				if "abilities" in room_details:
 					var ability_list:Array = room_details.abilities.call()
 					for index in ability_list.size():
-						if index >= wing_max_level:
+						if index <= ring_ability_level:
 							abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
 				
 				if "passive_abilities" in room_details:
 					var ability_list:Array = room_details.passive_abilities.call()
 					for index in ability_list.size():
-						if index >= wing_max_level:
+						if index <= ring_ability_level:
 							passive_abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
 	
 	return {
-		"wing_max_level": wing_max_level,
 		"room_refs": wing_data.room_refs,
 		"abilities": abilities,
 		"passive_abilities": passive_abilities
@@ -360,6 +356,54 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		"researchers": researchers
 	}
 # ------------------------------------------------------------------------------	
+
+## ------------------------------------------------------------------------------
+#func activate_room(from_location:Dictionary, skip_prompt:bool = false) -> bool:
+	#var extract_details:Dictionary = GAME_UTIL.extract_room_details(from_location)
+	#var room_ref:int = extract_details.room.details.ref
+	#var wing_max_level:int = GAME_UTIL.get_ring_ability_level()
+	#SUBSCRIBE.suppress_click = true
+	#
+	#var activate_func:Callable = func() -> void:		
+		#var abilities:Array = extract_details.room.passive_abilities
+		#for index in abilities.size():
+			#var ability:Dictionary = abilities[index]
+			#var designation:String = str(current_location.floor, current_location.ring)
+			#if ability.name not in base_states.ring[designation].passives_enabled:
+				#base_states.ring[designation].passives_enabled[ability.name] = index >= wing_max_level
+#
+		#SUBSCRIBE.base_states = base_states
+		#SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, false)
+		#
+	#if skip_prompt:
+		#activate_func.call()
+		#return false	
+#
+	## first, check if you have enough resources to activate room
+	#var can_activate:bool = extract_details.can_activate
+	#var activation_requirements:Array = ROOM_UTIL.return_activation_cost(room_ref)
+	#
+	## --------------
+	#if !can_activate:		
+		#ConfirmModal.activation_requirements = activation_requirements
+		#ConfirmModal.set_props("You're missing the correct resources to activate this room.")
+		#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
+		#var confirm:bool = await ConfirmModal.user_response
+		#GameplayNode.restore_showing_state()
+		#SUBSCRIBE.suppress_click = false
+		#return false
+	#
+	## -------------- ACTIVATE UPDATE
+	#ConfirmModal.set_props("Activate %s?" % [extract_details.room.details.name])	
+	#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
+	#var confirm:bool = await ConfirmModal.user_response
+	#if confirm:
+		#activate_func.call()
+		#
+	#SUBSCRIBE.suppress_click = false
+	#GameplayNode.restore_showing_state()
+	#return confirm
+## ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func use_active_ability(ability:Dictionary, use_location:Dictionary = current_location) -> void:

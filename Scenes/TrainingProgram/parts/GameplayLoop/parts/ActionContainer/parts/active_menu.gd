@@ -4,6 +4,9 @@ extends Control
 @onready var HeaderLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/HeaderLabel
 @onready var LvlContainer:HBoxContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer
 
+@onready var PrevIcon:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/PrevIcon
+@onready var NextIcon:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/NextIcon
+
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
 
 var header:String = "" : 
@@ -20,11 +23,6 @@ var level:int = -1 :
 	set(val):
 		level = val
 		on_level_update()
-
-var ap_val:int = 0 : 
-	set(val):
-		ap_val = val
-		on_ap_val_update()
 
 var selected_index:int = 0 : 
 	set(val):
@@ -45,6 +43,11 @@ var freeze_inputs:bool = true :
 	set(val):
 		freeze_inputs = val
 		on_freeze_inputs_update()
+		
+var max_level:int = -1 : 
+	set(val):
+		max_level = val
+		on_max_level_update()
 
 var onPrev:Callable = func():pass
 var onNext:Callable = func():pass
@@ -63,9 +66,9 @@ func _ready() -> void:
 	on_options_list_update()
 	on_header_update()
 	on_use_color_update()	
-	on_ap_val_update()
 	on_show_ap_update()
 	on_level_update()
+	on_max_level_update()
 	
 func open() -> void:
 	freeze_inputs = false
@@ -76,7 +79,6 @@ func close() -> void:
 	await set_fade(false)
 	onClose.call()	
 	show_ap = false
-	ap_val = 0
 	selected_index = 0	
 	level = -1
 	options_list = []
@@ -96,7 +98,8 @@ func update_checkbox_option(index:int, is_checked:bool) -> void:
 	btn_node.is_checked = is_checked
 	
 func on_selected_index_update() -> void:
-	if !is_node_ready() or List.get_child_count() == 0:return		
+	if !is_node_ready() or List.get_child_count() == 0:return
+	
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
@@ -108,7 +111,7 @@ func on_options_list_update() -> void:
 	# ---- IF EMPTY
 	if options_list.is_empty():
 		var btn_node:Control = MenuBtnPreload.instantiate()
-		btn_node.title = "NO ACTIONS AVAILABLE"
+		btn_node.title = "NO LVL %s ACTIONS AVAILABLE" % [level + 1]
 		btn_node.btn_color = use_color
 		btn_node.is_empty = true
 		
@@ -129,12 +132,12 @@ func on_options_list_update() -> void:
 		btn_node.is_selected = index == selected_index
 		btn_node.cooldown_duration = item.cooldown_duration if "cooldown_duration" in item else -1
 		btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
+		btn_node.energy_cost = item.energy_cost if "energy_cost" in item else -1
 		
+
 		btn_node.onClick = func() -> void:
 			if !btn_node.is_disabled:
-				item.onSelect.call(selected_index)
-				if btn_node.is_togglable:
-					btn_node.is_checked = item.get_checked_state.call()
+				on_action.call(index)
 				
 		btn_node.onFocus = func(_node:Control) -> void:
 			selected_index = index
@@ -144,17 +147,31 @@ func on_options_list_update() -> void:
 	self.size.y = 1	
 	
 
-func on_ap_val_update() -> void:
-	if !is_node_ready():return
-
-			
-
+func on_max_level_update() -> void:
+	if !is_node_ready():return	
+	U.debounce("update_lvl_nodes", update_lvl_nodes)
+		
+		
 func on_level_update() -> void:
 	if !is_node_ready():return	
+	U.debounce("update_lvl_nodes", update_lvl_nodes)
+
+func update_lvl_nodes() -> void:
 	for index in LvlContainer.get_child_count():
 		var node:Control = LvlContainer.get_child(index)
-		node.modulate = Color(1, 1, 1, 1 if index == level else 0.6) 
+		var alpha:float = 1.0 if index == level else 0.5		
+		node.modulate = Color(1, 0, 0, alpha) if index > max_level else Color(1, 1, 1, alpha)
 	
+	for node in [PrevIcon, NextIcon]:
+		if max_level == 0:
+			node.hide()  
+		else:
+			node.show()
+	
+	PrevIcon.static_color = Color(1, 1, 1, 0.2 if level == 0 else 1)
+	NextIcon.static_color = Color(1, 1, 1, 0.2 if level == max_level else 1)		
+
+
 func on_show_ap_update() -> void:
 	if !is_node_ready():return
 	LvlContainer.show() if show_ap else LvlContainer.hide()
@@ -178,19 +195,22 @@ func on_freeze_inputs_update() -> void:
 	pass
 	#U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if freeze_inputs else 1)  )
 
-func on_action() -> void:
+func on_action(btn_index:int = selected_index) -> void:
 	if freeze_inputs or options_list.is_empty():return
-	if selected_index != -1:
+	if btn_index != -1:
 		var btn_node:Control = List.get_child(selected_index)
 		if btn_node == null:return
 		if !btn_node.is_disabled:
-			await options_list[selected_index].onSelect.call(selected_index)
+			await options_list[btn_index].onSelect.call(btn_index)
 			
-			if "get_cooldown_duration" in options_list[selected_index]:
-				btn_node.cooldown_duration = options_list[selected_index].get_cooldown_duration.call()
-				
-			if "get_checked_state" in options_list[selected_index]:
-				btn_node.is_checked = options_list[selected_index].get_checked_state.call()
+			if "get_checked_state" in options_list[btn_index]:
+				btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
+			if "get_disabled_state" in options_list[btn_index]:
+				btn_node.is_disabled = await options_list[btn_index].get_disabled_state.call()
+			if "get_cooldown_duration" in options_list[btn_index]:
+				btn_node.cooldown_duration = await options_list[btn_index].get_cooldown_duration.call()
+			if "get_checked_state" in options_list[btn_index]:
+				btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
