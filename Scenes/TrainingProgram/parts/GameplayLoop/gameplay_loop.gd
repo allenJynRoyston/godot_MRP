@@ -238,6 +238,7 @@ var initial_values:Dictionary = {
 			"base": {
 				"in_brownout": false,
 				"in_debt": false,
+				"generator_lvl": 0,
 			},
 			"floor": {
 				0: get_floor_default(true, 3),
@@ -263,7 +264,9 @@ var initial_values:Dictionary = {
 		
 		# ------------------------------
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
-			floor[str(floor_index)] = {} 	# not used 
+			floor[str(floor_index)] = {
+				"generator_level": 0
+			} 	# not used 
 			
 			# ------------------------------
 			for ring_index in [0, 1, 2, 3]:
@@ -1126,27 +1129,6 @@ func game_over() -> void:
 
 # -----------------------------------------------------------------------------
 #region ROOM ACTION QUEUE (assign/unassign/dismiss, etc)
-func set_floor_lockdown(from_location:Dictionary, state:bool) -> Dictionary:
-	var title:String
-	var subtitle:String
-
-	title = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
-	subtitle = "All wings will have their actions frozen." if state else ""
-			
-	ConfirmModal.set_props(title, subtitle)
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var response:Dictionary = await ConfirmModal.user_response
-
-	match response.action:
-		ACTION.NEXT:			
-			base_states.floor[str(from_location.floor)].in_lockdown = state
-			SUBSCRIBE.base_states = base_states
-
-	#on_confirm_complete.emit()
-	await restore_player_hud()
-	return {"has_changes": response.action == ACTION.NEXT}	
-# ---------------------
-
 # ------------------------------------------------------------------------------	
 func set_wing_emergency_mode(from_location:Dictionary, mode:ROOM.EMERGENCY_MODES) -> Dictionary:
 	var title:String
@@ -1186,25 +1168,74 @@ func activate_floor(from_location:Dictionary) -> bool:
 	SUBSCRIBE.suppress_click = true
 
 	var activated_count:int = 0
-	for n in room_config.floor.size():
-		if base_states.floor[str(n)].is_powered:
+	for floor_index in room_config.floor.size():
+		if room_config.floor[floor_index].is_powered:
 			activated_count += 1
 	var activation_cost:int = activated_count * 50
-	var can_purchase:bool = resources_data[RESOURCE.TYPE.ENERGY].amount >= activation_cost
+	var can_purchase:bool = resources_data[RESOURCE.TYPE.MONEY].amount >= activation_cost
 	
-	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.ENERGY)}]
+	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.MONEY)}]
 	ConfirmModal.set_props("Activate this floor?")
 	await show_only([ConfirmModal, Structure3dContainer])	
 	var confirm:bool = await ConfirmModal.user_response
 	
 	if confirm:
-		base_states.floor[str(from_location.floor)].is_powered = true
-		SUBSCRIBE.base_states = base_states
+		resources_data[RESOURCE.TYPE.MONEY].amount -= activation_cost
+		room_config.floor[from_location.floor].is_powered = true
+		SUBSCRIBE.room_config = room_config
+		SUBSCRIBE.resources_data = resources_data
 			
 	restore_showing_state()	
 	return confirm
 # ------------------------------------------------------------------------------
-		
+
+# ------------------------------------------------------------------------------
+func set_floor_lockdown(from_location:Dictionary, state:bool) -> bool:
+	var title:String
+	var subtitle:String
+
+	title = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
+	subtitle = "All wings will have their actions frozen." if state else ""
+			
+	ConfirmModal.set_props(title, subtitle)
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var confirm:bool = await ConfirmModal.user_response
+
+	if confirm:
+		room_config.floor[from_location.floor].in_lockdown = state
+		SUBSCRIBE.room_config = room_config
+
+	restore_showing_state()	
+	return confirm
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func upgrade_generator_level(use_location:Dictionary = current_location) -> bool:
+	var title:String
+	var subtitle:String
+
+	var activation_cost:int = 25
+	var can_purchase:bool = resources_data[RESOURCE.TYPE.MONEY].amount >= activation_cost
+
+	title = "Upgrade generator?"
+	subtitle = "X energy will be available per ring."
+	
+	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.MONEY)}]
+	ConfirmModal.set_props(title, subtitle)
+	await show_only([ConfirmModal, Structure3dContainer])	
+	var confirm:bool = await ConfirmModal.user_response
+
+	if confirm:
+		resources_data[RESOURCE.TYPE.MONEY].amount -= activation_cost
+		base_states.floor[str(use_location.floor)].generator_level += 1
+		SUBSCRIBE.base_states = base_states
+		SUBSCRIBE.resources_data = resources_data
+
+	restore_showing_state()	
+	return confirm
+# ------------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------------	
 func construct_room() -> void:	
 	current_builder_step = BUILDER_STEPS.OPEN
@@ -2443,7 +2474,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if no_save else restore_data.purchased_research_arr
 	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if no_save else restore_data.shop_unlock_purchases
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms.call() if no_save else restore_data.unavailable_rooms
-	SUBSCRIBE.base_states = initial_values.base_states.call() if no_save else restore_data.base_states
+	SUBSCRIBE.base_states = initial_values.base_states.call() #if no_save else restore_data.base_states
 	
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr.call() if no_save else restore_data.hired_lead_researchers_arr
@@ -2468,9 +2499,25 @@ func set_room_config(force_setup:bool = false) -> void:
 	var built_room_refs:Array = purchased_facility_arr.map(func(x): return x.ref)
 	var metric_defaults:Dictionary = {}
 	
-	# mark rooms and push to subscriptions
+	# set defaults
 	for floor_index in new_room_config.floor.size():
+		var energy_available:int 
+		# set default energy for ring
+		match base_states.floor[str(floor_index)].generator_level:
+			0:
+				energy_available = 9
+			1:
+				energy_available = 12
+			2:
+				energy_available = 15
+				
 		for ring_index in new_room_config.floor[floor_index].ring.size():
+			var ring_config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
+
+			ring_config_data.energy.available = energy_available
+			ring_config_data.energy.used = 0
+				
+			
 			var floor_ring_designation:String = str(floor_index, ring_index)
 			if floor_ring_designation not in metric_defaults:
 				metric_defaults[floor_ring_designation] = {
@@ -2518,20 +2565,23 @@ func set_room_config(force_setup:bool = false) -> void:
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var ring_base_state:Dictionary = base_states.ring[str(floor, ring)]
-
-		# add to ref count
-		ring_config_data.room_refs.push_back(item.ref)		
-		# set default energy for ring
-		ring_config_data.energy.available = 9
-		ring_config_data.energy.used = 0
 		
+		# add to ref count
+		ring_config_data.room_refs.push_back(item.ref)
+		
+
 		# FIRST, check passive abilities that upgrade the current ability level
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for level in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[level]
 				var ability_uid:String = str(room_data.ref, level)
-				if ability_uid in ring_base_state.passives_enabled and ring_base_state.passives_enabled[ability_uid]:
+				
+				# creates default state if it doesn't exist
+				if ability_uid not in ring_base_state.passives_enabled:
+					ring_base_state.passives_enabled[ability_uid] = false
+				
+				if ring_base_state.passives_enabled[ability_uid]:
 					if "update_room_config" in ability:
 						ring_config_data = ability.update_room_config.call(ring_config_data)
 	

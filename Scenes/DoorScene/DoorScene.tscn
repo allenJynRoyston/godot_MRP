@@ -311,6 +311,10 @@ libraries = {
 &"": SubResource("AnimationLibrary_oq4hm")
 }
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="RenderSubviewport/Node3D"]
+transform = Transform3D(0.896223, 0, 0.443603, 0.0280627, 0.997997, -0.0566958, -0.442715, 0.0632608, 0.894428, 0, 0, 0)
+visible = false
+
 [node name="SpotLight3D2" type="SpotLight3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(-0.0353491, 0.994205, -0.101526, 0.303616, 0.107471, 0.946714, 0.952138, 0.0026406, -0.305655, 1.12125, 3.2137, 0.29774)
 light_color = Color(0.894118, 1, 1, 1)
@@ -401,6 +405,7 @@ mesh = SubResource("BoxMesh_y10y4")
 
 [node name="BackWall" type="MeshInstance3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.62649, 0.00412459, -4.30626)
+visible = false
 mesh = SubResource("PlaneMesh_oq4hm")
 skeleton = NodePath("Door")
 
@@ -431,6 +436,10 @@ light_specular = 1.579
 shadow_enabled = true
 omni_range = 1.396
 omni_attenuation = 0.776
+
+[node name="PreviewCamera" type="Camera3D" parent="RenderSubviewport/Node3D"]
+transform = Transform3D(0.927184, 0, 0.374606, 0, 1, 0, -0.374606, 0, 0.927184, 0.085, 0, 0)
+fov = 122.9
 
 [node name="Camera3D" type="Camera3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(0.927184, 0, 0.374606, 0, 1, 0, -0.374606, 0, 0.927184, 0.085, 0, 0)

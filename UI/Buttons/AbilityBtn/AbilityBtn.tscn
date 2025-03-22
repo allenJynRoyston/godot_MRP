@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_fb3xu"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_xsc2d"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4ccn"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_msfmp"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -25,10 +25,13 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="AbilityBtn" type="PanelContainer"]
+modulate = Color(1, 1, 1, 0.5)
 offset_right = 54.0
 offset_bottom = 62.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_y4ccn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_msfmp")
 script = ExtResource("1_msfmp")
+text_active_color = Color(1, 1, 1, 1)
+text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -46,6 +49,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
@@ -54,10 +58,13 @@ theme_override_constants/separation = 5
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 5
-text = "TITLE"
+text = "ABILITY"
 label_settings = ExtResource("2_25rd3")
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 1
+text_overrun_behavior = 2
+ellipsis_char = ""
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
@@ -70,7 +77,7 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-icon = 24
+icon = 62
 flip_v = false
 is_hoverable = false
 

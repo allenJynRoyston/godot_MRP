@@ -33,9 +33,9 @@ extends BtnBase
 		is_disabled = val
 		on_is_disabled_updated()
 
-const default_icon:SVGS.TYPE = SVGS.TYPE.TARGET
+var default_icon:SVGS.TYPE = SVGS.TYPE.TARGET
 
-var title:String = "" : 
+var title:String = "NONE" : 
 	set(val): 
 		title = val
 		on_title_update()
@@ -43,12 +43,20 @@ var title:String = "" :
 var room_ref:int = -1 
 var ability_index:int = -1 
 		
-var icon:SVGS.TYPE = SVGS.TYPE.BUILD : 
+var icon:SVGS.TYPE : 
 	set(val):
 		icon = val
 		on_icon_update()		
 
-var is_hovered:bool = false
+var is_empty:bool = true : 
+	set(val):
+		is_empty = val
+		on_is_empty_update()
+
+var is_invalid:bool = false : 
+	set(val):
+		is_invalid = val
+		on_is_invalid_update()
 
 var get_disable:Callable = func() -> bool:
 	return false
@@ -56,17 +64,13 @@ var get_disable:Callable = func() -> bool:
 var get_icon:Callable = func() -> SVGS.TYPE:
 	return icon
 
-var is_invalid:bool = false : 
-	set(val):
-		is_invalid = val
-		on_is_invalid_update()
-
-
 var type:String
 var ability:Dictionary = {}
 var base_states:Dictionary = {}
 var room_config:Dictionary = {}
 var current_location:Dictionary = {}
+
+var onReset:Callable = func():pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -91,9 +95,18 @@ func _ready() -> void:
 	on_icon_update()
 	on_title_update()
 	on_assigned_key_update()
+	reset()
 	
 	on_panel_color_update()
 	on_is_disabled_updated()
+
+func reset() -> void:
+	title = "NONE"
+	icon = SVGS.TYPE.NONE
+	is_empty = true
+	is_invalid = false
+	ability = {}
+	onReset.call()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -108,13 +121,28 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 
 # ------------------------------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
-	room_config = new_val
+	room_config = new_val	
 	update_self()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func set_refs(_type:String, _room_ref:int, _ability_index:int) -> void:
+	type = _type
+	room_ref = _room_ref
+	ability_index = _ability_index
+	is_empty = false
+	
+	match type: 
+		"active":
+			ability = ROOM_UTIL.return_ability(room_ref, ability_index)
+		"passive":
+			ability = ROOM_UTIL.return_passive_ability(room_ref, ability_index)
+	
+	update_self()
+
 func update_self() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or ability.is_empty():return
+	title = ability.name
 	match type:
 		'passive':
 			update_passive_type()
@@ -130,19 +158,19 @@ func update_active_type() -> void:
 
 	if room_ref in abilities:
 		var filtered:Array = abilities[room_ref].filter(func(ab): return ab.level == ability_index )
-		is_invalid = filtered.size() == 0
+		is_invalid = filtered.is_empty()
 
-		if !filtered.is_empty():
-			var ring_ability_level:int = GAME_UTIL.get_ring_ability_level()
-			var at_level_requirement:bool = ring_ability_level >= ability_index
-			var cooldown_duration:int = 0
-			if ability.name in base_states.ring[designation].ability_on_cooldown:
-				cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.name]
-			#TODO REPLACE WITH COOLDOWN INDICATOR?
-			# TODO NEEDS TO VISIBLE SHOW WHEN A SKILL IS INACTIVE AND THE REASON
-			icon = default_icon if cooldown_duration == 0 else SVGS.TYPE.NO_ELECTRICITY
+		if is_invalid:
+			return
 
-
+		var ring_ability_level:int = GAME_UTIL.get_ring_ability_level()
+		var at_level_requirement:bool = ring_ability_level >= ability_index
+		var cooldown_duration:int = 0
+		if ability.name in base_states.ring[designation].ability_on_cooldown:
+			cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.name]
+		#TODO REPLACE WITH COOLDOWN INDICATOR?
+		# TODO NEEDS TO VISIBLE SHOW WHEN A SKILL IS INACTIVE AND THE REASON
+		icon = default_icon if cooldown_duration == 0 else SVGS.TYPE.NO_ELECTRICITY
 	
 func update_passive_type() -> void:
 	var designation:String = str(current_location.floor, current_location.ring)
@@ -156,36 +184,20 @@ func update_passive_type() -> void:
 		
 		if is_invalid:
 			return
+	
+		var is_active:bool = base_states.ring[designation].passives_enabled[ability_uid]
+		var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1			
+		var energy:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].energy
+		var energy_remaining:int = energy.available - energy.used
+		var has_enough:bool = energy_remaining - energy_cost >= 0
+
+		is_invalid = !is_active and !has_enough
 		
-		if ability_uid in base_states.ring[designation].passives_enabled:
-			var is_active:bool = base_states.ring[designation].passives_enabled[ability_uid]
-			var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1			
-			var energy:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].energy
-			var energy_remaining:int = energy.available - energy.used
-			var has_enough:bool = energy_remaining - energy_cost >= 0
-
-			is_invalid = !is_active and !has_enough
-
-			icon = default_icon #if has_enough  else SVGS.TYPE.NO_ELECTRICITY
+		default_icon = SVGS.TYPE.CHECKBOX if is_active else SVGS.TYPE.EMPTY_CHECKBOX
+		icon = default_icon 
 # ------------------------------------------------------------------------------	
 
-
-
 # ------------------------------------------------------------------------------
-func set_refs(_type:String, _room_ref:int, _ability_index:int) -> void:
-	type = _type
-	room_ref = _room_ref
-	ability_index = _ability_index
-	match type: 
-		"active":
-			ability = ROOM_UTIL.return_ability(room_ref, ability_index)
-			icon = SVGS.TYPE.TARGET
-		"passive":
-			ability = ROOM_UTIL.return_passive_ability(room_ref, ability_index)
-			
-	title = ability.name
-
-
 func update_color(new_color:Color) -> void:
 	if !is_node_ready():return
 
@@ -195,9 +207,13 @@ func on_focus(state:bool = is_focused) -> void:
 		on_panel_color_update()
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !is_node_ready() or !is_hoverable or is_disabled or is_invalid:return
+	if !is_node_ready() or !is_hoverable or is_disabled or !on_hover:return
+	
+	if is_invalid:
+		reset()
+		return
+			
 	super.on_mouse_click(node, btn, on_hover)
-		
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -206,25 +222,22 @@ func on_assigned_key_update() -> void:
 	KeyLabel.text = assigned_key
 	
 func on_is_invalid_update() -> void:
+	if is_invalid:
+		title = "! %s !" % ability.name
 	on_icon_update()
+	on_is_disabled_updated()
+	
+func on_is_empty_update() -> void:
 	on_is_disabled_updated()
 		
 func on_is_disabled_updated() -> void:
-	modulate = Color(1, 0, 0, 1) if is_disabled or is_invalid else Color(1, 1, 1, 1)
+	var alpha:float = 0.5 if is_empty else 1.0
+	modulate = Color(1, 0, 0, alpha) if is_disabled or is_invalid else Color(1, 1, 1, alpha)
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = StyleBoxFlat.new()
+	var new_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
 	new_stylebox.bg_color = panel_color
-	new_stylebox.corner_radius_bottom_left = 5
-	new_stylebox.corner_radius_bottom_right = 5
-	new_stylebox.corner_radius_top_left = 5
-	new_stylebox.corner_radius_top_right = 5
-	
-	new_stylebox.border_width_bottom = 2
-	new_stylebox.border_width_left = 2
-	new_stylebox.border_width_right = 2
-	new_stylebox.border_width_top = 2
 	new_stylebox.border_color = Color.WHITE if is_focused else Color.BLACK
 		
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
@@ -241,8 +254,12 @@ func on_icon_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_hoverable or is_disabled or is_invalid:return
+	if !is_node_ready() or !is_hoverable or is_disabled:return
+
 	var key:String = input_data.key
-	if key == assigned_key and is_visible_in_tree():
+	if key == assigned_key and is_visible_in_tree():		
+		if is_invalid:
+			reset()
+			return
 		onClick.call()
 # ------------------------------------------------------------------------------

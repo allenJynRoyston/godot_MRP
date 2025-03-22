@@ -461,11 +461,11 @@ theme_override_constants/separation = 5
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="TitleHeader" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+[node name="LeftSideTitleLabel" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 5
-text = "ACTIVE HOTKEYS"
+text = "HOTKEYS"
 label_settings = ExtResource("2_i3yab")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -478,29 +478,21 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_x63m5")
 assigned_key = "1"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="AbilityBtn2" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/LeftSideBtnList" instance=ExtResource("8_bk83u")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
 assigned_key = "2"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="AbilityBtn3" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/LeftSideBtnList" instance=ExtResource("8_bk83u")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
 assigned_key = "3"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="AbilityBtn4" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/LeftSideBtnList" instance=ExtResource("8_bk83u")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 assigned_key = "4"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide"]
 layout_mode = 2
@@ -546,11 +538,11 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 alignment = 2
 
-[node name="TitleHeader" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+[node name="RightSideBtnLabel" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 5
-text = "PASSIVE HOTKEYS"
+text = "HOTKEYS"
 label_settings = ExtResource("2_i3yab")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -563,29 +555,21 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
 assigned_key = "5"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="AbilityBtn2" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/RightSideBtnList" instance=ExtResource("8_bk83u")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
 assigned_key = "6"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="AbilityBtn3" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/RightSideBtnList" instance=ExtResource("8_bk83u")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_txh3k")
 assigned_key = "7"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="AbilityBtn4" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/RightSideBtnList" instance=ExtResource("8_bk83u")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_l3pfk")
 assigned_key = "8"
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="ToggleBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide" instance=ExtResource("4_n6idl")]
 layout_mode = 2
