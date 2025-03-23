@@ -641,7 +641,7 @@ func buildout_btns() -> void:
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_INVESTIGATE]:
 				new_center_btn_list.push_back({
 					"assigned_key": "R",
-					"title": "INVESTIGATE",
+					"title": "DETAIL",
 					"icon": SVGS.TYPE.QUESTION_MARK,
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
@@ -659,47 +659,16 @@ func buildout_btns() -> void:
 								enable_room_focus(false)
 								unlock_menu(true)
 				})
+
 			
-			#new_center_btn_list.push_back({
-				#"title": "CONTAIN",
-				#"assigned_key": "C",
-				#"icon": SVGS.TYPE.CONTAIN,
-				#"is_disabled": scp_data.available_list.size() == 0,
-				#"get_disable": func() -> bool:
-					#return scp_data.available_list.size() == 0,
-				#"onClick": func() -> void:
-					#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-						#enable_room_focus(true)
-						#await lock_menu(true)
-						#in_contain_mode = true
-						#current_mode = MODE.CONFIRM_AND_BACK
-						#GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo])
-						#
-						#var onFinish = func() -> void:
-							#current_mode = MODE.SELECT_FLOOR
-							#in_contain_mode = false
-							#await GameplayNode.restore_player_hud()
-							#enable_room_focus(false)
-							#unlock_menu(true)
-													#
-						#
-						#ConfirmBtn.onClick = func() -> void:
-							#await GameplayNode.contain_scp(scp_data.available_list[0].ref)
-							#onFinish.call()
-						#
-						#BackBtn.onClick = func() -> void:
-							#onFinish.call()
-			#})						
-			
-			if false:	
-				new_center_btn_list.push_back({
-					"title": "DEBUG",
-					"assigned_key": "TAB",
-					"icon": SVGS.TYPE.WARNING,
-					"onClick": func() -> void:
-						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-							open_debug_menu(),
-				})	
+			new_center_btn_list.push_back({
+				"title": "DEBUG",
+				"assigned_key": "TAB",
+				"icon": SVGS.TYPE.WARNING,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						show_debug(),
+			})	
 	
 
 	new_center_btn_list.push_back({
@@ -1023,68 +992,44 @@ func check_if_contain_is_valid() -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # -------------------------------------------------------------------------------------------------				
-func open_debug_menu() -> void:
-	pass
-	## setup cloes behavior
-	#ActiveMenu.onClose = func() -> void:	
-		#GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		#set_btn_disabled_state(false)
-	#
-	## make room nodes active
-	#GBL.find_node(REFS.ROOM_NODES).is_active = true
-	#
-	## enable/disable buttons
-	#ActiveMenu.freeze_inputs = false
-	#set_btn_disabled_state(true)
-	#
-	## pull data, create the options list
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	#var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
-	#var room_is_empty:bool = room_extract.is_room_empty
-	#var researchers_count:int = room_extract.researchers_count
-	#var is_room_active:bool = room_extract.is_activated
-	#var room_is_active
-	#
-	#var options_list := []
-	#options_list.push_back({
-		#"title": "BACK",
-		#"onSelect": func() -> void:	
-			#GBL.find_node(REFS.ROOM_NODES).is_active = false
-			#ActiveMenu.close()
-			#await U.tick()
-			#set_btn_disabled_state(false)
-	#})
-	#
-	#options_list.push_back({
-		#"title": "TRIGGER MORALE EVENT...",
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true
-			#set_btn_disabled_state(true)
-			#var props:Dictionary = {"onSelection": func(selected):print(selected), "current_location": current_location}
-			#await GameplayNode.triggger_event(EVT.TYPE.MORALE, props)
-			#ActiveMenu.freeze_inputs = false
-			#restore_btn_disable_state()
-	#})		
-	#
-	#options_list.push_back({
-		#"title": "TRIGGER MORALE EVENT...",
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true
-			#set_btn_disabled_state(true)
-			#var props:Dictionary = {"onSelection": func(selected):print(selected), "current_location": current_location}
-			#await GameplayNode.triggger_event(EVT.TYPE.MORALE, props)
-			#ActiveMenu.freeze_inputs = false
-			#restore_btn_disable_state()
-	#})		
-#
-	#ActiveMenu.header = "DEBUG"
-	#ActiveMenu.use_color = Color.WHITE
-	#ActiveMenu.options_list = options_list		
-	#await U.tick()
-	#ActiveMenu.size = Vector2(1, 1)
-	#ActiveMenu.custom_minimum_size = Vector2(1, 1)
-	#ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
-	#ActiveMenu.open()
+func show_debug(skip_animation:bool = false) -> void:
+	open_menu()
+		
+	var list:Array = []
+	disable_inputs_while_menu_is_open = true
+	
+	list.push_back({
+		"title": "OPEN SHOP",
+		"icon": SVGS.TYPE.RESEARCH,
+		"cooldown_duration": 0,
+		"action": func() -> void:
+			await GAME_UTIL.open_store(),
+		"onSelect": func(index:int) -> void:
+			await list[index].action.call()
+			GameplayNode.restore_player_hud(),
+	})
+	
+	list.push_back({
+		"title": "get_new_scp",
+		"icon": SVGS.TYPE.RESEARCH,
+		"cooldown_duration": 0,
+		"action": func() -> void:
+			await GAME_UTIL.get_new_scp(),
+		"onSelect": func(index:int) -> void:
+			await list[index].action.call()
+			GameplayNode.restore_player_hud(),
+	})	
+	
+
+	ActiveMenu.level = ability_level_index
+	ActiveMenu.show_ap = true
+	
+	ActiveMenu.onClose = func() -> void:	
+		disable_inputs_while_menu_is_open = false
+		restore_menu()
+		
+			
+	update_active_menu("ACTIVE", Color.WHITE, list, ActionBtn.global_position.x - 5, skip_animation)	
 # --------------------------------------------------------------------------------------------------				
 
 ## --------------------------------------------------------------------------------------------------

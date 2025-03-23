@@ -1642,7 +1642,7 @@ func on_current_contain_step_update() -> void:
 				## --------------------
 				#ACTION.CONTAINED.CANCEL_TRANSFER:
 					#selected_contain_item.is_new_transfer = false
-					#current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCEL
+					#current_contain_step = CONTAIN_STEPS.ON_TRANSFER_CANCELpromote_researchers
 				## --------------------
 				#ACTION.CONTAINED.ASSIGN_RESEARCHER:
 					#pass
