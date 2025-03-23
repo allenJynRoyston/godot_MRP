@@ -39,6 +39,7 @@ var control_pos_default:Dictionary
 var control_pos:Dictionary
 var animation_speed:float = 0.0 if !Engine.is_editor_hint() else 0.3
 var initalized_at_fullscreen:bool
+var unavailable_rooms:Array = []
 
 const is_container:bool = true
 
@@ -63,6 +64,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_base_states(self)
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
+	SUBSCRIBE.subscribe_to_unavailable_rooms(self)
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
@@ -87,6 +89,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
+	SUBSCRIBE.unsubscribe_to_unavailable_rooms(self)
 
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
@@ -141,6 +144,8 @@ func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val
 func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
 	gameplay_conditionals = new_val
+func on_unavailable_rooms_update(new_val:Array) -> void:
+	unavailable_rooms = new_val
 	
 func on_reset() -> void:pass
 func on_freeze_inputs_update() -> void:pass

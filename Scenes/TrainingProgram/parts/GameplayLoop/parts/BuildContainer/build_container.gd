@@ -161,20 +161,7 @@ func purchase_room() -> void:
 	
 	await U.tick()
 	
-	# GAME_UTIL.activate_room(current_location, true)
-	# enable this to add a construction time, but I don't know if I like this...
-	#GameplayNode.add_timeline_item({
-		#"action": ACTION.AQ.BUILD_ITEM,
-		#"ref": room_details.ref,
-		#"title": room_details.name,
-		#"icon": SVGS.TYPE.BUILD,
-		#"completed_at": room_details.build_time,
-		#"description": "CONSTRUCTING",
-		#"location": current_location.duplicate()
-	#})
-	#SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(room_details.ref)		
-	#await U.tick()
-	
+
 	GameplayNode.ToastContainer.add("%s purchased!" % [room_details.name])
 	on_grid_index_update()
 # --------------------------------------------------------------------------------------------------	
@@ -192,9 +179,8 @@ func on_current_location_update(new_val:Dictionary) -> void:
 func update_grid_content() -> void:
 	var query:Dictionary
 	var start_at:int = page_tracker * cards_on_screen
-	var end_at:int = start_at + cards_on_screen
 
-	query = ROOM_UTIL.get_all_unlocked_paginated_list(start_at, end_at)
+	query = ROOM_UTIL.get_all_unlocked_paginated_list(start_at, cards_on_screen)
 
 	# reset show/hide more buttons	
 	has_more = query.has_more

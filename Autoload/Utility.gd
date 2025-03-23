@@ -215,10 +215,11 @@ func dec_ring() -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func room_up() -> void:
+func room_up(allow_floor_change:bool = false) -> void:
 	var room_index:int = U.location_lookup(current_location.room, U.DIR.UP)
+	
 	if room_index == -1:
-		if current_location.floor - 1 >= 0:
+		if current_location.floor - 1 >= 0 and allow_floor_change:
 			var next_val:int = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
 			current_location.floor = next_val
 			current_location.room = 4
@@ -226,10 +227,10 @@ func room_up() -> void:
 		current_location.room = room_index
 	SUBSCRIBE.current_location = current_location
 
-func room_down() -> void:
+func room_down(allow_floor_change:bool = false) -> void:
 	var room_index:int = U.location_lookup(current_location.room, U.DIR.DOWN)
 	if room_index == -1:
-		if current_location.floor + 1 < room_config.floor.size() - 1:
+		if current_location.floor + 1 < room_config.floor.size() - 1 and allow_floor_change:
 			var next_val:int = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
 			current_location.floor = next_val
 			current_location.room = 4	
@@ -237,10 +238,10 @@ func room_down() -> void:
 		current_location.room = room_index
 	SUBSCRIBE.current_location = current_location
 
-func room_right() -> void:
+func room_right(allow_floor_change:bool = false) -> void:
 	var room_index:int = U.location_lookup(current_location.room, U.DIR.RIGHT)
 	if room_index == -1:
-		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1:
+		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1 and allow_floor_change:
 			var next_val:int = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
 			current_location.ring = next_val
 			current_location.room = 4	
@@ -248,10 +249,10 @@ func room_right() -> void:
 		current_location.room = room_index	
 	SUBSCRIBE.current_location = current_location
 
-func room_left() -> void:
+func room_left(allow_floor_change:bool = false) -> void:
 	var room_index:int = U.location_lookup(current_location.room, U.DIR.LEFT)
 	if room_index == -1:
-		if current_location.ring > 0:
+		if current_location.ring > 0 and allow_floor_change:
 			var next_val:int = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
 			current_location.ring = next_val
 			current_location.room = 4

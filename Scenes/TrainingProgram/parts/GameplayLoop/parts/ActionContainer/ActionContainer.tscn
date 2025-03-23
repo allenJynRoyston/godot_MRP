@@ -207,27 +207,24 @@ layout_mode = 2
 color = Color(0, 0, 0, 0.0980392)
 
 [node name="Details" type="Control" parent="."]
-visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Details"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = -859.0
-offset_bottom = 125.0
-grow_horizontal = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
 
 [node name="MarginContainer" type="MarginContainer" parent="Details/PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-size_flags_horizontal = 8
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
@@ -464,8 +461,16 @@ layout_mode = 2
 [node name="LeftSideTitleLabel" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 5
 text = "HOTKEYS"
+label_settings = ExtResource("2_i3yab")
+vertical_alignment = 1
+
+[node name="LeftSideTitleLabel2" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_vertical = 5
 label_settings = ExtResource("2_i3yab")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -493,9 +498,6 @@ assigned_key = "3"
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 assigned_key = "4"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide"]
-layout_mode = 2
 
 [node name="CenterBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -545,6 +547,16 @@ size_flags_vertical = 5
 text = "HOTKEYS"
 label_settings = ExtResource("2_i3yab")
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightSideBtnLabel2" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "HOTKEYS"
+label_settings = ExtResource("2_i3yab")
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2"]

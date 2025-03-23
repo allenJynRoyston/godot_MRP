@@ -25,6 +25,9 @@ extends GameContainer
 @onready var RightSideShortcutContainer:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer
 @onready var LeftSideShortcutContainer:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer
 
+@onready var LeftSideTitleLabel2:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/LeftSideTitleLabel2
+@onready var RightSideBtnLabel2:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/RightSideBtnLabel2
+
 @onready var LeftSideTitleLabel:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/LeftSideTitleLabel
 @onready var RightSideBtnLabel:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/RightSideBtnLabel
 @onready var LeftSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/LeftSideBtnList
@@ -32,7 +35,7 @@ extends GameContainer
 @onready var CenterBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList
 @onready var Backdrop:ColorRect = $Backdrop
 
-enum MODE { SELECT_FLOOR, SELECT_ROOM, BACK_ONLY, CONFIRM_AND_BACK }
+enum MODE { SELECT_FLOOR, SELECT_ROOM, INVESTIGATE, RESET_ROOM }
 enum MENU_TYPE { ACTIVES, PASSIVES }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
@@ -62,12 +65,6 @@ var shortcuts:Dictionary = {}
 
 var active_menu_is_open:bool = false
 var is_setup:bool = false
-var enable_update_details:bool = false
-var in_clear_mode:bool = false : 
-	set(val):
-		in_clear_mode = val
-		if in_clear_mode:
-			check_if_remove_is_valid()
 
 var in_contain_mode:bool = false : 
 	set(val):
@@ -99,15 +96,26 @@ func _ready() -> void:
 		for node in child.get_children():
 			node.onFocus = func(node:Control) -> void:
 				LeftSideTitleLabel.text = node.ability.name if !node.ability.is_empty() else "HOTKEYS"
+				if !node.ability.is_empty():
+					var cooldown_duration:int = GAME_UTIL.get_ability_cooldown(node.ability)
+					LeftSideTitleLabel2.text = "COOLDOWN %s DAYS" % [cooldown_duration] if cooldown_duration > 0 else "READY!"
+				else:
+					LeftSideTitleLabel2.text = ""
 			node.onBlur = func(node:Control) -> void:
 				LeftSideTitleLabel.text = "HOTKEYS"
+				LeftSideTitleLabel2.text = ""
 
 	for child in [RightSideBtnList]:
 		for node in child.get_children():
 			node.onFocus = func(node:Control) -> void:
 				RightSideBtnLabel.text = node.ability.name if !node.ability.is_empty() else "HOTKEYS"
+				if !node.ability.is_empty():
+					RightSideBtnLabel2.text = "ENABLED" if GAME_UTIL.get_passive_ability_state(node.room_ref, node.ability_index) else "DISABLED"
+				else:
+					RightSideBtnLabel2.text = ""
 			node.onBlur = func(node:Control) -> void:
-				RightSideBtnLabel.text = "HOTKEYS"			
+				RightSideBtnLabel.text = "HOTKEYS"
+				RightSideBtnLabel2.text = ""
 			
 	ActionBtn.onClick = func() -> void:
 		current_menu_type = MENU_TYPE.ACTIVES
@@ -215,7 +223,7 @@ func toggle_camera_view() -> void:
 func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
-		
+
 	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 	U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
 # --------------------------------------------------------------------------------------------------		
@@ -237,7 +245,7 @@ func show_generator_upgrades(skip_animation:bool = false) -> void:
 		"cooldown_duration": 0, 
 		"is_disabled": false,
 		"action": func() -> void:
-			await GameplayNode.upgrade_generator_level.call(),
+			await GAME_UTIL.upgrade_generator_level.call(),
 		"onSelect": func(index:int) -> void:
 			await list[index].action.call(),
 	})					
@@ -269,7 +277,7 @@ func show_base_upgrades(skip_animation:bool = false) -> void:
 			"is_disabled": is_powered.call(),
 			"get_disabled_state": is_powered,		
 			"action": func() -> void:
-				await GameplayNode.activate_floor(current_location.duplicate(true)),
+				await GAME_UTIL.activate_floor(),
 			"onSelect": func(index:int) -> void:
 				await list[index].action.call(),
 		})
@@ -279,7 +287,7 @@ func show_base_upgrades(skip_animation:bool = false) -> void:
 		"cooldown_duration": 0, 
 		"is_disabled": false,
 		"action": func() -> void:
-			await GameplayNode.set_floor_lockdown(current_location.duplicate(true), !is_in_lockdown.call()),
+			await GAME_UTIL.set_floor_lockdown(!is_in_lockdown.call()),
 		"onSelect": func(index:int) -> void:
 			await list[index].action.call(),
 	})						
@@ -314,14 +322,11 @@ func show_actives(skip_animation:bool = false) -> void:
 					
 					var get_cooldown_duration:Callable = func() -> int:
 						await U.tick()
-						var cooldown_duration:int = 0
-						if ability.details.name in base_states.ring[designation].ability_on_cooldown:
-							cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.details.name]
-						return cooldown_duration
+						return GAME_UTIL.get_ability_cooldown(ability.details)
 						
 					var is_disabled:Callable = func() -> bool:
 						await U.tick()
-						var cooldown_duration:int = await get_cooldown_duration.call() 
+						var cooldown_duration:int = GAME_UTIL.get_ability_cooldown(ability.details)
 						return cooldown_duration != 0
 					
 					action_list_options.push_back({
@@ -383,12 +388,11 @@ func show_passives(skip_animation:bool = false) -> void:
 		for ability_level in abilities.size():
 			var ability:Dictionary = abilities[ability_level]
 			if ability_level_index == ability.level:
-				var ability_uid:String = str(room_ref, ability_level)
 				var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
 				
 				var is_checked:Callable = func() -> bool: 
 					await U.tick()
-					return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
+					return GAME_UTIL.get_passive_ability_state(room_ref, ability_level)
 					
 				var is_disabled:Callable = func() -> bool: 
 					var _is_checked:bool = await is_checked.call()
@@ -488,11 +492,11 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			"passives": {}
 		}			
 	
-	if enable_update_details:
+	if current_mode == MODE.INVESTIGATE:
 		update_details()
 		return
 	
-	if in_clear_mode:
+	if current_mode == MODE.RESET_ROOM:
 		check_if_remove_is_valid()
 		return
 		
@@ -583,7 +587,7 @@ func buildout_btns() -> void:
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
 							await lock_menu()
-							await GameplayNode.open_objectives()
+							await GAME_UTIL.open_objectives()
 							unlock_menu(),
 				})							
 	
@@ -599,10 +603,24 @@ func buildout_btns() -> void:
 					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 						enable_room_focus(true)
 						await lock_menu(true)
-						await GameplayNode.construct_room()
+						await GAME_UTIL.construct_room()
 						unlock_menu(true)
 						enable_room_focus(false),
 			})	
+			
+			#if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_INVESTIGATE]:
+			new_center_btn_list.push_back({
+				"assigned_key": "C",
+				"title": "ASSIGN",
+				"icon": SVGS.TYPE.RECRUIT,
+				"onClick": func() -> void:
+					if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+						enable_room_focus(true)
+						await lock_menu(true)
+						await GAME_UTIL.assign_researcher()
+						unlock_menu(true)
+						enable_room_focus(false),
+			})
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_DESTROY_ROOM]:
 				new_center_btn_list.push_back({
@@ -613,23 +631,12 @@ func buildout_btns() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
 							enable_room_focus(true)
 							await lock_menu(true)
-							in_clear_mode = true
-							current_mode = MODE.CONFIRM_AND_BACK
-							GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo])
-							
-							ConfirmBtn.onClick = func() -> void:
-								await GameplayNode.reset_room(current_location.duplicate())
-								await U.tick()
-								check_if_remove_is_valid()
-							
-							BackBtn.onClick = func() -> void:
-								current_mode = MODE.SELECT_FLOOR
-								in_clear_mode = false
-								await GameplayNode.restore_showing_state()
-								
-								enable_room_focus(false)
-								unlock_menu(true)
+							await GAME_UTIL.reset_room()
+							unlock_menu(true)
+							enable_room_focus(false),
 				})	
+			
+
 			
 			if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_INVESTIGATE]:
 				new_center_btn_list.push_back({
@@ -638,22 +645,19 @@ func buildout_btns() -> void:
 					"icon": SVGS.TYPE.QUESTION_MARK,
 					"onClick": func() -> void:
 						if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
+							lock_menu(true)
+							GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer, GameplayNode.MetricsContainer])
+							
+							current_mode = MODE.INVESTIGATE
 							enable_room_focus(true)
-							await lock_menu(true)
-							enable_update_details = true
-							update_details()
-							current_mode = MODE.BACK_ONLY
-							await GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo])
-							U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].show)	
 							
 							BackBtn.onClick = func() -> void:
-								current_mode = MODE.SELECT_FLOOR
-								U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide)	
+								U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide)
+								current_mode = MODE.SELECT_ROOM
 								await GameplayNode.restore_showing_state()
 								
 								enable_room_focus(false)
 								unlock_menu(true)
-								enable_update_details = false
 				})
 			
 			#new_center_btn_list.push_back({
@@ -855,9 +859,9 @@ func on_current_mode_update() -> void:
 		for node in [LeftSideBtnList, RightSideBtnList, CenterBtnList]:
 			for child in node.get_children():
 				child.is_disabled = true
-				
 		for btn in [ConfirmBtn, BackBtn]:
-			btn.is_disabled = true		
+			btn.is_disabled = true
+			
 		await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
 		
 	match current_mode:
@@ -867,8 +871,12 @@ func on_current_mode_update() -> void:
 			ToggleBtn.title = "GENERATOR UPGRADES"
 			
 			for node in [LeftSideBtnList, RightSideBtnList, CenterBtnList]:
+				node.show()
 				for child in node.get_children():
 					child.is_disabled = false
+					
+			for node in [ActionBtn, ToggleBtn]:
+				node.show()
 					
 			for btn in [ConfirmBtn, BackBtn]:
 				btn.is_disabled = true
@@ -880,11 +888,14 @@ func on_current_mode_update() -> void:
 		MODE.SELECT_ROOM:
 			ActionBtn.title = "ACTIVE"
 			ToggleBtn.title = "PASSIVE"
-
 						
 			for node in [LeftSideBtnList, RightSideBtnList, CenterBtnList]:
+				node.show()
 				for child in node.get_children():
 					child.is_disabled = false
+			
+			for node in [ActionBtn, ToggleBtn]:
+				node.show()
 					
 			for btn in [ConfirmBtn, BackBtn]:
 				btn.is_disabled = true
@@ -892,12 +903,15 @@ func on_current_mode_update() -> void:
 				
 			render_shorcut_container()
 		# --------------
-		MODE.BACK_ONLY:
+		MODE.INVESTIGATE:
+			update_details()
+			U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].show)
+			
 			for node in [LeftSideBtnList, RightSideBtnList, CenterBtnList]:
 				for child in node.get_children():
 					child.is_disabled = true 
 								
-			for btn in [ActionBtn, ToggleBtn, CenterBtnList]:
+			for btn in [ActionBtn, ToggleBtn, CenterBtnList, RightSideShortcutContainer, LeftSideShortcutContainer]:
 				btn.hide()
 
 			for btn in [ConfirmBtn, BackBtn]:
@@ -906,12 +920,14 @@ func on_current_mode_update() -> void:
 			ConfirmBtn.hide()
 			BackBtn.show()
 		# --------------
-		MODE.CONFIRM_AND_BACK:
+		MODE.RESET_ROOM:
+			check_if_remove_is_valid()
+			
 			for node in [LeftSideBtnList, RightSideBtnList, CenterBtnList]:
 				for child in node.get_children():
 					child.is_disabled = true 
-						
-			for btn in [ActionBtn, ToggleBtn, CenterBtnList]:
+			
+			for btn in [ActionBtn, ToggleBtn, CenterBtnList, RightSideShortcutContainer, LeftSideShortcutContainer]:
 				btn.hide()
 
 			for btn in [ConfirmBtn, BackBtn]:
@@ -929,6 +945,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 	
+
 	match key:
 		# ----------------------------
 		"W":
@@ -1154,27 +1171,14 @@ func update_details() -> void:
 	RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
 	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1	
 	
+	for node in [ResearcherList, TraitList]:
+		for child in node.get_children():
+			child.queue_free()
+	
 	if !room_extract.scp.is_empty():
 		ScpMiniCard.ref = room_extract.scp.details.ref
 	ScpMiniCard.show() if !room_extract.scp.is_empty() else ScpMiniCard.hide()
 	
-	if room_extract.researchers.is_empty():
-		Researchers.hide()
-		TraitContainer.hide()
-		SynergyContainer.hide()
-	else:
-		Researchers.show()
-		var total_traits_list := []
-		
-		for researcher in room_extract.researchers:
-			var mini_card:Control = ResearcherMiniCard.instantiate()
-			mini_card.researcher = researcher
-			mini_card.room_extract = room_extract
-			ResearcherList.add_child(mini_card)
-			# add selected to selected list	
-			total_traits_list.push_back(researcher.traits)
-		ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]	
-		
 	## RESEARCHER DETAILS
 	if room_extract.researchers.is_empty():
 		Researchers.hide()
@@ -1255,106 +1259,8 @@ func update_details() -> void:
 #
 ## --------------------------------------------------------------------------------------------------		
 #func open_room_menu() -> void:
-	## pull data, create the options list
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	#var room_is_empty:bool = room_extract.is_room_empty
-	#var is_room_under_construction:bool = room_extract.is_room_under_construction
-	#var is_room_active:bool = room_extract.is_activated
-	#var can_destroy:bool = room_extract.can_destroy
-	#var room_category:int = room_extract.room_category
-	#var researchers_count:int = room_extract.researchers_count
-	#var is_scp_empty:bool = room_extract.is_scp_empty
-	#var options_list:Array = []
-	#
-	#options_list.push_back({
-		#"title": "BACK",
-		#"onSelect": func() -> void:
-			#GBL.find_node(REFS.ROOM_NODES).is_active = false
-			#ActiveMenu.close()
-			#set_btn_disabled_state(false)
-	#})
-	#
-	#if room_is_empty:
-		#options_list.push_back({
-			#"title": "CONSTRUCT ROOM...",
-			#"onSelect": func() -> void:
-				#ActiveMenu.freeze_inputs = true				
-				#await GameplayNode.construct_room()
-				#ActiveMenu.freeze_inputs = false				
-				#open_room_menu()
-		#})	
-	#
-	#if is_room_under_construction:
-		#options_list.push_back({
-			#"title": "CANCEL CONSTRUCTION",
-			#"onSelect": func() -> void:
-				#ActiveMenu.freeze_inputs = true			
-				#await GameplayNode.cancel_construction(current_location.duplicate())
-				#ActiveMenu.freeze_inputs = false
-				#open_room_menu()
-		#})		
-#
-	#if !room_is_empty:
-		#if !is_room_active:
-			#options_list.push_back({
-				#"title": "ACTIVATE ROOM",
-				#"onSelect": func() -> void:
-					#ActiveMenu.freeze_inputs = true	
-					#await GameplayNode.activate_room(current_location.duplicate())
-					#ActiveMenu.freeze_inputs = false
-					#open_room_menu()
-			#})		
-		#else:
-			#options_list.push_back({
-				#"title": "DEACTIVATE ROOM",
-				#"onSelect": func() -> void:
-					#ActiveMenu.freeze_inputs = true	
-					#await GameplayNode.deactivate_room(current_location.duplicate())
-					#ActiveMenu.freeze_inputs = false
-					#open_room_menu()
-			#})				
-	##
-	#
-	#if !room_is_empty:
-		#options_list.push_back({
-			#"title": "CANNOT DESTROY ROOM" if !is_scp_empty or !can_destroy else "DESTROY ROOM",
-			#"is_disabled": !is_scp_empty or !can_destroy,
-			#"onSelect": func() -> void:
-				#ActiveMenu.freeze_inputs = true	
-				#await GameplayNode.reset_room(current_location.duplicate())
-				#ActiveMenu.freeze_inputs = false	
-				#open_room_menu()
-		#})
-#
-#
-#
-	## setup cloes behavior
-	#ActiveMenu.onClose = func() -> void:	
-		#GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		#set_btn_disabled_state(false)
-		#GameplayNode.restore_player_hud()
-		#
-	## make room nodes active
-	#GBL.find_node(REFS.ROOM_NODES).is_active = true
-	#
-	## enable/disable buttons
-	#ActiveMenu.freeze_inputs = false
-	#set_btn_disabled_state(true)
-	#
-	#GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
-	#
-	#
-	#ActiveMenu.show_ap = false
-	#ActiveMenu.header = "FACILITY"
-	#ActiveMenu.use_color = Color(0, 0.529, 1)
-	#ActiveMenu.options_list = options_list
-	#await U.tick()
-	#ActiveMenu.size = Vector2(1, 1)
-	#ActiveMenu.custom_minimum_size = Vector2(1, 1)
-	#ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
-	#ActiveMenu.open()
-## --------------------------------------------------------------------------------------------------			
-#
+
+
 ## --------------------------------------------------------------------------------------------------			
 #func open_scp_menu() -> void:
 	## setup cloes behavior
@@ -1389,16 +1295,7 @@ func update_details() -> void:
 			#set_btn_disabled_state(false)
 	#})
 	#
-	#if is_scp_empty:
-		#options_list.push_back({
-			#"title": "CONTAIN SCP",
-			#"is_disabled": scp_data.available_list.size() == 0,
-			#"onSelect": func() -> void:
-				#ActiveMenu.freeze_inputs = true
-				#await GameplayNode.contain_scp(current_location.duplicate(), scp_data.available_list[0].ref)
-				#ActiveMenu.freeze_inputs = false
-				#open_scp_menu()
-		#})
+
 	#else:
 		#options_list.push_back({
 			#"title": "CONDUCT TESTING",
@@ -1504,113 +1401,7 @@ func update_details() -> void:
 		
 ## ---- CENTER
 #CenterBtnList
-#
-## ---- LEFT SIDE
-#new_left_btn_list.push_back({
-	#"title": "UNLOCK",
-	#"assigned_key": "E",
-	#"is_disabled": floor_is_powered,
-	#"icon": SVGS.TYPE.TARGET,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#set_btn_disabled_state(true)
-			#await GameplayNode.activate_floor(current_location.duplicate())
-			#restore_btn_disable_state(true)
-			#
-#})						
-			#
-## ---- RIGHT SIDE
-#new_right_btn_list.push_back({
-	#"title": "QUICKSAVE",
-	#"assigned_key": "F5",
-	#"icon": SVGS.TYPE.SAVE,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#GameplayNode.quicksave()
-#})		
-#
-#new_right_btn_list.push_back({
-	#"title": "QUICKLOAD",
-	#"assigned_key": "F8",
-	#"icon": SVGS.TYPE.LOADING,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#GameplayNode.quickload()
-#})	
-#
-#if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN]:
-	#new_right_btn_list.push_back({
-		#"title": "DETAILS",
-		#"assigned_key": "SPACEBAR",
-		#"icon": SVGS.TYPE.CHECKBOX if GBL.find_node(REFS.FLOOR_INFO).expand else SVGS.TYPE.EMPTY_CHECKBOX,
-		#"onClick": func() -> void:
-			#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-				#GBL.find_node(REFS.FLOOR_INFO).toggle_expand()
-				#buildout_btns()
-	#})				
-			#
-#new_right_btn_list.push_back({
-	#"title": "GOTO WING",
-	#"assigned_key": "TAB",
-	#"icon": SVGS.TYPE.TARGET,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#toggle_camera_view()
-#})		
 
-## ---- LEFT SIDE
-#new_left_btn_list.push_back({
-	#"title": "ABILITIES",
-	#"assigned_key": "E",
-	#"is_disabled": !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTION_DETAILS] or !is_activated,
-	#"icon": SVGS.TYPE.TARGET,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#show_details()
-#})						
-#
-#new_left_btn_list.push_back({
-	#"title": "FACILITY",
-	#"assigned_key": "1",
-	#"icon": SVGS.TYPE.MONEY,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#open_room_menu()
-#})
-#
-#
-#new_left_btn_list.push_back({
-	#"title": "RESEARCHER",
-	#"is_disabled": !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_RESEARCHER],
-	#"assigned_key": "2",
-	#"icon": SVGS.TYPE.CONTAIN,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#open_researcher_menu()
-#})
-	#
-#
-#new_left_btn_list.push_back({
-	#"title": "CONTAINMENT",
-	#"is_disabled": !gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP] or !can_contain,
-	#"assigned_key": "3",
-	#"icon": SVGS.TYPE.CONTAIN if room_category == ROOM.CATEGORY.CONTAINMENT_CELL else SVGS.TYPE.CLEAR,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#open_scp_menu()
-#})
-#
-#
-#
-## ---- RIGHT SIDE
-#new_right_btn_list.push_back({
-	#"title": "DEBUG",
-	#"assigned_key": "-",
-	#"icon": SVGS.TYPE.DOWNLOAD,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-			#open_debug_menu()
-#})							
 #
 #if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_DATABASE_BTN]:
 	#new_right_btn_list.push_back({
@@ -1623,35 +1414,3 @@ func update_details() -> void:
 				#await GameplayNode.open_scp_database()
 				#restore_btn_disable_state(true)
 	#})				
-#
-#if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN]:
-	#new_right_btn_list.push_back({
-		#"title": "OBJECTIVES",
-		#"assigned_key": "O",
-		#"icon": SVGS.TYPE.TXT_FILE,
-		#"onClick": func() -> void:
-			#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-				#set_btn_disabled_state(true)
-				#await GameplayNode.open_objectives()							
-				#restore_btn_disable_state(true)
-	#})				
-#
-#if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN]:
-	#new_right_btn_list.push_back({
-		#"title": "DETAILS",
-		#"assigned_key": "SPACEBAR",
-		#"icon": SVGS.TYPE.CHECKBOX if GBL.find_node(REFS.ROOM_INFO).expand else SVGS.TYPE.EMPTY_CHECKBOX,
-		#"onClick": func() -> void:
-			#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-				#GBL.find_node(REFS.ROOM_INFO).toggle_expand()
-				#buildout_btns()
-	#})	
-			#
-#new_right_btn_list.push_back({
-	#"title": "GOTO",
-	#"assigned_key": "TAB",
-	#"icon": SVGS.TYPE.CAMERA_B,
-	#"onClick": func() -> void:
-		#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied(): 
-			#toggle_camera_view()
-#})

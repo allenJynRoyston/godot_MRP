@@ -193,6 +193,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
 no_bg = true
+checkbox_color = Color(1, 1, 1, 1)
 title = "1 energy required (you have X)"
 
 [node name="HSeparator" type="HSeparator" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer"]

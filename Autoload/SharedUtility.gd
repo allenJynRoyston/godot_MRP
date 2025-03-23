@@ -258,7 +258,7 @@ func return_tier_paginated(reference_data:Dictionary, filter:Callable, start_at:
 	list = filter.call(list)
 	
 	var paginated_array:Array = U.paginate_array(list, start_at, limit)
-	
+
 	return {
 		"list": paginated_array, 
 		"size": list.size(), 

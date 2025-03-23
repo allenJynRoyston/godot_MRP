@@ -20,6 +20,12 @@ extends GameContainer
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
+@onready var allow_controls:bool = false : 
+	set(val):
+		allow_controls = val
+		check_for_unavailable_rooms()
+		GBL.find_node(REFS.ROOM_NODES).enable_room_focus = val
+
 var title:String = "" : 
 	set(val):
 		title = val
@@ -79,12 +85,15 @@ func set_props(new_title:String = "", new_subtitle:String = "", new_image:String
 
 # --------------------------------------------------------------------------------------------------		
 func end(made_changes:bool) -> void:
+	allow_controls = false
+	
 	for btn in RightSideBtnList.get_children():
 		btn.is_disabled = true
 		#
 	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
 	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
+	
 	
 	confirm_only = false
 	activation_requirements = []
@@ -109,6 +118,12 @@ func on_fullscreen_update(state:bool) -> void:
 	update_control_pos()
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------
+func check_for_unavailable_rooms() -> void:
+	var designation:String = U.location_to_designation(current_location)	
+	AcceptBtn.is_disabled = designation in unavailable_rooms
+# --------------------------------------------------------------------------------------------------	
+
 # --------------------------------------------------------------------------------------------------		
 func update_control_pos() -> void:	
 	await U.tick()
@@ -129,8 +144,6 @@ func update_control_pos() -> void:
 		"show": control_pos_default[StaffingControlPanel].y , 
 		"hide": control_pos_default[StaffingControlPanel].y - StaffingControlPanel.size.y
 	}	
-	
-
 	
 	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------	
@@ -231,3 +244,27 @@ func on_confirm_only_update() -> void:
 	else:
 		BackBtn.show()
 # --------------------------------------------------------------------------------------------------		
+
+
+# --------------------------------------------------------------------------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !allow_controls:return
+	var key:String = input_data.key
+	var keycode:int = input_data.keycode
+	
+	match key:
+		# ----------------------------
+		"W":
+			U.room_up()
+		# ----------------------------
+		"S":
+			U.room_down()
+		# ----------------------------
+		"D":
+			U.room_right()
+		# ----------------------------
+		"A":
+			U.room_left()
+	
+	check_for_unavailable_rooms()
+# --------------------------------------------------------------------------------------------------	

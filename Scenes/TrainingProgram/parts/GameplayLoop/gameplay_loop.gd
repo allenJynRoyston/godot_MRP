@@ -294,10 +294,10 @@ var initial_values:Dictionary = {
 			CONDITIONALS.TYPE.BASE_IS_SETUP: false,
 			
 			CONDITIONALS.TYPE.ENABLE_NEXT: false,
-			CONDITIONALS.TYPE.ENABLE_DESTROY_ROOM: false,
+			CONDITIONALS.TYPE.ENABLE_DESTROY_ROOM: true,
 			CONDITIONALS.TYPE.ENABLE_ACTIVE_ABILITY_SHORTCUTS: true,
 			CONDITIONALS.TYPE.ENABLE_PASSIVE_ABILITY_SHORTCUTS: true,
-			CONDITIONALS.TYPE.ENABLE_INVESTIGATE: false,
+			CONDITIONALS.TYPE.ENABLE_INVESTIGATE: true,
 			CONDITIONALS.TYPE.ENABLE_OBJECTIVES_BTN: false,
 			CONDITIONALS.TYPE.ENABLE_SAVE_AND_LOAD: true,
 			
@@ -833,7 +833,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 			# -------------------------
 			# get their contained_list details
 			"contained_list_details": func() -> Dictionary:
-				var res:Dictionary = find_in_contained(scp_ref)
+				var res:Dictionary = GAME_UTIL.find_in_contained(scp_ref)
 				return {
 					"index": res.index,
 					"data": res.data
@@ -841,7 +841,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 			# -------------------------	
 			# return current researcher(s) attached to scp
 			"researcher_details": func() -> Array:
-				var res:Dictionary = find_in_contained(scp_ref)
+				var res:Dictionary = GAME_UTIL.find_in_contained(scp_ref)
 				var room_extract:Dictionary = GAME_UTIL.extract_room_details(res.data.location)
 				return room_extract.researchers,
 			# -------------------------	
@@ -863,7 +863,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 			# -------------------------	
 			# get counts for type (randomize, after_contained, etc)
 			"event_type_count": func(type:int, event_id:int) -> int:
-				var res:Dictionary = find_in_contained(scp_ref)
+				var res:Dictionary = GAME_UTIL.find_in_contained(scp_ref)
 				var event_name:String = "%s%s" % [type, event_id]
 				return 0 if event_name not in res.data.event_type_count else res.data.event_type_count[event_name].count,
 			# -------------------------
@@ -884,7 +884,7 @@ func get_self_ref_callable(scp_ref:int) -> Callable:
 
 # -----------------------------------
 func check_events(ref:int, event_ref:SCP.EVENT_TYPE, skip_wait:bool = false) -> Dictionary:
-	var res:Dictionary = find_in_contained(ref)
+	var res:Dictionary = GAME_UTIL.find_in_contained(ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data
 	var event:Dictionary = SCP_UTIL.check_for_events(ref, event_ref, get_data_snapshot, get_self_ref_callable(ref))
@@ -914,7 +914,7 @@ func check_events(ref:int, event_ref:SCP.EVENT_TYPE, skip_wait:bool = false) -> 
 
 # -----------------------------------
 func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> void:
-	var res:Dictionary = find_in_contained(ref)
+	var res:Dictionary = GAME_UTIL.find_in_contained(ref)
 	var index:int = res.index
 	var list_data:Dictionary = res.data	
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(list_data.location)
@@ -1127,269 +1127,9 @@ func game_over() -> void:
 #endregion
 # ------------------------------------------------------------------------------	
 
-# -----------------------------------------------------------------------------
-#region ROOM ACTION QUEUE (assign/unassign/dismiss, etc)
-# ------------------------------------------------------------------------------	
-func set_wing_emergency_mode(from_location:Dictionary, mode:ROOM.EMERGENCY_MODES) -> Dictionary:
-	var title:String
-	var subtitle:String
-	
-	match mode:
-		ROOM.EMERGENCY_MODES.DANGER:
-			title = "SET ALERT LEVEL TO DANGER?"
-			subtitle = "All actions (research, construction, etc) will be halted.  READINESS will be increased by 5, MORALE will be decreaed by 3."
-		ROOM.EMERGENCY_MODES.WARNING:
-			title = "SET ALERT LEVEL WARNING?"
-			subtitle = "All actions will take longer.  SAFETY will be increased by 5, MORALE will be decreaed by 3."			
-		ROOM.EMERGENCY_MODES.CAUTION:
-			title = "SET ALERT LEVEL CAUTION?"
-			subtitle = "SAFETY and READINESS will be increased by 1, MORALE will decrease by 1."						
-		ROOM.EMERGENCY_MODES.NORMAL:
-			title = "SET ALERT LEVEL BACK TO NORMAL?"
-			subtitle = "Metrics will be returned to normal."
-
-	ConfirmModal.set_props(title, subtitle)
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var response:Dictionary = await ConfirmModal.user_response
-	
-	match response.action:
-		ACTION.NEXT:			
-			var designation:String = "%s%s" % [from_location.floor, from_location.ring]
-			base_states.ring[designation].emergency_mode = mode
-			SUBSCRIBE.base_states = base_states
-#
-	#on_confirm_complete.emit()
-	await restore_player_hud()	
-	return {"has_changes": response.action == ACTION.NEXT}	
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------
-func activate_floor(from_location:Dictionary) -> bool:
-	SUBSCRIBE.suppress_click = true
-
-	var activated_count:int = 0
-	for floor_index in room_config.floor.size():
-		if room_config.floor[floor_index].is_powered:
-			activated_count += 1
-	var activation_cost:int = activated_count * 50
-	var can_purchase:bool = resources_data[RESOURCE.TYPE.MONEY].amount >= activation_cost
-	
-	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.MONEY)}]
-	ConfirmModal.set_props("Activate this floor?")
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
-	
-	if confirm:
-		resources_data[RESOURCE.TYPE.MONEY].amount -= activation_cost
-		room_config.floor[from_location.floor].is_powered = true
-		SUBSCRIBE.room_config = room_config
-		SUBSCRIBE.resources_data = resources_data
-			
-	restore_showing_state()	
-	return confirm
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func set_floor_lockdown(from_location:Dictionary, state:bool) -> bool:
-	var title:String
-	var subtitle:String
-
-	title = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
-	subtitle = "All wings will have their actions frozen." if state else ""
-			
-	ConfirmModal.set_props(title, subtitle)
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
-
-	if confirm:
-		room_config.floor[from_location.floor].in_lockdown = state
-		SUBSCRIBE.room_config = room_config
-
-	restore_showing_state()	
-	return confirm
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-func upgrade_generator_level(use_location:Dictionary = current_location) -> bool:
-	var title:String
-	var subtitle:String
-
-	var activation_cost:int = 25
-	var can_purchase:bool = resources_data[RESOURCE.TYPE.MONEY].amount >= activation_cost
-
-	title = "Upgrade generator?"
-	subtitle = "X energy will be available per ring."
-	
-	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.MONEY)}]
-	ConfirmModal.set_props(title, subtitle)
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
-
-	if confirm:
-		resources_data[RESOURCE.TYPE.MONEY].amount -= activation_cost
-		base_states.floor[str(use_location.floor)].generator_level += 1
-		SUBSCRIBE.base_states = base_states
-		SUBSCRIBE.resources_data = resources_data
-
-	restore_showing_state()	
-	return confirm
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------	
-func construct_room() -> void:	
-	current_builder_step = BUILDER_STEPS.OPEN
-	await on_store_purchase_complete	
-# ---------------------
-
-# ------------------------------------------------------------------------------	
-func open_store() -> bool:	
-	current_shop_step = SHOP_STEPS.OPEN
-	return await on_store_purchase_complete
-# ---------------------
-
-# ---------------------a
-func cancel_construction(from_location:Dictionary) -> bool:
-	var floor_index:int = from_location.floor
-	var ring_index:int = from_location.ring
-	var room_index:int = from_location.room
-	var filtered_arr:Array = timeline_array.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index) and i.action == ACTION.AQ.BUILD_ITEM)
-	var has_changes:bool = await cancel_action_queue(filtered_arr[0])
-	return has_changes
-# ---------------------	
-
-# ---------------------
-#func deactivate_room(from_location:Dictionary, skip_confirm:bool = false) -> bool:
-	#var extract_details:Dictionary = GAME_UTIL.extract_room_details(from_location)
-	#var room_ref:int = extract_details.room.details.ref
-	#var confirm:bool = skip_confirm
-	#
-	## -------------- ACTIVATE UPDATE
-	#if !skip_confirm:
-		#ConfirmModal.set_props("Deactivate %s?" % [extract_details.room.details.name], "Personnel [COUNT] will be made available.")
-		#SUBSCRIBE.suppress_click = true
-		#
-		#await show_only([ConfirmModal, Structure3dContainer])	
-		#confirm = await ConfirmModal.user_response
-		#SUBSCRIBE.suppress_click = false
-		#restore_showing_state()	
-#
-	#if confirm:
-		#base_states.room[U.location_to_designation(from_location)].is_activated = false
-		#SUBSCRIBE.base_states = base_states
-		#SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, true)
-		#
-	#return confirm
-# ---------------------
-
-# ---------------------
-func reset_room(from_location:Dictionary) -> bool:
-	var floor_index:int = from_location.floor
-	var ring_index:int = from_location.ring
-	var room_index:int = from_location.room
-	var reset_arr:Array = purchased_facility_arr.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(from_location)
-	
-	# ---------------------
-	if reset_arr.size() > 0:
-		#SUBSCRIBE.suppress_click = true
-		#ConfirmModal.set_props("This room will be destroyed.", "Personnel [COUNT] will be made available." if room_extract.is_activated else "")
-		#SUBSCRIBE.suppress_click = false
-		#await show_only([ConfirmModal, Structure3dContainer])	
-		#var response:bool = await ConfirmModal.user_response
-		#if response:
-		var reset_item:Dictionary = reset_arr[0]
-		#if room_extract.is_activated:
-			#deactivate_room(from_location, true)
-			
-		SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-		SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, true)
-			
-
-		#await restore_showing_state()
-		return true
-		
-	# ---------------------
-	#await restore_showing_state()
-	return false	
-# ---------------------
-
-# ------------------------------------------------------------------------------
-func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
-	SUBSCRIBE.suppress_click = true
-	var contained_data:Dictionary = find_in_contained(scp_ref)
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	var testing_index:int = scp_data.contained_list[contained_data.index].testing_completed
-	
-	if testing_index >= scp_details.testing_options.size():
-		ConfirmModal.set_props("There's no additional test scenarios available.")
-		await show_only([ConfirmModal, Structure3dContainer])	
-		await ConfirmModal.user_response
-		restore_showing_state()	
-		return true
-	
-	var testing_event:Dictionary = scp_details.testing_options[testing_index]
-	ConfirmModal.activation_requirements = SCP_UTIL.return_testing_requirements(scp_ref, testing_index)
-	ConfirmModal.set_props("Begin testing on %s?" % [scp_details.name], "THERE ARE RISKS ASSOCIATED WITH TESTING.", scp_details.img_src)
-	await show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
-	
-	#TODO: ADD EVENT 	
-	if confirm:
-		SUBSCRIBE.resources_data = SCP_UTIL.calculate_testing_costs(scp_ref, testing_index)
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details(from_location)		
-		event_data = [{"event_instructions": testing_event.event_instructions.call(extract_data, 0)}]
-		await on_events_complete
-		# increament and save
-		scp_data.contained_list[contained_data.index].testing_completed = U.min_max( contained_data.data.testing_completed + 1, 0, scp_details.testing_options.size())
-		SUBSCRIBE.scp_data = scp_data		
-		# need to restore hud here
-		await U.tick()
-		restore_player_hud()
-		
-	else:
-		restore_showing_state()	
-	
-
-	return confirm
-# ------------------------------------------------------------------------------
-	
-#endregion
-# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
 #region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
-# -----------------------------------
-func cancel_action_queue(timeline_item:Dictionary, include_restore:bool = true) -> bool:
-	match timeline_item.action:
-		ACTION.AQ.CONTAIN:
-			ConfirmModal.set_props("Cancel containment?", "There are no costs for this action.")
-		ACTION.AQ.TRANSFER:
-			ConfirmModal.set_props("Cancel transfer?", "There are no costs for this action.")
-		ACTION.AQ.BUILD_ITEM:
-			ConfirmModal.set_props("Cancel construction?", "Resources will be refunded.")
-		_:
-			ConfirmModal.set_props("Missing instruction...", "Check for errors.")
-			
-	await show_only([Structure3dContainer, ConfirmModal])	
-	var confirm:bool = await ConfirmModal.user_response
-	if confirm:
-		match timeline_item.action:
-			ACTION.AQ.BUILD_ITEM:
-				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(timeline_item.ref, true)
-			ACTION.AQ.CONTAIN:
-				cancel_scp_containment(timeline_item.ref)
-			ACTION.AQ.TRANSFER:
-				cancel_scp_transfer(timeline_item.ref)
-				
-		await remove_from_timeline(timeline_item)
-	
-	if include_restore:
-		await restore_player_hud()
-		
-	return confirm
-# -----------------------------------
-
 # -----------------------------------
 func remove_from_timeline(timeline_item:Dictionary) -> void:	
 	SUBSCRIBE.timeline_array = timeline_array.filter(func(i): return i.uid != timeline_item.uid)
@@ -1415,23 +1155,8 @@ func add_timeline_item(dict:Dictionary, props:Dictionary = {}) -> void:
 #endregion	
 # ------------------------------------------------------------------------------	
 
-# -----------------------------------
-func open_objectives() -> void:
-	current_objective_state = OBJECTIVES_STATE.SHOW
-	await on_objective_signal
-# -----------------------------------
-
-
 # ------------------------------------------------------------------------------	
 #region SCP FUNCS (assign/unassign/dismiss, etc)
-# -----------------------------------
-func get_new_scp() -> bool:
-	# TODO: add something to determine next set of SCPs
-	SCPSelectScreen.start_selection([0, 1])
-	current_select_scp_step = SELECT_SCP_STEPS.START
-	return await on_scp_select_complete
-# -----------------------------------
-
 # -----------------------------------
 func open_scp_database() -> bool:
 	SCPSelectScreen.start_read_only(scp_data.contained_list.map(func(i):return i.ref))
@@ -1446,117 +1171,6 @@ func view_scp_details(ref) -> bool:
 	return await on_scp_select_complete
 # -----------------------------------
 
-
-# -----------------------------------
-func find_in_contained_via_location(from_location:Dictionary) -> Dictionary:
-	var index:int = -1
-	var res_data:Dictionary = {} 
-
-	for ind in scp_data.contained_list.size():
-		var data:Dictionary = scp_data.contained_list[ind]
-		if data.location.floor == from_location.floor and data.location.ring == from_location.ring and data.location.room == from_location.room:
-			index = ind
-			res_data = data
-			break	
-	
-	return {
-		"index": index,
-		"data": res_data
-	}
-# -----------------------------------	
-
-# -----------------------------------
-func find_in_contained(ref:int) -> Dictionary:
-	var index:int = -1
-	var res_data:Dictionary = {} 
-
-	for ind in scp_data.contained_list.size():
-		var data:Dictionary = scp_data.contained_list[ind]
-		if data.ref == ref:
-			index = ind
-			res_data = data
-			break	
-	
-	return {
-		"index": index,
-		"data": res_data
-	}
-# -----------------------------------	
-
-# -----------------------------------
-func find_in_available(ref:int) -> Dictionary:
-	var index:int = -1
-	var res_data:Dictionary = {} 
-
-	for ind in scp_data.available_list.size():
-		var data:Dictionary = scp_data.available_list[ind]
-		if data.ref == ref:
-			index = ind
-			res_data = data
-			break	
-	
-	return {
-		"index": index,
-		"data": res_data
-	}
-# -----------------------------------	
-
-# -----------------------------------
-func transfer_scp(from_location:Dictionary) -> Dictionary:
-	return {}
-# -----------------------------------
-
-# -----------------------------------
-func contain_scp_cancel(from_location:Dictionary, action:ACTION.AQ) -> Dictionary:
-	ConfirmModal.set_props("Cancel containment?")
-	await show_only([Structure3dContainer, ConfirmModal])
-	var response:Dictionary = await ConfirmModal.user_response	
-	match response.action:
-		ACTION.NEXT:	
-			var floor_index:int = from_location.floor
-			var ring_index:int = from_location.ring
-			var room_index:int = from_location.room
-			var scp_details:Dictionary = room_config.floor[floor_index].ring[ring_index].room[room_index].scp_data.get_scp_details.call()
-			var filtered_arr:Array = timeline_array.filter(func(i): return i.ref == scp_details.ref and i.action == action)
-			match action:
-				ACTION.AQ.CONTAIN:
-					cancel_scp_containment(scp_details.ref)
-				ACTION.AQ.TRANSFER:
-					cancel_scp_transfer(scp_details.ref)
-			remove_from_timeline(filtered_arr[0])
-		
-	restore_player_hud()		
-	return {"has_changes": response.action != ACTION.BACK}
-# -----------------------------------
-
-# -----------------------------------
-func cancel_scp_transfer(ref:int) -> void:
-	var res:Dictionary = find_in_contained(ref)
-	var index:int = res.index
-	
-	scp_data.contained_list[index].transfer_status = { 
-		"state": false, 
-		"days_till_complete": -1,
-		"location": {}
-	}	
-
-	SUBSCRIBE.scp_data = scp_data
-# -----------------------------------
-
-# -----------------------------------
-func cancel_scp_containment(ref:int) -> void:
-	var res:Dictionary = find_in_available(ref)
-	var index:int = res.index
-		
-	# resets it in the available list
-	scp_data.available_list[index].transfer_status = { 
-		"state": false, 
-		"days_till_complete": -1,
-		"location": {}
-	}
-	
-	SUBSCRIBE.scp_data = scp_data
-# -----------------------------------
 
 # -----------------------------------	
 func destroy_scp(selected_data:Dictionary) -> void:
@@ -1573,48 +1187,24 @@ func on_expired_scp_items_update() -> void:
 # ------------------------------------------------------------------------------	
 #region RESEARCHER FUNCS (assign/unassign/dismiss, etc)
 
-
-# -----------------------------------
-func assign_researcher(location_data:Dictionary) -> bool:
-	current_researcher_step = RESEARCHERS_STEPS.ASSIGN
-	var response:Dictionary = await on_researcher_component_complete
-
-	match response.action:
-		ACTION.RESEARCHERS.SELECT:
-			# add new researchers
-			hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-				# clear out prior researchers
-				if U.dictionaries_equal(i[9].assigned_to_room, location_data):
-					i[9].assigned_to_room = {}
-				# add current users
-				if i[0] in response.uids:
-					i[9].assigned_to_room = location_data.duplicate()
-				return i
-			)
-			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
-			
-#
-	return response.action == ACTION.RESEARCHERS.SELECT
-# -----------------------------------
-
 # -----------------------------------	
-func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) -> Dictionary:
-	pass
-	#ConfirmModal.set_props("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
-	#await show_only([Structure3dContainer, ConfirmModal])
-	#
-	#var response:Dictionary = await ConfirmModal.user_response
-#
-	#match response.action:
-		#ACTION.NEXT:	
-			#SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-				#if i[0] == researcher_data.uid:
-					#i[9].assigned_to_room = null
-				#return i
-			#)
-#
-	restore_player_hud()
-	return {"has_changes": true}
+#func unassign_researcher(researcher_data:Dictionary, room_details:Dictionary) -> Dictionary:
+	#pass
+	##ConfirmModal.set_props("Remove %s from %s?" % [researcher_data.name, room_details.name if !room_details.is_empty() else "this location."])
+	##await show_only([Structure3dContainer, ConfirmModal])
+	##
+	##var response:Dictionary = await ConfirmModal.user_response
+##
+	##match response.action:
+		##ACTION.NEXT:	
+			##SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				##if i[0] == researcher_data.uid:
+					##i[9].assigned_to_room = null
+				##return i
+			##)
+##
+	#restore_player_hud()
+	#return {"has_changes": true}
 # -----------------------------------	
 
 # -----------------------------------
@@ -1700,13 +1290,14 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals) -> void:
 	gameplay_conditionals = new_val
 
-func on_base_states_update(new_val:Dictionary = base_states) -> void:
-	base_states = new_val
-	if setup_complete:
-		U.debounce("set_room_config", set_room_config)
-		
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
+	print(hired_lead_researchers_arr)
+	if setup_complete:
+		U.debounce("set_room_config", set_room_config)
+
+func on_base_states_update(new_val:Dictionary = base_states) -> void:
+	base_states = new_val
 	if setup_complete:
 		U.debounce("set_room_config", set_room_config)
 		
@@ -2282,7 +1873,7 @@ func on_current_select_scp_step_update() -> void:
 			await show_only([SCPSelectScreen])			
 			var response:bool = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			await restore_showing_state()	
+			#await restore_showing_state()	
 			# trigger signal
 			on_scp_select_complete.emit(response)
 			current_select_scp_step = SELECT_SCP_STEPS.RESET
@@ -2517,7 +2108,6 @@ func set_room_config(force_setup:bool = false) -> void:
 			ring_config_data.energy.available = energy_available
 			ring_config_data.energy.used = 0
 				
-			
 			var floor_ring_designation:String = str(floor_index, ring_index)
 			if floor_ring_designation not in metric_defaults:
 				metric_defaults[floor_ring_designation] = {
@@ -2526,26 +2116,16 @@ func set_room_config(force_setup:bool = false) -> void:
 					RESOURCE.BASE_METRICS.READINESS: 0
 				}
 
-	# mark rooms that are being transfered to a room 
-	if "available_list" in scp_data:
-		for item in scp_data.available_list:
-			if item.transfer_status.state:
-				var floor:int = item.transfer_status.location.floor
-				var ring:int = item.transfer_status.location.ring
-				var room:int = item.transfer_status.location.room	
-				new_room_config.floor[floor].ring[ring].room[room].scp_data = {
-					"ref": item.ref,
-				}
 				
 	# ... and mark rooms that are currently contained 
-	if "contained_list" in scp_data:
+	if !scp_data.is_empty() and "contained_list" in scp_data:
 		for item in scp_data.contained_list:
-			# ... or in a state of being transfered to another room
 			var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
 			var floor:int = item.location.floor
 			var ring:int = item.location.ring
 			var room:int = item.location.room	
-			
+			var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+
 			# add to ref count
 			new_room_config.floor[floor].ring[ring].scp_refs.push_back(item.ref)
 			
@@ -2553,10 +2133,18 @@ func set_room_config(force_setup:bool = false) -> void:
 			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
 				"ref": item.ref,
 			}
-
-			# first add scp ref to list to both ring and floor			
+			
+			# first add scp ref to list to both ring and floor	
 			new_room_config.floor[floor].scp_refs.push_back(item.ref)
 			new_room_config.floor[floor].ring[ring].scp_refs.push_back(item.ref)
+			
+			# check for effects
+			var ring_effects:Dictionary = scp_details.effects.ring.call()
+			if "provides" in ring_effects:
+				for resource in ring_effects.provides:
+					ring_config_data.available_resources[resource] = true
+
+			
 	
 	# FIRST, check passive abilities that upgrade the current ability level
 	for item in purchased_facility_arr:
@@ -2569,7 +2157,6 @@ func set_room_config(force_setup:bool = false) -> void:
 		# add to ref count
 		ring_config_data.room_refs.push_back(item.ref)
 		
-
 		# FIRST, check passive abilities that upgrade the current ability level
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()

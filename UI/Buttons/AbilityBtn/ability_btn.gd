@@ -214,6 +214,8 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 		return
 			
 	super.on_mouse_click(node, btn, on_hover)
+	await U.tick()
+	super.on_focus(true)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

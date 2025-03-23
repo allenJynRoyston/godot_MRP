@@ -189,7 +189,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			# add to selected researchers
 			hired_lead_researchers_arr.push_back(new_hire_list[researcher_active_index])
-			
+
 			# subscribe
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 			

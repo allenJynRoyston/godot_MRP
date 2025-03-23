@@ -387,6 +387,7 @@ func on_current_mode_update(reset_position:bool = false) -> void:
 			UnlockBtn.hide()
 			SelectTabBtn.show()
 			
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 1 )
 			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, 0 if reset_position else 0.3)
 			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, 0 if reset_position else 0.3)
 			

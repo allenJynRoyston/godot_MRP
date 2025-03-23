@@ -8,19 +8,19 @@ var SCP_001:Dictionary = {
 	"img_src": "res://Media/scps/the_door.png",
 	"quote": "Quote goes here.",
 	"passive_effect": {
-		"description": "Passive effect description for XX1"
+		"description": "SUPPLIES ALL RESOURCES"
 	},
 	"item_class": func() -> String:
 		return "SAFE",		
 	
 	# -----------------------------------
-	"offered_on_day": func() -> int:
-		return 1,
-	"containment_time": func() -> int:
-		return 3,
-	"containment_requirements": [
-		ROOM.TYPE.CONTAINMENT_CELL
-	],
+	#"offered_on_day": func() -> int:
+		#return 1,
+	#"containment_time": func() -> int:
+		#return 3,
+	#"containment_requirements": [
+		#ROOM.TYPE.CONTAINMENT_CELL
+	#],
 	"researcher_preferences": {
 		#RESEARCHER.SPECIALIZATION.ENGINEERING: 3,
 	},	
@@ -39,10 +39,21 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 	
 	# -----------------------------------
-	"wing_effect": func(extract_data:Dictionary) -> Dictionary:				
-		return {
-			RESOURCE.BASE_METRICS.SAFETY: -4 if extract_data.scp.is_contained else 0
-		},
+	"effects": {
+		"floor": func() -> Dictionary:
+			return {
+				
+			},
+		"ring": func() -> Dictionary: 
+			return {
+				"provides": [
+					RESOURCE.TYPE.SECURITY,
+					RESOURCE.TYPE.STAFF,
+					RESOURCE.TYPE.TECHNICIANS,
+					RESOURCE.TYPE.DCLASS
+				]
+			},
+	},
 	# -----------------------------------
 	
 	# -----------------------------------
@@ -51,7 +62,6 @@ var SCP_001:Dictionary = {
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: 50,
-					RESOURCE.TYPE.STAFF: 5	
 				},
 		}	
 	},
@@ -60,10 +70,10 @@ var SCP_001:Dictionary = {
 	# -----------------------------------
 	"ongoing_containment": {
 		"resources": {
-			"metrics": func() -> Dictionary:
-				return {
-					RESOURCE.BASE_METRICS.SAFETY: -4
-			},
+			#"metrics": func() -> Dictionary:
+				#return {
+					#RESOURCE.BASE_METRICS.SAFETY: -4
+			#},
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: 15,
@@ -85,7 +95,6 @@ var SCP_001:Dictionary = {
 						return {
 							RESOURCE.TYPE.MONEY: 50,
 							RESOURCE.TYPE.SCIENCE: 50,
-							RESOURCE.TYPE.ENERGY: 50,
 						},
 					#"utilized": func() -> Dictionary:
 						#return {
@@ -468,7 +477,6 @@ var SCP_002:Dictionary = {
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: 50,
-					RESOURCE.TYPE.STAFF: 5	
 				},
 			"capacity": func() -> Dictionary:
 				return {
@@ -494,26 +502,26 @@ var SCP_002:Dictionary = {
 	# -----------------------------------
 	
 	# -----------------------------------	
-	"unlockables": {
-		SCP.UNLOCKABLE.ONE: {
-			"add_to": {
-				"containment_procedures": func(self_ref:Dictionary) -> Array: 
-					return [
-						"ADDENUMDUM:",
-						"Containment of %s requires the use of 2 guards stationed outside the door." % [self_ref.name]
-					],
-				"description": func(self_ref:Dictionary) -> Array:
-					return [
-						"%s should show up now that I've been added." % [self_ref.name]
-					],
-			},
-			
-			"event_text": func(self_ref:Dictionary) -> Array:
-				return [
-					"You ignore the knocking."
-				],
-		}
-	},
+	#"unlockables": {
+		#SCP.UNLOCKABLE.ONE: {
+			#"add_to": {
+				#"containment_procedures": func(self_ref:Dictionary) -> Array: 
+					#return [
+						#"ADDENUMDUM:",
+						#"Containment of %s requires the use of 2 guards stationed outside the door." % [self_ref.name]
+					#],
+				#"description": func(self_ref:Dictionary) -> Array:
+					#return [
+						#"%s should show up now that I've been added." % [self_ref.name]
+					#],
+			#},
+			#
+			#"event_text": func(self_ref:Dictionary) -> Array:
+				#return [
+					#"You ignore the knocking."
+				#],
+		#}
+	#},
 	# -----------------------------------
 
 	# -----------------------------------

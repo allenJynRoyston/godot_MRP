@@ -19,32 +19,32 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"abilities": func() -> Array: 
-		return [
-			{
-				"name": "AQUIRE SCP",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  5, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.get_new_scp(),
-			}
-		],	
+	#"abilities": func() -> Array: 
+		#return [
+			#{
+				#"name": "AQUIRE SCP",
+				#"unlock_cost": func() -> Dictionary:
+					#return {
+						#RESOURCE.TYPE.SCIENCE: -20
+					#},
+				#"cooldown_duration":  5, 
+				#"effect": func() -> bool:
+					#return await GAME_UTIL.get_new_scp(),
+			#}
+		#],	
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
-		return [
-			{
-				"name": "TEST +1",
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.ENERGY: -1
-					},
-			}
-		],	
+	#"passive_abilities": func() -> Array: 
+		#return [
+			#{
+				#"name": "TEST +1",
+				#"use_cost": func() -> Dictionary:
+					#return {
+						#RESOURCE.TYPE.ENERGY: -1
+					#},
+			#}
+		#],	
 	# ------------------------------------------	
 
 	# ------------------------------------------
@@ -646,12 +646,8 @@ var CONTAINMENT_CELL:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			{
-				"name": "CONTAIN",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  7, 
+				"name": "CONTAIN SCP",
+				"cooldown_duration":  14, 
 				"effect": func() -> bool:
 					return await GAME_UTIL.contain_scp(),
 			}
@@ -1022,6 +1018,16 @@ func return_room_speclization_preferences(ref:ROOM.TYPE) -> Array:
 	return list
 # ------------------------------------------------------------------------------			
 
+# ------------------------------------------------------------------------------			
+func return_refs_that_can_contain() -> Array:
+	var refs:Array = []
+	for ref in reference_data:
+		if "can_contain" in reference_data[ref] and reference_data[ref].can_contain:
+			refs.push_back(ref)		
+	return refs
+# ------------------------------------------------------------------------------			
+	
+
 # ------------------------------------------------------------------------------
 func calculate_unlock_cost(ref:ROOM.TYPE, add:bool = false) -> Dictionary:		
 	return SHARED_UTIL.calculate_resources(return_data(ref), "unlock_costs", resources_data, add)
@@ -1087,16 +1093,18 @@ func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
 func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
 	var filter:Callable = func(list:Array) -> Array:
-		# once base is setup, should return all unlocked
-		if gameplay_conditionals[CONDITIONALS.TYPE.BASE_IS_SETUP]:	
+		
+		if !gameplay_conditionals[CONDITIONALS.TYPE.BASE_IS_SETUP]:	
+			# base not setup, only return two options
+			return list.filter(func(i): return i.ref in [ROOM.TYPE.DIRECTORS_OFFICE, ROOM.TYPE.HQ])		
+		else:
+			# once base is setup, should return all unlocked
 			return list.filter(func(i): 
 				if "requires_unlock" not in i.details:
 					return true
 				return true if !i.details.requires_unlock else i.ref in shop_unlock_purchases
-			)
-		# else, just the directors office and hq
-		else:
-			return list.filter(func(i): return i.ref in [ROOM.TYPE.DIRECTORS_OFFICE, ROOM.TYPE.HQ])
+			)			
+
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------	
 
