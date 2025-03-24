@@ -26,16 +26,19 @@ corner_radius_bottom_left = 5
 
 [node name="KeyBtn" type="PanelContainer"]
 offset_right = 54.0
-offset_bottom = 62.0
+offset_bottom = 32.0
+size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_f1p3b")
 script = ExtResource("1_5n3hm")
 title = "TITLE"
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 text_active_color = Color(1, 1, 1, 1)
 text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
+hide_icon_panel = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 8
 theme_override_constants/separation = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
@@ -64,6 +67,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_26aci")
 

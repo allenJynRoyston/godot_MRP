@@ -49,6 +49,9 @@ var max_level:int = -1 :
 		max_level = val
 		on_max_level_update()
 
+var wait_for_release:bool = false
+var allow_shortcut:bool = false
+
 var onPrev:Callable = func():pass
 var onNext:Callable = func():pass
 var onClose:Callable = func():pass
@@ -90,6 +93,7 @@ func set_fade(state:bool) -> void:
 
 # ------------------------------------------------------------------------------
 func clear_list() -> void:
+	selected_index = 0
 	for child in List.get_children():
 		child.queue_free()
 		
@@ -106,7 +110,9 @@ func on_selected_index_update() -> void:
 		
 func on_options_list_update() -> void:
 	if !is_node_ready():return	
+	wait_for_release = true
 	clear_list()
+	
 
 	# ---- IF EMPTY
 	if options_list.is_empty():
@@ -145,7 +151,7 @@ func on_options_list_update() -> void:
 		List.add_child(btn_node)
 	
 	self.size.y = 1	
-	
+
 
 func on_max_level_update() -> void:
 	if !is_node_ready():return	
@@ -220,14 +226,19 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	match key:
 		"1":
-			onBookmark.call(selected_index, 0)
+			onBookmark.call(selected_index, 0, options_list)
 		"2":
-			onBookmark.call(selected_index, 1)
+			onBookmark.call(selected_index, 1, options_list)
 		"3":
-			onBookmark.call(selected_index, 2)
+			onBookmark.call(selected_index, 2, options_list)
 		"4":
-			onBookmark.call(selected_index, 3)			
+			onBookmark.call(selected_index, 3, options_list)
+		"5":
+			onBookmark.call(selected_index, 4, options_list)
+		"6":
+			onBookmark.call(selected_index, 5, options_list)
 		"E":
+			if wait_for_release:return
 			on_action()
 		"B":
 			close()
@@ -240,3 +251,9 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"S":
 			selected_index = U.min_max(selected_index + 1, 0, options_list.size() - 1)
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_control_input_release_update() -> void:
+	if !is_node_ready():return
+	wait_for_release = false
+# ------------------------------------------------------------------------------	

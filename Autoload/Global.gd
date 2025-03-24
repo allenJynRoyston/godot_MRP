@@ -228,10 +228,16 @@ func unsubscribe_to_control_input(node:Node) -> void:
 	control_input_subscriptions.erase(node)
 		
 func _unhandled_key_input(event: InputEvent) -> void:
+	if event.is_released():
+		for node in control_input_subscriptions:
+			if "on_control_input_release_update" in node:
+				node.on_control_input_release_update()
+				
 	if event.is_pressed():
 		for node in control_input_subscriptions:
 			if "on_control_input_update" in node:
 				var key:String = ""
+
 				match event.keycode:
 					# --------------
 					48:
@@ -255,9 +261,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "ENTER"
 					4194308:
 						key = "BACK"
+					4194325:
+						key = "SHIFT"
 					32:
 						key = "SPACEBAR"
-						
 					# --------------
 					67:
 						key = "C"
@@ -270,6 +277,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					82:
 						key = "R"
 					# --------------
+					72:
+						key = "H"					
 					65:
 						key = "A"
 					68:
@@ -282,9 +291,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "S"
 					84:
 						key = "T"
-					91:
+					81:
 						key = "TL"
-					93: 
+					89: 
 						key = "TR"
 						
 				node.on_control_input_update({"keycode": event.keycode, "key": key})

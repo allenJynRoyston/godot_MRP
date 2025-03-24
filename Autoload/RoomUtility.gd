@@ -334,8 +334,8 @@ var CONSTRUCTION_YARD:Dictionary = {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
 				"cooldown_duration":  1, 
-				"effect": func() -> void:
-					pass,
+				"effect": func() -> bool:
+					return true,
 					#await GameplayNode.recruit_new_researcher(1),
 			},
 		],	

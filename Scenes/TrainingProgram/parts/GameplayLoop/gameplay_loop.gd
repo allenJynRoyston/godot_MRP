@@ -273,7 +273,8 @@ var initial_values:Dictionary = {
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"ability_on_cooldown": {},
-					"passives_enabled": {}
+					"passives_enabled": {},
+					"hotkeys": {},
 				}
 				
 				# ------------------------------
@@ -282,6 +283,7 @@ var initial_values:Dictionary = {
 
 		
 		return {
+			"global_hotkeys": {},
 			"floor": floor, 	# not currently used for anything
 			"ring": ring,
 			"room": room		 # not currently used for anything
@@ -2065,7 +2067,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if no_save else restore_data.purchased_research_arr
 	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if no_save else restore_data.shop_unlock_purchases
 	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms.call() if no_save else restore_data.unavailable_rooms
-	SUBSCRIBE.base_states = initial_values.base_states.call() #if no_save else restore_data.base_states
+	SUBSCRIBE.base_states = initial_values.base_states.call() if no_save else restore_data.base_states
 	
 	# comes after purchased_research_arr, fix this later
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr.call() if no_save else restore_data.hired_lead_researchers_arr
@@ -2139,10 +2141,11 @@ func set_room_config(force_setup:bool = false) -> void:
 			new_room_config.floor[floor].ring[ring].scp_refs.push_back(item.ref)
 			
 			# check for effects
-			var ring_effects:Dictionary = scp_details.effects.ring.call()
-			if "provides" in ring_effects:
-				for resource in ring_effects.provides:
-					ring_config_data.available_resources[resource] = true
+			if "effects" in scp_details:
+				var ring_effects:Dictionary = scp_details.effects.ring.call()
+				if "provides" in ring_effects:
+					for resource in ring_effects.provides:
+						ring_config_data.available_resources[resource] = true
 
 			
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dmjokg2svoddw"]
+[gd_scene load_steps=12 format=3 uid="uid://dmjokg2svoddw"]
 
 [ext_resource type="Script" uid="uid://cotsvaq7of3j7" path="res://UI/Buttons/MenuBtn/menu_btn.gd" id="1_b56nf"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="2_aglnc"]
@@ -39,7 +39,14 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqoss"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8g0ic"]
+bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4kqi3"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -53,9 +60,7 @@ offset_right = 34.0
 offset_bottom = 34.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_asb5s")
 script = ExtResource("1_b56nf")
-energy_cost = null
 btn_color = Color(0.510764, 0.00166744, 0.716704, 1)
-is_empty = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -84,16 +89,16 @@ theme_override_constants/separation = 5
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "BTN LABEL"
 label_settings = SubResource("LabelSettings_nqoss")
 vertical_alignment = 1
 
 [node name="EnergyPanel" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="EnergyAmountLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel"]
 layout_mode = 2
-text = "3"
+text = "1"
 label_settings = ExtResource("5_oae0j")
 vertical_alignment = 1
 
@@ -134,9 +139,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TogglePanel" type="PanelContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8g0ic")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel"]
 layout_mode = 2
@@ -150,7 +156,7 @@ layout_mode = 2
 [node name="CheckBox" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer/HBoxContainer" instance=ExtResource("2_aglnc")]
 layout_mode = 2
 size_flags_vertical = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_nqoss")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4kqi3")
 no_bg = true
 bg_color = Color(0, 0, 0, 0.796)
 checkbox_color = Color(0, 0, 0, 1)

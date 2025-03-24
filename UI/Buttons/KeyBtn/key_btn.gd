@@ -2,6 +2,7 @@
 extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
+@onready var IconPanelContainer:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer
 @onready var IconBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/IconBtn
 @onready var IndicatorBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/NewIndicatorBtn
 
@@ -47,6 +48,14 @@ extends BtnBase
 	set(val):
 		has_new = val
 		on_has_new_update()		
+		
+@export var hide_icon_panel:bool = false : 
+	set(val):
+		hide_icon_panel = val
+		on_hide_icon_panel_update()
+
+var is_pressed:bool = false
+var btn_delay:float = 0.2
 
 var is_hovered:bool = false
 
@@ -77,6 +86,7 @@ func _ready() -> void:
 	
 	on_panel_color_update()
 	on_is_disabled_updated()
+	on_hide_icon_panel_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -89,9 +99,8 @@ func on_focus(state:bool = is_focused) -> void:
 		on_panel_color_update()
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !is_disabled and is_visible_in_tree():
-		super.on_mouse_click(node, btn, on_hover)
-		
+	if !is_node_ready() or !is_visible_in_tree() or !is_hoverable or is_disabled:return
+	super.on_mouse_click(node, btn, on_hover)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -135,12 +144,23 @@ func on_title_update() -> void:
 func on_icon_update() -> void:
 	if !is_node_ready():return
 	IconBtn.icon = icon	
+	
+func on_hide_icon_panel_update() -> void:
+	if !is_node_ready():return
+	IconPanelContainer.show() if !hide_icon_panel else IconPanelContainer.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_hoverable or is_disabled:return
+	if !is_node_ready() or !is_visible_in_tree() or !is_hoverable or is_disabled:return
 	var key:String = input_data.key
-	if key == assigned_key and is_visible_in_tree():
+	if key == assigned_key and !is_pressed:		
 		onClick.call()
+		is_pressed = true
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_control_input_release_update() -> void:
+	if !is_node_ready():return
+	is_pressed = false
+# ------------------------------------------------------------------------------	
