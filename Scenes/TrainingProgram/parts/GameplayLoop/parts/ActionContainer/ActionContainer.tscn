@@ -493,9 +493,17 @@ assigned_key = "SPACEBAR"
 icon = 15
 hide_icon_panel = false
 
-[node name="ActionBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
+[node name="DetailBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_x63m5")
+title = "DETAILS"
+assigned_key = "SHIFT"
+icon = 29
+hide_icon_panel = false
+
+[node name="ActionBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
 title = "ACTIONS"
 assigned_key = "E"
 hide_icon_panel = false
@@ -503,7 +511,7 @@ hide_icon_panel = false
 [node name="AbilityBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
+theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
 title = "ABILITY"
 assigned_key = "R"
 icon = 10
@@ -511,7 +519,7 @@ hide_icon_panel = false
 
 [node name="PassiveBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 title = "PASSIVE"
 assigned_key = "T"
 icon = 46
@@ -520,29 +528,20 @@ hide_icon_panel = false
 [node name="DebugBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
 title = "ACTIONS"
 assigned_key = "TAB"
 hide_icon_panel = false
 
 [node name="NextBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
 title = "NEXT DAY"
 assigned_key = "ENTER"
 icon = 27
 hide_icon_panel = false
 
-[node name="DetailBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
-title = "DETAILS"
-assigned_key = "SHIFT"
-icon = 29
-hide_icon_panel = false
-
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer"]
@@ -570,7 +569,7 @@ theme_override_constants/separation = 0
 [node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
+theme_override_constants/margin_top = -15
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
@@ -580,11 +579,10 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 
 [node name="ShortcutLabelLeft" type="Label" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -606,6 +604,7 @@ layout_mode = 2
 theme_override_constants/separation = 25
 
 [node name="ShortcutToggleBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2" instance=ExtResource("4_n6idl")]
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
 title = "TOGGLE"
@@ -633,11 +632,13 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_fqpim")
 assigned_key = "3"
 
 [node name="AbilityBtn4" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("8_bk83u")]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ww8tn")
 assigned_key = "4"
 
 [node name="AbilityBtn5" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("8_bk83u")]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hvn03")
 assigned_key = "5"
@@ -688,10 +689,10 @@ layout_mode = 0
 anchors_preset = 0
 anchor_top = 0.0
 anchor_bottom = 0.0
-offset_left = 10.0
-offset_top = 772.0
-offset_right = 185.0
-offset_bottom = 982.0
+offset_left = 8.0
+offset_top = 785.0
+offset_right = 258.0
+offset_bottom = 995.0
 grow_vertical = 1
 
 [connection signal="item_rect_changed" from="." to="." method="_on_item_rect_changed"]

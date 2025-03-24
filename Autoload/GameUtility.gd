@@ -43,7 +43,6 @@ func find_in_available(ref:int) -> Dictionary:
 	}
 # -----------------------------------	
 
-
 # ------------------------------------------------------------------------------
 func assign_nodes() -> void:	
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
@@ -62,10 +61,10 @@ func get_ring_ability_level(use_location:Dictionary = current_location) -> int:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func extract_wing_details() -> Dictionary:	
-	var floor:int = current_location.floor
-	var ring:int = current_location.ring
-	var room:int = current_location.room
+func extract_wing_details(use_location:Dictionary = current_location) -> Dictionary:	
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring
+	var room:int = use_location.room
 	
 	var wing_data:Dictionary = room_config.floor[floor].ring[ring]
 	var room_refs:Array = wing_data.room_refs
@@ -394,53 +393,27 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	}
 # ------------------------------------------------------------------------------	
 
-## ------------------------------------------------------------------------------
-#func activate_room(from_location:Dictionary, skip_prompt:bool = false) -> bool:
-	#var extract_details:Dictionary = GAME_UTIL.extract_room_details(from_location)
-	#var room_ref:int = extract_details.room.details.ref
-	#var wing_max_level:int = GAME_UTIL.get_ring_ability_level()
-	#SUBSCRIBE.suppress_click = true
-	#
-	#var activate_func:Callable = func() -> void:		
-		#var abilities:Array = extract_details.room.passive_abilities
-		#for index in abilities.size():
-			#var ability:Dictionary = abilities[index]
-			#var designation:String = str(current_location.floor, current_location.ring)
-			#if ability.name not in base_states.ring[designation].passives_enabled:
-				#base_states.ring[designation].passives_enabled[ability.name] = index >= wing_max_level
-#
-		#SUBSCRIBE.base_states = base_states
-		#SUBSCRIBE.resources_data = ROOM_UTIL.calculate_activation_cost(room_ref, false)
-		#
-	#if skip_prompt:
-		#activate_func.call()
-		#return false	
-#
-	## first, check if you have enough resources to activate room
-	#var can_activate:bool = extract_details.can_activate
-	#var activation_requirements:Array = ROOM_UTIL.return_activation_cost(room_ref)
-	#
-	## --------------
-	#if !can_activate:		
-		#ConfirmModal.activation_requirements = activation_requirements
-		#ConfirmModal.set_props("You're missing the correct resources to activate this room.")
-		#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-		#var confirm:bool = await ConfirmModal.user_response
-		#GameplayNode.restore_showing_state()
-		#SUBSCRIBE.suppress_click = false
-		#return false
-	#
-	## -------------- ACTIVATE UPDATE
-	#ConfirmModal.set_props("Activate %s?" % [extract_details.room.details.name])	
-	#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-	#var confirm:bool = await ConfirmModal.user_response
-	#if confirm:
-		#activate_func.call()
-		#
-	#SUBSCRIBE.suppress_click = false
-	#GameplayNode.restore_showing_state()
-	#return confirm
-## ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+func does_passive_ability_exists_in_ring(ability:Dictionary, use_location:Dictionary = current_location) -> bool:
+	var extract_data:Dictionary = extract_wing_details(use_location)
+	for key in extract_data.passive_abilities:
+		for item in extract_data.passive_abilities[key]:
+			if ability.name == item.details.name:
+				return true
+				break
+	return false
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func does_ability_exists_in_ring(ability:Dictionary, use_location:Dictionary = current_location) -> bool:
+	var extract_data:Dictionary = extract_wing_details(use_location)
+	for key in extract_data.abilities:
+		for item in extract_data.abilities[key]:
+			if ability.name == item.details.name:
+				return true
+				break
+	return false
+# ------------------------------------------------------------------------------	
 
 ## ------------------------------------------------------------------------------
 func get_passive_ability_state(room_ref:int, ability_level:int, use_location:Dictionary = current_location) -> bool:

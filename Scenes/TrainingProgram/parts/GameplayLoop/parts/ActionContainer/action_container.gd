@@ -84,18 +84,15 @@ func _ready() -> void:
 		for node in child.get_children():
 			node.queue_free()	
 			
-	#for child in [ShortcutBtnList]:
-		#for node in child.get_children():
-			#node.onFocus = func(node:Control) -> void:
-				#LeftSideTitleLabel.text = node.ability.name if !node.ability.is_empty() else "HOTKEYS"
-				#if !node.ability.is_empty():
-					#var cooldown_duration:int = GAME_UTIL.get_ability_cooldown(node.ability)
-					#LeftSideTitleLabel2.text = "COOLDOWN %s DAYS" % [cooldown_duration] if cooldown_duration > 0 else "READY!"
-				#else:
-					#LeftSideTitleLabel2.text = ""
-			#node.onBlur = func(node:Control) -> void:
-				#LeftSideTitleLabel.text = "HOTKEYS"
-				#LeftSideTitleLabel2.text = ""
+	for child in [ShortcutBtnList]:
+		for node in child.get_children():
+			node.onFocus = func(_node:Control) -> void:
+				if _node == node:
+					ShortcutLabelLeft.text = node.title 
+					ShortcutLabelRight.text = node.hint_description
+			node.onBlur = func(node:Control) -> void:
+				ShortcutLabelLeft.text = ""
+				ShortcutLabelRight.text = ""
 
 			
 	AbilityBtn.onClick = func() -> void:
@@ -185,10 +182,8 @@ func _ready() -> void:
 	ShortcutToggleBtn.onClick = func() -> void:
 		if current_bookmark_type == BOOKMARK_TYPE.GLOBAL:
 			current_bookmark_type = BOOKMARK_TYPE.RING
-			ShortcutToggleBtn.icon = SVGS.TYPE.PLUS
 		elif current_bookmark_type == BOOKMARK_TYPE.RING:
 			current_bookmark_type = BOOKMARK_TYPE.GLOBAL
-			ShortcutToggleBtn.icon = SVGS.TYPE.MINUS
 		
 	
 	on_current_bookmark_type_update()
@@ -340,7 +335,7 @@ func action_func_lookup(title:String) -> Dictionary:
 					await GAME_UTIL.construct_room(),
 			}		
 		# ------------------
-		"RECYCLE":
+		"CLEAR":
 			action_dict = {
 				"onSelect": func(_index:int) -> void:
 					enable_room_focus(true)
@@ -396,7 +391,7 @@ func show_actions(skip_animation:bool = false) -> void:
 	if active_menu_index == 0:
 		menu_title = "CONSTRUCTION"
 		options.push_back(action_func_lookup('BUILD'))
-		options.push_back(action_func_lookup('RECYCLE'))
+		options.push_back(action_func_lookup('CLEAR'))
 		
 	if active_menu_index == 1:
 		menu_title = "OTHER"
@@ -428,7 +423,11 @@ func ability_funcs(ability:Dictionary, use_location:Dictionary) -> Dictionary:
 	var get_icon_func:Callable = func() -> SVGS.TYPE:
 		return SVGS.TYPE.MEDIA_PLAY if GAME_UTIL.get_ability_cooldown(ability, use_location) == 0 else SVGS.TYPE.CLEAR
 	
+	var get_invalid_func:Callable = func() -> bool:
+		return !GAME_UTIL.does_ability_exists_in_ring(ability, use_location)
+	
 	return 	{
+		"get_invalid_func": get_invalid_func,
 		"get_cooldown_duration": get_cooldown_duration, 
 		"get_not_ready_func": get_not_ready_func,
 		"get_icon_func": get_icon_func
@@ -479,12 +478,13 @@ func show_abilities(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func passive_funcs(room_ref:int, ability_level:int, use_location:Dictionary) -> Dictionary:
+	var ability:Dictionary = ROOM_UTIL.return_passive_ability(room_ref, ability_level)
+	
 	var get_checked:Callable = func() -> bool: 
 		await U.tick()
 		return GAME_UTIL.get_passive_ability_state(room_ref, ability_level)
 						
 	var get_not_ready_func:Callable = func() -> bool: 
-		var ability:Dictionary = ROOM_UTIL.return_passive_ability(room_ref, ability_level)
 		var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1		
 		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_level)
 		var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
@@ -495,11 +495,15 @@ func passive_funcs(room_ref:int, ability_level:int, use_location:Dictionary) -> 
 	var get_icon_func:Callable = func() -> SVGS.TYPE:
 		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_level)
 		return SVGS.TYPE.CHECKBOX if await is_checked else SVGS.TYPE.EMPTY_CHECKBOX
+		
+	var get_invalid_func:Callable = func() -> bool:
+		return !GAME_UTIL.does_passive_ability_exists_in_ring(ability, use_location)		
 	
 	return 	{
 		"get_checked": get_checked,
 		"get_not_ready_func": get_not_ready_func,
-		"get_icon_func": get_icon_func
+		"get_icon_func": get_icon_func,
+		"get_invalid_func": get_invalid_func
 	}
 	
 func show_passives(skip_animation:bool = false) -> void:
@@ -594,12 +598,18 @@ func set_backdrop_state(state:bool) -> void:
 func on_current_bookmark_type_update() -> void:
 	if !is_node_ready():return
 	
+	#ShortcutLabelLeft.text = ""
+	#ShortcutLabelRight.text = ""	
+	
 	match current_bookmark_type:
 		BOOKMARK_TYPE.GLOBAL:	
-			ShortcutLabelLeft.text = "GLOBAL HOTKEYS"
-		BOOKMARK_TYPE.RING:				
-			ShortcutLabelLeft.text = "RING HOTKEYS"
+			ShortcutToggleBtn.icon = SVGS.TYPE.CAMERA_B
+			ShortcutToggleBtn.title = "GLOBAL"			
 			
+		BOOKMARK_TYPE.RING:				
+			ShortcutToggleBtn.icon = SVGS.TYPE.CAMERA_A
+			ShortcutToggleBtn.title = "RING"			
+
 	build_shortcuts()
 # --------------------------------------------------------------------------------------------------		
 
@@ -608,11 +618,11 @@ func build_shortcuts() -> void:
 	if current_location.is_empty():return
 	var designation:String = str(current_location.floor, current_location.ring)
 
-	for index in ShortcutBtnList.get_child_count():		
-		var btn:Control = ShortcutBtnList.get_child(index)
-		btn.reset()
-		btn.onClick = func() -> void:pass
-		btn.onReset = func() -> void:pass
+	#for index in ShortcutBtnList.get_child_count():		
+		#var btn:Control = ShortcutBtnList.get_child(index)
+		#btn.reset()
+		#btn.onClick = func() -> void:pass
+		#btn.onReset = func() -> void:pass
 
 	var use_dict:Dictionary = {} 
 	match current_bookmark_type:
@@ -620,13 +630,14 @@ func build_shortcuts() -> void:
 			use_dict = base_states.global_hotkeys
 		BOOKMARK_TYPE.RING:
 			use_dict = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
-			
+	
+
 	for index in ShortcutBtnList.get_child_count():		
+		var btn:Control = ShortcutBtnList.get_child(index)
+		
+		#----------------------------
 		if index in use_dict:			
 			var shortcut_data:Dictionary = use_dict[index]
-			var btn:Control = ShortcutBtnList.get_child(index)
-			var type:String 
-			
 			if !shortcut_data.is_empty():
 				match shortcut_data.type:
 					MENU_TYPE.ACTIONS:
@@ -636,23 +647,27 @@ func build_shortcuts() -> void:
 						btn.get_not_ready_func = func() -> bool:
 							return false
 						btn.title = action_data.title
+						btn.hint_description = "ACTION DESCRIPTION"
 					MENU_TYPE.ABILITIES:
 						var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.ability_level)
 						var funcs:Dictionary = ability_funcs(ability, shortcut_data.use_location)
 						btn.get_icon_func = funcs.get_icon_func	
 						btn.get_not_ready_func = funcs.get_not_ready_func
-						btn.title = ability.name								
+						btn.get_invalid_func = funcs.get_invalid_func
+						btn.title = ability.name
+						btn.hint_description = "ABILITY DESCRIPTION"
 					MENU_TYPE.PASSIVES:
 						var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.room_ref, shortcut_data.ability_level)
 						var funcs:Dictionary = passive_funcs(shortcut_data.room_ref, shortcut_data.ability_level, shortcut_data.use_location)
 						btn.get_icon_func = funcs.get_icon_func	
-						btn.get_not_ready_func = funcs.get_not_ready_func								
+						btn.get_not_ready_func = funcs.get_not_ready_func
+						btn.get_invalid_func = funcs.get_invalid_func
 						btn.title = ability.name
-				btn.update_self()
+						
+						btn.hint_description = "PASSIVE DESCRIPTION"
 				
 				btn.onReset = func() -> void:
 					use_dict.erase(index)
-					btn.onClick = func() -> void:pass
 					
 				btn.onClick = func() -> void:
 					match shortcut_data.type:
@@ -667,7 +682,10 @@ func build_shortcuts() -> void:
 						MENU_TYPE.PASSIVES:
 							GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.ability_level)
 				
-				
+				btn.update_self()
+		#----------------------------
+		else:
+			btn.reset()
 # --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------		
@@ -754,8 +772,7 @@ func buildout_btns() -> void:
 					GameplayNode.restore_showing_state()
 					current_mode = MODE.SELECT_ROOM
 					lock_btns(true)				
-	
-	
+
 	build_shortcuts()
 	is_setup = true
 	await U.set_timeout(0.1)

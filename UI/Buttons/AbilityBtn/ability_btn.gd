@@ -39,26 +39,23 @@ extends BtnBase
 		hide_icon = val
 		on_hide_icon_update()
 
+const empty_title:String = "NONE"
+
 var default_icon:SVGS.TYPE = SVGS.TYPE.TARGET
-
-var title:String = "NONE" : 
-	set(val): 
-		title = val
-		on_title_update()
-
+var hint_description:String = "" 
 var is_pressed:bool = false
 var room_ref:int = -1 
 var ability_index:int = -1 
+
+var title:String = empty_title : 
+	set(val): 
+		title = val
+		on_title_update()
 		
 var icon:SVGS.TYPE : 
 	set(val):
 		icon = val
 		on_icon_update()		
-
-var is_empty:bool = true : 
-	set(val):
-		is_empty = val
-		on_is_empty_update()
 
 var is_not_ready:bool = false : 
 	set(val):
@@ -70,17 +67,10 @@ var is_invalid:bool = false :
 		is_invalid = val
 		on_is_invalid_update()
 
-var get_is_invalid:Callable = func() -> bool:
-	return false
-
-var get_cooldown_duration:Callable = func() -> int:
-	return 0
-
-var get_not_ready_func:Callable = func() -> bool:
-	return false
-
-var get_icon_func:Callable = func() -> SVGS.TYPE:
-	return icon
+var get_invalid_func:Callable = func() -> bool: return false
+var get_cooldown_duration:Callable = func() -> int:return 0
+var get_not_ready_func:Callable = func() -> bool:return false
+var get_icon_func:Callable = func() -> SVGS.TYPE:return icon
 
 var base_states:Dictionary = {}
 var room_config:Dictionary = {}
@@ -117,11 +107,25 @@ func _ready() -> void:
 	on_is_disabled_updated()
 	on_hide_icon_update()
 
-func reset() -> void:
-	title = "NONE"
+func reset(clear:bool = false) -> void:
+	if clear:
+		onReset.call()
+	
+	title = empty_title
+	hint_description = ""
 	icon = SVGS.TYPE.NONE
-	is_empty = true
 	is_invalid = false
+	is_not_ready = false
+
+	onClick = func() -> void:pass
+	onReset = func() -> void:pass
+	get_cooldown_duration = func():return -1
+	get_invalid_func = func():return false
+	get_not_ready_func = func():return false
+	get_icon_func = func():return SVGS.TYPE.NONE	
+
+	on_icon_update()
+	on_is_disabled_updated()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -141,12 +145,9 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func set_refs(_title:String) -> void:
-	title = _title
-	update_self()
-
 func update_self() -> void:
 	if !is_node_ready() or room_config.is_empty():return
+	is_invalid = await get_invalid_func.call()
 	is_not_ready = await get_not_ready_func.call()
 	icon = await get_icon_func.call()
 # ------------------------------------------------------------------------------	
@@ -165,12 +166,15 @@ func on_focus(state:bool = is_focused) -> void:
 		on_panel_color_update()
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !is_node_ready() or !is_hoverable or is_disabled or is_not_ready or !on_hover:return
+	if !is_node_ready():return
 	
 	if is_invalid:
-		reset()
+		reset(true)
 		return
-			
+	
+	if !is_hoverable or is_not_ready or is_disabled:
+		return
+
 	super.on_mouse_click(node, btn, on_hover)
 	await U.tick()
 	super.on_focus(true)
@@ -186,8 +190,8 @@ func on_is_not_ready_update() -> void:
 	on_is_disabled_updated()
 
 func on_is_invalid_update() -> void:
-	#if is_invalid:
-		#title = "! %s !" % title
+	if is_invalid:
+		title = "!RMV!"
 	on_icon_update()
 	on_is_disabled_updated()
 	
@@ -195,7 +199,7 @@ func on_is_empty_update() -> void:
 	on_is_disabled_updated()
 		
 func on_is_disabled_updated() -> void:
-	var alpha:float = 0.5 if is_empty else 1.0	
+	var alpha:float = 0.5 if title == empty_title else 1.0	
 	modulate = Color(1, 0, 0, alpha) if (is_disabled or is_invalid or is_not_ready) else Color(1, 1, 1, alpha)
 	
 func on_panel_color_update() -> void:
@@ -218,12 +222,16 @@ func on_icon_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or !is_hoverable or is_not_ready or is_disabled:return
+	if !is_node_ready() or !is_visible_in_tree():return
 	var key:String = input_data.key
 	if key == assigned_key and !is_pressed:		
 		if is_invalid:
-			reset()
+			reset(true)
 			return
+			
+		if !is_hoverable or is_not_ready or is_disabled:
+			return
+		
 		onClick.call()
 # ------------------------------------------------------------------------------
 
