@@ -112,7 +112,6 @@ func on_options_list_update() -> void:
 	if !is_node_ready():return	
 	wait_for_release = true
 	clear_list()
-	
 
 	# ---- IF EMPTY
 	if options_list.is_empty():
@@ -139,7 +138,6 @@ func on_options_list_update() -> void:
 		btn_node.cooldown_duration = item.cooldown_duration if "cooldown_duration" in item else -1
 		btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
 		btn_node.energy_cost = item.energy_cost if "energy_cost" in item else -1
-		
 
 		btn_node.onClick = func() -> void:
 			if !btn_node.is_disabled:
@@ -147,6 +145,7 @@ func on_options_list_update() -> void:
 				
 		btn_node.onFocus = func(_node:Control) -> void:
 			selected_index = index
+			print(item)
 		
 		List.add_child(btn_node)
 	
@@ -225,18 +224,9 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 
 	match key:
-		"1":
-			onBookmark.call(selected_index, 0, options_list)
-		"2":
-			onBookmark.call(selected_index, 1, options_list)
-		"3":
-			onBookmark.call(selected_index, 2, options_list)
-		"4":
-			onBookmark.call(selected_index, 3, options_list)
-		"5":
-			onBookmark.call(selected_index, 4, options_list)
-		"6":
-			onBookmark.call(selected_index, 5, options_list)
+		"G":
+			if !options_list.is_empty() and "shortcut_data" in options_list[selected_index]:
+				onBookmark.call(options_list[selected_index].shortcut_data)
 		"E":
 			if wait_for_release:return
 			on_action()

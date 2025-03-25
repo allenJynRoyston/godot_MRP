@@ -101,7 +101,7 @@ func _ready() -> void:
 	on_freeze_inputs_update()
 	on_is_showing_update()
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP) 
-	initalized_at_fullscreen = GBL.is_fullscreen
+	GBL.initalized_at_fullscreen = GBL.is_fullscreen
 
 func activate() -> void:
 	pass

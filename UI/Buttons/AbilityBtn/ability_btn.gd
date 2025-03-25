@@ -2,6 +2,8 @@
 extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
+@onready var AnimationPlayerNode:AnimationPlayer = $AnimationPlayer
+@onready var SelectedIcon:BtnBase = $Control/SelectedIcon
 @onready var IconPanel:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer
 @onready var IconBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/IconBtn
 @onready var IndicatorBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/NewIndicatorBtn
@@ -38,6 +40,11 @@ extends BtnBase
 	set(val):
 		hide_icon = val
 		on_hide_icon_update()
+		
+@export var is_selected:bool = false : 
+	set(val):
+		is_selected = val
+		on_is_selected_update()		
 
 const empty_title:String = "NONE"
 
@@ -106,7 +113,8 @@ func _ready() -> void:
 	on_panel_color_update()
 	on_is_disabled_updated()
 	on_hide_icon_update()
-
+	on_is_selected_update()
+	
 func reset(clear:bool = false) -> void:
 	if clear:
 		onReset.call()
@@ -181,6 +189,17 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	AnimationPlayerNode.play("pointing") if is_selected else AnimationPlayerNode.stop()
+	SelectedIcon.show() if is_selected else SelectedIcon.hide()
+	on_is_disabled_updated()
+
+	var new_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
+	new_stylebox.border_color = Color.WHITE if is_selected else Color.BLACK
+	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+
+
 func on_assigned_key_update() -> void:
 	if !is_node_ready():return
 	KeyLabel.text = assigned_key
@@ -198,16 +217,17 @@ func on_is_invalid_update() -> void:
 func on_is_empty_update() -> void:
 	on_is_disabled_updated()
 		
-func on_is_disabled_updated() -> void:
+func on_is_disabled_updated() -> void:	
 	var alpha:float = 0.5 if title == empty_title else 1.0	
-	modulate = Color(1, 0, 0, alpha) if (is_disabled or is_invalid or is_not_ready) else Color(1, 1, 1, alpha)
+	if is_selected:
+		modulate = Color(0, 0, 1, alpha) if (is_disabled or is_invalid or is_not_ready) else Color(1, 1, 1, alpha)
+	else:
+		modulate = Color(1, 0, 0, alpha) if (is_disabled or is_invalid or is_not_ready) else Color(1, 1, 1, alpha)
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
 	var new_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
-	new_stylebox.bg_color = panel_color
 	new_stylebox.border_color = Color.WHITE if is_focused else Color.BLACK
-		
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 		
 

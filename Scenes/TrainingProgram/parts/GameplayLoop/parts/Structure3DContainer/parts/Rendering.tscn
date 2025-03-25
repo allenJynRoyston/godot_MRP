@@ -186,7 +186,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 150, -0.302952, 0)
 
 [node name="Inner" type="MeshInstance3D" parent="RoomScene"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 43.7743)
-visible = false
 layers = 1024
 mesh = SubResource("CylinderMesh_m8spo")
 

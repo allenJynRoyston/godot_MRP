@@ -92,6 +92,9 @@ func change_resolution(new_resolution:Vector2i) -> void:
 
 # ------------------------------------------------------------------------------
 var is_fullscreen:bool 
+var h_diff:int
+var y_diff:int
+var initalized_at_fullscreen:bool
 var game_resolution:Vector2 : 
 	set(val):
 		game_resolution = val
@@ -107,6 +110,11 @@ func unsubscribe_to_fullscreen(node:Control) -> void:
 	
 func update_fullscreen_mode(state:bool) -> void:
 	is_fullscreen = state
+	
+	h_diff = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
+	y_diff = (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)	
+	print(y_diff)
+	
 	for node in fullscreen_nodes:
 		if "on_fullscreen_update" in node:
 			node.on_fullscreen_update.call(state)
@@ -298,6 +306,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						
 				node.on_control_input_update({"keycode": event.keycode, "key": key})
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+var node_location_dict:Dictionary = {}
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 # NODE REFS

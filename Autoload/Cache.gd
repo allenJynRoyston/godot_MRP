@@ -98,7 +98,13 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/box-minimalistic-svgrepo-com.svg")			
 		SVGS.TYPE.NEXT:
 			texture = load("res://SVGs/next-svgrepo-com.svg")
-		
+		SVGS.TYPE.BACK:
+			texture = load("res://SVGs/back-svgrepo-com.svg")
+		SVGS.TYPE.ARROW_DOWN:
+			texture = load("res://SVGs/back-up-down-svgrepo-com.svg")
+		SVGS.TYPE.ARROW_UP:
+			texture = load("res://SVGs/back-up-svgrepo-com.svg")
+					
 		SVGS.TYPE.MONEY:
 			texture = load("res://SVGs/money-svgrepo-com.svg")
 		SVGS.TYPE.ENERGY:
@@ -118,7 +124,11 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/clear-day-svgrepo-com.svg")
 		SVGS.TYPE.DANGER:
 			texture = load("res://SVGs/death-sign-svgrepo-com.svg")
-			
+		SVGS.TYPE.GLOBAL:
+			texture = load("res://SVGs/global-button-svgrepo-com.svg")
+		SVGS.TYPE.RING:
+			texture = load("res://SVGs/ring-one-svgrepo-com.svg")			
+		
 		SVGS.TYPE.CAMERA_A:
 			texture = load("res://SVGs/camera-svgrepo-com.svg")
 		SVGS.TYPE.CAMERA_B:

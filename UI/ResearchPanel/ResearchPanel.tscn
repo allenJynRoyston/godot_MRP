@@ -1,8 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cccm4vcre42mu"]
+[gd_scene load_steps=7 format=3 uid="uid://de0fnwa2gry6h"]
 
-[ext_resource type="Script" uid="uid://ci72tkehq3i7q" path="res://UI/FundPanel/fund_panel.gd" id="1_v0jo8"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_euf0c"]
-[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_cnvgk"]
+[ext_resource type="Script" uid="uid://xhebogcrt5x4" path="res://UI/ResearchPanel/research_panel.gd" id="1_mxnad"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_dcjf1"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_4d3bg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fm7g2"]
 bg_color = Color(0, 0, 0, 0.572549)
@@ -23,14 +23,14 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v0jo8"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ogtbr"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[node name="Funds" type="PanelContainer"]
+[node name="Research" type="PanelContainer"]
 custom_minimum_size = Vector2(60, 0)
 theme_override_styles/panel = SubResource("StyleBoxFlat_fm7g2")
-script = ExtResource("1_v0jo8")
+script = ExtResource("1_mxnad")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -48,8 +48,8 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "FUNDING"
-label_settings = ExtResource("2_euf0c")
+text = "RESEARCH"
+label_settings = ExtResource("2_dcjf1")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -73,10 +73,10 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="ResourceItem" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_cnvgk")]
+[node name="ResourceItem" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_4d3bg")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_v0jo8")
-icon = 31
+theme_override_styles/panel = SubResource("StyleBoxFlat_ogtbr")
+icon = 44
 no_bg = true
 title = "0"
 display_at_bottom = true

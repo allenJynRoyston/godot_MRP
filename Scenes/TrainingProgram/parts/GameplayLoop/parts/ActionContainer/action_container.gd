@@ -6,6 +6,8 @@ extends GameContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
 @onready var Details:Control = $Details
 @onready var DetailsPanel:PanelContainer = $Details/PanelContainer
+@onready var HotkeyContainer:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/HotkeyContainer
+@onready var PreviewTextureRect:TextureRect = $PanelContainer/PreviewTextureRect
 
 @onready var AbilityBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/AbilityBtn
 @onready var PassiveBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/PassiveBtn
@@ -15,7 +17,8 @@ extends GameContainer
 @onready var ActionBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ActionBtn
 @onready var NextBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NextBtn
 @onready var DetailBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/DetailBtn
-@onready var ShortcutToggleBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutToggleBtn
+
+@onready var RoomVBox:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/Room
 
 @onready var Researchers:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers
 @onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/HBoxContainer/ResearcherCount
@@ -27,14 +30,9 @@ extends GameContainer
 @onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/ScpMiniCard
 @onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/RoomMiniCard
 
-@onready var ShortcutContainer:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer
-@onready var ShortcutBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList
-@onready var ShortcutLabelLeft:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelLeft
-@onready var ShortcutLabelRight:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ShortcutContainer/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelRight
-
 enum BOOKMARK_TYPE { GLOBAL, RING }
 enum MODE { SELECT_FLOOR, SELECT_ROOM, INVESTIGATE, RESET_ROOM }
-enum MENU_TYPE { ACTIONS, ABILITIES, PASSIVES }
+enum MENU_TYPE { ACTIONS = 0, ABILITIES = 1, PASSIVES = 2 }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
 const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
@@ -53,10 +51,6 @@ var current_mode:MODE = MODE.SELECT_FLOOR :
 		on_current_mode_update()
 
 var ref_btn:Control
-#var shortcuts:Dictionary = {}
-#var shortcut_global:Dictionary = {}
-#var shortcut_ring:Dictionary = {} 
-
 var active_menu_index:int = 0
 var active_menu_is_open:bool = false
 var is_setup:bool = false
@@ -84,16 +78,6 @@ func _ready() -> void:
 		for node in child.get_children():
 			node.queue_free()	
 			
-	for child in [ShortcutBtnList]:
-		for node in child.get_children():
-			node.onFocus = func(_node:Control) -> void:
-				if _node == node:
-					ShortcutLabelLeft.text = node.title 
-					ShortcutLabelRight.text = node.hint_description
-			node.onBlur = func(node:Control) -> void:
-				ShortcutLabelLeft.text = ""
-				ShortcutLabelRight.text = ""
-
 			
 	AbilityBtn.onClick = func() -> void:
 		current_menu_type = MENU_TYPE.ABILITIES
@@ -147,45 +131,29 @@ func _ready() -> void:
 	ActiveMenu.onClose = func() -> void:	
 		open_menu(false)
 		
-	ActiveMenu.onBookmark = func(index:int, target:int, options:Array) -> void:
-		if options.is_empty() or options[index].is_empty():return
-		var dict_ref:Dictionary
-		
-		match current_bookmark_type:
-			BOOKMARK_TYPE.GLOBAL:
-				dict_ref = base_states.global_hotkeys
-			BOOKMARK_TYPE.RING:
-				dict_ref = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
-				
-		if target not in dict_ref:
-			dict_ref[target] = {}
-			
-		if dict_ref[target].is_empty():
-			dict_ref[target] = options[index].shortcut_data
-		else:
-			if dict_ref[target] == options[index].shortcut_data:
-				dict_ref[target] = {}
-			else:
-				dict_ref[target] = options[index].shortcut_data
-		
-		match current_bookmark_type:
-			BOOKMARK_TYPE.GLOBAL:
-				base_states.global_hotkeys = dict_ref
-			BOOKMARK_TYPE.RING:
-				base_states.ring[str(current_location.floor, current_location.ring)].hotkeys = dict_ref
-				
-		SUBSCRIBE.base_states = base_states
-		build_shortcuts()
-		
+	ActiveMenu.onBookmark = func(shotcut_data:Dictionary) -> void:
+		ActiveMenu.freeze_inputs = true
+		HotkeyContainer.start_bookmark(shotcut_data)
 
-		
-	ShortcutToggleBtn.onClick = func() -> void:
+	HotkeyContainer.action_func_lookup = action_func_lookup
+	HotkeyContainer.ability_funcs = ability_funcs
+	HotkeyContainer.passive_funcs = passive_funcs
+	
+	HotkeyContainer.onBookmarkToggle = func() -> void:
 		if current_bookmark_type == BOOKMARK_TYPE.GLOBAL:
-			current_bookmark_type = BOOKMARK_TYPE.RING
+			current_bookmark_type = BOOKMARK_TYPE.RING			
 		elif current_bookmark_type == BOOKMARK_TYPE.RING:
 			current_bookmark_type = BOOKMARK_TYPE.GLOBAL
-		
+
+	HotkeyContainer.endBookmark = func() -> void:
+		await U.tick()
+		ActiveMenu.freeze_inputs = false
 	
+	HotkeyContainer.onSetLock = func(state:bool) -> void:
+		ActiveMenu.freeze_inputs = state
+		for btn in [ActionBtn, AbilityBtn, GotoBtn, NextBtn, AbilityBtn, PassiveBtn, DetailBtn]:
+			btn.is_disabled = state
+
 	on_current_bookmark_type_update()
 	hide()	
 	on_current_mode_update()
@@ -211,9 +179,7 @@ func on_fullscreen_update(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 func update_control_pos() -> void:	
 	await U.tick()
-	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
-	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
-	
+
 	# for elements in the bottom left corner
 	control_pos[BtnControlPanel] = {
 		"global": BtnControlPanel.global_position,
@@ -243,6 +209,7 @@ func toggle_camera_view() -> void:
 		CAMERA.TYPE.FLOOR_SELECT:
 			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 			current_mode = MODE.SELECT_ROOM
+
 		
 		CAMERA.TYPE.ROOM_SELECT:
 			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
@@ -263,13 +230,22 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 
 	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
-	U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
+	await U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
+
+	GBL.node_location_dict["AbilityBtn"] = AbilityBtn.global_position
+	GBL.node_location_dict["PassiveBtn"] = PassiveBtn.global_position	
+
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func get_menu_y_pos() -> int:
 	return self.size.y - 40 - ActiveMenu.size.y
 # --------------------------------------------------------------------------------------------------			
+
+# --------------------------------------------------------------------------------------------------			
+func on_in_details_mode_update() -> void:
+	on_current_location_update()	
+# --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------	
 func show_generator_upgrades(skip_animation:bool = false) -> void:
@@ -574,7 +550,6 @@ func on_base_states_update(new_val:Dictionary = base_states) -> void:
 		U.debounce("build_btns", buildout_btns)		
 # --------------------------------------------------------------------------------------------------		
 
-
 # --------------------------------------------------------------------------------------------------		
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
@@ -589,105 +564,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	U.debounce("build_btns", buildout_btns)
 # --------------------------------------------------------------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------
-func set_backdrop_state(state:bool) -> void:	
-	await U.tween_node_property(Backdrop, 'color', Color(0, 0.1, 0, 0.4 if state else 0.0))	
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func on_current_bookmark_type_update() -> void:
-	if !is_node_ready():return
-	
-	#ShortcutLabelLeft.text = ""
-	#ShortcutLabelRight.text = ""	
-	
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:	
-			ShortcutToggleBtn.icon = SVGS.TYPE.CAMERA_B
-			ShortcutToggleBtn.title = "GLOBAL"			
-			
-		BOOKMARK_TYPE.RING:				
-			ShortcutToggleBtn.icon = SVGS.TYPE.CAMERA_A
-			ShortcutToggleBtn.title = "RING"			
-
-	build_shortcuts()
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
-func build_shortcuts() -> void:
-	if current_location.is_empty():return
-	var designation:String = str(current_location.floor, current_location.ring)
-
-	#for index in ShortcutBtnList.get_child_count():		
-		#var btn:Control = ShortcutBtnList.get_child(index)
-		#btn.reset()
-		#btn.onClick = func() -> void:pass
-		#btn.onReset = func() -> void:pass
-
-	var use_dict:Dictionary = {} 
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:
-			use_dict = base_states.global_hotkeys
-		BOOKMARK_TYPE.RING:
-			use_dict = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
-	
-
-	for index in ShortcutBtnList.get_child_count():		
-		var btn:Control = ShortcutBtnList.get_child(index)
-		
-		#----------------------------
-		if index in use_dict:			
-			var shortcut_data:Dictionary = use_dict[index]
-			if !shortcut_data.is_empty():
-				match shortcut_data.type:
-					MENU_TYPE.ACTIONS:
-						var action_data:Dictionary = action_func_lookup(shortcut_data.lookup_ref)
-						btn.get_icon_func = func() -> SVGS.TYPE:
-							return SVGS.TYPE.MEDIA_PLAY
-						btn.get_not_ready_func = func() -> bool:
-							return false
-						btn.title = action_data.title
-						btn.hint_description = "ACTION DESCRIPTION"
-					MENU_TYPE.ABILITIES:
-						var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.ability_level)
-						var funcs:Dictionary = ability_funcs(ability, shortcut_data.use_location)
-						btn.get_icon_func = funcs.get_icon_func	
-						btn.get_not_ready_func = funcs.get_not_ready_func
-						btn.get_invalid_func = funcs.get_invalid_func
-						btn.title = ability.name
-						btn.hint_description = "ABILITY DESCRIPTION"
-					MENU_TYPE.PASSIVES:
-						var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.room_ref, shortcut_data.ability_level)
-						var funcs:Dictionary = passive_funcs(shortcut_data.room_ref, shortcut_data.ability_level, shortcut_data.use_location)
-						btn.get_icon_func = funcs.get_icon_func	
-						btn.get_not_ready_func = funcs.get_not_ready_func
-						btn.get_invalid_func = funcs.get_invalid_func
-						btn.title = ability.name
-						
-						btn.hint_description = "PASSIVE DESCRIPTION"
-				
-				btn.onReset = func() -> void:
-					use_dict.erase(index)
-					
-				btn.onClick = func() -> void:
-					match shortcut_data.type:
-						MENU_TYPE.ACTIONS:
-							var action_data:Dictionary = action_func_lookup(shortcut_data.lookup_ref)
-							action_data.onSelect.call(-1) # number passed doesn't matter
-						MENU_TYPE.ABILITIES:
-							await lock_btns(true)
-							var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.ability_level)
-							await GAME_UTIL.use_active_ability(ability)
-							lock_btns(false)
-						MENU_TYPE.PASSIVES:
-							GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.ability_level)
-				
-				btn.update_self()
-		#----------------------------
-		else:
-			btn.reset()
-# --------------------------------------------------------------------------------------------------				
-
 # --------------------------------------------------------------------------------------------------		
 var previous_designation:String
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
@@ -695,7 +571,13 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	if current_location.is_empty():return
 	var designation:String = str(current_location.floor, current_location.ring)
 	
+
 	if current_mode == MODE.INVESTIGATE:
+		var node_position:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) 		
+		GBL.node_location_dict["RoomMiniCard"] = RoomMiniCard.global_position	
+		GBL.node_location_dict["ScpMiniCard"] = ScpMiniCard.global_position				
+		
+		GBL.find_node(REFS.LINE_DRAW).add( node_position * self.size )	
 		update_details()
 		return
 	
@@ -713,6 +595,18 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func set_backdrop_state(state:bool) -> void:	
+	await U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.4 if state else 0.0))	
+# --------------------------------------------------------------------------------------------------	
+
+## --------------------------------------------------------------------------------------------------	
+func on_current_bookmark_type_update() -> void:
+	if !is_node_ready():return
+	HotkeyContainer.current_bookmark_type = current_bookmark_type
+## --------------------------------------------------------------------------------------------------		
+
+
+# --------------------------------------------------------------------------------------------------
 func enable_room_focus(state:bool) -> void:
 	GBL.find_node(REFS.ROOM_NODES).enable_room_focus = state
 # --------------------------------------------------------------------------------------------------	
@@ -720,7 +614,7 @@ func enable_room_focus(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 func render_shorcut_container() -> void:
 	if !is_node_ready() or gameplay_conditionals.is_empty():return
-	ShortcutBtnList.show()
+	#ShortcutBtnList.show()
 	#LeftSideShortcutContainer.show() if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIVE_ABILITY_SHORTCUTS] else LeftSideShortcutContainer.hide()
 	#RightSideShortcutContainer.show() if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_PASSIVE_ABILITY_SHORTCUTS] else RightSideShortcutContainer.hide()	
 # --------------------------------------------------------------------------------------------------	
@@ -761,19 +655,22 @@ func buildout_btns() -> void:
 			
 	DetailBtn.onClick = func() -> void:
 		if camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
-			if !active_menu_is_open and !GameplayNode.is_occupied(): 
+			if !active_menu_is_open and !GameplayNode.is_occupied(): 				
 				lock_btns(true)
 				GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer, GameplayNode.MetricsContainer])
 				current_mode = MODE.INVESTIGATE
 				enable_room_focus(true)
+				on_current_location_update()
+				set_backdrop_state(true)	
 				
 				BackBtn.onClick = func() -> void:
+					GBL.find_node(REFS.LINE_DRAW).clear()
 					enable_room_focus(false)
+					set_backdrop_state(false)	
 					GameplayNode.restore_showing_state()
 					current_mode = MODE.SELECT_ROOM
 					lock_btns(true)				
 
-	build_shortcuts()
 	is_setup = true
 	await U.set_timeout(0.1)
 	refresh_buttons.emit()
@@ -784,9 +681,8 @@ func lock_btns(state:bool) -> void:
 	for btn in [ActionBtn, AbilityBtn, GotoBtn, NextBtn, AbilityBtn, PassiveBtn, DetailBtn]:
 		btn.is_disabled = state
 	
-	for node in [ShortcutBtnList]:
-		for child in node.get_children():
-			child.is_disabled = state
+	HotkeyContainer.lock_btns = state
+
 	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide if state else control_pos[BtnControlPanel].show)
 
 func open_menu(state:bool) -> void:	
@@ -796,9 +692,7 @@ func open_menu(state:bool) -> void:
 	for btn in [ActionBtn, AbilityBtn, GotoBtn, NextBtn, AbilityBtn, PassiveBtn, DetailBtn]:
 		btn.is_disabled = state
 		
-	for node in [ShortcutBtnList]:
-		for child in node.get_children():
-			child.is_disabled = state
+	HotkeyContainer.lock_btns = state
 	
 	ActiveMenu.freeze_inputs = !state
 	set_backdrop_state(state)	
@@ -812,9 +706,7 @@ func on_current_mode_update() -> void:
 	if !is_node_ready():return	
 	
 	if !control_pos.is_empty():
-		for node in [ShortcutBtnList]:
-			for child in node.get_children():
-				child.is_disabled = true
+		HotkeyContainer.lock_btns = true
 				
 		for btn in [ConfirmBtn, BackBtn]:
 			btn.is_disabled = true
@@ -827,11 +719,8 @@ func on_current_mode_update() -> void:
 			AbilityBtn.title = "FACILITY UPGRADES"
 			PassiveBtn.title = "GENERATOR UPGRADES"
 			
-			ShortcutContainer.hide()
-			
-			for node in [ShortcutBtnList]:
-				for child in node.get_children():
-					child.is_disabled = true
+			HotkeyContainer.hide()
+			HotkeyContainer.lock_btns = true
 					
 			for node in [AbilityBtn, PassiveBtn]:
 				node.show()
@@ -840,7 +729,7 @@ func on_current_mode_update() -> void:
 				btn.is_disabled = true
 				btn.hide()
 				
-			ShortcutBtnList.hide()
+			#ShortcutBtnList.hide()
 		# --------------
 		MODE.SELECT_ROOM:
 			AbilityBtn.title = "ABILITY"
@@ -848,13 +737,9 @@ func on_current_mode_update() -> void:
 			
 			U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].hide)
 						
-			for node in [ShortcutBtnList]:
-				for child in node.get_children():
-					child.is_disabled = false
-					
-			for node in [ShortcutContainer]:
-				node.show()
-				
+			HotkeyContainer.show()
+			HotkeyContainer.lock_btns = false
+						
 			for node in [GotoBtn, NextBtn, ActionBtn, PassiveBtn, DetailBtn, AbilityBtn, PassiveBtn, DetailBtn]:
 				node.show()
 				node.is_disabled = false
@@ -869,8 +754,7 @@ func on_current_mode_update() -> void:
 			update_details()
 			U.tween_node_property(DetailsPanel, "position:y", control_pos[DetailsPanel].show)
 			
-
-			for node in [GotoBtn, NextBtn, ActionBtn, PassiveBtn, DetailBtn, AbilityBtn, PassiveBtn, DetailBtn, ShortcutContainer]:
+			for node in [GotoBtn, NextBtn, ActionBtn, PassiveBtn, DetailBtn, AbilityBtn, PassiveBtn, DetailBtn, HotkeyContainer]:
 				node.hide()
 
 			for btn in [ConfirmBtn, BackBtn]:
@@ -882,11 +766,9 @@ func on_current_mode_update() -> void:
 		MODE.RESET_ROOM:
 			check_if_remove_is_valid()
 			
-			for node in [ShortcutBtnList]:
-				for child in node.get_children():
-					child.is_disabled = true
+			HotkeyContainer.lock_btns = true
 			
-			for node in [AbilityBtn, PassiveBtn, ShortcutBtnList]:
+			for node in [AbilityBtn, PassiveBtn, HotkeyContainer]:
 				node.hide()
 
 			for btn in [ConfirmBtn, BackBtn]:
@@ -897,7 +779,6 @@ func on_current_mode_update() -> void:
 	if !control_pos.is_empty():
 		U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show )
 # --------------------------------------------------------------------------------------------------			
-
 
 # --------------------------------------------------------------------------------------------------	
 func check_if_remove_is_valid() -> void:
@@ -952,11 +833,8 @@ func show_debug(skip_animation:bool = false) -> void:
 	ActiveMenu.level = active_menu_index
 	ActiveMenu.show_ap = true
 	
-
 	update_active_menu("ABILITY", Color.WHITE, list, 3, AbilityBtn.global_position.x - 5, skip_animation)	
 # --------------------------------------------------------------------------------------------------				
-
-
 
 # --------------------------------------------------------------------------------------------------
 func update_details() -> void:
@@ -1080,20 +958,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 ## --------------------------------------------------------------------------------------------------
 #func open_alarm_setting() -> void:
-	## setup cloes behavior
-	#ActiveMenu.onClose = func() -> void:			
-		#set_btn_disabled_state(false)
-#
-	## enable/disable buttons
-	#ActiveMenu.freeze_inputs = false
-	#set_btn_disabled_state(true)
-	#
-	## pull data, create the options list
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-	#var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
-	#var options_list := []
-	#var is_scp_empty:bool = room_extract.scp.is_empty()
-	#
 	#options_list.push_back({
 		#"title": "BACK",
 		#"onSelect": func() -> void:
@@ -1140,40 +1004,12 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			#if response.has_changes:
 				#open_alarm_setting()	
 	#})	
-#
-	#ActiveMenu.options_list = options_list		
-	#await U.tick()
-	#ActiveMenu.size = Vector2(1, 1)
-	#ActiveMenu.global_position = Vector2(ref_btn.global_position.x, ref_btn.global_position.y - ActiveMenu.size.y - 10)	
-	#ActiveMenu.open()				
+		
 # --------------------------------------------------------------------------------------------------
 	
 
 ## --------------------------------------------------------------------------------------------------		
 #func open_scp_details() -> void:
-	## setup cloes behavior
-	#ActiveMenu.onClose = func() -> void:	
-		#GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		
-	#
-	## make room nodes active
-	#GBL.find_node(REFS.ROOM_NODES).is_active = true
-	#
-	## enable/disable buttons
-	#ActiveMenu.freeze_inputs = false
-	#set_btn_disabled_state(true)
-	#
-	#
-	## pull data, create the options list
-	#var options_list := []
-#
-	#options_list.push_back({
-		#"title": "BACK",
-		#"onSelect": func() -> void:
-			#GBL.find_node(REFS.ROOM_NODES).is_active = false
-			#ActiveMenu.close()
-	#})
-#
 	#options_list.push_back({
 		#"title": "VIEW DETAILS",
 		#"onSelect": func() -> void:
@@ -1181,14 +1017,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			#await GameplayNode.view_scp_details()
 			#ActiveMenu.freeze_inputs = false
 	#})
-	#
-#
-	#ActiveMenu.options_list = options_list			
-	#await U.tick()
-	#ActiveMenu.size = Vector2(1, 1)
-	#ActiveMenu.custom_minimum_size = Vector2(1, 1)
-	#ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
-	#ActiveMenu.open()
+
 ## --------------------------------------------------------------------------------------------------			
 #
 ## --------------------------------------------------------------------------------------------------		
@@ -1197,40 +1026,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 ## --------------------------------------------------------------------------------------------------			
 #func open_scp_menu() -> void:
-	## setup cloes behavior
-	#ActiveMenu.onClose = func() -> void:	
-		#GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		#set_btn_disabled_state(false)
-	#
-	## make room nodes active
-	#GBL.find_node(REFS.ROOM_NODES).is_active = true
-	#
-	## enable/disable buttons
-	#ActiveMenu.freeze_inputs = false
-	#set_btn_disabled_state(true)
-	#
-	## pull data, create the options list
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	#var room_is_empty:bool = room_extract.is_room_empty
-	#var is_room_under_construction:bool = room_extract.is_room_under_construction
-	#var is_room_active:bool = room_extract.is_activated
-	#var room_category:int = room_extract.room_category
-	#var is_scp_empty:bool = room_extract.is_scp_empty
-	##var	is_scp_transfering:bool = room_extract.is_scp_transfering
-	##var is_scp_contained:bool = room_extract.is_scp_contained
-	#var researchers_count:int = room_extract.researchers_count	
-	#var options_list:Array = []
-			#
-	#options_list.push_back({
-		#"title": "BACK",
-		#"onSelect": func() -> void:
-			#GBL.find_node(REFS.ROOM_NODES).is_active = false
-			#ActiveMenu.close()
-			#set_btn_disabled_state(false)
-	#})
-	#
-
-	#else:
 		#options_list.push_back({
 			#"title": "CONDUCT TESTING",
 			#"onSelect": func() -> void:
@@ -1249,60 +1044,12 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				#ActiveMenu.freeze_inputs = false
 				#open_scp_menu()
 		#})					
-		#
-#
-	#ActiveMenu.show_ap = false
-	#ActiveMenu.header = "CONTAINMENT"
-	#ActiveMenu.use_color = Color(0.511, 0.002, 0.717)
-	#ActiveMenu.options_list = options_list		
-	#await U.tick()
-	#ActiveMenu.size = Vector2(1, 1)
-	#ActiveMenu.custom_minimum_size = Vector2(1, 1)
-	#ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
-	#ActiveMenu.open()
+
 ## --------------------------------------------------------------------------------------------------				
 #
 ## --------------------------------------------------------------------------------------------------				
 #func open_researcher_menu() -> void:
-	## setup cloes behavior
-	#ActiveMenu.onClose = func() -> void:	
-		#GBL.find_node(REFS.ROOM_NODES).is_active = false	
-		#set_btn_disabled_state(false)
-	#
-	## make room nodes active
-	#GBL.find_node(REFS.ROOM_NODES).is_active = true
-	#
-	## enable/disable buttons
-	#ActiveMenu.freeze_inputs = false
-	#set_btn_disabled_state(true)
-	#
-	## pull data, create the options list
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	#var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
-	#var room_is_empty:bool = room_extract.is_room_empty
-	#var researchers_count:int = room_extract.researchers_count
-	#var is_room_active:bool = room_extract.is_activated
-	#var room_is_active
-	#
-	#var options_list := []
-	#options_list.push_back({
-		#"title": "BACK",
-		#"onSelect": func() -> void:	
-			#GBL.find_node(REFS.ROOM_NODES).is_active = false
-			#ActiveMenu.close()
-			#set_btn_disabled_state(false)
-	#})
-	#
-	#options_list.push_back({
-		#"title": "ASSIGN RESEARCHER...",
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true
-			#set_btn_disabled_state(true)
-			#await GameplayNode.assign_researcher(current_location.duplicate())
-			#ActiveMenu.freeze_inputs = false
-			#restore_btn_disable_state()
-	#})		
-	#
+
 	#options_list.push_back({
 		#"title": "PROMOTE RESEARCHER",
 		#"onSelect": func() -> void:
@@ -1321,15 +1068,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				#ActiveMenu.freeze_inputs = false
 				#open_researcher_menu(),
 		#})
-#
-	#ActiveMenu.header = "RESEARCHER"
-	#ActiveMenu.use_color = Color(0, 0.965, 0.278)
-	#ActiveMenu.options_list = options_list		
-	#await U.tick()
-	#ActiveMenu.size = Vector2(1, 1)
-	#ActiveMenu.custom_minimum_size = Vector2(1, 1)
-	#ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
-	#ActiveMenu.open()
 ## --------------------------------------------------------------------------------------------------				
 
 		

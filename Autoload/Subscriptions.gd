@@ -423,3 +423,16 @@ func subscribe_to_gameplay_conditionals(node:Node) -> void:
 func unsubscribe_to_gameplay_conditionals(node:Node) -> void:
 	gameplay_conditionals_subscriptions.erase(node)				
 # ------------------------------------------------------------	
+
+
+# ------------------------------------------------------------	
+#
+#func subscribe_to_gameplay_conditionals(node:Node) -> void:
+	#if node not in gameplay_conditionals_subscriptions:
+		#gameplay_conditionals_subscriptions.push_back(node)
+		#if "on_gameplay_conditionals_update" in node:
+			#node.on_gameplay_conditionals_update.call( gameplay_conditionals)
+			#
+#func unsubscribe_to_gameplay_conditionals(node:Node) -> void:
+	#gameplay_conditionals_subscriptions.erase(node)				
+# ------------------------------------------------------------	

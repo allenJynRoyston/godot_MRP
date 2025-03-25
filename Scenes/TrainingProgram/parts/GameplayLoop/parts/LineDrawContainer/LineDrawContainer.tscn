@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://p7chmumf3rm2"]
+
+[ext_resource type="Script" uid="uid://dgyhy7b4dr00i" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/line_draw_container.gd" id="1_yt5sp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yt5sp"]
+
+[node name="PanelContainer" type="PanelContainer"]
+z_index = 1
+z_as_relative = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_yt5sp")
+script = ExtResource("1_yt5sp")
+
+[node name="LineDrawContainer" type="Control" parent="."]
+layout_mode = 2

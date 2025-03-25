@@ -2,7 +2,10 @@ extends GameContainer
 
 @onready var ResourcePanel:MarginContainer = $Control2/ResourcePanel
 @onready var ScpPanel:PanelContainer = $Control2/ScpPanel
-
+@onready var Energy:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Energy
+@onready var Resources:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Resources
+@onready var Funds:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Funds
+@onready var Research:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Research
 @onready var DetailPanel:Control = $Control/DetailPanel
 
 var detail_panel_is_focused:bool = false
@@ -53,7 +56,12 @@ func update_control_pos() -> void:
 func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
-	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, 0 if skip_animation else 0.7)
+	await U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, 0 if skip_animation else 0.7)
+	
+	GBL.node_location_dict["EnergyPanel"] = Energy.global_position
+	GBL.node_location_dict["ResourcesPanel"] = Resources.global_position
+	GBL.node_location_dict["FundsPanel"] = Funds.global_position
+	GBL.node_location_dict["ResearchPanel"] = Research.global_position	
 # -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------

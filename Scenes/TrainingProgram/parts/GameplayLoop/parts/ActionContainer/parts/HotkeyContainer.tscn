@@ -1,0 +1,253 @@
+[gd_scene load_steps=16 format=3 uid="uid://2wr0honpqb2p"]
+
+[ext_resource type="Script" uid="uid://3moq5i4irex2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/hotkey_container.gd" id="1_2obsv"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_f1t52"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="3_ppj06"]
+[ext_resource type="PackedScene" uid="uid://b5ecew7bcpv" path="res://UI/Buttons/AbilityBtn/AbilityBtn.tscn" id="4_2bq3x"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2obsv"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1t52"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ppj06"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2bq3x"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_caq01"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blwye"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ypnn6"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eljyn"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4fo12"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_euu51"]
+bg_color = Color(0.169, 0.169, 0.169, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8q56x"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="HotkeyContainer" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_2obsv")
+script = ExtResource("1_2obsv")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="ShortcutLabelLeft" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "NONE"
+label_settings = ExtResource("2_f1t52")
+vertical_alignment = 1
+
+[node name="ShortcutLabelRight" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_vertical = 5
+label_settings = ExtResource("2_f1t52")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+
+[node name="ShortcutToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer" instance=ExtResource("3_ppj06")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f1t52")
+title = "GLOBAL"
+assigned_key = "H"
+icon = 39
+hide_icon_panel = false
+
+[node name="ShortcutBtnList" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="AbilityBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ppj06")
+assigned_key = "1"
+
+[node name="AbilityBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2bq3x")
+assigned_key = "2"
+
+[node name="AbilityBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_caq01")
+assigned_key = "3"
+
+[node name="AbilityBtn4" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_blwye")
+assigned_key = "4"
+
+[node name="AbilityBtn5" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ypnn6")
+assigned_key = "5"
+
+[node name="AbilityBtn6" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_eljyn")
+assigned_key = "6"
+
+[node name="AbilityBtn7" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4fo12")
+assigned_key = "7"
+
+[node name="AbilityBtn8" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList" instance=ExtResource("4_2bq3x")]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_euu51")
+assigned_key = "8"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+
+[node name="ClearBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2" instance=ExtResource("3_ppj06")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8q56x")
+title = "REMOVE"
+assigned_key = "C"
+icon = 1
+hide_icon_panel = false
