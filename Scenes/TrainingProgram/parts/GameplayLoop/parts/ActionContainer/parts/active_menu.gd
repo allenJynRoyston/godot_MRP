@@ -55,7 +55,7 @@ var allow_shortcut:bool = false
 var onPrev:Callable = func():pass
 var onNext:Callable = func():pass
 var onClose:Callable = func():pass
-var onBookmark:Callable = func(_index:int, _target:int):pass
+var onBookmark:Callable = func(_shortcut_data:Dictionary, _btn_node:Control):pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -145,7 +145,6 @@ func on_options_list_update() -> void:
 				
 		btn_node.onFocus = func(_node:Control) -> void:
 			selected_index = index
-			print(item)
 		
 		List.add_child(btn_node)
 	
@@ -219,14 +218,14 @@ func on_action(btn_index:int = selected_index) -> void:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
+func on_control_input_update(input_data:Dictionary) -> void:	
 	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or selected_index == -1:return
 	var key:String = input_data.key
 
 	match key:
 		"G":
 			if !options_list.is_empty() and "shortcut_data" in options_list[selected_index]:
-				onBookmark.call(options_list[selected_index].shortcut_data)
+				onBookmark.call(options_list[selected_index].shortcut_data, List.get_child(selected_index))
 		"E":
 			if wait_for_release:return
 			on_action()

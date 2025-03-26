@@ -102,6 +102,7 @@ var HQ:Dictionary = {
 		return [
 			{
 				"name": "HIRE RESEARCHER",
+				"use_at": 0,
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
@@ -112,6 +113,7 @@ var HQ:Dictionary = {
 			},
 			{
 				"name": "PROMOTE RESEARCHER",
+				"use_at": 0,
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
@@ -191,6 +193,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 		return [
 			{
 				"name": "UNLOCK FACILITIES", 
+				"use_at": 0,
 				"cooldown_duration":  1, 
 				"effect": func() -> bool:
 					return await GAME_UTIL.open_store(),
@@ -265,6 +268,7 @@ var R_AND_D_LAB:Dictionary = {
 		return [
 			{
 				"name": "UPGRADE +1",
+				"use_at": 0,
 				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.ENERGY: -1
@@ -327,17 +331,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			{
-				"name": "ABILITY X",
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  1, 
-				"effect": func() -> bool:
-					return true,
-					#await GameplayNode.recruit_new_researcher(1),
-			},
+
 		],	
 	# ------------------------------------------
 
@@ -383,6 +377,7 @@ var BARRICKS:Dictionary = {
 		return [
 			{
 				"name": "SUPPLY SECURITY",
+				"use_at": 0,
 				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.ENERGY: -1
@@ -435,6 +430,7 @@ var DORMITORY:Dictionary = {
 		return [
 			{
 				"name": "SUPPLY STAFF",
+				"use_at": 0,
 				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.ENERGY: -1
@@ -487,6 +483,7 @@ var HOLDING_CELLS:Dictionary = {
 		return [
 			{
 				"name": "SUPPLY DCLASS",
+				"use_at": 0,
 				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.ENERGY: -1
@@ -539,6 +536,7 @@ var HR_DEPARTMENT:Dictionary = {
 		return [
 			{
 				"name": "HIRE STAFF",
+				"use_at": 0,
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
@@ -549,6 +547,7 @@ var HR_DEPARTMENT:Dictionary = {
 			},
 			{
 				"name": "HIRE SECURITY",
+				"use_at": 0,
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
@@ -559,6 +558,7 @@ var HR_DEPARTMENT:Dictionary = {
 			},
 			{
 				"name": "HIRE TECHNICANS",
+				"use_at": 0,
 				"unlock_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
@@ -647,6 +647,7 @@ var CONTAINMENT_CELL:Dictionary = {
 		return [
 			{
 				"name": "CONTAIN SCP",
+				"use_at": 0,
 				"cooldown_duration":  14, 
 				"effect": func() -> bool:
 					return await GAME_UTIL.contain_scp(),
@@ -659,6 +660,7 @@ var CONTAINMENT_CELL:Dictionary = {
 		return [
 			{
 				"name": "STATION GUARDS",
+				"use_at": 0,
 				"use_cost": func() -> Dictionary:
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
@@ -752,6 +754,7 @@ var ENGINEERING_BAY:Dictionary = {
 		return [
 			{
 				"name": "UPGRADE LVL 2",
+				"use_at": 0,
 				"energy_cost": 3,
 				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
 					if ring_config_data.ability_level < 1:
@@ -760,6 +763,7 @@ var ENGINEERING_BAY:Dictionary = {
 			},
 			{
 				"name": "UPGRADE LVL 3",
+				"use_at": 1,
 				"energy_cost": 1,
 				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
 					if ring_config_data.ability_level == 1:

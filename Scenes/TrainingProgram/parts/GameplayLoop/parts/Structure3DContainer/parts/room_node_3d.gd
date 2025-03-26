@@ -130,7 +130,7 @@ func on_current_state_update() -> void:
 			new_color = Color.TRANSPARENT
 		STATES.ACTIVE:
 			new_color = Color(1, 1, 1, 1) if !is_unavailable else  Color(0.66, 0, 0, 1)
-			NameLabel.show()
+			#NameLabel.show()
 		STATES.INACTIVE:
 			new_color = Color(0, 0, 0, 0)
 		STATES.UNAVAILABLE:

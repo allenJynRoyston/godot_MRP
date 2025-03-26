@@ -1294,7 +1294,6 @@ func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals)
 
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
-	print(hired_lead_researchers_arr)
 	if setup_complete:
 		U.debounce("set_room_config", set_room_config)
 
@@ -2145,7 +2144,8 @@ func set_room_config(force_setup:bool = false) -> void:
 				var ring_effects:Dictionary = scp_details.effects.ring.call()
 				if "provides" in ring_effects:
 					for resource in ring_effects.provides:
-						ring_config_data.available_resources[resource] = true
+						pass
+						#ring_config_data.available_resources[resource] = true
 
 			
 	

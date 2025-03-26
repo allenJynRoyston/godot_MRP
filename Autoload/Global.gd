@@ -36,6 +36,7 @@ func has_animation_in_queue() -> bool:
 
 # ------------------------------------------------------------------------------
 # NODE REFS
+var direct_ref:Dictionary = {}
 var node_refs:Dictionary = {}
 
 func register_node(key:int, node:Node) -> void:
@@ -113,7 +114,7 @@ func update_fullscreen_mode(state:bool) -> void:
 	
 	h_diff = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
 	y_diff = (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)	
-	print(y_diff)
+
 	
 	for node in fullscreen_nodes:
 		if "on_fullscreen_update" in node:
@@ -285,8 +286,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					82:
 						key = "R"
 					# --------------
+					71:
+						key = "G"
 					72:
-						key = "H"					
+						key = "H"
 					65:
 						key = "A"
 					68:
@@ -306,11 +309,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						
 				node.on_control_input_update({"keycode": event.keycode, "key": key})
 # ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-var node_location_dict:Dictionary = {}
-# ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 # NODE REFS

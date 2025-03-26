@@ -2,12 +2,12 @@
 extends PanelContainer
 
 @onready var RootPanel:Control = $"."
-@onready var ShortcutToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer/ShortcutToggleBtn
-@onready var ClearBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/ClearBtn
+@onready var ShortcutBtnGrid:GridContainer = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnGrid
 
-@onready var ShortcutBtnList:HBoxContainer = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnList
-@onready var ShortcutLabelLeft:Label = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelLeft
-@onready var ShortcutLabelRight:Label = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelRight
+@onready var ShortcutToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutToggleBtn
+@onready var ClearBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ClearBtn
+#@onready var ShortcutLabelLeft:Label = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelLeft
+#@onready var ShortcutLabelRight:Label = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelRight
 
 enum BOOKMARK_TYPE {GLOBAL, RING}
 enum CONTROL_MODE { BOOKMARK, CLEAR }
@@ -63,21 +63,22 @@ func _exit_tree() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func _ready() -> void:
-	for child in [ShortcutBtnList]:
-		for node in child.get_children():
-			node.onFocus = func(node:Control) -> void:
-				ShortcutLabelLeft.text = node.title 
-				ShortcutLabelRight.text = node.hint_description
-			node.onBlur = func(node:Control) -> void:
-				ShortcutLabelLeft.text = ""
-				ShortcutLabelRight.text = ""	
-				
+	for node in ShortcutBtnGrid.get_children():
+		node.onFocus = func(node:Control) -> void:
+			pass
+			#ShortcutLabelLeft.text = node.title 
+			#ShortcutLabelRight.text = node.hint_description
+		node.onBlur = func(node:Control) -> void:
+			pass
+			#ShortcutLabelLeft.text = ""
+			#ShortcutLabelRight.text = ""	
+				#
 
 	ShortcutToggleBtn.onClick = func() -> void:
 		onBookmarkToggle.call()
 	
 	ClearBtn.onClick = func() -> void:
-		for btn in ShortcutBtnList.get_children():
+		for btn in ShortcutBtnGrid.get_children():
 			btn.is_disabled = true
 		current_control_mode = CONTROL_MODE.CLEAR
 		onSetLock.call(true)
@@ -136,8 +137,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func on_selected_index_update() -> void:
-	for index in ShortcutBtnList.get_child_count():
-		var btn:Control = ShortcutBtnList.get_child(index)
+	for index in ShortcutBtnGrid.get_child_count():
+		var btn:Control = ShortcutBtnGrid.get_child(index)
 		btn.is_selected = index == selected_index
 # --------------------------------------------------------------------------------------------------	
 
@@ -155,7 +156,7 @@ func end_bookmark(confirm:bool) -> void:
 	var dict_ref:Dictionary
 	enable_controls = false
 	endBookmark.call()
-	for btn in ShortcutBtnList.get_children():
+	for btn in ShortcutBtnGrid.get_children():
 		btn.is_selected = false
 	highlight_container()
 	
@@ -202,7 +203,7 @@ func clear_btn() -> void:
 		BOOKMARK_TYPE.RING:
 			base_states.ring[str(current_location.floor, current_location.ring)].hotkeys = dict_ref
 	
-	var btn:Control = ShortcutBtnList.get_child(selected_index)
+	var btn:Control = ShortcutBtnGrid.get_child(selected_index)
 	btn.reset()
 	
 	SUBSCRIBE.base_states = base_states	
@@ -214,21 +215,22 @@ func end_clear() -> void:
 	enable_controls = false
 	selected_index = 0	
 	highlight_container()
-	for btn in ShortcutBtnList.get_children():
+	for btn in ShortcutBtnGrid.get_children():
 		btn.is_selected = false	
 
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
 func highlight_container() -> void:
-	var new_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
-	new_stylebox.border_color = Color.WHITE if enable_controls else Color.BLACK
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
+	pass
+	#var new_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
+	#new_stylebox.border_color = Color.WHITE if enable_controls else Color.BLACK
+	#RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
 func on_lock_btns_update() -> void:
-	for node in [ShortcutBtnList]:
+	for node in [ShortcutBtnGrid]:
 		for child in node.get_children():
 			child.is_disabled = lock_btns	
 # --------------------------------------------------------------------------------------------------
@@ -245,8 +247,8 @@ func build_shortcuts() -> void:
 		BOOKMARK_TYPE.RING:
 			use_dict = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
 	
-	for index in ShortcutBtnList.get_child_count():		
-		var btn:Control = ShortcutBtnList.get_child(index)
+	for index in ShortcutBtnGrid.get_child_count():		
+		var btn:Control = ShortcutBtnGrid.get_child(index)
 
 		#----------------------------
 		if index in use_dict:			
@@ -329,8 +331,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					end_clear()
 		# ----------------------------
 		"D":
-			selected_index = U.min_max(selected_index + 1, 0, 4, true)
+			selected_index = U.min_max(selected_index + 1, 0, 5, true)
 		# ----------------------------
 		"A":
-			selected_index = U.min_max(selected_index - 1, 0, 4, true)
+			selected_index = U.min_max(selected_index - 1, 0, 5, true)
 # --------------------------------------------------------------------------------------------------	

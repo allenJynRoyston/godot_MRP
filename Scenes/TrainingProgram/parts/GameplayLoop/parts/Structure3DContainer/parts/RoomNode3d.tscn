@@ -177,6 +177,7 @@ omni_attenuation = 6.854
 
 [node name="NameLabel" type="Label3D" parent="RoomNode"]
 transform = Transform3D(-1.00003, 0, -1.51e-07, 0, 1, 0, 1.51e-07, 0, -1.00003, -1.02939, 1.64182, 3.50949)
+visible = false
 layers = 128
 pixel_size = 0.001
 shaded = true

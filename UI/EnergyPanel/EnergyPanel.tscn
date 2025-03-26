@@ -76,7 +76,7 @@ theme_override_constants/separation = 5
 [node name="ResourceItem" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_tw5mx")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_gm4lt")
-icon = 31
+icon = 32
 no_bg = true
 title = "0"
 display_at_bottom = true

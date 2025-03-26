@@ -87,13 +87,23 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 					var ability_list:Array = room_details.abilities.call()
 					for index in ability_list.size():
 						if index <= ring_ability_level:
-							abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
+							abilities[room_details.ref].push_back({
+								"room_index": room_index,
+								"index": index, 
+								"level": ability_list[index].use_at, 
+								"details": ability_list[index]
+							})
 				
 				if "passive_abilities" in room_details:
 					var ability_list:Array = room_details.passive_abilities.call()
 					for index in ability_list.size():
 						if index <= ring_ability_level:
-							passive_abilities[room_details.ref].push_back({"index": index, "level": index, "details": ability_list[index]})
+							passive_abilities[room_details.ref].push_back({
+								"room_index": room_index,
+								"index": index, 
+								"level": ability_list[index].use_at, 
+								"details": ability_list[index]
+							})
 	
 	return {
 		"room_refs": wing_data.room_refs,
@@ -123,14 +133,24 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var can_destroy:bool = false if is_room_empty else room_details.can_destroy
 	var ap_diff_amount:int = 1 if is_activated else 0
 	var abilities:Array = [] if (is_room_empty or "abilities" not in room_details) else room_details.abilities.call()	
-	var passive_abilities:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
+	
+	var ring_base_state:Dictionary = base_states.ring[str(current_location.floor, current_location.ring)]
+	var passives_enabled:Dictionary = ring_base_state.passives_enabled	
+	var passive_abl:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
+	var passive_abilities:Array = []
+	for index in passive_abl.size():
+		var pa:Dictionary = passive_abl[index]
+		var auid:String = str(room_details.ref, index)
+		pa.index = index
+		pa.is_enabled = passives_enabled[auid] if auid in passives_enabled else false
+		passive_abilities.push_back(pa)
 	
 	var scp_data:Dictionary = room_config_data.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
 	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(scp_data.ref)
 	var is_transfer:bool = false #if is_scp_empty else room_config_data.scp_data.is_transfer
 	var is_contained:bool = false #if is_scp_empty else room_config_data.scp_data.is_contained
-	
+
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
 		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
@@ -462,20 +482,20 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-#func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
-	#var dict:Dictionary = RESOURCE_UTIL.return_data(type)
-	#
-	#ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
-	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	#
-	#var confirm:bool = await ConfirmModal.user_response
-	#if confirm:
-		#resources_data[type].amount += amount
-		#SUBSCRIBE.resources_data = resources_data
-		#ToastContainer.add("Hired %s %s!" % [amount, dict.name])
-	#
-	#GameplayNode.restore_showing_state()
-	#return confirm
+func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
+	var dict:Dictionary = RESOURCE_UTIL.return_data(type)
+	
+	ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
+	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
+	
+	var confirm:bool = await ConfirmModal.user_response
+	if confirm:
+		resources_data[type].amount += amount
+		SUBSCRIBE.resources_data = resources_data
+		ToastContainer.add("Hired %s %s!" % [amount, dict.name])
+	
+	GameplayNode.restore_showing_state()
+	return confirm
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		

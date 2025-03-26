@@ -20,6 +20,11 @@ var show_details:bool = false :
 func _ready() -> void:
 	super._ready()
 	on_show_details_update()
+	
+	GBL.direct_ref["EnergyPanel"] = Energy
+	GBL.direct_ref["ResourcesPanel"] = Resources
+	GBL.direct_ref["FundsPanel"] = Funds
+	GBL.direct_ref["ResearchPanel"] = Research		
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -56,12 +61,7 @@ func update_control_pos() -> void:
 func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
-	await U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, 0 if skip_animation else 0.7)
-	
-	GBL.node_location_dict["EnergyPanel"] = Energy.global_position
-	GBL.node_location_dict["ResourcesPanel"] = Resources.global_position
-	GBL.node_location_dict["FundsPanel"] = Funds.global_position
-	GBL.node_location_dict["ResearchPanel"] = Research.global_position	
+	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, 0 if skip_animation else 0.7)
 # -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
