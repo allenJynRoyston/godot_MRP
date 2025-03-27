@@ -29,7 +29,7 @@ outline_size = 8
 shadow_size = 0
 
 [node name="LocationPanel" type="PanelContainer"]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(50, 50)
 offset_right = 192.0
 offset_bottom = 11.0
 size_flags_horizontal = 0
@@ -38,10 +38,10 @@ script = ExtResource("1_2cn8n")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -8
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = -1
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2

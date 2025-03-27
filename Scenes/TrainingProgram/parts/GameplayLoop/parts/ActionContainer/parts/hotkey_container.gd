@@ -81,7 +81,6 @@ func _ready() -> void:
 				#
 	
 	ShowToggleBtn.onClick = func() -> void:
-		print('here?')
 		show_hotkeys = !show_hotkeys
 	
 	ShortcutToggleBtn.onClick = func() -> void:

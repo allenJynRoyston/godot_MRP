@@ -102,22 +102,16 @@ var HQ:Dictionary = {
 		return [
 			{
 				"name": "HIRE RESEARCHER",
-				"use_at": 0,
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
+				"lvl_required": 0,
+				"science_cost": 50,
 				"cooldown_duration":  1, 
 				"effect": func() -> bool:
 					return await GAME_UTIL.recruit_new_researcher(3),
 			},
 			{
 				"name": "PROMOTE RESEARCHER",
-				"use_at": 0,
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
+				"lvl_required": 0,
+				"science_cost": 50,
 				"cooldown_duration":  5, 
 				"effect": func() -> bool:
 					return await GAME_UTIL.promote_researchers(),
@@ -193,7 +187,8 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 		return [
 			{
 				"name": "UNLOCK FACILITIES", 
-				"use_at": 0,
+				"lvl_required": 0,
+				"science_cost": 1,
 				"cooldown_duration":  1, 
 				"effect": func() -> bool:
 					return await GAME_UTIL.open_store(),
@@ -268,11 +263,8 @@ var R_AND_D_LAB:Dictionary = {
 		return [
 			{
 				"name": "UPGRADE +1",
-				"use_at": 0,
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.ENERGY: -1
-					},
+				"lvl_required": 0,
+				"energy_cost": 3,
 				"conditional": func(gpc:Dictionary) -> Dictionary:
 					gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = 1
 					return gpc,
@@ -377,11 +369,8 @@ var BARRICKS:Dictionary = {
 		return [
 			{
 				"name": "SUPPLY SECURITY",
-				"use_at": 0,
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.ENERGY: -1
-					},
+				"lvl_required": 0,
+				"energy_cost": 1,
 				"provides": [
 					RESOURCE.TYPE.SECURITY
 				]
@@ -430,11 +419,8 @@ var DORMITORY:Dictionary = {
 		return [
 			{
 				"name": "SUPPLY STAFF",
-				"use_at": 0,
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.ENERGY: -1
-					},
+				"lvl_required": 0,
+				"energy_cost": 2,
 				"provides": [
 					RESOURCE.TYPE.STAFF,
 				]
@@ -483,11 +469,8 @@ var HOLDING_CELLS:Dictionary = {
 		return [
 			{
 				"name": "SUPPLY DCLASS",
-				"use_at": 0,
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.ENERGY: -1
-					},
+				"lvl_required": 0,
+				"energy_cost": 2,
 				"provides": [
 					RESOURCE.TYPE.DCLASS,
 				]
@@ -534,39 +517,7 @@ var HR_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			{
-				"name": "HIRE STAFF",
-				"use_at": 0,
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  7, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.recruit_new_personel(RESOURCE.TYPE.STAFF, 10),
-			},
-			{
-				"name": "HIRE SECURITY",
-				"use_at": 0,
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  7, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.recruit_new_personel(RESOURCE.TYPE.SECURITY, 10),
-			},
-			{
-				"name": "HIRE TECHNICANS",
-				"use_at": 0,
-				"unlock_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
-				"cooldown_duration":  7, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.recruit_new_personel(RESOURCE.TYPE.TECHNICIANS, 10),
-			}
+
 		],	
 	# ------------------------------------------
 
@@ -647,7 +598,8 @@ var CONTAINMENT_CELL:Dictionary = {
 		return [
 			{
 				"name": "CONTAIN SCP",
-				"use_at": 0,
+				"lvl_required": 0,
+				"science_cost": 1,
 				"cooldown_duration":  14, 
 				"effect": func() -> bool:
 					return await GAME_UTIL.contain_scp(),
@@ -660,11 +612,8 @@ var CONTAINMENT_CELL:Dictionary = {
 		return [
 			{
 				"name": "STATION GUARDS",
-				"use_at": 0,
-				"use_cost": func() -> Dictionary:
-					return {
-						RESOURCE.TYPE.SCIENCE: -20
-					},
+				"lvl_required": 0,
+				"energy_cost": 2,
 				"effect": func() -> Dictionary:
 					return {
 						"metrics":{
@@ -754,7 +703,7 @@ var ENGINEERING_BAY:Dictionary = {
 		return [
 			{
 				"name": "UPGRADE LVL 2",
-				"use_at": 0,
+				"lvl_required": 0,
 				"energy_cost": 3,
 				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
 					if ring_config_data.ability_level < 1:
@@ -763,7 +712,7 @@ var ENGINEERING_BAY:Dictionary = {
 			},
 			{
 				"name": "UPGRADE LVL 3",
-				"use_at": 1,
+				"lvl_required": 1,
 				"energy_cost": 1,
 				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
 					if ring_config_data.ability_level == 1:
@@ -930,36 +879,6 @@ func return_passive_ability(ref:ROOM.TYPE, ability_index:int) -> Dictionary:
 	return abilities[ability_index]
 # ------------------------------------------------------------------------------		
 	
-# ------------------------------------------------------------------------------
-func return_ability_cost(ref:ROOM.TYPE, ability_index:int) -> Array:
-	var room_data:Dictionary = return_data(ref)
-	var abilities:Array = room_data.abilities.call() if "abilities" in room_data else []
-	if abilities.size() >= ability_index:
-		var list:Array = []
-		var unlock_cost:Dictionary = abilities[ability_index].unlock_cost.call()
-		for key in unlock_cost:
-			var amount:int = unlock_cost[key]
-			list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-		return list
-	else:
-		return []
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func return_passive_abilities_cost(ref:ROOM.TYPE, ability_index:int) -> Array:
-	var room_data:Dictionary = return_data(ref)
-	var abilities:Array = room_data.passive_abilities.call() if "passive_abilities" in room_data else []
-	if abilities.size() >= ability_index:
-		var list:Array = []
-		var unlock_cost:Dictionary = abilities[ability_index].use_cost.call()
-		for key in unlock_cost:
-			var amount:int = unlock_cost[key]
-			list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
-		return list
-	else:
-		return []
-# ------------------------------------------------------------------------------
-
 # ------------------------------------------------------------------------------
 func return_purchase_cost(ref:ROOM.TYPE) -> Array:
 	return SHARED_UTIL.return_resource_list(return_data(ref), "purchase_costs")

@@ -139,12 +139,15 @@ func on_options_list_update() -> void:
 		
 		btn_node.title = item.title
 		btn_node.btn_color = use_color
+		btn_node.is_selected = index == selected_index
+
 		btn_node.is_togglable = item.is_togglable if "is_togglable" in item else false
 		btn_node.is_checked = item.is_checked if "is_checked" in item else false
-		btn_node.is_selected = index == selected_index
-		btn_node.cooldown_duration = item.cooldown_duration if "cooldown_duration" in item else -1
 		btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
+		
+		btn_node.cooldown_duration = item.cooldown_duration if "cooldown_duration" in item else -1
 		btn_node.energy_cost = item.energy_cost if "energy_cost" in item else -1
+		btn_node.science_cost = item.science_cost if "science_cost" in item else -1
 
 		btn_node.onClick = func() -> void:
 			if !btn_node.is_disabled:

@@ -161,7 +161,7 @@ func _draw() -> void:
 	var start_v2:Vector2 = get_start_vector.call()
 	draw_rect(Rect2(start_v2 + offset - (rect_size/2), rect_size), line_color)  # Red color for the square
 	if "label" in draw_dict:
-		NamePanel.position = get_start_vector.call() + Vector2(15, 40)
+		NamePanel.position = get_start_vector.call() + Vector2(30, 40)
 
 	if !render_lines:return
 	draw_list = []

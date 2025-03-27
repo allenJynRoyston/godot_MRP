@@ -90,7 +90,7 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 							abilities[room_details.ref].push_back({
 								"room_index": room_index,
 								"index": index, 
-								"level": ability_list[index].use_at, 
+								"level": ability_list[index].lvl_required, 
 								"details": ability_list[index]
 							})
 				
@@ -101,7 +101,7 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 							passive_abilities[room_details.ref].push_back({
 								"room_index": room_index,
 								"index": index, 
-								"level": ability_list[index].use_at, 
+								"level": ability_list[index].lvl_required, 
 								"details": ability_list[index]
 							})
 	
@@ -458,13 +458,16 @@ func get_ability_cooldown(ability:Dictionary, use_location:Dictionary = current_
 func use_active_ability(ability:Dictionary, use_location:Dictionary = current_location) -> void:
 	var designation:String = str(use_location.floor, use_location.ring)
 	var apply_cooldown:bool = await ability.effect.call()
-	
+
 	if ability.name not in base_states.ring[designation].ability_on_cooldown:
 		base_states.ring[designation].ability_on_cooldown[ability.name] = 0
 			
 	if apply_cooldown:
 		base_states.ring[designation].ability_on_cooldown[ability.name] = ability.cooldown_duration
-	
+		resources_data[RESOURCE.TYPE.SCIENCE].amount -= ability.science_cost
+		print(resources_data[RESOURCE.TYPE.SCIENCE])
+		SUBSCRIBE.resources_data = resources_data
+		
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------	
 

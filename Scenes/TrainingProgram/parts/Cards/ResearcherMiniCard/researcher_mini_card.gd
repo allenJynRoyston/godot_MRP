@@ -54,7 +54,6 @@ func on_researcher_update() -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	print(is_selected)
 	SelectedIcon.show() if is_selected else SelectedIcon.hide()
 	
 	if is_selected:

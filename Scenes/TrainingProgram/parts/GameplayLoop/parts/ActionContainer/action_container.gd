@@ -293,8 +293,7 @@ func show_generator_upgrades(skip_animation:bool = false) -> void:
 	var options:Array = []
 	
 	options.push_back({
-		"title": "UPGRADE GENERATOR LVL %s" % [base_states.floor[str(current_location.floor)].generator_level + 1],		
-		"cooldown_duration": 0, 
+		"title": "UPGRADE GENERATOR LVL %s" % [base_states.floor[str(current_location.floor)].generator_level + 1],				
 		"is_disabled": false,
 		"action": func() -> void:
 			await GAME_UTIL.upgrade_generator_level.call(),
@@ -317,8 +316,7 @@ func show_base_upgrades(skip_animation:bool = false) -> void:
 	
 	if !is_powered.call():
 		options.push_back({
-			"title": "UNLOCK FLOOR" if !is_powered.call() else "ALREADY UNLOCKED",		
-			"cooldown_duration": 0, 
+			"title": "UNLOCK FLOOR" if !is_powered.call() else "ALREADY UNLOCKED",					
 			"is_disabled": is_powered.call(),
 			"get_disabled_state": is_powered,		
 			"action": func() -> void:
@@ -328,8 +326,7 @@ func show_base_upgrades(skip_animation:bool = false) -> void:
 		})
 	
 	options.push_back({
-		"title": "LOCKDOWN FLOOR" if !is_in_lockdown.call() else "RELEASE LOCKDOWN",
-		"cooldown_duration": 0, 
+		"title": "LOCKDOWN FLOOR" if !is_in_lockdown.call() else "RELEASE LOCKDOWN",		
 		"is_disabled": false,
 		"action": func() -> void:
 			await GAME_UTIL.set_floor_lockdown(!is_in_lockdown.call()),
@@ -388,8 +385,7 @@ func action_func_lookup(title:String) -> Dictionary:
 			}
 		# ------------------				
 	
-	action_dict.title = title
-	action_dict.cooldown_duration = 0
+	action_dict.title = title	
 	action_dict.shortcut_data = {
 		"type": MENU_TYPE.ACTIONS,
 		"lookup_ref": title
@@ -438,8 +434,9 @@ func ability_funcs(ability:Dictionary, use_location:Dictionary) -> Dictionary:
 							
 	var get_not_ready_func:Callable = func() -> bool:
 		await U.tick()
+		var enough_science:bool = resources_data[RESOURCE.TYPE.SCIENCE].amount  >= ability.science_cost
 		var cooldown_duration:int = GAME_UTIL.get_ability_cooldown(ability, use_location)
-		return cooldown_duration != 0
+		return cooldown_duration != 0 or !enough_science
 		
 	var get_icon_func:Callable = func() -> SVGS.TYPE:
 		return SVGS.TYPE.MEDIA_PLAY if GAME_UTIL.get_ability_cooldown(ability, use_location) == 0 else SVGS.TYPE.CLEAR
@@ -471,6 +468,7 @@ func show_abilities(skip_animation:bool = false, room_only:bool = false) -> void
 					var get_cooldown_duration:Callable = funcs.get_cooldown_duration
 					var get_not_ready_func:Callable = funcs.get_not_ready_func
 					var get_icon_func:Callable = funcs.get_icon_func
+					var science_cost:int = ability.details.science_cost
 					
 					options.push_back({
 						"shortcut_data": {
@@ -480,12 +478,15 @@ func show_abilities(skip_animation:bool = false, room_only:bool = false) -> void
 							"use_location": use_location.duplicate(true), 
 						},
 						"title": ability.details.name,
+						"science_cost": science_cost, 
 						"cooldown_duration": await get_cooldown_duration.call(), 
 						"is_disabled": await get_not_ready_func.call(),
 						"get_disabled_state": get_not_ready_func,
 						"get_cooldown_duration": get_cooldown_duration,
 						"action": func() -> void:
-							await GAME_UTIL.use_active_ability(ability.details),
+							await GAME_UTIL.use_active_ability(ability.details)
+							U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)
+							on_current_location_update(),
 						"onSelect": func(index:int) -> void:
 							await options[index].action.call(),
 					})				
@@ -939,7 +940,6 @@ func show_debug(skip_animation:bool = false) -> void:
 	list.push_back({
 		"title": "OPEN SHOP",
 		"icon": SVGS.TYPE.RESEARCH,
-		"cooldown_duration": 0,
 		"action": func() -> void:
 			await GAME_UTIL.open_store(),
 		"onSelect": func(index:int) -> void:
@@ -950,7 +950,6 @@ func show_debug(skip_animation:bool = false) -> void:
 	list.push_back({
 		"title": "get_new_scp",
 		"icon": SVGS.TYPE.RESEARCH,
-		"cooldown_duration": 0,
 		"action": func() -> void:
 			await GAME_UTIL.get_new_scp(),
 		"onSelect": func(index:int) -> void:

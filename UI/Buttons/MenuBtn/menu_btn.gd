@@ -11,6 +11,10 @@ extends BtnBase
 @onready var EnergyAmountLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel/EnergyAmountLabel
 @onready var EnergyIconBtn:Control = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel/EnergyIconBtn
 
+@onready var SciencePanel:HBoxContainer = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/SciencePanel
+@onready var ScienceAmountLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/SciencePanel/ScienceAmountLabel
+@onready var ScienceIconBtn:Control = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/SciencePanel/ScienceIconBtn
+
 @onready var CooldownPanel:PanelContainer = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel
 @onready var CooldownLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel/MarginContainer/HBoxContainer/CooldownLabel
 
@@ -31,6 +35,11 @@ extends BtnBase
 	set(val):
 		energy_cost = val
 		on_energy_cost_update()
+		
+@export var science_cost:int = -1 : 
+	set(val):
+		science_cost = val
+		on_science_cost_update()
 
 @export var btn_color:Color = Color(0, 0.965, 0.278) : 
 	set(val): 
@@ -72,6 +81,7 @@ func _ready() -> void:
 
 	on_title_update()
 	on_energy_cost_update()
+	on_science_cost_update()
 	on_is_disabled_updated()
 	on_is_selected_update()
 	on_cooldown_duration_update()
@@ -104,6 +114,7 @@ func update_color(new_color:Color = btn_color) -> void:
 	BtnLabel.label_settings = label_settings
 	
 	EnergyIconBtn.static_color = new_color	
+	ScienceIconBtn.static_color = new_color
 	
 		
 func on_focus(state:bool = is_focused) -> void:
@@ -125,8 +136,7 @@ func on_is_disabled_updated() -> void:
 func on_is_togglable_update() -> void:
 	if !is_node_ready() or is_empty:return
 	TogglePanel.show() if is_togglable else TogglePanel.hide()
-	EnergyPanel.show() if is_togglable else EnergyPanel.hide()
-	CooldownPanel.hide() if is_togglable else CooldownPanel.show()
+	
 
 func on_is_checked_update() -> void:
 	if !is_node_ready():return
@@ -134,14 +144,27 @@ func on_is_checked_update() -> void:
 
 func on_cooldown_duration_update() -> void:
 	if !is_node_ready():return
-	if cooldown_duration == -1:return
+	if cooldown_duration == -1:
+		CooldownPanel.hide()
+		return
 	CooldownLabel.show()
 	CooldownLabel.text = "RDY" if cooldown_duration == 0 else str(cooldown_duration)
-	InnerPanelMarginContainer.add_theme_constant_override('margin_right', 5 if cooldown_duration == -1 else 0)
 
 func on_energy_cost_update() -> void:
 	if !is_node_ready():return
+	if energy_cost == -1:
+		EnergyPanel.hide()
+		return
+	EnergyPanel.show()
 	EnergyAmountLabel.text = str(absi(energy_cost))
+	
+func on_science_cost_update() -> void:
+	if !is_node_ready():return
+	if science_cost == -1:
+		SciencePanel.hide()
+		return	
+	SciencePanel.show()
+	ScienceAmountLabel.text = str(absi(science_cost))
 	
 func on_is_empty_update() -> void:
 	if !is_node_ready():return
@@ -149,6 +172,7 @@ func on_is_empty_update() -> void:
 		TogglePanel.hide()
 		EnergyPanel.hide()
 		CooldownPanel.hide()
+		SciencePanel.hide()
 
 func on_title_update() -> void:
 	if !is_node_ready():return

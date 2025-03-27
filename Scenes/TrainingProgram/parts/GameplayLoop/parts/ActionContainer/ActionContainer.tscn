@@ -185,12 +185,16 @@ grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
 
+[node name="Backdrop" type="ColorRect" parent="Details/PanelContainer"]
+z_as_relative = false
+layout_mode = 2
+color = Color(0, 0, 0, 0.270588)
+
 [node name="MarginContainer" type="MarginContainer" parent="Details/PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-size_flags_vertical = 4
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 75
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
@@ -505,3 +509,4 @@ offset_top = 785.0
 offset_right = 258.0
 offset_bottom = 995.0
 grow_vertical = 1
+metadata/_edit_group_ = true

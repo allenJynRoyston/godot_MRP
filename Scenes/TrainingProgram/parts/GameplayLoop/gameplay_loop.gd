@@ -1381,7 +1381,7 @@ func on_current_phase_update() -> void:
 							for item in record.data.diff:
 								var resource_details:Dictionary = RESOURCE_UTIL.return_data(item.resource_ref)
 								ToastContainer.add("%s %s %s %s" % [record.data.name, "generated" if item.amount > 0 else "spent", item.amount, resource_details.name])				
-								await U.set_timeout(0.5)
+								await U.set_timeout(0.3)
 							
 					SUBSCRIBE.resources_data = resources_data		
 				
@@ -2116,7 +2116,6 @@ func set_room_config(force_setup:bool = false) -> void:
 
 		# add to ref count
 		ring_config_data.room_refs.push_back(item.ref)		
-		ring_config_data.energy.used += 1
 		
 		# if passives are enabled...
 		if "passive_abilities" in room_data:
@@ -2155,7 +2154,7 @@ func set_room_config(force_setup:bool = false) -> void:
 					is_activated = false
 					break
 		
-		room_config_data.is_activated = is_activated
+		room_config_data.is_activated = is_activated 
 		
 		# set room config data
 		room_config_data.room_data = {
