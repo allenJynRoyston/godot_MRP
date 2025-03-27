@@ -10,7 +10,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -87,7 +87,7 @@ theme_override_constants/separation = 5
 [node name="ResourceItemTech" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_8ca1n")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8ca1n")
-icon = 33
+icon = 15
 no_bg = true
 title = "OK"
 display_at_bottom = true
@@ -113,7 +113,7 @@ is_negative = true
 [node name="ResourceItemDClass" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_8ca1n")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wft7u")
-icon = 32
+icon = 33
 no_bg = true
 title = "-"
 display_at_bottom = true

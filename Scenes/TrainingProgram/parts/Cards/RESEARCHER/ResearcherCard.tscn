@@ -43,7 +43,6 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
-material = ExtResource("2_ughr2")
 layout_mode = 2
 texture = SubResource("ViewportTexture_ff5rk")
 

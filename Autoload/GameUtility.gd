@@ -482,20 +482,21 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
-	var dict:Dictionary = RESOURCE_UTIL.return_data(type)
-	
-	ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
-	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	
-	var confirm:bool = await ConfirmModal.user_response
-	if confirm:
-		resources_data[type].amount += amount
-		SUBSCRIBE.resources_data = resources_data
-		ToastContainer.add("Hired %s %s!" % [amount, dict.name])
-	
-	GameplayNode.restore_showing_state()
-	return confirm
+
+#func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
+	#var dict:Dictionary = RESOURCE_UTIL.return_data(type)
+	#
+	#ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
+	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
+	#
+	#var confirm:bool = await ConfirmModal.user_response
+	#if confirm:
+		#resources_data[type].amount += amount
+		#SUBSCRIBE.resources_data = resources_data
+		#ToastContainer.add("Hired %s %s!" % [amount, dict.name])
+	#
+	#GameplayNode.restore_showing_state()
+	#return confirm
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -604,30 +605,53 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 	GameplayNode.current_researcher_step = GameplayNode.RESEARCHERS_STEPS.ASSIGN
 	var response:Dictionary = await GameplayNode.on_researcher_component_complete
 	if response.action == ACTION.RESEARCHERS.BACK:
+		GameplayNode.restore_player_hud()
 		return false
 	
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(response.uids[0])
 
-	ConfirmModal.allow_controls = true
-	ConfirmModal.set_props("Assign researcher to a room.", "", researcher_details.img_src)
-	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	var confirm:bool = await ConfirmModal.user_response
-	
-	if confirm:
+	#ConfirmModal.allow_controls = true
+	#ConfirmModal.set_props("Assign researcher to a room.", "", researcher_details.img_src)
+	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
+	#var confirm:bool = await ConfirmModal.user_response
+	#
+	#if confirm:
 		# add new researchers
-		hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-			# clear out prior researchers
-			if U.dictionaries_equal(i[9].assigned_to_room, location_data):
-				i[9].assigned_to_room = {}
-			# add current users
-			if i[0] in response.uids:
-				i[9].assigned_to_room = location_data.duplicate()
-			return i
-		)
-		SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+		# clear out prior researchers
+		if U.dictionaries_equal(i[9].assigned_to_room, location_data):
+			i[9].assigned_to_room = {}
+		# add current users
+		if i[0] in response.uids:
+			i[9].assigned_to_room = location_data.duplicate()
+		return i
+	)
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 			
 	GameplayNode.restore_player_hud()
-	return confirm
+	return true
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func unassign_researcher(researcher_data:Dictionary) -> bool:
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+		if i[0] == researcher_data.uid:
+			i[9].assigned_to_room = {}
+		return i
+	)
+	return true
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func dismiss_researcher(researcher_data:Dictionary) -> bool:
+	# first, remove from any projects
+	hired_lead_researchers_arr = hired_lead_researchers_arr.filter(func(i):
+		return i[0] != researcher_data.uid	
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+	SUBSCRIBE.scp_data = scp_data
+	return true
 # --------------------------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

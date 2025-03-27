@@ -109,7 +109,7 @@ func on_is_selected_update() -> void:
 
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
-	CardTextureRect.material = BlackAndWhiteShader if is_deselected else CardShader
+	#CardTextureRect.material = BlackAndWhiteShader if is_deselected else CardShader
 
 func on_reveal_update() -> void:
 	if !is_node_ready():return

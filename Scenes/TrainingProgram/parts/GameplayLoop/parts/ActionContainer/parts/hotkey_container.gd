@@ -6,6 +6,7 @@ extends PanelContainer
 
 @onready var ShortcutToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutToggleBtn
 @onready var ClearBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ClearBtn
+@onready var ShowToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ShowToggleBtn
 #@onready var ShortcutLabelLeft:Label = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelLeft
 #@onready var ShortcutLabelRight:Label = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelRight
 
@@ -31,8 +32,10 @@ var room_config:Dictionary = {}
 var camera_settings:Dictionary = {}
 var current_location:Dictionary = {}
 var enable_controls:bool = false
-#var enable_bookmark:bool = false
-#var clear_bookmark:bool = false
+var show_hotkeys:bool = false : 
+	set(val):
+		show_hotkeys = val
+		on_showkeys_update()
 
 var endBookmark:Callable = func():pass
 var onSetLock:Callable = func(state:bool):pass
@@ -52,6 +55,8 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
 	GBL.subscribe_to_control_input(self)
+	GBL.register_node(REFS.HOTKEY_CONTAINER, self)
+	
 
 	
 func _exit_tree() -> void:
@@ -60,6 +65,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	GBL.unsubscribe_to_control_input(self)
+	GBL.unregister_node(REFS.HOTKEY_CONTAINER)
 
 # --------------------------------------------------------------------------------------------------	
 func _ready() -> void:
@@ -73,7 +79,11 @@ func _ready() -> void:
 			#ShortcutLabelLeft.text = ""
 			#ShortcutLabelRight.text = ""	
 				#
-
+	
+	ShowToggleBtn.onClick = func() -> void:
+		print('here?')
+		show_hotkeys = !show_hotkeys
+	
 	ShortcutToggleBtn.onClick = func() -> void:
 		onBookmarkToggle.call()
 	
@@ -81,6 +91,7 @@ func _ready() -> void:
 		for btn in ShortcutBtnGrid.get_children():
 			btn.is_disabled = true
 		current_control_mode = CONTROL_MODE.CLEAR
+		GBL.find_node(REFS.ACTION_CONTAINER).freeze_inputs = true
 		onSetLock.call(true)
 		enable_controls = true
 		selected_index = 0	
@@ -88,6 +99,7 @@ func _ready() -> void:
 
 	on_current_bookmark_type_update()
 	highlight_container()
+	on_showkeys_update()
 # --------------------------------------------------------------------------------------------------	
 			
 # --------------------------------------------------------------------------------------------------	
@@ -133,6 +145,17 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	if previous_designation != designation:
 		previous_designation = designation
 		U.debounce("build_shortcuts", build_shortcuts)
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func on_showkeys_update() -> void:
+	if !is_node_ready():return
+	ShowToggleBtn.title = "SHOW" if !show_hotkeys else "HIDE"
+	ShowToggleBtn.icon = SVGS.TYPE.CHECKBOX if show_hotkeys else SVGS.TYPE.EMPTY_CHECKBOX
+	
+	ClearBtn.show() if show_hotkeys else ClearBtn.hide()
+	ShortcutToggleBtn.show() if show_hotkeys else ShortcutToggleBtn.hide()
+	ShortcutBtnGrid.show() if show_hotkeys else ShortcutBtnGrid.hide()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -217,7 +240,7 @@ func end_clear() -> void:
 	highlight_container()
 	for btn in ShortcutBtnGrid.get_children():
 		btn.is_selected = false	
-
+	GBL.find_node(REFS.ACTION_CONTAINER).freeze_inputs = false
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
@@ -233,6 +256,9 @@ func on_lock_btns_update() -> void:
 	for node in [ShortcutBtnGrid]:
 		for child in node.get_children():
 			child.is_disabled = lock_btns	
+	
+	for btn in [ClearBtn, ShowToggleBtn]:
+		btn.is_disabled = lock_btns
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		

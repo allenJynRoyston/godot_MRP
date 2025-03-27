@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=27 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://cyv8vf7k1e1s4" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn" id="2_860v8"]
@@ -112,7 +112,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fx5xy"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -124,6 +124,30 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2nmih"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_txh3k"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3pfk"]
 bg_color = Color(1, 0.203922, 0, 1)
 border_width_left = 2
 border_width_top = 2
@@ -152,7 +176,7 @@ color = Color(0, 0, 0, 0.270588)
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Details"]
-custom_minimum_size = Vector2(0, 300)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -164,7 +188,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
 [node name="MarginContainer" type="MarginContainer" parent="Details/PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 0
@@ -173,7 +196,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 30
 
 [node name="Room" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
@@ -241,7 +264,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="TraitContainer" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -269,7 +291,6 @@ theme_override_constants/separation = 10
 [node name="TraitCard" parent="Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer/VBoxContainer/TraitList" instance=ExtResource("6_5fkrn")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bk83u")
-is_highlighted = false
 
 [node name="SynergyContainer" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]
 visible = false
@@ -297,7 +318,6 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 is_synergy = true
-is_highlighted = false
 
 [node name="Totals" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]
 visible = false
@@ -349,10 +369,10 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_bk83u")
 
 [node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -397,28 +417,46 @@ assigned_key = "ENTER"
 icon = 27
 hide_icon_panel = false
 
+[node name="AssignBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
+title = "ASSIGN RESEARCHER"
+assigned_key = "E"
+icon = 27
+hide_icon_panel = false
+
+[node name="DismissBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide" instance=ExtResource("4_n6idl")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
+title = "DISMISS RESEARCHER"
+assigned_key = "C"
+icon = 27
+hide_icon_panel = false
+
 [node name="CenterBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
 [node name="ActionBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList" instance=ExtResource("4_n6idl")]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
 title = "BASE"
 assigned_key = "E"
 hide_icon_panel = false
 
 [node name="AbilityBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList" instance=ExtResource("4_n6idl")]
-custom_minimum_size = Vector2(65, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
 title = "ABILITY"
 assigned_key = "R"
 icon = 10
 hide_icon_panel = false
 
 [node name="PassiveBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList" instance=ExtResource("4_n6idl")]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
 title = "PASSIVE"
 assigned_key = "T"
 icon = 46
@@ -436,7 +474,7 @@ layout_mode = 2
 [node name="ConfirmBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide" instance=ExtResource("4_n6idl")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_txh3k")
 title = "CONFIRM"
 assigned_key = "E"
 icon = 19
@@ -446,7 +484,7 @@ hide_icon_panel = false
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide" instance=ExtResource("4_n6idl")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
+theme_override_styles/panel = SubResource("StyleBoxFlat_l3pfk")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -457,6 +495,7 @@ hide_icon_panel = false
 layout_mode = 2
 
 [node name="ActiveMenu" parent="Control" instance=ExtResource("3_b0sqn")]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 0
 anchors_preset = 0
 anchor_top = 0.0

@@ -52,7 +52,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 90
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
@@ -60,7 +60,7 @@ theme_override_constants/margin_bottom = 5
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_constants/separation = 20
+theme_override_constants/separation = 10
 
 [node name="DayLabel" type="Label" parent="Control/MarginContainer/VBoxContainer"]
 layout_mode = 2

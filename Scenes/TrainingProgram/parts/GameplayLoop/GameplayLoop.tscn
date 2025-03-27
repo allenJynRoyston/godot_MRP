@@ -58,6 +58,9 @@ layout_mode = 2
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
 layout_mode = 2
 
+[node name="LineDrawContainer" parent="." instance=ExtResource("14_g12vl")]
+layout_mode = 2
+
 [node name="BuildContainer" parent="." instance=ExtResource("11_2mss3")]
 visible = false
 layout_mode = 2
@@ -80,7 +83,7 @@ visible = false
 layout_mode = 2
 
 [node name="SelectResearcherScreen" parent="." instance=ExtResource("9_e8e1f")]
-visible = false
+z_index = 2
 layout_mode = 2
 
 [node name="MetricsContainer" parent="." instance=ExtResource("2_28uuh")]
@@ -88,13 +91,10 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
-visible = false
+z_index = 2
 layout_mode = 2
 
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]
-layout_mode = 2
-
-[node name="LineDrawContainer" parent="." instance=ExtResource("14_g12vl")]
 layout_mode = 2
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
@@ -106,7 +106,7 @@ visible = false
 layout_mode = 2
 
 [node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
-visible = false
+z_index = 2
 layout_mode = 2
 
 [node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]

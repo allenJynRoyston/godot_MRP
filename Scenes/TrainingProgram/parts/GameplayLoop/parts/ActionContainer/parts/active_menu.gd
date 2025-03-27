@@ -56,6 +56,7 @@ var onPrev:Callable = func():pass
 var onNext:Callable = func():pass
 var onClose:Callable = func():pass
 var onBookmark:Callable = func(_shortcut_data:Dictionary, _btn_node:Control):pass
+var onDrawUpdate:Callable = func(_index:int, _item:Dictionary):pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -78,6 +79,7 @@ func open() -> void:
 	set_fade(true)
 
 func close() -> void:	
+	GBL.find_node(REFS.LINE_DRAW).clear()
 	freeze_inputs = true
 	await set_fade(false)
 	onClose.call()	
@@ -86,6 +88,7 @@ func close() -> void:
 	level = -1
 	options_list = []
 	clear_list()
+	
 	
 func set_fade(state:bool) -> void:
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else 0), 0.2)	
@@ -103,11 +106,15 @@ func update_checkbox_option(index:int, is_checked:bool) -> void:
 	
 func on_selected_index_update() -> void:
 	if !is_node_ready() or List.get_child_count() == 0:return
-	
+
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
+	
+	if !freeze_inputs:
+		add_draw_lines()
 		
+
 func on_options_list_update() -> void:
 	if !is_node_ready():return	
 	wait_for_release = true
@@ -147,10 +154,38 @@ func on_options_list_update() -> void:
 			selected_index = index
 		
 		List.add_child(btn_node)
+		
+		if index == selected_index and !freeze_inputs:
+			add_draw_lines()
 	
 	self.size.y = 1	
 
 
+func add_draw_lines() -> void:
+	if options_list.is_empty():return	
+	if "shortcut_data" in options_list[selected_index] and  "use_location" in options_list[selected_index].shortcut_data:
+		var get_node_pos:Callable = func() -> Vector2: 
+			return Vector2(300, 150)
+
+		# do a check for passives to see if they provide a resource
+		var draw_resource:bool = false
+		if options_list[selected_index].shortcut_data.type == 2:
+			var room_extract:Dictionary = GAME_UTIL.extract_room_details(options_list[selected_index].shortcut_data.use_location)	
+			var item:Dictionary = room_extract.room.passive_abilities.filter(func(x): return x.name == options_list[selected_index].title)[0]
+			draw_resource = "provides" in item
+
+		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
+			"label": options_list[selected_index].title,
+			"draw_to_room": true,
+			"draw_energy": options_list[selected_index].shortcut_data.type == 2,
+			"draw_resource": draw_resource,
+			"draw_active_menu": true
+		})
+		
+		onDrawUpdate.call(selected_index, {} if options_list.is_empty() else options_list[selected_index] )
+	else:
+		GBL.find_node(REFS.LINE_DRAW).clear()
+		
 func on_max_level_update() -> void:
 	if !is_node_ready():return	
 	U.debounce("update_lvl_nodes", update_lvl_nodes)
@@ -179,7 +214,6 @@ func update_lvl_nodes() -> void:
 func on_show_ap_update() -> void:
 	if !is_node_ready():return
 	LvlContainer.show() if show_ap else LvlContainer.hide()
-
 
 func on_header_update() -> void:
 	if !is_node_ready():return
@@ -223,7 +257,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 
 	match key:
-		"G":
+		"H":
 			if !options_list.is_empty() and "shortcut_data" in options_list[selected_index]:
 				onBookmark.call(options_list[selected_index].shortcut_data, List.get_child(selected_index))
 		"E":

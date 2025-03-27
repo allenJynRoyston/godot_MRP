@@ -1,8 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://p7chmumf3rm2"]
+[gd_scene load_steps=5 format=3 uid="uid://p7chmumf3rm2"]
 
 [ext_resource type="Script" uid="uid://dgyhy7b4dr00i" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/line_draw_container.gd" id="1_yt5sp"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_r2um6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yt5sp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r2um6"]
+bg_color = Color(0.0142752, 0.0142752, 0.0142752, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="LineDrawContainer" type="PanelContainer"]
 z_index = 1
@@ -17,3 +25,24 @@ script = ExtResource("1_yt5sp")
 
 [node name="LineDrawContainer" type="Control" parent="."]
 layout_mode = 2
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="NamePanel" type="PanelContainer" parent="Control"]
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 18.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_r2um6")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/NamePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 8
+
+[node name="NameLabel" type="Label" parent="Control/NamePanel/MarginContainer"]
+layout_mode = 2
+text = "NODE LABEL"
+label_settings = ExtResource("2_r2um6")

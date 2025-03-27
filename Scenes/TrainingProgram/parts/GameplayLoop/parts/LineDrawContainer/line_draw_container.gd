@@ -1,5 +1,8 @@
 extends PanelContainer
 
+@onready var NamePanel:PanelContainer = $Control/NamePanel
+@onready var NameLabel:Label = $Control/NamePanel/MarginContainer/NameLabel
+
 const line_color: Color = Color(0.2, 1, 0, 1) # Green
 const line_width: float = 2.0
 
@@ -33,6 +36,7 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	GBL.register_node(REFS.LINE_DRAW, self)
+	NamePanel.hide()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -58,9 +62,20 @@ func add(_get_start_vector:Callable, _draw_dict:Dictionary ) -> void:
 	draw_inc = 0
 	ani_count = 0
 	render_lines = false
+	
+	
+	if "label" in draw_dict:
+		NameLabel.text = draw_dict.label	
+		NamePanel.size = Vector2(0, 0)
+		NamePanel.show()
+	
 	await U.set_timeout(0.1)
 	render_lines = true
 	render = true
+	
+
+		
+	
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -68,6 +83,7 @@ func clear() -> void:
 	draw_list = []
 	render = false
 	render_lines = false
+	NamePanel.hide()
 	queue_redraw()	
 # --------------------------------------------------------------------------------------------------		
 
@@ -137,13 +153,15 @@ func generate_stepwise_segments(line_data: Array, segment_length: float = 5.0) -
 
 # --------------------------------------------------------------------------------------------------	
 const rect_size:Vector2 = Vector2(15, 15)
-const offset:Vector2 = Vector2(0, 75)
+const offset:Vector2 = Vector2(20, 75)
 const animation_arr:Array = [5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -3, -2, -1, 0, 1, 2, 3, 2, 1, 0, -1, -2, -1, 0, 1, 0]
 
 func _draw() -> void:
 	if !render:return
 	var start_v2:Vector2 = get_start_vector.call()
 	draw_rect(Rect2(start_v2 + offset - (rect_size/2), rect_size), line_color)  # Red color for the square
+	if "label" in draw_dict:
+		NamePanel.position = get_start_vector.call() + Vector2(15, 40)
 
 	if !render_lines:return
 	draw_list = []
@@ -171,9 +189,9 @@ func _draw() -> void:
 	
 
 	if "draw_hotkey" in draw_dict and draw_dict.draw_hotkey:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["HotkeyContainer"].global_position + Vector2(13, -50), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["HotkeyContainer"].global_position + Vector2(40, 15), 1) ))
 	if "draw_active_menu" in draw_dict and draw_dict.draw_active_menu:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ActiveMenu"].global_position + Vector2(23, -53), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ActiveMenu"].global_position + Vector2(150, -10), 1) ))
 	
 
 			

@@ -1,10 +1,49 @@
-[gd_scene load_steps=8 format=3 uid="uid://cyv8vf7k1e1s4"]
+[gd_scene load_steps=13 format=3 uid="uid://cyv8vf7k1e1s4"]
 
 [ext_resource type="Script" uid="uid://bfgk648834pnk" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/researcher_mini_card.gd" id="1_ni348"]
 [ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_lwih7"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_gsawx"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_h2ft1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ol8ek"]
+
+[sub_resource type="Animation" id="Animation_2d0eq"]
+resource_name = "SELECTED"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-15, 7), Vector2(-10, 7)]
+}
+
+[sub_resource type="Animation" id="Animation_816jx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-10, 7)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ah3g8"]
+_data = {
+&"RESET": SubResource("Animation_816jx"),
+&"SELECTED": SubResource("Animation_2d0eq")
+}
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vglbs"]
 bg_color = Color(1, 0.339692, 0.306841, 1)
@@ -18,17 +57,29 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2ft1"]
+border_width_left = 1
+border_width_right = 3
+border_color = Color(0, 0, 0, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aud1r"]
 bg_color = Color(0, 0, 0, 0.560784)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c5m35"]
 
 [node name="ResearcherMiniCard" type="PanelContainer"]
-offset_right = 160.0
-offset_bottom = 38.0
+offset_right = 250.0
+offset_bottom = 40.0
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ol8ek")
 script = ExtResource("1_ni348")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+active = false
+root_node = NodePath("../Control/IconBtn")
+libraries = {
+&"": SubResource("AnimationLibrary_ah3g8")
+}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -42,7 +93,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_vglbs")
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Portrait" type="TextureRect" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_h2ft1")
+
+[node name="Portrait" type="TextureRect" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 texture = ExtResource("2_lwih7")
@@ -113,3 +168,16 @@ layout_mode = 2
 text = "NO BONUS"
 label_settings = ExtResource("3_gsawx")
 horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="IconBtn" parent="Control" instance=ExtResource("4_h2ft1")]
+layout_mode = 0
+offset_left = -10.0
+offset_top = 7.0
+offset_right = 15.0
+offset_bottom = 32.0
+icon = 27
+flip_v = false
+is_hoverable = false

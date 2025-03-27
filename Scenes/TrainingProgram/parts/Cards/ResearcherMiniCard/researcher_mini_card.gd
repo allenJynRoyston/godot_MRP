@@ -1,12 +1,14 @@
 extends PanelContainer
 
-@onready var Portrait:TextureRect = $VBoxContainer/PanelContainer/HBoxContainer/Portrait
+@onready var RootPanel:PanelContainer = $"."
+@onready var AniPlayer:AnimationPlayer = $AnimationPlayer
+@onready var Portrait:TextureRect = $VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/Portrait
 @onready var TitleLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/TitleLabel
 @onready var SpecLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/SpecLabel
 @onready var ResourceGrid:GridContainer = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/ResourceGrid
 @onready var MetricsList:VBoxContainer = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/MetricList
 @onready var NoBonusLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/NoBonusLabel
-
+@onready var SelectedIcon:BtnBase = $Control/IconBtn
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var uid:String = "" : 
@@ -24,10 +26,16 @@ var room_extract:Dictionary = {} :
 		room_extract = val
 		on_room_extract_update()
 		
+var is_selected:bool = false : 
+	set(val):
+		is_selected = val
+		on_is_selected_update()
+		
 func _ready() -> void:
 	on_uid_update()
 	on_researcher_update()
 	on_room_extract_update()
+	on_is_selected_update()
 	
 func on_uid_update() -> void:
 	if !is_node_ready() or uid.is_empty():return
@@ -43,6 +51,19 @@ func on_researcher_update() -> void:
 	TitleLabel.text = researcher.name
 	Portrait.texture = CACHE.fetch_image("res://Media/images/redacted.png" if researcher.is_empty() else researcher.img_src)
 	SpecLabel.text = "" if researcher.is_empty() else RESEARCHER_UTIL.return_specialization_data(researcher.specializations[0]).name
+
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	print(is_selected)
+	SelectedIcon.show() if is_selected else SelectedIcon.hide()
+	
+	if is_selected:
+		AniPlayer.active = true
+		AniPlayer.play("SELECTED")
+	else:
+		AniPlayer.stop()
+		
+		
 
 func on_room_extract_update() -> void:
 	if !is_node_ready() or room_extract.is_empty() or researcher.is_empty():return

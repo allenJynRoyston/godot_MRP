@@ -107,9 +107,9 @@ var HQ:Dictionary = {
 					return {
 						RESOURCE.TYPE.SCIENCE: -20
 					},
-				"cooldown_duration":  5, 
+				"cooldown_duration":  1, 
 				"effect": func() -> bool:
-					return await GAME_UTIL.recruit_new_researcher(1),
+					return await GAME_UTIL.recruit_new_researcher(3),
 			},
 			{
 				"name": "PROMOTE RESEARCHER",
