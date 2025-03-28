@@ -5,5 +5,5 @@
 [resource]
 font = ExtResource("1_yqxeb")
 outline_size = 8
-outline_color = Color(0, 0, 0, 1)
+outline_color = Color(0.160784, 0.160784, 0.160784, 1)
 shadow_size = 0

@@ -9,6 +9,8 @@ extends GameContainer
 @onready var HotkeyContainer:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/HotkeyContainer
 @onready var PreviewTextureRect:TextureRect = $PanelContainer/PreviewTextureRect
 
+@onready var NameControl:Control = $NameControl
+
 @onready var NavBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel
 @onready var GotoBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBtn
 @onready var FloorPlanBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
@@ -56,6 +58,7 @@ enum MENU_TYPE { ACTIONS = 0, ABILITIES = 1, PASSIVES = 2 }
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
 const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
 const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
+const NametagsPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/Nametag.tscn")
 
 var previous_camera_type:int
 var current_menu_type:MENU_TYPE = MENU_TYPE.ABILITIES
@@ -149,10 +152,10 @@ func _ready() -> void:
 				active_menu_index = U.min_max(active_menu_index + 1, 0, 2)
 				show_actions(true)
 			MENU_TYPE.ABILITIES:
-				active_menu_index = U.min_max(active_menu_index + 1, 0, GAME_UTIL.get_ring_ability_level())
+				active_menu_index = U.min_max(active_menu_index + 1, 0, GAME_UTIL.get_ability_level())
 				show_abilities(true)
 			MENU_TYPE.PASSIVES:
-				active_menu_index = U.min_max(active_menu_index + 1, 0, GAME_UTIL.get_ring_ability_level())
+				active_menu_index = U.min_max(active_menu_index + 1, 0, GAME_UTIL.get_ability_level())
 				show_passives(true)
 		
 	ActiveMenu.onPrev = func() -> void:
@@ -161,10 +164,10 @@ func _ready() -> void:
 				active_menu_index = U.min_max(active_menu_index - 1, 0, 2)
 				show_actions(true)
 			MENU_TYPE.ABILITIES:
-				active_menu_index = U.min_max(active_menu_index - 1, 0, GAME_UTIL.get_ring_ability_level())
+				active_menu_index = U.min_max(active_menu_index - 1, 0, GAME_UTIL.get_ability_level())
 				show_abilities(true)
 			MENU_TYPE.PASSIVES:
-				active_menu_index = U.min_max(active_menu_index - 1, 0, GAME_UTIL.get_ring_ability_level())
+				active_menu_index = U.min_max(active_menu_index - 1, 0, GAME_UTIL.get_ability_level())
 				show_passives(true)
 	
 
@@ -375,7 +378,7 @@ func show_generator_upgrades(skip_animation:bool = false) -> void:
 			await options[index].action.call(),
 	})					
 	
-	update_active_menu("GENERATOR", Color.WHITE, options, GAME_UTIL.get_ring_ability_level(), Vector2(300, 300), skip_animation)	
+	update_active_menu("GENERATOR", Color.WHITE, options, GAME_UTIL.get_ability_level(), Vector2(300, 300), skip_animation)	
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -569,7 +572,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 	enable_room_focus(true)
 	
 	var use_global_position:Vector2 = Vector2(RoomMiniCard.global_position.x + RoomMiniCard.size.x + 200, RoomMiniCard.global_position.y + 0)
-	update_active_menu("ABILITY [ALL]" if !room_only else "ABILITIES [%s]" % [room_name], Color.WHITE, options, GAME_UTIL.get_ring_ability_level(), use_global_position, skip_animation)	
+	update_active_menu("ABILITY [ALL]" if !room_only else "ABILITIES [%s]" % [room_name], Color.WHITE, options, GAME_UTIL.get_ability_level(), use_global_position, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -678,7 +681,7 @@ func show_passives(skip_animation:bool = false) -> void:
 	enable_room_focus(true)
 	
 	var use_global_position:Vector2 = Vector2(RoomMiniCard.global_position.x + RoomMiniCard.size.x + 200, RoomMiniCard.global_position.y + 0)
-	update_active_menu("PASSIVE [ALL]" if !room_only else "PASSIVES [%s]" % [room_name], Color.WHITE, options, GAME_UTIL.get_ring_ability_level(), use_global_position, skip_animation)	
+	update_active_menu("PASSIVE [ALL]" if !room_only else "PASSIVES [%s]" % [room_name], Color.WHITE, options, GAME_UTIL.get_ability_level(), use_global_position, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -785,7 +788,7 @@ func enable_room_focus(state:bool) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func render_shorcut_container() -> void:
-	if !is_node_ready() or gameplay_conditionals.is_empty():return
+	if !is_node_ready() or gameplay_conditionals.is_empty():return	
 	#ShortcutBtnList.show()
 	#LeftSideShortcutContainer.show() if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIVE_ABILITY_SHORTCUTS] else LeftSideShortcutContainer.hide()
 	#RightSideShortcutContainer.show() if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_PASSIVE_ABILITY_SHORTCUTS] else RightSideShortcutContainer.hide()	
@@ -833,6 +836,16 @@ func buildout_btns() -> void:
 	await U.set_timeout(0.1)
 	refresh_buttons.emit()
 # --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func render_nametags() -> void:
+	for n in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+		var new_nametag:Control = NametagsPreload.instantiate()
+		new_nametag.index = n
+		NameControl.add_child(new_nametag)
+		
+# --------------------------------------------------------------------------------------------------		
+		
 
 # --------------------------------------------------------------------------------------------------		
 func lock_btns(state:bool) -> void:
@@ -891,6 +904,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.SELECT_ROOM:
 			AbilityBtn.title = "ABILITY"
 			PassiveBtn.title = "PASSIVE"
+			
+			render_nametags()
+			NameControl.show()
 
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, duration)
 
@@ -917,6 +933,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			update_details()
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show, duration)
 			
+			NameControl.hide()
 			#CenterLabel.text = "ROOM OPTIONS"
 
 			for panel in [AdminBtnPanel, NavBtnPanel, FacilityBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:

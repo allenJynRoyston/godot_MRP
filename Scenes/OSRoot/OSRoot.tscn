@@ -208,9 +208,7 @@ offset_bottom = 40.0
 texture = SubResource("ViewportTexture_a2e5w")
 
 [node name="MousePointer" type="TextureRect" parent="Control"]
-layout_mode = 0
-offset_right = 1440.0
-offset_bottom = 800.0
+layout_mode = 1
 texture = ExtResource("3_ni4fo")
 expand_mode = 1
 stretch_mode = 2
