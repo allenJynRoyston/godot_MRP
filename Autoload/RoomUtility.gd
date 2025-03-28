@@ -594,26 +594,26 @@ var CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"abilities": func() -> Array: 
-		return [
-			{
-				"name": "CONTAIN SCP",
-				"lvl_required": 0,
-				"science_cost": 1,
-				"cooldown_duration":  14, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.contain_scp(),
-			}
-		],	
+	#"abilities": func() -> Array: 
+		#return [
+			#{
+				#"name": "CONTAIN SCP",
+				#"lvl_required": 0,
+				#"science_cost": 1,
+				#"cooldown_duration":  14, 
+				#"effect": func() -> bool:
+					#return await GAME_UTIL.contain_scp(),
+			#}
+		#],	
 	# ------------------------------------------	
 	
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
 			{
-				"name": "STATION GUARDS",
+				"name": "MEMETIC SHIELDING",
 				"lvl_required": 0,
-				"energy_cost": 2,
+				"energy_cost": 3,
 				"effect": func() -> Dictionary:
 					return {
 						"metrics":{

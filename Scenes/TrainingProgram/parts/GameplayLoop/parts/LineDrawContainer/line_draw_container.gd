@@ -3,7 +3,6 @@ extends PanelContainer
 @onready var NamePanel:PanelContainer = $Control/NamePanel
 @onready var NameLabel:Label = $Control/NamePanel/MarginContainer/NameLabel
 
-const line_color: Color = Color(0.2, 1, 0, 1) # Green
 const line_width: float = 2.0
 
 var draw_list:Array = [] 
@@ -102,15 +101,15 @@ func generate_stepwise_path(start_point: Vector2, end_point: Vector2, steps: int
 
 		if horz_pref:
 			# Move horizontally
-			segment1 = { "start": last_point , "end": next_horiz, "animate": "y"}  
+			segment1 = { "start": last_point , "end": next_horiz, "animate": "y", "is_juncture": true}  
 			# Move vertically
-			segment2 = { "start": next_horiz , "end": Vector2(next_horiz.x, next_horiz.y + dy), "animate": "y" }  
+			segment2 = { "start": next_horiz , "end": Vector2(next_horiz.x, next_horiz.y + dy), "animate": "y", "is_juncture": true}  
 			last_point = segment2["end"]
 		else:
 			 # Move vertically
-			segment1 = { "start": last_point , "end": next_vert, "animate": "x"  } 
+			segment1 = { "start": last_point , "end": next_vert, "animate": "x", "is_juncture": true  } 
 			# Move horizontally
-			segment2 = { "start": next_vert , "end": Vector2(next_vert.x + dx, next_vert.y), "animate": "x"  }  
+			segment2 = { "start": next_vert , "end": Vector2(next_vert.x + dx, next_vert.y), "animate": "x", "is_juncture": true  }  
 			last_point = segment2["end"]
 
 		segments.append(segment1)
@@ -142,11 +141,11 @@ func generate_stepwise_segments(line_data: Array, segment_length: float = 5.0) -
 			var segment_end = start_point + direction * segment_length * (i + 1)
 			
 			# Add this segment to the list
-			segments.append({"start": segment_start, "end": segment_end, "animate": line.animate})
+			segments.append({"start": segment_start, "end": segment_end, "animate": line.animate, "is_juncture": false})
 		
 		# Add the final segment (if any remainder distance)
 		if steps * segment_length < distance:
-			segments.append({"start": start_point + direction * segment_length * steps, "end": end_point, "animate": line.animate})
+			segments.append({"start": start_point + direction * segment_length * steps, "end": end_point, "animate": line.animate, "is_juncture": true})
 	
 	return segments
 # --------------------------------------------------------------------------------------------------
@@ -154,12 +153,12 @@ func generate_stepwise_segments(line_data: Array, segment_length: float = 5.0) -
 # --------------------------------------------------------------------------------------------------	
 const rect_size:Vector2 = Vector2(15, 15)
 const offset:Vector2 = Vector2(20, 75)
-const animation_arr:Array = [5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -3, -2, -1, 0, 1, 2, 3, 2, 1, 0, -1, -2, -1, 0, 1, 0]
 
 func _draw() -> void:
 	if !render:return
+	var line_color: Color = Color(0, 1, 0, 1) # Green
 	var start_v2:Vector2 = get_start_vector.call()
-	draw_rect(Rect2(start_v2 + offset - (rect_size/2), rect_size), line_color)  # Red color for the square
+	
 	if "label" in draw_dict:
 		NamePanel.position = get_start_vector.call() + Vector2(30, 40)
 
@@ -183,32 +182,47 @@ func _draw() -> void:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ResearcherList"].global_position + Vector2(180, -32), 1, false) ))
 
 	if "draw_ability" in draw_dict and draw_dict.draw_ability:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["AbilityBtn"].global_position + Vector2(24, -50), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["AbilityBtn"].global_position + Vector2(30, -80), 1) ))
 	if "draw_passive" in draw_dict and draw_dict.draw_passive:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["PassiveBtn"].global_position + Vector2(24, -50), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["PassiveBtn"].global_position + Vector2(30, -80), 1) ))
 	
 
 	if "draw_hotkey" in draw_dict and draw_dict.draw_hotkey:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["HotkeyContainer"].global_position + Vector2(40, 15), 1) ))
 	if "draw_active_menu" in draw_dict and draw_dict.draw_active_menu:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ActiveMenu"].global_position + Vector2(150, -10), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ActiveMenu"].global_position, 1, true) ))
 	
-
+	#if "draw_room_0":
+		#var room_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(0) * self.size
+		#draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), room_pos, 1) ))
+	#if "draw_room_1":
+		#var room_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(1) * self.size
+		#draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), room_pos, 1) ))		
+	#if "draw_room_2":
+		#var room_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(2) * self.size
+		#draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), room_pos, 1) ))				
+	#if "draw_room_3":
+		#var room_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(3) * self.size
+		#draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), room_pos, 1) ))						
 			
-	for points in draw_list:		
+	for points in draw_list:	
 		# Iterate backwards using the range function
-		for index in range(points.size() - 1, -1, -1):  # Start from the last index, go down to 0
+		points.reverse()
+		for index in points.size():
 			if index < draw_count:
 				var point:Dictionary = points[index]
 				ani_count += 0.01
-				var ani_val:int = 0 #animation_arr[animation_arr.size() - 1] if roundi(ani_count) > animation_arr.size() - 1 else animation_arr[roundi(ani_count)] 
 				
+				#if point.is_juncture:
+					#draw_rect(Rect2(point.start - (rect_size/2), rect_size), line_color.lightened(index * 0.009))  # Red color for the square
+
 				match point.animate:
 					"x":
-						draw_dashed_line(point.start - Vector2(ani_val, 0), point.end - Vector2(ani_val, 0), line_color.lightened(index * 0.009), line_width)
+						draw_dashed_line(point.start, point.end, line_color.lightened(index * 0.009), line_width)
 					"y":
-						draw_dashed_line(point.start - Vector2(0, ani_val), point.end - Vector2(0, ani_val), line_color.lightened(index * 0.009), line_width)						
-	
+						draw_dashed_line(point.start, point.end, line_color.lightened(index * 0.009), line_width)						
+				
+	draw_rect(Rect2(start_v2 + offset - (rect_size/2), rect_size), line_color)
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -231,7 +245,7 @@ func on_process_update(delta: float) -> void:
 	update_time_elapsed += delta 
 
 	# redraws the lines every 1/5 frames
-	if GBL.has_animation_in_queue() or draw_count < MAX_DRAW:
-		queue_redraw() 
-		update_time_elapsed = 0.0		
+	#if GBL.has_animation_in_queue() or draw_count < MAX_DRAW:
+	queue_redraw() 
+	update_time_elapsed = 0.0		
 # --------------------------------------------------------------------------------------------------	

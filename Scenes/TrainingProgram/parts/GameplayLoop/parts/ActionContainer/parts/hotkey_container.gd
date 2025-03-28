@@ -2,9 +2,9 @@
 extends PanelContainer
 
 @onready var RootPanel:Control = $"."
-@onready var ShortcutBtnGrid:GridContainer = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/ShortcutBtnGrid
+@onready var ShortcutBtnGrid:GridContainer = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid
 
-@onready var ShortcutToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutToggleBtn
+#@onready var ShortcutToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutToggleBtn
 @onready var ClearBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ClearBtn
 @onready var ShowToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ShowToggleBtn
 #@onready var ShortcutLabelLeft:Label = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/ShortcutLabelLeft
@@ -13,7 +13,7 @@ extends PanelContainer
 enum BOOKMARK_TYPE {GLOBAL, RING}
 enum CONTROL_MODE { BOOKMARK, CLEAR }
 
-var current_bookmark_type:BOOKMARK_TYPE = BOOKMARK_TYPE.GLOBAL : 
+var current_bookmark_type:BOOKMARK_TYPE = BOOKMARK_TYPE.RING : 
 	set(val):
 		current_bookmark_type = val
 		on_current_bookmark_type_update()
@@ -83,8 +83,8 @@ func _ready() -> void:
 	ShowToggleBtn.onClick = func() -> void:
 		show_hotkeys = !show_hotkeys
 	
-	ShortcutToggleBtn.onClick = func() -> void:
-		onBookmarkToggle.call()
+	#ShortcutToggleBtn.onClick = func() -> void:
+		#onBookmarkToggle.call()
 	
 	ClearBtn.onClick = func() -> void:
 		for btn in ShortcutBtnGrid.get_children():
@@ -105,14 +105,14 @@ func _ready() -> void:
 func on_current_bookmark_type_update() -> void:
 	if !is_node_ready():return
 	
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:	
-			ShortcutToggleBtn.icon = SVGS.TYPE.GLOBAL
-			ShortcutToggleBtn.title = "GLOBAL"			
-			
-		BOOKMARK_TYPE.RING:				
-			ShortcutToggleBtn.icon = SVGS.TYPE.RING
-			ShortcutToggleBtn.title = "RING"			
+	#match current_bookmark_type:
+		#BOOKMARK_TYPE.GLOBAL:	
+			#ShortcutToggleBtn.icon = SVGS.TYPE.GLOBAL
+			#ShortcutToggleBtn.title = "GLOBAL"			
+			#
+		#BOOKMARK_TYPE.RING:				
+			#ShortcutToggleBtn.icon = SVGS.TYPE.RING
+			#ShortcutToggleBtn.title = "RING"			
 
 	build_shortcuts()
 # --------------------------------------------------------------------------------------------------					
@@ -151,9 +151,8 @@ func on_showkeys_update() -> void:
 	if !is_node_ready():return
 	ShowToggleBtn.title = "SHOW" if !show_hotkeys else "HIDE"
 	ShowToggleBtn.icon = SVGS.TYPE.CHECKBOX if show_hotkeys else SVGS.TYPE.EMPTY_CHECKBOX
-	
 	ClearBtn.show() if show_hotkeys else ClearBtn.hide()
-	ShortcutToggleBtn.show() if show_hotkeys else ShortcutToggleBtn.hide()
+	#ShortcutToggleBtn.show() if show_hotkeys else ShortcutToggleBtn.hide()
 	ShortcutBtnGrid.show() if show_hotkeys else ShortcutBtnGrid.hide()
 # --------------------------------------------------------------------------------------------------
 
@@ -162,6 +161,16 @@ func on_selected_index_update() -> void:
 	for index in ShortcutBtnGrid.get_child_count():
 		var btn:Control = ShortcutBtnGrid.get_child(index)
 		btn.is_selected = index == selected_index
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------
+func enable_assign_mode(state:bool) -> void:
+	ClearBtn.hide() 
+	ShowToggleBtn.hide() if state else ShowToggleBtn.show()
+	
+	ShortcutBtnGrid.show() if state else ShortcutBtnGrid.hide()
+	#ShortcutToggleBtn.show() if state else ShortcutToggleBtn.hide()
+	show() if state else hide()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -182,11 +191,11 @@ func end_bookmark(confirm:bool) -> void:
 		btn.is_selected = false
 	highlight_container()
 	
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:
-			dict_ref = base_states.global_hotkeys
-		BOOKMARK_TYPE.RING:
-			dict_ref = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
+	#match current_bookmark_type:
+		#BOOKMARK_TYPE.GLOBAL:
+			#dict_ref = base_states.global_hotkeys
+		#BOOKMARK_TYPE.RING:
+	dict_ref = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
 			
 	if selected_index not in dict_ref:
 		dict_ref[selected_index] = {}
@@ -196,11 +205,13 @@ func end_bookmark(confirm:bool) -> void:
 	
 	dict_ref[selected_index] = shotcut_data
 	
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:
-			base_states.global_hotkeys = dict_ref
-		BOOKMARK_TYPE.RING:
-			base_states.ring[str(current_location.floor, current_location.ring)].hotkeys = dict_ref
+	#match current_bookmark_type:
+		#BOOKMARK_TYPE.GLOBAL:
+			#base_states.global_hotkeys = dict_ref
+		#BOOKMARK_TYPE.RING:
+			#base_states.ring[str(current_location.floor, current_location.ring)].hotkeys = dict_ref
+			
+	base_states.global_hotkeys = dict_ref
 			
 	SUBSCRIBE.base_states = base_states	
 # --------------------------------------------------------------------------------------------------		

@@ -181,8 +181,8 @@ func update_control_pos() -> void:
 	}
 	
 	control_pos[TraitPanel] = {
-		"show": control_pos_default[TraitPanel].x,
-		"hide": control_pos_default[TraitPanel].x - TraitPanel.size.x
+		"show": control_pos_default[TraitPanel].y,
+		"hide": control_pos_default[TraitPanel].y - TraitPanel.size.y
 	}	
 	
 	control_pos[PromoteControlPanel] = {
@@ -206,7 +206,7 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	PromotionCard.reveal = false
 	
 	U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].hide, 0 if skip_animation else 0.3) 
-	U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide, 0 if skip_animation else 0.3) 
+	U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide, 0 if skip_animation else 0.3) 
 	U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide, 0 if skip_animation else 0.3 )
 	
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
@@ -270,7 +270,7 @@ func end(response:Dictionary) -> void:
 	promote_mode = false
 	
 	U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].hide) 
-	U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide) 
+	U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide) 
 	U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide) 
 	U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].hide) 
 	await U.tween_node_property(BtnPanelContainer, "position:y", control_pos[BtnPanelContainer].hide) 	
@@ -541,7 +541,7 @@ func on_selected_researchers_update() -> void:
 	# hide/show Trait Panel
 	if current_mode == MODE.SELECT_RESEARCHERS:
 		U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].show if total_traits_list.size() > 0 else control_pos[SelectedPanel].hide)
-		U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].show if total_traits_list.size() > 0 else control_pos[TraitPanel].hide)
+		U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].show if total_traits_list.size() > 0 else control_pos[TraitPanel].hide)
 
 
 	# add deselected (black/white filter) when at capacity
@@ -600,7 +600,7 @@ func on_current_mode_update() -> void:
 			PromoteBtn.hide()
 			SelectBtn.show()
 			
-			U.tween_node_property(TraitPanel, "position:x", control_pos[TraitPanel].hide) 
+			U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide) 
 			U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide) 
 			await U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].hide) 
 			U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].show) 

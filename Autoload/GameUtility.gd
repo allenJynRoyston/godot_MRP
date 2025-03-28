@@ -558,49 +558,49 @@ func contain_scp() -> bool:
 		GameplayNode.restore_player_hud()
 		return false
 	
-	# first, make sure that only rooms that CAN CONTAIN and rooms that DO NOT HAVE AN SCP in them are added to blacklist
-	var can_contain_refs:Array = ROOM_UTIL.return_refs_that_can_contain()
-	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room
-	var unavailable_rooms:Array = []
-	for room_index in room_config_data.size():
-		var designation:String = str(current_location.floor, current_location.ring, room_index)
-		if room_config_data[room_index].room_data.is_empty() or !room_config_data[room_index].scp_data.is_empty():
-			unavailable_rooms.push_back(designation)
-		else:
-			if room_config_data[room_index].room_data.ref not in can_contain_refs:
-				unavailable_rooms.push_back(designation)
-	
-	SUBSCRIBE.unavailable_rooms = unavailable_rooms
-	
+	## first, make sure that only rooms that CAN CONTAIN and rooms that DO NOT HAVE AN SCP in them are added to blacklist
+	#var can_contain_refs:Array = ROOM_UTIL.return_refs_that_can_contain()
+	#var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room
+	#var unavailable_rooms:Array = []
+	#for room_index in room_config_data.size():
+		#var designation:String = str(current_location.floor, current_location.ring, room_index)
+		#if room_config_data[room_index].room_data.is_empty() or !room_config_data[room_index].scp_data.is_empty():
+			#unavailable_rooms.push_back(designation)
+		#else:
+			#if room_config_data[room_index].room_data.ref not in can_contain_refs:
+				#unavailable_rooms.push_back(designation)
+	#
+	#SUBSCRIBE.unavailable_rooms = unavailable_rooms
+	#
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_data.available_list[0].ref)
 	var scp_ref:int = scp_details.ref
-	
-	# then open the modal
-	ConfirmModal.allow_controls = true
-	ConfirmModal.set_props("Select a containment cell.", "It must be empty.", scp_details.img_src)
-	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	var confirm:bool = await ConfirmModal.user_response
-	SUBSCRIBE.unavailable_rooms = []
-	
-	if confirm:
-		# remove from available list...
-		scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != scp_ref)
-		# then add to contained list...
-		scp_data.contained_list.push_back({ 
-			"ref": scp_ref,
-			"location": current_location.duplicate(true),
-			"days_in_containment": 0,
-			"testing_completed": 0,
-			"event_type_count": {
-				#["type/event_id"]: count[int]
-			},
-		})
+	#
+	## then open the modal
+	#ConfirmModal.allow_controls = true
+	#ConfirmModal.set_props("Select a containment cell.", "It must be empty.", scp_details.img_src)
+	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
+	#var confirm:bool = await ConfirmModal.user_response
+	#SUBSCRIBE.unavailable_rooms = []
+	#
+	#if confirm:
+	# remove from available list...
+	scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != scp_ref)
+	# then add to contained list...
+	scp_data.contained_list.push_back({ 
+		"ref": scp_ref,
+		"location": current_location.duplicate(true),
+		"days_in_containment": 0,
+		"testing_completed": 0,
+		"event_type_count": {
+			#["type/event_id"]: count[int]
+		},
+	})
 
-		SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
-		SUBSCRIBE.scp_data = scp_data
+	SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
+	SUBSCRIBE.scp_data = scp_data
 		
 	GameplayNode.restore_player_hud()
-	return confirm
+	return true
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	

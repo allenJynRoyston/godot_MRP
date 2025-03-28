@@ -401,7 +401,7 @@ func get_user_object(val:Array) -> Dictionary:
 	var level:int = val[8]
 	var props:Dictionary = val[9]
 	
-	var img_src:String = "res://Media/images/example_doctor.jpg"
+	var img_src:String = "res://Media/images/researcher_female_02.jpg"
 	
 	var lname:String = get_lname(name_val)
 	

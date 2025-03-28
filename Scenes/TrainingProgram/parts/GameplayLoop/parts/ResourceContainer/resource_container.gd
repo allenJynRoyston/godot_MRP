@@ -1,26 +1,24 @@
 extends GameContainer
 
-@onready var ResourcePanel:MarginContainer = $Control2/ResourcePanel
-@onready var ScpPanel:PanelContainer = $Control2/ScpPanel
-@onready var Energy:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Energy
-@onready var Resources:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Resources
-@onready var Funds:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Funds
-@onready var Research:PanelContainer = $Control2/ResourcePanel/HBoxContainer/Research
 @onready var DetailPanel:Control = $Control/DetailPanel
+
+@onready var ResourcePanel:MarginContainer = $Control2/ResourcePanel
+#@onready var ScpPanel:PanelContainer = $Control2/ScpPanel
+@onready var Energy:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer/Energy
+@onready var Resources:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer3/Resources
+@onready var Funds:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer/Funds
+@onready var Research:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer3/Researcher
+
 
 var detail_panel_is_focused:bool = false
 var detail_panel_is_busy:bool = false
 var scp_available:bool = false
-var show_details:bool = false : 
-	set(val):
-		show_details = val
-		on_show_details_update()
+
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	on_show_details_update()
-	
+
 	GBL.direct_ref["EnergyPanel"] = Energy
 	GBL.direct_ref["ResourcesPanel"] = Resources
 	GBL.direct_ref["FundsPanel"] = Funds
@@ -63,49 +61,3 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, 0 if skip_animation else 0.7)
 # -----------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------
-func on_show_details_update() -> void:
-	pass
-# --------------------------------------------------------------------------------------------------
-#
-## --------------------------------------------------------------------------------------------------
-#func open_detail_panel(node:Control) -> void:
-	#pass
-	##DetailPanel.position.y = node.global_position.y + 100
-## --------------------------------------------------------------------------------------------------	
-#
-## --------------------------------------------------------------------------------------------------	
-#func on_scp_data_update(new_val:Dictionary) -> void:
-	#super.on_scp_data_update(new_val)
-	#if !is_node_ready():return
-	#scp_available = scp_data.available_list.size() > 0	
-	#if scp_available:
-		#ScpPanel.ref = scp_data.available_list[0].ref
-	#on_is_showing_update()
-## --------------------------------------------------------------------------------------------------	
-#
-## --------------------------------------------------------------------------------------------------
-#func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
-	#resources_data = new_val
-	#if !is_node_ready() or resources_data.is_empty():return
-	#DetailPanel.resources_data = resources_data
-#
-	#for key in resources_data:
-		#var data:Dictionary = resources_data[key]
-		#
-		#match key:
-			#RESOURCE.TYPE.MONEY:
-				#ResourceItemMoney.title = "%s" % [data.amount]
-			#RESOURCE.TYPE.ENERGY:
-				#ResourceItemEnergy.title = "%s" % [data.amount]
-			#RESOURCE.TYPE.SCIENCE:
-				#ResourceItemScience.title = "%s" % [data.amount]
-#
-			#RESOURCE.TYPE.STAFF:
-				#ResourceItemStaff.title = "%s/%s" % [data.amount, data.capacity]
-			#RESOURCE.TYPE.SECURITY:
-				#ResourceItemSecurity.title = "%s/%s" % [data.amount, data.capacity]
-			#RESOURCE.TYPE.DCLASS:
-				#ResourceItemDClass.title = "%s/%s" % [data.amount, data.capacity]
-## --------------------------------------------------------------------------------------------------

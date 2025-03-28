@@ -42,7 +42,6 @@ var options_list:Array = [] :
 var freeze_inputs:bool = true : 
 	set(val):
 		freeze_inputs = val
-		on_freeze_inputs_update()
 		
 var max_level:int = -1 : 
 	set(val):
@@ -79,12 +78,11 @@ func open() -> void:
 	set_fade(true)
 
 func close() -> void:	
-	GBL.find_node(REFS.LINE_DRAW).clear()
 	freeze_inputs = true
 	await set_fade(false)
 	onClose.call()	
 	show_ap = false
-	selected_index = 0	
+	selected_index = -1
 	level = -1
 	options_list = []
 	clear_list()
@@ -96,7 +94,6 @@ func set_fade(state:bool) -> void:
 
 # ------------------------------------------------------------------------------
 func clear_list() -> void:
-	selected_index = 0
 	for child in List.get_children():
 		child.queue_free()
 		
@@ -106,7 +103,7 @@ func update_checkbox_option(index:int, is_checked:bool) -> void:
 	
 func on_selected_index_update() -> void:
 	if !is_node_ready() or List.get_child_count() == 0:return
-
+	await U.tick()
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
@@ -119,7 +116,7 @@ func on_options_list_update() -> void:
 	if !is_node_ready():return	
 	wait_for_release = true
 	clear_list()
-
+	
 	# ---- IF EMPTY
 	if options_list.is_empty():
 		var btn_node:Control = MenuBtnPreload.instantiate()
@@ -129,9 +126,6 @@ func on_options_list_update() -> void:
 		
 		List.add_child(btn_node)		
 		return
-	
-	if selected_index > options_list.size():
-		selected_index = options_list.size() - 1
 		
 	for index in options_list.size():
 		var item:Dictionary = options_list[index]		
@@ -139,7 +133,6 @@ func on_options_list_update() -> void:
 		
 		btn_node.title = item.title
 		btn_node.btn_color = use_color
-		btn_node.is_selected = index == selected_index
 
 		btn_node.is_togglable = item.is_togglable if "is_togglable" in item else false
 		btn_node.is_checked = item.is_checked if "is_checked" in item else false
@@ -158,33 +151,13 @@ func on_options_list_update() -> void:
 		
 		List.add_child(btn_node)
 		
-		if index == selected_index and !freeze_inputs:
-			add_draw_lines()
-	
 	self.size.y = 1	
+	selected_index = 0
 
 
 func add_draw_lines() -> void:
 	if options_list.is_empty():return	
 	if "shortcut_data" in options_list[selected_index] and  "use_location" in options_list[selected_index].shortcut_data:
-		var get_node_pos:Callable = func() -> Vector2: 
-			return Vector2(300, 150)
-
-		# do a check for passives to see if they provide a resource
-		var draw_resource:bool = false
-		if options_list[selected_index].shortcut_data.type == 2:
-			var room_extract:Dictionary = GAME_UTIL.extract_room_details(options_list[selected_index].shortcut_data.use_location)	
-			var item:Dictionary = room_extract.room.passive_abilities.filter(func(x): return x.name == options_list[selected_index].title)[0]
-			draw_resource = "provides" in item
-
-		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
-			"label": options_list[selected_index].title,
-			"draw_to_room": true,
-			"draw_energy": options_list[selected_index].shortcut_data.type == 2,
-			"draw_resource": draw_resource,
-			"draw_active_menu": true
-		})
-		
 		onDrawUpdate.call(selected_index, {} if options_list.is_empty() else options_list[selected_index] )
 	else:
 		GBL.find_node(REFS.LINE_DRAW).clear()
@@ -232,10 +205,6 @@ func on_use_color_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_freeze_inputs_update() -> void:
-	pass
-	#U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if freeze_inputs else 1)  )
-
 func on_action(btn_index:int = selected_index) -> void:
 	if freeze_inputs or options_list.is_empty():return
 	if btn_index != -1:
@@ -254,9 +223,14 @@ func on_action(btn_index:int = selected_index) -> void:
 				btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
 # ------------------------------------------------------------------------------		
 
+# ------------------------------------------------------------------------------		
+func get_node_btn(index:int) -> Control:
+	return List.get_child(selected_index)
+# ------------------------------------------------------------------------------			
+
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:	
-	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or selected_index == -1:return
+	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs:return
 	var key:String = input_data.key
 
 	match key:
