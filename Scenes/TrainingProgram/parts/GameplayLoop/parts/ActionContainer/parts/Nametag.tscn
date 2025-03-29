@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ckywdp1o7nc2i"]
+[gd_scene load_steps=9 format=3 uid="uid://ckywdp1o7nc2i"]
 
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="1_eqwxl"]
 [ext_resource type="Script" uid="uid://bhoimhgr7awhf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.gd" id="1_or75n"]
@@ -7,7 +7,7 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_rodcg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqwxl"]
-bg_color = Color(0, 0, 0, 0.796078)
+bg_color = Color(0, 0, 0, 0.756863)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
@@ -19,27 +19,66 @@ font_size = 6
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[node name="HBoxContainer" type="HBoxContainer"]
-offset_left = 10.0
-offset_top = -6.0
-offset_right = 76.0
-offset_bottom = 17.0
-theme_override_constants/separation = -4
+[sub_resource type="LabelSettings" id="LabelSettings_rcgg0"]
+font = ExtResource("3_rodcg")
+font_size = 8
+outline_size = 8
+outline_color = Color(0.160784, 0.160784, 0.160784, 1)
+shadow_size = 0
+
+[node name="Nametag" type="HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+offset_right = 103.0
+offset_bottom = 23.0
+theme_override_constants/separation = 0
 script = ExtResource("1_or75n")
+fade = true
 
 [node name="PanelContainer2" type="PanelContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_eqwxl")
 
-[node name="Control3" type="Control" parent="PanelContainer2"]
+[node name="LvlIndicator" type="Control" parent="PanelContainer2"]
 layout_mode = 2
 
-[node name="IconBtn" parent="PanelContainer2/Control3" instance=ExtResource("2_rcgg0")]
+[node name="Control" type="Control" parent="PanelContainer2/LvlIndicator"]
+anchors_preset = 0
+offset_left = 1.0
+offset_right = 41.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="PanelContainer2/LvlIndicator/Control"]
+custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
-offset_left = 15.0
+offset_left = 1.0
+offset_top = -4.0
+offset_right = 19.0
+offset_bottom = 8.0
+size_flags_horizontal = 3
+text = "Lvl"
+label_settings = SubResource("LabelSettings_h4bwi")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LvlLabel" type="Label" parent="PanelContainer2/LvlIndicator/Control"]
+layout_mode = 2
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 16.0
+offset_bottom = 24.0
+text = "3"
+label_settings = ExtResource("2_6ohcx")
+horizontal_alignment = 1
+
+[node name="ActivatedIndicator" type="Control" parent="PanelContainer2"]
+layout_mode = 2
+
+[node name="IconBtn" parent="PanelContainer2/ActivatedIndicator" instance=ExtResource("2_rcgg0")]
+layout_mode = 2
+offset_left = 17.0
 offset_top = 1.0
-offset_right = 35.0
+offset_right = 37.0
 offset_bottom = 21.0
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
@@ -50,40 +89,46 @@ static_color = Color(0, 0.964706, 0.278431, 1)
 flip_v = false
 is_hoverable = false
 
-[node name="Control2" type="Control" parent="PanelContainer2"]
+[node name="EnergyIndicator" type="Control" parent="PanelContainer2"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelContainer2/Control2"]
-custom_minimum_size = Vector2(0, 12)
+[node name="Control" type="Control" parent="PanelContainer2/EnergyIndicator"]
 layout_mode = 2
-offset_left = 3.0
-offset_top = -3.0
-offset_right = 21.0
-offset_bottom = 9.0
-size_flags_horizontal = 3
-text = "Lvl"
-label_settings = SubResource("LabelSettings_h4bwi")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Control" type="Control" parent="PanelContainer2"]
-layout_mode = 2
-
-[node name="LvlLabel" type="Label" parent="PanelContainer2/Control"]
-layout_mode = 2
-offset_left = 6.0
-offset_top = 8.0
-offset_right = 18.0
+anchors_preset = 0
+offset_left = 105.0
+offset_top = 9.0
+offset_right = 120.0
 offset_bottom = 24.0
-text = "2"
-label_settings = ExtResource("2_6ohcx")
+
+[node name="IconBtn" parent="PanelContainer2/EnergyIndicator/Control" instance=ExtResource("2_rcgg0")]
+layout_mode = 0
+offset_left = 3.0
+offset_top = -11.0
+offset_right = 28.0
+offset_bottom = 14.0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+icon = 32
+flip_v = false
+is_hoverable = false
+
+[node name="EnergyLabel" type="Label" parent="PanelContainer2/EnergyIndicator/Control"]
+layout_mode = 2
+offset_left = 16.0
+offset_top = -2.0
+offset_right = 28.0
+offset_bottom = 14.0
+text = "0"
+label_settings = SubResource("LabelSettings_rcgg0")
 horizontal_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="PanelContainer2"]
 layout_mode = 2
-theme_override_constants/margin_left = 35
+theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 8
+theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 6
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer2/MarginContainer2"]

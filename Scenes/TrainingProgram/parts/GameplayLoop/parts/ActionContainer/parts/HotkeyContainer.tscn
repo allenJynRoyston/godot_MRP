@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://2wr0honpqb2p"]
+[gd_scene load_steps=12 format=3 uid="uid://2wr0honpqb2p"]
 
 [ext_resource type="Script" uid="uid://3moq5i4irex2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/hotkey_container.gd" id="1_2obsv"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_f1t52"]
@@ -7,20 +7,8 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2obsv"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ypnn6"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2obsv"]
-bg_color = Color(0.169, 0.169, 0.169, 1)
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -68,30 +56,6 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_caq01"]
-bg_color = Color(0.169, 0.169, 0.169, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blwye"]
-bg_color = Color(0.169, 0.169, 0.169, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eljyn"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_width_left = 2
 border_width_top = 2
@@ -103,7 +67,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4fo12"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blwye"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_width_left = 2
 border_width_top = 2
@@ -163,13 +127,14 @@ theme_override_constants/separation = 5
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
+size_flags_vertical = 8
 theme_override_constants/separation = 10
 
 [node name="ShortcutToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2" instance=ExtResource("3_ppj06")]
 visible = false
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ypnn6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2obsv")
 title = "GLOBAL"
 assigned_key = "G"
 icon = 39
@@ -185,38 +150,20 @@ columns = 3
 [node name="AbilityBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid" instance=ExtResource("4_2bq3x")]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2obsv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f1t52")
 assigned_key = "1"
 
 [node name="AbilityBtn2" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid" instance=ExtResource("4_2bq3x")]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f1t52")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ppj06")
 assigned_key = "2"
 
 [node name="AbilityBtn3" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid" instance=ExtResource("4_2bq3x")]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ppj06")
-assigned_key = "3"
-
-[node name="AbilityBtn4" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid" instance=ExtResource("4_2bq3x")]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2bq3x")
-assigned_key = "4"
-
-[node name="AbilityBtn5" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid" instance=ExtResource("4_2bq3x")]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_caq01")
-assigned_key = "5"
-
-[node name="AbilityBtn6" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid" instance=ExtResource("4_2bq3x")]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_blwye")
-assigned_key = "6"
+assigned_key = "3"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
@@ -227,18 +174,19 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="ClearBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2" instance=ExtResource("3_ppj06")]
+visible = false
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_eljyn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_caq01")
 title = "REMOVE"
-assigned_key = "C"
+assigned_key = "R"
 icon = 1
 hide_icon_panel = false
 
 [node name="ShowToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2" instance=ExtResource("3_ppj06")]
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4fo12")
+theme_override_styles/panel = SubResource("StyleBoxFlat_blwye")
 title = "SHOW"
 assigned_key = "H"
 icon = 51

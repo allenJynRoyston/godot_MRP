@@ -74,8 +74,8 @@ layout_mode = 2
 
 [node name="FloorInfo" parent="." instance=ExtResource("7_ceqoy")]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
 expand = false
 
 [node name="SCPSelectScreen" parent="." instance=ExtResource("13_acjes")]
@@ -84,6 +84,7 @@ z_index = 2
 layout_mode = 2
 
 [node name="SelectResearcherScreen" parent="." instance=ExtResource("9_e8e1f")]
+visible = false
 z_index = 2
 layout_mode = 2
 
@@ -93,10 +94,12 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
+visible = false
 z_index = 2
 layout_mode = 2
 
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]
+visible = false
 layout_mode = 2
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]
@@ -108,6 +111,7 @@ visible = false
 layout_mode = 2
 
 [node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
+visible = false
 z_index = 2
 layout_mode = 2
 

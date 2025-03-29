@@ -96,31 +96,32 @@ func on_context_value_update() -> void:
 # -----------------------------------
 func update_stylebox() -> void:
 	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel')
-	var new_color:Color = Color(0.27, 0.366, 0.409) # BLUE
-	
-	if value != 0:
-		new_color = Color(1, 0.204, 0) if value < 0 else Color(0, 0.965, 0.278)
-	
-	if value < 0:	
-		new_color = new_color.darkened( 0.5 - abs(value * 0.1))
-	
-	if value > 0:
-		new_color = new_color.darkened( 0.5 - abs(value * 0.1))
-		
-	current_bg_color = new_color
-	
-	new_stylebox.corner_radius_bottom_left = 5
-	new_stylebox.corner_radius_bottom_right = 5
-	new_stylebox.corner_radius_top_left = 5
-	new_stylebox.corner_radius_top_right = 5	
-	new_stylebox.border_width_bottom = 2
-	new_stylebox.border_width_left = 2
-	new_stylebox.border_width_right = 2
-	new_stylebox.border_width_top = 2
-	new_stylebox.border_color = Color.WHITE if is_active else Color.BLACK
-	new_stylebox.bg_color = new_color
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	pass
+	#var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel')
+	#var new_color:Color = Color(0.27, 0.366, 0.409) # BLUE
+	#
+	#if value != 0:
+		#new_color = Color(1, 0.204, 0) if value < 0 else Color(0, 0.965, 0.278)
+	#
+	#if value < 0:	
+		#new_color = new_color.darkened( 0.5 - abs(value * 0.1))
+	#
+	#if value > 0:
+		#new_color = new_color.darkened( 0.5 - abs(value * 0.1))
+		#
+	#current_bg_color = new_color
+	#
+	#new_stylebox.corner_radius_bottom_left = 5
+	#new_stylebox.corner_radius_bottom_right = 5
+	#new_stylebox.corner_radius_top_left = 5
+	#new_stylebox.corner_radius_top_right = 5	
+	#new_stylebox.border_width_bottom = 2
+	#new_stylebox.border_width_left = 2
+	#new_stylebox.border_width_right = 2
+	#new_stylebox.border_width_top = 2
+	#new_stylebox.border_color = Color.WHITE if is_active else Color.BLACK
+	#new_stylebox.bg_color = new_color
+	#RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 # -----------------------------------
 
 
@@ -130,19 +131,19 @@ var time_elapsed: float = 0.0  # Time tracker
 func on_process_update(delta: float) -> void:
 	if !is_node_ready(): return
 
-	if is_active and value != 0:		
-		var new_stylebox: StyleBoxFlat = RootPanel.get_theme_stylebox('panel')
-		var bg_color:Color = current_bg_color
-
-		# Increment time for smooth animation
-		time_elapsed += delta  
-
-		# Compute sine wave value smoothly
-		var sine_value = sin(2.0 * PI * FREQUENCY * time_elapsed) * 0.5 + 0.5  # Map to 0-1 range
-
-		# Apply the sine wave to darkening (no need for binary_value)
-		bg_color = bg_color.darkened(sine_value * 0.5)  # Reduce max darkening effect
-
-		# Update stylebox color
-		new_stylebox.bg_color = bg_color
-		RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	#if is_active and value != 0:		
+		#var new_stylebox: StyleBoxFlat = RootPanel.get_theme_stylebox('panel')
+		#var bg_color:Color = current_bg_color
+#
+		## Increment time for smooth animation
+		#time_elapsed += delta  
+#
+		## Compute sine wave value smoothly
+		#var sine_value = sin(2.0 * PI * FREQUENCY * time_elapsed) * 0.5 + 0.5  # Map to 0-1 range
+#
+		## Apply the sine wave to darkening (no need for binary_value)
+		#bg_color = bg_color.darkened(sine_value * 0.5)  # Reduce max darkening effect
+#
+		## Update stylebox color
+		#new_stylebox.bg_color = bg_color
+		#RootPanel.add_theme_stylebox_override("panel", new_stylebox)

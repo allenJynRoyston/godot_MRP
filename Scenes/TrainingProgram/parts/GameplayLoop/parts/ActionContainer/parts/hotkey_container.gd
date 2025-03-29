@@ -37,8 +37,10 @@ var show_hotkeys:bool = false :
 		show_hotkeys = val
 		on_showkeys_update()
 
-var endBookmark:Callable = func():pass
-var onSetLock:Callable = func(state:bool):pass
+var onClearStart:Callable = func():pass
+var onClearEnd:Callable = func():pass
+
+var onBookmarkEnd:Callable = func():pass
 var onBookmarkToggle:Callable
 var action_func_lookup:Callable 
 var ability_funcs:Callable
@@ -87,14 +89,16 @@ func _ready() -> void:
 		#onBookmarkToggle.call()
 	
 	ClearBtn.onClick = func() -> void:
+		ShowToggleBtn.is_disabled = true
 		for btn in ShortcutBtnGrid.get_children():
 			btn.is_disabled = true
 		current_control_mode = CONTROL_MODE.CLEAR
-		GBL.find_node(REFS.ACTION_CONTAINER).freeze_inputs = true
-		onSetLock.call(true)
+		#GBL.find_node(REFS.ACTION_CONTAINER).freeze_inputs = true
+		#onSetLock.call(true)
 		enable_controls = true
 		selected_index = 0	
-		highlight_container()		
+		highlight_container()
+		onClearStart.call()
 
 	on_current_bookmark_type_update()
 	highlight_container()
@@ -167,8 +171,7 @@ func on_selected_index_update() -> void:
 func enable_assign_mode(state:bool) -> void:
 	ClearBtn.hide() 
 	ShowToggleBtn.hide() if state else ShowToggleBtn.show()
-	
-	ShortcutBtnGrid.show() if state else ShortcutBtnGrid.hide()
+	ShortcutBtnGrid.show() if state else ShortcutBtnGrid.show() if show_hotkeys else ShortcutBtnGrid.hide()
 	#ShortcutToggleBtn.show() if state else ShortcutToggleBtn.hide()
 	show() if state else hide()
 # --------------------------------------------------------------------------------------------------	
@@ -184,19 +187,14 @@ func start_bookmark(_shotcut_data:Dictionary) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func end_bookmark(confirm:bool) -> void:
-	var dict_ref:Dictionary
+	onBookmarkEnd.call()
+	
+	var dict_ref:Dictionary = base_states.global_hotkeys
 	enable_controls = false
-	endBookmark.call()
 	for btn in ShortcutBtnGrid.get_children():
 		btn.is_selected = false
 	highlight_container()
-	
-	#match current_bookmark_type:
-		#BOOKMARK_TYPE.GLOBAL:
-			#dict_ref = base_states.global_hotkeys
-		#BOOKMARK_TYPE.RING:
-	dict_ref = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
-			
+
 	if selected_index not in dict_ref:
 		dict_ref[selected_index] = {}
 		
@@ -205,12 +203,6 @@ func end_bookmark(confirm:bool) -> void:
 	
 	dict_ref[selected_index] = shotcut_data
 	
-	#match current_bookmark_type:
-		#BOOKMARK_TYPE.GLOBAL:
-			#base_states.global_hotkeys = dict_ref
-		#BOOKMARK_TYPE.RING:
-			#base_states.ring[str(current_location.floor, current_location.ring)].hotkeys = dict_ref
-			
 	base_states.global_hotkeys = dict_ref
 			
 	SUBSCRIBE.base_states = base_states	
@@ -218,23 +210,17 @@ func end_bookmark(confirm:bool) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func clear_btn() -> void:
-	var dict_ref:Dictionary
+	var dict_ref:Dictionary = base_states.global_hotkeys
 
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:
-			dict_ref = base_states.global_hotkeys
-		BOOKMARK_TYPE.RING:
-			dict_ref = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
-			
 	if selected_index not in dict_ref:
 		dict_ref[selected_index] = {}
 	dict_ref[selected_index] = {}
 	
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:
-			base_states.global_hotkeys = dict_ref
-		BOOKMARK_TYPE.RING:
-			base_states.ring[str(current_location.floor, current_location.ring)].hotkeys = dict_ref
+	#match current_bookmark_type:
+		#BOOKMARK_TYPE.GLOBAL:
+			#base_states.global_hotkeys = dict_ref
+		#BOOKMARK_TYPE.RING:
+			#base_states.ring[str(current_location.floor, current_location.ring)].hotkeys = dict_ref
 	
 	var btn:Control = ShortcutBtnGrid.get_child(selected_index)
 	btn.reset()
@@ -244,13 +230,13 @@ func clear_btn() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func end_clear() -> void:
-	onSetLock.call(false)
+	ShowToggleBtn.is_disabled = false
 	enable_controls = false
 	selected_index = 0	
 	highlight_container()
 	for btn in ShortcutBtnGrid.get_children():
-		btn.is_selected = false	
-	GBL.find_node(REFS.ACTION_CONTAINER).freeze_inputs = false
+		btn.is_selected = false		
+	onClearEnd.call()
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------		
@@ -276,12 +262,7 @@ func build_shortcuts() -> void:
 	if current_location.is_empty():return
 	var designation:String = str(current_location.floor, current_location.ring)
 #
-	var use_dict:Dictionary = {} 
-	match current_bookmark_type:
-		BOOKMARK_TYPE.GLOBAL:
-			use_dict = base_states.global_hotkeys
-		BOOKMARK_TYPE.RING:
-			use_dict = base_states.ring[str(current_location.floor, current_location.ring)].hotkeys
+	var use_dict:Dictionary = base_states.global_hotkeys
 	
 	for index in ShortcutBtnGrid.get_child_count():		
 		var btn:Control = ShortcutBtnGrid.get_child(index)
@@ -300,7 +281,7 @@ func build_shortcuts() -> void:
 						btn.title = action_data.title
 						btn.hint_description = "ACTION DESCRIPTION"
 					1:
-						var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.ability_level)
+						var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.index)
 						var funcs:Dictionary = ability_funcs.call(ability, shortcut_data.use_location)
 						btn.get_icon_func = funcs.get_icon_func	
 						btn.get_not_ready_func = funcs.get_not_ready_func
@@ -308,8 +289,8 @@ func build_shortcuts() -> void:
 						btn.title = ability.name
 						btn.hint_description = "ABILITY DESCRIPTION"
 					2:
-						var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.room_ref, shortcut_data.ability_level)
-						var funcs:Dictionary = passive_funcs.call(shortcut_data.room_ref, shortcut_data.ability_level, shortcut_data.use_location)
+						var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.room_ref, shortcut_data.index)
+						var funcs:Dictionary = passive_funcs.call(shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
 						btn.get_icon_func = funcs.get_icon_func	
 						btn.get_not_ready_func = funcs.get_not_ready_func
 						btn.get_invalid_func = funcs.get_invalid_func
@@ -367,8 +348,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					end_clear()
 		# ----------------------------
 		"D":
-			selected_index = U.min_max(selected_index + 1, 0, 5, true)
+			selected_index = U.min_max(selected_index + 1, 0, 2, true)
 		# ----------------------------
 		"A":
-			selected_index = U.min_max(selected_index - 1, 0, 5, true)
+			selected_index = U.min_max(selected_index - 1, 0, 2, true)
 # --------------------------------------------------------------------------------------------------	

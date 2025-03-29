@@ -1,5 +1,6 @@
 extends PanelContainer
 
+@onready var Nametag:Control = $Control/Nametag
 @onready var NamePanel:PanelContainer = $Control/NamePanel
 @onready var NameLabel:Label = $Control/NamePanel/MarginContainer/NameLabel
 
@@ -9,9 +10,11 @@ var draw_list:Array = []
 var draw_count:int = 0
 var draw_inc:int = 1
 var ani_count:float = 0
+var nametag_lock:bool = false
 var render:bool = false
 var render_lines:bool = false
 var get_start_vector:Callable
+var previous_room_val:int
 
 var draw_dict:Dictionary = {
 	"draw_ability": false, 
@@ -24,18 +27,23 @@ var draw_dict:Dictionary = {
 	"draw_to_scp": false
 }
 
+var current_location:Dictionary = {}
+
 # --------------------------------------------------------------------------------------------------	
 func _init() -> void:
+	SUBSCRIBE.subscribe_to_current_location(self)
 	GBL.subscribe_to_process(self)
 	GBL.subscribe_to_fullscreen(self)
 
 func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_current_location(self)
 	GBL.unsubscribe_to_process(self)
 	GBL.unsubscribe_to_fullscreen(self)
 
 func _ready() -> void:
 	GBL.register_node(REFS.LINE_DRAW, self)
 	NamePanel.hide()
+	Nametag.hide()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -53,6 +61,15 @@ func on_fullscreen_update(_state:bool) -> void:
 		show()
 # --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
+func on_current_location_update(new_val:Dictionary) -> void:
+	current_location = new_val
+	if current_location.is_empty():return
+	if previous_room_val != current_location.room:
+		previous_room_val = current_location.room
+		nametag_lock = false
+# --------------------------------------------------------------------------------------------------			
+
 # --------------------------------------------------------------------------------------------------
 func add(_get_start_vector:Callable, _draw_dict:Dictionary ) -> void:
 	get_start_vector = _get_start_vector
@@ -61,28 +78,31 @@ func add(_get_start_vector:Callable, _draw_dict:Dictionary ) -> void:
 	draw_inc = 0
 	ani_count = 0
 	render_lines = false
-	
-	
+
 	if "label" in draw_dict:
 		NameLabel.text = draw_dict.label	
 		NamePanel.size = Vector2(0, 0)
+		nametag_lock = false
 		NamePanel.show()
 	
+	if "use_nametag" in draw_dict and draw_dict.use_nametag:
+		Nametag.show()
+	else:
+		Nametag.hide()
+		
 	await U.set_timeout(0.1)
 	render_lines = true
 	render = true
-	
-
-		
-	
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func clear() -> void:
+	print('clear?')
 	draw_list = []
 	render = false
 	render_lines = false
 	NamePanel.hide()
+	Nametag.hide()
 	queue_redraw()	
 # --------------------------------------------------------------------------------------------------		
 
@@ -164,7 +184,14 @@ func _draw() -> void:
 
 	if !render_lines:return
 	draw_list = []
+	if "use_nametag" in draw_dict and draw_dict.use_nametag:
+		if !nametag_lock:
+			nametag_lock = true
+			Nametag.fade = false
+			Nametag.index = previous_room_val			
+		Nametag.position = get_start_vector.call() + Vector2(30, 40)
 
+	
 	if "draw_resource" in draw_dict and draw_dict.draw_resource:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ResourcesPanel"].global_position + Vector2(70, 15), 1) ))
 	if "draw_energy" in draw_dict and  draw_dict.draw_energy:
@@ -190,7 +217,7 @@ func _draw() -> void:
 	if "draw_hotkey" in draw_dict and draw_dict.draw_hotkey:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["HotkeyContainer"].global_position + Vector2(40, 15), 1) ))
 	if "draw_active_menu" in draw_dict and draw_dict.draw_active_menu:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ActiveMenu"].global_position, 1, true) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ActiveMenu"].global_position + Vector2(20, 0), 1, true) ))
 	
 	#if "draw_room_0":
 		#var room_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(0) * self.size

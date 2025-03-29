@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://p7chmumf3rm2"]
+[gd_scene load_steps=6 format=3 uid="uid://p7chmumf3rm2"]
 
 [ext_resource type="Script" uid="uid://dgyhy7b4dr00i" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/line_draw_container.gd" id="1_yt5sp"]
+[ext_resource type="PackedScene" uid="uid://ckywdp1o7nc2i" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/Nametag.tscn" id="2_cpxc6"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_r2um6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yt5sp"]
@@ -28,6 +29,17 @@ layout_mode = 2
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
+
+[node name="Nametag" parent="Control" instance=ExtResource("2_cpxc6")]
+visible = false
+modulate = Color(1, 1, 1, 1)
+layout_mode = 2
+offset_left = 1.0
+offset_top = 32.0
+offset_right = 137.0
+offset_bottom = 56.0
+fade = false
+ignore_current_location = true
 
 [node name="NamePanel" type="PanelContainer" parent="Control"]
 layout_mode = 0

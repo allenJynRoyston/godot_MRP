@@ -34,6 +34,7 @@ func on_ref_update() -> void:
 	if ref == -1:
 		hide()
 		return
+	show()
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_locked:bool = false

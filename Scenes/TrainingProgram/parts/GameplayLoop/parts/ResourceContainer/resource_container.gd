@@ -4,10 +4,10 @@ extends GameContainer
 
 @onready var ResourcePanel:MarginContainer = $Control2/ResourcePanel
 #@onready var ScpPanel:PanelContainer = $Control2/ScpPanel
-@onready var Energy:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer/Energy
-@onready var Resources:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer3/Resources
+@onready var Energy:PanelContainer = $Control2/ResourcePanel/HBoxContainer2/Energy
+@onready var Resources:PanelContainer = $Control2/ResourcePanel/HBoxContainer2/Resources
 @onready var Funds:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer/Funds
-@onready var Research:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer3/Researcher
+@onready var Research:PanelContainer = $Control2/ResourcePanel/HBoxContainer/HBoxContainer/Research
 
 
 var detail_panel_is_focused:bool = false

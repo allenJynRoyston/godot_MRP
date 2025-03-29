@@ -1,8 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://g7smhpnta8gj"]
+[gd_scene load_steps=6 format=3 uid="uid://g7smhpnta8gj"]
 
 [ext_resource type="Script" uid="uid://w4li2qv2gnou" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/location_panel.gd" id="1_2cn8n"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_ymivw"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_qf653"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_20pqv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ymivw"]
 
@@ -17,12 +17,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_qf2cv"]
-font = ExtResource("3_qf653")
-font_color = Color(0, 0, 0, 1)
-outline_size = 8
-shadow_size = 0
 
 [node name="LocationPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
@@ -47,7 +41,7 @@ theme_override_constants/margin_right = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer2"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer2/VBoxContainer"]
 layout_mode = 2
@@ -75,7 +69,7 @@ alignment = 1
 [node name="FloorLabel" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer2/VBoxContainer/HBoxContainer2/HBoxContainer2"]
 layout_mode = 2
 text = "1"
-label_settings = SubResource("LabelSettings_qf2cv")
+label_settings = ExtResource("3_20pqv")
 horizontal_alignment = 1
 
 [node name="PanelContainer3" type="PanelContainer" parent="HBoxContainer"]
@@ -90,7 +84,7 @@ theme_override_constants/margin_right = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer3/MarginContainer2"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer3/MarginContainer2/VBoxContainer"]
 layout_mode = 2
@@ -118,5 +112,5 @@ alignment = 1
 [node name="RingLabel" type="Label" parent="HBoxContainer/PanelContainer3/MarginContainer2/VBoxContainer/HBoxContainer2/HBoxContainer2"]
 layout_mode = 2
 text = "A"
-label_settings = SubResource("LabelSettings_qf2cv")
+label_settings = ExtResource("3_20pqv")
 horizontal_alignment = 1

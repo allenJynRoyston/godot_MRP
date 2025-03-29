@@ -7,7 +7,7 @@
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_r01ax"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqb8x"]
-bg_color = Color(0.27, 0.366, 0.409, 1)
+bg_color = Color(0, 0, 0, 0.572549)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -72,6 +72,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_krmuu")
 layout_mode = 2
 
 [node name="IconBtn" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer" instance=ExtResource("2_rtf5u")]
+visible = false
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -107,6 +108,7 @@ vertical_alignment = 1
 uppercase = true
 
 [node name="IconBtn2" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer" instance=ExtResource("2_rtf5u")]
+visible = false
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -137,7 +139,7 @@ alignment = 1
 [node name="StatusLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "NORMAL"
+text = "NO BONUS"
 label_settings = ExtResource("3_aujp3")
 horizontal_alignment = 1
 vertical_alignment = 1

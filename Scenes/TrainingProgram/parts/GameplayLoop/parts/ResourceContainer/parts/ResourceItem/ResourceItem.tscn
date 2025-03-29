@@ -32,12 +32,12 @@ layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 4
+theme_override_constants/margin_bottom = 2
 
 [node name="ResourceItem" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 5
+theme_override_constants/separation = 6
 alignment = 1
 
 [node name="HeaderLabel" type="Label" parent="MarginContainer/ResourceItem"]
@@ -71,7 +71,6 @@ label_settings = SubResource("LabelSettings_rcc13")
 vertical_alignment = 1
 
 [node name="BtmItemLabel" type="Label" parent="MarginContainer/ResourceItem"]
-visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_n01h6")
 horizontal_alignment = 1

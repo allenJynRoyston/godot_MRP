@@ -1,8 +1,8 @@
 extends GameContainer
 
 #@onready var MainPanel:MarginContainer = $mARGINcONTAIN
-@onready var StatusLabel:Label = $MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/MarginContainer/VBoxContainer/StatusLabel
-@onready var PreviewTextureRect:TextureRect = $MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/MarginContainer/VBoxContainer/PreviewTextureRect
+@onready var StatusLabel:Label = $Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/MarginContainer/VBoxContainer/StatusLabel
+@onready var PreviewTextureRect:TextureRect = $Control/MarginContainer/HBoxContainer/ExpandListContainer/PanelContainer/MarginContainer/VBoxContainer/PreviewTextureRect
 #@onready var ExpandListContainer:VBoxContainer = $Control/MarginContainer/HBoxContainer/ExpandListContainer
 #@onready var ExpandSubListContainer:VBoxContainer = $Control/MarginContainer/HBoxContainer/ExpandListContainer/ExpandSubListContainer
 #

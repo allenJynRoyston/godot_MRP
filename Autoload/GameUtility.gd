@@ -600,6 +600,7 @@ func contain_scp() -> bool:
 	SUBSCRIBE.scp_data = scp_data
 		
 	GameplayNode.restore_player_hud()
+	await U.tick()
 	return true
 # --------------------------------------------------------------------------------------------------	
 

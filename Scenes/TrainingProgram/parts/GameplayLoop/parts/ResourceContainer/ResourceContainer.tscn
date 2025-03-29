@@ -72,6 +72,12 @@ alignment = 1
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
+[node name="Energy" parent="Control2/ResourcePanel/HBoxContainer2" instance=ExtResource("5_7q6wh")]
+layout_mode = 2
+
+[node name="Resources" parent="Control2/ResourcePanel/HBoxContainer2" instance=ExtResource("4_5xs2u")]
+layout_mode = 2
+
 [node name="HBoxContainer" type="HBoxContainer" parent="Control2/ResourcePanel"]
 layout_mode = 2
 size_flags_vertical = 0
@@ -82,22 +88,16 @@ alignment = 2
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="Researcher" parent="Control2/ResourcePanel/HBoxContainer/HBoxContainer3" instance=ExtResource("4_xre08")]
-layout_mode = 2
-
-[node name="Resources" parent="Control2/ResourcePanel/HBoxContainer/HBoxContainer3" instance=ExtResource("4_5xs2u")]
-layout_mode = 2
-
 [node name="HBoxContainer" type="HBoxContainer" parent="Control2/ResourcePanel/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
+[node name="Researcher" parent="Control2/ResourcePanel/HBoxContainer/HBoxContainer" instance=ExtResource("4_xre08")]
+layout_mode = 2
+
 [node name="Scp" parent="Control2/ResourcePanel/HBoxContainer/HBoxContainer" instance=ExtResource("3_6lc06")]
 visible = false
 custom_minimum_size = Vector2(56, 56)
-layout_mode = 2
-
-[node name="Energy" parent="Control2/ResourcePanel/HBoxContainer/HBoxContainer" instance=ExtResource("5_7q6wh")]
 layout_mode = 2
 
 [node name="Research" parent="Control2/ResourcePanel/HBoxContainer/HBoxContainer" instance=ExtResource("6_7q6wh")]
