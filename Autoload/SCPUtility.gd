@@ -7,26 +7,11 @@ var SCP_001:Dictionary = {
 	"nickname": "THE DOOR",
 	"img_src": "res://Media/scps/the_door.png",
 	"quote": "Quote goes here.",
-	"passive_effect": {
-		"description": "SUPPLIES ALL RESOURCES"
-	},
-	"item_class": func() -> String:
-		return "SAFE",		
-	
-	# -----------------------------------
-	#"offered_on_day": func() -> int:
-		#return 1,
-	#"containment_time": func() -> int:
-		#return 3,
-	#"containment_requirements": [
-		#ROOM.TYPE.CONTAINMENT_CELL
-	#],
-	"researcher_preferences": {
-		#RESEARCHER.SPECIALIZATION.ENGINEERING: 3,
-	},	
 	# -----------------------------------
 	
 	# -----------------------------------	
+	"item_class": func() -> String:
+		return "SAFE",			
 	"containment_procedures": func(self_ref:Dictionary) -> Array:
 		return [
 			"%s is to be contained in a locked containment cell." % [self_ref.name],
@@ -40,19 +25,45 @@ var SCP_001:Dictionary = {
 	
 	# -----------------------------------
 	"effects": {
-		"floor": func() -> Dictionary:
-			return {
-				
-			},
-		"ring": func() -> Dictionary: 
-			return {
-				"provides": [
-					RESOURCE.TYPE.SECURITY,
-					RESOURCE.TYPE.STAFF,
-					RESOURCE.TYPE.TECHNICIANS,
-					RESOURCE.TYPE.DCLASS
-				]
-			},
+		"metrics":{
+			RESOURCE.BASE_METRICS.MORALE: 4,
+			RESOURCE.BASE_METRICS.SAFETY: 3,
+			RESOURCE.BASE_METRICS.READINESS: 2
+		},
+		"contained": {
+			"description": "Supplies all resources.", 
+			"effect": func() -> void:
+				pass,
+		},
+		"uncontained": {
+			"description": "Removes all resources.",
+			"effect": func() -> void:
+				pass,			
+		}
+		#"containment_requirements": {
+			#"metrics":{
+				#RESOURCE.BASE_METRICS.MORALE: 1,
+				#RESOURCE.BASE_METRICS.SAFETY: 1,
+				#RESOURCE.BASE_METRICS.READINESS: 1
+			#}
+		#},
+		#"description": {
+			#"contained": "SUPPLIES ALL RESOURCES",
+			#"uncontained": "SUPPLIES DO NOT WORK"
+		#},
+		#"floor": func() -> Dictionary:
+			#return {
+				#
+			#},
+		#"ring": func() -> Dictionary: 
+			#return {
+				#"provides": [
+					#RESOURCE.TYPE.SECURITY,
+					#RESOURCE.TYPE.STAFF,
+					#RESOURCE.TYPE.TECHNICIANS,
+					#RESOURCE.TYPE.DCLASS
+				#]
+			#},
 	},
 	# -----------------------------------
 	
@@ -440,26 +451,38 @@ var SCP_002:Dictionary = {
 	"nickname": "LSD PAINT",
 	"img_src": "res://Media/scps/lsd_paint.png",
 	"quote": "Quote goes here.",
-	"passive_effect": {
-		"description": "Passive effect description for XX2."
-	},
-	"item_class": func() -> String:
-		return "KETER",		
-		
-	# -----------------------------------
-	"offered_on_day": func() -> int:
-		return 1,
-	"containment_time": func() -> int:
-		return 3,
-	"containment_requirements": [
-		ROOM.TYPE.CONTAINMENT_CELL
-	],
-	"researcher_preferences": {
-		#RESEARCHER.SPECIALIZATION.ENGINEERING: 3,
-	},		
 	# -----------------------------------
 	
+	# -----------------------------------
+	"effects": {
+		"containment_requirements": {
+			"metrics":{
+				RESOURCE.BASE_METRICS.MORALE: 1,
+				RESOURCE.BASE_METRICS.SAFETY: 1,
+				RESOURCE.BASE_METRICS.READINESS: 1
+			}
+		},
+		"description": {
+			"contained": "SUPPLIES ALL RESOURCES",
+			"uncontained": "SUPPLIES DO NOT WORK"
+		},
+		"floor": func() -> Dictionary:
+			return {
+				
+			},
+		"ring": func() -> Dictionary: 
+			return {
+				"provides": [
+
+				]
+			},
+	},
 	# -----------------------------------	
+	
+	# -----------------------------------	
+	"item_class": func() -> String:
+		return "KETER",		
+			
 	"containment_procedures": func(self_ref:Dictionary) -> Array:
 		return [
 			"%s is to be contained in a locked containment cell." % [self_ref.name],
@@ -601,7 +624,7 @@ var SCP_002:Dictionary = {
 
 var reference_data:Dictionary = {
 	SCP.TYPE.SCP_001: SCP_001,
-	SCP.TYPE.SCP_002: SCP_002
+	#SCP.TYPE.SCP_002: SCP_002
 }
 
 # ------------------------------------------------------------------------------

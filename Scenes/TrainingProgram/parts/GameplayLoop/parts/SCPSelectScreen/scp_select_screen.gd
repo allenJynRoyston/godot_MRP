@@ -121,13 +121,17 @@ func clear_list() -> void:
 
 # -----------------------------------------------
 func on_refs_update() -> void:
-	if !is_node_ready():return
+	if !is_node_ready() or current_location.is_empty():return
 	clear_list()
+	
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
+	var wing_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
 	
 	# fills in the scp cards
 	for index in refs.size():
 		var ref:int = refs[index]
 		var new_card:Control = ScpCardPreload.instantiate()
+		new_card.current_metrics = wing_data.metrics	
 		new_card.ref = ref
 		new_card.index = index
 		new_card.onFocus = func(_node:Control):			

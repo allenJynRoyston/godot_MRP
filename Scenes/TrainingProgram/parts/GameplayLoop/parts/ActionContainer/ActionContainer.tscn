@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=40 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://cyv8vf7k1e1s4" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn" id="2_860v8"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="7_ah17n"]
 [ext_resource type="PackedScene" uid="uid://2wr0honpqb2p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/HotkeyContainer.tscn" id="8_bk83u"]
 [ext_resource type="PackedScene" uid="uid://ckywdp1o7nc2i" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/Nametag.tscn" id="10_xathl"]
+[ext_resource type="PackedScene" uid="uid://dmgj730nihsve" path="res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn" id="12_58xi4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3e5bh"]
 
@@ -25,10 +26,6 @@ fill_to = Vector2(0.5, 0)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_083vi"]
 color = Color(1, 1, 1, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah17n"]
-bg_color = Color(0.316, 0.249, 0.37, 1)
-border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_58xi4"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
@@ -257,10 +254,15 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3de1l"]
+
 [node name="ActionContainer" type="PanelContainer"]
 z_index = 2
-offset_right = 1920.0
-offset_bottom = 1080.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_3e5bh")
 script = ExtResource("1_co4u3")
 metadata/_edit_group_ = true
@@ -278,7 +280,7 @@ custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 244.0
+offset_right = 250.0
 grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
@@ -366,35 +368,6 @@ layout_mode = 2
 
 [node name="PanelContainer2" parent="Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/ResearcherList" instance=ExtResource("2_860v8")]
 layout_mode = 2
-
-[node name="TraitContainer" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "TRAITS"
-label_settings = ExtResource("2_i3yab")
-
-[node name="HSeparator" type="HSeparator" parent="Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_083vi")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="TraitList" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="TraitCard" parent="Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer/VBoxContainer/TraitList" instance=ExtResource("6_5fkrn")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 
 [node name="SynergyContainer" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]
 visible = false
@@ -654,6 +627,7 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="ContainBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
 title = "CONTAIN"
@@ -955,3 +929,20 @@ offset_right = 143.0
 offset_bottom = 524.0
 index = 8
 fade = false
+
+[node name="ScpDetails" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="ScpDetails"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_3de1l")
+
+[node name="SCPCard" parent="ScpDetails/PanelContainer" instance=ExtResource("12_58xi4")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4

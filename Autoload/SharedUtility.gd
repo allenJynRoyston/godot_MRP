@@ -229,7 +229,8 @@ func return_resource_list(details:Dictionary, dict_property:String) -> Array:
 			var metrics_dict:Dictionary = details[dict_property].resources.metrics.call()
 			for key in metrics_dict:	
 				var amount:int = metrics_dict[key]
-				list.push_back({"type": "metrics", "amount": amount, "resource": RESOURCE_UTIL.return_metric_data(key)})	
+				list.push_back({"type": "metrics", "amount": amount, "resource": RESOURCE_UTIL.return_metric_data(key)})
+				
 	return list
 # ------------------------------------------------------------------------------
 

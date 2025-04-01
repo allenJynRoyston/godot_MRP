@@ -7,14 +7,22 @@ extends MouseInteractions
 @onready var Front:VBoxContainer = $SubViewport/SCPCard/Front
 @onready var Back:VBoxContainer = $SubViewport/SCPCard/Back
 
-@onready var NicknameLabelLabel:Label = $SubViewport/SCPCard/Front/Image/PanelContainer/MarginContainer/NicknameLabel
-@onready var DesignationLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Designation/DesignationLabel
-@onready var ItemClassLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ItemClass/ItemClassLabel
-@onready var PassiveEffectLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer/VBoxContainer/PassiveEffectLabel
+@onready var SelectedCheckbox:BtnBase = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/SelectedCheckbox
+@onready var NicknameLabel:Label = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/NicknameLabel
+@onready var DesignationLabel:Label = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/DesignationLabel
+@onready var ItemClassLabel:Label = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/ItemClass/ItemClassLabel
 @onready var QuoteLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Quote/QuoteLabel
-@onready var RewardsList:VBoxContainer = $SubViewport/SCPCard/Back/MarginContainer/VBoxContainer/Rewards/RewardsList
-@onready var MetricsList:VBoxContainer = $SubViewport/SCPCard/Back/MarginContainer/VBoxContainer/Metrics/MetricsList
-@onready var SelectedCheckbox:BtnBase = $SubViewport/SCPCard/Front/Image/MarginContainer2/SelectedCheckbox
+
+@onready var Morale:Control = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics/Morale
+@onready var Safety:Control = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics/Safety
+@onready var Readiness:Control = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics/Readiness
+
+@onready var ContainedEffect:VBoxContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect
+@onready var UnContainedEffect:VBoxContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect
+@onready var ContainedDescriptionLabel:Label  = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer4/MarginContainer/DescriptionLabel
+@onready var UncontainedDescriptionLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer4/MarginContainer/DescriptionLabel
+
+@onready var BenefitsGridContainer:GridContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards/GridContainer
 
 @export var ref:int = -1: 
 	set(val):
@@ -51,10 +59,12 @@ extends MouseInteractions
 		is_deselected = val
 		on_is_deselected_update()
 		
+		
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var index:int = -1
+var current_metrics:Dictionary = {}
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass
@@ -64,10 +74,6 @@ func _ready() -> void:
 	super._ready()
 	Front.show()
 	Back.hide()
-
-	for node in [RewardsList, MetricsList]:
-		for child in node.get_children():
-			child.queue_free()	
 
 	on_ref_update()
 	on_reveal_update()
@@ -113,22 +119,50 @@ func on_reveal_update() -> void:
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
 	if !is_node_ready() or ref not in SCP_UTIL.reference_data:return	
+	for child in BenefitsGridContainer.get_children():
+		child.queue_free()	
+	
 	var scp_data:Dictionary = SCP_UTIL.return_data(ref)
 	var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
+	
+	for ref in scp_data.effects.metrics:
+		var amount:int = scp_data.effects.metrics[ref]
+		match ref:
+			RESOURCE.BASE_METRICS.MORALE:
+				Morale.value = amount
+				if RESOURCE.BASE_METRICS.MORALE in current_metrics:
+					Morale.is_negative = current_metrics[RESOURCE.BASE_METRICS.MORALE] < amount
+			RESOURCE.BASE_METRICS.SAFETY:
+				Safety.value = amount
+				if RESOURCE.BASE_METRICS.SAFETY in current_metrics:
+					Safety.is_negative = current_metrics[RESOURCE.BASE_METRICS.SAFETY] < amount
+			RESOURCE.BASE_METRICS.READINESS:
+				Readiness.value = amount
+				if RESOURCE.BASE_METRICS.READINESS in current_metrics:
+					Readiness.is_negative = current_metrics[RESOURCE.BASE_METRICS.READINESS] < amount
+	
+	var has_negative:bool = false
+	for node in [Morale, Readiness, Safety]:
+		if node.is_negative:
+			has_negative = true
+			break
+	
+	ContainedEffect.modulate = Color(1, 1, 1, 0.7 if has_negative else 1)
+	UnContainedEffect.modulate = Color(1, 1, 1, 1 if has_negative else 0.7)
+
 
 	ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
 	DesignationLabel.text = scp_data.name
-	NicknameLabelLabel.text = '"%s"' % [scp_data.nickname]
+	NicknameLabel.text = '"%s"' % [scp_data.nickname]
 	ItemClassLabel.text = scp_data.item_class.call()
 	QuoteLabel.text = scp_data.quote
-	PassiveEffectLabel.text = scp_data.passive_effect.description
-	
+
 	for reward in rewards:
 		var btn_node:BtnBase = TextBtnPreload.instantiate()
 		btn_node.title = reward.resource.name
 		btn_node.icon = reward.resource.icon
 		btn_node.is_hoverable = false
-		RewardsList.add_child(btn_node)
+		BenefitsGridContainer.add_child(btn_node)
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
@@ -140,7 +174,6 @@ func on_focus(state:bool = is_focused) -> void:
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
 	else:
 		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:		

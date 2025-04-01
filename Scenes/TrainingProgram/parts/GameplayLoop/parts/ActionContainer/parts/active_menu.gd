@@ -243,8 +243,10 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"B":
 			close()
 		"A":
+			selected_index = 0
 			onPrev.call()
 		"D":
+			selected_index = 0
 			onNext.call()
 		"W":
 			selected_index = U.min_max(selected_index - 1, 0, options_list.size() - 1)

@@ -72,10 +72,10 @@ alignment = 1
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="Energy" parent="Control2/ResourcePanel/HBoxContainer2" instance=ExtResource("5_7q6wh")]
+[node name="Resources" parent="Control2/ResourcePanel/HBoxContainer2" instance=ExtResource("4_5xs2u")]
 layout_mode = 2
 
-[node name="Resources" parent="Control2/ResourcePanel/HBoxContainer2" instance=ExtResource("4_5xs2u")]
+[node name="Energy" parent="Control2/ResourcePanel/HBoxContainer2" instance=ExtResource("5_7q6wh")]
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control2/ResourcePanel"]

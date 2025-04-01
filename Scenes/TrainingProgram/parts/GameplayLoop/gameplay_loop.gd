@@ -693,8 +693,7 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 			RESOURCE.TYPE.STAFF: false,
 			RESOURCE.TYPE.SECURITY: false,
 			RESOURCE.TYPE.DCLASS: false	
-		},
-		"ability_level": 0,
+		},		
 		"energy": {
 			"available": 0,
 			"used": 0
@@ -707,6 +706,7 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 
 func get_room_defaults() -> Dictionary:
 	return {
+		"ability_level": 0,
 		"is_activated": false,
 		"build_data": {},
 		"room_data": {},
@@ -1842,29 +1842,17 @@ func set_room_config(force_setup:bool = false) -> void:
 	const energy_levels:Array = [5, 10, 15, 20, 25]
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
-	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()	
-	var under_construction_rooms:Array = []
+	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
 	var built_room_refs:Array = purchased_facility_arr.map(func(x): return x.ref)
 	var metric_defaults:Dictionary = {}
 	
 	# set defaults
 	for floor_index in new_room_config.floor.size():
 		var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]
-		# set default energy for ring
-		#match base_states.floor[str(floor_index)].generator_level:
-			#0:
-				#energy_available = 9
-			#1:
-				#energy_available = 12
-			#2:
-				#energy_available = 15
-				
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			var ring_config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
-
 			ring_config_data.energy.available = energy_available
 			ring_config_data.energy.used = 0
-				
 			var floor_ring_designation:String = str(floor_index, ring_index)
 			if floor_ring_designation not in metric_defaults:
 				metric_defaults[floor_ring_designation] = {
@@ -1873,64 +1861,48 @@ func set_room_config(force_setup:bool = false) -> void:
 					RESOURCE.BASE_METRICS.READINESS: 0
 				}
 
-				
-	# ... and mark rooms that are currently contained 
-	if !scp_data.is_empty() and "contained_list" in scp_data:
-		for item in scp_data.contained_list:
-			var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
-			var floor:int = item.location.floor
-			var ring:int = item.location.ring
-			var room:int = item.location.room	
-			var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+	# FIRST, add any contained items to the config
+	for item in scp_data.contained_list:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room	
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		room_config_data.scp_data = {
+			"ref": item.ref
+		}
 
-			# add to ref count
-			new_room_config.floor[floor].ring[ring].scp_refs.push_back(item.ref)
-			
-			# update the scp data and utility functions
-			new_room_config.floor[floor].ring[ring].room[room].scp_data = {
-				"ref": item.ref,
-			}
-			
-			# first add scp ref to list to both ring and floor	
-			new_room_config.floor[floor].scp_refs.push_back(item.ref)
-			new_room_config.floor[floor].ring[ring].scp_refs.push_back(item.ref)
-			
-			# check for effects
-			if "effects" in scp_details:
-				var ring_effects:Dictionary = scp_details.effects.ring.call()
-				if "provides" in ring_effects:
-					for resource in ring_effects.provides:
-						pass
-						#ring_config_data.available_resources[resource] = true
-
-			
-	
-	# FIRST, check passive abilities that upgrade the current ability level
+	# NEXT, RESET all passive enables, check for assigned researchers and add to ability level
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
+		var room:int = item.location.room
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var ring_base_state:Dictionary = base_states.ring[str(floor, ring)]
-		
-		# add to ref count
-		ring_config_data.room_refs.push_back(item.ref)
-		
-		# FIRST, check passive abilities that upgrade the current ability level
+		# FIRST, set defaults
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
-			for level in passive_abilities.size():
-				var ability:Dictionary = passive_abilities[level]
-				var ability_uid:String = str(room_data.ref, level)
-				
+			for ability_index in passive_abilities.size():
+				var ability:Dictionary = passive_abilities[ability_index]
+				var ability_uid:String = str(room_data.ref, ability_index)
 				# creates default state if it doesn't exist
 				if ability_uid not in ring_base_state.passives_enabled:
 					ring_base_state.passives_enabled[ability_uid] = false
+		# check for researcher and if they pair with the room to increasae the room level ability
+		for researcher in hired_lead_researchers_arr:
+			var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
+			var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
+			var specializations:Array = researcher_details.specializations
+			var has_pairing:bool = false
+			if "pairs_with" in room_data:
+				for spec in specializations:
+					if spec in room_data.pairs_with:
+						has_pairing = true
+						break
+			if assigned_to_room == item.location and has_pairing:
+				room_config_data.ability_level = U.min_max(room_config_data.ability_level + 1, 0, 2)
 				
-				if ring_base_state.passives_enabled[ability_uid]:
-					if "update_room_config" in ability:
-						ring_config_data = ability.update_room_config.call(ring_config_data)
-	
 	# NEXT check for passives in rooms
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1940,57 +1912,80 @@ func set_room_config(force_setup:bool = false) -> void:
 		var ring_base_state:Dictionary = base_states.ring[str(floor, ring)]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		var max_ability_level:int = ring_config_data.ability_level
-
-		# add to ref count
-		ring_config_data.room_refs.push_back(item.ref)		
-		
 		# if passives are enabled...
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
-			for level in passive_abilities.size():
-				
-				if level <= max_ability_level:
-					var ability:Dictionary = passive_abilities[level]
-					var ability_uid:String = str(room_data.ref, level)
-					var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
-					# check if passive is enabled
-					if ability_uid in ring_base_state.passives_enabled and ring_base_state.passives_enabled[ability_uid]:
-						# check if enough energy available to power the passive
-						if ring_config_data.energy.used < ring_config_data.energy.available:
-							# if it's enabled, add to energy cost
-							ring_config_data.energy.used += energy_cost
-							# add resources
-							if "provides" in ability: 
-								for resource in ability.provides:
-									ring_config_data.available_resources[resource] = true
+			for ability_index in passive_abilities.size():
+				var ability:Dictionary = passive_abilities[ability_index]
+				var ability_uid:String = str(room_data.ref, ability_index)
+				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
+				var ability_level:int = room_config_data.ability_level
+				# check if passive is enabled
+				if ring_base_state.passives_enabled[ability_uid]:
+					# check if level is equal or less then what is required...
+					# aand check if check if enough energy available to power the passive
+					if ability.lvl_required <= ability_level and ring_config_data.energy.used < ring_config_data.energy.available:
+						# if it's enabled, add to energy cost
+						ring_config_data.energy.used += energy_cost
+						# check provides
+						if "provides" in ability: 
+							for resource in ability.provides:
+								ring_config_data.available_resources[resource] = true
+					else:
+						ring_base_state.passives_enabled[ability_uid] = false
 
 	# go through once more to check if rooms can be activated if they have a resource requirement
+	# and add their metrics if they are
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
+		var floor_ring_designation:String = str(floor, ring)
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
-		var ring_base_state:Dictionary = base_states.ring[str(floor, ring)]
+		var ring_base_state:Dictionary = base_states.ring[floor_ring_designation]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		
 		var is_activated:bool = true
 		if "resource_requirements" in room_data:
 			for resource in room_data.resource_requirements:
 				if !ring_config_data.available_resources[resource]:
 					is_activated = false
 					break
-		
+		# update metrics IF room is activated
+		if is_activated and "metrics" in room_data:
+			for key in room_data.metrics:
+				var amount:int = room_data.metrics[key]
+				metric_defaults[floor_ring_designation][key] += amount
+		# add is activated statement
 		room_config_data.is_activated = is_activated 
-		
 		# set room config data
 		room_config_data.room_data = {
 			"ref": item.ref,
 			"details": ROOM_UTIL.return_data(item.ref), 
-		}		
+		}
+		# add to ref count
+		ring_config_data.room_refs.push_back(item.ref)
+
+	
+	# now add any researcher bonuses in
+	for item in purchased_facility_arr:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room		
+		var floor_ring_designation:String = str(floor, ring)		
+		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		# add any effects from researechers attached to room
+		var trait_res:Dictionary = GAME_UTIL.get_room_traits(item.location, new_room_config)
+		var trait_list:Array = trait_res.trait_list
+		var synergy_list:Array = trait_res.synergy_list
+		for list_item in trait_list:
+			for metric in list_item.effect.metric_list:
+				metric_defaults[floor_ring_designation][metric.resource.ref] += metric.amount
+
+		ring_config_data.metrics = metric_defaults[floor_ring_designation]
 
 
+	
 	# checks for any conditioals triggers by built room combonations:
 	if ROOM.TYPE.DIRECTORS_OFFICE in built_room_refs and ROOM.TYPE.HQ in built_room_refs:
 		new_gameplay_conditionals[CONDITIONALS.TYPE.BASE_IS_SETUP] = progress_data.day > 1

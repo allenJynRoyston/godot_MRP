@@ -97,7 +97,6 @@ func add(_get_start_vector:Callable, _draw_dict:Dictionary ) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func clear() -> void:
-	print('clear?')
 	draw_list = []
 	render = false
 	render_lines = false

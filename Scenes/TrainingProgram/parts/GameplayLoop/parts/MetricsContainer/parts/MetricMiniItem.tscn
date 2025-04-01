@@ -30,6 +30,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_tqb8x")
 script = ExtResource("1_kfsig")
+is_negative = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -121,6 +122,7 @@ flip_v = false
 is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jtngq")
 

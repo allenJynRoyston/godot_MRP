@@ -1,18 +1,20 @@
-[gd_scene load_steps=14 format=3 uid="uid://dmgj730nihsve"]
+[gd_scene load_steps=15 format=3 uid="uid://dmgj730nihsve"]
 
 [ext_resource type="Script" uid="uid://d1bxee1l27t34" path="res://Scenes/TrainingProgram/parts/Cards/SCP/scp_card.gd" id="1_ppy2u"]
 [ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="2_l0yob"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_nobte"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_t7bn4"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_2qlqr"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="4_50nll"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_fhyv1"]
+[ext_resource type="PackedScene" uid="uid://cr4jyhkulokw2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricMiniItem.tscn" id="7_1pgoi"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qha80"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_tv1yn"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w1mgs"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a1y1b"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -24,8 +26,6 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mj5bm"]
-
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_o08r0"]
 color = Color(1, 1, 1, 1)
 
@@ -34,18 +34,21 @@ font = ExtResource("6_fhyv1")
 font_size = 8
 font_color = Color(0, 1, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_miwdm"]
+[sub_resource type="LabelSettings" id="LabelSettings_bbv36"]
 font = ExtResource("6_fhyv1")
 font_size = 8
-font_color = Color(1, 0, 0, 1)
+font_color = Color(1, 0.339692, 0.306841, 1)
 
 [node name="SCPCard" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 299.0
+offset_bottom = 466.0
 pivot_offset = Vector2(125, 225)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_qha80")
 script = ExtResource("1_ppy2u")
 reveal = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -57,64 +60,83 @@ texture = SubResource("ViewportTexture_tv1yn")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(250, 460)
+size = Vector2i(300, 500)
 
 [node name="SCPCard" type="PanelContainer" parent="SubViewport"]
-offset_right = 250.0
-offset_bottom = 460.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_w1mgs")
+offset_right = 300.0
+offset_bottom = 500.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_a1y1b")
 
 [node name="Front" type="VBoxContainer" parent="SubViewport/SCPCard"]
 layout_mode = 2
 
 [node name="Image" type="TextureRect" parent="SubViewport/SCPCard/Front"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 125)
 layout_mode = 2
 texture = ExtResource("2_l0yob")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="MarginContainer2" type="MarginContainer" parent="SubViewport/SCPCard/Front/Image"]
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front/Image"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = -20.0
-offset_bottom = 20.0
-grow_horizontal = 0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="SelectedCheckbox" parent="SubViewport/SCPCard/Front/Image/MarginContainer2" instance=ExtResource("3_t7bn4")]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/SCPCard/Front/Image/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DesignationLabel" type="Label" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IOP-01"
+label_settings = ExtResource("4_2qlqr")
+
+[node name="NicknameLabel" type="Label" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "\"THE DOOR\""
+label_settings = ExtResource("4_50nll")
+vertical_alignment = 1
+
+[node name="SelectedCheckbox" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_t7bn4")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-icon = 46
+size_flags_vertical = 8
+icon = 51
 static_color = Color(0.411765, 0.411765, 0.411765, 1)
 flip_v = false
 is_hoverable = false
 
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport/SCPCard/Front/Image"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 18.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_mj5bm")
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front/Image/PanelContainer"]
+[node name="ItemClass" type="HBoxContainer" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+size_flags_vertical = 2
 
-[node name="NicknameLabel" type="Label" parent="SubViewport/SCPCard/Front/Image/PanelContainer/MarginContainer"]
+[node name="Label2" type="Label" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/ItemClass"]
 layout_mode = 2
-size_flags_vertical = 8
-text = "\"THE DOOR\""
+text = "ITEM CLASS: "
 label_settings = ExtResource("3_nobte")
+
+[node name="ItemClassLabel" type="Label" parent="SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/ItemClass"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SAFE"
+label_settings = ExtResource("4_2qlqr")
+horizontal_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front"]
 layout_mode = 2
@@ -128,110 +150,114 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Designation" type="HBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Designation"]
-layout_mode = 2
-text = "DESIGNATION: "
-label_settings = ExtResource("3_nobte")
-
-[node name="DesignationLabel" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Designation"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "SCP-X01"
-label_settings = ExtResource("4_2qlqr")
-horizontal_alignment = 2
-
-[node name="ItemClass" type="HBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ItemClass"]
-layout_mode = 2
-text = "ITEM CLASS: "
-label_settings = ExtResource("3_nobte")
-
-[node name="ItemClassLabel" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ItemClass"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "SAFE"
-label_settings = ExtResource("4_2qlqr")
-horizontal_alignment = 2
-
-[node name="HSeparator" type="HSeparator" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_o08r0")
-
-[node name="PassiveEffect" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="Label" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect"]
-layout_mode = 2
-text = "PASSIVE EFFECT:"
-label_settings = ExtResource("3_nobte")
-
-[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PassiveEffectLabel" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "CONTAINED AT:"
+label_settings = ExtResource("3_nobte")
+
+[node name="HSeparator" type="HSeparator" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o08r0")
+
+[node name="Metrics" type="HBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Morale" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics" instance=ExtResource("7_1pgoi")]
+layout_mode = 2
+size_flags_horizontal = 1
+value = 1
+is_negative = false
+
+[node name="Safety" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics" instance=ExtResource("7_1pgoi")]
+layout_mode = 2
+size_flags_horizontal = 1
+assigned_metric = 1
+value = 1
+is_negative = false
+
+[node name="Readiness" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics" instance=ExtResource("7_1pgoi")]
+layout_mode = 2
+size_flags_horizontal = 1
+assigned_metric = 2
+value = 1
+is_negative = false
+
+[node name="ContainedEffect" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect"]
+layout_mode = 2
+text = "IF CONTAINED:"
+label_settings = ExtResource("3_nobte")
+
+[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 15
+
+[node name="DescriptionLabel" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer4/MarginContainer"]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
-text = "Can foresee 3 days into the future."
+text = "Effect description."
 label_settings = SubResource("LabelSettings_7v4rc")
 autowrap_mode = 2
 
-[node name="PassiveEffectLabel2" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(1, 0)
+[node name="UncontainedEffect" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Can foresee 3 days into the future."
-label_settings = SubResource("LabelSettings_7v4rc")
-autowrap_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 5
 
-[node name="PassiveEffectLabel3" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/PassiveEffect/PanelContainer4/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect"]
+layout_mode = 2
+text = "IF NOT CONTAINED:"
+label_settings = ExtResource("3_nobte")
+
+[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 15
+
+[node name="DescriptionLabel" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer4/MarginContainer"]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
-text = "Can foresee 3 days into the future."
-label_settings = SubResource("LabelSettings_7v4rc")
+text = "Effect description."
+label_settings = SubResource("LabelSettings_bbv36")
 autowrap_mode = 2
 
 [node name="Rewards" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards"]
 layout_mode = 2
-text = "ON CONTAINMENT BREACH:"
+text = "AWARDED PER TURN:"
 label_settings = ExtResource("3_nobte")
 
-[node name="PanelContainer4" type="PanelContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards"]
+[node name="HSeparator" type="HSeparator" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards"]
 layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o08r0")
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards/PanelContainer4"]
+[node name="GridContainer" type="GridContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="Label" type="Label" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards/PanelContainer4/MarginContainer"]
-custom_minimum_size = Vector2(1, 0)
-layout_mode = 2
-text = "UNKNOWN"
-label_settings = SubResource("LabelSettings_miwdm")
-autowrap_mode = 2
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+columns = 2
 
 [node name="Quote" type="VBoxContainer" parent="SubViewport/SCPCard/Front/MarginContainer/VBoxContainer"]
 layout_mode = 2

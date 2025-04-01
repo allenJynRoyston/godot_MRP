@@ -16,6 +16,30 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"requires_unlock": false,	
 	"own_limit": 1,
 	"build_time": 1,
+	
+	"costs": {
+		"unlock": 50,
+		"purchase": 100,
+		"operating": 10
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
+		],		
+	
+	"pairs_with": [
+		RESEARCHER.SPECIALIZATION.SOCIOLOGY,
+		RESEARCHER.SPECIALIZATION.PHYSICS
+	],
+	
+	"metrics": {
+		RESOURCE.BASE_METRICS.MORALE: 1,
+		RESOURCE.BASE_METRICS.SAFETY: 1,
+		RESOURCE.BASE_METRICS.READINESS: 1,
+	},	
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -48,37 +72,37 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------	
 
 	# ------------------------------------------
-	"unlock_costs": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},
-		
-	"purchase_costs": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					
-				},
-		}	
-	},
-
-	"operating_costs": {
-		"resources": {
-			"amount": func() -> Dictionary:
-				return {
-					RESOURCE.TYPE.MONEY: -1
-				},
-		}	
-	},
+	#"unlock_costs": {
+		#"resources": {
+			#"amount": func() -> Dictionary:
+				#return {
+					#
+				#},
+		#}	
+	#},
+		#
+	#"purchase_costs": {
+		#"resources": {
+			#"amount": func() -> Dictionary:
+				#return {
+					#
+				#},
+		#}	
+	#},
+#
+	#"operating_costs": {
+		#"resources": {
+			#"amount": func() -> Dictionary:
+				#return {
+					#RESOURCE.TYPE.MONEY: -1
+				#},
+		#}	
+	#},
 	# ------------------------------------------
 	
 	# ------------------------------------------	
-	"specilization_bonus": func(specilizations:Array) -> Dictionary:
-		return {},
+	#"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		#return {},
 	# ------------------------------------------	
 }
 
@@ -96,26 +120,24 @@ var HQ:Dictionary = {
 	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
+
+	# --------------------------------------
+	"pairs_with": [
+		
+	],
+	
+	"metrics": {
+		RESOURCE.BASE_METRICS.MORALE: 1,
+		RESOURCE.BASE_METRICS.SAFETY: 1,
+		RESOURCE.BASE_METRICS.READINESS: 1,
+	},
+	# --------------------------------------	
 		
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			{
-				"name": "HIRE RESEARCHER",
-				"lvl_required": 0,
-				"science_cost": 50,
-				"cooldown_duration":  1, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.recruit_new_researcher(3),
-			},
-			{
-				"name": "PROMOTE RESEARCHER",
-				"lvl_required": 0,
-				"science_cost": 50,
-				"cooldown_duration":  5, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.promote_researchers(),
-			}
+			ABL.get_ability(ABL.REF.HIRE_RESEARCHER),
+			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER),
 		],	
 	# ------------------------------------------
 
@@ -142,28 +164,24 @@ var HQ:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -1
+					RESOURCE.TYPE.SCIENCE: 10,
+					RESOURCE.TYPE.MONEY: 10
 				},
 		}	
 	},
 	# ------------------------------------------
 	
 	# ------------------------------------------	
-	"specilization_bonus": func(specilizations:Array) -> Dictionary:
-		if RESEARCHER.SPECIALIZATION.CHEMISTRY in specilizations:
-			return {
-				"ap": 1,
-				"metrics":{
-					RESOURCE.BASE_METRICS.MORALE: 1
-				}				
-			}
-		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
-			return {
-				"metrics":{
-					RESOURCE.BASE_METRICS.MORALE: 1
-				}
-			}
-		return {}
+	#"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		#if RESEARCHER.SPECIALIZATION.CHEMISTRY in specilizations:
+			#return {
+				#"ap": 1
+			#}
+		#if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			#return {
+				#
+			#}
+		#return {}
 	# ------------------------------------------		
 }
 
@@ -185,14 +203,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			{
-				"name": "UNLOCK FACILITIES", 
-				"lvl_required": 0,
-				"science_cost": 1,
-				"cooldown_duration":  1, 
-				"effect": func() -> bool:
-					return await GAME_UTIL.open_store(),
-			}
+			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES),
 		],	
 	# ------------------------------------------
 
@@ -226,20 +237,18 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 	# ------------------------------------------	
 	
 	# ------------------------------------------	
-	"specilization_bonus": func(specilizations:Array) -> Dictionary:
-		if RESEARCHER.SPECIALIZATION.PHARMACOLOGY in specilizations:
-			return {
-				"resource":{
-					RESOURCE.TYPE.ENERGY: 2
-				},
-			}
-		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
-			return {
-				"metrics":{
-					RESOURCE.BASE_METRICS.MORALE: 1
-				}
-			}
-		return {},
+	#"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		#if RESEARCHER.SPECIALIZATION.PHARMACOLOGY in specilizations:
+			#return {
+				#"resource":{
+					#RESOURCE.TYPE.ENERGY: 2
+				#},
+			#}
+		#if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			#return {
+#
+			#}
+		#return {},
 	# ------------------------------------------		
 }
 
@@ -261,14 +270,7 @@ var R_AND_D_LAB:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			{
-				"name": "UPGRADE +1",
-				"lvl_required": 0,
-				"energy_cost": 3,
-				"conditional": func(gpc:Dictionary) -> Dictionary:
-					gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = 1
-					return gpc,
-			}
+			ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL)
 		],	
 	# ------------------------------------------
 
@@ -295,7 +297,7 @@ var R_AND_D_LAB:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -1
+					RESOURCE.TYPE.SCIENCE: 25
 				},
 		}	
 	}	
@@ -367,14 +369,7 @@ var BARRICKS:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			{
-				"name": "SUPPLY SECURITY",
-				"lvl_required": 0,
-				"energy_cost": 1,
-				"provides": [
-					RESOURCE.TYPE.SECURITY
-				]
-			},
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY),
 		],	
 	# ------------------------------------------
 
@@ -392,7 +387,7 @@ var BARRICKS:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -1
+					RESOURCE.TYPE.MONEY: -10
 				},
 		}	
 	}	
@@ -417,14 +412,7 @@ var DORMITORY:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			{
-				"name": "SUPPLY STAFF",
-				"lvl_required": 0,
-				"energy_cost": 2,
-				"provides": [
-					RESOURCE.TYPE.STAFF,
-				]
-			}
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF)
 		],	
 	# ------------------------------------------
 
@@ -467,15 +455,8 @@ var HOLDING_CELLS:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			{
-				"name": "SUPPLY DCLASS",
-				"lvl_required": 0,
-				"energy_cost": 2,
-				"provides": [
-					RESOURCE.TYPE.DCLASS,
-				]
-			}
-		],	
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
+	],	
 	# ------------------------------------------	
 
 	# ------------------------------------------
@@ -594,33 +575,16 @@ var CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	#"abilities": func() -> Array: 
-		#return [
-			#{
-				#"name": "CONTAIN SCP",
-				#"lvl_required": 0,
-				#"science_cost": 1,
-				#"cooldown_duration":  14, 
-				#"effect": func() -> bool:
-					#return await GAME_UTIL.contain_scp(),
-			#}
-		#],	
-	# ------------------------------------------	
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.CONTAIN_SCP)
+		],	
+	# ------------------------------------------
 	
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			{
-				"name": "MEMETIC SHIELDING",
-				"lvl_required": 0,
-				"energy_cost": 3,
-				"effect": func() -> Dictionary:
-					return {
-						"metrics":{
-							RESOURCE.BASE_METRICS.READINESS: 1
-						}
-					},
-			}
+			ABL_P.get_ability(ABL_P.REF.MEMETIC_SHILEDING)
 		],	
 	# ------------------------------------------	
 
@@ -636,31 +600,25 @@ var CONTAINMENT_CELL:Dictionary = {
 
 	"operating_costs": {
 		"resources": {
-			"metrics": func() -> Dictionary:
-				return {
-					RESOURCE.BASE_METRICS.SAFETY: 2
-			},
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: -1
+					RESOURCE.TYPE.MONEY: 10
 				},
 		}	
 	},
 	# ------------------------------------------	
-	"specilization_bonus": func(specilizations:Array) -> Dictionary:
-		if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
-			return {
-				"resource":{
-					RESOURCE.TYPE.ENERGY: 2
-				},
-			}
-		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
-			return {
-				"metrics":{
-					RESOURCE.BASE_METRICS.MORALE: 1
-				}
-			}
-		return {},
+	#"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		#if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
+			#return {
+				#"resource":{
+					#RESOURCE.TYPE.ENERGY: 2
+				#},
+			#}
+		#if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			#return {
+#
+			#}
+		#return {},
 	# ------------------------------------------
 }
 
@@ -683,42 +641,9 @@ var ENGINEERING_BAY:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	#"abilities": func() -> Array: 
-		#return [
-			#{
-				#"name": "CONTAIN",
-				#"unlock_cost": func() -> Dictionary:
-					#return {
-						#RESOURCE.TYPE.SCIENCE: -20
-					#},
-				#"cooldown_duration":  7, 
-				#"effect": func() -> bool:
-					#return await GAME_UTIL.contain_scp(),
-			#}
-		#],	
-	# ------------------------------------------	
-	
-	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			{
-				"name": "UPGRADE LVL 2",
-				"lvl_required": 0,
-				"energy_cost": 3,
-				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
-					if ring_config_data.ability_level < 1:
-						ring_config_data.ability_level = 1
-					return ring_config_data,
-			},
-			{
-				"name": "UPGRADE LVL 3",
-				"lvl_required": 1,
-				"energy_cost": 1,
-				"update_room_config": func(ring_config_data:Dictionary) -> Dictionary:
-					if ring_config_data.ability_level == 1:
-						ring_config_data.ability_level = 2
-					return ring_config_data,
-			}			
+
 		],	
 	# ------------------------------------------	
 
@@ -734,10 +659,7 @@ var ENGINEERING_BAY:Dictionary = {
 
 	"operating_costs": {
 		"resources": {
-			"metrics": func() -> Dictionary:
-				return {
-					RESOURCE.BASE_METRICS.SAFETY: 2
-			},
+
 			"amount": func() -> Dictionary:
 				return {
 					RESOURCE.TYPE.MONEY: -1
@@ -745,20 +667,18 @@ var ENGINEERING_BAY:Dictionary = {
 		}	
 	},
 	# ------------------------------------------	
-	"specilization_bonus": func(specilizations:Array) -> Dictionary:
-		if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
-			return {
-				"resource":{
-					RESOURCE.TYPE.ENERGY: 2
-				},
-			}
-		if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
-			return {
-				"metrics":{
-					RESOURCE.BASE_METRICS.MORALE: 1
-				}
-			}
-		return {},
+	#"specilization_bonus": func(specilizations:Array) -> Dictionary:
+		#if RESEARCHER.SPECIALIZATION.BIOLOGIST in specilizations:
+			#return {
+				#"resource":{
+					#RESOURCE.TYPE.ENERGY: 2
+				#},
+			#}
+		#if RESEARCHER.SPECIALIZATION.PSYCHOLOGY in specilizations:
+			#return {
+#
+			#}
+		#return {},
 	# ------------------------------------------
 }
 
@@ -900,45 +820,45 @@ func return_activation_cost(ref:ROOM.TYPE) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_specilization_bonus(ref:ROOM.TYPE, specilizations:Array) -> Array:
-	var data:Dictionary = return_data(ref)	
-	var list:Array = []
-	
-	if "specilization_bonus" in data:
-		var spec_bonus:Dictionary = data.specilization_bonus.call(specilizations)
-		if "ap" in spec_bonus:
-			list.push_back({"type": "ap", "amount": spec_bonus.ap})	
-		if "resource" in spec_bonus:
-			for key in spec_bonus.resource:
-				list.push_back({"type": "amount", "amount": spec_bonus.resource[key], "resource": RESOURCE_UTIL.return_data(key)})	
-		if "metrics" in spec_bonus:
-			for key in spec_bonus.metrics:
-				list.push_back({"type": "metrics", "amount": spec_bonus.metrics[key], "resource": RESOURCE_UTIL.return_metric_data(key)})	
-	return list
+#func return_specilization_bonus(ref:ROOM.TYPE, specilizations:Array) -> Array:
+	#var data:Dictionary = return_data(ref)	
+	#var list:Array = []
+	#
+	#if "specilization_bonus" in data:
+		#var spec_bonus:Dictionary = data.specilization_bonus.call(specilizations)
+		#if "ap" in spec_bonus:
+			#list.push_back({"type": "ap", "amount": spec_bonus.ap})	
+		#if "resource" in spec_bonus:
+			#for key in spec_bonus.resource:
+				#list.push_back({"type": "amount", "amount": spec_bonus.resource[key], "resource": RESOURCE_UTIL.return_data(key)})	
+		#if "metrics" in spec_bonus:
+			#for key in spec_bonus.metrics:
+				#list.push_back({"type": "metrics", "amount": spec_bonus.metrics[key], "resource": RESOURCE_UTIL.return_metric_data(key)})	
+	#return list
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-var room_speclization_lookup:Dictionary = {} # makes it so this only has to do the lookup once
-func return_room_speclization_preferences(ref:ROOM.TYPE) -> Array:
-	if ref in room_speclization_lookup:
-		return room_speclization_lookup[ref]
-	
-	var list:Array = []
-	var room_data:Dictionary = return_data(ref)
-	if "specilization_bonus" not in room_data:
-		room_speclization_lookup[ref] = []
-		return list
-	
-	for key in RESEARCHER.SPECIALIZATION:
-		var enum_val:int = RESEARCHER.SPECIALIZATION[key]
-		var spec_bonus:Dictionary = room_data.specilization_bonus.call([enum_val])
-		if !spec_bonus.is_empty():
-			var details:Dictionary = RESEARCHER_UTIL.return_specialization_data(enum_val)
-			var bonus_list:Array = return_specilization_bonus(ref, [enum_val])
-			list.push_back({"details": details, "bonus": bonus_list})
-	
-	room_speclization_lookup[ref] = list
-	return list
+#var room_speclization_lookup:Dictionary = {} # makes it so this only has to do the lookup once
+#func return_room_speclization_preferences(ref:ROOM.TYPE) -> Array:
+	#if ref in room_speclization_lookup:
+		#return room_speclization_lookup[ref]
+	#
+	#var list:Array = []
+	#var room_data:Dictionary = return_data(ref)
+	#if "specilization_bonus" not in room_data:
+		#room_speclization_lookup[ref] = []
+		#return list
+	#
+	#for key in RESEARCHER.SPECIALIZATION:
+		#var enum_val:int = RESEARCHER.SPECIALIZATION[key]
+		#var spec_bonus:Dictionary = room_data.specilization_bonus.call([enum_val])
+		#if !spec_bonus.is_empty():
+			#var details:Dictionary = RESEARCHER_UTIL.return_specialization_data(enum_val)
+			#var bonus_list:Array = return_specilization_bonus(ref, [enum_val])
+			#list.push_back({"details": details, "bonus": bonus_list})
+	#
+	#room_speclization_lookup[ref] = list
+	#return list
 # ------------------------------------------------------------------------------			
 
 # ------------------------------------------------------------------------------			

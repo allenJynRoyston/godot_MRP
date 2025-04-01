@@ -1,9 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://cyv8vf7k1e1s4"]
+[gd_scene load_steps=17 format=3 uid="uid://cyv8vf7k1e1s4"]
 
 [ext_resource type="Script" uid="uid://bfgk648834pnk" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/researcher_mini_card.gd" id="1_ni348"]
 [ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_lwih7"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_gsawx"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="4_816jx"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_h2ft1"]
+[ext_resource type="PackedScene" uid="uid://d1melr1fetrom" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn" id="5_ah3g8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ol8ek"]
 
@@ -67,6 +69,13 @@ bg_color = Color(0, 0, 0, 0.560784)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c5m35"]
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_8ssgu"]
+color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_816jx"]
+bg_color = Color(0.316, 0.249, 0.37, 1)
+border_color = Color(0, 0, 0, 1)
+
 [node name="ResearcherMiniCard" type="PanelContainer"]
 offset_right = 250.0
 offset_bottom = 40.0
@@ -83,7 +92,7 @@ libraries = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 10
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -168,6 +177,37 @@ layout_mode = 2
 text = "NO BONUS"
 label_settings = ExtResource("3_gsawx")
 horizontal_alignment = 1
+
+[node name="TraitContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TraitContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/TraitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TRAITS"
+label_settings = ExtResource("4_816jx")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/TraitContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_8ssgu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TraitContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TraitList" type="VBoxContainer" parent="VBoxContainer/TraitContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TraitCard" parent="VBoxContainer/TraitContainer/VBoxContainer/TraitList" instance=ExtResource("5_ah3g8")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_816jx")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2

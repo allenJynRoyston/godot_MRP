@@ -52,21 +52,21 @@ func on_ref_update() -> void:
 		for child in node.get_children():
 			child.queue_free()
 
-	# TODO FIND MORE RELIABLE WAY TO GET THE NUMBERS HERE
-	var activation_effects:Array = [] #ROOM_UTIL.return_activation_effect(item.ref)		
-	Effects.hide() if is_locked or activation_effects.is_empty() else Effects.show()
-	for item in activation_effects:
-		var btn_node:Control = TextBtnPreload.instantiate()
-		btn_node.is_hoverable = false
-		btn_node.title = "%s%s [%s] [%s]" % ["+" if item.amount > 0 else "", item.amount, item.resource.name, str(item.type).to_upper()]
-		btn_node.icon = item.resource.icon
-		EffectsList.add_child(btn_node)
-	
-	var spec_preferences:Array = ROOM_UTIL.return_room_speclization_preferences(ref)
-	Syncs.hide() if is_locked or spec_preferences.is_empty() else Syncs.show()
-	for item in spec_preferences:
-		var btn_node:Control = TextBtnPreload.instantiate()
-		btn_node.is_hoverable = false		
-		btn_node.title = "%s" % [item.details.name]
-		btn_node.icon = item.details.icon
-		SyncList.add_child(btn_node)
+	## TODO FIND MORE RELIABLE WAY TO GET THE NUMBERS HERE
+	#var activation_effects:Array = [] #ROOM_UTIL.return_activation_effect(item.ref)		
+	#Effects.hide() if is_locked or activation_effects.is_empty() else Effects.show()
+	#for item in activation_effects:
+		#var btn_node:Control = TextBtnPreload.instantiate()
+		#btn_node.is_hoverable = false
+		#btn_node.title = "%s%s [%s] [%s]" % ["+" if item.amount > 0 else "", item.amount, item.resource.name, str(item.type).to_upper()]
+		#btn_node.icon = item.resource.icon
+		#EffectsList.add_child(btn_node)
+	#
+	#var spec_preferences:Array = ROOM_UTIL.return_room_speclization_preferences(ref)
+	#Syncs.hide() if is_locked or spec_preferences.is_empty() else Syncs.show()
+	#for item in spec_preferences:
+		#var btn_node:Control = TextBtnPreload.instantiate()
+		#btn_node.is_hoverable = false		
+		#btn_node.title = "%s" % [item.details.name]
+		#btn_node.icon = item.details.icon
+		#SyncList.add_child(btn_node)

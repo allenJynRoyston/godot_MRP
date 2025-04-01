@@ -308,11 +308,11 @@ func build_shortcuts() -> void:
 							action_data.onSelect.call(-1) # number passed doesn't matter
 						1:
 							#await lock_btns(true)
-							var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.ability_level)
+							var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.index)
 							await GAME_UTIL.use_active_ability(ability)
 							#lock_btns(false)
 						2:
-							GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.ability_level)
+							GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.index)
 				
 				btn.update_self()
 		#----------------------------

@@ -57,7 +57,84 @@ func assign_nodes() -> void:
 func get_ability_level(use_location:Dictionary = current_location) -> int:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring	
-	return room_config.floor[floor].ring[ring].ability_level
+	var room:int = use_location.room
+	return room_config.floor[floor].ring[ring].room[room].ability_level
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_room_traits(use_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
+	var designation:String = U.location_to_designation(use_location)	
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring
+	var room:int = use_location.room
+	var config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
+	var room_data:Dictionary = config_data.room_data
+	var scp_data:Dictionary = config_data.scp_data 
+
+	var total_traits_list := []
+	var synergy_traits := []
+	var dup_list := []		
+	var trait_list := []
+	var synergy_list := []
+
+	
+	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
+		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
+		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
+			return true
+		return false	
+	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
+		
+	# records bonus from traits
+	for researcher in researchers:
+		total_traits_list.push_back(researcher.traits)
+	
+	# records bonus from traits
+	for traits in total_traits_list:
+		for t in traits:
+			if t not in dup_list:
+				trait_list.push_back(RESEARCHER_UTIL.return_trait_details(t, use_location, use_config))
+				
+	# records bonus from synergy traits
+	if total_traits_list.size() == 2:
+		var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
+		#for details in list:
+			#var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
+			#var resource_list:Array = []
+			#var metric_list:Array = []
+			## -------------------
+			#if "resource" in effect:
+				#for key in effect.resource:
+					#var amount:int = effect.resource[key]
+					#
+					#if key not in resource_details.synergy_traits:
+						#resource_details.synergy_traits[key] = 0
+					#if key not in resource_details.total:
+						#resource_details.total[key] = 0
+					#resource_details.synergy_traits[key] += amount
+					#resource_details.total[key] += amount
+					#
+					#resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
+			## -------------------
+			#if "metrics" in effect:
+				#for key in effect.metrics:
+					#var amount:int = effect.metrics[key]
+#
+					#if key not in metric_details.traits:
+						#metric_details.traits[key] = 0
+					#if key not in metric_details.total:
+						#metric_details.total[key] = 0
+					#metric_details.traits[key] += amount
+					#metric_details.total[key] += amount					
+					#
+					#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})		
+						#
+			#synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
+				
+	return {
+		"trait_list": trait_list,
+		"synergy_list": synergy_list
+	}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -86,24 +163,24 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 				if "abilities" in room_details:
 					var ability_list:Array = room_details.abilities.call()
 					for index in ability_list.size():
-						if index <= ring_ability_level:
-							abilities[room_details.ref].push_back({
-								"room_index": room_index,
-								"index": index, 
-								"level": ability_list[index].lvl_required, 
-								"details": ability_list[index]
-							})
+						#if index <= ring_ability_level:
+						abilities[room_details.ref].push_back({
+							"room_index": room_index,
+							"index": index, 
+							"lvl_required": ability_list[index].lvl_required, 
+							"details": ability_list[index]
+						})
 				
 				if "passive_abilities" in room_details:
 					var ability_list:Array = room_details.passive_abilities.call()
 					for index in ability_list.size():
-						if index <= ring_ability_level:
-							passive_abilities[room_details.ref].push_back({
-								"room_index": room_index,
-								"index": index, 
-								"level": ability_list[index].lvl_required, 
-								"details": ability_list[index]
-							})
+						#if index <= ring_ability_level:
+						passive_abilities[room_details.ref].push_back({
+							"room_index": room_index,
+							"index": index, 
+							"lvl_required": ability_list[index].lvl_required, 
+							"details": ability_list[index]
+						})
 	
 	return {
 		"room_refs": wing_data.room_refs,
@@ -150,7 +227,8 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(scp_data.ref)
 	var is_transfer:bool = false #if is_scp_empty else room_config_data.scp_data.is_transfer
 	var is_contained:bool = false #if is_scp_empty else room_config_data.scp_data.is_contained
-
+	
+	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
 		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
@@ -158,7 +236,10 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
-
+	var traits_res:Dictionary = get_room_traits(use_location, use_config)
+	var trait_list:Array = traits_res.trait_list
+	var synergy_list:Array = traits_res.synergy_list
+	
 	# tracks 
 	var resource_details:Dictionary = {
 		# captures just for room
@@ -189,7 +270,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		"total": {},
 	}
 	
-
 	# get resources spent/added by rooms
 	if !is_room_empty:
 		for item in ROOM_UTIL.return_operating_cost(room_details.ref):
@@ -218,7 +298,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 					metric_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
 					metric_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
 				
-	
 	# get resources spent/added by scp
 	if !is_scp_empty:
 		for item in SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref):
@@ -249,122 +328,117 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 					metric_details.total[item.resource.ref] += item.amount if is_contained else 0
 	
 
-	var total_traits_list := []
-	var synergy_traits := []
-	var dup_list := []		
-	var trait_list := []
-	var synergy_trait_list := []
 
-	for researcher in researchers:
-		# records researcher profession bonus (I.E. ECONOMIST, PSYCHOLOGIST, etc)
-		if !is_room_empty:
-			var spec_bonus:Array = ROOM_UTIL.return_specilization_bonus(room_details.ref, researcher.specializations)
-			for item in spec_bonus:
-				match item.type:
-					"ap":
-					# -----------------------
-						ap_diff_amount += item.amount
-					# -----------------------
-					"resource":
-						if item.resource.ref not in resource_details.researchers:
-							resource_details.researchers[item.resource.ref] = 0
-						if item.resource.ref not in resource_details.facility:
-							resource_details.facility[item.resource.ref] = 0					
-						if item.resource.ref not in resource_details.total:
-							resource_details.total[item.resource.ref] = 0
-							
-						resource_details.researchers[item.resource.ref] += item.amount
-						resource_details.facility[item.resource.ref] += item.amount
-						resource_details.total[item.resource.ref] += item.amount
-					# -----------------------
-					"metrics":
-						if item.resource.ref not in metric_details.researchers:
-							metric_details.researchers[item.resource.ref] = 0
-						if item.resource.ref not in metric_details.facility:
-							metric_details.facility[item.resource.ref] = 0					
-						if item.resource.ref not in metric_details.total:
-							metric_details.total[item.resource.ref] = 0
-							
-						metric_details.researchers[item.resource.ref] += item.amount
-						metric_details.facility[item.resource.ref] += item.amount
-						metric_details.total[item.resource.ref] += item.amount					
-
-		# add selected to selected list	
-		total_traits_list.push_back(researcher.traits)
-
-	# records bonus from traits
-	for traits in total_traits_list:
-		for t in traits:
-			if t not in dup_list:
-				var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(t)
-				var effect:Dictionary = traits_detail.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-				var resource_list:Array = []
-				var metric_list:Array = []
-				# -------------------
-				if "resource" in effect:
-					for key in effect.resource:
-						var amount:int = effect.resource[key]
-						
-						if key not in resource_details.traits:
-							resource_details.traits[key] = 0
-						if key not in resource_details.total:
-							resource_details.total[key] = 0
-						resource_details.traits[key] += amount
-						resource_details.total[key] += amount
-						
-						resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
-				# -------------------
-				if "metrics" in effect:
-					for key in effect.metrics:
-						var amount:int = effect.metrics[key]
-						
-						if key not in metric_details.traits:
-							metric_details.traits[key] = 0
-						if key not in metric_details.total:
-							metric_details.total[key] = 0
-						metric_details.traits[key] += amount
-						metric_details.total[key] += amount
-						
-						metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})						
-							
-				trait_list.push_back({"details": traits_detail, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-	
-	# records bonus from synergy traits
-	if total_traits_list.size() == 2:
-		var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
-		for details in list:
-			var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-			var resource_list:Array = []
-			var metric_list:Array = []
-			# -------------------
-			if "resource" in effect:
-				for key in effect.resource:
-					var amount:int = effect.resource[key]
-					
-					if key not in resource_details.synergy_traits:
-						resource_details.synergy_traits[key] = 0
-					if key not in resource_details.total:
-						resource_details.total[key] = 0
-					resource_details.synergy_traits[key] += amount
-					resource_details.total[key] += amount
-					
-					resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
-			# -------------------
-			if "metrics" in effect:
-				for key in effect.metrics:
-					var amount:int = effect.metrics[key]
-
-					if key not in metric_details.traits:
-						metric_details.traits[key] = 0
-					if key not in metric_details.total:
-						metric_details.total[key] = 0
-					metric_details.traits[key] += amount
-					metric_details.total[key] += amount					
-					
-					metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})		
-						
-			synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-			
+	#for researcher in researchers:
+		## records researcher profession bonus (I.E. ECONOMIST, PSYCHOLOGIST, etc)
+		#if !is_room_empty:
+			#var spec_bonus:Array = ROOM_UTIL.return_specilization_bonus(room_details.ref, researcher.specializations)
+			#for item in spec_bonus:
+				#match item.type:
+					#"ap":
+					## -----------------------
+						#ap_diff_amount += item.amount
+					## -----------------------
+					#"resource":
+						#if item.resource.ref not in resource_details.researchers:
+							#resource_details.researchers[item.resource.ref] = 0
+						#if item.resource.ref not in resource_details.facility:
+							#resource_details.facility[item.resource.ref] = 0					
+						#if item.resource.ref not in resource_details.total:
+							#resource_details.total[item.resource.ref] = 0
+							#
+						#resource_details.researchers[item.resource.ref] += item.amount
+						#resource_details.facility[item.resource.ref] += item.amount
+						#resource_details.total[item.resource.ref] += item.amount
+					## -----------------------
+					#"metrics":
+						#if item.resource.ref not in metric_details.researchers:
+							#metric_details.researchers[item.resource.ref] = 0
+						#if item.resource.ref not in metric_details.facility:
+							#metric_details.facility[item.resource.ref] = 0					
+						#if item.resource.ref not in metric_details.total:
+							#metric_details.total[item.resource.ref] = 0
+							#
+						#metric_details.researchers[item.resource.ref] += item.amount
+						#metric_details.facility[item.resource.ref] += item.amount
+						#metric_details.total[item.resource.ref] += item.amount					
+#
+		## add selected to selected list	
+		#total_traits_list.push_back(researcher.traits)
+#
+	## records bonus from traits
+	#for traits in total_traits_list:
+		#for t in traits:
+			#if t not in dup_list:
+				#var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(t)
+				#var effect:Dictionary = traits_detail.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
+				#var resource_list:Array = []
+				#var metric_list:Array = []
+				## -------------------
+				#if "resource" in effect:
+					#for key in effect.resource:
+						#var amount:int = effect.resource[key]
+						#
+						#if key not in resource_details.traits:
+							#resource_details.traits[key] = 0
+						#if key not in resource_details.total:
+							#resource_details.total[key] = 0
+						#resource_details.traits[key] += amount
+						#resource_details.total[key] += amount
+						#
+						#resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
+				## -------------------
+				#if "metrics" in effect:
+					#for key in effect.metrics:
+						#var amount:int = effect.metrics[key]
+						#
+						#if key not in metric_details.traits:
+							#metric_details.traits[key] = 0
+						#if key not in metric_details.total:
+							#metric_details.total[key] = 0
+						#metric_details.traits[key] += amount
+						#metric_details.total[key] += amount
+						#
+						#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})
+							#
+				#trait_list.push_back({"details": traits_detail, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
+	#
+	## records bonus from synergy traits
+	#if total_traits_list.size() == 2:
+		#var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
+		#for details in list:
+			#var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
+			#var resource_list:Array = []
+			#var metric_list:Array = []
+			## -------------------
+			#if "resource" in effect:
+				#for key in effect.resource:
+					#var amount:int = effect.resource[key]
+					#
+					#if key not in resource_details.synergy_traits:
+						#resource_details.synergy_traits[key] = 0
+					#if key not in resource_details.total:
+						#resource_details.total[key] = 0
+					#resource_details.synergy_traits[key] += amount
+					#resource_details.total[key] += amount
+					#
+					#resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
+			## -------------------
+			#if "metrics" in effect:
+				#for key in effect.metrics:
+					#var amount:int = effect.metrics[key]
+#
+					#if key not in metric_details.traits:
+						#metric_details.traits[key] = 0
+					#if key not in metric_details.total:
+						#metric_details.total[key] = 0
+					#metric_details.traits[key] += amount
+					#metric_details.total[key] += amount					
+					#
+					#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})		
+						#
+			#synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
+			#
 	
 	# convert resource as a dict to a list form for easy reading
 	var resources_as_list:Array = []
@@ -405,7 +479,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			#"is_contained": is_contained,
 		} if !is_scp_empty else {},
 		"trait_list": trait_list,
-		"synergy_trait_list": synergy_trait_list,
+		"synergy_list": synergy_list,
 		"resources_as_list": resources_as_list,
 		"resource_details": resource_details,
 		"metric_details": metric_details,
@@ -436,10 +510,10 @@ func does_ability_exists_in_ring(ability:Dictionary, use_location:Dictionary = c
 # ------------------------------------------------------------------------------	
 
 ## ------------------------------------------------------------------------------
-func get_passive_ability_state(room_ref:int, ability_level:int, use_location:Dictionary = current_location) -> bool:
+func get_passive_ability_state(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> bool:
 	var designation:String = str(use_location.floor, use_location.ring)
 	var passives_enabled:Dictionary = base_states.ring[designation].passives_enabled
-	var ability_uid:String = str(room_ref, ability_level)
+	var ability_uid:String = str(room_ref, ability_index)
 	
 	return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
 ## ------------------------------------------------------------------------------	
@@ -465,7 +539,6 @@ func use_active_ability(ability:Dictionary, use_location:Dictionary = current_lo
 	if apply_cooldown:
 		base_states.ring[designation].ability_on_cooldown[ability.name] = ability.cooldown_duration
 		resources_data[RESOURCE.TYPE.SCIENCE].amount -= ability.science_cost
-		print(resources_data[RESOURCE.TYPE.SCIENCE])
 		SUBSCRIBE.resources_data = resources_data
 		
 	SUBSCRIBE.base_states = base_states
@@ -475,12 +548,12 @@ func use_active_ability(ability:Dictionary, use_location:Dictionary = current_lo
 func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> void:
 	var designation:String = str(use_location.floor, use_location.ring)
 	var ability_uid:String = str(room_ref, ability_index)
-	
+
 	if ability_uid not in base_states.ring[designation].passives_enabled:
 		base_states.ring[designation].passives_enabled[ability_uid] = false
 	
 	base_states.ring[designation].passives_enabled[ability_uid] = !base_states.ring[designation].passives_enabled[ability_uid]
-	
+
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------		
 
@@ -595,6 +668,7 @@ func contain_scp() -> bool:
 			#["type/event_id"]: count[int]
 		},
 	})
+	print(scp_data.contained_list)
 
 	SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
 	SUBSCRIBE.scp_data = scp_data

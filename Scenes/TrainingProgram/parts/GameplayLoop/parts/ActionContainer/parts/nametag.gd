@@ -77,6 +77,12 @@ func update_node(shift_val:int = 10) -> void:
 	use_location.room = index
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)		
 	var ability_lvl:int = GAME_UTIL.get_ability_level(use_location)
+	
+	if room_extract.is_room_empty:
+		self.modulate = Color(1, 1, 1, 0)
+		return
+		
+	self.modulate = Color(1, 1, 1, 1)
 
 	name_str = room_extract.room.details.shortname if !room_extract.is_room_empty else "EMPTY"
 	lvl_str = str(ability_lvl) if !room_extract.is_room_empty else "0"

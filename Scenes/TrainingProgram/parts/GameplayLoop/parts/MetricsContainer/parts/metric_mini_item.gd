@@ -23,6 +23,11 @@ extends PanelContainer
 	set(val):
 		context_value = val
 		on_context_value_update()
+		
+@export var is_negative:bool = false : 
+	set(val):
+		is_negative = val
+		update_stylebox()	
 
 var progress_data:Dictionary
 var current_bg_color:Color 
@@ -58,9 +63,7 @@ func on_assigned_metric_update() -> void:
 			TitleHeader.text = "READINESS"
 	
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
-	progress_data = new_val	
-	if !is_node_ready() or progress_data.is_empty():return
-	update_stylebox()
+	progress_data = new_val		
 
 func on_value_update() -> void:
 	if !is_node_ready():return
@@ -74,7 +77,6 @@ func on_value_update() -> void:
 		RESOURCE.BASE_METRICS.READINESS:
 			StatusLabel.text = RESOURCE_UTIL.return_readiness_data(value).title
 
-	update_stylebox()
 
 func on_status_update() -> void:
 	if !is_node_ready():return
@@ -96,32 +98,9 @@ func on_context_value_update() -> void:
 # -----------------------------------
 func update_stylebox() -> void:
 	if !is_node_ready():return
-	pass
-	#var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel')
-	#var new_color:Color = Color(0.27, 0.366, 0.409) # BLUE
-	#
-	#if value != 0:
-		#new_color = Color(1, 0.204, 0) if value < 0 else Color(0, 0.965, 0.278)
-	#
-	#if value < 0:	
-		#new_color = new_color.darkened( 0.5 - abs(value * 0.1))
-	#
-	#if value > 0:
-		#new_color = new_color.darkened( 0.5 - abs(value * 0.1))
-		#
-	#current_bg_color = new_color
-	#
-	#new_stylebox.corner_radius_bottom_left = 5
-	#new_stylebox.corner_radius_bottom_right = 5
-	#new_stylebox.corner_radius_top_left = 5
-	#new_stylebox.corner_radius_top_right = 5	
-	#new_stylebox.border_width_bottom = 2
-	#new_stylebox.border_width_left = 2
-	#new_stylebox.border_width_right = 2
-	#new_stylebox.border_width_top = 2
-	#new_stylebox.border_color = Color.WHITE if is_active else Color.BLACK
-	#new_stylebox.bg_color = new_color
-	#RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	var label_settings:LabelSettings = TotalAmount.label_settings.duplicate()
+	label_settings.font_color = Color.RED if is_negative else Color.WHITE
+	TotalAmount.label_settings = label_settings
 # -----------------------------------
 
 

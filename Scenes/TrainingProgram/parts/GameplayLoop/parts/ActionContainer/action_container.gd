@@ -25,7 +25,8 @@ extends GameContainer
 @onready var UnassignBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
 
 @onready var ScpBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel
-@onready var ContainBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
+@onready var ScpDetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ScpDetailsBtn
+#@onready var ContainBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
 
 @onready var BaseBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel
 @onready var BuildBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ConstructBtn
@@ -47,15 +48,20 @@ extends GameContainer
 @onready var Researchers:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers
 @onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/HBoxContainer/ResearcherCount
 @onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/ResearcherList
-@onready var TraitContainer:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer
-@onready var TraitList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer/VBoxContainer/TraitList
+#@onready var TraitContainer:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer
+#@onready var TraitList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/TraitContainer/VBoxContainer/TraitList
 @onready var SynergyContainer:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/SynergyContainer
 @onready var SynergyTraitList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList
 @onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/ScpMiniCard
 @onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/RoomMiniCard
 
+@onready var ScpDetails:Control = $ScpDetails
+@onready var ScpDetailsPanel:PanelContainer = $ScpDetails/PanelContainer
+@onready var ScpCard:Control = $ScpDetails/PanelContainer/SCPCard
+
+
 enum BOOKMARK_TYPE { GLOBAL, RING }
-enum MODE { SELECT_FLOOR, SELECT_ROOM, INVESTIGATE, RESET_ROOM, DISMISS_RESEARCHER }
+enum MODE { SELECT_FLOOR, SELECT_ROOM, SCP_DETAILS, INVESTIGATE, RESET_ROOM, DISMISS_RESEARCHER }
 enum MENU_TYPE { ACTIONS = 0, ABILITIES = 1, PASSIVES = 2 }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
@@ -114,7 +120,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	
-	for child in [SynergyTraitList, TraitList]:
+	for child in [SynergyTraitList]:
 		for node in child.get_children():
 			node.queue_free()	
 
@@ -124,9 +130,9 @@ func _ready() -> void:
 	UnassignBtn.onClick = func() -> void:
 		current_mode = MODE.DISMISS_RESEARCHER
 	
-	ContainBtn.onClick = func() -> void:
-		call_and_redraw(func():await GAME_UTIL.contain_scp(), true)
-		
+	#ContainBtn.onClick = func() -> void:
+		#call_and_redraw(func():await GAME_UTIL.contain_scp(), true)
+		#
 	BuildBtn.onClick = func() -> void:
 		call_and_redraw(func():
 			enable_room_focus(true)
@@ -190,7 +196,10 @@ func _ready() -> void:
 		update_details(selected_data.shortcut_data.use_location)
 		draw_active_menu_items(selected_data, index)
 		
-
+	
+	ScpDetailsBtn.onClick = func() -> void:
+		current_mode = MODE.SCP_DETAILS
+			
 	HotkeyContainer.onBookmarkToggle = func() -> void:
 		if current_bookmark_type == BOOKMARK_TYPE.GLOBAL:
 			current_bookmark_type = BOOKMARK_TYPE.RING			
@@ -244,6 +253,7 @@ func activate() -> void:
 	
 	control_pos_default[BtnControlPanel] = BtnControlPanel.position
 	control_pos_default[DetailsPanel] = DetailsPanel.position
+	control_pos_default[ScpDetailsPanel] = ScpDetailsPanel.position
 
 	update_control_pos()
 	on_is_showing_update()
@@ -270,6 +280,12 @@ func update_control_pos() -> void:
 		"show": control_pos_default[DetailsPanel].x, 
 		"hide": control_pos_default[DetailsPanel].x - DetailsPanel.size.x
 	}	
+	
+	control_pos[ScpDetailsPanel] = {
+		"show": control_pos_default[ScpDetailsPanel].y, 
+		"hide": control_pos_default[ScpDetailsPanel].y - ScpDetailsPanel.size.y
+	}		
+
 	
 	if ref_btn != null:
 		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
@@ -305,7 +321,8 @@ func toggle_camera_view() -> void:
 func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
-
+	
+	U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].hide, 0 if skip_animation else 0.3)	
 	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
 # --------------------------------------------------------------------------------------------------		
@@ -569,8 +586,8 @@ func show_abilities(skip_animation:bool = false) -> void:
 			var abilities:Array = extract_wing_data.abilities[room_ref]
 			for index in abilities.size():
 				var ability:Dictionary = abilities[index]
-				var include:bool = true if !room_only else current_location.room == ability.room_index				
-				if active_menu_index == ability.level and include:
+				var include:bool = true if !room_only else current_location.room == ability.room_index
+				if active_menu_index == ability.lvl_required and include:
 					var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
 					var funcs:Dictionary = ability_funcs(ability.details, use_location)
 					var get_cooldown_duration:Callable = funcs.get_cooldown_duration
@@ -627,23 +644,18 @@ func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func passive_funcs(room_ref:int, ability_level:int, use_location:Dictionary) -> Dictionary:
-	var ability:Dictionary = ROOM_UTIL.return_passive_ability(room_ref, ability_level)
+func passive_funcs(room_ref:int, ability_index:int, use_location:Dictionary) -> Dictionary:
+	var ability:Dictionary = ROOM_UTIL.return_passive_ability(room_ref, ability_index)
 	
 	var get_checked:Callable = func() -> bool: 
 		await U.tick()
-		return GAME_UTIL.get_passive_ability_state(room_ref, ability_level)
+		return GAME_UTIL.get_passive_ability_state(room_ref, ability_index)
 						
 	var get_not_ready_func:Callable = func() -> bool: 
-		var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1		
-		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_level)
-		var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
-		var energy_remaining:int = energy.available - energy.used
-		var has_enough:bool = energy_remaining - energy_cost >= 0
-		return !has_enough and !is_checked
+		return false 
 		
 	var get_icon_func:Callable = func() -> SVGS.TYPE:
-		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_level)
+		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_index)
 		return SVGS.TYPE.CHECKBOX if await is_checked else SVGS.TYPE.EMPTY_CHECKBOX
 		
 	var get_invalid_func:Callable = func() -> bool:
@@ -677,17 +689,15 @@ func show_passives(skip_animation:bool = false) -> void:
 
 	for room_ref in extract_wing_data.passive_abilities:
 		var abilities:Array = extract_wing_data.passive_abilities[room_ref]
-
 		for index in abilities.size():
 			var ability:Dictionary = abilities[index]
 			var include:bool = true if !room_only else current_location.room == ability.room_index
-			if active_menu_index == ability.level and include:
+			if active_menu_index == ability.lvl_required and include:
 				var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
-				var funcs:Dictionary = passive_funcs(room_ref, ability.level, use_location)
+				var funcs:Dictionary = passive_funcs(room_ref, ability.index, use_location)
 				var get_not_ready_func:Callable = funcs.get_not_ready_func
 				var get_icon_func:Callable = funcs.get_icon_func
 				var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
-
 				options.push_back({
 					"shortcut_data": {
 						"room_ref": room_ref, 
@@ -704,7 +714,12 @@ func show_passives(skip_animation:bool = false) -> void:
 					"get_disabled_state": get_not_ready_func,
 					"get_checked_state": funcs.get_checked,
 					"action": func() -> void:
-						GAME_UTIL.toggle_passive_ability(room_ref, ability.level),
+						var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability.index)
+						var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
+						var energy_remaining:int = energy.available - energy.used
+						var has_enough:bool = energy_remaining - energy_cost >= 0
+						if !has_enough and !is_checked:return
+						GAME_UTIL.toggle_passive_ability(room_ref, ability.index),
 					"onSelect": func(index:int) -> void:
 						await options[index].action.call(),
 				})				
@@ -773,10 +788,10 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 
 		AssignBtn.is_disabled = room_extract.researchers.size() >= 2 or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open
-		ContainBtn.is_disabled = !room_extract.can_contain or (room_extract.can_contain and !room_extract.is_scp_empty) or active_menu_is_open
+		#ContainBtn.is_disabled = !room_extract.can_contain or (room_extract.can_contain and !room_extract.is_scp_empty) or active_menu_is_open
 		
 		ScpBtnPanel.hide() if !room_extract.can_contain else ScpBtnPanel.show()
-		ContainBtn.title = "CONTAIN" if room_extract.is_scp_empty else "CONTAIN [OCCUPIED]"
+		#ContainBtn.title = "CONTAIN" if room_extract.is_scp_empty else "CONTAIN [OCCUPIED]"
 		
 		PassiveBtn.is_disabled = passive_abilities.is_empty() or active_menu_is_open
 		AbilityBtn.is_disabled = abilities.is_empty() or active_menu_is_open
@@ -1014,7 +1029,32 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				prev_draw_state = {}
 				GBL.find_node(REFS.LINE_DRAW).clear()
 				current_mode = MODE.SELECT_ROOM
-
+		# --------------
+		MODE.SCP_DETAILS:
+			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
+			var wing_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+			ScpCard.current_metrics = wing_data.metrics
+			ScpCard.ref = room_extract.scp.details.ref
+			freeze_inputs = true
+			
+			
+			GBL.find_node(REFS.LINE_DRAW).clear()
+			prev_draw_state = {}
+			
+			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)	
+			U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].show)	
+			
+			GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+			BackBtn.is_disabled = false
+			
+			for panel in [ScpBtnPanel, AbilityBtnPanel, ResearcherBtnPanel]:
+				panel.hide()			
+			
+			BackBtn.onClick = func() -> void:
+				freeze_inputs = false
+				U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].hide)	
+				current_mode = MODE.INVESTIGATE
+				on_current_location_update()
 		# --------------
 		MODE.RESET_ROOM:
 			check_if_remove_is_valid()
@@ -1034,7 +1074,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			GBL.find_node(REFS.LINE_DRAW).clear()
 			RoomVBox.modulate = Color(1, 1, 1, 0)
-			TraitContainer.modulate = Color(1, 1, 1, 0)
+			#TraitContainer.modulate = Color(1, 1, 1, 0)
 				
 			for btn in [ConfirmBtn, BackBtn]:
 				btn.show()
@@ -1043,7 +1083,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BackBtn.onClick = func() -> void:
 				current_mode = MODE.INVESTIGATE
 				RoomVBox.modulate = Color(1, 1, 1, 1)
-				TraitContainer.modulate = Color(1, 1, 1, 1)
+				#TraitContainer.modulate = Color(1, 1, 1, 1)
 				on_current_location_update()
 			
 			ConfirmBtn.onClick = func() -> void:
@@ -1051,7 +1091,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await GAME_UTIL.unassign_researcher(researcher)
 				current_mode = MODE.INVESTIGATE
 				RoomVBox.modulate = Color(1, 1, 1, 1)
-				TraitContainer.modulate = Color(1, 1, 1, 1)
+				#TraitContainer.modulate = Color(1, 1, 1, 1)
 				on_current_location_update()
 		
 	if !control_pos.is_empty():
@@ -1127,11 +1167,12 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	
 	AbilityBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name
 	
-	for node in [ResearcherList, TraitList]:
+	for node in [ResearcherList, SynergyTraitList]:
 		for child in node.get_children():
 			child.queue_free()
 	
 	RoomDetailsPanel.ref = -1 if is_room_empty else room_extract.room.details.ref
+	
 	
 	if !room_extract.scp.is_empty():
 		ScpMiniCard.ref = room_extract.scp.details.ref
@@ -1140,7 +1181,7 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	## RESEARCHER DETAILS
 	if room_extract.researchers.is_empty():
 		Researchers.hide()
-		TraitContainer.hide()
+		#
 		SynergyContainer.hide()
 	else:
 		Researchers.show()
@@ -1149,28 +1190,30 @@ func update_details(use_location:Dictionary = current_location) -> void:
 		for researcher in room_extract.researchers:
 			var mini_card:Control = ResearcherMiniCard.instantiate()
 			mini_card.researcher = researcher
-			mini_card.room_extract = room_extract
 			ResearcherList.add_child(mini_card)
 			# add selected to selected list	
 			total_traits_list.push_back(researcher.traits)
 		ResearcherCount.text = "%s/2" % [room_extract.researchers.size()]
 	
-	TraitContainer.show() if !room_extract.trait_list.is_empty() else TraitContainer.hide()
-	for item in room_extract.trait_list:
-		var card:Control = TraitCardPreload.instantiate()
-		card.ref = item.details.ref
-		card.effect = item.effect
-		card.show_output = true
-		TraitList.add_child(card)
+	#TraitContainer.show() if !room_extract.trait_list.is_empty() else TraitContainer.hide()
+	#for item in room_extract.trait_list:
+		#var card:Control = TraitCardPreload.instantiate()
+		#card.ref = item.details.ref
+		#card.effect = item.effect
+		#card.show_output = true
+		#TraitList.add_child(card)
 	
-	SynergyContainer.hide() if room_extract.synergy_trait_list.is_empty() else SynergyContainer.show()
-	for item in room_extract.synergy_trait_list:
+	SynergyContainer.hide() if room_extract.synergy_list.is_empty() else SynergyContainer.show()
+	for item in room_extract.synergy_list:
 		var card:Control = TraitCardPreload.instantiate()
 		card.ref = item.details.ref
 		card.effect = item.effect
 		card.show_output = true
 		card.is_synergy = true
 		SynergyTraitList.add_child(card)		
+	
+	await U.tick()
+	DetailsPanel.position.y = 0	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------	

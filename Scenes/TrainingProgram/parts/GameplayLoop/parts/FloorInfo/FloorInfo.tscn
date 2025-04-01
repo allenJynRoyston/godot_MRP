@@ -46,15 +46,16 @@ expand = true
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Control"]
-custom_minimum_size = Vector2(275, 0)
-layout_mode = 2
-offset_left = 1645.0
-offset_top = 777.0
-offset_right = 1920.0
-offset_bottom = 1080.0
+visible = false
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 62.0
+grow_vertical = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
-theme_override_constants/margin_left = 5
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
