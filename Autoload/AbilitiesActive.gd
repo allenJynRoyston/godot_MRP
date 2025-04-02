@@ -10,7 +10,6 @@ enum REF {
 # ---------------------------------
 var contain_scp:Dictionary = {
 	"name": "CONTAIN SCP",
-	"lvl_required": 0,
 	"science_cost": 1,
 	"cooldown_duration":  14, 
 	"effect": func() -> bool:
@@ -20,7 +19,6 @@ var contain_scp:Dictionary = {
 # ---------------------------------
 var hire_researcher:Dictionary = {
 	"name": "HIRE RESEARCHER",
-	"lvl_required": 0,
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -30,7 +28,6 @@ var hire_researcher:Dictionary = {
 # ---------------------------------
 var promote_researchers:Dictionary = {
 	"name": "PROMOTE RESEARCHER",
-	"lvl_required": 0,
 	"science_cost": 50,
 	"cooldown_duration":  5, 
 	"effect": func() -> bool:
@@ -40,7 +37,6 @@ var promote_researchers:Dictionary = {
 # ---------------------------------
 var unlock_facilities:Dictionary = {
 	"name": "UNLOCK FACILITIES", 
-	"lvl_required": 0,
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -48,7 +44,7 @@ var unlock_facilities:Dictionary = {
 }
 
 # ---------------------------------
-func get_ability(ref:REF) -> Dictionary:
+func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
 	match ref:
 		REF.CONTAIN_SCP:
@@ -62,6 +58,7 @@ func get_ability(ref:REF) -> Dictionary:
 		REF.UNLOCK_FACILITIES:
 			ability =  unlock_facilities
 	
+	ability.lvl_required = lvl_required
 	ability.ref = ref
 	return ability
 	

@@ -137,7 +137,7 @@ var HQ:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER),
-			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER),
+			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 1),
 		],	
 	# ------------------------------------------
 

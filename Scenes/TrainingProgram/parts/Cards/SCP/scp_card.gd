@@ -146,10 +146,8 @@ func on_ref_update() -> void:
 			has_negative = true
 			break
 			
-	print(has_negative)
 	ContainedEffect.modulate = Color(1, 1, 1, 0.5 if has_negative else 1)
 	UnContainedEffect.modulate = Color(1, 1, 1, 1 if has_negative else 0.5)
-
 
 	ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
 	DesignationLabel.text = scp_data.name

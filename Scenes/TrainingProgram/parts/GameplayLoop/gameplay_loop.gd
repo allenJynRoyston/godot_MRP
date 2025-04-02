@@ -1385,13 +1385,13 @@ func on_current_phase_update() -> void:
 				
 			
 			await U.set_timeout(1.0)
-			current_phase = PHASE.RANDOM_EVENTS
+			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
-		PHASE.RANDOM_EVENTS:
-			PhaseAnnouncement.start("CHECKING FOR EVENTS")	
-			await execute_random_scp_events()
-			await U.set_timeout(1.0)
-			current_phase = PHASE.CALC_NEXT_DAY			
+		#PHASE.RANDOM_EVENTS:
+			#PhaseAnnouncement.start("CHECKING FOR EVENTS")	
+			#await execute_random_scp_events()
+			#await U.set_timeout(1.0)
+			#current_phase = PHASE.CALC_NEXT_DAY			
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
 			PhaseAnnouncement.start("ADVANCING THE DAY")	
@@ -1587,7 +1587,7 @@ func on_current_event_step_update() -> void:
 			on_events_complete.emit(event_res)			
 			# reset and evempty event_data
 			event_data = []
-			restore_showing_state()
+			restore_player_hud()
 			current_event_step = EVENT_STEPS.RESET
 #endregion
 # ------------------------------------------------------------------------------		

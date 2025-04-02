@@ -1094,7 +1094,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.RESEARCHER_DETAILS:
 			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 			var uid:String = room_extract.researchers[selected_researcher].uid
-			print(room_extract.researchers)
 			ResearcherCard.uid = uid
 			freeze_inputs = true
 			

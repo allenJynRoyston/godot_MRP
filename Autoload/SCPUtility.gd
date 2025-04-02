@@ -2,6 +2,142 @@ extends SubscribeWrapper
 
 const prefered_greeting:String = "Sir"
 
+
+var scp_template:Dictionary = {
+	"name": "SCP-X-00",
+	"nickname": "NICKNAME",
+	"img_src": "res://Media/scps/the_door.png",
+	"quote": "Lorem ipsum dolor sit amet consectetur adipiscing elit.",
+	# -----------------------------------
+	
+	# -----------------------------------	
+	"item_class": "SAFE",	
+	"description": func(ref:ROOM.TYPE) -> Array:
+		return [
+			"Description line one",
+			"Description line two"
+		],
+	# -----------------------------------
+	
+	# -----------------------------------
+	"effects": {
+		"metrics":{
+			RESOURCE.BASE_METRICS.MORALE: 0,
+			RESOURCE.BASE_METRICS.SAFETY: 0,
+			RESOURCE.BASE_METRICS.READINESS: 0
+		},
+		"contained": {
+			"description": "Contained description goes here.", 
+			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+				return new_room_config,
+		},
+		"uncontained": {
+			"description": "Uncontained description goes here.", 
+			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+				return new_room_config,
+		}
+	},
+	# -----------------------------------
+	
+	# -----------------------------------
+	"initial_containment": {
+		RESOURCE.TYPE.MONEY: 50,
+	},
+	# -----------------------------------
+	
+	# -----------------------------------
+	"ongoing_containment": {
+		RESOURCE.TYPE.MONEY: 25,
+		RESOURCE.TYPE.SCIENCE: 25
+	},
+	# -----------------------------------
+
+
+	# -----------------------------------
+	"events": {
+		# -------------------------
+		SCP.EVENT_TYPE.AFTER_CONTAINMENT: [
+			{
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "%s: AFTER CONTAINMENT EVENT" % [details.name],
+								"img_src": details.img_src,
+								"text": [
+									"After containment text"
+								]
+							},
+					],
+			}
+		],
+		# -------------------------		
+				
+		# -------------------------
+		SCP.EVENT_TYPE.DAY_SPECIFIC: [
+			{
+				"trigger_threshold": func(_count:int) -> int:
+					return 100,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					var progress_data:Dictionary = _dict.progress_data
+					match progress_data.day:
+						50:
+							return [
+								func() -> Dictionary:
+									return {
+										"header": "%s: DAY EVENT" % [details.name],
+										"img_src": details.img_src,
+										"text": [
+											"LOREM ISPUM",
+										]
+									},								
+							]
+						_:
+							return []
+					pass,
+			},
+			{
+				"trigger_threshold": func(_count:int) -> int:
+					return 2,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "%s: RANDOM EVENT 1" % [details.name],
+								"img_src": details.img_src,
+								"text": [
+									"Random event 1.  Times triggered: %s" % [_dict.count]
+								]
+							},
+					],
+			},
+			{
+				"trigger_threshold": func(_trigger_count:int) -> int:
+					return 2,
+				"trigger_check": func(_dict:Dictionary) -> Array:
+					var details:Dictionary = _dict.details
+					return [
+						func() -> Dictionary:
+							return {
+								"header": "%s: RANDOM EVENT 2" % [details.name],
+								"img_src": details.img_src,
+								"text": [
+									"Random event 2.  Times triggered: %s" % [_dict.count]
+								]
+							},
+					],
+			}						
+		],
+		# -------------------------
+	}
+	# -----------------------------------
+}
+
 var SCP_001:Dictionary = {
 	"name": "SCP-XX1",
 	"nickname": "THE DOOR",

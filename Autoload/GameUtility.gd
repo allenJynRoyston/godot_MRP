@@ -184,7 +184,7 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 							"lvl_required": ability_list[index].lvl_required, 
 							"details": ability_list[index]
 						})
-	print(abilities)
+
 	return {
 		"room_refs": wing_data.room_refs,
 		"abilities": abilities,
@@ -670,15 +670,19 @@ func contain_scp() -> bool:
 		"location": current_location.duplicate(true),
 		"days_in_containment": 0,
 		"testing_completed": 0,
+		"triggers_at": [progress_data.day + 10, progress_data.day + 20, progress_data.day + 30],
 		"event_type_count": {
 			#["type/event_id"]: count[int]
 		},
 	})
-
+	
 	SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
 	SUBSCRIBE.scp_data = scp_data
-		
-	GameplayNode.restore_player_hud()
+
+	var event_res:Dictionary = await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, true) 
+	# TODO might need to do something with this later...
+	print("** event_res: ", event_res)
+
 	await U.tick()
 	return true
 # --------------------------------------------------------------------------------------------------	
