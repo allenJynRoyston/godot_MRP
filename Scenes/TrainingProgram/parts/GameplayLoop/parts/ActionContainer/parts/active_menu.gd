@@ -212,7 +212,7 @@ func on_action(btn_index:int = selected_index) -> void:
 		if btn_node == null:return
 		if !btn_node.is_disabled:
 			await options_list[btn_index].onSelect.call(btn_index)
-			
+
 			if "get_checked_state" in options_list[btn_index]:
 				btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
 			if "get_disabled_state" in options_list[btn_index]:

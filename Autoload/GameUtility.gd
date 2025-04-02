@@ -211,8 +211,8 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var ap_diff_amount:int = 1 if is_activated else 0
 	var abilities:Array = [] if (is_room_empty or "abilities" not in room_details) else room_details.abilities.call()	
 	
-	var ring_base_state:Dictionary = base_states.ring[str(current_location.floor, current_location.ring)]
-	var passives_enabled:Dictionary = ring_base_state.passives_enabled	
+	var room_base_state:Dictionary = base_states.room[str(current_location.floor, current_location.ring, current_location.room)]
+	var passives_enabled:Dictionary = room_base_state.passives_enabled	
 	var passive_abl:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
 	var passive_abilities:Array = []
 	for index in passive_abl.size():
@@ -511,33 +511,36 @@ func does_ability_exists_in_ring(ability:Dictionary, use_location:Dictionary = c
 
 ## ------------------------------------------------------------------------------
 func get_passive_ability_state(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> bool:
-	var designation:String = str(use_location.floor, use_location.ring)
-	var passives_enabled:Dictionary = base_states.ring[designation].passives_enabled
+	var designation:String = U.location_to_designation(use_location)
+	var passives_enabled:Dictionary = base_states.room[designation].passives_enabled
 	var ability_uid:String = str(room_ref, ability_index)
-	
+
 	return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
 ## ------------------------------------------------------------------------------	
 
 ## ------------------------------------------------------------------------------
 func get_ability_cooldown(ability:Dictionary, use_location:Dictionary = current_location) -> int:
-	var designation:String = str(use_location.floor, use_location.ring)		
+	var designation:String = U.location_to_designation(use_location)
+	var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability.ref)	
 	var cooldown_duration:int = 0
-	if ability.name in base_states.ring[designation].ability_on_cooldown:
-		cooldown_duration = base_states.ring[designation].ability_on_cooldown[ability.name]	
-		
+	
+	if ability_uid in base_states.room[designation].ability_on_cooldown:
+		cooldown_duration = base_states.room[designation].ability_on_cooldown[ability_uid]	
+
 	return cooldown_duration
 ## ------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func use_active_ability(ability:Dictionary, use_location:Dictionary = current_location) -> void:
-	var designation:String = str(use_location.floor, use_location.ring)
+	var designation:String = U.location_to_designation(use_location)
+	var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability.ref)
 	var apply_cooldown:bool = await ability.effect.call()
-
-	if ability.name not in base_states.ring[designation].ability_on_cooldown:
-		base_states.ring[designation].ability_on_cooldown[ability.name] = 0
+	
+	if ability_uid not in base_states.room[designation].ability_on_cooldown:
+		base_states.room[designation].ability_on_cooldown[ability_uid] = 0
 			
 	if apply_cooldown:
-		base_states.ring[designation].ability_on_cooldown[ability.name] = ability.cooldown_duration
+		base_states.room[designation].ability_on_cooldown[ability_uid] = ability.cooldown_duration
 		resources_data[RESOURCE.TYPE.SCIENCE].amount -= ability.science_cost
 		SUBSCRIBE.resources_data = resources_data
 		
@@ -546,13 +549,13 @@ func use_active_ability(ability:Dictionary, use_location:Dictionary = current_lo
 
 # --------------------------------------------------------------------------------------------------	
 func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> void:
-	var designation:String = str(use_location.floor, use_location.ring)
+	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
 
-	if ability_uid not in base_states.ring[designation].passives_enabled:
-		base_states.ring[designation].passives_enabled[ability_uid] = false
+	if ability_uid not in base_states.room[designation].passives_enabled:
+		base_states.room[designation].passives_enabled[ability_uid] = false
 	
-	base_states.ring[designation].passives_enabled[ability_uid] = !base_states.ring[designation].passives_enabled[ability_uid]
+	base_states.room[designation].passives_enabled[ability_uid] = !base_states.room[designation].passives_enabled[ability_uid]
 
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------		

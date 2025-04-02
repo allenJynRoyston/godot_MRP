@@ -5,9 +5,9 @@ extends PanelContainer
 @onready var Portrait:TextureRect = $VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/Portrait
 @onready var TitleLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/TitleLabel
 @onready var SpecLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/SpecLabel
-@onready var ResourceGrid:GridContainer = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/ResourceGrid
-@onready var MetricsList:VBoxContainer = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/MetricList
+
 @onready var NoBonusLabel:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/NoBonusLabel
+@onready var LvlBonus:Label = $VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/LvlBonus
 @onready var SelectedIcon:BtnBase = $Control/IconBtn
 
 @onready var TraitContainer:VBoxContainer = $VBoxContainer/TraitContainer
@@ -71,11 +71,20 @@ func on_researcher_update() -> void:
 		card.ref = ref
 		
 		if !researcher.props.assigned_to_room.is_empty():
+			var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher.props.assigned_to_room)
+			var has_pairing:bool = ROOM_UTIL.check_for_room_pair(extract_data.room.details.ref, researcher.specializations)
+			LvlBonus.show() if has_pairing else LvlBonus.hide()
 			card.effect = RESEARCHER_UTIL.return_trait_details(ref, researcher.props.assigned_to_room).effect
 		#
 		#card.effect = item.effect
 		card.show_output = true
-		TraitList.add_child(card)		
+		TraitList.add_child(card)
+	
+
+	#if "pairs_with" in room_data:
+		
+	
+	NoBonusLabel.hide() if LvlBonus.is_visible_in_tree() else NoBonusLabel.show()
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return

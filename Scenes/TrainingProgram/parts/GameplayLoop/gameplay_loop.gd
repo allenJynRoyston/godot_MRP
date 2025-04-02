@@ -272,14 +272,16 @@ var initial_values:Dictionary = {
 			for ring_index in [0, 1, 2, 3]:
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
-					"ability_on_cooldown": {},
-					"passives_enabled": {},
+					"researchers_per_room": 1,					
 					"hotkeys": {},
 				}
 				
 				# ------------------------------
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
-					room[str(floor_index, ring_index, room_index)] = {}		# not used 
+					room[str(floor_index, ring_index, room_index)] = {
+						"passives_enabled": {},
+						"ability_on_cooldown": {},
+					}		# not used 
 
 		
 		return {
@@ -1033,9 +1035,9 @@ func execute_record_audit() -> void:
 					for researcher in researchers:
 						var science_amount:int = 1
 						var xp_amount:int = 2 - (researchers.size() - 1)   # 2xp if 1 researcher attached, 1xp if 2 are attached
-						for specilization in researcher.specializations:
-							if specilization in scp_details.researcher_preferences:
-								science_amount = scp_details.researcher_preferences[specilization]
+						#for specilization in researcher.specializations:
+							#if specilization in scp_details.researcher_preferences:
+								#science_amount = scp_details.researcher_preferences[specilization]
 						
 						var science_diff:Array = [{
 							"amount": science_amount, 
@@ -1401,13 +1403,13 @@ func on_current_phase_update() -> void:
 			# mark rooms and push to subscriptions
 			for floor_index in room_config.floor.size():		
 				for ring_index in room_config.floor[floor_index].ring.size():
-					var floor_ring_designation:String = str(floor_index, ring_index)
-					for key in base_states.ring[floor_ring_designation].ability_on_cooldown:
-						if base_states.ring[floor_ring_designation].ability_on_cooldown[key] > 0:
-							base_states.ring[floor_ring_designation].ability_on_cooldown[key] -= 1
-							if base_states.ring[floor_ring_designation].ability_on_cooldown[key] == 0:
-								ToastContainer.add("[%s] is ready!" % [key])
-					
+					for room_index in room_config.floor[floor_index].ring[ring_index].size():
+						var room_designation:String = str(floor_index, ring_index, room_index)
+						for key in base_states.room[room_designation].ability_on_cooldown:
+							if base_states.room[room_designation].ability_on_cooldown[key] > 0:
+								base_states.room[room_designation].ability_on_cooldown[key] -= 1
+								if base_states.room[room_designation].ability_on_cooldown[key] == 0:
+									ToastContainer.add("[%s] is ready!" % [key])
 				
 			# update subscriptions
 			SUBSCRIBE.progress_data = progress_data
@@ -1879,7 +1881,7 @@ func set_room_config(force_setup:bool = false) -> void:
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
-		var ring_base_state:Dictionary = base_states.ring[str(floor, ring)]
+		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		# FIRST, set defaults
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
@@ -1887,19 +1889,14 @@ func set_room_config(force_setup:bool = false) -> void:
 				var ability:Dictionary = passive_abilities[ability_index]
 				var ability_uid:String = str(room_data.ref, ability_index)
 				# creates default state if it doesn't exist
-				if ability_uid not in ring_base_state.passives_enabled:
-					ring_base_state.passives_enabled[ability_uid] = false
+				if ability_uid not in room_base_state.passives_enabled:
+					room_base_state.passives_enabled[ability_uid] = false
 		# check for researcher and if they pair with the room to increasae the room level ability
 		for researcher in hired_lead_researchers_arr:
 			var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
 			var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
 			var specializations:Array = researcher_details.specializations
-			var has_pairing:bool = false
-			if "pairs_with" in room_data:
-				for spec in specializations:
-					if spec in room_data.pairs_with:
-						has_pairing = true
-						break
+			var has_pairing:bool = ROOM_UTIL.check_for_room_pair(item.ref, specializations)
 			if assigned_to_room == item.location and has_pairing:
 				room_config_data.ability_level = U.min_max(room_config_data.ability_level + 1, 0, 2)
 				
@@ -1909,7 +1906,7 @@ func set_room_config(force_setup:bool = false) -> void:
 		var ring:int = item.location.ring
 		var room:int = item.location.room
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
-		var ring_base_state:Dictionary = base_states.ring[str(floor, ring)]
+		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		# if passives are enabled...
@@ -1921,7 +1918,7 @@ func set_room_config(force_setup:bool = false) -> void:
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
 				var ability_level:int = room_config_data.ability_level
 				# check if passive is enabled
-				if ring_base_state.passives_enabled[ability_uid]:
+				if room_base_state.passives_enabled[ability_uid]:
 					# check if level is equal or less then what is required...
 					# aand check if check if enough energy available to power the passive
 					if ability.lvl_required <= ability_level and ring_config_data.energy.used < ring_config_data.energy.available:
@@ -1932,7 +1929,7 @@ func set_room_config(force_setup:bool = false) -> void:
 							for resource in ability.provides:
 								ring_config_data.available_resources[resource] = true
 					else:
-						ring_base_state.passives_enabled[ability_uid] = false
+						room_base_state.passives_enabled[ability_uid] = false
 
 	# go through once more to check if rooms can be activated if they have a resource requirement
 	# and add their metrics if they are

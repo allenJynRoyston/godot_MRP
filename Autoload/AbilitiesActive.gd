@@ -49,17 +49,19 @@ var unlock_facilities:Dictionary = {
 
 # ---------------------------------
 func get_ability(ref:REF) -> Dictionary:
+	var ability:Dictionary = {}
 	match ref:
 		REF.CONTAIN_SCP:
-			return contain_scp
+			ability = contain_scp
 		# -----------------------------
 		REF.HIRE_RESEARCHER:
-			return hire_researcher
+			ability = hire_researcher
 		REF.PROMOTE_RESEARCHER:
-			return promote_researchers
+			ability = promote_researchers
 		# -----------------------------
 		REF.UNLOCK_FACILITIES:
-			return unlock_facilities
-		_:
-			return {}
+			ability =  unlock_facilities
+	
+	ability.ref = ref
+	return ability
 	

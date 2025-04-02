@@ -123,7 +123,7 @@ var HQ:Dictionary = {
 
 	# --------------------------------------
 	"pairs_with": [
-		
+		RESEARCHER.SPECIALIZATION.ADMINISTRATION
 	],
 	
 	"metrics": {
@@ -195,8 +195,7 @@ var AQUISITION_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": false,
-	"requires_unlock": false,	
-	"own_limit": 1,
+	"requires_unlock": false,		
 	"build_time": 1,
 	# ------------------------------------------
 		
@@ -263,7 +262,6 @@ var R_AND_D_LAB:Dictionary = {
 	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
-	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
 		
@@ -314,8 +312,7 @@ var CONSTRUCTION_YARD:Dictionary = {
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": false,
-	"requires_unlock": false,	
-	"own_limit": 1,
+	"requires_unlock": false,		
 	"build_time": 1,
 	"resource_requirements": [
 		RESOURCE.TYPE.SECURITY
@@ -360,8 +357,7 @@ var BARRICKS:Dictionary = {
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": false,
-	"requires_unlock": false,	
-	"own_limit": 1,
+	"requires_unlock": false,		
 	"build_time": 1,
 	"resource_requirements": [],	
 	# ------------------------------------------
@@ -404,8 +400,7 @@ var DORMITORY:Dictionary = {
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": false,
-	"requires_unlock": false,	
-	"own_limit": 1,
+	"requires_unlock": false,		
 	"build_time": 1,
 	# ------------------------------------------
 		
@@ -447,8 +442,7 @@ var HOLDING_CELLS:Dictionary = {
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": false,
-	"requires_unlock": false,	
-	"own_limit": 1,
+	"requires_unlock": false,		
 	"build_time": 1,
 	# ------------------------------------------
 	
@@ -491,7 +485,6 @@ var HR_DEPARTMENT:Dictionary = {
 	"can_contain": false,
 	"can_destroy": false,
 	"requires_unlock": false,	
-	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
 		
@@ -533,8 +526,7 @@ var HUME_DETECTOR:Dictionary = {
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": false,
-	"requires_unlock": false,	
-	"own_limit": 1,
+	"requires_unlock": false,		
 	"build_time": 1,
 	# ------------------------------------------
 
@@ -570,7 +562,6 @@ var CONTAINMENT_CELL:Dictionary = {
 	"can_contain": true,
 	"can_destroy": false,
 	"requires_unlock": false,	
-	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
 	
@@ -632,8 +623,7 @@ var ENGINEERING_BAY:Dictionary = {
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": false,
-	"requires_unlock": false,	
-	"own_limit": 2,
+	"requires_unlock": false,		
 	"build_time": 1,
 	"resource_requirements": [
 		# RESOURCE.TYPE.TECHNICIANS
@@ -817,6 +807,18 @@ func return_operating_cost(ref:ROOM.TYPE) -> Array:
 # ------------------------------------------------------------------------------
 func return_activation_cost(ref:ROOM.TYPE) -> Array:
 	return SHARED_UTIL.return_resource_list(return_data(ref), "activation_cost")
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func check_for_room_pair(ref:ROOM.TYPE, specializations:Array) -> bool:
+	var room_data:Dictionary = return_data(ref)
+	var has_pairing:bool = false
+	if "pairs_with" in room_data:
+		for spec in specializations:
+			if spec in room_data.pairs_with:
+				has_pairing = true
+				break	
+	return has_pairing
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

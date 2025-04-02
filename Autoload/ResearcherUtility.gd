@@ -227,7 +227,7 @@ var trait_data: Dictionary = {
 	},
 	RESEARCHER.TRAITS.SCIENTIFIC: {
 		"name": "SCIENTIFIC",
-		"description": "Converts facility FUNDING into SCIENCE.",
+		"description": "Converts FUNDING into SCIENCE.",
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			if config_data.room_data.is_empty():
@@ -334,7 +334,7 @@ var trait_data: Dictionary = {
 	},
 	RESEARCHER.TRAITS.EXTROVERT: {
 		"name": "EXTROVERT",
-		"description": "Produces SCIENCE and FUNDING if the researcher not alone.",
+		"description": "Produces SCIENCE and FUNDING if the researcher is not alone.",
 		"icon": SVGS.TYPE.ENERGY,
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
@@ -560,7 +560,7 @@ func get_user_object(val:Array) -> Dictionary:
 		"uid": uid_val,
 		"name": "%s" % [lname],
 		"img_src": img_src,
-		"traits": [RESEARCHER.TRAITS.COWARD], #traits,
+		"traits": traits,
 		"specializations": specializations,
 		"r_val": r_val,
 		"l_val": l_val,

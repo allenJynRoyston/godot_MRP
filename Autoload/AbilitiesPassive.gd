@@ -14,6 +14,7 @@ enum REF {
 # ---------------------------------
 var upgrade_abl_level:Dictionary = {
 	"name": "ABL LVL +1",
+	"lvl_required": 0,
 	"energy_cost": 4,
 	"conditional": func(gpc:Dictionary) -> Dictionary:
 		gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = 1
@@ -72,25 +73,22 @@ var memetic_shielding:Dictionary = {
 
 # ---------------------------------
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
+	var ability:Dictionary = {}
 	match ref:
 		REF.UPGRADE_ABL_LVL:
-			upgrade_abl_level.lvl_required = lvl_required
-			return upgrade_abl_level
+			ability = upgrade_abl_level
 		REF.SUPPLY_SECURITY:
-			supply_security.lvl_required = lvl_required
-			return supply_security
+			ability = supply_security
 		REF.SUPPLY_STAFF:
-			supply_staff.lvl_required = lvl_required
-			return supply_staff
+			ability = supply_staff
 		REF.SUPPLY_TECHNICIANS:
-			supply_technicians.lvl_required = lvl_required
-			return supply_technicians
+			ability = supply_technicians
 		REF.SUPPLY_DCLASS:
-			supply_dclass.lvl_required = lvl_required
-			return supply_dclass
+			ability = supply_dclass
 		REF.MEMETIC_SHILEDING:
-			memetic_shielding.lvl_required = lvl_required
-			return memetic_shielding
-		_:
-			return {}
+			ability = memetic_shielding
+	
+	ability.ref = ref
+	ability.lvl_required = lvl_required
+	return ability
 	

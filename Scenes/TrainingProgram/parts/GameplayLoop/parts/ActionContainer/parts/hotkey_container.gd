@@ -2,7 +2,8 @@
 extends PanelContainer
 
 @onready var RootPanel:Control = $"."
-@onready var ShortcutBtnGrid:GridContainer = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutBtnGrid
+@onready var ShotcutPanel:PanelContainer = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShotcutPanel
+@onready var ShortcutBtnGrid:GridContainer = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShotcutPanel/MarginContainer/VBoxContainer/ShortcutBtnGrid
 
 #@onready var ShortcutToggleBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2/ShortcutToggleBtn
 @onready var ClearBtn:BtnBase = $VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2/ClearBtn
@@ -153,11 +154,11 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 # --------------------------------------------------------------------------------------------------
 func on_showkeys_update() -> void:
 	if !is_node_ready():return
-	ShowToggleBtn.title = "SHOW" if !show_hotkeys else "HIDE"
+	#ShowToggleBtn.title = "HOTKEYS" if !show_hotkeys else "HOTKEYS"
 	ShowToggleBtn.icon = SVGS.TYPE.CHECKBOX if show_hotkeys else SVGS.TYPE.EMPTY_CHECKBOX
 	ClearBtn.show() if show_hotkeys else ClearBtn.hide()
 	#ShortcutToggleBtn.show() if show_hotkeys else ShortcutToggleBtn.hide()
-	ShortcutBtnGrid.show() if show_hotkeys else ShortcutBtnGrid.hide()
+	ShotcutPanel.show() if show_hotkeys else ShotcutPanel.hide()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -171,7 +172,7 @@ func on_selected_index_update() -> void:
 func enable_assign_mode(state:bool) -> void:
 	ClearBtn.hide() 
 	ShowToggleBtn.hide() if state else ShowToggleBtn.show()
-	ShortcutBtnGrid.show() if state else ShortcutBtnGrid.show() if show_hotkeys else ShortcutBtnGrid.hide()
+	ShotcutPanel.show() if state else ShotcutPanel.show() if show_hotkeys else ShotcutPanel.hide()
 	#ShortcutToggleBtn.show() if state else ShortcutToggleBtn.hide()
 	show() if state else hide()
 # --------------------------------------------------------------------------------------------------	
