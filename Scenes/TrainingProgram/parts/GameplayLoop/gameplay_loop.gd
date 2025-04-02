@@ -649,7 +649,7 @@ func start_new_game() -> void:
 	await U.set_timeout(1.0)
 	setup_complete = true
 	
-	set_room_config()	
+	update_room_config()	
 	current_phase = PHASE.PLAYER
 
 
@@ -1221,32 +1221,32 @@ func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals)
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
 	if setup_complete:
-		U.debounce("set_room_config", set_room_config)
+		U.debounce("update_room_config", update_room_config)
 
 func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	base_states = new_val
 	if setup_complete:
-		U.debounce("set_room_config", set_room_config)
+		U.debounce("update_room_config", update_room_config)
 		
 func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
 	purchased_facility_arr = new_val	
 	if setup_complete:
-		U.debounce("set_room_config", set_room_config)
+		U.debounce("update_room_config", update_room_config)
 	
 func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 	purchased_base_arr = new_val	
 	if setup_complete:
-		U.debounce("set_room_config", set_room_config)
+		U.debounce("update_room_config", update_room_config)
 
 func on_timeline_array_update(new_val:Array = timeline_array) -> void:
 	timeline_array = new_val	
 	if setup_complete:
-		U.debounce("set_room_config", set_room_config)
+		U.debounce("update_room_config", update_room_config)
 
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
 	if setup_complete:
-		U.debounce("set_room_config", set_room_config)
+		U.debounce("update_room_config", update_room_config)
 
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1839,7 +1839,7 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 # ------------------------------------------------------------------------------
 # NOTE: THIS IS THE MAIN LOGIC THAT HAPPENS WHEN GAMEPLAY ESSENTIAL DATA IS UPDATED
 # ------------------------------------------------------------------------------
-func set_room_config(force_setup:bool = false) -> void:
+func update_room_config(force_setup:bool = false) -> void:
 	if !setup_complete:return
 	const energy_levels:Array = [5, 10, 15, 20, 25]
 	# grab default values
@@ -1863,17 +1863,7 @@ func set_room_config(force_setup:bool = false) -> void:
 					RESOURCE.BASE_METRICS.READINESS: 0
 				}
 
-	# FIRST, add any contained items to the config
-	for item in scp_data.contained_list:
-		var floor:int = item.location.floor
-		var ring:int = item.location.ring
-		var room:int = item.location.room	
-		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		room_config_data.scp_data = {
-			"ref": item.ref
-		}
-
-	# NEXT, RESET all passive enables, check for assigned researchers and add to ability level
+	# FIRST, RESET all passive enables, check for assigned researchers and add to ability level
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
@@ -1981,6 +1971,34 @@ func set_room_config(force_setup:bool = false) -> void:
 
 		ring_config_data.metrics = metric_defaults[floor_ring_designation]
 
+	# CALCULATE CONTAINED SCP, add any contained items to the config
+	for item in scp_data.contained_list:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room	
+		var floor_ring_designation:String = str(floor, ring)		
+		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
+		var is_contained:bool = true
+		
+		for ref in [RESOURCE.BASE_METRICS.MORALE, RESOURCE.BASE_METRICS.SAFETY, RESOURCE.BASE_METRICS.READINESS]:
+			var current_amount:int = ring_config_data.metrics[ref]
+			var threshold_amount:int = scp_details.effects.metrics[ref]
+			if current_amount < threshold_amount:
+				is_contained = false
+				break
+		
+		# call their effects
+		if is_contained:
+			new_room_config = scp_details.effects.contained.effect.call(new_room_config, item.location)
+		else:
+			new_room_config = scp_details.effects.uncontained.effect.call(new_room_config, item.location)
+		
+		# first, add this to the config
+		room_config_data.scp_data = {
+			"ref": item.ref
+		}
 
 	
 	# checks for any conditioals triggers by built room combonations:

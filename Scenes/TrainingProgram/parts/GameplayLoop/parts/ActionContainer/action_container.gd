@@ -600,6 +600,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 	if is_powered:
 		for room_ref in extract_wing_data.abilities:
 			var abilities:Array = extract_wing_data.abilities[room_ref]
+			
 			for index in abilities.size():
 				var ability:Dictionary = abilities[index]
 				var include:bool = true if !room_only else current_location.room == ability.room_index

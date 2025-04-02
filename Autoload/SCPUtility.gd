@@ -6,7 +6,7 @@ var SCP_001:Dictionary = {
 	"name": "SCP-XX1",
 	"nickname": "THE DOOR",
 	"img_src": "res://Media/scps/the_door.png",
-	"quote": "Quote goes here.",
+	"quote": "How many of you exist now?  Like six?",
 	# -----------------------------------
 	
 	# -----------------------------------	
@@ -31,14 +31,28 @@ var SCP_001:Dictionary = {
 			RESOURCE.BASE_METRICS.READINESS: 2
 		},
 		"contained": {
-			"description": "Supplies all resources.", 
-			"effect": func() -> void:
-				pass,
+			"description": "All resources are available.", 
+			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
+				ring_config_data.available_resources = {
+					RESOURCE.TYPE.TECHNICIANS: true,
+					RESOURCE.TYPE.STAFF: true,
+					RESOURCE.TYPE.SECURITY: true,
+					RESOURCE.TYPE.DCLASS: true
+				}
+				return new_room_config,
 		},
 		"uncontained": {
-			"description": "Removes all resources.",
-			"effect": func() -> void:
-				pass,			
+			"description": "Makes resources unusable.",
+			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
+				ring_config_data.available_resources = {
+					RESOURCE.TYPE.TECHNICIANS: false,
+					RESOURCE.TYPE.STAFF: false,
+					RESOURCE.TYPE.SECURITY: false,
+					RESOURCE.TYPE.DCLASS: false
+				}
+				return new_room_config,
 		}
 		#"containment_requirements": {
 			#"metrics":{

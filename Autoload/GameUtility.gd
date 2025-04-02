@@ -157,14 +157,15 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 			if room_config_data.is_activated:
 				var room_details:Dictionary = room_config_data.room_data.details
 				
-				abilities[room_details.ref] = []
-				passive_abilities[room_details.ref] = []
+				abilities[designation] = []
+				passive_abilities[designation] = []
 				
 				if "abilities" in room_details:
 					var ability_list:Array = room_details.abilities.call()
+			
 					for index in ability_list.size():
 						#if index <= ring_ability_level:
-						abilities[room_details.ref].push_back({
+						abilities[designation].push_back({
 							"room_index": room_index,
 							"index": index, 
 							"lvl_required": ability_list[index].lvl_required, 
@@ -175,13 +176,13 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 					var ability_list:Array = room_details.passive_abilities.call()
 					for index in ability_list.size():
 						#if index <= ring_ability_level:
-						passive_abilities[room_details.ref].push_back({
+						passive_abilities[designation].push_back({
 							"room_index": room_index,
 							"index": index, 
 							"lvl_required": ability_list[index].lvl_required, 
 							"details": ability_list[index]
 						})
-	
+
 	return {
 		"room_refs": wing_data.room_refs,
 		"abilities": abilities,
@@ -671,7 +672,6 @@ func contain_scp() -> bool:
 			#["type/event_id"]: count[int]
 		},
 	})
-	print(scp_data.contained_list)
 
 	SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
 	SUBSCRIBE.scp_data = scp_data

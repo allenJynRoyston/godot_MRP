@@ -140,22 +140,24 @@ func on_ref_update() -> void:
 				Readiness.value = amount
 				if RESOURCE.BASE_METRICS.READINESS in current_metrics:
 					Readiness.is_negative = current_metrics[RESOURCE.BASE_METRICS.READINESS] < amount
-	
 	var has_negative:bool = false
 	for node in [Morale, Readiness, Safety]:
 		if node.is_negative:
 			has_negative = true
 			break
-	
-	ContainedEffect.modulate = Color(1, 1, 1, 0.7 if has_negative else 1)
-	UnContainedEffect.modulate = Color(1, 1, 1, 1 if has_negative else 0.7)
+			
+	print(has_negative)
+	ContainedEffect.modulate = Color(1, 1, 1, 0.5 if has_negative else 1)
+	UnContainedEffect.modulate = Color(1, 1, 1, 1 if has_negative else 0.5)
 
 
 	ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
 	DesignationLabel.text = scp_data.name
 	NicknameLabel.text = '"%s"' % [scp_data.nickname]
 	ItemClassLabel.text = scp_data.item_class.call()
-	QuoteLabel.text = scp_data.quote
+	QuoteLabel.text = '"%s"' % scp_data.quote
+	ContainedDescriptionLabel.text = scp_data.effects.contained.description
+	UncontainedDescriptionLabel.text = scp_data.effects.uncontained.description
 
 	for reward in rewards:
 		var btn_node:BtnBase = TextBtnPreload.instantiate()
