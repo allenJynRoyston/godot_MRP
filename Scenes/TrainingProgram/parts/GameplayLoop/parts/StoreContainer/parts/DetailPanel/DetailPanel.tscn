@@ -97,9 +97,12 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
-[node name="EffectList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+[node name="MetricList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
 layout_mode = 2
-theme_override_constants/separation = 0
+
+[node name="ResourceGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+layout_mode = 2
+columns = 2
 
 [node name="Syncs" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
@@ -117,3 +120,37 @@ theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 [node name="SyncList" type="GridContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
 layout_mode = 2
 size_flags_horizontal = 8
+columns = 2
+
+[node name="ActiveAbilities" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
+layout_mode = 2
+text = "ABILITIES"
+label_settings = ExtResource("1_4rx15")
+horizontal_alignment = 2
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
+
+[node name="ActiveAbilitiesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PassiveAbilities" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
+layout_mode = 2
+text = "PASSIVE ABILITIES"
+label_settings = ExtResource("1_4rx15")
+horizontal_alignment = 2
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
+
+[node name="PassiveAbilitiesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
+layout_mode = 2

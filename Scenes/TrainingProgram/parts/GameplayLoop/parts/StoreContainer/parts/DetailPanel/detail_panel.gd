@@ -4,9 +4,17 @@ extends PanelContainer
 @onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/SynergyContainer/Description/DescriptionLabel
 @onready var ProfileImage:TextureRect = $MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport/ProfileImage
 @onready var Effects:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/Effects
-@onready var EffectsList:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/Effects/EffectList
+@onready var ResourceGrid:GridContainer = $MarginContainer/VBoxContainer/SynergyContainer/Effects/ResourceGrid
+@onready var MetricsList:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/Effects/MetricList
+
 @onready var Syncs:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/Syncs
 @onready var SyncList:GridContainer = $MarginContainer/VBoxContainer/SynergyContainer/Syncs/SyncList
+
+@onready var ActiveAbilites:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities
+@onready var ActiveAbilitiesList:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities/ActiveAbilitiesList
+
+@onready var PassiveAbilities:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities
+@onready var PassiveAbilitiesList:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities/PassiveAbilitiesList
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -48,10 +56,66 @@ func on_ref_update() -> void:
 	DescriptionLabel.text = room_details.description if !is_locked else "(Viewable with AQUISITION DEPARTMENT.)"
 	ProfileImage.texture = CACHE.fetch_image(room_details.img_src if !is_locked else "")
 	
-	for node in [EffectsList, SyncList]:
+	for node in [MetricsList, ResourceGrid, SyncList, ActiveAbilitiesList, PassiveAbilitiesList]:
 		for child in node.get_children():
 			child.queue_free()
-
+	
+	for item in ROOM_UTIL.return_pairs_with_details(room_details.ref):
+		var btn_node:Control = TextBtnPreload.instantiate()
+		btn_node.is_hoverable = false
+		btn_node.title = item.name
+		btn_node.icon = item.icon
+		btn_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		SyncList.add_child(btn_node)
+	
+	if "abilities" in room_details:
+		var abilities:Array = room_details.abilities.call()
+		for ability_index in abilities.size():
+			var ability:Dictionary = abilities[ability_index]
+			var btn_node:Control = TextBtnPreload.instantiate()
+			btn_node.title = "Lvl-%s  %s" % [ability.lvl_required, ability.name]
+			btn_node.icon = SVGS.TYPE.NONE
+			ActiveAbilitiesList.add_child(btn_node)
+			ActiveAbilites.show()
+	else:
+		ActiveAbilites.hide()
+			
+	if "passive_abilities" in room_details:
+		var passive_abilities:Array = room_details.passive_abilities.call()
+		for ability_index in passive_abilities.size():
+			var ability:Dictionary = passive_abilities[ability_index]
+			var btn_node:Control = TextBtnPreload.instantiate()
+			btn_node.title = "Lvl-%s  %s" % [ability.lvl_required, ability.name]
+			btn_node.icon = SVGS.TYPE.NONE
+			PassiveAbilitiesList.add_child(btn_node)			
+			PassiveAbilities.show()
+	else:
+		PassiveAbilities.hide()
+	
+	var is_activated:bool = true
+	var operating_costs:Array = ROOM_UTIL.return_operating_cost(ref)	
+	var resource_list:Array = operating_costs.filter(func(i):return i.type == "amount") if is_activated else []
+	var metric_list:Array = operating_costs.filter(func(i):return i.type == "metrics") if is_activated else []
+	
+	ResourceGrid.columns = U.min_max(resource_list.size(), 1, 2)
+	
+	for item in resource_list:
+		var new_btn:Control = TextBtnPreload.instantiate()
+		new_btn.is_hoverable = false
+		new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		new_btn.icon = item.resource.icon
+		new_btn.title = "%s%s" % ["+" if item.amount > 0 else "", item.amount]
+		ResourceGrid.add_child(new_btn)
+		
+	for item in metric_list:
+		if item.type == "metrics":
+			var new_btn:Control = TextBtnPreload.instantiate()
+			new_btn.is_hoverable = false
+			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			new_btn.icon = item.resource.icon
+			new_btn.title = "%s%s %s" % ["+" if item.amount > 0 else "", item.amount, item.resource.name]
+			MetricsList.add_child(new_btn)		
+			
 	## TODO FIND MORE RELIABLE WAY TO GET THE NUMBERS HERE
 	#var activation_effects:Array = [] #ROOM_UTIL.return_activation_effect(item.ref)		
 	#Effects.hide() if is_locked or activation_effects.is_empty() else Effects.show()

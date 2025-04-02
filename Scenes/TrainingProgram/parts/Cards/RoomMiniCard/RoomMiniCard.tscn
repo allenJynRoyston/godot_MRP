@@ -22,7 +22,7 @@ bg_color = Color(0, 0, 0, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xsj30"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iq6ti"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_13kr7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="RoomMiniCard" type="PanelContainer"]
@@ -97,7 +97,7 @@ columns = 2
 
 [node name="TextBtn" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/ResourceGrid" instance=ExtResource("4_ksj6n")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_iq6ti")
+theme_override_styles/panel = SubResource("StyleBoxFlat_13kr7")
 
 [node name="NoBonusLabel" type="Label" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
 layout_mode = 2

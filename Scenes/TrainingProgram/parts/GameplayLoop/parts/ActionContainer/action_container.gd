@@ -709,20 +709,20 @@ func show_passives(skip_animation:bool = false) -> void:
 		BackBtn.show()		
 		on_current_location_update()		
 
-	for room_ref in extract_wing_data.passive_abilities:
-		var abilities:Array = extract_wing_data.passive_abilities[room_ref]
+	for key in extract_wing_data.passive_abilities:
+		var abilities:Array = extract_wing_data.passive_abilities[key]
 		for index in abilities.size():
 			var ability:Dictionary = abilities[index]
 			var include:bool = true if !room_only else current_location.room == ability.room_index
 			if active_menu_index == ability.lvl_required and include:
 				var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
-				var funcs:Dictionary = passive_funcs(room_ref, ability.index, use_location)
+				var funcs:Dictionary = passive_funcs(ability.room_ref, ability.index, use_location)
 				var get_not_ready_func:Callable = funcs.get_not_ready_func
 				var get_icon_func:Callable = funcs.get_icon_func
 				var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
 				options.push_back({
 					"shortcut_data": {
-						"room_ref": room_ref, 
+						"room_ref": ability.room_ref, 
 						"index": index, 
 						"type": MENU_TYPE.PASSIVES,
 						"use_location": use_location, 
@@ -736,12 +736,12 @@ func show_passives(skip_animation:bool = false) -> void:
 					"get_disabled_state": get_not_ready_func,
 					"get_checked_state": funcs.get_checked,
 					"action": func() -> void:
-						var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability.index)
+						var is_checked:bool = GAME_UTIL.get_passive_ability_state(ability.room_ref, ability.index)
 						var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
 						var energy_remaining:int = energy.available - energy.used
 						var has_enough:bool = energy_remaining - energy_cost >= 0
 						if !has_enough and !is_checked:return
-						GAME_UTIL.toggle_passive_ability(room_ref, ability.index),
+						GAME_UTIL.toggle_passive_ability(ability.room_ref, ability.index),
 					"onSelect": func(index:int) -> void:
 						await options[index].action.call(),
 				})				

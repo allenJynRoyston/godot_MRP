@@ -166,6 +166,7 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 					for index in ability_list.size():
 						#if index <= ring_ability_level:
 						abilities[designation].push_back({
+							"room_ref": room_details.ref,
 							"room_index": room_index,
 							"index": index, 
 							"lvl_required": ability_list[index].lvl_required, 
@@ -177,12 +178,13 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 					for index in ability_list.size():
 						#if index <= ring_ability_level:
 						passive_abilities[designation].push_back({
+							"room_ref": room_details.ref,
 							"room_index": room_index,
 							"index": index, 
 							"lvl_required": ability_list[index].lvl_required, 
 							"details": ability_list[index]
 						})
-
+	print(abilities)
 	return {
 		"room_refs": wing_data.room_refs,
 		"abilities": abilities,

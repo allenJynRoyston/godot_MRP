@@ -810,6 +810,17 @@ func return_activation_cost(ref:ROOM.TYPE) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func return_pairs_with_details(ref:ROOM.TYPE) -> Array:
+	var room_data:Dictionary = return_data(ref)
+	var arr:Array = []
+	if "pairs_with" in room_data:
+		for spec in room_data.pairs_with:
+			arr.push_back(RESEARCHER_UTIL.return_specialization_data(spec))
+	return arr
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
 func check_for_room_pair(ref:ROOM.TYPE, specializations:Array) -> bool:
 	var room_data:Dictionary = return_data(ref)
 	var has_pairing:bool = false
