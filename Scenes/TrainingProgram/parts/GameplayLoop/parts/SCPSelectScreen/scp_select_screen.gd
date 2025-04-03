@@ -100,7 +100,7 @@ func start_read_only(new_refs:Array) -> void:
 # -----------------------------------------------	
 
 # -----------------------------------------------
-func end(made_selection:bool) -> void:	
+func end(made_selection:bool, selected_scp:int = -1) -> void:	
 	for btn in [SelectScp, ConfirmScp, DetailsBtn, BackBtn]:
 		btn.is_disabled = true
 					
@@ -109,7 +109,7 @@ func end(made_selection:bool) -> void:
 	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
 	
 	current_mode = MODE.HIDE	
-	user_response.emit(made_selection)
+	user_response.emit({"made_selection": made_selection, "selected_scp": selected_scp})
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -341,21 +341,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.FINALIZE:
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
 			await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0 if skip_animation else 0.3)			
-
-			# update scp data
-			scp_data.available_list.push_back({
-				"ref": selected_scp, 
-				"is_new": true,
-				"transfer_status": {
-					"state": false, 
-					"days_till_complete": -1,
-					"location": {}
-				}
-			})
-
-			# subscribe
-			SUBSCRIBE.scp_data = scp_data
-			end(true)
+			end(true, selected_scp)
 	
 	await U.set_timeout(0.3)
 	is_animating = false

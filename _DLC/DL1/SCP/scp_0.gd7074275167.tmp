@@ -1,0 +1,6 @@
+extends Node
+
+enum SCP_REFS {
+	REF_A = 0, 
+	REF_B = 1
+}

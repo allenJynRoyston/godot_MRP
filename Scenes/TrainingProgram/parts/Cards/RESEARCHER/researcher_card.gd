@@ -7,6 +7,9 @@ extends MouseInteractions
 @onready var Front:VBoxContainer = $SubViewport/PanelContainer/Front
 @onready var Back:VBoxContainer = $SubViewport/PanelContainer/Back
 
+@onready var AttachedAtControl:Control = $AttachedAt
+@onready var AttachedLabel:Label = $AttachedAt/PanelContainer/MarginContainer/VBoxContainer/Label
+
 @onready var LevelLabel:Label = $SubViewport/PanelContainer/Front/Image/PanelContainer/MarginContainer/HBoxContainer/LevelLabel
 @onready var ProfileImage:TextureRect = $SubViewport/PanelContainer/Front/Image
 @onready var NameLabel:Label = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Name/NameLabel
@@ -140,6 +143,13 @@ func on_researcher_details_update() -> void:
 	NameLabel.text = researcher_details.name
 	ProfileImage.texture = CACHE.fetch_image(researcher_details.img_src)
 	LevelLabel.text = str(researcher_details.level + 1 if promotion_preview else 0)
+	
+	AttachedAtControl.hide() if researcher_details.props.assigned_to_room.is_empty() else AttachedAtControl.show()
+	if !researcher_details.props.assigned_to_room.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
+		if extract_data.is_empty():return
+		AttachedLabel.text = "WORKING AT [%s]" % [extract_data.room.details.name]
+
 	
 	for spec_id in researcher_details.specializations:
 		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)

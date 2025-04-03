@@ -137,7 +137,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
 [node name="ActiveAbilitiesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
 
 [node name="PassiveAbilities" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
@@ -154,3 +154,4 @@ theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
 [node name="PassiveAbilitiesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
 layout_mode = 2
+theme_override_constants/separation = 5

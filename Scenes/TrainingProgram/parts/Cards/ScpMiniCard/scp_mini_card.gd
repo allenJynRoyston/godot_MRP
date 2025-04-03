@@ -29,13 +29,10 @@ func on_ref_update() -> void:
 	for node in [ResourceGrid, MetricsList]:	
 		for child in node.get_children():
 			child.queue_free()
+
+	ResourceGrid.columns = U.min_max(operating_costs.size(), 1, 2)
 	
-	var resource_list:Array = operating_costs.filter(func(i):return i.type == "amount")
-	var metric_list:Array = operating_costs.filter(func(i):return i.type == "metrics")
-	
-	ResourceGrid.columns = U.min_max(resource_list.size(), 1, 2)
-	
-	for item in resource_list:
+	for item in operating_costs:
 		var new_btn:Control = TextBtnPreload.instantiate()
 		new_btn.is_hoverable = false
 		new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -43,18 +40,9 @@ func on_ref_update() -> void:
 		new_btn.title = "%s%s" % ["+" if item.amount > 0 else "", item.amount]
 		ResourceGrid.add_child(new_btn)
 		
-	for item in metric_list:
-		if item.type == "metrics":
-			var new_btn:Control = TextBtnPreload.instantiate()
-			new_btn.is_hoverable = false
-			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			new_btn.icon = item.resource.icon
-			new_btn.title = "%s%s %s" % ["+" if item.amount > 0 else "", item.amount, item.resource.name]
-			MetricsList.add_child(new_btn)
-			
-	ResourceGrid.hide() if resource_list.is_empty() else ResourceGrid.show()
-	MetricsList.hide() if metric_list.is_empty() else MetricsList.show()
-	NoBonusLabel.show() if resource_list.is_empty() and metric_list.is_empty() else NoBonusLabel.hide()
+
+	ResourceGrid.hide() if operating_costs.is_empty() else ResourceGrid.show()
+	NoBonusLabel.show() if operating_costs.is_empty() else NoBonusLabel.hide()
 
 func on_details_update() -> void:
 	if !is_node_ready():return

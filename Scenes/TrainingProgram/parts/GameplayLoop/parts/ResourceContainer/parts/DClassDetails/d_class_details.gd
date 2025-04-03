@@ -103,44 +103,7 @@ func build_list() -> void:
 	for node in [CapacityList, UtilizedList]:
 		for child in node.get_children():
 			child.queue_free()			
-			
-	# --- SEARCHES PURCHASED FACILITIES FOR CAPACITY 	
-	#for item in purchased_facility_arr:
-		## TODO FIND MORE RELIABLE WAY TO GET THE NUMBERS HERE
-		#var list:Array = [] #ROOM_UTIL.return_activation_effect(item.ref)
-		#var details:Dictionary = ROOM_UTIL.return_data(item.ref)
-		#for i in list:
-			#if i.resource.ref == RESOURCE.TYPE.DCLASS and i.type == "capacity":
-				#var new_node:BtnBase = DetailBtnPreload.instantiate()
-				#var designation:String = U.location_to_designation(item.location)
-				#var is_activated:bool = base_states.room[designation].is_activated
-				#
-				##var designation:String = item
-				#new_node.title = details.name
-				#new_node.icon = i.resource.icon if is_activated else SVGS.TYPE.NO_ELECTRICITY
-				#new_node.amount = ("%s%s" % ["+" if i.amount >= 0 else "-", i.amount]) if is_activated else 0
-##
-				#new_node.onClick = func() -> void:
-					#SUBSCRIBE.current_location = item.location.duplicate()
-#
-				#CapacityList.add_child(new_node)	#
 
-	# --- SEARCHES SCPS FOR CAPACITY 
-	for item in scp_data.contained_list:
-		var list_data:Array = SCP_UTIL.return_initial_containment_rewards(item.ref)
-		var details:Dictionary = SCP_UTIL.return_data(item.ref)
-		for i in list_data:
-			if i.resource.ref == RESOURCE.TYPE.DCLASS and i.type == "capacity":
-				var new_node:BtnBase = DetailBtnPreload.instantiate()
-				new_node.title = "%s" % [details.name]
-				new_node.icon = i.resource.icon
-				new_node.amount = "%s%s" % ["+" if i.amount >= 0 else "-", i.amount]
-				
-				new_node.onClick = func() -> void:
-					# TODO: bug is here - only links to the correct location once you've seen the rooms for some reason
-					SUBSCRIBE.current_location = item.location.duplicate()
-
-				CapacityList.add_child(new_node)
 				
 	for item in timeline_array:
 		if "props" in item and "utilized_amounts" in item.props:
@@ -158,22 +121,3 @@ func build_list() -> void:
 
 					UtilizedList.add_child(new_node)
 	
-	
-	# --- SEARCHES FOR ACTIVATED ROOMS 
-	#traverse(func(room_config_data:Dictionary, location:Dictionary) -> void:
-		#var room_base_state:Dictionary = base_states.room[U.location_to_designation(location)]
-		#if !room_config_data.room_data.is_empty() and room_base_state.is_activated:
-			#var room_details:Dictionary = room_config_data.room_data.details
-			#var activation_costs:Array = ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref)
-			#for item in activation_costs:
-				#if item.resource.ref == RESOURCE.TYPE.STAFF:
-					#var new_node:BtnBase = DetailBtnPreload.instantiate()
-					#new_node.title = "%s" % [room_details.name]
-					#new_node.icon = SVGS.TYPE.STAFF
-					#new_node.amount = "%s%s" % ["+" if item.amount >= 0 else "-", item.amount]
-					#
-					#new_node.onClick = func() -> void:
-						#SUBSCRIBE.current_location = location.duplicate()
-#
-					#UtilizedList.add_child(new_node)
-	#)		

@@ -63,7 +63,7 @@ enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
 enum SUMMARY_STEPS {RESET, START, DISMISS}
 enum RESEARCHERS_STEPS {RESET, DETAILS_ONLY, ASSIGN, PROMOTE}
 enum EVENT_STEPS {RESET, START}
-enum SELECT_SCP_STEPS { RESET, START, DATABASE }
+enum SELECT_SCP_STEPS { RESET, START }
 enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
@@ -172,27 +172,8 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"scp_data": func() -> Dictionary:
 		return {
-			"available_list": [
-				#{
-					#"ref": SCP.TYPE.SCP_001, 
-					#"days_until_expire": 99, 
-					#"is_new": true,
-					#"transfer_status": {
-						#"state": false, 
-						#"days_till_complete": -1,
-						#"location": {}
-					#}
-				#},
-				#{
-					#"ref": SCP.TYPE.SCP_002, 
-					#"days_until_expire": 99, 
-					#"is_new": true,
-					#"transfer_status": {
-						#"state": false, 
-						#"days_till_complete": -1,
-						#"location": {}
-					#}
-				#}		
+			"available_refs": [
+				#	"ref0", "ref1", "ref2"
 			],
 			"contained_list": [
 				#{ 
@@ -823,114 +804,36 @@ func update_tenative_location(location:Dictionary) -> void:
 # -----------------------------------
 
 # -----------------------------------
-func get_self_ref_callable(scp_ref:int) -> Callable:
-	# setup self reference callables
-	return func() -> Dictionary:
-		return {
-			# get scp details
-			# -------------------------get_me
-			"details": SCP_UTIL.return_data(scp_ref),
-			# -------------------------
-			# get their contained_list details
-			"contained_list_details": func() -> Dictionary:
-				var res:Dictionary = GAME_UTIL.find_in_contained(scp_ref)
-				return {
-					"index": res.index,
-					"data": res.data
-				},
-			# -------------------------	
-			# return current researcher(s) attached to scp
-			"researcher_details": func() -> Array:
-				var res:Dictionary = GAME_UTIL.find_in_contained(scp_ref)
-				var room_extract:Dictionary = GAME_UTIL.extract_room_details(res.data.location)
-				return room_extract.researchers,
-			# -------------------------	
-			"progress_data": func() -> Dictionary:
-				return progress_data.duplicate(true),
-			# get a count of the current resources available
-			"resources_data": func() -> Dictionary:
-				return resources_data.duplicate(true),
-			# -------------------------	
-			# preform an action (like cancel transfer, stop reserach, etc)
-			"perform_action": func(action:int) -> void:
-				pass,
-				#match action:
-					#ACTION.CONTAINED.CANCEL_TRANSFER:
-						#var filtered_arr:Array = action_queue_data.filter(func(i): return i.ref == scp_ref and i.action == ACTION.AQ.TRANSFER)
-						#cancel_scp_transfer(scp_ref)
-						#remove_from_timeline(filtered_arr[0])
-				#pass,
-			# -------------------------	
-			# get counts for type (randomize, after_contained, etc)
-			"event_type_count": func(type:int, event_id:int) -> int:
-				var res:Dictionary = GAME_UTIL.find_in_contained(scp_ref)
-				var event_name:String = "%s%s" % [type, event_id]
-				return 0 if event_name not in res.data.event_type_count else res.data.event_type_count[event_name].count,
-			# -------------------------
-			# easy method to call when you want to add something to their unlockable
-			"add_unlockable": func(unlockable:SCP.UNLOCKABLE) -> void:
-				scp_data.contained_list = scp_data.contained_list.map(func(i): 
-					if i.ref == scp_ref:
-						var refs_arr:Array = i.unlocked.map(func(i): return i.ref)
-						if unlockable not in refs_arr:
-							i.unlocked.push_back({
-								"ref": unlockable
-							})
-					return i
-				)
-				scp_data = scp_data
-		}
-# -----------------------------------
-
-# -----------------------------------
-func check_events(ref:int, event_ref:SCP.EVENT_TYPE, skip_wait:bool = false) -> Dictionary:
-	var res:Dictionary = GAME_UTIL.find_in_contained(ref)
-	var index:int = res.index
-	var list_data:Dictionary = res.data
-	var event:Dictionary = SCP_UTIL.check_for_events(ref, event_ref, get_data_snapshot, get_self_ref_callable(ref))
-	var event_arr:Array = []
-	if !event.event_instructions.is_empty():
-		var event_id:int = event.event_id
-		
-		# add number of times an event has been triggered
-		var event_type_id:String = "%s%s" % [event_ref, event_id]
-		if event_type_id not in list_data.event_type_count:
-			scp_data.contained_list[index].event_type_count[event_type_id] = {
-				"count": 0
-			}
-		scp_data.contained_list[index].event_type_count[event_type_id].count += 1
-			
-		# update scp data first
-		SUBSCRIBE.scp_data = scp_data
-	
-		if !skip_wait:
-			await wait_please()
-		
-		event_data = [event]
-		return await on_events_complete
-		
-	return {}
-# -----------------------------------
-
-# -----------------------------------
-func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> void:
-	var res:Dictionary = GAME_UTIL.find_in_contained(ref)
-	var index:int = res.index
-	var list_data:Dictionary = res.data	
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(list_data.location)
-	
-	# add to testing count
-	if testing_ref not in list_data.testing_count:
-		list_data.testing_count[testing_ref] = 0 
-	list_data.testing_count[testing_ref] += 1
-	var test_count:int = list_data.testing_count[testing_ref]
-		
-	var event:Dictionary = SCP_UTIL.check_for_testing_events(ref, testing_ref, room_extract, test_count)
-	var event_arr:Array = []
-	if !event.event_instructions.is_empty():
-		event_data = [event]
+func check_events(ref:int, event_ref:SCP.EVENT_TYPE) -> void:
+	var res:Array = SCP_UTIL.check_for_events(ref, event_ref)
+	if !res.is_empty():
+		event_data = res
 		await on_events_complete
+	else:
+		restore_player_hud()
+		
+	await U.tick()
 # -----------------------------------
+
+## -----------------------------------
+#func check_testing_events(ref:int, testing_ref:SCP.TESTING) -> void:
+	#var res:Dictionary = GAME_UTIL.find_in_contained(ref)
+	#var index:int = res.index
+	#var list_data:Dictionary = res.data	
+	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(list_data.location)
+	#
+	## add to testing count
+	#if testing_ref not in list_data.testing_count:
+		#list_data.testing_count[testing_ref] = 0 
+	#list_data.testing_count[testing_ref] += 1
+	#var test_count:int = list_data.testing_count[testing_ref]
+		#
+	#var event:Dictionary = SCP_UTIL.check_for_testing_events(ref, testing_ref, room_extract, test_count)
+	#var event_arr:Array = []
+	#if !event.event_instructions.is_empty():
+		#event_data = [event]
+		#await on_events_complete
+## -----------------------------------
 
 # -----------------------------------
 func calculate_daily_costs(costs:Array) -> void:
@@ -1070,35 +973,6 @@ func execute_record_audit() -> void:
 # -----------------------------------
 
 # -----------------------------------
-func execute_random_scp_events() -> void:
-	# CHECK FOR RANDOMIZED EVENTS
-	var event_data_arr = []
-	for index in scp_data.contained_list.size():
-		var data:Dictionary = scp_data.contained_list[index]
-		var event_count:int = 0
-		var event_res:Dictionary = {}
-
-		if data.days_in_containment > 0:
-			# check for specific day event first...
-			event_res = await check_events(data.ref, SCP.EVENT_TYPE.DAY_SPECIFIC, true) 
-			if event_res.is_empty():event_count += 1
-				
-				# ... then check for testing events
-			if !data.current_testing.is_empty():
-				event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TESTING, true)	
-				if event_res.is_empty():event_count += 1
-				
-			# ... then check for transfer events
-			if data.transfer_status.state:	
-				event_res = await check_events(data.ref, SCP.EVENT_TYPE.DURING_TRANSFER, true)	
-				if event_res.is_empty():event_count += 1
-				
-			# ... then check for random events 
-			if event_count == 0:
-				await check_events(data.ref, SCP.EVENT_TYPE.RANDOM_EVENTS, true)
-# -----------------------------------
-
-# -----------------------------------
 func next_day() -> void:
 	current_phase = PHASE.RESOURCE_COLLECTION
 # -----------------------------------
@@ -1153,35 +1027,6 @@ func add_timeline_item(dict:Dictionary, props:Dictionary = {}) -> void:
 	SUBSCRIBE.timeline_array = timeline_array
 # -----------------------------------
 #endregion	
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------	
-#region SCP FUNCS (assign/unassign/dismiss, etc)
-# -----------------------------------
-func open_scp_database() -> bool:
-	SCPSelectScreen.start_read_only(scp_data.contained_list.map(func(i):return i.ref))
-	current_select_scp_step = SELECT_SCP_STEPS.DATABASE
-	return await on_scp_select_complete
-# -----------------------------------
-	
-# -----------------------------------
-func view_scp_details(ref) -> bool:
-	SCPSelectScreen.start_read_only([ref])
-	current_select_scp_step = SELECT_SCP_STEPS.DATABASE
-	return await on_scp_select_complete
-# -----------------------------------
-
-
-# -----------------------------------	
-func destroy_scp(selected_data:Dictionary) -> void:
-	pass
-# -----------------------------------	
-
-# -----------------------------------	
-func on_expired_scp_items_update() -> void:
-	pass
-# -----------------------------------	
-#endregion
 # ------------------------------------------------------------------------------	
 
 
@@ -1629,23 +1474,17 @@ func on_current_select_scp_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			
 			await show_only([SCPSelectScreen])			
-			var response:bool = await SCPSelectScreen.user_response
+			var response:Dictionary = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			#await restore_showing_state()	
+			
+			if response.made_selection:
+				scp_data.available_refs	= SCP_UTIL.get_next_available_refs(response.selected_scp)
+				SUBSCRIBE.scp_data = scp_data
+			
 			# trigger signal
 			on_scp_select_complete.emit(response)
 			current_select_scp_step = SELECT_SCP_STEPS.RESET
 		# ------------------------
-		SELECT_SCP_STEPS.DATABASE:			
-			SUBSCRIBE.suppress_click = true
-			
-			await show_only([SCPSelectScreen])			
-			var response:bool = await SCPSelectScreen.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			await restore_showing_state()	
-			# trigger signal
-			on_scp_select_complete.emit(response)
-			current_select_scp_step = SELECT_SCP_STEPS.RESET
 #endregion
 # ------------------------------------------------------------------------------	
 

@@ -194,6 +194,8 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 
 # ------------------------------------------------------------------------------
 func extract_room_details(use_location:Dictionary = current_location, use_config:Dictionary = room_config) -> Dictionary:
+	if use_config.is_empty():return {}
+	
 	var designation:String = U.location_to_designation(use_location)
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
@@ -276,173 +278,30 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	# get resources spent/added by rooms
 	if !is_room_empty:
 		for item in ROOM_UTIL.return_operating_cost(room_details.ref):
-			match item.type:
-				# -----------------------
-				"amount":
-					if item.resource.ref not in resource_details.room:
-						resource_details.room[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.facility:
-						resource_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.total:
-						resource_details.total[item.resource.ref] = 0
-					resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				# -----------------------
-				"metrics":
-					if item.resource.ref not in metric_details.room:
-						metric_details.room[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.facility:
-						metric_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.total:
-						metric_details.total[item.resource.ref] = 0
-
-					metric_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					metric_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-					metric_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+			if item.resource.ref not in resource_details.room:
+				resource_details.room[item.resource.ref] = 0
+			if item.resource.ref not in resource_details.facility:
+				resource_details.facility[item.resource.ref] = 0
+			if item.resource.ref not in resource_details.total:
+				resource_details.total[item.resource.ref] = 0
+			resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+			resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+			resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
 				
 	# get resources spent/added by scp
 	if !is_scp_empty:
 		for item in SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref):
-			match item.type:
-				# -----------------------
-				"amount":
-					if item.resource.ref not in resource_details.scp:
-						resource_details.scp[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.facility:
-						resource_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in resource_details.total:
-						resource_details.total[item.resource.ref] = 0
-						
-					resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
-					resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
-					resource_details.total[item.resource.ref] += item.amount if is_contained else 0
-				# -----------------------
-				"metrics":
-					if item.resource.ref not in metric_details.scp:
-						metric_details.scp[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.facility:
-						metric_details.facility[item.resource.ref] = 0
-					if item.resource.ref not in metric_details.total:
-						metric_details.total[item.resource.ref] = 0
+			if item.resource.ref not in resource_details.scp:
+				resource_details.scp[item.resource.ref] = 0
+			if item.resource.ref not in resource_details.facility:
+				resource_details.facility[item.resource.ref] = 0
+			if item.resource.ref not in resource_details.total:
+				resource_details.total[item.resource.ref] = 0
+				
+			resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
+			resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
+			resource_details.total[item.resource.ref] += item.amount if is_contained else 0
 
-					metric_details.scp[item.resource.ref] += item.amount if is_contained else 0
-					metric_details.facility[item.resource.ref] += item.amount if is_contained else 0
-					metric_details.total[item.resource.ref] += item.amount if is_contained else 0
-	
-
-
-	#for researcher in researchers:
-		## records researcher profession bonus (I.E. ECONOMIST, PSYCHOLOGIST, etc)
-		#if !is_room_empty:
-			#var spec_bonus:Array = ROOM_UTIL.return_specilization_bonus(room_details.ref, researcher.specializations)
-			#for item in spec_bonus:
-				#match item.type:
-					#"ap":
-					## -----------------------
-						#ap_diff_amount += item.amount
-					## -----------------------
-					#"resource":
-						#if item.resource.ref not in resource_details.researchers:
-							#resource_details.researchers[item.resource.ref] = 0
-						#if item.resource.ref not in resource_details.facility:
-							#resource_details.facility[item.resource.ref] = 0					
-						#if item.resource.ref not in resource_details.total:
-							#resource_details.total[item.resource.ref] = 0
-							#
-						#resource_details.researchers[item.resource.ref] += item.amount
-						#resource_details.facility[item.resource.ref] += item.amount
-						#resource_details.total[item.resource.ref] += item.amount
-					## -----------------------
-					#"metrics":
-						#if item.resource.ref not in metric_details.researchers:
-							#metric_details.researchers[item.resource.ref] = 0
-						#if item.resource.ref not in metric_details.facility:
-							#metric_details.facility[item.resource.ref] = 0					
-						#if item.resource.ref not in metric_details.total:
-							#metric_details.total[item.resource.ref] = 0
-							#
-						#metric_details.researchers[item.resource.ref] += item.amount
-						#metric_details.facility[item.resource.ref] += item.amount
-						#metric_details.total[item.resource.ref] += item.amount					
-#
-		## add selected to selected list	
-		#total_traits_list.push_back(researcher.traits)
-#
-	## records bonus from traits
-	#for traits in total_traits_list:
-		#for t in traits:
-			#if t not in dup_list:
-				#var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(t)
-				#var effect:Dictionary = traits_detail.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-				#var resource_list:Array = []
-				#var metric_list:Array = []
-				## -------------------
-				#if "resource" in effect:
-					#for key in effect.resource:
-						#var amount:int = effect.resource[key]
-						#
-						#if key not in resource_details.traits:
-							#resource_details.traits[key] = 0
-						#if key not in resource_details.total:
-							#resource_details.total[key] = 0
-						#resource_details.traits[key] += amount
-						#resource_details.total[key] += amount
-						#
-						#resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
-				## -------------------
-				#if "metrics" in effect:
-					#for key in effect.metrics:
-						#var amount:int = effect.metrics[key]
-						#
-						#if key not in metric_details.traits:
-							#metric_details.traits[key] = 0
-						#if key not in metric_details.total:
-							#metric_details.total[key] = 0
-						#metric_details.traits[key] += amount
-						#metric_details.total[key] += amount
-						#
-						#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})
-							#
-				#trait_list.push_back({"details": traits_detail, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-	#
-	## records bonus from synergy traits
-	#if total_traits_list.size() == 2:
-		#var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
-		#for details in list:
-			#var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-			#var resource_list:Array = []
-			#var metric_list:Array = []
-			## -------------------
-			#if "resource" in effect:
-				#for key in effect.resource:
-					#var amount:int = effect.resource[key]
-					#
-					#if key not in resource_details.synergy_traits:
-						#resource_details.synergy_traits[key] = 0
-					#if key not in resource_details.total:
-						#resource_details.total[key] = 0
-					#resource_details.synergy_traits[key] += amount
-					#resource_details.total[key] += amount
-					#
-					#resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
-			## -------------------
-			#if "metrics" in effect:
-				#for key in effect.metrics:
-					#var amount:int = effect.metrics[key]
-#
-					#if key not in metric_details.traits:
-						#metric_details.traits[key] = 0
-					#if key not in metric_details.total:
-						#metric_details.total[key] = 0
-					#metric_details.traits[key] += amount
-					#metric_details.total[key] += amount					
-					#
-					#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})		
-						#
-			#synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-			#
-	
 	# convert resource as a dict to a list form for easy reading
 	var resources_as_list:Array = []
 	for key in resource_details.total:
@@ -632,58 +491,43 @@ func construct_room() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func contain_scp() -> bool:
-	var aquired:bool = await get_new_scp()
-	if !aquired:
+	var res:Dictionary = await get_new_scp()
+	
+	if res.is_empty:
+		ConfirmModal.confirm_only = true
+		ConfirmModal.set_props("There are no items available for containment.")
+		await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
+		await ConfirmModal.user_response
 		GameplayNode.restore_player_hud()
 		return false
 	
-	## first, make sure that only rooms that CAN CONTAIN and rooms that DO NOT HAVE AN SCP in them are added to blacklist
-	#var can_contain_refs:Array = ROOM_UTIL.return_refs_that_can_contain()
-	#var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room
-	#var unavailable_rooms:Array = []
-	#for room_index in room_config_data.size():
-		#var designation:String = str(current_location.floor, current_location.ring, room_index)
-		#if room_config_data[room_index].room_data.is_empty() or !room_config_data[room_index].scp_data.is_empty():
-			#unavailable_rooms.push_back(designation)
-		#else:
-			#if room_config_data[room_index].room_data.ref not in can_contain_refs:
-				#unavailable_rooms.push_back(designation)
-	#
-	#SUBSCRIBE.unavailable_rooms = unavailable_rooms
-	#
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_data.available_list[0].ref)
-	var scp_ref:int = scp_details.ref
-	#
-	## then open the modal
-	#ConfirmModal.allow_controls = true
-	#ConfirmModal.set_props("Select a containment cell.", "It must be empty.", scp_details.img_src)
-	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	#var confirm:bool = await ConfirmModal.user_response
-	#SUBSCRIBE.unavailable_rooms = []
-	#
-	#if confirm:
-	# remove from available list...
-	scp_data.available_list = scp_data.available_list.filter(func(i):return i.ref != scp_ref)
+	if !res.made_selection:
+		GameplayNode.restore_player_hud()
+		return false
+
+	var scp_ref:int = res.selected_scp
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	var breach_events_at:Array = []
+	
+	for val in scp_details.breach_events_at:
+		breach_events_at.push_back(val + progress_data.day)
+
 	# then add to contained list...
 	scp_data.contained_list.push_back({ 
 		"ref": scp_ref,
 		"location": current_location.duplicate(true),
-		"days_in_containment": 0,
-		"testing_completed": 0,
-		"triggers_at": [progress_data.day + 10, progress_data.day + 20, progress_data.day + 30],
-		"event_type_count": {
-			#["type/event_id"]: count[int]
-		},
+		"contained_on": progress_data.day,
+		"breach_event_count": 0,
+		"breach_events_at": breach_events_at,
 	})
 	
-	SUBSCRIBE.resources_data = SCP_UTIL.calculate_initial_containment_bonus(scp_ref)
+	# update 
 	SUBSCRIBE.scp_data = scp_data
-
-	var event_res:Dictionary = await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, true) 
-	# TODO might need to do something with this later...
-	print("** event_res: ", event_res)
-
-	await U.tick()
+	
+	# play event
+	await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT) 
+	
+	# return true
 	return true
 # --------------------------------------------------------------------------------------------------	
 
@@ -821,11 +665,35 @@ func open_store() -> bool:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	
-func get_new_scp() -> bool:
-	# TODO: add something to determine next set of SCPs
-	SCPSelectScreen.start_selection([0, 1])
+func get_new_scp() -> Dictionary:
+	var list:Array = []
+	
+	# if this is the first one, always make item 0 the first item
+	if scp_data.contained_list.size() == 0:
+		list = [0]
+	else:
+		# check for specific days that only supply specific scps
+		if progress_data.day == 4:
+			list = [4]
+		if progress_data.day == 20:
+			list = [20]
+		if progress_data.day == 24:
+			list = [24]
+	
+	# otherwise, produce three randomly that are not in the contained list
+	if list.is_empty():
+		var unavailable_list:Array = scp_data.contained_list.map(func(x): return x.ref)
+		list = scp_data.available_refs
+	
+	if list.is_empty():
+		return {"is_empty": true}
+		
+	SCPSelectScreen.start_selection(list)
 	GameplayNode.current_select_scp_step = GameplayNode.SELECT_SCP_STEPS.START
-	return await GameplayNode.on_scp_select_complete
+	var res:Dictionary = await GameplayNode.on_scp_select_complete
+	res.is_empty = false
+	
+	return res
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	

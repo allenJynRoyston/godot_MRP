@@ -1,0 +1,5 @@
+extends Node
+
+var details:Dictionary = {
+	"name": "something"
+}

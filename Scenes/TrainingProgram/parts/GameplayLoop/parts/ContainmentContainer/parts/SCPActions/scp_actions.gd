@@ -98,7 +98,7 @@ func on_data_update() -> void:
 				var bonus_bulletpoints:Array = []
 				var ongoing_bulletspoints:Array = []
 				
-				var initial_containment_rewards:Array = SCP_UTIL.return_initial_containment_rewards.call(data.ref)
+				#var initial_containment_rewards:Array = SCP_UTIL.return_initial_containment_rewards.call(data.ref)
 				var ongoing_containment_rewards:Array = SCP_UTIL.return_ongoing_containment_rewards.call(data.ref)
 				var containment_requirements:Array = data.containment_requirements
 
@@ -111,20 +111,20 @@ func on_data_update() -> void:
 							return 'Requires [%s] containment cell.  (You have %s available.)' % [str(room_data.name).to_upper(), room_count],
 					})
 
-				for item in initial_containment_rewards:
-					match item.type:
-						"amount": 
-							bonus_bulletpoints.push_back({
-								"icon": item.resource.icon, 
-								"text": func() -> String:
-									return '+%s %s [amount] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
-							})
-						"capacity":
-							bonus_bulletpoints.push_back({
-								"icon": item.resource.icon, 
-								"text": func() -> String:
-									return '+%s %s [capacity] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
-							})
+				#for item in initial_containment_rewards:
+					#match item.type:
+						#"amount": 
+							#bonus_bulletpoints.push_back({
+								#"icon": item.resource.icon, 
+								#"text": func() -> String:
+									#return '+%s %s [amount] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+							#})
+						#"capacity":
+							#bonus_bulletpoints.push_back({
+								#"icon": item.resource.icon, 
+								#"text": func() -> String:
+									#return '+%s %s [capacity] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+							#})
 
 				for item in ongoing_containment_rewards:
 					match item.type:

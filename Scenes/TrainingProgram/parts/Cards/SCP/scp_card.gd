@@ -152,7 +152,7 @@ func on_ref_update() -> void:
 	ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
 	DesignationLabel.text = scp_data.name
 	NicknameLabel.text = '"%s"' % [scp_data.nickname]
-	ItemClassLabel.text = scp_data.item_class.call()
+	ItemClassLabel.text = scp_data.item_class
 	QuoteLabel.text = '"%s"' % scp_data.quote
 	ContainedDescriptionLabel.text = scp_data.effects.contained.description
 	UncontainedDescriptionLabel.text = scp_data.effects.uncontained.description
