@@ -274,7 +274,6 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"gameplay_conditionals": func() -> Dictionary:
 		return {
-
 			# enables more than initial builds to be setup
 			CONDITIONALS.TYPE.BASE_IS_SETUP: false,
 			
@@ -413,10 +412,10 @@ var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.RESET :
 		current_recruit_step = val
 		on_current_recruit_step_update()
 		
-var current_action_complete_step:ACTION_COMPLETE_STEPS = ACTION_COMPLETE_STEPS.RESET : 
-	set(val):
-		current_action_complete_step = val
-		on_current_action_complete_step_update()
+#var current_action_complete_step:ACTION_COMPLETE_STEPS = ACTION_COMPLETE_STEPS.RESET : 
+	#set(val):
+		#current_action_complete_step = val
+		#on_current_action_complete_step_update()
 
 var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET : 
 	set(val):
@@ -588,7 +587,7 @@ func start_new_game() -> void:
 	current_shop_step = SHOP_STEPS.RESET
 	current_contain_step = CONTAIN_STEPS.RESET
 	current_recruit_step = RECRUIT_STEPS.RESET
-	current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
+	#current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
 	current_summary_step = SUMMARY_STEPS.RESET
 	current_event_step = EVENT_STEPS.RESET
 	current_researcher_step = RESEARCHERS_STEPS.RESET
@@ -645,13 +644,33 @@ func start_load_game() -> void:
 #region defaults functions
 func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 	return { 
+		# --------------  # FLOOR WIDE STATS
+		"metrics": {
+			RESOURCE.BASE_METRICS.MORALE: 0,
+			RESOURCE.BASE_METRICS.SAFETY: 0,
+			RESOURCE.BASE_METRICS.READINESS: 0
+		},
+		"available_resources": {
+			RESOURCE.TYPE.TECHNICIANS: false,
+			RESOURCE.TYPE.STAFF: false,
+			RESOURCE.TYPE.SECURITY: false,
+			RESOURCE.TYPE.DCLASS: false	
+		},		
+		"abl_lvl": 0,
+		"energy": {
+			"available": 0,
+			"used": 0
+		},
+		"active_buffs": [],
+		"room_refs": [],
+		"scp_refs": [],
+		# --------------
+		
 		"is_powered": is_powered,
 		"in_lockdown": false,
 		"array_size": array_size,
-		"metrics": {
-			RESOURCE.BASE_METRICS.HUME: 1,
-		},
-		"scp_refs": [],
+		# --------------
+
 		"ring": { 
 			0: get_ring_defaults(array_size),
 			1: get_ring_defaults(array_size),
@@ -665,7 +684,7 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 	for n in range(array_size*array_size):
 		room[n] = get_room_defaults()
 	return {	
-		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,	
+		# --------------  # FLOOR WIDE STATS
 		"metrics": {
 			RESOURCE.BASE_METRICS.MORALE: 0,
 			RESOURCE.BASE_METRICS.SAFETY: 0,
@@ -677,6 +696,7 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 			RESOURCE.TYPE.SECURITY: false,
 			RESOURCE.TYPE.DCLASS: false	
 		},		
+		"abl_lvl": 0,
 		"energy": {
 			"available": 0,
 			"used": 0
@@ -684,17 +704,20 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 		"active_buffs": [],
 		"room_refs": [],
 		"scp_refs": [],
+		# --------------
+		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 		"room": room
+		# --------------
 	}
 
 func get_room_defaults() -> Dictionary:
 	return {
+		"damage_val": 0,
 		"ability_level": 0,
 		"is_activated": false,
 		"build_data": {},
 		"room_data": {},
 		"scp_data": {},
-		"attached_researchers": []
 	}
 #endregion
 # ------------------------------------------------------------------------------
@@ -804,8 +827,8 @@ func update_tenative_location(location:Dictionary) -> void:
 # -----------------------------------
 
 # -----------------------------------
-func check_events(ref:int, event_ref:SCP.EVENT_TYPE) -> void:
-	var res:Array = SCP_UTIL.check_for_events(ref, event_ref)
+func check_events(ref:int, event_ref:SCP.EVENT_TYPE, props:Dictionary = {}) -> void:
+	var res:Array = SCP_UTIL.check_for_events(ref, event_ref, props)
 	if !res.is_empty():
 		event_data = res
 		await on_events_complete
@@ -1002,32 +1025,6 @@ func game_over() -> void:
 # ------------------------------------------------------------------------------	
 
 
-# ------------------------------------------------------------------------------	
-#region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
-# -----------------------------------
-func remove_from_timeline(timeline_item:Dictionary) -> void:	
-	SUBSCRIBE.timeline_array = timeline_array.filter(func(i): return i.uid != timeline_item.uid)
-	await U.tick()
-# -----------------------------------
-
-# -----------------------------------
-func add_timeline_item(dict:Dictionary, props:Dictionary = {}) -> void:
-	timeline_array.push_back({
-		"uid": U.generate_uid(),
-		"action": dict.action,
-		"ref": dict.ref,
-		"title": dict.title,
-		"icon": dict.icon,
-		"description": dict.description,
-		"completed_at": progress_data.day + dict.completed_at,
-		"location": dict.location,
-		"props": props
-	})
-	
-	SUBSCRIBE.timeline_array = timeline_array
-# -----------------------------------
-#endregion	
-# ------------------------------------------------------------------------------	
 
 
 # ------------------------------------------------------------------------------	
@@ -1232,12 +1229,6 @@ func on_current_phase_update() -> void:
 			await U.set_timeout(1.0)
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
-		#PHASE.RANDOM_EVENTS:
-			#PhaseAnnouncement.start("CHECKING FOR EVENTS")	
-			#await execute_random_scp_events()
-			#await U.set_timeout(1.0)
-			#current_phase = PHASE.CALC_NEXT_DAY			
-		# ------------------------
 		PHASE.CALC_NEXT_DAY:
 			PhaseAnnouncement.start("ADVANCING THE DAY")	
 			await show_only([Structure3dContainer, TimelineContainer, ToastContainer])	
@@ -1260,25 +1251,26 @@ func on_current_phase_update() -> void:
 			SUBSCRIBE.progress_data = progress_data
 			SUBSCRIBE.base_states = base_states
 			
-			var timeline_filter:Array = timeline_array.filter(func(i): return i.completed_at == progress_data.day)	
-			if timeline_filter.size() > 0:
-				PhaseAnnouncement.start("TIMELINE ITEMS COMPLETE")	
-				completed_actions = timeline_filter
-				current_action_complete_step = ACTION_COMPLETE_STEPS.START
-				await on_complete_build_complete	
-			else:	
-				await U.set_timeout(1.0)
+			await U.set_timeout(1.0)
 			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
 			# EVENT FIRES			
-			
-			# IF NO EVENTS, NO NEED FOR AWAIT
-			PhaseAnnouncement.end()
+			var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day)	
+			if timeline_filter.size() > 0:
+				PhaseAnnouncement.start("EVENTS")	
+				await U.set_timeout(1.5)
+				
+				
+				for item in timeline_filter:
+					await item.action.call()
+				
 			
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
-		PHASE.CONCLUDE:			
+		PHASE.CONCLUDE:	
+			PhaseAnnouncement.end()
+			await U.set_timeout(1.0)
 			# revert
 			SUBSCRIBE.camera_settings = camera_settings_snapshot
 			SUBSCRIBE.current_location = current_location_snapshot
@@ -1382,35 +1374,38 @@ func on_current_contain_step_update() -> void:
 
 # ------------------------------------------------------------------------------	BUILD COMPLETE
 #region CURRENT ACTION
-func on_current_action_complete_step_update() -> void:
-	if !is_node_ready():return
-
-	match current_action_complete_step:
-		# ---------------
-		ACTION_COMPLETE_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
-			completed_actions = []
-		# ---------------
-		ACTION_COMPLETE_STEPS.START:
-			SUBSCRIBE.suppress_click = true
-			BuildCompleteContainer.completed_build_items = completed_actions
-
-			await show_only([BuildCompleteContainer, Structure3dContainer, ResourceContainer, TimelineContainer])
-			await BuildCompleteContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			
-			# move back to current location
-			current_location = revert_state_location
-				
-			# CHECK FOR EVENTS
-			for item in completed_actions:
-				remove_from_timeline(item)
-			
-			on_complete_build_complete.emit()	
-			current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
-			
-#endregion
+#func on_current_action_complete_step_update() -> void:
+	#if !is_node_ready():return
+#
+	#match current_action_complete_step:
+		## ---------------
+		#ACTION_COMPLETE_STEPS.RESET:
+			#SUBSCRIBE.suppress_click = false
+			#await restore_player_hud()
+			#completed_actions = []
+		## ---------------
+		#ACTION_COMPLETE_STEPS.START:
+			#revert_state_location = current_location.duplicate(true)
+			#
+			#print(completed_actions)
+			##SUBSCRIBE.suppress_click = true
+			##BuildCompleteContainer.completed_build_items = completed_actions
+##
+			##await show_only([BuildCompleteContainer, Structure3dContainer, ResourceContainer, TimelineContainer])
+			##await BuildCompleteContainer.user_response
+			##GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			#
+			## move back to current location
+			#current_location = revert_state_location
+				#
+			## CHECK FOR EVENTS
+			##for item in completed_actions:
+				##remove_from_timeline(item)
+			#
+			#on_complete_build_complete.emit()	
+			#current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
+			#
+##endregion
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
@@ -1596,8 +1591,8 @@ func is_occupied() -> bool:
 		return true
 	if current_phase != PHASE.PLAYER:
 		return true
-	if (current_shop_step != SHOP_STEPS.RESET) or (current_contain_step != CONTAIN_STEPS.RESET) or (current_recruit_step != RECRUIT_STEPS.RESET) or (current_action_complete_step != ACTION_COMPLETE_STEPS.RESET) or (current_event_step != EVENT_STEPS.RESET):
-		return true
+	#if (current_shop_step != SHOP_STEPS.RESET) or (current_contain_step != CONTAIN_STEPS.RESET) or (current_recruit_step != RECRUIT_STEPS.RESET) or (current_action_complete_step != ACTION_COMPLETE_STEPS.RESET) or (current_event_step != EVENT_STEPS.RESET):
+		#return true
 	return false
 
 
@@ -1738,6 +1733,9 @@ func update_room_config(force_setup:bool = false) -> void:
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		var floor_ring_designation:String = str(floor, ring)
+
+		
 		# if passives are enabled...
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
@@ -1748,15 +1746,24 @@ func update_room_config(force_setup:bool = false) -> void:
 				var ability_level:int = room_config_data.ability_level
 				# check if passive is enabled
 				if room_base_state.passives_enabled[ability_uid]:
+					
+					
 					# check if level is equal or less then what is required...
 					# aand check if check if enough energy available to power the passive
 					if ability.lvl_required <= ability_level and ring_config_data.energy.used < ring_config_data.energy.available:
 						# if it's enabled, add to energy cost
 						ring_config_data.energy.used += energy_cost
-						# check provides
+						# check provides (like staff, dclass, security, etc)
 						if "provides" in ability: 
 							for resource in ability.provides:
 								ring_config_data.available_resources[resource] = true
+						# check for metrics
+						if "metrics" in ability: 
+							for metric in ability.metrics:
+								metric_defaults[floor_ring_designation][metric] += ability.metrics[metric]
+						
+						if "conditional" in ability:
+							ability.conditional.call(gameplay_conditionals)
 					else:
 						room_base_state.passives_enabled[ability_uid] = false
 

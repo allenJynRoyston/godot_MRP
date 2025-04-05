@@ -8,12 +8,18 @@ enum REF {
 	SUPPLY_TECHNICIANS,
 	SUPPLY_DCLASS,
 	
+	FIREARM_TRAINING,
+	HEAVY_WEAPONS_TRAINING,
+	
+	TECH_SUPPORT,
+	
+	
 	MEMETIC_SHILEDING
 }
 
 # ---------------------------------
 var upgrade_abl_level:Dictionary = {
-	"name": "ABL LVL +1",
+	"name": "LVL +1",
 	"lvl_required": 0,
 	"energy_cost": 4,
 	"conditional": func(gpc:Dictionary) -> Dictionary:
@@ -57,17 +63,41 @@ var supply_dclass:Dictionary = {
 	]
 }
 
+# ---------------------------------
+var firearm_training:Dictionary = {
+	"name": "FIREARM TRAINING",
+	"energy_cost": 2,
+	"metrics": {
+		RESOURCE.BASE_METRICS.SAFETY: 1
+	}
+}
+
+# ---------------------------------
+var heavy_weapons_training:Dictionary = {
+	"name": "HEAVY WEAPONS TRAINING",
+	"energy_cost": 3,
+	"metrics": {
+		RESOURCE.BASE_METRICS.READINESS: 1
+	}
+}
+
+# ---------------------------------
+var tech_support:Dictionary = {
+	"name": "TECH SUPPORT",
+	"energy_cost": 2,
+	"metrics": {
+		RESOURCE.BASE_METRICS.READINESS: 1
+	}	
+}
+
 
 # ---------------------------------
 var memetic_shielding:Dictionary = {
 	"name": "MEMETIC SHIELDING",
 	"energy_cost": 3,
-	"effect": func() -> Dictionary:
-		return {
-			"metrics":{
-				RESOURCE.BASE_METRICS.READINESS: 1
-			}
-		},
+	"metrics":{
+		RESOURCE.BASE_METRICS.READINESS: 1
+	}
 }
 
 
@@ -75,8 +105,10 @@ var memetic_shielding:Dictionary = {
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
 	match ref:
+		# ------------------
 		REF.UPGRADE_ABL_LVL:
 			ability = upgrade_abl_level
+		# ------------------	
 		REF.SUPPLY_SECURITY:
 			ability = supply_security
 		REF.SUPPLY_STAFF:
@@ -85,6 +117,15 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = supply_technicians
 		REF.SUPPLY_DCLASS:
 			ability = supply_dclass
+		# ------------------
+		REF.FIREARM_TRAINING:
+			ability = firearm_training
+		REF.HEAVY_WEAPONS_TRAINING:
+			ability = heavy_weapons_training
+		# ------------------
+		REF.TECH_SUPPORT:
+			ability = tech_support
+		# ------------------
 		REF.MEMETIC_SHILEDING:
 			ability = memetic_shielding
 	

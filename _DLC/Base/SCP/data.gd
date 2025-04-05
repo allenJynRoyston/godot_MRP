@@ -33,11 +33,15 @@ var SCP0:Dictionary = {
 		],
 	# -----------------------------------	
 	
+	# -----------------------------------	
+	"breach_events_at": [5, 10, 25],
+	# -----------------------------------	
+	
 	# -----------------------------------
 	"effects": {
 		"metrics":{
-			RESOURCE.BASE_METRICS.MORALE: 4,
-			RESOURCE.BASE_METRICS.SAFETY: 3,
+			RESOURCE.BASE_METRICS.MORALE: 2,
+			RESOURCE.BASE_METRICS.SAFETY: 2,
 			RESOURCE.BASE_METRICS.READINESS: 2
 		},
 		"contained": {
@@ -69,15 +73,18 @@ var SCP0:Dictionary = {
 	
 	"events": {
 		# -------------------------
-		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary) -> Array:
+		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			print("passes_metric_check: ", passes_metric_check)
+			
 			return [
 					# --------------------
 					func() -> Dictionary:
 						return {
-							"header": "%s: AFTER CONTAINMENT EVENT" % [scp_details.name],
+							"header": "CONTAINMENT EVENT",
 							"img_src": scp_details.img_src,
 							"text": [
-								"Custom injection."
+								"I pass the metric test" if passes_metric_check else "I did NOT pass the metrics test."
 							],
 							"options": [
 								{
@@ -107,8 +114,112 @@ var SCP0:Dictionary = {
 						},
 					# --------------------
 			],
-		}
-		# -------------------------				
+		# -------------------------
+		
+		# -------------------------
+		SCP.EVENT_TYPE.WARNING: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			print("passes_metric_check: ", passes_metric_check)
+			
+			match props.event_count:
+				0:
+					# --------------------
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "WARNING 1",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door begins to hum at an alarming frequency."
+									]
+								},
+							# --------------------
+					]
+					# --------------------
+				1:
+					# --------------------
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "WARNING 2",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door begins to hum at an alarming frequency."
+									]
+								},
+							# --------------------
+					]
+					# --------------------
+			# --------------------
+			return [
+					# --------------------
+					func() -> Dictionary:
+						return {
+							"header": "WARNING 3",
+							"img_src": scp_details.img_src,
+							"text": [
+								"The door begins to hum at an alarming frequency."
+							]
+						},
+					# --------------------
+			],
+			# --------------------
+		# -------------------------
+		
+		# -------------------------
+		SCP.EVENT_TYPE.BREACH_EVENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			print("passes_metric_check: ", passes_metric_check)
+						
+			match props.event_count:
+				# --------------------
+				0:
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "BREACH EVENT",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door flings open and a swarm of shadows seep out."
+									]
+								},
+							# --------------------
+					]
+				# --------------------
+				1:
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "BREACH EVENT",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door flings open and a swarm of shadows seep out."
+									]
+								},
+							# --------------------
+					]
+				# --------------------
+			
+			# --------------------
+			return [
+					# --------------------
+					func() -> Dictionary:
+						return {
+							"header": "BREACH EVENT",
+							"img_src": scp_details.img_src,
+							"text": [
+								"The door flings open and a swarm of shadows seep out."
+							]
+						},
+					# --------------------
+			],
+			# --------------------
+		# -------------------------	
+		},
 }
 
 var SCP1:Dictionary = {
@@ -229,6 +340,9 @@ var SCP4:Dictionary = {
 	# -----------------------------------	
 }
 
+
+# -----------------------------------	
 var list:Array[Dictionary] = [
 	SCP0, SCP1, SCP2, SCP3, SCP4
 ]
+# -----------------------------------	

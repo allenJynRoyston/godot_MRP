@@ -508,24 +508,48 @@ func contain_scp() -> bool:
 	var scp_ref:int = res.selected_scp
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var breach_events_at:Array = []
+	var use_location:Dictionary = current_location.duplicate(true)
 	
-	for val in scp_details.breach_events_at:
-		breach_events_at.push_back(val + progress_data.day)
+	for index in scp_details.breach_events_at.size():
+		var val:int = scp_details.breach_events_at[index]
+		var day:int = val + progress_data.day
+		breach_events_at.push_back(day)
+		add_timeline_item({
+			"title": scp_details.name,
+			"icon": SVGS.TYPE.WARNING,
+			"description": "WARNING",
+			"day": day - 2,
+			"location": current_location.duplicate(true),
+			"action": func() -> void:
+				await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.WARNING, {"event_count": index, "use_location": use_location}),	
+		})
+		
+		add_timeline_item({
+			"title": scp_details.name,
+			"icon": SVGS.TYPE.DANGER,
+			"description": "DANGER",
+			"day": day,
+			"location": use_location,
+			"action": func() -> void:
+				await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.BREACH_EVENT, {"event_count": index, "use_location": use_location}),	
+		})		
 
 	# then add to contained list...
 	scp_data.contained_list.push_back({ 
 		"ref": scp_ref,
-		"location": current_location.duplicate(true),
+		"location": use_location,
 		"contained_on": progress_data.day,
-		"breach_event_count": 0,
-		"breach_events_at": breach_events_at,
 	})
+		
+	
+	SUBSCRIBE.timeline_array = timeline_array	
+	
 	
 	# update 
 	SUBSCRIBE.scp_data = scp_data
 	
 	# play event
-	await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT) 
+	await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"use_location": use_location}) 
 	
 	# return true
 	return true
@@ -748,3 +772,30 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	
 	return confirm
 # ------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------	
+#region SCP ACTION QUEUE (assign/unassign/dismiss, etc)
+# -----------------------------------
+func remove_from_timeline(timeline_item:Dictionary) -> void:	
+	SUBSCRIBE.timeline_array = timeline_array.filter(func(i): return i.uid != timeline_item.uid)
+	await U.tick()
+# -----------------------------------
+
+# -----------------------------------
+func add_timeline_item(dict:Dictionary) -> void:
+	timeline_array.push_back({
+		"uid": U.generate_uid(),		
+		"title": dict.title,
+		"icon": dict.icon,
+		"description": dict.description,
+		"day": dict.day,
+		"location": dict.location,
+		"action": dict.action,
+	})
+	
+	SUBSCRIBE.timeline_array = timeline_array
+# -----------------------------------
+#endregion	
+# ------------------------------------------------------------------------------	

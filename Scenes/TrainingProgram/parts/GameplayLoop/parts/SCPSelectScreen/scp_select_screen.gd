@@ -131,6 +131,7 @@ func on_refs_update() -> void:
 	for index in refs.size():
 		var ref:int = refs[index]
 		var new_card:Control = ScpCardPreload.instantiate()
+		new_card.use_location = current_location.duplicate(true)
 		new_card.current_metrics = wing_data.metrics	
 		new_card.ref = ref
 		new_card.index = index

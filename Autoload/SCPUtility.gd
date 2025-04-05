@@ -6,7 +6,7 @@ const dlc_folder:String = "res://_DLC/"
 var reference_data:Dictionary = {}
 var reference_list:Array = []
 
-var scp_template:Dictionary = {
+var SCP_TEMPLATE:Dictionary = {
 	# -----------------------------------
 	"name": "SCP-X-TEMPLATE",
 	"nickname": "NICKNAME",
@@ -51,7 +51,7 @@ var scp_template:Dictionary = {
 	# -----------------------------------
 
 	# -----------------------------------
-	"breach_events_at": [1, 2, 3],
+	"breach_events_at": [10, 20, 30],
 	# -----------------------------------
 
 	# -----------------------------------
@@ -91,15 +91,15 @@ func _enter_tree() -> void:
 
 # ------------------------------------------------------------------------------
 func fill_template(data:Dictionary, ref:int) -> void:
-	var scp_template_copy:Dictionary = scp_template.duplicate(true)		
-	scp_template_copy.name = "SCP-X-%s" % [str(0,ref + 1) if ref + 1 < 10 else ref + 1]
+	var template_copy:Dictionary = SCP_TEMPLATE.duplicate(true)		
+	template_copy.name = "SCP-X-%s" % [str(0,ref + 1) if ref + 1 < 10 else ref + 1]
 	for key in data:
 		var value = data[key]
-		if key in scp_template_copy:
-			scp_template_copy[key] = value
+		if key in template_copy:
+			template_copy[key] = value
 
 	reference_list.push_back(ref)
-	reference_data[ref] = scp_template_copy
+	reference_data[ref] = template_copy
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
@@ -153,13 +153,31 @@ func calculate_refunded_utilizied(utilized_data:Dictionary, resources_data:Dicti
 	return resource_data_copy
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func passes_metric_check(ref:int, use_location:Dictionary) -> bool:
+	var scp_data:Dictionary = return_data(ref)
+	var wing_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]
+	var current_metrics:Dictionary = wing_data.metrics
+	
+	var above_threshold:bool = true
+	for metric_ref in scp_data.effects.metrics:
+		var amount:int = scp_data.effects.metrics[metric_ref]
+		var current_amount:int = current_metrics[metric_ref]
+		if current_amount < amount:
+			above_threshold = false
+			break
+		
+	return above_threshold
+# ------------------------------------------------------------------------------
+	
+
 # ------------------------------------------------------------------------------	
-func check_for_events(ref:int, event_type:SCP.EVENT_TYPE) -> Array:
+func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, props:Dictionary) -> Array:
 	var scp_details:Dictionary = return_data(ref)
 	var event_instructions:Array = []
 	
 	if "events" in scp_details and event_type in scp_details.events:
-		event_instructions = scp_details.events[event_type].call(scp_details)
+		event_instructions = scp_details.events[event_type].call(scp_details, props)
 		if !event_instructions.is_empty():
 			return [{"event_instructions": event_instructions}]
 	

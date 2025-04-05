@@ -64,6 +64,7 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var index:int = -1
+var use_location:Dictionary = {}
 var current_metrics:Dictionary = {}
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
@@ -140,14 +141,13 @@ func on_ref_update() -> void:
 				Readiness.value = amount
 				if RESOURCE.BASE_METRICS.READINESS in current_metrics:
 					Readiness.is_negative = current_metrics[RESOURCE.BASE_METRICS.READINESS] < amount
-	var has_negative:bool = false
-	for node in [Morale, Readiness, Safety]:
-		if node.is_negative:
-			has_negative = true
-			break
+	
+
+	var passes_metric_check:bool = SCP_UTIL.passes_metric_check(ref, use_location)
+
 			
-	ContainedEffect.modulate = Color(1, 1, 1, 0.5 if has_negative else 1)
-	UnContainedEffect.modulate = Color(1, 1, 1, 1 if has_negative else 0.5)
+	ContainedEffect.modulate = Color(1, 1, 1, 1 if passes_metric_check else 0.5)
+	UnContainedEffect.modulate = Color(1, 1, 1, 0.5 if passes_metric_check else 1.0)
 
 	ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
 	DesignationLabel.text = scp_data.name

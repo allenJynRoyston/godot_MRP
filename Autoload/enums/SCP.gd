@@ -2,5 +2,6 @@ extends Node
 
 enum EVENT_TYPE {
 	AFTER_CONTAINMENT,
-	WARNING
+	WARNING,
+	BREACH_EVENT
 }

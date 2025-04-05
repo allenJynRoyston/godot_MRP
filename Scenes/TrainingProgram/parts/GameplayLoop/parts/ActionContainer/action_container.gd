@@ -598,9 +598,8 @@ func show_abilities(skip_animation:bool = false) -> void:
 		on_current_location_update()		
 
 	if is_powered:
-		for room_ref in extract_wing_data.abilities:
-			var abilities:Array = extract_wing_data.abilities[room_ref]
-			
+		for key in extract_wing_data.abilities:
+			var abilities:Array = extract_wing_data.abilities[key]
 			for index in abilities.size():
 				var ability:Dictionary = abilities[index]
 				var include:bool = true if !room_only else current_location.room == ability.room_index
@@ -611,10 +610,10 @@ func show_abilities(skip_animation:bool = false) -> void:
 					var get_not_ready_func:Callable = funcs.get_not_ready_func
 					var get_icon_func:Callable = funcs.get_icon_func
 					var science_cost:int = ability.details.science_cost
-					
+
 					options.push_back({
 						"shortcut_data": {
-							"room_ref": room_ref, 
+							"room_ref": ability.room_ref, 
 							"index": index,
 							"type": MENU_TYPE.ABILITIES,
 							"use_location": use_location.duplicate(true), 
@@ -1067,6 +1066,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.SCP_DETAILS:
 			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 			var wing_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+			ScpCard.use_location = current_location.duplicate(true)
 			ScpCard.current_metrics = wing_data.metrics
 			ScpCard.ref = room_extract.scp.details.ref
 			freeze_inputs = true
