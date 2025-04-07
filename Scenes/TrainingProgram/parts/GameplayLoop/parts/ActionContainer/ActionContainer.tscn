@@ -904,7 +904,6 @@ metadata/_edit_group_ = true
 layout_mode = 2
 
 [node name="Nametag" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 135.0
@@ -914,7 +913,6 @@ index = 0
 fade = false
 
 [node name="Nametag2" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 181.0
@@ -924,7 +922,6 @@ index = 1
 fade = false
 
 [node name="Nametag3" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 227.0
@@ -934,7 +931,6 @@ index = 2
 fade = false
 
 [node name="Nametag4" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 273.0
@@ -944,7 +940,6 @@ index = 3
 fade = false
 
 [node name="Nametag5" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 319.0
@@ -954,7 +949,6 @@ index = 4
 fade = false
 
 [node name="Nametag6" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 365.0
@@ -964,7 +958,6 @@ index = 5
 fade = false
 
 [node name="Nametag7" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 411.0
@@ -974,7 +967,6 @@ index = 6
 fade = false
 
 [node name="Nametag8" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 457.0
@@ -984,7 +976,6 @@ index = 7
 fade = false
 
 [node name="Nametag9" parent="NameControl" instance=ExtResource("10_xathl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 7.0
 offset_top = 503.0

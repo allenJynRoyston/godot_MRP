@@ -203,15 +203,6 @@ func unlock_room() -> void:
 # --------------------------------------------------------------------------------------------------	
 func purchase_room() -> void:	
 	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
-	GameplayNode.add_timeline_item({
-		"action": ACTION.AQ.BUILD_ITEM,
-		"ref": room_details.ref,
-		"title": room_details.name,
-		"icon": SVGS.TYPE.BUILD,
-		"completed_at": room_details.get_build_time.call(),
-		"description": "CONSTRUCTING",
-		"location": current_location.duplicate()
-	})
 	SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(room_details.ref)		
 	await U.tick()
 	GameplayNode.ToastContainer.add("%s purchased!" % [room_details.name])

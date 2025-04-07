@@ -520,8 +520,12 @@ func contain_scp() -> bool:
 			"description": "WARNING",
 			"day": day - 2,
 			"location": current_location.duplicate(true),
-			"action": func() -> void:
-				await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.WARNING, {"event_count": index, "use_location": use_location}),	
+			"event": {
+				"scp_ref": scp_ref,
+				"event_ref": SCP.EVENT_TYPE.WARNING,
+				"use_location": use_location,
+				"event_count": index,
+			}
 		})
 		
 		add_timeline_item({
@@ -530,8 +534,12 @@ func contain_scp() -> bool:
 			"description": "DANGER",
 			"day": day,
 			"location": use_location,
-			"action": func() -> void:
-				await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.BREACH_EVENT, {"event_count": index, "use_location": use_location}),	
+			"event": {
+				"scp_ref": scp_ref,
+				"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
+				"use_location": use_location,
+				"event_count": index,
+			}
 		})		
 
 	# then add to contained list...
@@ -549,7 +557,7 @@ func contain_scp() -> bool:
 	SUBSCRIBE.scp_data = scp_data
 	
 	# play event
-	await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"use_location": use_location}) 
+	await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
 	
 	# return true
 	return true
@@ -792,7 +800,7 @@ func add_timeline_item(dict:Dictionary) -> void:
 		"description": dict.description,
 		"day": dict.day,
 		"location": dict.location,
-		"action": dict.action,
+		"event": dict.event if "event" in dict else {},
 	})
 	
 	SUBSCRIBE.timeline_array = timeline_array

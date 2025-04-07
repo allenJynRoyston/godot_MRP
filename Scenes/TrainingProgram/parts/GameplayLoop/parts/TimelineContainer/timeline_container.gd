@@ -5,11 +5,11 @@ extends GameContainer
 
 @onready var Gradiant:TextureRect = $Control/DetectorPanel/Gradiant
 @onready var DayLabel:Label = $Control/MarginContainer/VBoxContainer/DayLabel
-@onready var ListContainer:VBoxContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer/ListContainer
-@onready var ListScrollContainer:ScrollContainer = $Control/MarginContainer/VBoxContainer/ListScrollContainer
+@onready var ListContainer:VBoxContainer = $Control/MarginContainer/VBoxContainer/MarginContainer/ListScrollContainer/ListContainer
+@onready var ListScrollContainer:ScrollContainer = $Control/MarginContainer/VBoxContainer/MarginContainer/ListScrollContainer
 
 const TimelineItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineItem.tscn")
-const delay:float = 0.7
+const delay:float = 0.3
 
 var uid_refs:Dictionary = {}
 var current_day:int 

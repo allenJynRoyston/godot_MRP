@@ -14,6 +14,9 @@ func getSelectedIndex() -> int:
 
 func getSelectedVal():
 	return option_selected.store.option.val
+	
+func get_cost() -> Array:
+	return []
 # ---------------------------------------------
 
 
@@ -34,7 +37,7 @@ var SCP0:Dictionary = {
 	# -----------------------------------	
 	
 	# -----------------------------------	
-	"breach_events_at": [5, 10, 25],
+	"breach_events_at": [5, 8, 11],
 	# -----------------------------------	
 	
 	# -----------------------------------

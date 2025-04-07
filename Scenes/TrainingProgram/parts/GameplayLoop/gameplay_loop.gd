@@ -70,6 +70,8 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 #region EXPORT VARS
 @export var debug_mode:bool = false 
 @export var skip_progress_screen:bool = true
+@export var debug_energy:bool = false
+@export var debug_personnel:bool = false
 
 var show_structures:bool = true: 
 	set(val):
@@ -197,19 +199,19 @@ var initial_values:Dictionary = {
 	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": 100, 
+				"amount": 100 if !debug_personnel else 9999, 
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": 50, 
+				"amount": 50  if !debug_personnel else 1000, 
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": 10, 
+				"amount": 10  if !debug_personnel else 500, 
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": 1, 
+				"amount": 1 if !debug_personnel else 10, 
 				"capacity": 10
 			},						
 		},
@@ -777,6 +779,7 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
+	GBL.find_node(REFS.LINE_DRAW).clear()
 	await show_only([Structure3dContainer, TimelineContainer, ActionContainer, ResourceContainer, RoomInfo, FloorInfo])
 # ------------------------------------------------------------------------------
 
@@ -834,8 +837,11 @@ func update_tenative_location(location:Dictionary) -> void:
 
 # -----------------------------------
 func check_events(ref:int, event_ref:SCP.EVENT_TYPE, props:Dictionary = {}) -> void:
+	print("check for events...")
 	var res:Array = SCP_UTIL.check_for_events(ref, event_ref, props)
+	
 	if !res.is_empty():
+		GBL.find_node(REFS.LINE_DRAW).clear()
 		event_data = res
 		await on_events_complete
 	else:
@@ -1266,11 +1272,10 @@ func on_current_phase_update() -> void:
 			if timeline_filter.size() > 0:
 				PhaseAnnouncement.start("EVENTS")	
 				await U.set_timeout(1.5)
-				
-				
+				# plays any scp events
 				for item in timeline_filter:
-					await item.action.call()
-				
+					if "event" in item:
+						await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
 			
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
@@ -1693,7 +1698,7 @@ func update_room_config(force_setup:bool = false) -> void:
 		var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			var ring_config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
-			ring_config_data.energy.available = energy_available
+			ring_config_data.energy.available = energy_available if !debug_energy else 99
 			ring_config_data.energy.used = 0
 			var floor_ring_designation:String = str(floor_index, ring_index)
 			if floor_ring_designation not in metric_defaults:

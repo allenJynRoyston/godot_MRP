@@ -80,16 +80,22 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	super.on_current_location_update(new_val)
 	if !U.dictionaries_equal(previous_location, current_location):
 		previous_location = new_val.duplicate(true)
-		update_metrics_labels()
-		#update_status()
+		U.debounce(str(self.name, "_update_energy_panel"), update_metrics_labels)
 # -----------------------------------------------			
+
+# -----------------------------------------------			
+func on_room_config_update(new_val:Dictionary) -> void:
+	super.on_room_config_update(new_val)	
+	U.debounce(str(self.name, "_update_energy_panel"), update_metrics_labels)
+# -----------------------------------------------			
+
 
 # -----------------------------------------------
 func update_metrics_labels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
 	var ring_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
 	var extract_data:Dictionary = GAME_UTIL.extract_room_details(current_location)
-
+	
 	for key in ring_data.metrics:
 		var amount:int = ring_data.metrics[key]
 		match key:

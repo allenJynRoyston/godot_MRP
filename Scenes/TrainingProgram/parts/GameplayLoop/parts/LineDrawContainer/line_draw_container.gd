@@ -96,7 +96,7 @@ func add(_get_start_vector:Callable, _draw_dict:Dictionary ) -> void:
 	else:
 		Nametag.hide()
 		
-	await U.set_timeout(0.1)
+	await U.set_timeout(0.3)
 	render_lines = true
 	render = true
 # --------------------------------------------------------------------------------------------------	

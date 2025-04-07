@@ -1,5 +1,74 @@
 extends Node
 
+var DEBUG_ROOM:Dictionary = {
+	# ------------------------------------------
+	"name": "DEBUG ROOM",
+	"shortname": "DEBUG",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Debug room.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"can_contain": true,
+	"can_destroy": true,
+	"can_assign_researchers": true,
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"build_time": 1,
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"costs": {
+		"unlock": 0,
+		"purchase": 0,
+		"operating": 10
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0),
+			ABL.get_ability(ABL.REF.CONTAIN_SCP, 0),
+			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
+			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
+			#ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
+			#ABL.get_ability(ABL.REF.ADD_TRAIT, 0),
+			#ABL.get_ability(ABL.REF.REMOVE_TRAIT, 0),
+			#
+			#ABL.get_ability(ABL.REF.MONEY_HACK, 0),
+			#ABL.get_ability(ABL.REF.SCIENCE_HACK, 0),
+			#ABL.get_ability(ABL.REF.CONVERT_TO_SCIENCE, 0),
+			#ABL.get_ability(ABL.REF.CONVERT_TO_MONEY, 0),
+		],	
+	# ------------------------------------------
+
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
+			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING),
+			#ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING),
+			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
+			#ABL_P.get_ability(ABL_P.REF.MEMETIC_SHILEDING),
+		],	
+	# ------------------------------------------		
+	
+	# ------------------------------------------
+	"metrics": {
+		RESOURCE.BASE_METRICS.MORALE: 0,
+		RESOURCE.BASE_METRICS.SAFETY: 0,
+		RESOURCE.BASE_METRICS.READINESS: 0,
+	},	
+	# ------------------------------------------
+}
+
 var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"type_ref": ROOM.TYPE.DIRECTORS_OFFICE,
@@ -307,7 +376,7 @@ var ENGINEERING_BAY:Dictionary = {
 
 # -----------------------------------	
 var list:Array[Dictionary] = [
-	DIRECTORS_OFFICE, HQ,
+	DIRECTORS_OFFICE, HQ, DEBUG_ROOM,
 	# ---------------
 	STANDARD_CONTAINMENT_CELL, 
 	# ---------------

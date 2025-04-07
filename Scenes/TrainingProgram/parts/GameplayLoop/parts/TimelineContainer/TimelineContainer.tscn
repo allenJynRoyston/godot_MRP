@@ -71,18 +71,24 @@ label_settings = ExtResource("2_de2gr")
 horizontal_alignment = 2
 uppercase = true
 
-[node name="ListScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_right = -7
+
+[node name="ListScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 vertical_scroll_mode = 3
 
-[node name="ListContainer" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer/ListScrollContainer"]
+[node name="ListContainer" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer/MarginContainer/ListScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="ActionQueueItem" parent="Control/MarginContainer/VBoxContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
+[node name="ActionQueueItem" parent="Control/MarginContainer/VBoxContainer/MarginContainer/ListScrollContainer/ListContainer" instance=ExtResource("2_hg1uk")]
 layout_mode = 2
 script = null
 

@@ -146,6 +146,10 @@ func _ready() -> void:
 				await GAME_UTIL.construct_room()
 				if current_mode != MODE.INVESTIGATE:
 					enable_room_focus(false)
+				else:
+					U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
+	
+				GameplayNode.restore_player_hud()
 			)
 
 		
@@ -157,7 +161,8 @@ func _ready() -> void:
 			enable_room_focus(true)
 			await GAME_UTIL.reset_room()
 			if current_mode != MODE.INVESTIGATE:
-				enable_room_focus(false)			
+				enable_room_focus(false)
+			GameplayNode.restore_player_hud()
 		)
 
 	InfoBtn.onClick = func() -> void:
@@ -368,9 +373,9 @@ func draw_active_menu() -> void:
 	var draw_dict:Dictionary = {
 		"use_nametag": true,
 		"draw_to_center_list": true,
-		"draw_to_room": true,
-		"draw_to_researcher": !room_extract.researchers.is_empty(),
-		"draw_to_scp": !room_extract.is_scp_empty
+		"draw_to_room_mini_card": true,
+		"draw_to_researcher_list": !room_extract.researchers.is_empty(),
+		"draw_to_scp_mini_card": !room_extract.is_scp_empty
 	}
 	
 	if prev_draw_state != draw_dict:
@@ -384,6 +389,7 @@ var selected_index_state:int
 func draw_active_menu_items(selected_data:Dictionary = selected_data_state, selected_index:int = selected_index_state) -> void:	
 	selected_data_state = selected_data
 	selected_index_state = selected_index
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	
 	var get_node_pos:Callable = func() -> Vector2: 
 		return ActiveMenu.get_node_btn(selected_index).global_position - Vector2(200, 100)
@@ -397,10 +403,10 @@ func draw_active_menu_items(selected_data:Dictionary = selected_data_state, sele
 	
 	# IF PASSIVE
 	if selected_data.shortcut_data.type == 2:
-		var room_extract:Dictionary = GAME_UTIL.extract_room_details(selected_data.shortcut_data.use_location)	
 		var item:Dictionary = room_extract.room.passive_abilities.filter(func(x): return x.name == selected_data.title)[0]
 		draw_to_personnel = "provides" in item
 
+	
 	var draw_dict:Dictionary = {
 		"label": "PRESS [%s] TO USE" % ['E'],
 		"draw_to_room": true,
@@ -419,7 +425,6 @@ func draw_active_menu_items(selected_data:Dictionary = selected_data_state, sele
 		#"draw_to_safety": true,
 		#
 		"draw_to_room_mini_card": true,
-		#"draw_to_scp_mini_card": true,
 		#"draw_to_researcher_list": true,
 		
 		"draw_to_ability": selected_data.shortcut_data.type == 1,
@@ -825,8 +830,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
 		var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
 		var researchers_per_room:int = base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room
-
-		ResearcherBtnPanel.show() if !room_extract.is_room_empty else ResearcherBtnPanel.hide()		
 		for btn in [AbilityBtn, RoomDetailsToggleBtn]:
 			if room_extract.is_room_empty:
 				btn.hide()
@@ -847,6 +850,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		draw_active_menu()
 		update_details()
 		selected_researcher = 0
+		
+		await U.tick()
+		ResearcherBtnPanel.show() if !room_extract.is_room_empty else ResearcherBtnPanel.hide()				
 		return
 
 	
@@ -923,8 +929,10 @@ func buildout_btns() -> void:
 	GotoBtn.title = "DESIGN" if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else "ADMIN"
 	
 	NextBtn.onClick = func() -> void:
+		await lock_btns(true)
 		if !active_menu_is_open and !GameplayNode.is_occupied(): 
-			GameplayNode.next_day()
+			await GameplayNode.next_day()
+			lock_btns(false)
 	
 	GotoBtn.onClick = func() -> void:
 		if !active_menu_is_open and !GameplayNode.is_occupied(): 
@@ -932,7 +940,6 @@ func buildout_btns() -> void:
 			
 	FloorPlanBtn.onClick = func() -> void:
 		current_mode = MODE.INVESTIGATE		
-		on_current_location_update()
 
 	is_setup = true
 	await U.set_timeout(0.1)
@@ -999,8 +1006,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		for btn in [ConfirmBtn, BackBtn]:
 			btn.is_disabled = true
 			
-		U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, duration)
-		
+		lock_btns(true)
+		await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, duration)
+		lock_btns(false)
 		
 	match current_mode:
 		# --------------
@@ -1044,6 +1052,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			HotkeyContainer.show()
 			HotkeyContainer.lock_btns = false
 			show_room_details = false
+			await U.set_timeout(0.3)
+			GameplayNode.restore_player_hud()
 		# --------------
 		MODE.INVESTIGATE:
 			enable_room_focus(true)
@@ -1055,7 +1065,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show, duration)
 			
 			NameControl.hide()
-			#CenterLabel.text = "ROOM OPTIONS"
 
 			for panel in [AdminBtnPanel, NavBtnPanel, FacilityBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
 				panel.hide()
@@ -1071,15 +1080,17 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
+			on_current_location_update()
 			
-			BackBtn.onClick = func() -> void:				
+			BackBtn.onClick = func() -> void:
+				for btn in [ConfirmBtn, BackBtn]:
+					btn.is_disabled = true
 				enable_room_focus(false)
 				set_backdrop_state(false)	
-				GameplayNode.restore_player_hud()
-				
 				prev_draw_state = {}
 				GBL.find_node(REFS.LINE_DRAW).clear()
 				current_mode = MODE.SELECT_ROOM
+				
 		# --------------
 		MODE.SCP_DETAILS:
 			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
@@ -1102,12 +1113,14 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for panel in [ScpBtnPanel, AbilityBtnPanel, ResearcherBtnPanel]:
 				panel.hide()			
 			
-			BackBtn.onClick = func() -> void:				
+			BackBtn.onClick = func() -> void:
+				for btn in [ConfirmBtn, BackBtn]:
+					btn.is_disabled = true				
 				freeze_inputs = false
-				current_mode = MODE.INVESTIGATE
-				on_current_location_update()
 				await U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].hide)	
-				ScpDetailsPanel.hide()				
+				ScpDetailsPanel.hide()
+				current_mode = MODE.INVESTIGATE
+
 		# --------------
 		MODE.RESEARCHER_DETAILS:
 			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
@@ -1128,12 +1141,14 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for panel in [ScpBtnPanel, AbilityBtnPanel, ResearcherBtnPanel]:
 				panel.hide()						
 			
-			BackBtn.onClick = func() -> void:				
+			BackBtn.onClick = func() -> void:
+				for btn in [ConfirmBtn, BackBtn]:
+					btn.is_disabled = true
 				freeze_inputs = false
-				current_mode = MODE.INVESTIGATE
-				on_current_location_update()
 				await U.tween_node_property(ResearcherDetailsPanel, "position:y", control_pos[ResearcherDetailsPanel].hide)	
-				ResearcherDetails.hide()							
+				ResearcherDetails.hide()
+				current_mode = MODE.INVESTIGATE
+
 		# --------------
 		MODE.RESET_ROOM:
 			check_if_remove_is_valid()
@@ -1160,9 +1175,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				btn.is_disabled = false
 				
 			BackBtn.onClick = func() -> void:
+				for btn in [ConfirmBtn, BackBtn]:
+					btn.is_disabled = true							
 				current_mode = MODE.INVESTIGATE
 				RoomVBox.modulate = Color(1, 1, 1, 1)
-				#TraitContainer.modulate = Color(1, 1, 1, 1)
 				on_current_location_update()
 			
 			ConfirmBtn.onClick = func() -> void:
@@ -1170,11 +1186,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await GAME_UTIL.unassign_researcher(researcher)
 				current_mode = MODE.INVESTIGATE
 				RoomVBox.modulate = Color(1, 1, 1, 1)
-				#TraitContainer.modulate = Color(1, 1, 1, 1)
 				on_current_location_update()
 		
 	if !control_pos.is_empty():
 		U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, duration )
+		
+	on_current_location_update()	
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------	
