@@ -1,6 +1,8 @@
 extends SubscribeWrapper
 
 # ---------------------------------------------	FOR EVENTS
+enum OPTION {CURRENCY}
+
 var option_selected:Dictionary = {"store": null}
 
 func onSelected(item:Dictionary) -> void: 
@@ -15,8 +17,48 @@ func getSelectedIndex() -> int:
 func getSelectedVal():
 	return option_selected.store.option.val
 	
-func get_cost() -> Array:
-	return []
+func build_option(title:String = "", costs:Dictionary = {}) -> Dictionary:
+	var description_list:Array = []
+	var is_locked:bool = false
+	var onSelectedChild:Callable = func(item:Dictionary) -> void:
+		pass
+	
+	for type in costs:
+		match type:
+			OPTION.CURRENCY:
+				var arr:Array = []
+				for key in costs[type]:
+					var details:Dictionary = RESOURCE_UTIL.return_currency(key)
+					var amount:int = costs[type][key]
+					if amount != 0:
+						var description:String = "Will %s [%s] %s." % ["consume" if amount < 0 else "gain", absi(amount), details.name]
+						description_list.push_back(description)
+						if amount > resources_data[key].amount and !is_locked:
+							is_locked = true
+						arr.push_back(func() -> void:
+							resources_data[key].amount = U.min_max(resources_data[key].amount, 0, resources_data[key].amount + amount)
+						)
+					
+					onSelectedChild = func(_item:Dictionary) -> void:
+						for item in arr:
+							item.call()
+						SUBSCRIBE.resources_data = resources_data
+
+
+	
+	if title.is_empty():
+		title = "Do nothing."
+		description_list = ["..."]
+	
+	return 	{
+		"include": true,
+		"title": title,
+		"description_list": description_list, 
+		"locked": is_locked,
+		"val": true,
+		"onSelected": onSelectedChild
+	}
+	
 # ---------------------------------------------
 
 
@@ -78,7 +120,17 @@ var SCP0:Dictionary = {
 		# -------------------------
 		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
 			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			print("passes_metric_check: ", passes_metric_check)
+			var dict:Dictionary = {
+				"title": "passes_metric_check true" if passes_metric_check else "passes metric false",
+				"costs": {
+					OPTION.CURRENCY: {
+						RESOURCE.CURRENCY.MONEY: 100 if passes_metric_check else 0,
+						RESOURCE.CURRENCY.SCIENCE: 50 if !passes_metric_check else 0
+					}
+				}
+				
+			}
+			
 			
 			return [
 					# --------------------
@@ -90,18 +142,8 @@ var SCP0:Dictionary = {
 								"I pass the metric test" if passes_metric_check else "I did NOT pass the metrics test."
 							],
 							"options": [
-								{
-									"include": true,
-									"title": "Cancel transfer.  We can't risk damaging it or the facility.",
-									"val": true,
-									"onSelected": onSelected
-								},
-								{
-									"include": true,
-									"title": "Continue transfer.  Its just a door.",
-									"val": false,
-									"onSelected": onSelected
-								}
+								build_option(),
+								build_option(dict.title, dict.costs),
 							]
 						},
 					# --------------------
@@ -135,7 +177,12 @@ var SCP0:Dictionary = {
 									"img_src": scp_details.img_src,
 									"text": [
 										"The door begins to hum at an alarming frequency."
-									]
+									],
+									"options": [
+										build_option(),
+										build_option("Option 1", {OPTION.CURRENCY: {RESOURCE.CURRENCY.MONEY: -99, RESOURCE.CURRENCY.MATERIAL: -99}}),
+										build_option("Option 2"),
+									]	
 								},
 							# --------------------
 					]

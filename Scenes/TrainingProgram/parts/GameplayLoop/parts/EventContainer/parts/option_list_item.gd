@@ -4,7 +4,7 @@ extends MouseInteractions
 @onready var MarginContainerPanel:MarginContainer = $MarginContainer
 @onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
 @onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionLabel
-
+@onready var DescriptionListContainer:VBoxContainer = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionListContainer
 @onready var LockedTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/LockedTextBtn
 @onready var OptionTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/OptionTextBtn
 
@@ -83,6 +83,9 @@ func on_data_update() -> void:
 	OptionTextBtn.title = data.title
 	LockedTextBtn.title = data.title
 	
+	for node in DescriptionListContainer.get_children():
+		node.queue_free()
+	
 	if "locked" in data and data.locked:
 		LockedTextBtn.show() 
 		OptionTextBtn.hide()
@@ -92,6 +95,18 @@ func on_data_update() -> void:
 	if "description" in data and data.description.length() > 0:
 		DescriptionLabel.text = "%s %s" % ["[%s SUCCESS] -" % [str(data.success_rate.call(),'%')] if "success_rate" in data else "", data.description]
 		show_description = show_description
+	else:
+		show_description = false
+	
+	if "description_list" in data:
+		show_description = false
+		var label_setting_copy:LabelSettings = DescriptionLabel.label_settings.duplicate()
+
+		for str in data.description_list:
+			var new_label:Label = Label.new()
+			new_label.label_settings = label_setting_copy
+			new_label.text = str
+			DescriptionListContainer.add_child(new_label)
 # ----------------------
 
 # --------------------------------------------------------------------------------------------------		

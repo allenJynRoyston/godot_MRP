@@ -22,9 +22,9 @@ var upgrade_abl_level:Dictionary = {
 	"name": "LVL +1",
 	"lvl_required": 0,
 	"energy_cost": 4,
-	"conditional": func(gpc:Dictionary) -> Dictionary:
-		gpc[CONDITIONALS.TYPE.ENABLE_UPGRADES] = 1
-		return gpc,
+	"wing": func(new_room_config:Dictionary, use_location:Dictionary) -> Dictionary:
+		new_room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl += 1
+		return new_room_config,
 }
 
 # ---------------------------------

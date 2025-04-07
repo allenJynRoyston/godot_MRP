@@ -367,13 +367,13 @@ func on_current_instruction_update() -> void:
 			var show_description:bool = readiness_level >= 1
 			
 			# AT READINESS BELOW 0, OPTIONS HAVE DEBUFFS
-			if readiness_level < 0 and options.size() > 1 and option.val != -1:
-				if index <= absi(readiness_level):
-					option.title = "??? [READINESS COMPROMISED]"
-					option.icon = SVGS.TYPE.LOCK
-					if readiness_level <= -3:
-						option.title = "UNAVAILABLE [READINESS COMPROMISED]"
-						locked = true
+			#if readiness_level < 0 and options.size() > 1 and option.val != -1:
+				#if index <= absi(readiness_level):
+					#option.title = "??? [READINESS COMPROMISED]"
+					#option.icon = SVGS.TYPE.LOCK
+					#if readiness_level <= -3:
+						#option.title = "UNAVAILABLE [READINESS COMPROMISED]"
+						#locked = true
 				
 			if include:
 				new_node.data = option

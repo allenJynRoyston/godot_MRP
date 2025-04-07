@@ -1755,9 +1755,7 @@ func update_room_config(force_setup:bool = false) -> void:
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
 				var abl_lvl:int = room_config_data.abl_lvl
 				# check if passive is enabled
-				if room_base_state.passives_enabled[ability_uid]:
-					
-					
+				if room_base_state.passives_enabled[ability_uid]:					
 					# check if level is equal or less then what is required...
 					# aand check if check if enough energy available to power the passive
 					if ability.lvl_required <= abl_lvl and ring_config_data.energy.used < ring_config_data.energy.available:
@@ -1771,7 +1769,10 @@ func update_room_config(force_setup:bool = false) -> void:
 						if "metrics" in ability: 
 							for metric in ability.metrics:
 								metric_defaults[floor_ring_designation][metric] += ability.metrics[metric]
-						
+						# check for wing level stuff
+						if "wing" in ability:
+							new_room_config = ability.wing.call(new_room_config, item.location)
+						# check for any conditional changes
 						if "conditional" in ability:
 							ability.conditional.call(gameplay_conditionals)
 					else:

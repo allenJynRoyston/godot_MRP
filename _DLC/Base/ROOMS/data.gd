@@ -49,7 +49,7 @@ var DEBUG_ROOM:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL),
-			#ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 1),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),

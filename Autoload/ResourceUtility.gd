@@ -7,14 +7,27 @@ var MONEY:Dictionary = {
 	"icon": SVGS.TYPE.MONEY
 }
 
+var SCIENCE:Dictionary = {
+	"id": RESOURCE.CURRENCY.SCIENCE,
+	"name": "SCIENCE",
+	"icon": SVGS.TYPE.RESEARCH
+}
+
+var CORE:Dictionary = {
+	"id": RESOURCE.CURRENCY.CORE,
+	"name": "CORE",
+	"icon": SVGS.TYPE.DOT
+}
+
+var MATERIAL:Dictionary = {
+	"id": RESOURCE.CURRENCY.MATERIAL,
+	"name": "MATERIAL",
+	"icon": SVGS.TYPE.CONVERSATION
+}
+
 var ENERGY:Dictionary = {
 	"name": "ENERGY",
 	"icon": SVGS.TYPE.ENERGY
-}
-
-var SCIENCE:Dictionary = {
-	"name": "SCIENCE",
-	"icon": SVGS.TYPE.RESEARCH
 }
 
 var TECHNICIANS:Dictionary = {
@@ -55,6 +68,8 @@ var READINESS:Dictionary = {
 var reference_data:Dictionary = {
 	RESOURCE.CURRENCY.MONEY: MONEY,
 	RESOURCE.CURRENCY.SCIENCE: SCIENCE,
+	RESOURCE.CURRENCY.MATERIAL: MATERIAL,
+	RESOURCE.CURRENCY.CORE: CORE,
 }
 
 var reference_personnel:Dictionary = {

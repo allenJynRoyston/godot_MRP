@@ -58,7 +58,9 @@ func get_ability_level(use_location:Dictionary = current_location) -> int:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring	
 	var room:int = use_location.room
-	return room_config.floor[floor].ring[ring].room[room].abl_lvl
+	var wing_abl_lvl:int = 	room_config.floor[floor].ring[ring].abl_lvl
+	var room_abl_lvl:int = room_config.floor[floor].ring[ring].room[room].abl_lvl
+	return wing_abl_lvl + room_abl_lvl
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -147,7 +149,6 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 	var room_refs:Array = wing_data.room_refs
 	var abilities:Dictionary = {}
 	var passive_abilities:Dictionary = {}
-	var ring_ability_level:int = get_ability_level()
 
 	for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room_index]

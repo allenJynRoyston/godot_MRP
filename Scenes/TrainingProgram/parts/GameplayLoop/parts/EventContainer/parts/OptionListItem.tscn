@@ -69,7 +69,7 @@ title = "[PREREQUISITES MISSING]"
 [node name="OptionTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4l8vf")
-icon = 52
+icon = 67
 icon_placement = 1
 panel_color = Color(0, 0, 0, 0)
 inactive_color = Color(0.448712, 0.448712, 0.448712, 1)
@@ -79,13 +79,18 @@ is_hoverable = false
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
 
 [node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 size_flags_vertical = 1
-text = "Description goes here AND IT CAN GET VERY LONG.  "
+text = "Description item..."
 label_settings = SubResource("LabelSettings_hvfea")
 autowrap_mode = 2
 uppercase = true
 metadata/_edit_group_ = true
+
+[node name="DescriptionListContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2

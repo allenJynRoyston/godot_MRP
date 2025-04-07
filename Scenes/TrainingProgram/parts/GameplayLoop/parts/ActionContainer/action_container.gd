@@ -604,6 +604,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 	var designation:String = str(current_location.floor, current_location.ring)	
 	var extract_wing_data:Dictionary = GAME_UTIL.extract_wing_details()	
 	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
+	var get_ability_level:int = GAME_UTIL.get_ability_level()	
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
 	
@@ -625,7 +626,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 			var abilities:Array = extract_wing_data.abilities[key]
 			for index in abilities.size():
 				var ability:Dictionary = abilities[index]
-				if active_menu_index == ability.lvl_required and current_location.room == ability.room_index:
+				if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
 					var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": current_location.room}
 					var funcs:Dictionary = ability_funcs(ability.details, use_location)
 					var get_cooldown_duration:Callable = funcs.get_cooldown_duration
@@ -715,6 +716,7 @@ func show_passives(skip_animation:bool = false) -> void:
 	var options:Array = []
 	var extract_wing_data:Dictionary = GAME_UTIL.extract_wing_details()
 	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
+	var get_ability_level:int = GAME_UTIL.get_ability_level()
 	var designation:String = str(current_location.floor, current_location.ring)
 	
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
@@ -736,7 +738,7 @@ func show_passives(skip_animation:bool = false) -> void:
 		var abilities:Array = extract_wing_data.passive_abilities[key]
 		for index in abilities.size():
 			var ability:Dictionary = abilities[index]
-			if active_menu_index == ability.lvl_required and current_location.room == ability.room_index:
+			if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
 				var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
 				var funcs:Dictionary = passive_funcs(ability.room_ref, ability.index, use_location)
 				var get_not_ready_func:Callable = funcs.get_not_ready_func

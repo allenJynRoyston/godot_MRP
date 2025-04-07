@@ -471,6 +471,7 @@ title = "NEXT"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
+hide_icon_panel = false
 
 [node name="SelectBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("11_6solj")]
 layout_mode = 2
@@ -479,3 +480,4 @@ title = "SELECT"
 assigned_key = "E"
 icon = 45
 panel_color = Color(0, 0.529412, 0.278431, 1)
+hide_icon_panel = false
