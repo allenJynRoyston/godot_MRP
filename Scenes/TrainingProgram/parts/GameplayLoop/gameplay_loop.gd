@@ -14,7 +14,7 @@ extends PanelContainer
 @onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
 @onready var ResearchersContainer:PanelContainer = $ResearcherContainer
 @onready var EventContainer:PanelContainer = $EventContainer
-@onready var MetricsContainer:PanelContainer = $MetricsContainer
+#@onready var MetricsContainer:PanelContainer = $MetricsContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
@@ -90,11 +90,11 @@ var show_objectives:bool = false :
 	set(val):
 		show_objectives = val
 		on_show_objectives_update()		
-		
-var show_metrics:bool = true : 
-	set(val):
-		show_metrics = val
-		on_show_metrics_update()
+		#
+#var show_metrics:bool = true : 
+	#set(val):
+		#show_metrics = val
+		#on_show_metrics_update()
 
 var show_dialogue:bool = false : 
 	set(val):
@@ -196,16 +196,22 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"resources_data": func() -> Dictionary:
 		return { 
-			RESOURCE.TYPE.MONEY: {
+			RESOURCE.CURRENCY.MONEY: {
 				"amount": 100, 
-				"utilized": 0, 
 				"capacity": 9999
 			},
-			RESOURCE.TYPE.SCIENCE: {
-				"amount": 100, 
-				"utilized": 0, 
-				"capacity": 9999
+			RESOURCE.CURRENCY.SCIENCE: {
+				"amount": 50, 
+				"capacity": 1000
 			},
+			RESOURCE.CURRENCY.MATERIAL: {
+				"amount": 10, 
+				"capacity": 500
+			},
+			RESOURCE.CURRENCY.CORE: {
+				"amount": 1, 
+				"capacity": 10
+			},						
 		},
 	# ----------------------------------
 	"researcher_hire_list": func() -> Array:
@@ -543,7 +549,7 @@ func setup() -> void:
 	on_show_build_complete_update()
 	on_show_reseachers_update()
 	on_show_store_update()
-	on_show_metrics_update()
+	#on_show_metrics_update()
 	on_show_end_of_phase_update()
 	
 	# other
@@ -713,7 +719,7 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 func get_room_defaults() -> Dictionary:
 	return {
 		"damage_val": 0,
-		"ability_level": 0,
+		"abl_lvl": 0,
 		"is_activated": false,
 		"build_data": {},
 		"room_data": {},
@@ -740,7 +746,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		BuildContainer,
 		ConfirmModal, SelectResearcherScreen, ResourceContainer,
 		BuildCompleteContainer, ObjectivesContainer, EventContainer,
-		MetricsContainer,  EndOfPhaseContainer,	SCPSelectScreen,
+		EndOfPhaseContainer,	SCPSelectScreen,
 		RoomInfo, FloorInfo, PhaseAnnouncement, ToastContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
@@ -771,7 +777,7 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	await show_only([Structure3dContainer, TimelineContainer, ActionContainer, MetricsContainer, ResourceContainer, RoomInfo, FloorInfo])
+	await show_only([Structure3dContainer, TimelineContainer, ActionContainer, ResourceContainer, RoomInfo, FloorInfo])
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -868,7 +874,7 @@ func calculate_daily_costs(costs:Array) -> void:
 			match cost.resource_ref:
 				#----------------------------
 				# trigger in debt if less than 50.  
-				RESOURCE.TYPE.MONEY:
+				RESOURCE.CURRENCY.MONEY:
 					var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, -50, capacity)
 					resources_data[cost.resource_ref].amount = new_val
 					
@@ -967,7 +973,7 @@ func execute_record_audit() -> void:
 						
 						var science_diff:Array = [{
 							"amount": science_amount, 
-							"resource_ref": RESOURCE.TYPE.SCIENCE
+							"resource_ref": RESOURCE.CURRENCY.SCIENCE
 						}]
 						
 						progress_data.record.push_back({
@@ -1165,10 +1171,10 @@ func on_show_build_complete_update() -> void:
 	BuildCompleteContainer.is_showing = show_build_complete
 	showing_states[BuildCompleteContainer] = show_build_complete
 
-func on_show_metrics_update() -> void:
-	if !is_node_ready():return
-	MetricsContainer.is_showing = show_metrics
-	showing_states[MetricsContainer] = show_metrics
+#func on_show_metrics_update() -> void:
+	#if !is_node_ready():return
+	#MetricsContainer.is_showing = show_metrics
+	#showing_states[MetricsContainer] = show_metrics
 
 
 func on_show_end_of_phase_update() -> void:
@@ -1219,7 +1225,7 @@ func on_current_phase_update() -> void:
 						REFS.SOURCE.FACILITY:
 							SUBSCRIBE.current_location = record.data.location
 							for item in record.data.diff:
-								var resource_details:Dictionary = RESOURCE_UTIL.return_data(item.resource_ref)
+								var resource_details:Dictionary = RESOURCE_UTIL.return_currency(item.resource_ref)
 								ToastContainer.add("%s %s %s %s" % [record.data.name, "generated" if item.amount > 0 else "spent", item.amount, resource_details.name])				
 								await U.set_timeout(0.3)
 							
@@ -1318,7 +1324,7 @@ func on_current_objective_state_update() -> void:
 		OBJECTIVES_STATE.SHOW:
 			SUBSCRIBE.suppress_click = true
 			ObjectivesContainer.start()
-			await show_only([ObjectivesContainer, Structure3dContainer, ResourceContainer, MetricsContainer])
+			await show_only([ObjectivesContainer, Structure3dContainer, ResourceContainer])
 			await ObjectivesContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			await restore_showing_state()
@@ -1722,7 +1728,7 @@ func update_room_config(force_setup:bool = false) -> void:
 			var specializations:Array = researcher_details.specializations
 			var has_pairing:bool = ROOM_UTIL.check_for_room_pair(item.ref, specializations)
 			if assigned_to_room == item.location and has_pairing:
-				room_config_data.ability_level = U.min_max(room_config_data.ability_level + 1, 0, 2)
+				room_config_data.abl_lvl = U.min_max(room_config_data.abl_lvl + 1, 0, 2)
 				
 	# NEXT check for passives in rooms
 	for item in purchased_facility_arr:
@@ -1734,7 +1740,6 @@ func update_room_config(force_setup:bool = false) -> void:
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var floor_ring_designation:String = str(floor, ring)
-
 		
 		# if passives are enabled...
 		if "passive_abilities" in room_data:
@@ -1743,14 +1748,14 @@ func update_room_config(force_setup:bool = false) -> void:
 				var ability:Dictionary = passive_abilities[ability_index]
 				var ability_uid:String = str(room_data.ref, ability_index)
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
-				var ability_level:int = room_config_data.ability_level
+				var abl_lvl:int = room_config_data.abl_lvl
 				# check if passive is enabled
 				if room_base_state.passives_enabled[ability_uid]:
 					
 					
 					# check if level is equal or less then what is required...
 					# aand check if check if enough energy available to power the passive
-					if ability.lvl_required <= ability_level and ring_config_data.energy.used < ring_config_data.energy.available:
+					if ability.lvl_required <= abl_lvl and ring_config_data.energy.used < ring_config_data.energy.available:
 						# if it's enabled, add to energy cost
 						ring_config_data.energy.used += energy_cost
 						# check provides (like staff, dclass, security, etc)

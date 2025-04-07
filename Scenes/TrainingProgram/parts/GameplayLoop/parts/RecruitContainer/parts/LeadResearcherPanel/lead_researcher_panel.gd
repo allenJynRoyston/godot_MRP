@@ -88,7 +88,7 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 		#card_node.data = data
 		#card_node.addHire = func(cost:int) -> void:
 			#if !allow_recruitment:return
-			#if resources_data[RESOURCE.TYPE.MONEY].amount >= cost:
+			#if resources_data[RESOURCE.CURRENCY.MONEY].amount >= cost:
 				#addHire.call({
 					#"researcher": researcher_hire_list[index], 
 					#"cost": cost

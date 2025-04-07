@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="2_k1rty"]
 [ext_resource type="PackedScene" uid="uid://biv0mqroc6kax" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/RoomDetailPanel.tscn" id="3_xwga5"]
 [ext_resource type="PackedScene" uid="uid://c7j2nka1uvvlq" path="res://UI/ScpPanel/ScpPanel.tscn" id="4_g7ml8"]
-[ext_resource type="PackedScene" uid="uid://biu7hvraky4ie" path="res://UI/ResourcePanel/ResourcePanel.tscn" id="4_ry2yn"]
+[ext_resource type="PackedScene" uid="uid://biu7hvraky4ie" path="res://UI/PersonnelPanel/PersonnelPanel.tscn" id="4_ry2yn"]
 [ext_resource type="PackedScene" uid="uid://ck8ttsctrjixj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/parts/AbilitiesPanel.tscn" id="5_a7by7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_30yoo"]

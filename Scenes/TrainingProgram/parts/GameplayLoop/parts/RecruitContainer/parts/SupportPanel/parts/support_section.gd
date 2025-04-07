@@ -65,7 +65,7 @@ func _ready() -> void:
 
 	HireBtn.onClick = func() -> void:
 		var total_amount:int = amount * amount_price
-		if resources_data[RESOURCE.TYPE.MONEY].amount >= total_amount:
+		if resources_data[RESOURCE.CURRENCY.MONEY].amount >= total_amount:
 			onHireClick.call(amount, total_amount)
 		else:
 			print("NOT ENOUGH...")

@@ -35,6 +35,13 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
+		],	
+	# ------------------------------------------		
+	
+	# ------------------------------------------
 	"metrics": {
 		RESOURCE.BASE_METRICS.MORALE: 1,
 		RESOURCE.BASE_METRICS.SAFETY: 1,
@@ -93,11 +100,11 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 }
 
-var CONTAINMENT_CELL:Dictionary = {
+var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
 	"type_ref": ROOM.TYPE.CONTAINMENT_CELL,
-	"name": "CONTAINMENT CELL",
-	"shortname": "C.CELL",
+	"name": "STANDARD CONTAINMENT CELL",
+	"shortname": "S.CONTAINMENT",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Containment cell used to house anamolous objects.  Can be upgraded with additional security measures.",
@@ -302,7 +309,7 @@ var ENGINEERING_BAY:Dictionary = {
 var list:Array[Dictionary] = [
 	DIRECTORS_OFFICE, HQ,
 	# ---------------
-	CONTAINMENT_CELL, 
+	STANDARD_CONTAINMENT_CELL, 
 	# ---------------
 	PRISONER_BLOCK, HR_DEPARTMENT, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
 	# ---------------

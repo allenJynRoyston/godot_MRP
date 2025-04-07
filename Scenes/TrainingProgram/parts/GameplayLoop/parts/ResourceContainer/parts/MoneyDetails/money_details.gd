@@ -50,7 +50,7 @@ func update_list() -> void:
 		var operating_cost_list:Array = SCP_UTIL.return_ongoing_containment_rewards(item.ref)
 		var details:Dictionary = SCP_UTIL.return_data(item.ref)
 		for i in operating_cost_list:
-			if i.resource.ref == RESOURCE.TYPE.MONEY:
+			if i.resource.ref == RESOURCE.CURRENCY.MONEY:
 				var new_node:BtnBase = DetailBtnPreload.instantiate()
 				var amount:int = i.amount
 				new_node.title = "X%s" % [details.name]
@@ -71,7 +71,7 @@ func update_list() -> void:
 		var operating_cost_list:Array = ROOM_UTIL.return_operating_cost(item.ref)
 		var details:Dictionary = ROOM_UTIL.return_data(item.ref)
 		for i in operating_cost_list:
-			if i.resource.ref == RESOURCE.TYPE.MONEY:
+			if i.resource.ref == RESOURCE.CURRENCY.MONEY:
 				var new_node:BtnBase = DetailBtnPreload.instantiate()
 				var amount:int = i.amount
 				new_node.title = details.name

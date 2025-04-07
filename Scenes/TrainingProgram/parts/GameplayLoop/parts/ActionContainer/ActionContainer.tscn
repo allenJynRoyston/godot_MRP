@@ -786,7 +786,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_k4sxg")
 title = "DETAILS"
-assigned_key = "R2"
+assigned_key = "R"
 icon = 51
 hide_icon_panel = false
 
@@ -800,6 +800,7 @@ icon = 10
 hide_icon_panel = false
 
 [node name="PassiveBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+visible = false
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_34kq7")

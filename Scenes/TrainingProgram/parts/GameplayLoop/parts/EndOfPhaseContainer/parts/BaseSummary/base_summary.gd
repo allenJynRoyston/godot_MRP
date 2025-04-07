@@ -88,11 +88,11 @@ func get_floor_metrics(floor:int) -> Dictionary:
 				if "diff" in record.data:
 					for diff in record.data.diff:
 						match diff.resource_ref:
-							RESOURCE.TYPE.MONEY:
+							RESOURCE.CURRENCY.MONEY:
 								money_amount += diff.amount
 							RESOURCE.TYPE.ENERGY:
 								energy_amount += diff.amount
-							RESOURCE.TYPE.SCIENCE:
+							RESOURCE.CURRENCY.SCIENCE:
 								science_amount += diff.amount
 					
 	return {
@@ -113,7 +113,7 @@ func get_wing_metrics(floor:int, wing:int) -> Dictionary:
 		if record.location.floor == floor and record.location.ring == wing:
 			source = record.source
 			for cost in record.costs:
-				if cost.resource_ref == RESOURCE.TYPE.MONEY:
+				if cost.resource_ref == RESOURCE.CURRENCY.MONEY:
 					money_amount += cost.amount
 				if cost.resource_ref == RESOURCE.TYPE.ENERGY:
 					energy_amount += cost.amount
@@ -134,7 +134,7 @@ func get_room_metrics(floor:int, wing:int, room:int) -> Dictionary:
 		if record.location.floor == floor and record.location.ring == wing and record.location.room == room:
 			source = record.source
 			for cost in record.costs:
-				if cost.resource_ref == RESOURCE.TYPE.MONEY:
+				if cost.resource_ref == RESOURCE.CURRENCY.MONEY:
 					money_amount += cost.amount
 				if cost.resource_ref == RESOURCE.TYPE.ENERGY:
 					energy_amount += cost.amount
@@ -180,8 +180,8 @@ func on_steps_update() -> void:
 				#new_node.designation = "%s" % [floor_index]
 				BaseItemListContainer.add_child(new_node)
 				
-			if RESOURCE.TYPE.MONEY in resources_data and RESOURCE.TYPE.ENERGY in resources_data:
-				MoneyDiffLabel.text = "%s -> %s" % [resources_data[RESOURCE.TYPE.MONEY].amount - money_total, resources_data[RESOURCE.TYPE.MONEY].amount ]
+			if RESOURCE.CURRENCY.MONEY in resources_data and RESOURCE.TYPE.ENERGY in resources_data:
+				MoneyDiffLabel.text = "%s -> %s" % [resources_data[RESOURCE.CURRENCY.MONEY].amount - money_total, resources_data[RESOURCE.CURRENCY.MONEY].amount ]
 				EnergyDiffLabel.text = "%s -> %s" % [resources_data[RESOURCE.TYPE.ENERGY].amount - energy_total, resources_data[RESOURCE.TYPE.ENERGY].amount]	
 			TotalsLabel.text = "NEW BALANCE"
 		#-----------------

@@ -211,25 +211,25 @@ func return_resource_list(details:Dictionary, dict_property:String) -> Array:
 			var amount_dict:Dictionary = details[dict_property].resources.personnel.call()
 			for key in amount_dict:	
 				var amount:int = amount_dict[key]
-				list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
+				list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
 						
 		if "amount" in details[dict_property].resources:
 			var amount_dict:Dictionary = details[dict_property].resources.amount.call()
 			for key in amount_dict:	
 				var amount:int = amount_dict[key]
-				list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
+				list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
 				
 		if "capacity" in details[dict_property].resources:
 			var capacity_dict:Dictionary = details[dict_property].resources.capacity.call()
 			for key in capacity_dict:	
 				var amount:int = capacity_dict[key]
-				list.push_back({"type": "capacity", "amount": amount, "resource": RESOURCE_UTIL.return_data(key)})	
+				list.push_back({"type": "capacity", "amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})	
 				
 		if "metrics" in details[dict_property].resources:
 			var metrics_dict:Dictionary = details[dict_property].resources.metrics.call()
 			for key in metrics_dict:	
 				var amount:int = metrics_dict[key]
-				list.push_back({"type": "metrics", "amount": amount, "resource": RESOURCE_UTIL.return_metric_data(key)})
+				list.push_back({"type": "metrics", "amount": amount, "resource": RESOURCE_UTIL.return_metric(key)})
 				
 	return list
 # ------------------------------------------------------------------------------
@@ -311,7 +311,7 @@ func return_wing_effects_list(details:Dictionary, room_extract:Dictionary, prope
 		var wing_effects:Dictionary =  details.wing_effect.call(room_extract)
 		for key in wing_effects:
 			var amount:int = wing_effects[key]
-			var resource_data:Dictionary = RESOURCE_UTIL.return_metric_data(key)
+			var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
 			
 			match key:
 				RESOURCE.BASE_METRICS.MORALE:
@@ -327,7 +327,7 @@ func return_wing_effects_list(details:Dictionary, room_extract:Dictionary, prope
 				#var dict:Dictionary = details[property_name].resources[property].call()
 				#for key in dict:
 					#var amount:int = dict[key]
-					#var resource_data:Dictionary = RESOURCE_UTIL.return_data(key)
+					#var resource_data:Dictionary = RESOURCE_UTIL.return_currency(key)
 					#list.push_back({"resource_data": resource_data, "property": property, "amount": amount})
 
 									

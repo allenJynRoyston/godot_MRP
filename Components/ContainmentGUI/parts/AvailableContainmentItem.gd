@@ -41,7 +41,7 @@ func on_data_update() -> void:
 	for item in ref_data.required_resources:
 		var key:int = item[0]
 		var amount:int = item[1]		
-		if resources[key].total - resources[key].utilized < amount:
+		if resources[key].total  < amount:
 			has_enough_resources = false
 			break
 	

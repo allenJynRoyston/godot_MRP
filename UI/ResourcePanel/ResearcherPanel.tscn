@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bdjo5eyc627x"]
+[gd_scene load_steps=7 format=3 uid="uid://dlt20yyctrwy8"]
 
-[ext_resource type="Script" uid="uid://wgy5viq6he44" path="res://UI/ResourcePanel/resource_panel.gd" id="1_166i6"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_ser8d"]
-[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_8ca1n"]
+[ext_resource type="Script" uid="uid://dco5x0qmgyq12" path="res://UI/ResearcherPanel/researcher_panel.gd" id="1_5yhtx"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_k1hjm"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_os1pc"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_swyln"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fm7g2"]
 bg_color = Color(0, 0, 0, 0.572549)
@@ -23,14 +24,12 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ca1n"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[node name="ResourcePanel" type="PanelContainer"]
+[node name="Researcher" type="PanelContainer"]
 custom_minimum_size = Vector2(60, 0)
+offset_right = 82.0
+offset_bottom = 52.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_fm7g2")
-script = ExtResource("1_166i6")
+script = ExtResource("1_5yhtx")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -48,8 +47,8 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "SCIENCE"
-label_settings = ExtResource("2_ser8d")
+text = " RESEARCHERS "
+label_settings = ExtResource("2_k1hjm")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -65,7 +64,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_jex26")
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
@@ -73,10 +72,26 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="ResourceItem" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_8ca1n")]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8ca1n")
-icon = 31
-no_bg = true
-title = "0"
-display_at_bottom = true
+theme_override_constants/separation = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("3_os1pc")]
+layout_mode = 2
+icon = 34
+flip_v = false
+is_hoverable = false
+
+[node name="TotalLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "x4"
+label_settings = ExtResource("4_swyln")
+
+[node name="FreeLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "FREE (5)"
+label_settings = ExtResource("4_swyln")

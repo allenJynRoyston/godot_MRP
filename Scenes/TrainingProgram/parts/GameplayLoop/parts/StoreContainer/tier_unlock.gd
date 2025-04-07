@@ -60,7 +60,7 @@ func on_data_update() -> void:
 	for key in resource_list:
 		var amount:int = resource_list[key]
 		var btn_node:BtnBase = TextBtnPreload.instantiate()
-		var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
+		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
 		btn_node.title = str(amount)
 		btn_node.icon = resource_details.icon
 		btn_node.is_disabled = resource_data[key].amount < amount

@@ -117,15 +117,15 @@ func on_data_update(_previous_state:Dictionary = data) -> void:
 		ActiveVBox.add_child(new_node)
 # -----------------------------------	
 
-# -----------------------------------	
-func update_active_items(resource_copy:Dictionary) -> void:
-	for child in AvailableVbox.get_children():
-		child.resources = resource_copy
-# -----------------------------------		
+## -----------------------------------	
+#func update_active_items(resource_copy:Dictionary) -> void:
+	#for child in AvailableVbox.get_children():
+		#child.resources = resource_copy
+## -----------------------------------		
 
 # -----------------------------------	
 func check_if_enough() -> bool:
-	check_resources()
+	#check_resources()
 	
 	var i:Dictionary = data.available[selected]
 	var required_resources:Array = C.get_reference_data(i.item).required_resources
@@ -140,21 +140,21 @@ func check_if_enough() -> bool:
 # -----------------------------------		
 	
 
-# -----------------------------------	
-func check_resources() -> void:
-	resources_copy = resources.duplicate(true)
-	
-	for selected in selected_arr:
-		var i:Dictionary = data.available[selected]
-		var required_resources:Array = C.get_reference_data(i.item).required_resources
-		for item in required_resources:
-			var key:int = item[0]
-			var amount:int = item[1]
-			if (resources_copy[key].total - resources_copy[key].utilized) >= amount:
-				resources_copy[key].utilized += amount
-
-	update_active_items(resources_copy)
-# -----------------------------------	
+## -----------------------------------	
+#func check_resources() -> void:
+	#resources_copy = resources.duplicate(true)
+	#
+	#for selected in selected_arr:
+		#var i:Dictionary = data.available[selected]
+		#var required_resources:Array = C.get_reference_data(i.item).required_resources
+		#for item in required_resources:
+			#var key:int = item[0]
+			#var amount:int = item[1]
+			#if (resources_copy[key].total - resources_copy[key].utilized) >= amount:
+				#resources_copy[key].utilized += amount
+#
+	#update_active_items(resources_copy)
+## -----------------------------------	
 
 # -----------------------------------	
 func on_key_input(keycode:int) -> void:
@@ -183,7 +183,7 @@ func on_key_input(keycode:int) -> void:
 						selected_arr = selected_arr
 				else: 
 					selected_arr = selected_arr.filter(func(item): return item != selected)
-				check_resources()
+				#check_resources()
 		65: 
 			var new_section = section_arr.size() - 1 if section - 1 < 0 else section - 1
 			var list_size:int = section_arr[new_section].get_children().size()

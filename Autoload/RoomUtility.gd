@@ -115,7 +115,7 @@ var ROOM_TEMPLATE:Dictionary = {
 				##"name": "AQUIRE SCP",
 				##"unlock_cost": func() -> Dictionary:
 					##return {
-						##RESOURCE.TYPE.SCIENCE: -20
+						##RESOURCE.CURRENCY.SCIENCE: -20
 					##},
 				##"cooldown_duration":  5, 
 				##"effect": func() -> bool:
@@ -160,7 +160,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		##"resources": {
 			##"amount": func() -> Dictionary:
 				##return {
-					##RESOURCE.TYPE.MONEY: -1
+					##RESOURCE.CURRENCY.MONEY: -1
 				##},
 		##}	
 	##},
@@ -212,7 +212,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.SCIENCE: -20
+					#RESOURCE.CURRENCY.SCIENCE: -20
 				#},
 		#}	
 	#},
@@ -221,7 +221,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.SCIENCE: -20
+					#RESOURCE.CURRENCY.SCIENCE: -20
 				#},
 		#}	
 	#},
@@ -230,8 +230,8 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.SCIENCE: 10,
-					#RESOURCE.TYPE.MONEY: 10
+					#RESOURCE.CURRENCY.SCIENCE: 10,
+					#RESOURCE.CURRENCY.MONEY: 10
 				#},
 		#}	
 	#},
@@ -286,7 +286,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -295,7 +295,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -1
+					#RESOURCE.CURRENCY.MONEY: -1
 				#},
 		#}	
 	#},
@@ -343,7 +343,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -30
+					#RESOURCE.CURRENCY.MONEY: -30
 				#},
 		#}	
 	#},
@@ -352,7 +352,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -361,7 +361,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.SCIENCE: 25
+					#RESOURCE.CURRENCY.SCIENCE: 25
 				#},
 		#}	
 	#}	
@@ -397,7 +397,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -406,7 +406,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -1
+					#RESOURCE.CURRENCY.MONEY: -1
 				#},
 		#}	
 	#}	
@@ -440,7 +440,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -449,7 +449,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -10
+					#RESOURCE.CURRENCY.MONEY: -10
 				#},
 		#}	
 	#}	
@@ -482,7 +482,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -491,7 +491,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -1
+					#RESOURCE.CURRENCY.MONEY: -1
 				#},
 		#}	
 	#}	
@@ -524,7 +524,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -533,7 +533,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -1
+					#RESOURCE.CURRENCY.MONEY: -1
 				#},
 		#}	
 	#}	
@@ -566,7 +566,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -575,7 +575,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -1
+					#RESOURCE.CURRENCY.MONEY: -1
 				#},
 		#}	
 	#}	
@@ -601,7 +601,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -610,7 +610,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -1
+					#RESOURCE.CURRENCY.MONEY: -1
 				#},
 		#}	
 	#}	
@@ -650,7 +650,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -659,7 +659,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: 10
+					#RESOURCE.CURRENCY.MONEY: 10
 				#},
 		#}	
 	#},
@@ -708,7 +708,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"resources": {
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -20
+					#RESOURCE.CURRENCY.MONEY: -20
 				#},
 		#}	
 	#},
@@ -718,7 +718,7 @@ var ROOM_TEMPLATE:Dictionary = {
 #
 			#"amount": func() -> Dictionary:
 				#return {
-					#RESOURCE.TYPE.MONEY: -1
+					#RESOURCE.CURRENCY.MONEY: -1
 				#},
 		#}	
 	#},
@@ -766,35 +766,35 @@ var reference_list:Array = []
 		#"name": "ADMIN",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 0,
+				#RESOURCE.CURRENCY.MONEY: 0,
 			#},
 	#},
 	#TIER.VAL.ONE: {
 		#"name": "CONTAINMENT",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 5,
+				#RESOURCE.CURRENCY.MONEY: 5,
 			#},
 	#},
 	#TIER.VAL.TWO: {
 		#"name": "ADVANCED",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 50,
+				#RESOURCE.CURRENCY.MONEY: 50,
 			#},
 	#},
 	#TIER.VAL.THREE: {
 		#"name": "METAPHYSICAL",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 250,
+				#RESOURCE.CURRENCY.MONEY: 250,
 			#},
 	#},
 	#TIER.VAL.FOUR: {
 		#"name": "TECHNOLOGICAL",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 500,
+				#RESOURCE.CURRENCY.MONEY: 500,
 			#},
 	#},
 #}

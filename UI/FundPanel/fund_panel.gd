@@ -5,4 +5,4 @@ extends SubscribeWrapper
 func on_resources_data_update(new_val:Dictionary) -> void:
 	resources_data = new_val
 	if !is_node_ready():return
-	ResourceItem.title = str(resources_data[RESOURCE.TYPE.MONEY].amount)
+	ResourceItem.title = str(resources_data[RESOURCE.CURRENCY.MONEY].amount)

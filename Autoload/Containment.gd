@@ -7,7 +7,7 @@ extends Node
 #const ONE:Dictionary = {
 	#"name": 'ONE',
 	#"containment_reward": [
-		#[RESOURCE.TYPE.MONEY, 35]
+		#[RESOURCE.CURRENCY.MONEY, 35]
 	#],
 	#"required_resources": [ 
 		#[RESOURCE.TYPE.STAFF, 3] 

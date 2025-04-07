@@ -406,7 +406,6 @@ func on_current_mode_update(reset_position:bool = false) -> void:
 			UnlockBtn.show()	
 			
 			if !reset_position:
-				GBL.find_node(REFS.ROOM_NODES).is_active = true
 				GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
 				U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
 				U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show)

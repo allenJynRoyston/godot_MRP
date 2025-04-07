@@ -14,7 +14,7 @@ var UNLOCK_FLOOR_2:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: 25
+					RESOURCE.CURRENCY.MONEY: 25
 				},
 		}	
 	},
@@ -47,7 +47,7 @@ var UNLOCK_FLOOR_3:Dictionary = {
 		"resources": {
 			"amount": func() -> Dictionary:
 				return {
-					RESOURCE.TYPE.MONEY: 50
+					RESOURCE.CURRENCY.MONEY: 50
 				},
 		}	
 	},
@@ -72,35 +72,35 @@ var UNLOCK_FLOOR_3:Dictionary = {
 		#"name": "BASE ZERO",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 0,
+				#RESOURCE.CURRENCY.MONEY: 0,
 			#},
 	#},
 	#TIER.VAL.ONE: {
 		#"name": "BASE ONE",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 5,
+				#RESOURCE.CURRENCY.MONEY: 5,
 			#},
 	#},
 	#TIER.VAL.TWO: {
 		#"name": "BASE TWO",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 100,
+				#RESOURCE.CURRENCY.MONEY: 100,
 			#},
 	#},
 	#TIER.VAL.THREE: {
 		#"name": "BASE THREE",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 250,
+				#RESOURCE.CURRENCY.MONEY: 250,
 			#},
 	#},
 	#TIER.VAL.FOUR: {
 		#"name": "BASE FOUR",
 		#"get_unlock_cost": func() -> Dictionary:
 			#return {
-				#RESOURCE.TYPE.MONEY: 500,
+				#RESOURCE.CURRENCY.MONEY: 500,
 			#},
 	#},
 #}

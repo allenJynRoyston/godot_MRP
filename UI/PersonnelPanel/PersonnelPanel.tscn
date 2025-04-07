@@ -1,0 +1,121 @@
+[gd_scene load_steps=10 format=3 uid="uid://biu7hvraky4ie"]
+
+[ext_resource type="Script" uid="uid://bkv2hecqu5w4m" path="res://UI/PersonnelPanel/PersonnelPanel.gd" id="1_0850i"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_to88n"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_aigyd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7y1q"]
+bg_color = Color(0, 0, 0, 0.572549)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i33qc"]
+bg_color = Color(0, 0.53, 0.282667, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0850i"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_to88n"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aigyd"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yrrpe"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[node name="PersonnelPanel" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_q7y1q")
+script = ExtResource("1_0850i")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = -6
+theme_override_constants/margin_right = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PERSONNEL"
+label_settings = ExtResource("2_to88n")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Resources" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_styles/panel = SubResource("StyleBoxFlat_i33qc")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="ResourceItemTech" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_aigyd")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0850i")
+icon = 15
+no_bg = true
+title = "OK"
+display_at_bottom = true
+
+[node name="ResourceItemStaff" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_aigyd")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_to88n")
+icon = 34
+no_bg = true
+title = "-"
+display_at_bottom = true
+is_negative = true
+
+[node name="ResourceItemSecurity" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_aigyd")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_aigyd")
+icon = 35
+no_bg = true
+title = "-"
+display_at_bottom = true
+is_negative = true
+
+[node name="ResourceItemDClass" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2" instance=ExtResource("3_aigyd")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yrrpe")
+icon = 33
+no_bg = true
+title = "-"
+display_at_bottom = true
+is_negative = true
+metadata/_edit_group_ = true

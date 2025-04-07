@@ -24,13 +24,12 @@ corner_radius_bottom_left = 5
 bg_color = Color(0, 0, 0, 0.560784)
 
 [node name="MetricMiniItem" type="PanelContainer"]
-custom_minimum_size = Vector2(60, 0)
+custom_minimum_size = Vector2(0, 52)
 rotation = 0.000736245
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_tqb8x")
 script = ExtResource("1_kfsig")
-is_negative = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -38,6 +37,7 @@ theme_override_constants/separation = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = -7
 theme_override_constants/margin_right = 5
@@ -67,6 +67,7 @@ vertical_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_krmuu")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
@@ -96,6 +97,7 @@ size_flags_vertical = 5
 text = "0"
 label_settings = ExtResource("5_r01ax")
 horizontal_alignment = 1
+vertical_alignment = 1
 uppercase = true
 
 [node name="ContextAmount" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/HBoxContainer"]

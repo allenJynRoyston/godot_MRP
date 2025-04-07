@@ -17,14 +17,20 @@ var get_start_vector:Callable
 var previous_room_val:int
 
 var draw_dict:Dictionary = {
-	"draw_ability": false, 
-	"draw_research": false,
-	"draw_passive": false,
-	"draw_resource": false,
-	"draw_energy": false,
-	"draw_funding": false,
-	"draw_to_room": false,
-	"draw_to_scp": false
+	# HEADER
+	"draw_to_money": false,	
+	"draw_to_research": false,
+	"draw_to_material": false,
+	"draw_to_core": false,
+	"draw_to_energy": false, 
+	"draw_to_personnel": false,
+	# FOOTER
+	"draw_to_hotkeys": true,
+	"draw_to_center_btn_list": true,	
+	# LEFT SIDE
+	"draw_to_room_mini_card": true,
+	"draw_to_scp_mini_card": true,
+	"draw_to_researcher_list": true,	
 }
 
 var current_location:Dictionary = {}
@@ -177,6 +183,10 @@ func _draw() -> void:
 	if !render:return
 	var line_color: Color = Color(0, 1, 0, 1) # Green
 	var start_v2:Vector2 = get_start_vector.call()
+	var header_pos:Vector2 = Vector2(GBL.game_resolution.x/2, 100)
+	var footer_pos:Vector2 = Vector2(GBL.game_resolution.x/2, GBL.game_resolution.y - 175)
+	var leftside_pos:Vector2 = Vector2(260, 100)
+	var rightside_pos:Vector2 = Vector2(GBL.game_resolution.x, 100)
 	
 	if "label" in draw_dict:
 		NamePanel.position = get_start_vector.call() + Vector2(30, 40)
@@ -190,34 +200,73 @@ func _draw() -> void:
 			Nametag.index = previous_room_val			
 		Nametag.position = get_start_vector.call() + Vector2(30, 40)
 
-	
-	if "draw_resource" in draw_dict and draw_dict.draw_resource:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ResourcesPanel"].global_position + Vector2(70, 15), 1) ))
-	if "draw_energy" in draw_dict and  draw_dict.draw_energy:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["EnergyPanel"].global_position + Vector2(20, 15), 1) ))
-	if "draw_research" in draw_dict and  draw_dict.draw_research:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ResearchPanel"].global_position + Vector2(20, 15), 1) ))
-	if "draw_funding" in draw_dict and draw_dict.draw_funding:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["FundsPanel"].global_position + Vector2(20, 15), 1) ))
+	#GBL.direct_ref["MetricsContainer"] = MetricsContainer
+	#GBL.direct_ref["LocationPanel"] = LocationPanel
+	#GBL.direct_ref["PersonnelContainer"] = PersonnelContainer
+	#GBL.direct_ref["EnergyPanel"] = EnergyPanel
+	#
+	#
+	#GBL.direct_ref["CorePanel"] = CorePanel
+	#GBL.direct_ref["MaterialPanel"] = MaterialPanel
+	#GBL.direct_ref["SciencePanel"] = SciencePanel
+	#GBL.direct_ref["MoneyPanel"] = MoneyPanel
 
-	if "draw_to_room" in draw_dict and draw_dict.draw_to_room:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["RoomMiniCard"].global_position + Vector2(180, -32), 1, false) ))
-	if "draw_to_scp" in draw_dict and draw_dict.draw_to_scp:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ScpMiniCard"].global_position + Vector2(180, -32), 1, false) ))
-	if "draw_researcher" in draw_dict and draw_dict.draw_researcher:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ResearcherList"].global_position + Vector2(180, -32), 1, false) ))
+	#if "draw_resource" in draw_dict and draw_dict.draw_resource:
+		#draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ResourcesPanel"].global_position + Vector2(70, 15), 1) ))
+	if "draw_to_research" in draw_dict and  draw_dict.draw_to_research:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["SciencePanel"].global_position + Vector2(20, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
+	if "draw_to_money" in draw_dict and draw_dict.draw_to_money:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["MoneyPanel"].global_position + Vector2(20, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
+	if "draw_to_material" in draw_dict and draw_dict.draw_to_material:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["MaterialPanel"].global_position + Vector2(20, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
+	if "draw_to_core" in draw_dict and draw_dict.draw_to_core:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["CorePanel"].global_position + Vector2(20, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))		
 
-	if "draw_ability" in draw_dict and draw_dict.draw_ability:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["AbilityBtn"].global_position + Vector2(30, -80), 1) ))
-	if "draw_passive" in draw_dict and draw_dict.draw_passive:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["PassiveBtn"].global_position + Vector2(30, -80), 1) ))
+	if "draw_to_energy" in draw_dict and draw_dict.draw_to_energy:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["EnergyPanel"].global_position + Vector2(20, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
+	if "draw_to_personnel" in draw_dict and draw_dict.draw_to_personnel:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["PersonnelPanel"].global_position + Vector2(70, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
 	
+	if "draw_to_morale" in draw_dict and draw_dict.draw_to_morale:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["MoralePanel"].global_position + Vector2(35, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
+	if "draw_to_safety" in draw_dict and draw_dict.draw_to_safety:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["SafetyPanel"].global_position + Vector2(35, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))		
+	if "draw_to_readiness" in draw_dict and draw_dict.draw_to_readiness:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["ReadinessPanel"].global_position + Vector2(35, 15), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
 
-	if "draw_hotkey" in draw_dict and draw_dict.draw_hotkey:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["HotkeyContainer"].global_position + Vector2(40, 15), 1) ))
-	if "draw_active_menu" in draw_dict and draw_dict.draw_active_menu:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), GBL.direct_ref["ActiveMenu"].global_position + Vector2(20, 0), 1, true) ))
+	if "draw_to_hotkeys" in draw_dict and draw_dict.draw_to_hotkeys:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos + Vector2(200, 0), GBL.direct_ref["HotkeyContainer"].global_position + Vector2(142, -55), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos + Vector2(200, 0), start_v2 + offset, 1) ))
+	if "draw_to_center_btn_list" in draw_dict and draw_dict.draw_to_center_btn_list:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, GBL.direct_ref["CenterBtnList"].global_position + Vector2(60, -55), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, start_v2 + offset, 1) ))		
+
+	if "draw_to_room_mini_card" in draw_dict and draw_dict.draw_to_room_mini_card:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["RoomMiniCard"].global_position + Vector2(225, -30), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
+	if "draw_to_scp_mini_card" in draw_dict and draw_dict.draw_to_scp_mini_card:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ScpMiniCard"].global_position + Vector2(225, -30), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
+	if "draw_to_researcher_list" in draw_dict and draw_dict.draw_to_researcher_list:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ResearcherList"].global_position + Vector2(225, -30), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	
+	if "draw_to_active_menu" in draw_dict and draw_dict.draw_to_active_menu:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(GBL.direct_ref["ActiveMenu"].global_position + Vector2(275, -20), start_v2 + offset, 1) ))
+		
+		
+		
+
+	#
 	#if "draw_room_0":
 		#var room_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(0) * self.size
 		#draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(start_v2 + offset + Vector2(0, 0), room_pos, 1) ))
@@ -240,13 +289,13 @@ func _draw() -> void:
 				ani_count += 0.01
 				
 				#if point.is_juncture:
-					#draw_rect(Rect2(point.start - (rect_size/2), rect_size), line_color.lightened(index * 0.009))  # Red color for the square
+					#draw_rect(Rect2(point.start - (rect_size/2), rect_size), line_color)  # Red color for the square
 
 				match point.animate:
 					"x":
-						draw_dashed_line(point.start, point.end, line_color.lightened(index * 0.009), line_width)
+						draw_dashed_line(point.start, point.end, line_color, line_width)
 					"y":
-						draw_dashed_line(point.start, point.end, line_color.lightened(index * 0.009), line_width)						
+						draw_dashed_line(point.start, point.end, line_color, line_width)
 				
 	draw_rect(Rect2(start_v2 + offset - (rect_size/2), rect_size), line_color)
 # --------------------------------------------------------------------------------------------------	

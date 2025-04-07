@@ -29,9 +29,9 @@ func on_data_update() -> void:
 
 	if "details" in data and !data.details.is_empty():
 		if "total" in data.details:
-			Details.text = "%s" % [data.details.total - data.details.utilized]
-		if "utilized" in data.details  and show_utilized:
-			Details.text = "%s/%s" % [Details.text, data.details.utilized]				
+			Details.text = "%s" % [data.details.total]
+		#if "utilized" in data.details  and show_utilized:
+			#Details.text = "%s/%s" % [Details.text, data.details.utilized]				
 		if "capacity" in data.details and show_capacity:
 			Details.text = "%s/%s" % [Details.text, data.details.capacity]
 		if "net" in data.details:

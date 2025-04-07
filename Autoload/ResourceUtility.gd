@@ -2,7 +2,7 @@
 extends SubscribeWrapper
 
 var MONEY:Dictionary = {
-	"id": RESOURCE.TYPE.MONEY,
+	"id": RESOURCE.CURRENCY.MONEY,
 	"name": "MONEY",
 	"icon": SVGS.TYPE.MONEY
 }
@@ -53,32 +53,39 @@ var READINESS:Dictionary = {
 }
 
 var reference_data:Dictionary = {
-	RESOURCE.TYPE.MONEY: MONEY,
-	RESOURCE.TYPE.ENERGY: ENERGY,
-	RESOURCE.TYPE.SCIENCE: SCIENCE,
-	RESOURCE.TYPE.TECHNICIANS: TECHNICIANS,
-	RESOURCE.TYPE.STAFF: STAFF,
-	RESOURCE.TYPE.SECURITY: SECURITY,
-	RESOURCE.TYPE.DCLASS: DCLASS,
+	RESOURCE.CURRENCY.MONEY: MONEY,
+	RESOURCE.CURRENCY.SCIENCE: SCIENCE,
 }
 
+var reference_personnel:Dictionary = {
+	RESOURCE.PERSONNEL.TECHNICIANS: TECHNICIANS,
+	RESOURCE.PERSONNEL.STAFF: STAFF,
+	RESOURCE.PERSONNEL.SECURITY: SECURITY,
+	RESOURCE.PERSONNEL.DCLASS: DCLASS,
+}
 
-var reference_data_base_metric:Dictionary = {
-	RESOURCE.BASE_METRICS.MORALE: MORALE,
-	RESOURCE.BASE_METRICS.SAFETY: SAFETY,
-	RESOURCE.BASE_METRICS.READINESS: READINESS
+var reference_metric:Dictionary = {
+	RESOURCE.METRICS.MORALE: MORALE,
+	RESOURCE.METRICS.SAFETY: SAFETY,
+	RESOURCE.METRICS.READINESS: READINESS
 }
 
 # ------------------------------------------------------------------------------
-func return_data(key:int) -> Dictionary:
+func return_currency(key:int) -> Dictionary:
 	reference_data[key].ref = key
 	return reference_data[key]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_metric_data(key:int) -> Dictionary:
-	reference_data_base_metric[key].ref = key
-	return reference_data_base_metric[key]
+func return_personnel(key:int) -> Dictionary:
+	reference_personnel[key].ref = key
+	return reference_personnel[key]
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_metric(key:int) -> Dictionary:
+	reference_metric[key].ref = key
+	return reference_metric[key]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

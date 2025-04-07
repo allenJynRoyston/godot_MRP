@@ -105,19 +105,19 @@ func build_list() -> void:
 			child.queue_free()			
 
 				
-	for item in timeline_array:
-		if "props" in item and "utilized_amounts" in item.props:
-			for key in item.props.utilized_amounts:
-				if key == RESOURCE.TYPE.DCLASS:
-					var details:Dictionary = SCP_UTIL.return_data(item.ref)
-					var amount:int = item.props.utilized_amounts[key]
-					var new_node:BtnBase = DetailBtnPreload.instantiate()
-					new_node.title = "%s" % [details.name]
-					new_node.icon = SVGS.TYPE.D_CLASS
-					new_node.amount = "%s%s" % ["+" if amount >= 0 else "-", amount]
-					
-					new_node.onClick = func() -> void:
-						SUBSCRIBE.current_location = item.location.duplicate()
-
-					UtilizedList.add_child(new_node)
-	
+	#for item in timeline_array:
+		#if "props" in item and "utilized_amounts" in item.props:
+			#for key in item.props.utilized_amounts:
+				#if key == RESOURCE.TYPE.DCLASS:
+					#var details:Dictionary = SCP_UTIL.return_data(item.ref)
+					#var amount:int = item.props.utilized_amounts[key]
+					#var new_node:BtnBase = DetailBtnPreload.instantiate()
+					#new_node.title = "%s" % [details.name]
+					#new_node.icon = SVGS.TYPE.D_CLASS
+					#new_node.amount = "%s%s" % ["+" if amount >= 0 else "-", amount]
+					#
+					#new_node.onClick = func() -> void:
+						#SUBSCRIBE.current_location = item.location.duplicate()
+#
+					#UtilizedList.add_child(new_node)
+	#

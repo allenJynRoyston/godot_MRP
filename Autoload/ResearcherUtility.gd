@@ -157,12 +157,12 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 				
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.MONEY and item.amount > 0:
+				if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
 					amount += item.amount
 					
 			return {
 				"resource": {
-					RESOURCE.TYPE.SCIENCE: amount
+					RESOURCE.CURRENCY.SCIENCE: amount
 				}
 			},
 	},
@@ -180,12 +180,12 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 							
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.SCIENCE:
+				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
 					amount += item.amount
 					
 			return {
 				"resource": {
-					RESOURCE.TYPE.SCIENCE: amount
+					RESOURCE.CURRENCY.SCIENCE: amount
 				}
 			},
 	},
@@ -196,8 +196,8 @@ var trait_data: Dictionary = {
 		"get_effect": func(details: Dictionary) -> Dictionary:
 			return {
 				"resource": {
-					RESOURCE.TYPE.MONEY: 5,
-					RESOURCE.TYPE.SCIENCE: 5
+					RESOURCE.CURRENCY.MONEY: 5,
+					RESOURCE.CURRENCY.SCIENCE: 5
 				}
 			},
 	},	
@@ -216,12 +216,12 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 							
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.MONEY and item.amount < 0:
+				if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount < 0:
 					amount += item.amount
 					
 			return {
 				"resource": {
-					RESOURCE.TYPE.MONEY: amount
+					RESOURCE.CURRENCY.MONEY: amount
 				}
 			},
 	},
@@ -239,13 +239,13 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 							
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.MONEY and item.amount > 0:
+				if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
 					amount += item.amount
 					
 			return {
 				"resource": {
-					RESOURCE.TYPE.MONEY: -amount,
-					RESOURCE.TYPE.SCIENCE: amount,
+					RESOURCE.CURRENCY.MONEY: -amount,
+					RESOURCE.CURRENCY.SCIENCE: amount,
 				}
 			},
 	},	
@@ -263,13 +263,13 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 							
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.SCIENCE and item.amount > 0:
+				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount > 0:
 					amount += item.amount
 					
 			return {
 				"resource": {
-					RESOURCE.TYPE.MONEY: amount,
-					RESOURCE.TYPE.SCIENCE: -amount,
+					RESOURCE.CURRENCY.MONEY: amount,
+					RESOURCE.CURRENCY.SCIENCE: -amount,
 				}
 			},
 	},	
@@ -288,7 +288,7 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 							
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.SCIENCE and item.amou:
+				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amou:
 					amount += item.amount
 					
 			return {
@@ -311,7 +311,7 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 							
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.MONEY:
+				if item.resource.ref == RESOURCE.CURRENCY.MONEY:
 					amount += item.amount
 					
 			return {
@@ -327,8 +327,8 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
 				"resource": {
-					RESOURCE.TYPE.MONEY: 10 if config_data.researchers.size() == 1 else 0,
-					RESOURCE.TYPE.SCIENCE: 10 if config_data.researchers.size() == 1 else 0,
+					RESOURCE.CURRENCY.MONEY: 10 if config_data.researchers.size() == 1 else 0,
+					RESOURCE.CURRENCY.SCIENCE: 10 if config_data.researchers.size() == 1 else 0,
 				}
 			},
 	},
@@ -339,8 +339,8 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
 				"resource": {
-					RESOURCE.TYPE.MONEY: 10 if config_data.researchers.size() > 1 else 0,
-					RESOURCE.TYPE.SCIENCE: 10 if config_data.researchers.size() > 1 else 0,
+					RESOURCE.CURRENCY.MONEY: 10 if config_data.researchers.size() > 1 else 0,
+					RESOURCE.CURRENCY.SCIENCE: 10 if config_data.researchers.size() > 1 else 0,
 				}
 			},
 	},
@@ -358,12 +358,12 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 			
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.SCIENCE:
+				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
 					amount = item.amount 
 			
 			return {
 				"resource": {
-					RESOURCE.TYPE.SCIENCE: 0 if config_data.scp_data.is_empty() else amount
+					RESOURCE.CURRENCY.SCIENCE: 0 if config_data.scp_data.is_empty() else amount
 				},
 			},
 	},
@@ -381,12 +381,12 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 				
 			for item in list:
-				if item.resource.ref == RESOURCE.TYPE.SCIENCE:
+				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
 					amount = item.amount 				
 			
 			return {
 				"resource": {
-					RESOURCE.TYPE.SCIENCE: 0 if config_data.scp_data.is_empty() else -roundi(amount/2)
+					RESOURCE.CURRENCY.SCIENCE: 0 if config_data.scp_data.is_empty() else -roundi(amount/2)
 				},
 			},
 	},
@@ -608,13 +608,13 @@ func return_trait_details(ref:int, use_location:Dictionary, use_config:Dictionar
 	if "metrics" in effect:
 		for key in effect.metrics:
 			var amount:int = effect.metrics[key]
-			metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})
+			metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})
 
 	## -------------------
 	if "resource" in effect:
 		for key in effect.resource:
 			var amount:int = effect.resource[key]
-			resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
+			resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
 
 	return {"details": traits_detail, "effect": {"metric_list": metric_list, "resource_list": resource_list}}
 # ------------------------------------------------------------------------------
@@ -667,7 +667,7 @@ func return_wing_effects_list(researcher_data:Dictionary) -> Array:
 		var effects_dict:Dictionary = trait_data.wing_effect.call(researcher_data)
 		for key in effects_dict:
 			var amount:int = effects_dict[key]
-			var resource_data:Dictionary = RESOURCE_UTIL.return_metric_data(key)
+			var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
 			if amount > 0:
 				list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
 

@@ -50,7 +50,7 @@ extends Control
 		#on_window_offsets_update()
 #
 #var resource_data:Dictionary = {
-	#RESOURCE.TYPE.MONEY: {
+	#RESOURCE.CURRENCY.MONEY: {
 		#"total": 200,
 	#},
 	#RESOURCE.TYPE.ENERGY: {

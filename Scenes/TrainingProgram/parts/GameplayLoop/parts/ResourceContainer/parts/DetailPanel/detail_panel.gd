@@ -36,7 +36,7 @@ func show_details(type:RESOURCE.TYPE) -> void:
 		node.hide()
 		
 	match type:
-		RESOURCE.TYPE.MONEY:
+		RESOURCE.CURRENCY.MONEY:
 			MoneyDetails.show()
 		RESOURCE.TYPE.ENERGY:
 			EnergyDetails.show()

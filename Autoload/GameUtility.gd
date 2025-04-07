@@ -58,7 +58,7 @@ func get_ability_level(use_location:Dictionary = current_location) -> int:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring	
 	var room:int = use_location.room
-	return room_config.floor[floor].ring[ring].room[room].ability_level
+	return room_config.floor[floor].ring[ring].room[room].abl_lvl
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ func get_room_traits(use_location:Dictionary, use_config:Dictionary = room_confi
 					#resource_details.synergy_traits[key] += amount
 					#resource_details.total[key] += amount
 					#
-					#resource_list.push_back({"resource": RESOURCE_UTIL.return_data(key), "amount": amount})
+					#resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
 			## -------------------
 			#if "metrics" in effect:
 				#for key in effect.metrics:
@@ -127,7 +127,7 @@ func get_room_traits(use_location:Dictionary, use_config:Dictionary = room_confi
 					#metric_details.traits[key] += amount
 					#metric_details.total[key] += amount					
 					#
-					#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric_data(key), "amount": amount})		
+					#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})		
 						#
 			#synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
 				
@@ -306,7 +306,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var resources_as_list:Array = []
 	for key in resource_details.total:
 		var amount:int = resource_details.total[key]
-		resources_as_list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
+		resources_as_list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
 
 	return {
 		"floor_config_data": floor_data,
@@ -403,7 +403,7 @@ func use_active_ability(ability:Dictionary, use_location:Dictionary = current_lo
 			
 	if apply_cooldown:
 		base_states.room[designation].ability_on_cooldown[ability_uid] = ability.cooldown_duration
-		resources_data[RESOURCE.TYPE.SCIENCE].amount -= ability.science_cost
+		resources_data[RESOURCE.CURRENCY.SCIENCE].amount -= ability.science_cost
 		SUBSCRIBE.resources_data = resources_data
 		
 	SUBSCRIBE.base_states = base_states
@@ -425,7 +425,7 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 # --------------------------------------------------------------------------------------------------		
 
 #func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
-	#var dict:Dictionary = RESOURCE_UTIL.return_data(type)
+	#var dict:Dictionary = RESOURCE_UTIL.return_currency(type)
 	#
 	#ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
 	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
@@ -639,15 +639,15 @@ func activate_floor(use_location:Dictionary = current_location) -> bool:
 		if room_config.floor[floor_index].is_powered:
 			activated_count += 1
 	var activation_cost:int = activated_count * 50
-	var can_purchase:bool = resources_data[RESOURCE.TYPE.MONEY].amount >= activation_cost
+	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
 	
-	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.MONEY)}]
+	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
 	ConfirmModal.set_props("Activate this floor?")
 	await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
 	var confirm:bool = await ConfirmModal.user_response
 	
 	if confirm:
-		resources_data[RESOURCE.TYPE.MONEY].amount -= activation_cost
+		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
 		room_config.floor[use_location.floor].is_powered = true
 		SUBSCRIBE.room_config = room_config
 		SUBSCRIBE.resources_data = resources_data
@@ -662,18 +662,18 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> bool
 	var subtitle:String
 
 	var activation_cost:int = 25
-	var can_purchase:bool = resources_data[RESOURCE.TYPE.MONEY].amount >= activation_cost
+	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
 
 	title = "Upgrade generator?"
 	subtitle = "X energy will be available per ring."
 	
-	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_data(RESOURCE.TYPE.MONEY)}]
+	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
 	ConfirmModal.set_props(title, subtitle)
 	await GameplayNode.show_only([GameplayNode.ConfirmModal, GameplayNode.Structure3dContainer])	
 	var confirm:bool = await ConfirmModal.user_response
 
 	if confirm:
-		resources_data[RESOURCE.TYPE.MONEY].amount -= activation_cost
+		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
 		base_states.floor[str(use_location.floor)].generator_level += 1
 		SUBSCRIBE.base_states = base_states
 		SUBSCRIBE.resources_data = resources_data

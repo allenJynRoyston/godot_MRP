@@ -25,8 +25,8 @@ var SCP_TEMPLATE:Dictionary = {
 
 	# -----------------------------------
 	"ongoing_containment": {
-		RESOURCE.TYPE.MONEY: 25,
-		RESOURCE.TYPE.SCIENCE: 25
+		RESOURCE.CURRENCY.MONEY: 25,
+		RESOURCE.CURRENCY.SCIENCE: 25
 	},
 	# -----------------------------------
 
@@ -126,7 +126,7 @@ func return_ongoing_containment_rewards(ref:int) -> Array:
 
 	for key in scp_details.ongoing_containment:	
 		var amount:int = scp_details.ongoing_containment[key]
-		list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_data(key)})
+		list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
 					
 	return list
 # ------------------------------------------------------------------------------
@@ -142,15 +142,15 @@ func calculate_ongoing_containment(ref:int, resources_data:Dictionary, refund:bo
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func calculate_refunded_utilizied(utilized_data:Dictionary, resources_data:Dictionary) -> Dictionary:
-	var resource_data_copy:Dictionary = resources_data.duplicate(true)
-	for key in utilized_data:
-		resource_data_copy[key].utilized -= utilized_data[key]
-		resource_data_copy[key].amount += utilized_data[key]
-		if resource_data_copy[key].amount > resources_data[key].capacity:
-			resource_data_copy[key].amount = resources_data[key].capacity
-	
-	return resource_data_copy
+#func calculate_refunded_utilizied(utilized_data:Dictionary, resources_data:Dictionary) -> Dictionary:
+	#var resource_data_copy:Dictionary = resources_data.duplicate(true)
+	#for key in utilized_data:
+		#resource_data_copy[key].utilized -= utilized_data[key]
+		#resource_data_copy[key].amount += utilized_data[key]
+		#if resource_data_copy[key].amount > resources_data[key].capacity:
+			#resource_data_copy[key].amount = resources_data[key].capacity
+	#
+	#return resource_data_copy
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -278,21 +278,21 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 		# -----------
 		var not_enough_resources:bool = false
 		var required_resources_amount:Dictionary = option.requirements.resources.amount.call() if "amount" in option.requirements.resources else {}
-		var required_resources_utilized:Dictionary = option.requirements.resources.utilized.call() if "utilized" in option.requirements.resources else {}
+		#var required_resources_utilized:Dictionary = option.requirements.resources.utilized.call() if "utilized" in option.requirements.resources else {}
 		var required_notes:Dictionary = {
 			"header": "Resources required",
 			"list": []
 		}
-		var utilized_notes:Dictionary = {
-			"header": "Resources utilized",
-			"list": []
-		}		
+		#var utilized_notes:Dictionary = {
+			#"header": "Resources utilized",
+			#"list": []
+		#}		
 		
 		var missing_resources:Array = []
 		
 		for key in required_resources_amount:
 			var amount:int = required_resources_amount[key]
-			var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
 			required_notes.list.push_back({
 				"is_checked": resources_data[key].amount >= amount,
 				"icon": resource_details.icon, 
@@ -302,17 +302,17 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 			if resources_data[key].amount < amount:
 				missing_resources.push_back(key)
 				
-		for key in required_resources_utilized:
-			var amount:int = required_resources_utilized[key]
-			var resource_details:Dictionary = RESOURCE_UTIL.return_data(key)
-			utilized_notes.list.push_back({
-				"is_checked": resources_data[key].amount >= amount,
-				"icon": resource_details.icon, 
-				"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
-			})
-			
-			if resources_data[key].amount < amount:
-				missing_resources.push_back(key)				
+		#for key in required_resources_utilized:
+			#var amount:int = required_resources_utilized[key]
+			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			#utilized_notes.list.push_back({
+				#"is_checked": resources_data[key].amount >= amount,
+				#"icon": resource_details.icon, 
+				#"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
+			#})
+			#
+			#if resources_data[key].amount < amount:
+				#missing_resources.push_back(key)				
 			
 		
 		var locked:bool = is_missing_traits or is_missing_specilization or missing_resources.size() > 0
@@ -335,7 +335,7 @@ func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSe
 				"completed": testing_ref in research_completed,
 				"repeatable": repeatable,
 				"locked": locked,
-				"notes": [required_notes, utilized_notes],
+				"notes": [required_notes],
 				"title": "%s%s" % ["%s " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.name] if !locked else "%s" % [lock_str], 
 				"description": "",
 				"val": testing_ref,
