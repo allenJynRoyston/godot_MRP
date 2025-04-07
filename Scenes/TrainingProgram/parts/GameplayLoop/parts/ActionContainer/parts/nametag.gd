@@ -2,9 +2,12 @@
 extends Control
 
 @onready var NameLabel:Label = $PanelContainer2/MarginContainer2/VBoxContainer/HBoxContainer2/HBoxContainer2/NameLabel
+@onready var LvlIndicator:Control = $PanelContainer2/LvlIndicator
 @onready var LvlLabel:Label = $PanelContainer2/LvlIndicator/Control/LvlLabel
 @onready var DotIcon:BtnBase = $PanelContainer2/ActivatedIndicator/IconBtn
 @onready var EnergyIndicatorControl:Control = $PanelContainer2/EnergyIndicator/Control
+@onready var PanelMarginContainer:MarginContainer = $PanelContainer2/MarginContainer2
+@onready var ActivatedIndicator:Control = $PanelContainer2/ActivatedIndicator
 
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
@@ -78,15 +81,12 @@ func update_node(shift_val:int = 10) -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)		
 	var ability_lvl:int = GAME_UTIL.get_ability_level(use_location)
 	
-	if room_extract.is_room_empty:
-		self.modulate = Color(1, 1, 1, 0)
-		return
-		
-	self.modulate = Color(1, 1, 1, 1)
-
+	self.modulate = Color(1, 1, 1, 1 if !room_extract.is_room_empty or !fade else 0)
 	name_str = room_extract.room.details.shortname if !room_extract.is_room_empty else "EMPTY"
-	lvl_str = str(ability_lvl) if !room_extract.is_room_empty else "0"
-
+	lvl_str = str(ability_lvl) if !room_extract.is_room_empty else "X"
+	LvlIndicator.hide() if room_extract.is_room_empty else LvlIndicator.show()
+	ActivatedIndicator.hide() if room_extract.is_room_empty else ActivatedIndicator.show()
+	PanelMarginContainer.set('theme_override_constants/margin_left', 10 if room_extract.is_room_empty else 40)
 	
 	var label_setting_copy:LabelSettings = NameLabel.label_settings.duplicate()
 	label_setting_copy.font_color = Color(0.7, 0.3, 0.3, 1) if !room_extract.is_activated else Color(1, 1, 1, 1)
@@ -95,6 +95,7 @@ func update_node(shift_val:int = 10) -> void:
 	self.size.x = 1
 	await U.tick()
 	EnergyIndicatorControl.position.x = self.size.x - 30
+
 
 func shift_string_backward(text: String, shift: int = 5) -> String:
 	var result:String = ""

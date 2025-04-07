@@ -32,7 +32,6 @@ layout_mode = 2
 
 [node name="Nametag" parent="Control" instance=ExtResource("2_cpxc6")]
 visible = false
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 offset_left = 1.0
 offset_top = 32.0

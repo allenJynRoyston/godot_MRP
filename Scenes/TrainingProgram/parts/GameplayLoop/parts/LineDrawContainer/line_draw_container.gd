@@ -198,7 +198,7 @@ func _draw() -> void:
 			nametag_lock = true
 			Nametag.fade = false
 			Nametag.index = previous_room_val			
-		Nametag.position = get_start_vector.call() + Vector2(30, 40)
+		Nametag.position = get_start_vector.call() + Vector2(40, 60)
 
 	#GBL.direct_ref["MetricsContainer"] = MetricsContainer
 	#GBL.direct_ref["LocationPanel"] = LocationPanel
