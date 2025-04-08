@@ -330,6 +330,7 @@ var base_states_subscriptions:Array = []
 var base_states:Dictionary = {} : 
 	set(val):
 		base_states = val
+		print(base_states.room["004"])
 		for node in base_states_subscriptions:
 			if "on_base_states_update" in node:
 				node.on_base_states_update.call(base_states)

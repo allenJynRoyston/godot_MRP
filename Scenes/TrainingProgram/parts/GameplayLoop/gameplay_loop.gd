@@ -1725,10 +1725,11 @@ func update_room_config(force_setup:bool = false) -> void:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
-				var ability_uid:String = str(floor, ring, room, ability_index)
+				var ability_uid:String = str(room_data.ref, ability_index)
 				# creates default state if it doesn't exist
 				if ability_uid not in room_base_state.passives_enabled:
 					room_base_state.passives_enabled[ability_uid] = false
+
 		# check for researcher and if they pair with the room to increasae the room level ability
 		for researcher in hired_lead_researchers_arr:
 			var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
@@ -1754,7 +1755,7 @@ func update_room_config(force_setup:bool = false) -> void:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
-				var ability_uid:String = str(floor, ring, room, ability_index)
+				var ability_uid:String = str(room_data.ref, ability_index)
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
 				var abl_lvl:int = room_config_data.abl_lvl
 

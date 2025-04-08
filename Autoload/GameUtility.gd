@@ -62,9 +62,6 @@ func get_ability_level(use_location:Dictionary = current_location) -> int:
 	var room:int = use_location.room
 	var wing_abl_lvl:int = 	room_config.floor[floor].ring[ring].abl_lvl
 	var room_abl_lvl:int = room_config.floor[floor].ring[ring].room[room].abl_lvl
-	
-	#print("wing_abl_lvl: ", wing_abl_lvl, "   room_abl_lvl: ", room_abl_lvl)
-	
 	return wing_abl_lvl + room_abl_lvl
 # ------------------------------------------------------------------------------
 
@@ -228,7 +225,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var passive_abilities:Array = []
 	for index in passive_abl.size():
 		var pa:Dictionary = passive_abl[index]
-		var auid:String = str(floor, ring, room, index)
+		var auid:String = str(room_details.ref, index)
 		pa.index = index
 		pa.is_enabled = passives_enabled[auid] if auid in passives_enabled else false
 		passive_abilities.push_back(pa)
@@ -381,11 +378,7 @@ func does_ability_exists_in_ring(ability:Dictionary, use_location:Dictionary = c
 func get_passive_ability_state(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> bool:
 	var designation:String = U.location_to_designation(use_location)
 	var passives_enabled:Dictionary = base_states.room[designation].passives_enabled
-	var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability_index)
-	
-	print("FETCH")
-	print(base_states.room[designation].passives_enabled)
-	print("*****************")
+	var ability_uid:String = str(room_ref, ability_index)
 
 	return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
 ## ------------------------------------------------------------------------------	
@@ -422,17 +415,15 @@ func use_active_ability(ability:Dictionary, use_location:Dictionary = current_lo
 # --------------------------------------------------------------------------------------------------	
 func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> void:
 	var designation:String = U.location_to_designation(use_location)
-	var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability_index)
+	var ability_uid:String = str(room_ref, ability_index)
 
-	
 	if ability_uid not in base_states.room[designation].passives_enabled:
 		base_states.room[designation].passives_enabled[ability_uid] = false
 	
 	base_states.room[designation].passives_enabled[ability_uid] = !base_states.room[designation].passives_enabled[ability_uid]
-	print("TOGLGE PASSIVE!")
-	print(base_states.room[designation].passives_enabled)
-	print("*****************")
-	await U.set_timeout(0.1)
+	
+	#print(base_states.room[designation].passives_enabled)
+
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------		
 
