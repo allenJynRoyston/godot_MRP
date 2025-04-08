@@ -35,67 +35,74 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer5" type="HBoxContainer" parent="Control/MarginControl"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginControl"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="MetricsContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="MetricsContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Morale" parent="Control/MarginControl/HBoxContainer5/MetricsContainer" instance=ExtResource("3_7q6wh")]
+[node name="Morale" parent="Control/MarginControl/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
 layout_mode = 2
 size_flags_horizontal = 1
 
-[node name="Safety" parent="Control/MarginControl/HBoxContainer5/MetricsContainer" instance=ExtResource("3_7q6wh")]
+[node name="Safety" parent="Control/MarginControl/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
 layout_mode = 2
 size_flags_horizontal = 1
 assigned_metric = 1
 value = -4
 
-[node name="Readiness" parent="Control/MarginControl/HBoxContainer5/MetricsContainer" instance=ExtResource("3_7q6wh")]
+[node name="Readiness" parent="Control/MarginControl/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
 layout_mode = 2
 size_flags_horizontal = 1
 assigned_metric = 2
 value = 2
 
-[node name="LocationPanel" parent="Control/MarginControl/HBoxContainer5" instance=ExtResource("3_0dffn")]
-custom_minimum_size = Vector2(0, 50)
+[node name="PersonnelContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer"]
 layout_mode = 2
-
-[node name="PersonnelContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer5"]
-layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 0
 alignment = 1
 
-[node name="PersonnelPanel" parent="Control/MarginControl/HBoxContainer5/PersonnelContainer" instance=ExtResource("4_5xs2u")]
+[node name="PersonnelPanel" parent="Control/MarginControl/HBoxContainer/PersonnelContainer" instance=ExtResource("4_5xs2u")]
 layout_mode = 2
 
-[node name="EnergyPanel" parent="Control/MarginControl/HBoxContainer5" instance=ExtResource("5_7q6wh")]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/MarginControl"]
+z_index = 1
 layout_mode = 2
+size_flags_vertical = 0
 
-[node name="CurrencyContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer5"]
+[node name="CurrencyContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer2"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 5
 alignment = 2
 
-[node name="CorePanel" parent="Control/MarginControl/HBoxContainer5/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+[node name="MoneyPanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
 layout_mode = 2
-header_label = "CORE"
-resource = 3
 
-[node name="MatPanel" parent="Control/MarginControl/HBoxContainer5/CurrencyContainer" instance=ExtResource("6_5xs2u")]
-layout_mode = 2
-header_label = "MATERIAL"
-resource = 2
-
-[node name="SciencePanel" parent="Control/MarginControl/HBoxContainer5/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+[node name="SciencePanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
 layout_mode = 2
 header_label = "SCIENCE"
 resource = 1
 
-[node name="MoneyPanel" parent="Control/MarginControl/HBoxContainer5/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+[node name="MatPanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+layout_mode = 2
+header_label = "MATERIAL"
+resource = 2
+
+[node name="CorePanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+layout_mode = 2
+header_label = "CORE"
+resource = 3
+
+[node name="EnergyPanel" parent="Control/MarginControl/HBoxContainer2" instance=ExtResource("5_7q6wh")]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="LocationPanel" parent="Control/MarginControl/HBoxContainer2" instance=ExtResource("3_0dffn")]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2

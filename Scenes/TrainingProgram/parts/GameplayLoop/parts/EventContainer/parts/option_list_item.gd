@@ -3,6 +3,7 @@ extends MouseInteractions
 @onready var RootPanel:PanelContainer = $"."
 @onready var MarginContainerPanel:MarginContainer = $MarginContainer
 @onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
+@onready var DescriptionListMarginContainer:MarginContainer = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer
 @onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionLabel
 @onready var DescriptionListContainer:VBoxContainer = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionListContainer
 @onready var LockedTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/LockedTextBtn
@@ -98,15 +99,22 @@ func on_data_update() -> void:
 	else:
 		show_description = false
 	
-	if "description_list" in data:
-		show_description = false
-		var label_setting_copy:LabelSettings = DescriptionLabel.label_settings.duplicate()
 
-		for str in data.description_list:
+	if "description_list" in data and data.description_list.size() > 0:
+		var label_setting_copy:LabelSettings = DescriptionLabel.label_settings.duplicate()
+		
+		for item in data.description_list:
 			var new_label:Label = Label.new()
+			label_setting_copy.font_color = item.font_color
+			
 			new_label.label_settings = label_setting_copy
-			new_label.text = str
+			new_label.text = item.text
 			DescriptionListContainer.add_child(new_label)
+
+	if !show_description and DescriptionListContainer.get_child_count() == 0:
+		DescriptionListMarginContainer.hide()
+	else:
+		DescriptionListMarginContainer.show()
 # ----------------------
 
 # --------------------------------------------------------------------------------------------------		

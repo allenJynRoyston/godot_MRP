@@ -142,16 +142,17 @@ func _ready() -> void:
 	for btn in [BuildBtn, EmptyBuildBtn]:
 		btn.onClick = func() -> void:
 			call_and_redraw(func():
+				await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
 				enable_room_focus(true)
-				await GAME_UTIL.construct_room()
-				if current_mode != MODE.INVESTIGATE:
-					enable_room_focus(false)
-				else:
+				await GAME_UTIL.construct_room(current_mode != MODE.INVESTIGATE)
+
+				if current_mode == MODE.INVESTIGATE:
 					U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-	
+				else:
+					enable_room_focus(false)
+					
 				GameplayNode.restore_player_hud()
 			)
-
 		
 	RoomDetailsToggleBtn.onClick = func() -> void:
 		show_room_details = !show_room_details
@@ -199,7 +200,7 @@ func _ready() -> void:
 					MENU_TYPE.PASSIVES:
 						show_abilities(true)
 
-	ActiveMenu.onDrawUpdate = func(index:int, selected_data:Dictionary) -> void:
+	ActiveMenu.onDrawUpdate = func(index:int, selected_data:Dictionary) -> void:		
 		SUBSCRIBE.current_location = selected_data.shortcut_data.use_location
 		update_details(selected_data.shortcut_data.use_location)
 		draw_active_menu_items(selected_data, index)
@@ -240,7 +241,7 @@ func _ready() -> void:
 	HotkeyContainer.action_func_lookup = action_func_lookup
 	HotkeyContainer.ability_funcs = ability_funcs
 	HotkeyContainer.passive_funcs = passive_funcs			
-
+	
 	GBL.direct_ref["CenterBtnList"] = CenterBtnList
 	GBL.direct_ref["HotkeyContainer"] = HotkeyContainer
 	GBL.direct_ref["ResearcherList"] = ResearcherList	
@@ -328,7 +329,6 @@ func toggle_camera_view() -> void:
 	SUBSCRIBE.camera_settings = camera_settings	
 	
 	await refresh_buttons
-	BtnControlPanel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	
 	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show)
 	lock_btns(false)
@@ -362,7 +362,7 @@ func drawline_bookmark() -> void:
 # --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------
-func draw_active_menu() -> void:
+func draw_active_menu(draw_delay:float = 0.3) -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
 	var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
@@ -380,7 +380,7 @@ func draw_active_menu() -> void:
 	
 	if prev_draw_state != draw_dict:
 		prev_draw_state = draw_dict
-		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, draw_dict )
+		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, draw_dict, draw_delay )
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -390,51 +390,58 @@ func draw_active_menu_items(selected_data:Dictionary = selected_data_state, sele
 	selected_data_state = selected_data
 	selected_index_state = selected_index
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	
 	var get_node_pos:Callable = func() -> Vector2: 
-		return ActiveMenu.get_node_btn(selected_index).global_position - Vector2(200, 100)
+		return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 
 	# do a check for passives to see if they provide a resource
 	var draw_to_personnel:bool = false
 	var draw_to_research:bool = false
+	var draw_to_morale:bool = false
+	var draw_to_readiness:bool = false
+	var draw_to_safety:bool = false
+	var ability:Dictionary
 	
-	if selected_data.shortcut_data.type == 1:
-		draw_to_research = true
+	# get ability data
+	match selected_data.shortcut_data.type:
+		# IF ACTIVE
+		1:
+			ability = room_extract.room.abilities.filter(func(x): return x.name == selected_data.title)[0]
+			draw_to_research = true
+		# IF PASSIVE
+		2:
+			ability = room_extract.room.passive_abilities.filter(func(x): return x.name == selected_data.title)[0]
+			draw_to_personnel = "provides" in ability
 	
-	# IF PASSIVE
-	if selected_data.shortcut_data.type == 2:
-		var item:Dictionary = room_extract.room.passive_abilities.filter(func(x): return x.name == selected_data.title)[0]
-		draw_to_personnel = "provides" in item
+	# if any "metrics" draw to applies
+	if "metrics" in ability:
+		for ref in ability.metrics:
+			match ref:
+				RESOURCE.METRICS.MORALE:
+					draw_to_morale = true
+				RESOURCE.METRICS.SAFETY:
+					draw_to_safety = true
+				RESOURCE.METRICS.READINESS:
+					draw_to_readiness = true
 
 	
 	var draw_dict:Dictionary = {
-		"label": "PRESS [%s] TO USE" % ['E'],
-		"draw_to_room": true,
-		"draw_to_research": true,
-		#"draw_to_money": true,
-		#"draw_to_core": true,
-		#"draw_to_material": true,
+		"use_nametag": false,
+		#"label": "PRESS [%s] TO USE" % ['E'],
+		"draw_to_research": selected_data.shortcut_data.type == 1,
 		"draw_to_personnel": draw_to_personnel,
 		
-		"draw_to_hotkeys": true,
-		#"draw_to_center_btn_list": true,
-		
 		"draw_to_energy": selected_data.shortcut_data.type == 2,
-		#"draw_to_morale": true,
-		#"draw_to_readiness": true,
-		#"draw_to_safety": true,
+		"draw_to_morale": draw_to_morale,
+		"draw_to_readiness": draw_to_readiness,
+		"draw_to_safety": draw_to_safety,
 		#
-		"draw_to_room_mini_card": true,
-		#"draw_to_researcher_list": true,
-		
-		"draw_to_ability": selected_data.shortcut_data.type == 1,
-		"draw_to_passive": selected_data.shortcut_data.type == 2,
-		#"draw_to_active_menu": true
+
+		"draw_to_center_btn_list": true
 	}
 	
 	if prev_draw_state != draw_dict:
 		prev_draw_state = draw_dict
-		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, draw_dict)
+		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, draw_dict, 0)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------	
@@ -614,12 +621,9 @@ func show_abilities(skip_animation:bool = false) -> void:
 	BackBtn.hide()
 	ActiveMenu.onClose = func() -> void:	
 		HotkeyContainer.enable_assign_mode(false)
-		GBL.find_node(REFS.LINE_DRAW).clear()
-		prev_draw_state = {}		
 		open_menu(false)	
-		#enable_room_focus(true)	
 		BackBtn.show()		
-		on_current_location_update()		
+		draw_active_menu(0)
 
 	if is_powered:
 		for key in extract_wing_data.abilities:
@@ -659,18 +663,23 @@ func show_abilities(skip_animation:bool = false) -> void:
 	ActiveMenu.show_ap = false
 
 	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-	#enable_room_focus(true)
 	
-	var use_global_position:Vector2 = Vector2(RoomMiniCard.global_position.x + RoomMiniCard.size.x + 250, RoomMiniCard.global_position.y + 0)
-	update_active_menu("ABILITIES" % [room_name], Color.WHITE, options, GAME_UTIL.get_ability_level(), use_global_position, skip_animation)	
+	var active_menu_pos:Vector2 = (GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size) 
+	update_active_menu("ABILITIES" % [room_name], Color.WHITE, options, get_ability_level, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func call_and_redraw(action:Callable, show_details:bool = false) -> void:
+	lock_btns(true)
+	
+	# clear any lines
 	prev_draw_state = {}
 	GBL.find_node(REFS.LINE_DRAW).clear()
+	
+	# call 
 	await action.call()
 	await U.tick() # leave this in just in case any of the functions update data
+	
 	
 	if active_menu_is_open:
 		# redraws lines
@@ -684,6 +693,7 @@ func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 		if show_details:
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
 	
+	lock_btns(false)
 	#on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------
 
@@ -720,6 +730,8 @@ func show_passives(skip_animation:bool = false) -> void:
 	var designation:String = str(current_location.floor, current_location.ring)
 	
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
+	
+	#print("get_ability_level: ", get_ability_level)
 
 	current_menu_type = MENU_TYPE.PASSIVES
 
@@ -727,12 +739,9 @@ func show_passives(skip_animation:bool = false) -> void:
 	BackBtn.hide()
 	ActiveMenu.onClose = func() -> void:
 		HotkeyContainer.enable_assign_mode(false)
-		GBL.find_node(REFS.LINE_DRAW).clear()
-		prev_draw_state = {}		
-		open_menu(false)
-		#enable_room_focus(false)
+		open_menu(false)	
 		BackBtn.show()		
-		on_current_location_update()		
+		draw_active_menu(0)
 
 	for key in extract_wing_data.passive_abilities:
 		var abilities:Array = extract_wing_data.passive_abilities[key]
@@ -795,7 +804,8 @@ func update_active_menu(header:String, color:Color, options_list:Array, max_leve
 	update_details()
 	
 	if !skip_animation:
-		ActiveMenu.global_position = use_position
+		await U.tick()
+		ActiveMenu.global_position = use_position + Vector2(40, 100) #-ActiveMenu.size.y/2)
 		ActiveMenu.open()	
 # --------------------------------------------------------------------------------------------------
 
@@ -839,9 +849,10 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 				btn.show()
 
 		EmptyBuildBtn.show() if room_extract.is_room_empty else EmptyBuildBtn.hide()
-		ResearcherNextBtn.hide() if researchers_per_room == 1 else ResearcherNextBtn.show()
-		ScpBtnPanel.hide() if !room_extract.can_contain else ScpBtnPanel.show()
-				
+		ResearcherNextBtn.show() if researchers_per_room != 1 else ResearcherNextBtn.hide()
+		ScpBtnPanel.show() if room_extract.can_contain and !room_extract.scp.is_empty() else ScpBtnPanel.hide()
+		ResearcherBtnPanel.show() if !room_extract.is_room_empty and researcher_hire_list.size() > 0 else ResearcherBtnPanel.hide()				
+		
 		AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open
 		ResearcherDetailBtn.is_disabled = room_extract.is_room_empty or room_extract.researchers.size() == 0  or active_menu_is_open		
@@ -854,7 +865,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		selected_researcher = 0
 		
 		await U.tick()
-		ResearcherBtnPanel.show() if !room_extract.is_room_empty else ResearcherBtnPanel.hide()				
+		
 		return
 
 	

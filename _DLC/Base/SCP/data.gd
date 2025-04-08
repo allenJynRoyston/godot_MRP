@@ -17,38 +17,43 @@ func getSelectedIndex() -> int:
 func getSelectedVal():
 	return option_selected.store.option.val
 	
-func build_option(title:String = "", costs:Dictionary = {}) -> Dictionary:
+func build_option(dict:Dictionary = {}) -> Dictionary:
+	var title:String = dict.title if "title" in dict else ""
+	var change:Dictionary = dict.change if "change" in dict else {}
 	var description_list:Array = []
 	var is_locked:bool = false
-	var onSelectedChild:Callable = func(item:Dictionary) -> void:
-		pass
+	var onSelectedChild:Callable = onSelected
 	
-	for type in costs:
+	for type in change:
 		match type:
 			OPTION.CURRENCY:
 				var arr:Array = []
-				for key in costs[type]:
+				for key in change[type]:
 					var details:Dictionary = RESOURCE_UTIL.return_currency(key)
-					var amount:int = costs[type][key]
+					var amount:int = change[type][key]
 					if amount != 0:
-						var description:String = "Will %s [%s] %s." % ["consume" if amount < 0 else "gain", absi(amount), details.name]
-						description_list.push_back(description)
+						var description:String = "WILL %s [%s] %s." % ["CONSUME" if amount < 0 else "GAIN", absi(amount), details.name]
+						description_list.push_back({
+							"text": description, 
+							"font_color": Color.RED if amount < 0 else Color.GREEN
+						})
+						
 						if amount > resources_data[key].amount and !is_locked:
 							is_locked = true
-						arr.push_back(func() -> void:
-							resources_data[key].amount = U.min_max(resources_data[key].amount, 0, resources_data[key].amount + amount)
-						)
+							
+						arr.push_back(func() -> void: 
+							#resources_data[key].capacity
+							resources_data[key].amount = U.min_max(resources_data[key].amount + amount, 0, 999999))
 					
-					onSelectedChild = func(_item:Dictionary) -> void:
-						for item in arr:
-							item.call()
+					onSelectedChild = func(item:Dictionary) -> void:
+						option_selected.store = item
+						for arr_item in arr:
+							arr_item.call()
 						SUBSCRIBE.resources_data = resources_data
 
-
-	
 	if title.is_empty():
-		title = "Do nothing."
-		description_list = ["..."]
+		title = "DO NOTHING"
+		description_list = []
 	
 	return 	{
 		"include": true,
@@ -119,18 +124,18 @@ var SCP0:Dictionary = {
 	"events": {
 		# -------------------------
 		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
-			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			var passes_metric_check:bool = true #SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
 			var dict:Dictionary = {
-				"title": "passes_metric_check true" if passes_metric_check else "passes metric false",
-				"costs": {
+				"title": "PASSED METRIC CHECK.",
+				"change": {
 					OPTION.CURRENCY: {
-						RESOURCE.CURRENCY.MONEY: 100 if passes_metric_check else 0,
-						RESOURCE.CURRENCY.SCIENCE: 50 if !passes_metric_check else 0
+						RESOURCE.CURRENCY.MONEY: -100,
 					}
-				}
-				
+				} 
+			} if passes_metric_check else {
+				"title": "FAILED METRIC CHECK.",
+				"change": {}
 			}
-			
 			
 			return [
 					# --------------------
@@ -143,7 +148,7 @@ var SCP0:Dictionary = {
 							],
 							"options": [
 								build_option(),
-								build_option(dict.title, dict.costs),
+								build_option(dict),
 							]
 						},
 					# --------------------
@@ -164,7 +169,8 @@ var SCP0:Dictionary = {
 		# -------------------------
 		SCP.EVENT_TYPE.WARNING: func(scp_details:Dictionary, props:Dictionary) -> Array:
 			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			print("passes_metric_check: ", passes_metric_check)
+			print("props.event_count: ", props.event_count)
+			
 			
 			match props.event_count:
 				0:
@@ -177,12 +183,7 @@ var SCP0:Dictionary = {
 									"img_src": scp_details.img_src,
 									"text": [
 										"The door begins to hum at an alarming frequency."
-									],
-									"options": [
-										build_option(),
-										build_option("Option 1", {OPTION.CURRENCY: {RESOURCE.CURRENCY.MONEY: -99, RESOURCE.CURRENCY.MATERIAL: -99}}),
-										build_option("Option 2"),
-									]	
+									]
 								},
 							# --------------------
 					]

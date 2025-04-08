@@ -23,8 +23,8 @@ func debounce(key: String, callback: Callable, delay: float = 0.02):
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func generate_rand(min: int, max: int) -> int:
-	return randi() % (max - min + 1) + min
+func generate_rand(min_val: int, max_val: int) -> int:
+	return randi() % (max_val - min_val + 1) + min_val
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
@@ -45,18 +45,18 @@ func tick() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func min_max(val:int, min:int, max:int, cycle_back:bool = false) -> int:
+func min_max(val:int, min_val:int, max_val:int, cycle_back:bool = false) -> int:
 	var new_val:int = val
-	if val > max:
+	if val > max_val:
 		if cycle_back:
-			new_val = min
+			new_val = min_val
 		else:
-			new_val = max
-	if val < min:
+			new_val = max_val
+	if val < min_val:
 		if cycle_back:
-			new_val = max
+			new_val = max_val
 		else:
-			new_val = min
+			new_val = min_val
 	return new_val
 # ------------------------------------------------------------------------------	
 

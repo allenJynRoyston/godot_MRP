@@ -339,7 +339,7 @@ func on_current_instruction_update() -> void:
 			# wait for all texts in array to finish before being allowed to continue
 			await text_phase_complete
 	# -----------------------------------
-	
+
 	# -----------------------------------
 	if "options" in current_instruction:
 		update_next_btn(false)
@@ -419,6 +419,7 @@ func on_current_instruction_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_option_select() -> void:
 	if option_selected_index == -1 or OptionsListContainer.get_child(option_selected_index).is_locked:return
+
 	
 	current_controls = CONTROLS.FREEZE
 	update_next_btn(false)

@@ -19,6 +19,8 @@ extends MouseInteractions
 
 @onready var ContainedEffect:VBoxContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect
 @onready var UnContainedEffect:VBoxContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect
+@onready var ContainedPanel:PanelContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer4
+@onready var UncontainedPanel:PanelContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer4
 @onready var ContainedDescriptionLabel:Label  = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer4/MarginContainer/DescriptionLabel
 @onready var UncontainedDescriptionLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer4/MarginContainer/DescriptionLabel
 
@@ -125,6 +127,9 @@ func on_ref_update() -> void:
 	
 	var scp_data:Dictionary = SCP_UTIL.return_data(ref)
 	var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
+	var passes_metric_check:bool = SCP_UTIL.passes_metric_check(ref, use_location)
+	var contained_stylebox_flat_copy:StyleBoxFlat = ContainedPanel.get('theme_override_styles/panel').duplicate()
+	var uncontained_stylebox_flat_copy:StyleBoxFlat = UncontainedPanel.get('theme_override_styles/panel').duplicate()
 	
 	for ref in scp_data.effects.metrics:
 		var amount:int = scp_data.effects.metrics[ref]
@@ -142,12 +147,15 @@ func on_ref_update() -> void:
 				if RESOURCE.BASE_METRICS.READINESS in current_metrics:
 					Readiness.is_negative = current_metrics[RESOURCE.BASE_METRICS.READINESS] < amount
 	
-
-	var passes_metric_check:bool = SCP_UTIL.passes_metric_check(ref, use_location)
-
-			
-	ContainedEffect.modulate = Color(1, 1, 1, 1 if passes_metric_check else 0.5)
-	UnContainedEffect.modulate = Color(1, 1, 1, 0.5 if passes_metric_check else 1.0)
+	# change stylebox if passes metric check
+	contained_stylebox_flat_copy.border_color = Color(0.54, 0.54, 0.54) if passes_metric_check else Color.BLACK 
+	uncontained_stylebox_flat_copy.border_color = Color(0.54, 0.54, 0.54) if !passes_metric_check else Color.BLACK 
+	ContainedPanel.set('theme_override_styles/panel', contained_stylebox_flat_copy)
+	UncontainedPanel.set('theme_override_styles/panel', uncontained_stylebox_flat_copy)
+	
+	# change modulation
+	ContainedEffect.modulate = Color(1, 1, 1, 1 if passes_metric_check else 0.4)
+	UnContainedEffect.modulate = Color(1, 1, 1, 0.5 if passes_metric_check else 1.0)	
 
 	ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
 	DesignationLabel.text = scp_data.name

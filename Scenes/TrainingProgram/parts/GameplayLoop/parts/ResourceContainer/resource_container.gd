@@ -2,20 +2,20 @@ extends GameContainer
 
 @onready var MarginControl:MarginContainer = $Control/MarginControl
 
-@onready var MetricsContainer:Control = $Control/MarginControl/HBoxContainer5/MetricsContainer
-@onready var LocationPanel:Control = $Control/MarginControl/HBoxContainer5/LocationPanel
-@onready var PersonnelPanel:Control = $Control/MarginControl/HBoxContainer5/PersonnelContainer/PersonnelPanel
-@onready var EnergyPanel:Control = $Control/MarginControl/HBoxContainer5/EnergyPanel
-@onready var CurrencyContainer:Control = $Control/MarginControl/HBoxContainer5/CurrencyContainer
+@onready var MetricsContainer:Control = $Control/MarginControl/HBoxContainer2/MetricsContainer
+@onready var LocationPanel:Control = $Control/MarginControl/HBoxContainer2/LocationPanel
+@onready var CurrencyContainer:Control = $Control/MarginControl/HBoxContainer2/CurrencyContainer
 
-@onready var CorePanel:PanelContainer = $Control/MarginControl/HBoxContainer5/CurrencyContainer/CorePanel
-@onready var MaterialPanel:PanelContainer = $Control/MarginControl/HBoxContainer5/CurrencyContainer/MatPanel
-@onready var SciencePanel:PanelContainer = $Control/MarginControl/HBoxContainer5/CurrencyContainer/SciencePanel
-@onready var MoneyPanel:PanelContainer = $Control/MarginControl/HBoxContainer5/CurrencyContainer/MoneyPanel
+@onready var CorePanel:PanelContainer = $Control/MarginControl/HBoxContainer2/CurrencyContainer/CorePanel
+@onready var MaterialPanel:PanelContainer = $Control/MarginControl/HBoxContainer2/CurrencyContainer/MatPanel
+@onready var SciencePanel:PanelContainer = $Control/MarginControl/HBoxContainer2/CurrencyContainer/SciencePanel
+@onready var MoneyPanel:PanelContainer = $Control/MarginControl/HBoxContainer2/CurrencyContainer/MoneyPanel
+@onready var EnergyPanel:Control = $Control/MarginControl/HBoxContainer2/EnergyPanel
 
-@onready var Morale:Control = $Control/MarginControl/HBoxContainer5/MetricsContainer/Morale
-@onready var Safety:Control = $Control/MarginControl/HBoxContainer5/MetricsContainer/Safety
-@onready var Readiness:Control = $Control/MarginControl/HBoxContainer5/MetricsContainer/Readiness
+@onready var Morale:Control = $Control/MarginControl/HBoxContainer/MetricsContainer/Morale
+@onready var Safety:Control = $Control/MarginControl/HBoxContainer/MetricsContainer/Safety
+@onready var Readiness:Control = $Control/MarginControl/HBoxContainer/MetricsContainer/Readiness
+@onready var PersonnelPanel:Control = $Control/MarginControl/HBoxContainer/PersonnelContainer
 
 var previous_location:Dictionary = {}
 

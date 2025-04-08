@@ -73,9 +73,6 @@ func save_file_exist(type:FILE) -> bool:
 # ---------------------------------	
 
 # ---------------------------------		
-func extract_data_from_save(data:Dictionary) -> Dictionary:
-	return {}	
-
 func get_file_data(filepath:String) -> Dictionary:
 	var filedata:Dictionary = {}
 	if FileAccess.file_exists(filepath):
@@ -84,7 +81,7 @@ func get_file_data(filepath:String) -> Dictionary:
 		results.close()		
 	return filedata
 
-func load_file(type:FILE, is_preview:bool = false) -> Dictionary:
+func load_file(type:FILE) -> Dictionary:
 	var data:Dictionary = {}
 	var filedata:Dictionary = {}
 	
@@ -174,35 +171,35 @@ func save_file(type:FILE, save_data:Dictionary) -> Dictionary:
 
 # ---------------------------------
 func show_load_options() -> Dictionary:
-	var items = []
+	var items := []
 
-	var data_one_image_file_path = str(folder, FS.save_config.filenames.save_file_one, save_config.image_ext)
-	var data_two_image_file_path = str(folder, FS.save_config.filenames.save_file_two, save_config.image_ext)
-	var data_three_image_file_path = str(folder, FS.save_config.filenames.save_file_three, save_config.image_ext)
+	var data_one_image_file_path := str(folder, FS.save_config.filenames.save_file_one, save_config.image_ext)
+	var data_two_image_file_path := str(folder, FS.save_config.filenames.save_file_two, save_config.image_ext)
+	var data_three_image_file_path := str(folder, FS.save_config.filenames.save_file_three, save_config.image_ext)
 		
 	if save_file_exist(FILE.QUICK_SAVE):
-		var data = load_file(FILE.QUICK_SAVE, true)
+		var data:Dictionary = load_file(FILE.QUICK_SAVE)
 		items.push_back({
 			"text": str("Load ", FS.save_config.pretty_filenames.quick_save), 
 			"file": FILE.QUICK_SAVE,
 		})		
 		
 	if save_file_exist(FILE.SAVE_ONE):
-		var data = load_file(FILE.SAVE_ONE, true)
+		var data:Dictionary = load_file(FILE.SAVE_ONE)
 		items.push_back({
 			"text": str("Load ", FS.save_config.pretty_filenames.filesave_one), 
 			"file": FILE.SAVE_ONE,
 		})
 		
 	if save_file_exist(FILE.SAVE_TWO):
-		var data = load_file(FILE.SAVE_TWO, true)
+		var data:Dictionary = load_file(FILE.SAVE_TWO)
 		items.push_back({
 			"text": str("Load ", FS.save_config.pretty_filenames.filesave_two), 
 			"file": FILE.SAVE_TWO,
 		})
 		
 	if save_file_exist(FILE.SAVE_THREE):
-		var data = load_file(FILE.SAVE_THREE, true)
+		var data:Dictionary = load_file(FILE.SAVE_THREE)
 		items.push_back({
 			"text": str("Load ", FS.save_config.pretty_filenames.filesave_two), 
 			"file": FILE.SAVE_THREE,
@@ -216,15 +213,15 @@ func show_load_options() -> Dictionary:
 
 # ---------------------------------
 func show_save_options() -> Dictionary:
-	var data_one = load_file(FILE.SAVE_ONE, true)
-	var data_two = load_file(FILE.SAVE_TWO, true)
-	var data_three = load_file(FILE.SAVE_THREE, true)
+	var data_one:Dictionary = load_file(FILE.SAVE_ONE)
+	var data_two:Dictionary = load_file(FILE.SAVE_TWO)
+	var data_three:Dictionary = load_file(FILE.SAVE_THREE)
 	
-	var data_one_image_file_path = str(folder, FS.save_config.filenames.save_file_one, save_config.image_ext)
-	var data_two_image_file_path = str(folder, FS.save_config.filenames.save_file_two, save_config.image_ext)
-	var data_three_image_file_path = str(folder, FS.save_config.filenames.save_file_three, save_config.image_ext)
+	var data_one_image_file_path := str(folder, FS.save_config.filenames.save_file_one, save_config.image_ext)
+	var data_two_image_file_path := str(folder, FS.save_config.filenames.save_file_two, save_config.image_ext)
+	var data_three_image_file_path := str(folder, FS.save_config.filenames.save_file_three, save_config.image_ext)
 	
-	var items = [
+	var items:Array = [
 		{
 			"text": str("Save ", FS.save_config.pretty_filenames.filesave_one), 
 			"save_name": FS.save_config.filenames.save_file_one,

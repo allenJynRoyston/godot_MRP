@@ -14,7 +14,7 @@ var DEBUG_ROOM:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"own_limit": 1,
+	"own_limit": 99,
 	"build_time": 1,
 	# ------------------------------------------
 	
@@ -53,8 +53,8 @@ var DEBUG_ROOM:Dictionary = {
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
-			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING),
-			#ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING),
+			ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
+			ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 1),
 			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
 			#ABL_P.get_ability(ABL_P.REF.MEMETIC_SHILEDING),
 		],	

@@ -118,5 +118,4 @@ layout_mode = 2
 [node name="MenuBtn" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
 layout_mode = 2
 title = "ITEM A"
-science_cost = -1
 is_togglable = true

@@ -187,6 +187,9 @@ var initial_values:Dictionary = {
 					#}
 				#}		
 			],
+			"lock": {
+				
+			}
 		},
 	# ----------------------------------
 	"progress_data": func() -> Dictionary:
@@ -1722,7 +1725,7 @@ func update_room_config(force_setup:bool = false) -> void:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
-				var ability_uid:String = str(room_data.ref, ability_index)
+				var ability_uid:String = str(floor, ring, room, ability_index)
 				# creates default state if it doesn't exist
 				if ability_uid not in room_base_state.passives_enabled:
 					room_base_state.passives_enabled[ability_uid] = false
@@ -1751,16 +1754,18 @@ func update_room_config(force_setup:bool = false) -> void:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
-				var ability_uid:String = str(room_data.ref, ability_index)
+				var ability_uid:String = str(floor, ring, room, ability_index)
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
 				var abl_lvl:int = room_config_data.abl_lvl
+
 				# check if passive is enabled
-				if room_base_state.passives_enabled[ability_uid]:					
+				if room_base_state.passives_enabled[ability_uid]:
 					# check if level is equal or less then what is required...
 					# aand check if check if enough energy available to power the passive
 					if ability.lvl_required <= abl_lvl and ring_config_data.energy.used < ring_config_data.energy.available:
 						# if it's enabled, add to energy cost
 						ring_config_data.energy.used += energy_cost
+						
 						# check provides (like staff, dclass, security, etc)
 						if "provides" in ability: 
 							for resource in ability.provides:

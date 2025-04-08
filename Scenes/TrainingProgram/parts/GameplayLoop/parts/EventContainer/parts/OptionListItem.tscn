@@ -31,6 +31,7 @@ font_color = Color(0, 0.964706, 0.278431, 1)
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
+size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_e0f73")
 script = ExtResource("1_j7po5")
 
@@ -39,11 +40,11 @@ layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 5
 
 [node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_ryuwo")]
 layout_mode = 2

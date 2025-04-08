@@ -38,9 +38,9 @@ theme_override_constants/separation = 0
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/margin_left = 5
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = -7
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
@@ -53,7 +53,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = -4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(75, 15)
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 alignment = 1
 
@@ -67,11 +67,13 @@ vertical_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+size_flags_horizontal = 4
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_krmuu")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 
 [node name="IconBtn" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer" instance=ExtResource("2_rtf5u")]
 visible = false
@@ -87,7 +89,6 @@ is_hoverable = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/separation = 3
 alignment = 1
 

@@ -21,6 +21,8 @@ enum MODE {HIDE, CONTENT_SELECT, PLACEMENT}
 
 const cards_on_screen:int = 4
 
+@export var allow_placement:bool = false
+
 var current_mode:MODE = MODE.HIDE : 
 	set(val):
 		current_mode = val
@@ -45,13 +47,14 @@ var grid_as_array:Array = [
 	[8, 9, 10, 11],
 ]
 
+
+
 var await_confirm:bool = false
 signal on_confirm
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	
 	
 	PurchaseBtn.onClick = func() -> void:
 		if current_mode == MODE.CONTENT_SELECT:
@@ -61,6 +64,8 @@ func _ready() -> void:
 	PlacementBtn.onClick = func() -> void:
 		if current_mode == MODE.PLACEMENT:
 			purchase_room()
+			if !allow_placement:
+				end()
 	
 	BackBtn.onClick = func() -> void:
 		match current_mode:
@@ -161,7 +166,6 @@ func purchase_room() -> void:
 	
 	await U.tick()
 	
-
 	GameplayNode.ToastContainer.add("%s purchased!" % [room_details.name])
 	on_grid_index_update()
 # --------------------------------------------------------------------------------------------------	
@@ -286,7 +290,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		# -------------------
 		MODE.CONTENT_SELECT:		
 			for btn in RightSideBtnList.get_children():
-				btn.is_disabled = false
+				btn.is_disabled = true
 							
 			PurchaseBtn.show()	
 			PlacementBtn.hide()
@@ -306,6 +310,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, duration)
 			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
 			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show, duration)
+			for btn in RightSideBtnList.get_children():
+				btn.is_disabled = false			
 		# -------------------
 		MODE.PLACEMENT:
 			PurchaseBtn.hide()
@@ -318,8 +324,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				card_node.is_deselected = index != grid_index
 			
 			#GBL.find_node(REFS.ROOM_NODES).is_active = false
-			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration )
-			await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration )
+			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)
 			
 			on_grid_index_update()
 		# -------------------
@@ -359,7 +365,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					if grid_index not in grid_as_array[0] and has_valid_ref(grid_index - 4):
 						grid_index = grid_index - 4
 				MODE.PLACEMENT:
-					U.room_up()
+					if allow_placement:
+						U.room_up()
 					
 		"S":
 			match current_mode:
@@ -367,7 +374,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					if grid_index not in grid_as_array[2] and has_valid_ref(grid_index + 4):
 						grid_index = grid_index + 4
 				MODE.PLACEMENT:
-					U.room_down()
+					if allow_placement:
+						U.room_down()
 		"A":
 			match current_mode:
 				MODE.CONTENT_SELECT:
@@ -379,7 +387,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 						update_grid_content()
 						find_nearest_valid(grid_index, true)
 				MODE.PLACEMENT:
-					U.room_left()
+					if allow_placement:
+						U.room_left()
 		"D":
 			match current_mode:
 				MODE.CONTENT_SELECT:
@@ -391,5 +400,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 						update_grid_content()
 						find_nearest_valid(grid_index, false)
 				MODE.PLACEMENT:
-					U.room_right()
+					if allow_placement:
+						U.room_right()
 # --------------------------------------------------------------------------------------------------

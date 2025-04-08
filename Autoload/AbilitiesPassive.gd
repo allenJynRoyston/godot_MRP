@@ -24,6 +24,7 @@ var upgrade_abl_level:Dictionary = {
 	"energy_cost": 4,
 	"wing": func(new_room_config:Dictionary, use_location:Dictionary) -> Dictionary:
 		new_room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl += 1
+		#print("here!: ", new_room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl)
 		return new_room_config,
 }
 

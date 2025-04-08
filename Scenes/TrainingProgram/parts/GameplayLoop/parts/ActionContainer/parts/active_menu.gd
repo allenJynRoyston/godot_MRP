@@ -50,6 +50,7 @@ var max_level:int = -1 :
 
 var wait_for_release:bool = false
 var allow_shortcut:bool = false
+var stored_pos:Vector2 
 
 var onPrev:Callable = func():pass
 var onNext:Callable = func():pass
@@ -74,6 +75,7 @@ func _ready() -> void:
 	on_max_level_update()
 	
 func open() -> void:
+	stored_pos = self.position
 	freeze_inputs = false
 	set_fade(true)
 
@@ -89,7 +91,8 @@ func close() -> void:
 	
 	
 func set_fade(state:bool) -> void:
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else 0), 0.2)	
+	U.tween_node_property(self, "position:y", stored_pos.y + (-10 if state else 0), 0.3)	
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else 0), 0.3)	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -212,7 +215,7 @@ func on_action(btn_index:int = selected_index) -> void:
 		if btn_node == null:return
 		if !btn_node.is_disabled:
 			await options_list[btn_index].onSelect.call(btn_index)
-
+			
 			if "get_checked_state" in options_list[btn_index]:
 				btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
 			if "get_disabled_state" in options_list[btn_index]:

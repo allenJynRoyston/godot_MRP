@@ -25,6 +25,14 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqoss"]
+bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 10.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6dxlc"]
 bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
 corner_radius_top_left = 5
@@ -34,21 +42,13 @@ corner_radius_bottom_left = 5
 expand_margin_left = 10.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8g0ic"]
-bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 10.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4kqi3"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_nqoss"]
+[sub_resource type="LabelSettings" id="LabelSettings_4kqi3"]
 font = ExtResource("3_fvhk1")
 font_size = 8
 font_color = Color(0.357535, 0.00116721, 0.501693, 1)
@@ -64,7 +64,6 @@ offset_bottom = 34.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_asb5s")
 script = ExtResource("1_b56nf")
 title = "TITLE OF ITEM "
-science_cost = null
 btn_color = Color(0.510764, 0.00166744, 0.716704, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -91,9 +90,10 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="CooldownPanel" type="PanelContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nqoss")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel"]
 layout_mode = 2
@@ -114,9 +114,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TogglePanel" type="PanelContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_8g0ic")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel"]
 layout_mode = 2
@@ -130,7 +131,7 @@ layout_mode = 2
 [node name="CheckBox" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer/HBoxContainer" instance=ExtResource("2_aglnc")]
 layout_mode = 2
 size_flags_vertical = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_4kqi3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8g0ic")
 no_bg = true
 bg_color = Color(0, 0, 0, 0.796)
 checkbox_color = Color(0, 0, 0, 1)
@@ -141,10 +142,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "TITLE OF ITEM "
-label_settings = SubResource("LabelSettings_nqoss")
+label_settings = SubResource("LabelSettings_4kqi3")
 vertical_alignment = 1
 
 [node name="EnergyPanel" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="EnergyAmountLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/EnergyPanel"]
@@ -167,6 +169,7 @@ flip_v = false
 is_hoverable = false
 
 [node name="SciencePanel" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="ScienceAmountLabel" type="Label" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/SciencePanel"]
