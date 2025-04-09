@@ -504,7 +504,7 @@ func toggle_fullscreen() -> void:
 # -----------------------------------
 #region SAVE/LOAD
 func save_state(duration:float = 0.2) -> void:
-	var save_data = {
+	var save_data:Dictionary = {
 		"settings": settings,
 		"in_recycle_bin": in_recycle_bin,
 		"email_not_new": email_not_new,
@@ -520,7 +520,7 @@ func save_state(duration:float = 0.2) -> void:
 	await simulate_wait(duration)
 
 func load_state() -> void:
-	var res = FS.load_file(FS.FILE.SETTINGS)		
+	var res:Dictionary = FS.load_file(FS.FILE.SETTINGS)		
 	if res.success:
 		restore_state(res.filedata.data)
 		

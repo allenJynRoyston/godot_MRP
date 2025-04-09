@@ -14,6 +14,25 @@ var SCP_TEMPLATE:Dictionary = {
 	"quote": "Lorem ipsum dolor sit amet consectetur adipiscing elit.",
 	# -----------------------------------
 	
+	# -----------------------------------
+	"scenario_data":{
+		# STARTING SCP (or tutorial scp)
+		"contain_order": [0],  
+		# rewards gained after winning
+		"reward": [],
+		# objectives and their respective checks
+		"objectives": [
+			{
+				"title": "Build a HQ", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+			},
+		],
+		# limit to scenario
+		"day_limit": 3,
+	},
+	# -----------------------------------	
+	
 	# -----------------------------------	
 	"item_class": "SAFE",	
 	"description": func(ref:ROOM.TYPE) -> Array:
@@ -184,171 +203,189 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, props:Dictionary) -> A
 	return []
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------
-func return_event_testing_template(_dict:Dictionary) -> Array:
-	var scp_details:Dictionary = _dict.details
-	var list_details:Dictionary = _dict.list_details
-	var resources_data:Dictionary = _dict.resources_data
-	var research_completed:Array = list_details.data.research_completed
-	var researcher_details:Array = _dict.researcher_details		
-	var option_selected:Dictionary = {"val": null}
-	var onSelected = func(val) -> void:
-		option_selected.val = val
-	
-	var img_src:String = researcher_details[0].img_src
-	var portrait_title_name:String = "RESEARCHER %s" % [researcher_details[0].name]
-	
-	if researcher_details.size() == 2:
-		portrait_title_name = "RESEARCHERS %s and %s" % [researcher_details[0].name, researcher_details[1].name]
-		
-	if researcher_details.size() > 2:
-		portrait_title_name = "RESEARCH TEAM"	
-		# TODO: replace with group of researchers pic
-		img_src = researcher_details[0].img_src
-	
-	return [
-		func() -> Dictionary:
-			return {
-				"header": "UPDATE ON %s" % [scp_details.name],
-				"img_src": img_src,
-				"portrait": {
-					"title": portrait_title_name,
-					"img_src": 	img_src,
-				},
-				"text": [
-					"%s, these are %s proposals for %s." % [prefered_greeting, "my" if researcher_details.size() < 2 else "our", scp_details.name]
-				],
-				"options": build_event_options_list(_dict, option_selected, onSelected)
-			},
-		func() -> Dictionary:
-			return {
-				"text": [
-					"I'll begin immediately." if option_selected.val != -1 else "Probably for the best."
-				],
-				"set_return_val": func() -> Dictionary:
-					return option_selected,
-			}		
-	]
+
+# ------------------------------------------------------------------------------	
+func get_list_of_scenarios() -> Array:
+	var scenarios:Array = []
+	for ref in reference_list:
+		var scp_details:Dictionary = reference_data[ref]
+		if "scenario_data" in scp_details:
+			scenarios.push_back(ref)
+	return scenarios
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------
-func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSelected:Callable) -> Array:
-	var details:Dictionary = _dict.details
-	var list_details:Dictionary = _dict.list_details
-	var resources_data:Dictionary = _dict.resources_data
-	var researcher_details:Array = _dict.researcher_details	
-	var research_completed:Array = list_details.data.research_completed
-	var testing_options:Dictionary = details.testing_options
+# ------------------------------------------------------------------------------	
+func get_scenario_data(ref:int) -> Dictionary:
+	var scp_details:Dictionary = return_data(ref)
+	return scp_details.scenario_data if "scenario_data" in scp_details else {}
+# ------------------------------------------------------------------------------	
 
-	# first, check if all research options are exhasted
-	var options:Array = []
-	for testing_ref in testing_options:
-		var option:Dictionary = testing_options[testing_ref]
-		var completed:bool = testing_ref in research_completed
-		var repeatable:bool = option.repeatable if "repeatable" in option else false
-		
-		# -----------
-		# checks if prerequirites have been met
-		var prerequisites:Dictionary = option.prerequisites.call()
-		var required_traits:Array = prerequisites.traits if "traits" in prerequisites else []
-		var required_specilization:Array = prerequisites.specializations if "specializations" in prerequisites else []
-		var requires_trait:bool = required_traits.size() > 0
-		var requires_specilization:bool = required_specilization.size() > 0
-		var all_traits:Array = []
-		var all_specilization:Array = []
-		
-		for researcher in researcher_details:
-			for key in researcher.traits:
-				if key not in all_traits:
-					all_traits.push_back(key)
-			for key in researcher.specializations:
-				if key not in all_specilization:
-					all_specilization.push_back(key)
 
-		var useable_traits:Array = required_traits.filter(func(i): return all_traits.has(i)).map(func(i): return RESEARCHER_UTIL.return_trait_data(i))
-		var useable_specilization:Array = required_specilization.filter(func(i): return all_specilization.has(i)).map(func(i): return RESEARCHER_UTIL.return_specialization_data(i))
-		var is_missing_traits:bool = false if !requires_trait else required_traits.filter(func(i): return all_traits.has(i)).size() == 0
-		var is_missing_specilization:bool = false if !requires_specilization else required_specilization.filter(func(i): return all_specilization.has(i)).size() == 0
-		
-		var trait_tag:String = "[%s] " % useable_traits[0].fullname if useable_traits.size() > 0 else ""
-		var specilization_tag:String = "[%s] " % useable_specilization[0].fullname if useable_specilization.size() > 0 else ""
-		var usable_tag_string:String = "%s %s%s" % ["" if !completed else "[REPEAT]", trait_tag, specilization_tag]
-		# -----------
-		
-		# -----------
-		var not_enough_resources:bool = false
-		var required_resources_amount:Dictionary = option.requirements.resources.amount.call() if "amount" in option.requirements.resources else {}
-		#var required_resources_utilized:Dictionary = option.requirements.resources.utilized.call() if "utilized" in option.requirements.resources else {}
-		var required_notes:Dictionary = {
-			"header": "Resources required",
-			"list": []
-		}
-		#var utilized_notes:Dictionary = {
-			#"header": "Resources utilized",
+## ------------------------------------------------------------------------------
+#func return_event_testing_template(_dict:Dictionary) -> Array:
+	#var scp_details:Dictionary = _dict.details
+	#var list_details:Dictionary = _dict.list_details
+	#var resources_data:Dictionary = _dict.resources_data
+	#var research_completed:Array = list_details.data.research_completed
+	#var researcher_details:Array = _dict.researcher_details		
+	#var option_selected:Dictionary = {"val": null}
+	#var onSelected = func(val) -> void:
+		#option_selected.val = val
+	#
+	#var img_src:String = researcher_details[0].img_src
+	#var portrait_title_name:String = "RESEARCHER %s" % [researcher_details[0].name]
+	#
+	#if researcher_details.size() == 2:
+		#portrait_title_name = "RESEARCHERS %s and %s" % [researcher_details[0].name, researcher_details[1].name]
+		#
+	#if researcher_details.size() > 2:
+		#portrait_title_name = "RESEARCH TEAM"	
+		## TODO: replace with group of researchers pic
+		#img_src = researcher_details[0].img_src
+	#
+	#return [
+		#func() -> Dictionary:
+			#return {
+				#"header": "UPDATE ON %s" % [scp_details.name],
+				#"img_src": img_src,
+				#"portrait": {
+					#"title": portrait_title_name,
+					#"img_src": 	img_src,
+				#},
+				#"text": [
+					#"%s, these are %s proposals for %s." % [prefered_greeting, "my" if researcher_details.size() < 2 else "our", scp_details.name]
+				#],
+				#"options": build_event_options_list(_dict, option_selected, onSelected)
+			#},
+		#func() -> Dictionary:
+			#return {
+				#"text": [
+					#"I'll begin immediately." if option_selected.val != -1 else "Probably for the best."
+				#],
+				#"set_return_val": func() -> Dictionary:
+					#return option_selected,
+			#}		
+	#]
+## ------------------------------------------------------------------------------	
+##
+## ------------------------------------------------------------------------------
+#func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSelected:Callable) -> Array:
+	#var details:Dictionary = _dict.details
+	#var list_details:Dictionary = _dict.list_details
+	#var resources_data:Dictionary = _dict.resources_data
+	#var researcher_details:Array = _dict.researcher_details	
+	#var research_completed:Array = list_details.data.research_completed
+	#var testing_options:Dictionary = details.testing_options
+#
+	## first, check if all research options are exhasted
+	#var options:Array = []
+	#for testing_ref in testing_options:
+		#var option:Dictionary = testing_options[testing_ref]
+		#var completed:bool = testing_ref in research_completed
+		#var repeatable:bool = option.repeatable if "repeatable" in option else false
+		#
+		## -----------
+		## checks if prerequirites have been met
+		#var prerequisites:Dictionary = option.prerequisites.call()
+		#var required_traits:Array = prerequisites.traits if "traits" in prerequisites else []
+		#var required_specilization:Array = prerequisites.specializations if "specializations" in prerequisites else []
+		#var requires_trait:bool = required_traits.size() > 0
+		#var requires_specilization:bool = required_specilization.size() > 0
+		#var all_traits:Array = []
+		#var all_specilization:Array = []
+		#
+		#for researcher in researcher_details:
+			#for key in researcher.traits:
+				#if key not in all_traits:
+					#all_traits.push_back(key)
+			#for key in researcher.specializations:
+				#if key not in all_specilization:
+					#all_specilization.push_back(key)
+#
+		#var useable_traits:Array = required_traits.filter(func(i): return all_traits.has(i)).map(func(i): return RESEARCHER_UTIL.return_trait_data(i))
+		#var useable_specilization:Array = required_specilization.filter(func(i): return all_specilization.has(i)).map(func(i): return RESEARCHER_UTIL.return_specialization_data(i))
+		#var is_missing_traits:bool = false if !requires_trait else required_traits.filter(func(i): return all_traits.has(i)).size() == 0
+		#var is_missing_specilization:bool = false if !requires_specilization else required_specilization.filter(func(i): return all_specilization.has(i)).size() == 0
+		#
+		#var trait_tag:String = "[%s] " % useable_traits[0].fullname if useable_traits.size() > 0 else ""
+		#var specilization_tag:String = "[%s] " % useable_specilization[0].fullname if useable_specilization.size() > 0 else ""
+		#var usable_tag_string:String = "%s %s%s" % ["" if !completed else "[REPEAT]", trait_tag, specilization_tag]
+		## -----------
+		#
+		## -----------
+		#var not_enough_resources:bool = false
+		#var required_resources_amount:Dictionary = option.requirements.resources.amount.call() if "amount" in option.requirements.resources else {}
+		##var required_resources_utilized:Dictionary = option.requirements.resources.utilized.call() if "utilized" in option.requirements.resources else {}
+		#var required_notes:Dictionary = {
+			#"header": "Resources required",
 			#"list": []
-		#}		
-		
-		var missing_resources:Array = []
-		
-		for key in required_resources_amount:
-			var amount:int = required_resources_amount[key]
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			required_notes.list.push_back({
-				"is_checked": resources_data[key].amount >= amount,
-				"icon": resource_details.icon, 
-				"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
-			})
-			
-			if resources_data[key].amount < amount:
-				missing_resources.push_back(key)
-				
-		#for key in required_resources_utilized:
-			#var amount:int = required_resources_utilized[key]
+		#}
+		##var utilized_notes:Dictionary = {
+			##"header": "Resources utilized",
+			##"list": []
+		##}		
+		#
+		#var missing_resources:Array = []
+		#
+		#for key in required_resources_amount:
+			#var amount:int = required_resources_amount[key]
 			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			#utilized_notes.list.push_back({
+			#required_notes.list.push_back({
 				#"is_checked": resources_data[key].amount >= amount,
 				#"icon": resource_details.icon, 
 				#"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
 			#})
 			#
 			#if resources_data[key].amount < amount:
-				#missing_resources.push_back(key)				
-			
-		
-		var locked:bool = is_missing_traits or is_missing_specilization or missing_resources.size() > 0
-		
-		
-		var lock_str:String = "PREREQUISITES MISSING: "
-		if is_missing_traits:
-			for data in required_traits.map(func(i): return RESEARCHER_UTIL.return_trait_data(i)):
-				lock_str += " [TRAIT - %s]" % [data.fullname]
-
-		if is_missing_specilization:
-			for data in required_specilization.map(func(i): return RESEARCHER_UTIL.return_specialization_data(i)):
-				lock_str += " [SPECIALIZATION - %s]" % [data.fullname]
-		
-		if missing_resources.size() > 0 and (!is_missing_traits and !is_missing_specilization) :
-			lock_str = "%s [NOT ENOUGH RESOURCES]" % [option.name]
-	
-		if !completed or (completed and repeatable):
-			options.push_back({
-				"completed": testing_ref in research_completed,
-				"repeatable": repeatable,
-				"locked": locked,
-				"notes": [required_notes],
-				"title": "%s%s" % ["%s " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.name] if !locked else "%s" % [lock_str], 
-				"description": "",
-				"val": testing_ref,
-				"onSelected": onSelected			
-			})
-
-	options.push_back({
-		"completed": false,
-		"title": "I've changed my mind.",
-		"val": -1,
-		"onSelected": onSelected			
-	})
-	
-				
-	return options
-# ------------------------------------------------------------------------------
+				#missing_resources.push_back(key)
+				#
+		##for key in required_resources_utilized:
+			##var amount:int = required_resources_utilized[key]
+			##var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			##utilized_notes.list.push_back({
+				##"is_checked": resources_data[key].amount >= amount,
+				##"icon": resource_details.icon, 
+				##"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
+			##})
+			##
+			##if resources_data[key].amount < amount:
+				##missing_resources.push_back(key)				
+			#
+		#
+		#var locked:bool = is_missing_traits or is_missing_specilization or missing_resources.size() > 0
+		#
+		#
+		#var lock_str:String = "PREREQUISITES MISSING: "
+		#if is_missing_traits:
+			#for data in required_traits.map(func(i): return RESEARCHER_UTIL.return_trait_data(i)):
+				#lock_str += " [TRAIT - %s]" % [data.fullname]
+#
+		#if is_missing_specilization:
+			#for data in required_specilization.map(func(i): return RESEARCHER_UTIL.return_specialization_data(i)):
+				#lock_str += " [SPECIALIZATION - %s]" % [data.fullname]
+		#
+		#if missing_resources.size() > 0 and (!is_missing_traits and !is_missing_specilization) :
+			#lock_str = "%s [NOT ENOUGH RESOURCES]" % [option.name]
+	#
+		#if !completed or (completed and repeatable):
+			#options.push_back({
+				#"completed": testing_ref in research_completed,
+				#"repeatable": repeatable,
+				#"locked": locked,
+				#"notes": [required_notes],
+				#"title": "%s%s" % ["%s " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.name] if !locked else "%s" % [lock_str], 
+				#"description": "",
+				#"val": testing_ref,
+				#"onSelected": onSelected			
+			#})
+#
+	#options.push_back({
+		#"completed": false,
+		#"title": "I've changed my mind.",
+		#"val": -1,
+		#"onSelected": onSelected			
+	#})
+	#
+				#
+	#return options
+## ------------------------------------------------------------------------------

@@ -1,20 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=14 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_id14l"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_s4nou"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_p3swr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_f0u0i"]
 font = ExtResource("3_id14l")
 font_size = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vmsk3"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3swr"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -39,6 +33,32 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfvw8"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46a2l"]
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -88,31 +108,70 @@ alignment = 1
 
 [node name="NewGameBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vmsk3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "???"
 
 [node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "RUN SCENARIO"
 
 [node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "Continue"
 
 [node name="LoadBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kfvw8")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "Load"
 
 [node name="QuitBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kfvw8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "Quit"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="ScenarioPanel" type="PanelContainer" parent="Control"]
+layout_mode = 2
+offset_left = 1028.0
+offset_top = 618.0
+offset_right = 1106.0
+offset_bottom = 642.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/ScenarioPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/ScenarioPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/ScenarioPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "SCENARIOS"
+label_settings = ExtResource("5_p3swr")
+vertical_alignment = 1
+
+[node name="ScenarioList" type="VBoxContainer" parent="Control/ScenarioPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextBtn" parent="Control/ScenarioPanel/MarginContainer/VBoxContainer/ScenarioList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
+icon = 51
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+inactive_color = Color(0.527083, 0.527083, 0.527083, 1)
+title = "Scenario a"

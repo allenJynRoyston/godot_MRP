@@ -374,7 +374,8 @@ var setup_complete:bool = false :
 	set(val):
 		setup_complete = val
 		on_setup_complete_update()
-		
+
+var scenario_ref:int
 var scenario_data:Dictionary 
 var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
@@ -590,49 +591,20 @@ func start(game_data:Dictionary = {}) -> void:
 		node.activate()
 	
 	await U.tick()
-	
-	# add a scenario fetch here
-	scenario_data = {
-		# STARTING SCP (or tutorial scp)
-		"contain_order": [0],  
-		# rewards gained after winning
-		"reward": [
-			{
-				"title": "REWARD 1", 
-				"day_threshold": null, 
-				"unlock_func": func() -> void:
-					pass,
-			},
-			{
-				"title": "REWARD 2", 
-				"day_threshold": 10, 
-				"unlock_func": func() -> void:
-					pass,
-			}
-		],
-		# objectives and their respective checks
-		"objectives": [
-			{
-				"title": "Build a HQ", 
-				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
-			},
-			{
-				"title": "Contain ONE anamolous object in a containment cell.", 
-				"is_completed":func() -> bool:
-					return scp_data.contained_list.size() > 0,
-			}
-		],
-		# limit to scenario
-		"day_limit": 3,
-	} if "scenario_ref" in game_data else {}
-	
-	setup_scenario()
+	setup_scenario(game_data.scenario_ref)
 	start_new_game()
 	
 	
 	
-func setup_scenario () -> void:
+func setup_scenario (_scenario_ref:int) -> void:
+	scenario_ref = scenario_ref
+	
+	if scenario_ref == -1:
+		print("no scenario data to load")
+		return
+		
+	scenario_data = SCP_UTIL.get_scenario_data(scenario_ref)
+	
 	# apply timelimit to scenario data
 	scenario_data.objectives.push_back({
 		"title": "SURVIVE FOR %s DAYS." % [scenario_data.day_limit],
@@ -685,7 +657,7 @@ func start_new_game() -> void:
 		await U.set_timeout(0.5)
 	else:
 		await quickload()
-		
+	
 	# runs room config once everything is ready
 	await U.set_timeout(1.0)
 	setup_complete = true
@@ -1700,7 +1672,8 @@ func is_occupied() -> bool:
 #region SAVE/LOAD
 func quicksave() -> void:
 	is_busy = true
-	var save_data = {
+	var save_data := {
+		"scenario_ref": scenario_ref,
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
 		# OF ALL THE OTHER DATA THAT'S HERE
 		"progress_data": progress_data,		
@@ -1719,14 +1692,14 @@ func quicksave() -> void:
 		"base_states": base_states,
 		"unavailable_rooms": unavailable_rooms, 
 	}	
-	var res = FS.save_file(FS.FILE.QUICK_SAVE, save_data)
+	FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	await U.set_timeout(1.0)
 	is_busy = false
 	print("saved game!")
 
 func quickload() -> void:
 	is_busy = true
-	var res = FS.load_file(FS.FILE.QUICK_SAVE)
+	var res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
 	if res.success:
 		await parse_restore_data(res.filedata.data)
 		print("quickload success!")
@@ -1740,6 +1713,12 @@ func parse_restore_data(restore_data:Dictionary = {}) -> void:
 	var no_save:bool = restore_data.is_empty()
 	if debug_mode:
 		no_save = true
+	
+	# load scenario ref
+	if "scenario_ref" in restore_data:
+		scenario_ref = restore_data.scenario_ref
+	else:
+		scenario_ref = -1
 	
 	# non-reactive data that's used but doesn't require a subscription
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if no_save else restore_data.progress_data

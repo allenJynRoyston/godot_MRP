@@ -69,9 +69,46 @@ func build_option(dict:Dictionary = {}) -> Dictionary:
 
 var SCP0:Dictionary = {
 	# -----------------------------------
-	"nickname": "THE SCP0",
+	"nickname": "THE SCP-0",
 	"img_src": "res://Media/scps/the_door.png",
 	"quote": "How many of you exist now?  Like six?",
+	# -----------------------------------
+
+	# -----------------------------------
+	"scenario_data":{
+		# STARTING SCP (or tutorial scp)
+		"contain_order": [0],  
+		# rewards gained after winning
+		"reward": [
+			{
+				"title": "REWARD 1", 
+				"day_threshold": null, 
+				"unlock_func": func() -> void:
+					pass,
+			},
+			{
+				"title": "REWARD 2", 
+				"day_threshold": 10, 
+				"unlock_func": func() -> void:
+					pass,
+			}
+		],
+		# objectives and their respective checks
+		"objectives": [
+			{
+				"title": "Build a HQ", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+			},
+			{
+				"title": "Contain ONE anamolous object in a containment cell.", 
+				"is_completed":func() -> bool:
+					return scp_data.contained_list.size() > 0,
+			}
+		],
+		# limit to scenario
+		"day_limit": 3,
+	},
 	# -----------------------------------
 	
 	# -----------------------------------	

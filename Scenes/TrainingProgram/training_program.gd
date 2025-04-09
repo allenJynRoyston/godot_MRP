@@ -5,28 +5,46 @@ extends PanelContainer
 
 const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/GameplayLoop.tscn")
 
-var fast_start:bool = false
+# 
+@export var new_save_file:bool = false
+@export var skip_title_screen:bool = true
 
-var skip_to_new_game:bool = true
+@export_category("Gameplay Loop")
+@export var debug_mode:bool = false
+@export var skip_progress_screen:bool = false
+@export var debug_energy:bool = true
+@export var debug_personnel:bool = false
+
+
+# options
+var fast_start:bool = false
 var skip_main_menu:bool = false
 var load_first_game:bool = false
 
+# completed scenarios
+var completed_scenarios:Array = []
+
+# control
 var GameplayLoopNode:Control
 
+# signals
 signal on_quit
 
+# ---------------------------------------------
 func _ready() -> void:
 	hide()
+	load_settings()
+# ---------------------------------------------
 
-# Called when the node enters the scene tree for the first time.
+# ---------------------------------------------
 func start() -> void:	
 	show()
 	
 	# skip and load the last game 
-	if skip_to_new_game and !load_first_game:
+	if skip_title_screen and !load_first_game:
 		load_first_game = true
 		# TODO change out 0 for saved scenario ref
-		start_new_game(0, true)
+		start_new_game(-1, true)
 		return
 
 	# start logo screen
@@ -40,21 +58,27 @@ func start() -> void:
 		"new_game":
 			start_new_game(0, false)
 		"scenario": 
-			start_new_game(0, false)
+			start_new_game(res.props.ref, false)
 		"continue":
 			start_new_game(0, true)
 		"load":
 			pass
 		"quit":
 			on_quit.emit()
-				
-		
+# ---------------------------------------------
+
+# ---------------------------------------------
 func start_new_game(scenario_ref:int, continue_last_save:bool = false) -> void:
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
+	GameplayLoopNode.onEndGame = on_end_game	
+	GameplayLoopNode.debug_mode = debug_mode
+	GameplayLoopNode.skip_progress_screen = skip_progress_screen 
+	GameplayLoopNode.debug_energy = debug_energy
+	GameplayLoopNode.debug_personnel = debug_personnel
 	GameplayLoopNode.hide()
 	add_child(GameplayLoopNode)
+	
 	await U.tick()
-	GameplayLoopNode.onEndGame = on_end_game
 	GameplayLoopNode.start({
 		"continue": continue_last_save,
 		"scenario_ref": scenario_ref,
@@ -68,3 +92,20 @@ func on_end_game(scenario_data:Dictionary, endgame_state:bool) -> void:
 	print("continue...")
 	GameplayLoopNode.queue_free()
 	start()	
+# ---------------------------------------------
+
+# ---------------------------------------------
+func save_settings() -> Dictionary:
+	var save_data:Dictionary = {
+		"completed_scenarios": completed_scenarios
+	}	
+	FS.save_file(FS.FILE.PERMANENT_FILE, save_data)
+	return save_data
+
+func load_settings() -> void:
+	var res:Dictionary = FS.load_file(FS.FILE.PERMANENT_FILE)
+	var filedata:Dictionary = save_settings() if !res.success or new_save_file else res.filedata
+
+	# remap save properties
+	completed_scenarios = filedata.data.completed_scenarios
+# ---------------------------------------------

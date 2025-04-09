@@ -963,9 +963,9 @@ func buildout_btns() -> void:
 
 # --------------------------------------------------------------------------------------------------
 var previous_nametag_state:bool 
-func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals) -> void:
 	super.on_gameplay_conditionals_update(new_val)
-	if !is_node_ready():return
+	if !is_node_ready() or current_mode == MODE.SELECT_FLOOR:return
 	var state:bool = gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
 	if previous_nametag_state != state:
 		previous_nametag_state = state
@@ -1037,27 +1037,22 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		# --------------
 		MODE.SELECT_FLOOR:
-			hide_nametags(true)
-			
 			for panel in [ScpBtnPanel, ResearcherBtnPanel, AbilityBtnPanel, BaseBtnPanel, AdminBtnPanel]:
 				panel.hide()
 				
 			for panel in [FacilityBtnPanel, NavBtnPanel]:
 				panel.show()
 			
-			for btn in [ConfirmBtn, BackBtn, FloorPlanBtn]:
+			for btn in [ConfirmBtn, BackBtn, FloorPlanBtn, NameControl]:
 				btn.hide()
 				
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
 		# --------------
 		MODE.SELECT_ROOM:
+			
+			
 			AbilityBtn.title = "ABILITY"
-			#PassiveBtn.title = "PASSIVE"
-			
-			#render_nametags()
-			NameControl.show()
-			
 
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, duration)
 
@@ -1077,7 +1072,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			HotkeyContainer.lock_btns = false
 			show_room_details = false
 			await U.set_timeout(0.3)
-			GameplayNode.restore_player_hud()
+			await GameplayNode.restore_player_hud()
+			
+			NameControl.show()
+			on_gameplay_conditionals_update()
 		# --------------
 		MODE.INVESTIGATE:
 			enable_room_focus(true)

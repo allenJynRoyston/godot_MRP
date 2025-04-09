@@ -14,6 +14,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ie45v")
 script = ExtResource("1_kkc02")
+skip_title_screen = false
+debug_personnel = true
 
 [node name="LogoScreen" parent="." instance=ExtResource("2_rckpd")]
 layout_mode = 2

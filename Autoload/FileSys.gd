@@ -1,6 +1,6 @@
 extends Node
 
-enum FILE {SETTINGS, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
+enum FILE {SETTINGS, PERMANENT_FILE, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
 
 const save_config:Dictionary = {
 	"folder": "user://",
@@ -8,6 +8,7 @@ const save_config:Dictionary = {
 	"image_size": 400,
 	"pretty_filenames": {
 		"settings": "Settings",
+		"permanent": "Permanent",
 		"quick_save": "Quicksave",
 		"filesave_one": "File 1",
 		"filesave_two": "File 2",
@@ -15,6 +16,7 @@ const save_config:Dictionary = {
 	},
 	"filenames": {		
 		"settings": "SETTINGS",
+		"permanent": "PERMANENT",
 		"quicksave": "SAVE_QUICKSAVE",
 		"save_file_one": "SAVE_01",
 		"save_file_two": "SAVE_02",
@@ -25,6 +27,7 @@ const save_config:Dictionary = {
 
 const folder:String = save_config.folder
 const settings_filename:String = save_config.filenames.settings
+const permanent_filename:String = save_config.filenames.permanent
 const quick_save_filename:String = save_config.filenames.quicksave
 const save_file_one_filename:String = save_config.filenames.save_file_one
 const save_file_two_filename:String = save_config.filenames.save_file_two
@@ -57,6 +60,9 @@ func save_file_exist(type:FILE) -> bool:
 		FILE.SETTINGS:
 			filepath = str(folder, settings_filename)
 		# ----------------------------
+		FILE.PERMANENT_FILE:
+			filepath = str(folder, permanent_filename)
+		# ----------------------------	
 		FILE.QUICK_SAVE:
 			filepath = str(folder, quick_save_filename)		
 		# ----------------------------
@@ -91,6 +97,10 @@ func load_file(type:FILE) -> Dictionary:
 			var filepath:String = str(folder, settings_filename)
 			filedata = get_file_data(filepath)			
 		# ----------------------------
+		FILE.PERMANENT_FILE:
+			var filepath:String = str(folder, permanent_filename)
+			filedata = get_file_data(filepath)
+		# ----------------------------	
 		FILE.QUICK_SAVE:
 			var filepath:String = str(folder, quick_save_filename)
 			filedata = get_file_data(filepath)	
@@ -144,7 +154,12 @@ func save_file(type:FILE, save_data:Dictionary) -> Dictionary:
 		FILE.SETTINGS:
 			var filepath:String = str(folder, settings_filename)
 			file_data = add_savefile_metadata(settings_filename, save_data)
-			success = create_save_file(filepath, file_data)		
+			success = create_save_file(filepath, file_data)
+		# ----------------------------
+		FILE.PERMANENT_FILE:
+			var filepath:String = str(folder, permanent_filename)
+			file_data = add_savefile_metadata(permanent_filename, save_data)
+			success = create_save_file(filepath, file_data)			
 		# ----------------------------
 		FILE.QUICK_SAVE:
 			var filepath:String = str(folder, quick_save_filename)
@@ -243,15 +258,4 @@ func show_save_options() -> Dictionary:
 	]	
 	
 	return {"items": items}
-# ---------------------------------
-
-# ---------------------------------
-#func take_screenshot(save_file_name:String) -> void:
-	#var viewport:SubViewport = Global.GameRefNodes.get_ref(System.REF.FINAL_VIEWPORT)
-	#var viewport_capture:Image = viewport.get_texture().get_image()
-	#var image_size:Vector2 = viewport_capture.get_size()
-	#var image_ratio:float = float(image_size.y/image_size.x)
-	#viewport_capture.resize(save_config.image_size, save_config.image_size * image_ratio)
-	#var file_path = str(folder, save_file_name, save_config.image_ext)
-	#viewport_capture.save_png(file_path)
 # ---------------------------------
