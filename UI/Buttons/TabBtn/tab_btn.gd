@@ -5,10 +5,6 @@ extends BtnBase
 @onready var IconBtn:BtnBase = $VBoxContainer/IconBtn
 @onready var TitleLabel:Label = $VBoxContainer/TitleLabel
 
-@export var is_disabled:bool = false : 
-	set(val):
-		is_disabled = val
-		on_is_disabled_updated()
 
 @export var is_selected:bool = false : 
 	set(val):

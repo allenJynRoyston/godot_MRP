@@ -20,7 +20,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qh4il"]
-bg_color = Color(0, 0, 0, 0.796078)
+bg_color = Color(0.507666, 0.13466, 0.497494, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -88,6 +88,7 @@ theme_override_constants/margin_bottom = 0
 icon = 27
 flip_h = true
 flip_v = false
+is_disabled = null
 is_hoverable = false
 
 [node name="HeaderLabel" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer"]
@@ -104,6 +105,7 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 27
 flip_v = false
+is_disabled = null
 is_hoverable = false
 
 [node name="LvlContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]

@@ -554,10 +554,6 @@ func contain_scp() -> bool:
 		"location": use_location,
 		"contained_on": progress_data.day,
 	})
-		
-	
-	SUBSCRIBE.timeline_array = timeline_array	
-	
 	
 	# update 
 	SUBSCRIBE.scp_data = scp_data

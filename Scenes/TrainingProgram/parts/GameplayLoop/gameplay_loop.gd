@@ -30,7 +30,7 @@ extends PanelContainer
 
 const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
 
-enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE }
+enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, GAME_WON, GAME_LOST }
 
 enum OBJECTIVES_STATE {
 	HIDE, 
@@ -374,7 +374,8 @@ var setup_complete:bool = false :
 	set(val):
 		setup_complete = val
 		on_setup_complete_update()
-
+		
+var scenario_data:Dictionary 
 var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
@@ -461,6 +462,8 @@ var current_objective_state:OBJECTIVES_STATE = OBJECTIVES_STATE.HIDE :
 	set(val):
 		current_objective_state = val
 		on_current_objective_state_update()
+
+var onEndGame:Callable = func(_scenario_data:Dictionary, _endgame_state:bool) -> void:pass
 
 signal store_select_location
 signal on_complete_build_complete
@@ -585,20 +588,65 @@ func start(game_data:Dictionary = {}) -> void:
 		node.set_process(false)
 		node.set_physics_process(false)
 		node.activate()
-		
-	if game_data.is_empty():
-		start_new_game()
-	else:
-		start_load_game()
-
-
-
+	
+	await U.tick()
+	
+	# add a scenario fetch here
+	scenario_data = {
+		# STARTING SCP (or tutorial scp)
+		"contain_order": [0],  
+		# rewards gained after winning
+		"reward": [
+			{
+				"title": "REWARD 1", 
+				"day_threshold": null, 
+				"unlock_func": func() -> void:
+					pass,
+			},
+			{
+				"title": "REWARD 2", 
+				"day_threshold": 10, 
+				"unlock_func": func() -> void:
+					pass,
+			}
+		],
+		# objectives and their respective checks
+		"objectives": [
+			{
+				"title": "Build a HQ", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+			},
+			{
+				"title": "Contain ONE anamolous object in a containment cell.", 
+				"is_completed":func() -> bool:
+					return scp_data.contained_list.size() > 0,
+			}
+		],
+		# limit to scenario
+		"day_limit": 3,
+	} if "scenario_ref" in game_data else {}
+	
+	setup_scenario()
+	start_new_game()
+	
+	
+	
+func setup_scenario () -> void:
+	# apply timelimit to scenario data
+	scenario_data.objectives.push_back({
+		"title": "SURVIVE FOR %s DAYS." % [scenario_data.day_limit],
+		"is_completed": func() -> bool:
+			return progress_data.day >= scenario_data.day_limit
+	})
+	
+	# updates objectives
+	ObjectivesContainer.objectives = scenario_data.objectives	
 
 func start_new_game() -> void:
 	setup_complete = false
 	
 	# reset steps
-	await restore_player_hud()
 	current_shop_step = SHOP_STEPS.RESET
 	current_contain_step = CONTAIN_STEPS.RESET
 	current_recruit_step = RECRUIT_STEPS.RESET
@@ -637,20 +685,28 @@ func start_new_game() -> void:
 		await U.set_timeout(0.5)
 	else:
 		await quickload()
-	
-	
-	await restore_player_hud()	
+		
 	# runs room config once everything is ready
 	await U.set_timeout(1.0)
 	setup_complete = true
-	
 	update_room_config()	
+	
+	# show objectives on game start
+	if !skip_progress_screen:
+		await GAME_UTIL.open_objectives()
+
+	# add endgame timeline object
+	GAME_UTIL.add_timeline_item({
+		"title": "SCENARIO END",
+		"icon": SVGS.TYPE.CONVERSATION,
+		"description": "Win or lose...",
+		"day": scenario_data.day_limit,
+		"location": {"floor": 0, "ring": 0, "room": 0}
+	})		
+	
+	# update phase and start game
 	current_phase = PHASE.PLAYER
 
-
-func start_load_game() -> void:
-	# load save file
-	pass
 	
 #endregion
 # ------------------------------------------------------------------------------
@@ -1281,12 +1337,23 @@ func on_current_phase_update() -> void:
 				await U.set_timeout(1.5)
 				# plays any scp events
 				for item in timeline_filter:
-					if "event" in item:
+					if "event" in item and !item.event.is_empty():
 						await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
 			
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
 		PHASE.CONCLUDE:	
+			# CHECK IF SCENARIO DATA IS COMPLETE
+			var objectives_completed:bool = true
+			for objective in scenario_data.objectives:
+				if !objective.is_completed.call():
+					objectives_completed = false
+			
+			if progress_data.day >= scenario_data.day_limit:
+				await U.set_timeout(1.0)
+				current_phase = PHASE.GAME_WON if objectives_completed else PHASE.GAME_LOST
+				return
+			
 			PhaseAnnouncement.end()
 			await U.set_timeout(1.0)
 			# revert
@@ -1295,7 +1362,19 @@ func on_current_phase_update() -> void:
 			
 			await restore_player_hud()
 			current_phase = PHASE.PLAYER
+			
 		# ------------------------
+		PHASE.GAME_WON:
+			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")	
+			onEndGame.call(scenario_data, true)
+			return
+		# ------------------------
+		PHASE.GAME_LOST:
+			PhaseAnnouncement.start("FAILED TO MEET OBJECTIVES...")	
+			onEndGame.call(scenario_data, false)
+			return
+		# ------------------------
+
 
 # ------------------------------------------------------------------------------
 
@@ -1336,7 +1415,7 @@ func on_current_objective_state_update() -> void:
 		OBJECTIVES_STATE.SHOW:
 			SUBSCRIBE.suppress_click = true
 			ObjectivesContainer.start()
-			await show_only([ObjectivesContainer, Structure3dContainer, ResourceContainer])
+			await show_only([ObjectivesContainer, Structure3dContainer])
 			await ObjectivesContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			await restore_showing_state()

@@ -31,11 +31,6 @@ extends BtnBase
 		text_inactive_color = val
 		on_focus()
 
-@export var is_disabled:bool = false : 
-	set(val):
-		is_disabled = val
-		on_is_disabled_updated()
-		
 @export var hide_icon:bool = false : 
 	set(val):
 		hide_icon = val

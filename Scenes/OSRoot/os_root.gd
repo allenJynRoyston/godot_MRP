@@ -212,11 +212,11 @@ func on_current_layer_update() -> void:
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_node_ready() or is_animating:return
 	var key:String = input_data.key
-	match key:
-		"R":
-			reset()
-		"F":
-			toggle_fullscreen()
+	#match key:
+		#"R":
+			#reset()
+		#"F":
+			#toggle_fullscreen()
 # -----------------------------------		
 	
 # -----------------------------------	

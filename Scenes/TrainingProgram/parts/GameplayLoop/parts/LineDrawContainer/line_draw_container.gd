@@ -49,6 +49,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	GBL.unsubscribe_to_process(self)
 	GBL.unsubscribe_to_fullscreen(self)
+	GBL.unregister_node(REFS.LINE_DRAW)
 
 func _ready() -> void:
 	GBL.register_node(REFS.LINE_DRAW, self)

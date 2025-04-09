@@ -1,7 +1,7 @@
 extends GameContainer
 
 @onready var ObjectivesControlPanel:MarginContainer = $ObjectivesControl/MarginContainer
-@onready var ObjectivesList:VBoxContainer = $ObjectivesControl/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList
+@onready var ObjectivesList:VBoxContainer = $ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList
 
 @onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
@@ -9,10 +9,17 @@ extends GameContainer
 
 enum MODE {HIDE, ACTIVE}
 
+const CheckBoxButtonPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
+
 var current_mode:MODE = MODE.HIDE : 
 	set(val):
 		current_mode = val
 		on_current_mode_update()
+		
+var objectives:Array = [] : 
+	set(val):
+		objectives = val
+		on_objectives_update()
 		
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -94,4 +101,27 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, 0 if skip_animation else 0.3)
 			await U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].show, 0 if skip_animation else 0.3)	
 			BackBtn.is_disabled = false
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_room_config_update(new_val:Dictionary) -> void:
+	super.on_room_config_update(new_val)
+	if !is_node_ready():return
+	for index in objectives.size():
+		var objective:Dictionary = objectives[index]
+		var btn_node:Control = ObjectivesList.get_child(index)
+		btn_node.is_checked = objective.is_completed.call()
+# --------------------------------------------------------------------------------------------------		
+
+
+# --------------------------------------------------------------------------------------------------		
+func on_objectives_update() -> void:
+	if !is_node_ready():return
+	for child in ObjectivesList.get_children():
+		child.queue_free()
+	
+	for objective in objectives:
+		var new_btn:Control = CheckBoxButtonPreload.instantiate()
+		new_btn.title = str(objective.title).to_upper()
+		ObjectivesList.add_child(new_btn)
 # --------------------------------------------------------------------------------------------------		

@@ -6,9 +6,9 @@ extends ControlPanel
 @onready var PurchaseContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer/PurchaseContainer
 
 var GameplayLoop:Control
-var list:Array[Array] = B.get_type_arr()
+var list:Array[Array] 
 var selected_vector := Vector2(0, 0)
-var selected = BUILDING_TYPE.NONE
+var selected
 var on_floor:int = 0:
 	set(val):
 		on_floor = val
@@ -40,7 +40,7 @@ func on_is_active_updated() -> void:
 
 # -----------------------------------
 func on_inactive() -> void:
-	selected = BUILDING_TYPE.NONE
+	#selected = BUILDING_TYPE.NONE
 	selected_vector = Vector2(0, 0)
 # -----------------------------------	
 
@@ -58,16 +58,16 @@ func on_data_update(_previous_state:Dictionary = data) -> void:
 		for child in node.get_children():
 			child.queue_free()
 
-	for item in data.built[on_floor]:
-		var newLabel = Label.new()
-		newLabel.text = B.return_type_name(item.type)
-		ListContainer.add_child(newLabel)
-		
-	for item in data.purchase_list:
-		if on_floor == item.on_floor:
-			var newLabel = Label.new()
-			newLabel.text = B.return_type_name(item.type)
-			PurchaseContainer.add_child(newLabel)		
+	#for item in data.built[on_floor]:
+		#var newLabel = Label.new()
+		#newLabel.text = B.return_type_name(item.type)
+		#ListContainer.add_child(newLabel)
+		#
+	#for item in data.purchase_list:
+		#if on_floor == item.on_floor:
+			#var newLabel = Label.new()
+			#newLabel.text = B.return_type_name(item.type)
+			#PurchaseContainer.add_child(newLabel)		
 # -----------------------------------
 
 # -----------------------------------

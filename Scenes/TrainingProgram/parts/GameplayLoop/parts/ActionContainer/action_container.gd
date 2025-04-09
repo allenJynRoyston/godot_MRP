@@ -542,6 +542,9 @@ func show_actions(skip_animation:bool = false) -> void:
 		#enable_room_focus(true)	
 		on_current_location_update()
 		
+	var is_fullscreen_checked:Callable = func() -> bool:
+		return GBL.is_fullscreen
+		
 	var is_enable_nametags_checked:Callable = func() -> bool:
 		return gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
 		
@@ -550,6 +553,18 @@ func show_actions(skip_animation:bool = false) -> void:
 	
 	if active_menu_index == 0:
 		menu_title = "UI"
+		options.push_back({
+			"title": "FULLSCREEN",
+			"icon": SVGS.TYPE.CONVERSATION,
+			"is_togglable": true,
+			"is_checked": await is_fullscreen_checked.call(),
+			"get_checked_state": is_fullscreen_checked,
+			"action": func() -> void:
+				GBL.find_node(REFS.OS_ROOT).toggle_fullscreen(),	
+			"onSelect": func(index:int) -> void:
+				await options[index].action.call(),
+		})
+		
 		options.push_back({
 			"title": "NAMETAG OVERLAY",
 			"icon": SVGS.TYPE.RESEARCH,
@@ -664,7 +679,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 		draw_active_menu(0)
 	
 	if active_menu_index == 0:
-		menu_title = "ACTIVATE"
+		menu_title = "PASSIVE"
 		if is_powered:
 			for key in extract_wing_data.abilities:
 				var abilities:Array = extract_wing_data.abilities[key]
@@ -701,7 +716,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 						})				
 
 	if active_menu_index == 1:
-		menu_title = "PASSIVE"
+		menu_title = "ACTIVE"
 		for key in extract_wing_data.passive_abilities:
 			var abilities:Array = extract_wing_data.passive_abilities[key]
 			for index in abilities.size():
@@ -745,7 +760,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
 	
 	var active_menu_pos:Vector2 = (GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size) - Vector2(0, 100)
-	update_active_menu("%s [%s]" % [room_name, menu_title], Color.WHITE, options, 1, active_menu_pos, skip_animation)	
+	update_active_menu("%s / %s" % [room_name, menu_title], Color.WHITE, options, 1, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

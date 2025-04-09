@@ -38,11 +38,6 @@ enum SIDE {LEFT, RIGHT}
 		inactive_color = val
 		on_focus()
 
-@export var is_disabled:bool = false : 
-	set(val):
-		is_disabled = val
-		on_is_disabled_updated()
-
 @export var title:String = "" : 
 	set(val): 
 		title = val

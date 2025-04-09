@@ -45,11 +45,6 @@ extends BtnBase
 	set(val): 
 		btn_color = val
 		update_color(btn_color)
-		
-@export var is_disabled:bool = false : 
-	set(val):
-		is_disabled = val
-		on_is_disabled_updated()
 
 @export var is_selected:bool = false : 
 	set(val):

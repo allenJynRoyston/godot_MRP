@@ -129,7 +129,7 @@ func update_display() -> void:
 		ACTION.AQ.BUILD_ITEM:
 			# update
 			purchased_facility_arr.push_back({
-				"ref": data.ref,
+				"type_ref": data.type_ref if "type_ref" in data.type_ref else null,
 				"location": data.location.duplicate()
 			})
 			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
