@@ -103,11 +103,6 @@ var in_contain_mode:bool = false :
 		if in_contain_mode:
 			check_if_contain_is_valid()
 
-var show_floating_nametags:bool = false : 
-	set(val):
-		show_floating_nametags = val
-		on_show_floating_nametags_update()
-		
 var show_room_details:bool = false : 
 	set(val):
 		show_room_details = val
@@ -182,11 +177,8 @@ func _ready() -> void:
 				active_menu_index = U.min_max(active_menu_index + 1, 0, 2)
 				show_actions(true)
 			_:
-				match current_menu_type:
-					MENU_TYPE.ABILITIES:
-						show_passives(true)
-					MENU_TYPE.PASSIVES:
-						show_abilities(true)
+				active_menu_index = U.min_max(active_menu_index + 1, 0, 1)
+				show_abilities(true)
 		
 	ActiveMenu.onPrev = func() -> void:
 		match current_menu_type:
@@ -194,11 +186,8 @@ func _ready() -> void:
 				active_menu_index = U.min_max(active_menu_index - 1, 0, 2)
 				show_actions(true)
 			_:
-				match current_menu_type:
-					MENU_TYPE.ABILITIES:
-						show_passives(true)
-					MENU_TYPE.PASSIVES:
-						show_abilities(true)
+				active_menu_index = U.min_max(active_menu_index - 1, 0, 1)
+				show_abilities(true)
 
 	ActiveMenu.onDrawUpdate = func(index:int, selected_data:Dictionary) -> void:		
 		SUBSCRIBE.current_location = selected_data.shortcut_data.use_location
@@ -226,12 +215,16 @@ func _ready() -> void:
 		lock_btns(false, true)
 
 	ActiveMenu.onBookmark = func(shotcut_data:Dictionary, menu_btn:Control) -> void:		
+		HotkeyContainer.enable_assign_mode(true)
 		await U.tick()		
 		drawline_bookmark()	
 		ActiveMenu.freeze_inputs = true
+		ActiveMenu.show_hotkey = true
 		HotkeyContainer.start_bookmark(shotcut_data)
 
 	HotkeyContainer.onBookmarkEnd = func() -> void:
+		HotkeyContainer.enable_assign_mode(false)
+		ActiveMenu.show_hotkey = false
 		GBL.find_node(REFS.LINE_DRAW).clear()
 		prev_draw_state = {}
 		await U.tick()
@@ -250,7 +243,6 @@ func _ready() -> void:
 	GBL.direct_ref["ActiveMenu"] = ActiveMenu
 	
 	on_show_room_details_update()
-	on_show_floating_nametags_update()
 	on_current_bookmark_type_update()
 	on_current_mode_update()
 
@@ -357,7 +349,7 @@ func drawline_bookmark() -> void:
 		return Vector2(ActiveMenu.global_position.x + ActiveMenu.size.x + 10, ActiveMenu.global_position.y - 70), { 
 			"draw_to_hotkeys": true, 
 			"draw_to_active_menu": true,
-			"label": "PRESS [%s] TO ASSIGN TO HOTKEY" % ['E'],
+			"label": "PRESS [%s] TO ASSIGN, [%s] TO CANCEL" % ['E', 'B'],
 		})	
 # --------------------------------------------------------------------------------------------------				
 
@@ -541,7 +533,7 @@ func show_actions(skip_animation:bool = false) -> void:
 	var designation:String = str(current_location.floor, current_location.ring)	
 	var extract_wing_data:Dictionary = GAME_UTIL.extract_wing_details()	
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
-	var menu_title:String = "TITLE"
+	var menu_title:String 
 	
 	ActiveMenu.onClose = func() -> void:	
 		GBL.find_node(REFS.LINE_DRAW).clear()
@@ -550,22 +542,38 @@ func show_actions(skip_animation:bool = false) -> void:
 		#enable_room_focus(true)	
 		on_current_location_update()
 		
-	var is_floating_checked:Callable = func() -> bool:
-		return show_floating_nametags
+	var is_enable_nametags_checked:Callable = func() -> bool:
+		return gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
+		
+	var is_ability_hints_checked:Callable = func() -> bool:
+		return gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS]
 	
 	if active_menu_index == 0:
-		menu_title = "LAYOUT"
+		menu_title = "UI"
 		options.push_back({
-			"title": "FLOATING",
+			"title": "NAMETAG OVERLAY",
 			"icon": SVGS.TYPE.RESEARCH,
 			"is_togglable": true,
-			"is_checked": await is_floating_checked.call(),
-			"get_checked_state": is_floating_checked,
+			"is_checked": await is_enable_nametags_checked.call(),
+			"get_checked_state": is_enable_nametags_checked,
 			"action": func() -> void:
-				show_floating_nametags = !show_floating_nametags,
+				gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS] = !gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
+				SUBSCRIBE.gameplay_conditionals = gameplay_conditionals,
 			"onSelect": func(index:int) -> void:
 				await options[index].action.call(),
-		})				
+		})
+		options.push_back({
+			"title": "ABILITY HINTS",
+			"icon": SVGS.TYPE.QUESTION_MARK,
+			"is_togglable": true,
+			"is_checked": await is_ability_hints_checked.call(),
+			"get_checked_state": is_ability_hints_checked,
+			"action": func() -> void:
+				gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] = !gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS]
+				SUBSCRIBE.gameplay_conditionals = gameplay_conditionals,
+			"onSelect": func(index:int) -> void:
+				await options[index].action.call(),
+		})		
 		
 	if active_menu_index == 1:
 		menu_title = "INFORMATION"
@@ -580,7 +588,8 @@ func show_actions(skip_animation:bool = false) -> void:
 	ActiveMenu.level = active_menu_index
 	ActiveMenu.show_ap = true
 
-	update_active_menu(menu_title, Color.WHITE, options, 2, Vector2(10, AdminBtnPanel.global_position.y - 150), skip_animation)	
+	var active_menu_pos:Vector2 = Vector2(-30, GBL.game_resolution.y - 350)
+	update_active_menu(menu_title, Color.WHITE, options, 2, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -605,7 +614,36 @@ func ability_funcs(ability:Dictionary, use_location:Dictionary) -> Dictionary:
 		"get_not_ready_func": get_not_ready_func,
 		"get_icon_func": get_icon_func
 	}
-
+# --------------------------------------------------------------------------------------------------
+	
+# --------------------------------------------------------------------------------------------------
+func passive_funcs(room_ref:int, ability_index:int, use_location:Dictionary) -> Dictionary:
+	var ability:Dictionary = ROOM_UTIL.return_passive_ability(room_ref, ability_index)
+	
+	var get_checked:Callable = func() -> bool: 
+		await U.tick()
+		return GAME_UTIL.get_passive_ability_state(room_ref, ability_index)
+						
+	var get_not_ready_func:Callable = func() -> bool: 
+		var get_ability_level:int = GAME_UTIL.get_ability_level()	
+		return get_ability_level < ability.lvl_required
+		
+	var get_icon_func:Callable = func() -> SVGS.TYPE:
+		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_index)
+		return SVGS.TYPE.CHECKBOX if await is_checked else SVGS.TYPE.EMPTY_CHECKBOX
+		
+	var get_invalid_func:Callable = func() -> bool:
+		return !GAME_UTIL.does_passive_ability_exists_in_ring(ability, use_location)		
+	
+	return 	{
+		"get_checked": get_checked,
+		"get_not_ready_func": get_not_ready_func,
+		"get_icon_func": get_icon_func,
+		"get_invalid_func": get_invalid_func
+	}
+# --------------------------------------------------------------------------------------------------
+	
+# --------------------------------------------------------------------------------------------------
 func show_abilities(skip_animation:bool = false) -> void:
 	var options:Array = []
 	var designation:String = str(current_location.floor, current_location.ring)	
@@ -614,58 +652,100 @@ func show_abilities(skip_animation:bool = false) -> void:
 	var get_ability_level:int = GAME_UTIL.get_ability_level()	
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
+	var menu_title:String 
 	
 	current_menu_type = MENU_TYPE.ABILITIES
 	
-	HotkeyContainer.enable_assign_mode(true)
 	BackBtn.hide()
 	ActiveMenu.onClose = func() -> void:	
 		HotkeyContainer.enable_assign_mode(false)
 		open_menu(false)	
 		BackBtn.show()		
 		draw_active_menu(0)
+	
+	if active_menu_index == 0:
+		menu_title = "ACTIVATE"
+		if is_powered:
+			for key in extract_wing_data.abilities:
+				var abilities:Array = extract_wing_data.abilities[key]
+				for index in abilities.size():
+					var ability:Dictionary = abilities[index]
+					if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
+						var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": current_location.room}
+						var funcs:Dictionary = ability_funcs(ability.details, use_location)
+						var get_cooldown_duration:Callable = funcs.get_cooldown_duration
+						var get_not_ready_func:Callable = funcs.get_not_ready_func
+						var get_icon_func:Callable = funcs.get_icon_func
+						var science_cost:int = ability.details.science_cost
 
-	if is_powered:
-		for key in extract_wing_data.abilities:
-			var abilities:Array = extract_wing_data.abilities[key]
+						options.push_back({
+							"shortcut_data": {
+								"room_ref": ability.room_ref, 
+								"index": index,
+								"type": MENU_TYPE.ABILITIES,
+								"use_location": use_location.duplicate(true), 
+							},
+							"title": ability.details.name,
+							"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
+							"science_cost": science_cost, 
+							"cooldown_duration": await get_cooldown_duration.call(), 
+							"is_disabled": await get_not_ready_func.call(),
+							"get_disabled_state": get_not_ready_func,
+							"get_cooldown_duration": get_cooldown_duration,
+							"action": func() -> void:
+								await call_and_redraw(func():
+									await GAME_UTIL.use_active_ability(ability.details)
+								),
+							"onSelect": func(index:int) -> void:
+								await options[index].action.call(),
+						})				
+
+	if active_menu_index == 1:
+		menu_title = "PASSIVE"
+		for key in extract_wing_data.passive_abilities:
+			var abilities:Array = extract_wing_data.passive_abilities[key]
 			for index in abilities.size():
 				var ability:Dictionary = abilities[index]
-				if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
-					var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": current_location.room}
-					var funcs:Dictionary = ability_funcs(ability.details, use_location)
-					var get_cooldown_duration:Callable = funcs.get_cooldown_duration
+				if current_location.room == ability.room_index:
+					var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
+					var funcs:Dictionary = passive_funcs(ability.room_ref, ability.index, use_location)
 					var get_not_ready_func:Callable = funcs.get_not_ready_func
 					var get_icon_func:Callable = funcs.get_icon_func
-					var science_cost:int = ability.details.science_cost
-
+					var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
 					options.push_back({
 						"shortcut_data": {
 							"room_ref": ability.room_ref, 
-							"index": index,
-							"type": MENU_TYPE.ABILITIES,
-							"use_location": use_location.duplicate(true), 
+							"index": index, 
+							"type": MENU_TYPE.PASSIVES,
+							"use_location": use_location, 
 						},
 						"title": ability.details.name,
-						"science_cost": science_cost, 
-						"cooldown_duration": await get_cooldown_duration.call(), 
+						"icon": SVGS.TYPE.RESEARCH,
+						"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
+						"energy_cost": energy_cost, 
+						"is_togglable": true,
+						"is_checked": await funcs.get_checked.call(),
 						"is_disabled": await get_not_ready_func.call(),
 						"get_disabled_state": get_not_ready_func,
-						"get_cooldown_duration": get_cooldown_duration,
+						"get_checked_state": funcs.get_checked,
 						"action": func() -> void:
-							await call_and_redraw(func():
-								await GAME_UTIL.use_active_ability(ability.details)
-							),
+							var is_checked:bool = GAME_UTIL.get_passive_ability_state(ability.room_ref, ability.index)
+							var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
+							var energy_remaining:int = energy.available - energy.used
+							var has_enough:bool = energy_remaining - energy_cost >= 0
+							if !has_enough and !is_checked:return
+							GAME_UTIL.toggle_passive_ability(ability.room_ref, ability.index),
 						"onSelect": func(index:int) -> void:
 							await options[index].action.call(),
-					})				
+					})						
 
 	ActiveMenu.level = active_menu_index
 	ActiveMenu.show_ap = false
 
 	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
 	
-	var active_menu_pos:Vector2 = (GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size) 
-	update_active_menu("ABILITIES" % [room_name], Color.WHITE, options, get_ability_level, active_menu_pos, skip_animation)	
+	var active_menu_pos:Vector2 = (GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size) - Vector2(0, 100)
+	update_active_menu("%s [%s]" % [room_name, menu_title], Color.WHITE, options, 1, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -695,99 +775,6 @@ func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 	
 	lock_btns(false)
 	#on_current_mode_update(true)
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-func passive_funcs(room_ref:int, ability_index:int, use_location:Dictionary) -> Dictionary:
-	var ability:Dictionary = ROOM_UTIL.return_passive_ability(room_ref, ability_index)
-	
-	var get_checked:Callable = func() -> bool: 
-		await U.tick()
-		return GAME_UTIL.get_passive_ability_state(room_ref, ability_index)
-						
-	var get_not_ready_func:Callable = func() -> bool: 
-		return false 
-		
-	var get_icon_func:Callable = func() -> SVGS.TYPE:
-		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_index)
-		return SVGS.TYPE.CHECKBOX if await is_checked else SVGS.TYPE.EMPTY_CHECKBOX
-		
-	var get_invalid_func:Callable = func() -> bool:
-		return !GAME_UTIL.does_passive_ability_exists_in_ring(ability, use_location)		
-	
-	return 	{
-		"get_checked": get_checked,
-		"get_not_ready_func": get_not_ready_func,
-		"get_icon_func": get_icon_func,
-		"get_invalid_func": get_invalid_func
-	}
-	
-func show_passives(skip_animation:bool = false) -> void:
-	var options:Array = []
-	var extract_wing_data:Dictionary = GAME_UTIL.extract_wing_details()
-	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
-	var get_ability_level:int = GAME_UTIL.get_ability_level()
-	var designation:String = str(current_location.floor, current_location.ring)
-	
-	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
-	
-	#print("get_ability_level: ", get_ability_level)
-
-	current_menu_type = MENU_TYPE.PASSIVES
-
-	HotkeyContainer.enable_assign_mode(true)
-	BackBtn.hide()
-	ActiveMenu.onClose = func() -> void:
-		HotkeyContainer.enable_assign_mode(false)
-		open_menu(false)	
-		BackBtn.show()		
-		draw_active_menu(0)
-
-	for key in extract_wing_data.passive_abilities:
-		var abilities:Array = extract_wing_data.passive_abilities[key]
-		for index in abilities.size():
-			var ability:Dictionary = abilities[index]
-			if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
-				var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
-				var funcs:Dictionary = passive_funcs(ability.room_ref, ability.index, use_location)
-				var get_not_ready_func:Callable = funcs.get_not_ready_func
-				var get_icon_func:Callable = funcs.get_icon_func
-				var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
-				options.push_back({
-					"shortcut_data": {
-						"room_ref": ability.room_ref, 
-						"index": index, 
-						"type": MENU_TYPE.PASSIVES,
-						"use_location": use_location, 
-					},
-					"title": ability.details.name,
-					"icon": SVGS.TYPE.RESEARCH,
-					"energy_cost": energy_cost, 
-					"is_togglable": true,
-					"is_checked": await funcs.get_checked.call(),
-					"is_disabled": await get_not_ready_func.call(),
-					"get_disabled_state": get_not_ready_func,
-					"get_checked_state": funcs.get_checked,
-					"action": func() -> void:
-						var is_checked:bool = GAME_UTIL.get_passive_ability_state(ability.room_ref, ability.index)
-						var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
-						var energy_remaining:int = energy.available - energy.used
-						var has_enough:bool = energy_remaining - energy_cost >= 0
-						if !has_enough and !is_checked:return
-						GAME_UTIL.toggle_passive_ability(ability.room_ref, ability.index),
-					"onSelect": func(index:int) -> void:
-						await options[index].action.call(),
-				})				
-
-	ActiveMenu.level = active_menu_index
-	ActiveMenu.show_ap = false
-
-				
-	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-	#enable_room_focus(true)
-	
-	var use_global_position:Vector2 = Vector2(RoomMiniCard.global_position.x + RoomMiniCard.size.x + 260, RoomMiniCard.global_position.y + 0)
-	update_active_menu("PASSIVES" % [room_name], Color.WHITE, options, GAME_UTIL.get_ability_level(), use_global_position, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -959,11 +946,20 @@ func buildout_btns() -> void:
 	refresh_buttons.emit()
 # --------------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------	
-func on_show_floating_nametags_update() -> void:
+# --------------------------------------------------------------------------------------------------
+var previous_nametag_state:bool 
+func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+	super.on_gameplay_conditionals_update(new_val)
 	if !is_node_ready():return
-	NameControl.show() if show_floating_nametags else NameControl.hide()
-	hide_nametags(!show_floating_nametags)
+	var state:bool = gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
+	if previous_nametag_state != state:
+		previous_nametag_state = state
+		if state:
+			NameControl.show()
+			hide_nametags(!state)
+		else:
+			await hide_nametags(!state)
+			NameControl.hide()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	

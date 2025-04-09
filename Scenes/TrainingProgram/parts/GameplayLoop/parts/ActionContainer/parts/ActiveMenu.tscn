@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://0wbd87xeuk1l"]
+[gd_scene load_steps=8 format=3 uid="uid://0wbd87xeuk1l"]
 
 [ext_resource type="Script" uid="uid://ccq216c2w0su1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/active_menu.gd" id="1_yhadw"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_epm40"]
@@ -9,6 +9,18 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0to0"]
 bg_color = Color(0.0687983, 0.0687983, 0.0687983, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qh4il"]
+bg_color = Color(0, 0, 0, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -119,3 +131,40 @@ layout_mode = 2
 layout_mode = 2
 title = "ITEM A"
 is_togglable = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="HintPanel" type="PanelContainer" parent="Control"]
+layout_mode = 0
+offset_left = 272.0
+offset_top = 30.0
+offset_right = 496.0
+offset_bottom = 66.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qh4il")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/HintPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/HintPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/HintPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "HINT"
+label_settings = ExtResource("2_epm40")
+vertical_alignment = 1
+
+[node name="HintLabel" type="Label" parent="Control/HintPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "description goes here."
+label_settings = ExtResource("2_epm40")
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true

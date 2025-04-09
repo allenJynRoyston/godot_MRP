@@ -20,6 +20,7 @@ enum REF {
 # ---------------------------------
 var upgrade_abl_level:Dictionary = {
 	"name": "LVL +1",
+	"description": "Increases the ability level of ALL rooms in a wing.",
 	"lvl_required": 0,
 	"energy_cost": 4,
 	"wing": func(new_room_config:Dictionary, use_location:Dictionary) -> Dictionary:
@@ -29,7 +30,8 @@ var upgrade_abl_level:Dictionary = {
 
 # ---------------------------------
 var supply_security:Dictionary = {
-	"name": "SUPPLY SECURITY",
+	"name": "EMPLOY SECURITY",
+	"description": "Makes SECURITY personnel available for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.TYPE.SECURITY
@@ -38,7 +40,8 @@ var supply_security:Dictionary = {
 
 # ---------------------------------
 var supply_staff:Dictionary = {
-	"name": "SUPPLY STAFF",
+	"name": "EMPLOY STAFF",
+	"description": "Makes STAFF personnel available for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.TYPE.STAFF
@@ -47,7 +50,8 @@ var supply_staff:Dictionary = {
 
 # ---------------------------------
 var supply_technicians:Dictionary = {
-	"name": "SUPPLY TECHNICIANS",
+	"name": "EMPLOY TECHNICIANS",
+	"description": "Makes TECHNICIANS personnel available for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.TYPE.TECHNICIANS
@@ -56,7 +60,8 @@ var supply_technicians:Dictionary = {
 
 # ---------------------------------
 var supply_dclass:Dictionary = {
-	"name": "SUPPLY DCLASS",
+	"name": "CONSCRIPT DCLASS",
+	"description": "Makes DCLASS personnel available for the testing for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.TYPE.DCLASS
@@ -66,6 +71,7 @@ var supply_dclass:Dictionary = {
 # ---------------------------------
 var firearm_training:Dictionary = {
 	"name": "FIREARM TRAINING",
+	"description": "Increases SAFETY rating by 1.",
 	"energy_cost": 2,
 	"metrics": {
 		RESOURCE.BASE_METRICS.SAFETY: 1
@@ -75,6 +81,7 @@ var firearm_training:Dictionary = {
 # ---------------------------------
 var heavy_weapons_training:Dictionary = {
 	"name": "HEAVY WEAPONS TRAINING",
+	"description": "Increases READINESS rating by 1.",
 	"energy_cost": 3,
 	"metrics": {
 		RESOURCE.BASE_METRICS.READINESS: 1
@@ -84,6 +91,7 @@ var heavy_weapons_training:Dictionary = {
 # ---------------------------------
 var tech_support:Dictionary = {
 	"name": "TECH SUPPORT",
+	"description": "Increases READINESS rating by 1.",
 	"energy_cost": 2,
 	"metrics": {
 		RESOURCE.BASE_METRICS.READINESS: 1
@@ -94,6 +102,7 @@ var tech_support:Dictionary = {
 # ---------------------------------
 var memetic_shielding:Dictionary = {
 	"name": "MEMETIC SHIELDING",
+	"description": "Increases READINESS rating by 1.",
 	"energy_cost": 3,
 	"metrics":{
 		RESOURCE.BASE_METRICS.READINESS: 1

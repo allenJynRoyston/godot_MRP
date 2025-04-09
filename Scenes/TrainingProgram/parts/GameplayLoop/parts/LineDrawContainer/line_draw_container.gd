@@ -195,9 +195,8 @@ func _draw() -> void:
 	var header_pos:Vector2 = Vector2(start_v2.x + 20, 100)
 	var footer_pos:Vector2 = Vector2(start_v2.x + 20, GBL.game_resolution.y - 175)
 
-
 	if "label" in draw_dict:
-		NamePanel.position = get_start_vector.call() - Vector2(5, 70)
+		NamePanel.position = get_start_vector.call() - Vector2(20, 10)
 
 	if !render_lines:return
 	draw_list = []
@@ -241,8 +240,8 @@ func _draw() -> void:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
 	# ------------------------------------------------------
 	if "draw_to_hotkeys" in draw_dict and draw_dict.draw_to_hotkeys:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos + Vector2(200, 0), GBL.direct_ref["HotkeyContainer"].global_position + Vector2(142, -55), 1) ))
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos + Vector2(200, 0), start_v2 + offset, 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, GBL.direct_ref["HotkeyContainer"].global_position + Vector2(144, -55), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, start_v2 + offset, 1) ))
 	if "draw_to_center_btn_list" in draw_dict and draw_dict.draw_to_center_btn_list:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, GBL.direct_ref["CenterBtnList"].global_position + Vector2(60, -55), 1) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, start_v2 + offset, 1) ))		

@@ -54,7 +54,7 @@ var DEBUG_ROOM:Dictionary = {
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
 			ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
-			ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 1),
+			ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 2),
 			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
 			#ABL_P.get_ability(ABL_P.REF.MEMETIC_SHILEDING),
 		],	

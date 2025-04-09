@@ -4,6 +4,9 @@ extends Control
 @onready var HeaderLabel:Label = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/HeaderLabel
 @onready var LvlContainer:HBoxContainer = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer
 
+@onready var HintPanel:PanelContainer = $Control/HintPanel
+@onready var HintLabel:Label = $Control/HintPanel/MarginContainer/VBoxContainer/HintLabel
+
 @onready var PrevIcon:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/PrevIcon
 @onready var NextIcon:Control = $MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/NextIcon
 
@@ -48,6 +51,11 @@ var max_level:int = -1 :
 		max_level = val
 		on_max_level_update()
 
+var show_hotkey:bool =  false : 
+	set(val):
+		show_hotkey = val
+		on_show_hotkey_update()
+
 var wait_for_release:bool = false
 var allow_shortcut:bool = false
 var stored_pos:Vector2 
@@ -73,6 +81,7 @@ func _ready() -> void:
 	on_show_ap_update()
 	on_level_update()
 	on_max_level_update()
+	on_show_hotkey_update()
 	
 func open() -> void:
 	stored_pos = self.position
@@ -99,7 +108,11 @@ func set_fade(state:bool) -> void:
 func clear_list() -> void:
 	for child in List.get_children():
 		child.queue_free()
-		
+
+func on_show_hotkey_update() -> void:
+	if !is_node_ready():return
+	HintPanel.modulate = Color(1, 1, 1, 0 if show_hotkey else 1)
+
 func update_checkbox_option(index:int, is_checked:bool) -> void:
 	var btn_node:Control = List.get_child(index) 
 	btn_node.is_checked = is_checked
@@ -110,7 +123,22 @@ func on_selected_index_update() -> void:
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
-	
+		if index == selected_index:
+			var item:Dictionary = options_list[index]					
+			var has_hint:bool = "hint" in item and item.hint.length() > 0
+			if has_hint:
+				HintLabel.text = str(item.hint)
+				HintPanel.size = Vector2(1, 1)				
+				var new_pos:Vector2 = btn_node.global_position + Vector2(self.size.x, btn_node.size.y/2 - HintPanel.size.y/2)
+				var is_offscreen:bool = new_pos.x + btn_node.size.x > GBL.game_resolution.x
+				await U.tick()
+				if !is_offscreen:
+					HintPanel.global_position = self.global_position + Vector2(self.size.x, 5)
+				else:
+					HintPanel.global_position = self.global_position + Vector2(-self.size.x + 50, 5)
+				HintPanel.show()
+			else:
+				HintPanel.hide()
 	if !freeze_inputs:
 		add_draw_lines()
 		
@@ -155,6 +183,7 @@ func on_options_list_update() -> void:
 		List.add_child(btn_node)
 		
 	self.size.y = 1	
+	await U.tick()
 	selected_index = 0
 
 
@@ -162,8 +191,7 @@ func add_draw_lines() -> void:
 	if options_list.is_empty():return	
 	if "shortcut_data" in options_list[selected_index] and  "use_location" in options_list[selected_index].shortcut_data:
 		onDrawUpdate.call(selected_index, {} if options_list.is_empty() else options_list[selected_index] )
-	else:
-		GBL.find_node(REFS.LINE_DRAW).clear()
+
 		
 func on_max_level_update() -> void:
 	if !is_node_ready():return	
@@ -216,15 +244,24 @@ func on_action(btn_index:int = selected_index) -> void:
 		if !btn_node.is_disabled:
 			await options_list[btn_index].onSelect.call(btn_index)
 			
-			if "get_checked_state" in options_list[btn_index]:
-				btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
-			if "get_disabled_state" in options_list[btn_index]:
-				btn_node.is_disabled = await options_list[btn_index].get_disabled_state.call()
-			if "get_cooldown_duration" in options_list[btn_index]:
-				btn_node.cooldown_duration = await options_list[btn_index].get_cooldown_duration.call()
-			if "get_checked_state" in options_list[btn_index]:
-				btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
+	await U.tick()
+	check_all_button_states()
 # ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------
+func check_all_button_states() -> void:
+	for btn_index in List.get_child_count():
+		var btn_node:Control = List.get_child(btn_index)
+		if "get_checked_state" in options_list[btn_index]:
+			btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
+		if "get_disabled_state" in options_list[btn_index]:
+			btn_node.is_disabled = await options_list[btn_index].get_disabled_state.call()
+		if "get_cooldown_duration" in options_list[btn_index]:
+			btn_node.cooldown_duration = await options_list[btn_index].get_cooldown_duration.call()
+		if "get_checked_state" in options_list[btn_index]:
+			btn_node.is_checked = await options_list[btn_index].get_checked_state.call()
+# ------------------------------------------------------------------------------	
+	
 
 # ------------------------------------------------------------------------------		
 func get_node_btn(index:int) -> Control:

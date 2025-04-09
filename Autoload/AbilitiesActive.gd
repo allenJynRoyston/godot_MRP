@@ -15,6 +15,7 @@ enum REF {
 # ---------------------------------
 var trigger_onsite_nuke:Dictionary = {
 	"name": "TRIGGER ONSITE NUKE",
+	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  WARNING:  this action cannot be undone and will result in a game over.",
 	"science_cost": 0,
 	"cooldown_duration":  99, 
 	"effect": func() -> bool:
@@ -25,7 +26,8 @@ var trigger_onsite_nuke:Dictionary = {
 
 # ---------------------------------
 var contain_scp:Dictionary = {
-	"name": "CONTAIN SCP",
+	"name": "CONTAIN",
+	"description": "Select an anamolous object and contain it.",
 	"science_cost": 1,
 	"cooldown_duration":  14, 
 	"effect": func() -> bool:
@@ -35,6 +37,7 @@ var contain_scp:Dictionary = {
 # ---------------------------------
 var promote_researchers:Dictionary = {
 	"name": "PROMOTE RESEARCHER",
+	"description": "Promote a researcher.",
 	"science_cost": 50,
 	"cooldown_duration":  5, 
 	"effect": func() -> bool:
@@ -43,6 +46,7 @@ var promote_researchers:Dictionary = {
 
 var hire_researcher:Dictionary = {
 	"name": "HIRE RESEARCHER",
+	"description": "Hire a researcher.",
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -50,7 +54,8 @@ var hire_researcher:Dictionary = {
 }
 
 var add_trait:Dictionary = {
-	"name": "ADD TRAIT",		
+	"name": "ADD TRAIT",
+	"description": "Allows a researcher to gain a new trait.",
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -60,6 +65,7 @@ var add_trait:Dictionary = {
 
 var remove_trait:Dictionary = {
 	"name": "REMOVE TRAIT",
+	"description": "Allows a researcher to remove an existing trait.",
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -70,6 +76,7 @@ var remove_trait:Dictionary = {
 # ---------------------------------
 var unlock_facilities:Dictionary = {
 	"name": "UNLOCK FACILITIES", 
+	"description": "Unlock new facilities and make them available for your site.",
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -79,6 +86,7 @@ var unlock_facilities:Dictionary = {
 # --------------------------------- TODO
 var money_hack:Dictionary = {
 	"name": "MONEY HACK", 
+	"description": "Gain +25% of your current MONEY.",
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -88,6 +96,7 @@ var money_hack:Dictionary = {
 
 var science_hack:Dictionary = {
 	"name": "SCIENCE HACK", 
+	"description": "Gain +25% of your current SCIENCE.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -97,6 +106,7 @@ var science_hack:Dictionary = {
 
 var convert_money_to_science:Dictionary = {
 	"name": "CONVERT TO SCIENCE", 
+	"description": "Convert MONEY into SCIENCE.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -106,6 +116,7 @@ var convert_money_to_science:Dictionary = {
 
 var convert_science_to_money:Dictionary = {
 	"name": "CONVERT TO MONEY", 
+	"description": "Convert SCIENCE into MONEY.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:

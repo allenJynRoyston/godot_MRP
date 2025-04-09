@@ -309,6 +309,10 @@ var initial_values:Dictionary = {
 			CONDITIONALS.TYPE.ENABLE_ROOM_DETAILS_BTN: false,
 			CONDITIONALS.TYPE.ENABLE_DATABASE_BTN: false,
 			
+			# ui stuff
+			CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS: true,
+			CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS: true,
+			
 		},
 	# ----------------------------------
 	"timeline_array": func() -> Array:
@@ -1747,7 +1751,6 @@ func update_room_config(force_setup:bool = false) -> void:
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
-		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var floor_ring_designation:String = str(floor, ring)
 		
 		# if passives are enabled...
@@ -1757,16 +1760,19 @@ func update_room_config(force_setup:bool = false) -> void:
 				var ability:Dictionary = passive_abilities[ability_index]
 				var ability_uid:String = str(room_data.ref, ability_index)
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
-				var abl_lvl:int = room_config_data.abl_lvl
+				var room_abl_lvl:int = new_room_config.floor[floor].ring[ring].room[room].abl_lvl
+				var wing_abl_lvl:int = new_room_config.floor[floor].ring[ring].abl_lvl
+				var abl_lvl:int = room_abl_lvl + wing_abl_lvl
 
 				# check if passive is enabled
 				if room_base_state.passives_enabled[ability_uid]:
 					# check if level is equal or less then what is required...
 					# aand check if check if enough energy available to power the passive
+					#print(ability.name, ability.lvl_required, " -> ", abl_lvl)
 					if ability.lvl_required <= abl_lvl and ring_config_data.energy.used < ring_config_data.energy.available:
 						# if it's enabled, add to energy cost
 						ring_config_data.energy.used += energy_cost
-						
+
 						# check provides (like staff, dclass, security, etc)
 						if "provides" in ability: 
 							for resource in ability.provides:
@@ -1778,6 +1784,7 @@ func update_room_config(force_setup:bool = false) -> void:
 						# check for wing level stuff
 						if "wing" in ability:
 							new_room_config = ability.wing.call(new_room_config, item.location)
+
 						# check for any conditional changes
 						if "conditional" in ability:
 							ability.conditional.call(gameplay_conditionals)
