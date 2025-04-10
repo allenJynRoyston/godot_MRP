@@ -1,18 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://cgp6oftk1itbm"]
+[gd_scene load_steps=6 format=3 uid="uid://cgp6oftk1itbm"]
 
 [ext_resource type="Script" uid="uid://ds3v31x8jtj0f" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/timeline_item.gd" id="1_kvhu7"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_v1jwi"]
 [ext_resource type="PackedScene" uid="uid://hlplj21egi7y" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineListItem.tscn" id="3_bjc2s"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_uc60w"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cl2rc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6f2x"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(1, 1, 1, 0.796078)
 
 [node name="TimelineItem" type="PanelContainer"]
 offset_right = 200.0
 offset_bottom = 32.0
+size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxEmpty_cl2rc")
 script = ExtResource("1_kvhu7")
 
@@ -28,22 +28,12 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_v1jwi")]
-visible = false
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-is_hoverable = false
-
 [node name="ListContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
 [node name="ActionQueueListItem" parent="MarginContainer/HBoxContainer/ListContainer" instance=ExtResource("3_bjc2s")]
-layout_mode = 2
-script = null
-
-[node name="ActionQueueListItem2" parent="MarginContainer/HBoxContainer/ListContainer" instance=ExtResource("3_bjc2s")]
 layout_mode = 2
 script = null
 

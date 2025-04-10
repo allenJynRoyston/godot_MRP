@@ -16,11 +16,9 @@ extends GameContainer
 @onready var CenterBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList
 
 @onready var NavBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel
-@onready var GotoBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBtn
-@onready var FloorPlanBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
-
-@onready var AdminBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/AdminBtnPanel
-@onready var InfoBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/AdminBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/InfoBtn
+@onready var FloorPlanBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
+@onready var SettingsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
+@onready var ObjectivesBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ObjectivesBtn
 
 @onready var ResearcherBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel
 @onready var AssignBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
@@ -33,16 +31,16 @@ extends GameContainer
 #@onready var ContainBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
 
 @onready var BaseBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel
-@onready var BuildBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ConstructBtn
-@onready var DecontructBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 @onready var NextBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
+@onready var GotoBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBtn
 
 @onready var AbilityBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel
 @onready var AbilityBtnPanelLabel:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/AbilityBtnPanelLabel
 @onready var AbilityBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AbilityBtn
 #@onready var PassiveBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/PassiveBtn
 @onready var RoomDetailsToggleBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomDetailsToggleBtn
-@onready var EmptyBuildBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/EmptyBuildBtn
+@onready var BuildBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
+@onready var DecontructBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
 @onready var FacilityBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel
 
@@ -134,20 +132,19 @@ func _ready() -> void:
 	UnassignBtn.onClick = func() -> void:
 		current_mode = MODE.DISMISS_RESEARCHER
 	
-	for btn in [BuildBtn, EmptyBuildBtn]:
-		btn.onClick = func() -> void:
-			call_and_redraw(func():
-				await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
-				enable_room_focus(true)
-				await GAME_UTIL.construct_room(current_mode != MODE.INVESTIGATE)
+	BuildBtn.onClick = func() -> void:
+		call_and_redraw(func():
+			await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
+			enable_room_focus(true)
+			await GAME_UTIL.construct_room(current_mode != MODE.INVESTIGATE)
 
-				if current_mode == MODE.INVESTIGATE:
-					U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-				else:
-					enable_room_focus(false)
-					
-				GameplayNode.restore_player_hud()
-			)
+			if current_mode == MODE.INVESTIGATE:
+				U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
+			else:
+				enable_room_focus(false)
+				
+			GameplayNode.restore_player_hud()
+		)
 		
 	RoomDetailsToggleBtn.onClick = func() -> void:
 		show_room_details = !show_room_details
@@ -160,13 +157,14 @@ func _ready() -> void:
 				enable_room_focus(false)
 			GameplayNode.restore_player_hud()
 		)
-
-	InfoBtn.onClick = func() -> void:
+	
+	ObjectivesBtn.onClick = func() -> void:
+		await GAME_UTIL.open_objectives()
+	
+	SettingsBtn.onClick = func() -> void:
 		current_menu_type = MENU_TYPE.ACTIONS
-		match current_mode:
-			MODE.SELECT_ROOM:
-				active_menu_index = 0
-				show_actions()
+		active_menu_index = 0
+		show_actions()
 
 	AbilityBtn.onClick = func() -> void:
 		show_abilities(false)
@@ -223,7 +221,6 @@ func _ready() -> void:
 		HotkeyContainer.start_bookmark(shotcut_data)
 
 	HotkeyContainer.onBookmarkEnd = func() -> void:
-		HotkeyContainer.enable_assign_mode(false)
 		ActiveMenu.show_hotkey = false
 		GBL.find_node(REFS.LINE_DRAW).clear()
 		prev_draw_state = {}
@@ -589,13 +586,9 @@ func show_actions(skip_animation:bool = false) -> void:
 			"onSelect": func(index:int) -> void:
 				await options[index].action.call(),
 		})		
+	
 		
 	if active_menu_index == 1:
-		menu_title = "INFORMATION"
-		options.push_back(action_func_lookup('OBJECTIVES'))
-		#options.push_back(action_func_lookup('ASSIGN'))
-		
-	if active_menu_index == 2:
 		menu_title = "SYSTEM"
 		options.push_back(action_func_lookup('QUICKSAVE'))
 		options.push_back(action_func_lookup('QUICKLOAD'))
@@ -603,8 +596,13 @@ func show_actions(skip_animation:bool = false) -> void:
 	ActiveMenu.level = active_menu_index
 	ActiveMenu.show_ap = true
 
+	#if active_menu_index == 1:
+		#menu_title = "INFORMATION"
+		#options.push_back(action_func_lookup('OBJECTIVES'))
+		##options.push_back(action_func_lookup('ASSIGN'))
+
 	var active_menu_pos:Vector2 = Vector2(-30, GBL.game_resolution.y - 350)
-	update_active_menu(menu_title, Color.WHITE, options, 2, active_menu_pos, skip_animation)	
+	update_active_menu(menu_title, Color.WHITE, options, 1, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -850,7 +848,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			else: 
 				btn.show()
 
-		EmptyBuildBtn.show() if room_extract.is_room_empty else EmptyBuildBtn.hide()
+		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
+		DecontructBtn.hide() if room_extract.is_room_empty else DecontructBtn.show()
 		ResearcherNextBtn.show() if researchers_per_room != 1 else ResearcherNextBtn.hide()
 		ScpBtnPanel.show() if room_extract.can_contain and !room_extract.scp.is_empty() else ScpBtnPanel.hide()
 		ResearcherBtnPanel.show() if !room_extract.is_room_empty and researcher_hire_list.size() > 0 else ResearcherBtnPanel.hide()				
@@ -941,7 +940,7 @@ func buildout_btns() -> void:
 		previous_camera_type = camera_settings.type	
 		reload = true
 	
-	GotoBtn.title = "DESIGN" if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else "ADMIN"
+	GotoBtn.title = "BLUEPRINT" if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else "OVERVIEW"
 	
 	NextBtn.onClick = func() -> void:
 		await lock_btns(true)
@@ -995,7 +994,7 @@ func hide_nametags(state:bool, fast:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func lock_btns(state:bool, ignore_panel:bool = false) -> void:
-	for panel in [NavBtnPanel, AdminBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:				
+	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:				
 		for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
 			btn.is_disabled = state
 	
@@ -1006,7 +1005,7 @@ func open_menu(state:bool) -> void:
 	if state:
 		active_menu_is_open = true
 	
-	for panel in [NavBtnPanel, AdminBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:
+	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:
 		for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
 			btn.is_disabled = state	
 	
@@ -1037,7 +1036,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		# --------------
 		MODE.SELECT_FLOOR:
-			for panel in [ScpBtnPanel, ResearcherBtnPanel, AbilityBtnPanel, BaseBtnPanel, AdminBtnPanel]:
+			for panel in [ScpBtnPanel, ResearcherBtnPanel, AbilityBtnPanel, BaseBtnPanel]:
 				panel.hide()
 				
 			for panel in [FacilityBtnPanel, NavBtnPanel]:
@@ -1059,7 +1058,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for panel in [FacilityBtnPanel, ScpBtnPanel, ResearcherBtnPanel, AbilityBtnPanel]:
 				panel.hide()
 				
-			for panel in [AdminBtnPanel, NavBtnPanel, BaseBtnPanel, HotkeyContainer]:
+			for panel in [NavBtnPanel, BaseBtnPanel, HotkeyContainer]:
 				panel.show()
 				
 			for btn in [ConfirmBtn, BackBtn]:
@@ -1088,7 +1087,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			NameControl.hide()
 
-			for panel in [AdminBtnPanel, NavBtnPanel, FacilityBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
+			for panel in [NavBtnPanel, FacilityBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
 				panel.hide()
 				
 			for panel in [ResearcherBtnPanel, ScpBtnPanel, AbilityBtnPanel]:

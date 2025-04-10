@@ -68,7 +68,6 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
-@export var debug_mode:bool = false 
 @export var skip_progress_screen:bool = true
 @export var debug_energy:bool = false
 @export var debug_personnel:bool = false
@@ -199,22 +198,22 @@ var initial_values:Dictionary = {
 			"previous_records": []
 		},
 	# ----------------------------------
-	"resources_data": func() -> Dictionary:
+	"resources_data": func(starting_resources:Dictionary = {}) -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": 100 if !debug_personnel else 9999, 
+				"amount": starting_resources[RESOURCE.CURRENCY.MONEY] if !debug_personnel else 9999, 
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": 50  if !debug_personnel else 1000, 
+				"amount": starting_resources[RESOURCE.CURRENCY.SCIENCE] if !debug_personnel else 1000, 
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": 10  if !debug_personnel else 500, 
+				"amount": starting_resources[RESOURCE.CURRENCY.MATERIAL] if !debug_personnel else 500, 
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": 1 if !debug_personnel else 10, 
+				"amount": starting_resources[RESOURCE.CURRENCY.CORE] if !debug_personnel else 10, 
 				"capacity": 10
 			},						
 		},
@@ -361,7 +360,7 @@ var gameplay_conditionals:Dictionary
 
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
-var shop_revert_step:SHOP_STEPS
+var onEndGame:Callable = func(_scenario_ref:int, _scenario_data:Dictionary, _endgame_state:bool) -> void:pass
 
 var processing_next_day:bool = false
 
@@ -375,8 +374,8 @@ var setup_complete:bool = false :
 		setup_complete = val
 		on_setup_complete_update()
 
+var scenario_data:Dictionary
 var scenario_ref:int
-var scenario_data:Dictionary 
 var selected_support_hire:Dictionary = {}
 var selected_lead_hire:Dictionary = {}
 var selected_shop_item:Dictionary = {}
@@ -385,6 +384,7 @@ var selected_contain_item:Dictionary = {}
 var selected_researcher_item:Dictionary = {}
 var selected_scp_details:Dictionary = {} 
 var expired_scp_items:Array = [] 
+var awarded_rooms:Array = []
 
 var current_location_snapshot:Dictionary 
 var camera_settings_snapshot:Dictionary
@@ -428,11 +428,6 @@ var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.RESET :
 	set(val):
 		current_recruit_step = val
 		on_current_recruit_step_update()
-		
-#var current_action_complete_step:ACTION_COMPLETE_STEPS = ACTION_COMPLETE_STEPS.RESET : 
-	#set(val):
-		#current_action_complete_step = val
-		#on_current_action_complete_step_update()
 
 var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET : 
 	set(val):
@@ -464,7 +459,6 @@ var current_objective_state:OBJECTIVES_STATE = OBJECTIVES_STATE.HIDE :
 		current_objective_state = val
 		on_current_objective_state_update()
 
-var onEndGame:Callable = func(_scenario_data:Dictionary, _endgame_state:bool) -> void:pass
 
 signal store_select_location
 signal on_complete_build_complete
@@ -512,6 +506,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_timeline_array(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)	
 	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
+	SUBSCRIBE.subscribe_to_awarded_room(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
@@ -533,7 +528,8 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_timeline_array(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
 	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
-	
+	SUBSCRIBE.unsubscribe_to_awarded_room(self)
+
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		hide()
@@ -579,7 +575,7 @@ func setup() -> void:
 
 # ------------------------------------------------------------------------------	START GAME
 #region START GAME
-func start(game_data:Dictionary = {}) -> void:
+func start(new_game_data_config:Dictionary = {}) -> void:
 	show()
 
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
@@ -591,21 +587,9 @@ func start(game_data:Dictionary = {}) -> void:
 		node.activate()
 	
 	await U.tick()
-	setup_scenario(game_data.scenario_ref)
-	start_new_game()
+	start_new_game(new_game_data_config)
 	
-	
-	
-func setup_scenario (_scenario_ref:int) -> void:
-	scenario_ref = scenario_ref
-	
-	if scenario_ref == -1:
-		print("no scenario data to load")
-		return
-		
-	scenario_data = SCP_UTIL.get_scenario_data(scenario_ref)
-	
-	# apply timelimit to scenario data
+func setup_scenario(is_new_game:bool) -> void:
 	scenario_data.objectives.push_back({
 		"title": "SURVIVE FOR %s DAYS." % [scenario_data.day_limit],
 		"is_completed": func() -> bool:
@@ -614,8 +598,19 @@ func setup_scenario (_scenario_ref:int) -> void:
 	
 	# updates objectives
 	ObjectivesContainer.objectives = scenario_data.objectives	
+	
+	# add endgame timeline object
+	if is_new_game:
+		GAME_UTIL.add_timeline_item({
+			"title": "SCENARIO END",
+			"icon": SVGS.TYPE.CONVERSATION,
+			"description": "Win or lose...",
+			"day": scenario_data.day_limit,
+			"location": {"floor": 0, "ring": 0, "room": 0}
+		})
 
-func start_new_game() -> void:
+
+func start_new_game(game_data_config:Dictionary) -> void:
 	setup_complete = false
 	
 	# reset steps
@@ -646,7 +641,7 @@ func start_new_game() -> void:
 		SetupContainer.subtitle = "LOADING SAVE FILE..."
 		SetupContainer.progressbar_val = 0.7
 		await U.set_timeout(0.5)		
-		await quickload()
+		await parse_restore_data(game_data_config)
 	
 		SetupContainer.subtitle = "PREDICTING THE FUTURE..."
 		SetupContainer.progressbar_val = 0.9
@@ -656,29 +651,23 @@ func start_new_game() -> void:
 		SetupContainer.progressbar_val = 1.0	
 		await U.set_timeout(0.5)
 	else:
-		await quickload()
+		await parse_restore_data(game_data_config)
+		await U.set_timeout(1.0)
 	
 	# runs room config once everything is ready
-	await U.set_timeout(1.0)
 	setup_complete = true
 	update_room_config()	
 	
-	# show objectives on game start
-	if !skip_progress_screen:
-		await GAME_UTIL.open_objectives()
+	await U.tick()
+	setup_scenario(game_data_config.filedata.is_empty())
 
-	# add endgame timeline object
-	GAME_UTIL.add_timeline_item({
-		"title": "SCENARIO END",
-		"icon": SVGS.TYPE.CONVERSATION,
-		"description": "Win or lose...",
-		"day": scenario_data.day_limit,
-		"location": {"floor": 0, "ring": 0, "room": 0}
-	})		
+	# show objectives on game start
+	await GAME_UTIL.open_objectives()
+	quicksave(true)
 	
 	# update phase and start game
 	current_phase = PHASE.PLAYER
-
+	
 	
 #endregion
 # ------------------------------------------------------------------------------
@@ -1060,13 +1049,13 @@ func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
 # -----------------------------------
 func game_over() -> void:
 	await show_only([])	
-	var props:Dictionary = {
-		"onSelection": func(val:EVT.GAME_OVER_OPTIONS) -> void:
-			match val:
-				EVT.GAME_OVER_OPTIONS.RESTART:
-					start_new_game()
-	}	
-	triggger_event(EVT.TYPE.GAME_OVER, props)
+	#var props:Dictionary = {
+		#"onSelection": func(val:EVT.GAME_OVER_OPTIONS) -> void:
+			#match val:
+				#EVT.GAME_OVER_OPTIONS.RESTART:
+					#start_new_game()
+	#}	
+	#triggger_event(EVT.TYPE.GAME_OVER, props)
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1106,6 +1095,9 @@ func on_researcher_hire_list_update(new_val:Array = researcher_hire_list) -> voi
 
 func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals) -> void:
 	gameplay_conditionals = new_val
+	
+func on_awarded_rooms_update(new_val:Array = awarded_rooms) -> void:
+	awarded_rooms = new_val
 
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
@@ -1338,12 +1330,12 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.GAME_WON:
 			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")	
-			onEndGame.call(scenario_data, true)
+			onEndGame.call(scenario_ref, scenario_data, true)
 			return
 		# ------------------------
 		PHASE.GAME_LOST:
 			PhaseAnnouncement.start("FAILED TO MEET OBJECTIVES...")	
-			onEndGame.call(scenario_data, false)
+			onEndGame.call(scenario_ref, scenario_data, false)
 			return
 		# ------------------------
 
@@ -1410,7 +1402,6 @@ func on_current_shop_step_update() -> void:
 			restore_showing_state()
 		# ---------------
 		SHOP_STEPS.OPEN:
-			shop_revert_step = current_shop_step
 			SUBSCRIBE.suppress_click = true
 			selected_shop_item = {}
 			
@@ -1670,15 +1661,15 @@ func is_occupied() -> bool:
 
 # ------------------------------------------------------------------------------	SAVE/LOAD
 #region SAVE/LOAD
-func quicksave() -> void:
+func quicksave(skip_timeout:bool = false) -> void:
 	is_busy = true
+
 	var save_data := {
-		"scenario_ref": scenario_ref,
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
-		# OF ALL THE OTHER DATA THAT'S HERE
+		# OF ALL THE OTHER DATA THAT'S HERE		
+		"scenario_ref": scenario_ref,
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
-		#"action_queue_data": action_queue_data,
 		"timeline_array": timeline_array,
 		"gameplay_conditionals": gameplay_conditionals,
 		"purchased_base_arr": purchased_base_arr,
@@ -1690,57 +1681,58 @@ func quicksave() -> void:
 		"researcher_hire_list": researcher_hire_list,
 		"shop_unlock_purchases": shop_unlock_purchases,
 		"base_states": base_states,
-		"unavailable_rooms": unavailable_rooms, 
 	}	
 	FS.save_file(FS.FILE.QUICK_SAVE, save_data)
-	await U.set_timeout(1.0)
+	if !skip_timeout:
+		await U.set_timeout(1.0)
 	is_busy = false
 	print("saved game!")
 
-func quickload() -> void:
-	is_busy = true
-	var res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
-	if res.success:
-		await parse_restore_data(res.filedata.data)
-		print("quickload success!")
-	else:
-		await parse_restore_data({})
-		print("quickload failed - creating new file")
-	is_busy = false
+#func quickload() -> void:
+	#is_busy = true
+	#var res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
+	#if res.success:
+		#await parse_restore_data(res.filedata.data)
+		#print("quickload success!")
+	#else:
+		#await parse_restore_data({})
+		#print("quickload failed - creating new file")
+	#is_busy = false
 
 		
-func parse_restore_data(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
-	if debug_mode:
-		no_save = true
+func parse_restore_data(game_data_config:Dictionary) -> void:
+	var restore_data:Dictionary = game_data_config.filedata
+	var is_new_game:bool = restore_data.is_empty()
 	
-	# load scenario ref
-	if "scenario_ref" in restore_data:
-		scenario_ref = restore_data.scenario_ref
-	else:
-		scenario_ref = -1
+	# load the scenario_data
+	scenario_ref = game_data_config.scenario_ref if is_new_game else restore_data.scenario_ref
+	scenario_data = SCENARIO_UTIL.get_scenario_data(scenario_ref)
 	
-	# non-reactive data that's used but doesn't require a subscription
-	SUBSCRIBE.progress_data = initial_values.progress_data.call() if no_save else restore_data.progress_data
-	SUBSCRIBE.scp_data = initial_values.scp_data.call() if no_save else restore_data.scp_data
-	SUBSCRIBE.timeline_array = initial_values.timeline_array.call() if no_save else restore_data.timeline_array
+	# modify if starting a new game
+	var resources_data:Dictionary = initial_values.resources_data.call(scenario_data.start_conditions.resources) if is_new_game else restore_data.resources_data	
+	SUBSCRIBE.resources_data = resources_data
+	
+	# any rooms completed by scenarios become allowed
+	SUBSCRIBE.awarded_rooms = game_data_config.awarded_rooms
+	
+	# reactive data
+	SUBSCRIBE.progress_data = initial_values.progress_data.call() if is_new_game else restore_data.progress_data
+	SUBSCRIBE.scp_data = initial_values.scp_data.call() if is_new_game else restore_data.scp_data
+	SUBSCRIBE.timeline_array = initial_values.timeline_array.call() if is_new_game else restore_data.timeline_array
 	SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() #if no_save else restore_data.gameplay_conditionals	
-	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if no_save else restore_data.purchased_facility_arr  
-	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if no_save else restore_data.purchased_base_arr
-	SUBSCRIBE.resources_data = initial_values.resources_data.call() #if no_save else restore_data.resources_data	
-	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if no_save else restore_data.bookmarked_rooms
-	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if no_save else restore_data.researcher_hire_list
-	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if no_save else restore_data.purchased_research_arr
-	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if no_save else restore_data.shop_unlock_purchases
-	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms.call() if no_save else restore_data.unavailable_rooms
-	SUBSCRIBE.base_states = initial_values.base_states.call() if no_save else restore_data.base_states
-	
-	# comes after purchased_research_arr, fix this later
-	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr.call() if no_save else restore_data.hired_lead_researchers_arr
-	
+	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if is_new_game else restore_data.purchased_facility_arr  
+	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if is_new_game else restore_data.purchased_base_arr
+	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if is_new_game else restore_data.bookmarked_rooms
+	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if is_new_game else restore_data.researcher_hire_list
+	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if is_new_game else restore_data.purchased_research_arr
+	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if is_new_game else restore_data.shop_unlock_purchases
+	SUBSCRIBE.base_states = initial_values.base_states.call() if is_new_game else restore_data.base_states
+	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr.call() if is_new_game else restore_data.hired_lead_researchers_arr
+
 	# don't need to be saved, just load from defaults
 	SUBSCRIBE.current_location = initial_values.current_location.call() 
 	SUBSCRIBE.camera_settings = initial_values.camera_settings.call() 
+	SUBSCRIBE.unavailable_rooms = initial_values.unavailable_rooms.call()	
 
 #endregion		
 # ------------------------------------------------------------------------------
@@ -1755,7 +1747,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
-	var built_room_refs:Array = purchased_facility_arr.map(func(x): return x.ref)
+	var room_type_refs:Array = purchased_facility_arr.map(func(x): return x.type_ref)
 	var metric_defaults:Dictionary = {}
 	
 	# set defaults
@@ -1930,39 +1922,13 @@ func update_room_config(force_setup:bool = false) -> void:
 
 	
 	# checks for any conditioals triggers by built room combonations:
-	if ROOM.TYPE.DIRECTORS_OFFICE in built_room_refs and ROOM.TYPE.HQ in built_room_refs:
+	if ROOM.TYPE.DIRECTORS_OFFICE in room_type_refs and ROOM.TYPE.HQ in room_type_refs:
 		new_gameplay_conditionals[CONDITIONALS.TYPE.BASE_IS_SETUP] = progress_data.day > 1
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
-	
-	#update_metrics(new_room_config, metric_defaults)
 # -----------------------------------
-
-
-
-## -----------------------------------
-#func trigger_room_conditionals(ref:int, new_gameplay_conditionals:Dictionary) -> Dictionary:
-	#match ref:
-		## -------------------
-		#ROOM.TYPE.DIRECTORS_OFFICE:
-			#new_gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTION_DETAILS] = true	
-		## -------------------
-		#ROOM.TYPE.HQ:
-			#new_gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_RESEARCHER] = true			
-		## -------------------
-		#ROOM.TYPE.HR_DEPARTMENT:
-			#pass
-			##new_gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIONS_SCP] = true	
-		## -------------------
-		#ROOM.TYPE.R_AND_D_LAB:
-			#pass
-			##new_gameplay_conditionals[CONDITIONALS.TYPE.UPGRADE_LEVEL] = 0
-		## -------------------
-			#
-	#return new_gameplay_conditionals
-## -----------------------------------	
 
 # -----------------------------------
 func update_metrics(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:

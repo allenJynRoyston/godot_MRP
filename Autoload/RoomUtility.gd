@@ -208,7 +208,7 @@ func get_count(ref:int) -> int:
 
 # ------------------------------------------------------------------------------
 func owns_and_is_active(ref:int) -> bool:
-	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.type_ref == ref)
 	if filter.size() == 0:
 		return false
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(filter[0].location)
@@ -223,18 +223,19 @@ func owns_and_is_active(ref:int) -> bool:
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
+	print(awarded_rooms)
 	var filter:Callable = func(list:Array) -> Array:
-		return list.filter(func(i): return i.details.tier == tier)
+		return list.filter(func(i): return i.details.tier == tier and i.details.type_ref in awarded_rooms)
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:
+func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:	
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
 	var filter:Callable = func(list:Array) -> Array:	
 		return list.filter(func(i): 
 			return true if !i.details.requires_unlock else i.ref in shop_unlock_purchases
-		)			
+		)
 
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------	

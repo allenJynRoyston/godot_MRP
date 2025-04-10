@@ -97,11 +97,12 @@ func _ready() -> void:
 	
 	is_setup = true
 	on_is_showing_update(true)
-	on_tab_index_update()
-	on_current_mode_update()	
-	on_grid_index_update()	
 
 func start() -> void:
+	on_tab_index_update()
+	on_current_mode_update()	
+	on_grid_index_update()
+	
 	await U.tick()
 	current_mode = MODE.TAB_SELECT
 	

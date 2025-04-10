@@ -134,9 +134,6 @@ func add_savefile_metadata(file_name:String, data:Dictionary) -> Dictionary:
 		"data": data
 	}	
 	
-func compile_data_for_save() -> Dictionary:
-	return {}
-	
 func create_save_file(filepath:String, data:Dictionary) -> bool:
 	var results = FileAccess.open(filepath, FileAccess.WRITE)
 	if results == null:
@@ -225,6 +222,39 @@ func show_load_options() -> Dictionary:
 	else:
 		return {"has_results": false, "items": []}
 # ---------------------------------
+
+# ---------------------------------
+func clear_file(type:FILE) -> Dictionary:
+	var filepath:String 
+	var success:bool = false
+	var dir = DirAccess.open(save_config.folder)
+	
+	match type:
+		# ----------------------------
+		FILE.SETTINGS:
+			filepath = str(folder, settings_filename)
+		# ----------------------------
+		FILE.PERMANENT_FILE:
+			filepath = str(folder, permanent_filename)
+		# ----------------------------
+		FILE.QUICK_SAVE:
+			filepath = str(folder, quick_save_filename)
+		# ----------------------------
+		FILE.SAVE_ONE:
+			filepath = str(folder, save_file_two_filename)
+		# ----------------------------
+		FILE.SAVE_TWO:
+			filepath = str(folder, save_file_three_filename)
+		# ----------------------------
+		FILE.SAVE_THREE:
+			filepath = str(folder, quick_save_filename)
+	
+	print( dir.remove(filepath)	 )
+
+	
+	return {"success": success}
+# ---------------------------------
+
 
 # ---------------------------------
 func show_save_options() -> Dictionary:

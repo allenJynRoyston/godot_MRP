@@ -113,7 +113,6 @@ func on_room_config_update(new_val:Dictionary) -> void:
 		btn_node.is_checked = objective.is_completed.call()
 # --------------------------------------------------------------------------------------------------		
 
-
 # --------------------------------------------------------------------------------------------------		
 func on_objectives_update() -> void:
 	if !is_node_ready():return
@@ -123,5 +122,6 @@ func on_objectives_update() -> void:
 	for objective in objectives:
 		var new_btn:Control = CheckBoxButtonPreload.instantiate()
 		new_btn.title = str(objective.title).to_upper()
+		new_btn.is_checked = objective.is_completed.call()
 		ObjectivesList.add_child(new_btn)
 # --------------------------------------------------------------------------------------------------		

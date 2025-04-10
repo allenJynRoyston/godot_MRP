@@ -159,6 +159,7 @@ func purchase_room() -> void:
 	# update
 	purchased_facility_arr.push_back({
 		"ref": room_details.ref,
+		"type_ref": room_details.type_ref,
 		"location": current_location.duplicate()
 	})
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr	

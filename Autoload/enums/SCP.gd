@@ -1,5 +1,10 @@
 extends Node
 
+enum REF {
+	INSTRUCTION_MANUAL,
+	PIGGY_BANK
+}
+
 enum EVENT_TYPE {
 	AFTER_CONTAINMENT,
 	WARNING,

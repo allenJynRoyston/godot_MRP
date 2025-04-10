@@ -1,5 +1,6 @@
 extends BtnBase
 
+@onready var IconBtn:BtnBase = $HBoxContainer/IconBtn
 @onready var TitleLabel:Label = $HBoxContainer/VBoxContainer/TitleLabel
 @onready var DescriptionLabel:Label = $HBoxContainer/VBoxContainer/DescriptionLabel
 
@@ -17,7 +18,7 @@ func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
 	TitleLabel.text = data.title
 	DescriptionLabel.text = data.description
-
+	IconBtn.icon = data.icon
 
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:

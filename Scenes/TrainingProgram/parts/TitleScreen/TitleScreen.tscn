@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=13 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
@@ -38,13 +38,6 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
 bg_color = Color(0, 0, 0, 0.796078)
 border_width_left = 2
@@ -57,7 +50,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46a2l"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
 bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -106,34 +99,27 @@ layout_mode = 2
 size_flags_horizontal = 4
 alignment = 1
 
-[node name="NewGameBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+[node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
+inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
+title = "Continue"
+
+[node name="StoryBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "???"
 
 [node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "RUN SCENARIO"
 
-[node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "Continue"
-
-[node name="LoadBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kfvw8")
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "Load"
-
 [node name="QuitBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kfvw8")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "Quit"
 
@@ -170,7 +156,7 @@ layout_mode = 2
 
 [node name="TextBtn" parent="Control/ScenarioPanel/MarginContainer/VBoxContainer/ScenarioList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
 icon = 51
 panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 inactive_color = Color(0.527083, 0.527083, 0.527083, 1)

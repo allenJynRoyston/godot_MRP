@@ -6,11 +6,11 @@ extends PanelContainer
 const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/GameplayLoop.tscn")
 
 # 
-@export var new_save_file:bool = false
+@export var new_permanent_file:bool = false
 @export var skip_title_screen:bool = true
 
 @export_category("Gameplay Loop")
-@export var debug_mode:bool = false
+@export var new_quicksave_file:bool = false
 @export var skip_progress_screen:bool = false
 @export var debug_energy:bool = true
 @export var debug_personnel:bool = false
@@ -40,11 +40,15 @@ func _ready() -> void:
 func start() -> void:	
 	show()
 	
+	var quickload_res:Dictionary = load_quickload()
+	var has_quicksave:bool = false if new_quicksave_file else quickload_res.success 
+	var quicksave_filedata:Dictionary = quickload_res.filedata.data if has_quicksave else {}
+
 	# skip and load the last game 
 	if skip_title_screen and !load_first_game:
 		load_first_game = true
-		# TODO change out 0 for saved scenario ref
-		start_new_game(-1, true)
+		# same as continue
+		start_game(quicksave_filedata)
 		return
 
 	# start logo screen
@@ -52,60 +56,87 @@ func start() -> void:
 	await LogoScreen.finished
 	
 	# start gamescreen
+	TitleScreen.completed_scenarios = completed_scenarios
+	TitleScreen.disable_story = true
+	TitleScreen.disable_continue = !has_quicksave
 	TitleScreen.start(fast_start)
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
-		"new_game":
-			start_new_game(0, false)
+		"story":
+			start_game({}, 0)
 		"scenario": 
-			start_new_game(res.props.ref, false)
+			start_game({}, res.props.ref)
 		"continue":
-			start_new_game(0, true)
-		"load":
-			pass
+			start_game(quicksave_filedata, quicksave_filedata.scenario_ref)
 		"quit":
 			on_quit.emit()
 # ---------------------------------------------
 
 # ---------------------------------------------
-func start_new_game(scenario_ref:int, continue_last_save:bool = false) -> void:
+func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
 	GameplayLoopNode.onEndGame = on_end_game	
-	GameplayLoopNode.debug_mode = debug_mode
 	GameplayLoopNode.skip_progress_screen = skip_progress_screen 
 	GameplayLoopNode.debug_energy = debug_energy
 	GameplayLoopNode.debug_personnel = debug_personnel
 	GameplayLoopNode.hide()
 	add_child(GameplayLoopNode)
 	
+	# iterate through completed scenarios to build the awarded_rooms
+	var awarded_rooms:Array = []
+	for ref in completed_scenarios:
+		var list:Array = SCENARIO_UTIL.get_awarded_rooms(ref)
+		for room in list:
+			if room not in awarded_rooms:
+				awarded_rooms.push_back(room)
+	
+	# and add any that's in the current scenario:
+	if scenario_ref != -1:
+		var list:Array = SCENARIO_UTIL.get_awarded_rooms(scenario_ref)
+		for room in list:
+			if room not in awarded_rooms:
+				awarded_rooms.push_back(room)
+			
+
 	await U.tick()
 	GameplayLoopNode.start({
-		"continue": continue_last_save,
+		"filedata": filedata,
 		"scenario_ref": scenario_ref,
+		"awarded_rooms": awarded_rooms
 	})
 
 
-func on_end_game(scenario_data:Dictionary, endgame_state:bool) -> void:
-	# calculate any rewards here...
-	print('calculate and rewards...')
-	await U.set_timeout(1.0)
-	print("continue...")
+func on_end_game(scenario_ref:int, scenario_data:Dictionary, endgame_state:bool) -> void:
+	if endgame_state:
+		# remove quicksave
+		FS.clear_file(FS.FILE.QUICK_SAVE)
+		# calculate any rewards here...
+		if scenario_ref not in completed_scenarios:
+			completed_scenarios.push_back(scenario_ref)
+		save_settings()
+		
 	GameplayLoopNode.queue_free()
+	await U.set_timeout(1.0)
 	start()	
 # ---------------------------------------------
 
 # ---------------------------------------------
+func load_quickload() -> Dictionary:
+	var res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
+	return res
+
 func save_settings() -> Dictionary:
 	var save_data:Dictionary = {
 		"completed_scenarios": completed_scenarios
 	}	
 	FS.save_file(FS.FILE.PERMANENT_FILE, save_data)
+	print("Saved permanent file!")
 	return save_data
 
 func load_settings() -> void:
 	var res:Dictionary = FS.load_file(FS.FILE.PERMANENT_FILE)
-	var filedata:Dictionary = save_settings() if !res.success or new_save_file else res.filedata
+	var filedata:Dictionary = save_settings() if (!res.success or new_permanent_file) else res.filedata.data
 
 	# remap save properties
-	completed_scenarios = filedata.data.completed_scenarios
+	completed_scenarios = filedata.completed_scenarios
 # ---------------------------------------------

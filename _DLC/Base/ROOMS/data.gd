@@ -180,6 +180,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 		
 	# ------------------------------------------
 	"can_contain": true,
+	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -225,6 +226,7 @@ var PRISONER_BLOCK:Dictionary = {
 
 var HR_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
+	"type_ref": ROOM.TYPE.HR_DEPARTMENT,
 	"name": "HR DEPARTMENT",
 	"shortname": "HR",
 	"tier": TIER.VAL.ZERO,

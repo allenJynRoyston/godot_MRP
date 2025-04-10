@@ -66,7 +66,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
-text = "DAY XX"
+text = "DAY 4  "
 label_settings = ExtResource("2_de2gr")
 horizontal_alignment = 2
 uppercase = true
@@ -75,7 +75,7 @@ uppercase = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_right = -7
+theme_override_constants/margin_right = 0
 
 [node name="ListScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2

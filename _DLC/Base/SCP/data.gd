@@ -69,59 +69,22 @@ func build_option(dict:Dictionary = {}) -> Dictionary:
 
 var SCP0:Dictionary = {
 	# -----------------------------------
-	"nickname": "THE SCP-0",
+	"type_ref": SCP.REF.INSTRUCTION_MANUAL,
+	"nickname": "OLD INSTRUCTION MANUAL",
 	"img_src": "res://Media/scps/the_door.png",
-	"quote": "How many of you exist now?  Like six?",
-	# -----------------------------------
-
-	# -----------------------------------
-	"scenario_data":{
-		# STARTING SCP (or tutorial scp)
-		"contain_order": [0],  
-		# rewards gained after winning
-		"reward": [
-			{
-				"title": "REWARD 1", 
-				"day_threshold": null, 
-				"unlock_func": func() -> void:
-					pass,
-			},
-			{
-				"title": "REWARD 2", 
-				"day_threshold": 10, 
-				"unlock_func": func() -> void:
-					pass,
-			}
-		],
-		# objectives and their respective checks
-		"objectives": [
-			{
-				"title": "Build a HQ", 
-				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
-			},
-			{
-				"title": "Contain ONE anamolous object in a containment cell.", 
-				"is_completed":func() -> bool:
-					return scp_data.contained_list.size() > 0,
-			}
-		],
-		# limit to scenario
-		"day_limit": 3,
-	},
+	"quote": "...",
 	# -----------------------------------
 	
 	# -----------------------------------	
 	"item_class": "SAFE",	
 	"description": func(ref:ROOM.TYPE) -> Array:
 		return [
-			"Description line one",
-			"Description line two"
+			"An old instruction manual from a by-gone era."
 		],
 	# -----------------------------------	
 	
 	# -----------------------------------	
-	"breach_events_at": [5, 8, 11],
+	"breach_events_at": [2, 5, 15],
 	# -----------------------------------	
 	
 	# -----------------------------------
@@ -132,28 +95,14 @@ var SCP0:Dictionary = {
 			RESOURCE.BASE_METRICS.READINESS: 2
 		},
 		"contained": {
-			"description": "All resources are available.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-				ring_config_data.available_resources = {
-					RESOURCE.TYPE.TECHNICIANS: true,
-					RESOURCE.TYPE.STAFF: true,
-					RESOURCE.TYPE.SECURITY: true,
-					RESOURCE.TYPE.DCLASS: true
-				}
-				return new_room_config,
+			"description": "HINT option becomes available.", 
+			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
+				return _new_room_config,
 		},
 		"uncontained": {
-			"description": "Makes resources unusable.",
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-				ring_config_data.available_resources = {
-					RESOURCE.TYPE.TECHNICIANS: false,
-					RESOURCE.TYPE.STAFF: false,
-					RESOURCE.TYPE.SECURITY: false,
-					RESOURCE.TYPE.DCLASS: false
-				}
-				return new_room_config,
+			"description": "NONE",
+			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
+				return _new_room_config,
 		}
 	},
 	# -----------------------------------	
@@ -337,13 +286,13 @@ var SCP1:Dictionary = {
 		},
 		"contained": {
 			"description": "Randomly swaps with another item in a containment cell on the same floor.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				return new_room_config,
+			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
+				return _new_room_config,
 		},
 		"uncontained": {
 			"description": "Randomly swaps with another item in a containment cell.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				return new_room_config,
+			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
+				return _new_room_config,
 		}
 	},
 	# -----------------------------------		
@@ -376,13 +325,13 @@ var SCP2:Dictionary = {
 		},
 		"contained": {
 			"description": "MORALE cannot exceed 2.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				return new_room_config,
+			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
+				return _new_room_config,
 		},
 		"uncontained": {
 			"description": "Researchers assigned have a chance of developing a QUIRK.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				return new_room_config,
+			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
+				return _new_room_config,
 		}
 	},
 	# -----------------------------------			
@@ -405,6 +354,40 @@ var SCP3:Dictionary = {
 			"Despite its otherwise harmless nature, SCP3 has caused minor flooding incidents when left unattended near sinks or drains, leading to its current containment within a sealed, moisture-controlled environment."
 		],
 	# -----------------------------------	
+	
+	# -----------------------------------
+	"effects": {
+		"metrics":{
+			RESOURCE.BASE_METRICS.MORALE: 2,
+			RESOURCE.BASE_METRICS.SAFETY: 2,
+			RESOURCE.BASE_METRICS.READINESS: 2
+		},
+		"contained": {
+			"description": "All resources are available.", 
+			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
+				ring_config_data.available_resources = {
+					RESOURCE.TYPE.TECHNICIANS: true,
+					RESOURCE.TYPE.STAFF: true,
+					RESOURCE.TYPE.SECURITY: true,
+					RESOURCE.TYPE.DCLASS: true
+				}
+				return new_room_config,
+		},
+		"uncontained": {
+			"description": "Makes resources unusable.",
+			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
+				ring_config_data.available_resources = {
+					RESOURCE.TYPE.TECHNICIANS: false,
+					RESOURCE.TYPE.STAFF: false,
+					RESOURCE.TYPE.SECURITY: false,
+					RESOURCE.TYPE.DCLASS: false
+				}
+				return new_room_config,
+		}
+	},
+	# -----------------------------------		
 }
 
 var SCP4:Dictionary = {

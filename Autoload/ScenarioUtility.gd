@@ -1,0 +1,223 @@
+@tool
+extends SubscribeWrapper
+
+enum TYPE {STORY, TUTORIAL_1, TUTORIAL_2, TUTORIAL_3}
+
+
+var reference_list:Dictionary = {
+	# -----------------------------------
+	TYPE.STORY: {
+		"day_limit": 180,
+		# -----------------
+		
+		# -----------------
+		"reward": [],
+		# -----------------
+		
+		# -----------------
+		"objectives": [
+			{
+				"title": "CONTAIN ALL ANAMOLOUS OBJECTS.", 
+				"is_completed":func() -> bool:
+					return false,
+			},
+			{
+				"title": "SURVIVE AS LONG AS POSSIBLE...", 
+				"is_completed":func() -> bool:
+					return false,
+			}
+		],
+		# -----------------
+	},
+	# -----------------------------------
+			
+	# -----------------------------------
+	TYPE.TUTORIAL_1: {
+		# -----------------
+		"title": "TUTORIAL 1",
+		"containment":{
+			# STARTING SCP (or tutorial scp)
+			"initial": [SCP.REF.INSTRUCTION_MANUAL],  
+			"include": [],
+			"exclude": [],
+		},
+		"start_conditions": {
+			"starting_event": null,
+			"resources": {
+				RESOURCE.CURRENCY.MONEY: 200,
+				RESOURCE.CURRENCY.SCIENCE: 0,
+				RESOURCE.CURRENCY.MATERIAL: 0,
+				RESOURCE.CURRENCY.CORE: 1
+			},
+			"allowed_rooms": [
+				ROOM.TYPE.DIRECTORS_OFFICE,
+				ROOM.TYPE.HQ
+			]
+		},
+		# rewards gained after winning
+		"day_limit": 7,		
+		# -----------------
+		
+		# -----------------
+		# objectives and their respective checks
+		"objectives": [
+			{
+				"title": "Build an HQ.", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+			},
+			{
+				"title": "Build a DIRECTORS OFFICE.", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.DIRECTORS_OFFICE),
+			},
+			{
+				"title": "RESIST THE URGE TO TRIGGER THE ONSITE NUCLEAR DEVICE.", 
+				"is_completed":func() -> bool:
+					return false,
+			}			
+		],
+		# -----------------
+	},
+	# -----------------------------------		
+	
+	# -----------------------------------
+	TYPE.TUTORIAL_2: {
+		# -----------------
+		"title": "TUTORIAL 2",
+		"containment":{
+			# STARTING SCP (or tutorial scp)
+			"initial": [SCP.REF.INSTRUCTION_MANUAL],  
+			"include": [],
+			"exclude": [],
+		},
+		"start_conditions": {
+			"starting_event": null,
+			"allowed_rooms": [
+				ROOM.TYPE.HR_DEPARTMENT
+			]
+		},
+		# rewards gained after winning
+		# limit to scenario
+		"day_limit": 5,		
+		# -----------------
+		
+		# -----------------
+		"reward": [
+			ROOM.TYPE.HR_DEPARTMENT,
+		],
+		# -----------------
+		
+		# -----------------
+		# objectives and their respective checks
+		"objectives": [
+			{
+				"title": "Build a CONTAINMENT CELL.", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.CONTAINMENT_CELL),
+			},
+			{
+				"title": "Contain an anamolous object in a containment cell.", 
+				"is_completed":func() -> bool:
+					return scp_data.contained_list.size() > 0,
+			},
+			{
+				"title": "Hire a lead researcher.", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+			}
+		],
+		# -----------------
+	},
+	# -----------------------------------			
+	
+	# -----------------------------------
+	TYPE.TUTORIAL_3: {
+		# -----------------
+		"title": "TUTORIAL 3",
+		"containment":{
+			# STARTING SCP (or tutorial scp)
+			"initial": [SCP.REF.INSTRUCTION_MANUAL],  
+			"include": [],
+			"exclude": [],
+		},
+		"start_conditions": {
+			"starting_event": null,
+			"allowed_rooms": [
+				ROOM.TYPE.HR_DEPARTMENT
+			]
+		},
+		# rewards gained after winning
+		# limit to scenario
+		"day_limit": 5,		
+		# -----------------
+		
+		# -----------------
+		"reward": [
+			ROOM.TYPE.HR_DEPARTMENT,
+		],
+		# -----------------
+		
+		# -----------------
+		# objectives and their respective checks
+		"objectives": [
+			{
+				"title": "Build a CONTAINMENT CELL.", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.CONTAINMENT_CELL),
+			},
+			{
+				"title": "Contain an anamolous object in a containment cell.", 
+				"is_completed":func() -> bool:
+					return scp_data.contained_list.size() > 0,
+			},
+			{
+				"title": "Hire a lead researcher.", 
+				"is_completed":func() -> bool:
+					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+			}
+		],
+		# -----------------
+	}
+	# -----------------------------------				
+}
+
+# ------------------------------------------------------------------------------	
+func get_scenario_data(ref:int) -> Dictionary:
+	var scenario_data_copy:Dictionary = reference_list[ref].duplicate(true)
+	if "start_conditions" not in scenario_data_copy:
+		scenario_data_copy.start_conditions = {}
+	
+	# default resources for every scenario that does not define it
+	if "resources" not in scenario_data_copy.start_conditions:
+		scenario_data_copy.start_conditions.resources = {
+			RESOURCE.CURRENCY.MONEY: 100,
+			RESOURCE.CURRENCY.SCIENCE: 50,
+			RESOURCE.CURRENCY.MATERIAL: 25,
+			RESOURCE.CURRENCY.CORE: 1
+		}
+	
+	if "allowed_rooms" not in scenario_data_copy.start_conditions:
+		scenario_data_copy.start_conditions.allowed_rooms = []
+	
+	if "starting_event" not in scenario_data_copy.start_conditions:
+		scenario_data_copy.start_conditions.allowed_rooms.starting_event = null
+	
+	return scenario_data_copy
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func get_awarded_rooms(ref:int) -> Array:
+	var scenario_data_copy:Dictionary = get_scenario_data(ref)
+	return scenario_data_copy.start_conditions.allowed_rooms
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func get_list_of_scenarios() -> Array:
+	var scenarios:Array = []
+	for ref in reference_list:
+		if ref != TYPE.STORY:
+			var details:Dictionary = reference_list[ref]
+			scenarios.push_back({"ref": ref, "details": details})
+	return scenarios
+# ------------------------------------------------------------------------------	

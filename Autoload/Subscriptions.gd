@@ -284,6 +284,27 @@ func unsubscribe_to_bookmarked_rooms(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
+var awarded_rooms_subscriptions:Array = []
+
+var awarded_rooms:Array = [] : 
+	set(val):
+		awarded_rooms = val
+		for node in awarded_rooms_subscriptions:
+			if "on_awarded_rooms_update" in node:
+				node.on_awarded_rooms_update.call(awarded_rooms)
+
+func subscribe_to_awarded_room(node:Node) -> void:
+	if node not in awarded_rooms_subscriptions:
+		awarded_rooms_subscriptions.push_back(node)
+		if "on_awarded_rooms_update" in node:
+			node.on_awarded_rooms_update.call(awarded_rooms)	
+			
+func unsubscribe_to_awarded_room(node:Node) -> void:
+	awarded_rooms_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+
+# ------------------------------------------------------------	
 var researcher_hire_list_subscriptions:Array = []
 
 var researcher_hire_list:Array = [] : 

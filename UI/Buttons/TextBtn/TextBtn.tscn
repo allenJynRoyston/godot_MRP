@@ -39,7 +39,6 @@ layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
 flip_v = false
-is_disabled = null
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
@@ -53,5 +52,4 @@ layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
 flip_v = false
-is_disabled = null
 is_hoverable = false

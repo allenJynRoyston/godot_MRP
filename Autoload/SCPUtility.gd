@@ -8,6 +8,7 @@ var reference_list:Array = []
 
 var SCP_TEMPLATE:Dictionary = {
 	# -----------------------------------
+	"type_ref": null,
 	"name": "SCP-X-TEMPLATE",
 	"nickname": "NICKNAME",
 	"img_src": "res://Media/images/redacted.png",
@@ -204,21 +205,6 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, props:Dictionary) -> A
 # ------------------------------------------------------------------------------	
 
 
-# ------------------------------------------------------------------------------	
-func get_list_of_scenarios() -> Array:
-	var scenarios:Array = []
-	for ref in reference_list:
-		var scp_details:Dictionary = reference_data[ref]
-		if "scenario_data" in scp_details:
-			scenarios.push_back(ref)
-	return scenarios
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------	
-func get_scenario_data(ref:int) -> Dictionary:
-	var scp_details:Dictionary = return_data(ref)
-	return scp_details.scenario_data if "scenario_data" in scp_details else {}
-# ------------------------------------------------------------------------------	
 
 
 ## ------------------------------------------------------------------------------

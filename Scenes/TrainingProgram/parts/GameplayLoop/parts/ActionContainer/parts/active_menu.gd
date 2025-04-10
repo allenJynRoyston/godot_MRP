@@ -123,22 +123,25 @@ func on_selected_index_update() -> void:
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
-		if index == selected_index:
-			var item:Dictionary = options_list[index]					
-			var has_hint:bool = "hint" in item and item.hint.length() > 0
-			if has_hint:
-				HintLabel.text = str(item.hint)
-				HintPanel.size = Vector2(1, 1)				
-				var new_pos:Vector2 = btn_node.global_position + Vector2(self.size.x, btn_node.size.y/2 - HintPanel.size.y/2)
-				var is_offscreen:bool = new_pos.x + btn_node.size.x > GBL.game_resolution.x
-				await U.tick()
-				if !is_offscreen:
-					HintPanel.global_position = self.global_position + Vector2(self.size.x, 5)
+		if options_list.is_empty():
+			HintPanel.hide()
+		else:
+			if index == selected_index:
+				var item:Dictionary = options_list[index]					
+				var has_hint:bool = "hint" in item and item.hint.length() > 0
+				if has_hint:
+					HintLabel.text = str(item.hint)
+					HintPanel.size = Vector2(1, 1)				
+					var new_pos:Vector2 = btn_node.global_position + Vector2(self.size.x, btn_node.size.y/2 - HintPanel.size.y/2)
+					var is_offscreen:bool = new_pos.x + btn_node.size.x > GBL.game_resolution.x
+					await U.tick()
+					if !is_offscreen:
+						HintPanel.global_position = self.global_position + Vector2(self.size.x, 5)
+					else:
+						HintPanel.global_position = self.global_position + Vector2(-self.size.x + 50, 5)
+					HintPanel.show()
 				else:
-					HintPanel.global_position = self.global_position + Vector2(-self.size.x + 50, 5)
-				HintPanel.show()
-			else:
-				HintPanel.hide()
+					HintPanel.hide()
 	if !freeze_inputs:
 		add_draw_lines()
 		
