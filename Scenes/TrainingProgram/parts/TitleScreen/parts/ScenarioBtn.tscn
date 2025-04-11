@@ -1,0 +1,92 @@
+[gd_scene load_steps=8 format=3 uid="uid://dpuqbxd6wb6sa"]
+
+[ext_resource type="Script" uid="uid://b24ro8hhkqb47" path="res://Scenes/TrainingProgram/parts/TitleScreen/parts/scenario_btn.gd" id="1_v0y88"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_g7nim"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_nkwhq"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_nkwhq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v0y88"]
+bg_color = Color(0.358386, 0, 0.0701882, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_v0y88"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v0y88"]
+
+[node name="ScenarioBtn" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 200)
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_v0y88")
+script = ExtResource("1_v0y88")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "SCENARIO NAME"
+label_settings = ExtResource("2_nkwhq")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_v0y88")
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_vertical = 2
+text = "Scenario description..."
+label_settings = ExtResource("3_nkwhq")
+autowrap_mode = 3
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_v0y88")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "REWARDS"
+label_settings = ExtResource("2_g7nim")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_v0y88")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="RewardList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer"]
+layout_mode = 2

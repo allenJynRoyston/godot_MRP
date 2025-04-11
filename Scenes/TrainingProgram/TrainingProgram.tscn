@@ -14,7 +14,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ie45v")
 script = ExtResource("1_kkc02")
-new_permanent_file = true
 skip_title_screen = false
 skip_progress_screen = true
 debug_energy = false

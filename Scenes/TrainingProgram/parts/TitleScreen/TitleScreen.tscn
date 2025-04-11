@@ -1,45 +1,46 @@
-[gd_scene load_steps=13 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=21 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_id14l"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_s4nou"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_p3swr"]
+[ext_resource type="LabelSettings" uid="uid://cwsa8o7i4f0n3" path="res://Fonts/game/label_medium_thick.tres" id="6_kfvw8"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="6_nwmuc"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_oonus"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="7_3sdtd"]
+[ext_resource type="PackedScene" uid="uid://dpuqbxd6wb6sa" path="res://Scenes/TrainingProgram/parts/TitleScreen/parts/ScenarioBtn.tscn" id="7_ousww"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfvw8"]
+bg_color = Color(0.20871, 0.20871, 0.20871, 0.521569)
 
 [sub_resource type="LabelSettings" id="LabelSettings_f0u0i"]
 font = ExtResource("3_id14l")
 font_size = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3swr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwmuc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w78h0"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oonus"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q51us"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfvw8"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
-bg_color = Color(0, 0, 0, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ktom1"]
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -50,8 +51,31 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bp7c2"]
+bg_color = Color(0, 0, 0, 0.933333)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46a2l"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8mru"]
+bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p5roh"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -63,6 +87,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kfvw8")
 script = ExtResource("1_1obr7")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
@@ -70,94 +95,264 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
-theme_override_constants/separation = 50
+theme_override_constants/separation = 25
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 0
 text = "SITE DIRECTOR 
-TRAINING PROGRAM
-"
+TRAINING PROGRAM"
 label_settings = ExtResource("2_wrxma")
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "version 1.0.1"
+text = "V.0.1"
 label_settings = SubResource("LabelSettings_f0u0i")
 horizontal_alignment = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "SELECT A SCENARIO"
+label_settings = ExtResource("6_kfvw8")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MenuList" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
+theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
+inactive_color = Color(1, 1, 1, 0.796078)
 title = "Continue"
 
-[node name="StoryBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "???"
-
 [node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
+theme_override_styles/panel = SubResource("StyleBoxFlat_w78h0")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "RUN SCENARIO"
 
-[node name="QuitBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+[node name="StoryBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kfvw8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q51us")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "Quit"
+title = "???"
 
-[node name="Control" type="Control" parent="."]
+[node name="ContinueControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="ScenarioPanel" type="PanelContainer" parent="Control"]
+[node name="ContinueDetails" type="PanelContainer" parent="ContinueControl"]
 layout_mode = 2
-offset_left = 1028.0
-offset_top = 618.0
-offset_right = 1106.0
-offset_bottom = 642.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
+offset_left = 1032.0
+offset_top = 539.0
+offset_right = 1164.0
+offset_bottom = 571.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ktom1")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/ScenarioPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/ScenarioPanel/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Control/ScenarioPanel/MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ContinueControl/ContinueDetails"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-text = "SCENARIOS"
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ContinueControl/ContinueDetails/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label4" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer"]
+layout_mode = 2
 label_settings = ExtResource("5_p3swr")
 vertical_alignment = 1
 
-[node name="ScenarioList" type="VBoxContainer" parent="Control/ScenarioPanel/MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 2
+
+[node name="DetailName" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "SCENARIO NAME"
+label_settings = ExtResource("5_p3swr")
+
+[node name="DetailDay" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "DAY 1"
+label_settings = ExtResource("5_p3swr")
+
+[node name="DetailDate" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "01/12/2024"
+label_settings = ExtResource("5_p3swr")
+
+[node name="ScenarioPanel" type="Control" parent="."]
 layout_mode = 2
 
-[node name="TextBtn" parent="Control/ScenarioPanel/MarginContainer/VBoxContainer/ScenarioList" instance=ExtResource("3_s4nou")]
+[node name="MarginContainer" type="MarginContainer" parent="ScenarioPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="ScenarioPanel/MarginContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
-icon = 51
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
-inactive_color = Color(0.527083, 0.527083, 0.527083, 1)
-title = "Scenario a"
+theme_override_styles/panel = SubResource("StyleBoxFlat_bp7c2")
+
+[node name="MarginContainer" type="MarginContainer" parent="ScenarioPanel/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = -350
+
+[node name="Label" type="Label" parent="ScenarioPanel/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "SELECT A SCENARIO"
+label_settings = ExtResource("7_3sdtd")
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ScenarioPanel/MarginContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_constants/margin_left = 565
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="ScenarioList" type="HBoxContainer" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ScenarioBtn" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer/ScenarioList" instance=ExtResource("7_ousww")]
+layout_mode = 2
+
+[node name="ScenarioBtn2" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer/ScenarioList" instance=ExtResource("7_ousww")]
+layout_mode = 2
+
+[node name="ScenarioBtn3" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer/ScenarioList" instance=ExtResource("7_ousww")]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="ScenarioPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="ScenarioPanel/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -123.0
+offset_bottom = -123.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="IconBtn" parent="ScenarioPanel/Control/CenterContainer" instance=ExtResource("6_oonus")]
+layout_mode = 2
+icon = 37
+flip_v = false
+is_hoverable = false
+
+[node name="CenterContainer2" type="CenterContainer" parent="ScenarioPanel/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 127.0
+offset_bottom = 127.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="IconBtn" parent="ScenarioPanel/Control/CenterContainer2" instance=ExtResource("6_oonus")]
+layout_mode = 2
+icon = 37
+flip_v = true
+is_hoverable = false
+
+[node name="BtnControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -72.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+
+[node name="QuitBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_nwmuc")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s8mru")
+title = "QUIT"
+assigned_key = "B"
+icon = 16
+panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+hide_icon_panel = false
+
+[node name="NextBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_nwmuc")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_p5roh")
+title = "NEXT"
+assigned_key = "E"
+icon = 10
+panel_color = Color(0, 0.529412, 0.278431, 1)
+hide_icon_panel = false

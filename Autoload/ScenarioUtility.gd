@@ -35,6 +35,7 @@ var reference_list:Dictionary = {
 	TYPE.TUTORIAL_1: {
 		# -----------------
 		"title": "TUTORIAL 1",
+		"description": "Learn the basics of base building.",
 		"containment":{
 			# STARTING SCP (or tutorial scp)
 			"initial": [SCP.REF.INSTRUCTION_MANUAL],  
@@ -85,6 +86,7 @@ var reference_list:Dictionary = {
 	TYPE.TUTORIAL_2: {
 		# -----------------
 		"title": "TUTORIAL 2",
+		"description": "Learn the basics of abilities.",		
 		"containment":{
 			# STARTING SCP (or tutorial scp)
 			"initial": [SCP.REF.INSTRUCTION_MANUAL],  
@@ -102,11 +104,6 @@ var reference_list:Dictionary = {
 		"day_limit": 5,		
 		# -----------------
 		
-		# -----------------
-		"reward": [
-			ROOM.TYPE.HR_DEPARTMENT,
-		],
-		# -----------------
 		
 		# -----------------
 		# objectives and their respective checks
@@ -135,6 +132,7 @@ var reference_list:Dictionary = {
 	TYPE.TUTORIAL_3: {
 		# -----------------
 		"title": "TUTORIAL 3",
+		"description": "Learn the basics of hiring and staffing.",		
 		"containment":{
 			# STARTING SCP (or tutorial scp)
 			"initial": [SCP.REF.INSTRUCTION_MANUAL],  
@@ -150,12 +148,6 @@ var reference_list:Dictionary = {
 		# rewards gained after winning
 		# limit to scenario
 		"day_limit": 5,		
-		# -----------------
-		
-		# -----------------
-		"reward": [
-			ROOM.TYPE.HR_DEPARTMENT,
-		],
 		# -----------------
 		
 		# -----------------
@@ -207,9 +199,18 @@ func get_scenario_data(ref:int) -> Dictionary:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func get_awarded_rooms(ref:int) -> Array:
+func get_awarded_rooms(ref:int, return_details:bool = false) -> Array:
 	var scenario_data_copy:Dictionary = get_scenario_data(ref)
-	return scenario_data_copy.start_conditions.allowed_rooms
+	if !return_details:
+		var list:Array = []
+		for room_ref in scenario_data_copy.start_conditions.allowed_rooms:
+			list.push_back(ROOM_UTIL.type_ref_to_ref(room_ref))
+		return list 
+	else:
+		var details_list:Array = []
+		for room_ref in scenario_data_copy.start_conditions.allowed_rooms:
+			details_list.push_back(ROOM_UTIL.return_data(ROOM_UTIL.type_ref_to_ref(room_ref)))
+		return details_list	
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

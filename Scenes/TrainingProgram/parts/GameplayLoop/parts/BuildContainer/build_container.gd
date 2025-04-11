@@ -338,7 +338,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func has_valid_ref(index:int) -> bool:
-	if index > GridContent.get_child_count() or index < 0:
+	if index > GridContent.get_child_count() - 1 or index < 0:
 		return false
 	return GridContent.get_child(index).ref != -1
 # --------------------------------------------------------------------------------------------------			

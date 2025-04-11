@@ -361,6 +361,7 @@ var gameplay_conditionals:Dictionary
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
 var onEndGame:Callable = func(_scenario_ref:int, _scenario_data:Dictionary, _endgame_state:bool) -> void:pass
+var onExitGame:Callable = func(_exit_game:bool) -> void:pass
 
 var processing_next_day:bool = false
 
@@ -588,6 +589,12 @@ func start(new_game_data_config:Dictionary = {}) -> void:
 	
 	await U.tick()
 	start_new_game(new_game_data_config)
+	
+func exit_to_titlescreen() -> void:
+	onExitGame.call(false)
+
+func exit_game() -> void:
+	onExitGame.call(true)
 	
 func setup_scenario(is_new_game:bool) -> void:
 	scenario_data.objectives.push_back({

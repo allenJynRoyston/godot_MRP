@@ -92,9 +92,6 @@ func _ready() -> void:
 				await U.tick()
 				current_mode = MODE.TAB_SELECT
 	
-
-
-	
 	is_setup = true
 	on_is_showing_update(true)
 

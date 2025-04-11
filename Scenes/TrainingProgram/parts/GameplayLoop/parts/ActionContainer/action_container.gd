@@ -486,12 +486,26 @@ func show_base_upgrades(skip_animation:bool = false) -> void:
 func action_func_lookup(title:String) -> Dictionary:
 	var action_dict:Dictionary 
 	match title:
+		# ------------------	
+		"EXIT GAME":
+			action_dict = {
+				"onSelect": func(_index:int) -> void:
+					await GameplayNode.quicksave()
+					GameplayNode.exit_game()
+			}	
+		# ------------------		
+		"RETURN TO TITLESCREEN":
+			action_dict = {
+				"onSelect": func(_index:int) -> void:
+					await GameplayNode.quicksave()
+					GameplayNode.exit_to_titlescreen()
+			}	
 		# ------------------
 		"ASSIGN": 
 			action_dict = {
 				"onSelect": func(_index:int) -> void:
 					#enable_room_focus(true)
-					await GAME_UTIL.assign_researcher()
+					await GameplayNode.assign_researcher()
 			}					
 		# ------------------
 		"OBJECTIVES":
@@ -591,7 +605,12 @@ func show_actions(skip_animation:bool = false) -> void:
 	if active_menu_index == 1:
 		menu_title = "SYSTEM"
 		options.push_back(action_func_lookup('QUICKSAVE'))
-		options.push_back(action_func_lookup('QUICKLOAD'))
+	
+	if active_menu_index == 2:
+		menu_title = "QUIT"		
+		options.push_back(action_func_lookup('RETURN TO TITLESCREEN'))		
+		options.push_back(action_func_lookup('EXIT GAME'))
+
 
 	ActiveMenu.level = active_menu_index
 	ActiveMenu.show_ap = true
@@ -602,7 +621,7 @@ func show_actions(skip_animation:bool = false) -> void:
 		##options.push_back(action_func_lookup('ASSIGN'))
 
 	var active_menu_pos:Vector2 = Vector2(-30, GBL.game_resolution.y - 350)
-	update_active_menu(menu_title, Color.WHITE, options, 1, active_menu_pos, skip_animation)	
+	update_active_menu(menu_title, Color.WHITE, options, 2, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -639,6 +658,11 @@ func passive_funcs(room_ref:int, ability_index:int, use_location:Dictionary) -> 
 						
 	var get_not_ready_func:Callable = func() -> bool: 
 		var get_ability_level:int = GAME_UTIL.get_ability_level()	
+		var is_checked:bool = GAME_UTIL.get_passive_ability_state(room_ref, ability_index)
+		var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
+		var energy_remaining:int = energy.available - energy.used
+		if !is_checked and energy_remaining < ability.energy_cost:
+			return true
 		return get_ability_level < ability.lvl_required
 		
 	var get_icon_func:Callable = func() -> SVGS.TYPE:

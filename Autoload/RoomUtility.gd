@@ -108,6 +108,14 @@ func fill_template(data:Dictionary, ref:int) -> void:
 	reference_data[ref] = template_copy
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+func type_ref_to_ref(type_ref:int) -> int:
+	for ref in reference_data:
+		if reference_data[ref].type_ref == type_ref:
+			return ref
+	return -1
+# ------------------------------------------------------------------------------	
+	
 
 # ------------------------------------------------------------------------------
 func return_data(ref:int) -> Dictionary:
@@ -223,9 +231,8 @@ func owns_and_is_active(ref:int) -> bool:
 # ------------------------------------------------------------------------------
 func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
-	print(awarded_rooms)
 	var filter:Callable = func(list:Array) -> Array:
-		return list.filter(func(i): return i.details.tier == tier and i.details.type_ref in awarded_rooms)
+		return list.filter(func(i): return i.details.tier == tier and i.details.ref in awarded_rooms)
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------
 

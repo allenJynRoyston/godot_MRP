@@ -37,13 +37,12 @@ func _ready() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
-func start() -> void:	
+func start(restart:bool = false) -> void:	
 	show()
 	
 	var quickload_res:Dictionary = load_quickload()
 	var has_quicksave:bool = false if new_quicksave_file else quickload_res.success 
 	var quicksave_filedata:Dictionary = quickload_res.filedata.data if has_quicksave else {}
-
 	# skip and load the last game 
 	if skip_title_screen and !load_first_game:
 		load_first_game = true
@@ -52,13 +51,16 @@ func start() -> void:
 		return
 
 	# start logo screen
-	LogoScreen.start(fast_start)
-	await LogoScreen.finished
+	if !restart:
+		LogoScreen.show()
+		LogoScreen.start(fast_start)
+		await LogoScreen.finished
 	
 	# start gamescreen
 	TitleScreen.completed_scenarios = completed_scenarios
 	TitleScreen.disable_story = true
-	TitleScreen.disable_continue = !has_quicksave
+	TitleScreen.has_quicksave = has_quicksave
+	TitleScreen.quickload_data = quickload_res
 	TitleScreen.start(fast_start)
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
@@ -76,6 +78,7 @@ func start() -> void:
 func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
 	GameplayLoopNode.onEndGame = on_end_game	
+	GameplayLoopNode.onExitGame = on_exit_game
 	GameplayLoopNode.skip_progress_screen = skip_progress_screen 
 	GameplayLoopNode.debug_energy = debug_energy
 	GameplayLoopNode.debug_personnel = debug_personnel
@@ -104,7 +107,20 @@ func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:
 		"scenario_ref": scenario_ref,
 		"awarded_rooms": awarded_rooms
 	})
+	
+	LogoScreen.hide()
+	TitleScreen.hide()
 
+
+func on_exit_game(exit_game:bool) -> void:
+	if exit_game:
+		on_quit.emit()
+		return
+	
+	GameplayLoopNode.queue_free()
+	await U.set_timeout(1.0)
+	start(true)	
+	
 
 func on_end_game(scenario_ref:int, scenario_data:Dictionary, endgame_state:bool) -> void:
 	if endgame_state:

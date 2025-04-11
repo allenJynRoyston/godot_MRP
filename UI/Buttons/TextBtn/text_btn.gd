@@ -66,11 +66,15 @@ func update_color(new_color:Color) -> void:
 	IconBtnLeft.static_color = new_color
 	IconBtnRight.static_color = new_color
 	BtnLabel.modulate = new_color
-		
+
+func is_active(state:bool) -> void:
+	if !is_node_ready():return
+	update_color(active_color if state else inactive_color)
+
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
-	if is_node_ready():
-		update_color(active_color if state else inactive_color)
+	if !is_node_ready():return
+	update_color(active_color if state else inactive_color)
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	super.on_mouse_click(node, btn, on_hover)
