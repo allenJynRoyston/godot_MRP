@@ -96,7 +96,7 @@ func end() -> void:
 	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
 	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)	
 	U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide)
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0.3, 0.3)
+	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0.3, 0.3)
 	
 	current_mode = MODE.HIDE
 	grid_index = 0
