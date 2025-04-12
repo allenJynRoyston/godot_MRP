@@ -15,7 +15,14 @@ var hover_nodes:Array = []
 var track_list:Array = []
 var selected_track:int = 0
 var scroll_name:bool = false
+var BtnControls:Control 
+var data:Dictionary = {} : 
+	set(val): 
+		data = val
+		on_data_update()
 
+
+# --------------------------------------	
 func _ready() -> void:
 	super._ready()
 	on_focus(false)	
@@ -36,17 +43,24 @@ func _ready() -> void:
 	NextBtn.onClick = func():
 		selected_track = (selected_track + 1) % track_list.size()
 		play_selected_track()
-
-var data:Dictionary = {} : 
-	set(val): 
-		data = val
-		on_data_update()
+		
+	BtnControls = GBL.find_node(REFS.BTN_CONTROLS)
+# --------------------------------------	
 
 # --------------------------------------	
 func skip_to_track(track_data:Dictionary) -> void:
 	selected_track = 1
 	play_selected_track()
 # --------------------------------------		
+
+# --------------------------------------		
+func activate() -> void:
+	BtnControls.add_to_itemlist([PlayPauseBtn, NextBtn])
+		
+func deactivate() -> void:
+	BtnControls.remove_from_itemlist([PlayPauseBtn, NextBtn])
+# --------------------------------------		
+
 
 # --------------------------------------	
 func on_pause_or_play_update() -> void:
@@ -102,7 +116,6 @@ func on_focus(state:bool) -> void:
 	var label_setting:LabelSettings = TrackNameLabel.label_settings.duplicate()
 	label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
 	TrackNameLabel.label_settings = label_setting
-# --------------------------------------	
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and hover_nodes.is_empty():

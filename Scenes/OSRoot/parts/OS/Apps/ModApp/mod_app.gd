@@ -139,23 +139,23 @@ func _ready() -> void:
 		var setting:Array = mod_settings.filter(func(d): return d.ref == item.ref)		
 		item.selected = [] if setting.size() == 0 else setting[0].selected
 
-	# make sure has_read first so email_data can reference it
-	ModComponent.not_new = app_props.get_not_new.call()
-	# assign email_data
-	ModComponent.mods_data = mods_data
-	
-	# assign event to update has read
-	ModComponent.on_marked = app_events.on_marked	
-	# assign event to updat eif state has changed
-	ModComponent.on_data_changed = func(new_state:Array) -> void:
-		# not used, but can be used to capture the state of opened 
-		pass
-	
-	# custom rules for click on a section
-	ModComponent.on_click = func(data:Dictionary) -> void:
-		# can only be one selected for each section (maybe change later?)
-		mods_data[data.parent_index].selected = [data.index]
-		ModComponent.mods_data = mods_data
+	## make sure has_read first so email_data can reference it
+	#ModComponent.not_new = app_props.get_not_new.call()
+	## assign email_data
+	#ModComponent.mods_data = mods_data
+	#
+	## assign event to update has read
+	#ModComponent.on_marked = app_events.on_marked	
+	## assign event to updat eif state has changed
+	#ModComponent.on_data_changed = func(new_state:Array) -> void:
+		## not used, but can be used to capture the state of opened 
+		#pass
+	#
+	## custom rules for click on a section
+	#ModComponent.on_click = func(data:Dictionary) -> void:
+		## can only be one selected for each section (maybe change later?)
+		#mods_data[data.parent_index].selected = [data.index]
+		#ModComponent.mods_data = mods_data
 # ------------------------------------------------------------------------------
 
 

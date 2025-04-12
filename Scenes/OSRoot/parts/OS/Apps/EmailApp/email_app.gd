@@ -20,14 +20,15 @@ var email_data:Array[Dictionary] = [
 							return {
 								"title": "Site_Director_Training_Program.exe",
 								"onClick": func(data:Dictionary) -> void:
-									app_events.onOpenAttachment.call({
-										"type": "download", 
-										"installer_data": {
-											"filename": data.title,
-											"duration": 3,
-											"ref": Layout.APPS.SDT
-										}
-									}),
+									pass
+									#app_events.onOpenAttachment.call({
+										#"type": "download", 
+										#"installer_data": {
+											#"filename": data.title,
+											#"duration": 3,
+											#"ref": Layout.APPS.SDT
+										#}
+									#}),
 							}
 						
 					},
@@ -45,18 +46,19 @@ var email_data:Array[Dictionary] = [
 							return {
 								"title": "Voicenote",
 								"onClick": func(data:Dictionary) -> void:
-									app_events.onOpenAttachment.call({
-										"type": "media_player", 
-										"track_list": [
-											{
-												"details": {
-													"name": "voicenote_001.wav",
-													"author": "unknown"
-												},
-												"file": preload("res://Media/mp3/ghost_trick_test_track.mp3")
-											}
-										]
-									}),
+									pass
+									#app_events.onOpenAttachment.call({
+										#"type": "media_player", 
+										#"track_list": [
+											#{
+												#"details": {
+													#"name": "voicenote_001.wav",
+													#"author": "unknown"
+												#},
+												#"file": preload("res://Media/mp3/ghost_trick_test_track.mp3")
+											#}
+										#]
+									#}),
 							}
 					},
 				"render_if": func(_details:Dictionary) -> bool:
@@ -113,7 +115,7 @@ func _ready() -> void:
 
 	
 	# assign event to update has read
-	EmailComponent.on_marked = app_events.on_marked	
+	#EmailComponent.on_marked = app_events.on_marked	
 	# assign event to updat eif state has changed
 	EmailComponent.on_data_changed = func(new_state:Array) -> void:
 		# not used, but can be used to capture the state of opened 

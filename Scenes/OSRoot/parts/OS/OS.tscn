@@ -58,7 +58,6 @@ columns = 6
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 8
-alignment = 2
 
 [node name="RecycleBin" parent="MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2" instance=ExtResource("4_e3kl5")]
 layout_mode = 2

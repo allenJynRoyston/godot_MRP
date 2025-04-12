@@ -12,7 +12,7 @@ var onBlur:Callable = func(node:Control, window_node:Control) -> void:pass
 
 var WindowUI:PanelContainer 
 var app_props:Dictionary = {}
-var app_events:Dictionary = {}
+var events:Dictionary = {}
 var offset:Vector2 = Vector2(0, 0)
 var default_size:Vector2 
 var in_fullscreen:bool = false
@@ -79,27 +79,28 @@ func resize() -> void:
 
 # ------------------------------------------------------------------------------	
 func bind_events() -> void:
-	WindowUI.onClick = func(node:Control, btn:int, is_hovered:bool) -> void:
-		onClick.call(self, node, btn, is_hovered)
-		
-	WindowUI.onClickRelease = func(node:Control, btn:int, is_hovered:bool) -> void:
-		onClickRelease.call(self, node, btn, is_hovered)
+	#WindowUI.onClick = func(node:Control, btn:int, is_hovered:bool) -> void:
+		#onClick.call(self, node, btn, is_hovered)
+		#
+	#WindowUI.onClickRelease = func(node:Control, btn:int, is_hovered:bool) -> void:
+		#onClickRelease.call(self, node, btn, is_hovered)
 	
 	WindowUI.onCloseBtn = func(node:Control) -> void:
+		print("close button...")
 		onCloseBtn.call(self, node)
 		
-	WindowUI.onMaxBtn = func(node:Control) -> void:
-		onMaxBtn.call(self, node)	
-		
-	WindowUI.onDragStart = func(node:Control) -> void:
-		onDragStart.call(self, node)	
-		
-	WindowUI.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
-		onDragEnd.call(new_offset, self, node)	
-		
-	WindowUI.onFocus = func(node:Control) -> void:
-		onFocus.call(self, node)	
-		
-	WindowUI.onBlur = func(node:Control) -> void:
-		onBlur.call(self, node)		
+	#WindowUI.onMaxBtn = func(node:Control) -> void:
+		#onMaxBtn.call(self, node)	
+		#
+	#WindowUI.onDragStart = func(node:Control) -> void:
+		#onDragStart.call(self, node)	
+		#
+	#WindowUI.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
+		#onDragEnd.call(new_offset, self, node)	
+		#
+	#WindowUI.onFocus = func(node:Control) -> void:
+		#onFocus.call(self, node)	
+		#
+	#WindowUI.onBlur = func(node:Control) -> void:
+		#onBlur.call(self, node)		
 # ------------------------------------------------------------------------------		

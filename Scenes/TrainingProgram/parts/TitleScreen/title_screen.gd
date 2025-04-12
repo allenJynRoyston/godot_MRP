@@ -116,12 +116,12 @@ func end(action:String, props:Dictionary = {}) -> void:
 # ------------------------------------------
 func disable_btns(state:bool) -> void:
 	if !state:
-		for btn in [ScenarioBtn]:
+		for btn in [ScenarioBtn, QuitBtn, NextBtn]:
 			btn.is_disabled = false
 		StoryBtn.is_disabled = disable_story
 		ContinueBtn.is_disabled = !has_quicksave
 	else:
-		for btn in [StoryBtn, ScenarioBtn, ContinueBtn]:
+		for btn in [StoryBtn, ScenarioBtn, ContinueBtn, QuitBtn, NextBtn]:
 			btn.is_disabled = true
 # ------------------------------------------
 

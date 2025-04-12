@@ -116,73 +116,80 @@ var app_list:Array[Dictionary] = [
 			"title": "Site Director Training Program",
 			"icon": SVGS.TYPE.EXE_FILE,
 			"app": SiteDirectorTrainingAppPreload,
-			"app_events": {
-				"onQuit": func() -> void:
-					close_app(APPS.SDT),
-			}
+			#"app_events": {
+				#"onQuit": func() -> void:
+					#close_app(APPS.SDT)
+					#await U.set_timeout(0.3)
+					#BtnControls.reveal(true),
+			#}
 		},
 		"installed": func() -> bool:
 			return APPS.SDT in apps_installed,
 		"events": {
-			"onDblClick": func(data:Dictionary) -> void:
-				open_app(data, true),
+			"open": func(data:Dictionary) -> void:
+				BtnControls.reveal(false)
+				open_app(data, true, true),
+			"close": func() -> void:
+				close_app(APPS.SDT)
+				await U.set_timeout(0.3)
+				BtnControls.reveal(true),
 		}
 	},
-	{
-		"details": {
-			"ref": APPS.SDT_MODS,
-			"title": "Mods",
-			"icon": SVGS.TYPE.EXE_FILE,
-			"app": SiteDirectorTrainingModsAppPreload,
-			"app_props": {
-				"get_not_new": func() -> Array:
-					return mods_not_new,
-				"get_mod_settings": func() -> Array:
-					return mod_settings,
-				"get_modifications_unlocked": func() -> Dictionary:
-					return modifications_unlocked,
-			},
-			"app_events": {
-				"on_marked": func(updated_vals:Array) -> void:
-					mods_not_new = updated_vals
-					save_state(0),
-			}
-		},
-		"installed": func() -> bool:
-			return true, #APPS.SDT_MODS in apps_installed,
-		"events": {
-			"onDblClick": func(data:Dictionary) -> void:
-				open_app(data, false),
-		}
-	},
-	{
-		"details": {
-			"ref": APPS.EMAIL,
-			"title": "Email",
-			"icon": SVGS.TYPE.EMAIL,
-			"app": EmailAppPreload,
-			"installed": func() -> bool:
-				return true,
-			"app_props": {
-				"get_not_new": func() -> Array:
-					return email_not_new,
-			},
-			"app_events": {
-				"on_marked": func(updated_vals:Array) -> void:
-					email_not_new = updated_vals
-					save_state(0),
-				"onOpenAttachment": on_open_attachment,
-			}
-		},
-		"installed": func() -> bool:
-			return true,
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"onDblClick": open_app	
-		},
-	},
+	#{
+		#"details": {
+			#"ref": APPS.SDT_MODS,
+			#"title": "Mods",
+			#"icon": SVGS.TYPE.EXE_FILE,
+			#"app": SiteDirectorTrainingModsAppPreload,
+			#"app_props": {
+				#"get_not_new": func() -> Array:
+					#return mods_not_new,
+				#"get_mod_settings": func() -> Array:
+					#return mod_settings,
+				#"get_modifications_unlocked": func() -> Dictionary:
+					#return modifications_unlocked,
+			#},
+			#"app_events": {
+				#"on_marked": func(updated_vals:Array) -> void:
+					#mods_not_new = updated_vals
+					#save_state(0),
+			#}
+		#},
+		#"installed": func() -> bool:
+			#return true, #APPS.SDT_MODS in apps_installed,
+		#"events": {
+			#"open": func(data:Dictionary) -> void:
+				#open_app(data, false),
+		#}
+	#},
+	#{
+		#"details": {
+			#"ref": APPS.EMAIL,
+			#"title": "Email",
+			#"icon": SVGS.TYPE.EMAIL,
+			#"app": EmailAppPreload,
+			#"installed": func() -> bool:
+				#return true,
+			#"app_props": {
+				#"get_not_new": func() -> Array:
+					#return email_not_new,
+			#},
+			#"app_events": {
+				#"on_marked": func(updated_vals:Array) -> void:
+					#email_not_new = updated_vals
+					#save_state(0),
+				#"onOpenAttachment": on_open_attachment,
+			#}
+		#},
+		#"installed": func() -> bool:
+			#return true,
+		#"defaults": {
+			#"pos_offset": Vector2(0, 0),
+		#},
+		#"events": {
+			#"open": open_app	
+		#},
+	#},
 	{
 		"details": {
 			"ref": APPS.MUSIC_PLAYER,
@@ -195,7 +202,7 @@ var app_list:Array[Dictionary] = [
 			"pos_offset": Vector2(0, 0),
 		},
 		"events": {
-			"onDblClick": func(data:Dictionary) -> void:
+			"open": func(data:Dictionary) -> void:
 				if GBL.music_data.is_empty() and !has_notification:
 					await simulate_wait(0.7)
 					# open music player, no music selected
@@ -205,26 +212,26 @@ var app_list:Array[Dictionary] = [
 					},
 		},
 	},		
-	{
-		"details": {
-			"ref": APPS.README,
-			"title": "IMPORTANT PLEASE READ",
-			"icon": SVGS.TYPE.TXT_FILE,
-			"app": TextFileAppPreload,
-			"app_props": {
-				"title": "URGENT",
-				"content": "Check your EMAILS!"
-			},					
-		},
-		"installed": func() -> bool:
-			return true,
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"onDblClick": open_app
-		},
-	}	
+	#{
+		#"details": {
+			#"ref": APPS.README,
+			#"title": "IMPORTANT PLEASE READ",
+			#"icon": SVGS.TYPE.TXT_FILE,
+			#"app": TextFileAppPreload,
+			#"app_props": {
+				#"title": "URGENT",
+				#"content": "Check your EMAILS!"
+			#},					
+		#},
+		#"installed": func() -> bool:
+			#return true,
+		#"defaults": {
+			#"pos_offset": Vector2(0, 0),
+		#},
+		#"events": {
+			#"open": open_app
+		#},
+	#}	
 ]
 
 var music_track_list:Array = [
@@ -290,6 +297,13 @@ var top_level_window:Control :
 		top_level_window = val
 		set_node_selectable_state(top_level_window == null)
 
+#var selected_index:int = 0: 
+	#set(val):
+		#selected_index = val
+		#on_selected_index_update()
+
+var freeze_inputs:bool = false
+var BtnControls:Control 
 signal on_confirm
 #endregion
 # -----------------------------------
@@ -299,12 +313,14 @@ signal on_confirm
 func _init() -> void:
 	GBL.register_node(REFS.OS_LAYOUT, self)
 	GBL.subscribe_to_control_input(self)
+	
 # -----------------------------------
 
 # -----------------------------------
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.OS_LAYOUT)
 	GBL.unsubscribe_to_control_input(self)
+	
 # -----------------------------------	
 
 # -----------------------------------
@@ -313,6 +329,7 @@ func _ready() -> void:
 	visible = false
 	set_process(false)
 	set_physics_process(false)	
+	BtnControls = GBL.find_node(REFS.BTN_CONTROLS)
 # -----------------------------------
 
 # -----------------------------------
@@ -398,6 +415,28 @@ func on_bin_restore(data:Dictionary) -> void:
 func on_window_focus_list_update() -> void:
 	set_desktop_hoverable_state(window_focus_list.is_empty())
 # -----------------------------------			
+
+## -----------------------------------			
+#func on_selected_index_update() -> void:
+	#if !is_node_ready():return
+	#for index in DesktopIconContainer.get_child_count():
+		#if index == selected_index:
+			#var btn_node:Control = DesktopIconContainer.get_child(index)
+			#Input.warp_mouse(btn_node.global_position + btn_node.size/2 - Vector2(5, 10))
+		##btn_node.icon = SVGS.TYPE.NEXT if index == selected_index else SVGS.TYPE.NONE
+		##btn_node.is_active(index == selected_index)
+		##if index == selected_index:
+			##NextBtn.is_disabled = btn_node.is_disabled
+			##NextBtn.title = str(btn_node.title).to_upper()
+			##if btn_node == ContinueBtn:
+				##ContinueDetails.global_position = ContinueBtn.global_position + Vector2(ContinueBtn.size.x + 10, -ContinueBtn.size.y/4)
+				##ContinueDetails.show() 
+			##else:
+				##ContinueDetails.hide()
+				##
+	##print(selected_index)
+## -----------------------------------			
+
 
 # -----------------------------------
 func on_running_apps_list_update() -> void:
@@ -829,6 +868,8 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 
 	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
 	if data.ref not in app_refs:		
+		var app:Dictionary = find_in_app_list(data.ref) 
+		
 		# adds a mock timer
 		var previously_loaded:bool = data.ref in already_loaded
 		if !skip_loading and !previously_loaded:
@@ -843,12 +884,14 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 		# adds to running apps list and when updated show up in the taskbar
 		running_apps_list.push_back({"node": new_node, "data": data})
 		running_apps_list = running_apps_list
-	
+		
+		
 		# adds any props
 		if "app_props" in data:
 			new_node.app_props = data.app_props
-		if "app_events" in data:
-			new_node.app_events = data.app_events
+		# pass events down 
+		if "events" in app:
+			new_node.events = app.events
 		
 		# start in fullscreen or not, pass previously loaded
 		new_node.fast_load = (previously_loaded or skip_loading or force_open)
@@ -862,65 +905,66 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 		
 		# adds event handlers
 		# -------------------
-		new_node.onClick = func(node:Control, window_node:Node, btn:int, on_hover:bool) -> void:
-			if btn == MOUSE_BUTTON_LEFT:
-				# freeze content window (if it's not a context menu, and it's not fullscreen)
-				if data.ref != APPS.CONTEXT_MENU and !on_hover and !new_node.in_fullscreen:
-					window_node.freeze_content_input = true
-
-				# --- IF CONTEXT MENU, CLOSE WHEN IT'S NOT HOVERED OVER
-				if data.ref == APPS.CONTEXT_MENU and !on_hover:
-					close_app(data.ref)
-					
-				# else, move the top level window to the top
-				if top_level_window != null:
-					top_level_window.get_child(0).freeze_content_input = false
-					RunningAppsContainer.move_child(top_level_window, RunningAppsContainer.get_child_count() - 1)
+		#new_node.onClick = func(node:Control, window_node:Node, btn:int, on_hover:bool) -> void:
+			#if btn == MOUSE_BUTTON_LEFT:
+				## freeze content window (if it's not a context menu, and it's not fullscreen)
+				#if data.ref != APPS.CONTEXT_MENU and !on_hover and !new_node.in_fullscreen:
+					#window_node.freeze_content_input = true
+#
+				## --- IF CONTEXT MENU, CLOSE WHEN IT'S NOT HOVERED OVER
+				#if data.ref == APPS.CONTEXT_MENU and !on_hover:
+					#close_app(data.ref)
+					#
+				## else, move the top level window to the top
+				#if top_level_window != null:
+					#top_level_window.get_child(0).freeze_content_input = false
+					#RunningAppsContainer.move_child(top_level_window, RunningAppsContainer.get_child_count() - 1)
 			
 		# -------------------
 		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:			
+			print(app.events)
 			close_app(data.ref)
 			
 		# -------------------	
-		new_node.onMaxBtn = func(node:Control, window_node:Control) -> void:
-			Taskbar.fullscreen_data = data
-			app_in_fullscreen = true
-			node.on_max()
+		#new_node.onMaxBtn = func(node:Control, window_node:Control) -> void:
+			#Taskbar.fullscreen_data = data
+			#app_in_fullscreen = true
+			#node.on_max()
 
 			
-		# -------------------
-		new_node.onFocus = func(node:Control, window_node:Control) -> void:
-			if node not in window_focus_list:
-				window_focus_list.push_back(node)
-			window_focus_list = window_focus_list
-				
-			# determine which window is on top
-			var z_order:Dictionary = {}
-			for index in RunningAppsContainer.get_children().size():
-				z_order[RunningAppsContainer.get_child(index)] = index
-			if window_focus_list.size() > 1 and node in z_order:
-				if z_order[node] == RunningAppsContainer.get_children().size() - 1:
-					top_level_window = node
-			else:
-				top_level_window = node
-				
-				
-		# -------------------
-		new_node.onBlur = func(node:Control, window_node:Control) -> void:
-			window_focus_list.erase(node)
-			window_focus_list = window_focus_list
-
-			if window_focus_list.size() > 0:
-				top_level_window = window_focus_list[0]
-
-			else:
-				top_level_window = null
-		# -------------------
-		
-		# -------------------
-		new_node.onDragEnd = func(new_offset:Vector2, node:Control, window_node:Control) -> void:
-			pass
-		# -------------------			
+		## -------------------
+		#new_node.onFocus = func(node:Control, window_node:Control) -> void:
+			#if node not in window_focus_list:
+				#window_focus_list.push_back(node)
+			#window_focus_list = window_focus_list
+				#
+			## determine which window is on top
+			#var z_order:Dictionary = {}
+			#for index in RunningAppsContainer.get_children().size():
+				#z_order[RunningAppsContainer.get_child(index)] = index
+			#if window_focus_list.size() > 1 and node in z_order:
+				#if z_order[node] == RunningAppsContainer.get_children().size() - 1:
+					#top_level_window = node
+			#else:
+				#top_level_window = node
+				#
+				#
+		## -------------------
+		#new_node.onBlur = func(node:Control, window_node:Control) -> void:
+			#window_focus_list.erase(node)
+			#window_focus_list = window_focus_list
+#
+			#if window_focus_list.size() > 0:
+				#top_level_window = window_focus_list[0]
+#
+			#else:
+				#top_level_window = null
+		## -------------------
+		#
+		## -------------------
+		#new_node.onDragEnd = func(new_offset:Vector2, node:Control, window_node:Control) -> void:
+			#pass
+		## -------------------			
 		
 # -----------------------------------	
 #endregion
@@ -961,99 +1005,119 @@ func sort_desktop_icons() -> void:
 # -----------------------------------	
 func render_desktop_icons(wait_time:float = 1.0) -> void:
 	await simulate_wait(wait_time)
-	
+	var itemlist:Array = []	
 	var column_tracker := {}
 	
 	# remove and rerender icons, waitTime used to wait for changes
 	for child in DesktopIconContainer.get_children():
 		child.queue_free()
 	icon_focus_list = []	
-	await U.set_timeout(0)
+	await U.tick()
 	
 	for item in app_list:
 		if (item.details.ref not in in_recycle_bin) and item.installed.call():
 			var new_node:Control = AppItemPreload.instantiate()	
 			DesktopIconContainer.add_child(new_node)
+			itemlist.push_back(new_node)
 			new_node.pos_offset = app_positions[item.details.ref]
 			new_node.data = item.details
 			
-			new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
-				if window_focus_list.is_empty() and !has_notification:
-					item.events.onDblClick.call(data)
+			new_node.onClick = func() -> void:
+				item.events.open.call(item.details)
 				
-			new_node.onClick = func(node:Control, btn:int, on_hover:bool) -> void:
-				if on_hover and !has_notification:
-					if btn == MOUSE_BUTTON_RIGHT:
-						var details:Dictionary = item.details
-						open_context_menu(details.title, [
-							{
-								"get_details": func():
-									return {
-										"title": "Open..."
-									},
-								"onClick": func(_data:Dictionary):
-									item.events.onDblClick.call(details)
-									close_app(APPS.CONTEXT_MENU),
-							},						
-							{
-								"get_details": func():
-									return {
-										"title": "Move to Recycle Bin..."
-									},
-								"onClick": func(_data:Dictionary):
-									# add to recycle bin
-									in_recycle_bin.push_back(details.ref)
-									
-									# update recycle bin if it's open
-									for app in running_apps_list:
-										if app.data.ref == APPS.RECYCLE_BIN:
-											app.node.in_bin_list = in_recycle_bin
-											
-									# rerender desktop icons
-									render_desktop_icons(0.0)
-									close_app(APPS.CONTEXT_MENU)
-									
-									save_state(),
-							}
-						])
+				#if on_hover and !has_notification:
+					#if btn == MOUSE_BUTTON_RIGHT:
+						#var details:Dictionary = item.details
+						#open_context_menu(details.title, [
+							#{
+								#"get_details": func():
+									#return {
+										#"title": "Open..."
+									#},
+								#"onClick": func(_data:Dictionary):
+									#item.events.onDblClick.call(details)
+									#close_app(APPS.CONTEXT_MENU),
+							#},						
+							#{
+								#"get_details": func():
+									#return {
+										#"title": "Move to Recycle Bin..."
+									#},
+								#"onClick": func(_data:Dictionary):
+									## add to recycle bin
+									#in_recycle_bin.push_back(details.ref)
+									#
+									## update recycle bin if it's open
+									#for app in running_apps_list:
+										#if app.data.ref == APPS.RECYCLE_BIN:
+											#app.node.in_bin_list = in_recycle_bin
+											#
+									## rerender desktop icons
+									#render_desktop_icons(0.0)
+									#close_app(APPS.CONTEXT_MENU)
+									#
+									#save_state(),
+							#}
+						#])
+						#
+					#if btn == MOUSE_BUTTON_LEFT:
+						#DesktopIconContainer.move_child(top_level_icon, DesktopIconContainer.get_child_count() - 1)
+				
+			#new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
+				#if window_focus_list.is_empty() and !has_notification:
+					#item.events.onDblClick.call(data)
+				
+			#new_node.onDragStart = func(node:Control) -> void:
+				#set_node_selectable_state(false, top_level_icon)
+				#
+			#new_node.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
+				#set_node_selectable_state(true)
+				#icon_focus_list.erase(node)
+				#if app_positions[item.details.ref] != new_offset:
+					#if icon_focus_list.is_empty():
+						#app_positions[item.details.ref] = new_offset
+						#save_state()
+					#else:
+						#new_node.pos_offset = app_positions[item.details.ref]
 						
-					if btn == MOUSE_BUTTON_LEFT:
-						DesktopIconContainer.move_child(top_level_icon, DesktopIconContainer.get_child_count() - 1)
-				
-			new_node.onDragStart = func(node:Control) -> void:
-				set_node_selectable_state(false, top_level_icon)
-				
-			new_node.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
-				set_node_selectable_state(true)
-				icon_focus_list.erase(node)
-				if app_positions[item.details.ref] != new_offset:
-					if icon_focus_list.is_empty():
-						app_positions[item.details.ref] = new_offset
-						save_state()
-					else:
-						new_node.pos_offset = app_positions[item.details.ref]
-						
-			new_node.onFocus = func(node:Control) -> void:
-				if node not in icon_focus_list:
-					icon_focus_list.push_back(node)
-				var z_order:Dictionary = {}
-				for index in DesktopIconContainer.get_children().size():
-						z_order[DesktopIconContainer.get_child(index)] = index
-				if icon_focus_list.size() > 1:
-					if z_order[node] == DesktopIconContainer.get_children().size() - 1:
-						top_level_icon = node
-				else:
-					top_level_icon = node				
-					
-			new_node.onBlur = func(node:Control) -> void:
-				icon_focus_list.erase(node)
-				if icon_focus_list.size() > 0:
-					top_level_icon = icon_focus_list[0]
-				else:
-					top_level_icon = null			
+			#new_node.onFocus = func(node:Control) -> void:
+				#if node not in icon_focus_list:
+					#icon_focus_list.push_back(node)
+				#var z_order:Dictionary = {}
+				#for index in DesktopIconContainer.get_children().size():
+						#z_order[DesktopIconContainer.get_child(index)] = index
+				#if icon_focus_list.size() > 1:
+					#if z_order[node] == DesktopIconContainer.get_children().size() - 1:
+						#top_level_icon = node
+				#else:
+					#top_level_icon = node				
+					#
+			#new_node.onBlur = func(node:Control) -> void:
+				#icon_focus_list.erase(node)
+				#if icon_focus_list.size() > 0:
+					#top_level_icon = icon_focus_list[0]
+				#else:
+					#top_level_icon = null			
 
-			
-
+	BtnControls.itemlist = itemlist
+	#on_selected_index_update()
+	await U.set_timeout(0.3)
+	BtnControls.reveal(true)
 # -----------------------------------
 #endregion
 # -----------------------------------
+#
+## ------------------------------------------
+#func on_control_input_update(input_data:Dictionary) -> void:
+	#if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
+		#return
+#
+	#var key:String = input_data.key
+	#var keycode:int = input_data.keycode
+	#
+	#match key:
+		#"A":
+			#selected_index = U.min_max(selected_index - 1, 0, DesktopIconContainer.get_child_count() - 1)
+		#"D":
+			#selected_index = U.min_max(selected_index + 1, 0, DesktopIconContainer.get_child_count() - 1)
+## ------------------------------------------

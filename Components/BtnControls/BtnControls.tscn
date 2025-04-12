@@ -1,0 +1,105 @@
+[gd_scene load_steps=7 format=3 uid="uid://diewdd1a4yfp1"]
+
+[ext_resource type="Script" uid="uid://bt4fuj4j35pdi" path="res://Components/BtnControls/btn_controls.gd" id="1_42gfu"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="2_re623"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e24g7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ka7tl"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkurb"]
+bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j6bi6"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="BtnControl" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_42gfu")
+
+[node name="BtnControlPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_e24g7")
+
+[node name="BtnMarginContainer" type="MarginContainer" parent="BtnControlPanel"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="BtnControlPanel/BtnMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_ka7tl")
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+
+[node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
+title = "QUIT"
+assigned_key = "B"
+icon = 16
+panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+hide_icon_panel = false
+
+[node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
+title = "NEXT"
+assigned_key = "E"
+icon = 10
+panel_color = Color(0, 0.529412, 0.278431, 1)
+hide_icon_panel = false

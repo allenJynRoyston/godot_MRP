@@ -34,6 +34,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 icon = 3
+flip_v = false
 is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]

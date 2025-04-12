@@ -27,6 +27,7 @@ theme_override_constants/margin_bottom = 2
 [node name="LogoBtn" parent="MarginContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 12
+flip_v = false
 
 [node name="TrackNameScrollContainer" type="ScrollContainer" parent="."]
 custom_minimum_size = Vector2(200, 15)
@@ -63,10 +64,12 @@ theme_override_constants/separation = 5
 [node name="PlayPauseBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 9
+flip_v = false
 
 [node name="NextBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 8
+flip_v = false
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 autoplay = true

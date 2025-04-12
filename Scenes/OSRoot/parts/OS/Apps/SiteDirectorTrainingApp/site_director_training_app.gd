@@ -15,5 +15,5 @@ func _ready() -> void:
 	TrainingProgram.start()
 	await TrainingProgram.on_quit
 	TrainingProgram.hide()
-	app_events.onQuit.call()
+	events.close.call()
 # ------------------------------------------------------------------------------

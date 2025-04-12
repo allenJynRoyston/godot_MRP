@@ -14,6 +14,7 @@ extends PanelContainer
 
 const TaskbarLiveItemPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/Taskbar/parts/TaskbarLiveItem/TaskbarLiveItem.tscn")
 
+
 var fullscreen_data:Dictionary = {} : 
 	set(val):
 		fullscreen_data = val
@@ -58,8 +59,7 @@ func _ready() -> void:
 	
 	TitleBar.onClick = func() -> void:
 		onTitleBarClick.call(fullscreen_data)
-			
-	
+
 
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():
@@ -75,6 +75,11 @@ func on_is_busy_update() -> void:
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()
+	if show_media_player:
+		MediaPlayer.activate()
+	else:
+		MediaPlayer.deactivate()
+
 		
 func on_taskbar_live_items_update() -> void:
 	if !is_node_ready():return
@@ -96,7 +101,8 @@ func on_fullscreen_data_update() -> void:
 		TitleBar.icon = fullscreen_data.icon
 		
 		for child in RunningTasks.get_children():
-			child.show_min_button = child.data.ref == fullscreen_data.ref
+			# just remove this for now
+			child.show_min_button = false #child.data.ref == fullscreen_data.ref
 		
 
 func on_music_data_update() -> void:
