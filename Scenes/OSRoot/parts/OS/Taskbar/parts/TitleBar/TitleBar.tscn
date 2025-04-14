@@ -7,21 +7,24 @@
 [node name="TitleBar" type="HBoxContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 script = ExtResource("1_7oi70")
 
 [node name="IconBtn" parent="." instance=ExtResource("2_mhefv")]
 layout_mode = 2
 icon = 17
+flip_v = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
 text = "Titlebar"
 label_settings = ExtResource("3_tuvam")
+uppercase = true
 
 [node name="IsBusyBtn" parent="." instance=ExtResource("2_mhefv")]
 visible = false
 layout_mode = 2
 icon = 22
+flip_v = false
 is_hoverable = false

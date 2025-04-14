@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://btxy5mypwrlao"]
+[gd_scene load_steps=10 format=3 uid="uid://btxy5mypwrlao"]
 
 [ext_resource type="Script" uid="uid://cytp5e5onlqj6" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
 [ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="2_1nkh6"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_21r5r"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_hm80f"]
 [ext_resource type="PackedScene" uid="uid://b2xiva1hpi0f4" path="res://Scenes/OSRoot/parts/OS/Apps/EmailApp/parts/EmailAttachment.tscn" id="5_mf5du"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_bd68s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b51d8"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -131,4 +132,7 @@ theme_override_constants/separation = 20
 theme_override_styles/separator = SubResource("StyleBoxEmpty_tvy7c")
 
 [node name="AttachmentContainer" parent="HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_mf5du")]
+layout_mode = 2
+
+[node name="BtnControl" parent="." instance=ExtResource("6_bd68s")]
 layout_mode = 2

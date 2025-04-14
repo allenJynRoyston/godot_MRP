@@ -6,10 +6,6 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aug80"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.901961)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0, 0.964706, 0.278431, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -26,8 +22,11 @@ border_color = Color(0, 0.964706, 0.278431, 1)
 
 [node name="WindowUI" type="PanelContainer"]
 custom_minimum_size = Vector2(100, 0)
-offset_right = 113.0
-offset_bottom = 44.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_aug80")
 script = ExtResource("1_g5j4v")
 enable_close_btn = false

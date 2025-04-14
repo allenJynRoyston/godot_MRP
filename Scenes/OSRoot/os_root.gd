@@ -3,10 +3,9 @@ extends PanelContainer
 @onready var MousePointer:TextureRect = $Control/MousePointer
 @onready var Output:TextureRect = $Control/Output
 
-@onready var Background:TextureRect = $GameLayer/BG
+@onready var Gamelayer:SubViewport = $GameLayer
 @onready var DoorScene:PanelContainer = $GameLayer/DoorScene
 @onready var OSNode:PanelContainer = $GameLayer/OS
-
 
 @onready var Camera3d:Camera3D = $"3dViewport/Node3D/Camera3D"
 
@@ -62,18 +61,21 @@ func _init() -> void:
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 	GBL.unregister_node(REFS.OS_ROOT)
+	GBL.unregister_node(REFS.GAMELAYER_SUBVIEWPORT)
 	GBL.unsubscribe_to_mouse_icons(self)
 	GBL.unsubscribe_to_control_input(self)	
 # -----------------------------------		
 
 # -----------------------------------	
 func _ready() -> void:
-	Background.hide()
-	
-	DoorScene.on_login = func():
+	GBL.register_node(REFS.GAMELAYER_SUBVIEWPORT, Gamelayer)
+
+	DoorScene.onLogin = func() -> void:
 		start_os_layer()
 	
 	OSNode.skip_to_game = skip_to_game
+	OSNode.onBack = func() -> void:
+		current_layer = LAYER.DOOR_LAYER
 	
 	DoorScene.skip_logo = intro_skip_logo
 	DoorScene.skip_title = intro_skip_title
@@ -97,6 +99,15 @@ func reset() -> void:
 	if !skip_intro:
 		await play_door()	
 	else:
+		DoorScene.skip_logo = true
+		DoorScene.skip_title = true
+		DoorScene.skip_sequence = true
+		DoorScene.skip_start_at = true
+			
+		current_layer = LAYER.DOOR_LAYER	
+		await U.tick()
+		DoorScene.fastfoward()
+		await U.tick()
 		start_os_layer()
 # -----------------------------------		
 
@@ -110,12 +121,15 @@ func play_door() -> void:
 # -----------------------------------		
 func start_os_layer() -> void:
 	current_layer = LAYER.OS_lAYER		
+
+	if !OSNode.has_started:
+		OSNode.start()	
+	else:
+		OSNode.resume()
+		
 	await U.tick()
-	for node in [OSNode]:
-		node.visible = true
-		node.set_process(true)
-		node.set_physics_process(true)
-		node.start()
+	OSNode.show()
+
 # -----------------------------------
 
 # -----------------------------------	
@@ -194,18 +208,26 @@ func on_current_layer_update() -> void:
 	match current_layer:
 		# -----------
 		LAYER.DOOR_LAYER:
-			for node in [DoorScene, OSNode, Background]:
+			for node in [DoorScene, OSNode]:
 				if node == DoorScene:
 					node.show()
+					node.set_process(true)
+					node.set_physics_process(true)
 				else: 
 					node.hide()
+					node.set_process(false)
+					node.set_physics_process(false)
 		# -----------
 		LAYER.OS_lAYER:
-			for node in [DoorScene, OSNode, Background]:
-				if node == OSNode or node == Background:
+			for node in [DoorScene, OSNode]:
+				if node == OSNode:
 					node.show() 
+					node.set_process(true)
+					node.set_physics_process(true)
 				else: 
 					node.hide()		
+					node.set_process(false)
+					node.set_physics_process(false)	
 # -----------------------------------	
 
 # -----------------------------------	

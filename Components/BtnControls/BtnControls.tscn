@@ -7,8 +7,12 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ka7tl"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+expand_margin_left = 5.0
+expand_margin_top = 5.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkurb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42gfu"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -20,7 +24,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j6bi6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_re623"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -88,7 +92,7 @@ size_flags_vertical = 8
 
 [node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_42gfu")
 title = "QUIT"
 assigned_key = "B"
 icon = 16
@@ -97,7 +101,7 @@ hide_icon_panel = false
 
 [node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_re623")
 title = "NEXT"
 assigned_key = "E"
 icon = 10

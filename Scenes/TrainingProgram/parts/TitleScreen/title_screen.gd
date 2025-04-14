@@ -6,8 +6,9 @@ extends PanelContainer
 @onready var ScenarioBtn:Control = $CenterContainer/VBoxContainer/MenuList/ScenairoBtn
 @onready var ContinueBtn:Control = $CenterContainer/VBoxContainer/MenuList/ContinueBtn
 
-@onready var QuitBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/QuitBtn
-@onready var NextBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/NextBtn
+@onready var BtnControls:Control = $BtnControl
+#@onready var QuitBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/QuitBtn
+#@onready var NextBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/NextBtn
 
 @onready var ScenarioPanel:Control = $ScenarioPanel
 @onready var ScenarioMarginContainer:MarginContainer = $ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer
@@ -31,7 +32,10 @@ var current_mode:MODE = MODE.TITLE :
 var completed_scenarios:Array = []
 var	disable_story:bool = false
 var has_quicksave:bool = false
-var freeze_inputs:bool = false
+var freeze_inputs:bool = false : 
+	set(val):
+		freeze_inputs = val
+		on_freeze_inputs_update()
 var quickload_data:Dictionary = {}
 var btn_arr:Array[Control] = []
 
@@ -48,11 +52,11 @@ var scenario_index:int = 0 :
 signal wait_for_input
 
 # ------------------------------------------
-func _init() -> void:
-	GBL.subscribe_to_control_input(self)
-
-func _exit_tree() -> void:
-	GBL.unsubscribe_to_control_input(self)
+#func _init() -> void:
+	#GBL.subscribe_to_control_input(self)
+#
+#func _exit_tree() -> void:
+	#GBL.unsubscribe_to_control_input(self)
 # ------------------------------------------
 
 # ------------------------------------------
@@ -70,7 +74,7 @@ func _ready() -> void:
 	ContinueBtn.onClick = func() -> void:
 		end("continue")
 	
-	btn_arr = [StoryBtn, ScenarioBtn, ContinueBtn]
+	btn_arr = [ContinueBtn, ScenarioBtn, StoryBtn]
 	
 	for btn in btn_arr:
 		btn.onFocus = func(node:Control) -> void:
@@ -82,6 +86,14 @@ func _ready() -> void:
 	ContinueDetails.hide()
 	ScenarioMarginContainer.set("theme_override_constants/margin_left", GBL.game_resolution.x/2 - 110)
 	
+	# show and setup btns
+	BtnControls.directional_pref = "UD"
+	BtnControls.itemlist = btn_arr
+	BtnControls.onBack = func() -> void:
+		BtnControls.reveal(false)
+		end('quit')
+
+	on_freeze_inputs_update()
 	on_current_mode_update()
 # ------------------------------------------
 
@@ -99,6 +111,9 @@ func start(fast_boot:bool = false) -> void:
 		DetailName.text = scenario_details.title
 		DetailDay.text = "DAY %s" % [quickload_data.filedata.data.progress_data.day]
 		DetailDate.text = "%s/%s/%s" % [modification_date.day, modification_date.month, modification_date.year]
+
+	await U.set_timeout(0.3)
+	BtnControls.reveal(true)
 # ------------------------------------------
 
 # ------------------------------------------
@@ -114,14 +129,19 @@ func end(action:String, props:Dictionary = {}) -> void:
 # ------------------------------------------
 
 # ------------------------------------------
+func on_freeze_inputs_update() -> void:
+	BtnControls.freeze_and_disable(freeze_inputs)
+# ------------------------------------------
+
+# ------------------------------------------
 func disable_btns(state:bool) -> void:
 	if !state:
-		for btn in [ScenarioBtn, QuitBtn, NextBtn]:
+		for btn in [ScenarioBtn]:
 			btn.is_disabled = false
 		StoryBtn.is_disabled = disable_story
 		ContinueBtn.is_disabled = !has_quicksave
 	else:
-		for btn in [StoryBtn, ScenarioBtn, ContinueBtn, QuitBtn, NextBtn]:
+		for btn in [StoryBtn, ScenarioBtn, ContinueBtn]:
 			btn.is_disabled = true
 # ------------------------------------------
 
@@ -135,8 +155,8 @@ func on_selected_index_update() -> void:
 		btn_node.icon = SVGS.TYPE.NEXT if index == selected_index else SVGS.TYPE.NONE
 		btn_node.is_active(index == selected_index)
 		if index == selected_index:
-			NextBtn.is_disabled = btn_node.is_disabled
-			NextBtn.title = str(btn_node.title).to_upper()
+			#NextBtn.is_disabled = btn_node.is_disabled
+			#NextBtn.title = str(btn_node.title).to_upper()
 			if btn_node == ContinueBtn:
 				ContinueDetails.global_position = ContinueBtn.global_position + Vector2(ContinueBtn.size.x + 10, -ContinueBtn.size.y/4)
 				ContinueDetails.show() 
@@ -156,7 +176,8 @@ func on_scenario_index_update() -> void:
 		var btn_node:Control = ScenarioList.get_child(index)
 		btn_node.distance_from_center = distance_from_center
 		if scenario_index == index:
-			NextBtn.is_disabled = btn_node.is_disabled
+			pass
+			#NextBtn.is_disabled = btn_node.is_disabled
 
 	freeze_inputs = true
 	await U.tween_range(start_val, next_val, 0.3, func(val:float) -> void:
@@ -197,50 +218,27 @@ func on_current_mode_update() -> void:
 	if !is_node_ready():return
 	match current_mode:
 		MODE.TITLE:
-			NextBtn.title = "EXECUTE"
-			NextBtn.onClick = func() -> void:
-				var btn_node:Control = MenuList.get_child(selected_index)
-				if !btn_node.is_disabled:
-					btn_node.onClick.call()
-			
-			QuitBtn.title = "QUIT"
-			QuitBtn.onClick = func() -> void:
-				end("quit")	
+			pass
+			#NextBtn.title = "EXECUTE"
+			#NextBtn.onClick = func() -> void:
+				#var btn_node:Control = MenuList.get_child(selected_index)
+				#if !btn_node.is_disabled:
+					#btn_node.onClick.call()
+			#
+			#QuitBtn.title = "QUIT"
+			#QuitBtn.onClick = func() -> void:
+				#end("quit")	
 		MODE.SCENARIO:	
 			build_scenario_list()
-			
-			NextBtn.title = "START"
-			NextBtn.onClick = func() -> void:
-				var scenario:Dictionary = scenario_list[scenario_index]
-				end("scenario", {"ref": scenario.ref})
-			
-			QuitBtn.title = "BACK"
-			QuitBtn.onClick = func() -> void:
-				ScenarioPanel.hide()
-				current_mode = MODE.TITLE
+			pass
+			#NextBtn.title = "START"
+			#NextBtn.onClick = func() -> void:
+				#var scenario:Dictionary = scenario_list[scenario_index]
+				#end("scenario", {"ref": scenario.ref})
+			#
+			#QuitBtn.title = "BACK"
+			#QuitBtn.onClick = func() -> void:
+				#ScenarioPanel.hide()
+				#current_mode = MODE.TITLE
 # ------------------------------------------
 	
-	
-
-# ------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
-		return
-
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
-	match key:
-		"W":
-			if current_mode != MODE.TITLE:return
-			selected_index = U.min_max(selected_index - 1, 0 if has_quicksave else 1, btn_arr.size() - 1)
-		"S":
-			if current_mode != MODE.TITLE:return
-			selected_index = U.min_max(selected_index + 1, 0 if has_quicksave else 1, btn_arr.size() - 1)
-		"A":
-			if current_mode != MODE.SCENARIO:return
-			scenario_index = U.min_max(scenario_index - 1, 0, ScenarioList.get_child_count() - 1)
-		"D":
-			if current_mode != MODE.SCENARIO:return
-			scenario_index = U.min_max(scenario_index + 1, 0, ScenarioList.get_child_count() - 1)
-# ------------------------------------------

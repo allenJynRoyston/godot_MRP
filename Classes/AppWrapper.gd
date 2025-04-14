@@ -17,9 +17,14 @@ var offset:Vector2 = Vector2(0, 0)
 var default_size:Vector2 
 var in_fullscreen:bool = false
 var fast_load:bool = false
+var is_paused:bool = false
 
 var default_setup:Dictionary = {}
 var is_windows:bool = DisplayServer.get_name() == "Windows"
+var is_ready_and_activated:bool = false
+
+signal is_ready
+signal quit_complete
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -31,6 +36,9 @@ func _exit_tree() -> void:
 func _ready() -> void:		
 	after_ready.call_deferred()
 	default_size = WindowUI.size
+	
+func pause() -> void:pass
+func unpause() -> void:pass
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -59,16 +67,16 @@ func on_max() -> void:
 # ------------------------------------------------------------------------------	
 func resize() -> void:
 	var container_node:Control = GBL.find_node(REFS.OS_LAYOUT)	
-	if in_fullscreen:
-		var is_windowed_mode:bool = DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
-		var spacing:int = 35 if is_windows else 68
-		WindowUI.window_size = GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, (spacing if is_windowed_mode else 35) + 4)
-		WindowUI.window_position = Vector2(0, 35)
+	#if in_fullscreen:
+	#var is_windowed_mode:bool = DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
+	#var spacing:int = 35 if is_windows else 68
+	WindowUI.window_size = GBL.game_resolution #GBL.find_node(REFS.OS_LAYOUT).size - Vector2(4, (spacing if is_windowed_mode else 35) + 4)
+	WindowUI.window_position = Vector2(0, 0)
 
-	else:
-		var center_position:Vector2 = (container_node.size - default_size)/2 + offset
-		WindowUI.window_position = center_position
-		WindowUI.window_size = default_size
+	#else:
+		#var center_position:Vector2 = (container_node.size - default_size)/2 + offset
+		#WindowUI.window_position = center_position
+		#WindowUI.window_size = default_size
 			
 	WindowUI.in_fullscreen_mode = in_fullscreen
 	WindowUI.enable_header = !in_fullscreen
@@ -79,14 +87,13 @@ func resize() -> void:
 
 # ------------------------------------------------------------------------------	
 func bind_events() -> void:
-	#WindowUI.onClick = func(node:Control, btn:int, is_hovered:bool) -> void:
-		#onClick.call(self, node, btn, is_hovered)
+	WindowUI.onClick = func(node:Control, btn:int, is_hovered:bool) -> void:
+		onClick.call(self, node, btn, is_hovered)
 		#
 	#WindowUI.onClickRelease = func(node:Control, btn:int, is_hovered:bool) -> void:
 		#onClickRelease.call(self, node, btn, is_hovered)
 	
 	WindowUI.onCloseBtn = func(node:Control) -> void:
-		print("close button...")
 		onCloseBtn.call(self, node)
 		
 	#WindowUI.onMaxBtn = func(node:Control) -> void:

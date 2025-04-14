@@ -14,11 +14,9 @@ theme_override_constants/separation = 5
 script = ExtResource("1_gtfh7")
 
 [node name="IsSelected" parent="." instance=ExtResource("2_j18eo")]
-custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 icon = 3
+flip_v = false
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
@@ -31,5 +29,5 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 6
-size_flags_vertical = 4
 icon = 13
+flip_v = false

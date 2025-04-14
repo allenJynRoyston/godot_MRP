@@ -8,6 +8,7 @@ extends Control
 var control_pos:Dictionary
 var control_pos_default:Dictionary
 var freeze_inputs:bool = false
+var directional_pref:String = "LR"
 
 var item_index:int = -1 : 
 	set(val):
@@ -24,16 +25,15 @@ var is_revealed:bool = false :
 		is_revealed = val
 		reveal(val)
 		
-
+var onBack:Callable = func() -> void:pass
+var onAction:Callable = func() -> void:pass
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
-	GBL.register_node(REFS.BTN_CONTROLS, self)
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_fullscreen(self)
 
 func _exit_tree() -> void:
-	GBL.unregister_node(REFS.BTN_CONTROLS)
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_fullscreen(self)
 
@@ -43,8 +43,13 @@ func _ready() -> void:
 	ABtn.onClick = func() -> void:
 		if !is_node_ready() or itemlist.is_empty():return
 		var node:Control = itemlist[item_index]
+		onAction.call()
 		if "onClick" in node:
 			node.onClick.call()
+	
+	BBtn.onClick = func() -> void:
+		onBack.call()
+				
 # --------------------------------------------------------------------------------------------------
 
 
@@ -68,40 +73,56 @@ func update_control_pos() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
-	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
+	if control_pos.is_empty():return
+	
+	if !state:
+		freeze_and_disable(true)
+			
+	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
+	
+	if state:
+		freeze_and_disable(false)
+		
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func freeze_and_disable(state:bool) -> void:
+	freeze_inputs = state
+	for btn in [ABtn, BBtn]:
+		btn.is_disabled = state	
+	if !state:
+		on_item_index_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func on_itemlist_update() -> void:
 	if !is_node_ready() or itemlist.is_empty():return
+	await U.tick()
 	item_index = 0
-	for index in itemlist.size():
-		var node:Control = itemlist[index]
-		if "onFocus" in node:
-			node.onFocus = func(_node:Control) -> void:
-				if _node == node:
-					item_index = index
 
 func add_to_itemlist(list:Array) -> void:
 	for node in list:
-		itemlist.push_back(node)
+		if node not in itemlist:
+			itemlist.push_back(node)
 	
 func remove_from_itemlist(list:Array) -> void:
 	for node in list:
-		itemlist.erase(node)
+		if node in itemlist:
+			itemlist.erase(node)
+	item_index = 0
+	
+func clear_itemlist() -> void:
+	itemlist = []
+	item_index = -1
 # --------------------------------------------------------------------------------------------------
-
-
 
 # --------------------------------------------------------------------------------------------------
 func on_item_index_update() -> void:	
 	if !is_node_ready() or itemlist.is_empty():return
 	var node:Control = itemlist[item_index]
-		
 	Input.warp_mouse(node.global_position + Vector2(node.size.x/2, 10))
 # --------------------------------------------------------------------------------------------------
 	
-
 # ------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
@@ -110,9 +131,17 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 	
-	match key:
-		"A":
-			item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1)
-		"D":
-			item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1)
+	if directional_pref == "LR":
+		match key:
+			"A":
+				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1)
+			"D":
+				item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1)
+			
+	if directional_pref == "UD":
+		match key:
+			"W":
+				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1)
+			"S":
+				item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1)		
 # ------------------------------------------	

@@ -26,7 +26,6 @@ var active_nodes:Array[Control] = []
 var on_opened_changed:Callable = func():pass
 var on_item_focus_change:Callable = func(state:bool, data:Dictionary) -> void:pass
 var on_list_focus_change:Callable = func(state:bool) -> void:pass
-
 # --------------------------------------	
 func _ready() -> void:
 	super._ready()

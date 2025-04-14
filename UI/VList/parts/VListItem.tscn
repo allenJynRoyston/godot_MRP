@@ -26,9 +26,8 @@ theme_override_constants/separation = 5
 [node name="OpenBtn" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_gb1kg")]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 icon = 3
+flip_v = false
 is_hoverable = false
 
 [node name="SectionLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
@@ -41,9 +40,8 @@ vertical_alignment = 1
 [node name="NewBtn" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_gb1kg")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 icon = 13
+flip_v = false
 is_hoverable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]

@@ -34,8 +34,9 @@ layout_mode = 2
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 icon = 3
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.672751, 0.672752, 0.672751, 1)
 flip_v = false
-is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

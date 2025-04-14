@@ -103,43 +103,15 @@ func update_color(state:bool) -> void:
 	if Engine.is_editor_hint() or !is_node_ready():
 		return
 		
-	IconButton.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
+	#IconButton.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
 	
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
 	label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 	AppLabel.label_settings = label_setting
 	
-	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover:
-		if !is_draggable or !is_focused or !is_selectable: return
-		onClick.call(self, btn, on_hover)
-		if !is_dragging:
-			is_dragging = true
-			drag_start_pos = GBL.mouse_pos - pos_offset
-			onDragStart.call(self)
-
-func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover:
-		if !is_draggable or !is_focused or !is_selectable: return
-		if is_dragging:
-			onDragEnd.call(pos_offset, self)
-			is_dragging = false
 
 func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	if !is_selectable: return
 	if on_hover and btn == MOUSE_BUTTON_LEFT:
-		onDblClick.call(self, on_hover, data)
+		onClick.call()
 # ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func on_process_update(delta: float) -> void:
-	super.on_process_update(delta)
-		
-	if !is_dragging: 
-		pos_offset = pos_offset
-		return
-	
-	pos_offset = GBL.mouse_pos - drag_start_pos 
-# ------------------------------------------------------------------------------
-	

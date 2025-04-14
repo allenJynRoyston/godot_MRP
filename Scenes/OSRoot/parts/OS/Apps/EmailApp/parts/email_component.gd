@@ -2,6 +2,7 @@ extends PanelContainer
 
 @onready var VList:PanelContainer = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VList
 @onready var EmailContentContainer:PanelContainer = $HBoxContainer/ScrollContainer/EmailContentContainer
+@onready var BtnControls:Control = $BtnControl
 
 @onready var SubjectLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer/SubjectLabel
 @onready var FromLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer2/FromLabel
@@ -35,13 +36,38 @@ var on_click:Callable = func(data:Dictionary):pass
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
+	hide()
 	on_email_data_update()
 	
 	EmailContentContainer.hide()
 	AttachmentContainer.hide()
 	
+	BtnControls.directional_pref = "UD"
+	BtnControls.onBack = func() -> void:
+		BtnControls.reveal(false)
+
 	VList.on_data_changed = func(new_state) -> void:		
 		on_data_changed.call(new_state)
+		print(new_state)
+		#var itemlist:Array = []
+		#for btn in VList.get_btns():
+			#itemlist.push_back(btn)
+		#BtnControls.itemlist = itemlist
+		
+
+func start() -> void:
+	BtnControls.reveal(true)
+	show()
+		
+func pause() -> void:
+	pass
+	#PauseContainer.show()
+	#TitleScreen.freeze_inputs = true
+	
+func unpause() -> void:
+	pass
+	#PauseContainer.hide()
+	#TitleScreen.freeze_inputs = false		
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

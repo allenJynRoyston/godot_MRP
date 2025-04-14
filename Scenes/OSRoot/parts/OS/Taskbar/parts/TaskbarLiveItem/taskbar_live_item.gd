@@ -15,6 +15,10 @@ var data:Dictionary = {} :
 
 var focus_busy:bool = false
 
+var onClick:Callable = func():pass
+var onMinimize:Callable = func():pass
+var onClose:Callable = func():pass
+
 @export var show_min_button:bool = false : 
 	set(val):
 		show_min_button = val
@@ -27,8 +31,11 @@ func _ready() -> void:
 	on_show_min_button_update()
 	on_focus(false)
 	
+	IconButton.onClick = func() -> void:
+		onClick.call()
+	
 	MinButton.onClick = func() -> void:		
-		data.onMinimize.call()
+		onMinimize.call()
 	
 	MinButton.onFocus = func(node:Control) -> void:
 		focus_busy = true
@@ -37,7 +44,7 @@ func _ready() -> void:
 		focus_busy = false	
 	
 	CloseButton.onClick = func() -> void:
-		data.onClose.call()
+		onClose.call()
 		
 	CloseButton.onFocus = func(node:Control) -> void:
 		focus_busy = true
@@ -59,12 +66,13 @@ func on_data_update() -> void:
 		IconButton.icon = data.icon
 # --------------------------------------	
 
+# --------------------------------------		
+func get_buttons() -> Array:
+	return [IconButton, CloseButton]
+# --------------------------------------	
+	
 # --------------------------------------	
 func on_focus(state:bool) -> void:
-	#var label_setting:LabelSettings = ItemLabel.label_settings.duplicate()
-	#label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.DARK) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.LIGHT)
-	#ItemLabel.label_settings = label_setting
-	
 	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
 	new_stylebox.bg_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)

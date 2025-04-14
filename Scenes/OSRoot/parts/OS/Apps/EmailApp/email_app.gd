@@ -2,6 +2,7 @@ extends AppWrapper
 
 @onready var EmailComponent:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/EmailComponent
 @onready var LoadingComponent:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/LoadingComponent
+@onready var PauseContainer:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/PauseContainer
 
 var email_data:Array[Dictionary] = [
 	{
@@ -100,29 +101,53 @@ var email_data:Array[Dictionary] = [
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	WindowUI = $WindowUI
+	PauseContainer.hide()	
 	super._ready()	
-	
-	LoadingComponent.delay = 0.3 if fast_load else 2.0
-	EmailComponent.hide()
-	LoadingComponent.start(fast_load)
-	await LoadingComponent.on_complete	
-	EmailComponent.show()
-	
-	# make sure has_read first so email_data can reference it
-	EmailComponent.not_new = app_props.get_not_new.call()	
-	# assign email_data
-	EmailComponent.email_data = email_data
 
-	
-	# assign event to update has read
-	#EmailComponent.on_marked = app_events.on_marked	
-	# assign event to updat eif state has changed
-	EmailComponent.on_data_changed = func(new_state:Array) -> void:
-		# not used, but can be used to capture the state of opened 
-		pass
-	
-	EmailComponent.on_click = func(data:Dictionary) -> void:
-		for index in email_data.size():			
-			email_data[index].selected = [data.index] if index == data.parent_index else []
+func start() -> void:
+	if !is_ready_and_activated:
+		is_ready_and_activated = true	
+		LoadingComponent.delay = 0.3 if fast_load else 2.0
+		EmailComponent.hide()
+		LoadingComponent.start(fast_load)
+		await LoadingComponent.on_complete	
+		EmailComponent.start()
+		is_ready.emit()
+		
+		# make sure has_read first so email_data can reference it
+		EmailComponent.not_new = app_props.get_not_new.call()	
+		# assign email_data
 		EmailComponent.email_data = email_data
+
+		
+		# assign event to update has read
+		#EmailComponent.on_marked = app_events.on_marked	
+		# assign event to updat eif state has changed
+		EmailComponent.on_data_changed = func(new_state:Array) -> void:
+			# not used, but can be used to capture the state of opened 
+			pass
+		
+		EmailComponent.on_click = func(data:Dictionary) -> void:
+			for index in email_data.size():			
+				email_data[index].selected = [data.index] if index == data.parent_index else []
+			EmailComponent.email_data = email_data
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func quit() -> void:
+	await U.set_timeout(0.3)
+	quit_complete.emit()
+	self.queue_free()
+	
+func pause() -> void:
+	if !is_paused:
+		is_paused = true
+		PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+		PauseContainer.show()
+		EmailComponent.pause()
+	
+func unpause() -> void:
+	is_paused = false
+	PauseContainer.hide()
+	EmailComponent.unpause()
 # ------------------------------------------------------------------------------

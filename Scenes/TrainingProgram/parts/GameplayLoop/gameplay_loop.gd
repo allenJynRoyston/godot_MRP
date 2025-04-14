@@ -674,8 +674,6 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	
 	# update phase and start game
 	current_phase = PHASE.PLAYER
-	
-	
 #endregion
 # ------------------------------------------------------------------------------
 

@@ -37,3 +37,6 @@ func on_data_update() -> void:
 			on_data_changed.call(data.duplicate(true))
 			
 		ItemContainer.add_child(new_node)
+
+func get_btns() -> Array:
+	return ItemContainer.get_children()

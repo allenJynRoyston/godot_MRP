@@ -262,9 +262,15 @@ func room_left(allow_floor_change:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func take_screenshot(save_file_name:String) -> void:
+func get_viewport_texture(viewport:SubViewport) -> Texture2D:
+	var viewport_capture:Image = viewport.get_texture().get_image()
+	var texture:Texture2D = ImageTexture.create_from_image(viewport_capture).duplicate()
+	return texture
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func save_screenshot(viewport:SubViewport) -> void:
 	pass
-	#var viewport:SubViewport = GBL.find_node(System.REF.FINAL_VIEWPORT)
 	#var viewport_capture:Image = viewport.get_texture().get_image()
 	#var image_size:Vector2 = viewport_capture.get_size()
 	#var image_ratio:float = float(image_size.y/image_size.x)

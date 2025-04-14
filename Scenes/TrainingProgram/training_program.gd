@@ -15,7 +15,6 @@ const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/pa
 @export var debug_energy:bool = true
 @export var debug_personnel:bool = false
 
-
 # options
 var fast_start:bool = false
 var skip_main_menu:bool = false
@@ -73,6 +72,7 @@ func start(restart:bool = false) -> void:
 		"quit":
 			on_quit.emit()
 # ---------------------------------------------
+
 
 # ---------------------------------------------
 func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:

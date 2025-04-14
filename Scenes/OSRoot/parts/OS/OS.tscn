@@ -1,10 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=11 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/OSRoot/parts/OS/OS.gd" id="1_rk64t"]
+[ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="2_pdkdd"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/OSRoot/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn" id="4_e3kl5"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
 [ext_resource type="PackedScene" uid="uid://8hxxm66kio4n" path="res://Scenes/OSRoot/parts/OS/Installer/Installer.tscn" id="6_dhnyo"]
 [ext_resource type="PackedScene" uid="uid://clbcu7v8n62o8" path="res://Scenes/OSRoot/parts/OS/Notification/Notification.tscn" id="7_mdufi"]
+[ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="8_13atc"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41nkp"]
 
@@ -20,7 +23,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_41nkp")
 script = ExtResource("1_rk64t")
-metadata/_edit_group_ = true
+
+[node name="BG" type="TextureRect" parent="."]
+material = ExtResource("2_pdkdd")
+layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -64,21 +70,29 @@ layout_mode = 2
 title = "Recycle Bin"
 icon = 0
 
-[node name="RunningAppsContainer" type="Control" parent="MarginContainer"]
-layout_mode = 2
-
 [node name="TaskbarAppsContainer" type="Control" parent="MarginContainer"]
 layout_mode = 2
 
 [node name="Taskbar" parent="MarginContainer" instance=ExtResource("3_v00j4")]
-layout_mode = 2
-show_media_player = true
-
-[node name="FullScreenAppsContainer" type="Control" parent="MarginContainer"]
+z_index = 5
+z_as_relative = false
 layout_mode = 2
 
 [node name="Installer" parent="MarginContainer" instance=ExtResource("6_dhnyo")]
 layout_mode = 2
 
 [node name="NotificationContainer" parent="MarginContainer" instance=ExtResource("7_mdufi")]
+layout_mode = 2
+
+[node name="BtnControl" parent="MarginContainer" instance=ExtResource("6_b7tym")]
+layout_mode = 2
+
+[node name="PauseContainer" parent="." instance=ExtResource("8_13atc")]
+visible = false
+layout_mode = 2
+
+[node name="RunningAppsContainer" type="Control" parent="."]
+layout_mode = 2
+
+[node name="BtnControl" parent="." instance=ExtResource("6_b7tym")]
 layout_mode = 2

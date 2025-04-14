@@ -16,7 +16,7 @@ extends PanelContainer
 @export var skip_start_at:bool = false
 
 
-enum MODE {INIT, START}
+enum MODE {INIT, START, START_AT_SCREEN}
 
 var control_pos:Dictionary = {}
 
@@ -27,7 +27,7 @@ var current_mode:MODE = MODE.INIT :
 
 var is_ready:bool = false
 
-var on_login:Callable = func():pass
+var onLogin:Callable = func():pass
 
 signal on_finish
 
@@ -55,12 +55,15 @@ func _after_ready() -> void:
 	
 	LoginBtn.onClick = func() -> void:
 		if !is_ready:return
-		on_login.call()
+		onLogin.call()
 	
 	IntroAndTitleScreen.skip_logo = skip_logo
 	IntroAndTitleScreen.skip_title = skip_title
 	IntroAndTitleScreen.skip_sequence = skip_sequence
 	IntroAndTitleScreen.skip_start_at = skip_start_at
+	
+	await U.tick()
+	control_pos[BtnPanel] = {"show": BtnPanel.position.y, "hide": BtnPanel.position.y + BtnPanel.size.y}
 # ---------------------------------------------
 		
 
@@ -69,9 +72,15 @@ func start() -> void:
 	show()	
 	await U.tick()	
 	current_mode = MODE.START
-	control_pos[BtnPanel] = {"show": BtnPanel.position.y, "hide": BtnPanel.position.y + BtnPanel.size.y}
 	BtnPanel.position.y = control_pos[BtnPanel].hide
 	BtnPanel.modulate = Color(1, 1, 1, 1)
+
+func fastfoward() -> void:
+	await U.tick()	
+	current_mode = MODE.START_AT_SCREEN
+	BtnPanel.position.y = control_pos[BtnPanel].show
+	show()	
+	BtnPanel.modulate = Color(1, 1, 1, 1)	
 
 
 func end() -> void:
@@ -86,7 +95,6 @@ func on_current_mode_update() -> void:
 	match current_mode:
 		# ---------
 		MODE.INIT:
-			
 			for subviewport in [IntroSubviewport, RenderSubviewport]:
 				subviewport.set_process(false)
 
@@ -111,5 +119,21 @@ func on_current_mode_update() -> void:
 			SceneAnimationPlayer.play("LightsOn")			
 			await U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].show, 0.7, 2.0)
 			is_ready = true
+		# ---------
+		MODE.START_AT_SCREEN:
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0)
+			IntroAndTitleScreen.hide()
+
+			RenderSubviewport.set_process(true)
+
+			U.tween_node_property(SceneCamera, "fov", 77, 0)
+			TextureRender.texture = RenderSubviewport.get_texture()
+
+			U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0)
+			SceneAnimationPlayer.active = true
+			SceneAnimationPlayer.play("LightsOn")			
+			U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].show, 0)
+			is_ready = true
+		# ---------
 		
 # ---------------------------------------------	

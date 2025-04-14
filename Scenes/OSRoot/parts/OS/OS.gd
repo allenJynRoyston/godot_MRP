@@ -1,18 +1,21 @@
 extends MouseInteractions
 class_name Layout
 
+@onready var Background:TextureRect = $BG
+@onready var PauseContainer:Control = $PauseContainer
 @onready var Taskbar:Control = $MarginContainer/Taskbar
-@onready var RunningAppsContainer:Control = $MarginContainer/RunningAppsContainer
 @onready var TaskbarAppsContainer:Control = $MarginContainer/TaskbarAppsContainer
-@onready var FullScreenAppsContainer:Control = $MarginContainer/FullScreenAppsContainer
 @onready var NotificationContainer:PanelContainer = $MarginContainer/NotificationContainer
 @onready var BackgroundWindow:PanelContainer = $MarginContainer/BackgroundWindow
 @onready var Installer:PanelContainer = $MarginContainer/Installer
-
 @onready var DesktopIconContainer:Control = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
+@onready var BtnControls:Control = $BtnControl
+@onready var RunningAppsContainer:Control = $RunningAppsContainer
+
 @export var skip_to_game:bool = false
+@export var background_subviewport:SubViewport
 
 const AppItemPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
@@ -39,6 +42,7 @@ enum MODS {
 enum PLAYLIST {
 	TRACK_1, TRACK_2, TRACK_3
 }
+
 
 # -----------------------------------
 #region SAVABLE DATA
@@ -103,7 +107,7 @@ var email_not_new:Array = []
 var in_recycle_bin:Array = []
 var apps_installed:Array = [] 
 var apps_installing:Array = []
- 
+var has_started:bool = false
 #endregion
 # -----------------------------------
 
@@ -127,12 +131,9 @@ var app_list:Array[Dictionary] = [
 			return APPS.SDT in apps_installed,
 		"events": {
 			"open": func(data:Dictionary) -> void:
-				BtnControls.reveal(false)
 				open_app(data, true, true),
 			"close": func() -> void:
-				close_app(APPS.SDT)
-				await U.set_timeout(0.3)
-				BtnControls.reveal(true),
+				close_app(APPS.SDT, true),
 		}
 	},
 	#{
@@ -162,34 +163,37 @@ var app_list:Array[Dictionary] = [
 				#open_app(data, false),
 		#}
 	#},
-	#{
-		#"details": {
-			#"ref": APPS.EMAIL,
-			#"title": "Email",
-			#"icon": SVGS.TYPE.EMAIL,
-			#"app": EmailAppPreload,
-			#"installed": func() -> bool:
-				#return true,
-			#"app_props": {
-				#"get_not_new": func() -> Array:
-					#return email_not_new,
-			#},
-			#"app_events": {
-				#"on_marked": func(updated_vals:Array) -> void:
-					#email_not_new = updated_vals
-					#save_state(0),
-				#"onOpenAttachment": on_open_attachment,
-			#}
-		#},
-		#"installed": func() -> bool:
-			#return true,
-		#"defaults": {
-			#"pos_offset": Vector2(0, 0),
-		#},
-		#"events": {
-			#"open": open_app	
-		#},
-	#},
+	{
+		"details": {
+			"ref": APPS.EMAIL,
+			"title": "Email",
+			"icon": SVGS.TYPE.EMAIL,
+			"app": EmailAppPreload,
+			"installed": func() -> bool:
+				return true,
+			"app_props": {
+				"get_not_new": func() -> Array:
+					return email_not_new,
+			},
+			"app_events": {
+				"on_marked": func(updated_vals:Array) -> void:
+					email_not_new = updated_vals
+					save_state(0),
+				"onOpenAttachment": on_open_attachment,
+			}
+		},
+		"installed": func() -> bool:
+			return true,
+		"defaults": {
+			"pos_offset": Vector2(0, 0),
+		},
+		"events": {
+			"open": func(data:Dictionary) -> void:
+				open_app(data, true, true),
+			"close": func() -> void:
+				close_app(APPS.EMAIL, true),			
+		},
+	},
 	{
 		"details": {
 			"ref": APPS.MUSIC_PLAYER,
@@ -285,10 +289,7 @@ var window_focus_list:Array[Control] = [] :
 		window_focus_list = val
 		on_window_focus_list_update()
 		
-var running_apps_list:Array = [] : 
-	set(val): 
-		running_apps_list = val
-		on_running_apps_list_update()
+var running_apps_list:Array = []
 var app_in_fullscreen:bool = false 
 
 var top_level_icon:Control
@@ -301,9 +302,16 @@ var top_level_window:Control :
 	#set(val):
 		#selected_index = val
 		#on_selected_index_update()
-
+var btnlist:Array = []	
 var freeze_inputs:bool = false
-var BtnControls:Control 
+var show_taskbar:bool = false
+var currently_running_app:Control : 
+	set(val):
+		currently_running_app = val
+		on_currently_running_app_update()
+
+var onBack:Callable = func() -> void:pass
+
 signal on_confirm
 #endregion
 # -----------------------------------
@@ -326,40 +334,65 @@ func _exit_tree() -> void:
 # -----------------------------------
 func _ready() -> void:	
 	super._ready()	
-	visible = false
+	hide()
 	set_process(false)
 	set_physics_process(false)	
-	BtnControls = GBL.find_node(REFS.BTN_CONTROLS)
+	
+	Background.texture = background_subviewport.get_texture()
+	
+	BtnControls.onBack = func() -> void:
+		pause()
+		
+	Taskbar.onBackToDesktop = func() -> void:
+		currently_running_app = null
+		RunningAppsContainer.hide()
+		toggle_show_taskbar()
+	
+	Taskbar.onBack = func () -> void:
+		toggle_show_taskbar()
+	
+	Taskbar.onItemSelect = func(item:Dictionary) -> void:
+		for node in RunningAppsContainer.get_children():
+			if item.node == node:
+				currently_running_app = node
+		
+	
+	Taskbar.onItemClose = func(item:Dictionary) -> void:
+		for node in RunningAppsContainer.get_children():
+			if item.node == node:
+				close_app(item.ref)
+# -----------------------------------
+
+# -----------------------------------
+func pause() -> void:
+	freeze_inputs = true
+	await BtnControls.reveal(false)
+	onBack.call()	
+	
+func resume() -> void:
+	Taskbar.set_show_taskbar(false, true)
+	await BtnControls.reveal(true)
+	freeze_inputs = false
 # -----------------------------------
 
 # -----------------------------------
 func start() -> void:
+	has_started = true
 	load_state()	
 	on_simulated_busy_update()
-	
+	on_notification_data_update()
+
 	# finish this part	
 	if event_switches.show_status_on_boot:
 		show_status_notice(true)
-
-	render_desktop_icons()	
-	on_notification_data_update()
-
-	Taskbar.onTitleBarClick = open_taskbar_menu
-
-	RecycleBin.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
-		if is_focused:
-			open_app({
-				"ref": APPS.RECYCLE_BIN,
-				"icon": SVGS.TYPE.TXT_FILE,
-				"app": RecycleBinAppPreload,
-				"app_props": {
-					"app_data": app_list.duplicate().map(func(item):return item.details),
-					"in_bin": in_recycle_bin
-				},					
-			})
-			
+	
+	
 	if skip_to_game:
 		open_app(find_in_app_list(APPS.SDT).details, true, true, true)
+		
+	await render_desktop_icons()	
+	await U.set_timeout(0.3)
+	BtnControls.reveal(true)			
 # -----------------------------------	
 
 # -----------------------------------	
@@ -436,37 +469,6 @@ func on_window_focus_list_update() -> void:
 				##
 	##print(selected_index)
 ## -----------------------------------			
-
-
-# -----------------------------------
-func on_running_apps_list_update() -> void:
-	var refs:Array = running_apps_list.map(func(item): return item.data.ref)
-	var filter_list:Array = app_list.filter(func(item): return item.details.ref in refs)
-	var taskbar_live_items:Array = filter_list.map(func(item): 
-		var node_data:Dictionary = running_apps_list.filter(func(n): return item.details.ref == n.data.ref)[0]
-		var details:Dictionary = item.details
-		
-		return {
-			"title": details.title,
-			"icon": details.icon,
-			"ref": details.ref,
-			"onClick": func() -> void:
-				if app_in_fullscreen:
-					close_app(details.ref)
-					open_app(details, true, true)
-				else:
-					RunningAppsContainer.move_child(node_data.node, RunningAppsContainer.get_child_count() - 1),
-			"onMinimize": func() -> void:
-				node_data.node.on_minification.call()
-				app_in_fullscreen = false
-				Taskbar.fullscreen_data = {},
-			"onClose": func() -> void:
-				close_app(details.ref),
-		}
-	)
-	
-	Taskbar.taskbar_live_items = taskbar_live_items
-# -----------------------------------
 
 # -----------------------------------
 func find_in_app_list(ref:APPS) -> Dictionary:
@@ -793,179 +795,128 @@ func open_context_menu(title:String = "Context Menu", items:Array = []) -> void:
 
 # -----------------------------------	
 func open_taskbar_dropdown(node:Control, ref:int, props:Dictionary = {}) -> void:
-	if has_notification:return
-	
-	var selected_scene:PackedScene
-	match ref:
-		APPS.MEDIA_PLAYER_MINI:
-			selected_scene = MediaPlayerMiniAppPreload
-		APPS.TASKBAR_MENU:
-			selected_scene = TaskBarMenuAppPreload
-					
-	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
-	if selected_scene != null and ref not in app_refs:
-		var new_node:Control = selected_scene.instantiate()
-		
-		# set offset	
-		new_node.offset = Vector2(node.global_position.x + 10, 40)
-
-		# adds to running apps list and when updated show up in the taskbar
-		running_apps_list.push_back({"node": new_node, "data": {"ref": ref}})
-		running_apps_list = running_apps_list
-			
-		if "data" in new_node:
-			new_node.data = props
-			
-		new_node.onClick = func(node:Control, window_node:Node, btn:int, on_hover:bool) -> void:
-			if !on_hover:
-				node.queue_free()
-				window_focus_list.erase(node)
-				window_focus_list = window_focus_list
-				close_app(ref)
-	
-		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:
-			node.queue_free()
-			window_focus_list.erase(node)
-			window_focus_list = window_focus_list
-			close_app(ref)
-		
-			
-		new_node.onFocus = func(node:Control, window_node:Control) -> void:
-			if node not in window_focus_list:
-				window_focus_list.push_back(node)
-				
-		new_node.onBlur = func(node:Control, window_node:Control) -> void:
-			window_focus_list.erase(node)
-			window_focus_list = window_focus_list
-
-		TaskbarAppsContainer.add_child( new_node )
+	pass
+	#if has_notification:return
+	#
+	#var selected_scene:PackedScene
+	#match ref:
+		#APPS.MEDIA_PLAYER_MINI:
+			#selected_scene = MediaPlayerMiniAppPreload
+		#APPS.TASKBAR_MENU:
+			#selected_scene = TaskBarMenuAppPreload
+					#
+	#var running_apps_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
+	#if selected_scene != null and ref not in running_apps_refs:
+		#var new_node:Control = selected_scene.instantiate()
+		#
+		## set offset	
+		#new_node.offset = Vector2(node.global_position.x + 10, 40)
+#
+		## adds to running apps list and when updated show up in the taskbar
+		#running_apps_list.push_back({
+			#"node": new_node, 
+			#"data": {
+				#"ref": ref
+			#}
+		#})
+			#
+		#if "data" in new_node:
+			#new_node.data = props
+#
+		#TaskbarAppsContainer.add_child( new_node )
 # -----------------------------------	
 
 # -----------------------------------	
-func close_app(ref:int) -> void:	
-	var node:Control = running_apps_list.filter(func(item): return item.data.ref == ref)[0].node
-	running_apps_list = running_apps_list.filter(func(item): return item.data.ref != ref)	
-	window_focus_list.erase(node)
-	window_focus_list = window_focus_list
-	
-	if top_level_window == node:
-		top_level_window = null
-	if node.in_fullscreen:
-		var in_fs:Array = running_apps_list.filter(func(item): return item.node.in_fullscreen)
-		# checks if there are any other apps running in fullscreen
-		if in_fs.size() == 0:
-			app_in_fullscreen = false
-			Taskbar.fullscreen_data = {}
-		else:
-			Taskbar.fullscreen_data = in_fs[0].data
-			RunningAppsContainer.move_child(in_fs[0].node, RunningAppsContainer.get_child_count() - 1)
-			
-	node.queue_free()
-
 func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false, force_open:bool = false) -> void:
 	if !force_open and (simulate_busy or has_notification):
 		return
-
-	var app_refs:Array = running_apps_list.map(func(item): return item.data.ref)	
-	if data.ref not in app_refs:		
+	freeze_inputs = true
+	
+	# hide button controls
+	BtnControls.reveal(false)
+	# add stuff to taskbar
+	
+	# pause any running apps
+	for app in RunningAppsContainer.get_children():
+		app.pause()			
+	
+	# ... then open it
+	if data.ref not in running_apps_list.map(func(i): return i.ref):		
 		var app:Dictionary = find_in_app_list(data.ref) 
-		
-		# adds a mock timer
-		var previously_loaded:bool = data.ref in already_loaded
-		if !skip_loading and !previously_loaded:
-			already_loaded.push_back(data.ref)
-		
-		if !skip_loading:
-			await simulate_wait(0.2 if previously_loaded else 0.7)
-		
-		# adds new node and passes and props to them
 		var new_node:Control = data.app.instantiate()
+		var previously_loaded:bool = data.ref in already_loaded
+		running_apps_list.push_back({"ref": data.ref, "node": new_node})		
 
-		# adds to running apps list and when updated show up in the taskbar
-		running_apps_list.push_back({"node": new_node, "data": data})
-		running_apps_list = running_apps_list
-		
+		if data.ref not in already_loaded:
+			already_loaded.push_back(data.ref)
 		
 		# adds any props
 		if "app_props" in data:
 			new_node.app_props = data.app_props
-		# pass events down 
+		# and events
 		if "events" in app:
 			new_node.events = app.events
 		
 		# start in fullscreen or not, pass previously loaded
 		new_node.fast_load = (previously_loaded or skip_loading or force_open)
-		new_node.in_fullscreen = in_fullscreen
-		if in_fullscreen:
-			Taskbar.fullscreen_data = data
-			app_in_fullscreen = true
-		
+		new_node.in_fullscreen = true
+		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:			
+			close_app(data.ref)
+			
 		# determines which container to add it  to
 		RunningAppsContainer.add_child( new_node )
 		
-		# adds event handlers
-		# -------------------
-		#new_node.onClick = func(node:Control, window_node:Node, btn:int, on_hover:bool) -> void:
-			#if btn == MOUSE_BUTTON_LEFT:
-				## freeze content window (if it's not a context menu, and it's not fullscreen)
-				#if data.ref != APPS.CONTEXT_MENU and !on_hover and !new_node.in_fullscreen:
-					#window_node.freeze_content_input = true
-#
-				## --- IF CONTEXT MENU, CLOSE WHEN IT'S NOT HOVERED OVER
-				#if data.ref == APPS.CONTEXT_MENU and !on_hover:
-					#close_app(data.ref)
-					#
-				## else, move the top level window to the top
-				#if top_level_window != null:
-					#top_level_window.get_child(0).freeze_content_input = false
-					#RunningAppsContainer.move_child(top_level_window, RunningAppsContainer.get_child_count() - 1)
-			
-		# -------------------
-		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:			
-			print(app.events)
-			close_app(data.ref)
-			
-		# -------------------	
-		#new_node.onMaxBtn = func(node:Control, window_node:Control) -> void:
-			#Taskbar.fullscreen_data = data
-			#app_in_fullscreen = true
-			#node.on_max()
-
-			
-		## -------------------
-		#new_node.onFocus = func(node:Control, window_node:Control) -> void:
-			#if node not in window_focus_list:
-				#window_focus_list.push_back(node)
-			#window_focus_list = window_focus_list
-				#
-			## determine which window is on top
-			#var z_order:Dictionary = {}
-			#for index in RunningAppsContainer.get_children().size():
-				#z_order[RunningAppsContainer.get_child(index)] = index
-			#if window_focus_list.size() > 1 and node in z_order:
-				#if z_order[node] == RunningAppsContainer.get_children().size() - 1:
-					#top_level_window = node
-			#else:
-				#top_level_window = node
-				#
-				#
-		## -------------------
-		#new_node.onBlur = func(node:Control, window_node:Control) -> void:
-			#window_focus_list.erase(node)
-			#window_focus_list = window_focus_list
-#
-			#if window_focus_list.size() > 0:
-				#top_level_window = window_focus_list[0]
-#
-			#else:
-				#top_level_window = null
-		## -------------------
-		#
-		## -------------------
-		#new_node.onDragEnd = func(new_offset:Vector2, node:Control, window_node:Control) -> void:
-			#pass
-		## -------------------			
+		Taskbar.add_item({
+			"title": data.title,
+			"icon": data.icon,
+			"ref": data.ref,
+			"node": new_node,
+			"events": app.events
+		}) 
 		
+		currently_running_app = new_node
+		
+		# adds a mock loading splash
+		if !previously_loaded:
+			await simulate_wait(0.2 if previously_loaded else 0.7)
+		
+		new_node.start()
+		await new_node.is_ready
+	else:
+		currently_running_app = running_apps_list.filter(func(i): return i.ref == data.ref)[0].node
+		currently_running_app.unpause()
+
+	freeze_inputs = false
+	
+func close_app(ref:int, direct_close:bool = false) -> void:	
+	var node:Control = running_apps_list.filter(func(item): return item.ref == ref)[0].node
+	
+	for child in RunningAppsContainer.get_children():
+		if child == node:
+			currently_running_app = null
+			if direct_close:
+				BtnControls.reveal(true)
+			
+	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)	
+	node.quit()			
+	
+func on_currently_running_app_update() -> void:
+	for node in DesktopIconContainer.get_children():
+		if currently_running_app == null:
+			node.show() 
+		else: 
+			node.hide()
+	
+	for app in RunningAppsContainer.get_children():
+		if app == currently_running_app:
+			app.show() 
+		else:
+			app.hide()
+			
+	if currently_running_app == null:
+		RunningAppsContainer.hide()
+	else:
+		RunningAppsContainer.show()
 # -----------------------------------	
 #endregion
 # -----------------------------------
@@ -1004,8 +955,9 @@ func sort_desktop_icons() -> void:
 
 # -----------------------------------	
 func render_desktop_icons(wait_time:float = 1.0) -> void:
+	freeze_inputs = true
 	await simulate_wait(wait_time)
-	var itemlist:Array = []	
+	
 	var column_tracker := {}
 	
 	# remove and rerender icons, waitTime used to wait for changes
@@ -1013,111 +965,57 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 		child.queue_free()
 	icon_focus_list = []	
 	await U.tick()
+	btnlist = []
 	
 	for item in app_list:
 		if (item.details.ref not in in_recycle_bin) and item.installed.call():
 			var new_node:Control = AppItemPreload.instantiate()	
 			DesktopIconContainer.add_child(new_node)
-			itemlist.push_back(new_node)
+			btnlist.push_back(new_node)
 			new_node.pos_offset = app_positions[item.details.ref]
 			new_node.data = item.details
 			
 			new_node.onClick = func() -> void:
 				item.events.open.call(item.details)
-				
-				#if on_hover and !has_notification:
-					#if btn == MOUSE_BUTTON_RIGHT:
-						#var details:Dictionary = item.details
-						#open_context_menu(details.title, [
-							#{
-								#"get_details": func():
-									#return {
-										#"title": "Open..."
-									#},
-								#"onClick": func(_data:Dictionary):
-									#item.events.onDblClick.call(details)
-									#close_app(APPS.CONTEXT_MENU),
-							#},						
-							#{
-								#"get_details": func():
-									#return {
-										#"title": "Move to Recycle Bin..."
-									#},
-								#"onClick": func(_data:Dictionary):
-									## add to recycle bin
-									#in_recycle_bin.push_back(details.ref)
-									#
-									## update recycle bin if it's open
-									#for app in running_apps_list:
-										#if app.data.ref == APPS.RECYCLE_BIN:
-											#app.node.in_bin_list = in_recycle_bin
-											#
-									## rerender desktop icons
-									#render_desktop_icons(0.0)
-									#close_app(APPS.CONTEXT_MENU)
-									#
-									#save_state(),
-							#}
-						#])
-						#
-					#if btn == MOUSE_BUTTON_LEFT:
-						#DesktopIconContainer.move_child(top_level_icon, DesktopIconContainer.get_child_count() - 1)
-				
-			#new_node.onDblClick = func(node:Control, is_focused:bool, data:Dictionary) -> void:
-				#if window_focus_list.is_empty() and !has_notification:
-					#item.events.onDblClick.call(data)
-				
-			#new_node.onDragStart = func(node:Control) -> void:
-				#set_node_selectable_state(false, top_level_icon)
-				#
-			#new_node.onDragEnd = func(new_offset:Vector2, node:Control) -> void:
-				#set_node_selectable_state(true)
-				#icon_focus_list.erase(node)
-				#if app_positions[item.details.ref] != new_offset:
-					#if icon_focus_list.is_empty():
-						#app_positions[item.details.ref] = new_offset
-						#save_state()
-					#else:
-						#new_node.pos_offset = app_positions[item.details.ref]
-						
-			#new_node.onFocus = func(node:Control) -> void:
-				#if node not in icon_focus_list:
-					#icon_focus_list.push_back(node)
-				#var z_order:Dictionary = {}
-				#for index in DesktopIconContainer.get_children().size():
-						#z_order[DesktopIconContainer.get_child(index)] = index
-				#if icon_focus_list.size() > 1:
-					#if z_order[node] == DesktopIconContainer.get_children().size() - 1:
-						#top_level_icon = node
-				#else:
-					#top_level_icon = node				
-					#
-			#new_node.onBlur = func(node:Control) -> void:
-				#icon_focus_list.erase(node)
-				#if icon_focus_list.size() > 0:
-					#top_level_icon = icon_focus_list[0]
-				#else:
-					#top_level_icon = null			
-
-	BtnControls.itemlist = itemlist
-	#on_selected_index_update()
-	await U.set_timeout(0.3)
-	BtnControls.reveal(true)
+			
+	BtnControls.directional_pref = "LR"
+	BtnControls.itemlist = btnlist
+	freeze_inputs = false
 # -----------------------------------
 #endregion
 # -----------------------------------
+
+# -----------------------------------
+func toggle_show_taskbar() -> void:		
+	show_taskbar = !show_taskbar
+	
+	if show_taskbar:
+		PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))		
+		PauseContainer.show()
+		BtnControls.reveal(false)	
+		# pause any runnning apps
+		for app in RunningAppsContainer.get_children():
+			app.pause()		
+		
+	freeze_inputs = true
+	await Taskbar.set_show_taskbar(show_taskbar)
+	freeze_inputs = false
+	
+	if !show_taskbar:
+		PauseContainer.hide()
+		if currently_running_app != null:
+			currently_running_app.unpause()
+		else:
+			BtnControls.reveal(true)	
+
+# -----------------------------------
 #
-## ------------------------------------------
-#func on_control_input_update(input_data:Dictionary) -> void:
-	#if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
-		#return
-#
-	#var key:String = input_data.key
-	#var keycode:int = input_data.keycode
-	#
-	#match key:
-		#"A":
-			#selected_index = U.min_max(selected_index - 1, 0, DesktopIconContainer.get_child_count() - 1)
-		#"D":
-			#selected_index = U.min_max(selected_index + 1, 0, DesktopIconContainer.get_child_count() - 1)
-## ------------------------------------------
+# ------------------------------------------
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
+		return
+
+	match input_data.key:
+		"BACKSPACE":
+			toggle_show_taskbar()
+# ------------------------------------------

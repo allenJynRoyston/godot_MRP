@@ -1,15 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://bluesleu6wl4v"]
+[gd_scene load_steps=7 format=3 uid="uid://bluesleu6wl4v"]
 
 [ext_resource type="Script" uid="uid://doiyfiyvndsgw" path="res://Scenes/OSRoot/parts/OS/Apps/SiteDirectorTrainingApp/site_director_training_app.gd" id="1_5dlsa"]
 [ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_08334"]
 [ext_resource type="PackedScene" uid="uid://dam3228oxnp8k" path="res://Scenes/TrainingProgram/TrainingProgram.tscn" id="3_68i6h"]
 [ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="4_ys1py"]
+[ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="5_kem2l"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_45imw"]
 
 [node name="SiteDirectorTrainingApp" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_45imw")
@@ -32,24 +36,32 @@ window_label = "Site Director Training Program"
 
 [node name="IconBtn" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/LabelContainer/MarginContainer/HBoxContainer" index="0"]
 icon = 6
+flip_v = false
 
 [node name="Label" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/LabelContainer/MarginContainer/HBoxContainer" index="1"]
 text = "Site Director Training Program"
 
 [node name="MaxBtn" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/BtnContainer/HBoxContainer" index="0"]
-icon = 14
+visible = true
+flip_v = false
 
 [node name="CloseBtn" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/BtnContainer/HBoxContainer" index="1"]
 visible = true
+flip_v = false
 
 [node name="TrainingProgram" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_68i6h")]
 layout_mode = 2
 
 [node name="LoadingComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="1" instance=ExtResource("4_ys1py")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 loading_text = "Starting Site Director Training Program..."
+
+[node name="PauseContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="2" instance=ExtResource("5_kem2l")]
+visible = false
+layout_mode = 2
 
 [editable path="WindowUI"]
 [editable path="WindowUI/MarginContainer/VBoxContainer/Header"]

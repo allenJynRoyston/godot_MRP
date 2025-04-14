@@ -20,9 +20,9 @@ func on_loading_text_update() -> void:
 		LoadingLabel.text = loading_text
 
 func start(fast_boot:bool = false) -> void:
+	show()
 	if !fast_boot:
 		await U.set_timeout(delay)
 	hide()
 	await U.set_timeout(0.2)
 	on_complete.emit()
-	queue_free()

@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://b3f8ve03806mt"]
+
+[ext_resource type="Script" uid="uid://b4chbhsde8qht" path="res://Components/PauseContainer/pause_container.gd" id="1_mejih"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_0p0en"]
+[ext_resource type="Material" uid="uid://yeprohyubuxc" path="res://CanvasShader/Halftones/HalfTones.tres" id="2_gmgei"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_gmgei"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dutpr"]
+bg_color = Color(0.0823529, 0.0823529, 0.0823529, 0.807843)
+
+[sub_resource type="LabelSettings" id="LabelSettings_dc6ks"]
+font = ExtResource("2_0p0en")
+font_size = 32
+outline_size = 24
+outline_color = Color(0.160784, 0.160784, 0.160784, 1)
+shadow_size = 0
+
+[node name="PauseContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dutpr")
+script = ExtResource("1_mejih")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.45098)
+material = ExtResource("2_gmgei")
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "PAUSE"
+label_settings = SubResource("LabelSettings_dc6ks")
+
+[node name="IconBtn" parent="CenterContainer/VBoxContainer" instance=ExtResource("3_gmgei")]
+visible = false
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = 9
+flip_v = false
+is_hoverable = false

@@ -249,9 +249,7 @@ func clear_file(type:FILE) -> Dictionary:
 		FILE.SAVE_THREE:
 			filepath = str(folder, quick_save_filename)
 	
-	print( dir.remove(filepath)	 )
 
-	
 	return {"success": success}
 # ---------------------------------
 

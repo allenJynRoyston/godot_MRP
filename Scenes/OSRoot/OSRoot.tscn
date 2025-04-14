@@ -1,21 +1,16 @@
-[gd_scene load_steps=27 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=24 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://b8tjlqidemn2y" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
-[ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="3_rjxom"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="5_tgmfl"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
-[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_tgmfl"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="8_8iit3"]
 [ext_resource type="Material" uid="uid://wrbhauo7j8f6" path="res://Shader/_template/template.tres" id="10_fsu2y"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_m3rsi"]
-viewport_path = NodePath("SubViewportBG")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
 viewport_path = NodePath("CRTShader/BorderShader")
@@ -87,20 +82,12 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="BG" type="TextureRect" parent="GameLayer"]
-material = ExtResource("3_rjxom")
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("ViewportTexture_m3rsi")
-
 [node name="DoorScene" parent="GameLayer" instance=ExtResource("5_tgmfl")]
 
-[node name="OS" parent="GameLayer" instance=ExtResource("2_hsa0l")]
-visible = false
+[node name="OS" parent="GameLayer" node_paths=PackedStringArray("background_subviewport") instance=ExtResource("2_hsa0l")]
 clip_contents = true
 skip_to_game = true
-
-[node name="BtnControl" parent="GameLayer" instance=ExtResource("6_tgmfl")]
+background_subviewport = NodePath("../../SubViewportBG")
 
 [node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
