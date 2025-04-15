@@ -1,104 +1,135 @@
 extends PanelContainer
 
-@onready var VList:PanelContainer = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VList
-@onready var EmailContentContainer:PanelContainer = $HBoxContainer/ScrollContainer/EmailContentContainer
 @onready var BtnControls:Control = $BtnControl
+@onready var BackBtn:BtnBase = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BackBtn
+@onready var CategoryLabel:Label = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/CategoryLabel
+@onready var NextBtn:BtnBase = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
+@onready var List:VBoxContainer = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/List
 
+@onready var EmailContentContainer:PanelContainer = $HBoxContainer/ScrollContainer/EmailContentContainer
 @onready var SubjectLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer/SubjectLabel
 @onready var FromLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer2/FromLabel
 @onready var DateLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer3/DateLabel
 @onready var EmailContentRichText:RichTextLabel = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/EmailContentRichText
 @onready var AttachmentContainer:PanelContainer = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/AttachmentContainer
 
-var not_new:Array = [] : 
-	set(val):
-		not_new = val
-		on_not_new_update()
+const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var email_data:Array[Dictionary] = [] : 
 	set(val):
-		var new_email_data = val.map(func(data):
-			for item in data.items:
-				item.is_new = check_if_new
-				item.onClick = func(data:Dictionary) -> void:
-					mark_as_old(data)
-					on_click.call(data)
-			return data
-		)
-		email_data = val 
+		email_data = val
 		on_email_data_update()
 
-var on_marked:Callable = func(arr:Array):pass
+var previous_index:int
+var read_emails:Array = [] : 
+	set(val):
+		read_emails = val
+		on_read_emails_update()
+		
+var email_list:Array = []
+var sidebar_list:Array = []
 
-var on_data_changed:Callable = func(new_state:Array):pass
-var on_click:Callable = func(data:Dictionary):pass
+var onQuit:Callable = func():pass
+var markAsRead:Callable = func(_index:int):pass
 
 
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	GBL.subscribe_to_control_input(self)
+
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_control_input(self)	
+
 func _ready() -> void:
 	hide()
 	on_email_data_update()
 	
-	EmailContentContainer.hide()
-	AttachmentContainer.hide()
-	
 	BtnControls.directional_pref = "UD"
 	BtnControls.onBack = func() -> void:
-		BtnControls.reveal(false)
+		await BtnControls.reveal(false)
+		await U.set_timeout(0.3)
+		onQuit.call()
 
-	VList.on_data_changed = func(new_state) -> void:		
-		on_data_changed.call(new_state)
-		print(new_state)
-		#var itemlist:Array = []
-		#for btn in VList.get_btns():
-			#itemlist.push_back(btn)
-		#BtnControls.itemlist = itemlist
-		
 
 func start() -> void:
 	BtnControls.reveal(true)
 	show()
-		
-func pause() -> void:
-	pass
-	#PauseContainer.show()
-	#TitleScreen.freeze_inputs = true
-	
-func unpause() -> void:
-	pass
-	#PauseContainer.hide()
-	#TitleScreen.freeze_inputs = false		
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_read_emails_update() -> void:
+	await U.tick()
+	for index in read_emails:
+		var node:Control = List.get_child(index)
+		node.icon = SVGS.TYPE.CHECKBOX
+
+	
 func on_email_data_update() -> void:
-	if is_node_ready():
-		VList.data = email_data
+	if !is_node_ready():return
+	for node in List.get_children():
+		node.queue_free()
+	
+	email_list = []
+	for index in email_data.size():
+		var item:Dictionary = email_data[index]
+		var new_btn:Control = TextBtnPreload.instantiate()
+		new_btn.title = item.title
+		new_btn.icon = SVGS.TYPE.EMPTY_CHECKBOX	
+		new_btn.active_color = Color(1, 1, 1, 1)
+		new_btn.inactive_color = Color(1, 1, 1, 0.5)
+		new_btn.custom_minimum_size = Vector2(1, 30)
+		new_btn.panel_color = Color(1, 1, 1, 0)
 		
-func on_not_new_update() -> void:
-	on_marked.call(not_new)
-	
-func check_if_new(data:Dictionary) -> bool:
-	var id_str:String = str(data.parent_index, data.index)
-	return id_str not in not_new
+		new_btn.onClick = func() -> void:
+			parse_email(item, index)
 
-func mark_as_old(data:Dictionary) -> void:
-	var id_str:String = str(data.parent_index, data.index)
-	if id_str not in not_new:
-		not_new.push_back(id_str)
-		not_new = not_new
-		VList.data = email_data
-	
+		email_list.push_back(new_btn)
+		List.add_child(new_btn)
+		
+	BtnControls.itemlist = email_list
+	if email_data.size() == 0:
+		EmailContentContainer.hide()
+	else:
+		parse_email(email_data[0], 0)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func parse_email(data:Dictionary, index:int) -> void:
 	EmailContentContainer.show()	
-	var details:Dictionary = data.details
-	SubjectLabel.text = details.title
-	FromLabel.text = details.from	
-	DateLabel.text = details.date
-	EmailContentRichText.text = details.content
+
+	SubjectLabel.text = data.title
+	FromLabel.text = data.from	
+	DateLabel.text = data.date
+	EmailContentRichText.text = data.content
 	
-	if "get_attachment_details" in details:
+	if "attachment" in data:
 		AttachmentContainer.show()
-		AttachmentContainer.data = details.get_attachment_details.call()
+		AttachmentContainer.data = data.attachment
+		AttachmentContainer.onClick = func() -> void:
+			data.attachment.onClick.call(data.attachment)
+			
+		sidebar_list = [AttachmentContainer]
 	else:
 		AttachmentContainer.hide()
+		sidebar_list = []
+		
+	if index not in read_emails:
+		markAsRead.call(index)		
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+
+func on_control_input_update(input_data:Dictionary) -> void:
+	if !is_visible_in_tree() or !is_node_ready() or sidebar_list.is_empty(): 
+		return
+
+	match input_data.key:
+		"A":
+			BtnControls.itemlist = email_list
+			await U.tick()
+			BtnControls.item_index = previous_index
+		"D":
+			previous_index = BtnControls.item_index
+			BtnControls.itemlist = sidebar_list
 # ------------------------------------------------------------------------------

@@ -1,21 +1,24 @@
-[gd_scene load_steps=8 format=3 uid="uid://tcw2mmfv8vct"]
+[gd_scene load_steps=9 format=3 uid="uid://tcw2mmfv8vct"]
 
 [ext_resource type="Script" uid="uid://ci5bfb56hxyc" path="res://Scenes/OSRoot/parts/OS/Taskbar/taskbar.gd" id="1_eg3xy"]
-[ext_resource type="PackedScene" uid="uid://c2137vkv86l50" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/TitleBar/TitleBar.tscn" id="2_y8mwm"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_nyp1d"]
 [ext_resource type="PackedScene" uid="uid://cieqo2p3d5xly" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/MediaPlayer/MediaPlayer.tscn" id="3_7up16"]
 [ext_resource type="PackedScene" uid="uid://dqoykb187y44p" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/TimeAndSettings/TimeAndSettings.tscn" id="5_nn734"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="5_nyp1d"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ndu48"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y8vt8"]
-bg_color = Color(0.0594251, 8.53118e-06, 0.288154, 1)
-shadow_color = Color(0, 0, 0, 0.301961)
-shadow_size = 5
-shadow_offset = Vector2(0, 20)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nyp1d"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ndu48"]
+bg_color = Color(0, 0.254902, 0.0823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Taskbar" type="PanelContainer"]
-custom_minimum_size = Vector2(0, 25)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,13 +33,12 @@ script = ExtResource("1_eg3xy")
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="TaskbarControl"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-offset_right = 1920.0
-offset_bottom = 30.0
-scale = Vector2(0.983172, 0.992705)
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_y8vt8")
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nyp1d")
 
 [node name="MarginContainer" type="MarginContainer" parent="TaskbarControl/PanelContainer"]
 custom_minimum_size = Vector2(0, 30)
@@ -54,10 +56,14 @@ theme_override_constants/separation = 50
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleBar" parent="TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/LeftContainer" instance=ExtResource("2_y8mwm")]
+[node name="DesktopBtn" parent="TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/LeftContainer" instance=ExtResource("2_nyp1d")]
 layout_mode = 2
-title = "DESKTOP"
-icon = 41
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ndu48")
+icon = 67
+panel_color = Color(0, 0.254902, 0.0823529, 1)
+inactive_color = Color(0.656286, 0.656285, 0.656285, 1)
+title = "RETURN TO DESKTOP"
 
 [node name="RunningTasks" type="HBoxContainer" parent="TaskbarControl/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -77,3 +83,5 @@ layout_mode = 2
 
 [node name="BtnControl" parent="." instance=ExtResource("5_nyp1d")]
 layout_mode = 2
+reset_to_last = true
+offset = Vector2(2, 2)

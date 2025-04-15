@@ -6,7 +6,7 @@ extends PanelContainer
 
 signal on_complete
 
-@export var delay:float = 0.7
+var delay:float = 2.0
 @export var loading_text:String = "Loading..." : 
 	set(val):
 		loading_text = val
@@ -24,5 +24,5 @@ func start(fast_boot:bool = false) -> void:
 	if !fast_boot:
 		await U.set_timeout(delay)
 	hide()
-	await U.set_timeout(0.2)
+	await U.set_timeout(0.3)
 	on_complete.emit()

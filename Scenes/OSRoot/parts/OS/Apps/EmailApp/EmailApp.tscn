@@ -6,7 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="3_gbgu8"]
 [ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="5_fh1d2"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4qil"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fh1d2"]
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_623hu"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -16,7 +17,7 @@ border_color = Color(0, 0.964706, 0.278431, 1)
 [node name="EmailApp" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_f4qil")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fh1d2")
 script = ExtResource("1_wtx1q")
 
 [node name="WindowUI" parent="." instance=ExtResource("1_jstkg")]

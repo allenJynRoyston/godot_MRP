@@ -21,7 +21,7 @@ var is_busy:bool = false :
 		on_is_busy_update()
 		
 var onClick:Callable = func():pass
-
+var onFocus:Callable = func():pass
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -46,13 +46,16 @@ func on_is_busy_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:
-	if is_node_ready() and !Engine.is_editor_hint():
-		IconButton.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
-		IsBusyButton.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
-		
-		var label_setting:LabelSettings = TitleLabel.label_settings.duplicate()
-		label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
-		TitleLabel.label_settings = label_setting
+	if !is_node_ready():return
+	IconButton.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+	IsBusyButton.static_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+	
+	var label_setting:LabelSettings = TitleLabel.label_settings.duplicate()
+	label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+	TitleLabel.label_settings = label_setting
+	
+	if state:
+		onFocus.call()
 	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:

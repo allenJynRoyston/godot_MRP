@@ -6,7 +6,7 @@ extends PanelContainer
 
 @onready var TaskbarControl:Control = $TaskbarControl
 @onready var TaskbarPanel:PanelContainer = $TaskbarControl/PanelContainer
-@onready var TitleBar:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/LeftContainer/TitleBar
+@onready var DesktopBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/LeftContainer/DesktopBtn
 @onready var TimeAndSettings:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/TimeAndSettings
 @onready var MediaPlayer:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer
 @onready var RunningTasks:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RunningTasks
@@ -26,16 +26,13 @@ var music_data:Dictionary = {} :
 		music_data = val
 		on_music_data_update()
 
-var is_busy:bool = false : 
-	set(val):
-		is_busy = val
-		on_is_busy_update()
-		
 var show_taskbar:bool = false 
 var onBackToDesktop:Callable = func() -> void:pass
+var onDesktopBtnFocus:Callable = func() -> void:pass
 var onBack:Callable = func() -> void:pass
 var onItemSelect:Callable = func(_dict:Dictionary) -> void:pass
 var onItemClose:Callable = func(_dict:Dictionary) -> void:pass
+var onItemFocus:Callable = func() -> void:pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -49,10 +46,12 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_music_data_update()
 	on_show_media_player_update()
-	on_is_busy_update()
+	
+	DesktopBtn.onFocus = func(_node:Control) -> void:
+		onDesktopBtnFocus.call()
 
 	# setup controls
-	TitleBar.onClick = func():
+	DesktopBtn.onClick = func() -> void:
 		onBackToDesktop.call()
 
 	BtnControl.onBack = func() -> void:
@@ -68,54 +67,67 @@ func _ready() -> void:
 	
 	await U.tick()
 	set_show_taskbar(false, true)
+	update_itemlist()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 	show_taskbar = state
-	BtnControl.reveal(state)
-	
-	print("set showtaskbar: ", state)
-	
+	if !state:
+		await BtnControl.reveal(state)	
 	await U.tween_node_property(TaskbarControl, "position:y", control_pos[TaskbarControl].show if show_taskbar else control_pos[TaskbarControl].hide, 0 if skip_animation else 0.3)
 	if state:
-		update_itemlist()
-
-func on_is_busy_update() -> void:
-	if !is_node_ready():return
-	TitleBar.is_busy = is_busy
+		BtnControl.reveal(state)	
+	
 	
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()
+	update_itemlist()
 
-func add_item(item:Dictionary, start:bool = true) -> void:
+func add_item(item:Dictionary) -> void:
 	if !is_node_ready():return
 	var new_node:Control = TaskbarLiveItemPreload.instantiate()
 	new_node.data = item
 	new_node.show_min_button = false
 	
-	new_node.onClose = func():
-		RunningTasks.remove_child(new_node)
+	new_node.onFocus = func() -> void:
+		onItemFocus.call(item)
+	
+	new_node.onClose = func() -> void:
 		onItemClose.call(item)
-		new_node.queue_free()
-		await U.tick()
-		update_itemlist()
 		
-	new_node.onClick = func():
+	new_node.onClick = func() -> void:
+		onBack.call()
 		onItemSelect.call(item)
 	
 	RunningTasks.add_child(new_node)	
+	
+	await U.tick()
+	update_itemlist()
+	
+func remove_item(ref:int) -> void:
+	if !is_node_ready():return
+	for node in RunningTasks.get_children():
+		if node.data.ref == ref:
+			RunningTasks.remove_child(node)
+			node.queue_free()
+	
+	await U.tick()
+	update_itemlist()
 
 func update_itemlist() -> void:
-	var itemlist:Array = [TitleBar]
+	var itemlist:Array = [DesktopBtn]
 	
 	for node in RunningTasks.get_children():
 		for btn in node.get_buttons():
 			itemlist.push_back(btn)
+	
+	if show_media_player:
+		for btn in MediaPlayer.get_buttons():
+			itemlist.push_back(btn)
 
 	BtnControl.itemlist = itemlist	
-	
 
 func on_music_data_update() -> void:
 	show_media_player = !music_data.is_empty()

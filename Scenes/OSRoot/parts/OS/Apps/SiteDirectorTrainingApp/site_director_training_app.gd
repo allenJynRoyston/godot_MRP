@@ -15,12 +15,12 @@ func _ready() -> void:
 func start() -> void:
 	if !is_ready_and_activated:
 		is_ready_and_activated = true
-		TrainingProgram.fast_start = fast_load
-		LoadingComponent.delay = 0.3 if fast_load else 2.0
-		
+		print('start')
 		LoadingComponent.start(fast_load)
 		await LoadingComponent.on_complete	
-
+		print('completed...a')
+		
+		TrainingProgram.fast_start = fast_load
 		TrainingProgram.start()
 		is_ready.emit()
 		

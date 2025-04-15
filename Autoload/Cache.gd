@@ -174,7 +174,9 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/number-small-8-svgrepo-com.svg")
 		SVGS.TYPE.NINE:
 			texture = load("res://SVGs/number-small-9-svgrepo-com.svg")			
-			
+		SVGS.TYPE.DESKTOP:
+			texture = load("res://SVGs/desktop-sharp-svgrepo-com.svg")			
+				
 	svg_cache.push_back({
 		"key": key, 
 		"texture": texture

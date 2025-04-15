@@ -10,7 +10,6 @@ bg_color = Color(0, 0.254902, 0.0823529, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_ae3nu"]
 font = ExtResource("4_f1wu2")
 font_size = 15
-font_color = Color(0, 0.964706, 0.278431, 1)
 shadow_size = 0
 
 [node name="MediaPlayer" type="HBoxContainer"]
@@ -27,6 +26,8 @@ theme_override_constants/margin_bottom = 2
 [node name="LogoBtn" parent="MarginContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 12
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.672752, 0.672752, 0.672751, 1)
 flip_v = false
 
 [node name="TrackNameScrollContainer" type="ScrollContainer" parent="."]
@@ -43,16 +44,16 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_qcy4p")
 
 [node name="MarginContainer" type="MarginContainer" parent="TrackNameScrollContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 2
+theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 2
+theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 0
 
 [node name="TrackName" type="Label" parent="TrackNameScrollContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "asdfasdf"
+text = "TRACK NAME..."
 label_settings = SubResource("LabelSettings_ae3nu")
 vertical_alignment = 1
 uppercase = true
@@ -64,11 +65,15 @@ theme_override_constants/separation = 5
 [node name="PlayPauseBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 9
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.672752, 0.672752, 0.672751, 1)
 flip_v = false
 
 [node name="NextBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
 icon = 8
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.672752, 0.672752, 0.672751, 1)
 flip_v = false
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

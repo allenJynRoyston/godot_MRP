@@ -26,6 +26,10 @@ var active_nodes:Array[Control] = []
 var on_opened_changed:Callable = func():pass
 var on_item_focus_change:Callable = func(state:bool, data:Dictionary) -> void:pass
 var on_list_focus_change:Callable = func(state:bool) -> void:pass
+var onClick:Callable = func():
+	is_opened = !is_opened
+
+
 # --------------------------------------	
 func _ready() -> void:
 	super._ready()
@@ -54,7 +58,7 @@ func on_focus(state:bool) -> void:
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 	if on_hover and active_nodes.is_empty():
-		is_opened = !is_opened
+		onClick.call()
 # --------------------------------------		
 
 # --------------------------------------
@@ -68,7 +72,6 @@ func on_is_opened_update() -> void:
 func on_data_update() -> void:
 	if !is_node_ready():
 		return
-	
 
 	SectionLabel.text = data.section
 		

@@ -10,20 +10,20 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------
 func after_ready() -> void:	
-	WindowUI.window_label = app_props.window_label
+	WindowUI.window_label =  ""#app_props.window_label
 	
 	VList.data = [
 		{
 			"section": "Options",
 			"opened": true,
-			"items": app_props.items
+			"items": [] #app_props.items
 		}
 	]
 	
 	bind_events()
 	
-	var offset_x:int = app_props.offset.x
-	var offset_y:int = app_props.offset.y
+	var offset_x:int = 0 # app_props.offset.x
+	var offset_y:int = 0 #app_props.offset.y
 	var vp_size:Vector2 = get_viewport().get_visible_rect().size
 	await get_tree().process_frame
 	

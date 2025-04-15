@@ -10,9 +10,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.458824)
-shadow_size = 5
-shadow_offset = Vector2(5, 5)
 
 [node name="LoadingComponent" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 200)
@@ -35,11 +32,13 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Loading..."
 label_settings = ExtResource("2_0kr8o")
+uppercase = true
 
 [node name="IconBtn" parent="MarginContainer/CenterContainer/VBoxContainer" instance=ExtResource("2_chhwg")]
 custom_minimum_size = Vector2(25, 25)

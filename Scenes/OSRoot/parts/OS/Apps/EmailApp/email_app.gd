@@ -6,148 +6,93 @@ extends AppWrapper
 
 var email_data:Array[Dictionary] = [
 	{
-		"section": "Important",
-		"opened": true,
-		"selected": [],
-		"items": [
-			{
-				"get_details": func():
-					return {
-						"title": "URGENT!",
-						"from": "@unknown",
-						"date": "unknown",
-						"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your cuerent situation.  VERY IMPORTANT:  DO NOT venture out into the darkness.  It will kill you.  It will [REMOVE ALL YOUR PROGRESS - ESSENTIALLY A HARD RESET].",
-						"get_attachment_details": func():
-							return {
-								"title": "Site_Director_Training_Program.exe",
-								"onClick": func(data:Dictionary) -> void:
-									pass
-									#app_events.onOpenAttachment.call({
-										#"type": "download", 
-										#"installer_data": {
-											#"filename": data.title,
-											#"duration": 3,
-											#"ref": Layout.APPS.SDT
-										#}
-									#}),
-							}
-						
-					},
-				"render_if": func(_details:Dictionary) -> bool:
-					return true,
-			},
-			{
-				"get_details": func():
-					return {
-						"title": "Test voicenote",
-						"from": "@unknown",
-						"date": "unknown",
-						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis.",
-						"get_attachment_details": func():
-							return {
-								"title": "Voicenote",
-								"onClick": func(data:Dictionary) -> void:
-									pass
-									#app_events.onOpenAttachment.call({
-										#"type": "media_player", 
-										#"track_list": [
-											#{
-												#"details": {
-													#"name": "voicenote_001.wav",
-													#"author": "unknown"
-												#},
-												#"file": preload("res://Media/mp3/ghost_trick_test_track.mp3")
-											#}
-										#]
-									#}),
-							}
-					},
-				"render_if": func(_details:Dictionary) -> bool:
-					return true,
-			}			
-		]
-	},
+		"title": "INSTALL THIS",
+		"from": "@unknown",
+		"date": "unknown",
+		"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your cuerent situation.  VERY IMPORTANT:  DO NOT venture out into the darkness.  It will kill you.  It will [REMOVE ALL YOUR PROGRESS - ESSENTIALLY A HARD RESET].",
+		"attachment": {
+			"title": "Site_Director_Training_Program.exe",
+			"onClick": func(attachment:Dictionary) -> void:
+				events.install.call({
+					"type": "download", 
+					"installer_data": {
+						"filename": attachment.title,
+						"duration": 3,
+						"ref": Layout.APPS.SDT
+					}
+				}),
+		}
+
+	},	
 	{
-		"section": "Junk",
-		"opened": false,
-		"selected": [],
-		"items": [
-			{
-				"get_details": func():
-					return {
-						"title": "Email 1",
-						"from": "@unknown",
-						"date": "unknown",
-						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis."
-					},
-				"render_if": func(_details:Dictionary) -> bool:
-					return true,
-			},
-			{
-				"get_details": func():
-					return {
-						"title": "Email 2",
-						"from": "@unknown",
-						"date": "unknown",
-						"content": "Lorem ipsum odor amet, consectetuer adipiscing elit. Cursus sollicitudin pellentesque fermentum interdum quisque auctor quisque. Elit in faucibus porta; bibendum donec nunc maximus. Magna efficitur porttitor fringilla non facilisi dis leo ullamcorper. Tempus maecenas ultricies sagittis nam eleifend odio. Facilisis suscipit ut suscipit, vivamus sollicitudin ligula. Pulvinar vivamus est id cras nibh mus. At semper pretium habitasse lacinia sagittis luctus mollis."
-					},
-				"render_if": func(_details:Dictionary) -> bool:
-					return true,
-			}			
-		]
-	}	
+		"title": "INSTALL THIS (OPTIONAL)",
+		"from": "@unknown",
+		"date": "unknown",
+		"content": "SOMETHING ABOUT THIS SHOULD RESTORE YOUR MEMORY.",
+		"attachment": {
+			"title": "Music_Player.exe",
+			"onClick": func(attachment:Dictionary) -> void:
+				events.install.call({
+					"type": "download", 
+					"installer_data": {
+						"filename": attachment.title,
+						"duration": 3,
+						"ref": Layout.APPS.MUSIC_PLAYER
+					}
+				}),
+		}
+
+	}
 ]
+
+# signals
+signal on_quit
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	WindowUI = $WindowUI
 	PauseContainer.hide()	
+	LoadingComponent.hide()
+	EmailComponent.hide()
+	
+	EmailComponent.markAsRead = func(index:int) -> void:
+		events.mark.call(index)
+		EmailComponent.read_emails = events.fetch_read_emails.call()
+		
+	EmailComponent.onQuit = func() -> void:quit()
+
+	EmailComponent.email_data = email_data			
+	EmailComponent.read_emails = events.fetch_read_emails.call()
+
 	super._ready()	
 
 func start() -> void:
 	if !is_ready_and_activated:
 		is_ready_and_activated = true	
-		LoadingComponent.delay = 0.3 if fast_load else 2.0
-		EmailComponent.hide()
 		LoadingComponent.start(fast_load)
 		await LoadingComponent.on_complete	
+		
 		EmailComponent.start()
 		is_ready.emit()
-		
-		# make sure has_read first so email_data can reference it
-		EmailComponent.not_new = app_props.get_not_new.call()	
-		# assign email_data
-		EmailComponent.email_data = email_data
-
-		
-		# assign event to update has read
-		#EmailComponent.on_marked = app_events.on_marked	
-		# assign event to updat eif state has changed
-		EmailComponent.on_data_changed = func(new_state:Array) -> void:
-			# not used, but can be used to capture the state of opened 
-			pass
-		
-		EmailComponent.on_click = func(data:Dictionary) -> void:
-			for index in email_data.size():			
-				email_data[index].selected = [data.index] if index == data.parent_index else []
-			EmailComponent.email_data = email_data
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func quit() -> void:
-	await U.set_timeout(0.3)
-	quit_complete.emit()
-	self.queue_free()
+	EmailComponent.hide()
+	PauseContainer.hide()
+	LoadingComponent.hide()
+	events.close.call()
+
 	
 func pause() -> void:
 	if !is_paused:
 		is_paused = true
 		PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 		PauseContainer.show()
-		EmailComponent.pause()
+		EmailComponent.hide()
 	
 func unpause() -> void:
 	is_paused = false
 	PauseContainer.hide()
-	EmailComponent.unpause()
+	EmailComponent.show()
 # ------------------------------------------------------------------------------

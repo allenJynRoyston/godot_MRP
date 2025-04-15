@@ -15,6 +15,7 @@ var on_data_changed:Callable = func(new_data:Array) -> void:pass
 var on_item_focus_change:Callable = func(state:bool, date:Dictionary) -> void:pass
 var on_list_focus_change:Callable = func(state:bool) -> void:pass
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	on_data_update()
@@ -38,5 +39,8 @@ func on_data_update() -> void:
 			
 		ItemContainer.add_child(new_node)
 
-func get_btns() -> Array:
-	return ItemContainer.get_children()
+func get_clickable_btns() -> Array:
+	var arr:Array = []
+	for item in ItemContainer.get_children():
+		arr.push_back(item)
+	return arr

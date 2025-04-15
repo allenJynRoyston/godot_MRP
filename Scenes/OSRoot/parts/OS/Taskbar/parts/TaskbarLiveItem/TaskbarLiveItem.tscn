@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://btadhfwtptr10"]
 
 [ext_resource type="Script" uid="uid://covec4eqq4fid" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/TaskbarLiveItem/taskbar_live_item.gd" id="1_pvm5v"]
-[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="1_uj6ia"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_jsu1p"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_282hj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34og0"]
 bg_color = Color(0, 0.254902, 0.0823529, 1)
@@ -38,8 +38,9 @@ is_hoverable = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Application Name"
-label_settings = ExtResource("1_uj6ia")
+label_settings = ExtResource("3_282hj")
 vertical_alignment = 1
+uppercase = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2

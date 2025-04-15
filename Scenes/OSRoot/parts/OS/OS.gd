@@ -2,12 +2,11 @@ extends MouseInteractions
 class_name Layout
 
 @onready var Background:TextureRect = $BG
-@onready var PauseContainer:Control = $PauseContainer
+@onready var PauseContainer:PanelContainer = $PauseContainer
 @onready var Taskbar:Control = $MarginContainer/Taskbar
-@onready var TaskbarAppsContainer:Control = $MarginContainer/TaskbarAppsContainer
-@onready var NotificationContainer:PanelContainer = $MarginContainer/NotificationContainer
+@onready var NotificationContainer:PanelContainer = $Control/NotificationContainer
 @onready var BackgroundWindow:PanelContainer = $MarginContainer/BackgroundWindow
-@onready var Installer:PanelContainer = $MarginContainer/Installer
+@onready var Installer:PanelContainer = $Control/Installer
 @onready var DesktopIconContainer:Control = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
@@ -82,9 +81,9 @@ var app_positions:Dictionary = {
 var default_app_positions:Dictionary = app_positions.duplicate()
 
 var tracklist_unlocks:Dictionary = {
-	PLAYLIST.TRACK_1:true,
-	PLAYLIST.TRACK_2:true,
-	PLAYLIST.TRACK_3:true
+	PLAYLIST.TRACK_1: true,
+	PLAYLIST.TRACK_2: true,
+	PLAYLIST.TRACK_3: true
 }
 
 var modifications_unlocked:Dictionary = {
@@ -102,9 +101,9 @@ var modifications_unlocked:Dictionary = {
 }
 
 var mod_settings:Array = []
-var mods_not_new:Array = ["00"]  #"00" makes easy "marked" in mods
-var email_not_new:Array = []
-var in_recycle_bin:Array = []
+var installed_mods:Array = ["00"]  #"00" makes easy "marked" in mods
+var read_emails:Array = []
+#var in_recycle_bin:Array = []
 var apps_installed:Array = [] 
 var apps_installing:Array = []
 var has_started:bool = false
@@ -114,18 +113,13 @@ var has_started:bool = false
 # -----------------------------------
 #region LOCAL DATA
 var app_list:Array[Dictionary] = [
+	# ----------
 	{
 		"details": {
 			"ref": APPS.SDT,
 			"title": "Site Director Training Program",
 			"icon": SVGS.TYPE.EXE_FILE,
 			"app": SiteDirectorTrainingAppPreload,
-			#"app_events": {
-				#"onQuit": func() -> void:
-					#close_app(APPS.SDT)
-					#await U.set_timeout(0.3)
-					#BtnControls.reveal(true),
-			#}
 		},
 		"installed": func() -> bool:
 			return APPS.SDT in apps_installed,
@@ -136,6 +130,59 @@ var app_list:Array[Dictionary] = [
 				close_app(APPS.SDT, true),
 		}
 	},
+	# ----------
+	
+	# ----------
+	{
+		"details": {
+			"ref": APPS.EMAIL,
+			"title": "Email",
+			"icon": SVGS.TYPE.EMAIL,
+			"app": EmailAppPreload,
+		},
+		"installed": func() -> bool:
+			return true,
+		"events": {
+			"open": func(data:Dictionary) -> void:
+				open_app(data, true, true),
+			"close": func() -> void:
+				close_app(APPS.EMAIL, true),
+			"install": func(data:Dictionary) -> void:
+				Installer.add_item(data.installer_data),
+			"fetch_read_emails": func() -> Array:
+				return read_emails,
+			"mark": func(index:int) -> void:
+				if index not in read_emails:
+					read_emails.push_back(index)
+				save_state(0.2),
+					
+		},
+	},
+	# ----------
+	
+	# ----------
+	{
+		"details": {
+			"ref": APPS.MUSIC_PLAYER,
+			"title": "Music Player",
+			"icon": SVGS.TYPE.MUSIC
+		},
+		"installed": func() -> bool:
+			return APPS.MUSIC_PLAYER in apps_installed,
+		"events": {
+			"open": func(data:Dictionary) -> void:
+				if GBL.music_data.is_empty() and !has_notification:
+					await simulate_wait(0.7)
+					# open music player, no music selected
+					GBL.music_data = {
+						"track_list": music_track_list,
+						"selected": 1,
+					},
+		},
+	},
+	# ----------
+	
+	# ----------
 	#{
 		#"details": {
 			#"ref": APPS.SDT_MODS,
@@ -162,60 +209,7 @@ var app_list:Array[Dictionary] = [
 			#"open": func(data:Dictionary) -> void:
 				#open_app(data, false),
 		#}
-	#},
-	{
-		"details": {
-			"ref": APPS.EMAIL,
-			"title": "Email",
-			"icon": SVGS.TYPE.EMAIL,
-			"app": EmailAppPreload,
-			"installed": func() -> bool:
-				return true,
-			"app_props": {
-				"get_not_new": func() -> Array:
-					return email_not_new,
-			},
-			"app_events": {
-				"on_marked": func(updated_vals:Array) -> void:
-					email_not_new = updated_vals
-					save_state(0),
-				"onOpenAttachment": on_open_attachment,
-			}
-		},
-		"installed": func() -> bool:
-			return true,
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"open": func(data:Dictionary) -> void:
-				open_app(data, true, true),
-			"close": func() -> void:
-				close_app(APPS.EMAIL, true),			
-		},
-	},
-	{
-		"details": {
-			"ref": APPS.MUSIC_PLAYER,
-			"title": "Music Player",
-			"icon": SVGS.TYPE.MUSIC
-		},
-		"installed": func() -> bool:
-			return true,
-		"defaults": {
-			"pos_offset": Vector2(0, 0),
-		},
-		"events": {
-			"open": func(data:Dictionary) -> void:
-				if GBL.music_data.is_empty() and !has_notification:
-					await simulate_wait(0.7)
-					# open music player, no music selected
-					GBL.music_data = {
-						"track_list": music_track_list,
-						"selected": 1,
-					},
-		},
-	},		
+	#},	
 	#{
 		#"details": {
 			#"ref": APPS.README,
@@ -338,6 +332,8 @@ func _ready() -> void:
 	set_process(false)
 	set_physics_process(false)	
 	
+	PauseContainer.hide()
+	
 	Background.texture = background_subviewport.get_texture()
 	
 	BtnControls.onBack = func() -> void:
@@ -348,6 +344,10 @@ func _ready() -> void:
 		RunningAppsContainer.hide()
 		toggle_show_taskbar()
 	
+	Taskbar.onDesktopBtnFocus = func() -> void:
+		if show_taskbar:
+			currently_running_app = null
+			
 	Taskbar.onBack = func () -> void:
 		toggle_show_taskbar()
 	
@@ -355,12 +355,16 @@ func _ready() -> void:
 		for node in RunningAppsContainer.get_children():
 			if item.node == node:
 				currently_running_app = node
-		
 	
 	Taskbar.onItemClose = func(item:Dictionary) -> void:
 		for node in RunningAppsContainer.get_children():
 			if item.node == node:
 				close_app(item.ref)
+	
+	Taskbar.onItemFocus = func(item:Dictionary) -> void:
+		for node in RunningAppsContainer.get_children():
+			if item.node == node:
+				currently_running_app = node
 # -----------------------------------
 
 # -----------------------------------
@@ -397,21 +401,20 @@ func start() -> void:
 
 # -----------------------------------	
 func on_simulated_busy_update() -> void:	
-	if is_node_ready():
-		Taskbar.is_busy = simulate_busy	
+	if !is_node_ready():return
 # -----------------------------------		
 
 # -----------------------------------		
 func simulate_wait(duration:float, show_busy:bool = true) -> void:
 	if show_busy and duration > 0:
 		simulate_busy = true
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.BUSY)
+		#GBL.change_mouse_icon(GBL.MOUSE_ICON.BUSY)
 		
 	await U.set_timeout(duration * 1.0)
 	
 	if show_busy and duration > 0:
 		simulate_busy = false
-		GBL.end_mouse_busy()
+		#GBL.end_mouse_busy()
 # -----------------------------------		
 
 # -----------------------------------	
@@ -424,18 +427,19 @@ func notification_splash(data:Dictionary) -> Dictionary:
 
 # -----------------------------------		
 func on_notification_data_update() -> void:
-	if is_node_ready():
-		NotificationContainer.data = notification_data
-
-	has_notification = !notification_data.is_empty()	
+	pass
+	#if is_node_ready():
+		#NotificationContainer.data = notification_data
+#
+	#has_notification = !notification_data.is_empty()	
 # -----------------------------------		
 
 # -----------------------------------		
 func on_bin_restore(data:Dictionary) -> void:
-	in_recycle_bin = in_recycle_bin.filter(func(ref): return ref != data.details.ref)
-
-	# update contents of bin
-	data.details.bin_node.update_bin(in_recycle_bin)
+	#in_recycle_bin = in_recycle_bin.filter(func(ref): return ref != data.details.ref)
+#
+	## update contents of bin
+	#data.details.bin_node.update_bin(in_recycle_bin)
 	
 	# rerender ions
 	render_desktop_icons(0.0)
@@ -449,43 +453,22 @@ func on_window_focus_list_update() -> void:
 	set_desktop_hoverable_state(window_focus_list.is_empty())
 # -----------------------------------			
 
-## -----------------------------------			
-#func on_selected_index_update() -> void:
-	#if !is_node_ready():return
-	#for index in DesktopIconContainer.get_child_count():
-		#if index == selected_index:
-			#var btn_node:Control = DesktopIconContainer.get_child(index)
-			#Input.warp_mouse(btn_node.global_position + btn_node.size/2 - Vector2(5, 10))
-		##btn_node.icon = SVGS.TYPE.NEXT if index == selected_index else SVGS.TYPE.NONE
-		##btn_node.is_active(index == selected_index)
-		##if index == selected_index:
-			##NextBtn.is_disabled = btn_node.is_disabled
-			##NextBtn.title = str(btn_node.title).to_upper()
-			##if btn_node == ContinueBtn:
-				##ContinueDetails.global_position = ContinueBtn.global_position + Vector2(ContinueBtn.size.x + 10, -ContinueBtn.size.y/4)
-				##ContinueDetails.show() 
-			##else:
-				##ContinueDetails.hide()
-				##
-	##print(selected_index)
-## -----------------------------------			
-
 # -----------------------------------
 func find_in_app_list(ref:APPS) -> Dictionary:
 	return app_list.filter(func(i): return i.details.ref == ref)[0]
 # -----------------------------------
 
-# -----------------------------------
-func on_open_attachment(data:Dictionary) -> void:
-	match data.type:
-		"media_player":
-			GBL.music_data = {
-				"track_list": data.track_list,
-				"selected": 0,
-			}
-		"download": 
-			Installer.add_item(data.installer_data)
-# -----------------------------------
+## -----------------------------------
+#func on_open_attachment(data:Dictionary) -> void:
+	#match data.type:
+		#"media_player":
+			#GBL.music_data = {
+				#"track_list": data.track_list,
+				#"selected": 0,
+			#}
+		#"download": 
+			#Installer.add_item(data.installer_data)
+## -----------------------------------
 
 # -----------------------------------
 func update_mod_settings(new_state:Array) -> void:
@@ -506,40 +489,40 @@ func install_app_complete(ref:APPS) -> void:
 
 # -----------------------------------
 #region MOUSE 
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !window_focus_list.is_empty() or !icon_focus_list.is_empty() or GBL.mouse_pos.y < 40 or has_notification:return	
-	
-	if btn == MOUSE_BUTTON_RIGHT:
-		open_context_menu("Properties", [
-			{
-				"get_details": func():
-					return {
-						"title": "Sort Desktop Icons..."
-					},
-				"onClick": func(_data:Dictionary):
-					sort_desktop_icons(),
-			}
-		])
-	
-func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
-	pass
-
-func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
-	pass
+#func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	#if !window_focus_list.is_empty() or !icon_focus_list.is_empty() or GBL.mouse_pos.y < 40 or has_notification:return	
+	#
+	#if btn == MOUSE_BUTTON_RIGHT:
+		#open_context_menu("Properties", [
+			#{
+				#"get_details": func():
+					#return {
+						#"title": "Sort Desktop Icons..."
+					#},
+				#"onClick": func(_data:Dictionary):
+					#sort_desktop_icons(),
+			#}
+		#])
+	#
+#func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
+	#pass
+#
+#func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
+	#pass
 #endregion
 # -----------------------------------
 
 # -----------------------------------
 #region SETTINGS
-func toggle_fullscreen() -> void:
-	var os_root:Control = GBL.find_node(REFS.OS_ROOT)
-	if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
-		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
-		os_root.update_fullscreen(false)
-	else:
-		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
-		os_root.update_fullscreen(true)
-#endregion
+#func toggle_fullscreen() -> void:
+	#var os_root:Control = GBL.find_node(REFS.OS_ROOT)
+	#if DisplayServer.window_get_mode() == DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+		#DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_WINDOWED)
+		#os_root.update_fullscreen(false)
+	#else:
+		#DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
+		#os_root.update_fullscreen(true)
+##endregion
 # -----------------------------------
 
 # -----------------------------------
@@ -547,10 +530,8 @@ func toggle_fullscreen() -> void:
 func save_state(duration:float = 0.2) -> void:
 	var save_data:Dictionary = {
 		"settings": settings,
-		"in_recycle_bin": in_recycle_bin,
-		"email_not_new": email_not_new,
-		"mods_not_new": mods_not_new,
-		"app_positions": app_positions,
+		"read_emails": read_emails,
+		"installed_mods": installed_mods,
 		"tracklist_unlocks": tracklist_unlocks,
 		"modifications_unlocked": modifications_unlocked,
 		"event_switches": event_switches,
@@ -567,13 +548,12 @@ func load_state() -> void:
 		
 func restore_state(restore_data:Dictionary = {}) -> void:
 	var no_save:bool = restore_data.is_empty()
+	
 	settings = restore_data.settings if !no_save else settings
-	in_recycle_bin = restore_data.in_recycle_bin if !no_save else in_recycle_bin
-	email_not_new = restore_data.email_not_new if !no_save else email_not_new
-	mods_not_new = restore_data.mods_not_new if !no_save else mods_not_new
+	read_emails = restore_data.read_emails if !no_save else read_emails
+	installed_mods = restore_data.installed_mods if !no_save else installed_mods
 	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
 	modifications_unlocked = restore_data.modifications_unlocked if !no_save else modifications_unlocked
-	app_positions = restore_data.app_positions if !no_save else app_positions
 	event_switches = restore_data.event_switches if !no_save else event_switches
 	apps_installed = restore_data.apps_installed if !no_save else apps_installed
 	mod_settings = restore_data.mod_settings if !no_save else mod_settings
@@ -830,6 +810,11 @@ func open_taskbar_dropdown(node:Control, ref:int, props:Dictionary = {}) -> void
 func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false, force_open:bool = false) -> void:
 	if !force_open and (simulate_busy or has_notification):
 		return
+		
+	# take snapshot for pause
+	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))		
+	PauseContainer.show()
+	
 	freeze_inputs = true
 	
 	# hide button controls
@@ -850,15 +835,12 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 		if data.ref not in already_loaded:
 			already_loaded.push_back(data.ref)
 		
-		# adds any props
-		if "app_props" in data:
-			new_node.app_props = data.app_props
 		# and events
 		if "events" in app:
 			new_node.events = app.events
 		
 		# start in fullscreen or not, pass previously loaded
-		new_node.fast_load = (previously_loaded or skip_loading or force_open)
+		new_node.fast_load = previously_loaded
 		new_node.in_fullscreen = true
 		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:			
 			close_app(data.ref)
@@ -882,6 +864,7 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 		
 		new_node.start()
 		await new_node.is_ready
+		print('start?')
 	else:
 		currently_running_app = running_apps_list.filter(func(i): return i.ref == data.ref)[0].node
 		currently_running_app.unpause()
@@ -892,15 +875,21 @@ func close_app(ref:int, direct_close:bool = false) -> void:
 	var node:Control = running_apps_list.filter(func(item): return item.ref == ref)[0].node
 	
 	for child in RunningAppsContainer.get_children():
-		if child == node:
-			currently_running_app = null
-			if direct_close:
-				BtnControls.reveal(true)
+		if child == node and direct_close:
+			BtnControls.reveal(true)
 			
-	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)	
-	node.quit()			
+	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)
+	
+	if running_apps_list.size() == 0:
+		currently_running_app = null
+	else:
+		currently_running_app = running_apps_list[running_apps_list.size() - 1].node
+	
+	Taskbar.remove_item(ref)
+
 	
 func on_currently_running_app_update() -> void:
+	# hide/show any desktop icons 
 	for node in DesktopIconContainer.get_children():
 		if currently_running_app == null:
 			node.show() 
@@ -917,6 +906,7 @@ func on_currently_running_app_update() -> void:
 		RunningAppsContainer.hide()
 	else:
 		RunningAppsContainer.show()
+		
 # -----------------------------------	
 #endregion
 # -----------------------------------
@@ -968,7 +958,7 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 	btnlist = []
 	
 	for item in app_list:
-		if (item.details.ref not in in_recycle_bin) and item.installed.call():
+		if item.installed.call():
 			var new_node:Control = AppItemPreload.instantiate()	
 			DesktopIconContainer.add_child(new_node)
 			btnlist.push_back(new_node)
@@ -990,9 +980,10 @@ func toggle_show_taskbar() -> void:
 	show_taskbar = !show_taskbar
 	
 	if show_taskbar:
-		PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))		
+		if PauseContainer.background_image == null:
+			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 		PauseContainer.show()
-		BtnControls.reveal(false)	
+		await BtnControls.reveal(false)	
 		# pause any runnning apps
 		for app in RunningAppsContainer.get_children():
 			app.pause()		
@@ -1002,11 +993,12 @@ func toggle_show_taskbar() -> void:
 	freeze_inputs = false
 	
 	if !show_taskbar:
-		PauseContainer.hide()
 		if currently_running_app != null:
 			currently_running_app.unpause()
 		else:
 			BtnControls.reveal(true)	
+			PauseContainer.hide()
+			PauseContainer.background_image = null
 
 # -----------------------------------
 #

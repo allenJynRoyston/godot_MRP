@@ -5,7 +5,7 @@ extends AppWrapper
 
 var in_bin_list:Array = [] :
 	set(val):
-		in_bin_list = app_props.app_data.filter(func(item): return item.ref in val)
+		#in_bin_list = app_props.app_data.filter(func(item): return item.ref in val)
 		on_bin_list_update()
 
 
@@ -14,7 +14,7 @@ func _ready() -> void:
 	WindowUI = $WindowUI
 	super._ready()	
 	
-	in_bin_list = app_props.in_bin
+	#in_bin_list = app_props.in_bin
 # ------------------------------------------------------------------------------
 
 

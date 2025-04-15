@@ -6,7 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="4_ys1py"]
 [ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="5_kem2l"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_45imw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kem2l"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="SiteDirectorTrainingApp" type="PanelContainer"]
 anchors_preset = 15
@@ -16,7 +17,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_45imw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kem2l")
 script = ExtResource("1_5dlsa")
 
 [node name="WindowUI" parent="." instance=ExtResource("1_08334")]

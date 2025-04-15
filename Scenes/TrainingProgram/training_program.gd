@@ -36,7 +36,7 @@ func _ready() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
-func start(restart:bool = false) -> void:	
+func start() -> void:	
 	show()
 	
 	var quickload_res:Dictionary = load_quickload()
@@ -50,10 +50,9 @@ func start(restart:bool = false) -> void:
 		return
 
 	# start logo screen
-	if !restart:
-		LogoScreen.show()
-		LogoScreen.start(fast_start)
-		await LogoScreen.finished
+	LogoScreen.show()
+	LogoScreen.start(fast_start)
+	await LogoScreen.finished
 	
 	# start gamescreen
 	TitleScreen.completed_scenarios = completed_scenarios
@@ -100,7 +99,6 @@ func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:
 			if room not in awarded_rooms:
 				awarded_rooms.push_back(room)
 			
-
 	await U.tick()
 	GameplayLoopNode.start({
 		"filedata": filedata,
@@ -118,8 +116,6 @@ func on_exit_game(exit_game:bool) -> void:
 		return
 	
 	GameplayLoopNode.queue_free()
-	await U.set_timeout(1.0)
-	start(true)	
 	
 
 func on_end_game(scenario_ref:int, scenario_data:Dictionary, endgame_state:bool) -> void:

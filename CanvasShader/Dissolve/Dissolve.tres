@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cadagoadb5vbl"]
 
-[ext_resource type="Shader" uid="uid://26blh0n06k" path="res://Shaders/dissolve.gdshader" id="1_qg323"]
+[ext_resource type="Shader" uid="uid://26blh0n06k" path="res://CanvasShader/Dissolve/dissolve.gdshader" id="1_qg323"]
 
 [resource]
 shader = ExtResource("1_qg323")
-shader_parameter/sensitivity = 0.056
+shader_parameter/sensitivity = 0.218

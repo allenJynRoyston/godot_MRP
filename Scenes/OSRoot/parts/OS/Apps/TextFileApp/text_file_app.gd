@@ -12,10 +12,10 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------
 func on_data_update() -> void:
-	if is_node_ready():
-		if "title" in app_props:
-			TitleLabel.text = app_props.title
-		if "content" in app_props:
-			ContentRTL.text = app_props.content
+	if !is_node_ready():return
+	#if "title" in app_props:
+		#TitleLabel.text = app_props.title
+	#if "content" in app_props:
+		#ContentRTL.text = app_props.content
 		
 # ------------------------------------------------------------------------------	

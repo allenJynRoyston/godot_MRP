@@ -13,6 +13,8 @@ func _ready() -> void:
 	super._ready()
 	on_data_update()
 	on_focus(false)
+	
+var onClick:Callable = func(_data:Dictionary):pass
 
 # --------------------------------------		
 func on_data_update() -> void:
@@ -38,6 +40,6 @@ func on_focus(state:bool) -> void:
 
 # --------------------------------------	
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover and "onClick" in data:
-		data.onClick.call(data)
+	if on_hover:
+		onClick.call()
 # --------------------------------------		

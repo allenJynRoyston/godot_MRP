@@ -18,6 +18,7 @@ var focus_busy:bool = false
 var onClick:Callable = func():pass
 var onMinimize:Callable = func():pass
 var onClose:Callable = func():pass
+var onFocus:Callable = func():pass
 
 @export var show_min_button:bool = false : 
 	set(val):
@@ -76,6 +77,8 @@ func on_focus(state:bool) -> void:
 	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
 	new_stylebox.bg_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	if state:
+		onFocus.call()
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT and !focus_busy:

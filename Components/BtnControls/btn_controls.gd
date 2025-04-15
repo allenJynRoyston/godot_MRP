@@ -5,6 +5,9 @@ extends Control
 @onready var ABtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ABtn
 @onready var BBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BBtn
 
+@export var reset_to_last:bool = false
+@export var offset:Vector2 = Vector2(2, 5)
+
 var control_pos:Dictionary
 var control_pos_default:Dictionary
 var freeze_inputs:bool = false
@@ -44,6 +47,7 @@ func _ready() -> void:
 		if !is_node_ready() or itemlist.is_empty():return
 		var node:Control = itemlist[item_index]
 		onAction.call()
+		print(node)
 		if "onClick" in node:
 			node.onClick.call()
 	
@@ -98,7 +102,7 @@ func freeze_and_disable(state:bool) -> void:
 func on_itemlist_update() -> void:
 	if !is_node_ready() or itemlist.is_empty():return
 	await U.tick()
-	item_index = 0
+	item_index = itemlist.size() - 1 if reset_to_last else 0
 
 func add_to_itemlist(list:Array) -> void:
 	for node in list:
@@ -111,7 +115,7 @@ func remove_from_itemlist(list:Array) -> void:
 			itemlist.erase(node)
 	item_index = 0
 	
-func clear_itemlist() -> void:
+func clear_itemlist() -> void: 
 	itemlist = []
 	item_index = -1
 # --------------------------------------------------------------------------------------------------
@@ -120,7 +124,7 @@ func clear_itemlist() -> void:
 func on_item_index_update() -> void:	
 	if !is_node_ready() or itemlist.is_empty():return
 	var node:Control = itemlist[item_index]
-	Input.warp_mouse(node.global_position + Vector2(node.size.x/2, 10))
+	Input.warp_mouse(node.global_position + offset)
 # --------------------------------------------------------------------------------------------------
 	
 # ------------------------------------------

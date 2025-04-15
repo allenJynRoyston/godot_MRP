@@ -11,7 +11,7 @@ var onFocus:Callable = func(node:Control, window_node:Control) -> void:pass
 var onBlur:Callable = func(node:Control, window_node:Control) -> void:pass
 
 var WindowUI:PanelContainer 
-var app_props:Dictionary = {}
+#var app_props:Dictionary = {}
 var events:Dictionary = {}
 var offset:Vector2 = Vector2(0, 0)
 var default_size:Vector2 

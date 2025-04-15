@@ -20,7 +20,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "Containment failures are rare.  Bonus XP at 0%."
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			},
 			{
 				"get_details": func() -> Dictionary:
@@ -30,7 +31,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "Containment failures are likely.  Bonus XP at +50%."
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			},
 			{
 				"get_details": func() -> Dictionary:
@@ -40,7 +42,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "Containment failures are frequent.  Bonus XP at +100%."
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			}
 		]
 	},
@@ -58,7 +61,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "PRODUCTION_ONE description"
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			},
 			{
 				"get_details": func() -> Dictionary:
@@ -68,7 +72,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "PRODUCTION_TWO description"
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			},
 			{
 				"get_details": func() -> Dictionary:
@@ -78,7 +83,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "PRODUCTION_THREE description"
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			}
 		]
 	},
@@ -96,7 +102,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "ECONOMY_ONE description"
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			},
 			{
 				"get_details": func() -> Dictionary:
@@ -106,7 +113,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "ECONOMY_TWO description"
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			},
 			{
 				"get_details": func() -> Dictionary:
@@ -116,7 +124,8 @@ var mods_data:Array[Dictionary] = [
 						"description": "ECONOMY_THREE description"
 					},
 				"render_if": func(details:Dictionary) -> bool:
-					return app_props.get_modifications_unlocked.call()[details.ref],
+					return false,
+					#return app_props.get_modifications_unlocked.call()[details.ref],
 			}
 		]
 	}
@@ -133,7 +142,7 @@ func _ready() -> void:
 	await LoadingComponent.on_complete	
 	ModComponent.show()
 	
-	var mod_settings:Array = app_props.get_mod_settings.call()
+	var mod_settings:Array = [] #app_props.get_mod_settings.call()
 
 	for item in mods_data:
 		var setting:Array = mod_settings.filter(func(d): return d.ref == item.ref)		

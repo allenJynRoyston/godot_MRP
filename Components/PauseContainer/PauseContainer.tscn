@@ -1,12 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://b3f8ve03806mt"]
+[gd_scene load_steps=6 format=3 uid="uid://b3f8ve03806mt"]
 
 [ext_resource type="Script" uid="uid://b4chbhsde8qht" path="res://Components/PauseContainer/pause_container.gd" id="1_mejih"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_0p0en"]
-[ext_resource type="Material" uid="uid://yeprohyubuxc" path="res://CanvasShader/Halftones/HalfTones.tres" id="2_gmgei"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_gmgei"]
+[ext_resource type="Material" uid="uid://du77bmgt0y0fw" path="res://Shader/Sephia/template.tres" id="3_dutpr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dutpr"]
-bg_color = Color(0.0823529, 0.0823529, 0.0823529, 0.807843)
+bg_color = Color(0.444843, 0.444843, 0.444843, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_dc6ks"]
 font = ExtResource("2_0p0en")
@@ -24,28 +23,35 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dutpr")
 script = ExtResource("1_mejih")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-modulate = Color(1, 1, 1, 0.45098)
-material = ExtResource("2_gmgei")
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 100
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer2"]
+modulate = Color(1, 1, 1, 0.945098)
+material = ExtResource("3_dutpr")
 layout_mode = 2
 expand_mode = 1
-stretch_mode = 6
+stretch_mode = 5
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 57
+theme_override_constants/margin_right = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+alignment = 1
 
-[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "PAUSE"
 label_settings = SubResource("LabelSettings_dc6ks")
-
-[node name="IconBtn" parent="CenterContainer/VBoxContainer" instance=ExtResource("3_gmgei")]
-visible = false
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-icon = 9
-flip_v = false
-is_hoverable = false
+horizontal_alignment = 1
