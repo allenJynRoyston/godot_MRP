@@ -9,6 +9,8 @@ const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/pa
 @export var new_permanent_file:bool = false
 @export var skip_title_screen:bool = true
 
+#export 
+
 @export_category("Gameplay Loop")
 @export var new_quicksave_file:bool = false
 @export var skip_progress_screen:bool = false
@@ -56,7 +58,8 @@ func start() -> void:
 	
 	# start gamescreen
 	TitleScreen.completed_scenarios = completed_scenarios
-	TitleScreen.disable_story = true
+	TitleScreen.disable_story = false
+	TitleScreen.disable_scenario = false
 	TitleScreen.has_quicksave = has_quicksave
 	TitleScreen.quickload_data = quickload_res
 	TitleScreen.start(fast_start)

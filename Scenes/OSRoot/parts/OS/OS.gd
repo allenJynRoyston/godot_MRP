@@ -416,7 +416,7 @@ func start() -> void:
 	await render_desktop_icons()	
 	await U.set_timeout(0.3)
 	
-	KeyBtn.is_disabled = true
+	KeyBtn.is_disabled = false
 	BtnControls.reveal(true)			
 # -----------------------------------	
 

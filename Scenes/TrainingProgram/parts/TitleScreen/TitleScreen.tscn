@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=19 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
@@ -33,6 +33,13 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w78h0"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q51us"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -113,17 +120,24 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
 inactive_color = Color(1, 1, 1, 0.796078)
 title = "Continue"
 
-[node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+[node name="TutorialBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "RUN SCENARIO"
+title = "TUTORIAL"
+
+[node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_w78h0")
+inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
+title = "???"
 
 [node name="StoryBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_w78h0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q51us")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "???"
 

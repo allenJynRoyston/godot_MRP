@@ -22,6 +22,7 @@ var is_completed:bool = false :
 	set(val):
 		is_completed = val
 		on_scenario_ref_update()
+		
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -32,6 +33,7 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	super._ready()
+	self.modulate = Color(1, 1, 1, 0)
 	on_distance_from_center_update()
 	on_scenario_ref_update()
 # ------------------------------------------------------------------------------
@@ -70,5 +72,4 @@ func on_distance_from_center_update() -> void:
 	var stylebox_clone:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
 	stylebox_clone.border_color = Color.WHITE if distance_from_center == 0 else Color.BLACK
 	RootPanel.set('theme_override_styles/panel', stylebox_clone)
-	
 # ------------------------------------------------------------------------------

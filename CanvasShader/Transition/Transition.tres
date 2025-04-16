@@ -1,6 +1,3 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cu8icrnc376nl"]
-
-[ext_resource type="Shader" uid="uid://c06u0dsul34dr" path="res://CanvasShader/Transition/Transition.gdshader" id="1_oiq0d"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cu8icrnc376nl"]
 
 [resource]
-shader = ExtResource("1_oiq0d")

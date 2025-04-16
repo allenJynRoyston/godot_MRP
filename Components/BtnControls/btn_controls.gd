@@ -30,6 +30,7 @@ var is_revealed:bool = false :
 		
 var onBack:Callable = func() -> void:pass
 var onAction:Callable = func() -> void:pass
+var onDirectional:Callable = func(key:String) -> void:pass
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -46,6 +47,9 @@ func _ready() -> void:
 	ABtn.onClick = func() -> void:
 		if !is_node_ready() or itemlist.is_empty():return
 		var node:Control = itemlist[item_index]
+		print(node)
+		if "is_disabled" in node and node.is_disabled:
+			return
 		onAction.call()
 		if "onClick" in node:
 			node.onClick.call()
@@ -133,6 +137,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
+	
+	onDirectional.call(key)
 	
 	if directional_pref == "LR":
 		match key:
