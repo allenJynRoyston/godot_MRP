@@ -15,10 +15,8 @@ func _ready() -> void:
 func start() -> void:
 	if !is_ready_and_activated:
 		is_ready_and_activated = true
-		print('start')
 		LoadingComponent.start(fast_load)
 		await LoadingComponent.on_complete	
-		print('completed...a')
 		
 		TrainingProgram.fast_start = fast_load
 		TrainingProgram.start()
@@ -49,4 +47,5 @@ func unpause() -> void:
 	is_paused = false
 	PauseContainer.hide()
 	TrainingProgram.show()
+	TrainingProgram.unpause()
 # ------------------------------------------------------------------------------

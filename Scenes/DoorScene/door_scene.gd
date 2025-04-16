@@ -7,6 +7,7 @@ extends PanelContainer
 @onready var IntroSubviewport:SubViewport = $SubViewport
 @onready var IntroAndTitleScreen:Control = $SubViewport/IntroAndTitleScreen
 @onready var SceneAnimationPlayer:AnimationPlayer = $RenderSubviewport/Node3D/SceneAnimationPlayer
+@onready var ScreenTextureRect:TextureRect = $RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport/TextureRect
 @onready var BtnPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var LoginBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/LoginBtn
 
@@ -14,7 +15,6 @@ extends PanelContainer
 @export var skip_title:bool = false
 @export var skip_sequence:bool = false
 @export var skip_start_at:bool = false
-
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
@@ -113,7 +113,8 @@ func on_current_mode_update() -> void:
 
 			U.tween_node_property(SceneCamera, "fov", 77, 4.0, 0, Tween.TRANS_EXPO)
 			TextureRender.texture = RenderSubviewport.get_texture()
-
+			#ScreenTextureRect.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+			
 			await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7, 2.5)
 			SceneAnimationPlayer.active = true
 			SceneAnimationPlayer.play("LightsOn")			
@@ -128,7 +129,8 @@ func on_current_mode_update() -> void:
 
 			U.tween_node_property(SceneCamera, "fov", 77, 0)
 			TextureRender.texture = RenderSubviewport.get_texture()
-
+			#ScreenTextureRect.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+			
 			U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0)
 			SceneAnimationPlayer.active = true
 			SceneAnimationPlayer.play("LightsOn")			

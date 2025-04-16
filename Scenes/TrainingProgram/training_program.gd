@@ -70,6 +70,13 @@ func start() -> void:
 			start_game(quicksave_filedata, quicksave_filedata.scenario_ref)
 		"quit":
 			on_quit.emit()
+
+	
+func unpause() -> void:
+	TitleScreen.BtnControls.on_item_index_update()		
+	if GameplayLoopNode != null:
+		pass
+		#GameplayLoopNode.
 # ---------------------------------------------
 
 

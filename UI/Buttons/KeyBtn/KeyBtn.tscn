@@ -34,7 +34,6 @@ title = "TITLE"
 panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 text_active_color = Color(1, 1, 1, 1)
 text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
-hide_icon_panel = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -67,7 +66,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
-visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_26aci")
 

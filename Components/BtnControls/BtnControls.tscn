@@ -6,7 +6,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e24g7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ka7tl"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 expand_margin_left = 5.0
 expand_margin_top = 5.0
 expand_margin_right = 5.0

@@ -32,7 +32,6 @@ var sidebar_list:Array = []
 var onQuit:Callable = func():pass
 var markAsRead:Callable = func(_index:int):pass
 
-
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_control_input(self)
@@ -54,6 +53,9 @@ func _ready() -> void:
 func start() -> void:
 	BtnControls.reveal(true)
 	show()
+	
+func unpause() -> void:
+	BtnControls.on_item_index_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -62,7 +64,6 @@ func on_read_emails_update() -> void:
 	for index in read_emails:
 		var node:Control = List.get_child(index)
 		node.icon = SVGS.TYPE.CHECKBOX
-
 	
 func on_email_data_update() -> void:
 	if !is_node_ready():return
@@ -114,12 +115,15 @@ func parse_email(data:Dictionary, index:int) -> void:
 		sidebar_list = []
 		
 	if index not in read_emails:
-		markAsRead.call(index)		
+		markAsRead.call(index)
+		
 # ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------
-
+func set_control_pos_visibility(state:bool) -> void:
+	BtnControls.show() if state else BtnControls.hide()
+	
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or sidebar_list.is_empty(): 
 		return

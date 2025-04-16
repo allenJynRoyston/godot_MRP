@@ -406,7 +406,6 @@ mesh = SubResource("BoxMesh_y10y4")
 
 [node name="BackWall" type="MeshInstance3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.62649, 0.00412459, -4.30626)
-visible = false
 mesh = SubResource("PlaneMesh_oq4hm")
 skeleton = NodePath("Door")
 

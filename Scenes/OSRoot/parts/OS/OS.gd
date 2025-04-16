@@ -3,6 +3,10 @@ class_name Layout
 
 @onready var Background:TextureRect = $BG
 @onready var PauseContainer:PanelContainer = $PauseContainer
+@onready var LoginContainer:PanelContainer = $LoginContainer
+@onready var HeaderControls:Control = $HeaderControls
+@onready var HeaderPanel:PanelContainer = $HeaderControls/PanelContainer
+
 @onready var Taskbar:Control = $MarginContainer/Taskbar
 @onready var NotificationContainer:PanelContainer = $Control/NotificationContainer
 @onready var BackgroundWindow:PanelContainer = $MarginContainer/BackgroundWindow
@@ -12,6 +16,7 @@ class_name Layout
 
 @onready var BtnControls:Control = $BtnControl
 @onready var RunningAppsContainer:Control = $RunningAppsContainer
+@onready var KeyBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/HBoxContainer/KeyBtn
 
 @export var skip_to_game:bool = false
 @export var background_subviewport:SubViewport
@@ -296,6 +301,7 @@ var top_level_window:Control :
 	#set(val):
 		#selected_index = val
 		#on_selected_index_update()
+var control_pos:Dictionary
 var btnlist:Array = []	
 var freeze_inputs:bool = false
 var show_taskbar:bool = false
@@ -315,14 +321,12 @@ signal on_confirm
 func _init() -> void:
 	GBL.register_node(REFS.OS_LAYOUT, self)
 	GBL.subscribe_to_control_input(self)
-	
 # -----------------------------------
 
 # -----------------------------------
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.OS_LAYOUT)
 	GBL.unsubscribe_to_control_input(self)
-	
 # -----------------------------------	
 
 # -----------------------------------
@@ -331,6 +335,8 @@ func _ready() -> void:
 	hide()
 	set_process(false)
 	set_physics_process(false)	
+	
+	LoginContainer.show()
 	
 	PauseContainer.hide()
 	
@@ -365,6 +371,12 @@ func _ready() -> void:
 		for node in RunningAppsContainer.get_children():
 			if item.node == node:
 				currently_running_app = node
+				
+	KeyBtn.onClick = func() -> void:
+		if freeze_inputs:return
+		toggle_show_taskbar()
+	
+	KeyBtn.is_disabled = true
 # -----------------------------------
 
 # -----------------------------------
@@ -389,13 +401,22 @@ func start() -> void:
 	# finish this part	
 	if event_switches.show_status_on_boot:
 		show_status_notice(true)
-	
-	
+
 	if skip_to_game:
 		open_app(find_in_app_list(APPS.SDT).details, true, true, true)
+	
+	control_pos[HeaderPanel] = {
+		"show": HeaderPanel.position.y,
+		"hide": -HeaderPanel.size.y
+	}
+		
+	await U.set_timeout(1.0)
+	LoginContainer.hide()		
 		
 	await render_desktop_icons()	
 	await U.set_timeout(0.3)
+	
+	KeyBtn.is_disabled = true
 	BtnControls.reveal(true)			
 # -----------------------------------	
 
@@ -432,20 +453,6 @@ func on_notification_data_update() -> void:
 		#NotificationContainer.data = notification_data
 #
 	#has_notification = !notification_data.is_empty()	
-# -----------------------------------		
-
-# -----------------------------------		
-func on_bin_restore(data:Dictionary) -> void:
-	#in_recycle_bin = in_recycle_bin.filter(func(ref): return ref != data.details.ref)
-#
-	## update contents of bin
-	#data.details.bin_node.update_bin(in_recycle_bin)
-	
-	# rerender ions
-	render_desktop_icons(0.0)
-	
-	# save state
-	save_state(0.2)
 # -----------------------------------		
 
 # -----------------------------------		
@@ -807,12 +814,24 @@ func open_taskbar_dropdown(node:Control, ref:int, props:Dictionary = {}) -> void
 # -----------------------------------	
 
 # -----------------------------------	
+func take_background_snapshot() -> void:
+	BtnControls.hide()
+	HeaderPanel.hide()
+	await U.tick()	
+	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+	BtnControls.show()
+	if currently_running_app == null:
+		HeaderPanel.show()
+# -----------------------------------	
+
+
+# -----------------------------------	
 func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = false, force_open:bool = false) -> void:
 	if !force_open and (simulate_busy or has_notification):
 		return
 		
 	# take snapshot for pause
-	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))		
+	await take_background_snapshot()
 	PauseContainer.show()
 	
 	freeze_inputs = true
@@ -864,11 +883,13 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 		
 		new_node.start()
 		await new_node.is_ready
-		print('start?')
 	else:
 		currently_running_app = running_apps_list.filter(func(i): return i.ref == data.ref)[0].node
 		currently_running_app.unpause()
 
+	KeyBtn.is_disabled = true
+	await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
+	KeyBtn.is_disabled = false
 	freeze_inputs = false
 	
 func close_app(ref:int, direct_close:bool = false) -> void:	
@@ -881,10 +902,16 @@ func close_app(ref:int, direct_close:bool = false) -> void:
 	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)
 	
 	if running_apps_list.size() == 0:
+		if direct_close:
+			PauseContainer.hide()
+			KeyBtn.is_disabled = true
+			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show)
+			KeyBtn.is_disabled = false
 		currently_running_app = null
 	else:
 		currently_running_app = running_apps_list[running_apps_list.size() - 1].node
 	
+
 	Taskbar.remove_item(ref)
 
 	
@@ -980,10 +1007,15 @@ func toggle_show_taskbar() -> void:
 	show_taskbar = !show_taskbar
 	
 	if show_taskbar:
+		BtnControls.reveal(false)	
+		KeyBtn.is_disabled = true
+		await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
+		KeyBtn.is_disabled = false
+		#HeaderControls.hide()
 		if PauseContainer.background_image == null:
-			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+			await take_background_snapshot()
 		PauseContainer.show()
-		await BtnControls.reveal(false)	
+		
 		# pause any runnning apps
 		for app in RunningAppsContainer.get_children():
 			app.pause()		
@@ -999,15 +1031,19 @@ func toggle_show_taskbar() -> void:
 			BtnControls.reveal(true)	
 			PauseContainer.hide()
 			PauseContainer.background_image = null
+			KeyBtn.is_disabled = true
+			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show)
+			KeyBtn.is_disabled = false
+
 
 # -----------------------------------
 #
-# ------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
-		return
-
-	match input_data.key:
-		"BACKSPACE":
-			toggle_show_taskbar()
-# ------------------------------------------
+## ------------------------------------------
+#func on_control_input_update(input_data:Dictionary) -> void:
+	#if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
+		#return
+#
+	#match input_data.key:
+		#"BACKSPACE":
+			#toggle_show_taskbar()
+## ------------------------------------------

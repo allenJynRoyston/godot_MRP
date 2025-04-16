@@ -540,7 +540,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
 title = "DESIGN"
 assigned_key = "SPACEBAR"
 icon = 55
-hide_icon_panel = false
 
 [node name="SettingsBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(80, 0)
@@ -549,7 +548,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
 title = "SETTINGS"
 assigned_key = "TAB"
 icon = 15
-hide_icon_panel = false
 
 [node name="ObjectivesBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(80, 0)
@@ -558,7 +556,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 title = "OBJECTIVES"
 assigned_key = "T"
 icon = 23
-hide_icon_panel = false
 
 [node name="ResearcherBtnPanel" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide"]
 layout_mode = 2
@@ -594,7 +591,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
 title = "DETAIL"
 assigned_key = "L1"
 icon = 3
-hide_icon_panel = false
 
 [node name="AssignBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 layout_mode = 2
@@ -602,14 +598,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
 title = "ASSIGN"
 assigned_key = "T"
 icon = 53
-hide_icon_panel = false
 
 [node name="UnassignBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
 title = "REMOVE"
 icon = 1
-hide_icon_panel = false
 
 [node name="ResearcherNextBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 visible = false
@@ -618,7 +612,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_txh3k")
 title = "NEXT"
 assigned_key = "N"
 icon = 27
-hide_icon_panel = false
 
 [node name="ScpBtnPanel" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide"]
 layout_mode = 2
@@ -655,7 +648,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_l3pfk")
 title = "CONTAIN"
 assigned_key = "C"
 icon = 29
-hide_icon_panel = false
 
 [node name="ScpDetailsBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 layout_mode = 2
@@ -663,7 +655,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_fqpim")
 title = "DETAILS"
 assigned_key = "R1"
 icon = 29
-hide_icon_panel = false
 
 [node name="CenterBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -704,7 +695,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ww8tn")
 title = "DETAIL"
 assigned_key = "SHIFT"
 icon = 29
-hide_icon_panel = false
 
 [node name="ConstructBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 visible = false
@@ -713,7 +703,6 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_en8v0")
 title = "CONSTRUCT"
 assigned_key = "E"
-hide_icon_panel = false
 
 [node name="NextBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 layout_mode = 2
@@ -721,7 +710,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_a4y2m")
 title = "NEXT DAY"
 assigned_key = "ENTER"
 icon = 27
-hide_icon_panel = false
 
 [node name="AbilityBtnPanel" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList"]
 layout_mode = 2
@@ -757,7 +745,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_edhtb")
 title = "DETAILS"
 assigned_key = "R"
 icon = 51
-hide_icon_panel = false
 
 [node name="AbilityBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(80, 0)
@@ -766,7 +753,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_k4sxg")
 title = "ABILITY"
 assigned_key = "E"
 icon = 10
-hide_icon_panel = false
 
 [node name="PassiveBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 visible = false
@@ -776,21 +762,18 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_e0d7l")
 title = "PASSIVE"
 assigned_key = "R"
 icon = 46
-hide_icon_panel = false
 
 [node name="BuildBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_34kq7")
 title = "CONSTRUCT"
 assigned_key = "E"
-hide_icon_panel = false
 
 [node name="DeconstructBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_qan0e")
 title = "DESTROY"
-hide_icon_panel = false
 
 [node name="FacilityBtnPanel" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList"]
 layout_mode = 2
@@ -827,7 +810,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_4qisn")
 title = "GENERATOR"
 assigned_key = "E"
 icon = 10
-hide_icon_panel = false
 
 [node name="UpgradeBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 custom_minimum_size = Vector2(80, 0)
@@ -836,7 +818,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_3de1l")
 title = "UPGRADE"
 assigned_key = "R"
 icon = 46
-hide_icon_panel = false
 
 [node name="RightSide" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -855,7 +836,6 @@ title = "CONFIRM"
 assigned_key = "E"
 icon = 19
 panel_color = Color(0, 0.529412, 0.278431, 1)
-hide_icon_panel = false
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide" instance=ExtResource("4_n6idl")]
 visible = false
@@ -865,7 +845,6 @@ title = "BACK"
 assigned_key = "B"
 icon = 16
 panel_color = Color(1, 0.203922, 0, 1)
-hide_icon_panel = false
 
 [node name="NameControl" type="Control" parent="."]
 layout_mode = 2

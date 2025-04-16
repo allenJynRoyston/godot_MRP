@@ -74,12 +74,14 @@ func _ready() -> void:
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 	show_taskbar = state
 	if !state:
-		await BtnControl.reveal(state)	
+		if skip_animation:
+			BtnControl.reveal(state)
+		else:
+			await BtnControl.reveal(state)	
 	await U.tween_node_property(TaskbarControl, "position:y", control_pos[TaskbarControl].show if show_taskbar else control_pos[TaskbarControl].hide, 0 if skip_animation else 0.3)
 	if state:
 		BtnControl.reveal(state)	
-	
-	
+		
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()

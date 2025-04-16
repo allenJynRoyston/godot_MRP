@@ -1359,7 +1359,7 @@ func update_details(use_location:Dictionary = current_location) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_showing or GameplayNode.is_occupied() or current_location.is_empty() or room_config.is_empty() or freeze_inputs or active_menu_is_open:return
+	if !is_node_ready() or !is_visible_in_tree() or  GameplayNode.is_occupied() or current_location.is_empty() or room_config.is_empty() or !is_showing or freeze_inputs or active_menu_is_open:return
 	var key:String = input_data.key
 	var keycode:int = input_data.keycode
 	

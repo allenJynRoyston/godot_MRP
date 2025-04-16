@@ -23,6 +23,49 @@ script = ExtResource("1_qt3uu")
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
 
+[node name="CenterPanel" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 55.0
+grow_horizontal = 2
+theme_override_constants/margin_top = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/CenterPanel"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="MetricsContainer" type="HBoxContainer" parent="Control/CenterPanel/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Morale" parent="Control/CenterPanel/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
+layout_mode = 2
+size_flags_horizontal = 1
+
+[node name="Safety" parent="Control/CenterPanel/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
+layout_mode = 2
+size_flags_horizontal = 1
+assigned_metric = 1
+value = -4
+
+[node name="Readiness" parent="Control/CenterPanel/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
+layout_mode = 2
+size_flags_horizontal = 1
+assigned_metric = 2
+value = 2
+
+[node name="PersonnelContainer" type="HBoxContainer" parent="Control/CenterPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
+
+[node name="PersonnelPanel" parent="Control/CenterPanel/HBoxContainer/PersonnelContainer" instance=ExtResource("4_5xs2u")]
+layout_mode = 2
+
 [node name="MarginControl" type="MarginContainer" parent="Control"]
 layout_mode = 1
 anchors_preset = 15
@@ -31,43 +74,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginControl"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="MetricsContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="Morale" parent="Control/MarginControl/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
-layout_mode = 2
-size_flags_horizontal = 1
-
-[node name="Safety" parent="Control/MarginControl/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
-layout_mode = 2
-size_flags_horizontal = 1
-assigned_metric = 1
-value = -4
-
-[node name="Readiness" parent="Control/MarginControl/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
-layout_mode = 2
-size_flags_horizontal = 1
-assigned_metric = 2
-value = 2
-
-[node name="PersonnelContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-alignment = 1
-
-[node name="PersonnelPanel" parent="Control/MarginControl/HBoxContainer/PersonnelContainer" instance=ExtResource("4_5xs2u")]
-layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control/MarginControl"]
 z_index = 1

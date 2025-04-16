@@ -4,4 +4,4 @@
 
 [resource]
 shader = ExtResource("1_qg323")
-shader_parameter/sensitivity = 0.218
+shader_parameter/sensitivity = 0.056

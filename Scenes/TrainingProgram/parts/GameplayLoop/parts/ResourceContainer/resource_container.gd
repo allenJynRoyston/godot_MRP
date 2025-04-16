@@ -12,10 +12,11 @@ extends GameContainer
 @onready var MoneyPanel:PanelContainer = $Control/MarginControl/HBoxContainer2/CurrencyContainer/MoneyPanel
 @onready var EnergyPanel:Control = $Control/MarginControl/HBoxContainer2/EnergyPanel
 
-@onready var Morale:Control = $Control/MarginControl/HBoxContainer/MetricsContainer/Morale
-@onready var Safety:Control = $Control/MarginControl/HBoxContainer/MetricsContainer/Safety
-@onready var Readiness:Control = $Control/MarginControl/HBoxContainer/MetricsContainer/Readiness
-@onready var PersonnelPanel:Control = $Control/MarginControl/HBoxContainer/PersonnelContainer
+@onready var CenterPanel:Control = $Control/CenterPanel
+@onready var Morale:Control = $Control/CenterPanel/HBoxContainer/MetricsContainer/Morale
+@onready var Safety:Control = $Control/CenterPanel/HBoxContainer/MetricsContainer/Safety
+@onready var Readiness:Control = $Control/CenterPanel/HBoxContainer/MetricsContainer/Readiness
+@onready var PersonnelPanel:Control = $Control/CenterPanel/HBoxContainer/PersonnelContainer/PersonnelPanel
 
 var previous_location:Dictionary = {}
 
@@ -43,6 +44,7 @@ func activate() -> void:
 	show()
 	await U.tick()
 	
+	control_pos_default[CenterPanel] = CenterPanel.position
 	control_pos_default[MarginControl] = MarginControl.position
 
 	update_control_pos()
@@ -65,6 +67,11 @@ func update_control_pos() -> void:
 		"hide": control_pos_default[MarginControl].y - MarginControl.size.y
 	}	
 	
+	control_pos[CenterPanel] = {
+		"show": control_pos_default[CenterPanel].y, 
+		"hide": control_pos_default[CenterPanel].y - CenterPanel.size.y
+	}		
+	
 	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------	
 
@@ -73,6 +80,8 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
 	U.tween_node_property(MarginControl, "position:y", control_pos[MarginControl].show if is_showing else control_pos[MarginControl].hide, 0 if skip_animation else 0.7)
+	U.tween_node_property(CenterPanel, "position:y", control_pos[CenterPanel].show if is_showing else control_pos[CenterPanel].hide, 0 if skip_animation else 0.7)
+
 # -----------------------------------------------	
 
 # -----------------------------------------------	

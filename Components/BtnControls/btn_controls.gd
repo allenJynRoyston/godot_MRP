@@ -47,7 +47,6 @@ func _ready() -> void:
 		if !is_node_ready() or itemlist.is_empty():return
 		var node:Control = itemlist[item_index]
 		onAction.call()
-		print(node)
 		if "onClick" in node:
 			node.onClick.call()
 	
@@ -82,7 +81,7 @@ func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
 	if !state:
 		freeze_and_disable(true)
 			
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
+	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.2)
 	
 	if state:
 		freeze_and_disable(false)

@@ -71,7 +71,6 @@ func start() -> void:
 		is_ready_and_activated = true	
 		LoadingComponent.start(fast_load)
 		await LoadingComponent.on_complete	
-		
 		EmailComponent.start()
 		is_ready.emit()
 # ------------------------------------------------------------------------------
@@ -87,12 +86,16 @@ func quit() -> void:
 func pause() -> void:
 	if !is_paused:
 		is_paused = true
+		EmailComponent.set_control_pos_visibility(false)
+		await U.tick()
 		PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 		PauseContainer.show()
 		EmailComponent.hide()
+		EmailComponent.set_control_pos_visibility(true)
 	
 func unpause() -> void:
 	is_paused = false
 	PauseContainer.hide()
 	EmailComponent.show()
+	EmailComponent.unpause()
 # ------------------------------------------------------------------------------

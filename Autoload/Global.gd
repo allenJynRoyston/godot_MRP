@@ -266,6 +266,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					# --------------
 					4194308: 
 						key = "BACKSPACE"
+					4194308: 
+						key = "DELETE"
 					4194306:
 						key = "TAB"
 					4194309:
