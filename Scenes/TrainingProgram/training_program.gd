@@ -40,7 +40,7 @@ func _ready() -> void:
 # ---------------------------------------------
 func start() -> void:	
 	show()
-	
+
 	var quickload_res:Dictionary = load_quickload()
 	var has_quicksave:bool = false if new_quicksave_file else quickload_res.success 
 	var quicksave_filedata:Dictionary = quickload_res.filedata.data if has_quicksave else {}
@@ -63,6 +63,7 @@ func start() -> void:
 	TitleScreen.has_quicksave = has_quicksave
 	TitleScreen.quickload_data = quickload_res
 	TitleScreen.start(fast_start)
+	print("here?")
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
 		"story":
@@ -124,8 +125,9 @@ func on_exit_game(exit_game:bool) -> void:
 	if exit_game:
 		on_quit.emit()
 		return
-	
 	GameplayLoopNode.queue_free()
+	await U.set_timeout(1.0)
+	start()		
 	
 
 func on_end_game(scenario_ref:int, scenario_data:Dictionary, endgame_state:bool) -> void:
@@ -138,8 +140,6 @@ func on_end_game(scenario_ref:int, scenario_data:Dictionary, endgame_state:bool)
 		save_settings()
 		
 	GameplayLoopNode.queue_free()
-	await U.set_timeout(1.0)
-	start()	
 # ---------------------------------------------
 
 # ---------------------------------------------

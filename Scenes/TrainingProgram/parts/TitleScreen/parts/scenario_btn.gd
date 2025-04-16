@@ -63,7 +63,6 @@ func on_scenario_ref_update() -> void:
 		RewardList.add_child(text_btn)
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func on_distance_from_center_update() -> void:
 	if !is_node_ready():return

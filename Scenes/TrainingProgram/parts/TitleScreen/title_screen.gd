@@ -40,7 +40,7 @@ var freeze_inputs:bool = false :
 		on_freeze_inputs_update()
 var quickload_data:Dictionary = {}
 var btn_arr:Array[Control] = []
-
+var slist:Array = []
 var selected_index:int = 0 : 
 	set(val):
 		selected_index = val
@@ -115,7 +115,6 @@ func start(fast_boot:bool = false) -> void:
 
 # ------------------------------------------
 func end(action:String, props:Dictionary = {}) -> void:
-	current_mode = MODE.TITLE
 	disable_btns(true)
 	ScenarioPanel.hide()	
 	ContinueDetails.hide()
@@ -123,6 +122,7 @@ func end(action:String, props:Dictionary = {}) -> void:
 	await U.set_timeout(0.5)
 	hide()
 	wait_for_input.emit({"action": action, "props": props})
+	current_mode = MODE.TITLE
 # ------------------------------------------
 
 # ------------------------------------------
@@ -133,13 +133,12 @@ func on_freeze_inputs_update() -> void:
 # ------------------------------------------
 func disable_btns(state:bool) -> void:
 	if !state:
-		for btn in [ScenarioBtn]:
-			btn.is_disabled = false
+		ContinueBtn.is_disabled = !has_quicksave
+		TutorialBtn.is_disabled = false
 		StoryBtn.is_disabled = disable_story
 		ScenarioBtn.is_disabled = disable_scenario
-		ContinueBtn.is_disabled = !has_quicksave
 	else:
-		for btn in [StoryBtn, ScenarioBtn, ContinueBtn]:
+		for btn in [StoryBtn, TutorialBtn, ScenarioBtn, ContinueBtn]:
 			btn.is_disabled = true
 # ------------------------------------------
 
@@ -190,6 +189,7 @@ func build_scenario_list() -> void:
 	build_list( SCENARIO_UTIL.get_list_of_scenarios() )
 		
 func build_list(list:Array) -> void:
+	slist = list
 	for node in ScenarioList.get_children():
 		node.queue_free()
 	
@@ -204,11 +204,7 @@ func build_list(list:Array) -> void:
 		new_btn.is_completed = is_completed
 		new_btn.is_disabled = !is_unlocked
 		new_btn.scenario_ref = scenario.ref
-		new_btn.onFocus = func() -> void:
-			scenario_index = index
-		new_btn.onClick = func() -> void:
-			print("clicked!")
-			#end("scenario", {"ref": scenario.ref})
+
 			
 		ScenarioList.add_child(new_btn)
 # ------------------------------------------
@@ -217,6 +213,7 @@ func build_list(list:Array) -> void:
 var previous_btn_index_title:int = 0
 func on_current_mode_update() -> void:
 	if !is_node_ready():return
+	await U.tick()
 	match current_mode:
 		MODE.TITLE:
 			BtnControls.directional_pref = "UD"
@@ -240,6 +237,7 @@ func on_current_mode_update() -> void:
 		# -----------------	
 		MODE.SCENARIO:	
 			ScenarioPanel.show()	
+
 			previous_btn_index_title = BtnControls.item_index
 
 			BtnControls.directional_pref = "LR"
@@ -248,7 +246,11 @@ func on_current_mode_update() -> void:
 			BtnControls.onBack = func() -> void:
 				current_mode = MODE.TITLE
 			
-			BtnControls.onAction = func() -> void:pass
+			BtnControls.onAction = func() -> void:
+				var btn_node:Control = ScenarioList.get_child(scenario_index)
+				if btn_node.is_disabled:return
+				end("scenario", {"ref": slist[scenario_index].ref})
+
 			
 			BtnControls.onDirectional = func(key:String) -> void:
 				match key:

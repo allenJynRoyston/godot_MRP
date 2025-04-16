@@ -47,12 +47,13 @@ func _ready() -> void:
 	ABtn.onClick = func() -> void:
 		if !is_node_ready() or itemlist.is_empty():return
 		var node:Control = itemlist[item_index]
-		print(node)
 		if "is_disabled" in node and node.is_disabled:
 			return
-		onAction.call()
+		
 		if "onClick" in node:
 			node.onClick.call()
+			
+		onAction.call()	
 	
 	BBtn.onClick = func() -> void:
 		onBack.call()
