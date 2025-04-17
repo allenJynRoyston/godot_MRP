@@ -1,10 +1,11 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-@onready var TitleLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/TitleLabel
+@onready var BtnControls:Control = $BtnControls
 
-@onready var LeftSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
-@onready var RightSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
+@onready var TitleLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/TitleLabel
+#@onready var LeftSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
+#@onready var RightSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 
 @onready var ListScrollContainer:ScrollContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
 @onready var ScpList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ScpList
@@ -12,13 +13,13 @@ extends GameContainer
 @onready var LessBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MoreBtn
 
-@onready var DetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/Details
-@onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
-@onready var SelectScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectScp
-@onready var ConfirmScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmScp
+#@onready var DetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/Details
+#@onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
+#@onready var SelectScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectScp
+#@onready var ConfirmScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmScp
 
 @onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
-@onready var BtnControlPanel:Control = $BtnControl/MarginContainer
+#@onready var BtnControlPanel:Control = $BtnControl/MarginContainer
 
 enum MODE { HIDE, SELECT_SCP, CONFIRM_SCP, FINALIZE }
 
@@ -56,29 +57,10 @@ func _ready() -> void:
 	super._ready()
 	on_refs_update()
 	on_scp_active_index_update()
-
-	SelectScp.onClick = func() -> void:
-		if is_animating or read_only:return
-		if current_mode == MODE.SELECT_SCP:
-			mark_scp_as_selected()
-
-	ConfirmScp.onClick = func() -> void:
-		if is_animating or read_only:return
-		if current_mode == MODE.CONFIRM_SCP:
-			on_confirm_scp()
-			
-	DetailsBtn.onClick = func() -> void:
-		if is_animating:return
-		show_details()
-
-	BackBtn.onClick = func() -> void:
-		if is_animating:return
-		match current_mode:
-			MODE.SELECT_SCP:
-				end(false)
-				
-			MODE.CONFIRM_SCP:
-				mark_scp_as_selected(true)
+	
+	self.modulate = Color(1, 1, 1, 0)
+	
+	BtnControls.onDirectional = on_key_input
 
 # -----------------------------------------------
 
@@ -100,15 +82,12 @@ func start_read_only(new_refs:Array) -> void:
 # -----------------------------------------------	
 
 # -----------------------------------------------
-func end(made_selection:bool, selected_scp:int = -1) -> void:	
-	for btn in [SelectScp, ConfirmScp, DetailsBtn, BackBtn]:
-		btn.is_disabled = true
-					
+func end(made_selection:bool, selected_scp:int = -1) -> void:			
 	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-	U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
+	await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
 	
-	current_mode = MODE.HIDE	
+	await BtnControls.reveal(false)
+	
 	user_response.emit({"made_selection": made_selection, "selected_scp": selected_scp})
 # -----------------------------------------------	
 
@@ -163,6 +142,7 @@ func on_refs_update() -> void:
 		
 	ListScrollContainer.custom_minimum_size = custom_min_size
 	scp_active_index = 0
+	BtnControls.itemlist = ScpList.get_children()
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -267,7 +247,7 @@ func activate() -> void:
 	await U.tick()
 
 	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
-	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	#control_pos_default[BtnControlPanel] = BtnControlPanel.position
 
 	update_control_pos()
 	on_is_showing_update()
@@ -290,10 +270,10 @@ func update_control_pos() -> void:
 	}
 	
 	# for elements in the bottom left corner
-	control_pos[BtnControlPanel] = {
-		"show": control_pos_default[BtnControlPanel].y + y_diff, 
-		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
-	}
+	#control_pos[BtnControlPanel] = {
+		#"show": control_pos_default[BtnControlPanel].y + y_diff, 
+		#"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
+	#}
 
 	
 	on_current_mode_update(true)
@@ -307,32 +287,35 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		# --------------
 		MODE.HIDE:
-			for btn in [SelectScp, ConfirmScp, DetailsBtn]:
-				btn.is_disabled = true
-							
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
 			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0 if skip_animation else 0.3)
-			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 		# --------------
 		MODE.SELECT_SCP:
-			for btn in [SelectScp, ConfirmScp, DetailsBtn, BackBtn]:
-				btn.is_disabled = false
+			BtnControls.reveal(false)
 
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+			
 			for index in ScpList.get_child_count():
 				var node:Control = ScpList.get_child(index)
 				node.is_deselected = false
-			
-			
-			SelectScp.show() if !read_only else SelectScp.hide()
-			ConfirmScp.hide()			
 							
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
-			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, 0 if skip_animation else 0.3 )
-			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show, 0 if skip_animation else 0.3)
+			await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show, 0 if skip_animation else 0.3)
+			
+			BtnControls.a_btn_title = "SELECT"	
+			BtnControls.b_btn_title = "CANCEL"				
+			
+			BtnControls.reveal(true)
+			
+			BtnControls.onBack = func() -> void:
+				end(false)
 		# --------------
 		MODE.CONFIRM_SCP:
-			SelectScp.hide()
-			ConfirmScp.show()
+			BtnControls.a_btn_title = "CONFIRM"
+			BtnControls.b_btn_title = "BACK"	
+			
+			BtnControls.onBack = func() -> void:
+				mark_scp_as_selected(true)
 			
 			for index in ScpList.get_child_count():
 				var node:Control = ScpList.get_child(index)
@@ -359,13 +342,10 @@ func on_dec() -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
+func on_key_input(key:String) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
 		return
 
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
 	match key:
 		"A":
 			if current_mode == MODE.SELECT_SCP:

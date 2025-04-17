@@ -29,7 +29,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 55.0
 grow_horizontal = 2
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 20
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/CenterPanel"]
 layout_mode = 2
@@ -73,10 +73,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 120
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control/MarginControl"]
 z_index = 1

@@ -6,20 +6,19 @@ extends PanelContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var StoreContainer:PanelContainer = $StoreContainer
-@onready var BuildContainer:PanelContainer = $BuildContainer
 # @onready var ContainmentContainer:MarginContainer = $ContainmentContainer
 # @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
-@onready var BuildCompleteContainer:PanelContainer = $BuildCompleteContainer
+#@onready var BuildCompleteContainer:PanelContainer = $BuildCompleteContainer
 @onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
-@onready var ResearchersContainer:PanelContainer = $ResearcherContainer
+#@onready var ResearchersContainer:PanelContainer = $ResearcherContainer
 @onready var EventContainer:PanelContainer = $EventContainer
 #@onready var MetricsContainer:PanelContainer = $MetricsContainer
 @onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
-@onready var SCPSelectScreen:PanelContainer = $SCPSelectScreen
-@onready var SelectResearcherScreen:PanelContainer = $SelectResearcherScreen
+#@onready var SCPSelectScreen:PanelContainer = $SCPSelectScreen
+#@onready var SelectResearcherScreen:PanelContainer = $SelectResearcherScreen
 
 @onready var RoomInfo:PanelContainer = $RoomInfo
 @onready var FloorInfo:PanelContainer = $FloorInfo
@@ -28,7 +27,15 @@ extends PanelContainer
 @onready var WaitContainer:PanelContainer = $WaitContainer
 @onready var SetupContainer:PanelContainer = $SetupContainer
 
+var BuildContainer:Control 
+var SCPSelectScreen:Control 
+var SelectResearcherScreen:Control
+
+const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
+const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
 const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
+const BuildContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn")
+const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
 
 enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, GAME_WON, GAME_LOST }
 
@@ -68,9 +75,9 @@ enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
-@export var skip_progress_screen:bool = true
-@export var debug_energy:bool = false
-@export var debug_personnel:bool = false
+#@export var skip_progress_screen:bool = true
+#@export var debug_energy:bool = false
+#@export var debug_personnel:bool = false
 
 var show_structures:bool = true: 
 	set(val):
@@ -91,11 +98,6 @@ var show_objectives:bool = false :
 	set(val):
 		show_objectives = val
 		on_show_objectives_update()		
-		#
-#var show_metrics:bool = true : 
-	#set(val):
-		#show_metrics = val
-		#on_show_metrics_update()
 
 var show_dialogue:bool = false : 
 	set(val):
@@ -106,21 +108,6 @@ var show_store:bool = false :
 	set(val):
 		show_store = val
 		on_show_store_update()		
-		
-var show_build:bool = false : 
-	set(val):
-		show_build = val
-		on_show_build_update()
-	
-var show_recruit:bool = false : 
-	set(val):
-		show_recruit = val
-		on_show_recruit_update()		
-
-var show_reseachers:bool = false : 
-	set(val):
-		show_reseachers = val
-		on_show_reseachers_update()
 
 var show_containment_status:bool = false : 
 	set(val):
@@ -142,10 +129,10 @@ var show_events:bool = false :
 		show_events = val
 		on_show_events_update()		
 
-var show_build_complete:bool = false : 
-	set(val):
-		show_build_complete = val
-		on_show_build_complete_update()
+#var show_build_complete:bool = false : 
+	#set(val):
+		#show_build_complete = val
+		#on_show_build_complete_update()
 
 var show_end_of_phase:bool = false : 
 	set(val):
@@ -201,19 +188,19 @@ var initial_values:Dictionary = {
 	"resources_data": func(starting_resources:Dictionary = {}) -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": starting_resources[RESOURCE.CURRENCY.MONEY] if !debug_personnel else 9999, 
+				"amount": starting_resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 9999, 
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": starting_resources[RESOURCE.CURRENCY.SCIENCE] if !debug_personnel else 1000, 
+				"amount": starting_resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 1000, 
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": starting_resources[RESOURCE.CURRENCY.MATERIAL] if !debug_personnel else 500, 
+				"amount": starting_resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 500, 
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": starting_resources[RESOURCE.CURRENCY.CORE] if !debug_personnel else 10, 
+				"amount": starting_resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 10, 
 				"capacity": 10
 			},						
 		},
@@ -552,12 +539,9 @@ func setup() -> void:
 
 	on_show_dialogue_update()
 	on_show_containment_status_update()
-	on_show_recruit_update()
 	on_show_resources_update()
 	on_show_objectives_update()
 	on_show_events_update()
-	on_show_build_complete_update()
-	on_show_reseachers_update()
 	on_show_store_update()
 	#on_show_metrics_update()
 	on_show_end_of_phase_update()
@@ -618,8 +602,10 @@ func setup_scenario(is_new_game:bool) -> void:
 
 
 func start_new_game(game_data_config:Dictionary) -> void:
-	setup_complete = false
+	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.APP_SKIP_LOADING_SCREEN)	
 	
+	setup_complete = false
+		
 	# reset steps
 	current_shop_step = SHOP_STEPS.RESET
 	current_contain_step = CONTAIN_STEPS.RESET
@@ -628,6 +614,7 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	current_summary_step = SUMMARY_STEPS.RESET
 	current_event_step = EVENT_STEPS.RESET
 	current_researcher_step = RESEARCHERS_STEPS.RESET
+
 		
 	if !skip_progress_screen:
 		SetupContainer.title = "SETTING UP... PLEASE WAIT."
@@ -771,13 +758,12 @@ func on_is_busy_update() -> void:
 
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
-		Structure3dContainer, TimelineContainer, ResearchersContainer,
+		Structure3dContainer, TimelineContainer,
 		ActionContainer, 
 		DialogueContainer, StoreContainer, 
-		BuildContainer,
-		ConfirmModal, SelectResearcherScreen, ResourceContainer,
-		BuildCompleteContainer, ObjectivesContainer, EventContainer,
-		EndOfPhaseContainer,	SCPSelectScreen,
+		ConfirmModal, ResourceContainer,
+		ObjectivesContainer, EventContainer,
+		EndOfPhaseContainer,	
 		RoomInfo, FloorInfo, PhaseAnnouncement, ToastContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
@@ -1154,10 +1140,10 @@ func on_show_timeline_update() -> void:
 	TimelineContainer.is_showing = show_timeline
 	showing_states[TimelineContainer] = show_timeline
 
-func on_show_reseachers_update() -> void:
-	if !is_node_ready():return
-	ResearchersContainer.is_showing = show_reseachers
-	showing_states[ResearchersContainer] = show_reseachers
+#func on_show_reseachers_update() -> void:
+	#if !is_node_ready():return
+	#ResearchersContainer.is_showing = show_reseachers
+	#showing_states[ResearchersContainer] = show_reseachers
 		
 func on_show_dialogue_update() -> void:
 	if !is_node_ready():return
@@ -1169,10 +1155,10 @@ func on_show_store_update() -> void:
 	StoreContainer.is_showing = show_store
 	showing_states[StoreContainer] = show_store
 
-func on_show_build_update() -> void:
-	if !is_node_ready():return
-	BuildContainer.is_showing = show_build
-	showing_states[BuildContainer] = show_build
+#func on_show_build_update() -> void:
+	#if !is_node_ready():return
+	#BuildContainer.is_showing = show_build
+	#showing_states[BuildContainer] = show_build
 
 func on_show_containment_status_update() -> void:
 	if !is_node_ready():return
@@ -1183,11 +1169,6 @@ func on_show_confirm_modal_update() -> void:
 	if !is_node_ready():return
 	ConfirmModal.is_showing = show_confirm_modal
 	showing_states[ConfirmModal] = show_confirm_modal
-
-func on_show_recruit_update() -> void:
-	if !is_node_ready():return
-	SelectResearcherScreen.is_showing = show_recruit
-	showing_states[SelectResearcherScreen] = show_recruit
 
 func on_show_resources_update() -> void:
 	if !is_node_ready():return
@@ -1204,10 +1185,10 @@ func on_show_events_update() -> void:
 	EventContainer.is_showing = show_events
 	showing_states[EventContainer] = show_events
 		
-func on_show_build_complete_update() -> void:
-	if !is_node_ready():return
-	BuildCompleteContainer.is_showing = show_build_complete
-	showing_states[BuildCompleteContainer] = show_build_complete
+#func on_show_build_complete_update() -> void:
+	#if !is_node_ready():return
+	#BuildCompleteContainer.is_showing = show_build_complete
+	#showing_states[BuildCompleteContainer] = show_build_complete
 
 #func on_show_metrics_update() -> void:
 	#if !is_node_ready():return
@@ -1359,12 +1340,17 @@ func on_current_builder_step_update() -> void:
 		# ---------------
 		BUILDER_STEPS.OPEN:
 			SUBSCRIBE.suppress_click = true
+			BuildContainer = BuildContainerPreload.instantiate()
+			add_child(BuildContainer)
+			BuildContainer.activate()
+			await U.tick()
 			BuildContainer.start()
-			await show_only([BuildContainer, Structure3dContainer, ResourceContainer])
+			await show_only([Structure3dContainer, ResourceContainer])
 			await BuildContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			await restore_showing_state()
 			on_store_purchase_complete.emit()	
+			BuildContainer.queue_free()
 			current_builder_step = BUILDER_STEPS.RESET
 		## ---------------
 
@@ -1532,14 +1518,19 @@ func on_current_select_scp_step_update() -> void:
 		# ------------------------
 		SELECT_SCP_STEPS.START:
 			SUBSCRIBE.suppress_click = true
+			SCPSelectScreen = ScpSelectScreenPreload.instantiate()
+			add_child(SCPSelectScreen)
+			SCPSelectScreen.activate()
 			
-			await show_only([SCPSelectScreen])			
+			await show_only([])
 			var response:Dictionary = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
 			if response.made_selection:
 				scp_data.available_refs	= SCP_UTIL.get_next_available_refs(response.selected_scp)
 				SUBSCRIBE.scp_data = scp_data
+			
+			SCPSelectScreen.queue_free()
 			
 			# trigger signal
 			on_scp_select_complete.emit(response)
@@ -1560,11 +1551,17 @@ func on_current_recruit_step_update() -> void:
 		# ---------------
 		RECRUIT_STEPS.OPEN:
 			SUBSCRIBE.suppress_click = true
+			SelectResearcherScreen = SelectResearcherScreenPreload.instantiate()
+			add_child(SelectResearcherScreen)
+			SelectResearcherScreen.activate()
 			
-			await show_only([SelectResearcherScreen])
+			await show_only([])
 			SelectResearcherScreen.start()
 			var response:bool = await SelectResearcherScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			
+			
+			SelectResearcherScreen.queue_free()
 			
 			# trigger signal
 			on_recruit_complete.emit(response)
@@ -1581,17 +1578,20 @@ func on_current_researcher_promotion_step_update() -> void:
 			SUBSCRIBE.suppress_click = false
 		# ------------------------
 		PROMOTE_RESEARCHER_STEPS.START:
-			SUBSCRIBE.suppress_click = true
-			var ResearcherPromotionNode:Control = ResearcherPromotionScreenPreload.instantiate()
-			add_child(ResearcherPromotionNode)
-			await show_only([])
-			ResearcherPromotionNode.start()
-			await ResearcherPromotionNode.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			ResearcherPromotionNode.queue_free()
-			on_promote_researcher_complete.emit(true)
-			await restore_showing_state()
-			current_select_scp_step = SELECT_SCP_STEPS.RESET
+			print("here?")
+			#SUBSCRIBE.suppress_click = true
+			#var ResearcherPromotionNode:Control = ResearcherPromotionScreenPreload.instantiate()
+			#add_child(ResearcherPromotionNode)
+			#ResearcherPromotionNode.activate()
+			#await U.tick()
+			#await show_only([])
+			#ResearcherPromotionNode.start()
+			#await ResearcherPromotionNode.user_response
+			#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			#ResearcherPromotionNode.queue_free()
+			#on_promote_researcher_complete.emit(true)
+			#await restore_showing_state()
+			#current_select_scp_step = SELECT_SCP_STEPS.RESET
 
 
 func on_current_researcher_step_update() -> void:
@@ -1604,35 +1604,50 @@ func on_current_researcher_step_update() -> void:
 		# ------------------------
 		RESEARCHERS_STEPS.DETAILS_ONLY:
 			SUBSCRIBE.suppress_click = true
-
+			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
+			add_child(ResearchersContainer)
+			ResearchersContainer.activate()
+			await U.tick()
 			ResearchersContainer.start([], true)
-			await show_only([ResearchersContainer])
+			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			
+			ResearchersContainer.queue_free()
 			await restore_showing_state()
+			
 			on_researcher_component_complete.emit()
 			current_researcher_step = RESEARCHERS_STEPS.RESET
 		# ------------------------
 		RESEARCHERS_STEPS.ASSIGN:
 			SUBSCRIBE.suppress_click = true
 			
+			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
+			add_child(ResearchersContainer)
+			ResearchersContainer.activate()
+			await U.tick()			
+			
 			var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
 				return U.dictionaries_equal(i[9].assigned_to_room, current_location)
 			).map(func(i): return i[0])
-			
 			
 			ResearchersContainer.start(assigned_uids, false)
 			await show_only([ResearchersContainer])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 	
+			ResearchersContainer.queue_free()
 			await restore_showing_state()
+			
 			on_researcher_component_complete.emit(response)
 			current_researcher_step = RESEARCHERS_STEPS.RESET
 		# --------------------------------------
 		RESEARCHERS_STEPS.PROMOTE:
 			SUBSCRIBE.suppress_click = true
+			
+			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
+			add_child(ResearchersContainer)
+			ResearchersContainer.activate()
+			await U.tick()						
 			
 			var uids:Array =  hired_lead_researchers_arr.map(func(i): return i[0])
 			#TODO: THIS NEEDS WORK
@@ -1641,7 +1656,9 @@ func on_current_researcher_step_update() -> void:
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 
+			ResearchersContainer.queue_free()
 			await restore_showing_state()
+
 			on_researcher_component_complete.emit(response)
 			current_researcher_step = RESEARCHERS_STEPS.RESET
 		# ------------------------
@@ -1691,7 +1708,6 @@ func quicksave(skip_timeout:bool = false) -> void:
 	if !skip_timeout:
 		await U.set_timeout(1.0)
 	is_busy = false
-	print("saved game!")
 
 #func quickload() -> void:
 	#is_busy = true
@@ -1707,7 +1723,7 @@ func quicksave(skip_timeout:bool = false) -> void:
 		
 func parse_restore_data(game_data_config:Dictionary) -> void:
 	var restore_data:Dictionary = game_data_config.filedata
-	var is_new_game:bool = restore_data.is_empty()
+	var is_new_game:bool = restore_data.is_empty() 
 	
 	# load the scenario_data
 	scenario_ref = game_data_config.scenario_ref if is_new_game else restore_data.scenario_ref
@@ -1754,13 +1770,13 @@ func update_room_config(force_setup:bool = false) -> void:
 	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
 	var room_type_refs:Array = purchased_facility_arr.map(func(x): return x.type_ref)
 	var metric_defaults:Dictionary = {}
-	
+
 	# set defaults
 	for floor_index in new_room_config.floor.size():
 		var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			var ring_config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
-			ring_config_data.energy.available = energy_available if !debug_energy else 99
+			ring_config_data.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY)	 else 99
 			ring_config_data.energy.used = 0
 			var floor_ring_designation:String = str(floor_index, ring_index)
 			if floor_ring_designation not in metric_defaults:

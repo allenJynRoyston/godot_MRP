@@ -348,7 +348,6 @@ title = "BACK"
 assigned_key = "B"
 icon = 16
 panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
-hide_icon_panel = false
 
 [node name="SelectTabBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
 layout_mode = 2
@@ -357,7 +356,6 @@ title = "NEXT"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
-hide_icon_panel = false
 
 [node name="UnlockBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
 layout_mode = 2
@@ -366,7 +364,6 @@ title = "UNLOCK"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
-hide_icon_panel = false
 
 [node name="DetailControl" type="Control" parent="."]
 layout_mode = 2

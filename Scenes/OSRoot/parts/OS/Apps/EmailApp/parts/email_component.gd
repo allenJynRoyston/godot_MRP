@@ -33,12 +33,6 @@ var onQuit:Callable = func():pass
 var markAsRead:Callable = func(_index:int):pass
 
 # ------------------------------------------------------------------------------
-func _init() -> void:
-	GBL.subscribe_to_control_input(self)
-
-func _exit_tree() -> void:
-	GBL.unsubscribe_to_control_input(self)	
-
 func _ready() -> void:
 	hide()
 	on_email_data_update()
@@ -48,6 +42,19 @@ func _ready() -> void:
 		await BtnControls.reveal(false)
 		await U.set_timeout(0.3)
 		onQuit.call()
+	BtnControls.onDirectional = func(key:String):
+		if !is_visible_in_tree() or !is_node_ready() or sidebar_list.is_empty(): 
+				return
+		match key:
+			"A":
+				BtnControls.a_btn_title = "SELECT"
+				BtnControls.itemlist = email_list
+				await U.tick()
+				BtnControls.item_index = previous_index
+			"D":
+				BtnControls.a_btn_title = "INSTALL"
+				previous_index = BtnControls.item_index
+				BtnControls.itemlist = sidebar_list		
 
 
 func start() -> void:
@@ -123,17 +130,4 @@ func parse_email(data:Dictionary, index:int) -> void:
 # ------------------------------------------------------------------------------
 func set_control_pos_visibility(state:bool) -> void:
 	BtnControls.show() if state else BtnControls.hide()
-	
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or !is_node_ready() or sidebar_list.is_empty(): 
-		return
-
-	match input_data.key:
-		"A":
-			BtnControls.itemlist = email_list
-			await U.tick()
-			BtnControls.item_index = previous_index
-		"D":
-			previous_index = BtnControls.item_index
-			BtnControls.itemlist = sidebar_list
 # ------------------------------------------------------------------------------

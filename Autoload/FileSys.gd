@@ -1,6 +1,6 @@
 extends Node
 
-enum FILE {SETTINGS, PERMANENT_FILE, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
+enum FILE {SETTINGS, PERSISTANT, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
 
 const save_config:Dictionary = {
 	"folder": "user://",
@@ -8,7 +8,7 @@ const save_config:Dictionary = {
 	"image_size": 400,
 	"pretty_filenames": {
 		"settings": "Settings",
-		"permanent": "Permanent",
+		"persistant": "Persistant",
 		"quick_save": "Quicksave",
 		"filesave_one": "File 1",
 		"filesave_two": "File 2",
@@ -16,7 +16,7 @@ const save_config:Dictionary = {
 	},
 	"filenames": {		
 		"settings": "SETTINGS",
-		"permanent": "PERMANENT",
+		"persistant": "PERSISTANT",
 		"quicksave": "SAVE_QUICKSAVE",
 		"save_file_one": "SAVE_01",
 		"save_file_two": "SAVE_02",
@@ -27,7 +27,7 @@ const save_config:Dictionary = {
 
 const folder:String = save_config.folder
 const settings_filename:String = save_config.filenames.settings
-const permanent_filename:String = save_config.filenames.permanent
+const persistant_filename:String = save_config.filenames.persistant
 const quick_save_filename:String = save_config.filenames.quicksave
 const save_file_one_filename:String = save_config.filenames.save_file_one
 const save_file_two_filename:String = save_config.filenames.save_file_two
@@ -60,8 +60,8 @@ func save_file_exist(type:FILE) -> bool:
 		FILE.SETTINGS:
 			filepath = str(folder, settings_filename)
 		# ----------------------------
-		FILE.PERMANENT_FILE:
-			filepath = str(folder, permanent_filename)
+		FILE.PERSISTANT:
+			filepath = str(folder, persistant_filename)
 		# ----------------------------	
 		FILE.QUICK_SAVE:
 			filepath = str(folder, quick_save_filename)		
@@ -97,8 +97,8 @@ func load_file(type:FILE) -> Dictionary:
 			var filepath:String = str(folder, settings_filename)
 			filedata = get_file_data(filepath)			
 		# ----------------------------
-		FILE.PERMANENT_FILE:
-			var filepath:String = str(folder, permanent_filename)
+		FILE.PERSISTANT:
+			var filepath:String = str(folder, persistant_filename)
 			filedata = get_file_data(filepath)
 		# ----------------------------	
 		FILE.QUICK_SAVE:
@@ -152,31 +152,55 @@ func save_file(type:FILE, save_data:Dictionary) -> Dictionary:
 			var filepath:String = str(folder, settings_filename)
 			file_data = add_savefile_metadata(settings_filename, save_data)
 			success = create_save_file(filepath, file_data)
+			if success:
+				print("SETTINGS file save success!")
+			else:
+				print("SETTINGS file save failed...")
 		# ----------------------------
-		FILE.PERMANENT_FILE:
-			var filepath:String = str(folder, permanent_filename)
-			file_data = add_savefile_metadata(permanent_filename, save_data)
-			success = create_save_file(filepath, file_data)			
+		FILE.PERSISTANT:
+			var filepath:String = str(folder, persistant_filename)
+			file_data = add_savefile_metadata(persistant_filename, save_data)
+			success = create_save_file(filepath, file_data)
+			if success:
+				print("PERSISTANT file save success!")
+			else:
+				print("PERSISTANT file save failed...")			
 		# ----------------------------
 		FILE.QUICK_SAVE:
 			var filepath:String = str(folder, quick_save_filename)
 			file_data = add_savefile_metadata(quick_save_filename, save_data)
 			success = create_save_file(filepath, file_data)
+			if success:
+				print("QUICK_SAVE file save success!")
+			else:
+				print("QUICK_SAVE file save failed...")
 		# ----------------------------
 		FILE.SAVE_ONE:
 			var filepath:String = str(folder, save_file_two_filename)
 			file_data = add_savefile_metadata(save_file_two_filename, save_data)
-			success = create_save_file(filepath, file_data)				
+			success = create_save_file(filepath, file_data)
+			if success:
+				print("SAVE_ONE file save success!")
+			else:
+				print("SAVE_ONE file save failed...")
 		# ----------------------------
 		FILE.SAVE_TWO:
 			var filepath:String = str(folder, save_file_three_filename)
 			file_data = add_savefile_metadata(save_file_three_filename, save_data)
-			success = create_save_file(filepath, file_data)				
+			success = create_save_file(filepath, file_data)
+			if success:
+				print("SAVE_TWO file save success!")
+			else:
+				print("SAVE_TWO file save failed...")
 		# ----------------------------
 		FILE.SAVE_THREE:
 			var filepath:String = str(folder, quick_save_filename)
 			file_data = add_savefile_metadata(quick_save_filename, save_data)
-			success = create_save_file(filepath, file_data)			
+			success = create_save_file(filepath, file_data)
+			if success:
+				print("SAVE_THREE file save success!")
+			else:
+				print("SAVE_THREE file save failed...")
 	
 	return {"file_data": file_data, "success": success}
 # ---------------------------------		
@@ -234,8 +258,8 @@ func clear_file(type:FILE) -> Dictionary:
 		FILE.SETTINGS:
 			filepath = str(folder, settings_filename)
 		# ----------------------------
-		FILE.PERMANENT_FILE:
-			filepath = str(folder, permanent_filename)
+		FILE.PERSISTANT:
+			filepath = str(folder, persistant_filename)
 		# ----------------------------
 		FILE.QUICK_SAVE:
 			filepath = str(folder, quick_save_filename)

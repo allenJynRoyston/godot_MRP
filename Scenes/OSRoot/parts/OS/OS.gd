@@ -3,14 +3,11 @@ class_name Layout
 
 @onready var Background:TextureRect = $BG
 @onready var PauseContainer:PanelContainer = $PauseContainer
-@onready var LoginContainer:PanelContainer = $LoginContainer
 @onready var HeaderControls:Control = $HeaderControls
 @onready var HeaderPanel:PanelContainer = $HeaderControls/PanelContainer
 
 @onready var Taskbar:Control = $MarginContainer/Taskbar
-@onready var NotificationContainer:PanelContainer = $Control/NotificationContainer
 @onready var BackgroundWindow:PanelContainer = $MarginContainer/BackgroundWindow
-@onready var Installer:PanelContainer = $Control/Installer
 @onready var DesktopIconContainer:Control = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
 @onready var RecycleBin:PanelContainer = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
 
@@ -18,7 +15,11 @@ class_name Layout
 @onready var RunningAppsContainer:Control = $RunningAppsContainer
 @onready var KeyBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/HBoxContainer/KeyBtn
 
-@export var skip_to_game:bool = false
+@onready var LoginContainer:PanelContainer = $NodeControl/LoginContainer
+@onready var Installer:PanelContainer = $NodeControl/Installer
+@onready var NotificationContainer:PanelContainer = $NodeControl/NotificationContainer
+
+
 @export var background_subviewport:SubViewport
 
 const AppItemPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn")
@@ -393,6 +394,8 @@ func resume() -> void:
 
 # -----------------------------------
 func start() -> void:
+	var skip_boot:bool = DEBUG.get_val(DEBUG.OS_SKIP_BOOT)
+	var skip_to_game:bool = DEBUG.get_val(DEBUG.OS_SKIP_TO_GAME)
 	has_started = true
 	load_state()	
 	on_simulated_busy_update()
@@ -401,23 +404,27 @@ func start() -> void:
 	# finish this part	
 	if event_switches.show_status_on_boot:
 		show_status_notice(true)
-
-	if skip_to_game:
-		open_app(find_in_app_list(APPS.SDT).details, true, true, true)
 	
 	control_pos[HeaderPanel] = {
 		"show": HeaderPanel.position.y,
 		"hide": -HeaderPanel.size.y
 	}
 		
-	await U.set_timeout(1.0)
-	LoginContainer.hide()		
+	await U.set_timeout(1.0 if !skip_boot else 0)
+	if skip_boot:
+		LoginContainer.end()
+	else:
+		LoginContainer.start()
+	await LoginContainer.is_complete	
 		
 	await render_desktop_icons()	
-	await U.set_timeout(0.3)
+	await U.set_timeout(0.3 if !skip_boot else 0)
 	
 	KeyBtn.is_disabled = false
-	BtnControls.reveal(true)			
+	await BtnControls.reveal(true)			
+	
+	if skip_to_game:
+		open_app(find_in_app_list(APPS.SDT).details, true, true, true)		
 # -----------------------------------	
 
 # -----------------------------------	
@@ -546,6 +553,7 @@ func save_state(duration:float = 0.2) -> void:
 		"mod_settings": mod_settings,
 	}	
 	FS.save_file(FS.FILE.SETTINGS, save_data)
+	
 	await simulate_wait(duration)
 
 func load_state() -> void:
@@ -554,7 +562,9 @@ func load_state() -> void:
 		restore_state(res.filedata.data)
 		
 func restore_state(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = restore_data.is_empty()
+	var no_save:bool = DEBUG.get_val(DEBUG.NEW_SYSTEM_FILE) or restore_data.is_empty() 
+	if no_save:
+		print("No SYSTEM_FILE available: creating new one.")
 	
 	settings = restore_data.settings if !no_save else settings
 	read_emails = restore_data.read_emails if !no_save else read_emails
@@ -564,6 +574,7 @@ func restore_state(restore_data:Dictionary = {}) -> void:
 	event_switches = restore_data.event_switches if !no_save else event_switches
 	apps_installed = restore_data.apps_installed if !no_save else apps_installed
 	mod_settings = restore_data.mod_settings if !no_save else mod_settings
+	
 #endregion		
 # -----------------------------------
 
@@ -859,7 +870,7 @@ func open_app(data:Dictionary, in_fullscreen:bool = false, skip_loading:bool = f
 			new_node.events = app.events
 		
 		# start in fullscreen or not, pass previously loaded
-		new_node.fast_load = previously_loaded
+		new_node.fast_load = previously_loaded or DEBUG.get_val(DEBUG.OS_APP_FAST_LOAD)
 		new_node.in_fullscreen = true
 		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:			
 			close_app(data.ref)
@@ -897,7 +908,8 @@ func close_app(ref:int, direct_close:bool = false) -> void:
 	
 	for child in RunningAppsContainer.get_children():
 		if child == node and direct_close:
-			BtnControls.reveal(true)
+			PauseContainer.hide()
+			await BtnControls.reveal(true)
 			
 	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)
 	
@@ -911,9 +923,10 @@ func close_app(ref:int, direct_close:bool = false) -> void:
 	else:
 		currently_running_app = running_apps_list[running_apps_list.size() - 1].node
 	
-
 	Taskbar.remove_item(ref)
 
+	
+	
 	
 func on_currently_running_app_update() -> void:
 	# hide/show any desktop icons 
@@ -971,6 +984,10 @@ func sort_desktop_icons() -> void:
 # -----------------------------------
 
 # -----------------------------------	
+var active_desktop_nodes:Array = [] : 
+	set(val):
+		active_desktop_nodes = val
+		BtnControls.disable_active_btn = active_desktop_nodes.size() == 0
 func render_desktop_icons(wait_time:float = 1.0) -> void:
 	freeze_inputs = true
 	await simulate_wait(wait_time)
@@ -992,6 +1009,13 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 			new_node.pos_offset = app_positions[item.details.ref]
 			new_node.data = item.details
 			
+			new_node.onBlur = func(node:Control) -> void:
+				active_desktop_nodes.erase(node)
+				active_desktop_nodes = active_desktop_nodes
+			new_node.onFocus = func(node:Control) -> void:
+				if node not in active_desktop_nodes:
+					active_desktop_nodes.push_back(node)
+				active_desktop_nodes = active_desktop_nodes
 			new_node.onClick = func() -> void:
 				item.events.open.call(item.details)
 			

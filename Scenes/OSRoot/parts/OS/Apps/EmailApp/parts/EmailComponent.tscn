@@ -180,3 +180,5 @@ layout_mode = 2
 [node name="BtnControl" parent="." instance=ExtResource("6_bd68s")]
 layout_mode = 2
 offset = Vector2(2, 2)
+a_btn_title = "OPEN"
+b_btn_title = "CLOSE"

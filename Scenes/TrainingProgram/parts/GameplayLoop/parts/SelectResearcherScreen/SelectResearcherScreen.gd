@@ -1,16 +1,16 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
+@onready var BtnControls:Control = $BtnControls
+#@onready var LeftSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
+#@onready var RightSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 
-@onready var LeftSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
-@onready var RightSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
+#@onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
+#@onready var DetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/Details
+#@onready var SelectResearcher:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectResearcher
+#@onready var ConfirmResearchers:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmResearchers
 
-@onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
-@onready var DetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/Details
-@onready var SelectResearcher:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectResearcher
-@onready var ConfirmResearchers:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmResearchers
-
-@onready var ResearcherControlPanel:Control = $ResearcherControl/PanelContainer
+@onready var ResearcherControlPanel:Control = $ResearcherControl
 @onready var ResearcherList:HBoxContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/ResearcherList
 
 @onready var TraitPanel:Control = $TraitControl/TraitPanel
@@ -18,7 +18,7 @@ extends GameContainer
 @onready var SynergyContainer:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer
 @onready var SynergyTraitList:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList
 
-@onready var BtnControlPanel:Control = $BtnControl/MarginContainer
+#@onready var BtnControlPanel:Control = $BtnControl/MarginContainer
 
 enum MODE { HIDE, SELECT_RESEARCHERS, CONFIRM_RESEARCHERS, FINALIZE }
 
@@ -43,36 +43,29 @@ var total_options:int = 2
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()	
+	self.modulate = Color(1, 1, 1, 0)
 	on_researcher_active_index_update()
 	
 	SynergyContainer.hide() 
-
-	SelectResearcher.onClick = func() -> void:
-		if is_animating:return
-		if current_mode == MODE.SELECT_RESEARCHERS:
-			mark_researcher_as_selected()
-
-	DetailsBtn.onClick = func() -> void:
-		if is_animating:return
-		show_details()
-
 	
-	ConfirmResearchers.onClick = func() -> void:
-		if is_animating:return
-		if current_mode == MODE.CONFIRM_RESEARCHERS:
-			await U.tick()		
-			current_mode = MODE.FINALIZE
-					
-	
-	BackBtn.onClick = func() -> void:
-		match current_mode:
-			MODE.SELECT_RESEARCHERS:
-				end(false)
-			MODE.CONFIRM_RESEARCHERS:
-				revert_confirm()
-				await U.tick()
-				current_mode = MODE.SELECT_RESEARCHERS
-	
+	BtnControls.onDirectional = on_directional
+#
+	#SelectResearcher.onClick = func() -> void:
+		#if is_animating:return
+		#if current_mode == MODE.SELECT_RESEARCHERS:
+			#mark_researcher_as_selected()
+#
+	#DetailsBtn.onClick = func() -> void:
+		#if is_animating:return
+		#show_details()
+#
+	#
+	#ConfirmResearchers.onClick = func() -> void:
+		#if is_animating:return
+		#if current_mode == MODE.CONFIRM_RESEARCHERS:
+			#await U.tick()		
+			#current_mode = MODE.FINALIZE
+					#
 
 # -----------------------------------------------
 
@@ -88,9 +81,9 @@ func end(response:bool) -> void:
 	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 	U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide)
 	U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide)
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
-
-	current_mode = MODE.HIDE	
+	
+	await BtnControls.reveal(false)
+		
 	user_response.emit(response)
 # -----------------------------------------------	
 
@@ -107,7 +100,6 @@ func activate() -> void:
 	
 	control_pos_default[ResearcherControlPanel] = ResearcherControlPanel.position
 	control_pos_default[TraitPanel] = TraitPanel.position
-	control_pos_default[BtnControlPanel] = BtnControlPanel.position
 	
 	update_control_pos()
 # --------------------------------------------------------------------------------------------------	
@@ -133,11 +125,6 @@ func update_control_pos() -> void:
 		"hide": control_pos_default[TraitPanel].y - TraitPanel.size.y
 	}
 	
-	control_pos[BtnControlPanel] = {
-		"show": control_pos_default[BtnControlPanel].y + y_diff, 
-		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
-	}
-	
 	on_selected_researchers_update(true)
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------	
@@ -149,43 +136,47 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	
 	match current_mode:
 		# ---------------------
-		MODE.HIDE:
-			for btn in [SelectResearcher, ConfirmResearchers]:
-				btn.is_disabled = true
-							
+		MODE.HIDE:							
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
 			U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide, 0 if skip_animation else 0.3)
 			U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide, 0 if skip_animation else 0.3)
-			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 		# ---------------------
 		MODE.SELECT_RESEARCHERS:
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
-			
-			for btn in [SelectResearcher, ConfirmResearchers]:
-				btn.is_disabled = false
+			BtnControls.reveal(false)
 
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+			
 			for index in ResearcherList.get_child_count():
 				var node:Control = ResearcherList.get_child(index)
 				node.is_deselected = false
 							
-			SelectResearcher.show()
-			ConfirmResearchers.hide()
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
+			await U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].show, 0 if skip_animation else 0.3)
 			
-			U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].show, 0 if skip_animation else 0.3)			
-			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, 0 if skip_animation else 0.3)
+			BtnControls.a_btn_title = "SELECT"	
+			BtnControls.b_btn_title = "CANCEL"				
+			
+			BtnControls.reveal(true)
+			
+			BtnControls.onBack = func() -> void:
+				end(false)			
 		# ---------------------
 		MODE.CONFIRM_RESEARCHERS:
-			ConfirmResearchers.show()
-			SelectResearcher.hide()
-
+			BtnControls.a_btn_title = "CONFIRM"
+			BtnControls.b_btn_title = "BACK"	
+			
+			BtnControls.onBack = func() -> void:
+				revert_confirm()
+				await U.tick()
+				current_mode = MODE.SELECT_RESEARCHERS			
+			
 			for index in ResearcherList.get_child_count():
 				var node:Control = ResearcherList.get_child(index)
-				node.is_deselected = researcher_active_index != index
-			
+				node.is_deselected = researcher_active_index != index		
 		# ---------------------
 		MODE.FINALIZE:
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
-			await U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide, 0 if skip_animation else 0.3)	
+			U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide, 0 if skip_animation else 0.3)	
 
 			# add to selected researchers
 			hired_lead_researchers_arr.push_back(new_hire_list[researcher_active_index])
@@ -235,12 +226,12 @@ func create_researchers() -> void:
 				MODE.SELECT_RESEARCHERS:						
 					mark_researcher_as_selected()
 				MODE.CONFIRM_RESEARCHERS:
-					unmark_researcher(index)
-					current_mode = MODE.SELECT_RESEARCHERS
+					current_mode = MODE.FINALIZE
 			
 		ResearcherList.add_child(new_card)
 		new_card.reveal = true
-
+	
+	BtnControls.itemlist = ResearcherList.get_children()
 # -----------------------------------------------
 
 # -----------------------------------------------		
@@ -311,7 +302,6 @@ func on_selected_researchers_update(force_check:bool = false) -> void:
 	var synergy_traits := []
 	var dup_list := []
 	
-
 	if researcher_active_index != -1 and !new_hire_list.is_empty():
 		
 		# get traits from selected researchers	
@@ -354,13 +344,10 @@ func on_confirm_scp() -> void:
 # -----------------------------------------------		
 
 # -----------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:
+func on_directional(key:String) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs: 
 		return
 
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
 	match key:
 		"A":
 			if current_mode == MODE.SELECT_RESEARCHERS:

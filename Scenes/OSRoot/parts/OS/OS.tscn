@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=15 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/OSRoot/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="2_pdkdd"]
@@ -6,10 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn" id="4_e3kl5"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
 [ext_resource type="PackedScene" uid="uid://8hxxm66kio4n" path="res://Scenes/OSRoot/parts/OS/Installer/Installer.tscn" id="6_dhnyo"]
+[ext_resource type="PackedScene" uid="uid://cbwnq2nmqkgf0" path="res://Scenes/OSRoot/parts/OS/LoginScreen/LoginScreen.tscn" id="6_tw6u7"]
 [ext_resource type="PackedScene" uid="uid://clbcu7v8n62o8" path="res://Scenes/OSRoot/parts/OS/Notification/Notification.tscn" id="7_mdufi"]
 [ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="8_13atc"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_tw6u7"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="9_jbgct"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41nkp"]
 
@@ -17,7 +17,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6u7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2l3oe"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tw6u7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 border_width_left = 2
 border_width_top = 2
@@ -28,9 +28,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tw6u7"]
-bg_color = Color(0.0708272, 0.0708272, 0.0708272, 1)
 
 [node name="OS" type="PanelContainer"]
 anchors_preset = 15
@@ -100,30 +97,30 @@ z_as_relative = false
 layout_mode = 2
 
 [node name="PauseContainer" parent="." instance=ExtResource("8_13atc")]
+visible = false
 layout_mode = 2
 
 [node name="RunningAppsContainer" type="Control" parent="."]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="."]
+[node name="NodeControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="NotificationContainer" parent="Control" instance=ExtResource("7_mdufi")]
-layout_mode = 2
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 1918.0
-offset_bottom = 1078.0
+[node name="LoginContainer" parent="NodeControl" instance=ExtResource("6_tw6u7")]
+visible = false
+layout_mode = 1
 
-[node name="Installer" parent="Control" instance=ExtResource("6_dhnyo")]
+[node name="NotificationContainer" parent="NodeControl" instance=ExtResource("7_mdufi")]
+layout_mode = 1
+
+[node name="Installer" parent="NodeControl" instance=ExtResource("6_dhnyo")]
 layout_mode = 1
 
 [node name="BtnControl" parent="." instance=ExtResource("6_b7tym")]
 layout_mode = 2
 offset = Vector2(50, 10)
+a_btn_title = "LOAD"
+b_btn_title = "EXIT"
 
 [node name="HeaderControls" type="Control" parent="."]
 z_index = 10
@@ -156,34 +153,7 @@ size_flags_horizontal = 3
 [node name="KeyBtn" parent="HeaderControls/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("8_tw6u7")]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_2l3oe")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tw6u7")
 title = "TASKBAR"
 assigned_key = "BACKSPACE"
 icon = 15
-
-[node name="LoginContainer" type="PanelContainer" parent="."]
-visible = false
-z_index = 10
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tw6u7")
-
-[node name="CenterContainer" type="CenterContainer" parent="LoginContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="LoginContainer/CenterContainer"]
-custom_minimum_size = Vector2(400, 400)
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="LoginContainer/CenterContainer/MarginContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="LoginContainer/CenterContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Logging into system..."
-label_settings = ExtResource("9_jbgct")
-horizontal_alignment = 1

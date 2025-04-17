@@ -11,11 +11,6 @@ extends PanelContainer
 @onready var BtnPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var LoginBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/LoginBtn
 
-@export var skip_logo:bool = false
-@export var skip_title:bool = false
-@export var skip_sequence:bool = false
-@export var skip_start_at:bool = false
-
 enum MODE {INIT, START, START_AT_SCREEN}
 
 var control_pos:Dictionary = {}
@@ -56,11 +51,6 @@ func _after_ready() -> void:
 	LoginBtn.onClick = func() -> void:
 		if !is_ready:return
 		onLogin.call()
-	
-	IntroAndTitleScreen.skip_logo = skip_logo
-	IntroAndTitleScreen.skip_title = skip_title
-	IntroAndTitleScreen.skip_sequence = skip_sequence
-	IntroAndTitleScreen.skip_start_at = skip_start_at
 	
 	await U.tick()
 	control_pos[BtnPanel] = {"show": BtnPanel.position.y, "hide": BtnPanel.position.y + BtnPanel.size.y}

@@ -52,6 +52,8 @@ SCP_UTIL="*res://Autoload/SCPUtility.gd"
 GAME_UTIL="*res://Autoload/GameUtility.gd"
 SCENARIO_UTIL="*res://Autoload/ScenarioUtility.gd"
 EVT="*res://Autoload/enums/EVENTS.gd"
+Debug="*res://debug.gd"
+DEBUG="*res://Autoload/Debug.gd"
 
 [display]
 

@@ -291,7 +291,6 @@ title = "LOGIN"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
-hide_icon_panel = false
 
 [node name="SubViewport" type="SubViewport" parent="."]
 own_world_3d = true

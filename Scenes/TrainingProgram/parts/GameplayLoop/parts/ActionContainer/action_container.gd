@@ -66,7 +66,16 @@ extends GameContainer
 @onready var ResearcherCard:Control = $ResearcherDetails/PanelContainer/ResearcherCard
 
 enum BOOKMARK_TYPE { GLOBAL, RING }
-enum MODE { SELECT_FLOOR, SELECT_ROOM, SCP_DETAILS, RESEARCHER_DETAILS, INVESTIGATE, RESET_ROOM, DISMISS_RESEARCHER }
+enum MODE { 
+	SELECT_FLOOR, 
+	SELECT_ROOM, 
+	SCP_DETAILS, 
+	RESEARCHER_DETAILS, 
+	INVESTIGATE, 
+	BUILD,
+	RESET_ROOM, 
+	DISMISS_RESEARCHER 
+}
 enum MENU_TYPE { ACTIONS = 0, ABILITIES = 1, PASSIVES = 2 }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
@@ -95,6 +104,7 @@ var active_menu_index:int = 0
 var active_menu_is_open:bool = false
 var prev_draw_state:Dictionary	= {}
 var is_setup:bool = false
+#var draw_lines:bool = false
 var in_contain_mode:bool = false : 
 	set(val):
 		in_contain_mode = val
@@ -133,15 +143,13 @@ func _ready() -> void:
 		current_mode = MODE.DISMISS_RESEARCHER
 	
 	BuildBtn.onClick = func() -> void:
-		call_and_redraw(func():
+		call_and_redraw(func():			
+			await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)
+			
 			await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
-			enable_room_focus(true)
-			await GAME_UTIL.construct_room(current_mode != MODE.INVESTIGATE)
-
-			if current_mode == MODE.INVESTIGATE:
-				U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-			else:
-				enable_room_focus(false)
+			await GAME_UTIL.construct_room()
+			
+			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)
 				
 			GameplayNode.restore_player_hud()
 		)
@@ -151,10 +159,11 @@ func _ready() -> void:
 	
 	DecontructBtn.onClick = func() -> void:
 		call_and_redraw(func():
-			enable_room_focus(true)
+			#draw_lines = false
+			
 			await GAME_UTIL.reset_room()
-			if current_mode != MODE.INVESTIGATE:
-				enable_room_focus(false)
+			
+			#draw_lines = true
 			GameplayNode.restore_player_hud()
 		)
 	
@@ -424,7 +433,6 @@ func draw_active_menu_items(selected_data:Dictionary = selected_data_state, sele
 		"draw_to_readiness": draw_to_readiness,
 		"draw_to_safety": draw_to_safety,
 		#
-
 		"draw_to_center_btn_list": true
 	}
 	
@@ -787,12 +795,12 @@ func show_abilities(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func call_and_redraw(action:Callable, show_details:bool = false) -> void:
+	#draw_lines = false
 	lock_btns(true)
 	
 	# clear any lines
-	prev_draw_state = {}
-	GBL.find_node(REFS.LINE_DRAW).clear()
-	
+	GBL.find_node(REFS.LINE_DRAW).hide()
+
 	# call 
 	await action.call()
 	await U.tick() # leave this in just in case any of the functions update data
@@ -811,7 +819,12 @@ func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
 	
 	lock_btns(false)
-	#on_current_mode_update(true)
+
+	GBL.find_node(REFS.LINE_DRAW).show()
+	if current_mode == MODE.INVESTIGATE:
+		GBL.find_node(REFS.LINE_DRAW).clear()
+		prev_draw_state = {}	
+		draw_active_menu()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -876,7 +889,10 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		DecontructBtn.hide() if room_extract.is_room_empty else DecontructBtn.show()
 		ResearcherNextBtn.show() if researchers_per_room != 1 else ResearcherNextBtn.hide()
 		ScpBtnPanel.show() if room_extract.can_contain and !room_extract.scp.is_empty() else ScpBtnPanel.hide()
-		ResearcherBtnPanel.show() if !room_extract.is_room_empty and researcher_hire_list.size() > 0 else ResearcherBtnPanel.hide()				
+		ResearcherBtnPanel.show() if !room_extract.is_room_empty and hired_lead_researchers_arr.size() > 0 else ResearcherBtnPanel.hide()				
+		
+		
+		print(!room_extract.is_room_empty,  hired_lead_researchers_arr)
 		
 		AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open
@@ -884,13 +900,13 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		ScpDetailsBtn.is_disabled = room_extract.scp.is_empty() or active_menu_is_open
 		#PassiveBtn.is_disabled = passive_abilities.is_empty() or active_menu_is_open
 		AbilityBtn.is_disabled = (abilities.is_empty() and passive_abilities.is_empty()) or active_menu_is_open
-
+		
+		
 		draw_active_menu()
 		update_details()
 		selected_researcher = 0
 		
 		await U.tick()
-		
 		return
 
 	
@@ -1125,6 +1141,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
+			
+			#draw_lines = true
 			on_current_location_update()
 			
 			BackBtn.onClick = func() -> void:

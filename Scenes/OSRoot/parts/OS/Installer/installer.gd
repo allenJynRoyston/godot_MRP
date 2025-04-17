@@ -5,7 +5,13 @@ extends PanelContainer
 const InstallerItemPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/Installer/parts/InstallerItem.tscn")
 
 # ----------------------------------------
+func _ready() -> void:
+	hide()
+# ----------------------------------------
+
+# ----------------------------------------
 func add_item(data:Dictionary = {}) -> void:
+	show()
 	var layout_node:Control = GBL.find_node(REFS.OS_LAYOUT)
 	#if !is_node_ready() or (data.ref in layout_node.apps_installing) or (data.ref in layout_node.apps_installed): return
 	layout_node.installing_app_start(data.ref)

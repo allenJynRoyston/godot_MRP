@@ -5,18 +5,6 @@ extends PanelContainer
 
 const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/GameplayLoop.tscn")
 
-# 
-@export var new_permanent_file:bool = false
-@export var skip_title_screen:bool = true
-
-#export 
-
-@export_category("Gameplay Loop")
-@export var new_quicksave_file:bool = false
-@export var skip_progress_screen:bool = false
-@export var debug_energy:bool = true
-@export var debug_personnel:bool = false
-
 # options
 var fast_start:bool = false
 var skip_main_menu:bool = false
@@ -42,13 +30,17 @@ func start() -> void:
 	show()
 
 	var quickload_res:Dictionary = load_quickload()
-	var has_quicksave:bool = false if new_quicksave_file else quickload_res.success 
-	var quicksave_filedata:Dictionary = quickload_res.filedata.data if has_quicksave else {}
+	var has_quicksave:bool = false if DEBUG.get_val(DEBUG.NEW_QUICKSAVE_FILE) else quickload_res.success 
+	var restore_data:Dictionary = quickload_res.filedata.data if has_quicksave else {}
+	var no_save:bool = restore_data.is_empty() 
+	if no_save:
+		print("No QUICKSAVE available: creating new one.")	
+
 	# skip and load the last game 
-	if skip_title_screen and !load_first_game:
+	if DEBUG.get_val(DEBUG.APP_SKIP_TITLESCREEN) and !load_first_game:
 		load_first_game = true
-		# same as continue
-		start_game(quicksave_filedata)
+		# same as continue OR if blank start a new game
+		start_game(restore_data)
 		return
 
 	# start logo screen
@@ -63,7 +55,6 @@ func start() -> void:
 	TitleScreen.has_quicksave = has_quicksave
 	TitleScreen.quickload_data = quickload_res
 	TitleScreen.start(fast_start)
-	print("here?")
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
 		"story":
@@ -71,7 +62,7 @@ func start() -> void:
 		"scenario": 
 			start_game({}, res.props.ref)
 		"continue":
-			start_game(quicksave_filedata, quicksave_filedata.scenario_ref)
+			start_game(restore_data, restore_data.scenario_ref)
 		"quit":
 			on_quit.emit()
 
@@ -85,13 +76,10 @@ func unpause() -> void:
 
 
 # ---------------------------------------------
-func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:
+func start_game(filedata:Dictionary, scenario_ref:int = 0) -> void:
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
 	GameplayLoopNode.onEndGame = on_end_game	
 	GameplayLoopNode.onExitGame = on_exit_game
-	GameplayLoopNode.skip_progress_screen = skip_progress_screen 
-	GameplayLoopNode.debug_energy = debug_energy
-	GameplayLoopNode.debug_personnel = debug_personnel
 	GameplayLoopNode.hide()
 	add_child(GameplayLoopNode)
 	
@@ -104,11 +92,10 @@ func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:
 				awarded_rooms.push_back(room)
 	
 	# and add any that's in the current scenario:
-	if scenario_ref != -1:
-		var list:Array = SCENARIO_UTIL.get_awarded_rooms(scenario_ref)
-		for room in list:
-			if room not in awarded_rooms:
-				awarded_rooms.push_back(room)
+	var list:Array = SCENARIO_UTIL.get_awarded_rooms(scenario_ref)
+	for room in list:
+		if room not in awarded_rooms:
+			awarded_rooms.push_back(room)
 			
 	await U.tick()
 	GameplayLoopNode.start({
@@ -122,43 +109,50 @@ func start_game(filedata:Dictionary, scenario_ref:int = -1) -> void:
 
 
 func on_exit_game(exit_game:bool) -> void:
+	GameplayLoopNode.queue_free()
+	await U.set_timeout(0.3)
+	# quit game
 	if exit_game:
 		on_quit.emit()
 		return
-	GameplayLoopNode.queue_free()
-	await U.set_timeout(1.0)
+	# else, reset game
 	start()		
 	
 
-func on_end_game(scenario_ref:int, scenario_data:Dictionary, endgame_state:bool) -> void:
-	if endgame_state:
+func on_end_game(scenario_ref:int, scenario_data:Dictionary, win_state:bool) -> void:
+	# if scenario win...
+	if win_state:
 		# remove quicksave
 		FS.clear_file(FS.FILE.QUICK_SAVE)
 		# calculate any rewards here...
 		if scenario_ref not in completed_scenarios:
 			completed_scenarios.push_back(scenario_ref)
 		save_settings()
-		
+	# then clear
 	GameplayLoopNode.queue_free()
+	
+	# restart
+	await U.set_timeout(0.3)
+	start()	
 # ---------------------------------------------
 
 # ---------------------------------------------
 func load_quickload() -> Dictionary:
-	var res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
-	return res
+	return FS.load_file(FS.FILE.QUICK_SAVE)
 
 func save_settings() -> Dictionary:
 	var save_data:Dictionary = {
 		"completed_scenarios": completed_scenarios
 	}	
-	FS.save_file(FS.FILE.PERMANENT_FILE, save_data)
-	print("Saved permanent file!")
+	FS.save_file(FS.FILE.PERSISTANT, save_data)
 	return save_data
 
 func load_settings() -> void:
-	var res:Dictionary = FS.load_file(FS.FILE.PERMANENT_FILE)
-	var filedata:Dictionary = save_settings() if (!res.success or new_permanent_file) else res.filedata.data
-
-	# remap save properties
-	completed_scenarios = filedata.completed_scenarios
+	var res:Dictionary = FS.load_file(FS.FILE.PERSISTANT)
+	var restore_data:Dictionary = res.filedata.data
+	var no_save:bool = restore_data.is_empty() or DEBUG.get_val(DEBUG.NEW_PERSISTANT_FILE)
+	if no_save:
+		print("No PERSISTANT_FILE available: creating new one.")
+		
+	completed_scenarios = restore_data.completed_scenarios if !no_save else completed_scenarios
 # ---------------------------------------------

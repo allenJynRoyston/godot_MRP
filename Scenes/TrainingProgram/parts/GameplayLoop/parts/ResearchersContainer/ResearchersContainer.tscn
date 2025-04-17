@@ -366,7 +366,6 @@ title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23
 panel_color = Color(0.455201, 0.00200917, 0.712752, 1)
-hide_icon_panel = false
 
 [node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -380,7 +379,6 @@ title = "BACK"
 assigned_key = "B"
 icon = 16
 panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
-hide_icon_panel = false
 
 [node name="SelectBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_dots1")]
 layout_mode = 2
@@ -389,7 +387,6 @@ title = "SELECT"
 assigned_key = "E"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
-hide_icon_panel = false
 
 [node name="ConfirmBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_dots1")]
 layout_mode = 2
@@ -398,7 +395,6 @@ title = "CONFIRM"
 assigned_key = "ENTER"
 icon = 10
 panel_color = Color(0, 0.529412, 0.278431, 1)
-hide_icon_panel = false
 
 [node name="PromoteBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_dots1")]
 layout_mode = 2
@@ -407,7 +403,6 @@ title = "PROMOTE"
 assigned_key = "ENTER"
 icon = 15
 panel_color = Color(1, 0.745178, 0.380506, 1)
-hide_icon_panel = false
 
 [node name="TraitControl" type="Control" parent="."]
 layout_mode = 2

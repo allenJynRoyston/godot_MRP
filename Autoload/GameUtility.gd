@@ -2,10 +2,7 @@ extends SubscribeWrapper
 
 var GameplayNode:Control
 var ConfirmModal:Control
-var BuildContainer:Control
 var Structure3dContainer:Control
-var SCPSelectScreen:Control
-var SelectResearcherScreen:Control
 var ToastContainer:Control
 
 # -----------------------------------
@@ -49,10 +46,7 @@ func assign_nodes() -> void:
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
 	ConfirmModal = GameplayNode.ConfirmModal
 	Structure3dContainer = GameplayNode.Structure3dContainer
-	SCPSelectScreen = GameplayNode.SCPSelectScreen
 	ToastContainer = GameplayNode.ToastContainer
-	SelectResearcherScreen = GameplayNode.SelectResearcherScreen
-	BuildContainer = GameplayNode.BuildContainer
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -490,8 +484,9 @@ func open_objectives() -> void:
 
 # ------------------------------------------------------------------------------	
 func construct_room(allow_placement:bool = true) -> void:	
-	BuildContainer.allow_placement = allow_placement
 	GameplayNode.current_builder_step = GameplayNode.BUILDER_STEPS.OPEN
+	await U.tick()
+	#GameplayNode.BuildContainer.allow_placement = allow_placement
 	await GameplayNode.on_store_purchase_complete	
 # ---------------------
 
@@ -722,8 +717,10 @@ func get_new_scp() -> Dictionary:
 	if list.is_empty():
 		return {"is_empty": true}
 		
-	SCPSelectScreen.start_selection(list)
 	GameplayNode.current_select_scp_step = GameplayNode.SELECT_SCP_STEPS.START
+	await U.tick()
+		
+	GameplayNode.SCPSelectScreen.start_selection(list)
 	var res:Dictionary = await GameplayNode.on_scp_select_complete
 	res.is_empty = false
 	
@@ -739,8 +736,9 @@ func promote_researchers() -> bool:
 
 # --------------------------------------------------------------------------------------------------
 func recruit_new_researcher(total_options:int) -> bool:
-	SelectResearcherScreen.total_options = total_options 
 	GameplayNode.current_recruit_step = GameplayNode.RECRUIT_STEPS.OPEN
+	await U.tick()
+	GameplayNode.SelectResearcherScreen.total_options = total_options 
 	return await GameplayNode.on_recruit_complete		
 # ---------------------------------------------------------------------------get-----------------------
 

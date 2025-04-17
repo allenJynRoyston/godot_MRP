@@ -23,11 +23,6 @@ enum MODE {INIT, START, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_TEXT, WAIT_FOR
 @onready var PressStartGameLabel:Label = $PressStart/PanelContainer/MarginContainer/VBoxContainer/GameTitle
 @onready var PressStartMainPanel:MarginContainer = $PressStart/PanelContainer/MarginContainer
 
-@export var skip_logo:bool = false
-@export var skip_title:bool = false
-@export var skip_sequence:bool = false
-@export var skip_start_at:bool = false
-
 const game_title:String = "THE VOID LAYER"
 const BlurInLetterPreload:PackedScene = preload("res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn")
 
@@ -115,7 +110,7 @@ func on_current_mode_update() -> void:
 			current_mode = MODE.DISPLAY_LOGO			
 		# ---------
 		MODE.DISPLAY_LOGO:
-			if !skip_logo:
+			if !DEBUG.get_val(DEBUG.INTRO_SKIP_LOGO):
 				# fade in
 				U.tween_node_property(LogoTextureRect, 'scale:x', 1.05, 4.0, 1.0, Tween.TRANS_LINEAR)
 				U.tween_node_property(LogoTextureRect, 'scale:y', 1.05, 4.0, 1.0, Tween.TRANS_LINEAR)
@@ -137,7 +132,7 @@ func on_current_mode_update() -> void:
 			await U.tween_node_property(ColorBG, 'modulate', Color(1, 1, 1, 0), 3.0)
 			U.tween_node_property(SceneCamera, 'fov', 80, 10.0)
 			
-			if !skip_title:
+			if !DEBUG.get_val(DEBUG.INTRO_SKIP_TITLE):
 				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 1), 2.0)
 				for index in range(0, TitleLetterContainers.get_child_count()):
 					var letter_node:Control = TitleLetterContainers.get_child(index)
@@ -155,7 +150,7 @@ func on_current_mode_update() -> void:
 		MODE.DISPLAY_SIDE_TEXT:
 			CreditsPanel.get_parent().show()
 			
-			if !skip_sequence:
+			if !DEBUG.get_val(DEBUG.INTRO_SKIP_SEQUENCE):
 				for item in [{"text": 'A GAME BY ALLEN ROYSTON', "wait": 0.6}, {"text": 'CREATING SAVE FILE', "wait": 0.8}, {"text": 'SAVE FILE LOADED.', "wait": 0.8}]:
 					CreditsMarginPanel.position.y = control_pos[CreditsMarginPanel].hide
 					CreditLabel.text = item.text
@@ -178,9 +173,8 @@ func on_current_mode_update() -> void:
 		MODE.WAIT_FOR_INPUT:
 			PressStartPanel.get_parent().show()
 			
-			
 			U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].show, 0.7)
-			if !skip_start_at:
+			if !DEBUG.get_val(DEBUG.INTRO_SKIP_STARTAT):
 				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 1), 0.7)
 				await user_input
 			

@@ -1,7 +1,6 @@
-[gd_scene load_steps=28 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=22 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" uid="uid://b07g7jcbtop8c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
-[ext_resource type="PackedScene" uid="uid://ctkwq86y1xbhs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/MetricsContainer.tscn" id="2_28uuh"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
 [ext_resource type="PackedScene" uid="uid://d04lnq4yhp80o" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/TimelineContainer.tscn" id="5_1tp62"]
 [ext_resource type="PackedScene" uid="uid://caxuubq4dq5yo" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/RoomInfo.tscn" id="6_fbysn"]
@@ -9,15 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
 [ext_resource type="PackedScene" uid="uid://d35m668pfaxmj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn" id="9_1cket"]
 [ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
-[ext_resource type="PackedScene" uid="uid://dbghsxudvxi5i" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn" id="9_e8e1f"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
-[ext_resource type="PackedScene" uid="uid://de6y6tnltq8d" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn" id="11_2mss3"]
 [ext_resource type="PackedScene" uid="uid://dqajtnshjj5i7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn" id="11_kf8f5"]
-[ext_resource type="PackedScene" uid="uid://cwowqrsr48d6k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn" id="13_acjes"]
 [ext_resource type="PackedScene" uid="uid://bjpif0yvapqdn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/ResourceContainer.tscn" id="13_goe6f"]
-[ext_resource type="PackedScene" uid="uid://bqjbewhv2mf4t" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn" id="13_rsj21"]
 [ext_resource type="PackedScene" uid="uid://p7chmumf3rm2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/LineDrawContainer.tscn" id="14_g12vl"]
-[ext_resource type="PackedScene" uid="uid://85i830v26h73" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildCompleteContainer/BuildCompleteContainer.tscn" id="14_ohg8q"]
 [ext_resource type="PackedScene" uid="uid://b2glyeqvwy3vs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/ObjectivesContainer.tscn" id="15_g2w1o"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="15_y8y6g"]
 [ext_resource type="PackedScene" uid="uid://dqxnw3r7jjl1s" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn" id="16_nfnev"]
@@ -48,8 +42,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxod")
 script = ExtResource("1_15jbj")
-debug_energy = true
-debug_personnel = true
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
 layout_mode = 2
@@ -61,10 +53,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="LineDrawContainer" parent="." instance=ExtResource("14_g12vl")]
-layout_mode = 2
-
-[node name="BuildContainer" parent="." instance=ExtResource("11_2mss3")]
-visible = false
 layout_mode = 2
 
 [node name="ObjectivesContainer" parent="." instance=ExtResource("15_g2w1o")]
@@ -80,20 +68,6 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 expand = false
 
-[node name="SCPSelectScreen" parent="." instance=ExtResource("13_acjes")]
-visible = false
-z_index = 2
-layout_mode = 2
-
-[node name="SelectResearcherScreen" parent="." instance=ExtResource("9_e8e1f")]
-visible = false
-z_index = 2
-layout_mode = 2
-
-[node name="MetricsContainer" parent="." instance=ExtResource("2_28uuh")]
-layout_mode = 2
-size_flags_vertical = 0
-
 [node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
 visible = false
 z_index = 2
@@ -107,15 +81,6 @@ visible = false
 layout_mode = 2
 
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
-visible = false
-layout_mode = 2
-
-[node name="ResearcherContainer" parent="." instance=ExtResource("13_rsj21")]
-visible = false
-z_index = 2
-layout_mode = 2
-
-[node name="BuildCompleteContainer" parent="." instance=ExtResource("14_ohg8q")]
 visible = false
 layout_mode = 2
 

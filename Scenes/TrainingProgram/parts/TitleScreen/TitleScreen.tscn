@@ -285,3 +285,4 @@ is_hoverable = false
 
 [node name="BtnControl" parent="." instance=ExtResource("10_3sdtd")]
 layout_mode = 2
+b_btn_title = "CLOSE"

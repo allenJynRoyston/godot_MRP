@@ -15,20 +15,43 @@ const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-selec
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
 
+# GAMEPLAY OPTIONS
+@export_category("DEBUG OPTIONS")
+@export var is_production_build:bool = true
+@export var start_at_fullscreen:bool = false
+
 # DEFAULTS
-@export_category("Startup")
+@export_category("DEBUG SAVE FILES")
+@export var new_system_file:bool = false 
+@export var new_persistant_file:bool = false
+@export var new_quicksave_file:bool = false
+
+# SKIPS
+@export_category("DEBUG START")
 @export var skip_intro:bool = false 
 @export var skip_to_game:bool = false
 
 # INTRODUCTION
-@export_category("Introduction")
+@export_category("DEBUG INTRO SCREEN")
 @export var intro_skip_logo:bool = false
 @export var intro_skip_title:bool = false
 @export var intro_skip_sequence:bool = false
 @export var intro_skip_start_at:bool = false
 
-@export_category("Options")
-@export var start_at_fullscreen:bool = false
+# OS
+@export_category("DEBUG OS")
+@export var os_skip_boot:bool = false
+@export var os_skip_to_game:bool = false
+@export var os_app_fast_load:bool = false
+
+# INTRODUCTION
+@export_category("APP")
+@export var app_skip_titlescreen:bool = false
+@export var app_skip_loading_screen:bool = false
+
+@export_category("DEBUG GAMEPLAYLOOP")
+@export var max_energy:bool = true
+@export var all_personnel:bool = false
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
@@ -68,20 +91,42 @@ func _exit_tree() -> void:
 
 # -----------------------------------	
 func _ready() -> void:
+	
 	GBL.register_node(REFS.GAMELAYER_SUBVIEWPORT, Gamelayer)
-
+	# IS PRODUCTION
+	DEBUG.assign(DEBUG.IS_PRODUCTION_BUILD, is_production_build)		
+	
+	# options
+	DEBUG.assign(DEBUG.START_AT_FULLSCREEN, start_at_fullscreen)		
+	# save files
+	DEBUG.assign(DEBUG.NEW_SYSTEM_FILE, new_system_file)
+	DEBUG.assign(DEBUG.NEW_PERSISTANT_FILE, new_persistant_file)
+	DEBUG.assign(DEBUG.NEW_QUICKSAVE_FILE, new_quicksave_file)
+	# skips
+	DEBUG.assign(DEBUG.SKIP_INTRO, skip_intro)
+	DEBUG.assign(DEBUG.SKIP_TO_GAME, skip_to_game)
+	# intro
+	DEBUG.assign(DEBUG.INTRO_SKIP_LOGO, intro_skip_logo)
+	DEBUG.assign(DEBUG.INTRO_SKIP_TITLE, intro_skip_title)	
+	DEBUG.assign(DEBUG.INTRO_SKIP_SEQUENCE, intro_skip_sequence)
+	DEBUG.assign(DEBUG.INTRO_SKIP_STARTAT, intro_skip_start_at)
+	# os
+	DEBUG.assign(DEBUG.OS_SKIP_BOOT, os_skip_boot)
+	DEBUG.assign(DEBUG.OS_SKIP_TO_GAME, os_skip_to_game)
+	DEBUG.assign(DEBUG.OS_APP_FAST_LOAD, os_app_fast_load)
+	# app
+	DEBUG.assign(DEBUG.APP_SKIP_LOADING_SCREEN, app_skip_titlescreen)	
+	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, app_skip_loading_screen)	
+	# gameplayloop
+	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)
+	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
+	
 	DoorScene.onLogin = func() -> void:
 		start_os_layer()
 	
-	OSNode.skip_to_game = skip_to_game
 	OSNode.onBack = func() -> void:
 		current_layer = LAYER.DOOR_LAYER
 	
-	DoorScene.skip_logo = intro_skip_logo
-	DoorScene.skip_title = intro_skip_title
-	DoorScene.skip_sequence = intro_skip_sequence
-	DoorScene.skip_start_at = intro_skip_start_at
-
 	if !Engine.is_editor_hint():
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
@@ -96,14 +141,9 @@ func _ready() -> void:
 
 # -----------------------------------	
 func reset() -> void:
-	if !skip_intro:
+	if !DEBUG.get_val(DEBUG.SKIP_INTRO):
 		await play_door()	
 	else:
-		DoorScene.skip_logo = true
-		DoorScene.skip_title = true
-		DoorScene.skip_sequence = true
-		DoorScene.skip_start_at = true
-			
 		current_layer = LAYER.DOOR_LAYER	
 		await U.tick()
 		DoorScene.fastfoward()

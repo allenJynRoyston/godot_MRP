@@ -70,9 +70,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ka7tl")
 
 [node name="MarginContainer" type="MarginContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer"]
@@ -85,23 +85,27 @@ size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_override_constants/separation = 10
 
+[node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("2_re623")]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_42gfu")
+title = "BACK"
+assigned_key = "B"
+icon = 28
+panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+is_disabled = true
+
 [node name="RightSideBtnList" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 8
 
-[node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_42gfu")
-title = "QUIT"
-assigned_key = "B"
-icon = 16
-panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
-
 [node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_re623")
 title = "NEXT"
 assigned_key = "E"
-icon = 10
+icon = 27
 panel_color = Color(0, 0.529412, 0.278431, 1)
+is_disabled = true
