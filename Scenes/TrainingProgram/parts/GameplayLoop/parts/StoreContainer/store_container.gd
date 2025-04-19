@@ -1,12 +1,13 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
+@onready var BtnControls:Control = $BtnControls
+#@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 
-@onready var UnlockBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/UnlockBtn
-@onready var SelectTabBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectTabBtn
-@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
+#@onready var UnlockBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/UnlockBtn
+#@onready var SelectTabBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectTabBtn
+#@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
 @onready var LessBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MoreBtn
 
@@ -22,7 +23,7 @@ extends GameContainer
 
 @onready var DetailPanel:PanelContainer = $DetailControl/DetailPanel
 
-enum MODE {HIDE, TAB_SELECT, CONTENT_SELECT}
+enum MODE {HIDE, TAB_SELECT, CONTENT_SELECT, UNLOCK}
 
 var current_mode:MODE = MODE.HIDE : 
 	set(val):
@@ -60,56 +61,59 @@ var grid_as_array:Array = [
 	[8, 9, 10, 11],
 ]
 
-var await_confirm:bool = false
 signal on_confirm
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
+	self.modulate = Color(1, 1, 1, 0)
+		
+	BtnControls.onDirectional = on_key_press
 	
-	SelectTabBtn.onClick = func() -> void:		
-		if current_mode == MODE.TAB_SELECT:
-			await U.tick()
-			current_mode = MODE.CONTENT_SELECT
+	#SelectTabBtn.onClick = func() -> void:		
+		#if current_mode == MODE.TAB_SELECT:
+			#await U.tick()
+			#current_mode = MODE.CONTENT_SELECT
 	
-	UnlockBtn.onClick = func() -> void:
-		if await_confirm:
-			on_confirm.emit(true)
-			return
-			
-		if current_mode == MODE.CONTENT_SELECT:
-			unlock_room()
-	
-
-	BackBtn.onClick = func() -> void:
-		if await_confirm:
-			on_confirm.emit(false)
-			return
-		match current_mode:
-			MODE.TAB_SELECT:
-				user_response.emit(made_a_purchase)
-			MODE.CONTENT_SELECT:
-				await U.tick()
-				current_mode = MODE.TAB_SELECT
+	#UnlockBtn.onClick = func() -> void:
+		#if await_confirm:
+			#on_confirm.emit(true)
+			#return
+			#
+		#if current_mode == MODE.CONTENT_SELECT:
+			#unlock_room()
+#
+	#BackBtn.onClick = func() -> void:
+		#if await_confirm:
+			#on_confirm.emit(false)
+			#return
+		#match current_mode:
+			#MODE.TAB_SELECT:
+				#user_response.emit(made_a_purchase)
+			#MODE.CONTENT_SELECT:
+				#await U.tick()
+				#current_mode = MODE.TAB_SELECT
 	
 	is_setup = true
-	on_is_showing_update(true)
+	on_current_mode_update(true)
 
 func start() -> void:
 	on_tab_index_update()
-	on_current_mode_update()	
+	on_current_mode_update(true)	
 	on_grid_index_update()
 	
 	await U.tick()
 	current_mode = MODE.TAB_SELECT
 	
 func end() -> void:
-	is_showing = false
-	await on_is_showing_update()
-	current_mode = MODE.HIDE
-	grid_index = 0
-	tab_index = 0
-	made_a_purchase = false	
+	BtnControls.reveal(false)
+
+	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)
+	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
+	await U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide)	
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
+
+	user_response.emit(true)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -121,7 +125,6 @@ func activate() -> void:
 	control_pos_default[ActiveHeaderPanel] = ActiveHeaderPanel.position
 	control_pos_default[MainPanel] = MainPanel.position
 	control_pos_default[DetailPanel] = DetailPanel.position
-	control_pos_default[BtnControlPanel] = BtnControlPanel.position
 	control_pos_default[SplashPanelContainer] = SplashPanelContainer.position
 	
 	update_control_pos()
@@ -162,40 +165,14 @@ func update_control_pos() -> void:
 		"hide": control_pos_default[SplashPanelContainer].y + SplashPanelContainer.size.y
 	}	
 
-	control_pos[BtnControlPanel] = {
-		"show": control_pos_default[BtnControlPanel].y + y_diff, 
-		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
-	}
-
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func unlock_room() -> void:
-	await_confirm = true
+	current_mode = MODE.UNLOCK
 	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
 	SplashLabel.text = "UNLOCK %s?" % [room_details.name]
-	
-	await U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].show)	
-	var res:bool = await on_confirm
-	await_confirm = false
-	U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide)	
-	if res:
-		if room_details.ref not in shop_unlock_purchases:
-			shop_unlock_purchases.push_back(room_details.ref)
-
-		SUBSCRIBE.resources_data = ROOM_UTIL.calculate_unlock_cost(room_details.ref)
-		SUBSCRIBE.shop_unlock_purchases = shop_unlock_purchases
-		
-		GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
-		
-		var card_node:Control = GridContent.get_child(grid_index)
-		card_node.no_animation = false
-		card_node.flip = false
-		card_node.show_already_unlocked = true
-
-		await U.tick()
-		on_grid_index_update()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -213,19 +190,19 @@ func on_tab_index_update() -> void:
 	if !is_node_ready():return
 	for index in Tabs.get_child_count():
 		var tab:Control = Tabs.get_child(index)
-		tab.onClick = func() -> void:
-			if await_confirm:return
-			match current_mode:
-				MODE.TAB_SELECT:
-					tab_index = index					
-				MODE.CONTENT_SELECT:
-					current_mode = MODE.TAB_SELECT
 		
-		tab.is_selected = index == tab_index
-		if index == tab_index:
-			ActiveHeaderLabel.text = tab.title		
-			# reset page
+		tab.onFocus = func(node:Control) -> void:
+			tab.is_selected = true
+			tab_index = index
 			update_grid_content(index)
+			
+		tab.onBlur = func(node:Control) -> void:
+			tab.is_selected = false
+			
+		tab.onClick = func() -> void:
+			ActiveHeaderLabel.text = tab.title
+			current_mode = MODE.CONTENT_SELECT
+			
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -261,7 +238,8 @@ func update_grid_content(index:int = tab_index) -> void:
 
 	grid_list_data = query.list
 	for n in GridContent.get_child_count():
-		var card_node:Control = GridContent.get_child(n)		
+		var card_node:Control = GridContent.get_child(n)
+		
 		if grid_list_data.size() - 1 < n:
 			card_node.ref = -1
 			card_node.onHover = func() -> void: pass
@@ -269,7 +247,6 @@ func update_grid_content(index:int = tab_index) -> void:
 		else:			
 			var room_details:Dictionary = grid_list_data[n]
 			var is_locked:bool = false
-			
 			if "requires_unlock" in room_details.details:
 				if room_details.details.requires_unlock:		
 					if room_details.ref not in shop_unlock_purchases:	
@@ -280,27 +257,19 @@ func update_grid_content(index:int = tab_index) -> void:
 			card_node.flip = is_locked
 			card_node.ref = room_details.ref
 			card_node.show_already_unlocked = !is_locked
+			card_node.reset()
 			
 			card_node.onHover = func() -> void:
-				if await_confirm:return
 				match current_mode:
-					MODE.TAB_SELECT:
-						grid_index = n
 					MODE.CONTENT_SELECT:
 						grid_index = n
 				
 			card_node.onClick = func() -> void:
-				if await_confirm:return
 				match current_mode:
-					MODE.TAB_SELECT:
-						current_mode = MODE.CONTENT_SELECT
-							
 					MODE.CONTENT_SELECT:
 						grid_index = n
-						await U.tick()
-						if room_details.details.requires_unlock:		
-							if room_details.ref not in shop_unlock_purchases:	
-								unlock_room()
+						if room_details.details.requires_unlock and room_details.ref not in shop_unlock_purchases:		
+							unlock_room()
 	
 
 # --------------------------------------------------------------------------------------------------			
@@ -324,13 +293,12 @@ func on_grid_index_update() -> void:
 		MODE.CONTENT_SELECT:
 			DetailPanel.ref = grid_list_data[grid_index].ref
 			if room_details.requires_unlock:
-				if room_details.ref not in shop_unlock_purchases:					
-					UnlockBtn.is_disabled = !can_afford_check( ROOM_UTIL.return_unlock_costs(room_details.ref) ) or at_max_capacity
-					
+				if room_details.ref not in shop_unlock_purchases:
+					BtnControls.disable_active_btn = !can_afford_check( ROOM_UTIL.return_unlock_costs(room_details.ref) ) or at_max_capacity
 				else:
-					UnlockBtn.is_disabled = true
+					BtnControls.disable_active_btn = true
 			else:
-				UnlockBtn.is_disabled = true
+				BtnControls.disable_active_btn = true
 
 	
 	if current_mode == MODE.CONTENT_SELECT:
@@ -358,60 +326,102 @@ func on_is_showing_update(fast:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
-func on_current_mode_update(reset_position:bool = false) -> void:
+func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
+	var duration:float = 0 if skip_animation else 0.3
 	is_animating = true
+	
+	
 	match current_mode:
 		# -------------------
 		MODE.HIDE:
-			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, 0)
-			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, 0)
-			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0)
-			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, 0)
-			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, 0)
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, 0)
+			BtnControls.freeze_and_disable(true)
+			BtnControls.reveal(false)
+			BtnControls.onBack = func() -> void:pass
+			BtnControls.onAction = func() -> void:pass			
+						
+			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)
+			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, duration)
+			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, duration)
+			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 )
 		# -------------------
 		MODE.TAB_SELECT:			
-			UnlockBtn.hide()
-			SelectTabBtn.show()
-			
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, duration)
+			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, duration)
+			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show, duration)
+			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 1 )
-			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].hide, 0 if reset_position else 0.3)
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, 0 if reset_position else 0.3)
+			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show, duration)
+
+			await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)
+			BtnControls.itemlist = Tabs.get_children()
+
+			await BtnControls.reveal(true)
 			
-			if !reset_position:
-				for index in GridContent.get_child_count():
-					var card_node:Control = GridContent.get_child(index)
-					card_node.reset()
-					card_node.is_deselected = false
-						
-				GridContent.modulate = Color(1, 1, 1, 0.5)
+			BtnControls.disable_active_btn = false
+			BtnControls.onBack = func() -> void:end()
+			BtnControls.onAction = func() -> void:pass			
 			
-			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show, 0 if reset_position else 0.3)
+			for index in GridContent.get_child_count():
+				var card_node:Control = GridContent.get_child(index)
+				card_node.reset()
+				card_node.is_deselected = false			
+				
+			await U.tick()
+			BtnControls.item_index = tab_index			
+
 		# -------------------
 		MODE.CONTENT_SELECT:			
-			SelectTabBtn.hide()
-			UnlockBtn.show()	
+			BtnControls.itemlist = GridContent.get_children()
+			BtnControls.onBack = func() -> void:
+				current_mode = MODE.TAB_SELECT
+			BtnControls.onAction = func() -> void:pass			
 			
-			if !reset_position:
-				GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
-				U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
-				U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show)
+			#if !skip_animation:
+			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
 
-				for index in GridContent.get_child_count():
-					var card_node:Control = GridContent.get_child(index)
-					card_node.reset()
-					card_node.is_deselected = false
+					
+			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, 0 if skip_animation else 0.3)
+			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].show, 0 if skip_animation else 0.3)
+			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show, 0 if skip_animation else 0.3)
+			await U.tick()
+			grid_index = grid_index if grid_list_data.size() >= 0 else -1			
+			BtnControls.item_index = grid_index			
+		# -------------------
+		MODE.UNLOCK:
+			BtnControls.itemlist = []
+			
+			BtnControls.onBack = func() -> void:
+				current_mode = MODE.CONTENT_SELECT
+				await U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide)	
 				
-				grid_index = grid_index if grid_list_data.size() >= 0 else -1			
-			
-			GridContent.modulate = Color(1, 1, 1, 1)			
-			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, 0 if reset_position else 0.3)
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].show, 0 if reset_position else 0.3)
-			U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show, 0 if reset_position else 0.3)
+			BtnControls.onAction = func() -> void:
+				await U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide)	
+				var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
 
-		
+				if room_details.ref not in shop_unlock_purchases:
+					shop_unlock_purchases.push_back(room_details.ref)
+
+				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_unlock_cost(room_details.ref)
+				SUBSCRIBE.shop_unlock_purchases = shop_unlock_purchases
+				
+				GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
+				
+				var card_node:Control = GridContent.get_child(grid_index)
+				card_node.no_animation = false
+				card_node.flip = false
+				card_node.show_already_unlocked = true
+
+				await U.tick()
+				current_mode = MODE.CONTENT_SELECT
+							
+			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].show)	
+			await U.tick()
+			BtnControls.item_index = 0	
+
 			
 	await U.tick()
 	is_animating = false
@@ -433,13 +443,10 @@ func find_nearest_valid(start_at:int, reverse:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
+func on_key_press(key:String) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
 		return
-
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
+		
 	match key:
 		"W":
 			match current_mode:

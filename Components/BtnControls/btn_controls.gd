@@ -1,4 +1,3 @@
-@tool
 extends Control
 
 @onready var BtnControlPanel:PanelContainer = $BtnControlPanel
@@ -83,16 +82,16 @@ func _ready() -> void:
 	on_b_btn_icon_update()
 	
 	ABtn.onClick = func() -> void:
-		if !is_node_ready() or itemlist.is_empty():return
-		var node:Control = itemlist[item_index]
-		if "is_disabled" in node and node.is_disabled:
-			return
-		
-		if "onClick" in node:
-			node.onClick.call()
-			
+		if !is_node_ready():return
 		onAction.call()	
-	
+		if !itemlist.is_empty():
+			var node:Control = itemlist[item_index]
+			if "is_disabled" in node and node.is_disabled:
+				return
+			
+			if "onClick" in node:
+				node.onClick.call()
+			
 	BBtn.onClick = func() -> void:
 		onBack.call()
 

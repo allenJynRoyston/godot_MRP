@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=20 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" uid="uid://b07g7jcbtop8c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://caxuubq4dq5yo" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/RoomInfo/RoomInfo.tscn" id="6_fbysn"]
 [ext_resource type="PackedScene" uid="uid://c2u54w2kpt6b0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FloorInfo/FloorInfo.tscn" id="7_ceqoy"]
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
-[ext_resource type="PackedScene" uid="uid://d35m668pfaxmj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn" id="9_1cket"]
 [ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
 [ext_resource type="PackedScene" uid="uid://dqajtnshjj5i7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn" id="11_kf8f5"]
@@ -15,7 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://b2glyeqvwy3vs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/ObjectivesContainer.tscn" id="15_g2w1o"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="15_y8y6g"]
 [ext_resource type="PackedScene" uid="uid://dqxnw3r7jjl1s" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn" id="16_nfnev"]
-[ext_resource type="PackedScene" uid="uid://nfj5ltcydj3b" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EndOfPhaseContainer/EndofPhaseContainer.tscn" id="18_p3gf7"]
 [ext_resource type="PackedScene" uid="uid://btl83p0xrlqoi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/PhaseAnnouncement.tscn" id="20_q3yo6"]
 [ext_resource type="PackedScene" uid="uid://bxish5x37ra5e" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn" id="21_jqp8v"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="26_k4uqe"]
@@ -68,11 +66,6 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 expand = false
 
-[node name="StoreContainer" parent="." instance=ExtResource("9_1cket")]
-visible = false
-z_index = 2
-layout_mode = 2
-
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]
 layout_mode = 2
 
@@ -83,12 +76,6 @@ layout_mode = 2
 [node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
 visible = false
 layout_mode = 2
-
-[node name="EndofPhaseContainer" parent="." instance=ExtResource("18_p3gf7")]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
 [node name="EventContainer" parent="." instance=ExtResource("16_nfnev")]
 visible = false
@@ -103,7 +90,6 @@ visible = false
 layout_mode = 2
 
 [node name="ToastContainer" parent="." instance=ExtResource("9_wx8fv")]
-visible = false
 layout_mode = 2
 
 [node name="WaitContainer" type="PanelContainer" parent="."]

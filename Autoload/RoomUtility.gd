@@ -232,7 +232,7 @@ func owns_and_is_active(ref:int) -> bool:
 func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
 	var filter:Callable = func(list:Array) -> Array:
-		return list.filter(func(i): return i.details.tier == tier and i.details.ref in awarded_rooms)
+		return list.filter(func(i): return i.details.tier == tier and i.details.type_ref)
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------
 

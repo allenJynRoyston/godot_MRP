@@ -59,6 +59,11 @@ const CardShader:ShaderMaterial = preload("res://CanvasShader/CardShader/CardSha
 		promotion_preview = val
 		on_promotion_preview_update()
 		
+@export var flip_hide:bool = false : 
+	set(val):
+		flip_hide = val
+		on_flip_hide_update()
+		
 var researcher_details:Dictionary = {} : 
 	set(val):
 		researcher_details = val
@@ -78,17 +83,20 @@ func _ready() -> void:
 	Back.hide()
 
 	on_uid_update()
-	on_reveal_update()
+	on_reveal_update(true)
+	on_flip_hide_update(true)
 	on_is_active_update()
 	on_is_selected_update()
 	on_is_deselected_update()
 	on_researcher_details_update()	
+	
+	CardTextureRect.pivot_offset = self.size/2
+	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_flip_update() -> void:
 	if !is_node_ready():return
-	CardTextureRect.pivot_offset = self.size/2
 	await U.tween_node_property(CardTextureRect, "scale:x", 0, 0.1)
 	await U.set_timeout(0.2)
 	Front.hide() if flip else Front.show()
@@ -112,11 +120,15 @@ func on_is_selected_update() -> void:
 
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
-	#CardTextureRect.material = BlackAndWhiteShader if is_deselected else CardShader
+	CardTextureRect.material = BlackAndWhiteShader if is_deselected else null
 
-func on_reveal_update() -> void:
+func on_reveal_update(skip_animation:bool = false) -> void:
 	if !is_node_ready():return
-	await U.tween_node_property(CardTextureRect, "modulate", Color(1, 1, 1, 1) if reveal else Color(1, 1, 1, 0))
+	await U.tween_node_property(CardTextureRect, "modulate", Color(1, 1, 1, 1) if reveal else Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
+
+func on_flip_hide_update(skip_animation:bool = false) -> void:
+	if !is_node_ready():return
+	U.tween_node_property(CardTextureRect, "scale:x", 0 if flip_hide else 1, 0 if skip_animation else 0.2)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -145,6 +157,7 @@ func on_researcher_details_update() -> void:
 	LevelLabel.text = str(researcher_details.level + 1 if promotion_preview else 0)
 	
 	AttachedAtControl.hide() if researcher_details.props.assigned_to_room.is_empty() else AttachedAtControl.show()
+	
 	if !researcher_details.props.assigned_to_room.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
 		if extract_data.is_empty():return

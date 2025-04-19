@@ -269,6 +269,10 @@ func activate() -> void:
 
 	update_control_pos()
 	on_is_showing_update()
+	
+	await U.tick()
+	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
+		toggle_camera_view()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -507,13 +511,6 @@ func action_func_lookup(title:String) -> Dictionary:
 				"onSelect": func(_index:int) -> void:
 					await GameplayNode.quicksave()
 					GameplayNode.exit_to_titlescreen()
-			}	
-		# ------------------
-		"ASSIGN": 
-			action_dict = {
-				"onSelect": func(_index:int) -> void:
-					#enable_room_focus(true)
-					await GameplayNode.assign_researcher()
 			}					
 		# ------------------
 		"OBJECTIVES":
@@ -640,7 +637,7 @@ func ability_funcs(ability:Dictionary, use_location:Dictionary) -> Dictionary:
 	var get_not_ready_func:Callable = func() -> bool:
 		var enough_science:bool = resources_data[RESOURCE.CURRENCY.SCIENCE].amount  >= ability.science_cost
 		var cooldown_duration:int = GAME_UTIL.get_ability_cooldown(ability, use_location)
-		return cooldown_duration != 0 or !enough_science
+		return false #cooldown_duration != 0 or !enough_science
 		
 	var get_icon_func:Callable = func() -> SVGS.TYPE:
 		return SVGS.TYPE.MEDIA_PLAY if GAME_UTIL.get_ability_cooldown(ability, use_location) == 0 else SVGS.TYPE.CLEAR
@@ -890,9 +887,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		ResearcherNextBtn.show() if researchers_per_room != 1 else ResearcherNextBtn.hide()
 		ScpBtnPanel.show() if room_extract.can_contain and !room_extract.scp.is_empty() else ScpBtnPanel.hide()
 		ResearcherBtnPanel.show() if !room_extract.is_room_empty and hired_lead_researchers_arr.size() > 0 else ResearcherBtnPanel.hide()				
-		
-		
-		print(!room_extract.is_room_empty,  hired_lead_researchers_arr)
 		
 		AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open

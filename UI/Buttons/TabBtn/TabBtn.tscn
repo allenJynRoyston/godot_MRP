@@ -7,6 +7,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wlpdj"]
 
 [node name="TabBtn" type="PanelContainer"]
+modulate = Color(1, 1, 1, 0.5)
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 34.0
@@ -19,12 +20,13 @@ layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-text = "TAB ITEM"
+text = "TAB TITLE"
 label_settings = ExtResource("2_51oxl")
 horizontal_alignment = 1
 
 [node name="IconBtn" parent="VBoxContainer" instance=ExtResource("2_mfhg8")]
+visible = false
 layout_mode = 2
-icon = 50
-flip_v = null
+icon = 55
+flip_v = false
 is_hoverable = false

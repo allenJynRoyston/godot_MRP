@@ -5,20 +5,11 @@ extends PanelContainer
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
-@onready var StoreContainer:PanelContainer = $StoreContainer
-# @onready var ContainmentContainer:MarginContainer = $ContainmentContainer
-# @onready var RecruitmentContainer:MarginContainer = $RecruitmentContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
-#@onready var BuildCompleteContainer:PanelContainer = $BuildCompleteContainer
 @onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
-#@onready var ResearchersContainer:PanelContainer = $ResearcherContainer
 @onready var EventContainer:PanelContainer = $EventContainer
-#@onready var MetricsContainer:PanelContainer = $MetricsContainer
-@onready var EndOfPhaseContainer:MarginContainer = $EndofPhaseContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
-#@onready var SCPSelectScreen:PanelContainer = $SCPSelectScreen
-#@onready var SelectResearcherScreen:PanelContainer = $SelectResearcherScreen
 
 @onready var RoomInfo:PanelContainer = $RoomInfo
 @onready var FloorInfo:PanelContainer = $FloorInfo
@@ -30,7 +21,9 @@ extends PanelContainer
 var BuildContainer:Control 
 var SCPSelectScreen:Control 
 var SelectResearcherScreen:Control
+var StoreContainer:Control
 
+const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
 const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
 const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
 const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
@@ -103,11 +96,6 @@ var show_dialogue:bool = false :
 	set(val):
 		show_dialogue = val
 		on_show_dialogue_update()
-		
-var show_store:bool = false : 
-	set(val):
-		show_store = val
-		on_show_store_update()		
 
 var show_containment_status:bool = false : 
 	set(val):
@@ -134,10 +122,10 @@ var show_events:bool = false :
 		#show_build_complete = val
 		#on_show_build_complete_update()
 
-var show_end_of_phase:bool = false : 
-	set(val):
-		show_end_of_phase = val
-		on_show_end_of_phase_update()
+#var show_end_of_phase:bool = false : 
+	#set(val):
+		#show_end_of_phase = val
+		#on_show_end_of_phase_update()
 		
 #@export var show_choices:bool = false : 
 	#set(val):
@@ -437,10 +425,10 @@ var current_select_scp_step:SELECT_SCP_STEPS = SELECT_SCP_STEPS.RESET :
 		current_select_scp_step = val
 		on_current_select_scp_step_update()
 
-var current_researcher_promotion_step:PROMOTE_RESEARCHER_STEPS = PROMOTE_RESEARCHER_STEPS.RESET : 
-	set(val):
-		current_researcher_promotion_step = val
-		on_current_researcher_promotion_step_update()
+#var current_researcher_promotion_step:PROMOTE_RESEARCHER_STEPS = PROMOTE_RESEARCHER_STEPS.RESET : 
+	#set(val):
+		#current_researcher_promotion_step = val
+		#on_current_researcher_promotion_step_update()
 
 var current_objective_state:OBJECTIVES_STATE = OBJECTIVES_STATE.HIDE : 
 	set(val):
@@ -542,9 +530,6 @@ func setup() -> void:
 	on_show_resources_update()
 	on_show_objectives_update()
 	on_show_events_update()
-	on_show_store_update()
-	#on_show_metrics_update()
-	on_show_end_of_phase_update()
 	
 	# other
 	on_show_confirm_modal_update()
@@ -656,11 +641,14 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	setup_scenario(game_data_config.filedata.is_empty())
 
 	# show objectives on game start
-	await GAME_UTIL.open_objectives()
-	quicksave(true)
+	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
+		await GAME_UTIL.open_objectives()
+		quicksave(true)
 	
 	# update phase and start game
 	current_phase = PHASE.PLAYER
+	SetupContainer.queue_free()
+	
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -760,10 +748,9 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, TimelineContainer,
 		ActionContainer, 
-		DialogueContainer, StoreContainer, 
+		DialogueContainer, 
 		ConfirmModal, ResourceContainer,
 		ObjectivesContainer, EventContainer,
-		EndOfPhaseContainer,	
 		RoomInfo, FloorInfo, PhaseAnnouncement, ToastContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
@@ -1150,10 +1137,10 @@ func on_show_dialogue_update() -> void:
 	DialogueContainer.is_showing = show_dialogue
 	showing_states[DialogueContainer] = show_dialogue
 
-func on_show_store_update() -> void:
-	if !is_node_ready():return
-	StoreContainer.is_showing = show_store
-	showing_states[StoreContainer] = show_store
+#func on_show_store_update() -> void:
+	#if !is_node_ready():return
+	#StoreContainer.is_showing = show_store
+	#showing_states[StoreContainer] = show_store
 
 #func on_show_build_update() -> void:
 	#if !is_node_ready():return
@@ -1196,10 +1183,10 @@ func on_show_events_update() -> void:
 	#showing_states[MetricsContainer] = show_metrics
 
 
-func on_show_end_of_phase_update() -> void:
-	if !is_node_ready():return
-	EndOfPhaseContainer.is_showing = show_end_of_phase
-	showing_states[EndOfPhaseContainer] = show_end_of_phase
+#func on_show_end_of_phase_update() -> void:
+	#if !is_node_ready():return
+	#EndOfPhaseContainer.is_showing = show_end_of_phase
+	#showing_states[EndOfPhaseContainer] = show_end_of_phase
 
 #func on_show_choices_update() -> void:
 	#if !is_node_ready():return
@@ -1390,22 +1377,22 @@ func on_current_shop_step_update() -> void:
 		# ---------------
 		SHOP_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-			restore_showing_state()
 		# ---------------
 		SHOP_STEPS.OPEN:
 			SUBSCRIBE.suppress_click = true
-			selected_shop_item = {}
+			StoreContainer = StoreContainerPreload.instantiate()
+			add_child(StoreContainer)
+			StoreContainer.activate()
 			
+			await show_only([])
 			StoreContainer.start()
-			
-			await show_only([StoreContainer, Structure3dContainer, ResourceContainer])
 			var response:bool = await StoreContainer.user_response
-			await StoreContainer.end()
+			StoreContainer.queue_free()
+			restore_player_hud()
 
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			current_shop_step = SHOP_STEPS.RESET
-			await U.set_timeout(0.3)
 			on_store_purchase_complete.emit(response)	
+			current_shop_step = SHOP_STEPS.RESET
 		## ---------------
 
 #endregion
@@ -1488,21 +1475,21 @@ func on_current_event_step_update() -> void:
 func on_current_summary_step_update() -> void:
 	if !is_node_ready():return
 
-	match current_summary_step:
-		SUMMARY_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-			await restore_player_hud()
-		SUMMARY_STEPS.START:
-			SUBSCRIBE.suppress_click = true
-			await show_only([EndOfPhaseContainer])
-			EndOfPhaseContainer.start()
-			await EndOfPhaseContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			current_summary_step = SUMMARY_STEPS.RESET
-			await U.set_timeout(0.5)
-			# trigger signal
-			on_summary_complete.emit()
-			
+	#match current_summary_step:
+		#SUMMARY_STEPS.RESET:
+			#SUBSCRIBE.suppress_click = false
+			#await restore_player_hud()
+		#SUMMARY_STEPS.START:
+			#SUBSCRIBE.suppress_click = true
+			#await show_only([EndOfPhaseContainer])
+			#EndOfPhaseContainer.start()
+			#await EndOfPhaseContainer.user_response
+			#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			#current_summary_step = SUMMARY_STEPS.RESET
+			#await U.set_timeout(0.5)
+			## trigger signal
+			#on_summary_complete.emit()
+			#
 #endregion
 # ------------------------------------------------------------------------------		
 
@@ -1569,29 +1556,30 @@ func on_current_recruit_step_update() -> void:
 			current_recruit_step = RECRUIT_STEPS.RESET
 
 
-func on_current_researcher_promotion_step_update() -> void:
-	if !is_node_ready():return
-	
-	match current_researcher_promotion_step:
-		# ------------------------
-		PROMOTE_RESEARCHER_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-		# ------------------------
-		PROMOTE_RESEARCHER_STEPS.START:
-			print("here?")
-			#SUBSCRIBE.suppress_click = true
-			#var ResearcherPromotionNode:Control = ResearcherPromotionScreenPreload.instantiate()
-			#add_child(ResearcherPromotionNode)
-			#ResearcherPromotionNode.activate()
-			#await U.tick()
-			#await show_only([])
-			#ResearcherPromotionNode.start()
-			#await ResearcherPromotionNode.user_response
-			#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			#ResearcherPromotionNode.queue_free()
-			#on_promote_researcher_complete.emit(true)
-			#await restore_showing_state()
-			#current_select_scp_step = SELECT_SCP_STEPS.RESET
+#func on_current_researcher_promotion_step_update() -> void:
+	#if !is_node_ready():return
+	#
+	#match current_researcher_promotion_step:
+		## ------------------------
+		#PROMOTE_RESEARCHER_STEPS.RESET:
+			#SUBSCRIBE.suppress_click = false
+		## ------------------------
+		#PROMOTE_RESEARCHER_STEPS.START:
+			#pass
+			##print("here?")
+			##SUBSCRIBE.suppress_click = true
+			##var ResearcherPromotionNode:Control = ResearcherPromotionScreenPreload.instantiate()
+			##add_child(ResearcherPromotionNode)
+			##ResearcherPromotionNode.activate()
+			##await U.tick()
+			##await show_only([])
+			##ResearcherPromotionNode.start()
+			##await ResearcherPromotionNode.user_response
+			##GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			##ResearcherPromotionNode.queue_free()
+			##on_promote_researcher_complete.emit(true)
+			##await restore_showing_state()
+			##current_select_scp_step = SELECT_SCP_STEPS.RESET
 
 
 func on_current_researcher_step_update() -> void:
@@ -1630,8 +1618,8 @@ func on_current_researcher_step_update() -> void:
 				return U.dictionaries_equal(i[9].assigned_to_room, current_location)
 			).map(func(i): return i[0])
 			
-			ResearchersContainer.start(assigned_uids, false)
-			await show_only([ResearchersContainer])
+			ResearchersContainer.assign(assigned_uids, false)
+			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 	
@@ -1648,17 +1636,16 @@ func on_current_researcher_step_update() -> void:
 			add_child(ResearchersContainer)
 			ResearchersContainer.activate()
 			await U.tick()						
-			
+
 			var uids:Array =  hired_lead_researchers_arr.map(func(i): return i[0])
-			#TODO: THIS NEEDS WORK
 			ResearchersContainer.promote(uids)
-			await show_only([ResearchersContainer])
+			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-
+#
 			ResearchersContainer.queue_free()
 			await restore_showing_state()
-
+#
 			on_researcher_component_complete.emit(response)
 			current_researcher_step = RESEARCHERS_STEPS.RESET
 		# ------------------------

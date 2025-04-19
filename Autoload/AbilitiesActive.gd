@@ -50,7 +50,7 @@ var hire_researcher:Dictionary = {
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.recruit_new_researcher(2),
+		return await GAME_UTIL.recruit_new_researcher(3),
 }
 
 var add_trait:Dictionary = {

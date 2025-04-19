@@ -1,60 +1,20 @@
-[gd_scene load_steps=20 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=15 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" uid="uid://cuo7fn44s3f17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_v8p8x"]
-[ext_resource type="Material" uid="uid://cdypjyfyas2o5" path="res://CanvasShader/PlasmaWave/PlasmaWaves.tres" id="2_ifwh0"]
 [ext_resource type="PackedScene" uid="uid://cd46j3ltrkmdv" path="res://UI/Buttons/TabBtn/TabBtn.tscn" id="2_jvnhf"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_ytme7"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_3ph48"]
 [ext_resource type="PackedScene" uid="uid://jacix3bun03x" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn" id="4_huwd4"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_iga2a"]
-[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="6_uluvn"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="8_xyqc8"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="9_7676q"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_yrttf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_my8xt"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ij55"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3mux"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ifwh0"]
-bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvufl"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yrttf"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25tt0"]
 
@@ -74,9 +34,8 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_d3jd6")
 script = ExtResource("1_v8p8x")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_ifwh0")
 layout_mode = 2
-color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+color = Color(0.120418, 0.120418, 0.120418, 1)
 
 [node name="HeaderControl" type="Control" parent="."]
 layout_mode = 2
@@ -110,17 +69,16 @@ theme_override_constants/separation = 50
 alignment = 1
 
 [node name="TabBtn" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("2_jvnhf")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 is_selected = true
 title = "ADMIN"
 
 [node name="TabBtn2" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("2_jvnhf")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 title = "FACILITIES"
 
 [node name="TabBtn3" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("2_jvnhf")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 title = "CONTAINMENT"
 
@@ -200,6 +158,7 @@ flip_v = false
 [node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 100
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(700, 550)
@@ -297,74 +256,6 @@ text = "0/1"
 label_settings = ExtResource("4_iga2a")
 horizontal_alignment = 1
 
-[node name="BtnControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -72.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_r3mux")
-
-[node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 25
-
-[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-theme_override_constants/separation = 10
-
-[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 8
-
-[node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ifwh0")
-title = "BACK"
-assigned_key = "B"
-icon = 16
-panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
-
-[node name="SelectTabBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jvufl")
-title = "NEXT"
-assigned_key = "E"
-icon = 10
-panel_color = Color(0, 0.529412, 0.278431, 1)
-
-[node name="UnlockBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("6_uluvn")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yrttf")
-title = "UNLOCK"
-assigned_key = "E"
-icon = 10
-panel_color = Color(0, 0.529412, 0.278431, 1)
-
 [node name="DetailControl" type="Control" parent="."]
 layout_mode = 2
 
@@ -400,3 +291,6 @@ layout_mode = 2
 text = "UNLOCK?"
 label_settings = ExtResource("9_7676q")
 horizontal_alignment = 1
+
+[node name="BtnControls" parent="." instance=ExtResource("9_yrttf")]
+layout_mode = 2

@@ -36,7 +36,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="BtnControl" type="Control"]
+[node name="BtnControls" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

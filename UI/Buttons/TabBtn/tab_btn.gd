@@ -5,7 +5,6 @@ extends BtnBase
 @onready var IconBtn:BtnBase = $VBoxContainer/IconBtn
 @onready var TitleLabel:Label = $VBoxContainer/TitleLabel
 
-
 @export var is_selected:bool = false : 
 	set(val):
 		is_selected = val
@@ -40,8 +39,9 @@ func on_is_selected_update() -> void:
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
 	if state:
-		IconBtn.icon = SVGS.TYPE.DOT
-		IconBtn.show() 
+		pass
+		#IconBtn.icon = SVGS.TYPE.DOT
+		#IconBtn.show() 
 	else:
 		on_is_selected_update()
 

@@ -31,7 +31,7 @@ var DEBUG_ROOM:Dictionary = {
 		return [
 			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0),
 			ABL.get_ability(ABL.REF.CONTAIN_SCP, 0),
-			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
+			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
 			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
 			#ABL.get_ability(ABL.REF.ADD_TRAIT, 0),

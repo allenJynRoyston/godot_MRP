@@ -568,7 +568,7 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 		GameplayNode.restore_player_hud()
 		return false
 	
-	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(response.uids[0])
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(response.uid)
 
 	#ConfirmModal.allow_controls = true
 	#ConfirmModal.set_props("Assign researcher to a room.", "", researcher_details.img_src)
@@ -582,7 +582,7 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 		if U.dictionaries_equal(i[9].assigned_to_room, location_data):
 			i[9].assigned_to_room = {}
 		# add current users
-		if i[0] in response.uids:
+		if i[0] in response.uid:
 			i[9].assigned_to_room = location_data.duplicate()
 		return i
 	)
