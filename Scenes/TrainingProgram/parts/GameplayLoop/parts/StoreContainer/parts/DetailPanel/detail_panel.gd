@@ -8,7 +8,9 @@ extends Control
 @onready var ScpCard:Control = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer/CardContainer/SCPCard
 @onready var ResearcherCard:Control = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer/CardContainer/ResearcherCard
 
-@onready var FlipBtn:BtnBase = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/FlipBtn
+@onready var PrevBtn:BtnBase = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2/PrevBtn
+@onready var FlipBtn:BtnBase = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2/FlipBtn
+@onready var NextBtn:BtnBase = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2/NextBtn
 
 @export var show_researcher_card:bool = true : 
 	set(val):
@@ -54,17 +56,21 @@ var is_animating:bool = false
 # ---------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_shop_unlock_purchases(self)
-	GBL.subscribe_to_control_input(self)
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_shop_unlock_purchases(self)
-	GBL.unsubscribe_to_control_input(self)
 
 func _ready() -> void:
 	await U.tick()
 	
 	FlipBtn.onClick = func() -> void:
 		flip_card()
+		
+	PrevBtn.onClick = func() -> void:
+		cycle_cards(-1)
+
+	NextBtn.onClick = func() -> void:
+		cycle_cards(-1)		
 	
 	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + MarginPanel.size.x}
 	on_is_revealed_update(true)
@@ -166,16 +172,16 @@ func cycle_cards(val:int, skip_animation:bool = false) -> void:
 	is_animating = false
 # ---------------------------------
 
-# ---------------------------------
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_visible_in_tree() or !is_node_ready() or !is_revealed or is_animating: 
-		return
-
-	var key:String = input_data.key
-
-	match key:
-		'LEFT':
-			cycle_cards(-1)
-		'RIGHT':
-			cycle_cards(1)
-# ---------------------------------
+## ---------------------------------
+#func on_control_input_update(input_data:Dictionary) -> void:
+	#if !is_visible_in_tree() or !is_node_ready() or !is_revealed or is_animating: 
+		#return
+#
+	#var key:String = input_data.key
+#
+	#match key:
+		#'LEFT':
+			#cycle_cards(-1)
+		#'RIGHT':
+			#cycle_cards(1)
+## ---------------------------------
