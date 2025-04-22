@@ -101,7 +101,7 @@ func on_refs_update() -> void:
 		var ref:int = refs[index]
 		var new_card:Control = ScpCardPreload.instantiate()
 		new_card.use_location = current_location.duplicate(true)
-		new_card.current_metrics = wing_data.metrics	
+		#new_card.current_metrics = wing_data.metrics	
 		new_card.ref = ref
 		new_card.index = index
 		new_card.onFocus = func(_node:Control):			

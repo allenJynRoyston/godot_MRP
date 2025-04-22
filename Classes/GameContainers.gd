@@ -153,9 +153,6 @@ func on_freeze_inputs_update() -> void:pass
 
 # --------------------------------------------------------------------------------------------------
 func on_is_showing_update() -> void:	
-	if is_node_ready() and TextureRectNode != null:
-		TextureRectNode.material.set_shader_parameter('angle_degrees', 0 if is_showing else 180)
-		tween_percent()
 	freeze_inputs = !is_showing
 	show() if is_showing else hide()
 	

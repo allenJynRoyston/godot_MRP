@@ -1,26 +1,12 @@
-[gd_scene load_steps=13 format=3 uid="uid://dl5rw8mq2i0dp"]
+[gd_scene load_steps=10 format=3 uid="uid://dl5rw8mq2i0dp"]
 
 [ext_resource type="Script" uid="uid://hrqaxm2a60en" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_wktvj"]
-[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="2_wr5lh"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_vv08h"]
 [ext_resource type="PackedScene" uid="uid://c60d3ymkiaiyy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/Rendering.tscn" id="4_ypl4m"]
 [ext_resource type="Script" uid="uid://c5r1w5dtsadiu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/LineController.gd" id="5_5cekg"]
 [ext_resource type="LabelSettings" uid="uid://cl0raoi8pa3g5" path="res://Fonts/game/label_small_black.tres" id="5_p7elo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w8kjt"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_vfiyn"]
-shader = ExtResource("2_wr5lh")
-shader_parameter/percentage = 1.0
-shader_parameter/angle_degrees = 0.0
-shader_parameter/line_width = 0.02
-shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
-shader_parameter/laser_color = Color(1, 0, 0, 1)
-shader_parameter/glow_width = 0.05
-shader_parameter/trail_fade = 0.5
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_becdm"]
-viewport_path = NodePath("SubViewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_h66wl"]
 viewport_path = NodePath("SubViewport")
@@ -39,18 +25,14 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_w8kjt")
 script = ExtResource("1_wktvj")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-material = SubResource("ShaderMaterial_vfiyn")
-layout_mode = 2
-texture = SubResource("ViewportTexture_becdm")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 2
 texture = SubResource("ViewportTexture_h66wl")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_right = 0
 
 [node name="OverlayContainer" type="PanelContainer" parent="."]
 layout_mode = 2

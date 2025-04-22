@@ -56,11 +56,11 @@ extends GameContainer
 @onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/ScpMiniCard
 @onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/RoomMiniCard
 
-@onready var ScpDetails:Control = $ScpDetails
+#@onready var ScpDetails:Control = $ScpDetails
 @onready var ScpDetailsPanel:PanelContainer = $ScpDetails/PanelContainer
 @onready var ScpCard:Control = $ScpDetails/PanelContainer/SCPCard
 
-@onready var ResearcherDetails:Control = $ResearcherDetails
+#@onready var ResearcherDetails:Control = $ResearcherDetails
 @onready var ResearcherDetailsPanel:PanelContainer = $ResearcherDetails/PanelContainer
 @onready var ResearcherCard:Control = $ResearcherDetails/PanelContainer/ResearcherCard
 
@@ -253,8 +253,8 @@ func _ready() -> void:
 	on_current_mode_update()
 
 	hide()		
-	ScpDetailsPanel.hide()
-	ResearcherDetails.hide()
+	#ScpDetailsPanel.hide()
+	#ResearcherDetails.hide()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -264,9 +264,6 @@ func activate() -> void:
 	
 	control_pos_default[BtnControlPanel] = BtnControlPanel.position
 	control_pos_default[DetailsPanel] = DetailsPanel.position
-	control_pos_default[ScpDetailsPanel] = ScpDetailsPanel.position
-	control_pos_default[ResearcherDetailsPanel] = ResearcherDetailsPanel.position
-	
 
 	update_control_pos()
 	on_is_showing_update()
@@ -293,16 +290,6 @@ func update_control_pos() -> void:
 		"show": control_pos_default[DetailsPanel].x, 
 		"hide": control_pos_default[DetailsPanel].x - DetailsPanel.size.x
 	}	
-	
-	control_pos[ScpDetailsPanel] = {
-		"show": control_pos_default[ScpDetailsPanel].y, 
-		"hide": control_pos_default[ScpDetailsPanel].y - ScpDetailsPanel.size.y
-	}		
-
-	control_pos[ResearcherDetailsPanel] = {
-		"show": control_pos_default[ResearcherDetailsPanel].y, 
-		"hide": control_pos_default[ResearcherDetailsPanel].y - ResearcherDetailsPanel.size.y
-	}		
 
 	if ref_btn != null:
 		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
@@ -341,8 +328,6 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
 	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
 	
-	U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].hide, 0 if skip_animation else 0.3)	
-	U.tween_node_property(ResearcherDetailsPanel, "position:y", control_pos[ResearcherDetailsPanel].hide, 0 if skip_animation else 0.3)		
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -879,25 +864,23 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
 		var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
 		var researchers_per_room:int = base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room
-		for btn in [AbilityBtn, RoomDetailsToggleBtn]:
-			if room_extract.is_room_empty:
-				btn.hide()
-			else: 
-				btn.show()
-
+		
+		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
 		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
 		DecontructBtn.hide() if room_extract.is_room_empty else DecontructBtn.show()
 		ResearcherNextBtn.show() if researchers_per_room != 1 else ResearcherNextBtn.hide()
-		ScpBtnPanel.show() if room_extract.can_contain and !room_extract.scp.is_empty() else ScpBtnPanel.hide()
+		ScpBtnPanel.show() if room_extract.can_contain else ScpBtnPanel.hide()
 		ResearcherBtnPanel.show() if !room_extract.is_room_empty and hired_lead_researchers_arr.size() > 0 else ResearcherBtnPanel.hide()				
 		
 		AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open
 		ResearcherDetailBtn.is_disabled = room_extract.is_room_empty or room_extract.researchers.size() == 0  or active_menu_is_open		
 		ScpDetailsBtn.is_disabled = room_extract.scp.is_empty() or active_menu_is_open
-		#PassiveBtn.is_disabled = passive_abilities.is_empty() or active_menu_is_open
 		AbilityBtn.is_disabled = (abilities.is_empty() and passive_abilities.is_empty()) or active_menu_is_open
-		
+
+		RoomDetailsControl.show_room_card = true
+		RoomDetailsControl.show_scp_card = room_extract.can_contain
+		RoomDetailsControl.show_researcher_card = !room_extract.is_room_empty
 		
 		draw_active_menu()
 		update_details()
@@ -1050,6 +1033,7 @@ func lock_btns(state:bool, ignore_panel:bool = false) -> void:
 
 func open_menu(state:bool) -> void:	
 	if state:
+		RoomDetailsControl.reveal(false) 
 		active_menu_is_open = true
 		set_panel_btn_state(true)
 	
@@ -1059,6 +1043,7 @@ func open_menu(state:bool) -> void:
 		if current_mode != MODE.INVESTIGATE:
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide )		
 		
+		RoomDetailsControl.reveal(show_room_details) 
 		active_menu_is_open = false
 		set_panel_btn_state(false)
 # --------------------------------------------------------------------------------------------------		
@@ -1141,15 +1126,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for panel in [ResearcherBtnPanel, ScpBtnPanel, AbilityBtnPanel]:
 				panel.show()
 
-
-
 			BackBtn.show()
 			ConfirmBtn.hide()
 			
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
-			print("investigate ----")
-
+			
 			lock_btns(true, true)
 			#draw_lines = true
 			on_current_location_update()
@@ -1176,7 +1158,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			ScpCard.ref = room_extract.scp.details.ref
 			freeze_inputs = true
 			
-			ScpDetailsPanel.show()
+			
 			GBL.find_node(REFS.LINE_DRAW).clear()
 			prev_draw_state = {}
 			
@@ -1194,7 +1176,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					btn.is_disabled = true				
 				freeze_inputs = false
 				await U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].hide)	
-				ScpDetailsPanel.hide()
+				#ScpDetailsPanel.hide()
 				current_mode = MODE.INVESTIGATE
 
 		# --------------
@@ -1204,7 +1186,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			ResearcherCard.uid = uid
 			freeze_inputs = true
 			
-			ResearcherDetails.show()
+			#ResearcherDetails.show()
 			GBL.find_node(REFS.LINE_DRAW).clear()
 			prev_draw_state = {}			
 			
@@ -1222,7 +1204,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					btn.is_disabled = true
 				freeze_inputs = false
 				await U.tween_node_property(ResearcherDetailsPanel, "position:y", control_pos[ResearcherDetailsPanel].hide)	
-				ResearcherDetails.hide()
+				#ResearcherDetails.hide()
 				current_mode = MODE.INVESTIGATE
 
 		# --------------
@@ -1343,7 +1325,10 @@ func update_details(use_location:Dictionary = current_location) -> void:
 		for child in node.get_children():
 			child.queue_free()
 	
-	RoomDetailsControl.ref = -1 if is_room_empty else room_extract.room.details.ref
+	RoomDetailsControl.use_location = use_location
+	RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
+	RoomDetailsControl.scp_ref = -1 if room_extract.scp.is_empty() else room_extract.scp.details.ref
+	RoomDetailsControl.researcher_uid = -1 
 	
 	
 	if !room_extract.scp.is_empty():
@@ -1367,6 +1352,7 @@ func update_details(use_location:Dictionary = current_location) -> void:
 			total_traits_list.push_back(researcher.traits)
 		ResearcherCount.text = "%s/%s" % [room_extract.researchers.size(), base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room]
 	
+	
 	#TraitContainer.show() if !room_extract.trait_list.is_empty() else TraitContainer.hide()
 	#for item in room_extract.trait_list:
 		#var card:Control = TraitCardPreload.instantiate()
@@ -1375,15 +1361,15 @@ func update_details(use_location:Dictionary = current_location) -> void:
 		#card.show_output = true
 		#TraitList.add_child(card)
 	
-	SynergyContainer.hide() if room_extract.synergy_list.is_empty() else SynergyContainer.show()
-	for item in room_extract.synergy_list:
-		var card:Control = TraitCardPreload.instantiate()
-		card.ref = item.details.ref
-		card.effect = item.effect
-		card.show_output = true
-		card.is_synergy = true
-		SynergyTraitList.add_child(card)		
-	
+	#SynergyContainer.hide() if room_extract.synergy_list.is_empty() else SynergyContainer.show()
+	#for item in room_extract.synergy_list:
+		#var card:Control = TraitCardPreload.instantiate()
+		#card.ref = item.details.ref
+		#card.effect = item.effect
+		#card.show_output = true
+		#card.is_synergy = true
+		#SynergyTraitList.add_child(card)		
+	#
 	await U.tick()
 	DetailsPanel.position.y = 0	
 # --------------------------------------------------------------------------------------------------

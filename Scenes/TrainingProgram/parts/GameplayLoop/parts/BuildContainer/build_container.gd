@@ -213,7 +213,7 @@ func on_grid_index_update() -> void:
 	match current_mode:
 		# -----------
 		MODE.CONTENT_SELECT:
-			DetailPanel.ref = grid_list_data[grid_index].ref
+			DetailPanel.room_ref = grid_list_data[grid_index].ref
 	
 		# -----------
 		MODE.PLACEMENT:

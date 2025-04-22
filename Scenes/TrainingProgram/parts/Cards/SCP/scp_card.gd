@@ -6,12 +6,15 @@ extends MouseInteractions
 @onready var CardBody:Control = $SubViewport/CardBody
 #front
 @onready var CardDrawerImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var CardDrawerDesignation:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDesignation
+@onready var CardDrawerDesignation:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerDesignation
+@onready var CardDrawerLevel:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerLevel
 @onready var CardDrawerNickname:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerNickname
 @onready var CardDrawerItemClass:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerItemClass
 @onready var CardDrawerSupplies:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerSupplies
 @onready var CardDrawerRewards:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerRewards
 @onready var CardDrawerAssigned:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
+@onready var CardDrawerSpec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerSpec
+@onready var CardDrawerTrait:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawertrait
 # back
 @onready var CardDrawerContainmentInfo:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerContainmentInfo
 @onready var CardDrawerRequired:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerRequired
@@ -56,13 +59,15 @@ extends MouseInteractions
 		is_deselected = val
 		on_is_deselected_update()
 		
+@export var card_border_color:Color = Color(0.408, 0.42, 1.0) : 
+	set(val): 
+		card_border_color = val 
+		on_is_selected_update()
 
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
-const card_border_color:Color = Color(0.408, 0.42, 1.0)
 
 var index:int = -1
 var use_location:Dictionary = {}
-var current_metrics:Dictionary = {}
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass
@@ -92,7 +97,7 @@ func on_show_checkbox_update() -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	CardBody.border_color = card_border_color if is_selected else card_border_color.darkened(0.5)
+	CardBody.border_color = card_border_color if is_selected else card_border_color.darkened(0.1)
 
 func on_show_assigned_update() -> void:
 	if !is_node_ready():return
@@ -110,20 +115,28 @@ func on_reveal_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
-	if !is_node_ready() or ref not in SCP_UTIL.reference_data:return	
+	if !is_node_ready():return	
 	
+	if ref not in SCP_UTIL.reference_data:
+		CardDrawerImage.use_static = true
+		for node in [CardDrawerDesignation, CardDrawerLevel, CardDrawerNickname, CardDrawerItemClass, CardDrawerRequired, CardDrawerSpec, CardDrawerTrait]:
+			node.content = "-"
+		return
+		
 	var scp_data:Dictionary = SCP_UTIL.return_data(ref)
 	var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
-	var passes_metric_check:bool = SCP_UTIL.passes_metric_check(ref, use_location)
-	var metrics:Dictionary = {
-		"passes_metric_check": passes_metric_check,
-	}
-	for ref in scp_data.effects.metrics:
-		var needed:int = scp_data.effects.metrics[ref]
-		metrics[ref] = {
-			"needed": scp_data.effects.metrics[ref],
-			"current": current_metrics[ref]
-		}
+	#var passes_metric_check:bool = SCP_UTIL.passes_metric_check(ref, use_location)
+	#var metrics:Dictionary = {
+		#"passes_metric_check": passes_metric_check,
+	#}
+	#
+	#
+	#for ref in scp_data.effects.metrics:
+		#var needed:int = scp_data.effects.metrics[ref]
+		#metrics[ref] = {
+			#"needed": needed,
+			#"current": 2
+		#}
 		
 	var required_str:String = ""
 	for ref in scp_data.required_for_containment.profession:
@@ -137,9 +150,10 @@ func on_ref_update() -> void:
 	CardDrawerItemClass.content = scp_data.item_class
 	
 	CardDrawerImage.img_src = scp_data.img_src
+	CardDrawerImage.use_static = false
 	CardDrawerRewards.list = rewards.map(func(x): return {"icon": x.resource.icon, "title": str(x.amount)})
 	
-	CardDrawerContainmentInfo.metrics = metrics
+	#CardDrawerContainmentInfo.metrics = metrics
 	CardDrawerContainmentInfo.effects = scp_data.effects
 	CardDrawerRequired.content = required_str
 	

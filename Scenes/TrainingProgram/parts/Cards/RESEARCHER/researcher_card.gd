@@ -9,12 +9,16 @@ extends MouseInteractions
 @onready var CardDrawerName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
 @onready var CardDrawerLevel:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
 @onready var CardDrawerAssigned:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
-@onready var CardDrawerSpec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerSpec
-@onready var CardDrawerTraits:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTraits
+@onready var CardDrawerSpec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerSpec
+@onready var CardDrawerTraits:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawertrait
 
 @onready var CardDrawerImageBack:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerImage
 
-const card_border_color:Color = Color(0.0, 0.638, 0.337)
+@export var card_border_color:Color = Color(0.0, 0.638, 0.337) : 
+	set(val): 
+		card_border_color = val 
+		on_is_selected_update()
+
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 #const CardShader:ShaderMaterial = preload("res://CanvasShader/CardShader/CardShader.tres")
 
@@ -63,10 +67,10 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 		show_assigned = val
 		on_show_assigned_update()
 		
-var researcher_details:Dictionary = {} : 
-	set(val):
-		researcher_details = val
-		on_researcher_details_update()
+#var researcher_details:Dictionary = {} : 
+	#set(val):
+		#researcher_details = val
+		#on_researcher_details_update()
 		
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -84,7 +88,6 @@ func _ready() -> void:
 	on_is_active_update()
 	on_is_selected_update()
 	on_is_deselected_update()
-	on_researcher_details_update()	
 	on_show_assigned_update()
 	
 	await U.tick()
@@ -105,7 +108,7 @@ func on_show_checkbox_update() -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	CardBody.border_color = card_border_color if is_selected else card_border_color.darkened(0.5)
+	CardBody.border_color = card_border_color if is_selected else card_border_color.darkened(0.1)
 	
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
@@ -122,20 +125,17 @@ func on_show_assigned_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_uid_update() -> void:
-	if !is_node_ready() or uid == "":return		
-	researcher_details = RESEARCHER_UTIL.return_data_with_uid(uid)
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func on_promotion_preview_update() -> void:
-	if !is_node_ready():return
-	on_researcher_details_update()
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------
-func on_researcher_details_update() -> void:
-	if !is_node_ready() or researcher_details.is_empty():return
-
+	if !is_node_ready():return		
+	
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)	
+	
+	if uid == "-1" or researcher_details.is_empty():
+		CardDrawerImage.use_static = true
+		for node in [CardDrawerName, CardDrawerLevel, CardDrawerSpec, CardDrawerTraits, CardDrawerAssigned]:
+			node.content = "-"
+		return
+		
+	CardDrawerImage.use_static = false
 	CardDrawerImage.img_src = researcher_details.img_src
 	CardDrawerImageBack.img_src = researcher_details.img_src
 	CardDrawerName.content = researcher_details.name
@@ -163,6 +163,13 @@ func on_researcher_details_update() -> void:
 	trait_str = trait_str.left(trait_str.length() - 3)
 	CardDrawerTraits.content = trait_str
 # ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func on_promotion_preview_update() -> void:
+	if !is_node_ready():return
+	on_uid_update()
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:	

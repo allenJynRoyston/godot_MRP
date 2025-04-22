@@ -84,6 +84,7 @@ layout_mode = 2
 theme_override_constants/separation = 15
 
 [node name="Metrics" type="HBoxContainer" parent="MarginContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 alignment = 1
 
