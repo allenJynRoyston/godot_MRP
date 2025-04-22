@@ -36,9 +36,9 @@ var SCPA:Dictionary = {
 	# -----------------------------------
 	"effects": {
 		"metrics":{
-			RESOURCE.BASE_METRICS.MORALE: 4,
-			RESOURCE.BASE_METRICS.SAFETY: 3,
-			RESOURCE.BASE_METRICS.READINESS: 2
+			RESOURCE.METRICS.MORALE: 4,
+			RESOURCE.METRICS.SAFETY: 3,
+			RESOURCE.METRICS.READINESS: 2
 		},
 		"contained": {
 			"description": "All resources are available.", 

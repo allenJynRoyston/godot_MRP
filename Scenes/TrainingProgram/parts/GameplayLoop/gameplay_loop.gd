@@ -7,7 +7,7 @@ extends PanelContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var ResourceContainer:PanelContainer = $ResourceContainer
 @onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
-@onready var EventContainer:PanelContainer = $EventContainer
+@onready var LineDrawContainer:PanelContainer = $LineDrawContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
 
@@ -22,7 +22,9 @@ var BuildContainer:Control
 var SCPSelectScreen:Control 
 var SelectResearcherScreen:Control
 var StoreContainer:Control
+var EventContainer:Control 
 
+const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
 const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
 const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
 const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
@@ -82,7 +84,7 @@ var show_timeline:bool = true :
 		show_timeline = val
 		on_show_timeline_update()
 
-var show_actions:bool = true : 
+var show_actions:bool = false : 
 	set(val):
 		show_actions = val
 		on_show_actions_update()
@@ -96,6 +98,11 @@ var show_dialogue:bool = false :
 	set(val):
 		show_dialogue = val
 		on_show_dialogue_update()
+		
+var show_linedraw:bool = true : 
+	set(val):
+		show_linedraw = val
+		on_show_linedraw_update()
 
 var show_containment_status:bool = false : 
 	set(val):
@@ -112,25 +119,6 @@ var show_resources:bool = false :
 		show_resources = val
 		on_show_resources_update()
 		
-var show_events:bool = false : 
-	set(val):
-		show_events = val
-		on_show_events_update()		
-
-#var show_build_complete:bool = false : 
-	#set(val):
-		#show_build_complete = val
-		#on_show_build_complete_update()
-
-#var show_end_of_phase:bool = false : 
-	#set(val):
-		#show_end_of_phase = val
-		#on_show_end_of_phase_update()
-		
-#@export var show_choices:bool = false : 
-	#set(val):
-		#show_choices = val
-		#on_show_choices_update()		
 		
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -345,11 +333,7 @@ var is_busy:bool = false :
 		is_busy = val
 		on_is_busy_update()
 		
-var setup_complete:bool = false : 
-	set(val):
-		setup_complete = val
-		on_setup_complete_update()
-
+var setup_complete:bool = false
 var scenario_data:Dictionary
 var scenario_ref:int
 var selected_support_hire:Dictionary = {}
@@ -507,19 +491,8 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_awarded_room(self)
 
 func _ready() -> void:
-	if !Engine.is_editor_hint():
-		hide()
-		set_process(false)
-		set_physics_process(false)	
-	setup()
-	# initially all animation speed is set to 0 but after this is all ready, set animation speed
-	for node in get_all_container_nodes():
-		node.set_process(false)
-		node.set_physics_process(false)		
-		
-
-func setup() -> void:
-	current_phase = PHASE.STARTUP	
+	self.modulate = Color(1, 1, 1, 0)
+	
 	
 	# first these
 	on_show_structures_update()
@@ -529,7 +502,7 @@ func setup() -> void:
 	on_show_containment_status_update()
 	on_show_resources_update()
 	on_show_objectives_update()
-	on_show_events_update()
+	on_show_linedraw_update()
 	
 	# other
 	on_show_confirm_modal_update()
@@ -538,22 +511,31 @@ func setup() -> void:
 	# get default showing state
 	capture_default_showing_state()
 	
+	# assign
 	GAME_UTIL.assign_nodes()
+	
+	# initially all animation speed is set to 0 but after this is all ready, set animation speed
+	for node in get_all_container_nodes():
+		node.set_process(false)
+		node.set_physics_process(false)		
 
+	await U.tick()
+	LineDrawContainer.show()
+	show_only([])
+	
 #endregion
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	START GAME
 #region START GAME
 func start(new_game_data_config:Dictionary = {}) -> void:
-	show()
-
+	show()	
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	set_process(true)
 	set_physics_process(true)		
 	for node in get_all_container_nodes():
-		node.set_process(false)
-		node.set_physics_process(false)
+		node.set_process(true)
+		node.set_physics_process(true)
 		node.activate()
 	
 	await U.tick()
@@ -587,32 +569,21 @@ func setup_scenario(is_new_game:bool) -> void:
 
 
 func start_new_game(game_data_config:Dictionary) -> void:
-	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.APP_SKIP_LOADING_SCREEN)	
+	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	
-	setup_complete = false
-		
-	# reset steps
-	current_shop_step = SHOP_STEPS.RESET
-	current_contain_step = CONTAIN_STEPS.RESET
-	current_recruit_step = RECRUIT_STEPS.RESET
-	#current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
-	current_summary_step = SUMMARY_STEPS.RESET
-	current_event_step = EVENT_STEPS.RESET
-	current_researcher_step = RESEARCHERS_STEPS.RESET
-
-		
-	if !skip_progress_screen:
-		SetupContainer.title = "SETTING UP... PLEASE WAIT."
-		SetupContainer.subtitle = "SORTING FILES..."
-		SetupContainer.progressbar_val = 0.1
-		await U.set_timeout(0.5)
-
 	# trigger reset if applicable
 	for node in get_all_container_nodes():
 		if "on_reset" in node:
-			node.on_reset()
+			node.on_reset()	
 	
+	# progress screen
 	if !skip_progress_screen:
+		SetupContainer.show()
+		SetupContainer.title = "SETTING UP... PLEASE WAIT."
+		SetupContainer.subtitle = "SORTING FILES..."
+		SetupContainer.progressbar_val = 0
+		await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.7)
+		
 		SetupContainer.subtitle = "RESETING THE MATRIX..."
 		SetupContainer.progressbar_val = 0.3
 		await U.set_timeout(0.5)	
@@ -630,25 +601,31 @@ func start_new_game(game_data_config:Dictionary) -> void:
 		SetupContainer.progressbar_val = 1.0	
 		await U.set_timeout(0.5)
 	else:
+		U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0)
 		await parse_restore_data(game_data_config)
 		await U.set_timeout(1.0)
 	
 	# runs room config once everything is ready
+	await U.tween_node_property(SetupContainer, "modulate", Color(1, 1, 1, 0), 0.7)
+	SetupContainer.queue_free()
 	setup_complete = true
 	update_room_config()	
-	
-	await U.tick()
 	setup_scenario(game_data_config.filedata.is_empty())
-
+		
 	# show objectives on game start
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
 		await GAME_UTIL.open_objectives()
 		quicksave(true)
-	
+
+	# then show player hud
+	await restore_player_hud()	
+
+	# start at ring level
+	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
+		ActionContainer.toggle_camera_view()
+
 	# update phase and start game
 	current_phase = PHASE.PLAYER
-	SetupContainer.queue_free()
-	
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -658,9 +635,9 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 	return { 
 		# --------------  # FLOOR WIDE STATS
 		"metrics": {
-			RESOURCE.BASE_METRICS.MORALE: 0,
-			RESOURCE.BASE_METRICS.SAFETY: 0,
-			RESOURCE.BASE_METRICS.READINESS: 0
+			RESOURCE.METRICS.MORALE: 0,
+			RESOURCE.METRICS.SAFETY: 0,
+			RESOURCE.METRICS.READINESS: 0
 		},
 		"available_resources": {
 			RESOURCE.TYPE.TECHNICIANS: false,
@@ -698,9 +675,9 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 	return {	
 		# --------------  # FLOOR WIDE STATS
 		"metrics": {
-			RESOURCE.BASE_METRICS.MORALE: 0,
-			RESOURCE.BASE_METRICS.SAFETY: 0,
-			RESOURCE.BASE_METRICS.READINESS: 0
+			RESOURCE.METRICS.MORALE: 0,
+			RESOURCE.METRICS.SAFETY: 0,
+			RESOURCE.METRICS.READINESS: 0
 		},
 		"available_resources": {
 			RESOURCE.TYPE.TECHNICIANS: false,
@@ -735,22 +712,20 @@ func get_room_defaults() -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	SHOW/HIDE CONTAINERS
-#region show/hide functions
-func on_setup_complete_update() -> void:
-	if !is_node_ready():return
-	SetupContainer.show() if !setup_complete else SetupContainer.hide()
-	
+#region show/hide functions	
 func on_is_busy_update() -> void:
 	if !is_node_ready():return
 	WaitContainer.show() if is_busy else WaitContainer.hide()
 
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
-		Structure3dContainer, TimelineContainer,
+		Structure3dContainer, 
+		TimelineContainer,
+		ConfirmModal,
 		ActionContainer, 
 		DialogueContainer, 
-		ConfirmModal, ResourceContainer,
-		ObjectivesContainer, EventContainer,
+		ResourceContainer,
+		ObjectivesContainer,
 		RoomInfo, FloorInfo, PhaseAnnouncement, ToastContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
@@ -782,15 +757,26 @@ func capture_default_showing_state() -> void:
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
 	GBL.find_node(REFS.LINE_DRAW).clear()
-	await show_only([Structure3dContainer, TimelineContainer, ActionContainer, ResourceContainer, RoomInfo, FloorInfo])
+	await show_only([Structure3dContainer, ActionContainer, ResourceContainer, RoomInfo, FloorInfo])
 # ------------------------------------------------------------------------------
 
+
 # ------------------------------------------------------------------------------
-func restore_default_state() -> void:
-	for node in get_all_container_nodes():
-		if showing_states[node] != node.is_showing:
-			node.is_showing = showing_states[node]
-	await U.set_timeout(0.5)
+func restore_player_full_hud() -> void:
+	GBL.find_node(REFS.LINE_DRAW).clear()
+	await show_only([Structure3dContainer, ActionContainer, ResourceContainer, RoomInfo, FloorInfo])
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+#func show_default_state() -> void:
+	#for node in self.get_children():
+		#if node in [LineDrawContainer]:
+			#node.show()
+		#else:
+			#node.hide()
+			#
+	#await U.set_timeout(0.5)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -1127,10 +1113,10 @@ func on_show_timeline_update() -> void:
 	TimelineContainer.is_showing = show_timeline
 	showing_states[TimelineContainer] = show_timeline
 
-#func on_show_reseachers_update() -> void:
-	#if !is_node_ready():return
-	#ResearchersContainer.is_showing = show_reseachers
-	#showing_states[ResearchersContainer] = show_reseachers
+func on_show_linedraw_update() -> void:
+	if !is_node_ready():return
+	LineDrawContainer.is_showing = show_linedraw
+	showing_states[LineDrawContainer] = show_linedraw
 		
 func on_show_dialogue_update() -> void:
 	if !is_node_ready():return
@@ -1167,31 +1153,6 @@ func on_show_objectives_update() -> void:
 	ObjectivesContainer.is_showing = show_objectives
 	showing_states[ObjectivesContainer] = show_objectives
 
-func on_show_events_update() -> void:
-	if !is_node_ready():return
-	EventContainer.is_showing = show_events
-	showing_states[EventContainer] = show_events
-		
-#func on_show_build_complete_update() -> void:
-	#if !is_node_ready():return
-	#BuildCompleteContainer.is_showing = show_build_complete
-	#showing_states[BuildCompleteContainer] = show_build_complete
-
-#func on_show_metrics_update() -> void:
-	#if !is_node_ready():return
-	#MetricsContainer.is_showing = show_metrics
-	#showing_states[MetricsContainer] = show_metrics
-
-
-#func on_show_end_of_phase_update() -> void:
-	#if !is_node_ready():return
-	#EndOfPhaseContainer.is_showing = show_end_of_phase
-	#showing_states[EndOfPhaseContainer] = show_end_of_phase
-
-#func on_show_choices_update() -> void:
-	#if !is_node_ready():return
-	#ChoiceContainer.is_showing = show_choices
-	#showing_states[ChoiceContainer] = show_choices
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -1329,13 +1290,16 @@ func on_current_builder_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			BuildContainer = BuildContainerPreload.instantiate()
 			add_child(BuildContainer)
+			await U.tick()
+
 			BuildContainer.activate()
 			await U.tick()
 			BuildContainer.start()
-			await show_only([Structure3dContainer, ResourceContainer])
+			show_only([Structure3dContainer, ResourceContainer])
 			await BuildContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			await restore_showing_state()
+			await restore_player_hud()
+			
 			on_store_purchase_complete.emit()	
 			BuildContainer.queue_free()
 			current_builder_step = BUILDER_STEPS.RESET
@@ -1360,7 +1324,7 @@ func on_current_objective_state_update() -> void:
 			await show_only([ObjectivesContainer, Structure3dContainer])
 			await ObjectivesContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			await restore_showing_state()
+			await restore_player_hud()
 			on_objective_signal.emit()	
 			current_objective_state = OBJECTIVES_STATE.HIDE
 		## ---------------
@@ -1382,6 +1346,7 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			StoreContainer = StoreContainerPreload.instantiate()
 			add_child(StoreContainer)
+			await U.tick()
 			StoreContainer.activate()
 			
 			await show_only([])
@@ -1404,47 +1369,9 @@ func on_current_contain_step_update() -> void:
 	if !is_node_ready():return
 	pass	
 # ------------------------------------------------------------------------------	RECRUIT STEPS
-#region RECRUIT STEPS
-
-
 #endregion
 # ------------------------------------------------------------------------------		
 
-# ------------------------------------------------------------------------------	BUILD COMPLETE
-#region CURRENT ACTION
-#func on_current_action_complete_step_update() -> void:
-	#if !is_node_ready():return
-#
-	#match current_action_complete_step:
-		## ---------------
-		#ACTION_COMPLETE_STEPS.RESET:
-			#SUBSCRIBE.suppress_click = false
-			#await restore_player_hud()
-			#completed_actions = []
-		## ---------------
-		#ACTION_COMPLETE_STEPS.START:
-			#revert_state_location = current_location.duplicate(true)
-			#
-			#print(completed_actions)
-			##SUBSCRIBE.suppress_click = true
-			##BuildCompleteContainer.completed_build_items = completed_actions
-##
-			##await show_only([BuildCompleteContainer, Structure3dContainer, ResourceContainer, TimelineContainer])
-			##await BuildCompleteContainer.user_response
-			##GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			#
-			## move back to current location
-			#current_location = revert_state_location
-				#
-			## CHECK FOR EVENTS
-			##for item in completed_actions:
-				##remove_from_timeline(item)
-			#
-			#on_complete_build_complete.emit()	
-			#current_action_complete_step = ACTION_COMPLETE_STEPS.RESET
-			#
-##endregion
-# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
 #region CURRENT EVENT STEPS
@@ -1453,13 +1380,19 @@ func on_current_event_step_update() -> void:
 
 	match current_event_step:
 		EVENT_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false			
+			SUBSCRIBE.suppress_click = false
 		EVENT_STEPS.START:
-			SUBSCRIBE.suppress_click = true			
-			await show_only([Structure3dContainer, EventContainer])
-			EventContainer.event_data = event_data
-			EventContainer.start()
+			SUBSCRIBE.suppress_click = true
+			EventContainer = EventContainerPreload.instantiate()
+			add_child(EventContainer)
+			await U.tick()
+			EventContainer.activate()
+			
+			await show_only([])
+			EventContainer.start(event_data)
 			var event_res:Dictionary = await EventContainer.user_response
+			EventContainer.queue_free()
+			
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			# trigger signal
 			on_events_complete.emit(event_res)			
@@ -1507,6 +1440,7 @@ func on_current_select_scp_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			SCPSelectScreen = ScpSelectScreenPreload.instantiate()
 			add_child(SCPSelectScreen)
+			await U.tick()
 			SCPSelectScreen.activate()
 			
 			await show_only([])
@@ -1540,6 +1474,7 @@ func on_current_recruit_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			SelectResearcherScreen = SelectResearcherScreenPreload.instantiate()
 			add_child(SelectResearcherScreen)
+			await U.tick()
 			SelectResearcherScreen.activate()
 			
 			await show_only([])
@@ -1594,7 +1529,9 @@ func on_current_researcher_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
 			add_child(ResearchersContainer)
+			await U.tick()
 			ResearchersContainer.activate()
+			
 			await U.tick()
 			ResearchersContainer.start([], true)
 			await show_only([])
@@ -1611,13 +1548,14 @@ func on_current_researcher_step_update() -> void:
 			
 			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
 			add_child(ResearchersContainer)
+			await U.tick()
 			ResearchersContainer.activate()
-			await U.tick()			
-			
+		
 			var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
 				return U.dictionaries_equal(i[9].assigned_to_room, current_location)
 			).map(func(i): return i[0])
 			
+			await U.tick()						
 			ResearchersContainer.assign(assigned_uids, false)
 			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
@@ -1634,10 +1572,11 @@ func on_current_researcher_step_update() -> void:
 			
 			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
 			add_child(ResearchersContainer)
+			await U.tick()			
 			ResearchersContainer.activate()
-			await U.tick()						
 
 			var uids:Array =  hired_lead_researchers_arr.map(func(i): return i[0])
+			await U.tick()									
 			ResearchersContainer.promote(uids)
 			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
@@ -1660,8 +1599,6 @@ func is_occupied() -> bool:
 		return true
 	if current_phase != PHASE.PLAYER:
 		return true
-	#if (current_shop_step != SHOP_STEPS.RESET) or (current_contain_step != CONTAIN_STEPS.RESET) or (current_recruit_step != RECRUIT_STEPS.RESET) or (current_action_complete_step != ACTION_COMPLETE_STEPS.RESET) or (current_event_step != EVENT_STEPS.RESET):
-		#return true
 	return false
 
 
@@ -1768,9 +1705,9 @@ func update_room_config(force_setup:bool = false) -> void:
 			var floor_ring_designation:String = str(floor_index, ring_index)
 			if floor_ring_designation not in metric_defaults:
 				metric_defaults[floor_ring_designation] = {
-					RESOURCE.BASE_METRICS.MORALE: 0,
-					RESOURCE.BASE_METRICS.SAFETY: 0,
-					RESOURCE.BASE_METRICS.READINESS: 0
+					RESOURCE.METRICS.MORALE: 0,
+					RESOURCE.METRICS.SAFETY: 0,
+					RESOURCE.METRICS.READINESS: 0
 				}
 
 	# FIRST, RESET all passive enables, check for assigned researchers and add to ability level
@@ -1910,7 +1847,7 @@ func update_room_config(force_setup:bool = false) -> void:
 		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
 		var is_contained:bool = true
 		
-		for ref in [RESOURCE.BASE_METRICS.MORALE, RESOURCE.BASE_METRICS.SAFETY, RESOURCE.BASE_METRICS.READINESS]:
+		for ref in [RESOURCE.METRICS.MORALE, RESOURCE.METRICS.SAFETY, RESOURCE.METRICS.READINESS]:
 			var current_amount:int = ring_config_data.metrics[ref]
 			var threshold_amount:int = scp_details.effects.metrics[ref]
 			if current_amount < threshold_amount:
@@ -1953,22 +1890,22 @@ func update_metrics(new_room_config:Dictionary, metric_defaults:Dictionary) -> v
 			
 			var in_lockdown:bool = new_room_config.floor[floor_index].in_lockdown
 			if in_lockdown:
-					metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.READINESS] += 3
-					metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.MORALE] -= 3
+					metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
+					metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
 			else:
 				# then add any bonuses from the emergency states
 				var emergency_mode:int = new_room_config.floor[floor_index].ring[ring_index].emergency_mode
 				match emergency_mode:
 					ROOM.EMERGENCY_MODES.CAUTION:
-						metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.SAFETY] += 1
-						metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.READINESS] += 1
-						metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.MORALE] -= 2
+						metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 1
+						metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 1
+						metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 2
 					ROOM.EMERGENCY_MODES.WARNING:
-						metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.SAFETY] += 3
-						metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.MORALE] -= 3
+						metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 3
+						metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
 					ROOM.EMERGENCY_MODES.DANGER:
-						metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.READINESS] += 3
-						metric_defaults[floor_ring_designation][RESOURCE.BASE_METRICS.MORALE] -= 3
+						metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
+						metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
 						
 			# lastly, compile all the metrics from rooms, scps and researchers, etc
 			new_room_config.floor[floor_index].ring[ring_index].metrics = metric_defaults[floor_ring_designation]

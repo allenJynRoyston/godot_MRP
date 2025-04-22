@@ -29,7 +29,6 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 # SKIPS
 @export_category("DEBUG START")
 @export var skip_intro:bool = false 
-@export var skip_to_game:bool = false
 
 # INTRODUCTION
 @export_category("DEBUG INTRO SCREEN")
@@ -50,6 +49,7 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var app_skip_loading_screen:bool = false
 
 @export_category("DEBUG GAMEPLAYLOOP")
+@export var skip_setup_progress:bool = false
 @export var start_at_ring_level:bool = false
 @export var skip_objectives:bool = false
 @export var max_energy:bool = true
@@ -106,20 +106,20 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.NEW_QUICKSAVE_FILE, new_quicksave_file)
 	# skips
 	DEBUG.assign(DEBUG.SKIP_INTRO, skip_intro)
-	DEBUG.assign(DEBUG.SKIP_TO_GAME, skip_to_game)
 	# intro
 	DEBUG.assign(DEBUG.INTRO_SKIP_LOGO, intro_skip_logo)
 	DEBUG.assign(DEBUG.INTRO_SKIP_TITLE, intro_skip_title)	
 	DEBUG.assign(DEBUG.INTRO_SKIP_SEQUENCE, intro_skip_sequence)
 	DEBUG.assign(DEBUG.INTRO_SKIP_STARTAT, intro_skip_start_at)
 	# os
+	DEBUG.assign(DEBUG.OS_SKIP_TO_GAME, os_skip_to_game)	
 	DEBUG.assign(DEBUG.OS_SKIP_BOOT, os_skip_boot)
-	DEBUG.assign(DEBUG.OS_SKIP_TO_GAME, os_skip_to_game)
 	DEBUG.assign(DEBUG.OS_APP_FAST_LOAD, os_app_fast_load)
 	# app
 	DEBUG.assign(DEBUG.APP_SKIP_LOADING_SCREEN, app_skip_titlescreen)	
 	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, app_skip_loading_screen)	
 	# gameplayloop
+	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
 	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)

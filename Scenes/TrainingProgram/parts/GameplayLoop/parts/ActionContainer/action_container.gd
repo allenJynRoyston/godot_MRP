@@ -11,7 +11,6 @@ extends GameContainer
 
 @onready var NameControl:Control = $NameControl
 @onready var RoomDetailsControl:Control = $RoomDetails
-@onready var RoomDetailsPanel:Control = $RoomDetails/DetailPanel
 
 @onready var CenterBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList
 
@@ -104,6 +103,7 @@ var active_menu_index:int = 0
 var active_menu_is_open:bool = false
 var prev_draw_state:Dictionary	= {}
 var is_setup:bool = false
+
 #var draw_lines:bool = false
 var in_contain_mode:bool = false : 
 	set(val):
@@ -266,13 +266,10 @@ func activate() -> void:
 	control_pos_default[DetailsPanel] = DetailsPanel.position
 	control_pos_default[ScpDetailsPanel] = ScpDetailsPanel.position
 	control_pos_default[ResearcherDetailsPanel] = ResearcherDetailsPanel.position
+	
 
 	update_control_pos()
 	on_is_showing_update()
-	
-	await U.tick()
-	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
-		toggle_camera_view()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -702,8 +699,11 @@ func show_abilities(skip_animation:bool = false) -> void:
 	ActiveMenu.onClose = func() -> void:	
 		HotkeyContainer.enable_assign_mode(false)
 		open_menu(false)	
-		BackBtn.show()		
 		draw_active_menu(0)
+		on_current_location_update()
+		await U.set_timeout(0.1)
+		BackBtn.show()		
+
 	
 	if active_menu_index == 0:
 		menu_title = "PASSIVE"
@@ -793,6 +793,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 	#draw_lines = false
+	ActiveMenu.hide()
 	lock_btns(true)
 	
 	# clear any lines
@@ -800,24 +801,26 @@ func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 
 	# call 
 	await action.call()
-	await U.tick() # leave this in just in case any of the functions update data
-	
+	# leave this in just in case any of the functions update data
+	await U.tick() 
 	
 	if active_menu_is_open:
 		# redraws lines
 		ActiveMenu.add_draw_lines()
 		draw_active_menu_items()
 		# shows the details panel
-		U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)			
+		await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)			
 	else:
-		on_current_location_update()
 		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer])
 		if show_details:
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
+			await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
 	
-	lock_btns(false)
+	
+	await lock_btns(false)
+	
 
 	GBL.find_node(REFS.LINE_DRAW).show()
+	ActiveMenu.show()
 	if current_mode == MODE.INVESTIGATE:
 		GBL.find_node(REFS.LINE_DRAW).clear()
 		prev_draw_state = {}	
@@ -996,11 +999,11 @@ func buildout_btns() -> void:
 
 # --------------------------------------------------------------------------------------------------
 var previous_nametag_state:bool 
-func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals) -> void:
+func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals, force_change:bool = false) -> void:
 	super.on_gameplay_conditionals_update(new_val)
-	if !is_node_ready() or current_mode == MODE.SELECT_FLOOR:return
+	if !is_node_ready() or (current_mode == MODE.SELECT_FLOOR and !force_change):return
 	var state:bool = gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
-	if previous_nametag_state != state:
+	if previous_nametag_state != state or force_change:
 		previous_nametag_state = state
 		if state:
 			NameControl.show()
@@ -1013,7 +1016,7 @@ func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals)
 # --------------------------------------------------------------------------------------------------	
 func on_show_room_details_update() -> void:
 	if !is_node_ready():return
-	RoomDetailsControl.show() if show_room_details else RoomDetailsControl.hide()
+	RoomDetailsControl.reveal(show_room_details) 
 	RoomDetailsToggleBtn.icon = SVGS.TYPE.CHECKBOX if show_room_details else SVGS.TYPE.EMPTY_CHECKBOX
 # --------------------------------------------------------------------------------------------------		
 
@@ -1024,33 +1027,40 @@ func hide_nametags(state:bool, fast:bool = false) -> void:
 		if !fast:
 			await U.set_timeout(0.02)
 # --------------------------------------------------------------------------------------------------		
-		
+
+# --------------------------------------------------------------------------------------------------		
+func set_panel_btn_state(state:bool) -> void:
+	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:				
+		for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
+			btn.is_disabled = state	
+	BackBtn.is_disabled = state
+# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func lock_btns(state:bool, ignore_panel:bool = false) -> void:
-	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:				
-		for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
-			btn.is_disabled = state
+	if state:
+		set_panel_btn_state(true)
 	
 	if !ignore_panel:
 		await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide if state else control_pos[BtnControlPanel].show)
 
+	if !state:
+		set_panel_btn_state(false)
+		on_current_location_update()
+
 func open_menu(state:bool) -> void:	
 	if state:
 		active_menu_is_open = true
-	
-	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:
-		for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
-			btn.is_disabled = state	
+		set_panel_btn_state(true)
 	
 	ActiveMenu.freeze_inputs = !state
 	
-	if !state and current_mode != MODE.INVESTIGATE:
-		U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide )	
-	
 	if !state:
+		if current_mode != MODE.INVESTIGATE:
+			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide )		
+		
 		active_menu_is_open = false
-	
+		set_panel_btn_state(false)
 # --------------------------------------------------------------------------------------------------		
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready():return	
@@ -1083,8 +1093,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			HotkeyContainer.lock_btns = true
 		# --------------
 		MODE.SELECT_ROOM:
-			
-			
 			AbilityBtn.title = "ABILITY"
 
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, duration)
@@ -1104,11 +1112,14 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			HotkeyContainer.show()
 			HotkeyContainer.lock_btns = false
 			show_room_details = false
+			print("select room ----")
+			lock_btns(true, true)
 			await U.set_timeout(0.3)
 			await GameplayNode.restore_player_hud()
+			lock_btns(false, true)
 			
 			NameControl.show()
-			on_gameplay_conditionals_update()
+			on_gameplay_conditionals_update(gameplay_conditionals, true)
 		# --------------
 		MODE.INVESTIGATE:
 			enable_room_focus(true)
@@ -1120,6 +1131,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show, duration)
 			
 			NameControl.hide()
+			
+			for btn in [ConfirmBtn, BackBtn]:
+				btn.is_disabled = true			
 
 			for panel in [NavBtnPanel, FacilityBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
 				panel.hide()
@@ -1127,21 +1141,26 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for panel in [ResearcherBtnPanel, ScpBtnPanel, AbilityBtnPanel]:
 				panel.show()
 
-			for btn in [ConfirmBtn, BackBtn]:
-				btn.is_disabled = false
+
 
 			BackBtn.show()
 			ConfirmBtn.hide()
 			
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
-			
+			print("investigate ----")
+
+			lock_btns(true, true)
 			#draw_lines = true
 			on_current_location_update()
+			await U.set_timeout(1.0)
+			for btn in [ConfirmBtn, BackBtn]:
+				btn.is_disabled = true						
+			lock_btns(false, true)
 			
 			BackBtn.onClick = func() -> void:
 				for btn in [ConfirmBtn, BackBtn]:
-					btn.is_disabled = true
+					btn.is_disabled = false
 				enable_room_focus(false)
 				set_backdrop_state(false)	
 				prev_draw_state = {}
@@ -1324,7 +1343,7 @@ func update_details(use_location:Dictionary = current_location) -> void:
 		for child in node.get_children():
 			child.queue_free()
 	
-	RoomDetailsPanel.ref = -1 if is_room_empty else room_extract.room.details.ref
+	RoomDetailsControl.ref = -1 if is_room_empty else room_extract.room.details.ref
 	
 	
 	if !room_extract.scp.is_empty():

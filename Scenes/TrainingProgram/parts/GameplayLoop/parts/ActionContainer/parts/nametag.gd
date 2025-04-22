@@ -1,13 +1,15 @@
-@tool
 extends Control
 
-@onready var NameLabel:Label = $PanelContainer2/MarginContainer2/VBoxContainer/HBoxContainer2/HBoxContainer2/NameLabel
+@onready var NameLabel:Label = $PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer2/NameLabel
 @onready var LvlIndicator:Control = $PanelContainer2/LvlIndicator
 @onready var LvlLabel:Label = $PanelContainer2/LvlIndicator/Control/LvlLabel
 @onready var DotIcon:BtnBase = $PanelContainer2/ActivatedIndicator/IconBtn
 @onready var EnergyIndicatorControl:Control = $PanelContainer2/EnergyIndicator/Control
-@onready var PanelMarginContainer:MarginContainer = $PanelContainer2/MarginContainer2
+@onready var PanelMarginContainer:MarginContainer = $PanelContainer2/MarginContainer
 @onready var ActivatedIndicator:Control = $PanelContainer2/ActivatedIndicator
+
+@onready var Resources:Control = $PanelContainer2/Resources
+@onready var ResourceReason:Control = $PanelContainer2/ResourceReason
 
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
@@ -18,6 +20,11 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	GBL.unsubscribe_to_process(self)
+
+@export var show_resource_reason:bool = false : 
+	set(val):
+		show_resource_reason = val
+		on_show_resource_reason_update()
 
 @export var index:int = -1 : 
 	set(val):
@@ -31,7 +38,7 @@ func _exit_tree() -> void:
 
 @export var ignore_current_location:bool = false
 
-const fade_int:float = 10
+const fade_int:float = 5
 
 var room_config:Dictionary = {}
 var current_location:Dictionary = {}
@@ -45,6 +52,11 @@ func _ready() -> void:
 	original_position = self.global_position
 	on_fade_update()
 	on_index_update()
+	on_show_resource_reason_update()
+
+func on_show_resource_reason_update() -> void:
+	if !is_node_ready():return
+	pass
 	
 func on_fade_update() -> void:
 	if !is_node_ready():return
@@ -52,7 +64,7 @@ func on_fade_update() -> void:
 	if !fade:
 		update_node()
 	
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if fade else 1), 0.3)
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if fade else 1), 0.1)
 	U.tween_range(fade_int if fade else 0.0, fade_int if !fade else 0.0, 0.3, func(val:float) -> void:
 		offset.x = val
 	) 			
@@ -86,7 +98,13 @@ func update_node(shift_val:int = 10) -> void:
 	lvl_str = str(ability_lvl) if !room_extract.is_room_empty else "X"
 	LvlIndicator.hide() if room_extract.is_room_empty else LvlIndicator.show()
 	ActivatedIndicator.hide() if room_extract.is_room_empty else ActivatedIndicator.show()
+	Resources.hide() if room_extract.is_room_empty else Resources.show()
+	ResourceReason.hide() if room_extract.is_room_empty else (ResourceReason.show() if show_resource_reason else ResourceReason.hide())
+	hide() if room_extract.is_room_empty else show()
+
 	PanelMarginContainer.set('theme_override_constants/margin_left', 10 if room_extract.is_room_empty else 40)
+	
+	
 	
 	var label_setting_copy:LabelSettings = NameLabel.label_settings.duplicate()
 	label_setting_copy.font_color = Color(0.7, 0.3, 0.3, 1) if !room_extract.is_activated else Color(1, 1, 1, 1)
@@ -109,7 +127,7 @@ func shift_string_backward(text: String, shift: int = 5) -> String:
 func on_process_update(delta:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(index) * GBL.game_resolution
-	self.global_position = tag_pos + Vector2(30, 40) + offset
+	self.global_position = tag_pos +  offset - Vector2(self.size.x/2, 0)
 
 func _physics_process(delta: float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return

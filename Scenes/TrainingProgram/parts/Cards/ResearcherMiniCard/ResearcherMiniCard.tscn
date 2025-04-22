@@ -48,7 +48,7 @@ _data = {
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vglbs"]
-bg_color = Color(1, 0.339692, 0.306841, 1)
+bg_color = Color(1.54018e-06, 0.638255, 0.337091, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2

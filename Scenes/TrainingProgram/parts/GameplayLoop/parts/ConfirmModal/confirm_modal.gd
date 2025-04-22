@@ -1,6 +1,7 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
+@onready var BtnControls:Control = $BtnControls
 @onready var ContentPanelContainer:PanelContainer = $ModalControl/PanelContainer
 @onready var ImageTextureRect:TextureRect = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect
 @onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/TitleLabel
@@ -12,10 +13,10 @@ extends GameContainer
 @onready var StaffingControlPanel:MarginContainer = $StaffingControl/StaffingControlPanel
 @onready var StaffingList:VBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/List
 
-@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
-@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
-@onready var AcceptBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/AcceptBtn
-@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
+#@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
+#@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
+#@onready var AcceptBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/AcceptBtn
+#@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
 
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
@@ -62,11 +63,14 @@ var allow_input:bool = false
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-
-	AcceptBtn.onClick = func() -> void:
+	
+	BtnControls.onDirectional = on_key_press
+	
+	BtnControls.onAction = func() -> void:
 		if is_showing and allow_input:
 			end(true)
-	BackBtn.onClick = func() -> void:
+
+	BtnControls.onBack = func() -> void:
 		if is_showing and allow_input:
 			end(false)
 		
@@ -87,13 +91,10 @@ func set_props(new_title:String = "", new_subtitle:String = "", new_image:String
 func end(made_changes:bool) -> void:
 	allow_controls = false
 	
-	for btn in RightSideBtnList.get_children():
-		btn.is_disabled = true
-		#
-	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
-	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
+	BtnControls.reveal(false)
 	
+	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
+	await U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
 	
 	confirm_only = false
 	activation_requirements = []
@@ -107,7 +108,6 @@ func activate() -> void:
 	await U.tick()
 	
 	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
-	control_pos_default[BtnControlPanel] = BtnControlPanel.position
 	control_pos_default[StaffingControlPanel] = StaffingControlPanel.position
 	
 	update_control_pos()
@@ -121,7 +121,7 @@ func on_fullscreen_update(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------
 func check_for_unavailable_rooms() -> void:
 	var designation:String = U.location_to_designation(current_location)	
-	AcceptBtn.is_disabled = designation in unavailable_rooms
+	BtnControls.disable_active_btn = designation in unavailable_rooms
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
@@ -133,11 +133,6 @@ func update_control_pos() -> void:
 	control_pos[ContentPanelContainer] = {
 		"show": control_pos_default[ContentPanelContainer].y, 
 		"hide": control_pos_default[ContentPanelContainer].y - ContentPanelContainer.size.y
-	}
-	
-	control_pos[BtnControlPanel] = {
-		"show": control_pos_default[BtnControlPanel].y + y_diff, 
-		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
 	}
 	
 	control_pos[StaffingControlPanel] = {
@@ -153,19 +148,18 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	super.on_is_showing_update()
 	allow_input = false
 	if !is_node_ready() or control_pos.is_empty():return
-		
-	for btn in RightSideBtnList.get_children():
-		btn.is_disabled = !is_showing
+	
+	BtnControls.freeze_and_disable(true)	
 
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  0 if skip_animation else 0.3)
-	
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide,  0 if skip_animation else 0.3)
-	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide,  0 if skip_animation else 0.3)
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide,  0 if skip_animation else 0.3)
+	await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide,  0 if skip_animation else 0.3)
 	
 	# reset confirm only state
 	allow_input = true
+	BtnControls.reveal(true)
+
 
 func on_image_update() -> void:
 	if !is_node_ready():return	
@@ -226,32 +220,24 @@ func on_activation_requirements_update() -> void:
 		AfterList.add_child(after_node) 
 
 	await U.tick()
-	AcceptBtn.is_disabled = disable_btn
+	BtnControls.disable_active_btn = disable_btn
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func on_cancel_only_update() -> void:
 	if !is_node_ready():return
-	if cancel_only:
-		AcceptBtn.hide()
-	else:
-		AcceptBtn.show()
+	BtnControls.disable_active_btn = cancel_only
 		
 func on_confirm_only_update() -> void:
 	if !is_node_ready():return
-	if confirm_only:
-		BackBtn.hide()
-	else:
-		BackBtn.show()
+	BtnControls.disable_back_btn = confirm_only
 # --------------------------------------------------------------------------------------------------		
 
 
 # --------------------------------------------------------------------------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:
+func on_key_press(key:String) -> void:
 	if !allow_controls:return
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
+
 	match key:
 		# ----------------------------
 		"W":

@@ -93,18 +93,18 @@ func update_metrics_labels() -> void:
 	var extract_data:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	
 	# ROOM INDIVIDUAL CHANGES 
-	#MoraleNode.value = extract_data.metric_details.total[RESOURCE.BASE_METRICS.MORALE] if RESOURCE.BASE_METRICS.MORALE in extract_data.metric_details.total else 0
-	#ReadinessNode.value = extract_data.metric_details.total[RESOURCE.BASE_METRICS.READINESS] if RESOURCE.BASE_METRICS.READINESS in extract_data.metric_details.total else 0
-	#SafeteyNode.value = extract_data.metric_details.total[RESOURCE.BASE_METRICS.SAFETY] if RESOURCE.BASE_METRICS.SAFETY in extract_data.metric_details.total else 0
+	#MoraleNode.value = extract_data.metric_details.total[RESOURCE.METRICS.MORALE] if RESOURCE.METRICS.MORALE in extract_data.metric_details.total else 0
+	#ReadinessNode.value = extract_data.metric_details.total[RESOURCE.METRICS.READINESS] if RESOURCE.METRICS.READINESS in extract_data.metric_details.total else 0
+	#SafeteyNode.value = extract_data.metric_details.total[RESOURCE.METRICS.SAFETY] if RESOURCE.METRICS.SAFETY in extract_data.metric_details.total else 0
 
 	
 	for key in ring_data.metrics:
 		var amount:int = ring_data.metrics[key]
 		match key:
-			RESOURCE.BASE_METRICS.MORALE:
+			RESOURCE.METRICS.MORALE:
 				MoraleNode.value = amount
-			RESOURCE.BASE_METRICS.READINESS:
+			RESOURCE.METRICS.READINESS:
 				ReadinessNode.value = amount
-			RESOURCE.BASE_METRICS.SAFETY:
+			RESOURCE.METRICS.SAFETY:
 				SafeteyNode.value = amount
 # -----------------------------------------------

@@ -9,7 +9,7 @@ extends PanelContainer
 @onready var ContextAmount:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/HBoxContainer/HBoxContainer/ContextAmount
 @onready var StatusLabel:Label = $VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/StatusLabel
 
-@export var assigned_metric:RESOURCE.BASE_METRICS : 
+@export var assigned_metric:RESOURCE.METRICS : 
 	set(val):
 		assigned_metric = val
 		on_assigned_metric_update()
@@ -55,11 +55,11 @@ func _ready() -> void:
 func on_assigned_metric_update() -> void:
 	if !is_node_ready():return
 	match assigned_metric:
-		RESOURCE.BASE_METRICS.MORALE:
+		RESOURCE.METRICS.MORALE:
 			TitleHeader.text = "MORALE"
-		RESOURCE.BASE_METRICS.SAFETY:
+		RESOURCE.METRICS.SAFETY:
 			TitleHeader.text = "SAFETY"
-		RESOURCE.BASE_METRICS.READINESS:
+		RESOURCE.METRICS.READINESS:
 			TitleHeader.text = "READINESS"
 	
 func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
@@ -70,11 +70,11 @@ func on_value_update() -> void:
 	TotalAmount.text = str(value)
 	
 	match assigned_metric:
-		RESOURCE.BASE_METRICS.MORALE:
+		RESOURCE.METRICS.MORALE:
 			StatusLabel.text = RESOURCE_UTIL.return_morale_data(value).title
-		RESOURCE.BASE_METRICS.SAFETY:
+		RESOURCE.METRICS.SAFETY:
 			StatusLabel.text = RESOURCE_UTIL.return_safety_data(value).title
-		RESOURCE.BASE_METRICS.READINESS:
+		RESOURCE.METRICS.READINESS:
 			StatusLabel.text = RESOURCE_UTIL.return_readiness_data(value).title
 
 

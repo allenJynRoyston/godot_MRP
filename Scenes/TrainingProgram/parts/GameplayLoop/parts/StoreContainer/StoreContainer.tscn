@@ -133,7 +133,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 75
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
@@ -158,7 +158,7 @@ flip_v = false
 [node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(700, 550)
@@ -182,65 +182,85 @@ columns = 4
 [node name="ShopMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-flip = false
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard10" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-flip = false
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard11" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-flip = false
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="ShopMiniCard12" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-flip = false
+card_type = 0
+flipped = false
 ref = -1
 
 [node name="MoreBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_3ph48")]
@@ -256,11 +276,8 @@ text = "0/1"
 label_settings = ExtResource("4_iga2a")
 horizontal_alignment = 1
 
-[node name="DetailControl" type="Control" parent="."]
+[node name="DetailPanel" parent="." instance=ExtResource("8_xyqc8")]
 layout_mode = 2
-
-[node name="DetailPanel" parent="DetailControl" instance=ExtResource("8_xyqc8")]
-layout_mode = 1
 
 [node name="SplashControl" type="Control" parent="."]
 layout_mode = 2

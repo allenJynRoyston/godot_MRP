@@ -1,22 +1,30 @@
-extends PanelContainer
+extends Control
 
-@onready var NameLabel:Label = $MarginContainer/VBoxContainer/SynergyContainer/Description/NameLabel
-@onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/SynergyContainer/Description/DescriptionLabel
-@onready var ProfileImage:TextureRect = $MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport/ProfileImage
-@onready var Effects:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/Effects
-@onready var ResourceGrid:GridContainer = $MarginContainer/VBoxContainer/SynergyContainer/Effects/ResourceGrid
-@onready var MetricsList:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/Effects/MetricList
+@onready var DetailPanel:PanelContainer = $DetailPanel
+@onready var MarginPanel:MarginContainer = $DetailPanel/MarginContainer
 
-@onready var Syncs:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/Syncs
-@onready var SyncList:GridContainer = $MarginContainer/VBoxContainer/SynergyContainer/Syncs/SyncList
+@onready var NameLabel:Label = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Description/NameLabel
+@onready var DescriptionLabel:Label = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Description/DescriptionLabel
+@onready var ProfileImage:TextureRect = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport/ProfileImage
+@onready var Effects:VBoxContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Effects
+@onready var ResourceGrid:GridContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Effects/ResourceGrid
+@onready var MetricsList:VBoxContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Effects/MetricList
 
-@onready var ActiveAbilites:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities
-@onready var ActiveAbilitiesList:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities/ActiveAbilitiesList
+@onready var Syncs:VBoxContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Syncs
+@onready var SyncList:GridContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Syncs/SyncList
 
-@onready var PassiveAbilities:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities
-@onready var PassiveAbilitiesList:VBoxContainer = $MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities/PassiveAbilitiesList
+@onready var ActiveAbilites:VBoxContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities
+@onready var ActiveAbilitiesList:VBoxContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities/ActiveAbilitiesList
+
+@onready var PassiveAbilities:VBoxContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities
+@onready var PassiveAbilitiesList:VBoxContainer = $DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities/PassiveAbilitiesList
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+
+var is_revealed:bool = false : 
+	set(val):
+		is_revealed = val
+		on_is_revealed_update()
 
 var ref:int = -1:
 	set(val):
@@ -24,7 +32,7 @@ var ref:int = -1:
 		on_ref_update()
 
 var shop_unlock_purchases:Array = []
-
+var control_pos:Dictionary = {}
 
 # Called when the node enters the scene tree for the first time.
 func _init() -> void:
@@ -32,9 +40,22 @@ func _init() -> void:
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_shop_unlock_purchases(self)
+	
+func _ready() -> void:
+	await U.tick()
+	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + MarginPanel.size.x}
+	on_is_revealed_update(true)
+
+func reveal(state:bool) -> void:
+	is_revealed = state
 
 func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	shop_unlock_purchases = new_val
+	
+func on_is_revealed_update(skip_animation:bool = false) -> void:
+	if !is_node_ready() or control_pos.is_empty():return
+	var duration:float = 0.3 if !skip_animation else 0
+	await U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show if is_revealed else control_pos[DetailPanel].hide, duration)
 
 func on_ref_update() -> void:
 	if !is_node_ready():return

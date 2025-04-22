@@ -26,10 +26,7 @@ extends GameContainer
 @onready var OptionsListContainer:VBoxContainer = $ContentControl/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionListContainer
 @onready var NoteContainer:VBoxContainer = $ContentControl/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/NoteContainer
 
-@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
-@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
-@onready var NextBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/NextBtn
-@onready var SelectBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectBtn
+@onready var BtnControls:Control = $BtnControls
 
 enum MODE {HIDE, ACTIVE}
 enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
@@ -69,7 +66,7 @@ var current_mode:MODE = MODE.HIDE :
 		current_mode = val
 		on_current_mode_update()
 		
-var current_controls:CONTROLS = CONTROLS.FREEZE 
+#var current_controls:CONTROLS = CONTROLS.FREEZE 
 var event_output:Dictionary = {}
 var has_more:bool = true
 var text_reveal_tween:Tween
@@ -80,33 +77,20 @@ signal text_phase_complete
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-
+	
+	self.modulate = Color(1, 1, 1, 0)
+		
 	reset()
 	reset_content_nodes()
-	
-	for btn in [SelectBtn, NextBtn]:
-		btn.onClick = func() -> void:
-			match current_controls:
-				CONTROLS.TEXT_REVEAL:
-					next_text(true)
-				CONTROLS.OPTIONS:					
-					on_option_select()
-	
-	hide()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
 func activate() -> void:
-	show()
-	await U.tick()
-	
-	control_pos_default[BtnControlPanel] = BtnControlPanel.position
 	control_pos_default[RightControlPanel] = RightControlPanel.position
 	control_pos_default[LeftControlPanel] = LeftControlPanel.position
 	control_pos_default[ContentControlPanel] = ContentControlPanel.position
 	
 	update_control_pos()
-	on_is_showing_update()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -125,13 +109,7 @@ func update_control_pos() -> void:
 		"show": control_pos_default[ContentControlPanel].y, 
 		"hide": control_pos_default[ContentControlPanel].y - ContentControlPanel.size.y
 	}
-		
-	# for elements in the bottom left corner
-	control_pos[BtnControlPanel] = {
-		"show": control_pos_default[BtnControlPanel].y + y_diff, 
-		"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
-	}
-	
+
 	control_pos[LeftControlPanel] = {
 		"show": control_pos_default[LeftControlPanel].y + y_diff, 
 		"hide": control_pos_default[LeftControlPanel].y + y_diff + LeftControlPanel.size.y
@@ -146,34 +124,33 @@ func update_control_pos() -> void:
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------	
 
-
-# --------------------------------------------------------------------------------------------------		
-func on_is_showing_update() -> void:
-	super.on_is_showing_update()
-	if !is_node_ready() or control_pos.is_empty():return	
-# --------------------------------------------------------------------------------------------------		
-
 # --------------------------------------------------------------------------------------------------		
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
+	var duration:float = 0 if skip_animation else 0.3
+	
 	match current_mode:
+		# ---------
 		MODE.HIDE:
-			for btn in [SelectBtn, NextBtn]:
-				btn.is_disabled = true
-			await U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide, 0 if skip_animation else 0.3)
-			await U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide, 0 if skip_animation else 0.3)
-			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide, 0 if skip_animation else 0.3)
-			await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
-			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
-			is_showing = false
+			BtnControls.freeze_and_disable(true)
+			BtnControls.reveal(false)
+			BtnControls.onBack = func() -> void:pass
+			BtnControls.onAction = func() -> void:pass
+			
+			U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide, duration)
+			U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide, duration)
+			U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide, duration)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
+			
+		# ---------
 		MODE.ACTIVE:
-			for btn in [SelectBtn, NextBtn]:
-				btn.is_disabled = false				
-			SelectBtn.hide()
-			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)				
-			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show, 0 if skip_animation else 0.3)			
-			U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, 0 if skip_animation else 0.3)
-
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)				
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration)				
+			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show, duration)			
+			BtnControls.reveal(true)
+			BtnControls.disable_back_btn = true
+			BtnControls.onBack = func() -> void:pass
+			BtnControls.onAction = func() -> void:pass
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -181,7 +158,7 @@ func reset() -> void:
 	if !is_node_ready():return
 	update_next_btn(false)
 	
-	current_controls = CONTROLS.FREEZE
+	#current_controls = CONTROLS.FREEZE
 	current_event_instruction = {} 
 	current_instruction = {} 
 	
@@ -203,9 +180,9 @@ func reset_content_nodes() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func start() -> void:
+func start(new_event_data:Array) -> void:
+	event_data = new_event_data
 	current_mode = MODE.ACTIVE
-	current_controls = CONTROLS.TEXT_REVEAL
 	if event_data.size() > 0:
 		next_event()
 	else:
@@ -214,12 +191,13 @@ func start() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
-	current_mode = MODE.HIDE
-	await U.set_timeout(1.5)
+	BtnControls.reveal(false)
+	U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide)
+	U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide)
+	await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide)
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
+		
 	user_response.emit(event_output)
-	update_next_btn(true)
-	reset()
-	reset_content_nodes()	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -242,7 +220,7 @@ func next_instruction(inc:bool = false) -> void:
 		instruction_index += 1
 	
 	if instruction_index + 1 >= current_event_instruction.event_instructions.size():
-		NextBtn.title = "CLOSE"
+		BtnControls.a_btn_title = "CLOSE"
 		has_more = false
 	else:
 		has_more = true
@@ -276,7 +254,7 @@ func next_text(inc:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------		
 func update_next_btn(is_active:bool) -> void:	
 	if has_more:
-		NextBtn.title = "NEXT" if is_active else "SKIP"
+		BtnControls.a_btn_title = "NEXT" if is_active else "SKIP"
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -300,6 +278,8 @@ func on_current_instruction_update() -> void:
 	
 	# allows for a smoother transition in
 	tween_reveal(PanelRoot, "modulate", Color(1, 1, 1, 1), 0.7)
+	BtnControls.itemlist = []
+	BtnControls.onAction = func() -> void:pass			
 	
 	# -----------------------------------
 	if "header" in current_instruction:
@@ -330,7 +310,8 @@ func on_current_instruction_update() -> void:
 	# -----------------------------------
 	if "text" in current_instruction:
 		if current_instruction.text.size() > 0:
-			current_controls = CONTROLS.TEXT_REVEAL
+			BtnControls.onAction = func() -> void:
+				next_text(true)
 			DialogBtn.icon = SVGS.TYPE.CONVERSATION
 			BodyContainer.show()
 			text_index = 0
@@ -347,14 +328,10 @@ func on_current_instruction_update() -> void:
 		
 		option_selected_index = 0
 		DialogBtn.icon = SVGS.TYPE.QUESTION_MARK
-		
-		NextBtn.hide()
-		SelectBtn.show()
 
 		for child in OptionsListContainer.get_children():
 			child.queue_free()			
 		
-		var readiness_level:int = 1 #room_config.floor[current_location.floor].ring[current_location.ring].metrics[RESOURCE.BASE_METRICS.READINESS]
 		var options:Array = current_instruction.options
 		
 		var compromised_count:int = 0
@@ -364,17 +341,8 @@ func on_current_instruction_update() -> void:
 			var include:bool = option.include if "include" in option else true
 			var completed:bool = option.completed if "completed" in option else false
 			var locked:bool = option.locked if "locked" in option else false
-			var show_description:bool = readiness_level >= 1
+			var show_description:bool = true
 			
-			# AT READINESS BELOW 0, OPTIONS HAVE DEBUFFS
-			#if readiness_level < 0 and options.size() > 1 and option.val != -1:
-				#if index <= absi(readiness_level):
-					#option.title = "??? [READINESS COMPROMISED]"
-					#option.icon = SVGS.TYPE.LOCK
-					#if readiness_level <= -3:
-						#option.title = "UNAVAILABLE [READINESS COMPROMISED]"
-						#locked = true
-				
 			if include:
 				new_node.data = option
 				new_node.index = index 
@@ -382,10 +350,11 @@ func on_current_instruction_update() -> void:
 				new_node.show_description = show_description
 				new_node.is_selected = option_selected_index == index
 				new_node.onFocus = func(node:Control) -> void:
-					if node == new_node:
-						option_selected_index = index
+					option_selected_index = index
 				new_node.onClick = func() -> void:
+					option_selected_index = index
 					on_option_select()
+					
 				OptionsListContainer.add_child(new_node)
 		
 		await U.tick()
@@ -396,14 +365,15 @@ func on_current_instruction_update() -> void:
 		).finished 		
 
 		# wait for input
-		current_controls = CONTROLS.OPTIONS
+		#current_controls = CONTROLS.OPTIONS
+		
+		BtnControls.itemlist = OptionsListContainer.get_children()
+		BtnControls.directional_pref = "UD"
 		
 		update_next_btn(true)
 		
 	# -----------------------------------
 	else:
-		NextBtn.show()
-		SelectBtn.hide()
 		var expand_current_val:float = ContentVBox.get('theme_override_constants/separation')
 		if expand_current_val != -200:
 			U.tween_node_property(OptionsContainer, "modulate", Color(1, 1, 1, 0))
@@ -419,15 +389,10 @@ func on_current_instruction_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_option_select() -> void:
 	if option_selected_index == -1 or OptionsListContainer.get_child(option_selected_index).is_locked:return
-
 	
-	current_controls = CONTROLS.FREEZE
 	update_next_btn(false)
 	
 	var option:Dictionary = current_instruction.options[option_selected_index]
-	
-	NextBtn.show()
-	SelectBtn.hide()	
 	NoteContainer.hide()
 	
 	for index in OptionsListContainer.get_child_count():
@@ -440,7 +405,6 @@ func on_option_select() -> void:
 		# if selected val property is available, send it
 		option.onSelected.call({"index": option_selected_index, "option": option})
 		
-	
 	await U.set_timeout(0.3)
 	
 	# goto next instruction
@@ -483,19 +447,4 @@ func tween_text_reveal(duration:float = 0.3) -> void:
 	text_reveal_tween.play()
 	await text_reveal_tween.finished
 	await U.set_timeout(0.5)
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree():return
-	var key:String = input_data.key
-	var keycode:int = input_data.keycode
-	
-	match current_controls:
-		CONTROLS.OPTIONS:
-			match key:
-				"S":
-					option_selected_index = U.min_max(option_selected_index + 1, 0, current_instruction.options.size() - 1, true)
-				"W":
-					option_selected_index = U.min_max(option_selected_index - 1, 0, current_instruction.options.size() - 1, true)
 # --------------------------------------------------------------------------------------------------	

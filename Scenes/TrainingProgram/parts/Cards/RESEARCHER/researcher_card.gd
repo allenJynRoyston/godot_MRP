@@ -1,23 +1,22 @@
+@tool
 extends MouseInteractions
 
-@onready var RootContainer:PanelContainer = $SubViewport/PanelContainer
-@onready var CardTextureRect:TextureRect = $VBoxContainer/TextureRect
-@onready var ImageTextureRect:TextureRect = $SubViewport/PanelContainer/Front/Image
-@onready var SelectedCheckbox:BtnBase = $SubViewport/PanelContainer/Front/Image/MarginContainer2/SelectedCheckbox
-@onready var Front:VBoxContainer = $SubViewport/PanelContainer/Front
-@onready var Back:VBoxContainer = $SubViewport/PanelContainer/Back
+@onready var CardTextureRect:TextureRect = $TextureRect
 
-@onready var AttachedAtControl:Control = $AttachedAt
-@onready var AttachedLabel:Label = $AttachedAt/PanelContainer/MarginContainer/VBoxContainer/Label
+@onready var CardBody:Control = $SubViewport/CardBody
 
-@onready var LevelLabel:Label = $SubViewport/PanelContainer/Front/Image/PanelContainer/MarginContainer/HBoxContainer/LevelLabel
-@onready var ProfileImage:TextureRect = $SubViewport/PanelContainer/Front/Image
-@onready var NameLabel:Label = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Name/NameLabel
-@onready var SpecilizationList:VBoxContainer = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Specilizations/VBoxContainer
-@onready var TraitsList:VBoxContainer = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/Traits/VBoxContainer
+@onready var CardDrawerImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
+@onready var CardDrawerName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
+@onready var CardDrawerLevel:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
+@onready var CardDrawerAssigned:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
+@onready var CardDrawerSpec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerSpec
+@onready var CardDrawerTraits:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTraits
 
+@onready var CardDrawerImageBack:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerImage
+
+const card_border_color:Color = Color(0.0, 0.638, 0.337)
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
-const CardShader:ShaderMaterial = preload("res://CanvasShader/CardShader/CardShader.tres")
+#const CardShader:ShaderMaterial = preload("res://CanvasShader/CardShader/CardShader.tres")
 
 @export var uid:String = "": 
 	set(val):
@@ -59,10 +58,10 @@ const CardShader:ShaderMaterial = preload("res://CanvasShader/CardShader/CardSha
 		promotion_preview = val
 		on_promotion_preview_update()
 		
-@export var flip_hide:bool = false : 
+@export var show_assigned:bool = false : 
 	set(val):
-		flip_hide = val
-		on_flip_hide_update()
+		show_assigned = val
+		on_show_assigned_update()
 		
 var researcher_details:Dictionary = {} : 
 	set(val):
@@ -79,17 +78,16 @@ var onClick:Callable = func():pass
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	Front.show()
-	Back.hide()
 
 	on_uid_update()
-	on_reveal_update(true)
-	on_flip_hide_update(true)
+	on_reveal_update()
 	on_is_active_update()
 	on_is_selected_update()
 	on_is_deselected_update()
 	on_researcher_details_update()	
+	on_show_assigned_update()
 	
+	await U.tick()
 	CardTextureRect.pivot_offset = self.size/2
 	
 # ------------------------------------------------------------------------------
@@ -97,38 +95,29 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_flip_update() -> void:
 	if !is_node_ready():return
-	await U.tween_node_property(CardTextureRect, "scale:x", 0, 0.1)
-	await U.set_timeout(0.2)
-	Front.hide() if flip else Front.show()
-	Back.show() if flip else Back.hide()
-	U.tween_node_property(CardTextureRect, "scale:x", 1, 0.1)
+	CardBody.flip = flip
 
 func on_is_active_update() -> void:
 	if !is_node_ready():return
-	var dup_stylebox:StyleBoxFlat = RootContainer.get_theme_stylebox('panel').duplicate()
-	dup_stylebox.border_color = Color.WHITE if is_active else Color.BLACK
-	RootContainer.add_theme_stylebox_override('panel', dup_stylebox)
 
 func on_show_checkbox_update() -> void:
 	if !is_node_ready():return
-	SelectedCheckbox.show() if show_checkbox else SelectedCheckbox.hide()
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	SelectedCheckbox.icon = SVGS.TYPE.CHECKBOX if is_selected else SVGS.TYPE.EMPTY_CHECKBOX
-	SelectedCheckbox.static_color = Color.GREEN if is_selected else Color.DIM_GRAY
-
+	CardBody.border_color = card_border_color if is_selected else card_border_color.darkened(0.5)
+	
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
 	CardTextureRect.material = BlackAndWhiteShader if is_deselected else null
 
-func on_reveal_update(skip_animation:bool = false) -> void:
+func on_reveal_update() -> void:
 	if !is_node_ready():return
-	await U.tween_node_property(CardTextureRect, "modulate", Color(1, 1, 1, 1) if reveal else Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
+	CardBody.reveal = reveal
 
-func on_flip_hide_update(skip_animation:bool = false) -> void:
+func on_show_assigned_update() -> void:
 	if !is_node_ready():return
-	U.tween_node_property(CardTextureRect, "scale:x", 0 if flip_hide else 1, 0 if skip_animation else 0.2)
+	CardDrawerAssigned.show() if show_assigned else CardDrawerAssigned.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -145,40 +134,34 @@ func on_promotion_preview_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_researcher_details_update() -> void:
-	if !is_node_ready():return
-	
-	for node in [SpecilizationList, TraitsList]:
-		for child in node.get_children():
-			child.queue_free()
-			
-	if researcher_details.is_empty():return
-	NameLabel.text = researcher_details.name
-	ProfileImage.texture = CACHE.fetch_image(researcher_details.img_src)
-	LevelLabel.text = str(researcher_details.level + 1 if promotion_preview else 0)
-	
-	AttachedAtControl.hide() if researcher_details.props.assigned_to_room.is_empty() else AttachedAtControl.show()
-	
+	if !is_node_ready() or researcher_details.is_empty():return
+
+	CardDrawerImage.img_src = researcher_details.img_src
+	CardDrawerImageBack.img_src = researcher_details.img_src
+	CardDrawerName.content = researcher_details.name
+	CardDrawerLevel.content = str(researcher_details.level)
+
 	if !researcher_details.props.assigned_to_room.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
 		if extract_data.is_empty():return
-		AttachedLabel.text = "WORKING AT [%s]" % [extract_data.room.details.name]
+		CardDrawerAssigned.content = extract_data.room.details.name
+	else:
+		CardDrawerAssigned.content = "None"
 
-	
+
+	var spec_str:String = ""
 	for spec_id in researcher_details.specializations:
 		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)
-		var new_btn:BtnBase = TextBtnPreload.instantiate()
-		new_btn.title = dict.name
-		new_btn.icon = dict.icon
-		new_btn.is_hoverable = false
-		SpecilizationList.add_child(new_btn)
-		
+		spec_str += dict.name + " / "
+	spec_str = spec_str.left(spec_str.length() - 3)
+	CardDrawerSpec.content = spec_str
+	
+	var trait_str:String = ""
 	for trait_id in researcher_details.traits:
 		var dict:Dictionary = RESEARCHER_UTIL.return_trait_data(trait_id)
-		var new_btn:BtnBase = TextBtnPreload.instantiate()
-		new_btn.title = dict.name
-		new_btn.icon = dict.icon
-		new_btn.is_hoverable = false
-		TraitsList.add_child(new_btn)
+		trait_str += dict.name + " / "
+	trait_str = trait_str.left(trait_str.length() - 3)
+	CardDrawerTraits.content = trait_str
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -195,12 +178,4 @@ func on_focus(state:bool = is_focused) -> void:
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT:		
 		onClick.call()
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func _process(delta:float) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or CardTextureRect.material == null:return
-	
-	CardTextureRect.material.set_shader_parameter("mouse_position", GBL.mouse_pos)
-	CardTextureRect.material.set_shader_parameter("sprite_position",global_position)
 # ------------------------------------------------------------------------------

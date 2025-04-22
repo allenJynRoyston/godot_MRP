@@ -102,10 +102,11 @@ horizontal_alignment = 1
 
 [node name="ResearcherList" type="HBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 50
+theme_override_constants/separation = 10
 
 [node name="BtnControls" parent="." instance=ExtResource("4_xe5a1")]
 layout_mode = 2
+hide_c_btn = false
 
 [node name="TraitControl" type="Control" parent="."]
 layout_mode = 2

@@ -40,23 +40,6 @@ func _ready() -> void:
 	SynergyContainer.hide() 
 	
 	BtnControls.onDirectional = on_directional
-#
-	#SelectResearcher.onClick = func() -> void:
-		#if is_animating:return
-		#if current_mode == MODE.SELECT_RESEARCHERS:
-			#mark_researcher_as_selected()
-#
-	#DetailsBtn.onClick = func() -> void:
-		#if is_animating:return
-		#show_details()
-#
-	#
-	#ConfirmResearchers.onClick = func() -> void:
-		#if is_animating:return
-		#if current_mode == MODE.CONFIRM_RESEARCHERS:
-			#await U.tick()		
-			#current_mode = MODE.FINALIZE
-					#
 
 # -----------------------------------------------
 
@@ -69,11 +52,10 @@ func start() -> void:
 
 # -----------------------------------------------
 func end(response:bool) -> void:
-	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-	U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide)
+	BtnControls.reveal(false)
 	U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide)
-	
-	await BtnControls.reveal(false)
+	await U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide)
+
 		
 	user_response.emit(response)
 # -----------------------------------------------	
@@ -142,10 +124,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				node.is_deselected = false
 							
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
-			await U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].show, 0 if skip_animation else 0.3)
+			U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].show, 0 if skip_animation else 0.3)
 			
 			BtnControls.a_btn_title = "SELECT"	
-			BtnControls.b_btn_title = "CANCEL"				
+			BtnControls.b_btn_title = "CANCEL"	
+			BtnControls.onCBtn = func() -> void:
+				flip_card()			
 			
 			BtnControls.reveal(true)
 			
@@ -215,10 +199,13 @@ func create_researchers() -> void:
 			if is_animating:return
 			match current_mode:
 				MODE.SELECT_RESEARCHERS:
-					mark_researcher_as_selected()
+					mark_researcher_as_selected(index)
 				MODE.CONFIRM_RESEARCHERS:
-					current_mode = MODE.FINALIZE
-			
+					if index == researcher_active_index:
+						current_mode = MODE.FINALIZE
+					else:
+						mark_researcher_as_selected(index)
+
 		ResearcherList.add_child(new_card)
 		new_card.reveal = true
 	
@@ -241,25 +228,30 @@ func unmark_researcher(marked_index:int) -> void:
 # -----------------------------------------------			
 
 # -----------------------------------------------
-func mark_researcher_as_selected(clear:bool = false) -> void:
+func mark_researcher_as_selected(selected_index:int) -> void:
 	if !is_node_ready():return	
-	unflip_cards()
 
 	for index in ResearcherList.get_child_count():
 		var node:Control = ResearcherList.get_child(index)		
-		if researcher_active_index == index:
-			node.is_selected = !node.is_selected
-			if node.is_selected:
-				current_mode = MODE.CONFIRM_RESEARCHERS
+		node.is_selected = selected_index == index
+	
+	researcher_active_index = selected_index
+	current_mode = MODE.CONFIRM_RESEARCHERS
 # -----------------------------------------------		
+
+# -----------------------------------------------
+func flip_card() -> void:
+	if !is_node_ready():return	
+	for node in ResearcherList.get_children():
+		node.flip = !node.flip 
+# -----------------------------------------------
+
 
 # -----------------------------------------------
 func unflip_cards() -> void:
 	if !is_node_ready():return	
-	for index in ResearcherList.get_child_count():
-		var node:Control = ResearcherList.get_child(index)
-		if node.flip:
-			node.flip = false
+	for node in ResearcherList.get_children():
+		node.flip = false
 # -----------------------------------------------
 		
 # -----------------------------------------------
@@ -342,10 +334,8 @@ func on_directional(key:String) -> void:
 	match key:
 		"A":
 			if current_mode == MODE.SELECT_RESEARCHERS:
-				unflip_cards()
 				researcher_active_index = U.min_max(researcher_active_index - 1, 0, ResearcherList.get_child_count() - 1)
 		"D":
 			if current_mode == MODE.SELECT_RESEARCHERS:
-				unflip_cards()
 				researcher_active_index = U.min_max(researcher_active_index + 1, 0, ResearcherList.get_child_count() - 1)
 #  -----------------------------------		

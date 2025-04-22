@@ -84,15 +84,23 @@ var SCP0:Dictionary = {
 	# -----------------------------------	
 	
 	# -----------------------------------	
+	"required_for_containment": {
+		"profession": [RESEARCHER.SPECIALIZATION.ENGINEERING],
+		"traits": [RESEARCHER.TRAITS.ADAPTABLE]
+	},
+	# -----------------------------------	
+
+	
+	# -----------------------------------	
 	"breach_events_at": [2, 5, 15],
 	# -----------------------------------	
 	
 	# -----------------------------------
 	"effects": {
 		"metrics":{
-			RESOURCE.BASE_METRICS.MORALE: 2,
-			RESOURCE.BASE_METRICS.SAFETY: 2,
-			RESOURCE.BASE_METRICS.READINESS: 2
+			RESOURCE.METRICS.MORALE: 2,
+			RESOURCE.METRICS.SAFETY: 2,
+			RESOURCE.METRICS.READINESS: 2
 		},
 		"contained": {
 			"description": "HINT option becomes available.", 
@@ -280,9 +288,9 @@ var SCP1:Dictionary = {
 	# -----------------------------------
 	"effects": {
 		"metrics":{
-			RESOURCE.BASE_METRICS.MORALE: 1,
-			RESOURCE.BASE_METRICS.SAFETY: 1,
-			RESOURCE.BASE_METRICS.READINESS: 3
+			RESOURCE.METRICS.MORALE: 1,
+			RESOURCE.METRICS.SAFETY: 1,
+			RESOURCE.METRICS.READINESS: 3
 		},
 		"contained": {
 			"description": "Randomly swaps with another item in a containment cell on the same floor.", 
@@ -319,9 +327,9 @@ var SCP2:Dictionary = {
 	# -----------------------------------
 	"effects": {
 		"metrics":{
-			RESOURCE.BASE_METRICS.MORALE: 2,
-			RESOURCE.BASE_METRICS.SAFETY: 3,
-			RESOURCE.BASE_METRICS.READINESS: 0
+			RESOURCE.METRICS.MORALE: 2,
+			RESOURCE.METRICS.SAFETY: 3,
+			RESOURCE.METRICS.READINESS: 0
 		},
 		"contained": {
 			"description": "MORALE cannot exceed 2.", 
@@ -358,9 +366,9 @@ var SCP3:Dictionary = {
 	# -----------------------------------
 	"effects": {
 		"metrics":{
-			RESOURCE.BASE_METRICS.MORALE: 2,
-			RESOURCE.BASE_METRICS.SAFETY: 2,
-			RESOURCE.BASE_METRICS.READINESS: 2
+			RESOURCE.METRICS.MORALE: 2,
+			RESOURCE.METRICS.SAFETY: 2,
+			RESOURCE.METRICS.READINESS: 2
 		},
 		"contained": {
 			"description": "All resources are available.", 

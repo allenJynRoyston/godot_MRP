@@ -74,7 +74,7 @@ var firearm_training:Dictionary = {
 	"description": "Increases SAFETY rating by 1.",
 	"energy_cost": 2,
 	"metrics": {
-		RESOURCE.BASE_METRICS.SAFETY: 1
+		RESOURCE.METRICS.SAFETY: 1
 	}
 }
 
@@ -84,7 +84,7 @@ var heavy_weapons_training:Dictionary = {
 	"description": "Increases READINESS rating by 1.",
 	"energy_cost": 3,
 	"metrics": {
-		RESOURCE.BASE_METRICS.READINESS: 1
+		RESOURCE.METRICS.READINESS: 1
 	}
 }
 
@@ -94,7 +94,7 @@ var tech_support:Dictionary = {
 	"description": "Increases READINESS rating by 1.",
 	"energy_cost": 2,
 	"metrics": {
-		RESOURCE.BASE_METRICS.READINESS: 1
+		RESOURCE.METRICS.READINESS: 1
 	}	
 }
 
@@ -105,7 +105,7 @@ var memetic_shielding:Dictionary = {
 	"description": "Increases READINESS rating by 1.",
 	"energy_cost": 3,
 	"metrics":{
-		RESOURCE.BASE_METRICS.READINESS: 1
+		RESOURCE.METRICS.READINESS: 1
 	}
 }
 

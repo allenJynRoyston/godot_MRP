@@ -29,7 +29,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0),
+			#ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0),
 			ABL.get_ability(ABL.REF.CONTAIN_SCP, 0),
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
@@ -62,9 +62,9 @@ var DEBUG_ROOM:Dictionary = {
 	
 	# ------------------------------------------
 	"metrics": {
-		RESOURCE.BASE_METRICS.MORALE: 0,
-		RESOURCE.BASE_METRICS.SAFETY: 0,
-		RESOURCE.BASE_METRICS.READINESS: 0,
+		RESOURCE.METRICS.MORALE: 0,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0,
 	},	
 	# ------------------------------------------
 }
@@ -112,9 +112,9 @@ var DIRECTORS_OFFICE:Dictionary = {
 	
 	# ------------------------------------------
 	"metrics": {
-		RESOURCE.BASE_METRICS.MORALE: 1,
-		RESOURCE.BASE_METRICS.SAFETY: 1,
-		RESOURCE.BASE_METRICS.READINESS: 1,
+		RESOURCE.METRICS.MORALE: 1,
+		RESOURCE.METRICS.SAFETY: 1,
+		RESOURCE.METRICS.READINESS: 1,
 	},	
 	# ------------------------------------------
 }
@@ -153,9 +153,9 @@ var HQ:Dictionary = {
 	
 	# ------------------------------------------
 	"metrics": {
-		RESOURCE.BASE_METRICS.MORALE: 1,
-		RESOURCE.BASE_METRICS.SAFETY: 1,
-		RESOURCE.BASE_METRICS.READINESS: 1,
+		RESOURCE.METRICS.MORALE: 1,
+		RESOURCE.METRICS.SAFETY: 1,
+		RESOURCE.METRICS.READINESS: 1,
 	},
 	# --------------------------------------	
 		
@@ -333,7 +333,7 @@ var WEAPONS_RANGE:Dictionary = {
 	
 	# ------------------------------------------
 	"metrics": {
-		RESOURCE.BASE_METRICS.SAFETY: 1,
+		RESOURCE.METRICS.SAFETY: 1,
 	},	
 	# ------------------------------------------	
 }
@@ -370,11 +370,43 @@ var ENGINEERING_BAY:Dictionary = {
 	
 	# ------------------------------------------
 	"metrics": {
-		RESOURCE.BASE_METRICS.READINESS: 1,
+		RESOURCE.METRICS.READINESS: 1,
 	},	
 	# ------------------------------------------	
 }
 
+
+
+var TEST1:Dictionary = {
+	# ------------------------------------------
+	"name": "ENGINEERING BAY",
+	"shortname": "ENG.BAY",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+}
+
+var TEST2:Dictionary = {
+	# ------------------------------------------
+	"name": "ENGINEERING BAY",
+	"shortname": "ENG.BAY",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+}
+
+
+var TEST3:Dictionary = {
+	# ------------------------------------------
+	"name": "ENGINEERING BAY",
+	"shortname": "ENG.BAY",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+}
 
 # -----------------------------------	
 var list:Array[Dictionary] = [
@@ -385,5 +417,8 @@ var list:Array[Dictionary] = [
 	PRISONER_BLOCK, HR_DEPARTMENT, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
 	# ---------------
 	WEAPONS_RANGE, ENGINEERING_BAY, 
+	TEST1, TEST2, TEST3,
+	TEST1, TEST2, TEST3,
+	TEST1, TEST2, TEST3
 ]
 # -----------------------------------	

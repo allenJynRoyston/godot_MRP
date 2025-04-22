@@ -2,24 +2,15 @@ extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnControls:Control = $BtnControls
+@onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
 
 @onready var TitleLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/TitleLabel
-#@onready var LeftSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList
-#@onready var RightSideBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
-
 @onready var ListScrollContainer:ScrollContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
 @onready var ScpList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ScpList
 @onready var AvailableLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/AvailableLabel
 @onready var LessBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MoreBtn
 
-#@onready var DetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/Details
-#@onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
-#@onready var SelectScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectScp
-#@onready var ConfirmScp:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ConfirmScp
-
-@onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
-#@onready var BtnControlPanel:Control = $BtnControl/MarginContainer
 
 enum MODE { HIDE, SELECT_SCP, CONFIRM_SCP, FINALIZE }
 
@@ -82,11 +73,10 @@ func start_read_only(new_refs:Array) -> void:
 # -----------------------------------------------	
 
 # -----------------------------------------------
-func end(made_selection:bool, selected_scp:int = -1) -> void:			
+func end(made_selection:bool, selected_scp:int = -1) -> void:	
+	BtnControls.reveal(false)
 	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 	await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
-	
-	await BtnControls.reveal(false)
 	
 	user_response.emit({"made_selection": made_selection, "selected_scp": selected_scp})
 # -----------------------------------------------	
@@ -122,13 +112,13 @@ func on_refs_update() -> void:
 			if is_animating or read_only:return
 			match current_mode:
 				MODE.SELECT_SCP:
-					mark_scp_as_selected()
+					mark_scp_as_selected(index)
 				MODE.CONFIRM_SCP:
 					if index == selected_scp:
 						on_confirm_scp()
 					else:
-						mark_scp_as_selected(true)
-						scp_active_index = index
+						mark_scp_as_selected(index)
+					
 		ScpList.add_child(new_card)
 		new_card.reveal = true
 		
@@ -146,24 +136,24 @@ func on_refs_update() -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func mark_scp_as_selected(clear:bool = false) -> void:
+func mark_scp_as_selected(selected_index:int) -> void:
 	if !is_node_ready() or refs.size() == 0:return	
 	for index in ScpList.get_child_count():
 		var node:Control = ScpList.get_child(index)
-		if clear:
-			node.is_selected = false
-		else:
-			node.is_selected = scp_active_index == index
+		node.is_selected = selected_index == index
 				
-	selected_scp = -1 if clear else scp_active_index
-
-	unflip_cards()
-	await U.tick()
-	if clear:
-		current_mode = MODE.SELECT_SCP
-	else:
-		current_mode = MODE.CONFIRM_SCP
+	selected_scp = selected_index
+	current_mode = MODE.CONFIRM_SCP
 # -----------------------------------------------		
+
+# -----------------------------------------------
+func flip_card() -> void:
+	if !is_node_ready() or refs.size() == 0:return	
+
+	for node in ScpList.get_children():
+		node.flip = !node.flip 
+# -----------------------------------------------
+
 
 # -----------------------------------------------
 func unflip_cards() -> void:
@@ -287,44 +277,40 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		# --------------
 		MODE.HIDE:
+			BtnControls.freeze_and_disable(true)
+
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
 			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0 if skip_animation else 0.3)
 		# --------------
-		MODE.SELECT_SCP:
-			BtnControls.reveal(false)
-
-			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
-			
+		MODE.SELECT_SCP:	
 			for index in ScpList.get_child_count():
 				var node:Control = ScpList.get_child(index)
-				node.is_deselected = false
+				node.is_selected = false
 							
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
-			await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show, 0 if skip_animation else 0.3)
+			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show, 0 if skip_animation else 0.3)
 			
 			BtnControls.a_btn_title = "SELECT"	
-			BtnControls.b_btn_title = "CANCEL"				
+			BtnControls.b_btn_title = "BACK"
+			BtnControls.hide_c_btn = false
 			
 			BtnControls.reveal(true)
 			
 			BtnControls.onBack = func() -> void:
 				end(false)
+			BtnControls.onCBtn = func() -> void:
+				flip_card()
 		# --------------
 		MODE.CONFIRM_SCP:
 			BtnControls.a_btn_title = "CONFIRM"
-			BtnControls.b_btn_title = "BACK"	
-			
-			BtnControls.onBack = func() -> void:
-				mark_scp_as_selected(true)
-			
-			for index in ScpList.get_child_count():
-				var node:Control = ScpList.get_child(index)
-				node.is_deselected = scp_active_index != index			
+			BtnControls.b_btn_title = "CLEAR"	
 
+			BtnControls.onBack = func() -> void:
+				current_mode = MODE.SELECT_SCP
 		# --------------
 		MODE.FINALIZE:
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
-			await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0 if skip_animation else 0.3)			
+	
 			end(true, selected_scp)
 	
 	await U.set_timeout(0.3)

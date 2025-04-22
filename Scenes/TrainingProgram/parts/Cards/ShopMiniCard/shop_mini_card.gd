@@ -3,44 +3,42 @@ extends MouseInteractions
 
 @onready var RootPanel:Control = $SubViewport/PanelContainer
 @onready var CardTextureRect:TextureRect = $CardTextureRect
-@onready var BackNameLabel:Label = $SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/PanelContainer/VBoxContainer/BackNameLabel
-@onready var NameLabel:Label = $SubViewport/PanelContainer/Front/Header/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/NameLabel
-@onready var ProfileImage:TextureRect = $SubViewport/PanelContainer/SubViewport/ProfileImage
-@onready var PurchaseList:HBoxContainer = $SubViewport/PanelContainer/Front/Header/VBoxContainer/MarginContainer/PurchaseList
-@onready var UnlockList:HBoxContainer = $SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/UnlockList
-@onready var CursorContainer:Control = $CursorContainer
-@onready var UnlockBtn:Control = $SubViewport/PanelContainer/Back/MarginContainer2/LockPanel/VBoxContainer/UnlockBtn
-@onready var LockPanel:PanelContainer = $SubViewport/PanelContainer/Back/MarginContainer2/LockPanel
-@onready var AtMaxPanel:PanelContainer = $SubViewport/PanelContainer/AtMaxPanel
-@onready var AlreadyUnlocked:PanelContainer = $SubViewport/PanelContainer/AlreadyUnlocked
-
 @onready var Front:Control = $SubViewport/PanelContainer/Front
 @onready var Back:Control = $SubViewport/PanelContainer/Back
 
-@export var flip:bool = false : 
-	set(val):
-		flip = val
-		on_flip_update()
+@onready var ProfileImage:TextureRect = $SubViewport/PanelContainer/MarginContainer/TextureRect
+@onready var FrontNameLabel:Label = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/FrontNameLabel
+@onready var BackNameLabel:Label = $SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/BackNameLabel
+@onready var CostBtn:BtnBase = $SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/MarginContainer/CostBtn
 
-@export var is_selected:bool = false : 
+@onready var CursorContainer:Control = $CursorContainer
+@onready var LockedPanel:Control = $SubViewport/PanelContainer/LockedPanel
+@onready var AtMaxPanel:PanelContainer = $SubViewport/PanelContainer/AtMaxPanel
+@onready var AlreadyOwned:PanelContainer = $SubViewport/PanelContainer/AlreadyOwned
+
+enum CARD_TYPE {SHOP, SELECTION}
+
+@export var card_type:CARD_TYPE = CARD_TYPE.SELECTION
+
+@export var flipped:bool = false : 
 	set(val):
-		is_selected = val
-		on_is_selected_update()
-		
+		flipped = val
+		on_flipped_update()
+
 @export var is_highlighted:bool = false : 
 	set(val):
 		is_highlighted = val
 		on_is_highlighted_update()
 
-@export var is_deselected:bool = false : 
-	set(val):
-		is_deselected = val
-		on_is_deselected_update()		
+#@export var is_deselected:bool = false : 
+	#set(val):
+		#is_deselected = val
+		#on_is_deselected_update()		
 
-@export var show_already_unlocked:bool = false : 
-	set(val):
-		show_already_unlocked = val
-		on_show_already_unlocked()
+#@export var show_already_unlocked:bool = false : 
+	#set(val):
+		#show_already_unlocked = val
+		#on_show_already_unlocked()
 		
 @export var ref:int = -1: 
 	set(val):
@@ -48,10 +46,8 @@ extends MouseInteractions
 		on_ref_update()
 		
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
 var index:int
-var previous_flip:bool 
 var resources_data:Dictionary = {} 
 var shop_unlock_purchase:Array = []
 var room_config:Dictionary
@@ -67,7 +63,6 @@ var max_capacity:bool = false
 var onClick:Callable = func():pass
 var onHover:Callable = func():pass
 var onDismiss:Callable = func():pass
-
 
 # --------------------------------------
 func _init() -> void:
@@ -87,87 +82,41 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	
-	
 	Front.show()
 	Back.hide()
 	
 	CardTextureRect.scale.x = 0
-	for child in PurchaseList.get_children():
-		child.queue_free()	
+	CardTextureRect.pivot_offset = self.size/2
 
 	on_focus()
-	on_is_selected_update()
-	on_is_deselected_update()
 	on_ref_update()
-	on_show_already_unlocked()
+	on_is_highlighted_update()
 # --------------------------------------
-
-# --------------------------------------
-func reset() -> void:
-	is_highlighted = false
-	is_selected = false
-# --------------------------------------
-
-# --------------------------------------
-func on_is_selected_update() -> void:
-	if !is_node_ready():return
-
-# --------------------------------------	
 
 # --------------------------------------	
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
 	CursorContainer.show() if is_highlighted else CursorContainer.hide()
-	
-	var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	dupe_stylebox.border_color = Color.WHITE if is_highlighted else Color.BLACK
-	RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)	
 # --------------------------------------		
 
-# --------------------------------------
-func on_is_deselected_update() -> void:
-	if !is_node_ready():return
-	if !flip:
-		CardTextureRect.material = BlackAndWhiteShader if is_deselected else null
 # --------------------------------------	
-
-# --------------------------------------	
-func on_flip_update() -> void:
+func on_flipped_update() -> void:
 	if !is_node_ready():return
-	previous_flip = flip
-	CardTextureRect.pivot_offset = self.size/2
 	if no_animation:
 		CardTextureRect.scale.x = 0
 	else:
 		await U.tween_node_property(CardTextureRect, "scale:x", 0, 0.1)		
 		await U.set_timeout(0.2)
 		
-	Front.hide() if flip else Front.show()
-	Back.show() if flip else Back.hide()
-	
-	if flip:
-		AtMaxPanel.hide()
-		PurchaseList.hide()		
+	Front.hide() if flipped else Front.show()
+	Back.show() if flipped else Back.hide()
 
-	CardTextureRect.material = BlackAndWhiteShader if flip else null		
+	#CardTextureRect.material = BlackAndWhiteShader if is_locked else null		
 	if no_animation:
 		CardTextureRect.scale.x = 1
 	else:
 		U.tween_node_property(CardTextureRect, "scale:x", 1, 0.1)
-	
-func on_room_config_update(new_val:Dictionary = room_config) -> void:
-	room_config = new_val
-	if !is_node_ready() or room_config.is_empty() or ref == -1:return
-	await U.tick()
-	
 
-	max_capacity = ROOM_UTIL.at_own_limit(ref)
-
-		
-	AtMaxPanel.show() if max_capacity else AtMaxPanel.hide()
-	PurchaseList.hide() if max_capacity else PurchaseList.show()	
-	if max_capacity:
-		AlreadyUnlocked.hide()
 
 func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	shop_unlock_purchase = new_val
@@ -188,75 +137,51 @@ func update_content() -> void:
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 
 	ProfileImage.texture = CACHE.fetch_image(room_details.img_src)
-	NameLabel.text = room_details.shortname
+	FrontNameLabel.text = room_details.shortname
 	BackNameLabel.text = room_details.shortname
-
-	if room_details.requires_unlock:
-		LockPanel.hide() if room_details.ref in shop_unlock_purchase else LockPanel.show()		
-		if room_details.ref not in shop_unlock_purchase:
-			build_cost( ROOM_UTIL.return_unlock_costs(ref), false, UnlockList )
-		else:
-			build_cost( ROOM_UTIL.return_purchase_cost(ref), true, PurchaseList)
-	else:
-		build_cost( ROOM_UTIL.return_purchase_cost(ref), true, PurchaseList)
-
-	on_room_config_update()
-# --------------------------------------		
-
-# --------------------------------------		
-func can_afford_check(cost_arr:Array) -> bool:
-	for item in cost_arr:				
-		if abs(item.amount) > resources_data[item.resource.ref].amount:
-			return false
-	return true
-# --------------------------------------			
-
-# --------------------------------------		
-func build_cost(cost_arr:Array, show_free:bool, parent_node:Control) -> void:
-	for child in parent_node.get_children():
-		child.queue_free()	
 	
-	can_afford = can_afford_check(cost_arr)	
-
-	for item in cost_arr:
-		var new_btn:Control = TextBtnPreload.instantiate()
-		new_btn.title = "%s" % [absi(item.amount)]
-		new_btn.icon = item.resource.icon
-		new_btn.is_disabled = !can_afford
-		new_btn.panel_color = Color.BLACK
-		parent_node.add_child(new_btn)
-
-	if cost_arr.size() == 0 and show_free:
-		var new_btn:Control = TextBtnPreload.instantiate()
-		new_btn.title = "FREE"
-		new_btn.icon = SVGS.TYPE.MONEY
-		parent_node.add_child(new_btn)		
+	match card_type:
+		CARD_TYPE.SELECTION:
+			ROOM_UTIL.at_own_limit(ref)
+			AtMaxPanel.show() if max_capacity else AtMaxPanel.hide()
+			AlreadyOwned.hide()
+			LockedPanel.hide()
+			CostBtn.show()
+			var cost:int = ROOM_UTIL.return_purchase_cost(ref)
+			CostBtn.title = str(cost)
+			can_afford = can_afford_check(cost)
+		
+		CARD_TYPE.SHOP:
+			CostBtn.show()
+			if !room_details.requires_unlock or room_details.ref in shop_unlock_purchase:
+				AlreadyOwned.show()
+				LockedPanel.hide()
+				CostBtn.hide()
+			else:
+				AlreadyOwned.hide()
+				LockedPanel.show()
+				CostBtn.show()
+				var cost:int = ROOM_UTIL.return_unlock_costs(ref)
+				CostBtn.title = str(cost)
+				can_afford = can_afford_check(cost)	
 # --------------------------------------		
 
 # --------------------------------------		
-func on_show_already_unlocked() -> void:
-	if !is_node_ready():return
-	PurchaseList.hide() if show_already_unlocked else PurchaseList.show()
-	AlreadyUnlocked.show() if show_already_unlocked and !max_capacity else AlreadyUnlocked.hide() 
+func can_afford_check(amount:int) -> bool:
+	return resources_data[RESOURCE.CURRENCY.MONEY].amount >= amount
 # --------------------------------------			
 
 # --------------------------------------		
 func on_can_afford_update() -> void:
 	if !is_node_ready():return
 	var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	dupe_stylebox.bg_color = dupe_stylebox.bg_color if can_afford else Color.RED
-	dupe_stylebox.border_color = dupe_stylebox.border_color if can_afford else Color.RED
+	dupe_stylebox.bg_color = Color.BLACK if can_afford else Color.RED
 	RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)	
 # --------------------------------------			
 	
 # --------------------------------------	
 func on_focus(state:bool = false) -> void:
 	if !is_node_ready():return
-	
-	if !is_selected:
-		var dupe_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-		dupe_stylebox.border_color = Color.BLACK if !state else Color.WHITE
-		RootPanel.add_theme_stylebox_override('panel', dupe_stylebox)
 		
 	if state:
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)

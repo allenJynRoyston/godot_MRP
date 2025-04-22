@@ -400,6 +400,7 @@ func start() -> void:
 	load_state()	
 	on_simulated_busy_update()
 	on_notification_data_update()
+	
 
 	# finish this part	
 	if event_switches.show_status_on_boot:
@@ -915,14 +916,15 @@ func close_app(ref:int, direct_close:bool = false) -> void:
 	
 	if running_apps_list.size() == 0:
 		if direct_close:
-			PauseContainer.hide()
 			KeyBtn.is_disabled = true
 			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show)
 			KeyBtn.is_disabled = false
 		currently_running_app = null
 	else:
-		currently_running_app = running_apps_list[running_apps_list.size() - 1].node
+		toggle_show_taskbar()
+
 	
+	node.queue_free()
 	Taskbar.remove_item(ref)
 
 	

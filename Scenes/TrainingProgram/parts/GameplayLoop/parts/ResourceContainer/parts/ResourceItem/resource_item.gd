@@ -36,6 +36,11 @@ extends MouseInteractions
 	set(val):
 		is_negative = val
 		on_is_negative_update()
+
+@export var icon_size:Vector2 = Vector2(20, 20) : 
+	set(val):
+		icon_size = val
+		on_icon_size_update()
 		
 var onClick:Callable = func():pass
 var onDismiss:Callable = func():pass
@@ -49,6 +54,7 @@ func _ready() -> void:
 	on_display_at_bottom_update()
 	on_is_negative_update()	
 	on_title_update()
+	on_icon_size_update()
 	on_no_bg_update.call_deferred()
 
 func on_header_update() -> void:
@@ -63,6 +69,13 @@ func on_title_update() -> void:
 	if !is_node_ready():return	
 	ItemLabel.text = title
 	BtmItemLabel.text = title
+
+func on_icon_size_update() -> void:
+	if !is_node_ready():return	
+	IconBtn.size = Vector2(1, 1)
+	await U.tick()
+	IconBtn.custom_minimum_size = icon_size
+	
 
 func on_display_at_bottom_update() -> void:
 	if !is_node_ready():return

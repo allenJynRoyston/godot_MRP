@@ -457,11 +457,8 @@ layout_mode = 2
 text = "FACILITY:"
 label_settings = ExtResource("2_i3yab")
 
-[node name="RoomDetails" type="Control" parent="."]
+[node name="RoomDetails" parent="." instance=ExtResource("7_ah17n")]
 layout_mode = 2
-
-[node name="DetailPanel" parent="RoomDetails" instance=ExtResource("7_ah17n")]
-layout_mode = 1
 
 [node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
@@ -858,7 +855,6 @@ offset_top = 135.0
 offset_right = 143.0
 offset_bottom = 156.0
 index = 0
-fade = false
 
 [node name="Nametag2" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -867,7 +863,6 @@ offset_top = 181.0
 offset_right = 143.0
 offset_bottom = 202.0
 index = 1
-fade = false
 
 [node name="Nametag3" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -876,7 +871,6 @@ offset_top = 227.0
 offset_right = 143.0
 offset_bottom = 248.0
 index = 2
-fade = false
 
 [node name="Nametag4" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -885,7 +879,6 @@ offset_top = 273.0
 offset_right = 143.0
 offset_bottom = 294.0
 index = 3
-fade = false
 
 [node name="Nametag5" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -894,7 +887,6 @@ offset_top = 319.0
 offset_right = 143.0
 offset_bottom = 340.0
 index = 4
-fade = false
 
 [node name="Nametag6" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -903,7 +895,6 @@ offset_top = 365.0
 offset_right = 143.0
 offset_bottom = 386.0
 index = 5
-fade = false
 
 [node name="Nametag7" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -912,7 +903,6 @@ offset_top = 411.0
 offset_right = 143.0
 offset_bottom = 432.0
 index = 6
-fade = false
 
 [node name="Nametag8" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -921,7 +911,6 @@ offset_top = 457.0
 offset_right = 143.0
 offset_bottom = 478.0
 index = 7
-fade = false
 
 [node name="Nametag9" parent="NameControl" instance=ExtResource("10_xathl")]
 layout_mode = 2
@@ -930,7 +919,6 @@ offset_top = 503.0
 offset_right = 143.0
 offset_bottom = 524.0
 index = 8
-fade = false
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
@@ -959,7 +947,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="ResearcherDetails" type="Control" parent="."]
-visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="ResearcherDetails"]

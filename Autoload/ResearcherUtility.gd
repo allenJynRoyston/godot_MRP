@@ -82,7 +82,7 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data:Dictionary) -> Dictionary:
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.READINESS: 1
+					RESOURCE.METRICS.READINESS: 1
 				}
 			},
 	},
@@ -93,7 +93,7 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.MORALE: 1
+					RESOURCE.METRICS.MORALE: 1
 				}
 			},
 	},
@@ -104,7 +104,7 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.SAFETY: 1
+					RESOURCE.METRICS.SAFETY: 1
 				}
 			},
 	},
@@ -116,7 +116,7 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.SAFETY: -1
+					RESOURCE.METRICS.SAFETY: -1
 				}
 			},
 	},
@@ -127,7 +127,7 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.MORALE: -1
+					RESOURCE.METRICS.MORALE: -1
 				}
 			},
 	},
@@ -138,7 +138,7 @@ var trait_data: Dictionary = {
 		"get_effect": func(config_data: Dictionary) -> Dictionary:
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.READINESS: -1
+					RESOURCE.METRICS.READINESS: -1
 				}
 			},
 	},
@@ -293,7 +293,7 @@ var trait_data: Dictionary = {
 					
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.MORALE: 1 if amount > 25 else 0
+					RESOURCE.METRICS.MORALE: 1 if amount > 25 else 0
 				},
 			},
 	},	
@@ -316,7 +316,7 @@ var trait_data: Dictionary = {
 					
 			return {
 				"metrics": {
-					RESOURCE.BASE_METRICS.SAFETY: 1 if amount > 25 else 0
+					RESOURCE.METRICS.SAFETY: 1 if amount > 25 else 0
 				},
 			},
 	},	

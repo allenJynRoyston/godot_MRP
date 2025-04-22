@@ -93,5 +93,6 @@ label_settings = ExtResource("1_jc764")
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 icon = 10
+flip_v = false
 
 [connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="SubViewport/PanelContainer/MarginContainer/HBoxContainer/NextBtn" method="_on_subviewport_child_changed"]

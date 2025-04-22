@@ -41,6 +41,10 @@ var SCP_TEMPLATE:Dictionary = {
 			"Description line one",
 			"Description line two"
 		],
+	"required_for_containment": {
+		"profession": [],
+		"traits": []
+	},		
 	# -----------------------------------
 
 	# -----------------------------------
@@ -53,9 +57,9 @@ var SCP_TEMPLATE:Dictionary = {
 	# -----------------------------------
 	"effects": {
 		"metrics":{
-			RESOURCE.BASE_METRICS.MORALE: 0,
-			RESOURCE.BASE_METRICS.SAFETY: 0,
-			RESOURCE.BASE_METRICS.READINESS: 0
+			RESOURCE.METRICS.MORALE: 0,
+			RESOURCE.METRICS.SAFETY: 0,
+			RESOURCE.METRICS.READINESS: 0
 		},
 		"contained": {
 			"description": "Contained description goes here.", 

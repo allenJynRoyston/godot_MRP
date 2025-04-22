@@ -1,0 +1,165 @@
+[gd_scene load_steps=11 format=3 uid="uid://ca1erh850s21g"]
+
+[ext_resource type="Script" uid="uid://daxvb6vyrd5pa" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_containment_info.gd" id="1_glot1"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_4hgoj"]
+[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_2gwvn"]
+[ext_resource type="PackedScene" uid="uid://cr4jyhkulokw2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricMiniItem.tscn" id="4_2m10l"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="5_t765n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2gwvn"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1sos"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_gklnx"]
+font = ExtResource("5_t765n")
+font_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xlg2l"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.54, 0.54, 0.54, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_gxkkp"]
+font = ExtResource("5_t765n")
+font_size = 8
+font_color = Color(0.672752, 0.672752, 0.672751, 1)
+
+[node name="CardDrawerContainmentInfo" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 50)
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_2gwvn")
+script = ExtResource("1_glot1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = -2
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "TITLE LABEL "
+label_settings = ExtResource("2_4hgoj")
+horizontal_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Metrics" type="HBoxContainer" parent="MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Morale" parent="MarginContainer/MarginContainer/VBoxContainer/Metrics" instance=ExtResource("4_2m10l")]
+layout_mode = 2
+value = 1
+
+[node name="Safety" parent="MarginContainer/MarginContainer/VBoxContainer/Metrics" instance=ExtResource("4_2m10l")]
+layout_mode = 2
+assigned_metric = 1
+value = 1
+
+[node name="Readiness" parent="MarginContainer/MarginContainer/VBoxContainer/Metrics" instance=ExtResource("4_2m10l")]
+layout_mode = 2
+assigned_metric = 2
+value = 1
+
+[node name="ContainedEffect" type="VBoxContainer" parent="MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/ContainedEffect"]
+layout_mode = 2
+text = "CONTAINED EFFECT"
+label_settings = ExtResource("3_2gwvn")
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MarginContainer/VBoxContainer/ContainedEffect"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_f1sos")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 15
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "Effect description."
+label_settings = SubResource("LabelSettings_gklnx")
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="UncontainedEffect" type="VBoxContainer" parent="MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/UncontainedEffect"]
+layout_mode = 2
+text = "UNCONTAINED EFFECT"
+label_settings = ExtResource("3_2gwvn")
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MarginContainer/VBoxContainer/UncontainedEffect"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_xlg2l")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 15
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+text = "Effect description."
+label_settings = SubResource("LabelSettings_gxkkp")
+horizontal_alignment = 1
+autowrap_mode = 2

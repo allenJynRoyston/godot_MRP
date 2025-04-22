@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://cxkkni8jbnrqq"]
+[gd_scene load_steps=11 format=3 uid="uid://cxkkni8jbnrqq"]
 
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_4rx15"]
 [ext_resource type="Script" uid="uid://b121casmumllb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/detail_panel.gd" id="1_ifskr"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_v1d8f"]
+[ext_resource type="PackedScene" uid="uid://cey4msk4p7tpa" path="res://Scenes/TrainingProgram/parts/Cards/ROOM/RoomCard.tscn" id="2_xwi2o"]
 [ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="3_u3dak"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jtmyx"]
@@ -16,13 +17,21 @@ colors = PackedColorArray(0, 0, 0, 0, 0.133196, 0.133196, 0.133196, 1)
 gradient = SubResource("Gradient_e52w3")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_bpbdd"]
-viewport_path = NodePath("MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport")
+viewport_path = NodePath("DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport")
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_3t2rt"]
 color = Color(1, 1, 1, 1)
 
-[node name="DetailPanel" type="PanelContainer"]
+[node name="RoomDetails" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_ifskr")
+
+[node name="DetailPanel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,36 +39,44 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_jtmyx")
-script = ExtResource("1_ifskr")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="DetailPanel"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="TextureRect" type="TextureRect" parent="DetailPanel/MarginContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 texture = SubResource("GradientTexture1D_xwi2o")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="DetailPanel/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="RoomCard" parent="DetailPanel/MarginContainer/MarginContainer" instance=ExtResource("2_xwi2o")]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="SynergyContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="SynergyContainer" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 2
 
-[node name="Metadata" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+[node name="Metadata" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/SynergyContainer/Metadata"]
+[node name="TextureRect" type="TextureRect" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Metadata"]
 material = ExtResource("3_u3dak")
 custom_minimum_size = Vector2(190, 150)
 layout_mode = 2
@@ -67,30 +84,30 @@ size_flags_horizontal = 8
 texture = SubResource("ViewportTexture_bpbdd")
 stretch_mode = 2
 
-[node name="SubViewport" type="SubViewport" parent="MarginContainer/VBoxContainer/SynergyContainer/Metadata"]
+[node name="SubViewport" type="SubViewport" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Metadata"]
 size = Vector2i(190, 150)
 
-[node name="ProfileImage" type="TextureRect" parent="MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport"]
+[node name="ProfileImage" type="TextureRect" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Metadata/SubViewport"]
 offset_right = 190.0
 offset_bottom = 150.0
 texture = ExtResource("2_v1d8f")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Description" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+[node name="Description" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Description"]
+[node name="NameLabel" type="Label" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Description"]
 layout_mode = 2
 text = "NAME LABEL"
 label_settings = ExtResource("1_4rx15")
 horizontal_alignment = 2
 
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Description"]
+[node name="HSeparator3" type="HSeparator" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Description"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
-[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Description"]
+[node name="DescriptionLabel" type="Label" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Description"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "The description goes here.  It should wrap correctly."
@@ -98,74 +115,74 @@ label_settings = ExtResource("1_4rx15")
 horizontal_alignment = 2
 autowrap_mode = 2
 
-[node name="Effects" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+[node name="Effects" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+[node name="Label3" type="Label" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Effects"]
 layout_mode = 2
 text = "EFFECT"
 label_settings = ExtResource("1_4rx15")
 horizontal_alignment = 2
 
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+[node name="HSeparator3" type="HSeparator" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Effects"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
-[node name="MetricList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+[node name="MetricList" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Effects"]
 layout_mode = 2
 
-[node name="ResourceGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Effects"]
+[node name="ResourceGrid" type="GridContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Effects"]
 layout_mode = 2
 columns = 2
 
-[node name="Syncs" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+[node name="Syncs" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
+[node name="Label3" type="Label" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
 layout_mode = 2
 text = "PAIRS WITH"
 label_settings = ExtResource("1_4rx15")
 horizontal_alignment = 2
 
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
+[node name="HSeparator3" type="HSeparator" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
-[node name="SyncList" type="GridContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
+[node name="SyncList" type="GridContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/Syncs"]
 layout_mode = 2
 size_flags_horizontal = 8
 columns = 2
 
-[node name="ActiveAbilities" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+[node name="ActiveAbilities" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
+[node name="Label3" type="Label" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
 layout_mode = 2
 text = "ABILITIES"
 label_settings = ExtResource("1_4rx15")
 horizontal_alignment = 2
 
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
+[node name="HSeparator3" type="HSeparator" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
-[node name="ActiveAbilitiesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
+[node name="ActiveAbilitiesList" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/ActiveAbilities"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="PassiveAbilities" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer"]
+[node name="PassiveAbilities" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer"]
 layout_mode = 2
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
+[node name="Label3" type="Label" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
 layout_mode = 2
 text = "PASSIVE ABILITIES"
 label_settings = ExtResource("1_4rx15")
 horizontal_alignment = 2
 
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
+[node name="HSeparator3" type="HSeparator" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_3t2rt")
 
-[node name="PassiveAbilitiesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
+[node name="PassiveAbilitiesList" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/SynergyContainer/PassiveAbilities"]
 layout_mode = 2
 theme_override_constants/separation = 5

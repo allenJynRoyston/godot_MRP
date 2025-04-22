@@ -314,11 +314,11 @@ func return_wing_effects_list(details:Dictionary, room_extract:Dictionary, prope
 			var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
 			
 			match key:
-				RESOURCE.BASE_METRICS.MORALE:
+				RESOURCE.METRICS.MORALE:
 					list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
-				RESOURCE.BASE_METRICS.READINESS:
+				RESOURCE.METRICS.READINESS:
 					list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
-				RESOURCE.BASE_METRICS.SAFETY:
+				RESOURCE.METRICS.SAFETY:
 					list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})	
 						
 	#if property_name in details and "resources" in details[property_name]:

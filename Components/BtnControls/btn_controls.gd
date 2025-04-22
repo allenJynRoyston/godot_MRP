@@ -4,6 +4,7 @@ extends Control
 @onready var BtnMarginContainer:MarginContainer = $BtnControlPanel/BtnMarginContainer
 @onready var ABtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ABtn
 @onready var BBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/BBtn
+@onready var CBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/CBtn
 
 @export_category("OPTIONS")
 @export var reset_to_last:bool = false
@@ -17,7 +18,11 @@ extends Control
 @export var a_btn_icon:SVGS.TYPE = SVGS.TYPE.NEXT : 
 	set(val):
 		a_btn_icon = val
-		on_a_btn_icon_update()		
+		on_a_btn_icon_update()
+@export var hide_a_btn:bool = false : 
+	set(val):
+		hide_a_btn = val
+		on_hide_a_btn_update()
 
 @export_category("B BUTTON")
 @export var b_btn_title:String = "BACK" : 
@@ -28,7 +33,25 @@ extends Control
 	set(val):
 		b_btn_icon = val
 		on_b_btn_icon_update()		
+@export var hide_b_btn:bool = false : 
+	set(val): 
+		hide_b_btn = val
+		on_hide_b_btn_update()
 		
+		
+@export_category("C BUTTON")
+@export var c_btn_title:String = "INFO" : 
+	set(val):
+		c_btn_title = val
+		on_c_btn_title_update()
+@export var c_btn_icon:SVGS.TYPE = SVGS.TYPE.INFO : 
+	set(val):
+		c_btn_icon = val
+		on_c_btn_icon_update()		
+@export var hide_c_btn:bool = true : 
+	set(val): 
+		hide_c_btn = val
+		on_hide_c_btn_update()		
 
 var control_pos:Dictionary
 var control_pos_default:Dictionary
@@ -58,9 +81,15 @@ var disable_back_btn:bool = false :
 	set(val):
 		disable_back_btn = val
 		on_disable_back_btn_update()
-		
+
+var disable_c_btn:bool = false : 
+	set(val):
+		disable_c_btn = val
+		on_disable_c_btn_update()
+	
 var onBack:Callable = func() -> void:pass
 var onAction:Callable = func() -> void:pass
+var onCBtn:Callable = func() -> void:pass
 var onDirectional:Callable = func(key:String) -> void:pass
 
 # --------------------------------------------------------------------------------------------------
@@ -75,11 +104,18 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_fullscreen_update()
 	on_disable_active_btn_update()
+	
 	on_a_btn_title_update()
 	on_b_btn_title_update()
+	on_c_btn_title_update()
 	
 	on_a_btn_icon_update()
 	on_b_btn_icon_update()
+	on_c_btn_icon_update()
+	
+	on_hide_a_btn_update()
+	on_hide_b_btn_update()
+	on_hide_c_btn_update()
 	
 	ABtn.onClick = func() -> void:
 		if !is_node_ready():return
@@ -91,13 +127,19 @@ func _ready() -> void:
 			
 			if "onClick" in node:
 				node.onClick.call()
-			
+	
+	CBtn.onClick = func() -> void:
+		if !is_node_ready():return
+		onCBtn.call()
+	
 	BBtn.onClick = func() -> void:
+		if !is_node_ready():return
 		onBack.call()
 
 	disabled_state = {
 		ABtn: false,
-		BBtn: false
+		BBtn: false,
+		CBtn: false
 	}
 # --------------------------------------------------------------------------------------------------
 
@@ -109,6 +151,10 @@ func on_a_btn_title_update() -> void:
 func on_b_btn_title_update() -> void:
 	if !is_node_ready():return
 	BBtn.title = str(b_btn_title)	
+
+func on_c_btn_title_update() -> void:
+	if !is_node_ready():return
+	CBtn.title = str(c_btn_title)	
 	
 func on_a_btn_icon_update() -> void:
 	if !is_node_ready():return
@@ -118,6 +164,10 @@ func on_b_btn_icon_update() -> void:
 	if !is_node_ready():return
 	BBtn.icon = b_btn_icon	
 
+func on_c_btn_icon_update() -> void:
+	if !is_node_ready():return
+	CBtn.icon = c_btn_icon		
+
 func on_disable_active_btn_update() -> void:
 	disabled_state[ABtn] = disable_active_btn
 	if is_revealed:
@@ -126,7 +176,24 @@ func on_disable_active_btn_update() -> void:
 func on_disable_back_btn_update() -> void:
 	disabled_state[BBtn] = disable_back_btn
 	if is_revealed:
-		ABtn.is_disabled = disable_back_btn
+		BBtn.is_disabled = disable_back_btn
+		
+func on_disable_c_btn_update() -> void:
+	disabled_state[CBtn] = disable_c_btn
+	if is_revealed:
+		CBtn.is_disabled = disable_c_btn		
+
+func on_hide_a_btn_update() -> void:
+	if !is_node_ready():return
+	ABtn.hide() if hide_a_btn else ABtn.show()
+
+func on_hide_b_btn_update() -> void:
+	if !is_node_ready():return
+	BBtn.hide() if hide_b_btn else BBtn.show()	
+
+func on_hide_c_btn_update() -> void:
+	if !is_node_ready():return
+	CBtn.hide() if hide_c_btn else CBtn.show()		
 # --------------------------------------------------------------------------------------------------
 	
 
@@ -166,7 +233,7 @@ func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 func freeze_and_disable(state:bool) -> void:
 	freeze_inputs = state
-	for btn in [ABtn, BBtn]:
+	for btn in [ABtn, BBtn, CBtn]:
 		btn.is_disabled = disabled_state[btn] if !state else state
 	if !state:
 		restore_last_index()
@@ -213,7 +280,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		return
 
 	var key:String = input_data.key
-	var keycode:int = input_data.keycode
 	
 	onDirectional.call(key)
 	

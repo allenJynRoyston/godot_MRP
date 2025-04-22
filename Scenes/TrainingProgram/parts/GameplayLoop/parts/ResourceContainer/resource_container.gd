@@ -79,8 +79,8 @@ func update_control_pos() -> void:
 func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
-	U.tween_node_property(MarginControl, "position:y", control_pos[MarginControl].show if is_showing else control_pos[MarginControl].hide, 0 if skip_animation else 0.7)
-	U.tween_node_property(CenterPanel, "position:y", control_pos[CenterPanel].show if is_showing else control_pos[CenterPanel].hide, 0 if skip_animation else 0.7)
+	U.tween_node_property(MarginControl, "position:y", control_pos[MarginControl].show if is_showing else control_pos[MarginControl].hide, 0 if skip_animation else 0.3)
+	U.tween_node_property(CenterPanel, "position:y", control_pos[CenterPanel].show if is_showing else control_pos[CenterPanel].hide, 0 if skip_animation else 0.3)
 
 # -----------------------------------------------	
 
@@ -108,10 +108,10 @@ func update_metrics_labels() -> void:
 	for key in ring_data.metrics:
 		var amount:int = ring_data.metrics[key]
 		match key:
-			RESOURCE.BASE_METRICS.MORALE:
+			RESOURCE.METRICS.MORALE:
 				Morale.value = amount
-			RESOURCE.BASE_METRICS.READINESS:
+			RESOURCE.METRICS.READINESS:
 				Readiness.value = amount
-			RESOURCE.BASE_METRICS.SAFETY:
+			RESOURCE.METRICS.SAFETY:
 				Safety.value = amount
 # -----------------------------------------------

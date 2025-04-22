@@ -1,0 +1,123 @@
+[gd_scene load_steps=7 format=3 uid="uid://cggkdkq5crbw4"]
+
+[ext_resource type="Script" uid="uid://cslsj5nk26rop" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/card_body.gd" id="1_pwvyw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pwvyw"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_e4ajd"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jjyc3"]
+bg_color = Color(0, 0, 0, 0.694118)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0.796078)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nj0mj"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwvyw"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="CardBody" type="PanelContainer"]
+offset_right = 275.0
+offset_bottom = 400.0
+pivot_offset = Vector2(147.5, 215)
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pwvyw")
+script = ExtResource("1_pwvyw")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = SubResource("ViewportTexture_e4ajd")
+stretch_mode = 3
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(275, 425)
+
+[node name="Control" type="Control" parent="SubViewport"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="CardBody" type="PanelContainer" parent="SubViewport/Control"]
+custom_minimum_size = Vector2(275, 425)
+layout_mode = 2
+offset_right = 250.0
+offset_bottom = 400.0
+pivot_offset = Vector2(125, 200)
+theme_override_styles/panel = SubResource("StyleBoxFlat_jjyc3")
+
+[node name="Front" type="MarginContainer" parent="SubViewport/Control/CardBody"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/CardBody/Front"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nj0mj")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/Control/CardBody/Front/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="FrontDrawerContainer" type="VBoxContainer" parent="SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Back" type="MarginContainer" parent="SubViewport/Control/CardBody"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/CardBody/Back"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pwvyw")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/Control/CardBody/Back/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="BackDrawerContainer" type="VBoxContainer" parent="SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8

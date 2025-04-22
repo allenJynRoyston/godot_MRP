@@ -1,30 +1,20 @@
 @tool
 extends MouseInteractions
 
-@onready var RootContainer:PanelContainer = $SubViewport/SCPCard
-@onready var CardTextureRect:TextureRect = $VBoxContainer/TextureRect
-@onready var ImageTextureRect:TextureRect = $SubViewport/SCPCard/Front/Image
-@onready var Front:VBoxContainer = $SubViewport/SCPCard/Front
-@onready var Back:VBoxContainer = $SubViewport/SCPCard/Back
+@onready var OutputTextureRect:TextureRect = $TextureRect
 
-@onready var SelectedCheckbox:BtnBase = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/SelectedCheckbox
-@onready var NicknameLabel:Label = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/NicknameLabel
-@onready var DesignationLabel:Label = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/DesignationLabel
-@onready var ItemClassLabel:Label = $SubViewport/SCPCard/Front/Image/MarginContainer/VBoxContainer/ItemClass/ItemClassLabel
-@onready var QuoteLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Quote/QuoteLabel
-
-@onready var Morale:Control = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics/Morale
-@onready var Safety:Control = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics/Safety
-@onready var Readiness:Control = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/VBoxContainer/Metrics/Readiness
-
-@onready var ContainedEffect:VBoxContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect
-@onready var UnContainedEffect:VBoxContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect
-@onready var ContainedPanel:PanelContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer4
-@onready var UncontainedPanel:PanelContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer4
-@onready var ContainedDescriptionLabel:Label  = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer4/MarginContainer/DescriptionLabel
-@onready var UncontainedDescriptionLabel:Label = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/UncontainedEffect/PanelContainer4/MarginContainer/DescriptionLabel
-
-@onready var BenefitsGridContainer:GridContainer = $SubViewport/SCPCard/Front/MarginContainer/VBoxContainer/Rewards/GridContainer
+@onready var CardBody:Control = $SubViewport/CardBody
+#front
+@onready var CardDrawerImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
+@onready var CardDrawerDesignation:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDesignation
+@onready var CardDrawerNickname:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerNickname
+@onready var CardDrawerItemClass:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerItemClass
+@onready var CardDrawerSupplies:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerSupplies
+@onready var CardDrawerRewards:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerRewards
+@onready var CardDrawerAssigned:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
+# back
+@onready var CardDrawerContainmentInfo:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerContainmentInfo
+@onready var CardDrawerRequired:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerRequired
 
 @export var ref:int = -1: 
 	set(val):
@@ -35,6 +25,11 @@ extends MouseInteractions
 	set(val):
 		flip = val
 		on_flip_update()
+		
+@export var show_assigned:bool = false : 
+	set(val):
+		show_assigned = val
+		on_show_assigned_update()
 		
 @export var reveal:bool = false : 
 	set(val):
@@ -61,9 +56,9 @@ extends MouseInteractions
 		is_deselected = val
 		on_is_deselected_update()
 		
-		
+
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+const card_border_color:Color = Color(0.408, 0.42, 1.0)
 
 var index:int = -1
 var use_location:Dictionary = {}
@@ -75,102 +70,82 @@ var onClick:Callable = func():pass
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	Front.show()
-	Back.hide()
 
 	on_ref_update()
 	on_reveal_update()
 	on_is_active_update()
 	on_is_selected_update()
 	on_is_deselected_update()
+	on_show_assigned_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_flip_update() -> void:
 	if !is_node_ready():return
-	CardTextureRect.pivot_offset = self.size/2
-	await U.tween_node_property(CardTextureRect, "scale:x", 0, 0.1)
-	await U.set_timeout(0.2)
-	Front.hide() if flip else Front.show()
-	Back.show() if flip else Back.hide()
-	U.tween_node_property(CardTextureRect, "scale:x", 1, 0.1)
+	CardBody.flip = flip
 
 func on_is_active_update() -> void:
 	if !is_node_ready():return
-	var dup_stylebox:StyleBoxFlat = RootContainer.get_theme_stylebox('panel').duplicate()
-	dup_stylebox.border_color = Color.WHITE if is_active else Color.BLACK
-	RootContainer.add_theme_stylebox_override('panel', dup_stylebox)
 
 func on_show_checkbox_update() -> void:
 	if !is_node_ready():return
-	SelectedCheckbox.show() if show_checkbox else SelectedCheckbox.hide()
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	SelectedCheckbox.icon = SVGS.TYPE.CHECKBOX if is_selected else SVGS.TYPE.EMPTY_CHECKBOX
-	SelectedCheckbox.static_color = Color.GREEN if is_selected else Color.DIM_GRAY
+	CardBody.border_color = card_border_color if is_selected else card_border_color.darkened(0.5)
+
+func on_show_assigned_update() -> void:
+	if !is_node_ready():return
+	CardDrawerAssigned.show() if show_assigned else CardDrawerAssigned.hide()
 
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
-	CardTextureRect.material = BlackAndWhiteShader if is_deselected else null
+	OutputTextureRect.material = BlackAndWhiteShader if is_deselected else null
 
 func on_reveal_update() -> void:
 	if !is_node_ready():return
-	await U.tween_node_property(CardTextureRect, "modulate", Color(1, 1, 1, 1) if reveal else Color(1, 1, 1, 0))
+	CardBody.reveal = reveal
+
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
 	if !is_node_ready() or ref not in SCP_UTIL.reference_data:return	
-	for child in BenefitsGridContainer.get_children():
-		child.queue_free()	
 	
 	var scp_data:Dictionary = SCP_UTIL.return_data(ref)
 	var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
 	var passes_metric_check:bool = SCP_UTIL.passes_metric_check(ref, use_location)
-	var contained_stylebox_flat_copy:StyleBoxFlat = ContainedPanel.get('theme_override_styles/panel').duplicate()
-	var uncontained_stylebox_flat_copy:StyleBoxFlat = UncontainedPanel.get('theme_override_styles/panel').duplicate()
-	
+	var metrics:Dictionary = {
+		"passes_metric_check": passes_metric_check,
+	}
 	for ref in scp_data.effects.metrics:
-		var amount:int = scp_data.effects.metrics[ref]
-		match ref:
-			RESOURCE.BASE_METRICS.MORALE:
-				Morale.value = amount
-				if RESOURCE.BASE_METRICS.MORALE in current_metrics:
-					Morale.is_negative = current_metrics[RESOURCE.BASE_METRICS.MORALE] < amount
-			RESOURCE.BASE_METRICS.SAFETY:
-				Safety.value = amount
-				if RESOURCE.BASE_METRICS.SAFETY in current_metrics:
-					Safety.is_negative = current_metrics[RESOURCE.BASE_METRICS.SAFETY] < amount
-			RESOURCE.BASE_METRICS.READINESS:
-				Readiness.value = amount
-				if RESOURCE.BASE_METRICS.READINESS in current_metrics:
-					Readiness.is_negative = current_metrics[RESOURCE.BASE_METRICS.READINESS] < amount
-	
-	# change stylebox if passes metric check
-	contained_stylebox_flat_copy.border_color = Color(0.54, 0.54, 0.54) if passes_metric_check else Color.BLACK 
-	uncontained_stylebox_flat_copy.border_color = Color(0.54, 0.54, 0.54) if !passes_metric_check else Color.BLACK 
-	ContainedPanel.set('theme_override_styles/panel', contained_stylebox_flat_copy)
-	UncontainedPanel.set('theme_override_styles/panel', uncontained_stylebox_flat_copy)
-	
-	# change modulation
-	ContainedEffect.modulate = Color(1, 1, 1, 1 if passes_metric_check else 0.4)
-	UnContainedEffect.modulate = Color(1, 1, 1, 0.5 if passes_metric_check else 1.0)	
+		var needed:int = scp_data.effects.metrics[ref]
+		metrics[ref] = {
+			"needed": scp_data.effects.metrics[ref],
+			"current": current_metrics[ref]
+		}
+		
+	var required_str:String = ""
+	for ref in scp_data.required_for_containment.profession:
+		required_str += str(RESEARCHER_UTIL.return_specialization_data(ref).name + " or ")
+	for ref in scp_data.required_for_containment.traits:
+		required_str += str(RESEARCHER_UTIL.return_trait_data(ref).name + " or ")
+	required_str = required_str.left(required_str.length() - 4)
 
-	ImageTextureRect.texture = CACHE.fetch_image(scp_data.img_src)
-	DesignationLabel.text = scp_data.name
-	NicknameLabel.text = '"%s"' % [scp_data.nickname]
-	ItemClassLabel.text = scp_data.item_class
-	QuoteLabel.text = '"%s"' % scp_data.quote
-	ContainedDescriptionLabel.text = scp_data.effects.contained.description
-	UncontainedDescriptionLabel.text = scp_data.effects.uncontained.description
+	CardDrawerDesignation.content = scp_data.name
+	CardDrawerNickname.content = scp_data.nickname
+	CardDrawerItemClass.content = scp_data.item_class
+	
+	CardDrawerImage.img_src = scp_data.img_src
+	CardDrawerRewards.list = rewards.map(func(x): return {"icon": x.resource.icon, "title": str(x.amount)})
+	
+	CardDrawerContainmentInfo.metrics = metrics
+	CardDrawerContainmentInfo.effects = scp_data.effects
+	CardDrawerRequired.content = required_str
+	
+	
+	
 
-	for reward in rewards:
-		var btn_node:BtnBase = TextBtnPreload.instantiate()
-		btn_node.title = reward.resource.name
-		btn_node.icon = reward.resource.icon
-		btn_node.is_hoverable = false
-		BenefitsGridContainer.add_child(btn_node)
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

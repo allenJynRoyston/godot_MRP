@@ -103,7 +103,6 @@ func activate() -> void:
 	
 	# set pagination levels
 	max_pagination = floori( (hired_lead_researchers_arr.size() - 1)/cards_in_list) 
-	print("max_pagination: ", max_pagination)
 	
 	PromoteControl.hide()
 	
@@ -212,7 +211,6 @@ func update_cards() -> void:
 		new_card.uid = details.uid
 		new_card.index = index
 		new_card.show_checkbox = true
-		new_card.flip_hide = true
 		
 		new_card.onFocus = func(_node:Control) -> void:
 			if current_mode == MODE.SELECT_RESEARCHERS:
@@ -235,6 +233,9 @@ func update_cards() -> void:
 				NEXT_ACTION.PROMOTE:
 					current_mode = MODE.CONFIRM_PROMOTE
 				NEXT_ACTION.RETURN:
+					BtnControls.itemlist = []
+					BtnControls.freeze_and_disable(true)
+					await U.set_timeout(0.3)
 					end({"action": ACTION.RESEARCHERS.SELECT, "uid": details.uid})
 			
 		ResearcherList.add_child(new_card)
@@ -246,17 +247,7 @@ func update_cards() -> void:
 	AvailableLabel.text = "AVAILABLE: %s/%s" % [pagination_val, max_pagination]
 	
 	researcher_active_index = 0
-	
-	for child in ResearcherList.get_children():
-		await U.set_timeout(0.1)
-		child.flip_hide = false
-	
 	is_animating = false
-		
-	#
-	#LessBtn.show() if overflow_count > 0 and hired_lead_researchers_arr.size() > cards_in_list else LessBtn.hide()
-	#MoreBtn.show() if overflow_count == 0  and hired_lead_researchers_arr.size() > cards_in_list else MoreBtn.hide()				
-	#
 # -----------------------------------------------
 
 
@@ -388,7 +379,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
 		# ---------------
 		MODE.SELECT_RESEARCHERS:
-			BtnControls.freeze_and_disable(true)
 			BtnControls.a_btn_title = "SELECT"
 			BtnControls.b_btn_title = "BACK"		
 			
@@ -402,11 +392,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			reset_cards()
 	
 			await U.tick()
-			BtnControls.reveal(true)
 			BtnControls.itemlist = ResearcherList.get_children()			
 			await U.tick()
-			BtnControls.freeze_and_disable(false)
 			BtnControls.item_index = researcher_active_index
+			BtnControls.reveal(true)
 		# ---------------
 		MODE.CONFIRM_PROMOTE:
 			BtnControls.itemlist = []
