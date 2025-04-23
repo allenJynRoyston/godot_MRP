@@ -97,7 +97,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 layout_mode = 2
@@ -146,6 +146,7 @@ icon = 39
 hide_icon_panel = true
 
 [node name="ShotcutPanel" type="PanelContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_f1t52")
@@ -210,7 +211,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_blwye")
 title = "REMOVE"
 assigned_key = "R"
 icon = 1
-hide_icon_panel = false
 
 [node name="ShowToggleBtn" parent="VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer2/HBoxContainer2/VBoxContainer2" instance=ExtResource("3_ppj06")]
 custom_minimum_size = Vector2(65, 0)
@@ -219,4 +219,3 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ypnn6")
 title = "HOTKEYS"
 assigned_key = "H"
 icon = 51
-hide_icon_panel = false

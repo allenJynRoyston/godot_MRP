@@ -58,4 +58,4 @@ layout_mode = 2
 text = "NAMETAG"
 label_settings = SubResource("LabelSettings_gah0o")
 horizontal_alignment = 1
-autowrap_mode = 2
+autowrap_mode = 3

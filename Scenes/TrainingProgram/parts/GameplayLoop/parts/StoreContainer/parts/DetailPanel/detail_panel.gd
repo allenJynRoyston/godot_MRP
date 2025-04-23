@@ -61,6 +61,9 @@ var shop_unlock_purchases:Array = []
 var control_pos:Dictionary = {}
 var is_animating:bool = false
 
+var onUseAbility:Callable = func(_ability:Dictionary) -> void:
+	pass
+
 signal reveal_finished
 signal cycle_until_complete
 
@@ -83,6 +86,8 @@ func _ready() -> void:
 
 	NextBtn.onClick = func() -> void:
 		cycle_cards(1)		
+		
+	RoomCard.onUseAbility = onUseAbility
 	
 	control_pos[DetailPanel] = {
 		"show": DetailPanel.position.x, 

@@ -187,7 +187,7 @@ func create_researchers() -> void:
 		
 	for index in recruit_data.size():
 		var new_card:Control = ResearcherCardPreload.instantiate()
-		new_card.researcher_details = recruit_data[index]
+		#new_card.researcher_details = recruit_data[index]
 		new_card.index = index		
 		
 		new_card.onFocus = func(_node:Control):

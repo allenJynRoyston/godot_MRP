@@ -49,6 +49,8 @@ extends BtnBase
 	set(val):
 		is_unknown = val
 		on_is_unknown_update()		
+		
+var ability_data:Dictionary = {}
 	
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
 
@@ -127,6 +129,9 @@ func update_font_color() -> void:
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
 	if !is_node_ready():return
+	update_font_color()
+	on_panel_color_update()
+	
 
 	
 func on_panel_color_update() -> void:
@@ -135,9 +140,9 @@ func on_panel_color_update() -> void:
 	var new_color:Color = panel_color
 	
 	if is_selected:
-		new_color = panel_color.lightened(0.1)
+		new_color = panel_color.darkened(0.2)
 	if is_focused:
-		new_color = panel_color.lightened(0.1)
+		new_color = panel_color.darkened(0.2)
 	if on_cooldown:
 		new_color = Color.RED
 	if is_disabled:

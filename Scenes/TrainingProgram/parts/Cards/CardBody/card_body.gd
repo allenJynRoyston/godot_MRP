@@ -34,12 +34,14 @@ extends PanelContainer
 		border_color = val
 		on_border_color_update()
 
+# do not remove
+const is_container:bool = true
+
 var showing_front:bool 
 
 # ------------------------------------------------
 func _ready() -> void:
 	await U.tick()
-	CardTextureRect.pivot_offset = self.size/2
 	
 	on_reveal_update(true)
 	update_drawer_items(true)
@@ -50,6 +52,7 @@ func _ready() -> void:
 # ------------------------------------------------	
 func on_reveal_update(skip_animation:bool = false) -> void:
 	if !is_node_ready():return
+	CardTextureRect.pivot_offset = self.size/2	
 	var duration:float = 0 if skip_animation else 0.3
 	U.tween_node_property(CardTextureRect, "scale:x", 1 if reveal else 0, duration)
 # ------------------------------------------------	
@@ -58,6 +61,8 @@ func on_reveal_update(skip_animation:bool = false) -> void:
 # ------------------------------------------------	
 func on_fold_update() -> void:
 	if !is_node_ready() or !reveal:return
+	CardTextureRect.pivot_offset = self.size/2
+		
 	await U.tween_node_property(CardTextureRect, "scale:y", 0, 0.1)
 	await U.set_timeout(0.2)
 	Front.hide() if fold else Front.show()
@@ -69,6 +74,8 @@ func on_fold_update() -> void:
 # ------------------------------------------------
 func on_flip_update() -> void:
 	if !is_node_ready() or !reveal:return
+	CardTextureRect.pivot_offset = self.size/2
+		
 	await U.tween_node_property(CardTextureRect, "scale:x", 0, 0.3)
 	await U.set_timeout(0.2)
 	Front.hide() if flip else Front.show()

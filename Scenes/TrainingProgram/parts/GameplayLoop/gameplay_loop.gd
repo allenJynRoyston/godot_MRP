@@ -1290,15 +1290,16 @@ func on_current_builder_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			BuildContainer = BuildContainerPreload.instantiate()
 			add_child(BuildContainer)
+			BuildContainer.z_index = 10
 			await U.tick()
 
 			BuildContainer.activate()
 			await U.tick()
 			BuildContainer.start()
-			show_only([Structure3dContainer, ResourceContainer])
+			#show_only([Structure3dContainer, ResourceContainer])
 			await BuildContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			await restore_player_hud()
+			#await restore_player_hud()
 			
 			on_store_purchase_complete.emit()	
 			BuildContainer.queue_free()
@@ -1346,14 +1347,14 @@ func on_current_shop_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			StoreContainer = StoreContainerPreload.instantiate()
 			add_child(StoreContainer)
+			StoreContainer.z_index = 10
+
 			await U.tick()
 			StoreContainer.activate()
 			
-			await show_only([])
 			StoreContainer.start()
 			var response:bool = await StoreContainer.user_response
 			StoreContainer.queue_free()
-			restore_player_hud()
 
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			on_store_purchase_complete.emit(response)	
@@ -1385,10 +1386,11 @@ func on_current_event_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			EventContainer = EventContainerPreload.instantiate()
 			add_child(EventContainer)
+			EventContainer.z_index = 10
+			
 			await U.tick()
 			EventContainer.activate()
-			
-			await show_only([])
+			await U.tick()
 			EventContainer.start(event_data)
 			var event_res:Dictionary = await EventContainer.user_response
 			EventContainer.queue_free()
@@ -1398,7 +1400,7 @@ func on_current_event_step_update() -> void:
 			on_events_complete.emit(event_res)			
 			# reset and evempty event_data
 			event_data = []
-			restore_player_hud()
+			#restore_player_hud()
 			current_event_step = EVENT_STEPS.RESET
 #endregion
 # ------------------------------------------------------------------------------		
@@ -1440,10 +1442,16 @@ func on_current_select_scp_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			SCPSelectScreen = ScpSelectScreenPreload.instantiate()
 			add_child(SCPSelectScreen)
+			SCPSelectScreen.z_index = 10
+			
+			#for node in [Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo]:
+				#node.set_process(false)
+				#node.set_physics_process(false)		
+				#node.hide()
+				
 			await U.tick()
 			SCPSelectScreen.activate()
 			
-			await show_only([])
 			var response:Dictionary = await SCPSelectScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			
@@ -1452,6 +1460,11 @@ func on_current_select_scp_step_update() -> void:
 				SUBSCRIBE.scp_data = scp_data
 			
 			SCPSelectScreen.queue_free()
+			
+			#for node in [Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo]:
+				#node.set_process(true)
+				#node.set_physics_process(true)		
+				#node.show()			
 			
 			# trigger signal
 			on_scp_select_complete.emit(response)
@@ -1474,15 +1487,14 @@ func on_current_recruit_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			SelectResearcherScreen = SelectResearcherScreenPreload.instantiate()
 			add_child(SelectResearcherScreen)
+			SelectResearcherScreen.z_index = 10
+			
 			await U.tick()
 			SelectResearcherScreen.activate()
 			
-			await show_only([])
 			SelectResearcherScreen.start()
 			var response:bool = await SelectResearcherScreen.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			
-			
 			SelectResearcherScreen.queue_free()
 			
 			# trigger signal
@@ -1529,16 +1541,16 @@ func on_current_researcher_step_update() -> void:
 			SUBSCRIBE.suppress_click = true
 			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
 			add_child(ResearchersContainer)
+			ResearchersContainer.z_index = 10
+
 			await U.tick()
 			ResearchersContainer.activate()
 			
 			await U.tick()
 			ResearchersContainer.start([], true)
-			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
 			ResearchersContainer.queue_free()
-			await restore_showing_state()
 			
 			on_researcher_component_complete.emit()
 			current_researcher_step = RESEARCHERS_STEPS.RESET
@@ -1548,6 +1560,8 @@ func on_current_researcher_step_update() -> void:
 			
 			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
 			add_child(ResearchersContainer)
+			ResearchersContainer.z_index = 10
+			
 			await U.tick()
 			ResearchersContainer.activate()
 		
@@ -1572,18 +1586,17 @@ func on_current_researcher_step_update() -> void:
 			
 			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
 			add_child(ResearchersContainer)
+			ResearchersContainer.z_index = 10			
+			
 			await U.tick()			
 			ResearchersContainer.activate()
 
 			var uids:Array =  hired_lead_researchers_arr.map(func(i): return i[0])
 			await U.tick()									
 			ResearchersContainer.promote(uids)
-			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-#
 			ResearchersContainer.queue_free()
-			await restore_showing_state()
 #
 			on_researcher_component_complete.emit(response)
 			current_researcher_step = RESEARCHERS_STEPS.RESET

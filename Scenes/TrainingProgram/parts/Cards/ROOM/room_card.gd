@@ -72,6 +72,7 @@ var current_metrics:Dictionary = {}
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass
+var onUseAbility:Callable = func(_ability:Dictionary):pass
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -82,6 +83,8 @@ func _ready() -> void:
 	on_is_active_update()
 	on_is_selected_update()
 	on_is_deselected_update()
+	
+	CardDrawerActiveAbilities.onUseAbility = onUseAbility
 	#on_show_assigned_update()
 # ------------------------------------------------------------------------------
 

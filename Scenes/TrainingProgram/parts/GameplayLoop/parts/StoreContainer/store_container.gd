@@ -275,7 +275,7 @@ func on_grid_index_update() -> void:
 	
 	BtnControls.item_index = grid_index
 	
-	DetailPanel.ref = grid_list_data[grid_index].ref
+	DetailPanel.room_ref = grid_list_data[grid_index].ref
 	if room_details.requires_unlock:
 		if room_details.ref not in shop_unlock_purchases:
 			BtnControls.disable_active_btn = !can_afford_check( ROOM_UTIL.return_unlock_costs(room_details.ref) )

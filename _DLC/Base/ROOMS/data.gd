@@ -176,7 +176,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"shortname": "S.CONTAINMENT",
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
-	"description": "Containment cell used to house anamolous objects.  Can be upgraded with additional security measures.",
+	"description": "Containment cell used to house anamolous objects.",
 		
 	# ------------------------------------------
 	"can_contain": true,

@@ -73,12 +73,7 @@ flip_v = false
 layout_mode = 2
 theme_override_constants/margin_left = 0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(250, 460)
-layout_mode = 2
-horizontal_scroll_mode = 3
-
-[node name="ScpList" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer"]
+[node name="ScpList" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 

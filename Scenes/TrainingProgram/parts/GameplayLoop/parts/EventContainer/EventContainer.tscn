@@ -360,10 +360,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
 theme_override_styles/panel = SubResource("StyleBoxFlat_h7wp5")
-icon = 36
-icon_placement = 1
-panel_color = Color(0, 0, 0, 0)
-static_color = Color(0.52549, 0.0862745, 0, 1)
+script = null
 
 [node name="Label" type="Label" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Footer"]
 layout_mode = 2

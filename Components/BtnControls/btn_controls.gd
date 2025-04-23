@@ -23,6 +23,8 @@ extends Control
 	set(val):
 		hide_a_btn = val
 		on_hide_a_btn_update()
+@export var intercept_click_event:bool  = false 
+		
 
 @export_category("B BUTTON")
 @export var b_btn_title:String = "BACK" : 
@@ -91,6 +93,7 @@ var onBack:Callable = func() -> void:pass
 var onAction:Callable = func() -> void:pass
 var onCBtn:Callable = func() -> void:pass
 var onDirectional:Callable = func(key:String) -> void:pass
+var onIntercept:Callable = func(node:Control) -> void:pass
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -119,14 +122,22 @@ func _ready() -> void:
 	
 	ABtn.onClick = func() -> void:
 		if !is_node_ready():return
-		onAction.call()	
+		
 		if !itemlist.is_empty():
 			var node:Control = itemlist[item_index]
+			
 			if "is_disabled" in node and node.is_disabled:
 				return
 			
 			if "onClick" in node:
-				node.onClick.call()
+				if !intercept_click_event:
+					node.onClick.call()
+				else:
+					onIntercept.call(node)	
+					return
+					
+		onAction.call()	
+					
 	
 	CBtn.onClick = func() -> void:
 		if !is_node_ready():return

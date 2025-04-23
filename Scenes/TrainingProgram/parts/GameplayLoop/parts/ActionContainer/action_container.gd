@@ -2,11 +2,11 @@ extends GameContainer
 
 @onready var RootPanel:PanelContainer = $"."
 @onready var Backdrop:ColorRect = $Backdrop
-@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
+@onready var ActionPanel:PanelContainer = $ActionControls/PanelContainer
+@onready var ActionMarginPanel:MarginContainer = $ActionControls/PanelContainer/MarginContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
 @onready var Details:Control = $Details
 @onready var DetailsPanel:PanelContainer = $Details/PanelContainer
-@onready var HotkeyContainer:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/HotkeyContainer
 @onready var PreviewTextureRect:TextureRect = $PanelContainer/PreviewTextureRect
 
 @onready var BtnControls:Control = $BtnControls
@@ -14,44 +14,44 @@ extends GameContainer
 @onready var NameControl:Control = $NameControl
 @onready var RoomDetailsControl:Control = $RoomDetails
 
-@onready var CenterBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList
+@onready var CenterBtnList:Control = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList
 
-@onready var NavBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel
-@onready var SettingsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/SettingsBtn
-@onready var ObjectivesBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/ObjectivesBtn
+@onready var NavBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel
+@onready var SettingsBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/SettingsBtn
+@onready var ObjectivesBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/ObjectivesBtn
+
+@onready var FloorPlanBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
+@onready var GotoBaseBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBaseBtn
+@onready var GotoBuildingBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/GotoBuildingBtn
+@onready var HotkeyContainer:Control = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/HotkeyContainer
 
 
-@onready var FloorPlanBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
-@onready var GotoBaseBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBaseBtn
-@onready var GotoBuildingBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBuildingBtn
+@onready var ResearcherBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel
+@onready var AssignBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
+@onready var UnassignBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
+@onready var ResearcherDetailBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ResearcherDetailBtn
+@onready var ResearcherNextBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ResearcherNextBtn
 
-@onready var ResearcherBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel
-@onready var AssignBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
-@onready var UnassignBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
-@onready var ResearcherDetailBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ResearcherDetailBtn
-@onready var ResearcherNextBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ResearcherNextBtn
+@onready var ScpBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel
+@onready var ContainBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
 
-@onready var ScpBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel
-@onready var ScpDetailsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ScpDetailsBtn
-#@onready var ContainBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
+@onready var BaseBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel
+@onready var EndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
 
-@onready var BaseBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel
-@onready var NextBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
+@onready var RoomBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel
+@onready var RoomBtnPanelLabel:Label = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/RoomBtnPanelLabel
+@onready var UseAbilityBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UseAbilityBtn
+@onready var DetailsToggleBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DetailsToggleBtn
+@onready var BuildBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
+@onready var DecontructBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
-@onready var AbilityBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel
-@onready var AbilityBtnPanelLabel:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/AbilityBtnPanelLabel
-@onready var AbilityBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AbilityBtn
-#@onready var PassiveBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/PassiveBtn
-@onready var RoomDetailsToggleBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomDetailsToggleBtn
-@onready var BuildBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
-@onready var DecontructBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
-@onready var FacilityBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel
+@onready var FacilityBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel
 
-@onready var ConfirmBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/ConfirmBtn
-@onready var BackBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/BackBtn
+@onready var ConfirmBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/ConfirmBtn
+@onready var BackBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/BackBtn
+
 @onready var RoomVBox:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/Room
-
 @onready var Researchers:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers
 @onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/HBoxContainer/ResearcherCount
 @onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/ResearcherList
@@ -121,8 +121,6 @@ var show_room_details:bool = false :
 		show_room_details = val
 		on_show_room_details_update()
 
-signal refresh_buttons
-
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -143,7 +141,8 @@ func _ready() -> void:
 
 	AssignBtn.onClick = func() -> void:
 		call_and_redraw(func():
-			await GAME_UTIL.assign_researcher(), true
+			await GAME_UTIL.assign_researcher(), 
+			true
 		)
 	
 	UnassignBtn.onClick = func() -> void:
@@ -153,7 +152,7 @@ func _ready() -> void:
 		call_and_redraw(func():			
 			await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)
 			
-			await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
+			await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide)
 			await GAME_UTIL.construct_room()
 			
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)
@@ -161,16 +160,12 @@ func _ready() -> void:
 			GameplayNode.restore_player_hud()
 		)
 		
-	RoomDetailsToggleBtn.onClick = func() -> void:
+	DetailsToggleBtn.onClick = func() -> void:
 		show_room_details = !show_room_details
 	
 	DecontructBtn.onClick = func() -> void:
 		call_and_redraw(func():
-			#draw_lines = false
-			
 			await GAME_UTIL.reset_room()
-			
-			#draw_lines = true
 			GameplayNode.restore_player_hud()
 		)
 	
@@ -182,7 +177,7 @@ func _ready() -> void:
 		active_menu_index = 0
 		show_actions()
 
-	AbilityBtn.onClick = func() -> void:
+	UseAbilityBtn.onClick = func() -> void:
 		show_abilities(false)
 
 	ActiveMenu.onNext = func() -> void:		
@@ -206,10 +201,10 @@ func _ready() -> void:
 	ActiveMenu.onDrawUpdate = func(index:int, selected_data:Dictionary) -> void:		
 		SUBSCRIBE.current_location = selected_data.shortcut_data.use_location
 		update_details(selected_data.shortcut_data.use_location)
-		draw_active_menu_items(selected_data, index)
+		#draw_active_menu_items(selected_data, index)
 		
-	ScpDetailsBtn.onClick = func() -> void:
-		current_mode = MODE.SCP_DETAILS
+	#ScpDetailsBtn.onClick = func() -> void:
+		#current_mode = MODE.SCP_DETAILS
 	
 	ResearcherDetailBtn.onClick = func() -> void:
 		current_mode = MODE.RESEARCHER_DETAILS
@@ -269,7 +264,7 @@ func activate() -> void:
 	show()
 	await U.tick()
 	
-	control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	control_pos_default[ActionPanel] = ActionPanel.position
 	control_pos_default[DetailsPanel] = DetailsPanel.position
 
 	update_control_pos()
@@ -286,10 +281,9 @@ func update_control_pos() -> void:
 	await U.tick()
 
 	# for elements in the bottom left corner
-	control_pos[BtnControlPanel] = {
-		"global": BtnControlPanel.global_position,
-		"show": control_pos_default[BtnControlPanel].y, 
-		"hide": control_pos_default[BtnControlPanel].y + BtnControlPanel.size.y
+	control_pos[ActionPanel] = {
+		"show": control_pos_default[ActionPanel].y, 
+		"hide": control_pos_default[ActionPanel].y + ActionMarginPanel.size.y
 	}
 	
 	# for eelements in the top right
@@ -301,14 +295,14 @@ func update_control_pos() -> void:
 	if ref_btn != null:
 		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
 	
-	BtnControlPanel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	#BtnControlPanel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:	
-	lock_btns(true)
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide)
+	await lock_btns(true)
+	#await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide)
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -319,12 +313,14 @@ func toggle_camera_view() -> void:
 			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
 			current_mode = MODE.SELECT_FLOOR
 
+
 	SUBSCRIBE.camera_settings = camera_settings	
+	await U.set_timeout(0.7)
 	
-	await refresh_buttons
+	await lock_btns(false)
+	#await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].show)
 	
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show)
-	lock_btns(false)
+	#lock_btns(false, true)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -332,7 +328,7 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	super.on_is_showing_update()
 	if !is_node_ready() or control_pos.is_empty():return
 	
-	U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if is_showing else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.3)
+	U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].show if is_showing else control_pos[ActionPanel].hide, 0 if skip_animation else 0.3)
 	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
 	
 # --------------------------------------------------------------------------------------------------		
@@ -685,21 +681,35 @@ func show_abilities(skip_animation:bool = false) -> void:
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
 	var menu_title:String 
 	
-	lock_btns(true)
+	#lock_btns(true)
+	await lock_btns(true)
 	active_menu_is_open = true
 	await RoomDetailsControl.reveal(true)
 	var itemlist:Array = await RoomDetailsControl.switch_to_room_abilities()
-	BtnControls.reveal(true)
+	await BtnControls.reveal(true)
 	BtnControls.itemlist = itemlist
-	BtnControls.offset = RoomDetailsControl.RoomCard.global_position + Vector2(0, 4)
+	BtnControls.directional_pref = "UD"
+	BtnControls.offset = RoomDetailsControl.RoomCard.global_position
+	await U.tick()
+	BtnControls.item_index = 0
 	
-
+	BtnControls.onIntercept = func(node:Control) -> void:
+		print('start')
+		BtnControls.freeze_and_disable(true)
+		await U.tick()
+		await GAME_UTIL.use_active_ability(node.ability_data)
+		#await call_and_redraw(func() -> void:
+			#await GAME_UTIL.use_active_ability(node.ability_data)
+		#)
+		print('end')
+		BtnControls.freeze_and_disable(false)
 
 	BtnControls.onBack = func() -> void:
-		BtnControls.reveal(false)
+		BtnControls.onIntercept = func():pass
+		await BtnControls.reveal(false)
 		BtnControls.itemlist = []
+		await RoomDetailsControl.reveal(show_room_details)
 		RoomDetailsControl.end_switch_to_room_abilities()		
-		RoomDetailsControl.reveal(show_room_details)
 		active_menu_is_open = false
 		lock_btns(false)
 	#
@@ -804,7 +814,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 	#draw_lines = false
 	ActiveMenu.hide()
-	lock_btns(true)
+	await lock_btns(true)
 	
 	# clear any lines
 	GBL.find_node(REFS.LINE_DRAW).hide()
@@ -817,7 +827,7 @@ func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 	if active_menu_is_open:
 		# redraws lines
 		ActiveMenu.add_draw_lines()
-		draw_active_menu_items()
+		#draw_active_menu_items()
 		# shows the details panel
 		await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)			
 	else:
@@ -828,9 +838,9 @@ func call_and_redraw(action:Callable, show_details:bool = false) -> void:
 	
 	await lock_btns(false)
 	
-
 	GBL.find_node(REFS.LINE_DRAW).show()
 	ActiveMenu.show()
+	
 	if current_mode == MODE.INVESTIGATE:
 		GBL.find_node(REFS.LINE_DRAW).clear()
 		prev_draw_state = {}	
@@ -890,7 +900,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
 		var researchers_per_room:int = base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room
 		
-		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
+		UseAbilityBtn.show() if !room_extract.is_room_empty else UseAbilityBtn.hide()
 		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
 		DecontructBtn.hide() if room_extract.is_room_empty else DecontructBtn.show()
 		ResearcherNextBtn.show() if researchers_per_room != 1 else ResearcherNextBtn.hide()
@@ -900,8 +910,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open
 		ResearcherDetailBtn.is_disabled = room_extract.is_room_empty or room_extract.researchers.size() == 0  or active_menu_is_open		
-		ScpDetailsBtn.is_disabled = room_extract.scp.is_empty() or active_menu_is_open
-		AbilityBtn.is_disabled = (abilities.is_empty() and passive_abilities.is_empty()) or active_menu_is_open
+		#ScpDetailsBtn.is_disabled = room_extract.scp.is_empty() or active_menu_is_open
+		UseAbilityBtn.is_disabled = (abilities.is_empty() and passive_abilities.is_empty()) or active_menu_is_open
 
 		RoomDetailsControl.show_room_card = true
 		RoomDetailsControl.show_scp_card = room_extract.can_contain
@@ -986,13 +996,12 @@ func buildout_btns() -> void:
 		reload = true
 	
 	
-	NextBtn.onClick = func() -> void:
+	EndTurnBtn.onClick = func() -> void:
 		await lock_btns(true)
 		if !active_menu_is_open and !GameplayNode.is_occupied(): 
 			await GameplayNode.next_day()
 			lock_btns(false)
 	
-
 	GotoBuildingBtn.onClick = func() -> void:
 		toggle_camera_view()
 	
@@ -1000,11 +1009,11 @@ func buildout_btns() -> void:
 		toggle_camera_view()
 			
 	FloorPlanBtn.onClick = func() -> void:
+		await lock_btns(true)
 		current_mode = MODE.INVESTIGATE		
+		lock_btns(false)
 
 	is_setup = true
-	await U.set_timeout(0.1)
-	refresh_buttons.emit()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -1027,7 +1036,7 @@ func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals,
 func on_show_room_details_update() -> void:
 	if !is_node_ready():return
 	RoomDetailsControl.reveal(show_room_details) 
-	RoomDetailsToggleBtn.icon = SVGS.TYPE.CHECKBOX if show_room_details else SVGS.TYPE.EMPTY_CHECKBOX
+	DetailsToggleBtn.icon = SVGS.TYPE.CHECKBOX if show_room_details else SVGS.TYPE.EMPTY_CHECKBOX
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
@@ -1040,14 +1049,18 @@ func hide_nametags(state:bool, fast:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func set_panel_btn_state(state:bool) -> void:
-	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:		
+	for panel in [NavBtnPanel, FacilityBtnPanel,  ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, RoomBtnPanel]:		
 		if panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer') != null:		
 			for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
 				btn.is_disabled = state	
 		if panel.get_node('./MarginContainer/VBoxContainer/VBoxContainer') != null:		
 			for btn in panel.get_node('./MarginContainer/VBoxContainer/VBoxContainer').get_children():
-				btn.is_disabled = state				
-	BackBtn.is_disabled = state
+				btn.is_disabled = state			
+	
+	for btn in [BackBtn, GotoBuildingBtn]:
+		btn.is_disabled = state
+
+	HotkeyContainer.lock_btns = state
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1056,7 +1069,7 @@ func lock_btns(state:bool, ignore_panel:bool = false) -> void:
 		set_panel_btn_state(true)
 	
 	if !ignore_panel:
-		await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide if state else control_pos[BtnControlPanel].show)
+		await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide if state else control_pos[ActionPanel].show)
 
 	if !state:
 		set_panel_btn_state(false)
@@ -1086,17 +1099,17 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !control_pos.is_empty():
 		HotkeyContainer.lock_btns = true
 				
-		for btn in [ConfirmBtn, BackBtn]:
-			btn.is_disabled = true
-			
-		lock_btns(true)
-		await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].hide, duration)
-		lock_btns(false)
+		#for btn in [ConfirmBtn, BackBtn]:
+			#btn.is_disabled = true
+			#
+		#lock_btns(true)
+		#await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide, duration)
+		#lock_btns(false)
 		
 	match current_mode:
 		# --------------
 		MODE.SELECT_FLOOR:
-			for panel in [ScpBtnPanel, ResearcherBtnPanel, AbilityBtnPanel, BaseBtnPanel]:
+			for panel in [ScpBtnPanel, ResearcherBtnPanel, RoomBtnPanel, BaseBtnPanel]:
 				panel.hide()
 				
 			for panel in [FacilityBtnPanel, NavBtnPanel]:
@@ -1105,15 +1118,18 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for btn in [ConfirmBtn, BackBtn, FloorPlanBtn, NameControl]:
 				btn.hide()
 				
+			GotoBuildingBtn.hide()
+			GotoBaseBtn.show()								
+				
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
 		# --------------
 		MODE.SELECT_ROOM:
-			AbilityBtn.title = "ABILITY"
+			UseAbilityBtn.title = "ABILITY"
 
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, duration)
 
-			for panel in [FacilityBtnPanel, ScpBtnPanel, ResearcherBtnPanel, AbilityBtnPanel]:
+			for panel in [FacilityBtnPanel, ScpBtnPanel, ResearcherBtnPanel, RoomBtnPanel]:
 				panel.hide()
 				
 			for panel in [NavBtnPanel, BaseBtnPanel, HotkeyContainer]:
@@ -1124,20 +1140,20 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 			for btn in [FloorPlanBtn]:
 				btn.show()				
+				
+			GotoBuildingBtn.show()
+			GotoBaseBtn.hide()				
 						
 			HotkeyContainer.show()
 			HotkeyContainer.lock_btns = false
 			show_room_details = false
-			print("select room ----")
-			lock_btns(true, true)
-			await U.set_timeout(0.3)
-			await GameplayNode.restore_player_hud()
-			lock_btns(false, true)
+	
 			
 			NameControl.show()
 			on_gameplay_conditionals_update(gameplay_conditionals, true)
 		# --------------
 		MODE.INVESTIGATE:
+			
 			enable_room_focus(true)
 			set_backdrop_state(true)	
 			
@@ -1147,99 +1163,33 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show, duration)
 			
 			NameControl.hide()
-			
-			for btn in [ConfirmBtn, BackBtn]:
-				btn.is_disabled = true			
 
 			for panel in [NavBtnPanel, FacilityBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
 				panel.hide()
 				
-			for panel in [ResearcherBtnPanel, ScpBtnPanel, AbilityBtnPanel]:
+			for panel in [ResearcherBtnPanel, ScpBtnPanel, RoomBtnPanel]:
 				panel.show()
 
 			BackBtn.show()
 			ConfirmBtn.hide()
+			GotoBuildingBtn.hide()
 			
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
 			
-			lock_btns(true, true)
-			#draw_lines = true
 			on_current_location_update()
-			await U.set_timeout(1.0)
-			for btn in [ConfirmBtn, BackBtn]:
-				btn.is_disabled = true						
-			lock_btns(false, true)
-			
+
 			BackBtn.onClick = func() -> void:
-				for btn in [ConfirmBtn, BackBtn]:
-					btn.is_disabled = false
 				enable_room_focus(false)
 				set_backdrop_state(false)	
 				prev_draw_state = {}
 				GBL.find_node(REFS.LINE_DRAW).clear()
+				await lock_btns(true)
 				current_mode = MODE.SELECT_ROOM
-				
-		# --------------
-		MODE.SCP_DETAILS:
-			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-			var wing_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
-			ScpCard.use_location = current_location.duplicate(true)
-			ScpCard.current_metrics = wing_data.metrics
-			ScpCard.ref = room_extract.scp.details.ref
-			freeze_inputs = true
-			
-			
-			GBL.find_node(REFS.LINE_DRAW).clear()
-			prev_draw_state = {}
-			
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)	
-			U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].show)	
-			
-			GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
-			BackBtn.is_disabled = false
-			
-			for panel in [ScpBtnPanel, AbilityBtnPanel, ResearcherBtnPanel]:
-				panel.hide()			
-			
-			BackBtn.onClick = func() -> void:
-				for btn in [ConfirmBtn, BackBtn]:
-					btn.is_disabled = true				
-				freeze_inputs = false
-				await U.tween_node_property(ScpDetailsPanel, "position:y", control_pos[ScpDetailsPanel].hide)	
-				#ScpDetailsPanel.hide()
-				current_mode = MODE.INVESTIGATE
-
-		# --------------
-		MODE.RESEARCHER_DETAILS:
-			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-			var uid:String = room_extract.researchers[selected_researcher].uid
-			ResearcherCard.uid = uid
-			freeze_inputs = true
-			
-			#ResearcherDetails.show()
-			GBL.find_node(REFS.LINE_DRAW).clear()
-			prev_draw_state = {}			
-			
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)	
-			U.tween_node_property(ResearcherDetailsPanel, "position:y", control_pos[ResearcherDetailsPanel].show)
-			
-			GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
-			BackBtn.is_disabled = false
-			
-			for panel in [ScpBtnPanel, AbilityBtnPanel, ResearcherBtnPanel]:
-				panel.hide()						
-			
-			BackBtn.onClick = func() -> void:
-				for btn in [ConfirmBtn, BackBtn]:
-					btn.is_disabled = true
-				freeze_inputs = false
-				await U.tween_node_property(ResearcherDetailsPanel, "position:y", control_pos[ResearcherDetailsPanel].hide)	
-				#ResearcherDetails.hide()
-				current_mode = MODE.INVESTIGATE
-
+				lock_btns(false)
 		# --------------
 		MODE.RESET_ROOM:
+			print("here?")
 			check_if_remove_is_valid()
 			
 			HotkeyContainer.lock_btns = true
@@ -1249,7 +1199,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				btn.is_disabled = false
 		# --------------
 		MODE.DISMISS_RESEARCHER:
-			for panel in [BaseBtnPanel, AbilityBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
+			for panel in [BaseBtnPanel, RoomBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
 				panel.hide()			
 			
 			selected_researcher = 0
@@ -1277,9 +1227,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				RoomVBox.modulate = Color(1, 1, 1, 1)
 				on_current_location_update()
 		
-	if !control_pos.is_empty():
-		U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show, duration )
-		
+	#if !control_pos.is_empty():
+		#U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].show, duration )
+		#
 	on_current_location_update()	
 # --------------------------------------------------------------------------------------------------			
 
@@ -1350,7 +1300,7 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
 	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1	
 	
-	AbilityBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name
+	RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name
 	
 	for node in [ResearcherList, SynergyTraitList]:
 		for child in node.get_children():

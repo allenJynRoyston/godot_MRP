@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://bqjbewhv2mf4t"]
+[gd_scene load_steps=20 format=3 uid="uid://bqjbewhv2mf4t"]
 
 [ext_resource type="Script" uid="uid://c7eagduyswmvv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/researchers_container.gd" id="1_u5c0a"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_18rtl"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_oj23j"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_qpt25"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_veau8"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_7f8j1"]
@@ -48,10 +49,12 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_gm34h")
 script = ExtResource("1_u5c0a")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
+material = ExtResource("2_oj23j")
 layout_mode = 2
 color = Color(0.12, 0.12, 0.12, 1)
 
 [node name="PromoteControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="PromoteControl"]
@@ -165,15 +168,14 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_gotsv")
 [node name="MarginContainer" type="MarginContainer" parent="ResearcherControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_constants/margin_left = 100
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_left = 0
 theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 100
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
+alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -225,6 +227,7 @@ flip_v = false
 layout_mode = 2
 
 [node name="SelectedControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="SelectedPanel" type="PanelContainer" parent="SelectedControl"]
@@ -242,7 +245,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_pqfc2")
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 4
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
@@ -250,6 +252,7 @@ theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SelectedControl/SelectedPanel/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 4
 theme_override_constants/separation = 20
 
 [node name="SelectedContainer" type="VBoxContainer" parent="SelectedControl/SelectedPanel/MarginContainer/VBoxContainer"]

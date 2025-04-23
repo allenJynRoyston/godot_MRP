@@ -5,8 +5,8 @@ extends GameContainer
 @onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
 
 @onready var TitleLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/TitleLabel
-@onready var ListScrollContainer:ScrollContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
-@onready var ScpList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/ScpList
+#@onready var ListScrollContainer:ScrollContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
+@onready var ScpList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScpList
 @onready var AvailableLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/AvailableLabel
 @onready var LessBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MoreBtn
@@ -120,17 +120,16 @@ func on_refs_update() -> void:
 						mark_scp_as_selected(index)
 					
 		ScpList.add_child(new_card)
-		new_card.reveal = true
 		
 		await U.tick()
-		if index < cards_in_list:
-			custom_min_size = ScpList.size + Vector2(10, 0)
+		#if index < cards_in_list:
+			#custom_min_size = ScpList.size + Vector2(10, 0)
 	
 	LessBtn.show() if refs.size() > cards_in_list else LessBtn.hide()
 	MoreBtn.show() if refs.size() > cards_in_list else MoreBtn.hide()
 	AvailableLabel.text = "Entries available: %s" % [refs.size()]
 		
-	ListScrollContainer.custom_minimum_size = custom_min_size
+	#ListScrollContainer.custom_minimum_size = custom_min_size
 	scp_active_index = 0
 	BtnControls.itemlist = ScpList.get_children()
 # -----------------------------------------------
@@ -201,22 +200,24 @@ func on_scp_active_index_update() -> void:
 
 # -----------------------------------------------
 func next_set() -> void:
-	is_animating = true
-	var current_scroll:int = ListScrollContainer.scroll_horizontal
-	await U.tween_range(current_scroll, current_scroll + custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
-		ListScrollContainer.scroll_horizontal = val		
-	).finished  
-	is_animating = false
+	pass
+	#is_animating = true
+	#var current_scroll:int = ListScrollContainer.scroll_horizontal
+	#await U.tween_range(current_scroll, current_scroll + custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
+		#ListScrollContainer.scroll_horizontal = val		
+	#).finished  
+	#is_animating = false
 # -----------------------------------------------	
 
 # -----------------------------------------------
 func back_set() -> void:
-	is_animating = true
-	var current_scroll:int = ListScrollContainer.scroll_horizontal
-	await U.tween_range(current_scroll, current_scroll - custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
-		ListScrollContainer.scroll_horizontal = val
-	).finished  
-	is_animating = false
+	pass
+	#is_animating = true
+	#var current_scroll:int = ListScrollContainer.scroll_horizontal
+	#await U.tween_range(current_scroll, current_scroll - custom_min_size.x/cards_in_list, 0.2, func(val:float) -> void:
+		#ListScrollContainer.scroll_horizontal = val
+	#).finished  
+	#is_animating = false
 # -----------------------------------------------	
 
 # -----------------------------------------------
