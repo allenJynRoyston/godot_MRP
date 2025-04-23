@@ -1,11 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://b38bvj8mti387"]
+[gd_scene load_steps=5 format=3 uid="uid://b38bvj8mti387"]
 
 [ext_resource type="Script" uid="uid://dbcjx0aq66hmg" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_image.gd" id="1_ndhov"]
-[ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="1_y4suv"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_ndhov"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_e6u7c"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ndhov"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4suv"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -20,9 +19,8 @@ corner_radius_bottom_left = 5
 [node name="CardDrawerImage" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 125)
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ndhov")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y4suv")
 script = ExtResource("1_ndhov")
-use_static = null
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -32,7 +30,6 @@ theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
 [node name="DrawerImage" type="TextureRect" parent="MarginContainer2"]
-material = ExtResource("1_y4suv")
 layout_mode = 2
 texture = ExtResource("2_ndhov")
 expand_mode = 1

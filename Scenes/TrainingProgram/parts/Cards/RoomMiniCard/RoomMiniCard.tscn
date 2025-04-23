@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dwhtysap0bsna"]
+[gd_scene load_steps=10 format=3 uid="uid://dwhtysap0bsna"]
 
 [ext_resource type="Script" uid="uid://dacwtt350g61n" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/room_mini_card.gd" id="1_0jit3"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_fhq3g"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_bbdx2"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_qlsmf"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_ksj6n"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_qlsmf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dwfri"]
 bg_color = Color(0, 0.529412, 1, 1)
@@ -22,7 +23,7 @@ bg_color = Color(0, 0, 0, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xsj30"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_13kr7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qlsmf"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="RoomMiniCard" type="PanelContainer"]
@@ -68,7 +69,7 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "ROOM NAME"
-label_settings = ExtResource("3_bbdx2")
+label_settings = ExtResource("3_qlsmf")
 vertical_alignment = 1
 
 [node name="OutputContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
@@ -97,10 +98,10 @@ columns = 2
 
 [node name="TextBtn" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/ResourceGrid" instance=ExtResource("4_ksj6n")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_13kr7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qlsmf")
 
 [node name="NoBonusLabel" type="Label" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
 layout_mode = 2
-text = "NO BONUS"
-label_settings = ExtResource("3_bbdx2")
+text = "No bonus"
+label_settings = ExtResource("5_qlsmf")
 horizontal_alignment = 1

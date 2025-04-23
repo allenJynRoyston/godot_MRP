@@ -9,15 +9,21 @@ extends GameContainer
 @onready var HotkeyContainer:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSide/HotkeyContainer
 @onready var PreviewTextureRect:TextureRect = $PanelContainer/PreviewTextureRect
 
+@onready var BtnControls:Control = $BtnControls
+
 @onready var NameControl:Control = $NameControl
 @onready var RoomDetailsControl:Control = $RoomDetails
 
 @onready var CenterBtnList:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList
 
 @onready var NavBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel
+@onready var SettingsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/SettingsBtn
+@onready var ObjectivesBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/ObjectivesBtn
+
+
 @onready var FloorPlanBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
-@onready var SettingsBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
-@onready var ObjectivesBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ObjectivesBtn
+@onready var GotoBaseBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBaseBtn
+@onready var GotoBuildingBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBuildingBtn
 
 @onready var ResearcherBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel
 @onready var AssignBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
@@ -31,7 +37,6 @@ extends GameContainer
 
 @onready var BaseBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel
 @onready var NextBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
-@onready var GotoBtn:BtnBase = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBtn
 
 @onready var AbilityBtnPanel:PanelContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel
 @onready var AbilityBtnPanelLabel:Label = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/AbilityBtnPanel/MarginContainer/VBoxContainer/AbilityBtnPanelLabel
@@ -129,6 +134,8 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	super._ready()
+	
+	BtnControls.reveal(false)
 	
 	for child in [SynergyTraitList]:
 		for node in child.get_children():
@@ -678,101 +685,119 @@ func show_abilities(skip_animation:bool = false) -> void:
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
 	var menu_title:String 
 	
-	current_menu_type = MENU_TYPE.ABILITIES
+	lock_btns(true)
+	active_menu_is_open = true
+	await RoomDetailsControl.reveal(true)
+	var itemlist:Array = await RoomDetailsControl.switch_to_room_abilities()
+	BtnControls.reveal(true)
+	BtnControls.itemlist = itemlist
+	BtnControls.offset = RoomDetailsControl.RoomCard.global_position + Vector2(0, 4)
 	
-	BackBtn.hide()
-	ActiveMenu.onClose = func() -> void:	
-		HotkeyContainer.enable_assign_mode(false)
-		open_menu(false)	
-		draw_active_menu(0)
-		on_current_location_update()
-		await U.set_timeout(0.1)
-		BackBtn.show()		
 
-	
-	if active_menu_index == 0:
-		menu_title = "PASSIVE"
-		if is_powered:
-			for key in extract_wing_data.abilities:
-				var abilities:Array = extract_wing_data.abilities[key]
-				for index in abilities.size():
-					var ability:Dictionary = abilities[index]
-					if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
-						var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": current_location.room}
-						var funcs:Dictionary = ability_funcs(ability.details, use_location)
-						var get_cooldown_duration:Callable = funcs.get_cooldown_duration
-						var get_not_ready_func:Callable = funcs.get_not_ready_func
-						var get_icon_func:Callable = funcs.get_icon_func
-						var science_cost:int = ability.details.science_cost
 
-						options.push_back({
-							"shortcut_data": {
-								"room_ref": ability.room_ref, 
-								"index": index,
-								"type": MENU_TYPE.ABILITIES,
-								"use_location": use_location.duplicate(true), 
-							},
-							"title": ability.details.name,
-							"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
-							"science_cost": science_cost, 
-							"cooldown_duration": await get_cooldown_duration.call(), 
-							"is_disabled": await get_not_ready_func.call(),
-							"get_disabled_state": get_not_ready_func,
-							"get_cooldown_duration": get_cooldown_duration,
-							"action": func() -> void:
-								await call_and_redraw(func():
-									await GAME_UTIL.use_active_ability(ability.details)
-								),
-							"onSelect": func(index:int) -> void:
-								await options[index].action.call(),
-						})				
-
-	if active_menu_index == 1:
-		menu_title = "ACTIVE"
-		for key in extract_wing_data.passive_abilities:
-			var abilities:Array = extract_wing_data.passive_abilities[key]
-			for index in abilities.size():
-				var ability:Dictionary = abilities[index]
-				if current_location.room == ability.room_index:
-					var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
-					var funcs:Dictionary = passive_funcs(ability.room_ref, ability.index, use_location)
-					var get_not_ready_func:Callable = funcs.get_not_ready_func
-					var get_icon_func:Callable = funcs.get_icon_func
-					var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
-					options.push_back({
-						"shortcut_data": {
-							"room_ref": ability.room_ref, 
-							"index": index, 
-							"type": MENU_TYPE.PASSIVES,
-							"use_location": use_location, 
-						},
-						"title": ability.details.name,
-						"icon": SVGS.TYPE.RESEARCH,
-						"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
-						"energy_cost": energy_cost, 
-						"is_togglable": true,
-						"is_checked": await funcs.get_checked.call(),
-						"is_disabled": await get_not_ready_func.call(),
-						"get_disabled_state": get_not_ready_func,
-						"get_checked_state": funcs.get_checked,
-						"action": func() -> void:
-							var is_checked:bool = GAME_UTIL.get_passive_ability_state(ability.room_ref, ability.index)
-							var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
-							var energy_remaining:int = energy.available - energy.used
-							var has_enough:bool = energy_remaining - energy_cost >= 0
-							if !has_enough and !is_checked:return
-							GAME_UTIL.toggle_passive_ability(ability.room_ref, ability.index),
-						"onSelect": func(index:int) -> void:
-							await options[index].action.call(),
-					})						
-
-	ActiveMenu.level = active_menu_index
-	ActiveMenu.show_ap = false
-
-	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-	
-	var active_menu_pos:Vector2 = (GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size) - Vector2(0, 100)
-	update_active_menu("%s / %s" % [room_name, menu_title], Color.WHITE, options, 1, active_menu_pos, skip_animation)	
+	BtnControls.onBack = func() -> void:
+		BtnControls.reveal(false)
+		BtnControls.itemlist = []
+		RoomDetailsControl.end_switch_to_room_abilities()		
+		RoomDetailsControl.reveal(show_room_details)
+		active_menu_is_open = false
+		lock_btns(false)
+	#
+	#current_menu_type = MENU_TYPE.ABILITIES
+	#
+	#BackBtn.hide()
+	#ActiveMenu.onClose = func() -> void:	
+		#HotkeyContainer.enable_assign_mode(false)
+		#open_menu(false)	
+		#draw_active_menu(0)
+		#on_current_location_update()
+		#await U.set_timeout(0.1)
+		#BackBtn.show()		
+#
+	#
+	#if active_menu_index == 0:
+		#menu_title = "PASSIVE"
+		#if is_powered:
+			#for key in extract_wing_data.abilities:
+				#var abilities:Array = extract_wing_data.abilities[key]
+				#for index in abilities.size():
+					#var ability:Dictionary = abilities[index]
+					#if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
+						#var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": current_location.room}
+						#var funcs:Dictionary = ability_funcs(ability.details, use_location)
+						#var get_cooldown_duration:Callable = funcs.get_cooldown_duration
+						#var get_not_ready_func:Callable = funcs.get_not_ready_func
+						#var get_icon_func:Callable = funcs.get_icon_func
+						#var science_cost:int = ability.details.science_cost
+#
+						#options.push_back({
+							#"shortcut_data": {
+								#"room_ref": ability.room_ref, 
+								#"index": index,
+								#"type": MENU_TYPE.ABILITIES,
+								#"use_location": use_location.duplicate(true), 
+							#},
+							#"title": ability.details.name,
+							#"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
+							#"science_cost": science_cost, 
+							#"cooldown_duration": await get_cooldown_duration.call(), 
+							#"is_disabled": await get_not_ready_func.call(),
+							#"get_disabled_state": get_not_ready_func,
+							#"get_cooldown_duration": get_cooldown_duration,
+							#"action": func() -> void:
+								#await call_and_redraw(func():
+									#await GAME_UTIL.use_active_ability(ability.details)
+								#),
+							#"onSelect": func(index:int) -> void:
+								#await options[index].action.call(),
+						#})				
+#
+	#if active_menu_index == 1:
+		#menu_title = "ACTIVE"
+		#for key in extract_wing_data.passive_abilities:
+			#var abilities:Array = extract_wing_data.passive_abilities[key]
+			#for index in abilities.size():
+				#var ability:Dictionary = abilities[index]
+				#if current_location.room == ability.room_index:
+					#var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
+					#var funcs:Dictionary = passive_funcs(ability.room_ref, ability.index, use_location)
+					#var get_not_ready_func:Callable = funcs.get_not_ready_func
+					#var get_icon_func:Callable = funcs.get_icon_func
+					#var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
+					#options.push_back({
+						#"shortcut_data": {
+							#"room_ref": ability.room_ref, 
+							#"index": index, 
+							#"type": MENU_TYPE.PASSIVES,
+							#"use_location": use_location, 
+						#},
+						#"title": ability.details.name,
+						#"icon": SVGS.TYPE.RESEARCH,
+						#"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
+						#"energy_cost": energy_cost, 
+						#"is_togglable": true,
+						#"is_checked": await funcs.get_checked.call(),
+						#"is_disabled": await get_not_ready_func.call(),
+						#"get_disabled_state": get_not_ready_func,
+						#"get_checked_state": funcs.get_checked,
+						#"action": func() -> void:
+							#var is_checked:bool = GAME_UTIL.get_passive_ability_state(ability.room_ref, ability.index)
+							#var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
+							#var energy_remaining:int = energy.available - energy.used
+							#var has_enough:bool = energy_remaining - energy_cost >= 0
+							#if !has_enough and !is_checked:return
+							#GAME_UTIL.toggle_passive_ability(ability.room_ref, ability.index),
+						#"onSelect": func(index:int) -> void:
+							#await options[index].action.call(),
+					#})						
+#
+	#ActiveMenu.level = active_menu_index
+	#ActiveMenu.show_ap = false
+#
+	#U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
+	#
+	#var active_menu_pos:Vector2 = (GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size) - Vector2(0, 100)
+	#update_active_menu("%s / %s" % [room_name, menu_title], Color.WHITE, options, 1, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -960,7 +985,6 @@ func buildout_btns() -> void:
 		previous_camera_type = camera_settings.type	
 		reload = true
 	
-	GotoBtn.title = "BLUEPRINT" if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else "OVERVIEW"
 	
 	NextBtn.onClick = func() -> void:
 		await lock_btns(true)
@@ -968,9 +992,12 @@ func buildout_btns() -> void:
 			await GameplayNode.next_day()
 			lock_btns(false)
 	
-	GotoBtn.onClick = func() -> void:
-		if !active_menu_is_open and !GameplayNode.is_occupied(): 
-			toggle_camera_view()
+
+	GotoBuildingBtn.onClick = func() -> void:
+		toggle_camera_view()
+	
+	GotoBaseBtn.onClick = func() -> void:
+		toggle_camera_view()
 			
 	FloorPlanBtn.onClick = func() -> void:
 		current_mode = MODE.INVESTIGATE		
@@ -1013,9 +1040,13 @@ func hide_nametags(state:bool, fast:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func set_panel_btn_state(state:bool) -> void:
-	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:				
-		for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
-			btn.is_disabled = state	
+	for panel in [NavBtnPanel, ResearcherBtnPanel, ScpBtnPanel, BaseBtnPanel, AbilityBtnPanel]:		
+		if panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer') != null:		
+			for btn in panel.get_node('./MarginContainer/VBoxContainer/HBoxContainer').get_children():
+				btn.is_disabled = state	
+		if panel.get_node('./MarginContainer/VBoxContainer/VBoxContainer') != null:		
+			for btn in panel.get_node('./MarginContainer/VBoxContainer/VBoxContainer').get_children():
+				btn.is_disabled = state				
 	BackBtn.is_disabled = state
 # --------------------------------------------------------------------------------------------------		
 

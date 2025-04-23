@@ -36,7 +36,7 @@ func on_is_disabled_updated() -> void:
 func on_focus(state:bool = is_focused) -> void:	
 	if !is_node_ready():return	
 	is_focused = state
-
+	
 	if state:
 		onFocus.call_deferred(self)
 		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)

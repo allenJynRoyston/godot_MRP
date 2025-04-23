@@ -39,6 +39,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_41nkp")
 script = ExtResource("1_rk64t")
+is_hoverable = null
+debug_me = null
 
 [node name="BG" type="TextureRect" parent="."]
 material = ExtResource("2_pdkdd")

@@ -278,6 +278,8 @@ horizontal_alignment = 1
 
 [node name="DetailPanel" parent="." instance=ExtResource("8_xyqc8")]
 layout_mode = 2
+show_researcher_card = false
+show_scp_card = false
 
 [node name="SplashControl" type="Control" parent="."]
 layout_mode = 2

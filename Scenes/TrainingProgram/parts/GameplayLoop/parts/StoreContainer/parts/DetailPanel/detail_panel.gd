@@ -25,7 +25,12 @@ extends Control
 @export var show_scp_card:bool = true : 
 	set(val):
 		show_scp_card = val
-		on_show_scp_card_update()				
+		on_show_scp_card_update()
+
+@export var hide_next_prev_btns:bool  = false : 
+	set(val):
+		hide_next_prev_btns = val
+		on_hide_next_prev_btns_update()
 
 var is_revealed:bool = false : 
 	set(val):
@@ -36,22 +41,28 @@ var room_ref:int = -1:
 	set(val):
 		room_ref = val
 		on_room_ref_update()
+		U.debounce("detail_panel_check_refs", check_refs)
 		
 var scp_ref:int = -1:
 	set(val):
 		scp_ref = val
 		on_scp_ref_update()
+		U.debounce("detail_panel_check_refs", check_refs)
 		
 var researcher_uid:int = -1:
 	set(val):
 		researcher_uid = val
 		on_researcher_uid_update()
+		U.debounce("detail_panel_check_refs", check_refs) 
 
 var use_location:Dictionary 
 
 var shop_unlock_purchases:Array = []
 var control_pos:Dictionary = {}
 var is_animating:bool = false
+
+signal reveal_finished
+signal cycle_until_complete
 
 # ---------------------------------
 func _init() -> void:
@@ -63,6 +74,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	await U.tick()
 	
+	
 	FlipBtn.onClick = func() -> void:
 		flip_card()
 		
@@ -70,22 +82,38 @@ func _ready() -> void:
 		cycle_cards(-1)
 
 	NextBtn.onClick = func() -> void:
-		cycle_cards(-1)		
+		cycle_cards(1)		
 	
-	control_pos[DetailPanel] = {"show": DetailPanel.position.x, "hide": DetailPanel.position.x + MarginPanel.size.x}
+	control_pos[DetailPanel] = {
+		"show": DetailPanel.position.x, 
+		"hide": DetailPanel.position.x + MarginPanel.size.x
+	}
+	
 	on_is_revealed_update(true)
 	
 	on_show_researcher_card_update()
 	on_show_room_card_update()
+	on_show_scp_card_update()
+	on_hide_next_prev_btns_update()
 
 	on_room_ref_update()
 	on_scp_ref_update()
 	on_researcher_uid_update()
 # ---------------------------------
-		
+
+# ---------------------------------
+func check_refs() -> void:	
+	on_hide_next_prev_btns_update()
+# ---------------------------------
+
 # ---------------------------------
 func reveal(state:bool) -> void:
+	if state == is_revealed:
+		await U.tick()		
+		return
+		
 	is_revealed = state
+	await reveal_finished
 # ---------------------------------
 
 # ---------------------------------
@@ -94,6 +122,46 @@ func on_shop_unlock_purchases_update(new_val:Array) -> void:
 # ---------------------------------
 
 # ---------------------------------
+func switch_to_room_abilities() -> Array:
+	hide_next_prev_btns = true
+	
+	cycle_until(RoomCard)
+	
+	await cycle_until_complete		
+	
+	if !RoomCard.flip:
+		RoomCard.flip = true	
+	
+	await U.set_timeout(0.1)
+	return await RoomCard.get_ability_btns()
+# ---------------------------------
+
+# ---------------------------------
+func end_switch_to_room_abilities() -> void:
+	hide_next_prev_btns = false
+# ---------------------------------
+
+
+# ---------------------------------
+func on_hide_next_prev_btns_update() -> void:
+	if !is_node_ready():return
+	
+	if hide_next_prev_btns:
+		for btn in [NextBtn, PrevBtn]:
+			btn.hide()
+		return
+	
+	var visible_count:int = 0
+	for card in [ResearcherCard, RoomCard, ScpCard]:
+		if card.is_visible_in_tree():
+			visible_count += 1	
+	
+	for btn in [NextBtn, PrevBtn]:
+		if visible_count >=2:
+			btn.show()  
+		else:
+			btn.hide()
+			
 func on_show_researcher_card_update() -> void:
 	if !is_node_ready():return
 	ResearcherCard.show() if show_researcher_card else ResearcherCard.hide()
@@ -113,10 +181,15 @@ func on_is_revealed_update(skip_animation:bool = false) -> void:
 	var duration:float = 0.3 if !skip_animation else 0
 	if is_revealed:
 		show()
+		
 	await U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show if is_revealed else control_pos[DetailPanel].hide, duration)
 
 	if !is_revealed:
 		hide()
+	
+	check_refs()
+	
+	reveal_finished.emit()
 # ---------------------------------
 
 # ---------------------------------
@@ -140,6 +213,29 @@ func flip_card() -> void:
 	var card:Control = CardContainer.get_child(CardContainer.get_child_count() - 1)	
 	card.flip = !card.flip
 # ---------------------------------
+
+# ---------------------------------
+func cycle_until(card:Control, skip_animation:bool = false) -> void:
+	var first_child:Control = CardContainer.get_child(CardContainer.get_child_count() - 1)	
+	
+	if first_child == card:
+		await U.tick()
+		is_animating = false
+		cycle_until_complete.emit()	
+		return
+	
+	is_animating = true
+	var duration:float = 0 if skip_animation else 0.3
+	var last_child:Control = CardContainer.get_child(CardContainer.get_child_count() - 1)	
+	last_child.reveal = false
+	await U.set_timeout(duration)
+	CardContainer.move_child(last_child, 0)
+	last_child.reveal = true
+	await U.tick()
+
+	cycle_until(card, skip_animation)
+# ---------------------------------
+
 
 # ---------------------------------
 func cycle_cards(val:int, skip_animation:bool = false) -> void:
@@ -171,17 +267,3 @@ func cycle_cards(val:int, skip_animation:bool = false) -> void:
 		
 	is_animating = false
 # ---------------------------------
-
-## ---------------------------------
-#func on_control_input_update(input_data:Dictionary) -> void:
-	#if !is_visible_in_tree() or !is_node_ready() or !is_revealed or is_animating: 
-		#return
-#
-	#var key:String = input_data.key
-#
-	#match key:
-		#'LEFT':
-			#cycle_cards(-1)
-		#'RIGHT':
-			#cycle_cards(1)
-## ---------------------------------

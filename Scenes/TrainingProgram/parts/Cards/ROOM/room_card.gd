@@ -1,21 +1,21 @@
 @tool
 extends MouseInteractions
 
-@onready var OutputTextureRect:TextureRect = $TextureRect
+@onready var OutputTextureRect:TextureRect = $CardBody/TextureRect
 
-@onready var CardBody:Control = $SubViewport/CardBody
+@onready var CardBody:Control = $CardBody
 #front
-@onready var CardDrawerImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var CardDrawerName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
-@onready var CardDrawerLevel:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
-@onready var CardDrawerSpec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerSpec
-@onready var CardDrawerTrait:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerTrait
-@onready var CardDrawerDescription:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
+@onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
+@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
+@onready var CardDrawerSpec:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerSpec
+@onready var CardDrawerTrait:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerTrait
+@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 
 # back
-@onready var CardDrawerMetrics:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerMetrics
-@onready var CardDrawerActiveAbilities:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerActiveAbilities
-@onready var CardDrawerPassiveAbilities:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPassiveAbilities
+@onready var CardDrawerMetrics:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerMetrics
+@onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerActiveAbilities
+@onready var CardDrawerPassiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPassiveAbilities
 
 
 @export var ref:int = -1: 
@@ -132,6 +132,8 @@ func on_ref_update() -> void:
 	var is_locked:bool = false
 	var own_aquistions:bool = ROOM_UTIL.owns_and_is_active(ROOM.TYPE.AQUISITION_DEPARTMENT)
 	
+	CardDrawerActiveAbilities.room_details = room_details
+	
 	#
 	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"]
 	CardDrawerDescription.content = room_details.description if !is_locked else "(Viewable with AQUISITION DEPARTMENT.)"
@@ -151,31 +153,7 @@ func on_ref_update() -> void:
 		#btn_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		#SyncList.add_child(btn_node)
 	
-	if "abilities" in room_details:
-		var abilities:Array = room_details.abilities.call()
-		for ability_index in abilities.size():
-			var ability:Dictionary = abilities[ability_index]
-			#var btn_node:Control = TextBtnPreload.instantiate()
-			#btn_node.title = "Lvl-%s  %s" % [ability.lvl_required, ability.name]
-			#btn_node.icon = SVGS.TYPE.NONE
-			#ActiveAbilitiesList.add_child(btn_node)
-			#ActiveAbilites.show()
-	else:
-		pass
-		#ActiveAbilites.hide()
-			
-	if "passive_abilities" in room_details:
-		var passive_abilities:Array = room_details.passive_abilities.call()
-		for ability_index in passive_abilities.size():
-			var ability:Dictionary = passive_abilities[ability_index]
-			#var btn_node:Control = TextBtnPreload.instantiate()
-			#btn_node.title = "Lvl-%s  %s" % [ability.lvl_required, ability.name]
-			#btn_node.icon = SVGS.TYPE.NONE
-			#PassiveAbilitiesList.add_child(btn_node)			
-			#PassiveAbilities.show()
-	else:
-		pass
-		#PassiveAbilities.hide()
+	
 	
 	var is_activated:bool = true
 	var operating_costs:Array = ROOM_UTIL.return_operating_cost(ref)	
@@ -223,6 +201,15 @@ func on_ref_update() -> void:
 		#btn_node.icon = item.details.icon
 		#SyncList.add_child(btn_node)
 
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_ability_btns() -> Array:
+	await U.tick()
+	var btn_list:Array = []
+	for btn in CardDrawerActiveAbilities.get_btns():
+		btn_list.push_back(btn)
+	return btn_list
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

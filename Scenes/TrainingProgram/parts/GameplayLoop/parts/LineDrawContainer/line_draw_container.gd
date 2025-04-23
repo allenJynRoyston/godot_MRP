@@ -47,8 +47,8 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	GBL.register_node(REFS.LINE_DRAW, self)
-	NamePanel.hide()
-	Nametag.hide()
+	#NamePanel.hide()
+	#Nametag.hide()
 
 func activate() -> void:
 	set_physics_process(true)
@@ -95,10 +95,10 @@ func add(_get_start_vector:Callable, _draw_dict:Dictionary, delay:float = 0.3 ) 
 	else:
 		NamePanel.hide()
 	
-	if "use_nametag" in draw_dict and draw_dict.use_nametag:
-		Nametag.show()
-	else:
-		Nametag.hide()
+	#if "use_nametag" in draw_dict and draw_dict.use_nametag:
+		#Nametag.show()
+	#else:
+		#Nametag.hide()
 	
 	if delay > 0:
 		await U.set_timeout(delay)
@@ -113,7 +113,7 @@ func clear() -> void:
 	render = false
 	render_lines = false
 	NamePanel.hide()
-	Nametag.hide()
+	#Nametag.hide()
 	queue_redraw()	
 # --------------------------------------------------------------------------------------------------		
 
@@ -202,11 +202,12 @@ func _draw() -> void:
 	
 	# ------------------------------------------------------
 	if "use_nametag" in draw_dict and draw_dict.use_nametag:
-		if !nametag_lock:
-			nametag_lock = true
-			Nametag.fade = false
-			Nametag.index = previous_room_val			
-		Nametag.position = get_start_vector.call() + Vector2(-20, 0)
+		pass
+		#if !nametag_lock:
+			#nametag_lock = true
+			#Nametag.fade = false
+			#Nametag.index = previous_room_val			
+		#Nametag.position = get_start_vector.call() + Vector2(-20, 0)
 	# ------------------------------------------------------
 	if "draw_to_research" in draw_dict and  draw_dict.draw_to_research:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["SciencePanel"].global_position + Vector2(30, 60), 1) ))

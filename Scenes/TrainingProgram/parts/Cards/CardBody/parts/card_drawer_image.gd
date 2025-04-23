@@ -14,7 +14,6 @@ const StaticShader:ShaderMaterial = preload("res://Shader/Static.tres")
 	set(val):
 		use_static = val
 		on_use_static_update()
-		
 
 func _ready() -> void:
 	super._ready()

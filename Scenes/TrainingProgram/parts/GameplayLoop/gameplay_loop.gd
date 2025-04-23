@@ -757,15 +757,15 @@ func capture_default_showing_state() -> void:
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
 	GBL.find_node(REFS.LINE_DRAW).clear()
-	await show_only([Structure3dContainer, ActionContainer, ResourceContainer, RoomInfo, FloorInfo])
+	await show_only([Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo])
 # ------------------------------------------------------------------------------
 
 
-# ------------------------------------------------------------------------------
-func restore_player_full_hud() -> void:
-	GBL.find_node(REFS.LINE_DRAW).clear()
-	await show_only([Structure3dContainer, ActionContainer, ResourceContainer, RoomInfo, FloorInfo])
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func restore_player_full_hud() -> void:
+	#GBL.find_node(REFS.LINE_DRAW).clear()
+	#await show_only([Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo])
+## ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------

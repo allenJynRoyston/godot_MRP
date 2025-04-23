@@ -2,12 +2,11 @@ extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnControls:Control = $BtnControls
-@onready var LessBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/LessBtn
-@onready var MoreBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MoreBtn
+@onready var LessBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/LessBtn
+@onready var MoreBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MoreBtn
 
 @onready var Tabs:HBoxContainer = $HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs
-@onready var GridContent:GridContainer = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
-@onready var HeaderPanel:PanelContainer = $HeaderControl/HeaderPanel
+@onready var GridContent:GridContainer = $MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
 @onready var MainPanel:PanelContainer = $MainControl/MainPanel
 
 @onready var DetailPanel:Control = $DetailPanel
@@ -66,7 +65,6 @@ func start() -> void:
 func end() -> void:	
 	DetailPanel.reveal(false)
 	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
 	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)	
 	
 	await BtnControls.reveal(false)
@@ -80,7 +78,6 @@ func activate() -> void:
 	show()	
 	await U.tick()
 	
-	control_pos_default[HeaderPanel] = HeaderPanel.position
 	control_pos_default[MainPanel] = MainPanel.position
 
 	update_control_pos()	
@@ -96,11 +93,6 @@ func update_control_pos() -> void:
 	await U.tick()
 	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
 	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
-	
-	control_pos[HeaderPanel]  = {
-		"show": control_pos_default[HeaderPanel].y, 
-		"hide": control_pos_default[HeaderPanel].y - HeaderPanel.size.y
-	}
 
 	control_pos[MainPanel] = {
 		"show": control_pos_default[MainPanel].x, 
@@ -248,13 +240,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 						
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
-			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
 			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)	
 		# -------------------
 		MODE.CONTENT_SELECT:								
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration )
 			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show, duration)
-			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
 			await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration )
 			await DetailPanel.reveal(true)
 							
