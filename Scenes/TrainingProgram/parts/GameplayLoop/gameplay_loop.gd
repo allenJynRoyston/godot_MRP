@@ -1287,6 +1287,7 @@ func on_current_builder_step_update() -> void:
 			SUBSCRIBE.suppress_click = false
 		# ---------------
 		BUILDER_STEPS.OPEN:
+			print("here")
 			SUBSCRIBE.suppress_click = true
 			BuildContainer = BuildContainerPreload.instantiate()
 			add_child(BuildContainer)
@@ -1571,12 +1572,9 @@ func on_current_researcher_step_update() -> void:
 			
 			await U.tick()						
 			ResearchersContainer.assign(assigned_uids, false)
-			await show_only([])
 			var response:Dictionary = await ResearchersContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-	
+			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 			ResearchersContainer.queue_free()
-			await restore_showing_state()
 			
 			on_researcher_component_complete.emit(response)
 			current_researcher_step = RESEARCHERS_STEPS.RESET

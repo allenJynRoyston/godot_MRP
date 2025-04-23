@@ -296,7 +296,7 @@ metadata/_edit_group_ = true
 [node name="Backdrop" type="ColorRect" parent="."]
 z_as_relative = false
 layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
+color = Color(0.286684, 0.286684, 0.286684, 0.141176)
 
 [node name="Details" type="Control" parent="."]
 layout_mode = 2

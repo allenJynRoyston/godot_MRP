@@ -141,8 +141,7 @@ func _ready() -> void:
 
 	AssignBtn.onClick = func() -> void:
 		call_and_redraw(func():
-			await GAME_UTIL.assign_researcher(), 
-			true
+			await GAME_UTIL.assign_researcher()
 		)
 	
 	UnassignBtn.onClick = func() -> void:
@@ -150,14 +149,7 @@ func _ready() -> void:
 	
 	BuildBtn.onClick = func() -> void:
 		call_and_redraw(func():			
-			await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)
-			
-			await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide)
 			await GAME_UTIL.construct_room()
-			
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)
-				
-			GameplayNode.restore_player_hud()
 		)
 		
 	DetailsToggleBtn.onClick = func() -> void:
@@ -694,14 +686,9 @@ func show_abilities(skip_animation:bool = false) -> void:
 	BtnControls.item_index = 0
 	
 	BtnControls.onIntercept = func(node:Control) -> void:
-		print('start')
 		BtnControls.freeze_and_disable(true)
 		await U.tick()
 		await GAME_UTIL.use_active_ability(node.ability_data)
-		#await call_and_redraw(func() -> void:
-			#await GAME_UTIL.use_active_ability(node.ability_data)
-		#)
-		print('end')
 		BtnControls.freeze_and_disable(false)
 
 	BtnControls.onBack = func() -> void:
@@ -811,40 +798,24 @@ func show_abilities(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func call_and_redraw(action:Callable, show_details:bool = false) -> void:
-	#draw_lines = false
-	ActiveMenu.hide()
+func call_and_redraw(action:Callable) -> void:
 	await lock_btns(true)
+	await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)
+	GBL.find_node(REFS.LINE_DRAW).hide()
 	
 	# clear any lines
-	GBL.find_node(REFS.LINE_DRAW).hide()
-
+	GBL.find_node(REFS.LINE_DRAW).clear()
+	prev_draw_state = {}	
 	# call 
 	await action.call()
 	# leave this in just in case any of the functions update data
 	await U.tick() 
-	
-	if active_menu_is_open:
-		# redraws lines
-		ActiveMenu.add_draw_lines()
-		#draw_active_menu_items()
-		# shows the details panel
-		await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)			
-	else:
-		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer])
-		if show_details:
-			await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-	
-	
 	await lock_btns(false)
-	
+	await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)
 	GBL.find_node(REFS.LINE_DRAW).show()
-	ActiveMenu.show()
 	
 	if current_mode == MODE.INVESTIGATE:
-		GBL.find_node(REFS.LINE_DRAW).clear()
-		prev_draw_state = {}	
-		draw_active_menu()
+		GBL.find_node(REFS.LINE_DRAW).show()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -902,7 +873,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		
 		UseAbilityBtn.show() if !room_extract.is_room_empty else UseAbilityBtn.hide()
 		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
-		DecontructBtn.hide() if room_extract.is_room_empty else DecontructBtn.show()
+		DecontructBtn.is_disabled = room_extract.is_room_empty
 		ResearcherNextBtn.show() if researchers_per_room != 1 else ResearcherNextBtn.hide()
 		ScpBtnPanel.show() if room_extract.can_contain else ScpBtnPanel.hide()
 		ResearcherBtnPanel.show() if !room_extract.is_room_empty and hired_lead_researchers_arr.size() > 0 else ResearcherBtnPanel.hide()				
@@ -1066,12 +1037,14 @@ func set_panel_btn_state(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 func lock_btns(state:bool, ignore_panel:bool = false) -> void:
 	if state:
+		active_menu_is_open = true
 		set_panel_btn_state(true)
 	
 	if !ignore_panel:
 		await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide if state else control_pos[ActionPanel].show)
 
 	if !state:
+		active_menu_is_open = false
 		set_panel_btn_state(false)
 		on_current_location_update()
 
@@ -1126,6 +1099,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		# --------------
 		MODE.SELECT_ROOM:
 			UseAbilityBtn.title = "ABILITY"
+			GameplayNode.restore_player_hud()
 
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, duration)
 
@@ -1157,7 +1131,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			enable_room_focus(true)
 			set_backdrop_state(true)	
 			
-			GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer])
+			#GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer])
 
 			update_details()
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show, duration)

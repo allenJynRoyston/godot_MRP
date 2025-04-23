@@ -565,7 +565,7 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 	GameplayNode.current_researcher_step = GameplayNode.RESEARCHERS_STEPS.ASSIGN
 	var response:Dictionary = await GameplayNode.on_researcher_component_complete
 	if response.action == ACTION.RESEARCHERS.BACK:
-		GameplayNode.restore_player_hud()
+		#GameplayNode.restore_player_hud()
 		return false
 	
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(response.uid)
@@ -588,7 +588,7 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 	)
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 			
-	GameplayNode.restore_player_hud()
+	#GameplayNode.restore_player_hud()
 	return true
 # --------------------------------------------------------------------------------------------------	
 
