@@ -146,9 +146,10 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 
 	# --------------------------------------
-	"pairs_with": [
-		RESEARCHER.SPECIALIZATION.ADMINISTRATION
-	],
+	"levels_with": {
+		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+		"trait": RESEARCHER.TRAITS.DISCIPLINED
+	},
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -163,8 +164,8 @@ var HQ:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES),
-			#ABL.get_ability(ABL.REF.HIRE_RESEARCHER),
-			#ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 1),
+			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 1),
+			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 2),
 		],	
 	# ------------------------------------------
 }
@@ -319,7 +320,7 @@ var WEAPONS_RANGE:Dictionary = {
 	
 	# ------------------------------------------
 	"resource_requirements": [
-		RESOURCE.TYPE.SECURITY
+		RESOURCE.PERSONNEL.TECHNICIANS
 	],
 	# ------------------------------------------
 	
@@ -357,7 +358,7 @@ var ENGINEERING_BAY:Dictionary = {
 	
 	# ------------------------------------------
 	"resource_requirements": [
-		RESOURCE.TYPE.TECHNICIANS
+		RESOURCE.PERSONNEL.TECHNICIANS
 	],
 	# ------------------------------------------
 	
@@ -381,7 +382,7 @@ var TEST1:Dictionary = {
 	# ------------------------------------------
 	"name": "ENGINEERING BAY",
 	"shortname": "ENG.BAY",
-	"tier": TIER.VAL.ZERO,
+	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -391,7 +392,7 @@ var TEST2:Dictionary = {
 	# ------------------------------------------
 	"name": "ENGINEERING BAY",
 	"shortname": "ENG.BAY",
-	"tier": TIER.VAL.ZERO,
+	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -402,7 +403,7 @@ var TEST3:Dictionary = {
 	# ------------------------------------------
 	"name": "ENGINEERING BAY",
 	"shortname": "ENG.BAY",
-	"tier": TIER.VAL.ZERO,
+	"tier": TIER.VAL.ONE,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------

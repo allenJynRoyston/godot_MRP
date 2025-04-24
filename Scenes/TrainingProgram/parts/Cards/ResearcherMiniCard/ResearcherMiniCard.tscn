@@ -1,9 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://cyv8vf7k1e1s4"]
+[gd_scene load_steps=18 format=3 uid="uid://cyv8vf7k1e1s4"]
 
 [ext_resource type="Script" uid="uid://bfgk648834pnk" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/researcher_mini_card.gd" id="1_ni348"]
 [ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_lwih7"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_gsawx"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="4_816jx"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_ah3g8"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_h2ft1"]
 [ext_resource type="PackedScene" uid="uid://d1melr1fetrom" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn" id="5_ah3g8"]
 
@@ -72,7 +73,7 @@ bg_color = Color(0, 0, 0, 0.560784)
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_8ssgu"]
 color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_816jx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ssgu"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
 border_color = Color(0, 0, 0, 1)
 
@@ -165,17 +166,19 @@ alignment = 1
 
 [node name="NoBonusLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
 layout_mode = 2
-text = "NO BONUS"
-label_settings = ExtResource("3_gsawx")
+text = "No bonus]"
+label_settings = ExtResource("4_ah3g8")
 horizontal_alignment = 1
 
 [node name="LvlBonus" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 text = "+1 FACILIY LVL"
 label_settings = ExtResource("3_gsawx")
 horizontal_alignment = 1
 
 [node name="TraitContainer" type="VBoxContainer" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -204,7 +207,7 @@ theme_override_constants/separation = 10
 
 [node name="TraitCard" parent="VBoxContainer/TraitContainer/VBoxContainer/TraitList" instance=ExtResource("5_ah3g8")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_816jx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ssgu")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2

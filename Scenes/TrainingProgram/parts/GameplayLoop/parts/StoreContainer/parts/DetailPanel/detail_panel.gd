@@ -201,6 +201,7 @@ func on_is_revealed_update(skip_animation:bool = false) -> void:
 func on_room_ref_update() -> void:
 	if !is_node_ready():return
 	RoomCard.ref = room_ref
+	RoomCard.use_location = use_location
 	
 func on_scp_ref_update() -> void:
 	if !is_node_ready() or use_location.is_empty():return

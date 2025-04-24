@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dmgj730nihsve"]
+[gd_scene load_steps=20 format=3 uid="uid://dmgj730nihsve"]
 
 [ext_resource type="Script" uid="uid://d1bxee1l27t34" path="res://Scenes/TrainingProgram/parts/Cards/SCP/scp_card.gd" id="1_ppy2u"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/CardBody.tscn" id="9_50nll"]
@@ -103,10 +103,10 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.735717, 0.247227, 0.9, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5kwt"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -139,30 +139,6 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.735717, 0.247227, 0.9, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yjg7j"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w58ib"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.735717, 0.247227, 0.9, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -187,110 +163,85 @@ texture = SubResource("ViewportTexture_w1mgs")
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_aydr2")
 
-[node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("10_1pgoi")]
+[node name="CardDrawerAssigned" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("11_y252v")]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_a1y1b")
-title = "CONTAINMENT"
-is_left_side = true
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
-layout_mode = 2
-
-[node name="CardDrawerDesignation" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_50nll")
-is_small = true
-content = "SCP-T-01"
-title = "DESIGNATION"
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="CardDrawerLevel" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_1pgoi")
-content = "0"
-title = "LEVEL"
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
-layout_mode = 2
-
-[node name="CardDrawerSpec" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_y252v")
-is_small = true
-content = "Specialization"
-title = "SPECIALIZATION"
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="CardDrawertrait" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
-is_small = true
-content = "Trait"
-title = "KNOWN TRAIT"
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="CardDrawerNickname" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("11_y252v")]
-visible = false
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bbv36")
-is_small = true
-content = "Nickname"
-title = "NICKNAME"
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="CardDrawerItemClass" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("11_y252v")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xvhpf")
-is_small = true
-content = "KETER"
-title = "ITEM CLASS"
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="CardDrawerAssigned" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5" instance=ExtResource("11_y252v")]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_v5kwt")
 is_small = true
 content = "RESEARCHER NAME"
 title = "ASSIGNED RESEARCHER"
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
-[node name="CardDrawerRewards" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="6" instance=ExtResource("11_3cc3l")]
+[node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1" instance=ExtResource("10_1pgoi")]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_omwaq")
-title = "AWARDED PER DAY"
+theme_override_styles/panel = SubResource("StyleBoxFlat_50nll")
+title = "CONTAINMENT"
 is_left_side = true
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
-[node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_gbqd6")
-
-[node name="CardDrawerRequired" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="0" instance=ExtResource("11_y252v")]
-visible = false
+[node name="HBoxContainer3" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yjg7j")
+
+[node name="CardDrawerDesignation" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3" instance=ExtResource("11_y252v")]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1pgoi")
 is_small = true
-content = "BIOLOGIST / CRUEL"
-title = "RESEARCHER PREFERENCES"
+content = "SCP-T-01"
+title = "DESIGNATION"
+border_color = Color(0.735717, 0.247227, 0.9, 1)
+
+[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3" instance=ExtResource("11_y252v")]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_y252v")
+is_small = true
+content = "Sofa"
+title = "OBJECT"
+border_color = Color(0.735717, 0.247227, 0.9, 1)
+
+[node name="CardDrawerItemClass" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("11_y252v")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
+is_small = true
+content = "KETER"
+title = "ITEM CLASS"
+border_color = Color(0.735717, 0.247227, 0.9, 1)
+
+[node name="CardDrawerDescription" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("11_y252v")]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_bbv36")
+is_small = true
+content = "Description goes here..."
+title = "DESCRIPTION"
+border_color = Color(0.735717, 0.247227, 0.9, 1)
+
+[node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_xvhpf")
+
+[node name="CardDrawerContainmentInfo" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="0" instance=ExtResource("13_bbv36")]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_v5kwt")
+title = "PASSIVE EFFECT"
+border_color = Color(0.735717, 0.247227, 0.9, 1)
+
+[node name="CardDrawerBonus" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="1" instance=ExtResource("11_y252v")]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_omwaq")
+is_small = true
+content = "Specialization or Trait"
+title = "BONUS WITH"
 is_left_side = false
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
-[node name="CardDrawerContainmentInfo" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="1" instance=ExtResource("13_bbv36")]
+[node name="CardDrawerRewards" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="2" instance=ExtResource("11_3cc3l")]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_w58ib")
-title = "CONTAINMENT"
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbqd6")
+title = "AWARDED PER DAY"
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
 [editable path="CardBody"]

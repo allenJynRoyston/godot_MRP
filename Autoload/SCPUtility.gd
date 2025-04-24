@@ -6,87 +6,230 @@ const dlc_folder:String = "res://_DLC/"
 var reference_data:Dictionary = {}
 var reference_list:Array = []
 
+enum ITEM_CLASS {SAFE, EUCLID, KETER}
+
 var SCP_TEMPLATE:Dictionary = {
 	# -----------------------------------
-	"type_ref": null,
-	"name": "SCP-X-TEMPLATE",
-	"nickname": "NICKNAME",
-	"img_src": "res://Media/images/redacted.png",
-	"quote": "Lorem ipsum dolor sit amet consectetur adipiscing elit.",
+	"name": "",											# assigned when generated
+	"nickname": "NICKNAME",								# whatever the nickname of it will be
+	"description": "Description",						# description of what it is
+	"img_src": "res://Media/images/redacted.png",		# image reference
 	# -----------------------------------
 	
-	# -----------------------------------
-	"scenario_data":{
-		# STARTING SCP (or tutorial scp)
-		"contain_order": [0],  
-		# rewards gained after winning
-		"reward": [],
-		# objectives and their respective checks
-		"objectives": [
-			{
-				"title": "Build a HQ", 
-				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
-			},
-		],
-		# limit to scenario
-		"day_limit": 3,
+	# -----------------------------------	
+	"item_class": ITEM_CLASS.SAFE,  					# assigned when generated, could be SAFE/EUCLID/KETER, 
+														# acts as multipler for rewards
+	"containment_multiplier": {							# asssigned when generated
+		"specilization": null,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
+		"trait": null,									# must be a trait (HAPPY, SAD, etc).  Can only be one.  1.5x reward if researcher has assigned trait.
+	},													
+	"containment_reward": {								# assigned when generated
+		RESOURCE.CURRENCY.MONEY: 0,						# used to build rooms
+		RESOURCE.CURRENCY.MATERIAL: 0,					# used to build support (rooms that attach to containment cells)	
+		RESOURCE.CURRENCY.SCIENCE: 0,					# used for abilities / events 
+		RESOURCE.CURRENCY.CORE: 0						# used to unlock blueprints (purchases)
 	},
+	
+	"breach_events_at": [],								# assigned when generated, based off item_class
 	# -----------------------------------	
 	
+	# -----------------------------------
+	#"ongoing_containment": {
+		#RESOURCE.CURRENCY.MONEY: 25,
+		#RESOURCE.CURRENCY.SCIENCE: 25
+	#},
 	# -----------------------------------	
-	"item_class": "SAFE",	
-	"description": func(ref:ROOM.TYPE) -> Array:
-		return [
-			"Description line one",
-			"Description line two"
-		],
-	"required_for_containment": {
-		"profession": [],
-		"traits": []
-	},		
-	# -----------------------------------
-
-	# -----------------------------------
-	"ongoing_containment": {
-		RESOURCE.CURRENCY.MONEY: 25,
-		RESOURCE.CURRENCY.SCIENCE: 25
-	},
-	# -----------------------------------
+	
+	## -----------------------------------
+	#"scenario_data":{
+		## STARTING SCP (or tutorial scp)
+		#"contain_order": [0],  
+		## rewards gained after winning
+		#"reward": [],
+		## objectives and their respective checks
+		#"objectives": [
+			#{
+				#"title": "Build a HQ", 
+				#"is_completed":func() -> bool:
+					#return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+			#},
+		#],
+		## limit to scenario
+		#"day_limit": 3,
+	#},
+	## -----------------------------------	
 
 	# -----------------------------------
 	"effects": {
-		"metrics":{
-			RESOURCE.METRICS.MORALE: 0,
-			RESOURCE.METRICS.SAFETY: 0,
-			RESOURCE.METRICS.READINESS: 0
-		},
-		"contained": {
-			"description": "Contained description goes here.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				return new_room_config,
-		},
-		"uncontained": {
-			"description": "Uncontained description goes here.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				return new_room_config,
-		}
+		"description": "Makes all personnel resources available for the wing.", 
+		"func": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+			var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
+			ring_config_data.available_resources = {
+				RESOURCE.TYPE.TECHNICIANS: true,
+				RESOURCE.TYPE.STAFF: true,
+				RESOURCE.TYPE.SECURITY: true,
+				RESOURCE.TYPE.DCLASS: true
+			}
+			return new_room_config,
 	},
-	# -----------------------------------
-
-	# -----------------------------------
-	"breach_events_at": [10, 20, 30],
 	# -----------------------------------
 
 	# -----------------------------------
 	"events": {
-		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(_scp_details:Dictionary) -> Array:
-			return [],
-		SCP.EVENT_TYPE.WARNING: func(_scp_details:Dictionary) -> Array:
-			return [],
-	}
+		# -------------------------
+		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			var passes_metric_check:bool = true #SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			var dict:Dictionary = {
+				"title": "PASSED METRIC CHECK.",
+				"change": {
+					OPTION.CURRENCY: {
+						RESOURCE.CURRENCY.MONEY: -100,
+					}
+				} 
+			} if passes_metric_check else {
+				"title": "FAILED METRIC CHECK.",
+				"change": {}
+			}
+			
+			return [
+					# --------------------
+					func() -> Dictionary:
+						return {
+							"header": "CONTAINMENT EVENT",
+							"img_src": scp_details.img_src,
+							"text": [
+								"I pass the metric test" if passes_metric_check else "I did NOT pass the metrics test."
+							],
+							"options": [
+								build_option(),
+								build_option(dict),
+							]
+						},
+					# --------------------
+					
+					# --------------------
+					func() -> Dictionary:
+						print(getSelectedOption())
+						return {
+							"text": [
+								"You last selected index [%s]." % [getSelectedIndex()],
+								"The value was [%s]." % [getSelectedVal()]
+							],
+						},
+					# --------------------
+			],
+		# -------------------------
+		
+		# -------------------------
+		SCP.EVENT_TYPE.WARNING: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			print("props.event_count: ", props.event_count)
+			
+			
+			match props.event_count:
+				0:
+					# --------------------
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "WARNING 1",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door begins to hum at an alarming frequency."
+									]
+								},
+							# --------------------
+					]
+					# --------------------
+				1:
+					# --------------------
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "WARNING 2",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door begins to hum at an alarming frequency."
+									]
+								},
+							# --------------------
+					]
+					# --------------------
+			# --------------------
+			return [
+					# --------------------
+					func() -> Dictionary:
+						return {
+							"header": "WARNING 3",
+							"img_src": scp_details.img_src,
+							"text": [
+								"The door begins to hum at an alarming frequency."
+							]
+						},
+					# --------------------
+			],
+			# --------------------
+		# -------------------------
+		
+		# -------------------------
+		SCP.EVENT_TYPE.BREACH_EVENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			print("passes_metric_check: ", passes_metric_check)
+						
+			match props.event_count:
+				# --------------------
+				0:
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "BREACH EVENT",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door flings open and a swarm of shadows seep out."
+									]
+								},
+							# --------------------
+					]
+				# --------------------
+				1:
+					return [
+							# --------------------
+							func() -> Dictionary:
+								return {
+									"header": "BREACH EVENT",
+									"img_src": scp_details.img_src,
+									"text": [
+										"The door flings open and a swarm of shadows seep out."
+									]
+								},
+							# --------------------
+					]
+				# --------------------
+			
+			# --------------------
+			return [
+					# --------------------
+					func() -> Dictionary:
+						return {
+							"header": "BREACH EVENT",
+							"img_src": scp_details.img_src,
+							"text": [
+								"The door flings open and a swarm of shadows seep out."
+							]
+						},
+					# --------------------
+			],
+			# --------------------
+		# -------------------------	
+		},
 	# -----------------------------------
 }
+
+
+
 
 # ------------------------------------------------------------------------------
 func _enter_tree() -> void:
@@ -114,16 +257,74 @@ func _enter_tree() -> void:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
+var spec_count:int = 0
+var trait_count:int = 0
 func fill_template(data:Dictionary, ref:int) -> void:
 	var template_copy:Dictionary = SCP_TEMPLATE.duplicate(true)		
+	# assign "name"
 	template_copy.name = "SCP-X-%s" % [str(0,ref + 1) if ref + 1 < 10 else ref + 1]
+	
+	# replace any matching keys
 	for key in data:
 		var value = data[key]
 		if key in template_copy:
 			template_copy[key] = value
+			
+	# generate the following properties
+	if ref % 2 == 0:
+		template_copy.item_class = ITEM_CLASS.SAFE 
+		template_copy.breach_events_at = [ref * 1, ref * 2, ref * 3]
+	else:
+		template_copy.item_class = ITEM_CLASS.EUCLID
+		template_copy.breach_events_at = [ref * 1, ref * 2, ref * 3]
+
+	if ref % 3 == 0:
+		template_copy.item_class = ITEM_CLASS.KETER
+		template_copy.breach_events_at = [ref * 1, ref * 2, ref * 3]
+	
+	# now assign it a deterministic spec/trait
+	template_copy.containment_multiplier = {
+		"specilization": spec_count,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
+		"trait": trait_count,		
+	}
+	
+	# deterministically determine which item gets rewarded what
+	var amount:int = 0
+	match template_copy.item_class:
+		ITEM_CLASS.SAFE:
+			amount = 1
+		ITEM_CLASS.EUCLID:
+			amount = 2
+		ITEM_CLASS.KETER:
+			amount = 3 
+	
+	var matched:bool = false
+	if ref % 2 == 0:
+		template_copy.containment_reward[RESOURCE.CURRENCY.MONEY] = amount
+		matched = true
+	else:
+		template_copy.containment_reward[RESOURCE.CURRENCY.MATERIAL] = amount
+		matched = true
+		
+	if ref % 3 == 0 and !matched:
+		template_copy.containment_reward[RESOURCE.CURRENCY.SCIENCE] = amount
+		matched = true
+
+	if ref % 4 == 0 and !matched:
+		template_copy.containment_reward[RESOURCE.CURRENCY.CORE] = amount
+		matched = true
 
 	reference_list.push_back(ref)
 	reference_data[ref] = template_copy
+	
+	spec_count += 1
+	if spec_count > RESEARCHER.SPECIALIZATION.size() - 1:
+		spec_count = 0
+	
+	trait_count += 1
+	if trait_count > RESEARCHER.TRAITS.size() - 1:
+		trait_count = 0
+	
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
@@ -148,9 +349,9 @@ func return_ongoing_containment_rewards(ref:int) -> Array:
 	var scp_details:Dictionary = return_data(ref)
 	var list:Array = []
 
-	for key in scp_details.ongoing_containment:	
-		var amount:int = scp_details.ongoing_containment[key]
-		list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
+	for key in scp_details.containment_reward:	
+		var amount:int = scp_details.containment_reward[key]
+		list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})		
 					
 	return list
 # ------------------------------------------------------------------------------
@@ -208,174 +409,68 @@ func check_for_events(ref:int, event_type:SCP.EVENT_TYPE, props:Dictionary) -> A
 	return []
 # ------------------------------------------------------------------------------	
 
+# ---------------------------------------------	FOR EVENTS
+enum OPTION {CURRENCY}
 
+var option_selected:Dictionary = {"store": null}
 
+func onSelected(item:Dictionary) -> void: 
+	option_selected.store = item
 
-## ------------------------------------------------------------------------------
-#func return_event_testing_template(_dict:Dictionary) -> Array:
-	#var scp_details:Dictionary = _dict.details
-	#var list_details:Dictionary = _dict.list_details
-	#var resources_data:Dictionary = _dict.resources_data
-	#var research_completed:Array = list_details.data.research_completed
-	#var researcher_details:Array = _dict.researcher_details		
-	#var option_selected:Dictionary = {"val": null}
-	#var onSelected = func(val) -> void:
-		#option_selected.val = val
-	#
-	#var img_src:String = researcher_details[0].img_src
-	#var portrait_title_name:String = "RESEARCHER %s" % [researcher_details[0].name]
-	#
-	#if researcher_details.size() == 2:
-		#portrait_title_name = "RESEARCHERS %s and %s" % [researcher_details[0].name, researcher_details[1].name]
-		#
-	#if researcher_details.size() > 2:
-		#portrait_title_name = "RESEARCH TEAM"	
-		## TODO: replace with group of researchers pic
-		#img_src = researcher_details[0].img_src
-	#
-	#return [
-		#func() -> Dictionary:
-			#return {
-				#"header": "UPDATE ON %s" % [scp_details.name],
-				#"img_src": img_src,
-				#"portrait": {
-					#"title": portrait_title_name,
-					#"img_src": 	img_src,
-				#},
-				#"text": [
-					#"%s, these are %s proposals for %s." % [prefered_greeting, "my" if researcher_details.size() < 2 else "our", scp_details.name]
-				#],
-				#"options": build_event_options_list(_dict, option_selected, onSelected)
-			#},
-		#func() -> Dictionary:
-			#return {
-				#"text": [
-					#"I'll begin immediately." if option_selected.val != -1 else "Probably for the best."
-				#],
-				#"set_return_val": func() -> Dictionary:
-					#return option_selected,
-			#}		
-	#]
-## ------------------------------------------------------------------------------	
-##
-## ------------------------------------------------------------------------------
-#func build_event_options_list(_dict:Dictionary, option_selected:Dictionary, onSelected:Callable) -> Array:
-	#var details:Dictionary = _dict.details
-	#var list_details:Dictionary = _dict.list_details
-	#var resources_data:Dictionary = _dict.resources_data
-	#var researcher_details:Array = _dict.researcher_details	
-	#var research_completed:Array = list_details.data.research_completed
-	#var testing_options:Dictionary = details.testing_options
-#
-	## first, check if all research options are exhasted
-	#var options:Array = []
-	#for testing_ref in testing_options:
-		#var option:Dictionary = testing_options[testing_ref]
-		#var completed:bool = testing_ref in research_completed
-		#var repeatable:bool = option.repeatable if "repeatable" in option else false
-		#
-		## -----------
-		## checks if prerequirites have been met
-		#var prerequisites:Dictionary = option.prerequisites.call()
-		#var required_traits:Array = prerequisites.traits if "traits" in prerequisites else []
-		#var required_specilization:Array = prerequisites.specializations if "specializations" in prerequisites else []
-		#var requires_trait:bool = required_traits.size() > 0
-		#var requires_specilization:bool = required_specilization.size() > 0
-		#var all_traits:Array = []
-		#var all_specilization:Array = []
-		#
-		#for researcher in researcher_details:
-			#for key in researcher.traits:
-				#if key not in all_traits:
-					#all_traits.push_back(key)
-			#for key in researcher.specializations:
-				#if key not in all_specilization:
-					#all_specilization.push_back(key)
-#
-		#var useable_traits:Array = required_traits.filter(func(i): return all_traits.has(i)).map(func(i): return RESEARCHER_UTIL.return_trait_data(i))
-		#var useable_specilization:Array = required_specilization.filter(func(i): return all_specilization.has(i)).map(func(i): return RESEARCHER_UTIL.return_specialization_data(i))
-		#var is_missing_traits:bool = false if !requires_trait else required_traits.filter(func(i): return all_traits.has(i)).size() == 0
-		#var is_missing_specilization:bool = false if !requires_specilization else required_specilization.filter(func(i): return all_specilization.has(i)).size() == 0
-		#
-		#var trait_tag:String = "[%s] " % useable_traits[0].fullname if useable_traits.size() > 0 else ""
-		#var specilization_tag:String = "[%s] " % useable_specilization[0].fullname if useable_specilization.size() > 0 else ""
-		#var usable_tag_string:String = "%s %s%s" % ["" if !completed else "[REPEAT]", trait_tag, specilization_tag]
-		## -----------
-		#
-		## -----------
-		#var not_enough_resources:bool = false
-		#var required_resources_amount:Dictionary = option.requirements.resources.amount.call() if "amount" in option.requirements.resources else {}
-		##var required_resources_utilized:Dictionary = option.requirements.resources.utilized.call() if "utilized" in option.requirements.resources else {}
-		#var required_notes:Dictionary = {
-			#"header": "Resources required",
-			#"list": []
-		#}
-		##var utilized_notes:Dictionary = {
-			##"header": "Resources utilized",
-			##"list": []
-		##}		
-		#
-		#var missing_resources:Array = []
-		#
-		#for key in required_resources_amount:
-			#var amount:int = required_resources_amount[key]
-			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			#required_notes.list.push_back({
-				#"is_checked": resources_data[key].amount >= amount,
-				#"icon": resource_details.icon, 
-				#"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
-			#})
-			#
-			#if resources_data[key].amount < amount:
-				#missing_resources.push_back(key)
-				#
-		##for key in required_resources_utilized:
-			##var amount:int = required_resources_utilized[key]
-			##var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			##utilized_notes.list.push_back({
-				##"is_checked": resources_data[key].amount >= amount,
-				##"icon": resource_details.icon, 
-				##"text": "[%s] %s %s" % [resource_details.name, amount, "(You have %s)" % [resources_data[key].amount] if resources_data[key].amount < amount else ""]
-			##})
-			##
-			##if resources_data[key].amount < amount:
-				##missing_resources.push_back(key)				
-			#
-		#
-		#var locked:bool = is_missing_traits or is_missing_specilization or missing_resources.size() > 0
-		#
-		#
-		#var lock_str:String = "PREREQUISITES MISSING: "
-		#if is_missing_traits:
-			#for data in required_traits.map(func(i): return RESEARCHER_UTIL.return_trait_data(i)):
-				#lock_str += " [TRAIT - %s]" % [data.fullname]
-#
-		#if is_missing_specilization:
-			#for data in required_specilization.map(func(i): return RESEARCHER_UTIL.return_specialization_data(i)):
-				#lock_str += " [SPECIALIZATION - %s]" % [data.fullname]
-		#
-		#if missing_resources.size() > 0 and (!is_missing_traits and !is_missing_specilization) :
-			#lock_str = "%s [NOT ENOUGH RESOURCES]" % [option.name]
-	#
-		#if !completed or (completed and repeatable):
-			#options.push_back({
-				#"completed": testing_ref in research_completed,
-				#"repeatable": repeatable,
-				#"locked": locked,
-				#"notes": [required_notes],
-				#"title": "%s%s" % ["%s " % [usable_tag_string] if !usable_tag_string.is_empty() else "", option.name] if !locked else "%s" % [lock_str], 
-				#"description": "",
-				#"val": testing_ref,
-				#"onSelected": onSelected			
-			#})
-#
-	#options.push_back({
-		#"completed": false,
-		#"title": "I've changed my mind.",
-		#"val": -1,
-		#"onSelected": onSelected			
-	#})
-	#
-				#
-	#return options
-## ------------------------------------------------------------------------------
+func getSelectedOption() -> Dictionary:
+	return option_selected.store.option
+
+func getSelectedIndex() -> int:
+	return option_selected.store.index
+
+func getSelectedVal():
+	return option_selected.store.option.val
+	
+func build_option(dict:Dictionary = {}) -> Dictionary:
+	var title:String = dict.title if "title" in dict else ""
+	var change:Dictionary = dict.change if "change" in dict else {}
+	var description_list:Array = []
+	var is_locked:bool = false
+	var onSelectedChild:Callable = onSelected
+	
+	for type in change:
+		match type:
+			OPTION.CURRENCY:
+				var arr:Array = []
+				for key in change[type]:
+					var details:Dictionary = RESOURCE_UTIL.return_currency(key)
+					var amount:int = change[type][key]
+					if amount != 0:
+						var description:String = "WILL %s [%s] %s." % ["CONSUME" if amount < 0 else "GAIN", absi(amount), details.name]
+						description_list.push_back({
+							"text": description, 
+							"font_color": Color.RED if amount < 0 else Color.GREEN
+						})
+						
+						if amount > resources_data[key].amount and !is_locked:
+							is_locked = true
+							
+						arr.push_back(func() -> void: 
+							#resources_data[key].capacity
+							resources_data[key].amount = U.min_max(resources_data[key].amount + amount, 0, 999999))
+					
+					onSelectedChild = func(item:Dictionary) -> void:
+						option_selected.store = item
+						for arr_item in arr:
+							arr_item.call()
+						SUBSCRIBE.resources_data = resources_data
+
+	if title.is_empty():
+		title = "DO NOTHING"
+		description_list = []
+	
+	return 	{
+		"include": true,
+		"title": title,
+		"description_list": description_list, 
+		"locked": is_locked,
+		"val": true,
+		"onSelected": onSelectedChild
+	}
+	
+# ---------------------------------------------

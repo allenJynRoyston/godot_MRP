@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://b8hw5jenpkiw8"]
 
-[ext_resource type="Script" uid="uid://bnxgtq4yol570" path="res://UI/Buttons/TextBtn/text_btn.gd" id="1_53m1w"]
+[ext_resource type="Script" uid="uid://bnxgtq4yol570" path="res://UI/Buttons/TextBtn/text_btn.gd" id="1_4r2pu"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_vmudk"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_wxkle"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_u5i6s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4r2pu"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -17,10 +17,10 @@ offset_top = 2.0
 offset_right = 34.0
 offset_bottom = 34.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_4r2pu")
-script = ExtResource("1_53m1w")
+script = ExtResource("1_4r2pu")
 static_color = Color(1, 1, 1, 1)
 active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -43,7 +43,7 @@ is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-label_settings = ExtResource("3_u5i6s")
+label_settings = ExtResource("2_vmudk")
 uppercase = true
 
 [node name="IconBtnRight" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wxkle")]

@@ -8,8 +8,8 @@ extends PanelContainer
 @onready var IntroAndTitleScreen:Control = $SubViewport/IntroAndTitleScreen
 @onready var SceneAnimationPlayer:AnimationPlayer = $RenderSubviewport/Node3D/SceneAnimationPlayer
 @onready var ScreenTextureRect:TextureRect = $RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport/TextureRect
-@onready var BtnPanel:MarginContainer = $BtnControl/MarginContainer
-@onready var LoginBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/LoginBtn
+
+@onready var BtnControls:Control = $BtnControls
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
@@ -38,22 +38,22 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_current_mode_update()	
 	_after_ready.call_deferred()
+	BtnControls.reveal(false)
 # ---------------------------------------------
 
 # ---------------------------------------------
-func _after_ready() -> void:
-	BtnPanel.modulate = Color(1, 1, 1, 0)
-	
+func _after_ready() -> void:	
 	IntroAndTitleScreen.on_end = func() -> void:
 		IntroSubviewport.set_process(false)
 		IntroSubviewport.get_child(0).hide()
 	
-	LoginBtn.onClick = func() -> void:
+	BtnControls.onAction = func() -> void:
 		if !is_ready:return
 		onLogin.call()
+	BtnControls.onBack = func() -> void:
+		pass
 	
 	await U.tick()
-	control_pos[BtnPanel] = {"show": BtnPanel.position.y, "hide": BtnPanel.position.y + BtnPanel.size.y}
 # ---------------------------------------------
 		
 
@@ -62,16 +62,11 @@ func start() -> void:
 	show()	
 	await U.tick()	
 	current_mode = MODE.START
-	BtnPanel.position.y = control_pos[BtnPanel].hide
-	BtnPanel.modulate = Color(1, 1, 1, 1)
 
 func fastfoward() -> void:
 	await U.tick()	
 	current_mode = MODE.START_AT_SCREEN
-	BtnPanel.position.y = control_pos[BtnPanel].show
 	show()	
-	BtnPanel.modulate = Color(1, 1, 1, 1)	
-
 
 func end() -> void:
 	hide()
@@ -108,9 +103,11 @@ func on_current_mode_update() -> void:
 			await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7, 2.5)
 			SceneAnimationPlayer.active = true
 			SceneAnimationPlayer.play("LightsOn")			
-			await U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].show, 0.7, 2.0)
 			is_ready = true
+			BtnControls.reveal(true)
+
 		# ---------
+		
 		MODE.START_AT_SCREEN:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0)
 			IntroAndTitleScreen.hide()
@@ -124,8 +121,9 @@ func on_current_mode_update() -> void:
 			U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0)
 			SceneAnimationPlayer.active = true
 			SceneAnimationPlayer.play("LightsOn")			
-			U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].show, 0)
 			is_ready = true
+			BtnControls.reveal(true)
+
 		# ---------
 		
 # ---------------------------------------------	

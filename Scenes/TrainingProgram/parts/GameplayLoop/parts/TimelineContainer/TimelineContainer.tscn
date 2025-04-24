@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://d04lnq4yhp80o"]
 
 [ext_resource type="Script" uid="uid://brj5kk7yojux4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/timeline_container.gd" id="1_4mrhk"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_de2gr"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_go307"]
 [ext_resource type="PackedScene" uid="uid://cgp6oftk1itbm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineItem.tscn" id="2_hg1uk"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gu0f8"]
@@ -87,10 +87,17 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
-text = "DAY 4  "
-label_settings = ExtResource("2_de2gr")
+text = "Monday "
+label_settings = ExtResource("2_go307")
 horizontal_alignment = 2
-uppercase = true
+
+[node name="DateLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Day 4 "
+label_settings = ExtResource("2_go307")
+horizontal_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2

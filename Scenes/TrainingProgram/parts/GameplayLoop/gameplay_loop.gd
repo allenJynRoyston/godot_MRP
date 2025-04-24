@@ -103,11 +103,6 @@ var show_linedraw:bool = true :
 	set(val):
 		show_linedraw = val
 		on_show_linedraw_update()
-
-var show_containment_status:bool = false : 
-	set(val):
-		show_containment_status = val
-		on_show_containment_status_update()
 		
 var show_confirm_modal:bool = false : 
 	set(val):
@@ -419,7 +414,7 @@ var current_objective_state:OBJECTIVES_STATE = OBJECTIVES_STATE.HIDE :
 		current_objective_state = val
 		on_current_objective_state_update()
 
-
+signal phase_cycle_complete
 signal store_select_location
 signal on_complete_build_complete
 signal on_expired_scp_items_complete
@@ -499,7 +494,6 @@ func _ready() -> void:
 	on_show_actions_update()
 
 	on_show_dialogue_update()
-	on_show_containment_status_update()
 	on_show_resources_update()
 	on_show_objectives_update()
 	on_show_linedraw_update()
@@ -640,10 +634,10 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 			RESOURCE.METRICS.READINESS: 0
 		},
 		"available_resources": {
-			RESOURCE.TYPE.TECHNICIANS: false,
-			RESOURCE.TYPE.STAFF: false,
-			RESOURCE.TYPE.SECURITY: false,
-			RESOURCE.TYPE.DCLASS: false	
+			RESOURCE.PERSONNEL.TECHNICIANS: false,
+			RESOURCE.PERSONNEL.STAFF: false,
+			RESOURCE.PERSONNEL.SECURITY: false,
+			RESOURCE.PERSONNEL.DCLASS: false	
 		},		
 		"abl_lvl": 0,
 		"energy": {
@@ -663,7 +657,7 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 		"ring": { 
 			0: get_ring_defaults(array_size),
 			1: get_ring_defaults(array_size),
-			2: get_ring_defaults(array_size),
+			2: get_ring_defaults(array_size), 
 			3: get_ring_defaults(array_size)
 		}
 	}
@@ -680,10 +674,10 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 			RESOURCE.METRICS.READINESS: 0
 		},
 		"available_resources": {
-			RESOURCE.TYPE.TECHNICIANS: false,
-			RESOURCE.TYPE.STAFF: false,
-			RESOURCE.TYPE.SECURITY: false,
-			RESOURCE.TYPE.DCLASS: false	
+			RESOURCE.PERSONNEL.TECHNICIANS: false,
+			RESOURCE.PERSONNEL.STAFF: false,
+			RESOURCE.PERSONNEL.SECURITY: false,
+			RESOURCE.PERSONNEL.DCLASS: false	
 		},		
 		"abl_lvl": 0,
 		"energy": {
@@ -998,6 +992,7 @@ func execute_record_audit() -> void:
 # -----------------------------------
 func next_day() -> void:
 	current_phase = PHASE.RESOURCE_COLLECTION
+	await phase_cycle_complete
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -1123,21 +1118,6 @@ func on_show_dialogue_update() -> void:
 	DialogueContainer.is_showing = show_dialogue
 	showing_states[DialogueContainer] = show_dialogue
 
-#func on_show_store_update() -> void:
-	#if !is_node_ready():return
-	#StoreContainer.is_showing = show_store
-	#showing_states[StoreContainer] = show_store
-
-#func on_show_build_update() -> void:
-	#if !is_node_ready():return
-	#BuildContainer.is_showing = show_build
-	#showing_states[BuildContainer] = show_build
-
-func on_show_containment_status_update() -> void:
-	if !is_node_ready():return
-	#ContainmentContainer.is_showing = show_containment_status
-	#showing_states[ContainmentContainer] = show_containment_status
-
 func on_show_confirm_modal_update() -> void:
 	if !is_node_ready():return
 	ConfirmModal.is_showing = show_confirm_modal
@@ -1173,7 +1153,6 @@ func on_current_phase_update() -> void:
 		PHASE.RESOURCE_COLLECTION:
 			current_location_snapshot = current_location.duplicate(true)
 			camera_settings_snapshot = camera_settings.duplicate(true)
-
 			
 			if camera_settings_snapshot.type != CAMERA.TYPE.ROOM_SELECT:
 				camera_settings.type = CAMERA.TYPE.ROOM_SELECT
@@ -1181,9 +1160,7 @@ func on_current_phase_update() -> void:
 				await U.set_timeout(1.0)
 			
 			
-			await show_only([Structure3dContainer, ResourceContainer, ToastContainer])	
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
-
 
 			execute_record_audit()
 			if progress_data.record.size() > 0:
@@ -1204,7 +1181,6 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
 			PhaseAnnouncement.start("ADVANCING THE DAY")	
-			await show_only([Structure3dContainer, TimelineContainer, ToastContainer])	
 			
 			# ADD TO PROGRESS DATA day count
 			progress_data.day += 1
@@ -1260,6 +1236,7 @@ func on_current_phase_update() -> void:
 			
 			await restore_player_hud()
 			current_phase = PHASE.PLAYER
+			phase_cycle_complete.emit()
 			
 		# ------------------------
 		PHASE.GAME_WON:
@@ -1287,7 +1264,6 @@ func on_current_builder_step_update() -> void:
 			SUBSCRIBE.suppress_click = false
 		# ---------------
 		BUILDER_STEPS.OPEN:
-			print("here")
 			SUBSCRIBE.suppress_click = true
 			BuildContainer = BuildContainerPreload.instantiate()
 			add_child(BuildContainer)
@@ -1783,6 +1759,8 @@ func update_room_config(force_setup:bool = false) -> void:
 						if "provides" in ability: 
 							for resource in ability.provides:
 								ring_config_data.available_resources[resource] = true
+							print(ring_config_data.available_resources)
+
 						# check for metrics
 						if "metrics" in ability: 
 							for metric in ability.metrics:
@@ -1858,19 +1836,9 @@ func update_room_config(force_setup:bool = false) -> void:
 		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
 		var is_contained:bool = true
 		
-		for ref in [RESOURCE.METRICS.MORALE, RESOURCE.METRICS.SAFETY, RESOURCE.METRICS.READINESS]:
-			var current_amount:int = ring_config_data.metrics[ref]
-			var threshold_amount:int = scp_details.effects.metrics[ref]
-			if current_amount < threshold_amount:
-				is_contained = false
-				break
-		
 		# call their effects
-		if is_contained:
-			new_room_config = scp_details.effects.contained.effect.call(new_room_config, item.location)
-		else:
-			new_room_config = scp_details.effects.uncontained.effect.call(new_room_config, item.location)
-		
+		new_room_config = scp_details.effects.func.call(new_room_config, item.location)
+
 		# first, add this to the config
 		room_config_data.scp_data = {
 			"ref": item.ref

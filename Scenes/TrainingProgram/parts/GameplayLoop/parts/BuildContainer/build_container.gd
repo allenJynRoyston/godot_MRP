@@ -106,7 +106,6 @@ func update_control_pos() -> void:
 # --------------------------------------------------------------------------------------------------	
 func purchase_room() -> void:	
 	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
-
 	# update
 	purchased_facility_arr.push_back({
 		"ref": room_details.ref,
@@ -175,16 +174,14 @@ func update_grid_content() -> void:
 			card_node.ref = room_details.ref
 			
 			card_node.onHover = func() -> void:
-				if await_confirm:return
-				grid_index = n
-				BtnControls.item_index = n
+				if current_mode == MODE.CONTENT_SELECT:
+					grid_index = n
 				
 			card_node.onClick = func() -> void:
-				if await_confirm:return
-				grid_index = n
-				BtnControls.item_index = n
-				await U.tick()
-				current_mode = MODE.PLACEMENT
+				if current_mode == MODE.CONTENT_SELECT:
+					grid_index = n
+					await U.tick()
+					current_mode = MODE.PLACEMENT
 						
 # --------------------------------------------------------------------------------------------------			
 
@@ -206,14 +203,14 @@ func on_grid_index_update() -> void:
 		# -----------
 		MODE.CONTENT_SELECT:
 			DetailPanel.room_ref = grid_list_data[grid_index].ref
-	
+			BtnControls.disable_active_btn = false
+
 		# -----------
 		MODE.PLACEMENT:
 			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-			var allow_build:bool = room_extract.is_room_empty and !room_extract.is_room_under_construction
-			#PlacementBtn.is_disabled = !allow_build or at_max_capacity
-		#_:
-			#PlacementBtn.is_disabled = false
+			var allow_build:bool = room_extract.is_room_empty
+			BtnControls.disable_active_btn = !allow_build or at_max_capacity
+
 	
 	if current_mode == MODE.CONTENT_SELECT:
 		for index in GridContent.get_child_count():
@@ -301,6 +298,8 @@ func find_nearest_valid(start_at:int, reverse:bool = false) -> void:
 	for n in range(start_at + 3, 0, -1) if reverse else [start_at - 3, 8, 4, 0]:
 		if has_valid_ref(n):
 			grid_index = n
+			await U.tick()
+			BtnControls.item_index = n
 			break
 # --------------------------------------------------------------------------------------------------				
 

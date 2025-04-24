@@ -246,9 +246,7 @@ func update_grid_content(index:int = tab_index) -> void:
 			
 			card_node.index = n
 			card_node.no_animation = true	
-			#card_node.flip = is_locked
 			card_node.ref = room_details.ref
-			#card_node.show_already_unlocked = !is_locked
 			card_node.is_hoverable = true
 			
 			card_node.onHover = func() -> void:

@@ -1,427 +1,184 @@
 extends SubscribeWrapper
 
-# ---------------------------------------------	FOR EVENTS
-enum OPTION {CURRENCY}
+#const Items:Array = [
+  #"Sofa",
+  #"Coffee table",
+  #"Dining table",
+  #"Bed",
+  #"TV",
+  #"Refrigerator",
+  #"Microwave",
+  #"Toaster",
+  #"Blender",
+  #"Vacuum cleaner",
+  #"Washing machine",
+  #"Dishwasher",
+  #"Electric kettle",
+  #"Bookshelf",
+  #"Office desk",
+  #"Chair",
+  #"Floor lamp",
+  #"Wall clock",
+  #"Mirror",
+  #"Painting",
+  #"Area rug",
+  #"Curtains",
+  #"Pillows",
+  #"Pots and pans",
+  #"Plates",
+  #"Cups",
+  #"Silverware",
+  #"Towels",
+  #"Indoor plants",
+  #"Pet bed"
+#];
 
-var option_selected:Dictionary = {"store": null}
-
-func onSelected(item:Dictionary) -> void: 
-	option_selected.store = item
-
-func getSelectedOption() -> Dictionary:
-	return option_selected.store.option
-
-func getSelectedIndex() -> int:
-	return option_selected.store.index
-
-func getSelectedVal():
-	return option_selected.store.option.val
-	
-func build_option(dict:Dictionary = {}) -> Dictionary:
-	var title:String = dict.title if "title" in dict else ""
-	var change:Dictionary = dict.change if "change" in dict else {}
-	var description_list:Array = []
-	var is_locked:bool = false
-	var onSelectedChild:Callable = onSelected
-	
-	for type in change:
-		match type:
-			OPTION.CURRENCY:
-				var arr:Array = []
-				for key in change[type]:
-					var details:Dictionary = RESOURCE_UTIL.return_currency(key)
-					var amount:int = change[type][key]
-					if amount != 0:
-						var description:String = "WILL %s [%s] %s." % ["CONSUME" if amount < 0 else "GAIN", absi(amount), details.name]
-						description_list.push_back({
-							"text": description, 
-							"font_color": Color.RED if amount < 0 else Color.GREEN
-						})
-						
-						if amount > resources_data[key].amount and !is_locked:
-							is_locked = true
-							
-						arr.push_back(func() -> void: 
-							#resources_data[key].capacity
-							resources_data[key].amount = U.min_max(resources_data[key].amount + amount, 0, 999999))
-					
-					onSelectedChild = func(item:Dictionary) -> void:
-						option_selected.store = item
-						for arr_item in arr:
-							arr_item.call()
-						SUBSCRIBE.resources_data = resources_data
-
-	if title.is_empty():
-		title = "DO NOTHING"
-		description_list = []
-	
-	return 	{
-		"include": true,
-		"title": title,
-		"description_list": description_list, 
-		"locked": is_locked,
-		"val": true,
-		"onSelected": onSelectedChild
-	}
-	
-# ---------------------------------------------
 
 
 var SCP0:Dictionary = {
 	# -----------------------------------
-	"type_ref": SCP.REF.INSTRUCTION_MANUAL,
-	"nickname": "OLD INSTRUCTION MANUAL",
-	"img_src": "res://Media/scps/the_door.png",
-	"quote": "...",
+	"nickname": "Sofa",
+	"description": "A three-seat upholstered sofa with a hardwood frame and high-density foam cushions. It provides seating in living rooms and features fabric or leather upholstery.",
 	# -----------------------------------
-	
-	# -----------------------------------	
-	"item_class": "SAFE",	
-	"description": func(ref:ROOM.TYPE) -> Array:
-		return [
-			"An old instruction manual from a by-gone era."
-		],
-	# -----------------------------------	
-	
-	# -----------------------------------	
-	"required_for_containment": {
-		"profession": [RESEARCHER.SPECIALIZATION.ENGINEERING],
-		"traits": [RESEARCHER.TRAITS.ADAPTABLE]
-	},
-	# -----------------------------------	
-
-	
-	# -----------------------------------	
-	"breach_events_at": [2, 5, 15],
-	# -----------------------------------	
-	
-	# -----------------------------------
-	"effects": {
-		"metrics":{
-			RESOURCE.METRICS.MORALE: 2,
-			RESOURCE.METRICS.SAFETY: 2,
-			RESOURCE.METRICS.READINESS: 2
-		},
-		"contained": {
-			"description": "HINT option becomes available.", 
-			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
-				return _new_room_config,
-		},
-		"uncontained": {
-			"description": "NONE",
-			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
-				return _new_room_config,
-		}
-	},
-	# -----------------------------------	
-	
-	"events": {
-		# -------------------------
-		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
-			var passes_metric_check:bool = true #SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			var dict:Dictionary = {
-				"title": "PASSED METRIC CHECK.",
-				"change": {
-					OPTION.CURRENCY: {
-						RESOURCE.CURRENCY.MONEY: -100,
-					}
-				} 
-			} if passes_metric_check else {
-				"title": "FAILED METRIC CHECK.",
-				"change": {}
-			}
-			
-			return [
-					# --------------------
-					func() -> Dictionary:
-						return {
-							"header": "CONTAINMENT EVENT",
-							"img_src": scp_details.img_src,
-							"text": [
-								"I pass the metric test" if passes_metric_check else "I did NOT pass the metrics test."
-							],
-							"options": [
-								build_option(),
-								build_option(dict),
-							]
-						},
-					# --------------------
-					
-					# --------------------
-					func() -> Dictionary:
-						print(getSelectedOption())
-						return {
-							"text": [
-								"You last selected index [%s]." % [getSelectedIndex()],
-								"The value was [%s]." % [getSelectedVal()]
-							],
-						},
-					# --------------------
-			],
-		# -------------------------
-		
-		# -------------------------
-		SCP.EVENT_TYPE.WARNING: func(scp_details:Dictionary, props:Dictionary) -> Array:
-			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			print("props.event_count: ", props.event_count)
-			
-			
-			match props.event_count:
-				0:
-					# --------------------
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "WARNING 1",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door begins to hum at an alarming frequency."
-									]
-								},
-							# --------------------
-					]
-					# --------------------
-				1:
-					# --------------------
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "WARNING 2",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door begins to hum at an alarming frequency."
-									]
-								},
-							# --------------------
-					]
-					# --------------------
-			# --------------------
-			return [
-					# --------------------
-					func() -> Dictionary:
-						return {
-							"header": "WARNING 3",
-							"img_src": scp_details.img_src,
-							"text": [
-								"The door begins to hum at an alarming frequency."
-							]
-						},
-					# --------------------
-			],
-			# --------------------
-		# -------------------------
-		
-		# -------------------------
-		SCP.EVENT_TYPE.BREACH_EVENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
-			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			print("passes_metric_check: ", passes_metric_check)
-						
-			match props.event_count:
-				# --------------------
-				0:
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "BREACH EVENT",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door flings open and a swarm of shadows seep out."
-									]
-								},
-							# --------------------
-					]
-				# --------------------
-				1:
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "BREACH EVENT",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door flings open and a swarm of shadows seep out."
-									]
-								},
-							# --------------------
-					]
-				# --------------------
-			
-			# --------------------
-			return [
-					# --------------------
-					func() -> Dictionary:
-						return {
-							"header": "BREACH EVENT",
-							"img_src": scp_details.img_src,
-							"text": [
-								"The door flings open and a swarm of shadows seep out."
-							]
-						},
-					# --------------------
-			],
-			# --------------------
-		# -------------------------	
-		},
 }
 
 var SCP1:Dictionary = {
 	# -----------------------------------
-	"nickname": "The Forgetful Remote",
-	"img_src": "res://Media/scps/the_remote.png",
-	"quote": "I swear I just put it here...",
+	"nickname": "Coffee table",
+	"description": "A rectangular wooden coffee table with a smooth surface. It typically holds beverages, magazines, or decorative items.",
 	# -----------------------------------
-
-	# -----------------------------------	
-	"item_class": "EUCLID",	
-	"description": func(ref:ROOM.TYPE) -> Array:
-		return [
-			"A standard television remote that persistently relocates itself when not in direct observation.",
-			"Tests show that SCP1 disappears the moment it is placed down and left unattended, reappearing in another random location within the room.",
-			"Despite extensive testing, no footage has ever captured the moment of relocation, as all recording devices inexplicably fail during the transition.",
-			"The object has been responsible for numerous containment breaches due to personnel frustration and repeated unauthorized relocations."
-		],
-	# -----------------------------------	
-	
-	# -----------------------------------
-	"effects": {
-		"metrics":{
-			RESOURCE.METRICS.MORALE: 1,
-			RESOURCE.METRICS.SAFETY: 1,
-			RESOURCE.METRICS.READINESS: 3
-		},
-		"contained": {
-			"description": "Randomly swaps with another item in a containment cell on the same floor.", 
-			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
-				return _new_room_config,
-		},
-		"uncontained": {
-			"description": "Randomly swaps with another item in a containment cell.", 
-			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
-				return _new_room_config,
-		}
-	},
-	# -----------------------------------		
 }
 
 var SCP2:Dictionary = {
 	# -----------------------------------
-	"nickname": "The Echoing Blender",
-	"img_src": "res://Media/scps/the_blender.png",
-	"quote": "I turned it off. Why do I still hear it?",
+	"nickname": "Dining table",
+	"description": "A wooden dining table designed to seat multiple people. It is typically placed in dining rooms for meals or gatherings.",
 	# -----------------------------------
-
-	# -----------------------------------	
-	"item_class": "EUCLID",	
-	"description": func(ref:ROOM.TYPE) -> Array:
-		return [
-			"A standard kitchen blender that continues to emit the sound of blending even when unplugged and disassembled.",
-			"The sound persists at a constant volume, seemingly originating from the exact position where the blender was last activated.",
-			"Attempts to remove the noise by moving the blender to another location result in overlapping echoes, as previous activation sites retain their own phantom sounds indefinitely.",
-			"Long-term exposure to SCP2’s auditory anomaly has been linked to increased anxiety, insomnia, and, in rare cases, auditory hallucinations of other household appliances activating on their own."
-		],
-	# -----------------------------------	
-	
-	# -----------------------------------
-	"effects": {
-		"metrics":{
-			RESOURCE.METRICS.MORALE: 2,
-			RESOURCE.METRICS.SAFETY: 3,
-			RESOURCE.METRICS.READINESS: 0
-		},
-		"contained": {
-			"description": "MORALE cannot exceed 2.", 
-			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
-				return _new_room_config,
-		},
-		"uncontained": {
-			"description": "Researchers assigned have a chance of developing a QUIRK.", 
-			"effect": func(_new_room_config:Dictionary, _location:Dictionary) -> Dictionary:
-				return _new_room_config,
-		}
-	},
-	# -----------------------------------			
 }
 
 var SCP3:Dictionary = {
 	# -----------------------------------
-	"nickname": "The Never-Dry Sponge",
-	"img_src": "res://Media/scps/the_sponge.png",
-	"quote": "I wrung it out five times already. Why is it still dripping?",
+	"nickname": "Bed",
+	"description": "A queen-size bed with a metal frame and soft bedding. It is designed for sleeping and provides comfort during rest.",
 	# -----------------------------------
-
-	# -----------------------------------	
-	"item_class": "SAFE",	
-	"description": func(ref:ROOM.TYPE) -> Array:
-		return [
-			"A common household sponge that continuously absorbs water but never reaches saturation.",
-			"Any attempt to wring out SCP3 results in an indefinite expulsion of water, regardless of its prior exposure to moisture.",
-			"Tests indicate that the water expelled from SCP3 does not originate from any known source and is chemically identical to distilled water.",
-			"Despite its otherwise harmless nature, SCP3 has caused minor flooding incidents when left unattended near sinks or drains, leading to its current containment within a sealed, moisture-controlled environment."
-		],
-	# -----------------------------------	
-	
-	# -----------------------------------
-	"effects": {
-		"metrics":{
-			RESOURCE.METRICS.MORALE: 2,
-			RESOURCE.METRICS.SAFETY: 2,
-			RESOURCE.METRICS.READINESS: 2
-		},
-		"contained": {
-			"description": "All resources are available.", 
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-				ring_config_data.available_resources = {
-					RESOURCE.TYPE.TECHNICIANS: true,
-					RESOURCE.TYPE.STAFF: true,
-					RESOURCE.TYPE.SECURITY: true,
-					RESOURCE.TYPE.DCLASS: true
-				}
-				return new_room_config,
-		},
-		"uncontained": {
-			"description": "Makes resources unusable.",
-			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-				ring_config_data.available_resources = {
-					RESOURCE.TYPE.TECHNICIANS: false,
-					RESOURCE.TYPE.STAFF: false,
-					RESOURCE.TYPE.SECURITY: false,
-					RESOURCE.TYPE.DCLASS: false
-				}
-				return new_room_config,
-		}
-	},
-	# -----------------------------------		
 }
 
 var SCP4:Dictionary = {
 	# -----------------------------------
-	"nickname": "The Hungry Recliner",
-	"img_src": "res://Media/scps/the_recliner.png",
-	"quote": "It doesn’t swallow you whole. It takes its time.",
+	"nickname": "TV",
+	"description": "A flat-screen LED television mounted on a wall. It displays television programs, movies, and other media.",
 	# -----------------------------------
+}
 
-	# -----------------------------------	
-	"item_class": "KETER",	
-	"description": func(ref:ROOM.TYPE) -> Array:
-		return [
-			"A seemingly ordinary reclining chair that exhibits predatory behavior when occupied for extended periods.",
-			"Subjects who sit in SCP5 report an overwhelming sense of relaxation, often leading to unintended drowsiness and prolonged use.",
-			"Once a subject remains seated for more than ten minutes, the chair’s padding subtly shifts, gradually pulling the individual deeper into the cushions.",
-			"Attempts to stand up become increasingly difficult, as SCP5 applies a force equivalent to twice the subject’s body weight, preventing escape.",
-			"If not forcibly removed, the occupant will eventually vanish entirely into the chair, leaving no trace behind except for slight indentations in the upholstery.",
-			"Containment protocols require that SCP5 be securely strapped shut when not under active observation, and all testing is to be conducted with a reinforced harness attached to personnel."
-		],
-	# -----------------------------------	
+var SCP5:Dictionary = {
+	# -----------------------------------
+	"nickname": "Refrigerator",
+	"description": "A two-door refrigerator with a freezer compartment on top. It keeps food cold and preserves perishable items.",
+	# -----------------------------------
+}
+
+var SCP6:Dictionary = {
+	# -----------------------------------
+	"nickname": "Microwave",
+	"description": "A countertop microwave oven that heats food using electromagnetic radiation. It includes various presets for different foods.",
+	# -----------------------------------
+}
+
+var SCP7:Dictionary = {
+	# -----------------------------------
+	"nickname": "Toaster",
+	"description": "A two-slice toaster that browns bread and other items by exposing them to heated coils. It includes adjustable settings for toast crispness.",
+	# -----------------------------------
+}
+
+var SCP8:Dictionary = {
+	# -----------------------------------
+	"nickname": "Blender",
+	"description": "A countertop blender used for mixing or pureeing food. It has a glass jar and stainless steel blades.",
+	# -----------------------------------
+}
+
+var SCP9:Dictionary = {
+	# -----------------------------------
+	"nickname": "Vacuum cleaner",
+	"description": "A bagless vacuum cleaner that uses suction to remove dirt from floors. It includes a rotating brush for carpet cleaning.",
+	# -----------------------------------
+}
+
+var SCP10:Dictionary = {
+	# -----------------------------------
+	"nickname": "Washing machine",
+	"description": "A front-loading washing machine with multiple wash cycles. It has an automatic detergent dispenser and a high-spin cycle for efficient drying.",
+	# -----------------------------------
+}
+
+var SCP11:Dictionary = {
+	# -----------------------------------
+	"nickname": "Dishwasher",
+	"description": "A built-in dishwasher with adjustable racks, multiple wash modes, and a drying function. It uses a combination of hot water and detergent to clean dishes efficiently.",
+	# -----------------------------------
+}
+
+var SCP12:Dictionary = {
+	# -----------------------------------
+	"nickname": "Electric kettle",
+	"description": "A stainless steel electric kettle with an automatic shut-off feature. It boils water quickly and includes a cord-free design for easy pouring.",
+	# -----------------------------------
+}
+
+var SCP13:Dictionary = {
+	# -----------------------------------
+	"nickname": "Bookshelf",
+	"description": "A wooden bookshelf with five adjustable shelves. It is designed to hold books, decorative items, or other small objects.",
+	# -----------------------------------
+}
+
+var SCP14:Dictionary = {
+	# -----------------------------------
+	"nickname": "Office desk",
+	"description": "A rectangular office desk made of wood with a smooth laminate surface. It includes drawers for storage and space for a computer or paperwork.",
+	# -----------------------------------
+}
+
+var SCP15:Dictionary = {
+	# -----------------------------------
+	"nickname": "Chair",
+	"description": "A padded, ergonomic office chair with adjustable height and lumbar support. It is designed for comfort during extended periods of sitting.",
+	# -----------------------------------
+}
+
+var SCP16:Dictionary = {
+	# -----------------------------------
+	"nickname": "Floor lamp",
+	"description": "A tall floor lamp with a lampshade and adjustable arm. It provides ambient lighting and can be positioned to illuminate different areas of a room.",
+	# -----------------------------------
+}
+
+var SCP17:Dictionary = {
+	# -----------------------------------
+	"nickname": "Wall clock",
+	"description": "A wall-mounted clock with a classic design, featuring hour, minute, and second hands. It operates on a quartz movement and requires a single AA battery.",
+	# -----------------------------------
+}
+
+var SCP18:Dictionary = {
+	# -----------------------------------
+	"nickname": "Mirror",
+	"description": "A rectangular mirror with a wooden frame, designed for hanging on the wall. It reflects light and provides a clear view of one’s reflection.",
+	# -----------------------------------
+}
+
+var SCP19:Dictionary = {
+	# -----------------------------------
+	"nickname": "Painting",
+	"description": "A framed piece of art, typically oil or acrylic, designed to be hung on a wall. It adds aesthetic value to living spaces.",
+	# -----------------------------------
 }
 
 
-# -----------------------------------	
+# -----------------------------------
 var list:Array[Dictionary] = [
-	SCP0, SCP1, SCP2, SCP3, SCP4
+	SCP0, SCP1, SCP2, SCP3, SCP4, SCP5, SCP6, SCP7, SCP8, SCP9,
+	SCP10, SCP11, SCP12, SCP13, SCP14, SCP15, SCP16, SCP17, SCP18, SCP19
 ]
-# -----------------------------------	
+# -----------------------------------

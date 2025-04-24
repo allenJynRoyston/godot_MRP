@@ -21,15 +21,15 @@ func update_nodes() -> void:
 	for key in available_resources:
 		var is_active:bool = available_resources[key]
 		match key:
-			RESOURCE.TYPE.TECHNICIANS:
+			RESOURCE.PERSONNEL.TECHNICIANS:
 				ResourceItemTech.title = "TCH"
 				ResourceItemTech.is_negative = !is_active
-			RESOURCE.TYPE.STAFF: 
+			RESOURCE.PERSONNEL.STAFF: 
 				ResourceItemStaff.title = "STF"
 				ResourceItemStaff.is_negative = !is_active
-			RESOURCE.TYPE.SECURITY: 
+			RESOURCE.PERSONNEL.SECURITY: 
 				ResourceItemSecurity.title = "SEC"
 				ResourceItemSecurity.is_negative = !is_active
-			RESOURCE.TYPE.DCLASS: 
+			RESOURCE.PERSONNEL.DCLASS: 
 				ResourceItemDClass.title = "DCL"
 				ResourceItemDClass.is_negative = !is_active	

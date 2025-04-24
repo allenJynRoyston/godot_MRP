@@ -22,9 +22,8 @@ extends GameContainer
 
 @onready var FloorPlanBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
 @onready var GotoBaseBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBaseBtn
-@onready var GotoBuildingBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/GotoBuildingBtn
+@onready var GotoBuildingBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/GotoBuildingBtn
 @onready var HotkeyContainer:Control = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/HotkeyContainer
-
 
 @onready var ResearcherBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel
 @onready var AssignBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
@@ -41,7 +40,7 @@ extends GameContainer
 @onready var RoomBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel
 @onready var RoomBtnPanelLabel:Label = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/RoomBtnPanelLabel
 @onready var UseAbilityBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UseAbilityBtn
-@onready var DetailsToggleBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DetailsToggleBtn
+#@onready var DetailsToggleBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DetailsToggleBtn
 @onready var BuildBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
 @onready var DecontructBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
@@ -151,10 +150,15 @@ func _ready() -> void:
 		call_and_redraw(func():			
 			await GAME_UTIL.construct_room()
 		)
-		
-	DetailsToggleBtn.onClick = func() -> void:
-		show_room_details = !show_room_details
 	
+	ContainBtn.onClick = func() -> void:
+		call_and_redraw(func(): 
+			await GAME_UTIL.contain_scp()
+		)
+		
+	#DetailsToggleBtn.onClick = func() -> void:
+		#show_room_details = !show_room_details
+	#
 	DecontructBtn.onClick = func() -> void:
 		call_and_redraw(func():
 			await GAME_UTIL.reset_room()
@@ -688,7 +692,10 @@ func show_abilities(skip_animation:bool = false) -> void:
 	BtnControls.onIntercept = func(node:Control) -> void:
 		BtnControls.freeze_and_disable(true)
 		await U.tick()
-		await GAME_UTIL.use_active_ability(node.ability_data)
+		if "effect" in node.ability_data:
+			await GAME_UTIL.use_active_ability(node.ability_data)
+		else:
+			await GAME_UTIL.toggle_passive_ability(node.room_ref, node.ability_index)
 		BtnControls.freeze_and_disable(false)
 
 	BtnControls.onBack = func() -> void:
@@ -800,7 +807,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 func call_and_redraw(action:Callable) -> void:
 	await lock_btns(true)
-	await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)
+	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)
 	GBL.find_node(REFS.LINE_DRAW).hide()
 	
 	# clear any lines
@@ -878,6 +885,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		ScpBtnPanel.show() if room_extract.can_contain else ScpBtnPanel.hide()
 		ResearcherBtnPanel.show() if !room_extract.is_room_empty and hired_lead_researchers_arr.size() > 0 else ResearcherBtnPanel.hide()				
 		
+		ContainBtn.is_disabled = !room_extract.scp.is_empty()
 		AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open
 		ResearcherDetailBtn.is_disabled = room_extract.is_room_empty or room_extract.researchers.size() == 0  or active_menu_is_open		
@@ -887,6 +895,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		RoomDetailsControl.show_room_card = true
 		RoomDetailsControl.show_scp_card = room_extract.can_contain
 		RoomDetailsControl.show_researcher_card = !room_extract.is_room_empty
+		
+		var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
+		Input.warp_mouse(warp_to_pos)
 		
 		draw_active_menu()
 		update_details()
@@ -969,9 +980,8 @@ func buildout_btns() -> void:
 	
 	EndTurnBtn.onClick = func() -> void:
 		await lock_btns(true)
-		if !active_menu_is_open and !GameplayNode.is_occupied(): 
-			await GameplayNode.next_day()
-			lock_btns(false)
+		await GameplayNode.next_day()
+		lock_btns(false)
 	
 	GotoBuildingBtn.onClick = func() -> void:
 		toggle_camera_view()
@@ -1003,12 +1013,11 @@ func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals,
 			NameControl.hide()
 # --------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------	
+## --------------------------------------------------------------------------------------------------	
 func on_show_room_details_update() -> void:
 	if !is_node_ready():return
 	RoomDetailsControl.reveal(show_room_details) 
-	DetailsToggleBtn.icon = SVGS.TYPE.CHECKBOX if show_room_details else SVGS.TYPE.EMPTY_CHECKBOX
-# --------------------------------------------------------------------------------------------------		
+## --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
 func hide_nametags(state:bool, fast:bool = false) -> void:
@@ -1135,6 +1144,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			update_details()
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show, duration)
+			show_room_details = true
 			
 			NameControl.hide()
 
@@ -1163,7 +1173,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				lock_btns(false)
 		# --------------
 		MODE.RESET_ROOM:
-			print("here?")
 			check_if_remove_is_valid()
 			
 			HotkeyContainer.lock_btns = true

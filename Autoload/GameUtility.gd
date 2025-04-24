@@ -415,8 +415,8 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 		base_states.room[designation].passives_enabled[ability_uid] = false
 	
 	base_states.room[designation].passives_enabled[ability_uid] = !base_states.room[designation].passives_enabled[ability_uid]
-	
-	#print(base_states.room[designation].passives_enabled)
+
+	print(base_states.room[designation].passives_enabled)
 
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------		
@@ -548,6 +548,7 @@ func contain_scp() -> bool:
 		"ref": scp_ref,
 		"location": use_location,
 		"contained_on": progress_data.day,
+		"current_phase": 0
 	})
 	
 	# update 

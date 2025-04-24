@@ -72,15 +72,15 @@ alignment = 1
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 is_selected = true
-title = "ADMIN"
+title = "FACILITY"
 
 [node name="TabBtn2" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("2_jvnhf")]
 layout_mode = 2
-title = "FACILITIES"
+title = "CONTAINMENT"
 
 [node name="TabBtn3" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("2_jvnhf")]
 layout_mode = 2
-title = "CONTAINMENT"
+title = "SUPPORT"
 
 [node name="ActiveHeader" type="Control" parent="."]
 layout_mode = 2

@@ -7,17 +7,14 @@ extends MouseInteractions
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerDesignation:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerDesignation
-@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerLevel
-@onready var CardDrawerNickname:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerNickname
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerName
 @onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerItemClass
-@onready var CardDrawerSupplies:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerSupplies
-@onready var CardDrawerRewards:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerRewards
+@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
-@onready var CardDrawerSpec:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerSpec
-@onready var CardDrawerTrait:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawertrait
 # back
 @onready var CardDrawerContainmentInfo:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerContainmentInfo
-@onready var CardDrawerRequired:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerRequired
+@onready var CardDrawerBonus:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerBonus
+@onready var CardDrawerRewards:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerRewards
 
 @export var ref:int = -1: 
 	set(val):
@@ -44,10 +41,10 @@ extends MouseInteractions
 		is_active = val
 		on_is_active_update()
 		
-@export var show_checkbox:bool = false : 
+@export var show_assigned_researcher:bool = false : 
 	set(val):
-		show_checkbox = val
-		on_show_checkbox_update()
+		show_assigned_researcher = val
+		on_show_assigned_researcher_update()
 		
 @export var is_selected:bool = false : 
 	set(val):
@@ -92,8 +89,9 @@ func on_flip_update() -> void:
 func on_is_active_update() -> void:
 	if !is_node_ready():return
 
-func on_show_checkbox_update() -> void:
+func on_show_assigned_researcher_update() -> void:
 	if !is_node_ready():return
+	CardDrawerAssigned.show() if show_assigned_researcher else CardDrawerAssigned.hide()
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
@@ -119,47 +117,33 @@ func on_ref_update() -> void:
 	
 	if ref not in SCP_UTIL.reference_data:
 		CardDrawerImage.use_static = true
-		for node in [CardDrawerDesignation, CardDrawerLevel, CardDrawerNickname, CardDrawerItemClass, CardDrawerRequired, CardDrawerSpec, CardDrawerTrait]:
+		for node in [CardDrawerDesignation, CardDrawerItemClass, CardDrawerDescription, CardDrawerAssigned, CardDrawerName]:
 			node.content = "-"
 		return
 		
 	var scp_data:Dictionary = SCP_UTIL.return_data(ref)
 	var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
-	#var passes_metric_check:bool = SCP_UTIL.passes_metric_check(ref, use_location)
-	#var metrics:Dictionary = {
-		#"passes_metric_check": passes_metric_check,
-	#}
-	#
-	#
-	#for ref in scp_data.effects.metrics:
-		#var needed:int = scp_data.effects.metrics[ref]
-		#metrics[ref] = {
-			#"needed": needed,
-			#"current": 2
-		#}
-		
-	var required_str:String = ""
-	for ref in scp_data.required_for_containment.profession:
-		required_str += str(RESEARCHER_UTIL.return_specialization_data(ref).name + " or ")
-	for ref in scp_data.required_for_containment.traits:
-		required_str += str(RESEARCHER_UTIL.return_trait_data(ref).name + " or ")
-	required_str = required_str.left(required_str.length() - 4)
+	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(scp_data.containment_multiplier.specilization).name)
+	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(scp_data.containment_multiplier.trait).name)
+	var bonus_str:String = "%s or %s" % [spec_name, trait_name]
 
 	CardDrawerDesignation.content = scp_data.name
-	CardDrawerNickname.content = scp_data.nickname
-	CardDrawerItemClass.content = scp_data.item_class
+	CardDrawerName.content = scp_data.nickname
+	CardDrawerBonus.content = bonus_str
+	CardDrawerDescription.content = scp_data.description
+
+	match scp_data.item_class:
+		SCP_UTIL.ITEM_CLASS.SAFE:
+			CardDrawerItemClass.content = "SAFE"
+		SCP_UTIL.ITEM_CLASS.EUCLID:
+			CardDrawerItemClass.content = "EUCLID"
+		SCP_UTIL.ITEM_CLASS.KETER:
+			CardDrawerItemClass.content = "KETER"
 	
 	CardDrawerImage.img_src = scp_data.img_src
 	CardDrawerImage.use_static = false
-	CardDrawerRewards.list = rewards.map(func(x): return {"icon": x.resource.icon, "title": str(x.amount)})
-	
-	#CardDrawerContainmentInfo.metrics = metrics
+	CardDrawerRewards.list = rewards.map(func(x): return {"icon": x.resource.icon, "title": str(x.amount)})	
 	CardDrawerContainmentInfo.effects = scp_data.effects
-	CardDrawerRequired.content = required_str
-	
-	
-	
-
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

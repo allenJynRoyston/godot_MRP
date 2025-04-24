@@ -34,7 +34,7 @@ var supply_security:Dictionary = {
 	"description": "Makes SECURITY personnel available for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
-		RESOURCE.TYPE.SECURITY
+		RESOURCE.PERSONNEL.SECURITY
 	]
 }
 
@@ -44,7 +44,7 @@ var supply_staff:Dictionary = {
 	"description": "Makes STAFF personnel available for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
-		RESOURCE.TYPE.STAFF
+		RESOURCE.PERSONNEL.STAFF
 	]
 }
 
@@ -54,7 +54,7 @@ var supply_technicians:Dictionary = {
 	"description": "Makes TECHNICIANS personnel available for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
-		RESOURCE.TYPE.TECHNICIANS
+		RESOURCE.PERSONNEL.TECHNICIANS
 	]
 }
 
@@ -64,7 +64,7 @@ var supply_dclass:Dictionary = {
 	"description": "Makes DCLASS personnel available for the testing for the entire wing.",
 	"energy_cost": 1,
 	"provides": [
-		RESOURCE.TYPE.DCLASS
+		RESOURCE.PERSONNEL.DCLASS
 	]
 }
 

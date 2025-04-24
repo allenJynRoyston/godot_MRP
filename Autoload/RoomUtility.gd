@@ -51,10 +51,10 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------	
-	"pairs_with": [
-		#RESEARCHER.SPECIALIZATION.SOCIOLOGY,
-		#RESEARCHER.SPECIALIZATION.PHYSICS
-	],
+	"levels_with": {
+		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+		"trait": RESEARCHER.TRAITS.HARD_WORKING
+	},
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -165,26 +165,30 @@ func return_activation_cost(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_pairs_with_details(ref:int) -> Array:
+func return_levels_with_details(ref:int) -> Dictionary:
 	var room_data:Dictionary = return_data(ref)
-	var arr:Array = []
-	if "pairs_with" in room_data:
-		for spec in room_data.pairs_with:
-			arr.push_back(RESEARCHER_UTIL.return_specialization_data(spec))
-	return arr
+	var details:Dictionary = {}
+	if "levels_with" in room_data:
+		details = {
+			"specilization": RESEARCHER_UTIL.return_specialization_data(room_data.levels_with.specilization),
+			"trait": RESEARCHER_UTIL.return_trait_data(room_data.levels_with.trait),
+		}
+
+	return details
 # ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------
 func check_for_room_pair(ref:int, specializations:Array) -> bool:
-	var room_data:Dictionary = return_data(ref)
-	var has_pairing:bool = false
-	if "pairs_with" in room_data:
-		for spec in specializations:
-			if spec in room_data.pairs_with:
-				has_pairing = true
-				break	
-	return has_pairing
+	return true
+	#var room_data:Dictionary = return_data(ref)
+	#var has_pairing:bool = false
+	#if "levels_with" in room_data:
+		#for spec in specializations:
+			#if spec in room_data.levels_with:
+				#has_pairing = true
+				#break	
+	#return has_pairing
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------			
@@ -255,11 +259,8 @@ func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
 
 # ------------------------------------------------------------------------------
 func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:	
-	print(shop_unlock_purchases)
 	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
-	print(purchased_facility_arr)
-	print(facility_refs)
-	
+
 	var filter:Callable = func(list:Array) -> Array:	
 		return list.filter(func(i): 
 			return true if !i.details.requires_unlock else i.ref in shop_unlock_purchases

@@ -164,7 +164,6 @@ func on_uid_update() -> void:
 	CardDrawerTraits.content = trait_str
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func on_promotion_preview_update() -> void:
 	if !is_node_ready():return

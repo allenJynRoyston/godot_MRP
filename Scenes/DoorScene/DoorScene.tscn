@@ -1,26 +1,11 @@
-[gd_scene load_steps=21 format=3 uid="uid://ddkvohnxbwq22"]
+[gd_scene load_steps=19 format=3 uid="uid://ddkvohnxbwq22"]
 
 [ext_resource type="Script" uid="uid://b3atfi3xe6ern" path="res://Scenes/DoorScene/door_scene.gd" id="1_enmig"]
-[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="2_y10y4"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_fu8yw"]
 [ext_resource type="PackedScene" uid="uid://c4jcka6l73m7c" path="res://Scenes/IntroAndTitleScreen/IntroAndTitleScreen.tscn" id="4_y10y4"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y10y4"]
 viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oq4hm"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fu8yw"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="Animation" id="Animation_fu8yw"]
 resource_name = "LightsOn"
@@ -242,55 +227,10 @@ layout_mode = 2
 texture = SubResource("ViewportTexture_y10y4")
 expand_mode = 1
 
-[node name="BtnControl" type="Control" parent="."]
+[node name="BtnControls" parent="." instance=ExtResource("2_fu8yw")]
 layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_oq4hm")
-
-[node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 25
-
-[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-theme_override_constants/separation = 10
-
-[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 8
-
-[node name="LoginBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_y10y4")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fu8yw")
-title = "LOGIN"
-assigned_key = "E"
-icon = 10
-panel_color = Color(0, 0.529412, 0.278431, 1)
+a_btn_title = "LOGIN"
+hide_b_btn = true
 
 [node name="SubViewport" type="SubViewport" parent="."]
 own_world_3d = true

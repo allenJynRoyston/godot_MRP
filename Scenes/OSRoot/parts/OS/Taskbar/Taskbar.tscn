@@ -60,10 +60,6 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ndu48")
-icon = 67
-panel_color = Color(0, 0.254902, 0.0823529, 1)
-inactive_color = Color(0.656286, 0.656285, 0.656285, 1)
-title = "RETURN TO DESKTOP"
 
 [node name="RunningTasks" type="HBoxContainer" parent="TaskbarControl/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2

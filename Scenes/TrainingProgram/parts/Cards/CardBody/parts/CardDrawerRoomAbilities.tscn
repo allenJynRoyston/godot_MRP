@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://cus6h1nu75y1e"]
 
-[ext_resource type="Script" uid="uid://cjwbndhdhf52t" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_room_active_abilities.gd" id="1_s51no"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_3njyj"]
-[ext_resource type="PackedScene" uid="uid://d0rtygjh5shck" path="res://UI/Buttons/RoomAbilityBtn/RoomAbilityBtn.tscn" id="3_s51no"]
+[ext_resource type="Script" uid="uid://dhdi25jyrhskx" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_room_abilities.gd" id="1_6ymt7"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_b2hfq"]
+[ext_resource type="PackedScene" uid="uid://d0rtygjh5shck" path="res://UI/Buttons/RoomAbilityBtn/RoomAbilityBtn.tscn" id="3_pdxs1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s51no"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ymt7"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -16,18 +16,20 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3njyj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2hfq"]
 bg_color = Color(0.275367, 0.56172, 0.999992, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="CardDrawerActiveAbilities" type="PanelContainer"]
+[node name="CardDrawerAblities" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
+offset_right = 200.0
+offset_bottom = 54.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_s51no")
-script = ExtResource("1_s51no")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ymt7")
+script = ExtResource("1_6ymt7")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -41,7 +43,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "TITLE LABEL "
-label_settings = ExtResource("2_3njyj")
+label_settings = ExtResource("2_b2hfq")
 horizontal_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
@@ -54,7 +56,7 @@ theme_override_constants/margin_bottom = 3
 [node name="AbilityList" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="RoomAbilityBtn" parent="MarginContainer/MarginContainer/AbilityList" instance=ExtResource("3_s51no")]
+[node name="RoomAbilityBtn" parent="MarginContainer/MarginContainer/AbilityList" instance=ExtResource("3_pdxs1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3njyj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b2hfq")
 debug_me = true

@@ -43,6 +43,8 @@ func _ready() -> void:
 	on_uid_update()
 	on_researcher_update()
 	on_is_selected_update()
+	# hide for now
+	TraitContainer.hide()
 	
 func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
@@ -81,7 +83,7 @@ func on_researcher_update() -> void:
 		TraitList.add_child(card)
 	
 
-	#if "pairs_with" in room_data:
+	#if "levels_with" in room_data:
 		
 	
 	NoBonusLabel.hide() if LvlBonus.is_visible_in_tree() else NoBonusLabel.show()

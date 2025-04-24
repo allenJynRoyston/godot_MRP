@@ -39,20 +39,20 @@ func on_room_details_update() -> void:
 		pass
 		#ActiveAbilites.hide()
 			
-	if "passive_abilities" in room_details:
-		var passive_abilities:Array = room_details.passive_abilities.call()
-		for ability_index in passive_abilities.size():
-			var ability:Dictionary = passive_abilities[ability_index]
-			var btn_node:Control = RoomAbilityBtnPreload.instantiate()
-			AbilityList.add_child(btn_node)
-			#var btn_node:Control = TextBtnPreload.instantiate()
-			#btn_node.title = "Lvl-%s  %s" % [ability.lvl_required, ability.name]
-			#btn_node.icon = SVGS.TYPE.NONE
-			#PassiveAbilitiesList.add_child(btn_node)			
-			#PassiveAbilities.show()
-	else:
-		pass
-		#PassiveAbilities.hide()
+	#if "passive_abilities" in room_details:
+		#var passive_abilities:Array = room_details.passive_abilities.call()
+		#for ability_index in passive_abilities.size():
+			#var ability:Dictionary = passive_abilities[ability_index]
+			#var btn_node:Control = RoomAbilityBtnPreload.instantiate()
+			#AbilityList.add_child(btn_node)
+			##var btn_node:Control = TextBtnPreload.instantiate()
+			##btn_node.title = "Lvl-%s  %s" % [ability.lvl_required, ability.name]
+			##btn_node.icon = SVGS.TYPE.NONE
+			##PassiveAbilitiesList.add_child(btn_node)			
+			##PassiveAbilities.show()
+	#else:
+		#pass
+		##PassiveAbilities.hide()
 
 func get_btns() -> Array:	
 	return AbilityList.get_children()
