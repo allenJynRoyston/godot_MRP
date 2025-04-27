@@ -298,14 +298,15 @@ func update_control_pos() -> void:
 # --------------------------------------------------------------------------------------------------		
 func toggle_camera_view() -> void:	
 	await lock_btns(true)
+	
 	#await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide)
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
-			camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+			camera_settings.type = CAMERA.TYPE.WING_SELECT
 			current_mode = MODE.SELECT_ROOM
 		
-		CAMERA.TYPE.ROOM_SELECT:
+		CAMERA.TYPE.WING_SELECT:
 			camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
 			current_mode = MODE.SELECT_FLOOR
 
@@ -345,7 +346,7 @@ func drawline_bookmark() -> void:
 # --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------
-func draw_active_menu(draw_delay:float = 0.3) -> void:
+func draw_active_menu(draw_delay:float = 0) -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
 	var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
@@ -678,6 +679,8 @@ func show_abilities(skip_animation:bool = false) -> void:
 	var menu_title:String 
 	
 	#lock_btns(true)
+	print('start...')
+	
 	await lock_btns(true)
 	active_menu_is_open = true
 	await RoomDetailsControl.reveal(true)
@@ -687,121 +690,16 @@ func show_abilities(skip_animation:bool = false) -> void:
 	BtnControls.directional_pref = "UD"
 	BtnControls.offset = RoomDetailsControl.RoomCard.global_position
 	await U.tick()
+	print("here?")
 	BtnControls.item_index = 0
 	
-	BtnControls.onIntercept = func(node:Control) -> void:
-		BtnControls.freeze_and_disable(true)
-		await U.tick()
-		if "effect" in node.ability_data:
-			await GAME_UTIL.use_active_ability(node.ability_data)
-		else:
-			await GAME_UTIL.toggle_passive_ability(node.room_ref, node.ability_index)
-		BtnControls.freeze_and_disable(false)
-
 	BtnControls.onBack = func() -> void:
-		BtnControls.onIntercept = func():pass
 		await BtnControls.reveal(false)
 		BtnControls.itemlist = []
 		await RoomDetailsControl.reveal(show_room_details)
 		RoomDetailsControl.end_switch_to_room_abilities()		
 		active_menu_is_open = false
 		lock_btns(false)
-	#
-	#current_menu_type = MENU_TYPE.ABILITIES
-	#
-	#BackBtn.hide()
-	#ActiveMenu.onClose = func() -> void:	
-		#HotkeyContainer.enable_assign_mode(false)
-		#open_menu(false)	
-		#draw_active_menu(0)
-		#on_current_location_update()
-		#await U.set_timeout(0.1)
-		#BackBtn.show()		
-#
-	#
-	#if active_menu_index == 0:
-		#menu_title = "PASSIVE"
-		#if is_powered:
-			#for key in extract_wing_data.abilities:
-				#var abilities:Array = extract_wing_data.abilities[key]
-				#for index in abilities.size():
-					#var ability:Dictionary = abilities[index]
-					#if get_ability_level >= ability.lvl_required and current_location.room == ability.room_index:
-						#var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": current_location.room}
-						#var funcs:Dictionary = ability_funcs(ability.details, use_location)
-						#var get_cooldown_duration:Callable = funcs.get_cooldown_duration
-						#var get_not_ready_func:Callable = funcs.get_not_ready_func
-						#var get_icon_func:Callable = funcs.get_icon_func
-						#var science_cost:int = ability.details.science_cost
-#
-						#options.push_back({
-							#"shortcut_data": {
-								#"room_ref": ability.room_ref, 
-								#"index": index,
-								#"type": MENU_TYPE.ABILITIES,
-								#"use_location": use_location.duplicate(true), 
-							#},
-							#"title": ability.details.name,
-							#"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
-							#"science_cost": science_cost, 
-							#"cooldown_duration": await get_cooldown_duration.call(), 
-							#"is_disabled": await get_not_ready_func.call(),
-							#"get_disabled_state": get_not_ready_func,
-							#"get_cooldown_duration": get_cooldown_duration,
-							#"action": func() -> void:
-								#await call_and_redraw(func():
-									#await GAME_UTIL.use_active_ability(ability.details)
-								#),
-							#"onSelect": func(index:int) -> void:
-								#await options[index].action.call(),
-						#})				
-#
-	#if active_menu_index == 1:
-		#menu_title = "ACTIVE"
-		#for key in extract_wing_data.passive_abilities:
-			#var abilities:Array = extract_wing_data.passive_abilities[key]
-			#for index in abilities.size():
-				#var ability:Dictionary = abilities[index]
-				#if current_location.room == ability.room_index:
-					#var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": ability.room_index}
-					#var funcs:Dictionary = passive_funcs(ability.room_ref, ability.index, use_location)
-					#var get_not_ready_func:Callable = funcs.get_not_ready_func
-					#var get_icon_func:Callable = funcs.get_icon_func
-					#var energy_cost:int = ability.details.energy_cost if "energy_cost" in ability.details else 1
-					#options.push_back({
-						#"shortcut_data": {
-							#"room_ref": ability.room_ref, 
-							#"index": index, 
-							#"type": MENU_TYPE.PASSIVES,
-							#"use_location": use_location, 
-						#},
-						#"title": ability.details.name,
-						#"icon": SVGS.TYPE.RESEARCH,
-						#"hint": ability.details.description if gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] else "",
-						#"energy_cost": energy_cost, 
-						#"is_togglable": true,
-						#"is_checked": await funcs.get_checked.call(),
-						#"is_disabled": await get_not_ready_func.call(),
-						#"get_disabled_state": get_not_ready_func,
-						#"get_checked_state": funcs.get_checked,
-						#"action": func() -> void:
-							#var is_checked:bool = GAME_UTIL.get_passive_ability_state(ability.room_ref, ability.index)
-							#var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy
-							#var energy_remaining:int = energy.available - energy.used
-							#var has_enough:bool = energy_remaining - energy_cost >= 0
-							#if !has_enough and !is_checked:return
-							#GAME_UTIL.toggle_passive_ability(ability.room_ref, ability.index),
-						#"onSelect": func(index:int) -> void:
-							#await options[index].action.call(),
-					#})						
-#
-	#ActiveMenu.level = active_menu_index
-	#ActiveMenu.show_ap = false
-#
-	#U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)	
-	#
-	#var active_menu_pos:Vector2 = (GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size) - Vector2(0, 100)
-	#update_active_menu("%s / %s" % [room_name, menu_title], Color.WHITE, options, 1, active_menu_pos, skip_animation)	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -892,13 +790,12 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		#ScpDetailsBtn.is_disabled = room_extract.scp.is_empty() or active_menu_is_open
 		UseAbilityBtn.is_disabled = (abilities.is_empty() and passive_abilities.is_empty()) or active_menu_is_open
 
-		RoomDetailsControl.show_room_card = true
-		RoomDetailsControl.show_scp_card = room_extract.can_contain
-		RoomDetailsControl.show_researcher_card = !room_extract.is_room_empty
+		RoomDetailsControl.show_room_card = !room_extract.is_room_empty
+		RoomDetailsControl.show_scp_card = !room_extract.scp.is_empty() and room_extract.can_contain 
+		RoomDetailsControl.show_researcher_card = !room_extract.is_room_empty and room_extract.researchers.size() > 0
 		
 		var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 		Input.warp_mouse(warp_to_pos)
-		
 		draw_active_menu()
 		update_details()
 		selected_researcher = 0
@@ -976,8 +873,7 @@ func buildout_btns() -> void:
 	if camera_settings.type != previous_camera_type:
 		previous_camera_type = camera_settings.type	
 		reload = true
-	
-	
+
 	EndTurnBtn.onClick = func() -> void:
 		await lock_btns(true)
 		await GameplayNode.next_day()
@@ -993,6 +889,9 @@ func buildout_btns() -> void:
 		await lock_btns(true)
 		current_mode = MODE.INVESTIGATE		
 		lock_btns(false)
+		
+		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+		SUBSCRIBE.camera_settings = camera_settings		
 
 	is_setup = true
 # --------------------------------------------------------------------------------------------------
@@ -1171,6 +1070,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await lock_btns(true)
 				current_mode = MODE.SELECT_ROOM
 				lock_btns(false)
+				
+				camera_settings.type = CAMERA.TYPE.WING_SELECT
+				SUBSCRIBE.camera_settings = camera_settings						
 		# --------------
 		MODE.RESET_ROOM:
 			check_if_remove_is_valid()
@@ -1283,7 +1185,7 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
 	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1	
 	
-	RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name
+	RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
 	
 	for node in [ResearcherList, SynergyTraitList]:
 		for child in node.get_children():
@@ -1294,6 +1196,11 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	RoomDetailsControl.scp_ref = -1 if room_extract.scp.is_empty() else room_extract.scp.details.ref
 	RoomDetailsControl.researcher_uid = -1 
 	
+	# Ability/Deconstruct button
+	UseAbilityBtn.is_disabled = !is_activated
+	DecontructBtn.is_disabled = !room_extract.can_destroy
+	
+		
 	
 	if !room_extract.scp.is_empty():
 		ScpMiniCard.ref = room_extract.scp.details.ref
@@ -1350,7 +1257,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					U.inc_floor()
-				CAMERA.TYPE.ROOM_SELECT:
+				CAMERA.TYPE.WING_SELECT:
 					match current_mode:
 						MODE.SELECT_FLOOR:
 							U.inc_floor()
@@ -1360,12 +1267,14 @@ func on_control_input_update(input_data:Dictionary) -> void:
 							selected_researcher = U.min_max(selected_researcher - 1, 0, ResearcherList.get_child_count() - 1, true)
 						_:
 							U.room_up()
+				CAMERA.TYPE.ROOM_SELECT:
+					U.room_up()
 		# ----------------------------
 		"S":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					U.dec_floor()
-				CAMERA.TYPE.ROOM_SELECT:
+				CAMERA.TYPE.WING_SELECT:
 					match current_mode:
 						MODE.SELECT_FLOOR:
 							U.dec_floor()
@@ -1375,12 +1284,14 @@ func on_control_input_update(input_data:Dictionary) -> void:
 							selected_researcher = U.min_max(selected_researcher + 1, 0, ResearcherList.get_child_count() - 1, true)
 						_:
 							U.room_down()
+				CAMERA.TYPE.ROOM_SELECT:
+					U.room_down()
 		# ----------------------------
 		"D":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					U.inc_ring()
-				CAMERA.TYPE.ROOM_SELECT:
+				CAMERA.TYPE.WING_SELECT:
 					match current_mode:
 						MODE.SELECT_FLOOR:
 							U.inc_ring()
@@ -1388,12 +1299,14 @@ func on_control_input_update(input_data:Dictionary) -> void:
 							U.inc_ring()
 						_:
 							U.room_right()
+				CAMERA.TYPE.ROOM_SELECT:
+					U.room_right()
 		# ----------------------------
 		"A":
 			match camera_settings.type:
 				CAMERA.TYPE.FLOOR_SELECT:
 					U.dec_ring()
-				CAMERA.TYPE.ROOM_SELECT:
+				CAMERA.TYPE.WING_SELECT:
 					match current_mode:
 						MODE.SELECT_FLOOR:
 							U.dec_ring()
@@ -1401,6 +1314,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 							U.dec_ring()
 						_:
 							U.room_left()
+				CAMERA.TYPE.ROOM_SELECT:
+					U.room_left()
 # --------------------------------------------------------------------------------------------------	
 
 

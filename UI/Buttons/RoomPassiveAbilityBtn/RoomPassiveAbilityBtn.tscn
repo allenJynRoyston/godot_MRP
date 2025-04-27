@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://djsn4cx2hq8q4"]
+[gd_scene load_steps=9 format=3 uid="uid://djsn4cx2hq8q4"]
 
 [ext_resource type="Script" uid="uid://duc5pofg8524s" path="res://UI/Buttons/RoomPassiveAbilityBtn/room_passive_ability_btn.gd" id="1_4sylx"]
+[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="2_f8eie"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_jg673"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_f8eie"]
 
@@ -13,6 +14,13 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_48nus"]
 bg_color = Color(0.162066, 0.162066, 0.162066, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axmus"]
+bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -42,19 +50,6 @@ theme_override_constants/margin_bottom = 2
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
-
-[node name="LevelLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer"]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-text = "0"
-label_settings = SubResource("LabelSettings_axmus")
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="PanelContainer3" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
@@ -62,24 +57,39 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer3"]
 layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 3
+
+[node name="CheckBox" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer" instance=ExtResource("2_f8eie")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_axmus")
+no_bg = true
+checkbox_color = Color(1, 1, 1, 1)
+is_hoverable = false
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_right = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 0
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer" instance=ExtResource("3_f8eie")]
+[node name="IconBtn" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_f8eie")]
 layout_mode = 2
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-icon = 54
-static_color = Color(0.827451, 0.827451, 0.827451, 1)
+icon = 32
 flip_v = false
 is_hoverable = false
 
-[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer"]
-visible = false
+[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(15, 25)
 layout_mode = 2
 text = "0"
@@ -100,5 +110,6 @@ theme_override_constants/margin_right = 10
 [node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer2/MarginContainer"]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
+text = "Passive Ability"
 label_settings = SubResource("LabelSettings_axmus")
 vertical_alignment = 1

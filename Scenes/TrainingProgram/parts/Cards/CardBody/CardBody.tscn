@@ -40,12 +40,13 @@ corner_radius_bottom_left = 8
 
 [node name="CardBody" type="PanelContainer"]
 offset_right = 275.0
-offset_bottom = 400.0
+offset_bottom = 425.0
 pivot_offset = Vector2(147.5, 215)
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pwvyw")
 script = ExtResource("1_pwvyw")
+card_size = null
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 2

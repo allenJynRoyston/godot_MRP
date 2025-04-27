@@ -1,12 +1,12 @@
 extends Control
 
-@onready var NameLabel:Label = $PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer2/NameLabel
-@onready var LvlIndicator:Control = $PanelContainer2/LvlIndicator
-@onready var LvlLabel:Label = $PanelContainer2/LvlIndicator/Control/LvlLabel
-@onready var DotIcon:BtnBase = $PanelContainer2/ActivatedIndicator/IconBtn
-@onready var EnergyIndicatorControl:Control = $PanelContainer2/EnergyIndicator/Control
-@onready var PanelMarginContainer:MarginContainer = $PanelContainer2/MarginContainer
-@onready var ActivatedIndicator:Control = $PanelContainer2/ActivatedIndicator
+#@onready var NameLabel:Label = $PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer2/NameLabel
+#@onready var LvlIndicator:Control = $PanelContainer2/LvlIndicator
+#@onready var LvlLabel:Label = $PanelContainer2/LvlIndicator/Control/LvlLabel
+#@onready var DotIcon:BtnBase = $PanelContainer2/ActivatedIndicator/IconBtn
+#@onready var EnergyIndicatorControl:Control = $PanelContainer2/EnergyIndicator/Control
+#@onready var PanelMarginContainer:MarginContainer = $PanelContainer2/MarginContainer
+#@onready var ActivatedIndicator:Control = $PanelContainer2/ActivatedIndicator
 
 @onready var Resources:Control = $PanelContainer2/Resources
 @onready var ResourceReason:Control = $PanelContainer2/ResourceReason
@@ -94,25 +94,25 @@ func update_node(shift_val:int = 10) -> void:
 	var ability_lvl:int = GAME_UTIL.get_ability_level(use_location)
 	
 	self.modulate = Color(1, 1, 1, 1 if !room_extract.is_room_empty or !fade else 0)
-	name_str = room_extract.room.details.shortname if !room_extract.is_room_empty else "EMPTY"
+	name_str = str(room_extract.room.details.shortname + "  INACTIVE")  if !room_extract.is_room_empty else "EMPTY"
 	lvl_str = str(ability_lvl) if !room_extract.is_room_empty else "X"
-	LvlIndicator.hide() if room_extract.is_room_empty else LvlIndicator.show()
-	ActivatedIndicator.hide() if room_extract.is_room_empty else ActivatedIndicator.show()
-	Resources.hide() if room_extract.is_room_empty else Resources.show()
-	ResourceReason.hide() if room_extract.is_room_empty else (ResourceReason.show() if show_resource_reason else ResourceReason.hide())
+	#LvlIndicator.hide() if room_extract.is_room_empty else LvlIndicator.show()
+	#ActivatedIndicator.hide() if room_extract.is_room_empty else ActivatedIndicator.show()
+	#Resources.hide() if room_extract.is_room_empty else Resources.show()
+	#ResourceReason.hide() if room_extract.is_room_empty else (ResourceReason.show() if show_resource_reason else ResourceReason.hide())
 	hide() if room_extract.is_room_empty else show()
 
-	PanelMarginContainer.set('theme_override_constants/margin_left', 10 if room_extract.is_room_empty else 40)
+	#PanelMarginContainer.set('theme_override_constants/margin_left', 10 if room_extract.is_room_empty else 40)
 	
 	
 	
-	var label_setting_copy:LabelSettings = NameLabel.label_settings.duplicate()
-	label_setting_copy.font_color = Color(0.7, 0.3, 0.3, 1) if !room_extract.is_activated else Color(1, 1, 1, 1)
-	NameLabel.label_settings = label_setting_copy
-	DotIcon.static_color = Color(1, 0, 0, 1) if !room_extract.is_activated else Color(0, 1, 0, 1)
+	#var label_setting_copy:LabelSettings = NameLabel.label_settings.duplicate()
+	#label_setting_copy.font_color = Color(0.7, 0.3, 0.3, 1) if !room_extract.is_activated else Color(1, 1, 1, 1)
+	#NameLabel.label_settings = label_setting_copy
+	#DotIcon.static_color = Color(1, 0, 0, 1) if !room_extract.is_activated else Color(0, 1, 0, 1)
 	self.size.x = 1
 	await U.tick()
-	EnergyIndicatorControl.position.x = self.size.x - 30
+	#EnergyIndicatorControl.position.x = self.size.x - 30
 
 
 func shift_string_backward(text: String, shift: int = 5) -> String:
@@ -134,5 +134,5 @@ func _physics_process(delta: float) -> void:
 	
 	if shifted_val > 0:
 		shifted_val -= 1		
-		NameLabel.text = shift_string_backward(name_str, shifted_val)
-		LvlLabel.text = shift_string_backward(lvl_str, shifted_val)
+		#NameLabel.text = shift_string_backward(name_str, shifted_val)
+		#LvlLabel.text = shift_string_backward(lvl_str, shifted_val)

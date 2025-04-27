@@ -44,7 +44,7 @@ var SCPA:Dictionary = {
 			"description": "All resources are available.", 
 			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
 				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-				ring_config_data.available_resources = {
+				ring_config_data.personnel = {
 					RESOURCE.TYPE.TECHNICIANS: true,
 					RESOURCE.TYPE.STAFF: true,
 					RESOURCE.TYPE.SECURITY: true,
@@ -56,7 +56,7 @@ var SCPA:Dictionary = {
 			"description": "Makes resources unusable.",
 			"effect": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
 				var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-				ring_config_data.available_resources = {
+				ring_config_data.personnel = {
 					RESOURCE.TYPE.TECHNICIANS: false,
 					RESOURCE.TYPE.STAFF: false,
 					RESOURCE.TYPE.SECURITY: false,

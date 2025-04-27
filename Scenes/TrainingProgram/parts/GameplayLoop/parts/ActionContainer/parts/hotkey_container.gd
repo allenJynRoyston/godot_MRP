@@ -310,10 +310,10 @@ func build_shortcuts() -> void:
 						1:
 							#await lock_btns(true)
 							var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.index)
-							await GAME_UTIL.use_active_ability(ability)
+							await GAME_UTIL.use_active_ability(ability, shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
 							#lock_btns(false)
 						2:
-							GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.index)
+							GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
 				
 				btn.update_self()
 		#----------------------------

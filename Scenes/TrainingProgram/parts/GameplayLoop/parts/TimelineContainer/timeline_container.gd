@@ -18,7 +18,6 @@ var uid_refs:Dictionary = {}
 var current_day:int 
 var is_setup:bool = false
 
-
 signal wait_for_complete
 
 # --------------------------------------------------------------------------------------------------
@@ -37,6 +36,7 @@ func _ready() -> void:
 	DetectorPanel.onFocus = func() -> void:
 		if control_pos.is_empty():return
 		U.tween_node_property(Gradiant, "modulate", Color(1, 1, 1, 1))
+
 	DetectorPanel.onBlur = func() -> void:
 		if control_pos.is_empty():return
 		U.tween_node_property(Gradiant, "modulate", Color(1, 1, 1, 0))
@@ -76,7 +76,6 @@ func update_control_pos() -> void:
 		"show": control_pos_default[MainPanel].x, 
 		"hide": control_pos_default[MainPanel].x + MainMargin.size.x
 	}	
-
 	
 	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------	
@@ -93,6 +92,7 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 func on_progress_data_update(new_val:Dictionary) -> void:
 	progress_data = new_val
+	
 	if !is_node_ready():return	
 	await U.tick()
 

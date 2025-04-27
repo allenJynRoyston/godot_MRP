@@ -47,7 +47,7 @@ theme_override_constants/separation = 2
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
 
-[node name="LevelLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer"]
+[node name="CooldownLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer"]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 text = "0"
@@ -67,7 +67,7 @@ theme_override_constants/margin_right = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 0
 
 [node name="IconBtn" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer" instance=ExtResource("3_rylm3")]
 layout_mode = 2

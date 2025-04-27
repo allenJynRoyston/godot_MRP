@@ -27,12 +27,12 @@ var ROOM_TEMPLATE:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------	
 	
 	# ------------------------------------------
-	"resource_requirements": [
+	"required_personnel": [
+		# RESOURCE.PERSONNEL.STAFF
 	],	
 	# ------------------------------------------
 
@@ -54,6 +54,15 @@ var ROOM_TEMPLATE:Dictionary = {
 	"levels_with": {
 		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 		"trait": RESEARCHER.TRAITS.HARD_WORKING
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.CORE: 0
 	},
 	# ------------------------------------------
 	
@@ -103,6 +112,16 @@ func fill_template(data:Dictionary, ref:int) -> void:
 		var value = data[key]
 		if key in template_copy:
 			template_copy[key] = value
+	
+	if "metrics" in data:
+		for key in data.metrics:
+			var amount:int = data.metrics[key]
+			template_copy.metrics[key] = amount
+
+	if "currencies" in data:
+		for key in data.currencies:
+			var amount:int = data.currencies[key]
+			template_copy.currencies[key] = amount	
 
 	reference_list.push_back(ref)
 	reference_data[ref] = template_copy
@@ -227,9 +246,9 @@ func calculate_operating_costs(ref:int, add:bool = true) -> Dictionary:
 	resources_data[RESOURCE.CURRENCY.MONEY].amount = U.min_max(resources_data[RESOURCE.CURRENCY.MONEY].amount - room_data.costs.operating, 0, resources_data[RESOURCE.CURRENCY.MONEY].capacity)
 
 	SUBSCRIBE.resources_data = resources_data
-	return resources_data# ------------------------------------------------------------------------------
-
+	return resources_data
 # ------------------------------------------------------------------------------
+
 func get_count(ref:int) -> int:
 	return purchased_facility_arr.filter(func(i):return i.ref == ref).size()
 # ------------------------------------------------------------------------------

@@ -32,6 +32,11 @@ extends Control
 		hide_next_prev_btns = val
 		on_hide_next_prev_btns_update()
 
+@export var disable_inputs:bool = false : 
+	set(val):
+		disable_inputs = val
+		on_disable_inputs_update()
+
 var is_revealed:bool = false : 
 	set(val):
 		is_revealed = val
@@ -61,9 +66,6 @@ var shop_unlock_purchases:Array = []
 var control_pos:Dictionary = {}
 var is_animating:bool = false
 
-var onUseAbility:Callable = func(_ability:Dictionary) -> void:
-	pass
-
 signal reveal_finished
 signal cycle_until_complete
 
@@ -87,7 +89,7 @@ func _ready() -> void:
 	NextBtn.onClick = func() -> void:
 		cycle_cards(1)		
 		
-	RoomCard.onUseAbility = onUseAbility
+	#RoomCard.onUseAbility = onUseAbility
 	
 	control_pos[DetailPanel] = {
 		"show": DetailPanel.position.x, 
@@ -95,6 +97,7 @@ func _ready() -> void:
 	}
 	
 	on_is_revealed_update(true)
+	on_disable_inputs_update()
 	
 	on_show_researcher_card_update()
 	on_show_room_card_update()
@@ -110,6 +113,14 @@ func _ready() -> void:
 func check_refs() -> void:	
 	on_hide_next_prev_btns_update()
 # ---------------------------------
+
+
+# ---------------------------------
+func on_disable_inputs_update() -> void:
+	for btn in [FlipBtn, PrevBtn, NextBtn]:
+		btn.is_disabled = disable_inputs
+# ---------------------------------
+
 
 # ---------------------------------
 func reveal(state:bool) -> void:
@@ -136,8 +147,8 @@ func switch_to_room_abilities() -> Array:
 	
 	if !RoomCard.flip:
 		RoomCard.flip = true	
-	
-	await U.set_timeout(0.1)
+		await RoomCard.flip_complete
+		
 	return await RoomCard.get_ability_btns()
 # ---------------------------------
 

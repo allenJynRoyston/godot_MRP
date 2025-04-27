@@ -59,6 +59,9 @@ layout_mode = 2
 [node name="RoomInfo" parent="." instance=ExtResource("6_fbysn")]
 visible = false
 layout_mode = 2
+expand = null
+is_showing = null
+freeze_inputs = null
 
 [node name="FloorInfo" parent="." instance=ExtResource("7_ceqoy")]
 visible = false

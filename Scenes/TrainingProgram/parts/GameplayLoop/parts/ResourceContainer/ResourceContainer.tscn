@@ -1,117 +1,561 @@
-[gd_scene load_steps=8 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=23 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" uid="uid://da8752kxl16py" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/resource_container.gd" id="1_qt3uu"]
-[ext_resource type="PackedScene" uid="uid://g7smhpnta8gj" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/LocationPanel.tscn" id="3_0dffn"]
-[ext_resource type="PackedScene" uid="uid://cr4jyhkulokw2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/MetricMiniItem.tscn" id="3_7q6wh"]
-[ext_resource type="PackedScene" uid="uid://biu7hvraky4ie" path="res://UI/PersonnelPanel/PersonnelPanel.tscn" id="4_5xs2u"]
-[ext_resource type="PackedScene" uid="uid://47qvjxdsxbx5" path="res://UI/EnergyPanel/EnergyPanel.tscn" id="5_7q6wh"]
-[ext_resource type="PackedScene" uid="uid://bdjo5eyc627x" path="res://UI/ResourcePanel/ResourcePanel.tscn" id="6_5xs2u"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_7q6wh"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_bsj2a"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="4_4m2u1"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_5bupg"]
+[ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="6_0dffn"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="6_kd4jj"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="7_xre08"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_xre08"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ljmw"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5xs2u"]
 
-[node name="HeaderContainer" type="PanelContainer"]
-z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_0ljmw")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xre08"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0dffn"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bsj2a"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4m2u1"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5bupg"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kd4jj"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk4y0"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bd2ap"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erj62"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pubiq"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8af6x"]
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbbqs"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.162066, 0.162066, 0.162066, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Header" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
 script = ExtResource("1_qt3uu")
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 2
-
-[node name="CenterPanel" type="MarginContainer" parent="Control"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 55.0
-grow_horizontal = 2
-theme_override_constants/margin_top = 20
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/CenterPanel"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="MetricsContainer" type="HBoxContainer" parent="Control/CenterPanel/HBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="Morale" parent="Control/CenterPanel/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
-layout_mode = 2
-size_flags_horizontal = 1
-
-[node name="Safety" parent="Control/CenterPanel/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
-layout_mode = 2
-size_flags_horizontal = 1
-assigned_metric = 1
-value = -4
-
-[node name="Readiness" parent="Control/CenterPanel/HBoxContainer/MetricsContainer" instance=ExtResource("3_7q6wh")]
-layout_mode = 2
-size_flags_horizontal = 1
-assigned_metric = 2
-value = 2
-
-[node name="PersonnelContainer" type="HBoxContainer" parent="Control/CenterPanel/HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-alignment = 1
-
-[node name="PersonnelPanel" parent="Control/CenterPanel/HBoxContainer/PersonnelContainer" instance=ExtResource("4_5xs2u")]
-layout_mode = 2
-
-[node name="MarginControl" type="MarginContainer" parent="Control"]
+[node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5xs2u")
+
+[node name="MarginControl" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Control/MarginControl"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/MarginControl"]
+layout_mode = 2
+
+[node name="Location" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Floor" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/Location"]
+layout_mode = 2
+
+[node name="CenterLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Floor"]
+layout_mode = 2
+text = "FLOOR"
+label_settings = ExtResource("3_bsj2a")
+
+[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Floor"]
+layout_mode = 2
+text = "1"
+label_settings = ExtResource("5_5bupg")
+horizontal_alignment = 1
+
+[node name="Wing" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/Location"]
+layout_mode = 2
+
+[node name="CenterLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Wing"]
+layout_mode = 2
+text = "WING"
+label_settings = ExtResource("3_bsj2a")
+
+[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Wing"]
+layout_mode = 2
+text = "A"
+label_settings = ExtResource("5_5bupg")
+horizontal_alignment = 1
+
+[node name="Room" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/Location"]
+layout_mode = 2
+
+[node name="CenterLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Room"]
+layout_mode = 2
+text = "ROOM"
+label_settings = ExtResource("3_bsj2a")
+
+[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Room"]
+layout_mode = 2
+text = "1"
+label_settings = ExtResource("5_5bupg")
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2"]
+layout_mode = 2
+text = "Status"
+label_settings = ExtResource("2_7q6wh")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer"]
 z_index = 1
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="CurrencyContainer" type="HBoxContainer" parent="Control/MarginControl/HBoxContainer2"]
+[node name="Left" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="Currencies" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xre08")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "CURRENCIES"
+label_settings = ExtResource("3_bsj2a")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
+layout_mode = 2
 theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Money" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
+icon = 31
+no_bg = true
+title = "99"
+display_at_bottom = true
+
+[node name="Materials" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
+icon = 41
+no_bg = true
+title = "99"
+display_at_bottom = true
+
+[node name="Research" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4m2u1")
+icon = 44
+no_bg = true
+title = "99"
+display_at_bottom = true
+
+[node name="Core" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5bupg")
+icon = 39
+no_bg = true
+title = "10"
+display_at_bottom = true
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = -15
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="CurrencyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+
+[node name="MaterialTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+
+[node name="ScienceTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+
+[node name="CoreTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+
+[node name="Vibes" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xre08")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = -15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "VIBE"
+label_settings = ExtResource("3_bsj2a")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Morale" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="Label2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Morale"]
+layout_mode = 2
+text = "MORALE"
+label_settings = ExtResource("6_kd4jj")
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Morale"]
+layout_mode = 2
+text = "0"
+label_settings = ExtResource("5_5bupg")
+horizontal_alignment = 1
+
+[node name="Safety" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="Label2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Safety"]
+layout_mode = 2
+text = "SAFETY"
+label_settings = ExtResource("6_kd4jj")
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Safety"]
+layout_mode = 2
+text = "0"
+label_settings = ExtResource("5_5bupg")
+horizontal_alignment = 1
+
+[node name="Readiness" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="Label2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Readiness"]
+layout_mode = 2
+text = "READINESS"
+label_settings = ExtResource("6_kd4jj")
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Readiness"]
+layout_mode = 2
+text = "0"
+label_settings = ExtResource("5_5bupg")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_top = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="MoraleTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+
+[node name="SafetyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+
+[node name="ReadinessTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+
+[node name="Right" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
 alignment = 2
 
-[node name="MoneyPanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+[node name="Energy" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xre08")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "ENERGY"
+label_settings = ExtResource("3_bsj2a")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ResourceItem" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kd4jj")
+icon = 32
+no_bg = true
+title = "99/99"
+display_at_bottom = true
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = -15
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="EnergyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 layout_mode = 2
 
-[node name="SciencePanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+[node name="Personnel" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right"]
+custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-header_label = "SCIENCE"
-resource = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_xre08")
 
-[node name="MatPanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel"]
 layout_mode = 2
-header_label = "MATERIAL"
-resource = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
-[node name="CorePanel" parent="Control/MarginControl/HBoxContainer2/CurrencyContainer" instance=ExtResource("6_5xs2u")]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer"]
 layout_mode = 2
-header_label = "CORE"
-resource = 3
+theme_override_constants/separation = -1
 
-[node name="EnergyPanel" parent="Control/MarginControl/HBoxContainer2" instance=ExtResource("5_7q6wh")]
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-size_flags_vertical = 0
+text = "PERSONNEL"
+label_settings = ExtResource("3_bsj2a")
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="LocationPanel" parent="Control/MarginControl/HBoxContainer2" instance=ExtResource("3_0dffn")]
-custom_minimum_size = Vector2(0, 50)
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Staff" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rk4y0")
+icon = 35
+no_bg = true
+title = "STF"
+display_at_bottom = true
+
+[node name="Technicians" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bd2ap")
+icon = 34
+no_bg = true
+title = "TCH"
+display_at_bottom = true
+
+[node name="Security" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_erj62")
+icon = 36
+no_bg = true
+title = "SEC"
+display_at_bottom = true
+
+[node name="DClass" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pubiq")
+icon = 33
+no_bg = true
+title = "DCL"
+display_at_bottom = true
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = -15
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="StaffTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+use_icon = true
+
+[node name="TechTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+use_icon = true
+
+[node name="SecTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+use_icon = true
+
+[node name="DClassTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+layout_mode = 2
+use_icon = true
+
+[node name="KeyBtn" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right" instance=ExtResource("8_xre08")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8af6x")
+title = "TASKBAR"
+assigned_key = "DELETE"
+icon = 67
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+
+[node name="HintContainer" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer"]
+custom_minimum_size = Vector2(300, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rbbqs")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -4
+
+[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "HINT"
+label_settings = ExtResource("3_bsj2a")
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconBtn" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_xre08")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 23
+flip_v = false
+is_hoverable = false
+
+[node name="HintLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Hint goes here."
+label_settings = ExtResource("2_7q6wh")

@@ -46,6 +46,7 @@ layout_mode = 2
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_bottom = 5
 icon = 3
+flip_v = false
 
 [node name="Label" type="Label" parent="HBoxContainer/LabelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -72,8 +73,10 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 14
+flip_v = false
 
 [node name="CloseBtn" parent="HBoxContainer/BtnContainer/HBoxContainer" instance=ExtResource("3_8hswi")]
 visible = false
 layout_mode = 2
 icon = 1
+flip_v = false

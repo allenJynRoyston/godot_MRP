@@ -4,6 +4,9 @@ extends MouseInteractions
 @onready var OutputTextureRect:TextureRect = $CardBody/TextureRect
 
 @onready var CardBody:Control = $CardBody
+@onready var Front:Control = $CardBody/SubViewport/Control/CardBody/Front
+@onready var Back:Control = $CardBody/SubViewport/Control/CardBody/Back
+
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
@@ -12,10 +15,10 @@ extends MouseInteractions
 
 # back
 @onready var CardDrawerResearcherPref:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerResearcherPref
-@onready var CardDrawerMetrics:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerMetrics
 @onready var CardDrawerRewards:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerRewards
 @onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerActiveAbilities
 @onready var CardDrawerPassiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPassiveAbilities
+@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
 
 
 @export var ref:int = -1: 
@@ -27,11 +30,6 @@ extends MouseInteractions
 	set(val):
 		flip = val
 		on_flip_update()
-
-#@export var show_assigned:bool = false : 
-	#set(val):
-		#show_assigned = val
-		#on_show_assigned_update()
 		
 @export var reveal:bool = false : 
 	set(val):
@@ -72,7 +70,8 @@ var current_metrics:Dictionary = {}
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass
-var onUseAbility:Callable = func(_ability:Dictionary):pass
+
+signal flip_complete
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -84,7 +83,9 @@ func _ready() -> void:
 	on_is_selected_update()
 	on_is_deselected_update()
 	
-	CardDrawerActiveAbilities.onUseAbility = onUseAbility
+	Front.show()
+	Back.hide()
+	
 	#on_show_assigned_update()
 # ------------------------------------------------------------------------------
 
@@ -92,6 +93,8 @@ func _ready() -> void:
 func on_flip_update() -> void:
 	if !is_node_ready():return
 	CardBody.flip = flip
+	await CardBody.flip_complete
+	flip_complete.emit()
 
 func on_is_active_update() -> void:
 	if !is_node_ready():return
@@ -127,11 +130,10 @@ func on_ref_update() -> void:
 		CardDrawerDescription.content = "-"
 		CardDrawerImage.img_src = "-"
 		CardDrawerDescription.content = "-"
-		CardDrawerRewards.content = "-"
-	
-		CardDrawerMetrics.list = []
+		CardDrawerEffect.list = []
 		CardDrawerActivationRequirements.list = []
-
+		CardDrawerPassiveAbilities.clear()
+		CardDrawerActiveAbilities.clear()
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
@@ -140,16 +142,25 @@ func on_ref_update() -> void:
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		is_activated = extract_data.is_activated		
+
+	if "passive_abilities" not in room_details or room_details.passive_abilities.call().is_empty():
+		CardDrawerPassiveAbilities.hide()
+	else:
+		CardDrawerPassiveAbilities.show()
+		CardDrawerPassiveAbilities.room_details = room_details
+		CardDrawerPassiveAbilities.use_location = use_location
+
+	if "abilities" not in room_details or room_details.abilities.call().is_empty():
+		CardDrawerActiveAbilities.hide()
+	else:
+		CardDrawerActiveAbilities.show()
+		CardDrawerActiveAbilities.room_details = room_details
+		CardDrawerActiveAbilities.use_location = use_location
 	
-
-	CardDrawerActiveAbilities.room_details = room_details
-	CardDrawerPassiveAbilities.room_details = room_details
-
 	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerDescription.content = room_details.description if !is_locked else "(Viewable with AQUISITION DEPARTMENT.)"
 	CardDrawerImage.img_src = room_details.img_src if !is_locked else ""
 	CardDrawerImage.use_static = !is_activated
-
 	
 	var level_with_details:Dictionary = ROOM_UTIL.return_levels_with_details(room_details.ref)
 	if level_with_details.is_empty():
@@ -158,19 +169,18 @@ func on_ref_update() -> void:
 		var spec_str:String = level_with_details.specilization.name
 		var trait_str:String = level_with_details.trait.name
 		CardDrawerResearcherPref.content = "%s or %s" % [spec_str, trait_str]
-	
-	
 
-	CardDrawerActivationRequirements.list = room_details.resource_requirements.map(func(x):  
+	CardDrawerActivationRequirements.list = room_details.required_personnel.map(func(x):  
 		var resource_details:Dictionary = RESOURCE_UTIL.return_personnel(x)
 		return {"icon": resource_details.icon, "title": resource_details.name}
 	)
-
 	
-	CardDrawerMetrics.list = [
-		{"icon": SVGS.TYPE.PLUS, "title": "MORALE" },
-		{"icon": SVGS.TYPE.PLUS, "title": "SAFETY" },
-		{"icon": SVGS.TYPE.PLUS, "title": "READINESS" },
+	
+
+	CardDrawerEffect.list = [
+		#{"icon": SVGS.TYPE.PLUS, "title": "MORALE" },
+		#{"icon": SVGS.TYPE.PLUS, "title": "SAFETY" },
+		#{"icon": SVGS.TYPE.PLUS, "title": "READINESS" },
 	]
 
 # ------------------------------------------------------------------------------
@@ -180,8 +190,10 @@ func get_ability_btns() -> Array:
 	await U.tick()
 	var btn_list:Array = []
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:
-		for btn in node.get_btns():
-			btn_list.push_back(btn)
+		if node.is_visible_in_tree():
+			for btn in node.get_btns():
+				btn_list.push_back(btn)
+	
 	return btn_list
 # ------------------------------------------------------------------------------
 	

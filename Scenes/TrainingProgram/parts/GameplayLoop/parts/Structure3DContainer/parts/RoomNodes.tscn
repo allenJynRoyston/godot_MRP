@@ -1126,12 +1126,12 @@ spot_angle = 43.0215
 spot_angle_attenuation = 1.6245
 
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -18.035, 17, -18)
+transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -25.432, 23.0396, -25.397)
 projection = 1
 current = true
 size = 27.0
 near = 0.002
-far = 60.0
+far = 900.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/RoomColumn/MainCamera"]
 transform = Transform3D(1, 0, 0, 0, -2.98023e-08, -1, 0, 1, -2.98023e-08, 0, 3.93685e-06, -65.0989)

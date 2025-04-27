@@ -52,7 +52,7 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	
 	U.tween_node_property(MainControlPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0.3 if !skip_animation else 0)
 	
-	if is_showing and camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
+	if is_showing and camera_settings.type == CAMERA.TYPE.WING_SELECT:
 		U.tween_node_property(MainControlPanel, "position:x", control_pos[MainControlPanel].show, 0.3 if !skip_animation else 0)
 	
 	if !is_showing:
@@ -63,12 +63,13 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	super.on_camera_settings_update(new_val)
 	if !is_node_ready() or camera_settings.is_empty() or !is_ready:return	
-	if camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
-		is_showing = true
-		LocationPanel.show()
-	else:
-		is_showing = false
-		LocationPanel.hide()
+	match camera_settings.type:
+		CAMERA.TYPE.WING_SELECT:
+			is_showing = true
+			LocationPanel.show()
+		CAMERA.TYPE.FLOOR_SELECT:
+			is_showing = false
+			LocationPanel.hide()
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val

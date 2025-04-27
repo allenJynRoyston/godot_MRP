@@ -96,7 +96,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xvhpf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5kwt"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -108,7 +108,7 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5kwt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xvhpf"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -218,12 +218,12 @@ title = "DESCRIPTION"
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_xvhpf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_v5kwt")
 
 [node name="CardDrawerContainmentInfo" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="0" instance=ExtResource("13_bbv36")]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_v5kwt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xvhpf")
 title = "PASSIVE EFFECT"
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 

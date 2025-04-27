@@ -64,11 +64,11 @@ var SCP_TEMPLATE:Dictionary = {
 		"description": "Makes all personnel resources available for the wing.", 
 		"func": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
 			var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-			ring_config_data.available_resources = {
-				RESOURCE.TYPE.TECHNICIANS: true,
-				RESOURCE.TYPE.STAFF: true,
-				RESOURCE.TYPE.SECURITY: true,
-				RESOURCE.TYPE.DCLASS: true
+			ring_config_data.personnel = {
+				RESOURCE.PERSONNEL.TECHNICIANS: true,
+				RESOURCE.PERSONNEL.STAFF: true,
+				RESOURCE.PERSONNEL.SECURITY: true,
+				RESOURCE.PERSONNEL.DCLASS: true
 			}
 			return new_room_config,
 	},

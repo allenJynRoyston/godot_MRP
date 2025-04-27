@@ -15,10 +15,14 @@ enum ABILITY_TYPE {ACTIVE, PASSIVE}
 const RoomAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomAbilityBtn/RoomAbilityBtn.tscn")		
 const RoomPassiveAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomPassiveAbilityBtn/RoomPassiveAbilityBtn.tscn")
 
-var onUseAbility:Callable = func():pass
+var use_location:Dictionary = {}
 
 func _ready() -> void:
 	super._ready()
+
+func clear() -> void:
+	for node in AbilityList.get_children():
+		node.queue_free()
 
 func on_room_details_update() -> void:
 	if !is_node_ready() or room_details.is_empty():return
@@ -33,18 +37,30 @@ func on_room_details_update() -> void:
 				var ability:Dictionary = abilities[ability_index]
 				var btn_node:Control = RoomAbilityBtnPreload.instantiate()
 				
+				btn_node.room_ref = room_details.ref
+				btn_node.ability_index = ability_index
 				btn_node.ability_name = ability.name
+				btn_node.use_location = use_location
+				btn_node.panel_color = border_color
 				
-				btn_node.level = ability.lvl_required
+				btn_node.is_unknown = ability.lvl_required >= 1
 				btn_node.cost = ability.science_cost
 				btn_node.ability_data = ability
 
 				btn_node.onClick = func() -> void:
-					onUseAbility.call({"type": "active", "ability": ability})
+					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
+					if ActionContainerNode.is_visible_in_tree():
+						ActionContainerNode.BtnControls.freeze_and_disable(true)
+						ActionContainerNode.RoomDetailsControl.disable_inputs = true
+
+						await GAME_UTIL.use_active_ability(ability, room_details.ref, ability_index, use_location)
+						ActionContainerNode.BtnControls.freeze_and_disable(false)
+						ActionContainerNode.RoomDetailsControl.disable_inputs = false
+						return
+					GAME_UTIL.use_active_ability(ability, room_details.room_ref, ability_index, use_location)
 					
 				AbilityList.add_child(btn_node)
-		else:
-			pass
+
 			
 	if ability_type == ABILITY_TYPE.PASSIVE:
 		if "passive_abilities" in room_details:
@@ -56,18 +72,17 @@ func on_room_details_update() -> void:
 				btn_node.room_ref = room_details.ref
 				btn_node.ability_index = ability_index
 				btn_node.ability_name = ability.name
+				btn_node.use_location = use_location
+				btn_node.panel_color = border_color
 				
-				btn_node.level = 0
-				btn_node.cost = 0
+				btn_node.is_unknown = ability.lvl_required >= 1
+				btn_node.cost = ability.energy_cost
 				btn_node.ability_data = ability			
 				
 				btn_node.onClick = func() -> void:
-					onUseAbility.call({"type": "passive", "ability": ability, "ability_index": ability_index})
+					GAME_UTIL.toggle_passive_ability(room_details.ref, ability_index, use_location)					
 						
 				AbilityList.add_child(btn_node)
-		else:
-			pass
-			#PassiveAbilities.hide()
 
 func get_btns() -> Array:	
 	return AbilityList.get_children()

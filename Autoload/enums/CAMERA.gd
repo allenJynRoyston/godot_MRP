@@ -1,4 +1,4 @@
 @tool
 extends Node
 
-enum TYPE { FLOOR_SELECT, ROOM_SELECT }
+enum TYPE { FLOOR_SELECT, WING_SELECT, ROOM_SELECT }

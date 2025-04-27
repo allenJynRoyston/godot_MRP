@@ -32,6 +32,7 @@ var upgrade_abl_level:Dictionary = {
 var supply_security:Dictionary = {
 	"name": "EMPLOY SECURITY",
 	"description": "Makes SECURITY personnel available for the entire wing.",
+	"lvl_required": 0,
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.PERSONNEL.SECURITY
@@ -42,6 +43,7 @@ var supply_security:Dictionary = {
 var supply_staff:Dictionary = {
 	"name": "EMPLOY STAFF",
 	"description": "Makes STAFF personnel available for the entire wing.",
+	"lvl_required": 0,
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.PERSONNEL.STAFF
@@ -52,6 +54,7 @@ var supply_staff:Dictionary = {
 var supply_technicians:Dictionary = {
 	"name": "EMPLOY TECHNICIANS",
 	"description": "Makes TECHNICIANS personnel available for the entire wing.",
+	"lvl_required": 0,
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.PERSONNEL.TECHNICIANS
@@ -62,6 +65,7 @@ var supply_technicians:Dictionary = {
 var supply_dclass:Dictionary = {
 	"name": "CONSCRIPT DCLASS",
 	"description": "Makes DCLASS personnel available for the testing for the entire wing.",
+	"lvl_required": 0,
 	"energy_cost": 1,
 	"provides": [
 		RESOURCE.PERSONNEL.DCLASS
@@ -72,6 +76,7 @@ var supply_dclass:Dictionary = {
 var firearm_training:Dictionary = {
 	"name": "FIREARM TRAINING",
 	"description": "Increases SAFETY rating by 1.",
+	"lvl_required": 0,
 	"energy_cost": 2,
 	"metrics": {
 		RESOURCE.METRICS.SAFETY: 1
@@ -82,6 +87,7 @@ var firearm_training:Dictionary = {
 var heavy_weapons_training:Dictionary = {
 	"name": "HEAVY WEAPONS TRAINING",
 	"description": "Increases READINESS rating by 1.",
+	"lvl_required": 0,
 	"energy_cost": 3,
 	"metrics": {
 		RESOURCE.METRICS.READINESS: 1
@@ -92,6 +98,7 @@ var heavy_weapons_training:Dictionary = {
 var tech_support:Dictionary = {
 	"name": "TECH SUPPORT",
 	"description": "Increases READINESS rating by 1.",
+	"lvl_required": 0,
 	"energy_cost": 2,
 	"metrics": {
 		RESOURCE.METRICS.READINESS: 1
@@ -103,6 +110,7 @@ var tech_support:Dictionary = {
 var memetic_shielding:Dictionary = {
 	"name": "MEMETIC SHIELDING",
 	"description": "Increases READINESS rating by 1.",
+	"lvl_required": 0,
 	"energy_cost": 3,
 	"metrics":{
 		RESOURCE.METRICS.READINESS: 1

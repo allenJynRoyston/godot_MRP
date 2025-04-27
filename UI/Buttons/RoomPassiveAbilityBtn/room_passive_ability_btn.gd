@@ -3,9 +3,9 @@ extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
 
-@onready var LevelLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/LevelLabel
-@onready var CostLabel:Label = $MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer/CostLabel
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer/IconBtn
+@onready var Checkbox:BtnBase = $MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/CheckBox
+@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/IconBtn
+@onready var CostLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CostLabel
 @onready var NameLabel:Label = $MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/NameLabel
 
 @export var panel_color:Color = Color("0e0e0ecb") : 
@@ -50,15 +50,29 @@ extends BtnBase
 		is_unknown = val
 		on_is_unknown_update()		
 
+var base_states:Dictionary = {} 
+var use_location:Dictionary = {} : 
+	set(val):
+		use_location = val
+		on_base_states_update()
+
 # directly access, do not remove
 var type:String 
 var room_ref:int
 var ability_data:Dictionary = {}
 var ability_index:int
-	
+
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
 
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	super._init()
+	SUBSCRIBE.subscribe_to_base_states(self)
+
+func _exit_tree() -> void:
+	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_base_states(self)
+	
 func _ready() -> void:
 	super._ready()
 
@@ -71,9 +85,17 @@ func _ready() -> void:
 	on_is_disabled_updated()
 	on_is_unavailable_update()
 	on_is_unknown_update()
+	on_base_states_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_base_states_update(new_val:Dictionary = base_states) -> void:
+	base_states = new_val
+	if !is_node_ready() or use_location.is_empty():return
+	var ability_uid:String = str(room_ref, ability_index)	
+	var designation:String = U.location_to_designation(use_location)
+	Checkbox.is_checked = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false
+
 func on_is_unknown_update() -> void:
 	on_level_update()
 	on_ability_name_update()
@@ -81,7 +103,8 @@ func on_is_unknown_update() -> void:
 	
 func on_level_update() -> void:
 	if !is_node_ready():return
-	LevelLabel.text = str(level) if !is_unknown else "?"
+	pass
+	#LevelLabel.text = str(level) if !is_unknown else "?"
 
 func on_ability_name_update() -> void:
 	if !is_node_ready():return
@@ -90,7 +113,6 @@ func on_ability_name_update() -> void:
 func on_cost_update() -> void:
 	if !is_node_ready():return
 	CostLabel.text = str(cost) if !is_unknown else "?"
-	IconBtn.hide() if is_unknown else IconBtn.show()
 
 func on_cooldown_update() -> void:
 	if !is_node_ready():return
@@ -123,7 +145,7 @@ func update_font_color() -> void:
 		new_color = new_color.lightened(0.2)
 		
 	label_duplicate.font_color = new_color
-	for node in [LevelLabel, NameLabel, CostLabel]:
+	for node in [NameLabel, CostLabel]:
 		node.label_settings = label_duplicate	
 		
 	IconBtn.static_color = new_color		
@@ -136,7 +158,6 @@ func on_focus(state:bool = is_focused) -> void:
 	update_font_color()
 	on_panel_color_update()
 	
-
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return

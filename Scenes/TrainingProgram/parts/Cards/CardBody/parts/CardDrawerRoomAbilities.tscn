@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cus6h1nu75y1e"]
+[gd_scene load_steps=4 format=3 uid="uid://cus6h1nu75y1e"]
 
 [ext_resource type="Script" uid="uid://dhdi25jyrhskx" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_room_abilities.gd" id="1_6ymt7"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_b2hfq"]
-[ext_resource type="PackedScene" uid="uid://d0rtygjh5shck" path="res://UI/Buttons/RoomAbilityBtn/RoomAbilityBtn.tscn" id="3_pdxs1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ymt7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ildx4"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -16,19 +15,12 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2hfq"]
-bg_color = Color(0.275367, 0.56172, 0.999992, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [node name="CardDrawerAblities" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
 offset_right = 200.0
 offset_bottom = 54.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_6ymt7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ildx4")
 script = ExtResource("1_6ymt7")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -55,8 +47,3 @@ theme_override_constants/margin_bottom = 3
 
 [node name="AbilityList" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
-
-[node name="RoomAbilityBtn" parent="MarginContainer/MarginContainer/AbilityList" instance=ExtResource("3_pdxs1")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_b2hfq")
-debug_me = true

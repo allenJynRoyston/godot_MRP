@@ -93,7 +93,6 @@ var onBack:Callable = func() -> void:pass
 var onAction:Callable = func() -> void:pass
 var onCBtn:Callable = func() -> void:pass
 var onDirectional:Callable = func(key:String) -> void:pass
-var onIntercept:Callable = func(node:Control) -> void:pass
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -130,11 +129,7 @@ func _ready() -> void:
 				return
 			
 			if "onClick" in node:
-				if !intercept_click_event:
-					node.onClick.call()
-				else:
-					onIntercept.call(node)	
-					return
+				node.onClick.call()
 					
 		onAction.call()	
 					

@@ -5,7 +5,7 @@ extends PanelContainer
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
-@onready var ResourceContainer:PanelContainer = $ResourceContainer
+@onready var ResourceContainer:Control = $ResourceContainer
 @onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
 @onready var LineDrawContainer:PanelContainer = $LineDrawContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
@@ -159,15 +159,15 @@ var initial_values:Dictionary = {
 	"resources_data": func(starting_resources:Dictionary = {}) -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": starting_resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 9999, 
+				"amount": starting_resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": starting_resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 1000, 
+				"amount": starting_resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": starting_resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 500, 
+				"amount": starting_resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
@@ -633,11 +633,17 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 			RESOURCE.METRICS.SAFETY: 0,
 			RESOURCE.METRICS.READINESS: 0
 		},
-		"available_resources": {
+		"personnel": {
 			RESOURCE.PERSONNEL.TECHNICIANS: false,
 			RESOURCE.PERSONNEL.STAFF: false,
 			RESOURCE.PERSONNEL.SECURITY: false,
 			RESOURCE.PERSONNEL.DCLASS: false	
+		},
+		"currencies": {
+			RESOURCE.CURRENCY.MONEY: 0,
+			RESOURCE.CURRENCY.MATERIAL: 0,
+			RESOURCE.CURRENCY.SCIENCE: 0,
+			RESOURCE.CURRENCY.CORE: 0,
 		},		
 		"abl_lvl": 0,
 		"energy": {
@@ -667,18 +673,24 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 	for n in range(array_size*array_size):
 		room[n] = get_room_defaults()
 	return {	
-		# --------------  # FLOOR WIDE STATS
+		# --------------  # FLOOR RING STATS
 		"metrics": {
 			RESOURCE.METRICS.MORALE: 0,
 			RESOURCE.METRICS.SAFETY: 0,
 			RESOURCE.METRICS.READINESS: 0
 		},
-		"available_resources": {
+		"personnel": {
 			RESOURCE.PERSONNEL.TECHNICIANS: false,
 			RESOURCE.PERSONNEL.STAFF: false,
 			RESOURCE.PERSONNEL.SECURITY: false,
 			RESOURCE.PERSONNEL.DCLASS: false	
-		},		
+		},
+		"currencies": {
+			RESOURCE.CURRENCY.MONEY: 0,
+			RESOURCE.CURRENCY.MATERIAL: 0,
+			RESOURCE.CURRENCY.SCIENCE: 0,
+			RESOURCE.CURRENCY.CORE: 0,
+		},
 		"abl_lvl": 0,
 		"energy": {
 			"available": 0,
@@ -695,6 +707,15 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 
 func get_room_defaults() -> Dictionary:
 	return {
+		# if any passives ENABLE (provides) personnel, mark it here
+		"personnel": {
+			RESOURCE.PERSONNEL.TECHNICIANS: false,
+			RESOURCE.PERSONNEL.STAFF: false,
+			RESOURCE.PERSONNEL.SECURITY: false,
+			RESOURCE.PERSONNEL.DCLASS: false	
+		},
+		# if any passive use energy, mark it here
+		"energy_used": 0, 		
 		"damage_val": 0,
 		"abl_lvl": 0,
 		"is_activated": false,
@@ -1154,8 +1175,8 @@ func on_current_phase_update() -> void:
 			current_location_snapshot = current_location.duplicate(true)
 			camera_settings_snapshot = camera_settings.duplicate(true)
 			
-			if camera_settings_snapshot.type != CAMERA.TYPE.ROOM_SELECT:
-				camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+			if camera_settings_snapshot.type != CAMERA.TYPE.WING_SELECT:
+				camera_settings.type = CAMERA.TYPE.WING_SELECT
 				SUBSCRIBE.camera_settings = camera_settings	
 				await U.set_timeout(1.0)
 			
@@ -1733,8 +1754,15 @@ func update_room_config(force_setup:bool = false) -> void:
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+
 		var floor_ring_designation:String = str(floor, ring)
 		
+		if "currencies" in room_data:
+			for key in room_data.currencies:
+				var amount:int = room_data.currencies[key]
+				new_room_config.floor[floor].ring[ring].currencies[key] += amount
+			
 		# if passives are enabled...
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
@@ -1754,17 +1782,19 @@ func update_room_config(force_setup:bool = false) -> void:
 					if ability.lvl_required <= abl_lvl and ring_config_data.energy.used < ring_config_data.energy.available:
 						# if it's enabled, add to energy cost
 						ring_config_data.energy.used += energy_cost
+						room_config_data.energy_used += energy_cost
 
 						# check provides (like staff, dclass, security, etc)
 						if "provides" in ability: 
 							for resource in ability.provides:
-								ring_config_data.available_resources[resource] = true
-							print(ring_config_data.available_resources)
+								ring_config_data.personnel[resource] = true
+								room_config_data.personnel[resource] = true
 
 						# check for metrics
 						if "metrics" in ability: 
 							for metric in ability.metrics:
 								metric_defaults[floor_ring_designation][metric] += ability.metrics[metric]
+								
 						# check for wing level stuff
 						if "wing" in ability:
 							new_room_config = ability.wing.call(new_room_config, item.location)
@@ -1787,9 +1817,10 @@ func update_room_config(force_setup:bool = false) -> void:
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var is_activated:bool = true
-		if "resource_requirements" in room_data:
-			for resource in room_data.resource_requirements:
-				if !ring_config_data.available_resources[resource]:
+		# check if room has any requirements
+		if "required_personnel" in room_data:
+			for ref in room_data.required_personnel:
+				if !ring_config_data.personnel[ref]:
 					is_activated = false
 					break
 		# update metrics IF room is activated
@@ -1806,7 +1837,7 @@ func update_room_config(force_setup:bool = false) -> void:
 		}
 		# add to ref count
 		ring_config_data.room_refs.push_back(item.ref)
-
+	
 	
 	# now add any researcher bonuses in
 	for item in purchased_facility_arr:
@@ -1854,40 +1885,40 @@ func update_room_config(force_setup:bool = false) -> void:
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
 # -----------------------------------
 
-# -----------------------------------
-func update_metrics(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
-	# now update all metrics once everything has been attached
-	for floor_index in new_room_config.floor.size():
-		for ring_index in new_room_config.floor[floor_index].ring.size():
-			var floor_ring_designation:String = str(floor_index, ring_index)
-			# reset metrics before recalcualting them
-			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
-				var room_extract:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index}, new_room_config)
-				for key in room_extract.metric_details.total:
-					var amount:int = room_extract.metric_details.total[key]
-					metric_defaults[floor_ring_designation][key] += amount
-			
-			var in_lockdown:bool = new_room_config.floor[floor_index].in_lockdown
-			if in_lockdown:
-					metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
-					metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
-			else:
-				# then add any bonuses from the emergency states
-				var emergency_mode:int = new_room_config.floor[floor_index].ring[ring_index].emergency_mode
-				match emergency_mode:
-					ROOM.EMERGENCY_MODES.CAUTION:
-						metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 1
-						metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 1
-						metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 2
-					ROOM.EMERGENCY_MODES.WARNING:
-						metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 3
-						metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
-					ROOM.EMERGENCY_MODES.DANGER:
-						metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
-						metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
-						
-			# lastly, compile all the metrics from rooms, scps and researchers, etc
-			new_room_config.floor[floor_index].ring[ring_index].metrics = metric_defaults[floor_ring_designation]
-			
-	SUBSCRIBE.room_config = new_room_config	
-# -----------------------------------
+## -----------------------------------
+#func update_metrics(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
+	## now update all metrics once everything has been attached
+	#for floor_index in new_room_config.floor.size():
+		#for ring_index in new_room_config.floor[floor_index].ring.size():
+			#var floor_ring_designation:String = str(floor_index, ring_index)
+			## reset metrics before recalcualting them
+			#for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
+				#var room_extract:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index}, new_room_config)
+				#for key in room_extract.metric_details.total:
+					#var amount:int = room_extract.metric_details.total[key]
+					#metric_defaults[floor_ring_designation][key] += amount
+			#
+			#var in_lockdown:bool = new_room_config.floor[floor_index].in_lockdown
+			#if in_lockdown:
+					#metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
+					#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
+			#else:
+				## then add any bonuses from the emergency states
+				#var emergency_mode:int = new_room_config.floor[floor_index].ring[ring_index].emergency_mode
+				#match emergency_mode:
+					#ROOM.EMERGENCY_MODES.CAUTION:
+						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 1
+						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 1
+						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 2
+					#ROOM.EMERGENCY_MODES.WARNING:
+						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 3
+						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
+					#ROOM.EMERGENCY_MODES.DANGER:
+						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
+						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
+						#
+			## lastly, compile all the metrics from rooms, scps and researchers, etc
+			#new_room_config.floor[floor_index].ring[ring_index].metrics = metric_defaults[floor_ring_designation]
+			#
+	#SUBSCRIBE.room_config = new_room_config	
+## -----------------------------------

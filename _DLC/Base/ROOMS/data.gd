@@ -17,12 +17,25 @@ var DEBUG_ROOM:Dictionary = {
 	"own_limit": 99,
 	"build_time": 1,
 	# ------------------------------------------
+
+	# ------------------------------------------	
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 4,
+		RESOURCE.CURRENCY.MATERIAL: 3,
+		RESOURCE.CURRENCY.SCIENCE: 2,
+		RESOURCE.CURRENCY.CORE: 1,
+	},
+	"metrics": {
+		RESOURCE.METRICS.MORALE: 1,
+		RESOURCE.METRICS.SAFETY: 2,
+		RESOURCE.METRICS.READINESS: 3
+	},	
+	# ------------------------------------------
 	
 	# ------------------------------------------
 	"costs": {
 		"unlock": 0,
 		"purchase": 0,
-		"operating": 10
 	},
 	# ------------------------------------------
 	
@@ -59,14 +72,6 @@ var DEBUG_ROOM:Dictionary = {
 			#ABL_P.get_ability(ABL_P.REF.MEMETIC_SHILEDING),
 		],	
 	# ------------------------------------------		
-	
-	# ------------------------------------------
-	"metrics": {
-		RESOURCE.METRICS.MORALE: 0,
-		RESOURCE.METRICS.SAFETY: 0,
-		RESOURCE.METRICS.READINESS: 0,
-	},	
-	# ------------------------------------------
 }
 
 var DIRECTORS_OFFICE:Dictionary = {
@@ -87,12 +92,11 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"own_limit": 1,
 	"build_time": 1,
 	# ------------------------------------------
-	
+
 	# ------------------------------------------
 	"costs": {
 		"unlock": 0,
 		"purchase": 0,
-		"operating": 10
 	},
 	# ------------------------------------------
 	
@@ -109,14 +113,6 @@ var DIRECTORS_OFFICE:Dictionary = {
 			ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
 		],	
 	# ------------------------------------------		
-	
-	# ------------------------------------------
-	"metrics": {
-		RESOURCE.METRICS.MORALE: 1,
-		RESOURCE.METRICS.SAFETY: 1,
-		RESOURCE.METRICS.READINESS: 1,
-	},	
-	# ------------------------------------------
 }
 
 var HQ:Dictionary = {
@@ -141,7 +137,6 @@ var HQ:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 
@@ -151,14 +146,6 @@ var HQ:Dictionary = {
 		"trait": RESEARCHER.TRAITS.DISCIPLINED
 	},
 	# ------------------------------------------
-	
-	# ------------------------------------------
-	"metrics": {
-		RESOURCE.METRICS.MORALE: 1,
-		RESOURCE.METRICS.SAFETY: 1,
-		RESOURCE.METRICS.READINESS: 1,
-	},
-	# --------------------------------------	
 		
 	# ------------------------------------------
 	"abilities": func() -> Array: 
@@ -188,7 +175,6 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 		
@@ -213,7 +199,6 @@ var PRISONER_BLOCK:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 		
@@ -239,7 +224,6 @@ var HR_DEPARTMENT:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 	
@@ -264,7 +248,6 @@ var OPERATIONS_SUPPORT:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 	
@@ -289,7 +272,6 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 	
@@ -314,12 +296,11 @@ var WEAPONS_RANGE:Dictionary = {
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"resource_requirements": [
+	"required_personnel": [
 		RESOURCE.PERSONNEL.TECHNICIANS
 	],
 	# ------------------------------------------
@@ -328,14 +309,8 @@ var WEAPONS_RANGE:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING),
-			ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING)
+			ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 1)
 		],	
-	# ------------------------------------------	
-	
-	# ------------------------------------------
-	"metrics": {
-		RESOURCE.METRICS.SAFETY: 1,
-	},	
 	# ------------------------------------------	
 }
 
@@ -347,12 +322,11 @@ var ENGINEERING_BAY:Dictionary = {
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
-
+	
 	# ------------------------------------------
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
-		"operating": 10
 	},
 	# ------------------------------------------
 	
@@ -367,12 +341,6 @@ var ENGINEERING_BAY:Dictionary = {
 		return [
 			ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
 		],	
-	# ------------------------------------------	
-	
-	# ------------------------------------------
-	"metrics": {
-		RESOURCE.METRICS.READINESS: 1,
-	},	
 	# ------------------------------------------	
 }
 

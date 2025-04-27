@@ -190,6 +190,240 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func get_floor_summary(use_location:Dictionary = current_location) -> Dictionary:
+	if use_location.is_empty():return {}
+	
+	var designation:String = U.location_to_designation(use_location)
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring
+	var room:int = use_location.room	
+	
+	var currencies:Dictionary = {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0
+	}
+	
+	var metrics:Dictionary = {
+		RESOURCE.METRICS.MORALE: 0,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0
+	}
+	
+	var energy:Dictionary = {
+		"available": 0,
+		"used": 0,
+		"room_specific": null
+	}
+	
+	var personnel:Dictionary = {
+		RESOURCE.PERSONNEL.STAFF: false,
+		RESOURCE.PERSONNEL.TECHNICIANS: false,
+		RESOURCE.PERSONNEL.SECURITY: false,
+		RESOURCE.PERSONNEL.DCLASS: false
+	}
+	
+	# update currencies
+	var ring_currencies:Dictionary = room_config.floor[floor].ring[ring].currencies
+	for ref in ring_currencies:
+		var amount:int = ring_currencies[ref]
+		currencies[ref] += amount	
+	
+	# update metrics (ring level)
+	var ring_metrics:Dictionary = room_config.floor[floor].ring[ring].metrics
+	for ref in ring_metrics:
+		var amount:int = ring_metrics[ref]
+		metrics[ref] += amount
+	
+	# update personnel (ring level)
+	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
+	for ref in ring_personnel:
+		personnel[ref] = !ring_personnel[ref]
+	
+	# update energy (ring level)
+	energy = room_config.floor[floor].ring[ring].energy
+		
+	return {
+		"currencies": currencies,
+		"metrics": metrics,
+		"energy": energy,
+		"personnel": personnel
+	}
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_ring_summary(use_location:Dictionary = current_location) -> Dictionary:
+	if use_location.is_empty():return {}
+	
+	var designation:String = U.location_to_designation(use_location)
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring
+	var room:int = use_location.room	
+	
+	var currencies:Dictionary = {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0
+	}
+	
+	var metrics:Dictionary = {
+		RESOURCE.METRICS.MORALE: 0,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0
+	}
+	
+	var energy:Dictionary = {
+		"available": 0,
+		"used": 0,
+		"room_specific": null
+	}
+	
+	var personnel:Dictionary = {
+		RESOURCE.PERSONNEL.STAFF: false,
+		RESOURCE.PERSONNEL.TECHNICIANS: false,
+		RESOURCE.PERSONNEL.SECURITY: false,
+		RESOURCE.PERSONNEL.DCLASS: false
+	}
+	
+	# update metrics
+	var ring_metrics:Dictionary = room_config.floor[floor].ring[ring].metrics
+	for ref in ring_metrics:
+		var amount:int = ring_metrics[ref]
+		metrics[ref] += amount
+	
+	# update personnel
+	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
+	for ref in ring_personnel:
+		personnel[ref] = !ring_personnel[ref]
+	
+	# update currenciessab
+	var ring_currencies:Dictionary = room_config.floor[floor].ring[ring].currencies
+	for ref in ring_currencies:
+		var amount:int = ring_currencies[ref]
+		currencies[ref] += amount
+	
+	# update energy
+	energy = room_config.floor[floor].ring[ring].energy
+		
+	return {
+		"currencies": currencies,
+		"metrics": metrics,
+		"energy": energy,
+		"personnel": personnel
+	}
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
+	if use_location.is_empty():return {}
+	
+	var designation:String = U.location_to_designation(use_location)
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring
+	var room:int = use_location.room	
+	
+	var currencies:Dictionary = {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0
+	}
+	
+	var currencies_diff:Dictionary = {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0	
+	}
+	
+	var metrics:Dictionary = {
+		RESOURCE.METRICS.MORALE: 0,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0
+	}
+	
+	var metrics_diff:Dictionary = {
+		RESOURCE.METRICS.MORALE: 0,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0
+	}	
+	
+	var energy:Dictionary = {
+		"available": 0,
+		"used": 0,
+	}
+	
+	var energy_diff:int = 0
+	
+	var personnel:Dictionary = {
+		RESOURCE.PERSONNEL.STAFF: false,
+		RESOURCE.PERSONNEL.TECHNICIANS: false,
+		RESOURCE.PERSONNEL.SECURITY: false,
+		RESOURCE.PERSONNEL.DCLASS: false
+	}
+	
+	var personnel_diff:Dictionary = {
+		RESOURCE.PERSONNEL.STAFF: false,
+		RESOURCE.PERSONNEL.TECHNICIANS: false,
+		RESOURCE.PERSONNEL.SECURITY: false,
+		RESOURCE.PERSONNEL.DCLASS: false
+	}
+	
+	# update metrics
+	var ring_metrics:Dictionary = room_config.floor[floor].ring[ring].metrics
+	for ref in ring_metrics:
+		var amount:int = ring_metrics[ref]
+		metrics[ref] += amount
+	
+	# update personnel
+	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
+	for ref in ring_personnel:
+		personnel[ref] = !ring_personnel[ref]
+	
+	# update currenciessab
+	var ring_currencies:Dictionary = room_config.floor[floor].ring[ring].currencies
+	for ref in ring_currencies:
+		var amount:int = ring_currencies[ref]
+		currencies[ref] += amount
+	
+	# update energy
+	energy = room_config.floor[floor].ring[ring].energy
+	energy_diff = room_config.floor[floor].ring[ring].room[room].energy_used
+	
+	# update metrics
+	var room_details:Dictionary = room_config.floor[floor].ring[ring].room[room].room_data 
+	if !room_details.is_empty():
+		# room diff
+		var room_metrics:Dictionary = room_details.details.metrics
+		for ref in room_metrics:
+			var amount:int = room_metrics[ref]
+			metrics_diff[ref] += amount
+
+		var room_personnel:Dictionary = room_config.floor[floor].ring[ring].room[room].personnel
+		for ref in room_personnel:
+			personnel_diff[ref] = 1 if room_personnel[ref] else 0
+	#
+		var room_currencies:Dictionary = room_details.details.currencies
+		for ref in room_currencies:
+			var amount:int = room_currencies[ref]
+			currencies_diff[ref] += amount
+		
+	return {
+		"currencies": currencies,
+		"metrics": metrics,
+		"energy": energy,
+		"personnel": personnel,
+		# ------------------------------
+		"currency_diff": currencies_diff,
+		"metric_diff": metrics_diff,
+		"energy_diff": energy_diff,
+		"personnel_diff": personnel_diff
+	}
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func extract_room_details(use_location:Dictionary = current_location, use_config:Dictionary = room_config) -> Dictionary:
 	if use_config.is_empty():return {}
 	
@@ -390,9 +624,9 @@ func get_ability_cooldown(ability:Dictionary, use_location:Dictionary = current_
 ## ------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func use_active_ability(ability:Dictionary, use_location:Dictionary = current_location) -> void:
+func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use_location:Dictionary) -> void:
 	var designation:String = U.location_to_designation(use_location)
-	var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability.ref)
+	var ability_uid:String = str(room_ref, ability_index)
 	var apply_cooldown:bool = await ability.effect.call()
 	
 	if ability_uid not in base_states.room[designation].ability_on_cooldown:
@@ -415,8 +649,6 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 		base_states.room[designation].passives_enabled[ability_uid] = false
 	
 	base_states.room[designation].passives_enabled[ability_uid] = !base_states.room[designation].passives_enabled[ability_uid]
-
-	print(base_states.room[designation].passives_enabled)
 
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------		

@@ -38,6 +38,7 @@ enum MENU_TYPE {RESEARCHER, ROOM, SCP, WING}
 var designation:String
 var node_location:Vector3 
 var current_location:Dictionary = {} 
+var camera_settings:Dictionary = {}
 var resources_data:Dictionary = {} 
 var previous_floor:int = -1
 var previous_ring:int = -1
@@ -76,7 +77,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
-	GBL.subscribe_to_mouse_input(self)	
+	SUBSCRIBE.subscribe_to_camera_settings(self)
 	GBL.subscribe_to_control_input(self)
 	GBL.register_node(REFS.ROOM_NODES, self)
 
@@ -84,7 +85,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
-	GBL.unsubscribe_to_mouse_input(self)
+	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unregister_node(REFS.ROOM_NODES)
 	
@@ -295,20 +296,19 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-func on_mouse_scroll(dir:int) -> void:
-	if !is_node_ready() or GBL.has_animation_in_queue():return
-	match dir:
-		#UP
-		0: 
-			current_camera_size = U.min_max(current_camera_size + 1, 0, camera_size_arr.size() -1)
-		#DOWN
-		1:
-			current_camera_size = U.min_max(current_camera_size - 1, 0, camera_size_arr.size() -1)
-
-	GBL.add_to_animation_queue(self)
-	await U.tween_node_property(MainCamera, "size", camera_size_arr[current_camera_size], 0.3, 0)
-	GBL.remove_from_animation_queue(self)
+func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
+	camera_settings = new_val
+	if !is_node_ready() or camera_settings.is_empty():return
+	
+	match camera_settings.type:
+		CAMERA.TYPE.ROOM_SELECT:
+			current_camera_size = 30
+		_:
+			current_camera_size = 22
+		
+	U.tween_node_property(MainCamera, "size", current_camera_size, 0.3, 0)
 # --------------------------------------------------------
+
 
 # --------------------------------------------------------
 func on_select() -> void:

@@ -288,7 +288,7 @@ var trait_data: Dictionary = {
 				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 							
 			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amou:
+				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount:
 					amount += item.amount
 					
 			return {

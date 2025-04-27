@@ -17,19 +17,19 @@ func on_floor_changed() -> void:
 	
 func update_nodes() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
-	var available_resources:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].available_resources
-	for key in available_resources:
-		var is_active:bool = available_resources[key]
-		match key:
-			RESOURCE.PERSONNEL.TECHNICIANS:
-				ResourceItemTech.title = "TCH"
-				ResourceItemTech.is_negative = !is_active
-			RESOURCE.PERSONNEL.STAFF: 
-				ResourceItemStaff.title = "STF"
-				ResourceItemStaff.is_negative = !is_active
-			RESOURCE.PERSONNEL.SECURITY: 
-				ResourceItemSecurity.title = "SEC"
-				ResourceItemSecurity.is_negative = !is_active
-			RESOURCE.PERSONNEL.DCLASS: 
-				ResourceItemDClass.title = "DCL"
-				ResourceItemDClass.is_negative = !is_active	
+	#var available_resources:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].available_resources
+	#for key in available_resources:
+		#var is_active:bool = available_resources[key]
+		#match key:
+			#RESOURCE.PERSONNEL.TECHNICIANS:
+				#ResourceItemTech.title = "TCH"
+				#ResourceItemTech.is_negative = !is_active
+			#RESOURCE.PERSONNEL.STAFF: 
+				#ResourceItemStaff.title = "STF"
+				#ResourceItemStaff.is_negative = !is_active
+			#RESOURCE.PERSONNEL.SECURITY: 
+				#ResourceItemSecurity.title = "SEC"
+				#ResourceItemSecurity.is_negative = !is_active
+			#RESOURCE.PERSONNEL.DCLASS: 
+				#ResourceItemDClass.title = "DCL"
+				#ResourceItemDClass.is_negative = !is_active	

@@ -1,6 +1,8 @@
 @tool
 extends PanelContainer
 
+@onready var CardSubviewport:SubViewport = $SubViewport
+
 @onready var CardBody:PanelContainer = $SubViewport/Control/CardBody
 @onready var CardTextureRect:TextureRect = $TextureRect
 @onready var Subviewport:SubViewport = $SubViewport
@@ -13,6 +15,11 @@ extends PanelContainer
 
 @onready var FrontDrawerContainer:Control = $SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer
 @onready var BackDrawerContainer:Control = $SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer
+
+@export var card_size:Vector2 = Vector2(275, 425) : 
+	set(val):
+		card_size = val
+		on_card_size_update()
 
 @export var reveal:bool = true : 
 	set(val):
@@ -39,6 +46,8 @@ const is_container:bool = true
 
 var showing_front:bool 
 
+signal flip_complete
+
 # ------------------------------------------------
 func _ready() -> void:
 	await U.tick()
@@ -46,6 +55,7 @@ func _ready() -> void:
 	on_reveal_update(true)
 	update_drawer_items(true)
 	on_border_color_update()
+	on_card_size_update()
 	CardTextureRect.texture = Subviewport.get_texture()
 # ------------------------------------------------
 
@@ -55,6 +65,15 @@ func on_reveal_update(skip_animation:bool = false) -> void:
 	CardTextureRect.pivot_offset = self.size/2	
 	var duration:float = 0 if skip_animation else 0.3
 	U.tween_node_property(CardTextureRect, "scale:x", 1 if reveal else 0, duration)
+# ------------------------------------------------	
+
+# ------------------------------------------------	
+func on_card_size_update() -> void:
+	if !is_node_ready():return	
+	CardBody.custom_minimum_size = card_size
+	await U.tick()
+	CardBody.size = Vector2(1, 1)
+	CardSubviewport.size  = Vector2(1, 1)
 # ------------------------------------------------	
 
 
@@ -69,6 +88,8 @@ func on_fold_update() -> void:
 	Back.show() if fold else Back.hide()
 	U.tween_node_property(CardTextureRect, "scale:y", 1, 0.1)
 	update_drawer_items(!fold)
+	
+	flip_complete.emit()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -82,6 +103,8 @@ func on_flip_update() -> void:
 	Back.show() if flip else Back.hide()
 	U.tween_node_property(CardTextureRect, "scale:x", 1, 0.3)
 	update_drawer_items(!flip)	
+	
+	flip_complete.emit()
 # ------------------------------------------------
 
 # ------------------------------------------------

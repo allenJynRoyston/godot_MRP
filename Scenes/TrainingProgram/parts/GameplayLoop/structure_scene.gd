@@ -68,12 +68,15 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty():return
+	
+	var skip_ani:bool = camera_settings.type == CAMERA.TYPE.WING_SELECT and previous_camera_type == CAMERA.TYPE.ROOM_SELECT
+	
 	if previous_camera_type != camera_settings.type:
 		previous_camera_type = camera_settings.type
 		await update_cameras()
 		
 		GBL.add_to_animation_queue(self)
-		
+	
 		match camera_settings.type:
 			CAMERA.TYPE.FLOOR_SELECT:
 				await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
@@ -81,13 +84,13 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 				ActiveCamera.rotation = FloorPlaceholderCamera.rotation
 				ActiveCamera.position = FloorPlaceholderCamera.position
 				await U.tween_node_property(ActiveCamera, "size", FloorPlaceholderCamera.size, 0.3)	
-							
-			CAMERA.TYPE.ROOM_SELECT:
-				await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
-				await U.set_timeout(0.3)
-				ActiveCamera.rotation = RoomPlaceholderCamera.rotation
-				ActiveCamera.position = RoomPlaceholderCamera.position
-				await U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
+			CAMERA.TYPE.WING_SELECT:
+				if !skip_ani:
+					await U.tween_node_property(ActiveCamera, "size", 0, 0.3 )
+					await U.set_timeout(0.3)
+					ActiveCamera.rotation = RoomPlaceholderCamera.rotation
+					ActiveCamera.position = RoomPlaceholderCamera.position
+					await U.tween_node_property(ActiveCamera, "size", RoomPlaceholderCamera.size, 0.3)	
 
 			
 		GBL.remove_from_animation_queue(self)
@@ -111,7 +114,9 @@ func assign_room_node_location(floor_val:int, ring_val:int, animate:bool) -> voi
 	
 	if !animate:
 		await U.tick()
-		
+	
+	
+	
 	GBL.remove_from_animation_queue(self)	
 	animate_next_complete.emit()
 # ------------------------------------------------
@@ -136,11 +141,11 @@ func update_cameras() -> void:
 					child.mesh = mesh_duplicate	
 #
 		#
-		#CAMERA.TYPE.ROOM_SELECT:
+		#CAMERA.TYPE.WING_SELECT:
 	if previous_ring != current_location.ring or previous_floor != current_location.floor:
 		previous_ring = current_location.ring
 		previous_floor = current_location.floor
-		assign_room_node_location(current_location.floor, current_location.ring, camera_settings.type == CAMERA.TYPE.ROOM_SELECT)
+		assign_room_node_location(current_location.floor, current_location.ring, camera_settings.type == CAMERA.TYPE.WING_SELECT)
 
 		#U.tween_range(FloorScene.rotation.y, deg_to_rad( (90 * current_location.ring) + 45), 0.3, func(val:float) -> void:
 			#FloorScene.rotation.y = val
