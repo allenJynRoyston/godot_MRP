@@ -678,26 +678,22 @@ func show_abilities(skip_animation:bool = false) -> void:
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
 	var menu_title:String 
 	
-	#lock_btns(true)
-	print('start...')
-	
 	await lock_btns(true)
 	active_menu_is_open = true
 	await RoomDetailsControl.reveal(true)
-	var itemlist:Array = await RoomDetailsControl.switch_to_room_abilities()
+	var itemlist:Array = await RoomMiniCard.get_ability_btns()
 	await BtnControls.reveal(true)
 	BtnControls.itemlist = itemlist
 	BtnControls.directional_pref = "UD"
-	BtnControls.offset = RoomDetailsControl.RoomCard.global_position
+	BtnControls.offset = RoomMiniCard.global_position
 	await U.tick()
-	print("here?")
 	BtnControls.item_index = 0
 	
 	BtnControls.onBack = func() -> void:
 		await BtnControls.reveal(false)
 		BtnControls.itemlist = []
 		await RoomDetailsControl.reveal(show_room_details)
-		RoomDetailsControl.end_switch_to_room_abilities()		
+		#RoomDetailsControl.end_switch_to_room_abilities()		
 		active_menu_is_open = false
 		lock_btns(false)
 # --------------------------------------------------------------------------------------------------
@@ -793,6 +789,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		RoomDetailsControl.show_room_card = !room_extract.is_room_empty
 		RoomDetailsControl.show_scp_card = !room_extract.scp.is_empty() and room_extract.can_contain 
 		RoomDetailsControl.show_researcher_card = !room_extract.is_room_empty and room_extract.researchers.size() > 0
+		
+		RoomMiniCard.use_location = current_location
 		
 		var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 		Input.warp_mouse(warp_to_pos)
@@ -1181,8 +1179,8 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	var is_activated:bool = room_extract.is_activated
 	var abilities:Array = [] if is_room_empty else room_extract.room.abilities
 
-	RoomMiniCard.is_activated = is_activated
-	RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
+	#RoomMiniCard.is_activated = is_activated
+	#RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
 	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1	
 	
 	RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]

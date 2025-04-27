@@ -10,16 +10,12 @@ extends MouseInteractions
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
-@onready var CardDrawerActivationRequirements:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerActivationRequirements
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 
 # back
-@onready var CardDrawerResearcherPref:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerResearcherPref
-@onready var CardDrawerRewards:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerRewards
-@onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerActiveAbilities
-@onready var CardDrawerPassiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPassiveAbilities
-@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
-
+@onready var CardDrawerActivationRequirements:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerActivationRequirements
+@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
+@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
 
 @export var ref:int = -1: 
 	set(val):
@@ -130,71 +126,41 @@ func on_ref_update() -> void:
 		CardDrawerDescription.content = "-"
 		CardDrawerImage.img_src = "-"
 		CardDrawerDescription.content = "-"
-		CardDrawerEffect.list = []
+		CardDrawerCurrency.list = []
+		CardDrawerVibes.metrics = {}
 		CardDrawerActivationRequirements.list = []
-		CardDrawerPassiveAbilities.clear()
-		CardDrawerActiveAbilities.clear()
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_locked:bool = false
 	var is_activated:bool = true
+	var currency_list:Array = []
+	
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		is_activated = extract_data.is_activated		
 
-	if "passive_abilities" not in room_details or room_details.passive_abilities.call().is_empty():
-		CardDrawerPassiveAbilities.hide()
-	else:
-		CardDrawerPassiveAbilities.show()
-		CardDrawerPassiveAbilities.room_details = room_details
-		CardDrawerPassiveAbilities.use_location = use_location
-
-	if "abilities" not in room_details or room_details.abilities.call().is_empty():
-		CardDrawerActiveAbilities.hide()
-	else:
-		CardDrawerActiveAbilities.show()
-		CardDrawerActiveAbilities.room_details = room_details
-		CardDrawerActiveAbilities.use_location = use_location
-	
 	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerDescription.content = room_details.description if !is_locked else "(Viewable with AQUISITION DEPARTMENT.)"
 	CardDrawerImage.img_src = room_details.img_src if !is_locked else ""
 	CardDrawerImage.use_static = !is_activated
-	
-	var level_with_details:Dictionary = ROOM_UTIL.return_levels_with_details(room_details.ref)
-	if level_with_details.is_empty():
-		CardDrawerResearcherPref.content = "None"
-	else:
-		var spec_str:String = level_with_details.specilization.name
-		var trait_str:String = level_with_details.trait.name
-		CardDrawerResearcherPref.content = "%s or %s" % [spec_str, trait_str]
+		
+	for key in room_details.currencies:
+		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+		var amount:int = room_details.currencies[key]
+		currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})
 
-	CardDrawerActivationRequirements.list = room_details.required_personnel.map(func(x):  
-		var resource_details:Dictionary = RESOURCE_UTIL.return_personnel(x)
-		return {"icon": resource_details.icon, "title": resource_details.name}
-	)
+	CardDrawerCurrency.list = currency_list
+	CardDrawerVibes.metrics = room_details.metrics	
 	
 	
+	#
+	#CardDrawerEffect.list = [
+		##{"icon": SVGS.TYPE.PLUS, "title": "MORALE" },
+		##{"icon": SVGS.TYPE.PLUS, "title": "SAFETY" },
+		##{"icon": SVGS.TYPE.PLUS, "title": "READINESS" },
+	#]
 
-	CardDrawerEffect.list = [
-		#{"icon": SVGS.TYPE.PLUS, "title": "MORALE" },
-		#{"icon": SVGS.TYPE.PLUS, "title": "SAFETY" },
-		#{"icon": SVGS.TYPE.PLUS, "title": "READINESS" },
-	]
-
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func get_ability_btns() -> Array:
-	await U.tick()
-	var btn_list:Array = []
-	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:
-		if node.is_visible_in_tree():
-			for btn in node.get_btns():
-				btn_list.push_back(btn)
-	
-	return btn_list
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

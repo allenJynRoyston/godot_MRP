@@ -25,9 +25,9 @@ func on_list_update() -> void:
 		var new_node:Control = ResourceItemPreload.instantiate()
 		new_node.no_bg = true
 		new_node.display_at_bottom = true
-		new_node.title = item.title 
+		new_node.title = str(item.title)
 		new_node.icon = item.icon
-		new_node.icon_size = Vector2(30, 30)
+		new_node.icon_size = Vector2(20, 20)
 		
 		new_node.is_hoverable = false
 		

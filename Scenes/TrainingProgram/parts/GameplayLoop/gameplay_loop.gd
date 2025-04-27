@@ -1718,6 +1718,23 @@ func update_room_config(force_setup:bool = false) -> void:
 					RESOURCE.METRICS.READINESS: 0
 				}
 
+	# CALCULATE CONTAINED SCP - 
+	for item in scp_data.contained_list:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room	
+		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
+		
+		if "before" in scp_details.effects:
+			# call their effects
+			new_room_config = scp_details.effects.before.call(new_room_config, item.location)
+			# first, add this to the config
+			room_config_data.scp_data = {
+				"ref": item.ref
+			}
+
 	# FIRST, RESET all passive enables, check for assigned researchers and add to ability level
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1856,24 +1873,22 @@ func update_room_config(force_setup:bool = false) -> void:
 
 		ring_config_data.metrics = metric_defaults[floor_ring_designation]
 
-	# CALCULATE CONTAINED SCP, add any contained items to the config
+	# CALCULATE CONTAINED SCP - 
 	for item in scp_data.contained_list:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room	
-		var floor_ring_designation:String = str(floor, ring)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
-		var is_contained:bool = true
 		
-		# call their effects
-		new_room_config = scp_details.effects.func.call(new_room_config, item.location)
-
-		# first, add this to the config
-		room_config_data.scp_data = {
-			"ref": item.ref
-		}
+		if "after" in scp_details.effects:
+			# call their effects
+			new_room_config = scp_details.effects.after.call(new_room_config, item.location)
+			# first, add this to the config
+			room_config_data.scp_data = {
+				"ref": item.ref
+			}
 
 	
 	# checks for any conditioals triggers by built room combonations:

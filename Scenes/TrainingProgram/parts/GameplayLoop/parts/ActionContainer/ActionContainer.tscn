@@ -347,6 +347,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_083vi")
 layout_mode = 2
 
 [node name="ScpMiniCard" parent="Details/PanelContainer/MarginContainer/VBoxContainer/Room" instance=ExtResource("4_22xs4")]
+visible = false
 layout_mode = 2
 
 [node name="Researchers" type="VBoxContainer" parent="Details/PanelContainer/MarginContainer/VBoxContainer"]

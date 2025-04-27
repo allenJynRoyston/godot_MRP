@@ -1,39 +1,115 @@
-[gd_scene load_steps=23 format=3 uid="uid://dwhtysap0bsna"]
+[gd_scene load_steps=33 format=3 uid="uid://dwhtysap0bsna"]
 
 [ext_resource type="Script" uid="uid://dacwtt350g61n" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/room_mini_card.gd" id="1_0jit3"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/CardBody.tscn" id="2_cri0k"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_fhq3g"]
+[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_fl387"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_qlsmf"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_ksj6n"]
+[ext_resource type="PackedScene" uid="uid://cntgsx4ms1bdd" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerResource.tscn" id="4_op0jq"]
+[ext_resource type="PackedScene" uid="uid://car8yud4yb0pj" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerVibes.tscn" id="5_6vose"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_qlsmf"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="6_cri0k"]
+[ext_resource type="PackedScene" uid="uid://cus6h1nu75y1e" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerRoomAbilities.tscn" id="6_gmheq"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="8_op0jq"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="9_6vose"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fl387"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_op0jq"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_gmheq"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6vose"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_857f0"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmheq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pbb6"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0dah"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0bomq"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xl2ia"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xu8pk"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_80hfg"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dm64n"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -44,14 +120,14 @@ bg_color = Color(0, 0, 0, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xsj30"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_857f0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hauqp"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pbb6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k1m0t"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deyu1"]
@@ -66,19 +142,19 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0dah"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j5xya"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0bomq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lvtep"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xl2ia"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tk87u"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xu8pk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qapbw"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -91,23 +167,78 @@ script = ExtResource("1_0jit3")
 
 [node name="CardBody" parent="." instance=ExtResource("2_cri0k")]
 layout_mode = 2
-card_size = Vector2(275, 200)
+card_size = Vector2(275, 300)
+border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_op0jq")
+texture = SubResource("ViewportTexture_gmheq")
 
 [node name="SubViewport" parent="CardBody" index="1"]
-size = Vector2i(275, 200)
+size = Vector2i(275, 300)
 
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(275, 300)
 offset_right = 275.0
-offset_bottom = 425.0
+offset_bottom = 300.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_6vose")
+theme_override_styles/panel = SubResource("StyleBoxFlat_857f0")
+
+[node name="CardDrawerTitle" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_fl387")]
+visible = false
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8pbb6")
+is_small = true
+content = "Active Abilities"
+title = "ROOM"
+border_color = Color(0.337255, 0.27451, 1, 1)
+
+[node name="CardDrawerResources" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1" instance=ExtResource("4_op0jq")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_i0dah")
+is_left_side = true
+border_color = Color(0.337255, 0.27451, 1, 1)
+
+[node name="CardDrawerVibes" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("5_6vose")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0bomq")
+title = "VIBES"
+is_left_side = true
+border_color = Color(0.337255, 0.27451, 1, 1)
+
+[node name="CardDrawerResearcherPref" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("3_fl387")]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xl2ia")
+is_small = true
+content = ""
+title = "REQUIREMENTS"
+border_color = Color(0.337255, 0.27451, 1, 1)
+
+[node name="CardDrawerActiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("6_gmheq")]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_xu8pk")
+title = "ACTIVE ABILITIES"
+is_left_side = true
+border_color = Color(0.337255, 0.27451, 1, 1)
+
+[node name="CardDrawerPassiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5" instance=ExtResource("6_gmheq")]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_80hfg")
+ability_type = 1
+title = "PASSIVE ABILITIES"
+is_left_side = true
+border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_gmheq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_dm64n")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 visible = false
@@ -171,7 +302,7 @@ layout_mode = 2
 
 [node name="TextBtn" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/MetricList" instance=ExtResource("4_ksj6n")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_857f0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hauqp")
 icon = 1
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 title = "Morale +1"
@@ -183,7 +314,7 @@ columns = 2
 
 [node name="TextBtn" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/ResourceGrid" instance=ExtResource("4_ksj6n")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8pbb6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_k1m0t")
 inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="NoBonusLabel" type="Label" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
@@ -226,7 +357,7 @@ alignment = 1
 [node name="Money" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_cri0k")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_i0dah")
+theme_override_styles/panel = SubResource("StyleBoxFlat_j5xya")
 icon = 31
 no_bg = true
 title = "1"
@@ -234,7 +365,7 @@ title = "1"
 [node name="Materials" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_cri0k")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_0bomq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lvtep")
 icon = 41
 no_bg = true
 title = "1"
@@ -242,7 +373,7 @@ title = "1"
 [node name="Research" parent="HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_cri0k")]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_xl2ia")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tk87u")
 icon = 44
 no_bg = true
 title = "1"
@@ -251,7 +382,7 @@ title = "1"
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_xu8pk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qapbw")
 icon = 39
 no_bg = true
 title = "1"

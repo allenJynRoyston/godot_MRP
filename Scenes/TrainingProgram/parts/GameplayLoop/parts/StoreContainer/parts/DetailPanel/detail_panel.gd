@@ -79,7 +79,6 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	await U.tick()
 	
-	
 	FlipBtn.onClick = func() -> void:
 		flip_card()
 		
@@ -137,25 +136,25 @@ func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	shop_unlock_purchases = new_val
 # ---------------------------------
 
-# ---------------------------------
-func switch_to_room_abilities() -> Array:
-	hide_next_prev_btns = true
-	
-	cycle_until(RoomCard)
-	
-	await cycle_until_complete		
-	
-	if !RoomCard.flip:
-		RoomCard.flip = true	
-		await RoomCard.flip_complete
-		
-	return await RoomCard.get_ability_btns()
-# ---------------------------------
+## ---------------------------------
+#func switch_to_room_abilities() -> Array:
+	#hide_next_prev_btns = true
+	#
+	#cycle_until(RoomCard)
+	#
+	#await cycle_until_complete		
+	#
+	#if !RoomCard.flip:
+		#RoomCard.flip = true	
+		#await RoomCard.flip_complete
+		#
+	#return await RoomCard.get_ability_btns()
+## ---------------------------------
 
-# ---------------------------------
-func end_switch_to_room_abilities() -> void:
-	hide_next_prev_btns = false
-# ---------------------------------
+## ---------------------------------
+#func end_switch_to_room_abilities() -> void:
+	#hide_next_prev_btns = false
+## ---------------------------------
 
 
 # ---------------------------------

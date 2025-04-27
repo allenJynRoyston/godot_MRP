@@ -43,7 +43,7 @@ var DEBUG_ROOM:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			#ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0),
-			ABL.get_ability(ABL.REF.CONTAIN_SCP, 0),
+			#ABL.get_ability(ABL.REF.CONTAIN_SCP, 0),
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
 			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
@@ -61,13 +61,13 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 1),
+			#ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 1),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
-			ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
-			ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 2),
+			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
+			#ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 2),
 			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
 			#ABL_P.get_ability(ABL_P.REF.MEMETIC_SHILEDING),
 		],	

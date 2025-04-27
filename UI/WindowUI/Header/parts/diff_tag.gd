@@ -25,6 +25,8 @@ func on_use_icon_update() -> void:
 	if !is_node_ready():return
 	var label_settings_copy:LabelSettings = TextLabel.label_settings.duplicate()
 	
+	self.modulate = Color(1, 1, 1, 0 if val == 0 else 1)
+	
 	if use_icon:
 		label_settings_copy.font_size = 10
 		label_settings_copy.font_color = Color.WHITE

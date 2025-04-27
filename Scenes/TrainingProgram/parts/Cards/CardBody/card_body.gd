@@ -69,11 +69,11 @@ func on_reveal_update(skip_animation:bool = false) -> void:
 
 # ------------------------------------------------	
 func on_card_size_update() -> void:
-	if !is_node_ready():return	
+	if !is_node_ready():return
 	CardBody.custom_minimum_size = card_size
+	CardSubviewport.size  = card_size		
 	await U.tick()
 	CardBody.size = Vector2(1, 1)
-	CardSubviewport.size  = Vector2(1, 1)
 # ------------------------------------------------	
 
 
