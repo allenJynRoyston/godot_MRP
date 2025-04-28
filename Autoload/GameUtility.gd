@@ -192,18 +192,19 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 
 # ------------------------------------------------------------------------------	
 func apply_bonus_to(currencies:Dictionary, metrics_val:int, pair_data:Dictionary) -> Dictionary:
-	var moral_bonus:int = metrics_val * 20
-	var spec_bonus:int = 50 if pair_data.match_spec else 0
-	var trait_bonus:int = 50 if pair_data.match_trait else 0
-	var bonus_percent:float = (moral_bonus + spec_bonus + trait_bonus) * 0.01
-	var currencies_copy:Dictionary = currencies.duplicate()
-		
-	for key in currencies_copy:
-		var amount:int = currencies[key]
-		var amount_bonus:int = floori(amount * bonus_percent) if bonus_percent < 0 else ceili(amount * bonus_percent) 
-		currencies_copy[key] = amount + amount_bonus
+	#var moral_bonus:int = metrics_val * 20
+	#var spec_bonus:int = 50 if pair_data.match_spec else 0
+	#var trait_bonus:int = 50 if pair_data.match_trait else 0
+	#var bonus_percent:float = (moral_bonus + spec_bonus + trait_bonus) * 0.01
+	#var currencies_copy:Dictionary = currencies.duplicate()
+	#
 	
-	return currencies_copy
+	#for key in currencies_copy:
+		#var amount:int = currencies_copy[key]
+		#var amount_bonus:int = floori(amount * bonus_percent) if bonus_percent < 0 else ceili(amount * bonus_percent) 
+		#currencies_copy[key] = amount + amount_bonus
+	
+	return currencies
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
@@ -425,11 +426,11 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 		for ref in room_personnel:
 			personnel_diff[ref] = 1 if room_personnel[ref] else 0
 	#
-		var room_currencies:Dictionary = apply_bonus_to(room_details.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
-		for ref in room_currencies:
-			var amount:int = room_currencies[ref]
-			currencies_diff[ref] += amount
-		
+		#var room_currencies:Dictionary = apply_bonus_to(room_details.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
+		#for ref in room_currencies:
+			#var amount:int = room_currencies[ref]
+			#currencies_diff[ref] += amount
+		#
 			
 	var scp_data:Dictionary = room_config.floor[floor].ring[ring].room[room].scp_data
 	if !scp_data.is_empty():
@@ -442,10 +443,10 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 			var amount:int = room_metrics[ref]
 			metrics_diff[ref] += amount
 	
-		var scp_currencies:Dictionary = apply_bonus_to(scp_data.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
-		for ref in scp_currencies:
-			var amount:int = scp_currencies[ref]
-			currencies_diff[ref] += amount
+		#var scp_currencies:Dictionary = apply_bonus_to(scp_data.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
+		#for ref in scp_currencies:
+			#var amount:int = scp_currencies[ref]
+			#currencies_diff[ref] += amount
 		
 		# scp effect diff
 		if "personnel" in scp_data.details.effects:

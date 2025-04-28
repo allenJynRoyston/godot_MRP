@@ -70,5 +70,5 @@ is_hoverable = false
 
 [node name="DClassIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
 layout_mode = 2
-icon = 39
+icon = 33
 is_hoverable = false

@@ -147,6 +147,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="RoomCard" type="PanelContainer"]
+visible = false
 custom_minimum_size = Vector2(275, 425)
 offset_right = 40.0
 offset_bottom = 40.0

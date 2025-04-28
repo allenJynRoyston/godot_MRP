@@ -129,7 +129,6 @@ func on_ref_update() -> void:
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0	
 	
-
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		var pair_res:Dictionary = SCP_UTIL.check_for_pairing(ref, extract_data.researchers)
@@ -138,18 +137,18 @@ func on_ref_update() -> void:
 		has_spec_bonus =  pair_res.match_spec
 		has_trait_bonus = pair_res.match_trait
 		
-		var currencies_with_bonus:Dictionary = GAME_UTIL.apply_bonus_to(scp_details.currencies, summary_data.metrics[RESOURCE.METRICS.MORALE], pair_res)
-		for key in currencies_with_bonus:
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			var amount:int = currencies_with_bonus[key]
-			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})				
-		
-	else:
+		#var currencies_with_bonus:Dictionary = GAME_UTIL.apply_bonus_to(scp_details.currencies, summary_data.metrics[RESOURCE.METRICS.MORALE], pair_res)
+		#for key in currencies_with_bonus:
+			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			#var amount:int = currencies_with_bonus[key]
+			#currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})				
+		#
+	#else:
 
-		for key in scp_details.currencies:
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			var amount:int = scp_details.currencies[key]
-			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})		
+	#for key in scp_details.currencies:
+		#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+		#var amount:int = scp_details.currencies[key]
+		#currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})		
 	
 	# -----------
 	CardDrawerDesignation.content = scp_details.name

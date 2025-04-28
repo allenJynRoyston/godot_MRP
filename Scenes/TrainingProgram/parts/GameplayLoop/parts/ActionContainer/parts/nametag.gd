@@ -134,15 +134,22 @@ func update_node(shift_val:int = 10) -> void:
 	self.modulate = Color(1, 1, 1, 1 if !room_extract.is_room_empty or !fade else 0)
 	if !room_extract.is_room_empty:
 		var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
-		var currencies:Dictionary = room_details.currencies
+		var currencies_check:Dictionary = {
+			RESOURCE.CURRENCY.MONEY: 0,
+			RESOURCE.CURRENCY.MATERIAL: 0,
+			RESOURCE.CURRENCY.SCIENCE: 0,
+			RESOURCE.CURRENCY.CORE: 0
+		}
+		
+		for key in room_details.currencies:
+			currencies_check[key] += room_details.currencies[key]
 
 		if !room_extract.scp.is_empty():
 			for key in room_extract.scp.details.currencies: 
-				currencies[key] += room_extract.scp.details.currencies[key]
+				currencies_check[key] += room_extract.scp.details.currencies[key]
 				
-		var scp_details:Dictionary 
-		for key in currencies:
-			var amount:int = currencies[key]
+		for key in currencies_check:
+			var amount:int = currencies_check[key]
 			match key:
 				RESOURCE.CURRENCY.MONEY:
 					MoneyIcon.hide() if amount <= 0 else MoneyIcon.show()

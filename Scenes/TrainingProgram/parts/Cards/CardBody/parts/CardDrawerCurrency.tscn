@@ -57,12 +57,14 @@ theme_override_constants/separation = 10
 layout_mode = 2
 
 [node name="SpecBonusLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Spec bonus: + 50%"
 label_settings = ExtResource("3_osoqv")
 horizontal_alignment = 1
 
 [node name="TraitBonusLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Trait bonus: + 50%"
 label_settings = ExtResource("3_osoqv")
@@ -70,7 +72,7 @@ horizontal_alignment = 1
 
 [node name="MoraleBonusLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "Morale bonus: + 50%"
+text = "Morale bonus 0%"
 label_settings = ExtResource("3_osoqv")
 horizontal_alignment = 1
 
@@ -79,7 +81,7 @@ layout_mode = 2
 
 [node name="TotalBonusLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "Applied bonus: + 50%"
+text = "Applied bonus: 0%"
 label_settings = ExtResource("3_osoqv")
 horizontal_alignment = 1
 

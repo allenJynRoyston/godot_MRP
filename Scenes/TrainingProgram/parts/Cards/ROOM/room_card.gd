@@ -144,29 +144,32 @@ func on_ref_update() -> void:
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0
 		
-	if !use_location.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		var pair_res:Dictionary = ROOM_UTIL.check_for_pairing(ref, extract_data.researchers)
-		var summary_data:Dictionary = GAME_UTIL.get_ring_summary(use_location)	
-		morale_val = summary_data.metrics[RESOURCE.METRICS.MORALE]
-		is_activated = extract_data.is_activated		
-		has_spec_bonus =  pair_res.match_spec
-		has_trait_bonus = pair_res.match_trait
-		
-		var currencies_with_bonus:Dictionary = GAME_UTIL.apply_bonus_to(room_details.currencies, summary_data.metrics[RESOURCE.METRICS.MORALE], pair_res)
-		for key in currencies_with_bonus:
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			var amount:int = currencies_with_bonus[key]
-			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
-						
-	else:
-		for key in room_details.currencies:
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			var amount:int = room_details.currencies[key]
-			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
+	#if !use_location.is_empty():
+		#var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		#var pair_res:Dictionary = ROOM_UTIL.check_for_pairing(ref, extract_data.researchers)
+		#var summary_data:Dictionary = GAME_UTIL.get_ring_summary(use_location)	
+		#morale_val = summary_data.metrics[RESOURCE.METRICS.MORALE]
+		#is_activated = extract_data.is_activated		
+		#has_spec_bonus =  pair_res.match_spec
+		#has_trait_bonus = pair_res.match_trait
+		#
+		#var currencies_with_bonus:Dictionary = GAME_UTIL.apply_bonus_to(room_details.currencies, summary_data.metrics[RESOURCE.METRICS.MORALE], pair_res)
+		#for key in currencies_with_bonus:
+			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			#var amount:int = currencies_with_bonus[key]
+			#currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
+						#
+	#else:
+	
+	
+	for key in room_details.currencies:
+		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+		var amount:int = room_details.currencies[key]
+		currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
 
 	for node in [CardDrawerName, CardDrawerActivationRequirements]:
 		node.border_color = default_border_color if is_activated else Color.RED
+
 
 	# -----------
 	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"] if is_activated else "%s (INACTIVE)" % [room_details.name]

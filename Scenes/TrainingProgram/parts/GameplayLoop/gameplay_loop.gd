@@ -1694,30 +1694,28 @@ func parse_restore_data(game_data_config:Dictionary) -> void:
 # ------------------------------------------------------------------------------
 # NOTE: THIS IS THE MAIN LOGIC THAT HAPPENS WHEN GAMEPLAY ESSENTIAL DATA IS UPDATED
 # ------------------------------------------------------------------------------
-func update_room_config(force_setup:bool = false) -> void:
-	if !setup_complete:return
+func setup_default_energy_and_metrics(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
+	# energy availble per levels
 	const energy_levels:Array = [5, 10, 15, 20, 25]
-	# grab default values
-	var new_room_config:Dictionary = initial_values.room_config.call()	
-	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
-	var room_type_refs:Array = purchased_facility_arr.map(func(x): return x.type_ref)
-	var metric_defaults:Dictionary = {}
-
-	# set defaults
-	for floor_index in new_room_config.floor.size():
-		var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]
+	
+	for floor_index in new_room_config.floor.size():		
 		for ring_index in new_room_config.floor[floor_index].ring.size():
+			var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]				
 			var ring_config_data:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
+			var floor_ring_designation:String = str(floor_index, ring_index)
+			
+			# setup initial energy
 			ring_config_data.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY)	 else 99
 			ring_config_data.energy.used = 0
-			var floor_ring_designation:String = str(floor_index, ring_index)
-			if floor_ring_designation not in metric_defaults:
-				metric_defaults[floor_ring_designation] = {
-					RESOURCE.METRICS.MORALE: 0,
-					RESOURCE.METRICS.SAFETY: 0,
-					RESOURCE.METRICS.READINESS: 0
-				}
+			
+			# set default metrics
+			metric_defaults[floor_ring_designation] = {
+				RESOURCE.METRICS.MORALE: 0,
+				RESOURCE.METRICS.SAFETY: 0,
+				RESOURCE.METRICS.READINESS: 0
+			}	
 
+func setup_scp_and_run_firstpass_effects(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
 	# CALCULATE CONTAINED SCP - LAST THING TO BE COMPUTED
 	for item in scp_data.contained_list:
 		var floor:int = item.location.floor
@@ -1728,39 +1726,34 @@ func update_room_config(force_setup:bool = false) -> void:
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
 		
-		# first, add to room config data
-		room_config_data.scp_data = {
-			"ref": item.ref,
-			"details": SCP_UTIL.return_data(item.ref), 
-		}				
-		
-		# next, tally their metrics
+		# add to ring level metrics
 		for key in scp_details.metrics:
 			var amount:int = scp_details.metrics[key]
 			metric_defaults[floor_ring_designation][key] += amount		
 		
-		# call their effects before effect
+		# run first level effects to get personnel
 		if "personnel" in scp_details.effects:
 			for key in scp_details.effects.personnel:
 				ring_config_data.personnel[key] = scp_details.effects.personnel[key]
 				room_config_data.personnel[key] = scp_details.effects.personnel[key]
-				
+		
+		# run first level effects to get metrics		
 		if "metrics" in scp_details.effects:
 			for key in scp_details.effects.metrics:		
 				var amount:int = scp_details.effects.metrics[key]
 				metric_defaults[floor_ring_designation][key] = amount
-
-
-	# FIRST, RESET all passive enables, check for assigned researchers and add to ability level
+				
+func setup_room_passive_and_level_setup(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
-		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
+		
 		# FIRST, set defaults
+		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for ability_index in passive_abilities.size():
@@ -1769,16 +1762,17 @@ func update_room_config(force_setup:bool = false) -> void:
 				# creates default state if it doesn't exist
 				if ability_uid not in room_base_state.passives_enabled:
 					room_base_state.passives_enabled[ability_uid] = false
-
-		# check for researcher and if they pair with the room to increasae the room level ability
+					
+		# ... then check for hired researchers and if they are preference, up the room ability level
 		for researcher in hired_lead_researchers_arr:
 			var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
 			var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
 			var specializations:Array = researcher_details.specializations
 			var has_pairing:bool = ROOM_UTIL.check_for_room_pair(item.ref, researcher_details)
 			if assigned_to_room == item.location and has_pairing:
-				room_config_data.abl_lvl = U.min_max(room_config_data.abl_lvl + 1, 0, 2)
-				
+				room_config_data.abl_lvl = U.min_max(room_config_data.abl_lvl + 1, 0, 2)					
+
+func room_passive_check_for_effect(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
 	# NEXT check for passives in rooms
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1788,13 +1782,7 @@ func update_room_config(force_setup:bool = false) -> void:
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-
 		var floor_ring_designation:String = str(floor, ring)
-		
-		# tally their currencies
-		for key in room_data.currencies:
-			var amount:int = room_data.currencies[key]
-			new_room_config.floor[floor].ring[ring].currencies[key] += amount
 			
 		# if passives are enabled...
 		if "passive_abilities" in room_data:
@@ -1811,7 +1799,6 @@ func update_room_config(force_setup:bool = false) -> void:
 				if room_base_state.passives_enabled[ability_uid]:
 					# check if level is equal or less then what is required...
 					# aand check if check if enough energy available to power the passive
-					#print(ability.name, ability.lvl_required, " -> ", abl_lvl)
 					if ability.lvl_required <= abl_lvl and ring_config_data.energy.used < ring_config_data.energy.available:
 						# if it's enabled, add to energy cost
 						ring_config_data.energy.used += energy_cost
@@ -1834,8 +1821,7 @@ func update_room_config(force_setup:bool = false) -> void:
 					else:
 						room_base_state.passives_enabled[ability_uid] = false
 
-	# go through once more to check if rooms can be activated if they have a resource requirement
-	# and add their metrics if they are
+func room_check_for_activation(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
@@ -1860,30 +1846,24 @@ func update_room_config(force_setup:bool = false) -> void:
 				
 		# add is activated statement
 		room_config_data.is_activated = is_activated 
-		
-		# set room config data
-		room_config_data.room_data = {
-			"ref": item.ref,
-			"details": ROOM_UTIL.return_data(item.ref), 
-		}
-		
-		# add to ref count
-		ring_config_data.room_refs.push_back(item.ref)
-	
 
-	# lastly, calculate any mmorale bonus into the final currency rewards
+func room_calculate_currencies(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
 		var floor_ring_designation:String = str(floor, ring)
-		#var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
-		#var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		#var is_activated:bool = true		
-		ring_config_data.metrics = metric_defaults[floor_ring_designation]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 
-	# LASTLY, calculate currencies for both 
+		# tally their currencies
+		for key in room_data.currencies:
+			var amount:int = room_data.currencies[key]
+			# TODO: calculate bonuses and add it here
+			#new_room_config.floor[floor].ring[ring].currencies[key] += amount
+
+func scp_calculate_currencies(new_room_config:Dictionary) -> void:
 	for item in scp_data.contained_list:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
@@ -1892,20 +1872,73 @@ func update_room_config(force_setup:bool = false) -> void:
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
-		#var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": floor, "ring": ring, "room": room}, new_room_config)
-		#var pair_res:Dictionary = SCP_UTIL.check_for_pairing(item.ref, extract_data.researchers)		
-#
-		#if "currencies" in scp_details.effects:
-			#var with_bonus_currencies:Dictionary = GAME_UTIL.apply_bonus_to(scp_details.effects.currencies, metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE], pair_res)
-			#for key in with_bonus_currencies:		
-				#var amount:int = with_bonus_currencies[key]
-				#new_room_config.floor[floor].ring[ring].currencies[key] += amount
+		
+		for key in scp_details.currencies:
+			var amount:int = scp_details.currencies[key]
+			# TODO: calculate bonuses and add it here
+			
+func room_final_pass(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
+	# final room pass, tally currencies, save final metrics and other props
+	for item in purchased_facility_arr:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room
+		var floor_ring_designation:String = str(floor, ring)
+		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+			
+		# add to ref count
+		ring_config_data.room_refs.push_back(item.ref)		
+		#var is_activated:bool = true		
+		ring_config_data.metrics = metric_defaults[floor_ring_designation]
+		# set room config data
+		room_config_data.room_data = {
+			"ref": item.ref,
+			"details": ROOM_UTIL.return_data(item.ref), 
+		}
 
+func scp_final_pass(new_room_config:Dictionary) -> void:
+	# final scp pass, tally currencies
+	for item in scp_data.contained_list:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room	
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		
+		# first, add to room config data
+		room_config_data.scp_data = {
+			"ref": item.ref,
+			"details": SCP_UTIL.return_data(item.ref), 
+		}			
+
+func update_room_config(force_setup:bool = false) -> void:
+	if !setup_complete:return
+	# grab default values
+	var new_room_config:Dictionary = initial_values.room_config.call()	
+	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
+	var metric_defaults:Dictionary = {}
 	
-	# checks for any conditioals triggers by built room combonations:
-	if ROOM.TYPE.DIRECTORS_OFFICE in room_type_refs and ROOM.TYPE.HQ in room_type_refs:
-		new_gameplay_conditionals[CONDITIONALS.TYPE.BASE_IS_SETUP] = progress_data.day > 1
+	# EXECUTE IN THIS ORDER
+	# zero out defaults 
+	setup_default_energy_and_metrics(new_room_config, metric_defaults)
 	
+	# SCP, initial pass
+	setup_scp_and_run_firstpass_effects(new_room_config, metric_defaults)	
+	
+	# ROOM, setup and loop
+	setup_room_passive_and_level_setup(new_room_config)
+	room_passive_check_for_effect(new_room_config, metric_defaults)
+	room_check_for_activation(new_room_config, metric_defaults)
+	
+	# calculte currencies
+	room_calculate_currencies(new_room_config)
+	scp_calculate_currencies(new_room_config)
+	
+	# final pass	
+	room_final_pass(new_room_config, metric_defaults)
+	scp_final_pass(new_room_config) 
+	
+	# update subscriptions
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
