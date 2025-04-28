@@ -23,22 +23,25 @@ var SCP_TEMPLATE:Dictionary = {
 		"specilization": null,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
 		"trait": null,									# must be a trait (HAPPY, SAD, etc).  Can only be one.  1.5x reward if researcher has assigned trait.
 	},													
-	"containment_reward": {								# assigned when generated
-		RESOURCE.CURRENCY.MONEY: 0,						# used to build rooms
-		RESOURCE.CURRENCY.MATERIAL: 0,					# used to build support (rooms that attach to containment cells)	
-		RESOURCE.CURRENCY.SCIENCE: 0,					# used for abilities / events 
-		RESOURCE.CURRENCY.CORE: 0						# used to unlock blueprints (purchases)
-	},
-	
 	"breach_events_at": [],								# assigned when generated, based off item_class
 	# -----------------------------------	
 	
-	# -----------------------------------
-	#"ongoing_containment": {
-		#RESOURCE.CURRENCY.MONEY: 25,
-		#RESOURCE.CURRENCY.SCIENCE: 25
-	#},
-	# -----------------------------------	
+	# ------------------------------------------
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.CORE: 0
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"metrics": {
+		RESOURCE.METRICS.MORALE: 0,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0,
+	},	
+	# ------------------------------------------
 	
 	## -----------------------------------
 	#"scenario_data":{
@@ -62,15 +65,21 @@ var SCP_TEMPLATE:Dictionary = {
 	# -----------------------------------
 	"effects": {
 		"description": "Makes all personnel resources available for the wing.", 
-		"before": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-			var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-			ring_config_data.personnel = {
-				RESOURCE.PERSONNEL.TECHNICIANS: true,
-				RESOURCE.PERSONNEL.STAFF: true,
-				RESOURCE.PERSONNEL.SECURITY: true,
-				RESOURCE.PERSONNEL.DCLASS: true
-			}
-			return new_room_config,
+		"personnel": {
+			RESOURCE.PERSONNEL.TECHNICIANS: true,
+			RESOURCE.PERSONNEL.STAFF: true,
+			RESOURCE.PERSONNEL.SECURITY: true,
+			RESOURCE.PERSONNEL.DCLASS: true
+		},
+		#"before": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
+			#var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
+			#ring_config_data.personnel = {
+				#RESOURCE.PERSONNEL.TECHNICIANS: true,
+				#RESOURCE.PERSONNEL.STAFF: true,
+				#RESOURCE.PERSONNEL.SECURITY: true,
+				#RESOURCE.PERSONNEL.DCLASS: true
+			#}
+			#return new_room_config,
 	},
 	# -----------------------------------
 
@@ -284,8 +293,8 @@ func fill_template(data:Dictionary, ref:int) -> void:
 	
 	# now assign it a deterministic spec/trait
 	template_copy.containment_multiplier = {
-		"specilization": spec_count,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
-		"trait": trait_count,		
+		"specilization":RESEARCHER.SPECIALIZATION.BIOLOGIST, # spec_count,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
+		"trait": RESEARCHER.TRAITS.HARD_WORKING			#trait_count,		
 	}
 	
 	# deterministically determine which item gets rewarded what
@@ -300,19 +309,21 @@ func fill_template(data:Dictionary, ref:int) -> void:
 	
 	var matched:bool = false
 	if ref % 2 == 0:
-		template_copy.containment_reward[RESOURCE.CURRENCY.MONEY] = amount
+		template_copy.currencies[RESOURCE.CURRENCY.MONEY] = amount
 		matched = true
 	else:
-		template_copy.containment_reward[RESOURCE.CURRENCY.MATERIAL] = amount
+		template_copy.currencies[RESOURCE.CURRENCY.MATERIAL] = amount
 		matched = true
 		
 	if ref % 3 == 0 and !matched:
-		template_copy.containment_reward[RESOURCE.CURRENCY.SCIENCE] = amount
+		template_copy.currencies[RESOURCE.CURRENCY.SCIENCE] = amount
 		matched = true
 
-	if ref % 4 == 0 and !matched:
-		template_copy.containment_reward[RESOURCE.CURRENCY.CORE] = amount
-		matched = true
+	template_copy.metrics = {
+		RESOURCE.METRICS.MORALE: -1,
+		RESOURCE.METRICS.SAFETY: -2,
+		RESOURCE.METRICS.READINESS: -3,
+	}
 
 	reference_list.push_back(ref)
 	reference_data[ref] = template_copy
@@ -342,6 +353,25 @@ func get_next_available_refs(just_added_scp:int) -> Array:
 func return_data(ref:int) -> Dictionary:
 	reference_data[ref].ref = ref
 	return reference_data[ref]
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
+	var scp_details:Dictionary = return_data(ref)
+	var match_spec:bool = false
+	var match_trait:bool = false
+	
+	for researcher in researchers:
+		if !match_spec and (scp_details.containment_multiplier.specilization in researcher.specializations):
+			match_spec = true
+		if !match_trait and (scp_details.containment_multiplier.trait in researcher.traits):
+			match_trait = true
+	
+	return {
+		"match_spec": match_spec,
+		"match_trait": match_trait,
+		
+	}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

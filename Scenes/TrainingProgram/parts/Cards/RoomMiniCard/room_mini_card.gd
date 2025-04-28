@@ -3,6 +3,7 @@ extends MouseInteractions
 
 @onready var CardBody:Control = $CardBody
 
+@onready var CardDrawerEmpty:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerEmpty
 @onready var CardDrawerResearcherPref:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerResearcherPref
 @onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerActiveAbilities
 @onready var CardDrawerPassiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerPassiveAbilities
@@ -26,17 +27,35 @@ func on_ref_update() -> void:
 	if !is_node_ready():return
 
 	if ref == -1:
+		CardDrawerEmpty.show()
+		CardDrawerActiveAbilities.hide()
+		CardDrawerPassiveAbilities.hide()
+		CardBody.card_size.y = 75
+				
+		CardDrawerActiveAbilities.title = ""
+		CardDrawerPassiveAbilities.title = ""
 		CardDrawerResearcherPref.content = ""
 		CardDrawerActiveAbilities.clear()
 		CardDrawerPassiveAbilities.clear()
+
 		return
+	
+	
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_locked:bool = false
 	var is_activated:bool = true
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		is_activated = extract_data.is_activated		
+		is_activated = extract_data.is_activated
+	
+	CardDrawerEmpty.hide()
+	CardDrawerActiveAbilities.show()
+	CardDrawerPassiveAbilities.show()
+	CardBody.card_size.y = 250
+	
+	CardDrawerActiveAbilities.title = "%s PROGRAMS" % room_details.name
+	CardDrawerPassiveAbilities.title = "%s MODULES" % room_details.name
 
 	if "passive_abilities" not in room_details or room_details.passive_abilities.call().is_empty():
 		CardDrawerPassiveAbilities.hide()

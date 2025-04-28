@@ -50,15 +50,9 @@ extends GameContainer
 @onready var ConfirmBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/ConfirmBtn
 @onready var BackBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/BackBtn
 
-@onready var RoomVBox:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/Room
-@onready var Researchers:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers
-@onready var ResearcherCount:Label = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/HBoxContainer/ResearcherCount
-@onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/Researchers/ResearcherList
-
-@onready var SynergyContainer:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/SynergyContainer
-@onready var SynergyTraitList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList
-@onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/ScpMiniCard
-@onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/Room/RoomMiniCard
+@onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/ScpMiniCard
+@onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomMiniCard
+@onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/ResearcherList
 
 #@onready var ScpDetails:Control = $ScpDetails
 @onready var ScpDetailsPanel:PanelContainer = $ScpDetails/PanelContainer
@@ -133,10 +127,6 @@ func _ready() -> void:
 	super._ready()
 	
 	BtnControls.reveal(false)
-	
-	for child in [SynergyTraitList]:
-		for node in child.get_children():
-			node.queue_free()	
 
 	AssignBtn.onClick = func() -> void:
 		call_and_redraw(func():
@@ -350,7 +340,7 @@ func draw_active_menu(draw_delay:float = 0) -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
 	var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
-	var resources:Array = passive_abilities.filter(func(x): return "provides" in x and x.is_enabled).map(func(x): return x.provides)
+	var resources:Array = passive_abilities.filter(func(x): return "personnel" in x and x.is_enabled).map(func(x): return x.personnel)
 	var get_node_pos:Callable = func() -> Vector2: 
 		return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 	
@@ -394,7 +384,7 @@ func draw_active_menu_items(selected_data:Dictionary = selected_data_state, sele
 		# IF PASSIVE
 		2:
 			ability = room_extract.room.passive_abilities.filter(func(x): return x.name == selected_data.title)[0]
-			draw_to_personnel = "provides" in ability
+			draw_to_personnel = "personnel" in ability
 	
 	# if any "metrics" draw to applies
 	if "metrics" in ability:
@@ -1089,8 +1079,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show + 50, duration)
 			
 			GBL.find_node(REFS.LINE_DRAW).clear()
-			RoomVBox.modulate = Color(1, 1, 1, 0)
-			#TraitContainer.modulate = Color(1, 1, 1, 0)
+			for node in [RoomMiniCard, ScpMiniCard]:
+				node.modulate = Color(1, 1, 1, 0)
 				
 			for btn in [ConfirmBtn, BackBtn]:
 				btn.show()
@@ -1100,14 +1090,16 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				for btn in [ConfirmBtn, BackBtn]:
 					btn.is_disabled = true							
 				current_mode = MODE.INVESTIGATE
-				RoomVBox.modulate = Color(1, 1, 1, 1)
+				for node in [RoomMiniCard, ScpMiniCard]:
+					node.modulate = Color(1, 1, 1, 1)
 				on_current_location_update()
 			
 			ConfirmBtn.onClick = func() -> void:
 				var researcher:Dictionary = ResearcherList.get_child(selected_researcher).researcher
 				await GAME_UTIL.unassign_researcher(researcher)
 				current_mode = MODE.INVESTIGATE
-				RoomVBox.modulate = Color(1, 1, 1, 1)
+				for node in [RoomMiniCard, ScpMiniCard]:
+					node.modulate = Color(1, 1, 1, 1)
 				on_current_location_update()
 		
 	#if !control_pos.is_empty():
@@ -1179,16 +1171,14 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	var is_activated:bool = room_extract.is_activated
 	var abilities:Array = [] if is_room_empty else room_extract.room.abilities
 
-	#RoomMiniCard.is_activated = is_activated
-	#RoomMiniCard.is_room_under_construction = room_extract.is_room_under_construction	
-	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1	
-	
-	RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
-	
-	for node in [ResearcherList, SynergyTraitList]:
+	for node in [ResearcherList]:
 		for child in node.get_children():
 			child.queue_free()
 	
+	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1	
+	RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
+	
+
 	RoomDetailsControl.use_location = use_location
 	RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
 	RoomDetailsControl.scp_ref = -1 if room_extract.scp.is_empty() else room_extract.scp.details.ref
@@ -1206,39 +1196,15 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	
 	## RESEARCHER DETAILS
 	if room_extract.researchers.is_empty():
-		Researchers.hide()
-		#
-		SynergyContainer.hide()
+		ResearcherList.hide()
 	else:
-		Researchers.show()
+		ResearcherList.show()
 		var total_traits_list := []
-		
 		for researcher in room_extract.researchers:
 			var mini_card:Control = ResearcherMiniCard.instantiate()
 			mini_card.researcher = researcher
 			ResearcherList.add_child(mini_card)
-			# add selected to selected list	
-			total_traits_list.push_back(researcher.traits)
-		ResearcherCount.text = "%s/%s" % [room_extract.researchers.size(), base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room]
-	
-	
-	#TraitContainer.show() if !room_extract.trait_list.is_empty() else TraitContainer.hide()
-	#for item in room_extract.trait_list:
-		#var card:Control = TraitCardPreload.instantiate()
-		#card.ref = item.details.ref
-		#card.effect = item.effect
-		#card.show_output = true
-		#TraitList.add_child(card)
-	
-	#SynergyContainer.hide() if room_extract.synergy_list.is_empty() else SynergyContainer.show()
-	#for item in room_extract.synergy_list:
-		#var card:Control = TraitCardPreload.instantiate()
-		#card.ref = item.details.ref
-		#card.effect = item.effect
-		#card.show_output = true
-		#card.is_synergy = true
-		#SynergyTraitList.add_child(card)		
-	#
+
 	await U.tick()
 	DetailsPanel.position.y = 0	
 # --------------------------------------------------------------------------------------------------

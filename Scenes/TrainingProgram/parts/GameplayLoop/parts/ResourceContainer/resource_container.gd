@@ -43,9 +43,6 @@ extends GameContainer
 @onready var SecTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SecTag
 @onready var DClassTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/DClassTag
 
-@onready var HintContainer:Control = $PanelContainer/MarginControl/VBoxContainer/HintContainer
-@onready var HintLabel:Label = $PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintLabel
-
 
 var previous_location:Dictionary = {}
 
@@ -67,7 +64,6 @@ func _ready() -> void:
 	#GBL.direct_ref["SafetyPanel"] = Safety
 	#GBL.direct_ref["ReadinessPanel"] = Readiness
 	
-	HintContainer.hide()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -180,10 +176,10 @@ func update_panels() -> void:
 			personnel = summary_data.personnel	
 			
 			#currency diff
-			CurrenyTag.val = currencies[RESOURCE.CURRENCY.MONEY] 
-			MaterialTag.val = currencies[RESOURCE.CURRENCY.MATERIAL] 
-			ScienceTag.val = currencies[RESOURCE.CURRENCY.SCIENCE] 
-			CoreTag.val = currencies[RESOURCE.CURRENCY.CORE] 				
+			CurrenyTag.val = 0 #currencies[RESOURCE.CURRENCY.MONEY] 
+			MaterialTag.val = 0 #currencies[RESOURCE.CURRENCY.MATERIAL] 
+			ScienceTag.val = 0 #currencies[RESOURCE.CURRENCY.SCIENCE] 
+			CoreTag.val = 0 #currencies[RESOURCE.CURRENCY.CORE] 				
 						
 			for node in [LocationFloor, LocationWing, LocationRoom, MoraleTag, SafetyTag, ReadinessTag, EnergyTag, StaffTag, TechTag, SecTag, DClassTag]:
 				if node in [LocationFloor, LocationWing]:
@@ -198,6 +194,7 @@ func update_panels() -> void:
 			energy = summary_data.energy
 			personnel = summary_data.personnel	
 			
+
 			#currency diff
 			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
 			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 

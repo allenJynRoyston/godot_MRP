@@ -20,7 +20,7 @@ class_name CardDrawerClass
 	set(val):
 		border_color = val
 		on_border_color_update()
-		
+				
 func _ready() -> void:
 	on_is_left_side_update()
 	on_title_update()

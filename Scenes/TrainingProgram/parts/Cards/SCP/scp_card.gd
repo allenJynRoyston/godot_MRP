@@ -1,9 +1,8 @@
 @tool
 extends MouseInteractions
 
-@onready var OutputTextureRect:TextureRect = $CardBody/TextureRect
-
 @onready var CardBody:Control = $CardBody
+@onready var OutputTextureRect:TextureRect = $CardBody/TextureRect
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerDesignation:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerDesignation
@@ -12,9 +11,9 @@ extends MouseInteractions
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
 # back
-@onready var CardDrawerContainmentInfo:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerContainmentInfo
-@onready var CardDrawerBonus:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerBonus
-@onready var CardDrawerRewards:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerRewards
+@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
+@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPairsWith
+@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
 
 @export var ref:int = -1: 
 	set(val):
@@ -121,29 +120,66 @@ func on_ref_update() -> void:
 			node.content = "-"
 		return
 		
-	var scp_data:Dictionary = SCP_UTIL.return_data(ref)
-	var rewards:Array = SCP_UTIL.return_ongoing_containment_rewards(ref)
-	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(scp_data.containment_multiplier.specilization).name)
-	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(scp_data.containment_multiplier.trait).name)
+	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(scp_details.containment_multiplier.specilization).name)
+	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(scp_details.containment_multiplier.trait).name)
 	var bonus_str:String = "%s or %s" % [spec_name, trait_name]
+	var currency_list:Array = []
+	var has_spec_bonus:bool = false
+	var has_trait_bonus:bool = false
+	var morale_val:int = 0	
+	
 
-	CardDrawerDesignation.content = scp_data.name
-	CardDrawerName.content = scp_data.nickname
-	CardDrawerBonus.content = bonus_str
-	CardDrawerDescription.content = scp_data.description
+	if !use_location.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		var pair_res:Dictionary = SCP_UTIL.check_for_pairing(ref, extract_data.researchers)
+		var summary_data:Dictionary = GAME_UTIL.get_ring_summary(use_location)	
+		morale_val = summary_data.metrics[RESOURCE.METRICS.MORALE]		
+		has_spec_bonus =  pair_res.match_spec
+		has_trait_bonus = pair_res.match_trait
+		
+		var currencies_with_bonus:Dictionary = GAME_UTIL.apply_bonus_to(scp_details.currencies, summary_data.metrics[RESOURCE.METRICS.MORALE], pair_res)
+		for key in currencies_with_bonus:
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			var amount:int = currencies_with_bonus[key]
+			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})				
+		
+	else:
 
-	match scp_data.item_class:
+		for key in scp_details.currencies:
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			var amount:int = scp_details.currencies[key]
+			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})		
+	
+	# -----------
+	CardDrawerDesignation.content = scp_details.name
+	CardDrawerName.content = scp_details.nickname
+	CardDrawerDescription.content = scp_details.description
+	CardDrawerImage.img_src = scp_details.img_src
+	CardDrawerImage.use_static = false	
+	CardDrawerVibes.metrics = scp_details.metrics
+	# -----------
+	CardDrawerPairsWith.spec_name = spec_name
+	CardDrawerPairsWith.trait_name = trait_name
+	CardDrawerPairsWith.has_spec = has_spec_bonus
+	CardDrawerPairsWith.has_trait = has_trait_bonus
+	# -----------
+	CardDrawerCurrency.spec_name = spec_name
+	CardDrawerCurrency.trait_name = trait_name
+	CardDrawerCurrency.has_spec_bonus = has_spec_bonus
+	CardDrawerCurrency.has_trait_bonus = has_trait_bonus
+	CardDrawerCurrency.morale_val = morale_val
+	CardDrawerCurrency.list = currency_list
+	CardDrawerCurrency.update_labels()
+
+
+	match scp_details.item_class:
 		SCP_UTIL.ITEM_CLASS.SAFE:
 			CardDrawerItemClass.content = "SAFE"
 		SCP_UTIL.ITEM_CLASS.EUCLID:
 			CardDrawerItemClass.content = "EUCLID"
 		SCP_UTIL.ITEM_CLASS.KETER:
 			CardDrawerItemClass.content = "KETER"
-	
-	CardDrawerImage.img_src = scp_data.img_src
-	CardDrawerImage.use_static = false
-	CardDrawerRewards.list = rewards.map(func(x): return {"icon": x.resource.icon, "title": str(x.amount)})	
-	CardDrawerContainmentInfo.effects = scp_data.effects
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

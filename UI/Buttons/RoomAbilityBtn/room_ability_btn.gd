@@ -109,15 +109,15 @@ func on_is_unknown_update() -> void:
 	
 func on_cooldown_val_update() -> void:
 	if !is_node_ready():return
-	CooldownLabel.text = str(cooldown_val) if !is_unknown else "?"
+	CooldownLabel.text = str(cooldown_val) if !is_unknown else "-"
 
 func on_ability_name_update() -> void:
 	if !is_node_ready():return
-	NameLabel.text = str(ability_name)  if !is_unknown else "???"
+	NameLabel.text = str(ability_name)  if !is_unknown else "UNAVAILABLE"
 
 func on_cost_update() -> void:
 	if !is_node_ready():return
-	CostLabel.text = str(cost) if !is_unknown else "?"
+	CostLabel.text = str(cost) if !is_unknown else "-"
 	IconBtn.hide() if is_unknown else IconBtn.show()
 
 func on_cooldown_update() -> void:

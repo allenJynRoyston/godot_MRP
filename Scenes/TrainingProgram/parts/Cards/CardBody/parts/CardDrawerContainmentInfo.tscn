@@ -4,7 +4,7 @@
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_4hgoj"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_glot1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2gwvn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_glot1"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -21,7 +21,7 @@ corner_radius_bottom_left = 5
 [node name="CardDrawerContainmentInfo" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_2gwvn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_glot1")
 script = ExtResource("1_glot1")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -42,9 +42,9 @@ horizontal_alignment = 2
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 25
+theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
@@ -65,7 +65,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 15
+theme_override_constants/margin_bottom = 5
 
 [node name="DescriptionLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/ContainedEffect/PanelContainer/MarginContainer"]
 custom_minimum_size = Vector2(1, 0)

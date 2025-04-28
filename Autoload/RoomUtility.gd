@@ -52,7 +52,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	
 	# ------------------------------------------	
 	"levels_with": {
-		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+		"specilization": RESEARCHER.SPECIALIZATION.BIOLOGIST,
 		"trait": RESEARCHER.TRAITS.HARD_WORKING
 	},
 	# ------------------------------------------
@@ -196,18 +196,37 @@ func return_levels_with_details(ref:int) -> Dictionary:
 	return details
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
+	var scp_details:Dictionary = return_data(ref)
+	var match_spec:bool = false
+	var match_trait:bool = false
+	
+	for researcher in researchers:
+		if !match_spec and (scp_details.levels_with.specilization in researcher.specializations):
+			match_spec = true
+		if !match_trait and (scp_details.levels_with.trait in researcher.traits):
+			match_trait = true
+	
+	return {
+		"match_spec": match_spec,
+		"match_trait": match_trait,
+		
+	}
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
-func check_for_room_pair(ref:int, specializations:Array) -> bool:
-	return true
-	#var room_data:Dictionary = return_data(ref)
-	#var has_pairing:bool = false
-	#if "levels_with" in room_data:
-		#for spec in specializations:
-			#if spec in room_data.levels_with:
-				#has_pairing = true
-				#break	
-	#return has_pairing
+func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
+	var room_data:Dictionary = return_data(ref)
+	
+	if room_data.levels_with.specilization in researcher.specializations:
+		return true
+	
+	if room_data.levels_with.trait in researcher.traits:
+		return true
+	
+	return false
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------			

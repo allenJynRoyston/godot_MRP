@@ -947,30 +947,30 @@ func execute_record_audit() -> void:
 							}
 						})
 						
-						calculate_daily_costs(diff)
+						#calculate_daily_costs(diff)
 					
 
 				# ------- GETS SCP DATA PROFITS
 				if !is_scp_empty:
 					var scp_details:Dictionary = extract_data.scp.details
-					var diff:Array = SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref).map(func(i):
-						return {
-							"amount": i.amount, 
-							"resource_ref": i.resource.ref
-						}
-					)
+					#var diff:Array = SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref).map(func(i):
+						#return {
+							#"amount": i.amount, 
+							#"resource_ref": i.resource.ref
+						#}
+					#)
 					
-					progress_data.record.push_back({
-						"source": REFS.SOURCE.SCPS,
-						"data": {
-							"name": scp_details.name,
-							"day": progress_data.day,
-							"location": location,
-							"diff": diff
-						}
-					})
-					
-					calculate_daily_costs(diff)
+					#progress_data.record.push_back({
+						#"source": REFS.SOURCE.SCPS,
+						#"data": {
+							#"name": scp_details.name,
+							#"day": progress_data.day,
+							#"location": location,
+							#"diff": diff
+						#}
+					#})
+					#
+					#calculate_daily_costs(diff)
 					
 					# CALUCLATE SCIENCE FROM SCP's
 					for researcher in researchers:
@@ -1007,7 +1007,7 @@ func execute_record_audit() -> void:
 						})
 						
 						
-						calculate_daily_costs(science_diff)
+						#calculate_daily_costs(science_diff)
 # -----------------------------------
 
 # -----------------------------------
@@ -1718,22 +1718,38 @@ func update_room_config(force_setup:bool = false) -> void:
 					RESOURCE.METRICS.READINESS: 0
 				}
 
-	# CALCULATE CONTAINED SCP - 
+	# CALCULATE CONTAINED SCP - LAST THING TO BE COMPUTED
 	for item in scp_data.contained_list:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room	
+		var floor_ring_designation:String = str(floor, ring)
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
 		
-		if "before" in scp_details.effects:
-			# call their effects
-			new_room_config = scp_details.effects.before.call(new_room_config, item.location)
-			# first, add this to the config
-			room_config_data.scp_data = {
-				"ref": item.ref
-			}
+		# first, add to room config data
+		room_config_data.scp_data = {
+			"ref": item.ref,
+			"details": SCP_UTIL.return_data(item.ref), 
+		}				
+		
+		# next, tally their metrics
+		for key in scp_details.metrics:
+			var amount:int = scp_details.metrics[key]
+			metric_defaults[floor_ring_designation][key] += amount		
+		
+		# call their effects before effect
+		if "personnel" in scp_details.effects:
+			for key in scp_details.effects.personnel:
+				ring_config_data.personnel[key] = scp_details.effects.personnel[key]
+				room_config_data.personnel[key] = scp_details.effects.personnel[key]
+				
+		if "metrics" in scp_details.effects:
+			for key in scp_details.effects.metrics:		
+				var amount:int = scp_details.effects.metrics[key]
+				metric_defaults[floor_ring_designation][key] = amount
+
 
 	# FIRST, RESET all passive enables, check for assigned researchers and add to ability level
 	for item in purchased_facility_arr:
@@ -1759,7 +1775,7 @@ func update_room_config(force_setup:bool = false) -> void:
 			var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
 			var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
 			var specializations:Array = researcher_details.specializations
-			var has_pairing:bool = ROOM_UTIL.check_for_room_pair(item.ref, specializations)
+			var has_pairing:bool = ROOM_UTIL.check_for_room_pair(item.ref, researcher_details)
 			if assigned_to_room == item.location and has_pairing:
 				room_config_data.abl_lvl = U.min_max(room_config_data.abl_lvl + 1, 0, 2)
 				
@@ -1775,10 +1791,10 @@ func update_room_config(force_setup:bool = false) -> void:
 
 		var floor_ring_designation:String = str(floor, ring)
 		
-		if "currencies" in room_data:
-			for key in room_data.currencies:
-				var amount:int = room_data.currencies[key]
-				new_room_config.floor[floor].ring[ring].currencies[key] += amount
+		# tally their currencies
+		for key in room_data.currencies:
+			var amount:int = room_data.currencies[key]
+			new_room_config.floor[floor].ring[ring].currencies[key] += amount
 			
 		# if passives are enabled...
 		if "passive_abilities" in room_data:
@@ -1802,8 +1818,8 @@ func update_room_config(force_setup:bool = false) -> void:
 						room_config_data.energy_used += energy_cost
 
 						# check provides (like staff, dclass, security, etc)
-						if "provides" in ability: 
-							for resource in ability.provides:
+						if "personnel" in ability: 
+							for resource in ability.personnel:
 								ring_config_data.personnel[resource] = true
 								room_config_data.personnel[resource] = true
 
@@ -1812,10 +1828,6 @@ func update_room_config(force_setup:bool = false) -> void:
 							for metric in ability.metrics:
 								metric_defaults[floor_ring_designation][metric] += ability.metrics[metric]
 								
-						# check for wing level stuff
-						if "wing" in ability:
-							new_room_config = ability.wing.call(new_room_config, item.location)
-
 						# check for any conditional changes
 						if "conditional" in ability:
 							ability.conditional.call(gameplay_conditionals)
@@ -1830,65 +1842,64 @@ func update_room_config(force_setup:bool = false) -> void:
 		var room:int = item.location.room
 		var floor_ring_designation:String = str(floor, ring)
 		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
-		var ring_base_state:Dictionary = base_states.ring[floor_ring_designation]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var is_activated:bool = true
+		
 		# check if room has any requirements
-		if "required_personnel" in room_data:
-			for ref in room_data.required_personnel:
-				if !ring_config_data.personnel[ref]:
-					is_activated = false
-					break
+		for ref in room_data.required_personnel:
+			if !ring_config_data.personnel[ref]:
+				is_activated = false
+				break
+				
 		# update metrics IF room is activated
-		if is_activated and "metrics" in room_data:
+		if is_activated:
 			for key in room_data.metrics:
 				var amount:int = room_data.metrics[key]
 				metric_defaults[floor_ring_designation][key] += amount
+				
 		# add is activated statement
 		room_config_data.is_activated = is_activated 
+		
 		# set room config data
 		room_config_data.room_data = {
 			"ref": item.ref,
 			"details": ROOM_UTIL.return_data(item.ref), 
 		}
+		
 		# add to ref count
 		ring_config_data.room_refs.push_back(item.ref)
 	
-	
-	# now add any researcher bonuses in
+
+	# lastly, calculate any mmorale bonus into the final currency rewards
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
-		var room:int = item.location.room		
-		var floor_ring_designation:String = str(floor, ring)		
+		var room:int = item.location.room
+		var floor_ring_designation:String = str(floor, ring)
+		#var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
-		# add any effects from researechers attached to room
-		var trait_res:Dictionary = GAME_UTIL.get_room_traits(item.location, new_room_config)
-		var trait_list:Array = trait_res.trait_list
-		var synergy_list:Array = trait_res.synergy_list
-		for list_item in trait_list:
-			for metric in list_item.effect.metric_list:
-				metric_defaults[floor_ring_designation][metric.resource.ref] += metric.amount
-
+		#var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		#var is_activated:bool = true		
 		ring_config_data.metrics = metric_defaults[floor_ring_designation]
 
-	# CALCULATE CONTAINED SCP - 
+	# LASTLY, calculate currencies for both 
 	for item in scp_data.contained_list:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room	
+		var floor_ring_designation:String = str(floor, ring)
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
-		
-		if "after" in scp_details.effects:
-			# call their effects
-			new_room_config = scp_details.effects.after.call(new_room_config, item.location)
-			# first, add this to the config
-			room_config_data.scp_data = {
-				"ref": item.ref
-			}
+		#var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": floor, "ring": ring, "room": room}, new_room_config)
+		#var pair_res:Dictionary = SCP_UTIL.check_for_pairing(item.ref, extract_data.researchers)		
+#
+		#if "currencies" in scp_details.effects:
+			#var with_bonus_currencies:Dictionary = GAME_UTIL.apply_bonus_to(scp_details.effects.currencies, metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE], pair_res)
+			#for key in with_bonus_currencies:		
+				#var amount:int = with_bonus_currencies[key]
+				#new_room_config.floor[floor].ring[ring].currencies[key] += amount
 
 	
 	# checks for any conditioals triggers by built room combonations:
@@ -1899,41 +1910,3 @@ func update_room_config(force_setup:bool = false) -> void:
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
 # -----------------------------------
-
-## -----------------------------------
-#func update_metrics(new_room_config:Dictionary, metric_defaults:Dictionary) -> void:
-	## now update all metrics once everything has been attached
-	#for floor_index in new_room_config.floor.size():
-		#for ring_index in new_room_config.floor[floor_index].ring.size():
-			#var floor_ring_designation:String = str(floor_index, ring_index)
-			## reset metrics before recalcualting them
-			#for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
-				#var room_extract:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index}, new_room_config)
-				#for key in room_extract.metric_details.total:
-					#var amount:int = room_extract.metric_details.total[key]
-					#metric_defaults[floor_ring_designation][key] += amount
-			#
-			#var in_lockdown:bool = new_room_config.floor[floor_index].in_lockdown
-			#if in_lockdown:
-					#metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
-					#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
-			#else:
-				## then add any bonuses from the emergency states
-				#var emergency_mode:int = new_room_config.floor[floor_index].ring[ring_index].emergency_mode
-				#match emergency_mode:
-					#ROOM.EMERGENCY_MODES.CAUTION:
-						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 1
-						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 1
-						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 2
-					#ROOM.EMERGENCY_MODES.WARNING:
-						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.SAFETY] += 3
-						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
-					#ROOM.EMERGENCY_MODES.DANGER:
-						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.READINESS] += 3
-						#metric_defaults[floor_ring_designation][RESOURCE.METRICS.MORALE] -= 3
-						#
-			## lastly, compile all the metrics from rooms, scps and researchers, etc
-			#new_room_config.floor[floor_index].ring[ring_index].metrics = metric_defaults[floor_ring_designation]
-			#
-	#SUBSCRIBE.room_config = new_room_config	
-## -----------------------------------

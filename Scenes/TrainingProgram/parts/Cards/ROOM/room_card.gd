@@ -10,10 +10,11 @@ extends MouseInteractions
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
+@onready var CardDrawerActivationRequirements:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerActivationRequirements
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 
 # back
-@onready var CardDrawerActivationRequirements:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerActivationRequirements
+@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPairsWith
 @onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
 
@@ -63,6 +64,7 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 var index:int = -1
 var use_location:Dictionary = {}
 var current_metrics:Dictionary = {}
+var default_border_color:Color 
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass
@@ -82,6 +84,9 @@ func _ready() -> void:
 	Front.show()
 	Back.hide()
 	
+	
+	default_border_color = CardDrawerName.border_color
+
 	#on_show_assigned_update()
 # ------------------------------------------------------------------------------
 
@@ -91,6 +96,7 @@ func on_flip_update() -> void:
 	CardBody.flip = flip
 	await CardBody.flip_complete
 	flip_complete.emit()
+	on_ref_update()
 
 func on_is_active_update() -> void:
 	if !is_node_ready():return
@@ -102,10 +108,6 @@ func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	CardBody.border_color = card_border_color if is_selected else card_border_color.darkened(0.1)
 
-#func on_show_assigned_update() -> void:
-	#if !is_node_ready():return
-	#CardDrawerAssigned.show() if show_assigned else CardDrawerAssigned.hide()
-
 func on_is_deselected_update() -> void:
 	if !is_node_ready():return
 	OutputTextureRect.material = BlackAndWhiteShader if is_deselected else null
@@ -113,7 +115,6 @@ func on_is_deselected_update() -> void:
 func on_reveal_update() -> void:
 	if !is_node_ready():return
 	CardBody.reveal = reveal
-
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -129,38 +130,68 @@ func on_ref_update() -> void:
 		CardDrawerCurrency.list = []
 		CardDrawerVibes.metrics = {}
 		CardDrawerActivationRequirements.list = []
+		CardDrawerPairsWith.clear()
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_locked:bool = false
 	var is_activated:bool = true
 	var currency_list:Array = []
-	
+	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(room_details.levels_with.specilization).name)
+	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(room_details.levels_with.trait).name)
+	var bonus_str:String = "%s or %s" % [spec_name, trait_name]	
+	var has_spec_bonus:bool = false
+	var has_trait_bonus:bool = false
+	var morale_val:int = 0
+		
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		var pair_res:Dictionary = ROOM_UTIL.check_for_pairing(ref, extract_data.researchers)
+		var summary_data:Dictionary = GAME_UTIL.get_ring_summary(use_location)	
+		morale_val = summary_data.metrics[RESOURCE.METRICS.MORALE]
 		is_activated = extract_data.is_activated		
+		has_spec_bonus =  pair_res.match_spec
+		has_trait_bonus = pair_res.match_trait
+		
+		var currencies_with_bonus:Dictionary = GAME_UTIL.apply_bonus_to(room_details.currencies, summary_data.metrics[RESOURCE.METRICS.MORALE], pair_res)
+		for key in currencies_with_bonus:
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			var amount:int = currencies_with_bonus[key]
+			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
+						
+	else:
+		for key in room_details.currencies:
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
+			var amount:int = room_details.currencies[key]
+			currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
 
+	for node in [CardDrawerName, CardDrawerActivationRequirements]:
+		node.border_color = default_border_color if is_activated else Color.RED
+
+	# -----------
 	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"] if is_activated else "%s (INACTIVE)" % [room_details.name]
-	CardDrawerDescription.content = room_details.description if !is_locked else "(Viewable with AQUISITION DEPARTMENT.)"
+	CardDrawerDescription.content = room_details.description if !is_locked else "[REDACTED]"
+	CardDrawerActivationRequirements.list = room_details.required_personnel.map(func(x):
+		var personnel_details:Dictionary = RESOURCE_UTIL.return_personnel(x)
+		return {"icon": personnel_details.icon, "title": personnel_details.name}
+	)
 	CardDrawerImage.img_src = room_details.img_src if !is_locked else ""
 	CardDrawerImage.use_static = !is_activated
-		
-	for key in room_details.currencies:
-		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-		var amount:int = room_details.currencies[key]
-		currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})
-
 	CardDrawerCurrency.list = currency_list
 	CardDrawerVibes.metrics = room_details.metrics	
-	
-	
-	#
-	#CardDrawerEffect.list = [
-		##{"icon": SVGS.TYPE.PLUS, "title": "MORALE" },
-		##{"icon": SVGS.TYPE.PLUS, "title": "SAFETY" },
-		##{"icon": SVGS.TYPE.PLUS, "title": "READINESS" },
-	#]
-
+	# -----------
+	CardDrawerPairsWith.spec_name = spec_name
+	CardDrawerPairsWith.trait_name = trait_name
+	CardDrawerPairsWith.has_spec = has_spec_bonus
+	CardDrawerPairsWith.has_trait = has_trait_bonus	
+	# -----------
+	CardDrawerCurrency.spec_name = spec_name
+	CardDrawerCurrency.trait_name = trait_name
+	CardDrawerCurrency.has_spec_bonus = has_spec_bonus
+	CardDrawerCurrency.has_trait_bonus = has_trait_bonus
+	CardDrawerCurrency.morale_val = morale_val
+	CardDrawerCurrency.list = currency_list
+	CardDrawerCurrency.update_labels()		
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_3rgfc"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_3rgfc"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3wduh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3rgfc"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -18,9 +18,10 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="CardDrawerVibes" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 80)
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_3wduh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3rgfc")
 script = ExtResource("1_3wduh")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

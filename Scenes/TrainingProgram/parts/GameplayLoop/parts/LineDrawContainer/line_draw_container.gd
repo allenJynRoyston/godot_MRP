@@ -189,7 +189,7 @@ func _draw() -> void:
 	if !render:return
 	var line_color: Color = Color(0, 1, 0, 1) # Green
 	var start_v2:Vector2 = get_start_vector.call()
-	var leftside_pos:Vector2 = Vector2(275,  GBL.game_resolution.y/2)
+	var leftside_pos:Vector2 = Vector2(295,  GBL.game_resolution.y/2)
 	var rightside_pos:Vector2 = Vector2(GBL.game_resolution.x, 100)
 	var header_pos:Vector2 = Vector2(start_v2.x + 20, 100)
 	var footer_pos:Vector2 = Vector2(start_v2.x + 20, GBL.game_resolution.y - 175)
@@ -247,13 +247,13 @@ func _draw() -> void:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, start_v2 + offset, 1) ))		
 	# ------------------------------------------------------
 	if "draw_to_room_mini_card" in draw_dict and draw_dict.draw_to_room_mini_card:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["RoomMiniCard"].global_position + Vector2(225, 8), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["RoomMiniCard"].global_position + Vector2(275, 30), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	if "draw_to_scp_mini_card" in draw_dict and draw_dict.draw_to_scp_mini_card:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ScpMiniCard"].global_position + Vector2(225, 8), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ScpMiniCard"].global_position + Vector2(275, 30), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	if "draw_to_researcher_list" in draw_dict and draw_dict.draw_to_researcher_list:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ResearcherList"].global_position + Vector2(225, 8), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ResearcherList"].global_position + Vector2(275, 30), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	# ------------------------------------------------------
 	if "draw_to_active_menu" in draw_dict and draw_dict.draw_to_active_menu:

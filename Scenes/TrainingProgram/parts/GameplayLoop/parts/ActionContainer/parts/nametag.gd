@@ -1,25 +1,16 @@
 extends Control
 
-#@onready var NameLabel:Label = $PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2/HBoxContainer2/NameLabel
-#@onready var LvlIndicator:Control = $PanelContainer2/LvlIndicator
-#@onready var LvlLabel:Label = $PanelContainer2/LvlIndicator/Control/LvlLabel
-#@onready var DotIcon:BtnBase = $PanelContainer2/ActivatedIndicator/IconBtn
-#@onready var EnergyIndicatorControl:Control = $PanelContainer2/EnergyIndicator/Control
-#@onready var PanelMarginContainer:MarginContainer = $PanelContainer2/MarginContainer
-#@onready var ActivatedIndicator:Control = $PanelContainer2/ActivatedIndicator
+@onready var NameLabel:Label = $VBoxContainer/NameLabel
 
-@onready var Resources:Control = $PanelContainer2/Resources
-@onready var ResourceReason:Control = $PanelContainer2/ResourceReason
+@onready var MoneyIcon:Control = $VBoxContainer/List/MoneyIcon
+@onready var MatIcon:Control = $VBoxContainer/List/MatIcon
+@onready var ScienceIcon:Control = $VBoxContainer/List/ScienceIcon
+@onready var CoreIcon:Control = $VBoxContainer/List/CoreIcon
 
-func _init() -> void:
-	SUBSCRIBE.subscribe_to_room_config(self)
-	SUBSCRIBE.subscribe_to_current_location(self)
-	GBL.subscribe_to_process(self)
-	
-func _exit_tree() -> void:
-	SUBSCRIBE.unsubscribe_to_room_config(self)
-	SUBSCRIBE.unsubscribe_to_current_location(self)
-	GBL.unsubscribe_to_process(self)
+@onready var TechnicianIcon:Control = $VBoxContainer/List/TechnicianIcon
+@onready var StaffIcon:Control = $VBoxContainer/List/StaffIcon
+@onready var SecurityIcon:Control = $VBoxContainer/List/SecurityIcon
+@onready var DClassIcon:Control = $VBoxContainer/List/DClassIcon
 
 @export var show_resource_reason:bool = false : 
 	set(val):
@@ -44,20 +35,34 @@ var room_config:Dictionary = {}
 var current_location:Dictionary = {}
 var offset:Vector2
 var name_str:String
-var lvl_str:String
 var shifted_val:int = 5
 var original_position:Vector2
+
+# --------------------------------------------
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_current_location(self)
+	GBL.subscribe_to_process(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_current_location(self)
+	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
 	original_position = self.global_position
 	on_fade_update()
 	on_index_update()
 	on_show_resource_reason_update()
+# --------------------------------------------
 
+# --------------------------------------------
 func on_show_resource_reason_update() -> void:
 	if !is_node_ready():return
 	pass
-	
+# --------------------------------------------
+
+# --------------------------------------------	
 func on_fade_update() -> void:
 	if !is_node_ready():return
 	
@@ -68,11 +73,15 @@ func on_fade_update() -> void:
 	U.tween_range(fade_int if fade else 0.0, fade_int if !fade else 0.0, 0.3, func(val:float) -> void:
 		offset.x = val
 	) 			
+# --------------------------------------------
 
+# --------------------------------------------
 func on_index_update() -> void:
 	await U.tick()
 	U.debounce(str(self.name, "_nametag_update_node"), func():update_node())
+# --------------------------------------------
 
+# --------------------------------------------
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	if !ignore_current_location:
@@ -83,38 +92,10 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
 	await U.tick()
 	U.debounce(str(self.name, "_nametag_update_node"), func():update_node())
-	
-func update_node(shift_val:int = 10) -> void:
-	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or index == -1:return
-	shifted_val = shift_val
-	
-	var use_location:Dictionary = current_location.duplicate()
-	use_location.room = index
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)		
-	var ability_lvl:int = GAME_UTIL.get_ability_level(use_location)
-	
-	self.modulate = Color(1, 1, 1, 1 if !room_extract.is_room_empty or !fade else 0)
-	name_str = str(room_extract.room.details.shortname + "  INACTIVE")  if !room_extract.is_room_empty else "EMPTY"
-	lvl_str = str(ability_lvl) if !room_extract.is_room_empty else "X"
-	#LvlIndicator.hide() if room_extract.is_room_empty else LvlIndicator.show()
-	#ActivatedIndicator.hide() if room_extract.is_room_empty else ActivatedIndicator.show()
-	#Resources.hide() if room_extract.is_room_empty else Resources.show()
-	#ResourceReason.hide() if room_extract.is_room_empty else (ResourceReason.show() if show_resource_reason else ResourceReason.hide())
-	hide() if room_extract.is_room_empty else show()
 
-	#PanelMarginContainer.set('theme_override_constants/margin_left', 10 if room_extract.is_room_empty else 40)
-	
-	
-	
-	#var label_setting_copy:LabelSettings = NameLabel.label_settings.duplicate()
-	#label_setting_copy.font_color = Color(0.7, 0.3, 0.3, 1) if !room_extract.is_activated else Color(1, 1, 1, 1)
-	#NameLabel.label_settings = label_setting_copy
-	#DotIcon.static_color = Color(1, 0, 0, 1) if !room_extract.is_activated else Color(0, 1, 0, 1)
-	self.size.x = 1
-	await U.tick()
-	#EnergyIndicatorControl.position.x = self.size.x - 30
+# --------------------------------------------
 
-
+# --------------------------------------------
 func shift_string_backward(text: String, shift: int = 5) -> String:
 	var result:String = ""
 	for char in text:
@@ -123,7 +104,62 @@ func shift_string_backward(text: String, shift: int = 5) -> String:
 		else:
 			result += char(char.unicode_at(0) - shift)  # Convert back to character
 	return result
+# --------------------------------------------
 
+# --------------------------------------------
+func update_node(shift_val:int = 10) -> void:
+	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or index == -1:return
+	shifted_val = shift_val
+	
+	var use_location:Dictionary = current_location.duplicate()
+	use_location.room = index
+	
+	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+	# hide/show personnel icons
+	for key in room_config_data.personnel:
+		var val:bool = 	room_config_data.personnel[key]
+		match key:
+			RESOURCE.PERSONNEL.TECHNICIANS:
+				TechnicianIcon.hide() if !val else TechnicianIcon.show()
+			RESOURCE.PERSONNEL.STAFF:
+				StaffIcon.hide() if !val else StaffIcon.show()
+			RESOURCE.PERSONNEL.SECURITY:
+				SecurityIcon.hide() if !val else SecurityIcon.show()
+			RESOURCE.PERSONNEL.DCLASS:
+				DClassIcon.hide() if !val else DClassIcon.show()
+
+	
+	# hide/show currency icons
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
+	self.modulate = Color(1, 1, 1, 1 if !room_extract.is_room_empty or !fade else 0)
+	if !room_extract.is_room_empty:
+		var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
+		var currencies:Dictionary = room_details.currencies
+
+		if !room_extract.scp.is_empty():
+			for key in room_extract.scp.details.currencies: 
+				currencies[key] += room_extract.scp.details.currencies[key]
+				
+		var scp_details:Dictionary 
+		for key in currencies:
+			var amount:int = currencies[key]
+			match key:
+				RESOURCE.CURRENCY.MONEY:
+					MoneyIcon.hide() if amount <= 0 else MoneyIcon.show()
+				RESOURCE.CURRENCY.MATERIAL:
+					MatIcon.hide() if amount <= 0 else MatIcon.show()
+				RESOURCE.CURRENCY.SCIENCE:
+					ScienceIcon.hide() if amount <= 0 else ScienceIcon.show()
+				RESOURCE.CURRENCY.CORE:
+					CoreIcon.hide() if amount <= 0 else CoreIcon.show()
+		
+		name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.is_activated else ""])  if !room_extract.is_room_empty else "EMPTY"
+		
+
+	hide() if room_extract.is_room_empty else show()
+# --------------------------------------------
+
+# --------------------------------------------
 func on_process_update(delta:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(index) * GBL.game_resolution
@@ -131,8 +167,7 @@ func on_process_update(delta:float) -> void:
 
 func _physics_process(delta: float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
-	
 	if shifted_val > 0:
 		shifted_val -= 1		
-		#NameLabel.text = shift_string_backward(name_str, shifted_val)
-		#LvlLabel.text = shift_string_backward(lvl_str, shifted_val)
+		NameLabel.text = shift_string_backward(name_str, shifted_val)
+# --------------------------------------------

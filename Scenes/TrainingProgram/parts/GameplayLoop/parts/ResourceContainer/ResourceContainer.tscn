@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=21 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" uid="uid://da8752kxl16py" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/resource_container.gd" id="1_qt3uu"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_7q6wh"]
@@ -7,7 +7,6 @@
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_5bupg"]
 [ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="6_0dffn"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="6_kd4jj"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="7_xre08"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_xre08"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5xs2u"]
@@ -56,29 +55,17 @@ border_color = Color(1, 1, 1, 0)
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pubiq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbbqs"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8af6x"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pubiq"]
 bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbbqs"]
-bg_color = Color(0, 0, 0, 0.796078)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.162066, 0.162066, 0.162066, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -486,7 +473,7 @@ display_at_bottom = true
 
 [node name="DClass" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pubiq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rbbqs")
 icon = 33
 no_bg = true
 title = "DCL"
@@ -524,48 +511,8 @@ use_icon = true
 
 [node name="KeyBtn" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right" instance=ExtResource("8_xre08")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8af6x")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pubiq")
 title = "TASKBAR"
 assigned_key = "DELETE"
 icon = 67
 panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
-
-[node name="HintContainer" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer"]
-custom_minimum_size = Vector2(300, 20)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_rbbqs")
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = -4
-
-[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "HINT"
-label_settings = ExtResource("3_bsj2a")
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="IconBtn" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_xre08")]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-icon = 23
-flip_v = false
-is_hoverable = false
-
-[node name="HintLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Hint goes here."
-label_settings = ExtResource("2_7q6wh")

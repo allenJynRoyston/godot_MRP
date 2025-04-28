@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bcsulh43i1bt1" path="res://SVGs/bin-xmark-fill-svgrepo-com.svg" id="3_4f0o4"]
 [ext_resource type="Script" uid="uid://je1fhfhxowkp" path="res://UI/Buttons/IconBtn/icon_btn.gd" id="3_y66qb"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k3bap"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2dlqx"]
 shader = ExtResource("2_ilvdr")
 shader_parameter/tint_color = Color(0, 0.254902, 0.0823529, 1)
 shader_parameter/alpha = 1.0
@@ -24,10 +24,9 @@ icon = 0
 static_color = Color(1, 1, 1, 1)
 active_color = Color(0, 0.964706, 0.278431, 1)
 inactive_color = Color(0, 0.254902, 0.0823529, 1)
-flip_v = null
 
 [node name="Btn" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_k3bap")
+material = SubResource("ShaderMaterial_2dlqx")
 layout_mode = 2
 texture = ExtResource("3_4f0o4")
 expand_mode = 2

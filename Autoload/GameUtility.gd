@@ -189,6 +189,23 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 	}
 # ------------------------------------------------------------------------------
 
+
+# ------------------------------------------------------------------------------	
+func apply_bonus_to(currencies:Dictionary, metrics_val:int, pair_data:Dictionary) -> Dictionary:
+	var moral_bonus:int = metrics_val * 20
+	var spec_bonus:int = 50 if pair_data.match_spec else 0
+	var trait_bonus:int = 50 if pair_data.match_trait else 0
+	var bonus_percent:float = (moral_bonus + spec_bonus + trait_bonus) * 0.01
+	var currencies_copy:Dictionary = currencies.duplicate()
+		
+	for key in currencies_copy:
+		var amount:int = currencies[key]
+		var amount_bonus:int = floori(amount * bonus_percent) if bonus_percent < 0 else ceili(amount * bonus_percent) 
+		currencies_copy[key] = amount + amount_bonus
+	
+	return currencies_copy
+# ------------------------------------------------------------------------------	
+
 # ------------------------------------------------------------------------------
 func get_floor_summary(use_location:Dictionary = current_location) -> Dictionary:
 	if use_location.is_empty():return {}
@@ -277,7 +294,6 @@ func get_ring_summary(use_location:Dictionary = current_location) -> Dictionary:
 	var energy:Dictionary = {
 		"available": 0,
 		"used": 0,
-		"room_specific": null
 	}
 	
 	var personnel:Dictionary = {
@@ -292,7 +308,7 @@ func get_ring_summary(use_location:Dictionary = current_location) -> Dictionary:
 	for ref in ring_metrics:
 		var amount:int = ring_metrics[ref]
 		metrics[ref] += amount
-	
+		
 	# update personnel
 	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
 	for ref in ring_personnel:
@@ -303,7 +319,7 @@ func get_ring_summary(use_location:Dictionary = current_location) -> Dictionary:
 	for ref in ring_currencies:
 		var amount:int = ring_currencies[ref]
 		currencies[ref] += amount
-	
+		
 	# update energy
 	energy = room_config.floor[floor].ring[ring].energy
 		
@@ -376,6 +392,7 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 	for ref in ring_metrics:
 		var amount:int = ring_metrics[ref]
 		metrics[ref] += amount
+
 	
 	# update personnel
 	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
@@ -395,6 +412,9 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 	# update metrics
 	var room_details:Dictionary = room_config.floor[floor].ring[ring].room[room].room_data 
 	if !room_details.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		var pair_res:Dictionary = ROOM_UTIL.check_for_pairing(room_details.ref, extract_data.researchers)
+
 		# room diff
 		var room_metrics:Dictionary = room_details.details.metrics
 		for ref in room_metrics:
@@ -405,10 +425,32 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 		for ref in room_personnel:
 			personnel_diff[ref] = 1 if room_personnel[ref] else 0
 	#
-		var room_currencies:Dictionary = room_details.details.currencies
+		var room_currencies:Dictionary = apply_bonus_to(room_details.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
 		for ref in room_currencies:
 			var amount:int = room_currencies[ref]
 			currencies_diff[ref] += amount
+		
+			
+	var scp_data:Dictionary = room_config.floor[floor].ring[ring].room[room].scp_data
+	if !scp_data.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		var pair_res:Dictionary = SCP_UTIL.check_for_pairing(scp_data.ref, extract_data.researchers)
+		
+		# scp diff
+		var room_metrics:Dictionary = scp_data.details.metrics
+		for ref in room_metrics:
+			var amount:int = room_metrics[ref]
+			metrics_diff[ref] += amount
+	
+		var scp_currencies:Dictionary = apply_bonus_to(scp_data.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
+		for ref in scp_currencies:
+			var amount:int = scp_currencies[ref]
+			currencies_diff[ref] += amount
+		
+		# scp effect diff
+		if "personnel" in scp_data.details.effects:
+			for ref in scp_data.details.effects.personnel:
+				personnel_diff[ref] = 1 if scp_data.details.effects.personnel[ref] else 0
 		
 	return {
 		"currencies": currencies,
@@ -464,7 +506,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var is_transfer:bool = false #if is_scp_empty else room_config_data.scp_data.is_transfer
 	var is_contained:bool = false #if is_scp_empty else room_config_data.scp_data.is_contained
 	
-	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
 		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
@@ -507,31 +548,31 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	}
 	
 	# get resources spent/added by rooms
-	if !is_room_empty:
-		for item in ROOM_UTIL.return_operating_cost(room_details.ref):
-			if item.resource.ref not in resource_details.room:
-				resource_details.room[item.resource.ref] = 0
-			if item.resource.ref not in resource_details.facility:
-				resource_details.facility[item.resource.ref] = 0
-			if item.resource.ref not in resource_details.total:
-				resource_details.total[item.resource.ref] = 0
-			resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-			resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-			resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				
+	#if !is_room_empty:
+		#for item in ROOM_UTIL.return_operating_cost(room_details.ref):
+			#if item.resource.ref not in resource_details.room:
+				#resource_details.room[item.resource.ref] = 0
+			#if item.resource.ref not in resource_details.facility:
+				#resource_details.facility[item.resource.ref] = 0
+			#if item.resource.ref not in resource_details.total:
+				#resource_details.total[item.resource.ref] = 0
+			#resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+			#resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+			#resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
+				#
 	# get resources spent/added by scp
-	if !is_scp_empty:
-		for item in SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref):
-			if item.resource.ref not in resource_details.scp:
-				resource_details.scp[item.resource.ref] = 0
-			if item.resource.ref not in resource_details.facility:
-				resource_details.facility[item.resource.ref] = 0
-			if item.resource.ref not in resource_details.total:
-				resource_details.total[item.resource.ref] = 0
-				
-			resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
-			resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
-			resource_details.total[item.resource.ref] += item.amount if is_contained else 0
+	#if !is_scp_empty:
+		#for item in SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref):
+			#if item.resource.ref not in resource_details.scp:
+				#resource_details.scp[item.resource.ref] = 0
+			#if item.resource.ref not in resource_details.facility:
+				#resource_details.facility[item.resource.ref] = 0
+			#if item.resource.ref not in resource_details.total:
+				#resource_details.total[item.resource.ref] = 0
+				#
+			#resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
+			#resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
+			#resource_details.total[item.resource.ref] += item.amount if is_contained else 0
 
 	# convert resource as a dict to a list form for easy reading
 	var resources_as_list:Array = []
@@ -560,6 +601,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		#"is_scp_testing": !is_transfer and is_contained and researchers.size() > 0,
 		# ------
 		"researchers_count": researchers.size(),
+		"abl_lvl": room_config_data.abl_lvl,
 		# -----
 		"room": {						
 			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),

@@ -147,47 +147,47 @@ var trait_data: Dictionary = {
 		"name": "CLEVER",
 		"description": "Produces the same amount of SCIENCE as it does FUNDING.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.room_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-				
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
-					amount += item.amount
-					
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.SCIENCE: amount
-				}
-			},
+		#"get_effect": func(config_data: Dictionary) -> Dictionary:
+			#if config_data.room_data.is_empty():
+				#return {}
+			#
+			#var amount:int = 0
+			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
+			##if !config_data.scp_data.is_empty():
+				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+				#
+			#for item in list:
+				#if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
+					#amount += item.amount
+					#
+			#return {
+				#"resource": {
+					#RESOURCE.CURRENCY.SCIENCE: amount
+				#}
+			#},
 	},
 	RESEARCHER.TRAITS.ADAPTABLE: {
 		"name": "ADAPTABLE",
 		"description": "Doubles the SCIENCE output of a facility.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.room_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
-					amount += item.amount
-					
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.SCIENCE: amount
-				}
-			},
+		#"get_effect": func(config_data: Dictionary) -> Dictionary:
+			#if config_data.room_data.is_empty():
+				#return {}
+			#
+			#var amount:int = 0
+			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
+			##if !config_data.scp_data.is_empty():
+				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+							#
+			#for item in list:
+				#if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
+					#amount += item.amount
+					#
+			#return {
+				#"resource": {
+					#RESOURCE.CURRENCY.SCIENCE: amount
+				#}
+			#},
 	},
 	RESEARCHER.TRAITS.RESOURCEFUL: {
 		"name": "RESOURCEFUL",
@@ -206,119 +206,119 @@ var trait_data: Dictionary = {
 		"name": "WASTEFUL",
 		"description": "Doubles the cost of a facility.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.room_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount < 0:
-					amount += item.amount
-					
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.MONEY: amount
-				}
-			},
+		#"get_effect": func(config_data: Dictionary) -> Dictionary:
+			#if config_data.room_data.is_empty():
+				#return {}
+			#
+			#var amount:int = 0
+			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
+			#if !config_data.scp_data.is_empty():
+				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+							#
+			#for item in list:
+				#if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount < 0:
+					#amount += item.amount
+					#
+			#return {
+				#"resource": {
+					#RESOURCE.CURRENCY.MONEY: amount
+				#}
+			#},
 	},
 	RESEARCHER.TRAITS.SCIENTIFIC: {
 		"name": "SCIENTIFIC",
 		"description": "Converts FUNDING into SCIENCE.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.room_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
-					amount += item.amount
-					
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.MONEY: -amount,
-					RESOURCE.CURRENCY.SCIENCE: amount,
-				}
-			},
+		#"get_effect": func(config_data: Dictionary) -> Dictionary:
+			#if config_data.room_data.is_empty():
+				#return {}
+			#
+			#var amount:int = 0
+			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
+			#if !config_data.scp_data.is_empty():
+				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+							#
+			#for item in list:
+				#if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
+					#amount += item.amount
+					#
+			#return {
+				#"resource": {
+					#RESOURCE.CURRENCY.MONEY: -amount,
+					#RESOURCE.CURRENCY.SCIENCE: amount,
+				#}
+			#},
 	},	
 	RESEARCHER.TRAITS.FRUGAL: {
 		"name": "FRUGAL",
 		"description": "Converts facility SCIENCE into FUNDING.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.room_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount > 0:
-					amount += item.amount
-					
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.MONEY: amount,
-					RESOURCE.CURRENCY.SCIENCE: -amount,
-				}
-			},
+		#"get_effect": func(config_data: Dictionary) -> Dictionary:
+			#if config_data.room_data.is_empty():
+				#return {}
+			#
+			#var amount:int = 0
+			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
+			##if !config_data.scp_data.is_empty():
+				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+							#
+			#for item in list:
+				#if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount > 0:
+					#amount += item.amount
+					#
+			#return {
+				#"resource": {
+					#RESOURCE.CURRENCY.MONEY: amount,
+					#RESOURCE.CURRENCY.SCIENCE: -amount,
+				#}
+			#},
 	},	
 	# ---------------------------------
 	RESEARCHER.TRAITS.EXCITABLE: {
 		"name": "EXCITABLE",
 		"description": "If facility produces at least 25 SCIENCE, MORALE is increased.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.room_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount:
-					amount += item.amount
-					
-			return {
-				"metrics": {
-					RESOURCE.METRICS.MORALE: 1 if amount > 25 else 0
-				},
-			},
+		#"get_effect": func(config_data: Dictionary) -> Dictionary:
+			#if config_data.room_data.is_empty():
+				#return {}
+			#
+			#var amount:int = 0
+			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
+			##if !config_data.scp_data.is_empty():
+				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+							#
+			#for item in list:
+				#if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount:
+					#amount += item.amount
+					#
+			#return {
+				#"metrics": {
+					#RESOURCE.METRICS.MORALE: 1 if amount > 25 else 0
+				#},
+			#},
 	},	
 	RESEARCHER.TRAITS.METICULOUS: {
 		"name": "METICULOUS",
 		"description": "If facility produces at least 25 FUNDING, SAFETY is increased.",
 		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.room_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.MONEY:
-					amount += item.amount
-					
-			return {
-				"metrics": {
-					RESOURCE.METRICS.SAFETY: 1 if amount > 25 else 0
-				},
-			},
+		#"get_effect": func(config_data: Dictionary) -> Dictionary:
+			#if config_data.room_data.is_empty():
+				#return {}
+			#
+			#var amount:int = 0
+			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
+			##if !config_data.scp_data.is_empty():
+				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+							#
+			#for item in list:
+				#if item.resource.ref == RESOURCE.CURRENCY.MONEY:
+					#amount += item.amount
+					#
+			#return {
+				#"metrics": {
+					#RESOURCE.METRICS.SAFETY: 1 if amount > 25 else 0
+				#},
+			#},
 	},	
 	RESEARCHER.TRAITS.INTROVERT: {
 		"name": "INTROVERT",
@@ -354,8 +354,8 @@ var trait_data: Dictionary = {
 			
 			var amount:int = 0
 			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+			#if !config_data.scp_data.is_empty():
+				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 			
 			for item in list:
 				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
@@ -377,8 +377,8 @@ var trait_data: Dictionary = {
 	
 			var amount:int = 0
 			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			if !config_data.scp_data.is_empty():
-				list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
+			#if !config_data.scp_data.is_empty():
+				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
 				
 			for item in list:
 				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
@@ -600,23 +600,23 @@ func return_trait_details(ref:int, use_location:Dictionary, use_config:Dictionar
 	config_data.researchers = researchers
 				
 	var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(ref)
-	var effect:Dictionary = traits_detail.get_effect.call(config_data)
-	var resource_list:Array = []
-	var metric_list:Array = []
-
-	# -------------------
-	if "metrics" in effect:
-		for key in effect.metrics:
-			var amount:int = effect.metrics[key]
-			metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})
-
+	#var effect:Dictionary = traits_detail.get_effect.call(config_data)
+	#var resource_list:Array = []
+	#var metric_list:Array = []
+#
 	## -------------------
-	if "resource" in effect:
-		for key in effect.resource:
-			var amount:int = effect.resource[key]
-			resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
+	#if "metrics" in effect:
+		#for key in effect.metrics:
+			#var amount:int = effect.metrics[key]
+			#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})
+#
+	### -------------------
+	#if "resource" in effect:
+		#for key in effect.resource:
+			#var amount:int = effect.resource[key]
+			#resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
 
-	return {"details": traits_detail, "effect": {"metric_list": metric_list, "resource_list": resource_list}}
+	return {"details": traits_detail, "effect": {"metrics": [], "currencies": []}}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

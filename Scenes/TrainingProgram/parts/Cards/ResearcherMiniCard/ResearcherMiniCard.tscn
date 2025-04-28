@@ -1,12 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://cyv8vf7k1e1s4"]
+[gd_scene load_steps=15 format=3 uid="uid://cyv8vf7k1e1s4"]
 
 [ext_resource type="Script" uid="uid://bfgk648834pnk" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/researcher_mini_card.gd" id="1_ni348"]
-[ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="2_lwih7"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_gsawx"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="4_816jx"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_ah3g8"]
+[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="3_qyov1"]
+[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_2d0eq"]
+[ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="4_816jx"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_h2ft1"]
-[ext_resource type="PackedScene" uid="uid://d1melr1fetrom" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn" id="5_ah3g8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ol8ek"]
 
@@ -48,34 +46,56 @@ _data = {
 &"SELECTED": SubResource("Animation_2d0eq")
 }
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vglbs"]
-bg_color = Color(0.896058, 0.0343436, 0.451844, 1)
+[sub_resource type="ViewportTexture" id="ViewportTexture_2d0eq"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_816jx"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah3g8"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2ft1"]
-border_width_left = 1
-border_width_right = 3
-border_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aud1r"]
-bg_color = Color(0, 0, 0, 0.560784)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c5m35"]
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_8ssgu"]
-color = Color(1, 1, 1, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ssgu"]
-bg_color = Color(0.316, 0.249, 0.37, 1)
-border_color = Color(0, 0, 0, 1)
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m71de"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="ResearcherMiniCard" type="PanelContainer"]
 offset_right = 250.0
@@ -91,133 +111,57 @@ libraries = {
 &"": SubResource("AnimationLibrary_ah3g8")
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vglbs")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_h2ft1")
-
-[node name="Portrait" type="TextureRect" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-texture = ExtResource("2_lwih7")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_aud1r")
-
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "FNAME, LNAME"
-label_settings = ExtResource("3_gsawx")
-vertical_alignment = 1
-
-[node name="SpecLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "SPECILIZATION"
-label_settings = ExtResource("3_gsawx")
-horizontal_alignment = 2
-
-[node name="OutputContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_c5m35")
-
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2"]
-layout_mode = 2
-alignment = 1
-
-[node name="NoBonusLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
-layout_mode = 2
-text = "No bonus]"
-label_settings = ExtResource("4_ah3g8")
-horizontal_alignment = 1
-
-[node name="LvlBonus" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/VBoxContainer/OutputContainer/MarginContainer2/VBoxContainer2"]
-visible = false
-layout_mode = 2
-text = "+1 FACILIY LVL"
-label_settings = ExtResource("3_gsawx")
-horizontal_alignment = 1
-
-[node name="TraitContainer" type="VBoxContainer" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TraitContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/TraitContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "TRAITS"
-label_settings = ExtResource("4_816jx")
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/TraitContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_8ssgu")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TraitContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="TraitList" type="VBoxContainer" parent="VBoxContainer/TraitContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="TraitCard" parent="VBoxContainer/TraitContainer/VBoxContainer/TraitList" instance=ExtResource("5_ah3g8")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8ssgu")
-
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
 
 [node name="IconBtn" parent="Control" instance=ExtResource("4_h2ft1")]
 layout_mode = 0
-offset_left = -22.523
+offset_left = -25.0
 offset_top = 7.0
-offset_right = 2.47703
+offset_right = 3.05176e-05
 offset_bottom = 32.0
 icon = 27
 flip_v = false
 is_hoverable = false
+
+[node name="CardBody" parent="." instance=ExtResource("3_qyov1")]
+layout_mode = 2
+card_size = Vector2(275, 90)
+
+[node name="TextureRect" parent="CardBody" index="0"]
+texture = SubResource("ViewportTexture_2d0eq")
+
+[node name="SubViewport" parent="CardBody" index="1"]
+size = Vector2i(275, 90)
+
+[node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(275, 90)
+offset_bottom = 90.0
+
+[node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_816jx")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CardDrawerTitle" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("4_2d0eq")]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ah3g8")
+is_small = true
+content = "SPECILIZATION and TRAIT"
+title = "RESEARCHER NAME"
+
+[node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("4_816jx")]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ssgu")
+title = ""
+is_left_side = true
+
+[node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_m71de")
+
+[editable path="CardBody"]

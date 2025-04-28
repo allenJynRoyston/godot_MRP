@@ -4,7 +4,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pwvyw"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_e4ajd"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_q7ex6"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jjyc3"]
@@ -14,7 +14,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nj0mj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s4fsk"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -26,7 +26,7 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwvyw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6cof"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -46,13 +46,12 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pwvyw")
 script = ExtResource("1_pwvyw")
-card_size = null
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-texture = SubResource("ViewportTexture_e4ajd")
+texture = SubResource("ViewportTexture_q7ex6")
 stretch_mode = 3
 
 [node name="SubViewport" type="SubViewport" parent="."]
@@ -68,8 +67,8 @@ size_flags_vertical = 0
 [node name="CardBody" type="PanelContainer" parent="SubViewport/Control"]
 custom_minimum_size = Vector2(275, 425)
 layout_mode = 2
-offset_right = 250.0
-offset_bottom = 400.0
+offset_right = 275.0
+offset_bottom = 425.0
 pivot_offset = Vector2(125, 200)
 theme_override_styles/panel = SubResource("StyleBoxFlat_jjyc3")
 
@@ -82,7 +81,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/CardBody/Front"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nj0mj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s4fsk")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/Control/CardBody/Front/PanelContainer"]
 layout_mode = 2
@@ -105,7 +104,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/Control/CardBody/Back"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pwvyw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_o6cof")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/Control/CardBody/Back/PanelContainer"]
 layout_mode = 2

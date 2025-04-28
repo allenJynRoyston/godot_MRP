@@ -87,251 +87,251 @@ func on_data_update() -> void:
 	var list:Array = []
 	
 	
-	match list_type:
-		# ----------------------------------------------------------------
-		LIST_TYPE.AVAILABLE:
-			var scp_list:Array = scp_data.available_list.filter(func(i): return i.ref == data.ref)
-			if scp_list.size() > 0:
-				var active_scp_data:Dictionary = scp_list[0]
-
-				var placement_bullepoints:Array = []
-				var bonus_bulletpoints:Array = []
-				var ongoing_bulletspoints:Array = []
-				
-				#var initial_containment_rewards:Array = SCP_UTIL.return_initial_containment_rewards.call(data.ref)
-				var ongoing_containment_rewards:Array = SCP_UTIL.return_ongoing_containment_rewards.call(data.ref)
-				var containment_requirements:Array = data.containment_requirements
-
-				for index in containment_requirements.size():
-					var room_data:Dictionary = ROOM_UTIL.return_data( containment_requirements[index] )
-					var room_count:int = ROOM_UTIL.get_count(room_data.ref)
-					placement_bullepoints.push_back({
-						"icon": SVGS.TYPE.CLEAR if room_count < 1 else SVGS.TYPE.CHECKBOX, 
-						"text": func() -> String:
-							return 'Requires [%s] containment cell.  (You have %s available.)' % [str(room_data.name).to_upper(), room_count],
-					})
-
-				#for item in initial_containment_rewards:
+	#match list_type:
+		## ----------------------------------------------------------------
+		#LIST_TYPE.AVAILABLE:
+			#var scp_list:Array = scp_data.available_list.filter(func(i): return i.ref == data.ref)
+			#if scp_list.size() > 0:
+				#var active_scp_data:Dictionary = scp_list[0]
+#
+				#var placement_bullepoints:Array = []
+				#var bonus_bulletpoints:Array = []
+				#var ongoing_bulletspoints:Array = []
+				#
+				##var initial_containment_rewards:Array = SCP_UTIL.return_initial_containment_rewards.call(data.ref)
+				#var ongoing_containment_rewards:Array = SCP_UTIL.return_ongoing_containment_rewards.call(data.ref)
+				#var containment_requirements:Array = data.containment_requirements
+#
+				#for index in containment_requirements.size():
+					#var room_data:Dictionary = ROOM_UTIL.return_data( containment_requirements[index] )
+					#var room_count:int = ROOM_UTIL.get_count(room_data.ref)
+					#placement_bullepoints.push_back({
+						#"icon": SVGS.TYPE.CLEAR if room_count < 1 else SVGS.TYPE.CHECKBOX, 
+						#"text": func() -> String:
+							#return 'Requires [%s] containment cell.  (You have %s available.)' % [str(room_data.name).to_upper(), room_count],
+					#})
+#
+				##for item in initial_containment_rewards:
+					##match item.type:
+						##"amount": 
+							##bonus_bulletpoints.push_back({
+								##"icon": item.resource.icon, 
+								##"text": func() -> String:
+									##return '+%s %s [amount] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+							##})
+						##"capacity":
+							##bonus_bulletpoints.push_back({
+								##"icon": item.resource.icon, 
+								##"text": func() -> String:
+									##return '+%s %s [capacity] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+							##})
+#
+				#for item in ongoing_containment_rewards:
 					#match item.type:
 						#"amount": 
-							#bonus_bulletpoints.push_back({
+							#ongoing_bulletspoints.push_back({
 								#"icon": item.resource.icon, 
 								#"text": func() -> String:
-									#return '+%s %s [amount] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+									#return '+%s %s [amount] per day in containment.' % [item.amount, str(item.resource.name).to_upper()],
 							#})
 						#"capacity":
-							#bonus_bulletpoints.push_back({
+							#ongoing_bulletspoints.push_back({
 								#"icon": item.resource.icon, 
 								#"text": func() -> String:
-									#return '+%s %s [capacity] on initial containment.' % [item.amount, str(item.resource.name).to_upper()],
+									#return '+%s %s [capacity] per day in containment.' % [item.amount, str(item.resource.name).to_upper()],
 							#})
-
-				for item in ongoing_containment_rewards:
-					match item.type:
-						"amount": 
-							ongoing_bulletspoints.push_back({
-								"icon": item.resource.icon, 
-								"text": func() -> String:
-									return '+%s %s [amount] per day in containment.' % [item.amount, str(item.resource.name).to_upper()],
-							})
-						"capacity":
-							ongoing_bulletspoints.push_back({
-								"icon": item.resource.icon, 
-								"text": func() -> String:
-									return '+%s %s [capacity] per day in containment.' % [item.amount, str(item.resource.name).to_upper()],
-							})
-				
-				if assign_only:
-					if !active_scp_data.transfer_status.state:
-						list.push_back({
-							"title": "SELECT",
-							"title_icon": SVGS.TYPE.TARGET,
-							"bulletpoints": [
-								{
-									"header": "Placement",
-									"list": placement_bullepoints
-								},
-								{
-									"header": "Initial Bonus",
-									"list": bonus_bulletpoints
-								},
-								{
-									"header": "Ongoing Containment Bonus",
-									"list": ongoing_bulletspoints
-								}								
-							],
-							"onClick": func() -> void:
-								onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
-						})
-					else:
-						list.push_back({
-							"title": "UNAVAILABLE",
-							"title_icon": SVGS.TYPE.CLEAR,
-							"onClick": func() -> void:
-								pass
-						})						
-					
-
-				#list = [
-					#{
-						#"title":"Cancel Containment" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
-						#"title_icon": SVGS.TYPE.DELETE,
-						#"onClick": func() -> void:
-							#if active_scp_data.days_until_expire > 0:
-								#onAction.call(ACTION.CONTAINED.STOP_CONTAINMENT)
-							#else:
-								#onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
-					#}		
-				#]  if active_scp_data.transfer_status.state else [
-					#{
-						#"title": "Contain",
-						#"title_icon": SVGS.TYPE.TARGET,
-						#"bulletpoints": [
-							#{
-								#"header": "Placement",
-								#"list": placement_bullepoints
-							#},
-							#{
-								#"header": "Initial Bonus",
-								#"list": bonus_bulletpoints
-							#},
-							#{
-								#"header": "Ongoing Containment Bonus",
-								#"list": ongoing_bulletspoints
-							#}								
-						#],
-						#"onClick": func() -> void:
-							#onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
-					#},
-					#{
-						#"title":"Reject",
-						#"title_icon": SVGS.TYPE.DELETE,
-						#"onClick": func() -> void:
-							#onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
-					#}		
-				#] 
-				
-		# ----------------------------------------------------------------
-		LIST_TYPE.CONTAINED:
-			var scp_list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
-			if scp_list.size() > 0:			
-				var active_scp_data:Dictionary = scp_list[0]
-				var can_transfer:bool = active_scp_data.current_testing.is_empty()
-				var can_destroy:bool = false
-				
-				if assign_only:
-					list.push_back(
-						{
-							"title": "Select" if active_scp_data.lead_researcher.is_empty() else "Select (Unavailable)",
-							"title_icon": SVGS.TYPE.DRS,
-							"onClick": func() -> void:
-								if active_scp_data.lead_researcher.is_empty():
-									onAction.call(ACTION.CONTAINED.SELECT_FOR_ASSIGN),
-							"bulletpoints": [] if active_scp_data.lead_researcher.is_empty() else [
-								{
-									"header": "Lead Researcher already assigned",
-									"list": [
-										{
-											"icon": SVGS.TYPE.STAFF, 
-											"text": func() -> String:
-												var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid)
-												return "DR %s" % [researcher_details.name],
-										}	
-									]
-								}
-							] 
-						}		
-					)					
-				else:
-					#if active_scp_data.transfer_status.state:
-						#list.push_back(
-							#{
-								#"title":"Cancel Transfer",
-								#"title_icon": SVGS.TYPE.DELETE,
-								#"onClick": func() -> void:
-									#onAction.call(ACTION.CONTAINED.CANCEL_TRANSFER),
-							#}	
-						#)
+				#
+				#if assign_only:
+					#if !active_scp_data.transfer_status.state:
+						#list.push_back({
+							#"title": "SELECT",
+							#"title_icon": SVGS.TYPE.TARGET,
+							#"bulletpoints": [
+								#{
+									#"header": "Placement",
+									#"list": placement_bullepoints
+								#},
+								#{
+									#"header": "Initial Bonus",
+									#"list": bonus_bulletpoints
+								#},
+								#{
+									#"header": "Ongoing Containment Bonus",
+									#"list": ongoing_bulletspoints
+								#}								
+							#],
+							#"onClick": func() -> void:
+								#onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
+						#})
 					#else:
-						
-						if !active_scp_data.lead_researcher.is_empty():
-							list.push_back(
-								{
-									"title": "Start Testing" if active_scp_data.current_testing.is_empty() else "Stop Testing",
-									"title_icon": SVGS.TYPE.RESEARCH,
-									"onClick": func() -> void:
-										onAction.call(ACTION.CONTAINED.START_TESTING if active_scp_data.current_testing.is_empty() else ACTION.CONTAINED.STOP_TESTING),
-								}		
-							)					
-
-						list.push_back(
-							{
-								"title":"Assign Lead Researcher" if active_scp_data.lead_researcher.is_empty() else "Remove Lead Researcher",
-								"title_icon": SVGS.TYPE.DRS,
-								"onClick": func() -> void:
-									onAction.call(ACTION.CONTAINED.ASSIGN_RESEARCHER if active_scp_data.lead_researcher.is_empty() else ACTION.CONTAINED.UNASSIGN_RESEARCHER),
-								"bulletpoints": [
-									{
-										"header": "Lead Researcher",
-										"list": [
-											{
-												"icon": SVGS.TYPE.STAFF, 
-												"text": func() -> String:
-													if active_scp_data.lead_researcher.is_empty():
-														return "NONE ASSIGNED"
-													else:
-														var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid)
-														return "DR %s" % [researcher_details.name],
-											}	
-										]
-									}
-								]
-							}
-						)
-						
+						#list.push_back({
+							#"title": "UNAVAILABLE",
+							#"title_icon": SVGS.TYPE.CLEAR,
+							#"onClick": func() -> void:
+								#pass
+						#})						
+					#
+#
+				##list = [
+					##{
+						##"title":"Cancel Containment" if active_scp_data.days_until_expire > 0 else "Cancel and Reject",
+						##"title_icon": SVGS.TYPE.DELETE,
+						##"onClick": func() -> void:
+							##if active_scp_data.days_until_expire > 0:
+								##onAction.call(ACTION.CONTAINED.STOP_CONTAINMENT)
+							##else:
+								##onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
+					##}		
+				##]  if active_scp_data.transfer_status.state else [
+					##{
+						##"title": "Contain",
+						##"title_icon": SVGS.TYPE.TARGET,
+						##"bulletpoints": [
+							##{
+								##"header": "Placement",
+								##"list": placement_bullepoints
+							##},
+							##{
+								##"header": "Initial Bonus",
+								##"list": bonus_bulletpoints
+							##},
+							##{
+								##"header": "Ongoing Containment Bonus",
+								##"list": ongoing_bulletspoints
+							##}								
+						##],
+						##"onClick": func() -> void:
+							##onAction.call(ACTION.CONTAINED.START_CONTAINMENT),
+					##},
+					##{
+						##"title":"Reject",
+						##"title_icon": SVGS.TYPE.DELETE,
+						##"onClick": func() -> void:
+							##onAction.call(ACTION.CONTAINED.REJECT_AND_REMOVE),
+					##}		
+				##] 
+				#
+		## ----------------------------------------------------------------
+		#LIST_TYPE.CONTAINED:
+			#var scp_list:Array = scp_data.contained_list.filter(func(i): return i.ref == data.ref)
+			#if scp_list.size() > 0:			
+				#var active_scp_data:Dictionary = scp_list[0]
+				#var can_transfer:bool = active_scp_data.current_testing.is_empty()
+				#var can_destroy:bool = false
+				#
+				#if assign_only:
+					#list.push_back(
+						#{
+							#"title": "Select" if active_scp_data.lead_researcher.is_empty() else "Select (Unavailable)",
+							#"title_icon": SVGS.TYPE.DRS,
+							#"onClick": func() -> void:
+								#if active_scp_data.lead_researcher.is_empty():
+									#onAction.call(ACTION.CONTAINED.SELECT_FOR_ASSIGN),
+							#"bulletpoints": [] if active_scp_data.lead_researcher.is_empty() else [
+								#{
+									#"header": "Lead Researcher already assigned",
+									#"list": [
+										#{
+											#"icon": SVGS.TYPE.STAFF, 
+											#"text": func() -> String:
+												#var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid)
+												#return "DR %s" % [researcher_details.name],
+										#}	
+									#]
+								#}
+							#] 
+						#}		
+					#)					
+				#else:
+					##if active_scp_data.transfer_status.state:
+						##list.push_back(
+							##{
+								##"title":"Cancel Transfer",
+								##"title_icon": SVGS.TYPE.DELETE,
+								##"onClick": func() -> void:
+									##onAction.call(ACTION.CONTAINED.CANCEL_TRANSFER),
+							##}	
+						##)
+					##else:
+						#
+						#if !active_scp_data.lead_researcher.is_empty():
+							#list.push_back(
+								#{
+									#"title": "Start Testing" if active_scp_data.current_testing.is_empty() else "Stop Testing",
+									#"title_icon": SVGS.TYPE.RESEARCH,
+									#"onClick": func() -> void:
+										#onAction.call(ACTION.CONTAINED.START_TESTING if active_scp_data.current_testing.is_empty() else ACTION.CONTAINED.STOP_TESTING),
+								#}		
+							#)					
+#
 						#list.push_back(
 							#{
-								#"title":"Transfer SCP" if can_transfer else "Transfer SCP (Unavailable)",
-								#"title_icon": SVGS.TYPE.CONTAIN,
+								#"title":"Assign Lead Researcher" if active_scp_data.lead_researcher.is_empty() else "Remove Lead Researcher",
+								#"title_icon": SVGS.TYPE.DRS,
 								#"onClick": func() -> void:
-									#if can_transfer:
-										#onAction.call(ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION),
-								#"bulletpoints": [] if can_transfer else [
+									#onAction.call(ACTION.CONTAINED.ASSIGN_RESEARCHER if active_scp_data.lead_researcher.is_empty() else ACTION.CONTAINED.UNASSIGN_RESEARCHER),
+								#"bulletpoints": [
+									#{
+										#"header": "Lead Researcher",
+										#"list": [
+											#{
+												#"icon": SVGS.TYPE.STAFF, 
+												#"text": func() -> String:
+													#if active_scp_data.lead_researcher.is_empty():
+														#return "NONE ASSIGNED"
+													#else:
+														#var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(active_scp_data.lead_researcher.uid)
+														#return "DR %s" % [researcher_details.name],
+											#}	
+										#]
+									#}
+								#]
+							#}
+						#)
+						#
+						##list.push_back(
+							##{
+								##"title":"Transfer SCP" if can_transfer else "Transfer SCP (Unavailable)",
+								##"title_icon": SVGS.TYPE.CONTAIN,
+								##"onClick": func() -> void:
+									##if can_transfer:
+										##onAction.call(ACTION.CONTAINED.TRANSFER_TO_NEW_LOCATION),
+								##"bulletpoints": [] if can_transfer else [
+									##{
+										##"header": "Action unavailable",
+										##"list": [
+											##{
+												##"icon": SVGS.TYPE.CLEAR, 
+												##"text": func() -> String:
+													##return "Testing ongoing.",
+											##}	
+										##]
+									##}
+								##]										
+							##}		
+						##)
+											#
+						#list.push_back(
+							#{
+								#"title": "Destroy SCP" if can_destroy else  "Destroy SCP (Unavailable)",
+								#"title_icon": SVGS.TYPE.CAUTION,
+								#"onClick": func() -> void:
+									#if can_destroy:
+										#pass,	
+								#"bulletpoints": [] if can_destroy else [
 									#{
 										#"header": "Action unavailable",
 										#"list": [
 											#{
 												#"icon": SVGS.TYPE.CLEAR, 
 												#"text": func() -> String:
-													#return "Testing ongoing.",
+													#return "Technology missing",
 											#}	
 										#]
 									#}
-								#]										
+								#]
 							#}		
 						#)
-											
-						list.push_back(
-							{
-								"title": "Destroy SCP" if can_destroy else  "Destroy SCP (Unavailable)",
-								"title_icon": SVGS.TYPE.CAUTION,
-								"onClick": func() -> void:
-									if can_destroy:
-										pass,	
-								"bulletpoints": [] if can_destroy else [
-									{
-										"header": "Action unavailable",
-										"list": [
-											{
-												"icon": SVGS.TYPE.CLEAR, 
-												"text": func() -> String:
-													return "Technology missing",
-											}	
-										]
-									}
-								]
-							}		
-						)
 
 	update_list(list)
 # ------------------------------------------------------------

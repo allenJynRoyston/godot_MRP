@@ -1,55 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://ckywdp1o7nc2i"]
+[gd_scene load_steps=5 format=3 uid="uid://ckywdp1o7nc2i"]
 
 [ext_resource type="Script" uid="uid://bhoimhgr7awhf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.gd" id="1_or75n"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_6ohcx"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_rcgg0"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_rodcg"]
-[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="6_h4bwi"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="6_rodcg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rodcg"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h4bwi"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4evv"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqwxl"]
-bg_color = Color(0, 0, 0, 0)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-
-[sub_resource type="LabelSettings" id="LabelSettings_h4bwi"]
-font = ExtResource("3_rodcg")
-font_size = 6
-outline_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_rcgg0"]
-font = ExtResource("3_rodcg")
-font_size = 8
-outline_size = 8
-outline_color = Color(0.160784, 0.160784, 0.160784, 1)
-shadow_size = 0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oac6o"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6p70v"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mgvw4"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[node name="PanelContainer" type="PanelContainer"]
+[node name="Nametag" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_rodcg")
@@ -57,213 +14,61 @@ script = ExtResource("1_or75n")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
 theme_override_constants/separation = 0
-alignment = 1
 
-[node name="StatusIcon" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_rcgg0")]
-layout_mode = 2
-icon = 52
-flip_v = false
-is_hoverable = false
-
-[node name="NameLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+[node name="NameLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "Nametag"
 label_settings = ExtResource("6_rodcg")
 horizontal_alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+[node name="List" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = -8
+theme_override_constants/separation = -2
 alignment = 1
 
-[node name="ResourceItem" parent="VBoxContainer/HBoxContainer2" instance=ExtResource("6_h4bwi")]
+[node name="MoneyIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_h4bwi")
 icon = 31
-no_bg = true
-title = "99"
-display_at_bottom = true
-
-[node name="ResourceItem2" parent="VBoxContainer/HBoxContainer2" instance=ExtResource("6_h4bwi")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_l4evv")
-icon = 35
-no_bg = true
-title = "99"
-display_at_bottom = true
-
-[node name="Nametag" type="HBoxContainer" parent="."]
-layout_mode = 2
-theme_override_constants/separation = 0
-script = ExtResource("1_or75n")
-
-[node name="PanelContainer2" type="PanelContainer" parent="Nametag"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_eqwxl")
-
-[node name="LvlIndicator" type="Control" parent="Nametag/PanelContainer2"]
-visible = false
-layout_mode = 2
-
-[node name="Control" type="Control" parent="Nametag/PanelContainer2/LvlIndicator"]
-anchors_preset = 0
-offset_left = 1.0
-offset_right = 41.0
-offset_bottom = 40.0
-
-[node name="Label" type="Label" parent="Nametag/PanelContainer2/LvlIndicator/Control"]
-custom_minimum_size = Vector2(0, 12)
-layout_mode = 2
-offset_left = 1.0
-offset_top = -4.0
-offset_right = 19.0
-offset_bottom = 8.0
-size_flags_horizontal = 3
-text = "Lvl"
-label_settings = SubResource("LabelSettings_h4bwi")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="LvlLabel" type="Label" parent="Nametag/PanelContainer2/LvlIndicator/Control"]
-layout_mode = 2
-offset_left = 4.0
-offset_top = 8.0
-offset_right = 16.0
-offset_bottom = 24.0
-text = "3"
-label_settings = ExtResource("2_6ohcx")
-horizontal_alignment = 1
-
-[node name="ActivatedIndicator" type="Control" parent="Nametag/PanelContainer2"]
-visible = false
-layout_mode = 2
-
-[node name="IconBtn" parent="Nametag/PanelContainer2/ActivatedIndicator" instance=ExtResource("2_rcgg0")]
-layout_mode = 2
-offset_left = 18.0
-offset_top = 5.0
-offset_right = 38.0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-icon = 3
-static_color = Color(0, 0.964706, 0.278431, 1)
-flip_v = false
 is_hoverable = false
 
-[node name="EnergyIndicator" type="Control" parent="Nametag/PanelContainer2"]
-visible = false
+[node name="MatIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-
-[node name="Control" type="Control" parent="Nametag/PanelContainer2/EnergyIndicator"]
-layout_mode = 2
-anchors_preset = 0
-offset_left = 105.0
-offset_top = 9.0
-offset_right = 120.0
-offset_bottom = 24.0
-
-[node name="IconBtn" parent="Nametag/PanelContainer2/EnergyIndicator/Control" instance=ExtResource("2_rcgg0")]
-layout_mode = 0
-offset_left = 3.0
-offset_top = -11.0
-offset_right = 28.0
-offset_bottom = 14.0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-icon = 32
-flip_v = false
+icon = 41
 is_hoverable = false
 
-[node name="EnergyLabel" type="Label" parent="Nametag/PanelContainer2/EnergyIndicator/Control"]
+[node name="ScienceIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-offset_left = 16.0
-offset_top = -2.0
-offset_right = 28.0
-offset_bottom = 14.0
-text = "0"
-label_settings = SubResource("LabelSettings_rcgg0")
-horizontal_alignment = 1
-
-[node name="Resources" type="Control" parent="Nametag/PanelContainer2"]
-layout_mode = 2
-
-[node name="MarginContainerEmpty" type="MarginContainer" parent="Nametag/PanelContainer2/Resources"]
-layout_mode = 2
-offset_left = 31.0
-offset_top = -21.0
-offset_right = 118.0
-offset_bottom = 19.0
-
-[node name="ResourceReason" type="Control" parent="Nametag/PanelContainer2"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Nametag/PanelContainer2/ResourceReason"]
-layout_mode = 2
-offset_left = 30.0
-offset_top = 24.0
-offset_right = 139.0
-offset_bottom = 64.0
-theme_override_constants/separation = -8
-
-[node name="ResourceItem" parent="Nametag/PanelContainer2/ResourceReason/HBoxContainer" instance=ExtResource("6_h4bwi")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oac6o")
-icon = 31
-no_bg = true
-display_at_bottom = true
-
-[node name="ResourceItem2" parent="Nametag/PanelContainer2/ResourceReason/HBoxContainer" instance=ExtResource("6_h4bwi")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6p70v")
-icon = 32
-no_bg = true
-display_at_bottom = true
-
-[node name="ResourceItem3" parent="Nametag/PanelContainer2/ResourceReason/HBoxContainer" instance=ExtResource("6_h4bwi")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_mgvw4")
 icon = 44
-no_bg = true
-display_at_bottom = true
+is_hoverable = false
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Nametag/PanelContainer2/ResourceReason"]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 19.0
-offset_right = 118.0
-offset_bottom = 81.0
-theme_override_constants/separation = -8
-alignment = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="Nametag/PanelContainer2"]
+[node name="CoreIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+icon = 39
+is_hoverable = false
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Nametag/PanelContainer2/MarginContainer"]
-visible = false
+[node name="TechnicianIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
+icon = 34
+is_hoverable = false
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Nametag/PanelContainer2/MarginContainer/VBoxContainer"]
+[node name="StaffIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-theme_override_constants/separation = 15
-alignment = 1
+icon = 35
+is_hoverable = false
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Nametag/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="SecurityIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-alignment = 1
+icon = 36
+is_hoverable = false
+
+[node name="DClassIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
+layout_mode = 2
+icon = 39
+is_hoverable = false
