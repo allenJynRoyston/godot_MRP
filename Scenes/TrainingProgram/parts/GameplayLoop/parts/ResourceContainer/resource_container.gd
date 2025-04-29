@@ -152,15 +152,41 @@ func update_panels() -> void:
 	LocationWingLabel.text = str(current_location.ring)
 	LocationRoomLabel.text = str(current_location.room)
 	
+	var floor_config:Dictionary = room_config.floor[current_location.floor]
+	var ring_config:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+	ring_config.metrics
+				
+	# currency
+	CurrencyMoney.title = "%s" % [resources_data[RESOURCE.CURRENCY.MONEY].amount]
+	CurrencyMaterials.title = "%s" % [resources_data[RESOURCE.CURRENCY.MATERIAL].amount]
+	CurrencyResearch.title = "%s" %  [resources_data[RESOURCE.CURRENCY.SCIENCE].amount]
+	CurrencyCore.title = "%s" %  [resources_data[RESOURCE.CURRENCY.CORE].amount]
+	
+	# metrics
+	MoraleLabel.text = str(ring_config.metrics[RESOURCE.METRICS.MORALE])
+	SafetyLabel.text = str(ring_config.metrics[RESOURCE.METRICS.SAFETY])
+	ReadinessLabel.text = str(ring_config.metrics[RESOURCE.METRICS.READINESS])
+	
+	# energy
+	Energy.title = "%s/%s" % [ring_config.energy.available - ring_config.energy.used, ring_config.energy.available]
+	
+
+	## personnel
+	PersonnelStaff.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.STAFF]
+	PersonnelTechnicians.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.TECHNICIANS]
+	PersonnelSecurity.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.SECURITY]
+	PersonnelDClass.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.DCLASS]	
+	
 	# update everything else
 	match camera_settings.type:
 		# -----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_ring_summary(current_location)	
-			currencies = summary_data.currencies
-			metrics = summary_data.metrics
-			energy = summary_data.energy
-			personnel = summary_data.personnel
+
+			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
+			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
+			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
+			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
 			for node in [LocationFloor, LocationWing, LocationRoom, MoraleTag, SafetyTag, ReadinessTag, EnergyTag, StaffTag, TechTag, SecTag, DClassTag]:
 				if node in [LocationFloor]:
@@ -170,16 +196,11 @@ func update_panels() -> void:
 		# -----------------------
 		CAMERA.TYPE.WING_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_ring_summary(current_location)	
-			currencies = summary_data.currencies
-			metrics = summary_data.metrics
-			energy = summary_data.energy
-			personnel = summary_data.personnel	
-			
-			#currency diff
-			CurrenyTag.val = 0 #currencies[RESOURCE.CURRENCY.MONEY] 
-			MaterialTag.val = 0 #currencies[RESOURCE.CURRENCY.MATERIAL] 
-			ScienceTag.val = 0 #currencies[RESOURCE.CURRENCY.SCIENCE] 
-			CoreTag.val = 0 #currencies[RESOURCE.CURRENCY.CORE] 				
+
+			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
+			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
+			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
+			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 						
 			for node in [LocationFloor, LocationWing, LocationRoom, MoraleTag, SafetyTag, ReadinessTag, EnergyTag, StaffTag, TechTag, SecTag, DClassTag]:
 				if node in [LocationFloor, LocationWing]:
@@ -189,17 +210,12 @@ func update_panels() -> void:
 		# -----------------------
 		CAMERA.TYPE.ROOM_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_room_summary(current_location)	
-			currencies = summary_data.currencies
-			metrics = summary_data.metrics
-			energy = summary_data.energy
-			personnel = summary_data.personnel	
 			
-
 			#currency diff
 			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
 			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
 			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
-			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE] 							
+			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
 			MoraleTag.val = str(summary_data.metric_diff[RESOURCE.METRICS.MORALE])
 			SafetyTag.val = str(summary_data.metric_diff[RESOURCE.METRICS.SAFETY])
@@ -214,24 +230,5 @@ func update_panels() -> void:
 
 			for node in [LocationFloor, LocationWing, LocationRoom, MoraleTag, SafetyTag, ReadinessTag, EnergyTag, StaffTag, TechTag, SecTag, DClassTag]:
 				node.show()
-				
-	# currency
-	CurrencyMoney.title = "%s" % [resources_data[RESOURCE.CURRENCY.MONEY].amount]
-	CurrencyMaterials.title = "%s" % [resources_data[RESOURCE.CURRENCY.MATERIAL].amount]
-	CurrencyResearch.title = "%s" %  [resources_data[RESOURCE.CURRENCY.SCIENCE].amount]
-	CurrencyCore.title = "%s" %  [resources_data[RESOURCE.CURRENCY.CORE].amount]
-	
-	# metrics
-	MoraleLabel.text = str(metrics[RESOURCE.METRICS.MORALE])
-	SafetyLabel.text = str(metrics[RESOURCE.METRICS.SAFETY])
-	ReadinessLabel.text = str(metrics[RESOURCE.METRICS.READINESS])
-	
-	# energy
-	Energy.title = "%s/%s" % [energy.available - energy.used, energy.available]
-	
-	# personnel
-	PersonnelStaff.is_negative = personnel[RESOURCE.PERSONNEL.STAFF]
-	PersonnelTechnicians.is_negative = personnel[RESOURCE.PERSONNEL.TECHNICIANS]
-	PersonnelSecurity.is_negative = personnel[RESOURCE.PERSONNEL.SECURITY]
-	PersonnelDClass	.is_negative = personnel[RESOURCE.PERSONNEL.DCLASS]
+
 # -----------------------------------------------

@@ -137,37 +137,30 @@ func on_ref_update() -> void:
 	var is_locked:bool = false
 	var is_activated:bool = true
 	var currency_list:Array = []
-	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(room_details.levels_with.specilization).name)
-	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(room_details.levels_with.trait).name)
+	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specilization).name)
+	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(room_details.pairs_with.trait).name)
 	var bonus_str:String = "%s or %s" % [spec_name, trait_name]	
 	var has_spec_bonus:bool = false
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0
-		
-	#if !use_location.is_empty():
-		#var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		#var pair_res:Dictionary = ROOM_UTIL.check_for_pairing(ref, extract_data.researchers)
-		#var summary_data:Dictionary = GAME_UTIL.get_ring_summary(use_location)	
-		#morale_val = summary_data.metrics[RESOURCE.METRICS.MORALE]
-		#is_activated = extract_data.is_activated		
-		#has_spec_bonus =  pair_res.match_spec
-		#has_trait_bonus = pair_res.match_trait
-		#
-		#var currencies_with_bonus:Dictionary = GAME_UTIL.apply_bonus_to(room_details.currencies, summary_data.metrics[RESOURCE.METRICS.MORALE], pair_res)
-		#for key in currencies_with_bonus:
-			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-			#var amount:int = currencies_with_bonus[key]
-			#currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
-						#
-	#else:
 	
-	
+	if !use_location.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		morale_val = extract_data.ring_config.metrics[RESOURCE.METRICS.MORALE]
+		is_activated = extract_data.is_activated
+		has_spec_bonus = extract_data.room.pairs_with.specilization
+		has_trait_bonus = extract_data.room.pairs_with.trait
+
 	for key in room_details.currencies:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
 		var amount:int = room_details.currencies[key]
+		
+		# apply bonus
+		if !use_location.is_empty():
+			amount = GAME_UTIL.apply_pair_and_morale_bonus(use_location, amount)
 		currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
 
-	for node in [CardDrawerName, CardDrawerActivationRequirements]:
+	for node in [CardBody]:
 		node.border_color = default_border_color if is_activated else Color.RED
 
 

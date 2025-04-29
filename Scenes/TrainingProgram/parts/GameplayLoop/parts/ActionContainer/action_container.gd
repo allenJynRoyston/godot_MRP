@@ -842,15 +842,12 @@ func render_shorcut_container() -> void:
 func buildout_btns() -> void:
 	if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty():return
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	var floor_is_powered:bool = room_extract.floor_config_data.is_powered
+	var floor_is_powered:bool = room_extract.floor_config.is_powered
 	
 	var room_is_empty:bool = room_extract.room.is_empty()	
 	var is_activated:bool = room_extract.is_activated
-	var room_can_contain
-	var is_room_under_construction:bool = room_extract.is_room_under_construction
 	var can_contain:bool =  room_extract.can_contain
-	var room_step_complete:bool = !room_is_empty and !is_room_under_construction
-	var room_category:int = room_extract.room_category
+	var room_step_complete:bool = !room_is_empty
 	var scp_is_empty:bool = room_extract.is_scp_empty
 
 	var new_right_btn_list:Array = [] 
@@ -1112,21 +1109,19 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 func check_if_remove_is_valid() -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
 	var is_room_empty:bool = room_extract.is_room_empty
-	var is_room_under_construction:bool = room_extract.is_room_under_construction
 	
-	ConfirmBtn.title = "REFUND" if is_room_under_construction else "DESTROY"
-	ConfirmBtn.is_disabled = is_room_empty and !is_room_under_construction
+	ConfirmBtn.title = "DESTROY"
+	ConfirmBtn.is_disabled = is_room_empty
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
 func check_if_contain_is_valid() -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
 	var is_room_empty:bool = room_extract.is_room_empty
-	var is_room_under_construction:bool = room_extract.is_room_under_construction
 	var can_contain:bool = room_extract.can_contain
 	
 	ConfirmBtn.title = "CONTAIN"
-	ConfirmBtn.is_disabled = is_room_empty or is_room_under_construction or !can_contain
+	ConfirmBtn.is_disabled = is_room_empty or !can_contain
 # --------------------------------------------------------------------------------------------------	
 
 # -------------------------------------------------------------------------------------------------				

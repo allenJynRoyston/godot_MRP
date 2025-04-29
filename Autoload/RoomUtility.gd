@@ -51,7 +51,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------	
-	"levels_with": {
+	"pairs_with": {
 		"specilization": RESEARCHER.SPECIALIZATION.BIOLOGIST,
 		"trait": RESEARCHER.TRAITS.HARD_WORKING
 	},
@@ -184,13 +184,13 @@ func return_activation_cost(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_levels_with_details(ref:int) -> Dictionary:
+func return_pairs_with_details(ref:int) -> Dictionary:
 	var room_data:Dictionary = return_data(ref)
 	var details:Dictionary = {}
-	if "levels_with" in room_data:
+	if "pairs_with" in room_data:
 		details = {
-			"specilization": RESEARCHER_UTIL.return_specialization_data(room_data.levels_with.specilization),
-			"trait": RESEARCHER_UTIL.return_trait_data(room_data.levels_with.trait),
+			"specilization": RESEARCHER_UTIL.return_specialization_data(room_data.pairs_with.specilization),
+			"trait": RESEARCHER_UTIL.return_trait_data(room_data.pairs_with.trait),
 		}
 
 	return details
@@ -203,9 +203,9 @@ func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
 	var match_trait:bool = false
 	
 	for researcher in researchers:
-		if !match_spec and (scp_details.levels_with.specilization in researcher.specializations):
+		if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
 			match_spec = true
-		if !match_trait and (scp_details.levels_with.trait in researcher.traits):
+		if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
 			match_trait = true
 	
 	return {
@@ -220,10 +220,10 @@ func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
 func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
 	var room_data:Dictionary = return_data(ref)
 	
-	if room_data.levels_with.specilization in researcher.specializations:
+	if room_data.pairs_with.specilization in researcher.specializations:
 		return true
 	
-	if room_data.levels_with.trait in researcher.traits:
+	if room_data.pairs_with.trait in researcher.traits:
 		return true
 	
 	return false

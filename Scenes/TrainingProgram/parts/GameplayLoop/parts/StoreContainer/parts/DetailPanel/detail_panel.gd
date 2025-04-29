@@ -87,13 +87,6 @@ func _ready() -> void:
 
 	NextBtn.onClick = func() -> void:
 		cycle_cards(1)		
-		
-	#RoomCard.onUseAbility = onUseAbility
-	
-	control_pos[DetailPanel] = {
-		"show": DetailPanel.position.x, 
-		"hide": DetailPanel.position.x + MarginPanel.size.x
-	}
 	
 	on_is_revealed_update(true)
 	on_disable_inputs_update()
@@ -106,6 +99,14 @@ func _ready() -> void:
 	on_room_ref_update()
 	on_scp_ref_update()
 	on_researcher_uid_update()
+	
+	await U.tick()
+	control_pos[DetailPanel] = {
+		"show": DetailPanel.position.x, 
+		"hide": DetailPanel.position.x + MarginPanel.size.x
+	}
+	
+	animate(false, true)
 # ---------------------------------
 
 # ---------------------------------
@@ -135,27 +136,6 @@ func reveal(state:bool) -> void:
 func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	shop_unlock_purchases = new_val
 # ---------------------------------
-
-## ---------------------------------
-#func switch_to_room_abilities() -> Array:
-	#hide_next_prev_btns = true
-	#
-	#cycle_until(RoomCard)
-	#
-	#await cycle_until_complete		
-	#
-	#if !RoomCard.flip:
-		#RoomCard.flip = true	
-		#await RoomCard.flip_complete
-		#
-	#return await RoomCard.get_ability_btns()
-## ---------------------------------
-
-## ---------------------------------
-#func end_switch_to_room_abilities() -> void:
-	#hide_next_prev_btns = false
-## ---------------------------------
-
 
 # ---------------------------------
 func on_hide_next_prev_btns_update() -> void:
@@ -196,8 +176,8 @@ func on_is_revealed_update(skip_animation:bool = false) -> void:
 	var duration:float = 0.3 if !skip_animation else 0
 	if is_revealed:
 		show()
-		
-	await U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show if is_revealed else control_pos[DetailPanel].hide, duration)
+	
+	await animate(is_revealed, skip_animation)
 
 	if !is_revealed:
 		hide()
@@ -205,6 +185,12 @@ func on_is_revealed_update(skip_animation:bool = false) -> void:
 	check_refs()
 	
 	reveal_finished.emit()
+# ---------------------------------
+
+# ---------------------------------
+func animate(state:bool, skip_animation:bool = false) -> void:
+	var duration:float = 0 if skip_animation else 0.3
+	await U.tween_node_property(DetailPanel, "position:x", control_pos[DetailPanel].show if state else control_pos[DetailPanel].hide, duration)
 # ---------------------------------
 
 # ---------------------------------

@@ -57,16 +57,14 @@ theme_override_constants/separation = 10
 layout_mode = 2
 
 [node name="SpecBonusLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
-text = "Spec bonus: + 50%"
+text = "Spec bonus +50%"
 label_settings = ExtResource("3_osoqv")
 horizontal_alignment = 1
 
 [node name="TraitBonusLabel" type="Label" parent="MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
-text = "Trait bonus: + 50%"
+text = "Trait bonus +50%"
 label_settings = ExtResource("3_osoqv")
 horizontal_alignment = 1
 

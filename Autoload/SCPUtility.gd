@@ -19,7 +19,7 @@ var SCP_TEMPLATE:Dictionary = {
 	# -----------------------------------	
 	"item_class": ITEM_CLASS.SAFE,  					# assigned when generated, could be SAFE/EUCLID/KETER, 
 														# acts as multipler for rewards
-	"containment_multiplier": {							# asssigned when generated
+	"pairs_with": {										# asssigned when generated
 		"specilization": null,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
 		"trait": null,									# must be a trait (HAPPY, SAD, etc).  Can only be one.  1.5x reward if researcher has assigned trait.
 	},													
@@ -292,7 +292,7 @@ func fill_template(data:Dictionary, ref:int) -> void:
 		template_copy.breach_events_at = [ref * 1, ref * 2, ref * 3]
 	
 	# now assign it a deterministic spec/trait
-	template_copy.containment_multiplier = {
+	template_copy.pairs_with = {
 		"specilization":RESEARCHER.SPECIALIZATION.BIOLOGIST, # spec_count,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
 		"trait": RESEARCHER.TRAITS.HARD_WORKING			#trait_count,		
 	}
@@ -309,14 +309,14 @@ func fill_template(data:Dictionary, ref:int) -> void:
 	
 	var matched:bool = false
 	if ref % 2 == 0:
-		template_copy.currencies[RESOURCE.CURRENCY.MONEY] = amount
+		template_copy.currencies[RESOURCE.CURRENCY.MONEY] = 10
 		matched = true
 	else:
-		template_copy.currencies[RESOURCE.CURRENCY.MATERIAL] = amount
+		template_copy.currencies[RESOURCE.CURRENCY.MATERIAL] = 10
 		matched = true
 		
 	if ref % 3 == 0 and !matched:
-		template_copy.currencies[RESOURCE.CURRENCY.SCIENCE] = amount
+		template_copy.currencies[RESOURCE.CURRENCY.SCIENCE] = 10
 		matched = true
 
 	template_copy.metrics = {
@@ -362,9 +362,9 @@ func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
 	var match_trait:bool = false
 	
 	for researcher in researchers:
-		if !match_spec and (scp_details.containment_multiplier.specilization in researcher.specializations):
+		if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
 			match_spec = true
-		if !match_trait and (scp_details.containment_multiplier.trait in researcher.traits):
+		if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
 			match_trait = true
 	
 	return {

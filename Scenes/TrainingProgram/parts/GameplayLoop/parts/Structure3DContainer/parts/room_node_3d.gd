@@ -218,29 +218,23 @@ func build_room_details() -> void:
 	material_copy.albedo_color = Color.SLATE_GRAY
 
 	RoomNumberLabel.text = "%s" % [room_number]	
-	if extract_data.is_room_under_construction:
-		NameLabel.text = "CONSTRUCTING..." 
-	else:
-		NameLabel.text = "EMPTY" if extract_data.is_room_empty else extract_data.room.details.name
+	NameLabel.text = "EMPTY" if extract_data.is_room_empty else extract_data.room.details.name
 	
 	var scp_color:Color = Color(0.511, 0.002, 0.717)
 	var room_color:Color = Color(0, 0.529, 1)
 	var special_color:Color = Color(0, 0, 0)
 
 	if extract_data.is_room_empty:
-		if extract_data.is_room_under_construction:
-			material_copy.albedo_color = scp_color.darkened(0.75) if extract_data.room.details.can_contain else room_color.darkened(0.75)
-		else:
-			DoorLabel.text = "EMPTY"
-			ActivationIndicatorLight.omni_attenuation = 1.0
-			ActivationIndicatorLight.light_color = Color.TRANSPARENT
+		DoorLabel.text = "EMPTY"
+		ActivationIndicatorLight.omni_attenuation = 1.0
+		ActivationIndicatorLight.light_color = Color.TRANSPARENT
 	else:
 		DoorLabel.text = extract_data.room.details.name		
-		match extract_data.room_category:
-			ROOM.CATEGORY.CONTAINMENT_CELL:
-				material_copy.albedo_color = special_color if extract_data.is_directors_office else scp_color
-			ROOM.CATEGORY.FACILITY:
-				material_copy.albedo_color = special_color if extract_data.is_directors_office else room_color
+		#match extract_data.room_category:
+			#ROOM.CATEGORY.CONTAINMENT_CELL:
+				#material_copy.albedo_color = special_color if extract_data.is_directors_office else scp_color
+			#ROOM.CATEGORY.FACILITY:
+				#material_copy.albedo_color = special_color if extract_data.is_directors_office else room_color
 		ActivationIndicatorLight.omni_attenuation = 6.5
 		ActivationIndicatorLight.light_color = Color.GREEN if extract_data.is_activated else Color.ORANGE_RED
 	

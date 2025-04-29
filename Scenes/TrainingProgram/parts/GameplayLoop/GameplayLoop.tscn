@@ -123,7 +123,6 @@ alignment = 1
 [node name="IconBtn" parent="WaitContainer/MarginContainer/PanelContainer/VBoxContainer" instance=ExtResource("15_y8y6g")]
 layout_mode = 2
 icon = 18
-flip_v = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="WaitContainer/MarginContainer/PanelContainer/VBoxContainer"]
@@ -156,7 +155,6 @@ alignment = 1
 [node name="IconBtn" parent="WaitContainer/MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer" instance=ExtResource("15_y8y6g")]
 layout_mode = 2
 icon = 18
-flip_v = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="WaitContainer/MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]

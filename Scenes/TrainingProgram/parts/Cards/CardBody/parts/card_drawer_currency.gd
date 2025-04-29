@@ -27,26 +27,31 @@ func _ready() -> void:
 	
 func update_labels() -> void:
 	if !is_node_ready():return
+	var morale_amount:int = morale_val * 20
+	var total_amount:int = morale_amount	
 	
 	if has_spec_bonus:
 		SpecBonusLabel.show()
-		SpecBonusLabel.text = str("%s bonus +%s" % [spec_name, 50], "%") if has_spec_bonus else "No bonus from %s" % [spec_name]
+		SpecBonusLabel.text = str("%s bonus +%s" % [spec_name, 200], "%") if has_spec_bonus else "No bonus from %s" % [spec_name]
 	else:
 		SpecBonusLabel.hide()
 	
 	if has_trait_bonus:
 		TraitBonusLabel.show()
-		TraitBonusLabel.text =  str("%s bonus +%s" % [trait_name, 50], "%") 
+		TraitBonusLabel.text =  str("%s bonus +%s" % [trait_name, 200], "%") 
 	else:
 		TraitBonusLabel.hide()
-		
-	var morale_amount:int = morale_val * 20		
-	var total_amount:int = morale_amount
+	
+	if morale_val != 0:
+		MoraleBonusLabel.show() 
+	else:
+		MoraleBonusLabel.hide()
+
 	if has_spec_bonus:
-		total_amount += 50
+		total_amount += 200
 	if has_trait_bonus:
-		total_amount += 50
-		
+		total_amount += 200
+	
 		
 	MoraleBonusLabel.text =  str("%s bonus %s%s" % ["Morale", "+" if morale_val > 0 else "", morale_amount], "%")
 	TotalBonusLabel.text = str("Applied bonus: %s%s" % ["+" if total_amount > 0 else "", total_amount], "%")

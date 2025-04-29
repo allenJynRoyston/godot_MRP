@@ -30,20 +30,11 @@ func on_extract_data_update() -> void:
 	if !is_node_ready() or extract_data.is_empty():return
 	
 	if extract_data.is_room_empty:
-		if extract_data.is_room_under_construction:
-			StatusTag.show()
-			StatusLabel.text = "UNDER CONSTRUCTION"
-			LevelLabel.text = ""
-			TitleLabel.text = " %s " % [extract_data.room.details.shortname]
-
-			ProfileImage.material = null
-			ProfileImage.texture = CACHE.fetch_image(extract_data.room.details.img_src)
-		else:
-			StatusTag.hide()
-			TitleLabel.text = " NOTHING ASSIGNED " 
-			LevelLabel.text = ""
-			ProfileImage.material = StaticShader
-			ProfileImage.texture = CACHE.fetch_image("")
+		StatusTag.hide()
+		TitleLabel.text = " NOTHING ASSIGNED " 
+		LevelLabel.text = ""
+		ProfileImage.material = StaticShader
+		ProfileImage.texture = CACHE.fetch_image("")
 	else:		
 		TitleLabel.text = " %s " % [extract_data.room.details.shortname]
 		ProfileImage.texture = CACHE.fetch_image(extract_data.room.details.img_src)

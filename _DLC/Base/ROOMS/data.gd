@@ -20,15 +20,15 @@ var DEBUG_ROOM:Dictionary = {
 
 	# ------------------------------------------	
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 4,
-		RESOURCE.CURRENCY.MATERIAL: 3,
-		RESOURCE.CURRENCY.SCIENCE: 2,
+		RESOURCE.CURRENCY.MONEY: 5,
+		RESOURCE.CURRENCY.MATERIAL: 10,
+		RESOURCE.CURRENCY.SCIENCE: 20,
 		RESOURCE.CURRENCY.CORE: 1,
 	},
 	"metrics": {
 		RESOURCE.METRICS.MORALE: 1,
-		RESOURCE.METRICS.SAFETY: 2,
-		RESOURCE.METRICS.READINESS: 3
+		RESOURCE.METRICS.SAFETY: 1,
+		RESOURCE.METRICS.READINESS: 1
 	},	
 	# ------------------------------------------
 	
@@ -62,9 +62,9 @@ var DEBUG_ROOM:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			#ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL),
-			#ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 1),
-			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
-			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
 			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
 			#ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 2),
@@ -141,7 +141,7 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 
 	# --------------------------------------
-	"levels_with": {
+	"pairs_with": {
 		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 		"trait": RESEARCHER.TRAITS.DISCIPLINED
 	},
@@ -242,6 +242,7 @@ var OPERATIONS_SUPPORT:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies technicians.",
+	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -290,6 +291,7 @@ var WEAPONS_RANGE:Dictionary = {
 	"tier": TIER.VAL.ZERO,
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Increases security and provides training.",
+	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -345,6 +347,36 @@ var ENGINEERING_BAY:Dictionary = {
 }
 
 
+var ENERGY_STORAGE:Dictionary = {
+	# ------------------------------------------
+	"name": "ENERGY STORAGE",
+	"shortname": "E.STORAGE",
+	"tier": TIER.VAL.ZERO,
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"costs": {
+		"unlock": 50,
+		"purchase": 100,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"resource_requirements": [
+		RESOURCE.PERSONNEL.TECHNICIANS
+	],
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			
+		],	
+	# ------------------------------------------	
+}
+
 
 var TEST1:Dictionary = {
 	# ------------------------------------------
@@ -385,7 +417,7 @@ var list:Array[Dictionary] = [
 	# ---------------
 	PRISONER_BLOCK, HR_DEPARTMENT, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
 	# ---------------
-	WEAPONS_RANGE, ENGINEERING_BAY, 
+	WEAPONS_RANGE, ENGINEERING_BAY, ENERGY_STORAGE,
 	TEST1, TEST2, TEST3,
 	TEST1, TEST2, TEST3,
 	TEST1, TEST2, TEST3

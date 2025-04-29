@@ -100,6 +100,7 @@ func on_is_unknown_update() -> void:
 	on_level_update()
 	on_ability_name_update()
 	on_cost_update()
+	is_disabled = is_unknown
 	
 func on_level_update() -> void:
 	if !is_node_ready():return

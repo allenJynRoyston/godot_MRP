@@ -56,9 +56,9 @@ var page_tracker:Dictionary = {
 }
 
 var grid_as_array:Array = [
-	[0, 1, 2, 3],
-	[4, 5, 6, 7],
-	[8, 9, 10, 11],
+	[0, 1, 2],
+	[3, 4, 5],
+	[6, 7, 8],
 ]
 
 signal on_confirm
@@ -69,30 +69,6 @@ func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 		
 	BtnControls.onDirectional = on_key_press
-	
-	#SelectTabBtn.onClick = func() -> void:		
-		#if current_mode == MODE.TAB_SELECT:
-			#await U.tick()
-			#current_mode = MODE.CONTENT_SELECT
-	
-	#UnlockBtn.onClick = func() -> void:
-		#if await_confirm:
-			#on_confirm.emit(true)
-			#return
-			#
-		#if current_mode == MODE.CONTENT_SELECT:
-			#unlock_room()
-#
-	#BackBtn.onClick = func() -> void:
-		#if await_confirm:
-			#on_confirm.emit(false)
-			#return
-		#match current_mode:
-			#MODE.TAB_SELECT:
-				#user_response.emit(made_a_purchase)
-			#MODE.CONTENT_SELECT:
-				#await U.tick()
-				#current_mode = MODE.TAB_SELECT
 	
 	is_setup = true
 	on_current_mode_update(true)
@@ -108,6 +84,11 @@ func start() -> void:
 func end() -> void:
 	BtnControls.reveal(false)
 	DetailPanel.reveal(false)
+	
+	for n in GridContent.get_child_count():
+		var card_node:Control = GridContent.get_child(n)
+		card_node.onHover = func() -> void: pass
+		card_node.onClick = func() -> void: pass	
 
 	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)
 	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
@@ -184,14 +165,17 @@ func on_tab_index_update() -> void:
 		var tab:Control = Tabs.get_child(index)
 		
 		tab.onFocus = func(node:Control) -> void:
+			if current_mode != MODE.TAB_SELECT:return
 			tab.is_selected = true
 			tab_index = index
 			update_grid_content(index)
 			
 		tab.onBlur = func(node:Control) -> void:
+			if current_mode != MODE.TAB_SELECT:return
 			tab.is_selected = false
 			
 		tab.onClick = func() -> void:
+			if current_mode != MODE.TAB_SELECT:return
 			ActiveHeaderLabel.text = tab.title
 			current_mode = MODE.CONTENT_SELECT
 			
@@ -200,8 +184,9 @@ func on_tab_index_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func update_grid_content(index:int = tab_index) -> void:
 	var query:Dictionary
-	var start_at:int = page_tracker[index] * 12
-	var end_at:int = start_at + 12
+	var grid_size:int = GridContent.get_child_count() 
+	var start_at:int = page_tracker[index] * grid_size
+	var end_at:int = start_at + grid_size
 
 	match index:
 		0:
@@ -210,6 +195,7 @@ func update_grid_content(index:int = tab_index) -> void:
 			query = ROOM_UTIL.get_paginated_list(TIER.VAL.ONE, start_at, end_at)
 		2:
 			query = ROOM_UTIL.get_paginated_list(TIER.VAL.TWO, start_at, end_at)
+	
 
 	# reset show/hide more buttons	
 	has_more = query.has_more
@@ -250,9 +236,11 @@ func update_grid_content(index:int = tab_index) -> void:
 			card_node.is_hoverable = true
 			
 			card_node.onHover = func() -> void:
+				if current_mode != MODE.CONTENT_SELECT:return
 				grid_index = n
 				
 			card_node.onClick = func() -> void:
+				if current_mode != MODE.CONTENT_SELECT:return
 				grid_index = n
 				await U.tick()
 				if room_details.ref not in shop_unlock_purchases:
@@ -425,7 +413,9 @@ func has_valid_ref(index:int) -> bool:
 
 # --------------------------------------------------------------------------------------------------			
 func find_nearest_valid(start_at:int, reverse:bool = false) -> void:
-	for n in range(start_at + 3, 0, -1) if reverse else [start_at - 3, 8, 4, 0]:
+	var nearest_val:int = GridContent.columns - 1
+	
+	for n in range(start_at + nearest_val, 0, -1) if reverse else [start_at - nearest_val, 8, 4, 0]:
 		if has_valid_ref(n):
 			grid_index = n
 			break
@@ -435,24 +425,26 @@ func find_nearest_valid(start_at:int, reverse:bool = false) -> void:
 func on_key_press(key:String) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
 		return
+	
+	var columns:int = GridContent.columns
 		
 	match key:
 		"W":
 			match current_mode:
 				MODE.CONTENT_SELECT:
-					if grid_index not in grid_as_array[0] and has_valid_ref(grid_index - 4):
-						grid_index = grid_index - 4
+					if grid_index not in grid_as_array[0] and has_valid_ref(grid_index - columns):
+						grid_index = grid_index - columns
 					
 		"S":
 			match current_mode:
 				MODE.CONTENT_SELECT:
-					if grid_index not in grid_as_array[2] and has_valid_ref(grid_index + 4):
-						grid_index = grid_index + 4
+					if grid_index not in grid_as_array[2] and has_valid_ref(grid_index + columns):
+						grid_index = grid_index + columns
 
 		"A":
 			match current_mode:
 				MODE.CONTENT_SELECT:
-					if grid_index not in [0, 4, 8]:
+					if grid_index not in [0, 3, 6]:
 						if has_valid_ref(grid_index - 1):
 							grid_index = grid_index - 1
 					elif page_tracker[tab_index] > 0:
@@ -463,7 +455,7 @@ func on_key_press(key:String) -> void:
 		"D":
 			match current_mode:
 				MODE.CONTENT_SELECT:
-					if grid_index not in [3, 7, 11]:
+					if grid_index not in [2, 5, 8]:
 						if has_valid_ref(grid_index + 1):
 							grid_index = grid_index + 1
 					elif has_more:

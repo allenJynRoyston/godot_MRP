@@ -131,15 +131,14 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_6ij55")
 [node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 0
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 100
-theme_override_constants/margin_right = 100
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_bottom = 100
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 50
+alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -147,13 +146,13 @@ theme_override_constants/separation = -10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = -20
 
 [node name="LessBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_3ph48")]
 layout_mode = 2
 icon = 10
 inactive_color = Color(1, 1, 1, 1)
 flip_h = true
-flip_v = false
 
 [node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -161,7 +160,7 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(700, 550)
+custom_minimum_size = Vector2(600, 550)
 layout_mode = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
@@ -177,7 +176,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/h_separation = 25
 theme_override_constants/v_separation = 25
-columns = 4
+columns = 3
 
 [node name="ShopMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
@@ -242,32 +241,10 @@ card_type = 0
 flipped = false
 ref = -1
 
-[node name="ShopMiniCard10" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-card_type = 0
-flipped = false
-ref = -1
-
-[node name="ShopMiniCard11" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-card_type = 0
-flipped = false
-ref = -1
-
-[node name="ShopMiniCard12" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-card_type = 0
-flipped = false
-ref = -1
-
 [node name="MoreBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_3ph48")]
 layout_mode = 2
 icon = 10
 inactive_color = Color(1, 1, 1, 1)
-flip_v = false
 
 [node name="AvailableLabel" type="Label" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer"]
 visible = false

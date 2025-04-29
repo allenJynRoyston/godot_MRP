@@ -190,23 +190,6 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 # ------------------------------------------------------------------------------
 
 
-# ------------------------------------------------------------------------------	
-func apply_bonus_to(currencies:Dictionary, metrics_val:int, pair_data:Dictionary) -> Dictionary:
-	#var moral_bonus:int = metrics_val * 20
-	#var spec_bonus:int = 50 if pair_data.match_spec else 0
-	#var trait_bonus:int = 50 if pair_data.match_trait else 0
-	#var bonus_percent:float = (moral_bonus + spec_bonus + trait_bonus) * 0.01
-	#var currencies_copy:Dictionary = currencies.duplicate()
-	#
-	
-	#for key in currencies_copy:
-		#var amount:int = currencies_copy[key]
-		#var amount_bonus:int = floori(amount * bonus_percent) if bonus_percent < 0 else ceili(amount * bonus_percent) 
-		#currencies_copy[key] = amount + amount_bonus
-	
-	return currencies
-# ------------------------------------------------------------------------------	
-
 # ------------------------------------------------------------------------------
 func get_floor_summary(use_location:Dictionary = current_location) -> Dictionary:
 	if use_location.is_empty():return {}
@@ -215,58 +198,31 @@ func get_floor_summary(use_location:Dictionary = current_location) -> Dictionary
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room	
+	var floor_config:Dictionary = room_config.floor[floor]
+	var ring_config:Dictionary = room_config.floor[floor].ring[ring]
+	var room_config:Dictionary = room_config.floor[floor].ring[ring].room[room]	
 	
-	var currencies:Dictionary = {
-		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.CORE: 0
-	}
+	var currencies_diff:Dictionary = floor_config.currencies
 	
-	var metrics:Dictionary = {
+	var metrics_diff:Dictionary = {
 		RESOURCE.METRICS.MORALE: 0,
 		RESOURCE.METRICS.SAFETY: 0,
 		RESOURCE.METRICS.READINESS: 0
+	}	
+	
+	# no differential on a ring level
+	var personnel_diff:Dictionary = {
+		RESOURCE.PERSONNEL.STAFF: 0,
+		RESOURCE.PERSONNEL.TECHNICIANS: 0,
+		RESOURCE.PERSONNEL.SECURITY: 0,
+		RESOURCE.PERSONNEL.DCLASS: 0
 	}
-	
-	var energy:Dictionary = {
-		"available": 0,
-		"used": 0,
-		"room_specific": null
-	}
-	
-	var personnel:Dictionary = {
-		RESOURCE.PERSONNEL.STAFF: false,
-		RESOURCE.PERSONNEL.TECHNICIANS: false,
-		RESOURCE.PERSONNEL.SECURITY: false,
-		RESOURCE.PERSONNEL.DCLASS: false
-	}
-	
-	# update currencies
-	var ring_currencies:Dictionary = room_config.floor[floor].ring[ring].currencies
-	for ref in ring_currencies:
-		var amount:int = ring_currencies[ref]
-		currencies[ref] += amount	
-	
-	# update metrics (ring level)
-	var ring_metrics:Dictionary = room_config.floor[floor].ring[ring].metrics
-	for ref in ring_metrics:
-		var amount:int = ring_metrics[ref]
-		metrics[ref] += amount
-	
-	# update personnel (ring level)
-	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
-	for ref in ring_personnel:
-		personnel[ref] = !ring_personnel[ref]
-	
-	# update energy (ring level)
-	energy = room_config.floor[floor].ring[ring].energy
 		
 	return {
-		"currencies": currencies,
-		"metrics": metrics,
-		"energy": energy,
-		"personnel": personnel
+		"currency_diff": currencies_diff,
+		"metric_diff": metrics_diff,
+		"energy_diff": 0,
+		"personnel_diff": personnel_diff
 	}
 # ------------------------------------------------------------------------------
 
@@ -278,57 +234,31 @@ func get_ring_summary(use_location:Dictionary = current_location) -> Dictionary:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room	
+	var ring_config:Dictionary = room_config.floor[floor].ring[ring]
+	var room_config:Dictionary = room_config.floor[floor].ring[ring].room[room]	
 	
-	var currencies:Dictionary = {
-		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.CORE: 0
-	}
+	var currencies_diff:Dictionary = ring_config.currencies
 	
-	var metrics:Dictionary = {
+	var metrics_diff:Dictionary = {
 		RESOURCE.METRICS.MORALE: 0,
 		RESOURCE.METRICS.SAFETY: 0,
 		RESOURCE.METRICS.READINESS: 0
+	}	
+	
+	# no differential on a ring level
+	var personnel_diff:Dictionary = {
+		RESOURCE.PERSONNEL.STAFF: 0,
+		RESOURCE.PERSONNEL.TECHNICIANS: 0,
+		RESOURCE.PERSONNEL.SECURITY: 0,
+		RESOURCE.PERSONNEL.DCLASS: 0
 	}
-	
-	var energy:Dictionary = {
-		"available": 0,
-		"used": 0,
-	}
-	
-	var personnel:Dictionary = {
-		RESOURCE.PERSONNEL.STAFF: false,
-		RESOURCE.PERSONNEL.TECHNICIANS: false,
-		RESOURCE.PERSONNEL.SECURITY: false,
-		RESOURCE.PERSONNEL.DCLASS: false
-	}
-	
-	# update metrics
-	var ring_metrics:Dictionary = room_config.floor[floor].ring[ring].metrics
-	for ref in ring_metrics:
-		var amount:int = ring_metrics[ref]
-		metrics[ref] += amount
-		
-	# update personnel
-	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
-	for ref in ring_personnel:
-		personnel[ref] = !ring_personnel[ref]
-	
-	# update currenciessab
-	var ring_currencies:Dictionary = room_config.floor[floor].ring[ring].currencies
-	for ref in ring_currencies:
-		var amount:int = ring_currencies[ref]
-		currencies[ref] += amount
-		
-	# update energy
-	energy = room_config.floor[floor].ring[ring].energy
+
 		
 	return {
-		"currencies": currencies,
-		"metrics": metrics,
-		"energy": energy,
-		"personnel": personnel
+		"currency_diff": currencies_diff,
+		"metric_diff": metrics_diff,
+		"energy_diff": 0,
+		"personnel_diff": personnel_diff
 	}
 # ------------------------------------------------------------------------------
 
@@ -340,131 +270,74 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room	
+	var room_config:Dictionary = room_config.floor[floor].ring[ring].room[room]
 	
-	var currencies:Dictionary = {
-		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.CORE: 0
-	}
-	
-	var currencies_diff:Dictionary = {
-		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.CORE: 0	
-	}
-	
-	var metrics:Dictionary = {
-		RESOURCE.METRICS.MORALE: 0,
-		RESOURCE.METRICS.SAFETY: 0,
-		RESOURCE.METRICS.READINESS: 0
-	}
-	
-	var metrics_diff:Dictionary = {
-		RESOURCE.METRICS.MORALE: 0,
-		RESOURCE.METRICS.SAFETY: 0,
-		RESOURCE.METRICS.READINESS: 0
-	}	
-	
-	var energy:Dictionary = {
-		"available": 0,
-		"used": 0,
-	}
-	
-	var energy_diff:int = 0
-	
-	var personnel:Dictionary = {
-		RESOURCE.PERSONNEL.STAFF: false,
-		RESOURCE.PERSONNEL.TECHNICIANS: false,
-		RESOURCE.PERSONNEL.SECURITY: false,
-		RESOURCE.PERSONNEL.DCLASS: false
-	}
-	
+	var currencies_diff:Dictionary = room_config.currencies
+	var metrics_diff:Dictionary = room_config.metrics
+	var energy_diff:int = room_config.energy_used
 	var personnel_diff:Dictionary = {
-		RESOURCE.PERSONNEL.STAFF: false,
-		RESOURCE.PERSONNEL.TECHNICIANS: false,
-		RESOURCE.PERSONNEL.SECURITY: false,
-		RESOURCE.PERSONNEL.DCLASS: false
+		RESOURCE.PERSONNEL.STAFF: 0,
+		RESOURCE.PERSONNEL.TECHNICIANS: 0,
+		RESOURCE.PERSONNEL.SECURITY: 0,
+		RESOURCE.PERSONNEL.DCLASS: 0
 	}
 	
-	# update metrics
-	var ring_metrics:Dictionary = room_config.floor[floor].ring[ring].metrics
-	for ref in ring_metrics:
-		var amount:int = ring_metrics[ref]
-		metrics[ref] += amount
-
-	
-	# update personnel
-	var ring_personnel:Dictionary = room_config.floor[floor].ring[ring].personnel
-	for ref in ring_personnel:
-		personnel[ref] = !ring_personnel[ref]
-	
-	# update currenciessab
-	var ring_currencies:Dictionary = room_config.floor[floor].ring[ring].currencies
-	for ref in ring_currencies:
-		var amount:int = ring_currencies[ref]
-		currencies[ref] += amount
-	
-	# update energy
-	energy = room_config.floor[floor].ring[ring].energy
-	energy_diff = room_config.floor[floor].ring[ring].room[room].energy_used
-	
-	# update metrics
-	var room_details:Dictionary = room_config.floor[floor].ring[ring].room[room].room_data 
-	if !room_details.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		var pair_res:Dictionary = ROOM_UTIL.check_for_pairing(room_details.ref, extract_data.researchers)
-
-		# room diff
-		var room_metrics:Dictionary = room_details.details.metrics
-		for ref in room_metrics:
-			var amount:int = room_metrics[ref]
-			metrics_diff[ref] += amount
-
-		var room_personnel:Dictionary = room_config.floor[floor].ring[ring].room[room].personnel
-		for ref in room_personnel:
-			personnel_diff[ref] = 1 if room_personnel[ref] else 0
-	#
-		#var room_currencies:Dictionary = apply_bonus_to(room_details.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
-		#for ref in room_currencies:
-			#var amount:int = room_currencies[ref]
-			#currencies_diff[ref] += amount
-		#
-			
-	var scp_data:Dictionary = room_config.floor[floor].ring[ring].room[room].scp_data
-	if !scp_data.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		var pair_res:Dictionary = SCP_UTIL.check_for_pairing(scp_data.ref, extract_data.researchers)
-		
-		# scp diff
-		var room_metrics:Dictionary = scp_data.details.metrics
-		for ref in room_metrics:
-			var amount:int = room_metrics[ref]
-			metrics_diff[ref] += amount
-	
-		#var scp_currencies:Dictionary = apply_bonus_to(scp_data.details.currencies, metrics[RESOURCE.METRICS.MORALE], pair_res)
-		#for ref in scp_currencies:
-			#var amount:int = scp_currencies[ref]
-			#currencies_diff[ref] += amount
-		
-		# scp effect diff
-		if "personnel" in scp_data.details.effects:
-			for ref in scp_data.details.effects.personnel:
-				personnel_diff[ref] = 1 if scp_data.details.effects.personnel[ref] else 0
+	for key in room_config.personnel:
+		if room_config.personnel[key]:
+			personnel_diff[key] = 1
 		
 	return {
-		"currencies": currencies,
-		"metrics": metrics,
-		"energy": energy,
-		"personnel": personnel,
-		# ------------------------------
 		"currency_diff": currencies_diff,
 		"metric_diff": metrics_diff,
 		"energy_diff": energy_diff,
 		"personnel_diff": personnel_diff
 	}
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func apply_scp_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> int:
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring
+	var room:int = use_location.room
+	
+	var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
+	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
+	# double the amount if specilization has a match
+	if room_config.scp_paired_with.specilization:
+		amount = amount * 2
+		
+	# double room_config amount if trait has a match	
+	if room_config.scp_paired_with.trait:
+		amount = amount * 2
+		
+	var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
+	var bonus_val:int = ceili( amount * morale_val )
+	
+	return amount + bonus_val
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func apply_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> int:
+	var floor:int = use_location.floor
+	var ring:int = use_location.ring
+	var room:int = use_location.room
+	
+	var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
+	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
+	# double the amount if specilization has a match
+	if room_config.room_paired_with.specilization:
+		amount = amount * 2
+		
+	# double room_config amount if trait has a match	
+	if room_config.room_paired_with.trait:
+		amount = amount * 2
+		
+	var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
+	var bonus_val:int = ceili( amount * morale_val )
+	
+	return amount + bonus_val
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func extract_room_details(use_location:Dictionary = current_location, use_config:Dictionary = room_config) -> Dictionary:
@@ -474,151 +347,65 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room
+	var floor_config:Dictionary = room_config.floor[floor]
+	var ring_config:Dictionary = room_config.floor[floor].ring[ring]
+	var room_config:Dictionary = room_config.floor[floor].ring[ring].room[room]
+	var room_base_state:Dictionary = base_states.room[str(current_location.floor, current_location.ring, current_location.room)]
 
-	var floor_data:Dictionary = room_config.floor[floor]
-	var wing_data:Dictionary = room_config.floor[floor].ring[ring]
-	var room_config_data:Dictionary = room_config.floor[floor].ring[ring].room[room]
-	var is_room_empty:bool = room_config_data.room_data.is_empty()
-	var can_purchase:bool = room_config_data.build_data.is_empty() and room_config_data.room_data.is_empty()
-	var is_room_under_construction:bool  = !room_config_data.build_data.is_empty()
-	var room_details:Dictionary = {} if is_room_empty else room_config_data.room_data.details 
-	
-	var is_activated:bool = false if is_room_empty else room_config_data.is_activated 
-	var can_activate:bool = false if is_room_empty else (RESOURCE_UTIL.check_if_have_enough(ROOM_UTIL.return_activation_cost(room_config_data.room_data.ref)) if !is_activated else false)
+	var is_room_empty:bool = room_config.room_data.is_empty()
+	var room_details:Dictionary = {} if is_room_empty else room_config.room_data.details 
+	var is_activated:bool = false if is_room_empty else room_config.is_activated 
 	var can_contain:bool = false if is_room_empty else room_details.can_contain
 	var can_destroy:bool = false if is_room_empty else room_details.can_destroy
-	var ap_diff_amount:int = 1 if is_activated else 0
+	
 	var abilities:Array = [] if (is_room_empty or "abilities" not in room_details) else room_details.abilities.call()	
-	
-	var room_base_state:Dictionary = base_states.room[str(current_location.floor, current_location.ring, current_location.room)]
 	var passives_enabled:Dictionary = room_base_state.passives_enabled	
-	var passive_abl:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
+	var passive_list:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
 	var passive_abilities:Array = []
-	for index in passive_abl.size():
-		var pa:Dictionary = passive_abl[index]
-		var auid:String = str(room_details.ref, index)
-		pa.index = index
-		pa.is_enabled = passives_enabled[auid] if auid in passives_enabled else false
-		passive_abilities.push_back(pa)
-	
-	var scp_data:Dictionary = room_config_data.scp_data 
+	for index in passive_list.size():
+		var ability:Dictionary = passive_list[index]
+		var ability_uid:String = str(room_details.ref, index)
+		ability.index = index
+		ability.is_enabled = passives_enabled[ability_uid] if ability_uid in passives_enabled else false
+		passive_abilities.push_back(ability)
+
+	var scp_data:Dictionary = room_config.scp_data 
 	var is_scp_empty:bool = scp_data.is_empty()
 	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(scp_data.ref)
-	var is_transfer:bool = false #if is_scp_empty else room_config_data.scp_data.is_transfer
-	var is_contained:bool = false #if is_scp_empty else room_config_data.scp_data.is_contained
-	
+
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
 		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
 			return true
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-	
-	var traits_res:Dictionary = get_room_traits(use_location, use_config)
-	var trait_list:Array = traits_res.trait_list
-	var synergy_list:Array = traits_res.synergy_list
-	
-	# tracks 
-	var resource_details:Dictionary = {
-		# captures just for room
-		"room": {},
-		# all resources for scp
-		"scp": {},
-		# 
-		"researchers": {},
-		# combines room, scp and researchers 
-		"facility": {},
-		#
-		"traits": {},
-		"synergy_traits": {},
-		"total": {},
-	}
-	var metric_details:Dictionary = {
-		# captures just for room
-		"room": {},
-		# all resources for scp
-		"scp": {},
-		# 
-		"researchers": {},
-		# combines room, scp and researchers 
-		"facility": {},
-		#
-		"traits": {},
-		"synergy_traits": {},
-		"total": {},
-	}
-	
-	# get resources spent/added by rooms
-	#if !is_room_empty:
-		#for item in ROOM_UTIL.return_operating_cost(room_details.ref):
-			#if item.resource.ref not in resource_details.room:
-				#resource_details.room[item.resource.ref] = 0
-			#if item.resource.ref not in resource_details.facility:
-				#resource_details.facility[item.resource.ref] = 0
-			#if item.resource.ref not in resource_details.total:
-				#resource_details.total[item.resource.ref] = 0
-			#resource_details.room[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-			#resource_details.facility[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-			#resource_details.total[item.resource.ref] += item.amount if is_activated and !is_room_under_construction else 0
-				#
-	# get resources spent/added by scp
-	#if !is_scp_empty:
-		#for item in SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref):
-			#if item.resource.ref not in resource_details.scp:
-				#resource_details.scp[item.resource.ref] = 0
-			#if item.resource.ref not in resource_details.facility:
-				#resource_details.facility[item.resource.ref] = 0
-			#if item.resource.ref not in resource_details.total:
-				#resource_details.total[item.resource.ref] = 0
-				#
-			#resource_details.facility[item.resource.ref] += item.amount if is_contained else 0
-			#resource_details.scp[item.resource.ref] += item.amount if is_contained else 0
-			#resource_details.total[item.resource.ref] += item.amount if is_contained else 0
 
-	# convert resource as a dict to a list form for easy reading
-	var resources_as_list:Array = []
-	for key in resource_details.total:
-		var amount:int = resource_details.total[key]
-		resources_as_list.push_back({"amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
 
 	return {
-		"floor_config_data": floor_data,
-		"wing_config_data": wing_data,
-		"room_config_data": room_config_data,
+		"floor_config": floor_config,
+		"ring_config": ring_config,
+		"room_config": room_config,
 		# -----
-		"is_directors_office": room_details.ref == ROOM.TYPE.DIRECTORS_OFFICE if !room_details.is_empty() else false,
-		"is_hq": room_details.ref == ROOM.TYPE.HQ if !room_details.is_empty() else false,
 		"is_room_empty": room_details.is_empty(),
-		"is_room_under_construction": is_room_under_construction,
+		"is_scp_empty": is_scp_empty,
+		# ------
 		"is_activated": is_activated,
-		"can_activate": can_activate,
 		"can_contain": can_contain,
 		"can_destroy": can_destroy,
-		"room_category": ROOM.CATEGORY.CONTAINMENT_CELL if (!room_details.is_empty() and room_details.can_contain) else ROOM.CATEGORY.FACILITY,
-		# ------		
-		"is_scp_empty": is_scp_empty,
-		#"is_scp_transfering": is_transfer,
-		#"is_scp_contained": is_contained,
-		#"is_scp_testing": !is_transfer and is_contained and researchers.size() > 0,
 		# ------
 		"researchers_count": researchers.size(),
-		"abl_lvl": room_config_data.abl_lvl,
 		# -----
-		"room": {						
-			"details": room_details if !is_room_under_construction else ROOM_UTIL.return_data(room_config_data.build_data.ref),
+		"room": {
+			"details": room_details,
 			"abilities": abilities,
 			"passive_abilities": passive_abilities,
-		} if !is_room_empty or is_room_under_construction else {},
+			"pairs_with": room_config.room_paired_with,
+			"abl_lvl": room_config.abl_lvl,		
+		} if !is_room_empty else {},
 		"scp": {
 			"details": scp_details,
-			#"is_transfer": is_transfer,
-			#"is_contained": is_contained,
+			"pairs_with": room_config.scp_paired_with,
 		} if !is_scp_empty else {},
-		"trait_list": trait_list,
-		"synergy_list": synergy_list,
-		"resources_as_list": resources_as_list,
-		"resource_details": resource_details,
-		"metric_details": metric_details,
 		"researchers": researchers
 	}
 # ------------------------------------------------------------------------------	

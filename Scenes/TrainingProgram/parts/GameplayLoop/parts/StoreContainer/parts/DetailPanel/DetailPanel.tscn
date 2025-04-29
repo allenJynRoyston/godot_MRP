@@ -102,7 +102,6 @@ visible = false
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 28
-flip_v = false
 is_hoverable = false
 
 [node name="CardContainer" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer"]
@@ -129,7 +128,6 @@ custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 28
 flip_h = true
-flip_v = false
 is_hoverable = false
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer"]

@@ -8,6 +8,8 @@ extends MouseInteractions
 @onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerActiveAbilities
 @onready var CardDrawerPassiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerPassiveAbilities
 
+@onready var DeactivatedPanel:Control = $DeactivatedPanel
+
 var use_location:Dictionary 
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
@@ -38,10 +40,9 @@ func on_ref_update() -> void:
 		CardDrawerActiveAbilities.clear()
 		CardDrawerPassiveAbilities.clear()
 
+		DeactivatedPanel.hide()
 		return
-	
-	
-	
+
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_locked:bool = false
 	var is_activated:bool = true
@@ -49,10 +50,11 @@ func on_ref_update() -> void:
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		is_activated = extract_data.is_activated
 	
+	DeactivatedPanel.hide() if is_activated else DeactivatedPanel.show()
 	CardDrawerEmpty.hide()
 	CardDrawerActiveAbilities.show()
 	CardDrawerPassiveAbilities.show()
-	CardBody.card_size.y = 250
+	CardBody.card_size.y = 275
 	
 	CardDrawerActiveAbilities.title = "%s PROGRAMS" % room_details.name
 	CardDrawerPassiveAbilities.title = "%s MODULES" % room_details.name
@@ -72,7 +74,7 @@ func on_ref_update() -> void:
 		CardDrawerActiveAbilities.use_location = use_location
 	
 
-	var level_with_details:Dictionary = ROOM_UTIL.return_levels_with_details(room_details.ref)
+	var level_with_details:Dictionary = ROOM_UTIL.return_pairs_with_details(room_details.ref)
 	if level_with_details.is_empty():
 		CardDrawerResearcherPref.content = "None"
 	else:
