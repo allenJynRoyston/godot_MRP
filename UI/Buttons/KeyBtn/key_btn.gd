@@ -109,7 +109,6 @@ func on_has_new_update() -> void:
 		IndicatorBtn.hide()
 	else:
 		IndicatorBtn.show()
-		# pulse on and off
 		
 func on_is_disabled_updated() -> void:
 	modulate = Color(1, 0, 0, 1) if is_disabled else Color(1, 1, 1, 1)

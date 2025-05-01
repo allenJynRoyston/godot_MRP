@@ -239,13 +239,12 @@ func return_refs_that_can_contain() -> Array:
 # ------------------------------------------------------------------------------			
 	
 # ------------------------------------------------------------------------------
-func calculate_unlock_cost(ref:int, add:bool = false) -> Dictionary:		
+func calculate_unlock_cost(ref:int, add:bool = false) -> void:		
 	var room_data:Dictionary = return_data(ref)
 	
-	resources_data[RESOURCE.CURRENCY.MONEY].amount = U.min_max(resources_data[RESOURCE.CURRENCY.MONEY].amount - room_data.costs.unlock, 0, resources_data[RESOURCE.CURRENCY.MONEY].capacity)
+	resources_data[RESOURCE.CURRENCY.SCIENCE].amount = U.min_max(resources_data[RESOURCE.CURRENCY.SCIENCE].amount - room_data.costs.unlock, 0, resources_data[RESOURCE.CURRENCY.SCIENCE].capacity)
 
 	SUBSCRIBE.resources_data = resources_data
-	return resources_data
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

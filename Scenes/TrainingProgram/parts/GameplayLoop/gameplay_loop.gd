@@ -1418,11 +1418,6 @@ func on_current_select_scp_step_update() -> void:
 			SCPSelectScreen = ScpSelectScreenPreload.instantiate()
 			add_child(SCPSelectScreen)
 			SCPSelectScreen.z_index = 10
-			
-			#for node in [Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo]:
-				#node.set_process(false)
-				#node.set_physics_process(false)		
-				#node.hide()
 				
 			await U.tick()
 			SCPSelectScreen.activate()
@@ -1435,11 +1430,7 @@ func on_current_select_scp_step_update() -> void:
 				SUBSCRIBE.scp_data = scp_data
 			
 			SCPSelectScreen.queue_free()
-			
-			#for node in [Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo]:
-				#node.set_process(true)
-				#node.set_physics_process(true)		
-				#node.show()			
+						
 			
 			# trigger signal
 			on_scp_select_complete.emit(response)

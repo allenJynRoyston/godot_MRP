@@ -168,7 +168,6 @@ func promote(uids:Array) -> void:
 	new_trait_arr = []
 	
 	update_cards()
-	print("here?")
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1) )	
 	current_mode = MODE.SELECT_RESEARCHERS
 # -----------------------------------------------

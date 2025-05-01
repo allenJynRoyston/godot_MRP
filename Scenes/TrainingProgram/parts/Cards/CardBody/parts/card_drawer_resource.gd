@@ -10,6 +10,7 @@ extends CardDrawerClass
 
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
+
 func _ready() -> void:
 	super._ready()
 	on_list_update()
@@ -28,7 +29,7 @@ func on_list_update() -> void:
 		new_node.title = str(item.title)
 		new_node.icon = item.icon
 		new_node.icon_size = Vector2(20, 20)
-		
+		new_node.is_negative = item.is_negative if "is_negative" in item else false
 		new_node.is_hoverable = false
 		
 		ListContainer.add_child(new_node)

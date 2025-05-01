@@ -156,6 +156,11 @@ func on_hide_next_prev_btns_update() -> void:
 			btn.show()  
 		else:
 			btn.hide()
+	
+	if visible_count == 0:
+		FlipBtn.hide()
+	else:
+		FlipBtn.show()
 			
 func on_show_researcher_card_update() -> void:
 	if !is_node_ready():return
@@ -215,6 +220,22 @@ func flip_card() -> void:
 	var card:Control = CardContainer.get_child(CardContainer.get_child_count() - 1)	
 	card.flip = !card.flip
 # ---------------------------------
+
+# ---------------------------------
+func cycle_to_room(skip_animation:bool = false) -> void:
+	cycle_until(RoomCard, skip_animation)
+# ---------------------------------
+
+# ---------------------------------
+func cycle_to_scp(skip_animation:bool = false) -> void:
+	cycle_until(ScpCard, skip_animation)
+# ---------------------------------
+
+# ---------------------------------
+func cycle_to_reseacher(skip_animation:bool = false) -> void:
+	cycle_until(ResearcherCard, skip_animation)
+# ---------------------------------
+
 
 # ---------------------------------
 func cycle_until(card:Control, skip_animation:bool = false) -> void:

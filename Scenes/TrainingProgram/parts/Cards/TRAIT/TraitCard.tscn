@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://d1melr1fetrom"]
+[gd_scene load_steps=8 format=3 uid="uid://d1melr1fetrom"]
 
 [ext_resource type="Script" uid="uid://dhv37hwpslkb5" path="res://Scenes/TrainingProgram/parts/Cards/TRAIT/trait_card.gd" id="1_8b124"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="1_m3aei"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_q3fly"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_oksh4"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xfi55"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hgsqj"]
 bg_color = Color(0.316, 0.249, 0.37, 1)
 border_width_left = 2
 border_width_top = 2
@@ -25,7 +26,7 @@ bg_color = Color(0.05, 0.05, 0.05, 0.419608)
 [node name="TraitCard" type="PanelContainer"]
 offset_right = 92.0
 offset_bottom = 58.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_xfi55")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hgsqj")
 script = ExtResource("1_8b124")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -70,7 +71,6 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 25
-flip_v = false
 is_hoverable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
@@ -97,7 +97,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 1
 text = "The description of the trait goes here.  It has to be kinda short."
-label_settings = ExtResource("1_m3aei")
+label_settings = ExtResource("4_oksh4")
 vertical_alignment = 1
 autowrap_mode = 2
 

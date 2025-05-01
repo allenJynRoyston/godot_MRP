@@ -253,7 +253,7 @@ func _draw() -> void:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ScpMiniCard"].global_position + Vector2(275, 30), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	if "draw_to_researcher_list" in draw_dict and draw_dict.draw_to_researcher_list:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ResearcherList"].global_position + Vector2(275, 30), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ResearcherMiniCard"].global_position + Vector2(275, 30), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	# ------------------------------------------------------
 	if "draw_to_active_menu" in draw_dict and draw_dict.draw_to_active_menu:

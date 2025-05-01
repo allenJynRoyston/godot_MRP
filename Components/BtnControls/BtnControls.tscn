@@ -15,7 +15,7 @@ expand_margin_top = 5.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0q36v"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkurb"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -27,7 +27,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iae0a"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j6bi6"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -39,7 +39,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6pxk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0q36v"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -113,14 +113,13 @@ size_flags_vertical = 8
 theme_override_constants/separation = 10
 
 [node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("2_re623")]
-modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
+theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
 title = "BACK"
 assigned_key = "B"
 icon = 28
 panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
-is_disabled = true
+allow_hint = false
 
 [node name="RightSideBtnList" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -128,24 +127,22 @@ size_flags_horizontal = 10
 size_flags_vertical = 8
 
 [node name="CBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
-modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_iae0a")
+theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
 title = "ALT"
 assigned_key = "F"
 icon = 23
 panel_color = Color(0, 0.529412, 0.278431, 1)
-is_disabled = true
+allow_hint = false
 
 [node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
-modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_m6pxk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
 title = "NEXT"
 assigned_key = "E"
 icon = 27
 panel_color = Color(0, 0.529412, 0.278431, 1)
-is_disabled = true
+allow_hint = false
 
 [node name="Control" type="Control" parent="BtnControlPanel/BtnMarginContainer"]
 layout_mode = 2
@@ -159,6 +156,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="HintContainer" type="PanelContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer"]
+visible = false
 custom_minimum_size = Vector2(600, 20)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -175,25 +173,26 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 theme_override_constants/separation = -4
 
-[node name="Label" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer"]
+[node name="HintTitle" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "HINT"
 label_settings = ExtResource("3_ka7tl")
 vertical_alignment = 1
+uppercase = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="IconBtn" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_dkurb")]
+[node name="HintIcon" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_dkurb")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 icon = 23
-flip_v = false
 is_hoverable = false
+allow_hint = false
 
-[node name="HintLabel" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HintDescription" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Hint goes here."
 label_settings = ExtResource("5_j6bi6")

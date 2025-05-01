@@ -2,7 +2,6 @@ extends Node
 
 enum REF {
 	TRIGGER_ONSITE_NUKE,
-	CONTAIN_SCP,
 	HIRE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
 	
 	
@@ -24,15 +23,7 @@ var trigger_onsite_nuke:Dictionary = {
 		#return await GAME_UTIL.trigger_nuke(),
 }
 
-# ---------------------------------
-var contain_scp:Dictionary = {
-	"name": "CONTAIN",
-	"description": "Select an anamolous object and contain it.",
-	"science_cost": 1,
-	"cooldown_duration":  14, 
-	"effect": func() -> bool:
-		return await GAME_UTIL.contain_scp(),
-}
+
 
 # ---------------------------------
 var promote_researchers:Dictionary = {
@@ -77,8 +68,8 @@ var remove_trait:Dictionary = {
 var unlock_facilities:Dictionary = {
 	"name": "UNLOCK FACILITIES", 
 	"description": "Unlock new facilities and make them available for your site.",
-	"science_cost": 50,
-	"cooldown_duration":  1, 
+	"science_cost": 0,
+	"cooldown_duration":  0, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.open_store(),
 }
@@ -133,11 +124,6 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# -----------------------------=
 		REF.TRIGGER_ONSITE_NUKE:
 			ability = trigger_onsite_nuke
-		# -----------------------------
-	
-		# -----------------------------
-		REF.CONTAIN_SCP:
-			ability = contain_scp
 		# -----------------------------
 	
 		# -----------------------------

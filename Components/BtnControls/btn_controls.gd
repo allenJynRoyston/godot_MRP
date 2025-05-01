@@ -6,6 +6,11 @@ extends Control
 @onready var BBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/BBtn
 @onready var CBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/CBtn
 
+@onready var HintContainer:Control = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer
+@onready var HintTitle:Label = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HintTitle
+@onready var HintDescription:Label = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintDescription
+@onready var HintIcon:Control = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintIcon
+
 @export_category("OPTIONS")
 @export var reset_to_last:bool = false
 @export var offset:Vector2 = Vector2(2, 5)
@@ -118,6 +123,8 @@ func _ready() -> void:
 	on_hide_a_btn_update()
 	on_hide_b_btn_update()
 	on_hide_c_btn_update()
+	
+	HintContainer.hide()
 	
 	ABtn.onClick = func() -> void:
 		if !is_node_ready():return
@@ -267,6 +274,7 @@ func remove_from_itemlist(list:Array) -> void:
 func clear_itemlist() -> void: 
 	itemlist = []
 	item_index = -1
+	HintContainer.hide()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -279,6 +287,18 @@ func on_item_index_update() -> void:
 	# prevents it from warping all over the place
 	if !is_node_ready() or itemlist.is_empty() or !is_visible_in_tree() or !is_revealed:return
 	var node:Control = itemlist[item_index]
+	if "get_hint" in node and !node.get_hint().is_empty():
+		var hint:Dictionary = node.get_hint()
+		if hint.title == "" and hint.description == "":
+			HintContainer.hide()
+		else:
+			HintContainer.show()
+			HintIcon.icon = hint.icon
+			HintTitle.text = hint.title
+			HintDescription.text = hint.description
+	else:
+		HintContainer.hide()
+
 	Input.warp_mouse(node.global_position + offset)
 # --------------------------------------------------------------------------------------------------
 	

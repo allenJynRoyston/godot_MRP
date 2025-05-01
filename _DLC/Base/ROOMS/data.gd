@@ -43,7 +43,6 @@ var DEBUG_ROOM:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			#ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0),
-			#ABL.get_ability(ABL.REF.CONTAIN_SCP, 0),
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
 			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
@@ -181,7 +180,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.CONTAIN_SCP),
+			
 		],	
 	# ------------------------------------------	
 }

@@ -5,8 +5,8 @@ extends GameContainer
 @onready var ActionPanel:PanelContainer = $ActionControls/PanelContainer
 @onready var ActionMarginPanel:MarginContainer = $ActionControls/PanelContainer/MarginContainer
 @onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
-@onready var Details:Control = $Details
-@onready var DetailsPanel:PanelContainer = $Details/PanelContainer
+@onready var MiniCardPanel:PanelContainer = $MiniCardControl/PanelContainer
+@onready var MiniCardMargin:MarginContainer = $MiniCardControl/PanelContainer/MarginContainer
 @onready var PreviewTextureRect:TextureRect = $PanelContainer/PreviewTextureRect
 
 @onready var BtnControls:Control = $BtnControls
@@ -17,12 +17,13 @@ extends GameContainer
 @onready var CenterBtnList:Control = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList
 
 @onready var NavBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel
-@onready var SettingsBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/SettingsBtn
-@onready var ObjectivesBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/ObjectivesBtn
+@onready var SettingsBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
+@onready var ObjectivesBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ObjectivesBtn
+@onready var HintInfoBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/HintInfoBtn
 
 @onready var FloorPlanBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorPlanBtn
 @onready var GotoBaseBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBaseBtn
-@onready var GotoBuildingBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/NavBtnPanel/MarginContainer/VBoxContainer/VBoxContainer/GotoBuildingBtn
+@onready var GotoBuildingBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoBuildingBtn
 @onready var HotkeyContainer:Control = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/HotkeyContainer
 
 @onready var ResearcherBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel
@@ -30,12 +31,12 @@ extends GameContainer
 @onready var UnassignBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
 @onready var ResearcherDetailBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ResearcherDetailBtn
 @onready var ResearcherNextBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ResearcherNextBtn
+@onready var ActivateFloorBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ActivateFloor
 
 @onready var ScpBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel
 @onready var ContainBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
 
 @onready var BaseBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel
-@onready var EndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/BaseBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
 
 @onready var RoomBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel
 @onready var RoomBtnPanelLabel:Label = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/RoomBtnPanelLabel
@@ -48,11 +49,12 @@ extends GameContainer
 @onready var FacilityBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel
 
 @onready var ConfirmBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/ConfirmBtn
-@onready var BackBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/BackBtn
+@onready var BackBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/BackBtnPanel/MarginContainer/VBoxContainer/BackBtn
+@onready var EndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/EndTurnBtn
 
-@onready var ScpMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/ScpMiniCard
-@onready var RoomMiniCard:Control = $Details/PanelContainer/MarginContainer/VBoxContainer/RoomMiniCard
-@onready var ResearcherList:VBoxContainer = $Details/PanelContainer/MarginContainer/VBoxContainer/ResearcherList
+@onready var ScpMiniCard:Control = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/ScpMiniCard
+@onready var RoomMiniCard:Control = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/RoomMiniCard
+@onready var ResearcherMiniCard:Control = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/ResearcherMiniCard
 
 #@onready var ScpDetails:Control = $ScpDetails
 @onready var ScpDetailsPanel:PanelContainer = $ScpDetails/PanelContainer
@@ -76,7 +78,6 @@ enum MODE {
 enum MENU_TYPE { ACTIONS = 0, ABILITIES = 1, PASSIVES = 2 }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
-const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
 const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
 
 var previous_camera_type:int
@@ -91,10 +92,10 @@ var current_mode:MODE = MODE.SELECT_FLOOR :
 		current_mode = val
 		on_current_mode_update()
 
-var selected_researcher:int = 0 : 
-	set(val):
-		selected_researcher = val
-		on_selected_researcher_update()
+#var selected_researcher:int = 0 : 
+	#set(val):
+		#selected_researcher = val
+		#on_selected_researcher_update()
 
 var ref_btn:Control
 var active_menu_index:int = 0
@@ -145,10 +146,12 @@ func _ready() -> void:
 		call_and_redraw(func(): 
 			await GAME_UTIL.contain_scp()
 		)
-		
-	#DetailsToggleBtn.onClick = func() -> void:
-		#show_room_details = !show_room_details
-	#
+	
+	ActivateFloorBtn.onClick = func() -> void:
+		call_and_redraw(func(): 
+			await GAME_UTIL.activate_floor()
+		)
+
 	DecontructBtn.onClick = func() -> void:
 		call_and_redraw(func():
 			await GAME_UTIL.reset_room()
@@ -156,7 +159,9 @@ func _ready() -> void:
 		)
 	
 	ObjectivesBtn.onClick = func() -> void:
+		await lock_btns(true)
 		await GAME_UTIL.open_objectives()
+		lock_btns(false)
 	
 	SettingsBtn.onClick = func() -> void:
 		current_menu_type = MENU_TYPE.ACTIONS
@@ -224,6 +229,41 @@ func _ready() -> void:
 		await U.tick()
 		ActiveMenu.freeze_inputs = false
 		draw_active_menu_items()
+		
+	EndTurnBtn.onClick = func() -> void:
+		await lock_btns(true)
+		await GameplayNode.next_day()
+		lock_btns(false)
+	
+	GotoBuildingBtn.onClick = func() -> void:
+		toggle_camera_view()
+	
+	GotoBaseBtn.onClick = func() -> void:
+		toggle_camera_view()
+			
+	FloorPlanBtn.onClick = func() -> void:
+		await lock_btns(true)
+		current_mode = MODE.INVESTIGATE		
+		lock_btns(false)
+	
+	HintInfoBtn.onClick = func() -> void:
+		await lock_btns(true)
+		
+		BtnControls.itemlist = GBL.find_node(REFS.GAMEPLAY_HEADER).get_hint_buttons()
+		BtnControls.directional_pref = "LR"
+		BtnControls.offset = Vector2(0, 0)
+		BtnControls.hide_a_btn = true
+		BtnControls.reveal(true)
+		
+		await U.tick()
+		BtnControls.item_index = 0
+		BtnControls.onBack = func() -> void:
+			await BtnControls.reveal(false)
+			lock_btns(false)
+			
+	
+		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+		SUBSCRIBE.camera_settings = camera_settings				
 
 	HotkeyContainer.action_func_lookup = action_func_lookup
 	HotkeyContainer.ability_funcs = ability_funcs
@@ -231,7 +271,7 @@ func _ready() -> void:
 	
 	GBL.direct_ref["CenterBtnList"] = CenterBtnList
 	GBL.direct_ref["HotkeyContainer"] = HotkeyContainer
-	GBL.direct_ref["ResearcherList"] = ResearcherList	
+	GBL.direct_ref["ResearcherMiniCard"] = ResearcherMiniCard	
 	GBL.direct_ref["RoomMiniCard"] = RoomMiniCard	
 	GBL.direct_ref["ScpMiniCard"] = ScpMiniCard	
 	GBL.direct_ref["ActiveMenu"] = ActiveMenu
@@ -251,7 +291,7 @@ func activate() -> void:
 	await U.tick()
 	
 	control_pos_default[ActionPanel] = ActionPanel.position
-	control_pos_default[DetailsPanel] = DetailsPanel.position
+	control_pos_default[MiniCardPanel] = MiniCardPanel.position
 
 	update_control_pos()
 	on_is_showing_update()
@@ -273,15 +313,14 @@ func update_control_pos() -> void:
 	}
 	
 	# for eelements in the top right
-	control_pos[DetailsPanel] = {
-		"show": control_pos_default[DetailsPanel].x, 
-		"hide": control_pos_default[DetailsPanel].x - DetailsPanel.size.x
+	control_pos[MiniCardPanel] = {
+		"show": control_pos_default[MiniCardPanel].x, 
+		"hide": control_pos_default[MiniCardPanel].x - MiniCardMargin.size.x
 	}	
 
 	if ref_btn != null:
 		ActiveMenu.global_position = Vector2(ref_btn.global_position.x, get_menu_y_pos())
 	
-	#BtnControlPanel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	on_is_showing_update(true)
 # --------------------------------------------------------------------------------------------------	
 
@@ -316,7 +355,7 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	
 	U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].show if is_showing else control_pos[ActionPanel].hide, 0 if skip_animation else 0.3)
-	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, 0.3 if !skip_animation else 0)
+	U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide, 0.3 if !skip_animation else 0)
 	
 # --------------------------------------------------------------------------------------------------		
 
@@ -671,9 +710,8 @@ func show_abilities(skip_animation:bool = false) -> void:
 	await lock_btns(true)
 	active_menu_is_open = true
 	await RoomDetailsControl.reveal(true)
-	var itemlist:Array = await RoomMiniCard.get_ability_btns()
 	await BtnControls.reveal(true)
-	BtnControls.itemlist = itemlist
+	BtnControls.itemlist = await RoomMiniCard.get_ability_btns()
 	BtnControls.directional_pref = "UD"
 	BtnControls.offset = RoomMiniCard.global_position
 	await U.tick()
@@ -691,7 +729,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 func call_and_redraw(action:Callable) -> void:
 	await lock_btns(true)
-	U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide)
+	U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide)
 	GBL.find_node(REFS.LINE_DRAW).hide()
 	
 	# clear any lines
@@ -702,7 +740,7 @@ func call_and_redraw(action:Callable) -> void:
 	# leave this in just in case any of the functions update data
 	await U.tick() 
 	await lock_btns(false)
-	await U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show)
+	await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show)
 	GBL.find_node(REFS.LINE_DRAW).show()
 	
 	if current_mode == MODE.INVESTIGATE:
@@ -755,7 +793,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if current_location.is_empty():return
 	var designation:String = str(current_location.floor, current_location.ring)
-	
+		
 	if current_mode == MODE.INVESTIGATE:
 		var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 		var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
@@ -773,8 +811,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or active_menu_is_open
 		UnassignBtn.is_disabled = room_extract.researchers.size() == 0  or active_menu_is_open
 		ResearcherDetailBtn.is_disabled = room_extract.is_room_empty or room_extract.researchers.size() == 0  or active_menu_is_open		
-		#ScpDetailsBtn.is_disabled = room_extract.scp.is_empty() or active_menu_is_open
-		UseAbilityBtn.is_disabled = (abilities.is_empty() and passive_abilities.is_empty()) or active_menu_is_open
 
 		RoomDetailsControl.show_room_card = !room_extract.is_room_empty
 		RoomDetailsControl.show_scp_card = !room_extract.scp.is_empty() and room_extract.can_contain 
@@ -786,7 +822,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		Input.warp_mouse(warp_to_pos)
 		draw_active_menu()
 		update_details()
-		selected_researcher = 0
+
 		
 		await U.tick()
 		return
@@ -817,11 +853,11 @@ func on_current_bookmark_type_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_selected_researcher_update() -> void:
-	if current_mode != MODE.DISMISS_RESEARCHER:return
-	for index in ResearcherList.get_child_count():
-		var card:Control = ResearcherList.get_child(index)
-		card.is_selected = index == selected_researcher
+#func on_selected_researcher_update() -> void:
+	#if current_mode != MODE.DISMISS_RESEARCHER:return
+	#for index in ResearcherList.get_child_count():
+		#var card:Control = ResearcherList.get_child(index)
+		#card.is_selected = index == selected_researcher
 
 # --------------------------------------------------------------------------------------------------		
 
@@ -840,7 +876,9 @@ func render_shorcut_container() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func buildout_btns() -> void:
-	if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty():return
+	if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty():return	
+	var floor_config:Dictionary = room_config.floor[current_location.floor]
+
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var floor_is_powered:bool = room_extract.floor_config.is_powered
 	
@@ -858,25 +896,12 @@ func buildout_btns() -> void:
 	if camera_settings.type != previous_camera_type:
 		previous_camera_type = camera_settings.type	
 		reload = true
+	
+	
+	FloorPlanBtn.show() if floor_config.is_powered else FloorPlanBtn.hide()
+	ActivateFloorBtn.hide() if floor_config.is_powered else ActivateFloorBtn.show()
+	
 
-	EndTurnBtn.onClick = func() -> void:
-		await lock_btns(true)
-		await GameplayNode.next_day()
-		lock_btns(false)
-	
-	GotoBuildingBtn.onClick = func() -> void:
-		toggle_camera_view()
-	
-	GotoBaseBtn.onClick = func() -> void:
-		toggle_camera_view()
-			
-	FloorPlanBtn.onClick = func() -> void:
-		await lock_btns(true)
-		current_mode = MODE.INVESTIGATE		
-		lock_btns(false)
-		
-		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
-		SUBSCRIBE.camera_settings = camera_settings		
 
 	is_setup = true
 # --------------------------------------------------------------------------------------------------
@@ -921,7 +946,7 @@ func set_panel_btn_state(state:bool) -> void:
 			for btn in panel.get_node('./MarginContainer/VBoxContainer/VBoxContainer').get_children():
 				btn.is_disabled = state			
 	
-	for btn in [BackBtn, GotoBuildingBtn]:
+	for btn in [BackBtn, GotoBuildingBtn, HintInfoBtn, EndTurnBtn]:
 		btn.is_disabled = state
 
 	HotkeyContainer.lock_btns = state
@@ -951,7 +976,7 @@ func open_menu(state:bool) -> void:
 	
 	if !state:
 		if current_mode != MODE.INVESTIGATE:
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide )		
+			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide )		
 		
 		RoomDetailsControl.reveal(show_room_details) 
 		active_menu_is_open = false
@@ -985,7 +1010,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				btn.hide()
 				
 			GotoBuildingBtn.hide()
-			GotoBaseBtn.show()								
+			GotoBaseBtn.show()
+			HintInfoBtn.show()
 				
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
@@ -994,7 +1020,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			UseAbilityBtn.title = "ABILITY"
 			GameplayNode.restore_player_hud()
 
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].hide, duration)
+			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide, duration)
 
 			for panel in [FacilityBtnPanel, ScpBtnPanel, ResearcherBtnPanel, RoomBtnPanel]:
 				panel.hide()
@@ -1005,13 +1031,13 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for btn in [ConfirmBtn, BackBtn]:
 				btn.hide()
 				
-			for btn in [FloorPlanBtn]:
+			for btn in [FloorPlanBtn, HintInfoBtn]:
 				btn.show()				
 				
 			GotoBuildingBtn.show()
 			GotoBaseBtn.hide()				
 						
-			HotkeyContainer.show()
+			#HotkeyContainer.show()
 			HotkeyContainer.lock_btns = false
 			show_room_details = false
 	
@@ -1027,7 +1053,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			#GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer])
 
 			update_details()
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show, duration)
+			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show, duration)
 			show_room_details = true
 			
 			NameControl.hide()
@@ -1041,6 +1067,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BackBtn.show()
 			ConfirmBtn.hide()
 			GotoBuildingBtn.hide()
+			HintInfoBtn.hide()
 			
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true
@@ -1064,6 +1091,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			HotkeyContainer.lock_btns = true
 			
+			HintInfoBtn.hide()
+			
 			for btn in [ConfirmBtn, BackBtn]:
 				btn.show()
 				btn.is_disabled = false
@@ -1071,9 +1100,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.DISMISS_RESEARCHER:
 			for panel in [BaseBtnPanel, RoomBtnPanel, ScpBtnPanel, BaseBtnPanel, ResearcherBtnPanel]:
 				panel.hide()			
+			HintInfoBtn.hide()
 			
-			selected_researcher = 0
-			U.tween_node_property(DetailsPanel, "position:x", control_pos[DetailsPanel].show + 50, duration)
+			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show + 50, duration)
 			
 			GBL.find_node(REFS.LINE_DRAW).clear()
 			for node in [RoomMiniCard, ScpMiniCard]:
@@ -1092,7 +1121,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				on_current_location_update()
 			
 			ConfirmBtn.onClick = func() -> void:
-				var researcher:Dictionary = ResearcherList.get_child(selected_researcher).researcher
+				var researcher:Dictionary = ResearcherMiniCard.researcher
 				await GAME_UTIL.unassign_researcher(researcher)
 				current_mode = MODE.INVESTIGATE
 				for node in [RoomMiniCard, ScpMiniCard]:
@@ -1164,44 +1193,44 @@ func update_details(use_location:Dictionary = current_location) -> void:
 	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
 	var is_room_empty:bool = room_extract.is_room_empty
 	var is_activated:bool = room_extract.is_activated
-	var abilities:Array = [] if is_room_empty else room_extract.room.abilities
+	var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
+	var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
 
-	for node in [ResearcherList]:
-		for child in node.get_children():
-			child.queue_free()
-	
+
 	RoomMiniCard.ref = room_extract.room.details.ref if !is_room_empty else -1	
 	RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
 	
-
+	# update RoomDetails
 	RoomDetailsControl.use_location = use_location
 	RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
 	RoomDetailsControl.scp_ref = -1 if room_extract.scp.is_empty() else room_extract.scp.details.ref
-	RoomDetailsControl.researcher_uid = -1 
+	RoomDetailsControl.researcher_uid = -1 if room_extract.researchers.is_empty() else room_extract.researchers[0].uid
+	
+	# and jump to the right card
+	if room_extract.scp.is_empty():
+		RoomDetailsControl.cycle_to_room(true)
+	else:
+		RoomDetailsControl.cycle_to_scp(true)
 	
 	# Ability/Deconstruct button
-	UseAbilityBtn.is_disabled = !is_activated
+	UseAbilityBtn.is_disabled = !is_activated or (abilities.is_empty() and passive_abilities.is_empty())
 	DecontructBtn.is_disabled = !room_extract.can_destroy
-	
-		
-	
+
 	if !room_extract.scp.is_empty():
 		ScpMiniCard.ref = room_extract.scp.details.ref
 	ScpMiniCard.show() if !room_extract.scp.is_empty() else ScpMiniCard.hide()
 	
 	## RESEARCHER DETAILS
 	if room_extract.researchers.is_empty():
-		ResearcherList.hide()
+		ResearcherMiniCard.hide()
 	else:
-		ResearcherList.show()
-		var total_traits_list := []
+		ResearcherMiniCard.show()
 		for researcher in room_extract.researchers:
-			var mini_card:Control = ResearcherMiniCard.instantiate()
-			mini_card.researcher = researcher
-			ResearcherList.add_child(mini_card)
+			ResearcherMiniCard.researcher = researcher
+			
 
 	await U.tick()
-	DetailsPanel.position.y = 0	
+	MiniCardPanel.position.y = 0	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------	
@@ -1222,8 +1251,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 							U.inc_floor()
 						MODE.SELECT_ROOM:
 							U.inc_floor()
-						MODE.DISMISS_RESEARCHER:
-							selected_researcher = U.min_max(selected_researcher - 1, 0, ResearcherList.get_child_count() - 1, true)
+						#MODE.DISMISS_RESEARCHER:
+						#selected_researcher = U.min_max(selected_researcher - 1, 0, ResearcherList.get_child_count() - 1, true)
 						_:
 							U.room_up()
 				CAMERA.TYPE.ROOM_SELECT:
@@ -1239,8 +1268,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 							U.dec_floor()
 						MODE.SELECT_ROOM:
 							U.dec_floor()
-						MODE.DISMISS_RESEARCHER:
-							selected_researcher = U.min_max(selected_researcher + 1, 0, ResearcherList.get_child_count() - 1, true)
+						#MODE.DISMISS_RESEARCHER:
+						#	selected_researcher = U.min_max(selected_researcher + 1, 0, ResearcherList.get_child_count() - 1, true)
 						_:
 							U.room_down()
 				CAMERA.TYPE.ROOM_SELECT:
@@ -1391,20 +1420,3 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				#open_researcher_menu(),
 		#})
 ## --------------------------------------------------------------------------------------------------				
-
-		
-## ---- CENTER
-#CenterBtnList
-
-#
-#if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_DATABASE_BTN]:
-	#new_right_btn_list.push_back({
-		#"title": "DATABASE",
-		#"assigned_key": "-",
-		#"icon": SVGS.TYPE.CONVERSATION,
-		#"onClick": func() -> void:
-			#if !disable_inputs_while_menu_is_open and !GameplayNode.is_occupied():  
-				#set_btn_disabled_state(true)
-				#await GameplayNode.open_scp_database()
-				#restore_btn_disable_state(true)
-	#})				

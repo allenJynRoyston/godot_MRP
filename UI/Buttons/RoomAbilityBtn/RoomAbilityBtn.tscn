@@ -76,7 +76,6 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 44
 static_color = Color(0.827451, 0.827451, 0.827451, 1)
-flip_v = false
 is_hoverable = false
 
 [node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer"]

@@ -83,7 +83,6 @@ alignment = 1
 [node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("3_os1pc")]
 layout_mode = 2
 icon = 34
-flip_v = false
 is_hoverable = false
 
 [node name="TotalLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2/Resources/MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer"]

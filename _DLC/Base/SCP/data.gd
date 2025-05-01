@@ -1,39 +1,5 @@
 extends SubscribeWrapper
 
-#const Items:Array = [
-  #"Sofa",
-  #"Coffee table",
-  #"Dining table",
-  #"Bed",
-  #"TV",
-  #"Refrigerator",
-  #"Microwave",
-  #"Toaster",
-  #"Blender",
-  #"Vacuum cleaner",
-  #"Washing machine",
-  #"Dishwasher",
-  #"Electric kettle",
-  #"Bookshelf",
-  #"Office desk",
-  #"Chair",
-  #"Floor lamp",
-  #"Wall clock",
-  #"Mirror",
-  #"Painting",
-  #"Area rug",
-  #"Curtains",
-  #"Pillows",
-  #"Pots and pans",
-  #"Plates",
-  #"Cups",
-  #"Silverware",
-  #"Towels",
-  #"Indoor plants",
-  #"Pet bed"
-#];
-
-
 
 var SCP0:Dictionary = {
 	# -----------------------------------

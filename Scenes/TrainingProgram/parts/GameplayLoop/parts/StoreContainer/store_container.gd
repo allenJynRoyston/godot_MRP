@@ -2,12 +2,10 @@ extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnControls:Control = $BtnControls
-#@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
-@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 
-#@onready var UnlockBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/UnlockBtn
-#@onready var SelectTabBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/SelectTabBtn
-#@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
+@onready var CostResourceItem:Control = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/CostResourceItem
+
+@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
 @onready var LessBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MoreBtn
 
@@ -15,8 +13,13 @@ extends GameContainer
 @onready var ActiveHeaderLabel:Label = $ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer/ActiveHeaderLabel
 @onready var GridContent:GridContainer = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
 @onready var ActiveHeaderPanel:PanelContainer = $ActiveHeader/ActiveHeaderPanel
+@onready var ActiveHeaderMargin:MarginContainer = $ActiveHeader/ActiveHeaderPanel/MarginContainer
 @onready var HeaderPanel:PanelContainer = $HeaderControl/HeaderPanel
 @onready var MainPanel:PanelContainer = $MainControl/MainPanel
+
+@onready var RoomMiniPanel:Control = $MiniCardControl/PanelContainer
+@onready var RoomMiniMargin:MarginContainer = $MiniCardControl/PanelContainer/MarginContainer
+@onready var RoomMiniCard:Control = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/RoomMiniCard
 
 @onready var SplashPanelContainer:PanelContainer = $SplashControl/SplashPanelContainer
 @onready var SplashLabel:Label = $SplashControl/SplashPanelContainer/PanelContainer/MarginContainer/SplashLabel
@@ -62,6 +65,7 @@ var grid_as_array:Array = [
 ]
 
 signal on_confirm
+signal on_hide_complete
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
@@ -72,6 +76,7 @@ func _ready() -> void:
 	
 	is_setup = true
 	on_current_mode_update(true)
+	on_resources_data_update()
 
 func start() -> void:
 	on_tab_index_update()
@@ -82,18 +87,8 @@ func start() -> void:
 	current_mode = MODE.TAB_SELECT
 	
 func end() -> void:
-	BtnControls.reveal(false)
-	DetailPanel.reveal(false)
-	
-	for n in GridContent.get_child_count():
-		var card_node:Control = GridContent.get_child(n)
-		card_node.onHover = func() -> void: pass
-		card_node.onClick = func() -> void: pass	
-
-	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide)
-	U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
-
+	current_mode = MODE.HIDE
+	await on_hide_complete
 	user_response.emit(true)
 # --------------------------------------------------------------------------------------------------
 
@@ -106,6 +101,7 @@ func activate() -> void:
 	control_pos_default[ActiveHeaderPanel] = ActiveHeaderPanel.position
 	control_pos_default[MainPanel] = MainPanel.position
 	control_pos_default[SplashPanelContainer] = SplashPanelContainer.position
+	control_pos_default[RoomMiniPanel] = RoomMiniPanel.position
 	
 	update_control_pos()
 	on_is_showing_update()
@@ -125,9 +121,10 @@ func update_control_pos() -> void:
 		"hide": control_pos_default[HeaderPanel].y - HeaderPanel.size.y
 	}
 	control_pos[ActiveHeaderPanel] = {
-		"show": control_pos_default[ActiveHeaderPanel].x, 
-		"hide": control_pos_default[ActiveHeaderPanel].x - ActiveHeaderPanel.size.x - 20
+		"show": control_pos_default[ActiveHeaderPanel].y, 
+		"hide": control_pos_default[ActiveHeaderPanel].y - ActiveHeaderMargin.size.y
 	}
+	
 	control_pos[MainPanel] = {
 		"show": control_pos_default[MainPanel].x, 
 		"hide": control_pos_default[MainPanel].x - MainPanel.size.x - 20
@@ -138,6 +135,12 @@ func update_control_pos() -> void:
 		"hide": control_pos_default[SplashPanelContainer].y + SplashPanelContainer.size.y
 	}	
 
+	control_pos[RoomMiniPanel] = {
+		"show": control_pos_default[RoomMiniPanel].x, 
+		"hide": control_pos_default[RoomMiniPanel].x - RoomMiniMargin.size.x
+	}	
+	
+
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------	
 
@@ -145,7 +148,7 @@ func update_control_pos() -> void:
 func unlock_room() -> void:
 	current_mode = MODE.UNLOCK
 	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
-	SplashLabel.text = "UNLOCK %s?" % [room_details.name]
+	SplashLabel.text = "Research %s?" % [room_details.name]
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -157,6 +160,13 @@ func purchase_room() -> void:
 	made_a_purchase = true
 	on_grid_index_update()
 # --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
+	if !is_node_ready():return
+	CostResourceItem.title = str(resources_data[RESOURCE.CURRENCY.SCIENCE].amount)
+# --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func on_tab_index_update() -> void:
@@ -231,13 +241,12 @@ func update_grid_content(index:int = tab_index) -> void:
 						is_locked = true
 			
 			card_node.index = n
-			card_node.no_animation = true	
 			card_node.ref = room_details.ref
 			card_node.is_hoverable = true
 			
-			card_node.onHover = func() -> void:
-				if current_mode != MODE.CONTENT_SELECT:return
-				grid_index = n
+			#card_node.onHover = func() -> void:
+				#if current_mode != MODE.CONTENT_SELECT:return
+				#grid_index = n
 				
 			card_node.onClick = func() -> void:
 				if current_mode != MODE.CONTENT_SELECT:return
@@ -258,7 +267,6 @@ func can_afford_check(cost:int) -> bool:
 func on_grid_index_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or grid_index == -1 or grid_list_data.is_empty():return
 	var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
-	
 	BtnControls.item_index = grid_index
 	
 	DetailPanel.room_ref = grid_list_data[grid_index].ref
@@ -275,6 +283,8 @@ func on_grid_index_update() -> void:
 		for index in GridContent.get_child_count():
 			var card_node:Control = GridContent.get_child(index)
 			card_node.is_highlighted = index == grid_index
+		
+		RoomMiniCard.ref = grid_list_data[grid_index].ref
 # --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------	
@@ -296,11 +306,11 @@ func on_is_showing_update(fast:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
+var previous_grid_index:int = 0
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	var duration:float = 0 if skip_animation else 0.3
 	is_animating = true
-	
 	
 	match current_mode:
 		# -------------------
@@ -311,20 +321,30 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.onAction = func() -> void:pass			
 			
 			DetailPanel.reveal(false)
-						
+			
+			for n in GridContent.get_child_count():
+				var card_node:Control = GridContent.get_child(n)
+				card_node.onHover = func() -> void: pass
+				card_node.onClick = func() -> void: pass	
+			
+			DetailPanel.reveal(false)
 			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)
 			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, duration)
+			U.tween_node_property(ActiveHeaderPanel, "position:y", control_pos[ActiveHeaderPanel].hide, duration)
+			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].hide, duration)
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 )
+			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration )
+			
+			on_hide_complete.emit()
 		# -------------------
 		MODE.TAB_SELECT:			
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].hide, duration)
+			U.tween_node_property(ActiveHeaderPanel, "position:y", control_pos[ActiveHeaderPanel].hide, duration)
 			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show, duration)
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 1 )
 			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show, duration)
-			
+			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].hide, duration)
+
 			DetailPanel.reveal(false)
 			
 			await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)
@@ -338,6 +358,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.onAction = func() -> void:pass			
 				
 			await U.tick()
+			
 			BtnControls.item_index = tab_index			
 
 			for n in GridContent.get_child_count():
@@ -345,25 +366,25 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				card_node.is_hoverable = false
 
 		# -------------------
-		MODE.CONTENT_SELECT:			
+		MODE.CONTENT_SELECT:		
 			BtnControls.directional_pref = "NONE"
 			BtnControls.itemlist = GridContent.get_children()
 			BtnControls.onBack = func() -> void:
+				await U.tween_node_property(ActiveHeaderPanel, "position:y", control_pos[ActiveHeaderPanel].hide, duration)
 				current_mode = MODE.TAB_SELECT
-			BtnControls.onAction = func() -> void:pass
+			BtnControls.onAction = func() -> void:
+				previous_grid_index = grid_index
+			await U.tick()
+			BtnControls.item_index = previous_grid_index
 			
 			DetailPanel.reveal(true)
-			
-			#if !skip_animation:
-			GBL.find_node(REFS.ACTION_CONTAINER).set_backdrop_state(true)
+
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1) )
-					
-			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, 0 if skip_animation else 0.3)
-			U.tween_node_property(ActiveHeaderPanel, "position:x", control_pos[ActiveHeaderPanel].show, 0 if skip_animation else 0.3)
-			await U.tick()
-			grid_index = grid_index if grid_list_data.size() >= 0 else -1			
-			BtnControls.item_index = grid_index			
-			
+			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].show, duration)
+			await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide, duration)
+			U.tween_node_property(ActiveHeaderPanel, "position:y", control_pos[ActiveHeaderPanel].show, duration)
+
+
 			for n in GridContent.get_child_count():
 				var card_node:Control = GridContent.get_child(n)
 				card_node.is_hoverable = true			
@@ -372,33 +393,24 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.itemlist = []
 			
 			BtnControls.onBack = func() -> void:
-				current_mode = MODE.CONTENT_SELECT
 				await U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide)	
+				current_mode = MODE.CONTENT_SELECT
 				
 			BtnControls.onAction = func() -> void:
 				await U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide)	
 				var room_details:Dictionary = ROOM_UTIL.return_data(grid_list_data[grid_index].ref)
-
 				if room_details.ref not in shop_unlock_purchases:
 					shop_unlock_purchases.push_back(room_details.ref)
 
-				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_unlock_cost(room_details.ref)
+				ROOM_UTIL.calculate_unlock_cost(room_details.ref)
 				SUBSCRIBE.shop_unlock_purchases = shop_unlock_purchases
 				
 				GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
 				
-				var card_node:Control = GridContent.get_child(grid_index)
-				card_node.no_animation = false
-				#card_node.flip = false
-				#card_node.show_already_unlocked = true
-
-				await U.tick()
 				current_mode = MODE.CONTENT_SELECT
 							
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].show)	
-			await U.tick()
-			BtnControls.item_index = 0	
-
+		
 			
 	await U.tick()
 	is_animating = false

@@ -10,7 +10,7 @@ extends MouseInteractions
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
-@onready var CardDrawerActivationRequirements:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerActivationRequirements
+@onready var CardDrawerStaffingRequirements:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerStaffingRequirements
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 
 # back
@@ -129,7 +129,7 @@ func on_ref_update() -> void:
 		CardDrawerDescription.content = "-"
 		CardDrawerCurrency.list = []
 		CardDrawerVibes.metrics = {}
-		CardDrawerActivationRequirements.list = []
+		CardDrawerStaffingRequirements.clear()
 		CardDrawerPairsWith.clear()
 		return
 	
@@ -167,10 +167,7 @@ func on_ref_update() -> void:
 	# -----------
 	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerDescription.content = room_details.description if !is_locked else "[REDACTED]"
-	CardDrawerActivationRequirements.list = room_details.required_personnel.map(func(x):
-		var personnel_details:Dictionary = RESOURCE_UTIL.return_personnel(x)
-		return {"icon": personnel_details.icon, "title": personnel_details.name}
-	)
+	CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel
 	CardDrawerImage.img_src = room_details.img_src if !is_locked else ""
 	CardDrawerImage.use_static = !is_activated
 	CardDrawerCurrency.list = currency_list

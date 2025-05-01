@@ -8,6 +8,13 @@ class_name MouseInteractions
 		
 @export var debug_me:bool = false
 
+
+@export_category("BTN CONTROL HINT")
+@export var hint_icon:SVGS.TYPE = SVGS.TYPE.INFO
+@export var hint_title:String = ""
+@export var hint_description:String = ""
+@export var allow_hint:bool = true
+
 var root_node:Control 
 var container_node:Control
 var is_in_subviewport:bool = false
@@ -68,6 +75,18 @@ func on_mouse_release(node:Control, btn:int, on_hover:bool) -> void:
 # --------------------------------------		
 func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	pass
+# --------------------------------------		
+
+# --------------------------------------		
+func get_hint() -> Dictionary:
+	if !allow_hint:
+		return {}
+	
+	return {
+		"icon": hint_icon,
+		"title": hint_title,
+		"description": hint_description
+	}
 # --------------------------------------		
 
 # --------------------------------------	

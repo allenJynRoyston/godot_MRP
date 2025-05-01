@@ -44,7 +44,6 @@ extends BtnBase
 const empty_title:String = "NONE"
 
 var default_icon:SVGS.TYPE = SVGS.TYPE.TARGET
-var hint_description:String = "" 
 var is_pressed:bool = false
 var room_ref:int = -1 
 var ability_index:int = -1 

@@ -11,6 +11,8 @@ extends GameContainer
 @onready var LocationWingLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/Location/Wing/CenterLabel2
 @onready var LocationRoomLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/Location/Room/CenterLabel2
 
+@onready var StatusLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/StatusLabel
+
 @onready var CurrencyMoney:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Money
 @onready var CurrencyMaterials:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Materials
 @onready var CurrencyResearch:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Research
@@ -29,8 +31,7 @@ extends GameContainer
 @onready var SafetyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SafetyTag
 @onready var ReadinessTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ReadinessTag
 
-@onready var Energy:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer/ResourceItem
-
+@onready var Energy:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer/EnergyItem
 @onready var EnergyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/EnergyTag
 
 @onready var PersonnelStaff:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Staff
@@ -47,9 +48,16 @@ extends GameContainer
 var previous_location:Dictionary = {}
 
 # --------------------------------------------------------------------------------------------------
+func _init() -> void:
+	super._init()
+	GBL.register_node(REFS.GAMEPLAY_HEADER, self)
+
+func _exit_tree() -> void:
+	super._exit_tree()
+	GBL.unregister_node(REFS.GAMEPLAY_HEADER)
+
 func _ready() -> void:
 	super._ready()
-
 	#GBL.direct_ref["MetricsContainer"] = MetricsContainer
 	#GBL.direct_ref["LocationPanel"] = LocationPanel
 	#GBL.direct_ref["PersonnelPanel"] = PersonnelPanel
@@ -63,7 +71,6 @@ func _ready() -> void:
 	#GBL.direct_ref["MoralePanel"] = Morale
 	#GBL.direct_ref["SafetyPanel"] = Safety
 	#GBL.direct_ref["ReadinessPanel"] = Readiness
-	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -74,6 +81,11 @@ func activate() -> void:
 	control_pos_default[HeaderContainer] = HeaderContainer.position
 
 	update_control_pos()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func get_hint_buttons() -> Array:
+	return [CurrencyMoney, CurrencyMaterials, CurrencyResearch, CurrencyCore, Energy, PersonnelStaff, PersonnelTechnicians, PersonnelSecurity, PersonnelDClass]
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -125,37 +137,18 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 func update_panels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or camera_settings.is_empty():return
 	
-	var currencies:Dictionary = {
-		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.CORE: 0
-	}
-	var metrics:Dictionary = {
-		RESOURCE.METRICS.MORALE: 0,
-		RESOURCE.METRICS.SAFETY: 0,
-		RESOURCE.METRICS.READINESS: 0
-	}
-	var energy:Dictionary = {
-		"available": 0,
-		"used": 0
-	}
-	var personnel:Dictionary = {
-		RESOURCE.PERSONNEL.STAFF: false,
-		RESOURCE.PERSONNEL.TECHNICIANS: false,
-		RESOURCE.PERSONNEL.SECURITY: false,
-		RESOURCE.PERSONNEL.DCLASS: false
-	}
+	var floor_config:Dictionary = room_config.floor[current_location.floor]
+	var ring_config:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]	
 	
+
 	# update location label
 	LocationFloorLabel.text = str(current_location.floor)
 	LocationWingLabel.text = str(current_location.ring)
 	LocationRoomLabel.text = str(current_location.room)
-	
-	var floor_config:Dictionary = room_config.floor[current_location.floor]
-	var ring_config:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
-	ring_config.metrics
-				
+
+	# status
+	StatusLabel.text = "POWERED" if floor_config.is_powered else "NO POWER"	
+		
 	# currency
 	CurrencyMoney.title = "%s" % [resources_data[RESOURCE.CURRENCY.MONEY].amount]
 	CurrencyMaterials.title = "%s" % [resources_data[RESOURCE.CURRENCY.MATERIAL].amount]
@@ -169,7 +162,6 @@ func update_panels() -> void:
 	
 	# energy
 	Energy.title = "%s/%s" % [ring_config.energy.available - ring_config.energy.used, ring_config.energy.available]
-	
 
 	## personnel
 	PersonnelStaff.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.STAFF]

@@ -132,8 +132,9 @@ func on_ref_update() -> void:
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		morale_val = extract_data.ring_config.metrics[RESOURCE.METRICS.MORALE]
-		has_spec_bonus = extract_data.scp.pairs_with.specilization
-		has_trait_bonus = extract_data.scp.pairs_with.trait
+		if !extract_data.scp.is_empty():
+			has_spec_bonus = extract_data.scp.pairs_with.specilization
+			has_trait_bonus = extract_data.scp.pairs_with.trait
 	
 
 	for key in scp_details.currencies:

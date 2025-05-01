@@ -106,9 +106,11 @@ theme_override_constants/separation = 10
 
 [node name="BtnControls" parent="." instance=ExtResource("4_xe5a1")]
 layout_mode = 2
+c_btn_title = "FLIP"
 hide_c_btn = false
 
 [node name="TraitControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="TraitPanel" type="PanelContainer" parent="TraitControl"]

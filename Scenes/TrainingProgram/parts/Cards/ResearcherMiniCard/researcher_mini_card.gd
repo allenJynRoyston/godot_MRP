@@ -35,7 +35,8 @@ func on_researcher_update() -> void:
 	
 	if researcher.is_empty():
 		return
-	
+		
+
 	var spec:String = "" if researcher.is_empty() else RESEARCHER_UTIL.return_specialization_data(researcher.specializations[0]).name	
 	var traits:String = ""
 	var has_pairing:bool = false 

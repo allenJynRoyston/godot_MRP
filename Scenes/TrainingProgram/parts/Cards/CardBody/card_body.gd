@@ -62,7 +62,7 @@ func _ready() -> void:
 # ------------------------------------------------	
 func on_reveal_update(skip_animation:bool = false) -> void:
 	if !is_node_ready():return
-	CardTextureRect.pivot_offset = self.size/2	
+	CardTextureRect.pivot_offset = card_size/2	
 	var duration:float = 0 if skip_animation else 0.3
 	U.tween_node_property(CardTextureRect, "scale:x", 1 if reveal else 0, duration)
 # ------------------------------------------------	
@@ -80,7 +80,7 @@ func on_card_size_update() -> void:
 # ------------------------------------------------	
 func on_fold_update() -> void:
 	if !is_node_ready() or !reveal:return
-	CardTextureRect.pivot_offset = self.size/2
+	CardTextureRect.pivot_offset = card_size/2
 		
 	await U.tween_node_property(CardTextureRect, "scale:y", 0, 0.1)
 	await U.set_timeout(0.2)
@@ -95,7 +95,7 @@ func on_fold_update() -> void:
 # ------------------------------------------------
 func on_flip_update() -> void:
 	if !is_node_ready() or !reveal:return
-	CardTextureRect.pivot_offset = self.size/2
+	CardTextureRect.pivot_offset = card_size/2
 		
 	await U.tween_node_property(CardTextureRect, "scale:x", 0, 0.3)
 	await U.set_timeout(0.2)
@@ -117,25 +117,27 @@ func on_border_color_update() -> void:
 	update_drawer_items()
 # ------------------------------------------------
 
+# ------------------------------------------------
 func drawer_child(child:Control, is_left_side:bool) -> void:
 	if "is_left_side" in child:
 		child.is_left_side = is_left_side
 	if "border_color" in child:
 		child.border_color = border_color	
+# ------------------------------------------------
 
 # ------------------------------------------------
 func update_drawer_items(_showing_front:bool = showing_front) -> void:
 	showing_front = _showing_front
 	if showing_front:
 		for child in FrontDrawerContainer.get_children():
-			if child is HBoxContainer:
+			if child is HBoxContainer or child is VBoxContainer:
 				for _child in child.get_children():
 					drawer_child(_child, showing_front)
 			drawer_child(child, showing_front)
 
 	else:
 		for child in BackDrawerContainer.get_children():
-			if child is HBoxContainer:
+			if child is HBoxContainer or child is VBoxContainer:
 				for _child in child.get_children():
 					drawer_child(_child, showing_front)
 			drawer_child(child, showing_front)

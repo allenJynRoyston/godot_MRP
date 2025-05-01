@@ -50,7 +50,6 @@ extends BtnBase
 		is_unknown = val
 		on_is_unknown_update()		
 
-
 var base_states:Dictionary = {} 
 var use_location:Dictionary = {} : 
 	set(val):
@@ -60,7 +59,10 @@ var use_location:Dictionary = {} :
 # directly access, do not remove
 var type:String 
 var room_ref:int
-var ability_data:Dictionary = {}
+var ability_data:Dictionary = {} : 
+	set(val):
+		ability_data = val
+		on_ability_data_update()
 var ability_index:int
 	
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
@@ -110,6 +112,7 @@ func on_is_unknown_update() -> void:
 func on_cooldown_val_update() -> void:
 	if !is_node_ready():return
 	CooldownLabel.text = str(cooldown_val) if !is_unknown else "-"
+	on_ability_data_update()
 
 func on_ability_name_update() -> void:
 	if !is_node_ready():return
@@ -119,6 +122,12 @@ func on_cost_update() -> void:
 	if !is_node_ready():return
 	CostLabel.text = str(cost) if !is_unknown else "-"
 	IconBtn.hide() if is_unknown else IconBtn.show()
+
+func on_ability_data_update() -> void:
+	if ability_data.is_empty():return
+	hint_title = ability_data.name
+	hint_description = ability_data.description
+	hint_icon = SVGS.TYPE.RESEARCH
 
 func on_cooldown_update() -> void:
 	if !is_node_ready():return

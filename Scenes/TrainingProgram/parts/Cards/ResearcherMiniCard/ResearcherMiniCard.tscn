@@ -121,7 +121,6 @@ offset_top = 7.0
 offset_right = 3.05176e-05
 offset_bottom = 32.0
 icon = 27
-flip_v = false
 is_hoverable = false
 
 [node name="CardBody" parent="." instance=ExtResource("3_qyov1")]
@@ -145,21 +144,21 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_816jx")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CardDrawerTitle" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("4_2d0eq")]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ah3g8")
-is_small = true
-content = "SPECILIZATION and TRAIT"
-title = "RESEARCHER NAME"
-
 [node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("4_816jx")]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_8ssgu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ah3g8")
 title = ""
 is_left_side = true
+
+[node name="CardDrawerTitle" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("4_2d0eq")]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ssgu")
+is_small = true
+content = "SPECILIZATION and TRAIT"
+title = "RESEARCHER NAME"
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_m71de")

@@ -133,15 +133,10 @@ show_assigned = true
 
 [node name="CardBody" parent="." instance=ExtResource("8_tcow0")]
 layout_mode = 2
-card_size = Vector2(275, 425)
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
 texture = SubResource("ViewportTexture_qnqh7")
-
-[node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
-offset_right = 275.0
-offset_bottom = 425.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_ughr2")
@@ -149,7 +144,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ughr2")
 [node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("9_2tpuf")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ng244")
-title = "RESEARCHER NAME"
+title = ""
 is_left_side = true
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
@@ -173,36 +168,31 @@ content = "0"
 title = "LEVEL"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
-layout_mode = 2
-
-[node name="CardDrawerSpec" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2" instance=ExtResource("10_klncf")]
+[node name="CardDrawerSpec" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("10_klncf")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_2tpuf")
 is_small = true
 content = "Specialization"
 title = "SPECIALIZATION"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
-[node name="CardDrawertrait" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2" instance=ExtResource("10_klncf")]
+[node name="CardDrawerTrait" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("10_klncf")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_klncf")
 is_small = true
 content = "Trait"
-title = "KNOWN TRAIT"
+title = "KNOWN TRAITS"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
-[node name="CardDrawerAssigned" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("10_klncf")]
+[node name="CardDrawerAssigned" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("10_klncf")]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_giyq1")
 is_small = true
 content = "Engineering Bay"
-title = "ASSIGNED"
+title = "ASSIGNED TO"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]

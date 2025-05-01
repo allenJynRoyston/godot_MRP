@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c2g08ld7dokr2" path="res://Scenes/TrainingProgram/parts/Cards/ROOM/room_card.gd" id="1_tq8sf"]
 [ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="2_tq8sf"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_uk1cn"]
-[ext_resource type="PackedScene" uid="uid://cntgsx4ms1bdd" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerResource.tscn" id="6_p42hl"]
+[ext_resource type="PackedScene" uid="uid://bca2onq4fhupq" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerStaffingRequirements.tscn" id="5_8cpo2"]
 [ext_resource type="PackedScene" uid="uid://bj03t7b41o5x2" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerCurrency.tscn" id="7_8cpo2"]
 [ext_resource type="PackedScene" uid="uid://6k2utfhwgc6f" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerSpecAndTrait.tscn" id="7_esvi2"]
 [ext_resource type="PackedScene" uid="uid://car8yud4yb0pj" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerVibes.tscn" id="7_p42hl"]
@@ -182,8 +182,7 @@ content = "-"
 title = "NAME"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
-[node name="CardDrawerActivationRequirements" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("6_p42hl")]
-custom_minimum_size = Vector2(200, 80)
+[node name="CardDrawerStaffingRequirements" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("5_8cpo2")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nu0ye")
 title = "STAFFING REQUIREMENTS"

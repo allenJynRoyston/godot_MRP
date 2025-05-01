@@ -264,8 +264,8 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 		
 	previous_emergency_mode = emergency_mode		
 	
-	LeftBoardRoomLabels.show()
-	RightBoardRoomLabels.show()	
+	LeftBoardRoomLabels.hide()
+	RightBoardRoomLabels.hide()	
 	
 	if in_lockdown:
 		for light in lights:

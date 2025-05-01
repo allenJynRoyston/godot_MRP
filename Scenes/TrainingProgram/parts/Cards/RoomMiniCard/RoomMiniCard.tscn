@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://dwhtysap0bsna"]
+[gd_scene load_steps=19 format=3 uid="uid://dwhtysap0bsna"]
 
 [ext_resource type="Script" uid="uid://dacwtt350g61n" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/room_mini_card.gd" id="1_0jit3"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_cri0k"]
+[ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_675dp"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_fl387"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="5_deyu1"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_heudf"]
@@ -9,10 +10,10 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fl387"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_qlsmf"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_675dp"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_heudf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j3mx2"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -23,30 +24,6 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_675dp"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j3mx2"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cri0k"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -73,6 +50,42 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_op0jq"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmheq"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deyu1"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_857f0"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -111,7 +124,7 @@ card_size = Vector2(275, 75)
 border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_qlsmf")
+texture = SubResource("ViewportTexture_675dp")
 
 [node name="SubViewport" parent="CardBody" index="1"]
 size = Vector2i(275, 75)
@@ -121,14 +134,28 @@ custom_minimum_size = Vector2(275, 75)
 offset_bottom = 76.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_heudf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_j3mx2")
 
-[node name="CardDrawerEmpty" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_fl387")]
+[node name="CardDetails" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
+layout_mode = 2
+
+[node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDetails" instance=ExtResource("3_675dp")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_cri0k")
+use_static = true
+title = ""
+is_left_side = true
+border_color = Color(0.337255, 0.27451, 1, 1)
+
+[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDetails" instance=ExtResource("3_fl387")]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_675dp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fl387")
 is_small = true
-content = "Nothing built"
+content = "EMPTY"
 title = ""
 border_color = Color(0.337255, 0.27451, 1, 1)
 
@@ -136,7 +163,7 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 visible = false
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_j3mx2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_op0jq")
 is_small = true
 content = ""
 title = "PAIRS WITH"
@@ -146,7 +173,7 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_cri0k")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gmheq")
 title = ""
 is_left_side = true
 border_color = Color(0.337255, 0.27451, 1, 1)
@@ -155,16 +182,17 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_fl387")
+theme_override_styles/panel = SubResource("StyleBoxFlat_deyu1")
 ability_type = 1
 title = ""
 is_left_side = true
 border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_op0jq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_857f0")
 
 [node name="DeactivatedPanel" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4

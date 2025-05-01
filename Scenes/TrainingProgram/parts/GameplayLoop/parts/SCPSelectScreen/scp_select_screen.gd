@@ -3,13 +3,17 @@ extends GameContainer
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnControls:Control = $BtnControls
 @onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
+@onready var ContentPanelMargin:MarginContainer = $ContentControl/PanelContainer/MarginContainer
 
 @onready var TitleLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/TitleLabel
-#@onready var ListScrollContainer:ScrollContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer
 @onready var ScpList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ScpList
 @onready var AvailableLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/AvailableLabel
 @onready var LessBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:BtnBase = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MoreBtn
+
+@onready var MiniCardPanel:PanelContainer = $MiniCardControl/MiniCardPanel
+@onready var MiniCardMargin:MarginContainer = $MiniCardControl/MiniCardPanel/MarginContainer
+@onready var ScpMiniCard:Control = $MiniCardControl/MiniCardPanel/MarginContainer/VBoxContainer/ScpMiniCard
 
 
 enum MODE { HIDE, SELECT_SCP, CONFIRM_SCP, FINALIZE }
@@ -43,6 +47,8 @@ var custom_min_size:Vector2
 var overflow_count:int
 var read_only:bool = false
 
+signal hide_complete
+
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -52,12 +58,11 @@ func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 	
 	BtnControls.onDirectional = on_key_input
-
+	
 # -----------------------------------------------
 
 # -----------------------------------------------
 func start_selection(new_refs:Array) -> void:
-	# TODO:  add soemthing here to determine the next set of available SCPs
 	refs = new_refs
 	TitleLabel.text = "SELECT AN SCP"
 	current_mode = MODE.SELECT_SCP
@@ -75,8 +80,8 @@ func start_read_only(new_refs:Array) -> void:
 # -----------------------------------------------
 func end(made_selection:bool, selected_scp:int = -1) -> void:	
 	BtnControls.reveal(false)
-	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-	await U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide)
+	current_mode = MODE.HIDE
+	await hide_complete
 	
 	user_response.emit({"made_selection": made_selection, "selected_scp": selected_scp})
 # -----------------------------------------------	
@@ -196,6 +201,8 @@ func on_scp_active_index_update() -> void:
 	for index in ScpList.get_child_count():
 		var node:Control = ScpList.get_child(index)
 		node.is_hoverable = index >= overflow_count and index < overflow_count + cards_in_list
+		
+	ScpMiniCard.ref = scp_active_index
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -238,7 +245,7 @@ func activate() -> void:
 	await U.tick()
 
 	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
-	#control_pos_default[BtnControlPanel] = BtnControlPanel.position
+	control_pos_default[MiniCardPanel] = MiniCardPanel.position
 
 	update_control_pos()
 	on_is_showing_update()
@@ -252,19 +259,16 @@ func on_fullscreen_update(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 func update_control_pos() -> void:
 	await U.tick()
-	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
-	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
 
 	control_pos[ContentPanelContainer] = {
-		"show": control_pos_default[ContentPanelContainer].x, 
-		"hide": control_pos_default[ContentPanelContainer].x - ContentPanelContainer.size.x
+		"show": control_pos_default[ContentPanelContainer].y, 
+		"hide": control_pos_default[ContentPanelContainer].y - ContentPanelMargin.size.y
 	}
 	
-	# for elements in the bottom left corner
-	#control_pos[BtnControlPanel] = {
-		#"show": control_pos_default[BtnControlPanel].y + y_diff, 
-		#"hide": control_pos_default[BtnControlPanel].y + y_diff + BtnControlPanel.size.y
-	#}
+	control_pos[MiniCardPanel] = {
+		"show": control_pos_default[MiniCardPanel].x, 
+		"hide": control_pos_default[MiniCardPanel].x - MiniCardMargin.size.x
+	}
 
 	
 	on_current_mode_update(true)
@@ -273,15 +277,20 @@ func update_control_pos() -> void:
 # -----------------------------------------------
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
+	var duration:float = 0 if skip_animation else 0.3
 	is_animating = true
+	
 
 	match current_mode:
 		# --------------
 		MODE.HIDE:
 			BtnControls.freeze_and_disable(true)
 
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
-			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].hide, 0 if skip_animation else 0.3)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
+			U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide, duration)
+			await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide, duration)
+			
+			hide_complete.emit()
 		# --------------
 		MODE.SELECT_SCP:	
 			for index in ScpList.get_child_count():
@@ -289,8 +298,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				node.is_selected = false
 							
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
-			U.tween_node_property(ContentPanelContainer, "position:x", control_pos[ContentPanelContainer].show, 0 if skip_animation else 0.3)
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration)
+			await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show, duration)
+			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show, duration)
+			
 			
 			BtnControls.a_btn_title = "SELECT"	
 			BtnControls.b_btn_title = "BACK"
@@ -311,7 +322,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				current_mode = MODE.SELECT_SCP
 		# --------------
 		MODE.FINALIZE:
-	
 			end(true, selected_scp)
 	
 	await U.set_timeout(0.3)

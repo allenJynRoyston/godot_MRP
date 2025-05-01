@@ -5,16 +5,16 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_rami6"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_0wirc"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rcc13"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wirc"]
 bg_color = Color(0, 0, 0, 1)
 border_color = Color(1, 1, 1, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_n01h6"]
+[sub_resource type="LabelSettings" id="LabelSettings_rcc13"]
 font = ExtResource("4_0wirc")
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_4yeji"]
+[sub_resource type="LabelSettings" id="LabelSettings_n01h6"]
 font = ExtResource("4_0wirc")
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
@@ -22,8 +22,10 @@ outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 [node name="ResourceItem" type="PanelContainer"]
 offset_right = 50.0
 offset_bottom = 20.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_rcc13")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0wirc")
 script = ExtResource("1_l01xo")
+is_faded = null
+allow_hint = false
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -58,16 +60,17 @@ theme_override_constants/margin_bottom = 0
 icon = 3
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.59, 0.59, 0.59, 1)
-flip_v = false
 is_hoverable = false
+allow_hint = false
 
 [node name="ItemLabel" type="Label" parent="MarginContainer/ResourceItem/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-label_settings = SubResource("LabelSettings_n01h6")
+label_settings = SubResource("LabelSettings_rcc13")
 vertical_alignment = 1
 
 [node name="BtmItemLabel" type="Label" parent="MarginContainer/ResourceItem"]
+visible = false
 layout_mode = 2
-label_settings = SubResource("LabelSettings_4yeji")
+label_settings = SubResource("LabelSettings_n01h6")
 horizontal_alignment = 1

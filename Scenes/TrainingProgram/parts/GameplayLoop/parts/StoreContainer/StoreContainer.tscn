@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=18 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" uid="uid://cuo7fn44s3f17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/store_container.gd" id="1_v8p8x"]
 [ext_resource type="PackedScene" uid="uid://cd46j3ltrkmdv" path="res://UI/Buttons/TabBtn/TabBtn.tscn" id="2_jvnhf"]
@@ -6,8 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_3ph48"]
 [ext_resource type="PackedScene" uid="uid://jacix3bun03x" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn" id="4_huwd4"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_iga2a"]
+[ext_resource type="PackedScene" uid="uid://dwhtysap0bsna" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/RoomMiniCard.tscn" id="8_ifwh0"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="8_jvufl"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="8_xyqc8"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="9_7676q"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_yrttf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
@@ -16,13 +17,19 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ij55"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jvufl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ifwh0"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25tt0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hljm"]
 bg_color = Color(0, 0, 0, 1)
 border_width_top = 3
 border_width_bottom = 3
-border_color = Color(0.8, 0, 0, 1)
+border_color = Color(1, 1, 0.337255, 1)
 
 [node name="StoreContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -107,7 +114,7 @@ alignment = 1
 
 [node name="IconBtn" parent="ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer" instance=ExtResource("3_3ph48")]
 layout_mode = 2
-icon = 50
+icon = 27
 flip_v = true
 is_hoverable = false
 
@@ -115,6 +122,12 @@ is_hoverable = false
 layout_mode = 2
 text = "LABEL"
 label_settings = ExtResource("2_ytme7")
+
+[node name="IconBtn2" parent="ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer" instance=ExtResource("3_3ph48")]
+layout_mode = 2
+icon = 27
+flip_h = true
+is_hoverable = false
 
 [node name="MainControl" type="Control" parent="."]
 layout_mode = 2
@@ -174,71 +187,62 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_constants/h_separation = 25
-theme_override_constants/v_separation = 25
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
 columns = 3
 
 [node name="ShopMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="ShopMiniCard9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("4_huwd4")]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 card_type = 0
-flipped = false
 ref = -1
 
 [node name="MoreBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_3ph48")]
@@ -257,6 +261,44 @@ horizontal_alignment = 1
 layout_mode = 2
 show_researcher_card = false
 show_scp_card = false
+
+[node name="MiniCardControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MiniCardControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jvufl")
+
+[node name="MarginContainer" type="MarginContainer" parent="MiniCardControl/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MiniCardControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="CostResourceItem" parent="MiniCardControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_jvufl")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ifwh0")
+icon = 44
+no_bg = true
+title = "500"
+display_at_bottom = true
+icon_size = Vector2(50, 50)
+is_faded = false
+
+[node name="RoomMiniCard" parent="MiniCardControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_ifwh0")]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+preview_mode = true
 
 [node name="SplashControl" type="Control" parent="."]
 layout_mode = 2
@@ -285,7 +327,7 @@ theme_override_constants/margin_bottom = 20
 [node name="SplashLabel" type="Label" parent="SplashControl/SplashPanelContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "UNLOCK?"
-label_settings = ExtResource("9_7676q")
+label_settings = ExtResource("2_ytme7")
 horizontal_alignment = 1
 
 [node name="BtnControls" parent="." instance=ExtResource("9_yrttf")]

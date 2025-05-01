@@ -203,6 +203,11 @@ icon = 31
 no_bg = true
 title = "99"
 display_at_bottom = true
+is_faded = false
+hint_icon = 31
+hint_title = "Money"
+hint_description = "Money description."
+allow_hint = true
 
 [node name="Materials" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
@@ -211,6 +216,11 @@ icon = 41
 no_bg = true
 title = "99"
 display_at_bottom = true
+is_faded = false
+hint_icon = 41
+hint_title = "Materials"
+hint_description = "Materials description."
+allow_hint = true
 
 [node name="Research" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
@@ -219,6 +229,11 @@ icon = 44
 no_bg = true
 title = "99"
 display_at_bottom = true
+is_faded = false
+hint_icon = 44
+hint_title = "Research"
+hint_description = "Research description."
+allow_hint = true
 
 [node name="Core" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
@@ -227,6 +242,11 @@ icon = 39
 no_bg = true
 title = "10"
 display_at_bottom = true
+is_faded = false
+hint_icon = 39
+hint_title = "CORE"
+hint_description = "Core description."
+allow_hint = true
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -396,13 +416,18 @@ vertical_alignment = 1
 layout_mode = 2
 alignment = 1
 
-[node name="ResourceItem" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+[node name="EnergyItem" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kd4jj")
 icon = 32
 no_bg = true
 title = "99/99"
 display_at_bottom = true
+is_faded = false
+hint_icon = 32
+hint_title = "Energy"
+hint_description = "Required for powering room modules."
+allow_hint = true
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -454,6 +479,11 @@ icon = 35
 no_bg = true
 title = "STF"
 display_at_bottom = true
+is_faded = false
+hint_icon = 35
+hint_title = "Staff"
+hint_description = "Staff description."
+allow_hint = true
 
 [node name="Technicians" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
@@ -462,6 +492,11 @@ icon = 34
 no_bg = true
 title = "TCH"
 display_at_bottom = true
+is_faded = false
+hint_icon = 34
+hint_title = "Technicians"
+hint_description = "Technicians description."
+allow_hint = true
 
 [node name="Security" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
@@ -470,6 +505,11 @@ icon = 36
 no_bg = true
 title = "SEC"
 display_at_bottom = true
+is_faded = false
+hint_icon = 36
+hint_title = "Security"
+hint_description = "Security descriptions."
+allow_hint = true
 
 [node name="DClass" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
@@ -478,6 +518,11 @@ icon = 33
 no_bg = true
 title = "DCL"
 display_at_bottom = true
+is_faded = false
+hint_icon = 33
+hint_title = "D-Class"
+hint_description = "D-Class Description."
+allow_hint = true
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -516,3 +561,4 @@ title = "TASKBAR"
 assigned_key = "DELETE"
 icon = 67
 panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+allow_hint = false

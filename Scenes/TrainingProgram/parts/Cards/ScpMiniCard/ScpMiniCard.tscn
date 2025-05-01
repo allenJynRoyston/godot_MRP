@@ -1,15 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://mvalbebjx6bu"]
+[gd_scene load_steps=11 format=3 uid="uid://mvalbebjx6bu"]
 
 [ext_resource type="Script" uid="uid://tkqatcpj06gb" path="res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/scp_mini_card.gd" id="1_ca1ce"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_5lpm0"]
 [ext_resource type="PackedScene" uid="uid://ca1erh850s21g" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerContainmentInfo.tscn" id="3_4vkgm"]
+[ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_n8iws"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n8iws"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_5lpm0"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_20tj0"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4vkgm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_saevx"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -21,7 +22,19 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8iws"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xe1v1"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhka2"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -33,7 +46,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_20tj0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s6vk2"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -58,7 +71,7 @@ card_size = Vector2(275, 115)
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_5lpm0")
+texture = SubResource("ViewportTexture_20tj0")
 
 [node name="SubViewport" parent="CardBody" index="1"]
 size = Vector2i(275, 115)
@@ -68,16 +81,26 @@ custom_minimum_size = Vector2(275, 115)
 offset_bottom = 115.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_4vkgm")
+theme_override_styles/panel = SubResource("StyleBoxFlat_saevx")
 
-[node name="CardDrawerContainmentInfo" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_4vkgm")]
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_n8iws")
+
+[node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("3_n8iws")]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xe1v1")
+title = ""
+
+[node name="CardDrawerContainmentInfo" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("3_4vkgm")]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_uhka2")
 is_left_side = true
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_20tj0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s6vk2")
 
 [editable path="CardBody"]

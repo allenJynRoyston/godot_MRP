@@ -9,9 +9,8 @@ extends MouseInteractions
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
 @onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
-@onready var CardDrawerSpec:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerSpec
-@onready var CardDrawerTraits:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawertrait
-
+@onready var CardDrawerSpec:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerSpec
+@onready var CardDrawerTraits:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTrait
 @onready var CardDrawerImageBack:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerImage
 
 @export var card_border_color:Color = Color(0.0, 0.638, 0.337) : 
@@ -67,10 +66,10 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 		show_assigned = val
 		on_show_assigned_update()
 		
-#var researcher_details:Dictionary = {} : 
-	#set(val):
-		#researcher_details = val
-		#on_researcher_details_update()
+var researcher_details:Dictionary = {} : 
+	set(val):
+		researcher_details = val
+		on_researcher_details_update()
 		
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -89,6 +88,7 @@ func _ready() -> void:
 	on_is_selected_update()
 	on_is_deselected_update()
 	on_show_assigned_update()
+	on_researcher_details_update()
 	
 	await U.tick()
 	CardTextureRect.pivot_offset = self.size/2
@@ -124,20 +124,34 @@ func on_show_assigned_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_researcher_details_update() -> void:
+	if !is_node_ready() or researcher_details.is_empty():return
+	update_nodes(researcher_details)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func on_uid_update() -> void:
 	if !is_node_ready():return		
 	
-	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)	
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)		
 	
 	if uid == "-1" or researcher_details.is_empty():
 		CardDrawerImage.use_static = true
 		for node in [CardDrawerName, CardDrawerLevel, CardDrawerSpec, CardDrawerTraits, CardDrawerAssigned]:
 			node.content = "-"
 		return
-		
+	
+	
+	update_nodes(researcher_details)
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func update_nodes(researcher_details:Dictionary) -> void:
+
 	CardDrawerImage.use_static = false
 	CardDrawerImage.img_src = researcher_details.img_src
 	CardDrawerImageBack.img_src = researcher_details.img_src
+	CardDrawerImageBack.title = "RESEARCHER %s" % researcher_details.name
 	CardDrawerName.content = researcher_details.name
 	CardDrawerLevel.content = str(researcher_details.level)
 
@@ -162,7 +176,10 @@ func on_uid_update() -> void:
 		trait_str += dict.name + " / "
 	trait_str = trait_str.left(trait_str.length() - 3)
 	CardDrawerTraits.content = trait_str
+
 # ------------------------------------------------------------------------------
+	
+	
 
 # ------------------------------------------------------------------------------
 func on_promotion_preview_update() -> void:

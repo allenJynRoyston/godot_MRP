@@ -1,47 +1,78 @@
 [gd_scene load_steps=15 format=3 uid="uid://jacix3bun03x"]
 
 [ext_resource type="Script" uid="uid://cy177bercus4u" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/shop_mini_card.gd" id="1_7gy44"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_blnkg"]
-[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="2_kq0y7"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_noi03"]
+[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_6v8ap"]
+[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_sv0aq"]
+[ext_resource type="PackedScene" uid="uid://cntgsx4ms1bdd" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerResource.tscn" id="4_i77hi"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_sh3ly"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="6_v1vnd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i4yqh"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_7qley"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5y5s"]
-bg_color = Color(0, 0, 0, 1)
+[sub_resource type="ViewportTexture" id="ViewportTexture_ctiee"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k052h"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+border_color = Color(0.6, 0.6, 0.6, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ctiee"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bx5nk"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.6, 0.6, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3i7t"]
-bg_color = Color(0, 0.529412, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5y5s"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.6, 0.6, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5260f"]
-bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.6, 0.6, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6v8ap"]
-bg_color = Color(0.205117, 0.205117, 0.205117, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.6, 0.6, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g27v5"]
 
@@ -51,8 +82,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_i4yqh")
 script = ExtResource("1_7gy44")
-card_type = null
-flipped = null
+card_type = 1
 ref = 0
 
 [node name="CardTextureRect" type="TextureRect" parent="."]
@@ -62,191 +92,60 @@ stretch_mode = 6
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(150, 150)
+size = Vector2i(175, 175)
 
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 150.0
-offset_bottom = 150.0
+[node name="CardBody" parent="SubViewport" instance=ExtResource("2_6v8ap")]
+card_size = Vector2(175, 175)
+border_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="TextureRect" parent="SubViewport/CardBody" index="0"]
+texture = SubResource("ViewportTexture_ctiee")
+
+[node name="SubViewport" parent="SubViewport/CardBody" index="1"]
+size = Vector2i(175, 175)
+
+[node name="CardBody" parent="SubViewport/CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(175, 175)
+offset_right = 175.0
+offset_bottom = 175.0
+
+[node name="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_k052h")
+
+[node name="CardDrawerTitle" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_sv0aq")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bx5nk")
+is_small = true
+content = "Roomname"
+title = ""
+border_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="CardDrawerResource" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1" instance=ExtResource("4_i77hi")]
+visible = false
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_f5y5s")
+title = "COST"
+is_left_side = true
+border_color = Color(0.6, 0.6, 0.6, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
-
-[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer"]
-material = ExtResource("2_kq0y7")
-layout_mode = 2
-texture = SubResource("PlaceholderTexture2D_ctiee")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="AtMaxPanel" type="PanelContainer" parent="SubViewport/PanelContainer"]
-visible = false
-layout_mode = 2
-
-[node name="CenterContainer" type="CenterContainer" parent="SubViewport/PanelContainer/AtMaxPanel"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/AtMaxPanel/CenterContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 10
-
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/AtMaxPanel/CenterContainer/MarginContainer"]
-layout_mode = 2
-text = "MAX
-CAPACITY"
-label_settings = ExtResource("4_noi03")
-horizontal_alignment = 1
-
-[node name="AlreadyOwned" type="PanelContainer" parent="SubViewport/PanelContainer"]
-layout_mode = 2
-
-[node name="CenterContainer" type="CenterContainer" parent="SubViewport/PanelContainer/AlreadyOwned"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/AlreadyOwned/CenterContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 10
-
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/AlreadyOwned/CenterContainer/MarginContainer"]
-layout_mode = 2
-text = "ALREADY
-UNLOCKED"
-label_settings = ExtResource("4_noi03")
-horizontal_alignment = 1
-
-[node name="LockedPanel" type="PanelContainer" parent="SubViewport/PanelContainer"]
-visible = false
-layout_mode = 2
-
-[node name="CenterContainer" type="CenterContainer" parent="SubViewport/PanelContainer/LockedPanel"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/LockedPanel/CenterContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/LockedPanel/CenterContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/LockedPanel/CenterContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "LOCKED"
-label_settings = ExtResource("4_noi03")
-horizontal_alignment = 1
-
-[node name="Front" type="VBoxContainer" parent="SubViewport/PanelContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Front"]
+[node name="CardDrawerStatus" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("3_sv0aq")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 50
-
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_r3i7t")
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="FrontNameLabel" type="Label" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "FACILITY NAME"
-label_settings = ExtResource("2_blnkg")
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="CostBtn" parent="SubViewport/PanelContainer/Front/MarginContainer/VBoxContainer/MarginContainer" instance=ExtResource("6_v1vnd")]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_5260f")
-icon = 31
-panel_color = Color(0.205117, 0.205117, 0.205117, 1)
-title = "200"
+is_small = true
+content = "Status"
+title = ""
+border_color = Color(0.6, 0.6, 0.6, 1)
 
-[node name="Back" type="VBoxContainer" parent="SubViewport/PanelContainer"]
-visible = false
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Back"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 50
-
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_r3i7t")
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="BackNameLabel" type="Label" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "FACILITY NAME"
-label_settings = ExtResource("2_blnkg")
-
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextBtn" parent="SubViewport/PanelContainer/Back/MarginContainer/VBoxContainer/MarginContainer" instance=ExtResource("6_v1vnd")]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
+[node name="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_6v8ap")
-icon = 31
-panel_color = Color(0.205117, 0.205117, 0.205117, 1)
-title = "200"
 
 [node name="CursorContainer" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CursorContainer"]
@@ -275,5 +174,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_g27v5")
 [node name="CursorImage" parent="CursorContainer/PanelContainer2" instance=ExtResource("4_sh3ly")]
 layout_mode = 2
 icon = 37
-flip_v = false
 is_hoverable = false
+
+[editable path="SubViewport/CardBody"]

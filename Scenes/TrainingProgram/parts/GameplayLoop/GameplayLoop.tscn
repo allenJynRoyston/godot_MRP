@@ -124,6 +124,7 @@ alignment = 1
 layout_mode = 2
 icon = 18
 is_hoverable = false
+allow_hint = false
 
 [node name="Label" type="Label" parent="WaitContainer/MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -156,6 +157,7 @@ alignment = 1
 layout_mode = 2
 icon = 18
 is_hoverable = false
+allow_hint = false
 
 [node name="Label" type="Label" parent="WaitContainer/MarginContainer/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2

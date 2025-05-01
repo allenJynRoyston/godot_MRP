@@ -1,13 +1,15 @@
-[gd_scene load_steps=30 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=34 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
 [ext_resource type="Material" uid="uid://b4dnsatkufi37" path="res://Shader/ScreenSaver/ScreenSaver.tres" id="2_7nwk1"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_batgf"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_2d0xm"]
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode3d.tscn" id="4_b2h6u"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_fjg3y"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_gg0ij"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_312tc"]
 [ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="5_b26bj"]
+[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="5_fjg3y"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_gytyc"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_u0dki"]
@@ -63,6 +65,11 @@ grow = true
 [sub_resource type="BoxMesh" id="BoxMesh_n6uvr"]
 material = SubResource("StandardMaterial3D_opsu7")
 size = Vector3(21, 5.5, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_fjg3y"]
+viewport_path = NodePath("SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D/SubViewport")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_neith"]
 
 [sub_resource type="FogMaterial" id="FogMaterial_0edq6"]
 density = 0.8218
@@ -194,6 +201,7 @@ spot_angle_attenuation = 1.41421
 
 [node name="RightBoardRoomLabels" type="Node3D" parent="SubViewport/RoomColumn/RightBoard"]
 transform = Transform3D(1, 0, -1.06581e-14, 0, 1, 0, 1.06581e-14, 0, 1, 0.941055, 2.47272, 0.522508)
+visible = false
 
 [node name="0" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -0.708123, 0)
@@ -464,6 +472,31 @@ uppercase = true
 line_spacing = 20.0
 width = 150.0
 
+[node name="MsgBoard" type="Node3D" parent="SubViewport/RoomColumn/RightBoard"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.564634)
+
+[node name="Sprite3D" type="Sprite3D" parent="SubViewport/RoomColumn/RightBoard/MsgBoard"]
+transparent = false
+texture = SubResource("ViewportTexture_fjg3y")
+
+[node name="Label3D" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0361191)
+pixel_size = 0.03
+shaded = true
+double_sided = false
+text = "Everything is fine."
+font = ExtResource("4_fjg3y")
+
+[node name="SubViewport" type="SubViewport" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D"]
+size = Vector2i(2090, 550)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D/SubViewport"]
+material = ExtResource("5_fjg3y")
+custom_minimum_size = Vector2(2900, 600)
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("NoiseTexture2D_neith")
+
 [node name="LeftBoard" type="MeshInstance3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15.233, 3.20563, -0.459461)
 mesh = SubResource("BoxMesh_n6uvr")
@@ -481,6 +514,7 @@ line_spacing = 20.0
 
 [node name="LeftBoardRoomLabels" type="Node3D" parent="SubViewport/RoomColumn/LeftBoard"]
 transform = Transform3D(1, 0, -1.06581e-14, 0, 1, 0, 1.06581e-14, 0, 1, -0.0527551, 2.66723, 0.517871)
+visible = false
 
 [node name="0" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -0.708123, 0)
@@ -750,6 +784,31 @@ horizontal_alignment = 0
 uppercase = true
 line_spacing = 20.0
 width = 150.0
+
+[node name="MsgBoard" type="Node3D" parent="SubViewport/RoomColumn/LeftBoard"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.98023e-08, 0, 0.564634)
+
+[node name="Sprite3D" type="Sprite3D" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard"]
+transparent = false
+texture = SubResource("ViewportTexture_fjg3y")
+
+[node name="Label3D" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0361191)
+pixel_size = 0.03
+shaded = true
+double_sided = false
+text = "Everything is fine."
+font = ExtResource("4_fjg3y")
+
+[node name="SubViewport" type="SubViewport" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D"]
+size = Vector2i(2090, 550)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D/SubViewport"]
+material = ExtResource("5_fjg3y")
+custom_minimum_size = Vector2(2900, 600)
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("NoiseTexture2D_neith")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/LeftBoard"]
 transform = Transform3D(0.717035, -0.492742, 0.493017, 0.234449, 0.836584, 0.495137, -0.656425, -0.239443, 0.715383, 7.4959, 8.99649, 13.9021)

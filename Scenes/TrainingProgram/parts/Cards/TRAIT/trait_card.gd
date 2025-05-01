@@ -66,39 +66,6 @@ func on_is_highlighted_update() -> void:
 	
 func on_effect_update() -> void:
 	if !is_node_ready() or effect.is_empty():return
-	#var resource_list:Array = effect.resource_list
-	#var metric_list:Array = effect.metric_list
-	#
-	#for node in [ResourceGrid, MetricList]:
-		#for child in node.get_children():
-			#child.queue_free()
-	#
-	#ResourceGrid.columns = U.min_max(resource_list.size(), 1, 2)
-	#for item in resource_list:
-		#var new_btn:Control = TextBtnPreload.instantiate()
-		#new_btn.is_hoverable = false
-		#new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		#new_btn.icon = item.resource.icon
-		#new_btn.title = "%s%s" % ["+" if item.amount > 0 else "", item.amount]
-		#ResourceGrid.add_child(new_btn)
-	#ResourceGrid.hide() if resource_list.is_empty() else ResourceGrid.show()
-	#
-	#for item in metric_list:
-		#var new_btn:Control = TextBtnPreload.instantiate()		
-		#new_btn.is_hoverable = false
-		#new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		#new_btn.icon = item.resource.icon
-		#new_btn.title = "%s%s %s" % ["+" if item.amount > 0 else "", item.amount, item.resource.name]
-		#MetricList.add_child(new_btn)
-	#MetricList.hide() if metric_list.is_empty() else MetricList.show()
-	#
-	#var dup_label_settings:LabelSettings = DescriptionLabel.label_settings.duplicate()
-	#dup_label_settings.font_color = Color.RED if resource_list.size() == 0 and metric_list.size() == 0 else Color.WHITE
-	#DescriptionLabel.label_settings = dup_label_settings
-	#
-	#if show_output:
-		#OutputContainer.hide() if resource_list.size() == 0 and metric_list.size() == 0 else OutputContainer.show()
-	
 
 func on_ref_update() -> void:
 	if !is_node_ready() or ref == -1:return

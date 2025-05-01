@@ -13,11 +13,6 @@ extends GameContainer
 @onready var StaffingControlPanel:MarginContainer = $StaffingControl/StaffingControlPanel
 @onready var StaffingList:VBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/List
 
-#@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
-#@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
-#@onready var AcceptBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/AcceptBtn
-#@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
-
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
@@ -127,9 +122,7 @@ func check_for_unavailable_rooms() -> void:
 # --------------------------------------------------------------------------------------------------		
 func update_control_pos() -> void:	
 	await U.tick()
-	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
-	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
-	
+
 	control_pos[ContentPanelContainer] = {
 		"show": control_pos_default[ContentPanelContainer].y, 
 		"hide": control_pos_default[ContentPanelContainer].y - ContentPanelContainer.size.y
@@ -204,7 +197,7 @@ func on_activation_requirements_update() -> void:
 		new_node.no_bg = true
 		new_node.is_checked = has_enough
 		new_node.modulate = Color(1, 0, 0, 1) if !has_enough else Color(1, 1, 1, 1)
-		new_node.title =  "%s REQUIRED: %s (YOU HAVE %s)" % [item.resource.name, abs(item.amount), current_amount]
+		new_node.title =  "%s Required: %s (currenctly at %s)" % [item.resource.name, abs(item.amount), current_amount]
 		StaffingList.add_child(new_node)
 		
 		new_resource_node.is_hoverable = false
