@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://de6y6tnltq8d"]
+[gd_scene load_steps=18 format=3 uid="uid://de6y6tnltq8d"]
 
 [ext_resource type="Script" uid="uid://csfun4rw8wt5u" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/build_container.gd" id="1_h7ayo"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_23d3u"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_mq6a8"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_2fbgh"]
 [ext_resource type="PackedScene" uid="uid://jacix3bun03x" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn" id="5_08bo1"]
@@ -9,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="8_8ecmk"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="8_et4l3"]
 [ext_resource type="PackedScene" uid="uid://dwhtysap0bsna" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/RoomMiniCard.tscn" id="9_rlxop"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="10_rlxop"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
 
@@ -16,7 +18,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_23d3u"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ecmk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_23d3u"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -38,6 +40,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_d3jd6")
 script = ExtResource("1_h7ayo")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
+material = ExtResource("2_23d3u")
 layout_mode = 2
 color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
@@ -57,17 +60,18 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_6ij55")
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 alignment = 1
 
 [node name="TitleLabel" type="Label" parent="MainControl/MainPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Select a facility..."
+text = "Select blueprint:"
 label_settings = ExtResource("4_2fbgh")
 horizontal_alignment = 1
 
@@ -185,7 +189,7 @@ alignment = 1
 
 [node name="CostResourceItem" parent="MiniCardControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_8ecmk")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8ecmk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_23d3u")
 icon = 31
 no_bg = true
 title = "500"
@@ -230,3 +234,6 @@ layout_mode = 2
 text = "PURCHASE?"
 label_settings = ExtResource("4_2fbgh")
 horizontal_alignment = 1
+
+[node name="TransistionScreen" parent="." instance=ExtResource("10_rlxop")]
+layout_mode = 2

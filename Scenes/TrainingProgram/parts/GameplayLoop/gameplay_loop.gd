@@ -1184,16 +1184,16 @@ func on_current_phase_update() -> void:
 			progress_data.day += 1
 			
 			# mark rooms and push to subscriptions
-			for floor_index in room_config.floor.size():		
-				for ring_index in room_config.floor[floor_index].ring.size():
-					for room_index in room_config.floor[floor_index].ring[ring_index].size():
-						var room_designation:String = str(floor_index, ring_index, room_index)
-						for key in base_states.room[room_designation].ability_on_cooldown:
-							if base_states.room[room_designation].ability_on_cooldown[key] > 0:
-								base_states.room[room_designation].ability_on_cooldown[key] -= 1
-								if base_states.room[room_designation].ability_on_cooldown[key] == 0:
-									ToastContainer.add("[%s] is ready!" % [key])
-				
+			#for floor_index in room_config.floor.size():		
+				#for ring_index in room_config.floor[floor_index].ring.size():
+					#for room_index in room_config.floor[floor_index].ring[ring_index].size():
+						#var room_designation:String = str(floor_index, ring_index, room_index)
+						#for key in base_states.room[room_designation].ability_on_cooldown:
+							#if base_states.room[room_designation].ability_on_cooldown[key] > 0:
+								#base_states.room[room_designation].ability_on_cooldown[key] -= 1
+								#if base_states.room[room_designation].ability_on_cooldown[key] == 0:
+									#ToastContainer.add("[%s] is ready!" % [key])
+				#
 			# update subscriptions
 			SUBSCRIBE.progress_data = progress_data
 			SUBSCRIBE.base_states = base_states
@@ -1271,12 +1271,11 @@ func on_current_builder_step_update() -> void:
 			BuildContainer.activate()
 			await U.tick()
 			BuildContainer.start()
-			#show_only([Structure3dContainer, ResourceContainer])
-			await BuildContainer.user_response
+
+			var response:bool = await BuildContainer.user_response
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			#await restore_player_hud()
 			
-			on_store_purchase_complete.emit()	
+			on_store_purchase_complete.emit(response)	
 			BuildContainer.queue_free()
 			current_builder_step = BUILDER_STEPS.RESET
 		## ---------------
@@ -1329,6 +1328,7 @@ func on_current_shop_step_update() -> void:
 			
 			StoreContainer.start()
 			var response:bool = await StoreContainer.user_response
+			print(response)
 			StoreContainer.queue_free()
 
 			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)

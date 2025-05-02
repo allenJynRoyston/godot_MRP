@@ -26,6 +26,8 @@ extends GameContainer
 
 @onready var DetailPanel:Control = $DetailPanel
 
+@onready var TransitionScreen:Control = $TransistionScreen
+
 enum MODE {HIDE, TAB_SELECT, CONTENT_SELECT, UNLOCK}
 
 var current_mode:MODE = MODE.HIDE : 
@@ -47,7 +49,7 @@ var grid_index:int = 0 :
 
 var has_more:bool = false
 var grid_list_data:Array
-
+var made_changes:bool = false
 var is_setup:bool = false
 var is_animating:bool = false 
 var made_a_purchase:bool = false
@@ -89,7 +91,8 @@ func start() -> void:
 func end() -> void:
 	current_mode = MODE.HIDE
 	await on_hide_complete
-	user_response.emit(true)
+	await TransitionScreen.end()
+	user_response.emit(made_changes)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -333,21 +336,23 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			U.tween_node_property(ActiveHeaderPanel, "position:y", control_pos[ActiveHeaderPanel].hide, duration)
 			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].hide, duration)
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
-			await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration )
 			
+			await U.tick()
 			on_hide_complete.emit()
 		# -------------------
 		MODE.TAB_SELECT:			
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)			
+			
 			U.tween_node_property(ActiveHeaderPanel, "position:y", control_pos[ActiveHeaderPanel].hide, duration)
 			U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show, duration)
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 1 )
 			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show, duration)
 			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].hide, duration)
+			await TransitionScreen.start()
 
 			DetailPanel.reveal(false)
 			
-			await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)
 			BtnControls.itemlist = Tabs.get_children()
 
 			await BtnControls.reveal(true)
@@ -408,6 +413,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
 				
 				current_mode = MODE.CONTENT_SELECT
+				made_changes = true
 							
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].show)	
 		

@@ -17,7 +17,7 @@ extends GameContainer
 
 @onready var SplashPanelContainer:PanelContainer = $SplashControl/SplashPanelContainer
 @onready var SplashLabel:Label = $SplashControl/SplashPanelContainer/PanelContainer/MarginContainer/SplashLabel
-
+@onready var TransitionScreen:Control = $TransistionScreen
 
 @onready var DetailPanel:Control = $DetailPanel
 
@@ -70,10 +70,11 @@ func start() -> void:
 	current_mode = MODE.CONTENT_SELECT
 	update_grid_content()
 	
-func end() -> void:	
+func end(has_action:bool) -> void:		
 	current_mode = MODE.HIDE
 	await on_hide_complete
-	user_response.emit()
+	await TransitionScreen.end()	
+	user_response.emit(has_action)
 # --------------------------------------------------------------------------------------------------
 
 
@@ -99,8 +100,8 @@ func update_control_pos() -> void:
 	await U.tick()
 
 	control_pos[MainPanel] = {
-		"show": control_pos_default[MainPanel].x, 
-		"hide": control_pos_default[MainPanel].x - MainPanel.size.x
+		"show": control_pos_default[MainPanel].y, 
+		"hide": control_pos_default[MainPanel].y - MainPanel.size.y
 	}
 	
 	control_pos[RoomMiniPanel] = {
@@ -238,25 +239,24 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			DetailPanel.reveal(false)
 
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
 			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].hide, duration)	
-			await U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].hide, duration)	
+			await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide, duration)	
+			
 			
 			on_hide_complete.emit()
 		# -------------------
 		MODE.CONTENT_SELECT:
-			await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration )
-			
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration )
-			U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show, duration)
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0 )
+			await TransitionScreen.start()
+			BtnControls.reveal(true)
+			DetailPanel.reveal(true)
+			U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show, duration)			
 			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].show, duration)	
-			await BtnControls.reveal(true)
-			await DetailPanel.reveal(true)
 
 			BtnControls.directional_pref = "NONE"
 			BtnControls.itemlist = GridContent.get_children()
 			BtnControls.onBack = func() -> void:
-				end()
+				end(false)
 			BtnControls.onAction = func() -> void:
 				previous_grid_index = grid_index
 			await U.tick()
@@ -283,7 +283,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr	
 				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(room_details.ref)		
-				end()
+				end(true)
 							
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].show)	
 		

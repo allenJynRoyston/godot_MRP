@@ -299,13 +299,18 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	
 	match camera_settings.type:
 		CAMERA.TYPE.ROOM_SELECT:
-			current_camera_size = 30
+			update_camera_size(30)
 		_:
-			current_camera_size = 22
+			update_camera_size(22)
 		
 	U.tween_node_property(MainCamera, "size", current_camera_size, 0.3, 0)
 # --------------------------------------------------------
 
+# --------------------------------------------------------
+func update_camera_size(val:int) -> void:
+	current_camera_size = val
+	U.tween_node_property(MainCamera, "size", current_camera_size, 0.3, 0)	
+# --------------------------------------------------------
 
 # --------------------------------------------------------
 func on_select() -> void:

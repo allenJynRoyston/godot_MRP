@@ -243,6 +243,8 @@ func _ready() -> void:
 			
 	FloorPlanBtn.onClick = func() -> void:
 		await lock_btns(true)
+		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
+		SUBSCRIBE.camera_settings = camera_settings						
 		current_mode = MODE.INVESTIGATE		
 		lock_btns(false)
 	
@@ -262,8 +264,7 @@ func _ready() -> void:
 			lock_btns(false)
 			
 	
-		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
-		SUBSCRIBE.camera_settings = camera_settings				
+
 
 	HotkeyContainer.action_func_lookup = action_func_lookup
 	HotkeyContainer.ability_funcs = ability_funcs
@@ -729,7 +730,7 @@ func show_abilities(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 func call_and_redraw(action:Callable) -> void:
 	await lock_btns(true)
-	U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide)
+	U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide, 0.3, 0.3)
 	GBL.find_node(REFS.LINE_DRAW).hide()
 	
 	# clear any lines
@@ -737,6 +738,7 @@ func call_and_redraw(action:Callable) -> void:
 	prev_draw_state = {}	
 	# call 
 	await action.call()
+	
 	# leave this in just in case any of the functions update data
 	await U.tick() 
 	await lock_btns(false)
@@ -1046,11 +1048,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			on_gameplay_conditionals_update(gameplay_conditionals, true)
 		# --------------
 		MODE.INVESTIGATE:
-			
+			GBL.find_node(REFS.ROOM_NODES).update_camera_size(30)
+
 			enable_room_focus(true)
 			set_backdrop_state(true)	
-			
-			#GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer, GameplayNode.RoomInfo, GameplayNode.ResourceContainer])
 
 			update_details()
 			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show, duration)

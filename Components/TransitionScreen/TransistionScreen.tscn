@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://dk5255oi6br8j"]
+
+[ext_resource type="Script" uid="uid://cc8fmiqmqge2p" path="res://Components/TransitionScreen/transistion_screen.gd" id="1_yenij"]
+[ext_resource type="Material" uid="uid://cadagoadb5vbl" path="res://CanvasShader/Dissolve/Dissolve.tres" id="2_ac3g3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6f1yw"]
+
+[node name="TransistionScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yenij")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6f1yw")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer"]
+material = ExtResource("2_ac3g3")
+layout_mode = 2
