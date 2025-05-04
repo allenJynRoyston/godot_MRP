@@ -139,7 +139,7 @@ func _ready() -> void:
 	
 	BuildBtn.onClick = func() -> void:
 		call_and_redraw(func():			
-			await GAME_UTIL.construct_room()
+			await GameplayNode.open_build()
 		)
 	
 	ContainBtn.onClick = func() -> void:
@@ -730,23 +730,9 @@ func show_abilities(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------
 func call_and_redraw(action:Callable) -> void:
 	await lock_btns(true)
-	U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide, 0.3, 0.3)
-	GBL.find_node(REFS.LINE_DRAW).hide()
-	
-	# clear any lines
-	GBL.find_node(REFS.LINE_DRAW).clear()
-	prev_draw_state = {}	
-	# call 
 	await action.call()
-	
-	# leave this in just in case any of the functions update data
 	await U.tick() 
 	await lock_btns(false)
-	await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show)
-	GBL.find_node(REFS.LINE_DRAW).show()
-	
-	if current_mode == MODE.INVESTIGATE:
-		GBL.find_node(REFS.LINE_DRAW).show()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -825,7 +811,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		draw_active_menu()
 		update_details()
 
-		
 		await U.tick()
 		return
 
@@ -903,8 +888,6 @@ func buildout_btns() -> void:
 	FloorPlanBtn.show() if floor_config.is_powered else FloorPlanBtn.hide()
 	ActivateFloorBtn.hide() if floor_config.is_powered else ActivateFloorBtn.show()
 	
-
-
 	is_setup = true
 # --------------------------------------------------------------------------------------------------
 
@@ -1048,7 +1031,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			on_gameplay_conditionals_update(gameplay_conditionals, true)
 		# --------------
 		MODE.INVESTIGATE:
-			GBL.find_node(REFS.ROOM_NODES).update_camera_size(30)
+			#GBL.find_node(REFS.ROOM_NODES).update_camera_size(30)
 
 			enable_room_focus(true)
 			set_backdrop_state(true)	
@@ -1164,7 +1147,7 @@ func show_debug(skip_animation:bool = false) -> void:
 		"title": "OPEN SHOP",
 		"icon": SVGS.TYPE.RESEARCH,
 		"action": func() -> void:
-			await GAME_UTIL.open_store(),
+			await GameplayNode.open_store(),
 		"onSelect": func(index:int) -> void:
 			await list[index].action.call()
 			GameplayNode.restore_player_hud(),

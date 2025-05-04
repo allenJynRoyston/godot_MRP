@@ -1,8 +1,6 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-
-@onready var BtnPanelContainer:Control = $BtnControl/MarginContainer
 @onready var BtnControls:Control = $BtnControls
 
 @onready var ResearcherPanel:Control = $ResearcherControl/PanelContainer
@@ -16,11 +14,13 @@ extends GameContainer
 @onready var SelectedPanel:Control = $SelectedControl/SelectedPanel
 @onready var SelectedList:VBoxContainer = $SelectedControl/SelectedPanel/MarginContainer/VBoxContainer/SelectedContainer/SelectedList
 
-@onready var PromoteControl:Control = $PromoteControl
-@onready var PromoteControlPanel:Control = $PromoteControl/MarginContainer
+@onready var PromoteControlPanel:Control = $PromoteControl
+@onready var PromoteControlMargin:Control = $PromoteControl/MarginContainer
 @onready var PromotionCard:Control = $PromoteControl/MarginContainer/HBoxContainer/ResearcherCardContainer/PromotionCard
 @onready var PromotionLabel:Label = $PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/PromotionLabel
 @onready var NewTraitList:VBoxContainer = $PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/MarginContainer/NewTraitList
+
+@onready var TransitionScreen:Control = $TransitionScreen
 
 enum MODE { SELECT_RESEARCHERS, DETAILS_ONLY, PROMOTE, CONFIRM_PROMOTE, HIDE }
 enum NEXT_ACTION { NOTHING, PROMOTE, RETURN }
@@ -103,9 +103,7 @@ func activate() -> void:
 	
 	# set pagination levels
 	max_pagination = floori( (hired_lead_researchers_arr.size() - 1)/cards_in_list) 
-	
-	PromoteControl.hide()
-	
+		
 	BtnControls.freeze_and_disable(true)
 	update_control_pos()
 # --------------------------------------------------------------------------------------------------	
@@ -118,9 +116,7 @@ func on_fullscreen_update(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 func update_control_pos() -> void:	
 	await U.tick()
-	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
-	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
-		
+
 	control_pos[SelectedPanel] = {
 		"show": control_pos_default[SelectedPanel].x, 
 		"hide": control_pos_default[SelectedPanel].x - SelectedPanel.size.x
@@ -132,8 +128,8 @@ func update_control_pos() -> void:
 	}
 	
 	control_pos[PromoteControlPanel] = {
-		"show": control_pos_default[PromoteControlPanel].x,
-		"hide": control_pos_default[PromoteControlPanel].x - PromoteControlPanel.size.x
+		"show": control_pos_default[PromoteControlPanel].y,
+		"hide": control_pos_default[PromoteControlPanel].y - PromoteControlMargin.size.y
 	}	
 	
 	on_current_mode_update(true)
@@ -174,11 +170,9 @@ func promote(uids:Array) -> void:
 
 # -----------------------------------------------
 func end(response:Dictionary) -> void:
-	U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide) 
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
-		
-	await BtnControls.reveal(false)
-	
+	current_mode = MODE.HIDE
+	await hide_complete
+	await TransitionScreen.end()
 	user_response.emit(response)
 # -----------------------------------------------
 
@@ -368,25 +362,22 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		# ---------------
 		MODE.HIDE:
-			BtnControls.freeze_and_disable(true)
-			BtnControls.reveal(false)
-			BtnControls.onBack = func() -> void:pass
-			BtnControls.onAction = func() -> void:pass			
-			
-			U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].hide, duration)
-			U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].hide, duration) 			
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
+			U.tween_node_property(PromoteControlPanel, "position:y", control_pos[PromoteControlPanel].hide, duration)
+			await BtnControls.reveal(false)	
+			hide_complete.emit()
 		# ---------------
 		MODE.SELECT_RESEARCHERS:
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+			await TransitionScreen.start()
+						
 			BtnControls.a_btn_title = "SELECT"
 			BtnControls.b_btn_title = "BACK"		
 			
 			BtnControls.onBack = func() -> void:
 				end({"action": ACTION.RESEARCHERS.BACK})	
-			BtnControls.onAction = func() -> void:pass				
+			BtnControls.onAction = func() -> void:pass	
 
 			#GBL.find_node(REFS.ROOM_NODES).is_active = true
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration )
 			U.tween_node_property(SelectedPanel, "position:x", control_pos[SelectedPanel].show, duration)			
 			reset_cards()
 	
@@ -413,8 +404,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				node.is_deselected = index != researcher_active_index				
 		# ---------------
 		MODE.PROMOTE:
-			PromoteControl.show()
-			
 			BtnControls.disable_back_btn = true
 			BtnControls.freeze_and_disable(true)
 			BtnControls.a_btn_title = "PROMOTE"

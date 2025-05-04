@@ -79,7 +79,6 @@ func on_ref_update() -> void:
 
 	CardDetails.show()
 	
-	
 	CardDrawerActiveAbilities.title = "%s PROGRAMS" % room_details.name
 	CardDrawerPassiveAbilities.title = "%s MODULES" % room_details.name
 	
@@ -87,7 +86,6 @@ func on_ref_update() -> void:
 	CardDrawerImage.img_src = room_details.img_src	if !room_details.is_empty() else null
 	CardDrawerImage.use_static = room_details.is_empty()
 	
-
 	if "passive_abilities" not in room_details or room_details.passive_abilities.call().is_empty():
 		CardDrawerPassiveAbilities.hide()
 		no_passives = true

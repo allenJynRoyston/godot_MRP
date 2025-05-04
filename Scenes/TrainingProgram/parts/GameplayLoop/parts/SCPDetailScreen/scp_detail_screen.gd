@@ -14,6 +14,8 @@ extends GameContainer
 @onready var ContentPanelContainer:Control = $ContentControl/PanelContainer
 @onready var BtnPanelContainer:Control = $BtnControl/MarginContainer
 
+@onready var Transition
+
 enum MODE { HIDE, SELECT_SCP, CONFIRM_SCP, FINALIZE }
 
 const ScpCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn")

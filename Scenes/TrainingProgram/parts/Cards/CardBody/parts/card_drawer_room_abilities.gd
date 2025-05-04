@@ -54,15 +54,17 @@ func on_room_details_update() -> void:
 					if preview_mode or !is_visible_in_tree():return
 					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 					if ActionContainerNode.is_visible_in_tree():
-						ActionContainerNode.BtnControls.freeze_and_disable(true)
-						ActionContainerNode.RoomDetailsControl.disable_inputs = true
+						# first, disables btns in the card
 						onLock.call()
+						# then disables the btn controls
+						await ActionContainerNode.BtnControls.reveal(false)	
+						# perform the ability
 						await GAME_UTIL.use_active_ability(ability, room_details.ref, ability_index, use_location)
+						# unlocks
 						onUnlock.call()
-						ActionContainerNode.BtnControls.freeze_and_disable(false)
-						ActionContainerNode.RoomDetailsControl.disable_inputs = false
+						ActionContainerNode.BtnControls.reveal(true)	
 						return
-						
+				
 					GAME_UTIL.use_active_ability(ability, room_details.room_ref, ability_index, use_location)
 					
 				AbilityList.add_child(btn_node)

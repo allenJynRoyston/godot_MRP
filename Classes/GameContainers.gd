@@ -44,6 +44,7 @@ var unavailable_rooms:Array = []
 const is_container:bool = true
 
 signal user_response
+signal hide_complete
 
 # ------------------------------------------------------------------------------
 func _init() -> void:

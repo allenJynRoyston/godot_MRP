@@ -18,10 +18,12 @@ extends PanelContainer
 @onready var WaitContainer:PanelContainer = $WaitContainer
 @onready var SetupContainer:PanelContainer = $SetupContainer
 
-var BuildContainer:Control 
+@onready var TransitionScreen:Control = $TransistionScreen
+
+#var BuildContainer:Control 
 var SCPSelectScreen:Control 
 var SelectResearcherScreen:Control
-var StoreContainer:Control
+#var StoreContainer:Control
 var EventContainer:Control 
 
 const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
@@ -364,16 +366,6 @@ var current_phase:PHASE = PHASE.STARTUP :
 		current_phase = val
 		on_current_phase_update()
 
-var current_shop_step:SHOP_STEPS = SHOP_STEPS.RESET : 
-	set(val):
-		current_shop_step = val
-		on_current_shop_step_update()
-		
-var current_builder_step:BUILDER_STEPS = BUILDER_STEPS.RESET : 
-	set(val):
-		current_builder_step = val
-		on_current_builder_step_update()		
-
 var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.RESET : 
 	set(val):
 		current_contain_step = val
@@ -421,7 +413,7 @@ signal on_expired_scp_items_complete
 signal on_events_complete
 signal on_summary_complete
 signal on_store_closedt
-signal on_store_purchase_complete
+#signal on_store_purchase_complete
 signal on_confirm_complete
 signal on_cancel_construction_complete
 signal on_reset_room_complete
@@ -837,7 +829,6 @@ func update_tenative_location(location:Dictionary) -> void:
 
 # -----------------------------------
 func check_events(ref:int, event_ref:SCP.EVENT_TYPE, props:Dictionary = {}) -> void:
-	print("check for events...")
 	var res:Array = SCP_UTIL.check_for_events(ref, event_ref, props)
 	
 	if !res.is_empty():
@@ -1247,41 +1238,8 @@ func on_current_phase_update() -> void:
 			onEndGame.call(scenario_ref, scenario_data, false)
 			return
 		# ------------------------
-
-
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------	SHOP STEPS
-#region SHOP STATES
-func on_current_builder_step_update() -> void:
-	if !is_node_ready():return
-	
-	match current_builder_step:
-		# ---------------
-		BUILDER_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-		# ---------------
-		BUILDER_STEPS.OPEN:
-			SUBSCRIBE.suppress_click = true
-			BuildContainer = BuildContainerPreload.instantiate()
-			add_child(BuildContainer)
-			BuildContainer.z_index = 10
-			await U.tick()
-
-			BuildContainer.activate()
-			await U.tick()
-			BuildContainer.start()
-
-			var response:bool = await BuildContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			
-			on_store_purchase_complete.emit(response)	
-			BuildContainer.queue_free()
-			current_builder_step = BUILDER_STEPS.RESET
-		## ---------------
-
-#endregion
-# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	SHOP STEPS
 #region SHOP STATES
@@ -1308,34 +1266,68 @@ func on_current_objective_state_update() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	SHOP STEPS
-#region SHOP STATES
-func on_current_shop_step_update() -> void:
-	if !is_node_ready():return
+#region ABILITIES
+func open_build() -> bool:
+	var node:Control = BuildContainerPreload.instantiate()
+	node.z_index = 10	
+	add_child(node)
 	
-	match current_shop_step:
-		# ---------------
-		SHOP_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-		# ---------------
-		SHOP_STEPS.OPEN:
-			SUBSCRIBE.suppress_click = true
-			StoreContainer = StoreContainerPreload.instantiate()
-			add_child(StoreContainer)
-			StoreContainer.z_index = 10
+	await node.activate()
+	await node.start()
 
-			await U.tick()
-			StoreContainer.activate()
-			
-			StoreContainer.start()
-			var response:bool = await StoreContainer.user_response
-			print(response)
-			StoreContainer.queue_free()
+	var response:bool = await node.user_response
+	node.queue_free()
+	
+	return response
+# ------------------------
 
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			on_store_purchase_complete.emit(response)	
-			current_shop_step = SHOP_STEPS.RESET
-		## ---------------
+# ------------------------
+func open_store() -> bool:
+	var node:Control = StoreContainerPreload.instantiate()
+	add_child(node)
+	node.z_index = 10
+	
+	await node.activate()
+	await node.start()
+	
+	var response:bool = await node.user_response
+	node.queue_free()
 
+	return response
+# ------------------------
+
+# ------------------------
+func hire_researcher(total_options:int = 3) -> bool:
+	var node:Control = SelectResearcherScreenPreload.instantiate()
+	add_child(node)
+	node.z_index = 10
+	node.total_options = total_options 	
+	
+	await node.activate()
+	await node.start()
+	
+	var response:bool = await node.user_response
+	node.queue_free()
+	
+	return response
+# ------------------------
+
+# ------------------------
+func promote_researchers() -> bool:
+	var node:Control = ResearchersContainerPreload.instantiate()
+	add_child(node)
+	node.z_index = 10
+	
+	await U.tick()
+	node.activate()
+	await U.tick()
+	node.promote(hired_lead_researchers_arr.map(func(i): return i[0])	)
+	
+	var response:Dictionary = await node.user_response
+	node.queue_free()
+	
+	return response.action == ACTION.RESEARCHERS.PROMOTED
+# ------------------------
 #endregion
 # ------------------------------------------------------------------------------	
 

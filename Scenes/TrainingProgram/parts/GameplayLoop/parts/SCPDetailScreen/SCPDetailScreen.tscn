@@ -12,7 +12,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1c61"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqway"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_27kps"]
 bg_color = Color(0.455201, 0.00200917, 0.712752, 1)
 border_width_left = 2
 border_width_top = 2
@@ -24,7 +24,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eol62"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cw5v4"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -36,7 +36,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fa8a3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sf0tq"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -48,7 +48,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t8c2x"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hjrwl"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -151,7 +151,7 @@ custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_rqway")
+theme_override_styles/panel = SubResource("StyleBoxFlat_27kps")
 title = "MORE DETAILS"
 assigned_key = "R"
 icon = 23
@@ -164,7 +164,7 @@ size_flags_vertical = 8
 
 [node name="BackBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gmyeb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_eol62")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cw5v4")
 title = "BACK"
 assigned_key = "B"
 icon = 16
@@ -172,7 +172,7 @@ panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 
 [node name="SelectScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gmyeb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fa8a3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sf0tq")
 title = "SELECT"
 assigned_key = "E"
 icon = 10
@@ -180,7 +180,7 @@ panel_color = Color(0, 0.529412, 0.278431, 1)
 
 [node name="ConfirmScp" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_gmyeb")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_t8c2x")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hjrwl")
 title = "CONFIRM"
 assigned_key = "E"
 icon = 10

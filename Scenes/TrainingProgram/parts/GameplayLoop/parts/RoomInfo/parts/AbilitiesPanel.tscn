@@ -19,21 +19,21 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q73qc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m2tj7"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ynjwk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0de7l"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t7ytq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pui3"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -98,25 +98,25 @@ layout_mode = 2
 
 [node name="TextBtn" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_q73qc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_m2tj7")
 icon = 14
 title = "ABILITY 1  (5)"
 
 [node name="TextBtn2" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ynjwk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0de7l")
 icon = 1
-is_disabled = true
 title = "ABILITY 1  (5)"
+is_disabled = true
 
 [node name="TextBtn3" parent="PanelContainer/HBoxContainer/MarginContainer/VBoxContainer/MarginContainer/List" instance=ExtResource("3_3y3wk")]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_t7ytq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8pui3")
 icon = 1
-is_disabled = true
 title = "ABILITY 1  (5)"
+is_disabled = true
 
 [node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer"]
 visible = false

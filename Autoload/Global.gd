@@ -328,6 +328,15 @@ func _unhandled_key_input(event: InputEvent) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func set_transition(state:bool) -> void:
+	var TransitionScreen:Control = GBL.find_node(REFS.GAMEPLAY_LOOP).TransitionScreen
+	if state:
+		await TransitionScreen.start()
+	else:
+		await TransitionScreen.end()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 # NODE REFS
 var process_nodes:Array = []
 

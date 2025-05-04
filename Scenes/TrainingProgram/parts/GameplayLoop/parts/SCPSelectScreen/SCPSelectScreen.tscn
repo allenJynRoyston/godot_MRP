@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cwowqrsr48d6k"]
+[gd_scene load_steps=13 format=3 uid="uid://cwowqrsr48d6k"]
 
 [ext_resource type="Script" uid="uid://bg8kefvvqfmkp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/scp_select_screen.gd" id="1_gm8am"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_rj7tl"]
@@ -8,6 +8,7 @@
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_lyjb2"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_hgv5f"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="7_c0hdb"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="9_kbw1j"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7xi8"]
 
@@ -127,3 +128,6 @@ metadata/_edit_group_ = true
 layout_mode = 2
 c_btn_title = "CONTAINMENT INFO"
 c_btn_icon = 56
+
+[node name="TransitionScreen" parent="." instance=ExtResource("9_kbw1j")]
+layout_mode = 2

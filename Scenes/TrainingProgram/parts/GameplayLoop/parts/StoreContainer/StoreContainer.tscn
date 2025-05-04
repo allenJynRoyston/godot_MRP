@@ -41,6 +41,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_d3jd6")
 script = ExtResource("1_v8p8x")
+metadata/_edit_lock_ = true
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
 material = ExtResource("2_yrttf")
@@ -148,8 +149,8 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_6ij55")
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 100
-theme_override_constants/margin_bottom = 100
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer"]
 layout_mode = 2

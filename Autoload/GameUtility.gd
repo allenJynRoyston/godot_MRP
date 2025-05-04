@@ -458,16 +458,16 @@ func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use
 	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
 	var apply_cooldown:bool = await ability.effect.call()
-	
-	if ability_uid not in base_states.room[designation].ability_on_cooldown:
-		base_states.room[designation].ability_on_cooldown[ability_uid] = 0
-			
+	print(apply_cooldown)
 	if apply_cooldown:
+		if ability_uid not in base_states.room[designation].ability_on_cooldown:
+			base_states.room[designation].ability_on_cooldown[ability_uid] = 0		
+			
 		base_states.room[designation].ability_on_cooldown[ability_uid] = ability.cooldown_duration
 		resources_data[RESOURCE.CURRENCY.SCIENCE].amount -= ability.science_cost
-		SUBSCRIBE.resources_data = resources_data
 		
-	SUBSCRIBE.base_states = base_states
+		SUBSCRIBE.resources_data = resources_data
+		SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -752,7 +752,6 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> bool
 
 # --------------------------------------------------------------------------------------------------		
 func open_store() -> bool:	
-	GameplayNode.current_shop_step = GameplayNode.SHOP_STEPS.OPEN
 	return await GameplayNode.on_store_purchase_complete
 # --------------------------------------------------------------------------------------------------		
 

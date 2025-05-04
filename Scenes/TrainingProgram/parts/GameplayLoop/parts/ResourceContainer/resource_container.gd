@@ -167,9 +167,7 @@ func update_panels() -> void:
 	PersonnelTechnicians.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.TECHNICIANS]
 	PersonnelSecurity.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.SECURITY]
 	PersonnelDClass.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.DCLASS]	
-	
-	print("CAMERA.TYPE.ROOM_SELECT: ", camera_settings.type, CAMERA.TYPE.ROOM_SELECT)
-	
+		
 	# update everything else
 	match camera_settings.type:
 		# -----------------------
@@ -203,7 +201,6 @@ func update_panels() -> void:
 		# -----------------------
 		CAMERA.TYPE.ROOM_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_room_summary(current_location)	
-			print(summary_data)
 			#currency diff
 			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
 			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 

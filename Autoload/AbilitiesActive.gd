@@ -23,7 +23,15 @@ var trigger_onsite_nuke:Dictionary = {
 		#return await GAME_UTIL.trigger_nuke(),
 }
 
-
+# ---------------------------------
+var unlock_facilities:Dictionary = {
+	"name": "UNLOCK FACILITIES", 
+	"description": "Unlock new facilities and make them available for your site.",
+	"science_cost": 0,
+	"cooldown_duration":  0, 
+	"effect": func() -> bool:
+		return await GBL.find_node(REFS.GAMEPLAY_LOOP).open_store(),
+}
 
 # ---------------------------------
 var promote_researchers:Dictionary = {
@@ -32,7 +40,7 @@ var promote_researchers:Dictionary = {
 	"science_cost": 50,
 	"cooldown_duration":  5, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.promote_researchers(),
+		return await GBL.find_node(REFS.GAMEPLAY_LOOP).promote_researchers(),
 }
 
 var hire_researcher:Dictionary = {
@@ -41,7 +49,7 @@ var hire_researcher:Dictionary = {
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.recruit_new_researcher(3),
+		return await GBL.find_node(REFS.GAMEPLAY_LOOP).hire_researcher(3),
 }
 
 var add_trait:Dictionary = {
@@ -64,15 +72,7 @@ var remove_trait:Dictionary = {
 		return true,
 }
 
-# ---------------------------------
-var unlock_facilities:Dictionary = {
-	"name": "UNLOCK FACILITIES", 
-	"description": "Unlock new facilities and make them available for your site.",
-	"science_cost": 0,
-	"cooldown_duration":  0, 
-	"effect": func() -> bool:
-		return await GAME_UTIL.open_store(),
-}
+
 
 # --------------------------------- TODO
 var money_hack:Dictionary = {

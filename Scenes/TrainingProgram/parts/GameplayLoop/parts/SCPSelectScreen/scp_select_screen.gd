@@ -15,6 +15,7 @@ extends GameContainer
 @onready var MiniCardMargin:MarginContainer = $MiniCardControl/MiniCardPanel/MarginContainer
 @onready var ScpMiniCard:Control = $MiniCardControl/MiniCardPanel/MarginContainer/VBoxContainer/ScpMiniCard
 
+@onready var TransitionScreen:Control = $TransitionScreen
 
 enum MODE { HIDE, SELECT_SCP, CONFIRM_SCP, FINALIZE }
 
@@ -47,8 +48,6 @@ var custom_min_size:Vector2
 var overflow_count:int
 var read_only:bool = false
 
-signal hide_complete
-
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -58,7 +57,18 @@ func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 	
 	BtnControls.onDirectional = on_key_input
-	
+# -----------------------------------------------
+
+# -----------------------------------------------
+func activate() -> void:
+	show()
+	await U.tick()
+
+	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
+	control_pos_default[MiniCardPanel] = MiniCardPanel.position
+
+	update_control_pos()
+	on_is_showing_update()
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -67,6 +77,7 @@ func start_selection(new_refs:Array) -> void:
 	TitleLabel.text = "SELECT AN SCP"
 	current_mode = MODE.SELECT_SCP
 	read_only = false
+	TransitionScreen.start()
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -75,14 +86,14 @@ func start_read_only(new_refs:Array) -> void:
 	TitleLabel.text = "DETAILS"
 	current_mode = MODE.SELECT_SCP
 	read_only = true
+	TransitionScreen.start()
 # -----------------------------------------------	
 
 # -----------------------------------------------
 func end(made_selection:bool, selected_scp:int = -1) -> void:	
-	BtnControls.reveal(false)
 	current_mode = MODE.HIDE
 	await hide_complete
-	
+	await TransitionScreen.end()
 	user_response.emit({"made_selection": made_selection, "selected_scp": selected_scp})
 # -----------------------------------------------	
 
@@ -239,18 +250,6 @@ func on_confirm_scp() -> void:
 	current_mode = MODE.FINALIZE
 # -----------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------
-func activate() -> void:
-	show()
-	await U.tick()
-
-	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
-	control_pos_default[MiniCardPanel] = MiniCardPanel.position
-
-	update_control_pos()
-	on_is_showing_update()
-# --------------------------------------------------------------------------------------------------	
-
 # --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
 	update_control_pos()
@@ -283,13 +282,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 	match current_mode:
 		# --------------
-		MODE.HIDE:
-			BtnControls.freeze_and_disable(true)
-
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
-			U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide, duration)
-			await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide, duration)
-			
+		MODE.HIDE:			
+			await BtnControls.reveal(false)
 			hide_complete.emit()
 		# --------------
 		MODE.SELECT_SCP:	
@@ -297,10 +291,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				var node:Control = ScpList.get_child(index)
 				node.is_selected = false
 							
-			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration)
-			await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show, duration)
-			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show, duration)
+			await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+			#U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show, duration)
+			#await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show, duration)
 			
 			
 			BtnControls.a_btn_title = "SELECT"	

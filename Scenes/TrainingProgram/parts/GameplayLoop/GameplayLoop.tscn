@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=19 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" uid="uid://b07g7jcbtop8c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://p7chmumf3rm2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/LineDrawContainer.tscn" id="14_g12vl"]
 [ext_resource type="PackedScene" uid="uid://b2glyeqvwy3vs" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/ObjectivesContainer.tscn" id="15_g2w1o"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="15_y8y6g"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="17_2j8cg"]
 [ext_resource type="PackedScene" uid="uid://btl83p0xrlqoi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/PhaseAnnouncement.tscn" id="20_q3yo6"]
 [ext_resource type="PackedScene" uid="uid://bxish5x37ra5e" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn" id="21_jqp8v"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="26_k4uqe"]
@@ -46,7 +47,6 @@ visible = false
 layout_mode = 2
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]
-visible = false
 layout_mode = 2
 
 [node name="LineDrawContainer" parent="." instance=ExtResource("14_g12vl")]
@@ -59,9 +59,6 @@ layout_mode = 2
 [node name="RoomInfo" parent="." instance=ExtResource("6_fbysn")]
 visible = false
 layout_mode = 2
-expand = null
-is_showing = null
-freeze_inputs = null
 
 [node name="FloorInfo" parent="." instance=ExtResource("7_ceqoy")]
 visible = false
@@ -163,3 +160,8 @@ allow_hint = false
 layout_mode = 2
 text = "Please wait..."
 label_settings = ExtResource("26_k4uqe")
+
+[node name="TransistionScreen" parent="." instance=ExtResource("17_2j8cg")]
+visible = false
+z_index = 10
+layout_mode = 2

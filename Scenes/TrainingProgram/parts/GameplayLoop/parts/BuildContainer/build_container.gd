@@ -17,7 +17,7 @@ extends GameContainer
 
 @onready var SplashPanelContainer:PanelContainer = $SplashControl/SplashPanelContainer
 @onready var SplashLabel:Label = $SplashControl/SplashPanelContainer/PanelContainer/MarginContainer/SplashLabel
-@onready var TransitionScreen:Control = $TransistionScreen
+@onready var TransitionScreen:Control = $TransitionScreen
 
 @onready var DetailPanel:Control = $DetailPanel
 
@@ -37,7 +37,6 @@ var grid_index:int = 0 :
 var has_more:bool = false
 var grid_list_data:Array
 
-var is_setup:bool = false
 var is_animating:bool = false 
 
 var page_tracker:int = 0
@@ -51,44 +50,34 @@ var grid_as_array:Array = [
 
 var await_confirm:bool = false
 signal on_confirm
-signal on_hide_complete
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	hide()
 	self.modulate = Color(1, 1, 1, 0)
 	BtnControls.onDirectional = on_key_press
-
-	is_setup = true
-	on_current_mode_update()	
-	on_grid_index_update()	
 	on_resources_data_update()
+
+func activate() -> void:
+	await U.tick()
+	control_pos_default[MainPanel] = MainPanel.position
+	control_pos_default[RoomMiniPanel] = RoomMiniPanel.position
+	control_pos_default[SplashPanelContainer] = SplashPanelContainer.position
+	update_control_pos()
 
 func start() -> void:
 	await U.tick()
 	current_mode = MODE.CONTENT_SELECT
 	update_grid_content()
+	TransitionScreen.start()
+
 	
-func end(has_action:bool) -> void:		
+func end(has_action:bool) -> void:
 	current_mode = MODE.HIDE
-	await on_hide_complete
+	await hide_complete
 	await TransitionScreen.end()	
 	user_response.emit(has_action)
 # --------------------------------------------------------------------------------------------------
-
-
-# --------------------------------------------------------------------------------------------------
-func activate() -> void:
-	show()	
-	await U.tick()
-	
-	control_pos_default[MainPanel] = MainPanel.position
-	control_pos_default[RoomMiniPanel] = RoomMiniPanel.position
-	control_pos_default[SplashPanelContainer] = SplashPanelContainer.position
-
-	update_control_pos()	
-# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
@@ -125,15 +114,12 @@ func purchase_room() -> void:
 	SplashLabel.text = "Purchase %s?" % [room_details.name]
 # --------------------------------------------------------------------------------------------------	
 
-
-
 # --------------------------------------------------------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 	if !is_node_ready():return
 	CostResourceItem.title = str(resources_data[RESOURCE.CURRENCY.MONEY].amount)
 # --------------------------------------------------------------------------------------------------
-
 
 # --------------------------------------------------------------------------------------------------	
 func on_current_location_update(new_val:Dictionary) -> void:
@@ -231,26 +217,19 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		# -------------------
 		MODE.HIDE:
-			BtnControls.freeze_and_disable(true)
 			BtnControls.reveal(false)
-			BtnControls.onBack = func() -> void:pass
-			BtnControls.onAction = func() -> void:pass			
-			
 			DetailPanel.reveal(false)
 
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].hide, duration)
 			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].hide, duration)	
 			await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide, duration)	
 			
-			
-			on_hide_complete.emit()
+			hide_complete.emit()
 		# -------------------
 		MODE.CONTENT_SELECT:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0 )
-			await TransitionScreen.start()
-			BtnControls.reveal(true)
-			DetailPanel.reveal(true)
-			U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show, duration)			
+			
+			await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show, duration)			
 			U.tween_node_property(RoomMiniPanel, "position:x", control_pos[RoomMiniPanel].show, duration)	
 
 			BtnControls.directional_pref = "NONE"
@@ -259,9 +238,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				end(false)
 			BtnControls.onAction = func() -> void:
 				previous_grid_index = grid_index
-			await U.tick()
 			BtnControls.item_index = previous_grid_index
 			
+			DetailPanel.reveal(true)			
+			await BtnControls.reveal(true)
+
 			on_grid_index_update()				
 		# -------------------
 		MODE.PURCHASE:

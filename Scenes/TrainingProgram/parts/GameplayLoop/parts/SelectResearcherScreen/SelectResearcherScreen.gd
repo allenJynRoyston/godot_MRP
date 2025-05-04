@@ -3,13 +3,15 @@ extends GameContainer
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnControls:Control = $BtnControls
 
-@onready var ResearcherControlPanel:Control = $ResearcherControl
+#@onready var ResearcherControlPanel:Control = $ResearcherControl
 @onready var ResearcherList:HBoxContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/ResearcherList
 
 @onready var TraitPanel:Control = $TraitControl/TraitPanel
 @onready var TraitList:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/TraitContainer/TraitList
 @onready var SynergyContainer:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer
 @onready var SynergyTraitList:VBoxContainer = $TraitControl/TraitPanel/MarginContainer/VBoxContainer/SynergyContainer/SynergyTraitList
+
+@onready var TransitionScreen:Control = $TransitionScreen
 
 enum MODE { HIDE, SELECT_RESEARCHERS, CONFIRM_RESEARCHERS, FINALIZE }
 
@@ -30,17 +32,13 @@ var new_hire_list:Array
 var is_animating:bool = true
 var total_options:int = 2
 
-
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()	
 	self.modulate = Color(1, 1, 1, 0)
 	on_researcher_active_index_update()
-	
 	SynergyContainer.hide() 
-	
 	BtnControls.onDirectional = on_directional
-
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -48,15 +46,14 @@ func start() -> void:
 	researcher_active_index = -1
 	current_mode = MODE.SELECT_RESEARCHERS
 	create_researchers()
+	TransitionScreen.start()
 # -----------------------------------------------
 
 # -----------------------------------------------
 func end(response:bool) -> void:
-	BtnControls.reveal(false)
-	U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide)
-	await U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide)
-
-		
+	current_mode = MODE.HIDE
+	await hide_complete
+	await TransitionScreen.end()	
 	user_response.emit(response)
 # -----------------------------------------------	
 
@@ -71,7 +68,7 @@ func activate() -> void:
 	show()
 	await U.tick()
 	
-	control_pos_default[ResearcherControlPanel] = ResearcherControlPanel.position
+	#control_pos_default[ResearcherControlPanel] = ResearcherControlPanel.position
 	control_pos_default[TraitPanel] = TraitPanel.position
 	
 	update_control_pos()
@@ -88,10 +85,10 @@ func update_control_pos() -> void:
 	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
 	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
 	
-	control_pos[ResearcherControlPanel] = {
-		"show": control_pos_default[ResearcherControlPanel].y, 
-		"hide": control_pos_default[ResearcherControlPanel].y - ResearcherControlPanel.size.y
-	}
+	#control_pos[ResearcherControlPanel] = {
+		#"show": control_pos_default[ResearcherControlPanel].y, 
+		#"hide": control_pos_default[ResearcherControlPanel].y - ResearcherControlPanel.size.y
+	#}
 	
 	control_pos[TraitPanel] = {
 		"show": control_pos_default[TraitPanel].y,
@@ -106,25 +103,22 @@ func update_control_pos() -> void:
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	is_animating = true
+	var duration:float = 0 if skip_animation else 0.3
 	
 	match current_mode:
 		# ---------------------
-		MODE.HIDE:							
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
-			U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide, 0 if skip_animation else 0.3)
-			U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide, 0 if skip_animation else 0.3)
+		MODE.HIDE:		
+			await BtnControls.reveal(false)
+			hide_complete.emit()
 		# ---------------------
 		MODE.SELECT_RESEARCHERS:
-			BtnControls.reveal(false)
-
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
 			
 			for index in ResearcherList.get_child_count():
 				var node:Control = ResearcherList.get_child(index)
 				node.is_deselected = false
 							
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), 0 if skip_animation else 0.3)
-			U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].show, 0 if skip_animation else 0.3)
+			#U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].show, duration)
 			
 			BtnControls.a_btn_title = "SELECT"	
 			BtnControls.b_btn_title = "CANCEL"	
@@ -150,8 +144,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				node.is_deselected = researcher_active_index != index		
 		# ---------------------
 		MODE.FINALIZE:
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), 0 if skip_animation else 0.3)
-			U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide, 0 if skip_animation else 0.3)	
+			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
+			#U.tween_node_property(ResearcherControlPanel, "position:y", control_pos[ResearcherControlPanel].hide, duration)	
 
 			# add to selected researchers
 			hired_lead_researchers_arr.push_back(new_hire_list[researcher_active_index])
