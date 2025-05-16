@@ -1,9 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cus6h1nu75y1e"]
+[gd_scene load_steps=8 format=3 uid="uid://cus6h1nu75y1e"]
 
 [ext_resource type="Script" uid="uid://dhdi25jyrhskx" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_room_abilities.gd" id="1_6ymt7"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_b2hfq"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_b2hfq"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_pdxs1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ildx4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jqy7f"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -15,12 +17,26 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xpbf"]
+bg_color = Color(0, 0, 0, 0.509804)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_kovqv"]
+font = ExtResource("4_pdxs1")
+font_size = 32
+font_color = Color(1, 0.239216, 0, 1)
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
 [node name="CardDrawerAblities" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
 offset_right = 200.0
 offset_bottom = 54.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ildx4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jqy7f")
 script = ExtResource("1_6ymt7")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -47,3 +63,32 @@ theme_override_constants/margin_bottom = 3
 
 [node name="AbilityList" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
+
+[node name="BusyPanel" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="PanelContainer" type="PanelContainer" parent="BusyPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2xpbf")
+
+[node name="CenterContainer" type="CenterContainer" parent="BusyPanel/PanelContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BusyPanel/PanelContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="BusyPanel/PanelContainer/CenterContainer/HBoxContainer" instance=ExtResource("3_b2hfq")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 48
+static_color = Color(1, 0.239216, 0, 1)
+is_hoverable = false
+
+[node name="Label" type="Label" parent="BusyPanel/PanelContainer/CenterContainer/HBoxContainer"]
+layout_mode = 2
+text = "BUSY"
+label_settings = SubResource("LabelSettings_kovqv")

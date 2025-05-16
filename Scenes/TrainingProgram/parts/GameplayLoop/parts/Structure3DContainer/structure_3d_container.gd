@@ -1,7 +1,5 @@
 extends GameContainer
 
-@onready var SelectLocationInstructions:VBoxContainer = $PanelContainer/MarginContainer/SelectLocationInstructions
-@onready var PlacementInstructions:VBoxContainer = $PanelContainer/MarginContainer/PlacementInstructions
 @onready var Rendering:Node3D = $SubViewport/Rendering
 
 var placement_instructions:Array = [] : 

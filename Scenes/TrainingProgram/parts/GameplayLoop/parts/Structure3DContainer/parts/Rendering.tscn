@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://c60d3ymkiaiyy"]
 
-[ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/structure_scene.gd" id="1_cucwc"]
+[ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/rendering.gd" id="1_cucwc"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_baavy"]
 [ext_resource type="PackedScene" uid="uid://bl0fcbjjnqeux" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNodes.tscn" id="4_ujma6"]
 
@@ -88,7 +88,7 @@ size = Vector2i(1920, 1080)
 [node name="CameraContainers" type="Node3D" parent="."]
 
 [node name="ActiveCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(0.984808, -0.173648, -7.5904e-09, 0, -4.37114e-08, 1, -0.173648, -0.984808, -4.30473e-08, 0, 0, 0)
+transform = Transform3D(0.984808, -0.173648, -7.59039e-09, 0, -4.37114e-08, 1, -0.173648, -0.984808, -4.30473e-08, 0, 0, 0)
 cull_mask = 1023
 projection = 1
 current = true
@@ -102,7 +102,7 @@ projection = 1
 size = 100.0
 
 [node name="RoomPlaceholderCamera" type="Camera3D" parent="CameraContainers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 0.219315, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, -0.317456, 50)
 cull_mask = 1023
 projection = 1
 size = 7.0
@@ -196,6 +196,7 @@ skeleton = NodePath("../../CameraContainers/RoomPlaceholderCamera")
 
 [node name="Sprite3D" type="Sprite3D" parent="RoomScene/RoomNodeContainer"]
 transform = Transform3D(1, 0, 0, 0, 0.819152, -0.573576, 0, 0.573576, 0.819152, 0, 0, 0)
+transparent = false
 double_sided = false
 texture_filter = 0
 texture = SubResource("ViewportTexture_asfwt")

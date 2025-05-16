@@ -39,7 +39,6 @@ size_flags_vertical = 3
 script = ExtResource("1_15jbj")
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
-visible = false
 layout_mode = 2
 
 [node name="TimelineContainer" parent="." instance=ExtResource("5_1tp62")]
@@ -68,7 +67,6 @@ size_flags_vertical = 1
 expand = false
 
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]
-visible = false
 layout_mode = 2
 
 [node name="ConfirmModal" parent="." instance=ExtResource("11_kf8f5")]

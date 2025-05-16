@@ -1,8 +1,7 @@
 @tool
 extends CardDrawerClass
 
-enum ABILITY_TYPE {ACTIVE, PASSIVE}
-
+@onready var BusyPanel:MarginContainer = $BusyPanel
 @onready var AbilityList:VBoxContainer = $MarginContainer/MarginContainer/AbilityList
 
 @export var room_details:Dictionary = {} : 
@@ -11,6 +10,9 @@ enum ABILITY_TYPE {ACTIVE, PASSIVE}
 		on_room_details_update()
 		
 @export var ability_type:ABILITY_TYPE = ABILITY_TYPE.ACTIVE 
+
+enum ABILITY_TYPE {ACTIVE, PASSIVE}
+
 		
 const RoomAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomAbilityBtn/RoomAbilityBtn.tscn")		
 const RoomPassiveAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomPassiveAbilityBtn/RoomPassiveAbilityBtn.tscn")
@@ -22,6 +24,7 @@ var onUnlock:Callable = func() -> void:pass
 
 func _ready() -> void:
 	super._ready()
+	BusyPanel.hide()
 
 func clear() -> void:
 	for node in AbilityList.get_children():
@@ -52,6 +55,8 @@ func on_room_details_update() -> void:
 
 				btn_node.onClick = func() -> void:
 					if preview_mode or !is_visible_in_tree():return
+					if btn_node.on_cooldown or btn_node.is_unavailable or btn_node.is_unknown:return
+					
 					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 					if ActionContainerNode.is_visible_in_tree():
 						# first, disables btns in the card
@@ -82,6 +87,7 @@ func on_room_details_update() -> void:
 				btn_node.ability_name = ability.name
 				btn_node.use_location = use_location
 				btn_node.panel_color = border_color
+
 				
 				btn_node.is_unknown = ability.lvl_required >= 1 if !preview_mode else false
 				btn_node.cost = ability.energy_cost
@@ -95,11 +101,10 @@ func on_room_details_update() -> void:
 
 
 func lock_btns(state:bool) -> void:
+	BusyPanel.show() if state else BusyPanel.hide()
 	for btn in AbilityList.get_children():
-		if state:
-			btn.hide()
-		else:
-			btn.show()
+		btn.is_hoverable = !state
+
 
 func get_btns() -> Array:	
 	return AbilityList.get_children()

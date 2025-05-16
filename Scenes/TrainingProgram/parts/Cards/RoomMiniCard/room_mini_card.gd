@@ -10,14 +10,11 @@ extends MouseInteractions
 @onready var CardDetails:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDetails
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDetails/CardDrawerName
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDetails/CardDrawerImage
-
 @onready var DeactivatedPanel:Control = $DeactivatedPanel
 
 @export var preview_mode:bool = false 
 
-
 var use_location:Dictionary 
-
 var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass

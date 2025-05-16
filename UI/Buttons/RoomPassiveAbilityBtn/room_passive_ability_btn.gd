@@ -59,7 +59,10 @@ var use_location:Dictionary = {} :
 # directly access, do not remove
 var type:String 
 var room_ref:int
-var ability_data:Dictionary = {}
+var ability_data:Dictionary = {} : 
+	set(val):
+		ability_data = val
+		on_ability_data_update()
 var ability_index:int
 
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
@@ -128,7 +131,6 @@ func on_is_unavailable_update() -> void:
 	update_font_color()
 	on_panel_color_update()
 
-
 func update_font_color() -> void:
 	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
 	var new_color:Color = Color.LIGHT_GRAY
@@ -149,7 +151,29 @@ func update_font_color() -> void:
 	for node in [NameLabel, CostLabel]:
 		node.label_settings = label_duplicate	
 		
-	IconBtn.static_color = new_color		
+	IconBtn.static_color = new_color
+	
+func on_ability_data_update() -> void:
+	if ability_data.is_empty():return
+	hint_title = ability_data.name
+	hint_icon = SVGS.TYPE.ENERGY
+	
+	if is_unknown:
+		hint_title = "???"
+		hint_description = "[UNAVAILABLE]"
+		return
+	if is_unavailable:
+		hint_title = "???"
+		hint_description = "[UNAVAILBLE] %s " % ability_data.description 
+		return		
+	if on_cooldown:		
+		hint_description = "[ON COOLDOWN] %s " % ability_data.description
+		return
+	if is_disabled:
+		hint_description = "[CURRENTLY UNUSABLE] %s " % ability_data.description
+		return
+	
+	hint_description = ability_data.description	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -126,8 +126,24 @@ func on_cost_update() -> void:
 func on_ability_data_update() -> void:
 	if ability_data.is_empty():return
 	hint_title = ability_data.name
-	hint_description = ability_data.description
 	hint_icon = SVGS.TYPE.RESEARCH
+	
+	if is_unknown:
+		hint_title = "???"
+		hint_description = "[UNAVAILABLE]"
+		return
+	if is_unavailable:
+		hint_title = "???"
+		hint_description = "[UNAVAILBLE] %s " % ability_data.description 
+		return		
+	if on_cooldown:		
+		hint_description = "[ON COOLDOWN] %s " % ability_data.description
+		return
+	if is_disabled:
+		hint_description = "[CURRENTLY UNUSABLE] %s " % ability_data.description
+		return
+	
+	hint_description = ability_data.description
 
 func on_cooldown_update() -> void:
 	if !is_node_ready():return

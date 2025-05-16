@@ -41,15 +41,13 @@ extends GameContainer
 @onready var RoomBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel
 @onready var RoomBtnPanelLabel:Label = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/RoomBtnPanelLabel
 @onready var UseAbilityBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UseAbilityBtn
-#@onready var DetailsToggleBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DetailsToggleBtn
 @onready var BuildBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
 @onready var DecontructBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
 
 @onready var FacilityBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/FacilityBtnPanel
-
 @onready var ConfirmBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/ConfirmBtn
-@onready var BackBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/BackBtnPanel/MarginContainer/VBoxContainer/BackBtn
+@onready var BackBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/BackBtn
 @onready var EndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/EndTurnBtn
 
 @onready var ScpMiniCard:Control = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/ScpMiniCard
@@ -1052,6 +1050,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			ConfirmBtn.hide()
 			GotoBuildingBtn.hide()
 			HintInfoBtn.hide()
+			EndTurnBtn.hide()
 			
 			HotkeyContainer.hide()
 			HotkeyContainer.lock_btns = true

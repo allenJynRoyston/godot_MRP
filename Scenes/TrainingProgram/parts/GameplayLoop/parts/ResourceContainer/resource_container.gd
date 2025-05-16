@@ -44,6 +44,8 @@ extends GameContainer
 @onready var SecTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SecTag
 @onready var DClassTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/DClassTag
 
+# this button does not need to be linked; the listener is on the root level
+@onready var TaskbarBtn:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/TaskbarBtn
 
 var previous_location:Dictionary = {}
 
@@ -134,6 +136,22 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 # -----------------------------------------------			
 
 # -----------------------------------------------
+func update_vibes(morale_val:int, safety_val:int, readiness_val:int) -> void:
+	MoraleLabel.text = str(morale_val)
+	SafetyLabel.text = str(safety_val)
+	ReadinessLabel.text = str(readiness_val)
+	update_vibe_color(MoraleLabel, morale_val)
+	update_vibe_color(SafetyLabel, safety_val)
+	update_vibe_color(ReadinessLabel, readiness_val)
+
+func update_vibe_color(node:Control, val:int) -> void:
+	var label_setting_copy:LabelSettings = node.label_settings.duplicate()
+	label_setting_copy.font_color = Color.RED if val < 0 else Color.WHITE
+	node.label_settings = label_setting_copy
+# -----------------------------------------------
+
+
+# -----------------------------------------------
 func update_panels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or camera_settings.is_empty():return
 	
@@ -154,10 +172,8 @@ func update_panels() -> void:
 	CurrencyResearch.title = "%s" %  [resources_data[RESOURCE.CURRENCY.SCIENCE].amount]
 	CurrencyCore.title = "%s" %  [resources_data[RESOURCE.CURRENCY.CORE].amount]
 	
-	# metrics
-	MoraleLabel.text = str(ring_config.metrics[RESOURCE.METRICS.MORALE])
-	SafetyLabel.text = str(ring_config.metrics[RESOURCE.METRICS.SAFETY])
-	ReadinessLabel.text = str(ring_config.metrics[RESOURCE.METRICS.READINESS])
+	# vibes
+	update_vibes(ring_config.metrics[RESOURCE.METRICS.MORALE], ring_config.metrics[RESOURCE.METRICS.SAFETY], ring_config.metrics[RESOURCE.METRICS.READINESS])
 	
 	# energy
 	Energy.title = "%s/%s" % [ring_config.energy.available - ring_config.energy.used, ring_config.energy.available]
@@ -207,12 +223,10 @@ func update_panels() -> void:
 			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
 			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
-			MoraleTag.val = str(summary_data.metric_diff[RESOURCE.METRICS.MORALE])
-			SafetyTag.val = str(summary_data.metric_diff[RESOURCE.METRICS.SAFETY])
-			ReadinessTag.val = str(summary_data.metric_diff[RESOURCE.METRICS.READINESS])	
-			
-			EnergyTag.val = str(-summary_data.energy_diff)
-			
+			# update vibes
+			update_vibes(summary_data.metric_diff[RESOURCE.METRICS.MORALE], summary_data.metric_diff[RESOURCE.METRICS.SAFETY], summary_data.metric_diff[RESOURCE.METRICS.READINESS])
+
+			EnergyTag.val = str(-summary_data.energy_diff)			
 			StaffTag.val = str(summary_data.personnel_diff[RESOURCE.PERSONNEL.STAFF])
 			TechTag.val = str(summary_data.personnel_diff[RESOURCE.PERSONNEL.TECHNICIANS])
 			SecTag.val = str(summary_data.personnel_diff[RESOURCE.PERSONNEL.SECURITY])	
