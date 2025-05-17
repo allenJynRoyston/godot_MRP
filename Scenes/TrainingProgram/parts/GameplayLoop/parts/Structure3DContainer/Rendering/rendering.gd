@@ -33,17 +33,20 @@ func get_preview_viewport() -> SubViewport:
 # ------------------------------------------------
 
 # ------------------------------------------------
-func transition_out() -> void:
+func transition() -> void:
+	TransitionRect.show()
 	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
 	await U.tween_range(0.0, 1.0, 0.5, func(val:float) -> void:
 		TransitionRect.material.set_shader_parameter("sensitivity", val)
 	).finished	
+	TransitionRect.hide()
+	TransitionRect.material.set_shader_parameter("sensitivity", 0.0)
 # ------------------------------------------------
 
 # ------------------------------------------------
 func enable_overview(state:bool) -> void:
 	if state:
-		transition_out()
+		transition()
 		OverviewScene.show()
 		OverviewNode.show()
 		OverviewNode.set_process(true)
@@ -57,7 +60,7 @@ func enable_overview(state:bool) -> void:
 # ------------------------------------------------
 func enable_wing(state:bool) -> void:
 	if state:
-		transition_out()
+		transition()
 		WingScene.show()
 		WingNode.show()
 		WingNode.set_process(true)
@@ -74,7 +77,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty():return
 		
-	
 	GBL.add_to_animation_queue(self)
 
 	match camera_settings.type:

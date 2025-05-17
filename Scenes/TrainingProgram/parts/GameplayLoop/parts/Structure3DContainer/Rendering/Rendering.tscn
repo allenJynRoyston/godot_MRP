@@ -32,9 +32,13 @@ stretch_mode = 4
 
 [node name="TransitionRect" type="TextureRect" parent="."]
 material = ExtResource("2_dy8ob")
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 4
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true

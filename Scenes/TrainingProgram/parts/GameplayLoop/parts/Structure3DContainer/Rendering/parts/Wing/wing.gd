@@ -103,7 +103,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		designation = U.location_to_designation(current_location)
 		
 		menu_index = 0
-
+		transition()
 		on_assigned_location_update()
 		#assign_room_node_location(current_location.floor, current_location.ring, camera_settings.type == CAMERA.TYPE.WING_SELECT)
 
@@ -134,14 +134,16 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	update_room_lighting(true)	
 # --------------------------------------------------------
 
-# --------------------------------------------------------
-#func transition_out(state:bool, duration:float, viewport:SubViewport) -> void:
-	#TransitionRect.show()
-	#TransitionRect.texture = U.get_viewport_texture(viewport)
-	#await U.tween_range(0.0, 1.0, duration, func(val:float) -> void:
-		#TransitionRect.material.set_shader_parameter("sensitivity", val)
-	#).finished	
-# --------------------------------------------------------
+# ------------------------------------------------
+func transition() -> void:
+	TransitionRect.show()
+	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
+	await U.tween_range(0.0, 1.0, 0.5, func(val:float) -> void:
+		TransitionRect.material.set_shader_parameter("sensitivity", val)
+	).finished	
+	TransitionRect.hide()
+	TransitionRect.material.set_shader_parameter("sensitivity", 0.0)
+# ------------------------------------------------
 
 
 # --------------------------------------------------------
