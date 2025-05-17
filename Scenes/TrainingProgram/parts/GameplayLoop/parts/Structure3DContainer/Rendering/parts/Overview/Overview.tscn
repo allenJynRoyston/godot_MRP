@@ -1,0 +1,96 @@
+[gd_scene load_steps=6 format=3 uid="uid://m74gitiqvwla"]
+
+[ext_resource type="Script" uid="uid://dcr4ln4tdav5" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Overview/overview.gd" id="1_45i8x"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_fn6rr"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="Environment" id="Environment_kdkyo"]
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+volumetric_fog_density = 0.0167
+volumetric_fog_gi_inject = 0.89
+volumetric_fog_length = 22.9
+volumetric_fog_detail_spread = 0.5
+volumetric_fog_ambient_inject = 0.84
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_45i8x"]
+top_radius = 4.0
+bottom_radius = 4.0
+height = 70.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_becvl"]
+size = Vector3(25, 8, 25)
+
+[node name="Overview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_45i8x")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_fn6rr")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport"]
+environment = SubResource("Environment_kdkyo")
+
+[node name="Node3D" type="Node3D" parent="SubViewport"]
+
+[node name="Elevator" type="MeshInstance3D" parent="SubViewport/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28.1906, 0)
+layers = 1023
+mesh = SubResource("CylinderMesh_45i8x")
+skeleton = NodePath("../../../../..")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/Node3D/Elevator"]
+transform = Transform3D(-0.202309, 0.693053, -0.691917, -1.49012e-08, 0.706527, 0.707687, 0.979322, 0.143171, -0.142936, 0, 36.5862, 0)
+
+[node name="FloorInstance" type="Node3D" parent="SubViewport/Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5052, 0, -13.2129)
+mesh = SubResource("BoxMesh_becvl")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewport/Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.2659, 0, -13.2129)
+mesh = SubResource("BoxMesh_becvl")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="SubViewport/Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, -2.98023e-08, 0, 1, 13.2659, 0, 13.1206)
+mesh = SubResource("BoxMesh_becvl")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="SubViewport/Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5052, 0, 13.1206)
+mesh = SubResource("BoxMesh_becvl")
+skeleton = NodePath("")
+
+[node name="FloorInstanceContainer" type="Node3D" parent="SubViewport/Node3D"]
+
+[node name="FloorCamera" type="Camera3D" parent="SubViewport/Node3D"]
+transform = Transform3D(-1.04878, 0.232616, -0.639107, 0, 1.17462, 0.427525, 0.680123, 0.358702, -0.985528, -34.0062, 2.5, -52.4388)
+cull_mask = 1023
+projection = 1
+size = 100.0

@@ -327,8 +327,6 @@ func update_control_pos() -> void:
 func toggle_camera_view() -> void:	
 	await lock_btns(true)
 	
-	#await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].hide)
-	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
 			camera_settings.type = CAMERA.TYPE.WING_SELECT
@@ -343,9 +341,6 @@ func toggle_camera_view() -> void:
 	await U.set_timeout(0.7)
 	
 	await lock_btns(false)
-	#await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].show)
-	
-	#lock_btns(false, true)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1211,7 +1206,6 @@ func update_details(use_location:Dictionary = current_location) -> void:
 		for researcher in room_extract.researchers:
 			ResearcherMiniCard.researcher = researcher
 			
-
 	await U.tick()
 	MiniCardPanel.position.y = 0	
 # --------------------------------------------------------------------------------------------------

@@ -4,4 +4,4 @@
 
 [resource]
 shader = ExtResource("1_awmrf")
-shader_parameter/bit_depth = 8.0
+shader_parameter/bit_depth = 32.0

@@ -1,5 +1,8 @@
 extends Control
 
+@onready var TransitionRect:TextureRect = $TransitionRect
+@onready var RenderSubviewport:SubViewport = $SubViewport
+
 @onready var NodeContainer:Node3D = $SubViewport/RoomColumn/NodeContainer
 @onready var Column1:Node3D = $SubViewport/RoomColumn/NodeContainer/column1
 @onready var Column2:Node3D = $SubViewport/RoomColumn/NodeContainer/column2
@@ -8,9 +11,6 @@ extends Control
 @onready var RightBoardRoomLabels:Node3D = $SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels
 
 @onready var FloorMesh:MeshInstance3D = $SubViewport/RoomColumn/FloorMesh
-@onready var RoomNameLabel:Label = $ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomNameLabel
-@onready var RoomStatusLabel:Label = $ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/RoomStatusLabel
-
 @onready var CursorLabelSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorLabelSprite
 @onready var CursorMenuSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorMenuSprite
 
@@ -46,7 +46,6 @@ var is_setup:bool = false
 var node_refs:Dictionary = {}
 var node_ref_positions:Dictionary = {}
 var camera_size_arr:Array = [20, 24, 28, 32, 36]
-var current_camera_size:int = 0 
 var freeze_input:bool = false 
 var room_config:Dictionary = {}
 var menu_index:int = 0
@@ -106,6 +105,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		menu_index = 0
 
 		on_assigned_location_update()
+		#assign_room_node_location(current_location.floor, current_location.ring, camera_settings.type == CAMERA.TYPE.WING_SELECT)
+
+	assigned_location = current_location
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -131,6 +133,16 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	update_boards()	
 	update_room_lighting(true)	
 # --------------------------------------------------------
+
+# --------------------------------------------------------
+#func transition_out(state:bool, duration:float, viewport:SubViewport) -> void:
+	#TransitionRect.show()
+	#TransitionRect.texture = U.get_viewport_texture(viewport)
+	#await U.tween_range(0.0, 1.0, duration, func(val:float) -> void:
+		#TransitionRect.material.set_shader_parameter("sensitivity", val)
+	#).finished	
+# --------------------------------------------------------
+
 
 # --------------------------------------------------------
 func on_enable_room_focus() -> void:
@@ -190,13 +202,10 @@ func update_nodes() -> void:
 		node_ref_positions[node.name] = node.position
 		
 		node.onFocus = func(room_data:Dictionary) -> void:
-			RoomNameLabel.text = "EMPTY" if room_data.is_empty() else room_data.name				
-			RoomStatusLabel.text = "inactive"
 			node_location = node.global_position
 			CursorLabelSprite.global_position = node.global_position - Vector3(0, -2, 0)
 			CursorLabelSprite.position.z = -2
 				
-
 	var material_copy:StandardMaterial3D = FloorMesh.mesh.material
 	match assigned_location.ring:
 		0:
@@ -207,6 +216,7 @@ func update_nodes() -> void:
 			material_copy.albedo_color = Color(0.153, 0.313, 0.197)
 		3:
 			material_copy.albedo_color = Color(0.401, 0.177, 0.347)
+			
 	FloorMesh.mesh.material = material_copy
 # --------------------------------------------------------
 
@@ -299,17 +309,14 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	
 	match camera_settings.type:
 		CAMERA.TYPE.ROOM_SELECT:
-			update_camera_size(30)
+			update_camera_size(40)
 		_:
-			update_camera_size(22)
-		
-	U.tween_node_property(MainCamera, "size", current_camera_size, 0.3, 0)
+			update_camera_size(31)
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func update_camera_size(val:int) -> void:
-	current_camera_size = val
-	U.tween_node_property(MainCamera, "size", current_camera_size, 0.3, 0)	
+	U.tween_node_property(MainCamera, "size", val, 0.7, 0)	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -323,11 +330,6 @@ func on_back() -> void:
 # --------------------------------------------------------
 func _process(delta: float) -> void:
 	if !is_node_ready():return
-	#print(GBL.mouse_pos)
-	#if in_brownout:
-		#if U.generate_rand(0, 100) < 2:
-			#NoPowerLights.hide() if NoPowerLights.is_visible_in_tree() else NoPowerLights.show()
-	#
 	#if in_lockdown or emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
 	for child in DangerSpotlights.get_children():
 		child.find_child("Spotlight").rotate_x(0.1)

@@ -1,0 +1,92 @@
+[gd_scene load_steps=8 format=3 uid="uid://c60d3ymkiaiyy"]
+
+[ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/rendering.gd" id="1_cucwc"]
+[ext_resource type="Material" uid="uid://cadagoadb5vbl" path="res://CanvasShader/Dissolve/Dissolve.tres" id="2_dy8ob"]
+[ext_resource type="PackedScene" uid="uid://m74gitiqvwla" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Overview/Overview.tscn" id="2_urwmy"]
+[ext_resource type="PackedScene" uid="uid://bl0fcbjjnqeux" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/Wing.tscn" id="4_ujma6"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dy8ob"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_urwmy"]
+viewport_path = NodePath("SubViewport/Rendering/OverviewScene/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_pgdfi"]
+viewport_path = NodePath("SubViewport/Rendering/WingScene/SubViewport")
+
+[node name="Rendering" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cucwc")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_dy8ob")
+stretch_mode = 4
+
+[node name="TransitionRect" type="TextureRect" parent="."]
+material = ExtResource("2_dy8ob")
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="Rendering" type="Node3D" parent="SubViewport"]
+
+[node name="OverviewScene" type="Node3D" parent="SubViewport/Rendering"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+
+[node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/OverviewScene"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+
+[node name="OverviewNode" parent="SubViewport/Rendering/OverviewScene/SubViewport" instance=ExtResource("2_urwmy")]
+
+[node name="OverviewCamera" type="Camera3D" parent="SubViewport/Rendering/OverviewScene"]
+projection = 1
+far = 10.0
+
+[node name="Sprite3D" type="Sprite3D" parent="SubViewport/Rendering/OverviewScene/OverviewCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+pixel_size = 0.001
+texture = SubResource("ViewportTexture_urwmy")
+
+[node name="WingScene" type="Node3D" parent="SubViewport/Rendering"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 2.89305, 0, 0)
+
+[node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/WingScene"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+
+[node name="WingNode" parent="SubViewport/Rendering/WingScene/SubViewport" instance=ExtResource("4_ujma6")]
+
+[node name="WingCamera" type="Camera3D" parent="SubViewport/Rendering/WingScene"]
+cull_mask = 1023
+projection = 1
+current = true
+fov = 52.2
+far = 20.0
+
+[node name="Sprite3D" type="Sprite3D" parent="SubViewport/Rendering/WingScene/WingCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0533484, -1)
+pixel_size = 0.0013
+texture = SubResource("ViewportTexture_pgdfi")
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/Rendering/WingScene/WingCamera"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_dy8ob")
+stretch_mode = 4

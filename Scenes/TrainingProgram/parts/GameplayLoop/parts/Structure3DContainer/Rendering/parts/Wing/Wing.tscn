@@ -1,16 +1,12 @@
-[gd_scene load_steps=34 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=23 format=3 uid="uid://bl0fcbjjnqeux"]
 
-[ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/room_nodes.gd" id="1_fhdg3"]
-[ext_resource type="Material" uid="uid://4rhangikf6nd" path="res://Shader/BitSampler/BitSampler.tres" id="2_fjg3y"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_batgf"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_2d0xm"]
-[ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/RoomNode3d.tscn" id="4_b2h6u"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_fjg3y"]
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_gg0ij"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_312tc"]
-[ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="5_b26bj"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="5_fjg3y"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_gytyc"]
+[ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/wing.gd" id="1_qq608"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_i1dve"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_6ohhd"]
+[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_778r6"]
+[ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Room/RoomNode3d.tscn" id="5_k4egc"]
+[ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="6_iutnv"]
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="7_v5pir"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_u0dki"]
 viewport_path = NodePath("SubViewport")
@@ -97,51 +93,20 @@ viewport_path = NodePath("ControlSubViewport")
 [sub_resource type="ViewportTexture" id="ViewportTexture_yhbag"]
 viewport_path = NodePath("ControlMenuSubviewport")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tyf3d"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_08svg"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_8f5st"]
-color = Color(1, 1, 1, 1)
-grow_begin = 0.0
-grow_end = 0.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkhf3"]
-bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_puxs3"]
-bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_nkr4v"]
-color = Color(1, 1, 1, 1)
-grow_end = -5.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_neith"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
-
-[node name="RoomNodes" type="Control"]
+[node name="Wing" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_fhdg3")
+script = ExtResource("1_qq608")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = ExtResource("2_fjg3y")
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+rotation = -0.00732392
 texture = SubResource("ViewportTexture_u0dki")
 stretch_mode = 6
 
@@ -210,7 +175,7 @@ shaded = true
 modulate = Color(0.984314, 0.439216, 0.184314, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 outline_size = 0
 horizontal_alignment = 0
@@ -226,7 +191,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -241,7 +206,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 outline_size = 0
 horizontal_alignment = 0
@@ -257,7 +222,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -272,7 +237,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 outline_size = 0
 horizontal_alignment = 0
@@ -288,7 +253,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -303,7 +268,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  Research Lab"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 line_spacing = 20.0
@@ -316,7 +281,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -331,7 +296,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -345,7 +310,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -360,7 +325,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -374,7 +339,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -389,7 +354,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -404,7 +369,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -419,7 +384,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -434,7 +399,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -449,7 +414,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -464,7 +429,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -485,13 +450,13 @@ pixel_size = 0.03
 shaded = true
 double_sided = false
 text = "Everything is fine."
-font = ExtResource("4_fjg3y")
+font = ExtResource("3_6ohhd")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D"]
 size = Vector2i(2090, 550)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D/SubViewport"]
-material = ExtResource("5_fjg3y")
+material = ExtResource("4_778r6")
 custom_minimum_size = Vector2(2900, 600)
 offset_right = 40.0
 offset_bottom = 40.0
@@ -523,7 +488,7 @@ shaded = true
 modulate = Color(0.984314, 0.439216, 0.184314, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 outline_size = 0
 horizontal_alignment = 0
@@ -539,7 +504,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -554,7 +519,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 outline_size = 0
 horizontal_alignment = 0
@@ -570,7 +535,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -585,7 +550,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 outline_size = 0
 horizontal_alignment = 0
@@ -601,7 +566,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -616,7 +581,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  Research Lab"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 line_spacing = 20.0
@@ -629,7 +594,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -644,7 +609,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -658,7 +623,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -673,7 +638,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -687,7 +652,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -702,7 +667,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -717,7 +682,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -732,7 +697,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -747,7 +712,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -762,7 +727,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "x  room name"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 16
 horizontal_alignment = 0
 uppercase = true
@@ -777,7 +742,7 @@ shaded = true
 modulate = Color(0.524946, 1, 0.445033, 1)
 outline_modulate = Color(1, 1, 1, 0)
 text = "RESEARCHING"
-font = ExtResource("3_batgf")
+font = ExtResource("2_i1dve")
 font_size = 8
 outline_size = 0
 horizontal_alignment = 0
@@ -798,13 +763,13 @@ pixel_size = 0.03
 shaded = true
 double_sided = false
 text = "Everything is fine."
-font = ExtResource("4_fjg3y")
+font = ExtResource("3_6ohhd")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D"]
 size = Vector2i(2090, 550)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D/SubViewport"]
-material = ExtResource("5_fjg3y")
+material = ExtResource("4_778r6")
 custom_minimum_size = Vector2(2900, 600)
 offset_right = 40.0
 offset_bottom = 40.0
@@ -823,47 +788,47 @@ spot_angle_attenuation = 1.41421
 [node name="NodeContainer" type="Node3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.6, -3.133)
 
-[node name="0" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="0" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 13)
 room_number = 7
 ref_index = 0
 
-[node name="2" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="2" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 13)
 room_number = 8
 ref_index = 2
 
-[node name="5" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="5" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13)
 room_number = 9
 ref_index = 5
 
-[node name="1" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="1" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 6)
 room_number = 4
 ref_index = 1
 
-[node name="4" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="4" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 6)
 room_number = 5
 ref_index = 4
 
-[node name="7" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="7" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
 room_number = 6
 ref_index = 7
 
-[node name="3" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="3" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -1)
 room_number = 1
 ref_index = 3
 
-[node name="6" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="6" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -1)
 room_number = 2
 ref_index = 6
 
-[node name="8" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("4_b2h6u")]
+[node name="8" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 room_number = 3
 ref_index = 8
@@ -871,7 +836,7 @@ ref_index = 8
 [node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
 visible = false
 
-[node name="SpinLight" parent="SubViewport/RoomColumn/NormalLights" instance=ExtResource("5_b26bj")]
+[node name="SpinLight" parent="SubViewport/RoomColumn/NormalLights" instance=ExtResource("6_iutnv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7636, 3.23014, 0)
 visible = false
 
@@ -1188,7 +1153,7 @@ spot_angle_attenuation = 1.6245
 transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -25.432, 23.0396, -25.397)
 projection = 1
 current = true
-size = 27.0
+size = 31.0
 near = 0.002
 far = 900.0
 
@@ -1225,7 +1190,7 @@ visible = false
 outline_modulate = Color(0, 1, 0, 1)
 text = "
 "
-font = ExtResource("4_gg0ij")
+font = ExtResource("7_v5pir")
 font_size = 150
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/RoomColumn/MainCamera"]
@@ -1237,130 +1202,3 @@ light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.0
 light_cull_mask = 4293918720
 sky_mode = 1
-
-[node name="ControlSubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(215, 58)
-
-[node name="ControlPanelContainer" type="PanelContainer" parent="ControlSubViewport"]
-offset_right = 83.0
-offset_bottom = 33.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_tyf3d")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer"]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_08svg")
-
-[node name="MarginContainer" type="MarginContainer" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="RoomNameLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = ">> ROOM"
-label_settings = ExtResource("4_2d0xm")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_8f5st")
-
-[node name="RoomStatusLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "- Inactive | No Research -"
-label_settings = ExtResource("5_312tc")
-horizontal_alignment = 1
-
-[node name="PanelContainer2" type="PanelContainer" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fkhf3")
-
-[node name="MarginContainer" type="MarginContainer" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer2/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="SCPLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = ">> ROOM"
-label_settings = ExtResource("4_2d0xm")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_8f5st")
-
-[node name="SCPStatusLabel" type="Label" parent="ControlSubViewport/ControlPanelContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "- Inactive | No Research -"
-label_settings = ExtResource("5_312tc")
-horizontal_alignment = 1
-
-[node name="ControlMenuSubviewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(150, 90)
-
-[node name="ControlMenuContainer" type="PanelContainer" parent="ControlMenuSubviewport"]
-offset_right = 80.0
-offset_bottom = 41.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_puxs3")
-
-[node name="MarginContainer" type="MarginContainer" parent="ControlMenuSubviewport/ControlMenuContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/separation = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "ACTIONS"
-label_settings = ExtResource("5_312tc")
-
-[node name="HSeparator" type="HSeparator" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxLine_nkr4v")
-
-[node name="ControlMenuList" type="VBoxContainer" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="TextBtn" parent="ControlMenuSubviewport/ControlMenuContainer/MarginContainer/VBoxContainer/ControlMenuList" instance=ExtResource("7_gytyc")]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_neith")
-panel_color = Color(0, 0.254902, 0.0823529, 1)
-title = "BUILD"
-
-[connection signal="item_rect_changed" from="ControlSubViewport/ControlPanelContainer" to="." method="on_label_control_subpanel_rect_changed"]
-[connection signal="item_rect_changed" from="ControlMenuSubviewport/ControlMenuContainer" to="." method="on_menu_control_subpanel_rect_changed"]

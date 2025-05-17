@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dl5rw8mq2i0dp"]
 
 [ext_resource type="Script" uid="uid://hrqaxm2a60en" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/structure_3d_container.gd" id="1_wktvj"]
-[ext_resource type="PackedScene" uid="uid://c60d3ymkiaiyy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/Rendering.tscn" id="4_ypl4m"]
+[ext_resource type="PackedScene" uid="uid://c60d3ymkiaiyy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/Rendering.tscn" id="4_ypl4m"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w8kjt"]
 
