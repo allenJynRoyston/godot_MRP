@@ -371,10 +371,10 @@ var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.RESET :
 		current_contain_step = val
 		on_current_contain_step_update()
 		
-var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.RESET : 
-	set(val):
-		current_recruit_step = val
-		on_current_recruit_step_update()
+#var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.RESET : 
+	#set(val):
+		#current_recruit_step = val
+		#on_current_recruit_step_update()
 
 var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET : 
 	set(val):
@@ -1433,32 +1433,32 @@ func on_current_select_scp_step_update() -> void:
 
 # ------------------------------------------------------------------------------		
 #region RESEARCHER STEPS
-func on_current_recruit_step_update() -> void:
-	if !is_node_ready():return
-
-	match current_recruit_step:
-		# ---------------
-		RECRUIT_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-		# ---------------
-		RECRUIT_STEPS.OPEN:
-			SUBSCRIBE.suppress_click = true
-			SelectResearcherScreen = SelectResearcherScreenPreload.instantiate()
-			add_child(SelectResearcherScreen)
-			SelectResearcherScreen.z_index = 10
-			
-			await U.tick()
-			SelectResearcherScreen.activate()
-			
-			SelectResearcherScreen.start()
-			var response:bool = await SelectResearcherScreen.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			SelectResearcherScreen.queue_free()
-			
-			# trigger signal
-			on_recruit_complete.emit(response)
-			await restore_showing_state()
-			current_recruit_step = RECRUIT_STEPS.RESET
+#func on_current_recruit_step_update() -> void:
+	#if !is_node_ready():return
+#
+	#match current_recruit_step:
+		## ---------------
+		#RECRUIT_STEPS.RESET:
+			#SUBSCRIBE.suppress_click = false
+		## ---------------
+		#RECRUIT_STEPS.OPEN:
+			#SUBSCRIBE.suppress_click = true
+			#SelectResearcherScreen = SelectResearcherScreenPreload.instantiate()
+			#add_child(SelectResearcherScreen)
+			#SelectResearcherScreen.z_index = 10
+			#
+			#await U.tick()
+			#SelectResearcherScreen.activate()
+			#
+			#SelectResearcherScreen.start()
+			#var response:bool = await SelectResearcherScreen.user_response
+			#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+			#SelectResearcherScreen.queue_free()
+			#
+			## trigger signal
+			#on_recruit_complete.emit(response)
+			#await restore_showing_state()
+			#current_recruit_step = RECRUIT_STEPS.RESET
 
 
 func on_current_researcher_step_update() -> void:

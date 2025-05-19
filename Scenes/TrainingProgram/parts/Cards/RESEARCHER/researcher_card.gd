@@ -147,7 +147,6 @@ func on_uid_update() -> void:
 
 # ------------------------------------------------------------------------------
 func update_nodes(researcher_details:Dictionary) -> void:
-
 	CardDrawerImage.use_static = false
 	CardDrawerImage.img_src = researcher_details.img_src
 	CardDrawerImageBack.img_src = researcher_details.img_src

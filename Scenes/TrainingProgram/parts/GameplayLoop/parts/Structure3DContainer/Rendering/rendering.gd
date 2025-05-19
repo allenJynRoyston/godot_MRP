@@ -71,6 +71,15 @@ func enable_wing(state:bool) -> void:
 		WingNode.set_process(false)
 # ------------------------------------------------
 
+# ------------------------------------------------
+func enable_generator(state:bool) -> void:
+	if state:
+		transition()
+		pass
+	else:
+		pass
+# ------------------------------------------------
+
 
 # ------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
@@ -84,11 +93,17 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.FLOOR_SELECT:
 			await enable_overview(true)
 			enable_wing(false)
+			enable_generator(false)
 		# --------------------	
 		CAMERA.TYPE.WING_SELECT:
 			await enable_wing(true)			
 			enable_overview(false)
-			
+			enable_generator(false)
+		# --------------------	
+		CAMERA.TYPE.GENERATOR:
+			await enable_generator(true)
+			enable_overview(false)
+			enable_wing(false)
 
 	GBL.remove_from_animation_queue(self)
 # ------------------------------------------------

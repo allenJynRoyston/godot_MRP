@@ -458,7 +458,6 @@ func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use
 	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
 	var apply_cooldown:bool = await ability.effect.call()
-	print(apply_cooldown)
 	if apply_cooldown:
 		if ability_uid not in base_states.room[designation].ability_on_cooldown:
 			base_states.room[designation].ability_on_cooldown[ability_uid] = 0		
@@ -511,7 +510,7 @@ func reset_room() -> bool:
 			unavailable_rooms.push_back(designation)
 	SUBSCRIBE.unavailable_rooms = unavailable_rooms
 
-	ConfirmModal.allow_controls = true
+	ConfirmModal.allow_controls = false
 	ConfirmModal.set_props("Reset room?", "Room will be destroyed, researchers will be unassigned.")
 	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
 	var confirm:bool = await ConfirmModal.user_response
@@ -522,7 +521,6 @@ func reset_room() -> bool:
 		var ring_index:int = current_location.ring
 		var room_index:int = current_location.room
 		var reset_arr:Array = purchased_facility_arr.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-		
 		GameplayNode.restore_player_hud()
 		# ---------------------
 		if reset_arr.size() > 0:
@@ -532,10 +530,9 @@ func reset_room() -> bool:
 			return true
 		else:
 			return false
-		
-	# ---------------------
-	GameplayNode.restore_player_hud()
-	return confirm	
+	else:
+		GameplayNode.restore_player_hud()
+		return false	
 # --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------
@@ -628,18 +625,9 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 	GameplayNode.current_researcher_step = GameplayNode.RESEARCHERS_STEPS.ASSIGN
 	var response:Dictionary = await GameplayNode.on_researcher_component_complete
 	if response.action == ACTION.RESEARCHERS.BACK:
-		#GameplayNode.restore_player_hud()
 		return false
 	
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(response.uid)
-
-	#ConfirmModal.allow_controls = true
-	#ConfirmModal.set_props("Assign researcher to a room.", "", researcher_details.img_src)
-	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	#var confirm:bool = await ConfirmModal.user_response
-	#
-	#if confirm:
-		# add new researchers
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		# clear out prior researchers
 		if U.dictionaries_equal(i[9].assigned_to_room, location_data):
@@ -650,19 +638,27 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 		return i
 	)
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
-			
-	#GameplayNode.restore_player_hud()
 	return true
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func unassign_researcher(researcher_data:Dictionary) -> bool:
-	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-		if i[0] == researcher_data.uid:
-			i[9].assigned_to_room = {}
-		return i
-	)
-	return true
+	ConfirmModal.allow_controls = false
+	ConfirmModal.set_props("Unassign researcher from this room?", "Researcher will become available.", researcher_data.img_src)
+	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
+	var confirm:bool = await ConfirmModal.user_response
+	
+	GameplayNode.restore_player_hud()
+	
+	if confirm:
+		SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+			if i[0] == researcher_data.uid:
+				i[9].assigned_to_room = {}
+			return i
+		)
+		return true
+
+	return false
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	

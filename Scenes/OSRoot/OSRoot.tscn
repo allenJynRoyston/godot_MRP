@@ -71,7 +71,6 @@ os_app_fast_load = true
 app_skip_titlescreen = true
 app_skip_loading_screen = true
 skip_setup_progress = true
-start_at_ring_level = true
 skip_objectives = true
 max_energy = false
 all_personnel = true

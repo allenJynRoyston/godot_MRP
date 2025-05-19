@@ -238,7 +238,9 @@ func reset_node(room:int, state:bool) -> void:
 
 # --------------------------------------------------------
 func get_room_position(room_index:int) -> Vector2:
-	#camera: Camera3D, world_position: Vector3, control: Control
+	if node_refs.is_empty():
+		return Vector2(-1, -1)
+		
 	var RoomNode:Node3D = node_refs[str(room_index)]
 	var viewport := MainCamera.get_viewport()
 	var screen_position := MainCamera.unproject_position(RoomNode.position)
