@@ -14,6 +14,13 @@ extends Control
 @onready var WingSubviewport:SubViewport = $SubViewport/Rendering/WingScene/SubViewport
 @onready var WingNode:Control = $SubViewport/Rendering/WingScene/SubViewport/WingNode
 
+@onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
+@onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
+@onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
+@onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
+
+const TransitionShader:ShaderMaterial = preload("res://CanvasShader/Dissolve/Dissolve.tres")
+
 var camera_settings:Dictionary = {} 
 var previous_camera_type:int
 
@@ -28,19 +35,14 @@ func _exit_tree() -> void:
 # ------------------------------------------------
 
 # ------------------------------------------------
-func get_preview_viewport() -> SubViewport:
-	return WingSubviewport
-# ------------------------------------------------
-
-# ------------------------------------------------
 func transition() -> void:
 	TransitionRect.show()
 	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
-	await U.tween_range(0.0, 1.0, 0.5, func(val:float) -> void:
+	var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
+	await U.tween_range(0.0, 1.0, 0.3, func(val:float) -> void:
 		TransitionRect.material.set_shader_parameter("sensitivity", val)
 	).finished	
 	TransitionRect.hide()
-	TransitionRect.material.set_shader_parameter("sensitivity", 0.0)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -75,9 +77,14 @@ func enable_wing(state:bool) -> void:
 func enable_generator(state:bool) -> void:
 	if state:
 		transition()
-		pass
+		GeneratorScene.show()
+		GeneratorNode.show()
+		GeneratorNode.set_process(true)
+		GeneratorCamera.make_current()
 	else:
-		pass
+		GeneratorScene.hide()
+		GeneratorNode.hide()
+		GeneratorNode.set_process(false)
 # ------------------------------------------------
 
 
@@ -99,6 +106,11 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			await enable_wing(true)			
 			enable_overview(false)
 			enable_generator(false)
+		# --------------------		
+		CAMERA.TYPE.ROOM_SELECT:
+			await enable_wing(true)			
+			enable_overview(false)
+			enable_generator(false)			
 		# --------------------	
 		CAMERA.TYPE.GENERATOR:
 			await enable_generator(true)

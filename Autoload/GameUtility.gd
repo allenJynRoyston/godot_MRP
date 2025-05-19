@@ -458,6 +458,7 @@ func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use
 	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
 	var apply_cooldown:bool = await ability.effect.call()
+		
 	if apply_cooldown:
 		if ability_uid not in base_states.room[designation].ability_on_cooldown:
 			base_states.room[designation].ability_on_cooldown[ability_uid] = 0		

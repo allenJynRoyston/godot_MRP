@@ -90,7 +90,7 @@ skeleton = NodePath("")
 [node name="FloorInstanceContainer" type="Node3D" parent="SubViewport/Node3D"]
 
 [node name="FloorCamera" type="Camera3D" parent="SubViewport/Node3D"]
-transform = Transform3D(-1.04878, 0.232616, -0.639107, 0, 1.17462, 0.427525, 0.680123, 0.358702, -0.985528, -34.0062, 2.5, -52.4388)
+transform = Transform3D(-1.04878, 0.232615, -0.639106, 0, 1.17462, 0.427523, 0.680123, 0.358703, -0.985529, -34.006, 0, -50)
 cull_mask = 1023
 projection = 1
-size = 100.0
+size = 120.0

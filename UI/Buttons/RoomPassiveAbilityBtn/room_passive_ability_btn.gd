@@ -94,10 +94,12 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	base_states = new_val
+	
 	if !is_node_ready() or use_location.is_empty():return
 	var ability_uid:String = str(room_ref, ability_index)	
 	var designation:String = U.location_to_designation(use_location)
 	Checkbox.is_checked = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false
+
 
 func on_is_unknown_update() -> void:
 	on_level_update()

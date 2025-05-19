@@ -46,7 +46,6 @@ expand = true
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Control"]
-visible = false
 custom_minimum_size = Vector2(290, 0)
 layout_mode = 1
 anchors_preset = 9
@@ -105,7 +104,6 @@ offset_right = 252.0
 offset_bottom = 31.0
 icon = 49
 inactive_color = Color(1, 1, 1, 1)
-flip_v = false
 
 [node name="ExpandSubListContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer/ExpandListContainer"]
 visible = false

@@ -269,6 +269,18 @@ func get_viewport_texture(viewport:SubViewport) -> Texture2D:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func transition(TransitionRect:TextureRect, UseViewport:SubViewport, UseShader:ShaderMaterial) -> void:
+	TransitionRect.show()
+	TransitionRect.material = UseShader
+	TransitionRect.texture = U.get_viewport_texture(UseViewport)
+	await U.tween_range(0.0, 1.0, 0.3, func(val:float) -> void:
+		TransitionRect.material.set_shader_parameter("sensitivity", val)
+	).finished	
+	TransitionRect.hide()
+	TransitionRect.material = null
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
 func save_screenshot(viewport:SubViewport) -> void:
 	pass
 	#var viewport_capture:Image = viewport.get_texture().get_image()

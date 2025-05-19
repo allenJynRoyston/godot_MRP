@@ -35,6 +35,8 @@ extends Control
 
 enum MENU_TYPE {RESEARCHER, ROOM, SCP, WING}
 
+const TransitionShader:ShaderMaterial = preload("res://CanvasShader/Dissolve/Dissolve.tres")
+
 var designation:String
 var node_location:Vector3 
 var current_location:Dictionary = {} 
@@ -95,6 +97,12 @@ func _ready() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+func get_preview_viewport() -> SubViewport:
+	return RenderSubviewport
+# --------------------------------------------------------
+
+
+# --------------------------------------------------------
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready() or current_location.is_empty():return
@@ -105,7 +113,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		menu_index = 0
 		transition()
 		on_assigned_location_update()
-		#assign_room_node_location(current_location.floor, current_location.ring, camera_settings.type == CAMERA.TYPE.WING_SELECT)
 
 	assigned_location = current_location
 # --------------------------------------------------------
@@ -138,7 +145,8 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 func transition() -> void:
 	TransitionRect.show()
 	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
-	await U.tween_range(0.0, 1.0, 0.5, func(val:float) -> void:
+	var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
+	await U.tween_range(current_val, 1.0, 0.2, func(val:float) -> void:
 		TransitionRect.material.set_shader_parameter("sensitivity", val)
 	).finished	
 	TransitionRect.hide()

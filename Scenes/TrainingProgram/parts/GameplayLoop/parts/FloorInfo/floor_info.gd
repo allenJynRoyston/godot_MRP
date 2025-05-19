@@ -26,8 +26,8 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	await U.tick()
-	var subviewport:SubViewport = GBL.find_node(REFS.RENDERING).get_preview_viewport()
-	PreviewTextureRect.texture = subviewport.get_texture()
+	#var subviewport:SubViewport = GBL.find_node(REFS.RENDERING).get_preview_viewport()
+	#PreviewTextureRect.texture = subviewport.get_texture()
 # -----------------------------------------------
 
 # -----------------------------------------------

@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=3 uid="uid://c83wswsjxnmva"]
+
+[ext_resource type="Script" uid="uid://c2yjf6cukiw10" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Generator/generator.gd" id="1_3guo4"]
+[ext_resource type="Material" uid="uid://xaeua0jc0ktp" path="res://Shader/Ripple/Ripple.tres" id="2_a50ow"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_fn6rr"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="Environment" id="Environment_kdkyo"]
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+volumetric_fog_density = 0.0167
+volumetric_fog_gi_inject = 0.89
+volumetric_fog_length = 22.9
+volumetric_fog_detail_spread = 0.5
+volumetric_fog_ambient_inject = 0.84
+
+[sub_resource type="BoxMesh" id="BoxMesh_a50ow"]
+
+[node name="Generator" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3guo4")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.419608, 0.160784, 0.160784, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = ExtResource("2_a50ow")
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_fn6rr")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="Node3D" type="Node3D" parent="SubViewport"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/Node3D"]
+transform = Transform3D(0.101042, 0.971312, -0.215275, -0.323194, 0.236693, 0.916255, 0.940923, -0.0230045, 0.337838, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport/Node3D"]
+environment = SubResource("Environment_kdkyo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/Node3D"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, -1.95392, -2)
+mesh = SubResource("BoxMesh_a50ow")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/Node3D"]
+transform = Transform3D(1.25, 0, 0, 0, 1.02394, 0.716971, 0, -0.716973, 1.02394, 0, 0, 0)
+cull_mask = 1023
+projection = 1
+size = 8.0
