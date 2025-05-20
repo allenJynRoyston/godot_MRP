@@ -779,7 +779,7 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	GBL.find_node(REFS.LINE_DRAW).clear()
+	#GBL.find_node(REFS.LINE_DRAW).clear()
 	await show_only([Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo])
 # ------------------------------------------------------------------------------
 

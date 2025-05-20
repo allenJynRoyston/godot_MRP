@@ -1,9 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://dmjokg2svoddw"]
+[gd_scene load_steps=11 format=3 uid="uid://dmjokg2svoddw"]
 
 [ext_resource type="Script" uid="uid://cotsvaq7of3j7" path="res://UI/Buttons/MenuBtn/menu_btn.gd" id="1_b56nf"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="2_aglnc"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_yu543"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_fvhk1"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_oae0j"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_oae0j"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_asb5s"]
@@ -13,7 +13,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oae0j"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqoss"]
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 2
 border_width_top = 2
@@ -25,14 +25,6 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqoss"]
-bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 10.0
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6dxlc"]
 bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
 corner_radius_top_left = 5
@@ -42,18 +34,19 @@ corner_radius_bottom_left = 5
 expand_margin_left = 10.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8g0ic"]
+bg_color = Color(0.250274, 0.000817046, 0.351185, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4kqi3"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_4kqi3"]
-font = ExtResource("3_fvhk1")
-font_size = 8
-font_color = Color(0.357535, 0.00116721, 0.501693, 1)
-outline_size = 5
-outline_color = Color(0, 0, 0, 1)
 
 [node name="MenuBtn" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
@@ -75,7 +68,7 @@ theme_override_constants/margin_bottom = 3
 
 [node name="InnerPanel" type="PanelContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oae0j")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nqoss")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel"]
 custom_minimum_size = Vector2(0, 30)
@@ -93,7 +86,7 @@ theme_override_constants/separation = 20
 visible = false
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_nqoss")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel"]
 layout_mode = 2
@@ -117,7 +110,7 @@ vertical_alignment = 1
 visible = false
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_6dxlc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8g0ic")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel"]
 layout_mode = 2
@@ -131,7 +124,7 @@ layout_mode = 2
 [node name="CheckBox" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer/HBoxContainer" instance=ExtResource("2_aglnc")]
 layout_mode = 2
 size_flags_vertical = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_8g0ic")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4kqi3")
 no_bg = true
 bg_color = Color(0, 0, 0, 0.796)
 checkbox_color = Color(0, 0, 0, 1)
@@ -142,7 +135,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "TITLE OF ITEM "
-label_settings = SubResource("LabelSettings_4kqi3")
+label_settings = ExtResource("4_oae0j")
 vertical_alignment = 1
 
 [node name="EnergyPanel" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
@@ -165,7 +158,6 @@ theme_override_constants/margin_bottom = 0
 icon = 32
 static_color = Color(0.357535, 0.00116721, 0.501693, 1)
 inactive_color = Color(0, 0.964706, 0.278431, 1)
-flip_v = false
 is_hoverable = false
 
 [node name="SciencePanel" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]
@@ -188,5 +180,4 @@ theme_override_constants/margin_bottom = 0
 icon = 44
 static_color = Color(0.357535, 0.00116721, 0.501693, 1)
 inactive_color = Color(0, 0.964706, 0.278431, 1)
-flip_v = false
 is_hoverable = false

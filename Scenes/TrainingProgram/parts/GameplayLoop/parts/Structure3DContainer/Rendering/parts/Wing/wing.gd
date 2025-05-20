@@ -46,7 +46,7 @@ var previous_floor:int = -1
 var previous_ring:int = -1
 var is_setup:bool = false
 var node_refs:Dictionary = {}
-var node_ref_positions:Dictionary = {}
+#var node_ref_positions:Dictionary = {}
 var camera_size_arr:Array = [20, 24, 28, 32, 36]
 var freeze_input:bool = false 
 var room_config:Dictionary = {}
@@ -128,7 +128,7 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 		previous_emergency_mode = -1
 		
 		update_nodes()
-		update_boards()		
+		#update_boards()		
 		update_room_lighting()	
 # --------------------------------------------------------
 
@@ -137,7 +137,7 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return	
 	update_nodes()
-	update_boards()	
+	#update_boards()	
 	update_room_lighting(true)	
 # --------------------------------------------------------
 
@@ -208,13 +208,13 @@ func update_nodes() -> void:
 		node.update_refs(assigned_location.floor, assigned_location.ring)
 
 	for node in NodeContainer.get_children():
-		node_refs[node.name] = node
-		node_ref_positions[node.name] = node.position
+		node_refs[node.name] = node.get_marker()
+		#node_ref_positions[node.name] = node.position
 		
 		node.onFocus = func(room_data:Dictionary) -> void:
 			node_location = node.global_position
-			CursorLabelSprite.global_position = node.global_position - Vector3(0, -2, 0)
-			CursorLabelSprite.position.z = -2
+			#CursorLabelSprite.global_position = node.global_position - Vector3(0, -2, 0)
+			#CursorLabelSprite.position.z = -2
 				
 	var material_copy:StandardMaterial3D = FloorMesh.mesh.material
 	match assigned_location.ring:
@@ -251,7 +251,8 @@ func get_room_position(room_index:int) -> Vector2:
 		
 	var RoomNode:Node3D = node_refs[str(room_index)]
 	var viewport := MainCamera.get_viewport()
-	var screen_position := MainCamera.unproject_position(RoomNode.position)
+	var screen_position := MainCamera.unproject_position(RoomNode.global_position)
+	
 	
 	# Convert screen position to Control node's local space
 	return screen_position / self.size
@@ -321,9 +322,9 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	
 	match camera_settings.type:
 		CAMERA.TYPE.ROOM_SELECT:
-			update_camera_size(40)
+			update_camera_size(35)
 		_:
-			update_camera_size(31)
+			update_camera_size(25)
 # --------------------------------------------------------
 
 # --------------------------------------------------------

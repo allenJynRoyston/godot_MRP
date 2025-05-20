@@ -211,7 +211,6 @@ func on_hide_c_btn_update() -> void:
 	CBtn.hide() if hide_c_btn else CBtn.show()		
 # --------------------------------------------------------------------------------------------------
 	
-
 # --------------------------------------------------------------------------------------------------
 func on_fullscreen_update(_is_fullscreen:bool = GBL.is_fullscreen) -> void:
 	await U.tick()
@@ -233,12 +232,13 @@ func update_control_pos() -> void:
 # --------------------------------------------------------------------------------------------------
 func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
 	if control_pos.is_empty():return
+	var duration:float = 0 if skip_animation else 0.3
 	is_revealed = state
 	
 	if !state:
 		freeze_and_disable(true)
 			
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide, 0 if skip_animation else 0.2)
+	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide, duration)
 	
 	if state:
 		freeze_and_disable(false)

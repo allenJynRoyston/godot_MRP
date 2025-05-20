@@ -51,6 +51,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_75o2t")
 script = ExtResource("1_7tykf")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
+visible = false
 layout_mode = 2
 color = Color(1, 1, 1, 0.054902)
 
@@ -179,6 +180,7 @@ no_bg = true
 title = "99"
 display_at_bottom = true
 is_negative = true
+is_faded = false
 
 [node name="IconBtn" parent="StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter" instance=ExtResource("8_qglm5")]
 layout_mode = 2
@@ -197,6 +199,7 @@ icon = 31
 no_bg = true
 title = "99"
 display_at_bottom = true
+is_faded = false
 
 [node name="BtnControls" parent="." instance=ExtResource("9_t4xaw")]
 layout_mode = 2

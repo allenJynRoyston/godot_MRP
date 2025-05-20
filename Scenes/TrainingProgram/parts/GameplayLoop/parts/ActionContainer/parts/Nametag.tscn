@@ -4,12 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_rcgg0"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="6_rodcg"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rodcg"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ohcx"]
 
 [node name="Nametag" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_rodcg")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6ohcx")
 script = ExtResource("1_or75n")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -18,14 +18,12 @@ theme_override_constants/separation = 0
 
 [node name="NameLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-text = "Nametag"
+text = " Nametag"
 label_settings = ExtResource("6_rodcg")
-horizontal_alignment = 1
 
 [node name="List" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = -2
-alignment = 1
 
 [node name="MoneyIcon" parent="VBoxContainer/List" instance=ExtResource("2_rcgg0")]
 custom_minimum_size = Vector2(25, 25)

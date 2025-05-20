@@ -118,7 +118,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-stretch_mode = 2
+stretch_mode = 6
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
@@ -796,7 +796,7 @@ spot_angle = 8.39
 spot_angle_attenuation = 1.41421
 
 [node name="NodeContainer" type="Node3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.6, -3.133)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.3, -3.133)
 
 [node name="0" parent="SubViewport/RoomColumn/NodeContainer" instance=ExtResource("5_k4egc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 13)
@@ -844,7 +844,6 @@ room_number = 3
 ref_index = 8
 
 [node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
-visible = false
 
 [node name="SpinLight" parent="SubViewport/RoomColumn/NormalLights" instance=ExtResource("6_iutnv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7636, 3.23014, 0)
@@ -948,6 +947,7 @@ sky_mode = 1
 
 [node name="DangerLights" type="Node3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-0.999195, 0, -0.0401317, 0, 1, 0, 0.0401317, 0, -0.999195, 0, 0, 20)
+visible = false
 
 [node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/DangerLights"]
 transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
@@ -1113,6 +1113,7 @@ spot_angle_attenuation = 0.466516
 
 [node name="NoPowerLights" type="Node3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-0.999195, 0, -0.0401317, 0, 1, 0, 0.0401317, 0, -0.999195, 0, 0, 20)
+visible = false
 
 [node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/NoPowerLights"]
 transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
@@ -1160,12 +1161,12 @@ spot_angle = 43.0215
 spot_angle_attenuation = 1.6245
 
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -25.432, 23.0396, -25.397)
+transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -24.8661, 22.2572, -23.9335)
 projection = 1
 current = true
-size = 31.0
-near = 0.002
-far = 900.0
+size = 21.0
+near = 0.007
+far = 333.67
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/RoomColumn/MainCamera"]
 transform = Transform3D(1, 0, 0, 0, -2.98023e-08, -1, 0, 1, -2.98023e-08, 0, 3.93685e-06, -65.0989)

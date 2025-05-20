@@ -36,7 +36,6 @@ var current_location:Dictionary = {}
 var offset:Vector2
 var name_str:String
 var shifted_val:int = 5
-var original_position:Vector2
 
 # --------------------------------------------
 func _init() -> void:
@@ -50,10 +49,12 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
-	original_position = self.global_position
-	on_fade_update()
+	#on_fade_update()
+	hide()
+	await U.tick()
 	on_index_update()
 	on_show_resource_reason_update()
+	
 # --------------------------------------------
 
 # --------------------------------------------
@@ -115,6 +116,9 @@ func update_node(shift_val:int = 10) -> void:
 	use_location.room = index
 	
 	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+	
+
+	
 	# hide/show personnel icons
 	for key in room_config_data.personnel:
 		var val:bool = 	room_config_data.personnel[key]
@@ -128,7 +132,6 @@ func update_node(shift_val:int = 10) -> void:
 			RESOURCE.PERSONNEL.DCLASS:
 				DClassIcon.hide() if !val else DClassIcon.show()
 
-	
 	# hide/show currency icons
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
 	self.modulate = Color(1, 1, 1, 1 if !room_extract.is_room_empty or !fade else 0)
@@ -169,12 +172,12 @@ func update_node(shift_val:int = 10) -> void:
 # --------------------------------------------
 func on_process_update(delta:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
-	var tag_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(index) * GBL.game_resolution
-	self.global_position = tag_pos +  offset - Vector2(self.size.x/2, 0)
+	var tag_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(index) * GBL.game_resolution 
+	self.global_position = tag_pos #+  offset - Vector2(self.size.x/2, 0)
 
 func _physics_process(delta: float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	if shifted_val > 0:
 		shifted_val -= 1		
-		NameLabel.text = shift_string_backward(name_str, shifted_val)
+		NameLabel.text = str(" ", shift_string_backward(name_str, shifted_val))
 # --------------------------------------------

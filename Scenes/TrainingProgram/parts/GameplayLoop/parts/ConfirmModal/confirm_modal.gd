@@ -58,7 +58,6 @@ var allow_input:bool = false
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
-	
 	BtnControls.onDirectional = on_key_press
 	
 	BtnControls.onAction = func() -> void:
@@ -68,13 +67,14 @@ func _ready() -> void:
 	BtnControls.onBack = func() -> void:
 		if is_showing and allow_input:
 			end(false)
+			
+	BtnControls.reveal(false)
 		
 	on_title_update()
 	on_subtitle_update()
 	on_image_update()
 	on_activation_requirements_update()
 	
-
 
 func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "") -> void:
 	title = new_title
@@ -85,11 +85,13 @@ func set_props(new_title:String = "", new_subtitle:String = "", new_image:String
 # --------------------------------------------------------------------------------------------------		
 func end(made_changes:bool) -> void:
 	allow_controls = false
-	
-	BtnControls.reveal(false)
-	
+
 	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
-	await U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
+	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
+	
+	await BtnControls.reveal(false)
+
+	await U.set_timeout(0.3)
 	
 	confirm_only = false
 	activation_requirements = []
@@ -139,19 +141,22 @@ func update_control_pos() -> void:
 # --------------------------------------------------------------------------------------------------	
 func on_is_showing_update(skip_animation:bool = false) -> void:
 	super.on_is_showing_update()
-	allow_input = false
 	if !is_node_ready() or control_pos.is_empty():return
+	var duration:float = 0 if skip_animation else 0.3
 	
-	BtnControls.freeze_and_disable(true)	
-
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), 0 if skip_animation else 0.3)
-	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  0 if skip_animation else 0.3)
-	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide,  0 if skip_animation else 0.3)
-	await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide,  0 if skip_animation else 0.3)
+	if !is_showing:
+		allow_input = false	
+		BtnControls.reveal(false)
+	
+	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
+	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  duration)
+	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide, duration)
+	await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide, duration)
 	
 	# reset confirm only state
-	allow_input = true
-	BtnControls.reveal(true)
+	if is_showing:
+		allow_input = true
+		BtnControls.reveal(true)
 
 
 func on_image_update() -> void:

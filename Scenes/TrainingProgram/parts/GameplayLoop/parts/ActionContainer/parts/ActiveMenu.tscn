@@ -1,14 +1,39 @@
-[gd_scene load_steps=8 format=3 uid="uid://0wbd87xeuk1l"]
+[gd_scene load_steps=15 format=3 uid="uid://0wbd87xeuk1l"]
 
 [ext_resource type="Script" uid="uid://ccq216c2w0su1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/active_menu.gd" id="1_yhadw"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_epm40"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_o0to0"]
 [ext_resource type="PackedScene" uid="uid://dmjokg2svoddw" path="res://UI/Buttons/MenuBtn/MenuBtn.tscn" id="3_tmn8y"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_o0to0"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_epm40"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o0to0"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hjr8x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epm40"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0to0"]
-bg_color = Color(0.0687983, 0.0687983, 0.0687983, 1)
+bg_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l1lsc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hjr8x"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0)
+expand_margin_left = 5.0
+expand_margin_top = 5.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epm40"]
+bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -19,8 +44,8 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qh4il"]
-bg_color = Color(0.507666, 0.13466, 0.497494, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1lsc"]
+bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -31,54 +56,77 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="ActiveMenu" type="PanelContainer"]
-custom_minimum_size = Vector2(250, 0)
-anchors_preset = 9
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vmnia"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="SimpleMenu" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 234.0
+grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_o0to0")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_hjr8x")
 script = ExtResource("1_yhadw")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MenuControl" type="Control" parent="."]
 layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MenuControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_epm40")
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 100
+
+[node name="PanelContainer" type="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_o0to0")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = -10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-size_flags_vertical = 8
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PrevIcon" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
+[node name="PrevIcon" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -87,15 +135,14 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 27
 flip_h = true
-flip_v = false
 is_hoverable = false
 
-[node name="HeaderLabel" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer"]
+[node name="HeaderLabel" type="Label" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer"]
 layout_mode = 2
 text = "HEADER"
 label_settings = ExtResource("2_epm40")
 
-[node name="NextIcon" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
+[node name="NextIcon" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -103,68 +150,157 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 27
-flip_v = false
 is_hoverable = false
 
-[node name="LvlContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="LvlContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
 layout_mode = 2
 
-[node name="Lvl1" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer"]
+[node name="Lvl1" type="Label" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer"]
 layout_mode = 2
 text = "1"
 label_settings = ExtResource("2_epm40")
 
-[node name="Lvl2" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer"]
+[node name="Lvl2" type="Label" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer"]
 layout_mode = 2
 text = "2"
 label_settings = ExtResource("2_epm40")
 
-[node name="Lvl3" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer"]
+[node name="Lvl3" type="Label" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/LvlContainer"]
 layout_mode = 2
 text = "3  "
 label_settings = ExtResource("2_epm40")
 
-[node name="List" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="List" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="MenuBtn" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
+[node name="MenuBtn" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
 layout_mode = 2
 title = "ITEM A"
 is_togglable = true
 
-[node name="Control" type="Control" parent="."]
+[node name="MenuBtn2" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
+layout_mode = 2
+title = "ITEM A"
+is_togglable = true
+
+[node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="HintPanel" type="PanelContainer" parent="Control"]
-layout_mode = 0
-offset_left = 272.0
-offset_top = 30.0
-offset_right = 496.0
-offset_bottom = 66.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qh4il")
+[node name="BtnControlPanel" type="PanelContainer" parent="BtnControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_l1lsc")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/HintPanel"]
+[node name="BtnMarginContainer" type="MarginContainer" parent="BtnControl/BtnControlPanel"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_hjr8x")
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="BBtn" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("4_o0to0")]
+modulate = Color(1, 1, 1, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_epm40")
+title = "BACK"
+assigned_key = "B"
+icon = 28
+panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+is_disabled = false
+allow_hint = false
+
+[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+
+[node name="ABtn" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_o0to0")]
+modulate = Color(1, 1, 1, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_l1lsc")
+title = "NEXT"
+assigned_key = "E"
+icon = 27
+panel_color = Color(0, 0.529412, 0.278431, 1)
+is_disabled = false
+allow_hint = false
+
+[node name="Control" type="Control" parent="BtnControl/BtnControlPanel/BtnMarginContainer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HintContainer" type="PanelContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer"]
+custom_minimum_size = Vector2(600, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_vmnia")
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/HintPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = -4
 
-[node name="Label" type="Label" parent="Control/HintPanel/MarginContainer/VBoxContainer"]
+[node name="HintTitle" type="Label" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "HINT"
 label_settings = ExtResource("2_epm40")
 vertical_alignment = 1
-
-[node name="HintLabel" type="Label" parent="Control/HintPanel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-text = "description goes here."
-label_settings = ExtResource("2_epm40")
-vertical_alignment = 1
-autowrap_mode = 3
 uppercase = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HintIcon" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_o0to0")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 23
+is_hoverable = false
+allow_hint = false
+
+[node name="HintDescription" type="Label" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Hint goes here."
+label_settings = ExtResource("5_epm40")

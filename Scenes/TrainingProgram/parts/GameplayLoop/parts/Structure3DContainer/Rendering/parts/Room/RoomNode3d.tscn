@@ -1,9 +1,11 @@
-[gd_scene load_steps=16 format=4 uid="uid://wo1fm5yw1mj7"]
+[gd_scene load_steps=17 format=4 uid="uid://wo1fm5yw1mj7"]
 
 [ext_resource type="Script" uid="uid://bpoa3amhscup0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Room/room_node_3d.gd" id="1_qihmr"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_mku2i"]
 [ext_resource type="Texture2D" uid="uid://ccd5c02ynn4ul" path="res://Media/rooms/barricks.jpg" id="3_mmxwi"]
 [ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="4_ohfms"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_6w5pl"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4uhrp"]
 blend_mode = 4
@@ -79,8 +81,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.68341, 0, 0.346597)
 script = ExtResource("1_qihmr")
 current_state = 1
 
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1.04996, 0, 0, 0, 1.05, 0, 0, 0, 1.04996, -5.2057, 0.335177, 0)
+visible = false
+
+[node name="Marker" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.89442, 3.47289, -0.0423772)
+mesh = SubResource("SphereMesh_6w5pl")
+
 [node name="RoomNode" type="Node3D" parent="."]
-transform = Transform3D(0.999958, 0, 0, 0, 1, 0, 0, 0, 0.999958, 0, -1.28901, 0)
+transform = Transform3D(0.999958, 0, 0, 0, 1, 0, 0, 0, 0.999958, 0, 0, 0)
 
 [node name="MeshOutline" type="MeshInstance3D" parent="RoomNode"]
 transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, 0, 0, 0)
@@ -175,28 +185,6 @@ shadow_normal_bias = 0.0
 omni_range = 2.40478
 omni_attenuation = 6.854
 
-[node name="NameLabel" type="Label3D" parent="RoomNode"]
-transform = Transform3D(-1.00003, 0, -1.51e-07, 0, 1, 0, 1.51e-07, 0, -1.00003, -1.02939, 1.64182, 3.50949)
-visible = false
-layers = 128
-pixel_size = 0.001
-shaded = true
-double_sided = false
-fixed_size = true
-text = "TEST TEXT"
-font = ExtResource("2_mku2i")
-outline_size = 32
-horizontal_alignment = 2
-width = 0.0
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="RoomNode/NameLabel"]
-transform = Transform3D(0.999846, 0, -0.0180459, 0, 1, 0, 0.0180458, 0, 0.999846, 3.35835, -1.89822, 1.06952)
-layers = 128
-light_energy = 3.236
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 0.0
-light_cull_mask = 4294966400
-
 [node name="InsideViewport" type="SubViewport" parent="RoomNode"]
 transparent_bg = true
 size = Vector2i(300, 300)
@@ -219,3 +207,4 @@ size = 20.122
 
 [node name="SpinLight" parent="." instance=ExtResource("4_ohfms")]
 transform = Transform3D(0.088338, 0.996091, 0, -0.996091, 0.088338, 0, 0, 0, 1, 2.23072, -0.323841, 0.525419)
+visible = false

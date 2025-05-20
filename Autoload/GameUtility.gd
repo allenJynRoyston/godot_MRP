@@ -696,7 +696,7 @@ func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) 
 
 
 # ------------------------------------------------------------------------------
-func activate_floor(use_location:Dictionary = current_location) -> bool:
+func activate_floor(floor_val:int) -> bool:
 	SUBSCRIBE.suppress_click = true
 
 	var activated_count:int = 0
@@ -707,13 +707,13 @@ func activate_floor(use_location:Dictionary = current_location) -> bool:
 	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
 	
 	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
-	ConfirmModal.set_props("Activate this floor?")
+	ConfirmModal.set_props("Activate floor %s?" % floor_val)
 	await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
 	var confirm:bool = await ConfirmModal.user_response
 	
 	if confirm:
 		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
-		room_config.floor[use_location.floor].is_powered = true
+		room_config.floor[floor_val].is_powered = true
 		SUBSCRIBE.room_config = room_config
 		SUBSCRIBE.resources_data = resources_data
 			

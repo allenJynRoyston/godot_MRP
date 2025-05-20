@@ -4,7 +4,6 @@ extends GameContainer
 # SPECIAL NODES
 @onready var RootPanel:PanelContainer = $"."
 @onready var Backdrop:ColorRect = $Backdrop
-@onready var ActiveMenu:PanelContainer = $Control/ActiveMenu
 @onready var PreviewTextureRect:TextureRect = $FloorPreviewControl/PanelContainer/MarginContainer/VBoxContainer/PreviewTextureRect
 @onready var BtnControls:Control = $BtnControls
 @onready var NameControl:Control = $NameControl
@@ -102,6 +101,8 @@ enum MENU_TYPE { ACTIONS = 0, ABILITIES = 1, PASSIVES = 2 }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
 const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
+const NametagPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.tscn")
+const ActiveMenuPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ActiveMenu.tscn")
 
 var previous_camera_type:int
 var current_menu_type:MENU_TYPE = MENU_TYPE.ABILITIES
@@ -179,7 +180,15 @@ func _ready() -> void:
 		#)
 	# -------------------------------------
 
-
+	# -------------------------------------
+	GenActionBtns.onClick = func() -> void:
+		await lock_actions(true)
+		show_generator_updates()
+		
+	FacilityActionBtn.onClick = func() -> void:
+		await lock_actions(true)
+		show_facility_updates()
+	# -------------------------------------
 	
 	# -------------------------------------
 	ObjectivesBtn.onClick = func() -> void:
@@ -190,10 +199,7 @@ func _ready() -> void:
 	
 	SettingsBtn.onClick = func() -> void:
 		await lock_actions(true)
-		current_menu_type = MENU_TYPE.ACTIONS
-		active_menu_index = 0
-		show_actions()
-		on_current_mode_update()
+		show_settings()
 		
 	HintInfoBtn.onClick = func() -> void:
 		await lock_actions(true)
@@ -231,95 +237,27 @@ func _ready() -> void:
 		SUBSCRIBE.camera_settings = camera_settings
 		
 	# -------------------------------------
-	
-	
-	ActiveMenu.onNext = func() -> void:		
-		match current_menu_type:
-			MENU_TYPE.ACTIONS:
-				active_menu_index = U.min_max(active_menu_index + 1, 0, 2)
-				show_actions(true)
-			_:
-				active_menu_index = U.min_max(active_menu_index + 1, 0, 1)
-				#show_abilities(true)
-		
-	ActiveMenu.onPrev = func() -> void:
-		match current_menu_type:
-			MENU_TYPE.ACTIONS:
-				active_menu_index = U.min_max(active_menu_index - 1, 0, 2)
-				show_actions(true)
-			_:
-				active_menu_index = U.min_max(active_menu_index - 1, 0, 1)
-				#show_abilities(true)
-
-	#ActiveMenu.onDrawUpdate = func(index:int, selected_data:Dictionary) -> void:		
-		#SUBSCRIBE.current_location = selected_data.shortcut_data.use_location
-		#update_details(selected_data.shortcut_data.use_location)
-		##draw_active_menu_items(selected_data, index)
+	#ActiveMenu.onNext = func() -> void:		
+		#active_menu_index = U.min_max(active_menu_index + 1, 0, 2)
+		##match current_menu_type:
+			##MENU_TYPE.ACTIONS:
+				##active_menu_index = U.min_max(active_menu_index + 1, 0, 2)
+				##show_actions(true)
+			##_:
+				##active_menu_index = U.min_max(active_menu_index + 1, 0, 1)
+				###show_abilities(true)
 		#
-	##ScpDetailsBtn.onClick = func() -> void:
-		##current_mode = MODE.SCP_DETAILS
-	#
-	##ResearcherDetailBtn.onClick = func() -> void:
-		##current_mode = MODE.RESEARCHER_DETAILS
-			
-	#HotkeyContainer.onBookmarkToggle = func() -> void:
-		#if current_bookmark_type == BOOKMARK_TYPE.GLOBAL:
-			#current_bookmark_type = BOOKMARK_TYPE.RING			
-		#elif current_bookmark_type == BOOKMARK_TYPE.RING:
-			#current_bookmark_type = BOOKMARK_TYPE.GLOBAL
+	#ActiveMenu.onPrev = func() -> void:
+		#active_menu_index = U.min_max(active_menu_index - 1, 0, 2)
+		#match current_menu_type:
+			#MENU_TYPE.ACTIONS:
+				#active_menu_index = U.min_max(active_menu_index - 1, 0, 2)
+				#show_actions(true)
+			#_:
+				#active_menu_index = U.min_max(active_menu_index - 1, 0, 1)
+				##show_abilities(true)
+
 	
-	#HotkeyContainer.onClearStart = func() -> void:
-		#freeze_inputs = true
-		##lock_btns(true, true)
-	#
-	#HotkeyContainer.onClearEnd = func() -> void:
-		#freeze_inputs = false
-		##lock_btns(false, true)
-
-	#ActiveMenu.onBookmark = func(shotcut_data:Dictionary, menu_btn:Control) -> void:		
-		#HotkeyContainer.enable_assign_mode(true)
-		#await U.tick()		
-		#drawline_bookmark()	
-		#ActiveMenu.freeze_inputs = true
-		#ActiveMenu.show_hotkey = true
-		#HotkeyContainer.start_bookmark(shotcut_data)
-#
-	#HotkeyContainer.onBookmarkEnd = func() -> void:
-		#ActiveMenu.show_hotkey = false
-		#clear_lines()
-		#await U.tick()
-		#ActiveMenu.freeze_inputs = false
-		#draw_active_menu_items()
-		#
-	#EndTurnBtn.onClick = func() -> void:
-		#await lock_btns(true)
-		#await GameplayNode.next_day()
-		#lock_btns(false)
-
-
-		
-	#GotoBuildingBtn.onClick = func() -> void:
-		#toggle_camera_view()
-	#
-	#GotoBaseBtn.onClick = func() -> void:
-		#toggle_camera_view()
-			#
-	#FloorPlanBtn.onClick = func() -> void:
-		#await lock_btns(true)
-		#camera_settings.type = CAMERA.TYPE.ROOM_SELECT
-		#SUBSCRIBE.camera_settings = camera_settings						
-		#current_mode = MODE.INVESTIGATE		
-		#lock_btns(false)
-	
-
-			
-
-	#HotkeyContainer.action_func_lookup = action_func_lookup
-	#HotkeyContainer.ability_funcs = ability_funcs
-	#HotkeyContainer.passive_funcs = passive_funcs			
-	
-	#GBL.direct_ref["CenterBtnList"] = CenterBtnList
-	#GBL.direct_ref["HotkeyContainer"] = HotkeyContainer
 	GBL.direct_ref["ResearcherMiniCard"] = ResearcherMiniCard	
 	GBL.direct_ref["RoomMiniCard"] = RoomMiniCard	
 	GBL.direct_ref["ScpMiniCard"] = ScpMiniCard	
@@ -327,6 +265,11 @@ func _ready() -> void:
 	
 	on_show_room_details_update()
 	#on_current_bookmark_type_update()
+	
+	for index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+		var new_node:Control = NametagPreload.instantiate()
+		new_node.index = index
+		NameControl.add_child(new_node)
 	
 	hide()		
 # --------------------------------------------------------------------------------------------------	
@@ -343,7 +286,7 @@ func activate() -> void:
 	
 	lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
 
-	update_control_pos(true)
+	update_control_pos(false)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -372,6 +315,10 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": control_pos_default[MiniCardPanel].x - MiniCardMargin.size.x
 	}
 	
+	
+	ActionPanel.position.y = control_pos[ActionPanel].hide
+	InvestigatePanel.position.y = control_pos[InvestigatePanel].hide
+	
 	on_current_mode_update(skip_animation)
 # --------------------------------------------------------------------------------------------------	
 
@@ -381,26 +328,11 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 # --------------------------------------------------------------------------------------------------		
 
-## --------------------------------------------------------------------------------------------------		
-#func get_menu_y_pos() -> int:
-	#return self.size.y - 40 - ActiveMenu.size.y
-## --------------------------------------------------------------------------------------------------			
-
 # --------------------------------------------------------------------------------------------------				
 func clear_lines() -> void:
 	GBL.find_node(REFS.LINE_DRAW).clear()
 	prev_draw_state = {}			
 # --------------------------------------------------------------------------------------------------				
-
-## --------------------------------------------------------------------------------------------------				
-#func drawline_bookmark() -> void:	
-	#GBL.find_node(REFS.LINE_DRAW).add( func() -> Vector2:
-		#return Vector2(ActiveMenu.global_position.x + ActiveMenu.size.x + 10, ActiveMenu.global_position.y - 70), { 
-			#"draw_to_hotkeys": true, 
-			#"draw_to_active_menu": true,
-			#"label": "PRESS [%s] TO ASSIGN, [%s] TO CANCEL" % ['E', 'B'],
-		#})	
-## --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------
 func draw_active_menu(draw_delay:float = 0) -> void:
@@ -425,178 +357,127 @@ func draw_active_menu(draw_delay:float = 0) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-#var selected_data_state:Dictionary
-#var selected_index_state:int 
-#func draw_active_menu_items(selected_data:Dictionary = selected_data_state, selected_index:int = selected_index_state) -> void:	
-	#selected_data_state = selected_data
-	#selected_index_state = selected_index
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	#var get_node_pos:Callable = func() -> Vector2: 
-		#return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
-#
-	## do a check for passives to see if they provide a resource
-	#var draw_to_personnel:bool = false
-	#var draw_to_research:bool = false
-	#var draw_to_morale:bool = false
-	#var draw_to_readiness:bool = false
-	#var draw_to_safety:bool = false
-	#var ability:Dictionary
-	#
-	## get ability data
-	#match selected_data.shortcut_data.type:
-		## IF ACTIVE
-		#1:
-			#ability = room_extract.room.abilities.filter(func(x): return x.name == selected_data.title)[0]
-			#draw_to_research = true
-		## IF PASSIVE
-		#2:
-			#ability = room_extract.room.passive_abilities.filter(func(x): return x.name == selected_data.title)[0]
-			#draw_to_personnel = "personnel" in ability
-	#
-	## if any "metrics" draw to applies
-	#if "metrics" in ability:
-		#for ref in ability.metrics:
-			#match ref:
-				#RESOURCE.METRICS.MORALE:
-					#draw_to_morale = true
-				#RESOURCE.METRICS.SAFETY:
-					#draw_to_safety = true
-				#RESOURCE.METRICS.READINESS:
-					#draw_to_readiness = true
-#
-	#
-	#var draw_dict:Dictionary = {
-		#"use_nametag": false,
-		##"label": "PRESS [%s] TO USE" % ['E'],
-		#"draw_to_research": selected_data.shortcut_data.type == 1,
-		#"draw_to_personnel": draw_to_personnel,
-		#
-		#"draw_to_energy": selected_data.shortcut_data.type == 2,
-		#"draw_to_morale": draw_to_morale,
-		#"draw_to_readiness": draw_to_readiness,
-		#"draw_to_safety": draw_to_safety,
-		##
-		#"draw_to_center_btn_list": true
-	#}
-	#
-	#if prev_draw_state != draw_dict:
-		#prev_draw_state = draw_dict
-		#GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, draw_dict, 0)
-# --------------------------------------------------------------------------------------------------
-
-## --------------------------------------------------------------------------------------------------	
-#func show_generator_upgrades(skip_animation:bool = false) -> void:
-	#var options:Array = []
-	#
-	#options.push_back({
-		#"title": "UPGRADE GENERATOR LVL %s" % [base_states.floor[str(current_location.floor)].generator_level + 1],				
-		#"is_disabled": false,
-		#"action": func() -> void:
-			#await GAME_UTIL.upgrade_generator_level.call(),
-		#"onSelect": func(index:int) -> void:
-			#await options[index].action.call(),
-	#})					
-	#
-	#update_active_menu("GENERATOR", Color.WHITE, options, GAME_UTIL.get_ability_level(), Vector2(300, 300), skip_animation)	
-## --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-#func show_base_upgrades(skip_animation:bool = false) -> void:
-	#var options:Array = []
-		#
-	#var is_powered:Callable = func() -> bool:
-		#return room_config.floor[current_location.floor].is_powered
-		#
-	#var is_in_lockdown:Callable = func() -> bool:
-		#return room_config.floor[current_location.floor].in_lockdown		
-	#
-	#if !is_powered.call():
-		#options.push_back({
-			#"title": "UNLOCK FLOOR" if !is_powered.call() else "ALREADY UNLOCKED",					
-			#"is_disabled": is_powered.call(),
-			#"get_disabled_state": is_powered,		
-			#"action": func() -> void:
-				#await GAME_UTIL.activate_floor(),
-			#"onSelect": func(index:int) -> void:
-				#await options[index].action.call(),
-		#})
-	#
-	#options.push_back({
-		#"title": "LOCKDOWN FLOOR" if !is_in_lockdown.call() else "RELEASE LOCKDOWN",		
-		#"is_disabled": false,
-		#"action": func() -> void:
-			#await GAME_UTIL.set_floor_lockdown(!is_in_lockdown.call()),
-		#"onSelect": func(index:int) -> void:
-			#await options[index].action.call(),
-	#})						
-	#
-	#update_active_menu("UPGRADES", Color.WHITE, options, 0, Vector2(300, 300), skip_animation)		
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------
-func action_func_lookup(title:String) -> Dictionary:
-	var action_dict:Dictionary 
-	match title:
-		# ------------------	
-		"EXIT GAME":
-			action_dict = {
-				"onSelect": func(_index:int) -> void:
-					await GameplayNode.quicksave()
-					GameplayNode.exit_game()
-			}	
-		# ------------------		
-		"RETURN TO TITLESCREEN":
-			action_dict = {
-				"onSelect": func(_index:int) -> void:
-					await GameplayNode.quicksave()
-					GameplayNode.exit_to_titlescreen()
-			}					
-		# ------------------
-		"OBJECTIVES":
-			action_dict = {
-				"onSelect": func(_index:int) -> void:
-					await GAME_UTIL.open_objectives(),
-			}
-
-		# ------------------
-		"QUICKSAVE": 
-			action_dict = {
-				"onSelect": func(_index:int) -> void:
-					GameplayNode.quicksave()
-			}
-		# ------------------		
-		"QUICKLOAD": 
-			action_dict = {
-				"onSelect": func(_index:int) -> void:
-					GameplayNode.quickload()
-			}
-		# ------------------				
+func show_generator_updates(skip_animation:bool = false) -> void:			
 	
-	action_dict.title = title	
-	action_dict.shortcut_data = {
-		"type": MENU_TYPE.ACTIONS,
-		"lookup_ref": title
-	}
-
-	return action_dict
-# --------------------------------------------------------------------------------------------------
-
-
-# --------------------------------------------------------------------------------------------------
-func show_actions(skip_animation:bool = false) -> void:
-	var options:Array = []
-	var menu_title:String 
-	NameControl.hide()
-	set_backdrop_state(true)
+	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	
-	ActiveMenu.onClose = func() -> void:	
-		clear_lines()
-		NameControl.show()
+	var options:Array = [
+		{
+			"title": "GENERATOR ENHANCE",
+			"items": [
+				{
+					"title": "Powerup X",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "FULLSCREEN",
+						"description": "Supply power to FLOOR 0."
+					},
+					"is_togglable": true,
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.upgrade_generator_level()
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "Powerup Y",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "FULLSCREEN",
+						"description": "Supply power to FLOOR 1."
+					},
+					"is_togglable": true,
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.upgrade_generator_level()
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "Powerup Z",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "FULLSCREEN",
+						"description": "Supply power to FLOOR 2."
+					},
+					"is_togglable": true,
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.upgrade_generator_level()
+						ActiveMenuNode.unlock(),
+				},
+			]
+		}
+	]
+	
+	ActiveMenuNode.onBeforeAction = func(_item:Dictionary) -> void:
+		pass
+	
+	ActiveMenuNode.onAfterAction = func(_item:Dictionary) -> void:
+		pass
+	
+	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
-		open_menu(false)
 		on_current_location_update()
 		lock_actions(false)
-		
+	
+	ActiveMenuNode.use_color = Color.WHITE
+	ActiveMenuNode.options_list = options
+	
+	add_child(ActiveMenuNode)
+	await U.tick()
+	ActiveMenuNode.open()	
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+func show_facility_updates(skip_animation:bool = false) -> void:			
+	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+
+	var options:Array = [
+		{
+			"title": "ENERGY SUPPLY",
+			"items": [
+				{
+					"title": "Supply Power",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "FULLSCREEN",
+						"description": "Supply power to FLOOR %s." % [current_location.floor]
+					},
+					"is_togglable": true,
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.activate_floor(current_location.floor)
+						ActiveMenuNode.unlock(),
+				}
+			]
+		}
+	]
+
+	ActiveMenuNode.onBeforeAction = func(_item:Dictionary) -> void:
+		pass
+	
+	ActiveMenuNode.onAfterAction = func(_item:Dictionary) -> void:
+		pass
+	
+	ActiveMenuNode.onClose = func() -> void:	
+		set_backdrop_state(false)
+		on_current_location_update()
+		lock_actions(false)
+	
+	ActiveMenuNode.use_color = Color.WHITE
+	ActiveMenuNode.options_list = options
+	
+	add_child(ActiveMenuNode)
+	await U.tick()
+	ActiveMenuNode.open()	
+# --------------------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------------------
+func show_settings() -> void:			
 	var is_fullscreen_checked:Callable = func() -> bool:
 		return GBL.is_fullscreen
 		
@@ -606,66 +487,90 @@ func show_actions(skip_animation:bool = false) -> void:
 	var is_ability_hints_checked:Callable = func() -> bool:
 		return gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS]
 	
-	if active_menu_index == 0:
-		menu_title = "UI"
-		options.push_back({
-			"title": "FULLSCREEN",
-			"icon": SVGS.TYPE.CONVERSATION,
-			"is_togglable": true,
-			"is_checked": await is_fullscreen_checked.call(),
-			"get_checked_state": is_fullscreen_checked,
-			"action": func() -> void:
-				GBL.find_node(REFS.OS_ROOT).toggle_fullscreen(),	
-			"onSelect": func(index:int) -> void:
-				await options[index].action.call(),
-		})
-		
-		options.push_back({
-			"title": "NAMETAG OVERLAY",
-			"icon": SVGS.TYPE.RESEARCH,
-			"is_togglable": true,
-			"is_checked": await is_enable_nametags_checked.call(),
-			"get_checked_state": is_enable_nametags_checked,
-			"action": func() -> void:
-				gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS] = !gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
-				SUBSCRIBE.gameplay_conditionals = gameplay_conditionals,
-			"onSelect": func(index:int) -> void:
-				await options[index].action.call(),
-		})
-		options.push_back({
-			"title": "ABILITY HINTS",
-			"icon": SVGS.TYPE.QUESTION_MARK,
-			"is_togglable": true,
-			"is_checked": await is_ability_hints_checked.call(),
-			"get_checked_state": is_ability_hints_checked,
-			"action": func() -> void:
-				gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS] = !gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS]
-				SUBSCRIBE.gameplay_conditionals = gameplay_conditionals,
-			"onSelect": func(index:int) -> void:
-				await options[index].action.call(),
-		})		
+	var options:Array = [
+		{
+			"title": "GRAPHICS",
+			"items": [
+				{
+					"title": "Fullscreen",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "FULLSCREEN",
+						"description": "Change to and from fullscreen mode."
+					},
+					"is_togglable": true,
+					"is_checked": await is_fullscreen_checked.call(),
+					"get_checked_state": is_fullscreen_checked,
+					"action": func() -> void:
+						GBL.find_node(REFS.OS_ROOT).toggle_fullscreen(),
+				},
+			]
+		},
+		{
+			"title": "SAVE AND LOAD",
+			"items": [
+				{
+					"title": "Quicksave",
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"description": "Save your current progress"
+					},
+					"action": func() -> void:
+						GameplayNode.quicksave(),
+				}
+			]
+		},
+		{
+			"title": "QUIT",
+			"items": [
+				{
+					"title": "Exit Game",
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"description": "Exit your current game."
+					},
+					"action": func() -> void:
+						await GameplayNode.quicksave()
+						GameplayNode.exit_game(),
+				},
+				{
+					"title": "Return to Titlescreen",
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"description": "Exit to title screen."
+					},
+					"action": func() -> void:
+						await GameplayNode.quicksave()
+						GameplayNode.exit_to_titlescreen(),
+				},	
+			]
+		},		
+	]
 	
-		
-	if active_menu_index == 1:
-		menu_title = "SYSTEM"
-		options.push_back(action_func_lookup('QUICKSAVE'))
+	NameControl.hide()
+	set_backdrop_state(true)
+
+	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	
-	if active_menu_index == 2:
-		menu_title = "QUIT"		
-		options.push_back(action_func_lookup('RETURN TO TITLESCREEN'))		
-		options.push_back(action_func_lookup('EXIT GAME'))
-
-
-	ActiveMenu.level = active_menu_index
-	ActiveMenu.show_ap = true
-
-	#if active_menu_index == 1:
-		#menu_title = "INFORMATION"
-		#options.push_back(action_func_lookup('OBJECTIVES'))
-		##options.push_back(action_func_lookup('ASSIGN'))
-
-	var active_menu_pos:Vector2 = Vector2(GBL.game_resolution.x/2 - ActiveMenu.size.x/2, GBL.game_resolution.y/2 - ActiveMenu.size.y/2 - 100)
-	update_active_menu(menu_title, Color.WHITE, options, 2, active_menu_pos, skip_animation)	
+	ActiveMenuNode.onBeforeAction = func(_item:Dictionary) -> void:
+		pass
+	
+	ActiveMenuNode.onAfterAction = func(_item:Dictionary) -> void:
+		pass
+	
+	ActiveMenuNode.onClose = func() -> void:	
+		NameControl.show()
+		set_backdrop_state(false)
+		on_current_location_update()
+		lock_actions(false)
+	
+	ActiveMenuNode.use_color = Color.WHITE
+	ActiveMenuNode.options_list = options
+	
+	add_child(ActiveMenuNode)
+	await U.tick()
+	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -766,24 +671,6 @@ func after_use_passive_ability(_ability:Dictionary) -> void:
 # --------------------------------------------------------------------------------------------------
 
 
-# --------------------------------------------------------------------------------------------------
-func update_active_menu(header:String, color:Color, options_list:Array, max_level:int, use_position:Vector2, skip_animation:bool) -> void:
-	open_menu(true)
-	
-	ActiveMenu.header = header
-	ActiveMenu.use_color = color
-	ActiveMenu.options_list = options_list
-	ActiveMenu.max_level = max_level
-	ActiveMenu.size.y = 1
-	ActiveMenu.custom_minimum_size.y = 1	
-	
-	
-	if !skip_animation:
-		await U.tick()
-		ActiveMenu.global_position = use_position + Vector2(40, 100) #-ActiveMenu.size.y/2)
-		ActiveMenu.open()	
-# --------------------------------------------------------------------------------------------------
-
 # --------------------------------------------------------------------------------------------------		
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
@@ -875,12 +762,6 @@ func set_backdrop_state(state:bool) -> void:
 	await U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.4 if state else 0.0))	
 # --------------------------------------------------------------------------------------------------	
 
-## --------------------------------------------------------------------------------------------------	
-#func on_current_bookmark_type_update() -> void:
-	#if !is_node_ready():return
-	#HotkeyContainer.current_bookmark_type = current_bookmark_type
-## --------------------------------------------------------------------------------------------------		
-
 # --------------------------------------------------------------------------------------------------		
 func reveal_investigate_controls(state:bool, duration:float = 0.3) -> void:
 	await U.tween_node_property(InvestigatePanel, "position:y", control_pos[InvestigatePanel].show if state else control_pos[InvestigatePanel].hide , duration)
@@ -896,72 +777,9 @@ func reveal_cardminipanel(state:bool, duration:float = 0.3) -> void:
 	await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show if state else control_pos[MiniCardPanel].hide, duration)
 # --------------------------------------------------------------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------		
-#func on_selected_researcher_update() -> void:
-	#if current_mode != MODE.DISMISS_RESEARCHER:return
-	#for index in ResearcherList.get_child_count():
-		#var card:Control = ResearcherList.get_child(index)
-		#card.is_selected = index == selected_researcher
-
-# --------------------------------------------------------------------------------------------------		
-
 # --------------------------------------------------------------------------------------------------
 func enable_room_focus(state:bool) -> void:
 	GBL.find_node(REFS.ROOM_NODES).enable_room_focus = state
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func render_shorcut_container() -> void:
-	if !is_node_ready() or gameplay_conditionals.is_empty():return	
-	#ShortcutBtnList.show()
-	#LeftSideShortcutContainer.show() if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ACTIVE_ABILITY_SHORTCUTS] else LeftSideShortcutContainer.hide()
-	#RightSideShortcutContainer.show() if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_PASSIVE_ABILITY_SHORTCUTS] else RightSideShortcutContainer.hide()	
-# --------------------------------------------------------------------------------------------------	
-
-## --------------------------------------------------------------------------------------------------
-#func buildout_btns() -> void:
-	#if !is_node_ready() or camera_settings.is_empty() or room_config.is_empty() or current_location.is_empty():return	
-	#var floor_config:Dictionary = room_config.floor[current_location.floor]
-#
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	#var floor_is_powered:bool = room_extract.floor_config.is_powered
-	#
-	#var room_is_empty:bool = room_extract.room.is_empty()	
-	#var is_activated:bool = room_extract.is_activated
-	#var can_contain:bool =  room_extract.can_contain
-	#var room_step_complete:bool = !room_is_empty
-	#var scp_is_empty:bool = room_extract.is_scp_empty
-#
-	#var new_right_btn_list:Array = [] 
-	#var new_left_btn_list:Array = []
-	#var new_center_btn_list:Array = []
-	#var reload:bool = false
-	#
-	#if camera_settings.type != previous_camera_type:
-		#previous_camera_type = camera_settings.type	
-		#reload = true
-	#
-	#
-	##FloorPlanBtn.show() if floor_config.is_powered else FloorPlanBtn.hide()
-	##ActivateFloorBtn.hide() if floor_config.is_powered else ActivateFloorBtn.show()
-	#
-	#is_setup = true
-## --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-var previous_nametag_state:bool 
-func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals, force_change:bool = false) -> void:
-	super.on_gameplay_conditionals_update(new_val)
-	if !is_node_ready() or (current_mode == MODE.SELECT_FLOOR and !force_change):return
-	var state:bool = gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
-	if previous_nametag_state != state or force_change:
-		previous_nametag_state = state
-		if state:
-			NameControl.show()
-			hide_nametags(!state)
-		else:
-			await hide_nametags(!state)
-			NameControl.hide()
 # --------------------------------------------------------------------------------------------------	
 
 ## --------------------------------------------------------------------------------------------------	
@@ -1009,22 +827,6 @@ func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
 	if !state:
 		freeze_inputs = false
 		lock_panel_btn_state(state, [InvestigatePanel])		
-
-func open_menu(state:bool) -> void:	
-	if state:
-		RoomDetailsControl.reveal(false) 
-		active_menu_is_open = true
-		lock_panel_btn_state(true, [])
-	
-	ActiveMenu.freeze_inputs = !state
-	
-	if !state:
-		if current_mode != MODE.INVESTIGATE:
-			U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].hide )		
-		
-		RoomDetailsControl.reveal(show_room_details) 
-		active_menu_is_open = false
-		lock_panel_btn_state(false, [])
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1041,7 +843,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			for btn in [InvestigateBackBtn, AbilityBtn]:
 				btn.onClick = func() -> void:pass
 					
-			GBL.find_node(REFS.ROOM_NODES).update_camera_size(31)
+			#GBL.find_node(REFS.ROOM_NODES).update_camera_size(21)
 			enable_room_focus(false)
 			set_backdrop_state(false)	
 
@@ -1059,7 +861,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			lock_panel_btn_state(true, [ActionPanel])
 			NameControl.hide()
 
-			GBL.find_node(REFS.ROOM_NODES).update_camera_size(40)
+			#GBL.find_node(REFS.ROOM_NODES).update_camera_size(40)
 			enable_room_focus(true)
 			set_backdrop_state(true)	
 			
@@ -1115,39 +917,6 @@ func check_if_contain_is_valid() -> void:
 	#ConfirmBtn.title = "CONTAIN"
 	#ConfirmBtn.is_disabled = is_room_empty or !can_contain
 # --------------------------------------------------------------------------------------------------	
-
-# -------------------------------------------------------------------------------------------------				
-#func show_debug(skip_animation:bool = false) -> void:
-	#open_menu(true)
-		#
-	#var list:Array = []
-#
-	#list.push_back({
-		#"title": "OPEN SHOP",
-		#"icon": SVGS.TYPE.RESEARCH,
-		#"action": func() -> void:
-			#await GameplayNode.open_store(),
-		#"onSelect": func(index:int) -> void:
-			#await list[index].action.call()
-			#GameplayNode.restore_player_hud(),
-	#})
-	#
-	#list.push_back({
-		#"title": "get_new_scp",
-		#"icon": SVGS.TYPE.RESEARCH,
-		#"action": func() -> void:
-			#await GAME_UTIL.get_new_scp(),
-		#"onSelect": func(index:int) -> void:
-			#await list[index].action.call()
-			#GameplayNode.restore_player_hud(),
-	#})	
-	#
-#
-	#ActiveMenu.level = active_menu_index
-	#ActiveMenu.show_ap = true
-	#
-	#update_active_menu("DEBUG", Color.WHITE, list, 3, Vector2(10, 300), skip_animation)	
-# --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------
 func update_details(use_location:Dictionary) -> void:
@@ -1228,7 +997,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				MODE.INVESTIGATE:
 					U.room_left()
 # --------------------------------------------------------------------------------------------------	
-
 
 ## --------------------------------------------------------------------------------------------------
 #func open_alarm_setting() -> void:

@@ -3,7 +3,7 @@ extends Node3D
 @onready var PreviewCamera:Camera3D = $PreviewCamera
 @onready var MainMesh:MeshInstance3D = $RoomNode/MainMesh
 @onready var MeshOutline:MeshInstance3D = $RoomNode/MeshOutline
-@onready var NameLabel:Label3D = $RoomNode/NameLabel
+#@onready var NameLabel:Label3D = $RoomNode/NameLabel
 
 @onready var RoomNode:Node3D = $RoomNode
 @onready var RoomNumberLabel:Label3D = $RoomNode/MainMesh/DoorMesh/RoomNumberLabel
@@ -87,7 +87,6 @@ var sister_nodes:Array = []
 
 # ---------------------------------------------------
 func _init() -> void:
-	
 	SUBSCRIBE.subscribe_to_unavailable_rooms(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
@@ -112,6 +111,9 @@ func _ready() -> void:
 	build_room_details()
 # ---------------------------------------------------
 
+func get_marker() -> MeshInstance3D:
+	return $Node3D/Marker
+
 # ---------------------------------------------------
 func on_is_pulsing_update() -> void:
 	if !is_pulsing:
@@ -123,7 +125,7 @@ func on_current_state_update() -> void:
 	if !is_node_ready():return
 	var new_color:Color = Color.WHITE
 	var mesh_outline:StandardMaterial3D = MeshOutline.get_surface_override_material(0).duplicate()
-	NameLabel.hide()
+	#NameLabel.hide()
 	
 	match current_state:
 		STATES.NONE:
@@ -218,7 +220,7 @@ func build_room_details() -> void:
 	material_copy.albedo_color = Color.SLATE_GRAY
 
 	RoomNumberLabel.text = "%s" % [room_number]	
-	NameLabel.text = "EMPTY" if extract_data.is_room_empty else extract_data.room.details.name
+	#NameLabel.text = "EMPTY" if extract_data.is_room_empty else extract_data.room.details.name
 	
 	var scp_color:Color = Color(0.511, 0.002, 0.717)
 	var room_color:Color = Color(0, 0.529, 1)
@@ -229,7 +231,7 @@ func build_room_details() -> void:
 		ActivationIndicatorLight.omni_attenuation = 1.0
 		ActivationIndicatorLight.light_color = Color.TRANSPARENT
 	else:
-		DoorLabel.text = extract_data.room.details.name		
+		DoorLabel.text = extract_data.room.details.shortname		
 		#match extract_data.room_category:
 			#ROOM.CATEGORY.CONTAINMENT_CELL:
 				#material_copy.albedo_color = special_color if extract_data.is_directors_office else scp_color

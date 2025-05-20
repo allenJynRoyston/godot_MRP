@@ -86,11 +86,13 @@ cull_mask = 1023
 projection = 1
 current = true
 fov = 52.2
+size = 1.35
 far = 20.0
 
 [node name="Sprite3D" type="Sprite3D" parent="SubViewport/Rendering/WingScene/WingCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0533484, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0387301, -0.0257486, -1)
 pixel_size = 0.0013
+double_sided = false
 texture = SubResource("ViewportTexture_pgdfi")
 
 [node name="GeneratorScene" type="Node3D" parent="SubViewport/Rendering"]
