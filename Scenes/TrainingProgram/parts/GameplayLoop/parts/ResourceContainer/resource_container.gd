@@ -23,6 +23,7 @@ extends GameContainer
 @onready var ScienceTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ScienceTag
 @onready var CoreTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CoreTag
 
+@onready var VibesContainer:PanelContainer = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes
 @onready var MoraleLabel:Label = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Morale/Label
 @onready var SafetyLabel:Label = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Safety/Label
 @onready var ReadinessLabel:Label = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Readiness/Label
@@ -31,9 +32,11 @@ extends GameContainer
 @onready var SafetyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SafetyTag
 @onready var ReadinessTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ReadinessTag
 
+@onready var EnergyContainer:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy
 @onready var Energy:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer/EnergyItem
 @onready var EnergyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/EnergyTag
 
+@onready var Personnel:Container = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel
 @onready var PersonnelStaff:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Staff
 @onready var PersonnelTechnicians:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Technicians
 @onready var PersonnelSecurity:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Security
@@ -173,12 +176,15 @@ func update_panels() -> void:
 	CurrencyCore.title = "%s" %  [resources_data[RESOURCE.CURRENCY.CORE].amount]
 	
 	# vibes
+	VibesContainer.hide() if camera_settings.is_locked and camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else VibesContainer.show()
 	update_vibes(ring_config.metrics[RESOURCE.METRICS.MORALE], ring_config.metrics[RESOURCE.METRICS.SAFETY], ring_config.metrics[RESOURCE.METRICS.READINESS])
 	
 	# energy
+	EnergyContainer.hide() if camera_settings.is_locked and camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else EnergyContainer.show()	
 	Energy.title = "%s/%s" % [ring_config.energy.available - ring_config.energy.used, ring_config.energy.available]
 
 	## personnel
+	Personnel.hide() if camera_settings.is_locked and camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else Personnel.show()	
 	PersonnelStaff.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.STAFF]
 	PersonnelTechnicians.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.TECHNICIANS]
 	PersonnelSecurity.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.SECURITY]
@@ -188,7 +194,7 @@ func update_panels() -> void:
 	match camera_settings.type:
 		# -----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
-			var summary_data:Dictionary = GAME_UTIL.get_ring_summary(current_location)	
+			var summary_data:Dictionary = GAME_UTIL.get_floor_summary(current_location) if camera_settings.is_locked else GAME_UTIL.get_ring_summary(current_location)
 
 			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
 			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 

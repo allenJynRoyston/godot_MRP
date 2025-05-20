@@ -4,10 +4,17 @@ extends GameContainer
 # SPECIAL NODES
 @onready var RootPanel:PanelContainer = $"."
 @onready var Backdrop:ColorRect = $Backdrop
-@onready var PreviewTextureRect:TextureRect = $FloorPreviewControl/PanelContainer/MarginContainer/VBoxContainer/PreviewTextureRect
 @onready var BtnControls:Control = $BtnControls
 @onready var NameControl:Control = $NameControl
 @onready var RoomDetailsControl:Control = $RoomDetails
+#  ---------------------------------------
+
+#  ---------------------------------------
+# FLOOR PREVIEW
+@onready var FloorPreviewControl:Control = $FloorPreviewControl
+@onready var FloorPreviewPanel:PanelContainer = $FloorPreviewControl/PanelContainer
+@onready var FloorPreviewMargin:MarginContainer = $FloorPreviewControl/PanelContainer/MarginContainer
+@onready var PreviewTextureRect:TextureRect = $FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PreviewTextureRect
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -143,9 +150,6 @@ func _ready() -> void:
 	BtnControls.reveal(false)
 	NameControl.hide()
 	
-	var subviewport:SubViewport = GBL.find_node(REFS.ROOM_NODES).get_preview_viewport()
-	PreviewTextureRect.texture = subviewport.get_texture()	
-	
 	# -------------------------------------
 	BuildBtn.onClick = func() -> void:
 		investigate_wrapper(func():			
@@ -235,36 +239,12 @@ func _ready() -> void:
 	GotoGeneratorBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.GENERATOR
 		SUBSCRIBE.camera_settings = camera_settings
-		
-	# -------------------------------------
-	#ActiveMenu.onNext = func() -> void:		
-		#active_menu_index = U.min_max(active_menu_index + 1, 0, 2)
-		##match current_menu_type:
-			##MENU_TYPE.ACTIONS:
-				##active_menu_index = U.min_max(active_menu_index + 1, 0, 2)
-				##show_actions(true)
-			##_:
-				##active_menu_index = U.min_max(active_menu_index + 1, 0, 1)
-				###show_abilities(true)
-		#
-	#ActiveMenu.onPrev = func() -> void:
-		#active_menu_index = U.min_max(active_menu_index - 1, 0, 2)
-		#match current_menu_type:
-			#MENU_TYPE.ACTIONS:
-				#active_menu_index = U.min_max(active_menu_index - 1, 0, 2)
-				#show_actions(true)
-			#_:
-				#active_menu_index = U.min_max(active_menu_index - 1, 0, 1)
-				##show_abilities(true)
-
 	
 	GBL.direct_ref["ResearcherMiniCard"] = ResearcherMiniCard	
 	GBL.direct_ref["RoomMiniCard"] = RoomMiniCard	
 	GBL.direct_ref["ScpMiniCard"] = ScpMiniCard	
-	#GBL.direct_ref["ActiveMenu"] = ActiveMenu
 	
 	on_show_room_details_update()
-	#on_current_bookmark_type_update()
 	
 	for index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		var new_node:Control = NametagPreload.instantiate()
@@ -283,6 +263,7 @@ func activate() -> void:
 	control_pos_default[ActionPanel] = ActionPanel.position
 	control_pos_default[InvestigatePanel] = InvestigatePanel.position
 	control_pos_default[MiniCardPanel] = MiniCardPanel.position
+	control_pos_default[FloorPreviewPanel] = FloorPreviewPanel.position
 	
 	lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
 
@@ -315,9 +296,14 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": control_pos_default[MiniCardPanel].x - MiniCardMargin.size.x
 	}
 	
+	control_pos[FloorPreviewPanel] = {
+		"show": control_pos_default[FloorPreviewPanel].x, 
+		"hide": control_pos_default[FloorPreviewPanel].x - FloorPreviewMargin.size.x
+	}	
 	
 	ActionPanel.position.y = control_pos[ActionPanel].hide
 	InvestigatePanel.position.y = control_pos[InvestigatePanel].hide
+	FloorPreviewPanel.position.x = control_pos[FloorPreviewPanel].hide
 	
 	on_current_mode_update(skip_animation)
 # --------------------------------------------------------------------------------------------------	
@@ -474,7 +460,6 @@ func show_facility_updates(skip_animation:bool = false) -> void:
 	await U.tick()
 	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
-
 
 # --------------------------------------------------------------------------------------------------
 func show_settings() -> void:			
@@ -634,6 +619,11 @@ func show_abilities() -> void:
 	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
 	var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
+	
+	clear_lines()
+	RoomDetailsControl.reveal(false)
+	await lock_investigate(true)
+		
 	BtnControls.itemlist = await RoomMiniCard.get_ability_btns()
 	BtnControls.directional_pref = "UD"
 	BtnControls.offset = RoomMiniCard.global_position
@@ -644,6 +634,7 @@ func show_abilities() -> void:
 	BtnControls.reveal(true)
 	BtnControls.onBack = func() -> void:
 		await BtnControls.reveal(false)
+		lock_investigate(false)
 		current_mode = MODE.INVESTIGATE
 # --------------------------------------------------------------------------------------------------
 
@@ -670,17 +661,21 @@ func after_use_passive_ability(_ability:Dictionary) -> void:
 	#update_details()
 # --------------------------------------------------------------------------------------------------
 
-
 # --------------------------------------------------------------------------------------------------		
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty():return
+	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return
 	
 	var btnlist:Array = [GotoFloorBtn, GotoWingBtn, GotoGeneratorBtn]
 	var actionpanels:Array = [WingActionPanel, FacilityActionPanel, GenActionPanel]
 	
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
+			if camera_settings.is_locked:
+				reveal_floorpreview(false)
+			else:
+				reveal_floorpreview(true)
+			
 			for btn in btnlist:
 				btn.is_disabled = btn == GotoFloorBtn
 			for panel in actionpanels:
@@ -691,6 +686,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			NameControl.hide()
 			
 		CAMERA.TYPE.WING_SELECT:
+			reveal_floorpreview(false)
+			
 			for btn in btnlist:
 				btn.is_disabled = btn == GotoWingBtn
 				
@@ -705,6 +702,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 				NameControl.show()
 				
 		CAMERA.TYPE.GENERATOR:
+			reveal_floorpreview(false)
+			
 			for btn in btnlist:
 				btn.is_disabled = btn == GotoGeneratorBtn
 				
@@ -721,19 +720,25 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 var previous_designation:String
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if current_location.is_empty():return
+	if current_location.is_empty() or room_config.is_empty():return
 	
 	# update room details control
 	RoomDetailsControl.use_location = current_location
 		
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
+	var is_powered:bool = room_config.floor[current_location.floor].is_powered
+	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
 	
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
 		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
-		#ResearcherBtnPanel.hide() if room_extract.is_room_empty else ResearcherBtnPanel.show()
+		ResearcherBtnPanel.hide() if room_extract.is_room_empty else ResearcherBtnPanel.show()
 		ScpBtnPanel.hide() if room_extract.is_room_empty or !room_extract.can_contain else ScpBtnPanel.show()		
 	
+	if current_mode == MODE.NONE:
+		WingActionBtn.is_disabled = !is_powered or in_lockdown
+		WingActionBtn.icon = SVGS.TYPE.DELETE if !is_powered or in_lockdown else SVGS.TYPE.CONTAIN
+
 	if current_mode == MODE.INVESTIGATE:
 		var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
 		var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
@@ -762,9 +767,23 @@ func set_backdrop_state(state:bool) -> void:
 	await U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.4 if state else 0.0))	
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------	
+func reveal_floorpreview(state:bool, duration:float = 0.3) -> void:
+	if state:
+		FloorPreviewControl.show()
+		var subviewport:SubViewport = GBL.find_node(REFS.ROOM_NODES).get_preview_viewport()
+		PreviewTextureRect.texture = subviewport.get_texture()		
+	
+	await U.tween_node_property(FloorPreviewPanel, "position:x", control_pos[FloorPreviewPanel].show if state else control_pos[FloorPreviewPanel].hide , duration)
+	
+	if !state:
+		PreviewTextureRect.texture = null
+		FloorPreviewControl.hide()
+# --------------------------------------------------------------------------------------------------	
+
 # --------------------------------------------------------------------------------------------------		
 func reveal_investigate_controls(state:bool, duration:float = 0.3) -> void:
-	await U.tween_node_property(InvestigatePanel, "position:y", control_pos[InvestigatePanel].show if state else control_pos[InvestigatePanel].hide , duration)
+	await U.tween_node_property(InvestigatePanel, "position:y", control_pos[InvestigatePanel].show if state else control_pos[InvestigatePanel].hide, duration)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -814,7 +833,9 @@ func lock_actions(state:bool, ignore_panel:bool = false) -> void:
 	if state:
 		freeze_inputs = true
 		lock_panel_btn_state(state, [ActionPanel])
+		
 	await reveal_action_controls(!state)
+	
 	if !state:
 		freeze_inputs = false
 		lock_panel_btn_state(state, [ActionPanel])
@@ -823,7 +844,9 @@ func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
 	if state:
 		freeze_inputs = true
 		lock_panel_btn_state(state, [InvestigatePanel])
+		
 	await reveal_investigate_controls(!state)
+	
 	if !state:
 		freeze_inputs = false
 		lock_panel_btn_state(state, [InvestigatePanel])		
@@ -888,10 +911,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 		# --------------
 		MODE.ABILITY:
-			clear_lines()
-			RoomDetailsControl.reveal(false)
-			lock_panel_btn_state(true, [InvestigatePanel])
-			reveal_investigate_controls(false)
 			show_abilities()
 		# --------------
 
@@ -922,7 +941,7 @@ func check_if_contain_is_valid() -> void:
 func update_details(use_location:Dictionary) -> void:
 	# update room_extract
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)	
-	var can_take_action:bool = true #is_powered and (!in_lockdown and !in_brownout)	
+	var can_take_action:bool = false# is_powered and (!in_lockdown and !in_brownout)	
 	var is_room_empty:bool = room_extract.is_room_empty
 	var is_activated:bool = room_extract.is_activated
 	var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
@@ -964,37 +983,58 @@ func update_details(use_location:Dictionary) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or GameplayNode.is_occupied() or current_location.is_empty() or room_config.is_empty() or !is_showing or freeze_inputs or is_in_transition:return
+	if !is_node_ready() or !is_visible_in_tree() or GameplayNode.is_occupied() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_showing or freeze_inputs or is_in_transition:return	
+	if current_mode == MODE.ABILITY:return
+
 	var key:String = input_data.key
 
-	match key:
+
+	match camera_settings.type:
 		# ----------------------------
-		"W":
-			match current_mode:
-				MODE.NONE:
+		CAMERA.TYPE.FLOOR_SELECT:
+			match key:
+				# ----------------------------
+				"W":
 					U.inc_floor()
-				MODE.INVESTIGATE:
-					U.room_up()
-		# ----------------------------
-		"S":
-			match current_mode:
-				MODE.NONE:
+				# ----------------------------
+				"S":
 					U.dec_floor()
-				MODE.INVESTIGATE:
-					U.room_down()
-		# ----------------------------
-		"D":
-			match current_mode:
-				MODE.NONE:
+				# ----------------------------
+				"D":
 					U.inc_ring()
-				MODE.INVESTIGATE:
-					U.room_right()
+				# ----------------------------
+				"A":
+					camera_settings.is_locked = !camera_settings.is_locked
+					SUBSCRIBE.camera_settings = camera_settings
 		# ----------------------------
-		"A":
-			match current_mode:
-				MODE.NONE:
+		CAMERA.TYPE.WING_SELECT:
+			match key:
+				# ----------------------------
+				"W":
+					U.inc_floor()
+				# ----------------------------
+				"S":
+					U.dec_floor()
+				# ----------------------------
+				"D":
+					U.inc_ring()
+				# ----------------------------
+				"A":
 					U.dec_ring()
-				MODE.INVESTIGATE:
+		# ----------------------------
+		CAMERA.TYPE.ROOM_SELECT:
+			match key:
+				# ----------------------------
+				"W":
+					U.room_up()
+				# ----------------------------
+				"S":
+					U.room_down()
+				# ----------------------------
+				"D":
+					U.room_right()
+				# ----------------------------
+				"A":
 					U.room_left()
 # --------------------------------------------------------------------------------------------------	
 

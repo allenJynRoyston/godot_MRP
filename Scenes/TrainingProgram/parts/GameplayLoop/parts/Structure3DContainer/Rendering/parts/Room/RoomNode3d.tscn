@@ -86,7 +86,7 @@ transform = Transform3D(1.04996, 0, 0, 0, 1.05, 0, 0, 0, 1.04996, -5.2057, 0.335
 visible = false
 
 [node name="Marker" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.89442, 3.47289, -0.0423772)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.86637, 1.45035, -0.0423772)
 mesh = SubResource("SphereMesh_6w5pl")
 
 [node name="RoomNode" type="Node3D" parent="."]
