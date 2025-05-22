@@ -148,8 +148,8 @@ func on_ref_update() -> void:
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		morale_val = extract_data.ring_config.metrics[RESOURCE.METRICS.MORALE]
 		is_activated = extract_data.is_activated
-		has_spec_bonus = extract_data.room.pairs_with.specilization
-		has_trait_bonus = extract_data.room.pairs_with.trait
+		#has_spec_bonus = extract_data.room.pairs_with.specilization
+		#has_trait_bonus = extract_data.room.pairs_with.trait
 
 	for key in room_details.currencies:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)

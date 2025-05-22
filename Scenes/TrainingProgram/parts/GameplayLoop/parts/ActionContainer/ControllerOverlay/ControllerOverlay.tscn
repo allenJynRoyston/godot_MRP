@@ -1,0 +1,97 @@
+[gd_scene load_steps=6 format=3 uid="uid://2egdont4wbiv"]
+
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_7ogr2"]
+[ext_resource type="Script" uid="uid://dqpibb07vhjwa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ControllerOverlay/controller_overlay.gd" id="1_vkq4n"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_vkq4n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mtjfd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_l8yab"]
+font = ExtResource("2_vkq4n")
+font_size = 256
+outline_size = 32
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[node name="ControllerOverlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vkq4n")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_mtjfd")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 125
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = 27
+static_color = Color(1, 1, 1, 0.705882)
+flip_h = true
+is_hoverable = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="FloorLabel" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_l8yab")
+
+[node name="RingLabel" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+text = "A"
+label_settings = SubResource("LabelSettings_l8yab")
+
+[node name="IconBtn2" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = 27
+static_color = Color(1, 1, 1, 0.705882)
+is_hoverable = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = 37
+static_color = Color(1, 1, 1, 0.705882)
+flip_v = true
+is_hoverable = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="IconBtn2" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = 37
+static_color = Color(1, 1, 1, 0.705882)
+is_hoverable = false

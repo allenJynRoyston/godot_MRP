@@ -213,7 +213,7 @@ func _draw() -> void:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["SciencePanel"].global_position + Vector2(30, 60), 1) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
 	if "draw_to_money" in draw_dict and draw_dict.draw_to_money:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["MoneyPanel"].global_position + Vector2(30, 60), 1) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["MoneyPanel"].global_position + Vector2(15, 60), 1) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, start_v2 + offset, 1) ))
 	if "draw_to_material" in draw_dict and draw_dict.draw_to_material:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(header_pos, GBL.direct_ref["MaterialPanel"].global_position + Vector2(30, 60), 1) ))
@@ -246,19 +246,14 @@ func _draw() -> void:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, GBL.direct_ref["CenterBtnList"].global_position + Vector2(110, -20), 1) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(footer_pos, start_v2 + offset, 1) ))		
 	# ------------------------------------------------------
-	if "draw_to_room_mini_card" in draw_dict and draw_dict.draw_to_room_mini_card:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["RoomMiniCard"].global_position + Vector2(275, 30), 1, false) ))
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
-	if "draw_to_scp_mini_card" in draw_dict and draw_dict.draw_to_scp_mini_card:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ScpMiniCard"].global_position + Vector2(275, 30), 1, false) ))
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
-	if "draw_to_researcher_list" in draw_dict and draw_dict.draw_to_researcher_list:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ResearcherMiniCard"].global_position + Vector2(275, 30), 1, false) ))
+	if "draw_to_summary_card" in draw_dict and draw_dict.draw_to_summary_card:
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["SummaryCard"].global_position + Vector2(275, 30), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	# ------------------------------------------------------
 	if "draw_to_active_menu" in draw_dict and draw_dict.draw_to_active_menu:
-		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(GBL.direct_ref["ActiveMenu"].global_position + Vector2(0, 10), start_v2 + offset, 1) ))
-			
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ActiveMenu"].global_position + Vector2(GBL.direct_ref["ActiveMenu"].size.x + 5, 20), 1, false) ))
+		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
+	
 	for points in draw_list:	
 		# Iterate backwards using the range function
 		points.reverse()

@@ -362,6 +362,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var passives_enabled:Dictionary = room_base_state.passives_enabled	
 	var passive_list:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
 	var passive_abilities:Array = []
+	
 	for index in passive_list.size():
 		var ability:Dictionary = passive_list[index]
 		var ability_uid:String = str(room_details.ref, index)
@@ -400,7 +401,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			"abilities": abilities,
 			"passive_abilities": passive_abilities,
 			"pairs_with": room_config.room_paired_with,
-			"abl_lvl": room_config.abl_lvl,		
+			"abl_lvl": room_config.abl_lvl + ring_config.abl_lvl,		
 		} if !is_room_empty else {},
 		"scp": {
 			"details": scp_details,
@@ -437,6 +438,7 @@ func get_passive_ability_state(room_ref:int, ability_index:int, use_location:Dic
 	var designation:String = U.location_to_designation(use_location)
 	var passives_enabled:Dictionary = base_states.room[designation].passives_enabled
 	var ability_uid:String = str(room_ref, ability_index)
+	
 
 	return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
 ## ------------------------------------------------------------------------------	
@@ -472,13 +474,17 @@ func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use
 
 # --------------------------------------------------------------------------------------------------	
 func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> void:
+	var ring_config:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]
 	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
 
 	if ability_uid not in base_states.room[designation].passives_enabled:
 		base_states.room[designation].passives_enabled[ability_uid] = false
 	
-	base_states.room[designation].passives_enabled[ability_uid] = !base_states.room[designation].passives_enabled[ability_uid]
+	var toggle_val:bool = !base_states.room[designation].passives_enabled[ability_uid]
+	if ring_config.energy.used >= ring_config.energy.available and toggle_val:return
+
+	base_states.room[designation].passives_enabled[ability_uid] = toggle_val
 
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------		

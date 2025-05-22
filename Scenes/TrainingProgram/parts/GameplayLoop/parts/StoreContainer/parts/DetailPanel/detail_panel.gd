@@ -36,6 +36,8 @@ extends Control
 	set(val):
 		disable_inputs = val
 		on_disable_inputs_update()
+		
+@export var disable_location:bool = false
 
 var is_revealed:bool = false : 
 	set(val):
@@ -201,12 +203,12 @@ func animate(state:bool, skip_animation:bool = false) -> void:
 # ---------------------------------
 func on_room_ref_update() -> void:
 	if !is_node_ready():return
+	RoomCard.use_location = use_location if !disable_location else {}	
 	RoomCard.ref = room_ref
-	RoomCard.use_location = use_location
 	
 func on_scp_ref_update() -> void:
 	if !is_node_ready() or use_location.is_empty():return
-	ScpCard.use_location = use_location
+	ScpCard.use_location = use_location if !disable_location else {}
 	ScpCard.ref = scp_ref
 	
 func on_researcher_uid_update() -> void:

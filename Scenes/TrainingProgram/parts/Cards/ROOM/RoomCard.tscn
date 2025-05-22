@@ -232,7 +232,7 @@ border_color = Color(0.3672, 0.378, 0.9, 1)
 [node name="CardDrawerPairsWith" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="1" instance=ExtResource("7_esvi2")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jvq23")
-title = "PAIRS WITH"
+title = "LEVELS WITH"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="CardDrawerCurrency" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="2" instance=ExtResource("7_8cpo2")]

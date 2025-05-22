@@ -41,6 +41,8 @@ extends PanelContainer
 		border_color = val
 		on_border_color_update()
 
+@export var auto_color_panels:bool = true
+
 # do not remove
 const is_container:bool = true
 
@@ -121,8 +123,8 @@ func on_border_color_update() -> void:
 func drawer_child(child:Control, is_left_side:bool) -> void:
 	if "is_left_side" in child:
 		child.is_left_side = is_left_side
-	if "border_color" in child:
-		child.border_color = border_color	
+	#if "border_color" in child and auto_color_panels:
+		#child.border_color = border_color	
 # ------------------------------------------------
 
 # ------------------------------------------------

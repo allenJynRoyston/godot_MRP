@@ -31,6 +31,9 @@ size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_t1vmv")
 script = ExtResource("1_02iep")
 panel_color = Color(0.275367, 0.56172, 0.999992, 1)
+preview_mode = null
+abl_lvl = null
+required_lvl = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -43,60 +46,46 @@ theme_override_constants/margin_bottom = 2
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
-
-[node name="CooldownLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer"]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-text = "0"
-label_settings = SubResource("LabelSettings_rylm3")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="PanelContainer3" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+[node name="CostAndCooldown" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer3"]
-custom_minimum_size = Vector2(50, 0)
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 2
+alignment = 1
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer" instance=ExtResource("3_rylm3")]
+[node name="IconBtn" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("3_rylm3")]
 layout_mode = 2
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
 icon = 44
 static_color = Color(0.827451, 0.827451, 0.827451, 1)
 is_hoverable = false
 
-[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer"]
+[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(15, 25)
 layout_mode = 2
-text = "0"
+text = "99"
 label_settings = SubResource("LabelSettings_rylm3")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+[node name="Name" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Name"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer2/MarginContainer"]
+[node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer"]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 label_settings = SubResource("LabelSettings_rylm3")

@@ -1,7 +1,6 @@
 @tool
 extends CardDrawerClass
 
-@onready var BusyPanel:MarginContainer = $BusyPanel
 @onready var AbilityList:VBoxContainer = $MarginContainer/MarginContainer/AbilityList
 
 @export var room_details:Dictionary = {} : 
@@ -24,7 +23,6 @@ var onUnlock:Callable = func() -> void:pass
 
 func _ready() -> void:
 	super._ready()
-	BusyPanel.hide()
 
 func clear() -> void:
 	for node in AbilityList.get_children():
@@ -32,7 +30,7 @@ func clear() -> void:
 
 func on_room_details_update() -> void:
 	if !is_node_ready() or room_details.is_empty():return
-	
+		
 	for node in AbilityList.get_children():
 		node.queue_free()
 	
@@ -42,20 +40,24 @@ func on_room_details_update() -> void:
 			for ability_index in abilities.size():
 				var ability:Dictionary = abilities[ability_index]
 				var btn_node:Control = RoomAbilityBtnPreload.instantiate()
+				var abl_lvl:int = 0
+				if !use_location.is_empty():
+					var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+					abl_lvl = extract_data.room.abl_lvl
 				
+				# set
 				btn_node.room_ref = room_details.ref
 				btn_node.ability_index = ability_index
-				btn_node.ability_name = ability.name
 				btn_node.use_location = use_location
 				btn_node.panel_color = border_color
+				btn_node.abl_lvl = abl_lvl
+				btn_node.preview_mode = preview_mode
 				
-				btn_node.is_unknown = ability.lvl_required >= 1 if !preview_mode else false
-				btn_node.cost = ability.science_cost
+				# update this last
 				btn_node.ability_data = ability
-
+				
 				btn_node.onClick = func() -> void:
-					if preview_mode or !is_visible_in_tree():return
-					if btn_node.on_cooldown or btn_node.is_unavailable or btn_node.is_unknown:return
+					if preview_mode or !is_visible_in_tree() or btn_node.on_cooldown or btn_node.lvl_locked:return
 					
 					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 					if ActionContainerNode.is_visible_in_tree():
@@ -81,15 +83,19 @@ func on_room_details_update() -> void:
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
 				var btn_node:Control = RoomPassiveAbilityBtnPreload.instantiate()
-
+				var abl_lvl:int = 10 if preview_mode else 0				
+				if !use_location.is_empty():
+					var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+					abl_lvl = extract_data.room.abl_lvl
+				
 				btn_node.room_ref = room_details.ref
 				btn_node.ability_index = ability_index
 				btn_node.ability_name = ability.name
 				btn_node.use_location = use_location
 				btn_node.panel_color = border_color
-				
-				btn_node.is_unknown = ability.lvl_required >= 1 if !preview_mode else false
-				btn_node.cost = ability.energy_cost
+				btn_node.abl_lvl = abl_lvl
+				btn_node.preview_mode = preview_mode
+
 				btn_node.ability_data = ability			
 				
 				btn_node.onClick = func() -> void:
@@ -104,7 +110,6 @@ func on_room_details_update() -> void:
 
 
 func lock_btns(state:bool) -> void:
-	BusyPanel.show() if state else BusyPanel.hide()
 	for btn in AbilityList.get_children():
 		btn.is_hoverable = !state
 

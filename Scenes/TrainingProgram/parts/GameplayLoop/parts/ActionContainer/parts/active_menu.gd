@@ -6,10 +6,17 @@ extends Control
 @onready var BtnPanel:PanelContainer = $BtnControl/BtnControlPanel
 @onready var BtnMargin:MarginContainer = $BtnControl/BtnControlPanel/BtnMarginContainer
 
+@onready var PaginationContainer:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer
+@onready var PrevIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer/PrevIcon
+@onready var NextIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer/NextIcon
+@onready var PaginationList:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer/PaginationList
+
+@onready var ListContainer:PanelContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer
 @onready var List:VBoxContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List
 @onready var HeaderLabel:Label = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/HeaderLabel
 
 @onready var HintControl:Control = $BtnControl/BtnControlPanel/BtnMarginContainer/Control
+@onready var HintContainer:PanelContainer = $BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer
 @onready var HintTitle:Label = $BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HintTitle
 @onready var HintIcon:BtnBase = $BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintIcon
 @onready var HintDesription:Label = $BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintDescription
@@ -18,6 +25,7 @@ extends Control
 @onready var BBtn:BtnBase = $BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/BBtn
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
+const LabelSettingPreload:LabelSettings = preload("res://Fonts/game/label_small_thick.tres")
 
 var header:String = "" : 
 	set(val):
@@ -48,19 +56,31 @@ var freeze_inputs:bool = true :
 	set(val):
 		freeze_inputs = val
 		
+var disable_active_btn:bool = false : 
+	set(val):
+		disable_active_btn = val
+		on_disable_active_btn_update()
+
+var retain_height:bool = true
+		
+var hint_border_color:Color = Color(0.337, 0.275, 1.0) : 
+	set(val):
+		hint_border_color = val
+		on_hint_border_color_update()
 
 var control_pos_default:Dictionary
 var control_pos:Dictionary
 
 var wait_for_release:bool = false
 var allow_shortcut:bool = false
-var stored_pos:Vector2 
+var stored_size:Vector2 
 
 var onBeforeAction:Callable = func(_item:Dictionary):pass
 var onAfterAction:Callable = func(_item:Dictionary):pass
-var onClose:Callable = func():pass
 var onUpdate:Callable = func(_item:Dictionary):pass
 
+var onClose:Callable = func():pass
+var onAction:Callable = func():pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -71,6 +91,8 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
+	HintControl.hide()	
+	on_hint_border_color_update()
 	activate()
 # ------------------------------------------------------------------------------
 
@@ -104,14 +126,14 @@ func open() -> void:
 	selected_index = 0
 	freeze_inputs = false
 	
-
 func close() -> void:	
-	print("close...")
 	freeze_inputs = true
+	for btn in [ABtn, BBtn]:
+		btn.is_disabled = true
 	await animate_in(false)
 	onClose.call()	
 	queue_free()
-	
+
 func lock() -> void:
 	for btn in [ABtn, BBtn]:
 		btn.is_disabled = true
@@ -123,6 +145,7 @@ func unlock() -> void:
 	for btn in [ABtn, BBtn]:
 		btn.is_disabled = false
 	await U.set_timeout(0.2)
+# ------------------------------------------------------------------------------
 
 	
 # ------------------------------------------------------------------------------
@@ -132,11 +155,15 @@ func animate_in(state:bool, skip_animation:bool = false) -> void:
 	await U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].show if state else control_pos[BtnPanel].hide, duration)	
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func clear_list() -> void:
-	for child in List.get_children():
-		child.queue_free()
+	for node in [PaginationList, List]:
+		for child in node.get_children():
+			child.queue_free()
+
+func on_disable_active_btn_update() -> void:
+	if !is_node_ready():return
+	ABtn.is_disabled = disable_active_btn
 
 func update_checkbox_option(index:int, is_checked:bool) -> void:
 	var btn_node:Control = List.get_child(index) 
@@ -147,27 +174,43 @@ func on_selected_index_update() -> void:
 	for index in List.get_child_count():
 		var btn_node:Control = List.get_child(index) 
 		btn_node.is_selected = index == selected_index
+
 		if index == selected_index:
 			Input.warp_mouse(btn_node.global_position)
 			onUpdate.call(options_list[tab_index].items[index])	
 			update_hint(options_list[tab_index].items[index])
 
+
 func update_hint(item:Dictionary) -> void:
 	if "hint" in item:
-		HintControl.show()
 		HintTitle.text = item.title
 		HintIcon.icon = item.hint.icon
 		HintDesription.text = item.hint.description
+		await U.tick()
+		HintControl.show()
 	else:
 		HintControl.hide()
 
+func on_hint_border_color_update() -> void:
+	if !is_node_ready():return
+	var new_stylebox:StyleBoxFlat = HintContainer.get_theme_stylebox('panel').duplicate()
+	new_stylebox.border_color = hint_border_color		
+	HintContainer.add_theme_stylebox_override('panel', new_stylebox)	
+
 func on_tab_index_update() -> void:
 	on_options_list_update()
+	await U.tick()
+	for index in PaginationList.get_child_count():		
+		var LabelNode:Label = PaginationList.get_child(index) 
+		LabelNode.modulate = Color(1, 1, 1, 1 if index == tab_index else 0.5)
+				
 
 func on_options_list_update() -> void:
 	if !is_node_ready():return	
 	wait_for_release = true
 	clear_list()
+	
+	
 	
 	# ---- IF EMPTY
 	if options_list.is_empty():
@@ -178,6 +221,19 @@ func on_options_list_update() -> void:
 		
 		List.add_child(btn_node)		
 		return
+	
+	PaginationContainer.show() if options_list.size() > 1 else PaginationContainer.hide()
+	for index in options_list.size():
+		var new_pagination_label:Label = Label.new()
+		new_pagination_label.label_settings = LabelSettingPreload
+		new_pagination_label.text = str(index)
+		new_pagination_label.modulate = Color(1, 1, 1, 1 if index == tab_index else 0.5)
+		PaginationList.add_child(new_pagination_label)
+	
+	if options_list.size() > 1:
+		PrevIcon.static_color = Color(1, 1, 1, 0 if tab_index == 0 else 1)
+		NextIcon.static_color = Color(1, 1, 1, 0 if tab_index == options_list.size() - 1 else 1)
+
 	
 	for index in options_list[tab_index].items.size():
 		var item:Dictionary = options_list[tab_index].items[index]
@@ -199,7 +255,15 @@ func on_options_list_update() -> void:
 		List.add_child(btn_node)
 		
 
-
+	
+	await U.tick()
+	if stored_size.y < ListContainer.size.y:
+		stored_size = ListContainer.size
+	
+	if retain_height:	
+		ListContainer.size.y = stored_size.y
+		ListContainer.custom_minimum_size.y = stored_size.y
+			
 func on_header_update() -> void:
 	if !is_node_ready():return
 	HeaderLabel.text = header
@@ -221,6 +285,7 @@ func on_action() -> void:
 		await onBeforeAction.call(item)
 		await item.action.call()
 		onAfterAction.call(item)
+		onAction.call()
 # ------------------------------------------------------------------------------
 
 				
@@ -234,7 +299,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			if wait_for_release:return
 			on_action()
 		"B":
-			print("close?")
 			close()
 		"A":
 			tab_index = U.min_max(tab_index - 1, 0, options_list.size() - 1)

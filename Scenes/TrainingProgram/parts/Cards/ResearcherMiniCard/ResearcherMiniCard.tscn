@@ -126,6 +126,7 @@ is_hoverable = false
 [node name="CardBody" parent="." instance=ExtResource("3_qyov1")]
 layout_mode = 2
 card_size = Vector2(275, 90)
+auto_color_panels = null
 
 [node name="TextureRect" parent="CardBody" index="0"]
 texture = SubResource("ViewportTexture_2d0eq")

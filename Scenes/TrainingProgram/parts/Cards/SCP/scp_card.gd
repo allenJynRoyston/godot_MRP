@@ -9,6 +9,7 @@ extends MouseInteractions
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerName
 @onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerItemClass
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
+@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerEffect
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
 # back
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
@@ -116,7 +117,7 @@ func on_ref_update() -> void:
 	
 	if ref not in SCP_UTIL.reference_data:
 		CardDrawerImage.use_static = true
-		for node in [CardDrawerDesignation, CardDrawerItemClass, CardDrawerDescription, CardDrawerAssigned, CardDrawerName]:
+		for node in [CardDrawerDesignation, CardDrawerItemClass, CardDrawerDescription, CardDrawerEffect, CardDrawerAssigned, CardDrawerName]:
 			node.content = "-"
 		return
 		
@@ -150,6 +151,7 @@ func on_ref_update() -> void:
 	CardDrawerDesignation.content = scp_details.name
 	CardDrawerName.content = scp_details.nickname
 	CardDrawerDescription.content = scp_details.description
+	CardDrawerEffect.content = scp_details.effects.description
 	CardDrawerImage.img_src = scp_details.img_src
 	CardDrawerImage.use_static = false	
 	CardDrawerVibes.metrics = scp_details.metrics

@@ -63,19 +63,20 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	super._ready()
-	#GBL.direct_ref["MetricsContainer"] = MetricsContainer
-	#GBL.direct_ref["LocationPanel"] = LocationPanel
-	#GBL.direct_ref["PersonnelPanel"] = PersonnelPanel
-	#GBL.direct_ref["EnergyPanel"] = EnergyPanel
+	
+	GBL.direct_ref["MetricsContainer"] = VibesContainer
+	GBL.direct_ref["LocationPanel"] = LocationFloor
+	GBL.direct_ref["PersonnelPanel"] = Personnel
+	GBL.direct_ref["EnergyPanel"] = EnergyContainer
 	#
-	#GBL.direct_ref["CorePanel"] = CurrencyCore
-	#GBL.direct_ref["MaterialPanel"] = MaterialPanel
-	#GBL.direct_ref["SciencePanel"] = SciencePanel
-	#GBL.direct_ref["MoneyPanel"] = MoneyPanel
+	GBL.direct_ref["CorePanel"] = CurrencyCore
+	GBL.direct_ref["MaterialPanel"] = CurrencyMaterials
+	GBL.direct_ref["SciencePanel"] = CurrencyResearch
+	GBL.direct_ref["MoneyPanel"] = CurrencyMoney
 	#
-	#GBL.direct_ref["MoralePanel"] = Morale
-	#GBL.direct_ref["SafetyPanel"] = Safety
-	#GBL.direct_ref["ReadinessPanel"] = Readiness
+	GBL.direct_ref["MoralePanel"] = MoraleLabel
+	GBL.direct_ref["SafetyPanel"] = SafetyLabel
+	GBL.direct_ref["ReadinessPanel"] = ReadinessLabel
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -230,7 +231,10 @@ func update_panels() -> void:
 			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
 			# update vibes
-			update_vibes(summary_data.metric_diff[RESOURCE.METRICS.MORALE], summary_data.metric_diff[RESOURCE.METRICS.SAFETY], summary_data.metric_diff[RESOURCE.METRICS.READINESS])
+			MoraleTag.val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
+			SafetyTag.val = summary_data.metric_diff[RESOURCE.METRICS.SAFETY]
+			ReadinessTag.val = summary_data.metric_diff[RESOURCE.METRICS.READINESS]
+			#update_vibes(summary_data.metric_diff[RESOURCE.METRICS.MORALE], summary_data.metric_diff[RESOURCE.METRICS.SAFETY], summary_data.metric_diff[RESOURCE.METRICS.READINESS])
 
 			EnergyTag.val = str(-summary_data.energy_diff)			
 			StaffTag.val = str(summary_data.personnel_diff[RESOURCE.PERSONNEL.STAFF])

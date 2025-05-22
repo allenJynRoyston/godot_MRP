@@ -3,20 +3,17 @@ extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
 
-@onready var Checkbox:BtnBase = $MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/CheckBox
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/IconBtn
-@onready var CostLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/CostLabel
-@onready var NameLabel:Label = $MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/NameLabel
+@onready var CostAndCooldownContainer:PanelContainer = $MarginContainer/HBoxContainer/CostAndCooldown
+@onready var CostLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/CostLabel
+@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/IconBtn
+@onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/NameLabel
+@onready var Checkbox:BtnBase = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/CheckBox
+
 
 @export var panel_color:Color = Color("0e0e0ecb") : 
 	set(val):
 		panel_color = val
 		on_panel_color_update()		
-
-@export var level:int = 0: 
-	set(val):
-		level = val
-		on_level_update()
 
 @export var cost:int : 
 	set(val):
@@ -28,33 +25,22 @@ extends BtnBase
 		ability_name = val
 		on_ability_name_update()
 
-@export var on_cooldown:bool = false : 
-	set(val):
-		on_cooldown = val
-		on_cooldown_update()	
-		on_panel_color_update()
-		
-@export var is_selected:bool = false : 
-	set(val):
-		is_selected = val
-		on_is_selected_update()
-		on_panel_color_update()
-		
-@export var is_unavailable:bool = false : 
-	set(val):
-		is_unavailable = val
-		on_is_unavailable_update()
-		
-@export var is_unknown:bool = false : 
-	set(val):
-		is_unknown = val
-		on_is_unknown_update()		
+@export var preview_mode:bool = false
+@export var abl_lvl:int = 0
+@export var required_lvl:int = 0
 
 var base_states:Dictionary = {} 
 var use_location:Dictionary = {} : 
 	set(val):
 		use_location = val
 		on_base_states_update()
+
+var lvl_locked:bool = false : 
+	set(val):
+		lvl_locked = val
+		on_lvl_locked_update()
+
+var is_active:bool = false 
 
 # directly access, do not remove
 var type:String 
@@ -78,130 +64,105 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	super._ready()
-
-	on_level_update()
-	on_ability_name_update()
-	on_cooldown_update()
-	on_cost_update()
-	on_is_selected_update()
-	on_panel_color_update()
-	on_is_disabled_updated()
-	on_is_unavailable_update()
-	on_is_unknown_update()
 	on_base_states_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	base_states = new_val
-	
 	if !is_node_ready() or use_location.is_empty():return
 	var ability_uid:String = str(room_ref, ability_index)	
 	var designation:String = U.location_to_designation(use_location)
-	Checkbox.is_checked = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false
-
-
-func on_is_unknown_update() -> void:
-	on_level_update()
-	on_ability_name_update()
-	on_cost_update()
-	is_disabled = is_unknown
+	is_active = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false
+	update_all()
 	
-func on_level_update() -> void:
-	if !is_node_ready():return
-	pass
-	#LevelLabel.text = str(level) if !is_unknown else "?"
+
+func update_all() -> void:
+	update_font_color()
+	on_panel_color_update()
+	update_text()	
+
+func on_lvl_locked_update() -> void:
+	update_all()
+	
+	
+func on_ability_data_update() -> void:
+	if ability_data.is_empty():return
+	lvl_locked = abl_lvl < ability_data.lvl_required	
+	update_all()
 
 func on_ability_name_update() -> void:
 	if !is_node_ready():return
-	NameLabel.text = str(ability_name)  if !is_unknown else "???"
+	NameLabel.text = str(ability_name)
 
 func on_cost_update() -> void:
 	if !is_node_ready():return
-	CostLabel.text = str(cost) if !is_unknown else "?"
-
-func on_cooldown_update() -> void:
-	if !is_node_ready():return
-	update_font_color()
-	
-func on_is_selected_update() -> void:
-	if !is_node_ready():return
-	update_font_color()
-
-func on_is_unavailable_update() -> void:
-	if !is_node_ready():return
-	update_font_color()
-	on_panel_color_update()
+	CostLabel.text = str(cost)	
 
 func update_font_color() -> void:
+	if !is_node_ready():return
 	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
 	var new_color:Color = Color.LIGHT_GRAY
 	
-	if is_selected:
-		new_color = Color.WHITE	
-	if on_cooldown:
-		new_color = Color.RED
-	if is_disabled:
-		new_color = Color.RED
-	if is_unavailable:
-		new_color = Color.DARK_GRAY
-		
-	if is_focused:
-		new_color = new_color.lightened(0.2)
-		
+	if !preview_mode:
+		if lvl_locked:
+			new_color = Color.WEB_GRAY
+		if is_active:
+			new_color = Color.YELLOW
+	
 	label_duplicate.font_color = new_color
 	for node in [NameLabel, CostLabel]:
 		node.label_settings = label_duplicate	
 		
 	IconBtn.static_color = new_color
 	
-func on_ability_data_update() -> void:
-	if ability_data.is_empty():return
+	
+func on_panel_color_update() -> void:
+	if !is_node_ready():return
+	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
+	var new_color:Color = panel_color
+
+	if !preview_mode:
+		if lvl_locked:
+			new_color = panel_color
+			
+	new_stylebox.bg_color = new_color
+	RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
+	
+func update_text() -> void:
+	if !is_node_ready():return
+	
+	if preview_mode:
+		ability_name = ability_data.name
+		hint_title = ability_data.name
+		hint_icon = SVGS.TYPE.ENERGY
+		hint_description = ability_data.description
+		IconBtn.icon = SVGS.TYPE.LOCK
+		cost = ability_data.lvl_required
+		return
+	else:
+		if lvl_locked:
+			ability_name = "LVL %s REQUIRED" % [ability_data.lvl_required]
+			hint_description = "Level requirement too low to use this program"
+			IconBtn.icon = SVGS.TYPE.LOCK
+			cost = ability_data.lvl_required
+			return
+		
+	ability_name = ability_data.name
 	hint_title = ability_data.name
 	hint_icon = SVGS.TYPE.ENERGY
-	
-	if is_unknown:
-		hint_title = "???"
-		hint_description = "[UNAVAILABLE]"
-		return
-	if is_unavailable:
-		hint_title = "???"
-		hint_description = "[UNAVAILBLE] %s " % ability_data.description 
-		return		
-	if on_cooldown:		
-		hint_description = "[ON COOLDOWN] %s " % ability_data.description
-		return
-	if is_disabled:
-		hint_description = "[CURRENTLY UNUSABLE] %s " % ability_data.description
-		return
-	
-	hint_description = ability_data.description	
+	hint_description = ability_data.description
+	IconBtn.icon = SVGS.TYPE.ENERGY
+	cost = ability_data.energy_cost
+	Checkbox.is_checked = is_active
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------	
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
 	if !is_node_ready():return
 	update_font_color()
 	on_panel_color_update()
 	
-	
-func on_panel_color_update() -> void:
-	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	var new_color:Color = panel_color
-	
-	if is_selected:
-		new_color = panel_color.darkened(0.2)
-	if is_focused:
-		new_color = panel_color.darkened(0.2)
-	if on_cooldown:
-		new_color = Color.RED
-	if is_disabled:
-		new_color = Color.RED
-	if is_unavailable:
-		new_color = Color.DARK_GRAY		
-			
-	new_stylebox.bg_color = new_color
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+
 # ------------------------------------------------------------------------------

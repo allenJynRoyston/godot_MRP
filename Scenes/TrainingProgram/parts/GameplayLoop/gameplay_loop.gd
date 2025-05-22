@@ -212,7 +212,6 @@ var initial_values:Dictionary = {
 		var floor:Dictionary = {}
 		var ring:Dictionary = {}
 		var room:Dictionary = {} 
-		
 		# ------------------------------
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
@@ -620,17 +619,6 @@ func start_new_game(game_data_config:Dictionary) -> void:
 func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 	return { 
 		# --------------  # FLOOR WIDE STATS
-		#"metrics": {
-			#RESOURCE.METRICS.MORALE: 0,
-			#RESOURCE.METRICS.SAFETY: 0,
-			#RESOURCE.METRICS.READINESS: 0
-		#},
-		#"personnel": {
-			#RESOURCE.PERSONNEL.TECHNICIANS: false,
-			#RESOURCE.PERSONNEL.STAFF: false,
-			#RESOURCE.PERSONNEL.SECURITY: false,
-			#RESOURCE.PERSONNEL.DCLASS: false	
-		#},
 		"currencies": {
 			RESOURCE.CURRENCY.MONEY: 0,
 			RESOURCE.CURRENCY.MATERIAL: 0,
@@ -1700,10 +1688,13 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 			var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
 			var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
 			if assigned_to_room == item.location:
+				room_config_data.abl_lvl += 1
 				if room_data.pairs_with.specilization in researcher_details.specializations:
 					room_config_data.room_paired_with.specilization = true
+					room_config_data.abl_lvl += 1
 				if room_data.pairs_with.trait in researcher_details.traits:
 					room_config_data.room_paired_with.trait = true
+					room_config_data.abl_lvl += 1
 
 func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 	# NEXT check for passives in rooms

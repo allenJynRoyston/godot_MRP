@@ -2,15 +2,15 @@ extends Control
 
 @onready var NameLabel:Label = $VBoxContainer/NameLabel
 
-@onready var MoneyIcon:Control = $VBoxContainer/List/MoneyIcon
-@onready var MatIcon:Control = $VBoxContainer/List/MatIcon
-@onready var ScienceIcon:Control = $VBoxContainer/List/ScienceIcon
-@onready var CoreIcon:Control = $VBoxContainer/List/CoreIcon
+@onready var MoneyIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MoneyIcon
+@onready var MatIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MatIcon
+@onready var ScienceIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/ScienceIcon
+@onready var CoreIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/CoreIcon
 
-@onready var TechnicianIcon:Control = $VBoxContainer/List/TechnicianIcon
-@onready var StaffIcon:Control = $VBoxContainer/List/StaffIcon
-@onready var SecurityIcon:Control = $VBoxContainer/List/SecurityIcon
-@onready var DClassIcon:Control = $VBoxContainer/List/DClassIcon
+@onready var TechnicianIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/TechnicianIcon
+@onready var StaffIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/StaffIcon
+@onready var SecurityIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/SecurityIcon
+@onready var DClassIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/DClassIcon
 
 @export var show_resource_reason:bool = false : 
 	set(val):
@@ -36,6 +36,9 @@ var current_location:Dictionary = {}
 var offset:Vector2
 var name_str:String
 var shifted_val:int = 5
+
+var previous_ring:int
+var previous_floor:int
 
 # --------------------------------------------
 func _init() -> void:
@@ -85,7 +88,12 @@ func on_index_update() -> void:
 # --------------------------------------------
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
-	if !ignore_current_location:
+	if current_location.is_empty():return
+	
+	if previous_ring != current_location.ring or previous_floor != current_location.floor:
+		previous_ring = current_location.ring 
+		previous_floor = current_location.floor
+	
 		await U.tick()
 		U.debounce(str(self.name, "_nametag_update_node"), func():update_node())
 

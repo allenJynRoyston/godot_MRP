@@ -3,20 +3,15 @@ extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
 
-@onready var CooldownLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/CooldownLabel
-@onready var CostLabel:Label = $MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer/CostLabel
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/PanelContainer3/MarginContainer/HBoxContainer/IconBtn
-@onready var NameLabel:Label = $MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/NameLabel
+@onready var CostAndCooldownContainer:PanelContainer = $MarginContainer/HBoxContainer/CostAndCooldown
+@onready var CostLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/CostLabel
+@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/IconBtn
+@onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/NameLabel
 
 @export var panel_color:Color = Color("0e0e0ecb") : 
 	set(val):
 		panel_color = val
 		on_panel_color_update()		
-
-@export var cooldown_val:int = 0: 
-	set(val):
-		cooldown_val = val
-		on_cooldown_val_update()
 
 @export var cost:int : 
 	set(val):
@@ -32,38 +27,31 @@ extends BtnBase
 	set(val):
 		on_cooldown = val
 		on_cooldown_update()	
-		on_panel_color_update()
 		
-@export var is_selected:bool = false : 
-	set(val):
-		is_selected = val
-		on_is_selected_update()
-		on_panel_color_update()
-		
-@export var is_unavailable:bool = false : 
-	set(val):
-		is_unavailable = val
-		on_is_unavailable_update()
-		
-@export var is_unknown:bool = false : 
-	set(val):
-		is_unknown = val
-		on_is_unknown_update()		
+@export var preview_mode:bool = false
+@export var abl_lvl:int = 0
+@export var required_lvl:int = 0
 
+var cooldown_val:int = 0
 var base_states:Dictionary = {} 
 var use_location:Dictionary = {} : 
 	set(val):
 		use_location = val
 		on_base_states_update()
+		
+var lvl_locked:bool = false : 
+	set(val):
+		lvl_locked = val
+		on_lvl_locked_update()
 
 # directly access, do not remove
+var ability_index:int
 var type:String 
 var room_ref:int
 var ability_data:Dictionary = {} : 
 	set(val):
 		ability_data = val
 		on_ability_data_update()
-var ability_index:int
 	
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
 
@@ -78,16 +66,6 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	super._ready()
-
-	on_cooldown_val_update()
-	on_ability_name_update()
-	on_cooldown_update()
-	on_cost_update()
-	on_is_selected_update()
-	on_panel_color_update()
-	on_is_disabled_updated()
-	on_is_unavailable_update()
-	on_is_unknown_update()
 	on_base_states_update()
 # ------------------------------------------------------------------------------
 
@@ -101,110 +79,112 @@ func on_base_states_update(new_val:Dictionary = base_states) -> void:
 		on_cooldown = false
 		return
 		
+	cooldown_val = base_states.room[designation].ability_on_cooldown[ability_uid]		
 	on_cooldown = base_states.room[designation].ability_on_cooldown[ability_uid] > 0
-	cooldown_val = base_states.room[designation].ability_on_cooldown[ability_uid]
 	
-func on_is_unknown_update() -> void:
-	on_cooldown_val_update()
-	on_ability_name_update()
-	on_cost_update()
-	
-func on_cooldown_val_update() -> void:
-	if !is_node_ready():return
-	CooldownLabel.text = str(cooldown_val) if !is_unknown else "-"
-	on_ability_data_update()
 
-func on_ability_name_update() -> void:
-	if !is_node_ready():return
-	NameLabel.text = str(ability_name)  if !is_unknown else "UNAVAILABLE"
+func update_all() -> void:
+	update_font_color()
+	on_panel_color_update()
+	update_text()	
 
-func on_cost_update() -> void:
-	if !is_node_ready():return
-	CostLabel.text = str(cost) if !is_unknown else "-"
-	IconBtn.hide() if is_unknown else IconBtn.show()
+func on_is_disabled_updated() -> void:
+	update_all()
 
-func on_ability_data_update() -> void:
-	if ability_data.is_empty():return
-	hint_title = ability_data.name
-	hint_icon = SVGS.TYPE.RESEARCH
-	
-	if is_unknown:
-		hint_title = "???"
-		hint_description = "[UNAVAILABLE]"
-		return
-	if is_unavailable:
-		hint_title = "???"
-		hint_description = "[UNAVAILBLE] %s " % ability_data.description 
-		return		
-	if on_cooldown:		
-		hint_description = "[ON COOLDOWN] %s " % ability_data.description
-		return
-	if is_disabled:
-		hint_description = "[CURRENTLY UNUSABLE] %s " % ability_data.description
-		return
-	
-	hint_description = ability_data.description
+func on_lvl_locked_update() -> void:
+	update_all()
 
 func on_cooldown_update() -> void:
 	if !is_node_ready():return
-	update_font_color()
+	update_all()
+
+func on_ability_name_update() -> void:
+	if !is_node_ready():return
+	NameLabel.text = str(ability_name)
+
+func on_cost_update() -> void:
+	if !is_node_ready():return
+	CostLabel.text = str(cost)
+
+func on_ability_data_update() -> void:
+	if ability_data.is_empty():return
+	lvl_locked = abl_lvl < ability_data.lvl_required	
+	update_all()
 	
-func on_is_selected_update() -> void:
-	if !is_node_ready():return
-	update_font_color()
-
-func on_is_unavailable_update() -> void:
-	if !is_node_ready():return
-	update_font_color()
-	on_panel_color_update()
-
-
 func update_font_color() -> void:
+	if !is_node_ready():return
 	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
-	var new_color:Color = Color.LIGHT_GRAY
+	var new_color:Color = Color.WHITE	
 	
-	if is_selected:
-		new_color = Color.WHITE	
-	if on_cooldown:
-		new_color = Color.RED
-	if is_disabled:
-		new_color = Color.RED
-	if is_unavailable:
-		new_color = Color.DARK_GRAY
+	if !preview_mode:
+		if lvl_locked:
+			new_color = Color.WEB_GRAY
 		
-	if is_focused:
-		new_color = new_color.lightened(0.2)
+		if on_cooldown:
+			new_color = Color.SKY_BLUE
+	
 		
 	label_duplicate.font_color = new_color
-	for node in [CooldownLabel, NameLabel, CostLabel]:
+	for node in [NameLabel, CostLabel]:
 		node.label_settings = label_duplicate	
 		
 	IconBtn.static_color = new_color		
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:
-	super.on_focus(state)
-	if !is_node_ready():return
-	update_font_color()
-	on_panel_color_update()
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
 	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
 	var new_color:Color = panel_color
 	
-	if is_selected:
-		new_color = panel_color.darkened(0.2)
-	if is_focused:
-		new_color = panel_color.darkened(0.2)
-	if on_cooldown:
-		new_color = Color.RED
-	if is_disabled:
-		new_color = Color.RED
-	if is_unavailable:
-		new_color = Color.DARK_GRAY		
+	if !preview_mode:
+		if lvl_locked:
+			new_color = panel_color
 			
+		if on_cooldown:
+			new_color = panel_color
+		
+
 	new_stylebox.bg_color = new_color
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	
+func update_text() -> void:
+	if !is_node_ready():return
+	
+	if preview_mode:
+		ability_name = ability_data.name
+		hint_title = ability_data.name
+		hint_icon = SVGS.TYPE.RESEARCH
+		hint_description = ability_data.description
+		IconBtn.icon = SVGS.TYPE.LOCK
+		cost = ability_data.lvl_required
+		return
+	else:
+		if lvl_locked:
+			ability_name = "LVL %s REQUIRED" % [ability_data.lvl_required]
+			hint_description = "Level requirement too low to use this program"
+			IconBtn.icon = SVGS.TYPE.LOCK
+			cost = ability_data.lvl_required
+			return
+		
+		if on_cooldown:
+			ability_name = ability_data.name
+			hint_description = "Program on cooldown for %s %s." % [cooldown_val, "days" if cooldown_val > 1 else "day"]
+			IconBtn.icon = SVGS.TYPE.FROZEN
+			cost = cooldown_val
+			return
+	
+		
+	ability_name = ability_data.name
+	hint_title = ability_data.name
+	hint_icon = SVGS.TYPE.RESEARCH
+	hint_description = ability_data.description
+	IconBtn.icon = SVGS.TYPE.RESEARCH
+	cost = ability_data.science_cost
+	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_focus(state:bool = is_focused) -> void:
+	super.on_focus(state)
+	if !is_node_ready():return
+	#modulate = Color(1, 1, 1, 1 if state else 0.5)
 # ------------------------------------------------------------------------------

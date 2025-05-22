@@ -243,6 +243,8 @@ func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
 	if state:
 		freeze_and_disable(false)
 	
+	if !state:
+		HintContainer.hide()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -292,10 +294,11 @@ func on_item_index_update() -> void:
 		if hint.title == "" and hint.description == "":
 			HintContainer.hide()
 		else:
-			HintContainer.show()
 			HintIcon.icon = hint.icon
 			HintTitle.text = hint.title
 			HintDescription.text = hint.description
+			await U.tick()
+			HintContainer.show()			
 	else:
 		HintContainer.hide()
 

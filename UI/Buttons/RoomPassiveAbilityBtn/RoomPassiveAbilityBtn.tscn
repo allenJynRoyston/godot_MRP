@@ -12,12 +12,18 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_48nus"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onoaw"]
 bg_color = Color(0.162066, 0.162066, 0.162066, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_axmus"]
+font = ExtResource("2_jg673")
+font_color = Color(0.827451, 0.827451, 0.827451, 1)
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f8eie"]
 bg_color = Color(1, 1, 1, 0)
@@ -26,18 +32,15 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_onoaw"]
-font = ExtResource("2_jg673")
-font_color = Color(0.827451, 0.827451, 0.827451, 1)
-outline_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
-
 [node name="RoomPassiveAbilityBtn" type="PanelContainer"]
 offset_right = 194.0
 offset_bottom = 29.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jg673")
 script = ExtResource("1_4sylx")
+preview_mode = null
+abl_lvl = null
+required_lvl = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -50,64 +53,57 @@ theme_override_constants/margin_bottom = 2
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="PanelContainer3" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+[node name="CostAndCooldown" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
+theme_override_styles/panel = SubResource("StyleBoxFlat_onoaw")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown"]
 layout_mode = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 1
-theme_override_constants/margin_right = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 10
 
-[node name="CheckBox" parent="MarginContainer/HBoxContainer/PanelContainer3/MarginContainer" instance=ExtResource("2_f8eie")]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="IconBtn" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("3_f8eie")]
+layout_mode = 2
+icon = 32
+static_color = Color(0.827451, 0.827451, 0.827451, 1)
+is_hoverable = false
+
+[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(15, 25)
+layout_mode = 2
+text = "99"
+label_settings = SubResource("LabelSettings_axmus")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Name" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_onoaw")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Name"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Name/MarginContainer"]
+layout_mode = 2
+
+[node name="CheckBox" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer" instance=ExtResource("2_f8eie")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f8eie")
 no_bg = true
 is_hoverable = false
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="IconBtn" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_f8eie")]
-layout_mode = 2
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-icon = 32
-static_color = Color(0.827451, 0.827451, 0.827451, 1)
-is_hoverable = false
-
-[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(15, 25)
-layout_mode = 2
-text = "0"
-label_settings = SubResource("LabelSettings_onoaw")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-
-[node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer2/MarginContainer"]
+[node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-label_settings = SubResource("LabelSettings_onoaw")
+size_flags_horizontal = 3
+label_settings = SubResource("LabelSettings_axmus")
 vertical_alignment = 1

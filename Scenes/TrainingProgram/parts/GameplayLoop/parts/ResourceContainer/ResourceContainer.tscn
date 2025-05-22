@@ -371,8 +371,8 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="MoraleTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+val = -1
 
 [node name="SafetyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 modulate = Color(1, 1, 1, 0)
