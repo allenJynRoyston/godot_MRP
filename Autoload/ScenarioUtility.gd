@@ -62,8 +62,8 @@ var reference_list:Dictionary = {
 				RESOURCE.CURRENCY.CORE: 1
 			},
 			"allowed_rooms": [
-				ROOM.TYPE.DIRECTORS_OFFICE,
-				ROOM.TYPE.HQ
+				#ROOM.TYPE.DIRECTORS_OFFICE,
+				#ROOM.TYPE.HQ
 			]
 		},
 		# rewards gained after winning
@@ -76,12 +76,12 @@ var reference_list:Dictionary = {
 			{
 				"title": "Build an HQ.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+					return ROOM_UTIL.owns_and_is_active(0),
 			},
 			{
 				"title": "Build a DIRECTORS OFFICE.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.DIRECTORS_OFFICE),
+					return ROOM_UTIL.owns_and_is_active(0),
 			},
 			{
 				"title": "RESIST THE URGE TO TRIGGER THE ONSITE NUCLEAR DEVICE.", 
@@ -108,7 +108,7 @@ var reference_list:Dictionary = {
 		"start_conditions": {
 			"starting_event": null,
 			"allowed_rooms": [
-				ROOM.TYPE.HR_DEPARTMENT
+				#ROOM.TYPE.HR_DEPARTMENT
 			]
 		},
 		# rewards gained after winning
@@ -123,7 +123,7 @@ var reference_list:Dictionary = {
 			{
 				"title": "Build a CONTAINMENT CELL.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.CONTAINMENT_CELL),
+					return ROOM_UTIL.owns_and_is_active(0),
 			},
 			{
 				"title": "Contain an anamolous object in a containment cell.", 
@@ -133,7 +133,7 @@ var reference_list:Dictionary = {
 			{
 				"title": "Hire a lead researcher.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+					return ROOM_UTIL.owns_and_is_active(0),
 			}
 		],
 		# -----------------
@@ -155,7 +155,7 @@ var reference_list:Dictionary = {
 		"start_conditions": {
 			"starting_event": null,
 			"allowed_rooms": [
-				ROOM.TYPE.HR_DEPARTMENT
+				#ROOM.TYPE.HR_DEPARTMENT
 			]
 		},
 		# rewards gained after winning
@@ -169,7 +169,7 @@ var reference_list:Dictionary = {
 			{
 				"title": "Build a CONTAINMENT CELL.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.CONTAINMENT_CELL),
+					return ROOM_UTIL.owns_and_is_active(0),
 			},
 			{
 				"title": "Contain an anamolous object in a containment cell.", 
@@ -179,7 +179,7 @@ var reference_list:Dictionary = {
 			{
 				"title": "Hire a lead researcher.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+					return ROOM_UTIL.owns_and_is_active(0),
 			}
 		],
 		# -----------------
@@ -201,7 +201,7 @@ var reference_list:Dictionary = {
 		"start_conditions": {
 			"starting_event": null,
 			"allowed_rooms": [
-				ROOM.TYPE.HR_DEPARTMENT
+				#ROOM.TYPE.HR_DEPARTMENT
 			]
 		},
 		# rewards gained after winning
@@ -215,7 +215,7 @@ var reference_list:Dictionary = {
 			{
 				"title": "Build a CONTAINMENT CELL.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.CONTAINMENT_CELL),
+					return ROOM_UTIL.owns_and_is_active(0),
 			},
 			{
 				"title": "Contain an anamolous object in a containment cell.", 
@@ -225,7 +225,7 @@ var reference_list:Dictionary = {
 			{
 				"title": "Hire a lead researcher.", 
 				"is_completed":func() -> bool:
-					return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
+					return ROOM_UTIL.owns_and_is_active(0),
 			}
 		],
 		# -----------------

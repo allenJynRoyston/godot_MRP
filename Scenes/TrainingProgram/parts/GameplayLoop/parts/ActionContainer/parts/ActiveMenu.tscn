@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://0wbd87xeuk1l"]
+[gd_scene load_steps=19 format=3 uid="uid://0wbd87xeuk1l"]
 
 [ext_resource type="Script" uid="uid://ccq216c2w0su1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/active_menu.gd" id="1_yhadw"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_epm40"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_o0to0"]
-[ext_resource type="PackedScene" uid="uid://dmjokg2svoddw" path="res://UI/Buttons/MenuBtn/MenuBtn.tscn" id="3_tmn8y"]
+[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="3_hjr8x"]
+[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_aa1g3"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_o0to0"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_epm40"]
 
@@ -11,17 +12,44 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epm40"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0to0"]
-bg_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+[sub_resource type="ViewportTexture" id="ViewportTexture_l1lsc"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aa1g3"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e7jbp"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_63pvq"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l1lsc"]
 
@@ -32,7 +60,7 @@ expand_margin_top = 5.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epm40"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vmnia"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -44,7 +72,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1lsc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3otai"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -56,24 +84,26 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vmnia"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4oc5y"]
 bg_color = Color(0, 0, 0, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
+border_color = Color(0.337, 0.275, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="SimpleMenu" type="PanelContainer"]
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_right = 0.763
 anchor_bottom = 1.0
+offset_right = 455.04
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(0.763436, 0.992605)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hjr8x")
 script = ExtResource("1_yhadw")
 
@@ -92,49 +122,40 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_epm40")
 [node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 100
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 100
-
-[node name="PanelContainer" type="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer"]
-layout_mode = 2
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_o0to0")
-
-[node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer"]
-layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+[node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer" instance=ExtResource("3_hjr8x")]
 layout_mode = 2
-theme_override_constants/separation = 10
+card_size = Vector2(200, 200)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="TextureRect" parent="MenuControl/PanelContainer/MarginContainer/CardBody" index="0"]
+texture = SubResource("ViewportTexture_l1lsc")
+
+[node name="SubViewport" parent="MenuControl/PanelContainer/MarginContainer/CardBody" index="1"]
+size = Vector2i(225, 200)
+
+[node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(200, 200)
+offset_right = 226.0
+offset_bottom = 200.0
+
+[node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_aa1g3")
+
+[node name="CardMenuHeader" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("4_aa1g3")]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_styles/panel = SubResource("StyleBoxFlat_e7jbp")
+is_small = true
+title = ""
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HeaderLabel" type="Label" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer"]
-layout_mode = 2
-text = "HEADER"
-label_settings = ExtResource("2_epm40")
-
-[node name="PaginationContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="PaginationContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader"]
 layout_mode = 2
 
-[node name="PrevIcon" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer" instance=ExtResource("2_o0to0")]
+[node name="PrevIcon" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -145,10 +166,12 @@ icon = 27
 flip_h = true
 is_hoverable = false
 
-[node name="PaginationList" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer"]
+[node name="PaginationList" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
 
-[node name="NextIcon" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer" instance=ExtResource("2_o0to0")]
+[node name="NextIcon" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -158,18 +181,22 @@ theme_override_constants/margin_bottom = 0
 icon = 27
 is_hoverable = false
 
-[node name="List" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="List" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="MenuBtn" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
+[node name="FooterLabel" type="Label" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2
-title = "ITEM A"
-is_togglable = true
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "footer"
+label_settings = ExtResource("5_epm40")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_group_ = true
 
-[node name="MenuBtn2" parent="MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_tmn8y")]
-layout_mode = 2
-title = "ITEM A"
-is_togglable = true
+[node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Back" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_63pvq")
 
 [node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
@@ -217,7 +244,7 @@ theme_override_constants/separation = 10
 [node name="BBtn" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("4_o0to0")]
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_epm40")
+theme_override_styles/panel = SubResource("StyleBoxFlat_vmnia")
 title = "BACK"
 assigned_key = "B"
 icon = 28
@@ -233,7 +260,7 @@ size_flags_vertical = 8
 [node name="ABtn" parent="BtnControl/BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("4_o0to0")]
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_l1lsc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3otai")
 title = "NEXT"
 assigned_key = "E"
 icon = 27
@@ -242,6 +269,7 @@ is_disabled = false
 allow_hint = false
 
 [node name="Control" type="Control" parent="BtnControl/BtnControlPanel/BtnMarginContainer"]
+visible = false
 layout_mode = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control"]
@@ -256,7 +284,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(600, 20)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_vmnia")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4oc5y")
 
 [node name="MarginContainer" type="MarginContainer" parent="BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer"]
 layout_mode = 2
@@ -292,3 +320,5 @@ allow_hint = false
 layout_mode = 2
 text = "Hint goes here."
 label_settings = ExtResource("5_epm40")
+
+[editable path="MenuControl/PanelContainer/MarginContainer/CardBody"]

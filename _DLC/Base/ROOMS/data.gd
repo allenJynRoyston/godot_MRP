@@ -4,7 +4,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"name": "Debug Room",
 	"shortname": "Debug",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Debug room.",
 	# ------------------------------------------
@@ -14,7 +14,6 @@ var DEBUG_ROOM:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"own_limit": 99,
 	"build_time": 1,
 	# ------------------------------------------
 
@@ -82,10 +81,10 @@ var DEBUG_ROOM:Dictionary = {
 
 var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
-	"type_ref": ROOM.TYPE.DIRECTORS_OFFICE,
+	#"type_ref": ROOM.TYPE.DIRECTORS_OFFICE,
 	"name": "DIRECTORS OFFICE",
 	"shortname": "D.OFFICE",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "The site directors office.",
 	# ------------------------------------------
@@ -95,8 +94,8 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"can_destroy": false,
 	"can_assign_researchers": false,
 	"requires_unlock": false,	
-	"own_limit": 1,
 	"build_time": 1,
+	"own_limit": 1,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -123,10 +122,10 @@ var DIRECTORS_OFFICE:Dictionary = {
 
 var HQ:Dictionary = {
 	# ------------------------------------------
-	"type_ref": ROOM.TYPE.HQ,
+	#"type_ref": ROOM.TYPE.HQ,
 	"name": "HEADQUARTERS",
 	"shortname": "HQ",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Base headquarters.",
 		
@@ -135,8 +134,8 @@ var HQ:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"own_limit": 1,
 	"build_time": 1,
+	"own_limit": 1,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -165,16 +164,15 @@ var HQ:Dictionary = {
 
 var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
-	"type_ref": ROOM.TYPE.CONTAINMENT_CELL,
+	#"type_ref": ROOM.TYPE.CONTAINMENT_CELL,
 	"name": "STANDARD CONTAINMENT CELL",
 	"shortname": "S.CONTAINMENT",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.CONTAINMENT],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Containment cell used to house anamolous objects.",
 		
 	# ------------------------------------------
 	"can_contain": true,
-	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -196,7 +194,7 @@ var PRISONER_BLOCK:Dictionary = {
 	# ------------------------------------------
 	"name": "PRISONER BLOCK",
 	"shortname": "P.BLOCK",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "A prisoner block designed specifically to house D-Class personel.",
 	# ------------------------------------------
@@ -218,10 +216,10 @@ var PRISONER_BLOCK:Dictionary = {
 
 var HR_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
-	"type_ref": ROOM.TYPE.HR_DEPARTMENT,
+	#"type_ref": ROOM.TYPE.HR_DEPARTMENT,
 	"name": "HR DEPARTMENT",
 	"shortname": "HR",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies staff.",
 	# ------------------------------------------
@@ -245,10 +243,9 @@ var OPERATIONS_SUPPORT:Dictionary = {
 	# ------------------------------------------
 	"name": "OPERATIONS_SUPPORT",
 	"shortname": "OP.SUPPORT",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies technicians.",
-	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -270,7 +267,7 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
 	"name": "SECURITY DEPARTMENT",
 	"shortname": "SEC.DPT",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies security.",
 	# ------------------------------------------
@@ -294,10 +291,9 @@ var WEAPONS_RANGE:Dictionary = {
 	# ------------------------------------------
 	"name": "WEAPONS RANGE",
 	"shortname": "W.RANGE",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Increases security and provides training.",
-	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -326,7 +322,7 @@ var ENGINEERING_BAY:Dictionary = {
 	# ------------------------------------------
 	"name": "ENGINEERING BAY",
 	"shortname": "ENG.BAY",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -357,7 +353,7 @@ var ENERGY_STORAGE:Dictionary = {
 	# ------------------------------------------
 	"name": "ENERGY STORAGE",
 	"shortname": "E.STORAGE",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -386,9 +382,9 @@ var ENERGY_STORAGE:Dictionary = {
 
 var TEST1:Dictionary = {
 	# ------------------------------------------
-	"name": "ENGINEERING BAY",
+	"name": "TEST (STANDARD)",
 	"shortname": "ENG.BAY",
-	"tier": TIER.VAL.ONE,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -396,23 +392,27 @@ var TEST1:Dictionary = {
 
 var TEST2:Dictionary = {
 	# ------------------------------------------
-	"name": "ENGINEERING BAY",
+	"name": "TEST (CONTAINMENT)",
 	"shortname": "ENG.BAY",
-	"tier": TIER.VAL.ONE,
+	"categories": [ROOM.CATEGORY.CONTAINMENT],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
 }
 
-
 var TEST3:Dictionary = {
 	# ------------------------------------------
-	"name": "ENGINEERING BAY",
+	"name": "TEST (SPECIAL)",
 	"shortname": "ENG.BAY",
-	"tier": TIER.VAL.ONE,
+	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"own_limit": 1,	
+	# ------------------------------------------
+
 }
 
 # -----------------------------------	
@@ -425,7 +425,5 @@ var list:Array[Dictionary] = [
 	# ---------------
 	WEAPONS_RANGE, ENGINEERING_BAY, ENERGY_STORAGE,
 	TEST1, TEST2, TEST3,
-	TEST1, TEST2, TEST3,
-	TEST1, TEST2, TEST3
 ]
 # -----------------------------------	

@@ -133,7 +133,7 @@ func update_grid_content() -> void:
 	var cards_on_screen:int = GridContent.get_child_count()
 	var start_at:int = page_tracker * cards_on_screen
 
-	query = ROOM_UTIL.get_all_unlocked_paginated_list(start_at, cards_on_screen)
+	query = {} #ROOM_UTIL.get_all_unlocked_paginated_list(start_at, cards_on_screen)
 
 	# reset show/hide more buttons	
 	has_more = query.has_more

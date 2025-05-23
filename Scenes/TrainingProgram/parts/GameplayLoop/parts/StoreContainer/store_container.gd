@@ -188,14 +188,14 @@ func update_grid_content(index:int = tab_index) -> void:
 	var grid_size:int = GridContent.get_child_count() 
 	var start_at:int = page_tracker[index] * grid_size
 	var end_at:int = start_at + grid_size
-
+	
 	match index:
 		0:
-			query = ROOM_UTIL.get_paginated_list(TIER.VAL.ZERO, start_at, end_at)
+			query = ROOM_UTIL.get_category(ROOM.CATEGORY.STANDARD, start_at, end_at)
 		1:
-			query = ROOM_UTIL.get_paginated_list(TIER.VAL.ONE, start_at, end_at)
+			query = ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, start_at, end_at)
 		2:
-			query = ROOM_UTIL.get_paginated_list(TIER.VAL.TWO, start_at, end_at)
+			query = ROOM_UTIL.get_category(ROOM.CATEGORY.SPECIAL, start_at, end_at)
 	
 
 	# reset show/hide more buttons	

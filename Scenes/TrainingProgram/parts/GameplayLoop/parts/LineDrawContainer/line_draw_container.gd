@@ -250,7 +250,7 @@ func _draw() -> void:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["SummaryCard"].global_position + Vector2(275, 30), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	# ------------------------------------------------------
-	if "draw_to_active_menu" in draw_dict and draw_dict.draw_to_active_menu:
+	if "draw_to_active_menu" in draw_dict and draw_dict.draw_to_active_menu and GBL.direct_ref["ActiveMenu"] != null:
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, GBL.direct_ref["ActiveMenu"].global_position + Vector2(GBL.direct_ref["ActiveMenu"].size.x + 5, 20), 1, false) ))
 		draw_list.push_back( generate_stepwise_segments( generate_stepwise_path(leftside_pos, start_v2 + offset, 1) ))
 	

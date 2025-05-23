@@ -42,6 +42,7 @@ theme_override_constants/margin_bottom = 125
 layout_mode = 2
 
 [node name="IconBtn" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 icon = 27
@@ -67,6 +68,7 @@ text = "A"
 label_settings = SubResource("LabelSettings_l8yab")
 
 [node name="IconBtn2" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 icon = 27
@@ -77,6 +79,7 @@ is_hoverable = false
 layout_mode = 2
 
 [node name="IconBtn" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 icon = 37
@@ -90,6 +93,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="IconBtn2" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 icon = 37

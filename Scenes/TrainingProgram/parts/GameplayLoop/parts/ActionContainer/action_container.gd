@@ -295,10 +295,10 @@ func clear_lines() -> void:
 
 # --------------------------------------------------------------------------------------------------
 signal query_complete
-func query_items(cards_on_screen:int = 5, page:int = 0, return_list:Array = []) -> void:
+func query_items(cards_on_screen:int = 5, category:ROOM.CATEGORY = ROOM.CATEGORY.STANDARD, page:int = 0, return_list:Array = []) -> void:
 	var query:Dictionary
 	var start_at:int = page * cards_on_screen
-	query = ROOM_UTIL.get_all_unlocked_paginated_list(start_at, cards_on_screen)	
+	query = ROOM_UTIL.get_unlocked_category(category, start_at, cards_on_screen)	
 
 	return_list.push_back(
 		query.list.map(func(x):return {
@@ -325,23 +325,31 @@ func query_items(cards_on_screen:int = 5, page:int = 0, return_list:Array = []) 
 	)	
 	
 	if query.has_more:
-		query_items(cards_on_screen, page + 1, return_list)
+		query_items(cards_on_screen, category, page + 1, return_list)
 	else:
 		await U.tick()
 		query_complete.emit(return_list)
 		
 func show_build_options() -> void:
+	const list_size:int = 8
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var options:Array = []
-	query_items(2)
-	var query_results:Array = await query_complete
 	
-	for index in query_results.size():
-		var items:Array = query_results[index]
-		options.push_back({
-			"title": "BUILDABLE",
-			"items": items
-		})
+	for listitem in [
+			{"title": 'FACILITY', "type": ROOM.CATEGORY.STANDARD},
+			{"title": 'CONTAINMENT', "type": ROOM.CATEGORY.CONTAINMENT},
+			{"title": 'SPECIAL', "type": ROOM.CATEGORY.SPECIAL},
+		]:
+		query_items(list_size, listitem.type)
+		var query_results:Array = await query_complete
+		for index in query_results.size():
+			var items:Array = query_results[index]
+			if items.size() > 0:
+				options.push_back({
+					"title": listitem.title,
+					"items": items,
+					"footer": "%s / %s" % [index + 1, items.size() ],
+				})		
 		
 	var onClose:Callable = func(skip_reveal:bool) -> void:
 		if !skip_reveal:
@@ -366,6 +374,9 @@ func show_build_options() -> void:
 			"draw_to_money": item.details.costs.purchase > 0
 		}, 0 )
 	
+	ActiveMenuNode.onBeforeClose = func() -> void:
+		clear_lines()
+	
 	ActiveMenuNode.onClose = func() -> void:
 		onClose.call(false)
 		
@@ -380,7 +391,7 @@ func show_build_options() -> void:
 	add_child(ActiveMenuNode)
 	await U.tick()
 	ActiveMenuNode.open()	
-	GBL.direct_ref["ActiveMenu"] = ActiveMenuNode.ListContainer
+	GBL.direct_ref["ActiveMenu"] = ActiveMenuNode.CardBody
 
 # --------------------------------------------------------------------------------------------------
 

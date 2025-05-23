@@ -1,19 +1,26 @@
 extends Control
 
+@onready var CardBody:Control = $MenuControl/PanelContainer/MarginContainer/CardBody
+@onready var CardControlBody:PanelContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody
+@onready var CardBodySubviewport:SubViewport = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport
+
+@onready var PaginationContainer:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer
+@onready var PrevIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/PrevIcon
+@onready var NextIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/NextIcon
+@onready var PaginationList:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/PaginationList
+
+@onready var Footerlabel:Label = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FooterLabel
+
 @onready var MenuPanel:PanelContainer = $MenuControl/PanelContainer
 @onready var MenuMargin:MarginContainer = $MenuControl/PanelContainer/MarginContainer
 
 @onready var BtnPanel:PanelContainer = $BtnControl/BtnControlPanel
 @onready var BtnMargin:MarginContainer = $BtnControl/BtnControlPanel/BtnMarginContainer
 
-@onready var PaginationContainer:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer
-@onready var PrevIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer/PrevIcon
-@onready var NextIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer/NextIcon
-@onready var PaginationList:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/PaginationContainer/PaginationList
 
-@onready var ListContainer:PanelContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer
-@onready var List:VBoxContainer = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List
-@onready var HeaderLabel:Label = $MenuControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/HBoxContainer/HeaderLabel
+#@onready var ListContainer:PanelContainer = $ListCon
+@onready var List:VBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/List
+@onready var CardMenuHeader:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader
 
 @onready var HintControl:Control = $BtnControl/BtnControlPanel/BtnMarginContainer/Control
 @onready var HintContainer:PanelContainer = $BtnControl/BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer
@@ -27,10 +34,15 @@ extends Control
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
 const LabelSettingPreload:LabelSettings = preload("res://Fonts/game/label_small_thick.tres")
 
-var header:String = "" : 
-	set(val):
-		header = val
-		on_header_update()
+#var header:String = "" : 
+	#set(val):
+		#header = val
+		#on_header_update()
+#
+#var footer:String= "" : 
+	#set(val):
+		#footer = val
+		#on_footer_update()
 
 var tab_index:int = 0 : 
 	set(val):
@@ -79,6 +91,7 @@ var onBeforeAction:Callable = func(_item:Dictionary):pass
 var onAfterAction:Callable = func(_item:Dictionary):pass
 var onUpdate:Callable = func(_item:Dictionary):pass
 
+var onBeforeClose:Callable = func():pass
 var onClose:Callable = func():pass
 var onAction:Callable = func():pass
 
@@ -90,10 +103,11 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
 	
 func _ready() -> void:
-	modulate = Color(1, 1, 1, 0)
+	modulate = Color(1, 1, 1, 1)
 	HintControl.hide()	
 	on_hint_border_color_update()
 	activate()
+	CardBody.reveal = false
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -127,6 +141,7 @@ func open() -> void:
 	freeze_inputs = false
 	
 func close() -> void:	
+	onBeforeClose.call()
 	freeze_inputs = true
 	for btn in [ABtn, BBtn]:
 		btn.is_disabled = true
@@ -151,6 +166,7 @@ func unlock() -> void:
 # ------------------------------------------------------------------------------
 func animate_in(state:bool, skip_animation:bool = false) -> void:
 	var duration:float = 0.3
+	CardBody.reveal = state
 	await U.tween_node_property(MenuPanel, "position:x", control_pos[MenuPanel].show if state else control_pos[MenuPanel].hide, duration)
 	await U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].show if state else control_pos[BtnPanel].hide, duration)	
 # ------------------------------------------------------------------------------
@@ -176,7 +192,7 @@ func on_selected_index_update() -> void:
 		btn_node.is_selected = index == selected_index
 
 		if index == selected_index:
-			Input.warp_mouse(btn_node.global_position)
+			Input.warp_mouse(btn_node.global_position + CardBody.global_position)
 			onUpdate.call(options_list[tab_index].items[index])	
 			update_hint(options_list[tab_index].items[index])
 
@@ -223,22 +239,17 @@ func on_options_list_update() -> void:
 		return
 	
 	PaginationContainer.show() if options_list.size() > 1 else PaginationContainer.hide()
-	for index in options_list.size():
-		var new_pagination_label:Label = Label.new()
-		new_pagination_label.label_settings = LabelSettingPreload
-		new_pagination_label.text = str(index)
-		new_pagination_label.modulate = Color(1, 1, 1, 1 if index == tab_index else 0.5)
-		PaginationList.add_child(new_pagination_label)
-	
 	if options_list.size() > 1:
-		PrevIcon.static_color = Color(1, 1, 1, 0 if tab_index == 0 else 1)
-		NextIcon.static_color = Color(1, 1, 1, 0 if tab_index == options_list.size() - 1 else 1)
-
+		PrevIcon.static_color = Color(1, 1, 1, 0.5 if tab_index == 0 else 1)
+		NextIcon.static_color = Color(1, 1, 1, 0.5 if tab_index == options_list.size() - 1 else 1)
 	
 	for index in options_list[tab_index].items.size():
 		var item:Dictionary = options_list[tab_index].items[index]
 		var btn_node:Control = MenuBtnPreload.instantiate()
-		header = options_list[tab_index].title
+		
+		CardMenuHeader.content = str(options_list[tab_index].title) if "title" in options_list[tab_index] else ""
+		Footerlabel.text = str(options_list[tab_index].footer) if "footer" in options_list[tab_index] else ""
+		
 		btn_node.title = item.title
 		btn_node.btn_color = use_color
 
@@ -255,26 +266,23 @@ func on_options_list_update() -> void:
 		List.add_child(btn_node)
 		
 
-	
 	await U.tick()
-	if stored_size.y < ListContainer.size.y:
-		stored_size = ListContainer.size
+	if stored_size.y < CardControlBody.size.y:
+		stored_size = CardControlBody.size
 	
 	if retain_height:	
-		ListContainer.size.y = stored_size.y
-		ListContainer.custom_minimum_size.y = stored_size.y
+		CardControlBody.size.y = stored_size.y
+		CardControlBody.custom_minimum_size.y = stored_size.y
+		
 			
-func on_header_update() -> void:
-	if !is_node_ready():return
-	HeaderLabel.text = header
 
 func on_use_color_update() -> void:
 	if !is_node_ready():return
-	var label_settings:LabelSettings = HeaderLabel.label_settings.duplicate()
-	label_settings.font_color = use_color.lightened(0.4)
-	HeaderLabel.label_settings = label_settings
-	for child in List.get_children():
-		child.btn_color = use_color
+	#var label_settings:LabelSettings = HeaderLabel.label_settings.duplicate()
+	#label_settings.font_color = use_color.lightened(0.4)
+	#HeaderLabel.label_settings = label_settings
+	#for child in List.get_children():
+		#child.btn_color = use_color
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -319,3 +327,10 @@ func on_control_input_release_update() -> void:
 	if !is_node_ready():return
 	wait_for_release = false
 # ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func _process(delta: float) -> void:
+	if !is_node_ready():return
+	CardBodySubviewport.size = CardControlBody.size
+# ------------------------------------------------------------------------------
+	#

@@ -9,7 +9,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"type_ref": null,
 	"name": "FULL NAME",
 	"shortname": "SHORTNAME",
-	"tier": TIER.VAL.ZERO,
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Room description.",
 	# ------------------------------------------
@@ -19,7 +19,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": true,	
-	"own_limit": 10,
+	"own_limit": 99,
 	"build_time": 1,
 	# ------------------------------------------
 
@@ -215,7 +215,6 @@ func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
 	}
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
 	var room_data:Dictionary = return_data(ref)
@@ -267,10 +266,6 @@ func calculate_operating_costs(ref:int, add:bool = true) -> Dictionary:
 	return resources_data
 # ------------------------------------------------------------------------------
 
-func get_count(ref:int) -> int:
-	return purchased_facility_arr.filter(func(i):return i.ref == ref).size()
-# ------------------------------------------------------------------------------
-
 # ------------------------------------------------------------------------------
 func owns_and_is_active(ref:int) -> bool:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.type_ref == ref)
@@ -280,31 +275,34 @@ func owns_and_is_active(ref:int) -> bool:
 	return room_extract.is_activated
 # ------------------------------------------------------------------------------	
 
-## ------------------------------------------------------------------------------
-#func get_tier_dict() -> Dictionary:
-	#return SHARED_UTIL.return_tier_dict(tier_data)
-## ------------------------------------------------------------------------------
-
 # ------------------------------------------------------------------------------
-func get_paginated_list(tier:TIER.VAL, start_at:int, limit:int) -> Dictionary:
-	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
+func get_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary:
 	var filter:Callable = func(list:Array) -> Array:
-		return list.filter(func(i): return i.details.tier == tier)
-		#return list.filter(func(i): return i.details.tier == tier and i.details.type_ref in awarded_rooms)
+		return list.filter(func(i): return category in i.details.categories)
+	
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_all_unlocked_paginated_list(start_at:int, limit:int)  -> Dictionary:	
-	var facility_refs:Array = U.array_find_uniques(purchased_facility_arr.map(func(i): return i.ref))
+func get_unlocked_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary:
+	# start list with everything that's unlocked
+	var ref_list:Array = shop_unlock_purchases 
+	
+	# then add the anything that doesn't require an unlock
+	for ref in reference_data:
+		if !reference_data[ref].requires_unlock:
+			ref_list.push_back(ref)
+	
+	# weed out duplicates
+	ref_list = U.array_find_uniques(ref_list)
+	
+	# filter for matching categories
+	var filter:Callable = func(list:Array) -> Array:
+		return list.filter(func(i): return category in i.details.categories and i.ref in ref_list)
 
-	var filter:Callable = func(list:Array) -> Array:	
-		return list.filter(func(i): 
-			return true if !i.details.requires_unlock else i.ref in shop_unlock_purchases
-		)
-
+	# return pagination results
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
-# ------------------------------------------------------------------------------	
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 # remove this later
