@@ -3,7 +3,6 @@ extends SubscribeWrapper
 
 const dlc_folder:String = "res://_DLC/"
 
-
 var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	"type_ref": null,
@@ -121,7 +120,8 @@ func fill_template(data:Dictionary, ref:int) -> void:
 	if "currencies" in data:
 		for key in data.currencies:
 			var amount:int = data.currencies[key]
-			template_copy.currencies[key] = amount	
+			template_copy.currencies[key] = amount
+			
 
 	reference_list.push_back(ref)
 	reference_data[ref] = template_copy
@@ -228,15 +228,7 @@ func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
 	return false
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------			
-func return_refs_that_can_contain() -> Array:
-	var refs:Array = []
-	for ref in reference_data:
-		if "can_contain" in reference_data[ref] and reference_data[ref].can_contain:
-			refs.push_back(ref)		
-	return refs
-# ------------------------------------------------------------------------------			
-	
+
 # ------------------------------------------------------------------------------
 func calculate_unlock_cost(ref:int, add:bool = false) -> void:		
 	var room_data:Dictionary = return_data(ref)

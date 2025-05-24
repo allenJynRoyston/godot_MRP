@@ -175,10 +175,13 @@ func on_tab_index_update() -> void:
 			if current_mode != MODE.TAB_SELECT:return
 			tab.is_selected = false
 			
+			
 		tab.onClick = func() -> void:
 			if current_mode != MODE.TAB_SELECT:return
 			ActiveHeaderLabel.text = tab.title
 			current_mode = MODE.CONTENT_SELECT
+			await U.tick()
+			grid_index = 0
 			
 # --------------------------------------------------------------------------------------------------		
 
@@ -377,7 +380,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func has_valid_ref(index:int) -> bool:
-	if index > GridContent.get_child_count() or index < 0:
+	if index > GridContent.get_child_count() - 1 or index < 0:
 		return false
 	return GridContent.get_child(index).ref != -1
 # --------------------------------------------------------------------------------------------------			
@@ -390,6 +393,8 @@ func find_nearest_valid(start_at:int, reverse:bool = false) -> void:
 		if has_valid_ref(n):
 			grid_index = n
 			break
+	
+	grid_index = GridContent.get_child_count() - 1 
 # --------------------------------------------------------------------------------------------------				
 
 # --------------------------------------------------------------------------------------------------

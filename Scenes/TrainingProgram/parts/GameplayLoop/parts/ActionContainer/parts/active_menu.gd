@@ -101,6 +101,7 @@ func _init() -> void:
 
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
+	GBL.direct_ref.erase("ActiveMenu")
 	
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 1)
@@ -108,6 +109,7 @@ func _ready() -> void:
 	on_hint_border_color_update()
 	activate()
 	CardBody.reveal = false
+	GBL.direct_ref["ActiveMenu"] = CardBody
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -225,8 +227,6 @@ func on_options_list_update() -> void:
 	if !is_node_ready():return	
 	wait_for_release = true
 	clear_list()
-	
-	
 	
 	# ---- IF EMPTY
 	if options_list.is_empty():

@@ -125,7 +125,7 @@ var HQ:Dictionary = {
 	#"type_ref": ROOM.TYPE.HQ,
 	"name": "HEADQUARTERS",
 	"shortname": "HQ",
-	"categories": [ROOM.CATEGORY.STANDARD],
+	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Base headquarters.",
 		

@@ -31,25 +31,26 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func show_details(type:RESOURCE.TYPE) -> void:
-	for node in [MoneyDetails, EnergyDetails, LeadResearcherDetails, StaffDetails, DClassDetails, SecurityDetails]:
-		node.hide()
-		
-	match type:
-		RESOURCE.CURRENCY.MONEY:
-			MoneyDetails.show()
-		RESOURCE.TYPE.ENERGY:
-			EnergyDetails.show()
-		#RESOURCE.TYPE.TECHNICIANS:
-			#LeadResearcherDetails.show()
-		RESOURCE.TYPE.STAFF:
-			StaffDetails.show()
-		RESOURCE.TYPE.SECURITY:
-			SecurityDetails.show()
-		RESOURCE.TYPE.DCLASS:
-			DClassDetails.show()
-	
-	RootNode.size = Vector2(0, 0)
+func show_details(type:RESOURCE.CURRENCY) -> void:
+	pass
+	#for node in [MoneyDetails, EnergyDetails, LeadResearcherDetails, StaffDetails, DClassDetails, SecurityDetails]:
+		#node.hide()
+		#
+	#match type:
+		#RESOURCE.CURRENCY.MONEY:
+			#MoneyDetails.show()
+		#RESOURCE.TYPE.ENERGY:
+			#EnergyDetails.show()
+		##RESOURCE.TYPE.TECHNICIANS:
+			##LeadResearcherDetails.show()
+		#RESOURCE.TYPE.STAFF:
+			#StaffDetails.show()
+		#RESOURCE.TYPE.SECURITY:
+			#SecurityDetails.show()
+		#RESOURCE.TYPE.DCLASS:
+			#DClassDetails.show()
+	#
+	#RootNode.size = Vector2(0, 0)
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

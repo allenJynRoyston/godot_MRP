@@ -70,16 +70,16 @@ extends GameContainer
 @onready var InvestigateControls:Control = $InvestigateControls
 @onready var InvestigatePanel:PanelContainer = $InvestigateControls/PanelContainer
 @onready var InvestigateMargin:MarginContainer = $InvestigateControls/PanelContainer/MarginContainer
-
-@onready var ResearcherBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel
-@onready var ScpBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel
-
 @onready var AbilityBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UseAbilityBtn
 @onready var BuildBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
 @onready var DeconstructBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
+@onready var ResearcherBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel
+@onready var ResearcherPanelLabel:Label = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/CenterLabel
 @onready var AssignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
 @onready var UnassignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
+
+@onready var ScpBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel
 @onready var ContainBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
 
 @onready var HotkeyContainer:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/HotkeyContainer
@@ -119,11 +119,12 @@ func _init() -> void:
 func _exit_tree() -> void:
 	super._exit_tree()
 	GBL.unregister_node(REFS.ACTION_CONTAINER)
+		# set reference 
+	GBL.direct_ref.erase("SummaryCard")
+
 	
 func _ready() -> void:
 	super._ready()
-	
-	BtnControls.reveal(false)
 	
 	# -------------------------------------
 	GotoFloorBtn.onClick = func() -> void:
@@ -150,6 +151,8 @@ func _ready() -> void:
 		show_generator_updates()
 		
 	FacilityActionBtn.onClick = func() -> void:
+		ControllerOverlay.show_directional = false
+		reveal_floorpreview(false)
 		await lock_actions(true)
 		show_facility_updates()
 	# -------------------------------------	
@@ -217,6 +220,10 @@ func _ready() -> void:
 			NameControl.show()
 	# -------------------------------------
 	
+	# set defaults
+	BtnControls.reveal(false)
+	
+	# set reference 
 	GBL.direct_ref["SummaryCard"] = SummaryCard	
 
 	# CREATE NAMETAGS AND ADD THEM TO SCENE
@@ -295,7 +302,7 @@ func clear_lines() -> void:
 
 # --------------------------------------------------------------------------------------------------
 signal query_complete
-func query_items(cards_on_screen:int = 5, category:ROOM.CATEGORY = ROOM.CATEGORY.STANDARD, page:int = 0, return_list:Array = []) -> void:
+func query_items(cards_on_screen:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable) -> void:
 	var query:Dictionary
 	var start_at:int = page * cards_on_screen
 	query = ROOM_UTIL.get_unlocked_category(category, start_at, cards_on_screen)	
@@ -304,11 +311,8 @@ func query_items(cards_on_screen:int = 5, category:ROOM.CATEGORY = ROOM.CATEGORY
 		query.list.map(func(x):return {
 			"title": x.details.name,
 			"img_src": x.details.img_src,
-			"hint":{
-				"icon": SVGS.TYPE.MONEY,
-				"title": x.details.name,
-				"description": "Construction cost: %s (You have %s available.)" % [x.details.costs.purchase, resources_data[RESOURCE.TYPE.MONEY].amount]
-			},
+			"is_disabled": is_disabled_func.call(x),
+			"hint": hint_func.call(x), 
 			"ref": x.ref,
 			"details": x.details,
 			"action": func() -> void:
@@ -325,7 +329,7 @@ func query_items(cards_on_screen:int = 5, category:ROOM.CATEGORY = ROOM.CATEGORY
 	)	
 	
 	if query.has_more:
-		query_items(cards_on_screen, category, page + 1, return_list)
+		query_items(cards_on_screen, category, page + 1, return_list, is_disabled_func, hint_func)
 	else:
 		await U.tick()
 		query_complete.emit(return_list)
@@ -336,11 +340,47 @@ func show_build_options() -> void:
 	var options:Array = []
 	
 	for listitem in [
-			{"title": 'FACILITY', "type": ROOM.CATEGORY.STANDARD},
-			{"title": 'CONTAINMENT', "type": ROOM.CATEGORY.CONTAINMENT},
-			{"title": 'SPECIAL', "type": ROOM.CATEGORY.SPECIAL},
+			{
+				"title": 'FACILITY', 
+				"type": ROOM.CATEGORY.STANDARD,
+				"is_disabled_func": func(x:Dictionary) -> bool:
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x:Dictionary) -> Dictionary:
+					var description:String = "Construction cost: %s (You have %s available.)" % [x.details.costs.purchase, resources_data[RESOURCE.CURRENCY.MONEY].amount]
+					return {
+						"icon": SVGS.TYPE.MONEY,
+						"title": x.details.name,
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+					},
+			},
+			{
+				"title": 'CONTAINMENT', 
+				"type": ROOM.CATEGORY.CONTAINMENT,
+				"is_disabled_func": func(x:Dictionary) -> bool:
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x:Dictionary) -> Dictionary:
+					var description:String = "Construction cost: %s (You have %s available.)" % [x.details.costs.purchase, resources_data[RESOURCE.CURRENCY.MONEY].amount]
+					return {
+						"icon": SVGS.TYPE.MONEY,
+						"title": x.details.name,
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+					},
+			},
+			{
+				"title": 'SPECIAL', 
+				"type": ROOM.CATEGORY.SPECIAL,
+				"is_disabled_func": func(x:Dictionary) -> bool:
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.CORE].amount or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x:Dictionary) -> Dictionary:
+					var description:String = "Construction cost: %s (You have %s available.)" % [x.details.costs.purchase, resources_data[RESOURCE.CURRENCY.CORE].amount]
+					return {
+						"icon": SVGS.TYPE.GLOBAL,
+						"title": x.details.name,
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+					},
+			},
 		]:
-		query_items(list_size, listitem.type)
+		query_items(list_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func)
 		var query_results:Array = await query_complete
 		for index in query_results.size():
 			var items:Array = query_results[index]
@@ -362,7 +402,7 @@ func show_build_options() -> void:
 		RoomDetailsControl.room_ref = item.ref
 		
 		# disable/enable btn
-		var can_afford:bool = resources_data[RESOURCE.TYPE.MONEY].amount >= item.details.costs.purchase 
+		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
 		ActiveMenuNode.disable_active_btn = !can_afford
 		ActiveMenuNode.hint_border_color = Color.RED if !can_afford else Color(0.337, 0.275, 1.0)
 
@@ -391,7 +431,7 @@ func show_build_options() -> void:
 	add_child(ActiveMenuNode)
 	await U.tick()
 	ActiveMenuNode.open()	
-	GBL.direct_ref["ActiveMenu"] = ActiveMenuNode.CardBody
+	
 
 # --------------------------------------------------------------------------------------------------
 
@@ -451,8 +491,8 @@ func show_generator_updates() -> void:
 	
 	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
-		on_current_location_update()
-		lock_actions(false)
+		await lock_actions(false)
+		on_camera_settings_update()
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
@@ -491,8 +531,8 @@ func show_facility_updates() -> void:
 
 	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
-		on_current_location_update()
-		lock_actions(false)
+		await lock_actions(false)
+		on_camera_settings_update()
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
@@ -605,7 +645,6 @@ func investigate_wrapper(action:Callable) -> void:
 	await action.call()
 	await U.tick() 
 	lock_investigate(false)
-	#on_current_mode_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -632,6 +671,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			NameControl.hide()
+			ControllerOverlay.hide()
 			ControllerOverlay.show_directional = false
 			
 			if camera_settings.is_locked:
@@ -653,6 +693,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.WING_SELECT:
 			reveal_floorpreview(false)
 			NameControl.show()
+			ControllerOverlay.show()
 			ControllerOverlay.show_directional = true
 			
 			for panel in actionpanels:
@@ -669,6 +710,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.GENERATOR:
 			reveal_floorpreview(false)
 			NameControl.hide()
+			ControllerOverlay.hide()			
 			ControllerOverlay.show_directional = false
 			
 			if !is_in_transition:
@@ -688,8 +730,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 var previous_designation:String
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if current_location.is_empty() or room_config.is_empty() or is_in_transition:return
-	
+	if current_location.is_empty() or room_config.is_empty() or camera_settings.type == CAMERA.TYPE.FLOOR_SELECT or is_in_transition:return
+
 	# update room details control
 	RoomDetailsControl.use_location = current_location
 		
@@ -753,8 +795,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			BuildBtn.is_disabled = !room_extract.is_room_empty
 			DeconstructBtn.is_disabled = room_extract.is_room_empty
 			ContainBtn.is_disabled = !room_extract.scp.is_empty()
-			AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room
+			AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or hired_lead_researchers_arr.size() == 0
 			UnassignBtn.is_disabled = room_extract.researchers.size() == 0
+			ResearcherPanelLabel.text = "RESEARCHERS (%s)" % [hired_lead_researchers_arr.size()]
 						
 			if can_take_action:
 				AbilityBtn.is_disabled = !is_activated or (abilities.is_empty() and passive_abilities.is_empty())
@@ -884,6 +927,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			BtnControls.reveal(false)
 			RoomDetailsControl.reveal(false) 
+			ControllerOverlay.show()
 			
 			reveal_cardminipanel(false, duration)
 			await lock_actions(false)
@@ -901,6 +945,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			set_backdrop_state(true)	
 			
 			BtnControls.reveal(false)
+			ControllerOverlay.hide()
 			
 			reveal_action_controls(false)
 			reveal_cardminipanel(true)

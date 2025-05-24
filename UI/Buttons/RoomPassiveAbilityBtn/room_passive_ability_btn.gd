@@ -143,7 +143,7 @@ func update_text() -> void:
 	else:
 		if lvl_locked:
 			ability_name = "LVL %s REQUIRED" % [ability_data.lvl_required]
-			hint_description = "Level requirement too low to use this program"
+			hint_description = "Level requirement must be higher to use this module."
 			IconBtn.icon = SVGS.TYPE.LOCK
 			cost = ability_data.lvl_required
 			return

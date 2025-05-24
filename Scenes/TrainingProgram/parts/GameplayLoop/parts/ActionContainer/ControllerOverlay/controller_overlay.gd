@@ -18,6 +18,10 @@ var current_location:Dictionary
 var previous_floor:int
 var previous_ring:int
 
+var txt_tween_1:Tween 
+var txt_tween_2:Tween 
+var icon_tween:Tween 
+
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)
 	GBL.subscribe_to_control_input(self)
@@ -29,6 +33,7 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	on_show_directionals_update()
+	fade_out()
 
 
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
@@ -44,12 +49,19 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	FloorLabel.modulate = Color(1, 1, 1,  0.75)
 	RingLabel.modulate = Color(1, 1, 1, 0.75)
 	
+	if txt_tween_1.is_running():
+		txt_tween_1.stop()
+		txt_tween_2.stop()	
+	
 	U.debounce(str(self.name, "_fade_out"), fade_out, 0.5)
 	
 	
 func fade_out ()-> void:
-	U.tween_node_property(FloorLabel, "modulate", Color(1, 1, 1, 0), 0.1)
-	U.tween_node_property(RingLabel, "modulate", Color(1, 1, 1, 0), 0.1)	
+	txt_tween_1 = create_tween()
+	txt_tween_2 = create_tween()
+	
+	tween_node_property(txt_tween_1, FloorLabel, "modulate", Color(1, 1, 1, 0), 0.2)
+	tween_node_property(txt_tween_2, RingLabel, "modulate", Color(1, 1, 1, 0), 0.2)	
 
 func on_show_directionals_update() -> void:
 	if !is_node_ready():return
@@ -60,11 +72,22 @@ func press_btn(node:Control) -> void:
 	node.static_color = Color(1.0, 1, 1, 1)
 	for btn in [LeftIconBtn, RightIconBtn, UpIconBtn, DownIconBtn]:
 		btn.static_color = Color(1, 1, 1, 1 if node == btn else 0.5) 
-	
-	U.debounce(str(self.name, "_tween_icon_color"), tween_icon_color.bind(node), 0.3)
+	if icon_tween != null and icon_tween.is_running():
+		icon_tween.stop()
+	U.debounce(str(self.name, "_tween_icon_color"), tween_icon_color.bind(node), 0.1)
 
 func tween_icon_color(node) -> void:
-	U.tween_node_property(node, "static_color", Color(1, 1, 1, 0.5), 0.1, 0.1)
+	icon_tween = create_tween()
+	tween_node_property(icon_tween, node, "static_color", Color(1, 1, 1, 0.5), 0.2, 0.1)
+
+# --------------------------------------------------------------------------------------------------		
+func tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD) -> void:
+	if duration == 0:
+		duration = 0.02
+		
+	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
+	await tween.finished
+# --------------------------------------------------------------------------------------------------		
 
 
 func on_control_input_update(input_data:Dictionary) -> void:
