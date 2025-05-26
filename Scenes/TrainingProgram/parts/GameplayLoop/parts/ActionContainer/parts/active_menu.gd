@@ -104,7 +104,7 @@ func _exit_tree() -> void:
 	GBL.direct_ref.erase("ActiveMenu")
 	
 func _ready() -> void:
-	modulate = Color(1, 1, 1, 1)
+	modulate = Color(1, 1, 1, 0)
 	HintControl.hide()	
 	on_hint_border_color_update()
 	activate()

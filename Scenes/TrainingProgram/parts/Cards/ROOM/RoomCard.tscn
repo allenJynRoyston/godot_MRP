@@ -182,21 +182,14 @@ content = "-"
 title = "NAME"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
-[node name="CardDrawerStaffingRequirements" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("5_8cpo2")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nu0ye")
-title = "STAFFING REQUIREMENTS"
-is_left_side = true
-border_color = Color(0.3672, 0.378, 0.9, 1)
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 visible = false
 layout_mode = 2
 
 [node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("3_uk1cn")]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wvj30")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nu0ye")
 is_small = true
 content = "TYPE"
 title = ""
@@ -205,19 +198,26 @@ border_color = Color(0.3672, 0.378, 0.9, 1)
 [node name="CardDrawerName2" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("3_uk1cn")]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6vjof")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wvj30")
 is_small = true
 content = "SOMETHING"
 title = "NAME"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
-[node name="CardDrawerDescription" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("3_uk1cn")]
+[node name="CardDrawerStaffingRequirements" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("5_8cpo2")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6vjof")
+title = "STAFFING REQUIREMENTS"
+is_left_side = true
+border_color = Color(0.3672, 0.378, 0.9, 1)
+
+[node name="CardDrawerPairsWith" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("7_esvi2")]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_eqxk8")
-is_small = true
-content = "-"
-title = "DESCRIPTION"
+spec_name = "Speclization"
+title = "SPECLIZATION REQUIRED"
+is_left_side = true
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
@@ -229,17 +229,22 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_b2rkc")
 title = "EFFECTS TO VIBE"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
-[node name="CardDrawerPairsWith" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="1" instance=ExtResource("7_esvi2")]
+[node name="CardDrawerCurrency" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="1" instance=ExtResource("7_8cpo2")]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_jvq23")
-title = "LEVELS WITH"
+title = "AWARDED/COSTS PER DAY"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
-[node name="CardDrawerCurrency" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="2" instance=ExtResource("7_8cpo2")]
+[node name="CardDrawerDescription" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="2" instance=ExtResource("3_uk1cn")]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wteek")
-title = "AWARDED/COSTS PER DAY"
+is_small = true
+content = "-"
+title = "DESCRIPTION"
+is_left_side = false
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [editable path="CardBody"]

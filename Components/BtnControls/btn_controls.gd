@@ -98,6 +98,7 @@ var onBack:Callable = func() -> void:pass
 var onAction:Callable = func() -> void:pass
 var onCBtn:Callable = func() -> void:pass
 var onDirectional:Callable = func(key:String) -> void:pass
+var onUpdate:Callable = func(node:Control) -> void:pass
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -147,6 +148,7 @@ func _ready() -> void:
 	
 	BBtn.onClick = func() -> void:
 		if !is_node_ready():return
+		clear_itemlist()
 		onBack.call()
 
 	disabled_state = {
@@ -302,6 +304,7 @@ func on_item_index_update() -> void:
 	else:
 		HintContainer.hide()
 
+	onUpdate.call(node)
 	Input.warp_mouse(node.global_position + offset)
 # --------------------------------------------------------------------------------------------------
 	
@@ -317,14 +320,14 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	if directional_pref == "LR":
 		match key:
 			"A":
-				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1)
+				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1, true)
 			"D":
-				item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1)
+				item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1, true)
 			
 	if directional_pref == "UD":
 		match key:
 			"W":
-				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1)
+				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1, true)
 			"S":
-				item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1)		
+				item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1, true)		
 # ------------------------------------------	

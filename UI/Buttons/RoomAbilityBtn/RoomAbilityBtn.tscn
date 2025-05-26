@@ -31,9 +31,6 @@ size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_t1vmv")
 script = ExtResource("1_02iep")
 panel_color = Color(0.275367, 0.56172, 0.999992, 1)
-preview_mode = null
-abl_lvl = null
-required_lvl = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

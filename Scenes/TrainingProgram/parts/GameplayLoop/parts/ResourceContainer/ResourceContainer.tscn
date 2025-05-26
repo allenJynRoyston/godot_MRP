@@ -259,19 +259,15 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="CurrencyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="MaterialTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="ScienceTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="CoreTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="Vibes" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left"]
@@ -371,15 +367,14 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="MoraleTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 val = -1
 
 [node name="SafetyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="ReadinessTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="Right" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer"]
@@ -440,7 +435,6 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="EnergyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="Personnel" type="PanelContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right"]
@@ -535,22 +529,18 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="StaffTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 use_icon = true
 
 [node name="TechTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 use_icon = true
 
 [node name="SecTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 use_icon = true
 
 [node name="DClassTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 use_icon = true
 

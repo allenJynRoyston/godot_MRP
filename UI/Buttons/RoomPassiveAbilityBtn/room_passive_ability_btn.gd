@@ -26,7 +26,10 @@ extends BtnBase
 		on_ability_name_update()
 
 @export var preview_mode:bool = false
-@export var abl_lvl:int = 0
+@export var abl_lvl:int = 0 :
+	set(val):
+		abl_lvl = val
+		on_abl_lvl_update()
 @export var required_lvl:int = 0
 
 var base_states:Dictionary = {} 
@@ -74,7 +77,7 @@ func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	var ability_uid:String = str(room_ref, ability_index)	
 	var designation:String = U.location_to_designation(use_location)
 	is_active = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
 	
 
 func update_all() -> void:
@@ -83,13 +86,17 @@ func update_all() -> void:
 	update_text()	
 
 func on_lvl_locked_update() -> void:
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
 	
+func on_abl_lvl_update() -> void:
+	if ability_data.is_empty():return	
+	lvl_locked = abl_lvl < ability_data.lvl_required	
+	U.debounce(str(self.name, "_update_all"), update_all)
 	
 func on_ability_data_update() -> void:
 	if ability_data.is_empty():return
 	lvl_locked = abl_lvl < ability_data.lvl_required	
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
 
 func on_ability_name_update() -> void:
 	if !is_node_ready():return

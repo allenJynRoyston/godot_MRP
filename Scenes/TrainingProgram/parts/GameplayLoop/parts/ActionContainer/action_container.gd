@@ -136,6 +136,7 @@ func _ready() -> void:
 		SUBSCRIBE.camera_settings = camera_settings
 	
 	WingActionBtn.onClick = func() -> void:
+		on_current_location_update()
 		current_mode = MODE.INVESTIGATE	
 		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
@@ -195,6 +196,8 @@ func _ready() -> void:
 		on_current_mode_update()
 	
 	SettingsBtn.onClick = func() -> void:
+		ControllerOverlay.hide()
+		NameControl.hide()		
 		await lock_actions(true)
 		show_settings()
 		
@@ -392,6 +395,8 @@ func show_build_options() -> void:
 				})		
 		
 	var onClose:Callable = func(skip_reveal:bool) -> void:
+		previous_designation = ""
+		on_current_location_update()	
 		if !skip_reveal:
 			await RoomDetailsControl.reveal(false)
 		current_mode = MODE.INVESTIGATE
@@ -422,7 +427,6 @@ func show_build_options() -> void:
 		
 	ActiveMenuNode.onAction = func() -> void:
 		await ActiveMenuNode.close()
-		onClose.call(true)
 			
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
@@ -627,8 +631,9 @@ func show_settings() -> void:
 	
 	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
-		on_current_location_update()
-		lock_actions(false)
+		await lock_actions(false)
+		on_current_mode_update()
+
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
@@ -644,17 +649,20 @@ func investigate_wrapper(action:Callable) -> void:
 	await lock_investigate(true)
 	await action.call()
 	await U.tick() 
-	lock_investigate(false)
+	await lock_investigate(false)
+	
+	previous_designation = ""
+	on_current_location_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func before_use_ability(_ability:Dictionary) -> void:
+func before_use_ability() -> void:
 	await BtnControls.reveal(false)
 	
-func after_use_ability(_ability:Dictionary) -> void:
+func after_use_ability() -> void:
 	BtnControls.reveal(true)
 	
-func after_use_passive_ability(_ability:Dictionary) -> void:
+func after_use_passive_ability() -> void:
 	pass
 	#update_details()
 # --------------------------------------------------------------------------------------------------
@@ -731,7 +739,7 @@ var previous_designation:String
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if current_location.is_empty() or room_config.is_empty() or camera_settings.type == CAMERA.TYPE.FLOOR_SELECT or is_in_transition:return
-
+	
 	# update room details control
 	RoomDetailsControl.use_location = current_location
 		
@@ -741,19 +749,17 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var is_room_empty:bool = room_extract.is_room_empty
 	var is_activated:bool = room_extract.is_activated
 	var can_take_action:bool = is_powered and !in_lockdown
-	
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
 		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
-		ResearcherBtnPanel.hide() if room_extract.is_room_empty else ResearcherBtnPanel.show()
+		ResearcherBtnPanel.hide() #if room_extract.is_room_empty else ResearcherBtnPanel.show()
 		ScpBtnPanel.hide() if room_extract.is_room_empty or !room_extract.can_contain else ScpBtnPanel.show()		
 	
-		SummaryCard.use_location = current_location
-		SummaryCard.room_ref = room_extract.room.details.ref if !is_room_empty else -1
-		SummaryCard.scp_ref = room_extract.scp.details.ref if !room_extract.scp.is_empty() else -1
-		SummaryCard.researchers = room_extract.researchers
-	
-	
+		if previous_designation != U.location_to_designation(current_location):
+			previous_designation = U.location_to_designation(current_location)	
+			SummaryCard.use_location = current_location
+			SummaryCard.room_ref = room_extract.room.details.ref if !is_room_empty else -1
+
 	match current_mode:
 		# -----------
 		MODE.ACTIONS:
@@ -775,21 +781,17 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			
 			# update roomDetailsControl
 			RoomDetailsControl.show_room_card = !room_extract.is_room_empty
-			RoomDetailsControl.show_scp_card = !room_extract.scp.is_empty() and room_extract.can_contain 
-			RoomDetailsControl.show_researcher_card = !room_extract.is_room_empty and room_extract.researchers.size() > 0
-			RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
-			RoomDetailsControl.scp_ref = -1 if room_extract.scp.is_empty() else room_extract.scp.details.ref
-			RoomDetailsControl.researcher_uid = -1 if room_extract.researchers.is_empty() else room_extract.researchers[0].uid
+			RoomDetailsControl.show_scp_card = false
+			RoomDetailsControl.show_researcher_card = false	
 			
+			RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
+			RoomDetailsControl.scp_ref = -1 
+			RoomDetailsControl.researcher_uid = -1 
+
 			RoomDetailsControl.disable_location = false
 			RoomDetailsControl.reveal(!room_extract.is_room_empty)
 			
 			RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
-
-			if room_extract.scp.is_empty():
-				RoomDetailsControl.cycle_to_room(true)
-			else:
-				RoomDetailsControl.cycle_to_scp(true)
 			
 			# set button states
 			BuildBtn.is_disabled = !room_extract.is_room_empty
@@ -919,8 +921,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	match current_mode:
 		# --------------
 		MODE.ACTIONS:
-			camera_settings.type = CAMERA.TYPE.WING_SELECT
-			SUBSCRIBE.camera_settings = camera_settings
+			# start at ring level
+			if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
+				camera_settings.type = CAMERA.TYPE.WING_SELECT
+				SUBSCRIBE.camera_settings = camera_settings
 					
 			enable_room_focus(false)
 			set_backdrop_state(false)	
@@ -963,6 +967,31 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.directional_pref = "UD"
 			BtnControls.offset = SummaryCard.global_position
 			
+			BtnControls.onUpdate = func(node:Control) -> void:
+				# ----------------------
+				if "ability_data" in node:
+					RoomDetailsControl.cycle_to_room(true)
+					await U.tick()
+					RoomDetailsControl.show_room_card = true
+					RoomDetailsControl.show_scp_card = false
+					RoomDetailsControl.show_researcher_card = false
+				# ----------------------
+				if "researcher" in node:
+					RoomDetailsControl.researcher_uid = node.researcher.uid if !node.researcher.is_empty() else -1
+					RoomDetailsControl.cycle_to_reseacher(true)
+					await U.tick()
+					RoomDetailsControl.show_room_card = false
+					RoomDetailsControl.show_scp_card = false
+					RoomDetailsControl.show_researcher_card = true	
+				# ----------------------
+				if "scp_ref" in node:
+					RoomDetailsControl.scp_ref = node.scp_ref
+					RoomDetailsControl.cycle_to_scp(true)
+					await U.tick()
+					RoomDetailsControl.show_room_card = false
+					RoomDetailsControl.show_scp_card = true
+					RoomDetailsControl.show_researcher_card = true						
+
 			BtnControls.onBack = func() -> void:
 				current_mode = MODE.INVESTIGATE	
 			

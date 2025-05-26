@@ -4,18 +4,19 @@ extends GameContainer
 @onready var BtnControls:Control = $BtnControls
 
 @onready var CostResourceItem:Control = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/CostResourceItem
-
 @onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
+
+@onready var MainPanel:PanelContainer = $MainControl/MainPanel
 @onready var LessBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MoreBtn
+@onready var GridContent:GridContainer =$MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer
 
 @onready var Tabs:HBoxContainer = $HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs
+@onready var HeaderPanel:PanelContainer = $HeaderControl/HeaderPanel
+
 @onready var ActiveHeaderLabel:Label = $ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer/ActiveHeaderLabel
-@onready var GridContent:GridContainer = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer
 @onready var ActiveHeaderPanel:PanelContainer = $ActiveHeader/ActiveHeaderPanel
 @onready var ActiveHeaderMargin:MarginContainer = $ActiveHeader/ActiveHeaderPanel/MarginContainer
-@onready var HeaderPanel:PanelContainer = $HeaderControl/HeaderPanel
-@onready var MainPanel:PanelContainer = $MainControl/MainPanel
 
 @onready var RoomMiniPanel:Control = $MiniCardControl/PanelContainer
 @onready var RoomMiniMargin:MarginContainer = $MiniCardControl/PanelContainer/MarginContainer
@@ -368,11 +369,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
 				
-				current_mode = MODE.CONTENT_SELECT
 				made_changes = true
+				end()
 							
 			U.tween_node_property(SplashPanelContainer, "position:y", control_pos[SplashPanelContainer].show)	
-		
+			
 			
 	await U.tick()
 	is_animating = false

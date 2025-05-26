@@ -18,6 +18,11 @@ const RoomPassiveAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomP
 
 var preview_mode:bool = false
 var use_location:Dictionary = {}
+var abl_lvl:int = 0 : 
+	set(val):
+		abl_lvl = val
+		on_abl_lvl_update()
+		
 var onLock:Callable = func() -> void:pass
 var onUnlock:Callable = func() -> void:pass
 
@@ -26,13 +31,11 @@ func _ready() -> void:
 
 func clear() -> void:
 	for node in AbilityList.get_children():
-		node.queue_free()
+		node.free()
 
 func on_room_details_update() -> void:
 	if !is_node_ready() or room_details.is_empty():return
-		
-	for node in AbilityList.get_children():
-		node.queue_free()
+	clear()
 	
 	if ability_type == ABILITY_TYPE.ACTIVE :
 		if "abilities" in room_details:
@@ -64,12 +67,12 @@ func on_room_details_update() -> void:
 						# first, disables btns in the card
 						onLock.call()
 						# then disables the btn controls
-						await ActionContainerNode.before_use_ability(ability)
+						await ActionContainerNode.before_use_ability()
 						# perform the ability
 						await GAME_UTIL.use_active_ability(ability, room_details.ref, ability_index, use_location)
 						# unlocks
 						onUnlock.call()
-						ActionContainerNode.after_use_ability(ability)
+						ActionContainerNode.after_use_ability()
 						return
 				
 					GAME_UTIL.use_active_ability(ability, room_details.room_ref, ability_index, use_location)
@@ -103,11 +106,17 @@ func on_room_details_update() -> void:
 					GAME_UTIL.toggle_passive_ability(room_details.ref, ability_index, use_location)
 					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 					if ActionContainerNode.is_visible_in_tree():
-						ActionContainerNode.after_use_passive_ability.call(ability)
+						ActionContainerNode.after_use_passive_ability.call()
 					
 						
 				AbilityList.add_child(btn_node)
-
+	
+	on_abl_lvl_update()
+	
+func on_abl_lvl_update() -> void:
+	if !is_node_ready():return
+	for child in AbilityList.get_children():
+		child.abl_lvl = abl_lvl
 
 func lock_btns(state:bool) -> void:
 	for btn in AbilityList.get_children():

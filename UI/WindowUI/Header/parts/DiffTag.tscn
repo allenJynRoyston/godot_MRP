@@ -5,9 +5,9 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3gw83"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_drpab"]
+[sub_resource type="LabelSettings" id="LabelSettings_tm3ka"]
 font = ExtResource("2_cknqf")
-font_color = Color(0, 1, 0.184314, 1)
+font_color = Color(0, 1, 0.184, 1)
 outline_size = 4
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 shadow_size = 4
@@ -15,6 +15,7 @@ shadow_color = Color(0.162066, 0.162066, 0.162066, 1)
 shadow_offset = Vector2(2, 2)
 
 [node name="PanelContainer" type="PanelContainer"]
+modulate = Color(1, 1, 1, 0)
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_3gw83")
 script = ExtResource("1_tm3ka")
@@ -29,6 +30,6 @@ theme_override_constants/margin_bottom = 1
 [node name="Label" type="Label" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "+1"
-label_settings = SubResource("LabelSettings_drpab")
+text = "+0"
+label_settings = SubResource("LabelSettings_tm3ka")
 horizontal_alignment = 1

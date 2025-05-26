@@ -17,7 +17,7 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 
 # GAMEPLAY OPTIONS
 @export_category("DEBUG OPTIONS")
-@export var is_production_build:bool = true
+@export var is_production_build:bool = false
 @export var start_at_fullscreen:bool = false
 
 # DEFAULTS
@@ -54,6 +54,7 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var skip_objectives:bool = false
 @export var max_energy:bool = true
 @export var all_personnel:bool = false
+@export var researchers_per_room:int = 3
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
@@ -124,6 +125,8 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
 	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)
 	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
+	print(researchers_per_room)
+	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM, researchers_per_room)	
 	
 	DoorScene.onLogin = func() -> void:
 		start_os_layer()

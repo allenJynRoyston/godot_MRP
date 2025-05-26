@@ -17,52 +17,31 @@ extends CardDrawerClass
 		spec_name = val 
 		on_spec_name_update()
 		
-@export var trait_name:String = "Trait" :
-	set(val):
-		trait_name = val 
-		on_trait_name_update()
 
 @export var has_spec:bool = false : 
 	set(val):
 		has_spec = val
 		on_has_spec_update()
 		
-@export var has_trait:bool = false : 
-	set(val):
-		has_trait = val
-		on_has_trait_update()
-
 func _ready() -> void:
 	super._ready()
 	on_spec_name_update()
-	on_trait_name_update()
 	on_has_spec_update()
-	on_has_trait_update()
 	update_label_settings()
 
 func clear() -> void:
 	SpecLabel.text = "-"
-	TraitLabel.text = "-"
 	SpecCheckbox.is_checked = false
-	TraitCheckBox.is_checked = false
 	
 func on_spec_name_update() -> void:
 	if !is_node_ready():return
-	SpecLabel.text = spec_name
-	
-func on_trait_name_update() -> void:
-	if !is_node_ready():return
-	TraitLabel.text = trait_name
+	SpecLabel.text = spec_name 
 	
 func on_has_spec_update() -> void:
 	if !is_node_ready():return
 	SpecLabel.modulate = Color(1,1, 1, 1 if has_spec else 0.5) 
 	SpecCheckbox.is_checked = has_spec
 
-func on_has_trait_update() -> void:
-	if !is_node_ready():return
-	TraitLabel.modulate = Color(1,1, 1, 1 if has_trait else 0.5) 
-	TraitCheckBox.is_checked = has_trait
 	
 func update_label_settings() -> void:
 	if !is_node_ready():return

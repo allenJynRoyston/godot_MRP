@@ -133,7 +133,7 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	U.debounce(str(self.name, "_update_energy_panel"), update_panels)
 # -----------------------------------------------			
 
-# -----------------------------------------------			
+# ----------------------------------------------			
 func on_camera_settings_update(new_val:Dictionary) -> void: 
 	super.on_camera_settings_update(new_val)	
 	U.debounce(str(self.name, "_update_energy_panel"), update_panels)

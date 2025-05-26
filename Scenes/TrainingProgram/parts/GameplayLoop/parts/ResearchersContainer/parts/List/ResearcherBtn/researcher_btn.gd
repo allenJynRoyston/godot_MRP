@@ -14,13 +14,29 @@ var is_active:bool = false :
 
 var researcher_details:Dictionary = {} 
 
+var hired_lead_researchers:Array = []
+
 var onClick:Callable = func(_researcher_details:Dictionary):pass
 
 # --------------------------------------	
+func _init() -> void:
+	super._init()
+	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
+	
+func _exit_tree() -> void:
+	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
+	
 func _ready() -> void:
 	super._ready()
 	on_researcher_id_update()
 	on_is_active_update()
+# --------------------------------------	
+
+# --------------------------------------	
+func on_hired_lead_researchers_update(new_val:Array) -> void:
+	hired_lead_researchers = new_val
+	print(hired_lead_researchers) 
 # --------------------------------------	
 
 # --------------------------------------	

@@ -7,9 +7,22 @@ extends GameContainer
 @onready var ResearcherLabel:Label = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/Label
 @onready var ResearcherList:HBoxContainer = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ResearcherList
 
+@onready var MainPanel:PanelContainer = $MainControl/MainPanel
+@onready var LessBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/LessBtn
+@onready var MoreBtn:BtnBase = $MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MoreBtn
+@onready var GridContent:GridContainer =$MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer
+
+@onready var Tabs:HBoxContainer = $HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs
+@onready var HeaderPanel:PanelContainer = $HeaderControl/HeaderPanel
+
+@onready var ActiveHeaderLabel:Label = $ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer/ActiveHeaderLabel
+@onready var ActiveHeaderPanel:PanelContainer = $ActiveHeader/ActiveHeaderPanel
+@onready var ActiveHeaderMargin:MarginContainer = $ActiveHeader/ActiveHeaderPanel/MarginContainer
+
+
 @onready var AvailableLabel:Label = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/AvailableLabel
-@onready var LessBtn:BtnBase = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/LessBtn
-@onready var MoreBtn:BtnBase = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/MoreBtn
+#@onready var LessBtn:BtnBase = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/LessBtn
+#@onready var MoreBtn:BtnBase = $ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/MoreBtn
 
 @onready var SelectedPanel:Control = $SelectedControl/SelectedPanel
 @onready var SelectedList:VBoxContainer = $SelectedControl/SelectedPanel/MarginContainer/VBoxContainer/SelectedContainer/SelectedList
@@ -66,6 +79,19 @@ var pagination_val:int = 0 :
 var max_pagination:int
 var on_more_or_less_btns:bool = false
 
+var page_tracker:Dictionary = {
+	0:0,
+	1:0,
+	2:0
+}
+
+var grid_as_array:Array = [
+	[0, 1, 2],
+	[3, 4, 5],
+	[6, 7, 8],
+]
+
+
 # -----------------------------------------------
 func _ready() -> void:
 	super._ready()
@@ -100,7 +126,8 @@ func activate() -> void:
 	control_pos_default[SelectedPanel] = SelectedPanel.position
 	control_pos_default[ResearcherPanel] = ResearcherPanel.position
 	control_pos_default[PromoteControlPanel] = PromoteControlPanel.position
-	
+	control_pos_default[MainPanel] = MainPanel.position
+
 	# set pagination levels
 	max_pagination = floori( (hired_lead_researchers_arr.size() - 1)/cards_in_list) 
 		
@@ -130,6 +157,11 @@ func update_control_pos() -> void:
 	control_pos[PromoteControlPanel] = {
 		"show": control_pos_default[PromoteControlPanel].y,
 		"hide": control_pos_default[PromoteControlPanel].y - PromoteControlMargin.size.y
+	}	
+	
+	control_pos[MainPanel] = {
+		"show": control_pos_default[MainPanel].y, 
+		"hide": control_pos_default[MainPanel].y - MainPanel.size.y
 	}	
 	
 	on_current_mode_update(true)
@@ -218,7 +250,6 @@ func update_cards() -> void:
 				new_card.is_active = false
 				selected_researchers.erase(index)
 				selected_researchers = selected_researchers
-
 			
 		new_card.onClick = func() -> void:
 			new_card.is_selected = true
@@ -420,15 +451,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			BtnControls.freeze_and_disable(false)
 
-		# ---------------
-		MODE.DETAILS_ONLY:
-			pass
-			#for btn in [DetailsBtn, BackBtn, SelectBtn, ConfirmBtn]:
-				#btn.is_disabled = false
-			#SelectBtn.hide()
-			#ConfirmBtn.hide()
-
-			#
 # -----------------------------------------------
 
 # -----------------------------------------------

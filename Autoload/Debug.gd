@@ -15,7 +15,8 @@ enum {
 	APP_SKIP_LOADING_SCREEN, APP_SKIP_TITLESCREEN, 
 	# GAMEPLAY
 	GAMEPLAY_SKIP_SETUP_PROGRSS, GAMEPLAY_START_AT_RING_LEVEL, 
-	GAMEPLAY_SKIP_OBJECTIVES, GAMEPLAY_MAX_ENERGY, GAMEPLAY_ALL_PERSONNEL
+	GAMEPLAY_SKIP_OBJECTIVES, GAMEPLAY_MAX_ENERGY, GAMEPLAY_ALL_PERSONNEL,
+	GAMEPLAY_RESEARCHERS_PER_ROOM,
 }
 
 #@export var new_permanent_file:bool = false
@@ -35,10 +36,11 @@ enum {
 
 var refs:Dictionary = {}
 
-func assign(key:int, val:bool) -> void:
+func assign(key:int, val) -> void:
 	refs[key] = val
 
-func get_val(key:int) -> bool:
+func get_val(key:int):
 	if refs[IS_PRODUCTION_BUILD]:
-		return false	
+		if refs[key] is bool:
+			return false	
 	return refs[key]

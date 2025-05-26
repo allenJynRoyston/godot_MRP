@@ -94,7 +94,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	if !is_node_ready() or camera_settings.is_empty():return
 		
 	GBL.add_to_animation_queue(self)
-
 	match camera_settings.type:
 		# --------------------
 		CAMERA.TYPE.FLOOR_SELECT:

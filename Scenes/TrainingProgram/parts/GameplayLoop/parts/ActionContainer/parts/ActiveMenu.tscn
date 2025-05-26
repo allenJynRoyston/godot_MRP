@@ -136,7 +136,7 @@ card_size = Vector2(200, 200)
 texture = SubResource("ViewportTexture_l1lsc")
 
 [node name="SubViewport" parent="MenuControl/PanelContainer/MarginContainer/CardBody" index="1"]
-size = Vector2i(225, 200)
+size = Vector2i(200, 200)
 
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(200, 200)

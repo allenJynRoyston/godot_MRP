@@ -8,6 +8,8 @@ extends CardDrawerClass
 		list = val
 		on_list_update()
 
+var researchers_per_room:int
+
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
 

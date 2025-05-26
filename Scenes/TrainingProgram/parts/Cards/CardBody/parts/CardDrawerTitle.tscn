@@ -23,7 +23,7 @@ outline_size = 16
 outline_color = Color(0.162, 0.162, 0.162, 1)
 
 [node name="CardDrawerTitle" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(200, 40)
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_w7cv4")
 script = ExtResource("1_w7cv4")
@@ -48,9 +48,9 @@ label_settings = ExtResource("1_1np6w")
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 15
+theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_bottom = 4
 
 [node name="ContentLabel" type="Label" parent="MarginContainer/MarginContainer"]
 custom_minimum_size = Vector2(1, 1)

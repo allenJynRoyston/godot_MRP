@@ -380,8 +380,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			return true
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-
-
+	
 	return {
 		"floor_config": floor_config,
 		"ring_config": ring_config,
@@ -534,6 +533,15 @@ func reset_room() -> bool:
 			var reset_item:Dictionary = reset_arr[0]
 			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
 			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, true)
+			
+			hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+				# clear out prior researchers
+				if U.dictionaries_equal(i[9].assigned_to_room, current_location):
+					i[9].assigned_to_room = {}
+				return i
+			)
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+			
 			return true
 		else:
 			return false
@@ -636,9 +644,6 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 	
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(response.uid)
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-		# clear out prior researchers
-		if U.dictionaries_equal(i[9].assigned_to_room, location_data):
-			i[9].assigned_to_room = {}
 		# add current users
 		if i[0] in response.uid:
 			i[9].assigned_to_room = location_data.duplicate()

@@ -1,9 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cus6h1nu75y1e"]
+[gd_scene load_steps=4 format=3 uid="uid://dy0x4w2beaa05"]
 
-[ext_resource type="Script" uid="uid://dhdi25jyrhskx" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_room_abilities.gd" id="1_6ymt7"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_b2hfq"]
+[ext_resource type="Script" uid="uid://cwkhrlrei1wjc" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_researchers.gd" id="1_c7ied"]
+[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_oyllc"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ildx4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c7ied"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -15,13 +15,14 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="CardDrawerAblities" type="PanelContainer"]
+[node name="CardDrawerResearchers" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
 offset_right = 200.0
-offset_bottom = 54.0
+offset_bottom = 50.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ildx4")
-script = ExtResource("1_6ymt7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_c7ied")
+script = ExtResource("1_c7ied")
+title = "RESEARCHERS"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -34,8 +35,8 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "TITLE LABEL "
-label_settings = ExtResource("2_b2hfq")
+text = "RESEARCHERS "
+label_settings = ExtResource("2_oyllc")
 horizontal_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
@@ -45,5 +46,5 @@ theme_override_constants/margin_top = 13
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 3
 
-[node name="AbilityList" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
+[node name="List" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2

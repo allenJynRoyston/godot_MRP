@@ -30,7 +30,7 @@ const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/
 const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
 const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
 const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
-const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
+#const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
 const BuildContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn")
 const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
 
@@ -212,6 +212,7 @@ var initial_values:Dictionary = {
 		var floor:Dictionary = {}
 		var ring:Dictionary = {}
 		var room:Dictionary = {} 
+		
 		# ------------------------------
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
@@ -222,7 +223,7 @@ var initial_values:Dictionary = {
 			for ring_index in [0, 1, 2, 3]:
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
-					"researchers_per_room": 1,					
+					"researchers_per_room": DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM),
 					"hotkeys": {},
 				}
 				
@@ -604,10 +605,6 @@ func start_new_game(game_data_config:Dictionary) -> void:
 
 	# then show player hud
 	await restore_player_hud()	
-
-	# start at ring level
-	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
-		ActionContainer.toggle_camera_view()
 
 	# update phase and start game
 	current_phase = PHASE.PLAYER
@@ -1421,34 +1418,6 @@ func on_current_select_scp_step_update() -> void:
 
 # ------------------------------------------------------------------------------		
 #region RESEARCHER STEPS
-#func on_current_recruit_step_update() -> void:
-	#if !is_node_ready():return
-#
-	#match current_recruit_step:
-		## ---------------
-		#RECRUIT_STEPS.RESET:
-			#SUBSCRIBE.suppress_click = false
-		## ---------------
-		#RECRUIT_STEPS.OPEN:
-			#SUBSCRIBE.suppress_click = true
-			#SelectResearcherScreen = SelectResearcherScreenPreload.instantiate()
-			#add_child(SelectResearcherScreen)
-			#SelectResearcherScreen.z_index = 10
-			#
-			#await U.tick()
-			#SelectResearcherScreen.activate()
-			#
-			#SelectResearcherScreen.start()
-			#var response:bool = await SelectResearcherScreen.user_response
-			#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			#SelectResearcherScreen.queue_free()
-			#
-			## trigger signal
-			#on_recruit_complete.emit(response)
-			#await restore_showing_state()
-			#current_recruit_step = RECRUIT_STEPS.RESET
-
-
 func on_current_researcher_step_update() -> void:
 	if !is_node_ready():return
 	
@@ -1456,24 +1425,6 @@ func on_current_researcher_step_update() -> void:
 		# ------------------------
 		RESEARCHERS_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-		# ------------------------
-		RESEARCHERS_STEPS.DETAILS_ONLY:
-			SUBSCRIBE.suppress_click = true
-			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
-			add_child(ResearchersContainer)
-			ResearchersContainer.z_index = 10
-
-			await U.tick()
-			ResearchersContainer.activate()
-			
-			await U.tick()
-			ResearchersContainer.start([], true)
-			var response:Dictionary = await ResearchersContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			ResearchersContainer.queue_free()
-			
-			on_researcher_component_complete.emit()
-			current_researcher_step = RESEARCHERS_STEPS.RESET
 		# ------------------------
 		RESEARCHERS_STEPS.ASSIGN:
 			SUBSCRIBE.suppress_click = true
@@ -1688,13 +1639,12 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 			var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
 			var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
 			if assigned_to_room == item.location:
-				room_config_data.abl_lvl += 1
 				if room_data.pairs_with.specilization in researcher_details.specializations:
 					room_config_data.room_paired_with.specilization = true
-					room_config_data.abl_lvl += 1
-				if room_data.pairs_with.trait in researcher_details.traits:
-					room_config_data.room_paired_with.trait = true
-					room_config_data.abl_lvl += 1
+					room_config_data.abl_lvl += researcher_details.level
+				#if room_data.pairs_with.trait in researcher_details.traits:
+					#room_config_data.room_paired_with.trait = true
+					#room_config_data.abl_lvl += 1
 
 func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 	# NEXT check for passives in rooms

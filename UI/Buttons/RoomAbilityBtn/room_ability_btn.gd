@@ -29,7 +29,11 @@ extends BtnBase
 		on_cooldown_update()	
 		
 @export var preview_mode:bool = false
-@export var abl_lvl:int = 0
+@export var abl_lvl:int = 0 :
+	set(val):
+		abl_lvl = val
+		on_abl_lvl_update()
+		
 @export var required_lvl:int = 0
 
 var cooldown_val:int = 0
@@ -89,14 +93,18 @@ func update_all() -> void:
 	update_text()	
 
 func on_is_disabled_updated() -> void:
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
 
 func on_lvl_locked_update() -> void:
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
 
 func on_cooldown_update() -> void:
 	if !is_node_ready():return
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
+
+func on_ability_data_update() -> void:
+	if ability_data.is_empty():return
+	U.debounce(str(self.name, "_update_all"), update_all)
 
 func on_ability_name_update() -> void:
 	if !is_node_ready():return
@@ -106,10 +114,10 @@ func on_cost_update() -> void:
 	if !is_node_ready():return
 	CostLabel.text = str(cost)
 
-func on_ability_data_update() -> void:
-	if ability_data.is_empty():return
+func on_abl_lvl_update() -> void:
+	if ability_data.is_empty():return	
 	lvl_locked = abl_lvl < ability_data.lvl_required	
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
 	
 func update_font_color() -> void:
 	if !is_node_ready():return
@@ -117,13 +125,12 @@ func update_font_color() -> void:
 	var new_color:Color = Color.WHITE	
 	
 	if !preview_mode:
+		if on_cooldown:
+			new_color = Color.SKY_BLUE		
 		if lvl_locked:
 			new_color = Color.WEB_GRAY
-		
-		if on_cooldown:
-			new_color = Color.SKY_BLUE
 	
-		
+	
 	label_duplicate.font_color = new_color
 	for node in [NameLabel, CostLabel]:
 		node.label_settings = label_duplicate	
@@ -136,12 +143,11 @@ func on_panel_color_update() -> void:
 	var new_color:Color = panel_color
 	
 	if !preview_mode:
+		if on_cooldown:
+			new_color = panel_color		
 		if lvl_locked:
 			new_color = panel_color
-			
-		if on_cooldown:
-			new_color = panel_color
-		
+
 
 	new_stylebox.bg_color = new_color
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)

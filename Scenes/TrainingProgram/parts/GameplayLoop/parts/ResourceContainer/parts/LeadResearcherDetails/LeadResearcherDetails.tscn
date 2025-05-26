@@ -22,7 +22,6 @@ offset_left = -266.0
 offset_top = 2.0
 offset_right = -16.0
 offset_bottom = 402.0
-hide_hire_section = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

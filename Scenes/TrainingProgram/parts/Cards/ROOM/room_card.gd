@@ -11,12 +11,13 @@ extends MouseInteractions
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
 @onready var CardDrawerStaffingRequirements:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerStaffingRequirements
-@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
+@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerPairsWith
 
 # back
-@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPairsWith
 @onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
+@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
+
 
 @export var ref:int = -1: 
 	set(val):
@@ -148,8 +149,8 @@ func on_ref_update() -> void:
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		morale_val = extract_data.ring_config.metrics[RESOURCE.METRICS.MORALE]
 		is_activated = extract_data.is_activated
-		#has_spec_bonus = extract_data.room.pairs_with.specilization
-		#has_trait_bonus = extract_data.room.pairs_with.trait
+		has_spec_bonus = extract_data.room.pairs_with.specilization
+		has_trait_bonus = extract_data.room.pairs_with.trait
 
 	for key in room_details.currencies:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
@@ -174,9 +175,7 @@ func on_ref_update() -> void:
 	CardDrawerVibes.metrics = room_details.metrics	
 	# -----------
 	CardDrawerPairsWith.spec_name = spec_name
-	CardDrawerPairsWith.trait_name = trait_name
 	CardDrawerPairsWith.has_spec = has_spec_bonus
-	CardDrawerPairsWith.has_trait = has_trait_bonus	
 	# -----------
 	CardDrawerCurrency.spec_name = spec_name
 	CardDrawerCurrency.trait_name = trait_name

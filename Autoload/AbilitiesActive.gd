@@ -28,7 +28,7 @@ var unlock_facilities:Dictionary = {
 	"name": "UNLOCK FACILITIES", 
 	"description": "Unlock new facilities and make them available for your site.",
 	"science_cost": 0,
-	"cooldown_duration":  0, 
+	"cooldown_duration":  1, 
 	"effect": func() -> bool:
 		return await GBL.find_node(REFS.GAMEPLAY_LOOP).open_store(),
 }
