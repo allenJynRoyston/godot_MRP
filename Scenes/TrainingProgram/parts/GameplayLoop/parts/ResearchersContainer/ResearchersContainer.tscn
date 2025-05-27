@@ -1,49 +1,14 @@
-[gd_scene load_steps=24 format=3 uid="uid://bqjbewhv2mf4t"]
+[gd_scene load_steps=8 format=3 uid="uid://bqjbewhv2mf4t"]
 
 [ext_resource type="Script" uid="uid://c7eagduyswmvv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/researchers_container.gd" id="1_u5c0a"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_18rtl"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_oj23j"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_qpt25"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_veau8"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_7f8j1"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_7i7in"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="3_7j1yh"]
-[ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="3_e6lkj"]
-[ext_resource type="PackedScene" uid="uid://cd46j3ltrkmdv" path="res://UI/Buttons/TabBtn/TabBtn.tscn" id="3_ywibd"]
-[ext_resource type="PackedScene" uid="uid://ied6qtqemnsg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/parts/TraitItem/TraitItem.tscn" id="5_7j1yh"]
-[ext_resource type="PackedScene" uid="uid://cyv8vf7k1e1s4" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn" id="8_2blr1"]
-[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_oj23j"]
+[ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_xudhu"]
+[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="4_d8g8h"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="13_oj23j"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gm34h"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pppvx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gotsv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oj23j"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_86ytk"]
-bg_color = Color(0, 0, 0, 0.796078)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f7l2i"]
-bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pqfc2"]
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_wvonr"]
-color = Color(1, 1, 1, 1)
 
 [node name="ResearcherContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -57,412 +22,46 @@ script = ExtResource("1_u5c0a")
 [node name="ColorRectBG" type="ColorRect" parent="."]
 material = ExtResource("2_oj23j")
 layout_mode = 2
-color = Color(0.12, 0.12, 0.12, 1)
+color = Color(0.120418, 0.120418, 0.120418, 1)
 
-[node name="HeaderControl" type="Control" parent="."]
+[node name="SummaryControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="HeaderPanel" type="PanelContainer" parent="HeaderControl"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -253.0
-offset_right = 253.0
-offset_bottom = 86.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_pppvx")
-
-[node name="MarginContainer" type="MarginContainer" parent="HeaderControl/HeaderPanel"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="Categories" type="VBoxContainer" parent="HeaderControl/HeaderPanel/MarginContainer"]
-layout_mode = 2
-
-[node name="Tabs" type="HBoxContainer" parent="HeaderControl/HeaderPanel/MarginContainer/Categories"]
-layout_mode = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TabBtn" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("3_ywibd")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-is_selected = true
-title = "FACILITY"
-
-[node name="TabBtn2" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("3_ywibd")]
-layout_mode = 2
-title = "CONTAINMENT"
-
-[node name="TabBtn3" parent="HeaderControl/HeaderPanel/MarginContainer/Categories/Tabs" instance=ExtResource("3_ywibd")]
-layout_mode = 2
-title = "SUPPORT"
-
-[node name="ActiveHeader" type="Control" parent="."]
-layout_mode = 2
-
-[node name="ActiveHeaderPanel" type="PanelContainer" parent="ActiveHeader"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 58.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_pppvx")
-
-[node name="MarginContainer" type="MarginContainer" parent="ActiveHeader/ActiveHeaderPanel"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="ActiveHeader/ActiveHeaderPanel/MarginContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="IconBtn" parent="ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer" instance=ExtResource("3_7i7in")]
-layout_mode = 2
-icon = 27
-flip_v = true
-is_hoverable = false
-
-[node name="ActiveHeaderLabel" type="Label" parent="ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "LABEL"
-label_settings = ExtResource("2_veau8")
-
-[node name="IconBtn2" parent="ActiveHeader/ActiveHeaderPanel/MarginContainer/HBoxContainer" instance=ExtResource("3_7i7in")]
-layout_mode = 2
-icon = 27
-flip_h = true
-is_hoverable = false
-
-[node name="ResearcherControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="ResearcherControl"]
+[node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_gotsv")
-
-[node name="MarginContainer" type="MarginContainer" parent="ResearcherControl/PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 15
-alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-text = "RESEARCHER STAFF"
-label_settings = ExtResource("2_veau8")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="ResearcherList" type="HBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ResearcherCard" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/ResearcherList" instance=ExtResource("3_e6lkj")]
-layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="LessBtn" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_7i7in")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
-flip_h = true
-
-[node name="AvailableLabel" type="Label" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "0/1"
-label_settings = ExtResource("3_7f8j1")
-horizontal_alignment = 1
-
-[node name="MoreBtn" parent="ResearcherControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_7i7in")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
-
-[node name="MainControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="MainPanel" type="PanelContainer" parent="MainControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_oj23j")
-
-[node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = -10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = -20
-
-[node name="LessBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_7i7in")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
-flip_h = true
-
-[node name="MarginContainer" type="MarginContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-
-[node name="GridContainer" type="GridContainer" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_constants/h_separation = 5
-theme_override_constants/v_separation = 5
-columns = 3
-
-[node name="ResearcherMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="ResearcherMiniCard9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer" instance=ExtResource("8_2blr1")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-
-[node name="MoreBtn" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_7i7in")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
-
-[node name="AvailableLabel" type="Label" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "0/1"
-label_settings = ExtResource("3_7f8j1")
-horizontal_alignment = 1
-
-[node name="PromoteControl" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="PromoteControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="PromoteControl/MarginContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_86ytk")
-
-[node name="ColorRect" type="ColorRect" parent="PromoteControl/MarginContainer/PanelContainer"]
-material = ExtResource("2_18rtl")
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PromoteControl/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-alignment = 1
-
-[node name="ResearcherCardContainer" type="PanelContainer" parent="PromoteControl/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxEmpty_18rtl")
 
-[node name="PromotionCard" parent="PromoteControl/MarginContainer/HBoxContainer/ResearcherCardContainer" instance=ExtResource("3_e6lkj")]
-layout_mode = 2
-reveal = false
-promotion_preview = true
-
-[node name="PanelContainer2" type="PanelContainer" parent="PromoteControl/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_f7l2i")
-
-[node name="MarginContainer" type="MarginContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "PROMOTION BONUS"
-label_settings = ExtResource("2_qpt25")
-horizontal_alignment = 2
-
-[node name="PromotionLabel" type="Label" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(1, 1)
-layout_mode = 2
-text = "DR. LASTNAME HAS PROMOTED TO LEVEL 2!"
-label_settings = ExtResource("3_7j1yh")
-horizontal_alignment = 1
-autowrap_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "SELECT A NEW TRAIT:"
-label_settings = ExtResource("3_7f8j1")
-horizontal_alignment = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="NewTraitList" type="VBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 20
-alignment = 1
-
-[node name="HBoxContainer" parent="PromoteControl/MarginContainer/HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/MarginContainer/NewTraitList" instance=ExtResource("5_7j1yh")]
-layout_mode = 2
-is_selected = true
-
-[node name="BtnControls" parent="." instance=ExtResource("11_oj23j")]
-layout_mode = 2
-
-[node name="SelectedControl" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="SelectedPanel" type="PanelContainer" parent="SelectedControl"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_pqfc2")
-
-[node name="MarginContainer" type="MarginContainer" parent="SelectedControl/SelectedPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_right = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SelectedControl/SelectedPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SummaryControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 20
+theme_override_constants/separation = 25
+alignment = 1
 
-[node name="SelectedContainer" type="VBoxContainer" parent="SelectedControl/SelectedPanel/MarginContainer/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 1200)
 layout_mode = 2
+expand_mode = 4
+stretch_mode = 6
 
-[node name="Label" type="Label" parent="SelectedControl/SelectedPanel/MarginContainer/VBoxContainer/SelectedContainer"]
-layout_mode = 2
-text = "SELECTED"
-label_settings = ExtResource("3_7f8j1")
-
-[node name="HSeparator" type="HSeparator" parent="SelectedControl/SelectedPanel/MarginContainer/VBoxContainer/SelectedContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_wvonr")
-
-[node name="SelectedList" type="VBoxContainer" parent="SelectedControl/SelectedPanel/MarginContainer/VBoxContainer/SelectedContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ResearcherMiniCard" parent="SelectedControl/SelectedPanel/MarginContainer/VBoxContainer/SelectedContainer/SelectedList" instance=ExtResource("8_2blr1")]
-visible = false
-modulate = Color(1, 1, 1, 0.5)
+[node name="GridSelect" parent="." instance=ExtResource("3_xudhu")]
 layout_mode = 2
 
-[node name="TransitionScreen" parent="." instance=ExtResource("13_oj23j")]
+[node name="DetailPanel" parent="." instance=ExtResource("4_d8g8h")]
+layout_mode = 2
+show_room_card = false
+show_scp_card = false
+
+[node name="TransistionScreen" parent="." instance=ExtResource("13_oj23j")]
+z_index = 1
 layout_mode = 2

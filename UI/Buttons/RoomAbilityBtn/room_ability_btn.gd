@@ -173,6 +173,7 @@ func update_text() -> void:
 		
 		if on_cooldown:
 			ability_name = ability_data.name
+			hint_title = ability_data.name
 			hint_description = "Program on cooldown for %s %s." % [cooldown_val, "days" if cooldown_val > 1 else "day"]
 			IconBtn.icon = SVGS.TYPE.FROZEN
 			cost = cooldown_val

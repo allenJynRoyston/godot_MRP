@@ -93,9 +93,12 @@ func on_base_states_update(new_val:Dictionary) -> void:
 func update_room_label() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty() or room_ref == -1:return
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
-	var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
-	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-	var abl_lvl:int = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
+	var abl_lvl:int = 0
+	if !use_location.is_empty():
+		var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
+		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
+	
 	var TextNode:Control = RoomDetails.get_child(1)
 	
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:
@@ -108,7 +111,7 @@ func on_room_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
 	var ImgNode:Control = RoomDetails.get_child(0)
 	var TextNode:Control = RoomDetails.get_child(1)
-
+	
 	if room_ref == -1:
 		RoomDetails.modulate = Color(1, 1, 1, 0.5)
 		TextNode.content = "EMPTY"		
@@ -122,11 +125,12 @@ func on_room_ref_update() -> void:
 		CardControlBody.size = Vector2(1, 1)		
 		return
 	
-	var ring_base_states:Dictionary = base_states.ring[str(use_location.floor, use_location.ring)]
-	var researchers_per_room:int = ring_base_states.researchers_per_room
+	var researchers_per_room:int = 0
+	if !use_location.is_empty():
+		var ring_base_states:Dictionary = base_states.ring[str(use_location.floor, use_location.ring)]
+		researchers_per_room = 0 if preview_mode else ring_base_states.researchers_per_room 
 	# --
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
-	var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 	var show_passives:bool = false
 	var show_abilities:bool = false
 	var show_researchers:bool = false	
@@ -137,15 +141,14 @@ func on_room_ref_update() -> void:
 	ImgNode.use_static = false
 	
 	# attach scp data (if applicable)
-	print(room_details.can_contain)
 	CardDrawerScp.scp_ref = -1
-	CardDrawerScp.show() if room_details.can_contain else CardDrawerScp.hide()
+	CardDrawerScp.show() if room_details.can_contain and !preview_mode else CardDrawerScp.hide()
 	
 	# attach researcher data
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.researchers_per_room = researchers_per_room
 	CardDrawerResearchers.show() if researchers_per_room > 0 else CardDrawerResearchers.hide()
-
+	
 	# attach passives
 	if "passive_abilities" not in room_details or room_details.passive_abilities.call().is_empty():
 		CardDrawerPassiveAbilities.hide()
@@ -163,6 +166,7 @@ func on_room_ref_update() -> void:
 		CardDrawerActiveAbilities.use_location = use_location			
 		CardDrawerActiveAbilities.room_details = room_details
 		show_abilities = true
+		
 	
 	# hide container
 	ListContainers.show() if (show_passives or show_abilities or show_researchers) else ListContainers.hide()

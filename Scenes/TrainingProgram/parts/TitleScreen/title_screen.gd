@@ -102,7 +102,7 @@ func start(fast_boot:bool = false) -> void:
 	if has_quicksave:
 		var scenario_details:Dictionary = SCENARIO_UTIL.get_scenario_data(quickload_data.filedata.data.scenario_ref)
 		var modification_date:Dictionary = quickload_data.filedata.metadata.modification_date
-		DetailName.text = scenario_details.title
+		DetailName.text = "[DetailName]"
 		DetailDay.text = "DAY %s" % [quickload_data.filedata.data.progress_data.day]
 		DetailDate.text = "%s/%s/%s" % [modification_date.day, modification_date.month, modification_date.year]
 

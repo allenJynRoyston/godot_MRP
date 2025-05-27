@@ -2,16 +2,20 @@ extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnControls:Control = $BtnControls
+@onready var TextureRectUI:TextureRect = $TextureRect
+
 @onready var ContentPanelContainer:PanelContainer = $ModalControl/PanelContainer
 @onready var ImageTextureRect:TextureRect = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect
 @onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/TitleLabel
 @onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/SubLabel
-@onready var BeforeList:HBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before
-@onready var AfterList:HBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after
 
 @onready var StaffingControl:Control = $StaffingControl
-@onready var StaffingControlPanel:MarginContainer = $StaffingControl/StaffingControlPanel
-@onready var StaffingList:VBoxContainer = $StaffingControl/StaffingControlPanel/PanelContainer/MarginContainer/VBoxContainer/List
+@onready var StaffingControlPanel:PanelContainer = $StaffingControl/PanelContainer
+@onready var StaffingControlMargin:MarginContainer = $StaffingControl/PanelContainer/MarginContainer
+
+@onready var StaffingList:VBoxContainer = $StaffingControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List
+@onready var BeforeList:HBoxContainer = $StaffingControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before
+@onready var AfterList:HBoxContainer = $StaffingControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after
 
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
@@ -52,12 +56,14 @@ var activation_requirements:Array = [] :
 		activation_requirements = val
 		on_activation_requirements_update()
 
+var bg_color:Color = Color(0, 0, 0, 0)
 
 var allow_input:bool = false
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
+	self.modulate = Color(1, 1, 1, 0)
 	BtnControls.onDirectional = on_key_press
 	
 	BtnControls.onAction = func() -> void:
@@ -76,16 +82,22 @@ func _ready() -> void:
 	on_activation_requirements_update()
 	
 
-func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "") -> void:
+func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "", bg_color:Color = bg_color) -> void:
 	title = new_title
 	subtitle = new_subtitle
 	image = new_image
+	ColorRectBG.color = bg_color
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func end(made_changes:bool) -> void:
 	allow_controls = false
+	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 
+	U.tween_range(1.0, 0.0, 0.3, func(val:float) -> void:
+		TextureRectUI.material.set_shader_parameter("bend_amount", val)
+	).finished	
+	
 	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
 	
@@ -100,19 +112,30 @@ func end(made_changes:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
-func activate() -> void:
+func activate(auto_start:bool = true) -> void:
 	show()
 	await U.tick()
 	
 	control_pos_default[ContentPanelContainer] = ContentPanelContainer.position
 	control_pos_default[StaffingControlPanel] = StaffingControlPanel.position
 	
-	update_control_pos()
+	await update_control_pos(auto_start)
 # --------------------------------------------------------------------------------------------------	
+
+
+# -------------------------------------------------------------------------------------------------	
+func start() -> void:
+	TextureRectUI.show()
+	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+	
+	self.modulate = Color(1, 1, 1, 1)
+	is_showing = true
+# -------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
-	update_control_pos()
+	update_control_pos(true)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -122,20 +145,27 @@ func check_for_unavailable_rooms() -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
-func update_control_pos() -> void:	
+func update_control_pos(auto_start:bool) -> void:	
 	await U.tick()
 
 	control_pos[ContentPanelContainer] = {
-		"show": control_pos_default[ContentPanelContainer].y, 
+		"show": 0, 
 		"hide": control_pos_default[ContentPanelContainer].y - ContentPanelContainer.size.y
 	}
 	
 	control_pos[StaffingControlPanel] = {
-		"show": control_pos_default[StaffingControlPanel].y , 
-		"hide": control_pos_default[StaffingControlPanel].y - StaffingControlPanel.size.y
+		"show": 0, 
+		"hide": -StaffingControlMargin.size.y
 	}	
 	
-	on_is_showing_update(true)
+	if auto_start:
+		on_is_showing_update(true)
+	else:
+		await U.tick()
+		ColorRectBG.modulate = Color(1, 1, 1, 0)
+		StaffingControlPanel.position.y = control_pos[StaffingControlPanel].hide
+		ContentPanelContainer.position.y = control_pos[ContentPanelContainer].hide
+		await U.tick()
 # --------------------------------------------------------------------------------------------------	
 	
 # --------------------------------------------------------------------------------------------------	
@@ -148,6 +178,12 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 		allow_input = false	
 		BtnControls.reveal(false)
 	
+	self.modulate = Color(1, 1, 1, 1)	
+	
+	U.tween_range(0.0 if is_showing else 1.0, 1.0 if is_showing else 0.0, 1.0, func(val:float) -> void:
+		TextureRectUI.material.set_shader_parameter("bend_amount", val)
+	).finished	
+		
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  duration)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide, duration)

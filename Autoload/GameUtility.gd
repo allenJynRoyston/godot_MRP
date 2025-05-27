@@ -5,6 +5,11 @@ var ConfirmModal:Control
 var Structure3dContainer:Control
 var ToastContainer:Control
 
+const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
+const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
+const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
+
+
 # -----------------------------------
 func find_in_contained(ref:int) -> Dictionary:
 	var index:int = -1
@@ -635,10 +640,61 @@ func contain_scp() -> bool:
 	return true
 # --------------------------------------------------------------------------------------------------	
 
+
+# --------------------------------------------------------------------------------------------------	
+func clone_researcher() -> bool:
+	var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
+	GameplayNode.add_child(ResearchersContainer)
+	ResearchersContainer.z_index = 10
+	
+	await ResearchersContainer.activate()
+	ResearchersContainer.start()
+	var response:Dictionary = await ResearchersContainer.user_response
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
+	ResearchersContainer.queue_free()
+	
+	if response.action == ACTION.RESEARCHERS.BACK:
+		return false	
+	
+	return response.action == ACTION.RESEARCHERS.PROMOTED
+# --------------------------------------------------------------------------------------------------	
+
+
+# --------------------------------------------------------------------------------------------------	
+func promote_researcher() -> bool:	
+	var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
+	GameplayNode.add_child(ResearchersContainer)
+	ResearchersContainer.z_index = 10
+	
+	await ResearchersContainer.activate()	
+	ResearchersContainer.start()
+	var response:Dictionary = await ResearchersContainer.user_response
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
+	ResearchersContainer.queue_free()
+	
+	if response.action == ACTION.RESEARCHERS.BACK:
+		return false	
+	
+	return response.action == ACTION.RESEARCHERS.PROMOTED
+# --------------------------------------------------------------------------------------------------	
+
+
 # --------------------------------------------------------------------------------------------------	
 func assign_researcher(location_data:Dictionary = current_location) -> bool:
-	GameplayNode.current_researcher_step = GameplayNode.RESEARCHERS_STEPS.ASSIGN
-	var response:Dictionary = await GameplayNode.on_researcher_component_complete
+	var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
+	GameplayNode.add_child(ResearchersContainer)
+	ResearchersContainer.z_index = 10
+	
+	var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
+		return U.dictionaries_equal(i[9].assigned_to_room, current_location)
+	).map(func(i): return i[0])	
+	
+	await ResearchersContainer.activate()
+	ResearchersContainer.start(assigned_uids, current_location)
+	var response:Dictionary = await ResearchersContainer.user_response
+	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
+	ResearchersContainer.queue_free()
+
 	if response.action == ACTION.RESEARCHERS.BACK:
 		return false
 	
@@ -798,19 +854,28 @@ func get_new_scp() -> Dictionary:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func promote_researchers() -> bool:	
-	GameplayNode.current_researcher_step = GameplayNode.RESEARCHERS_STEPS.PROMOTE	
-	var response:Dictionary = await GameplayNode.on_researcher_component_complete
-	return response.action == ACTION.RESEARCHERS.PROMOTED
+func hire_researcher(total_options:int) -> bool:
+	var node:Control = SelectResearcherScreenPreload.instantiate()
+	GameplayNode.add_child(node)
+	node.z_index = 10
+	node.total_options = total_options 	
+	
+	await node.activate()
+	await node.start()
+	
+	var response:bool = await node.user_response
+	node.queue_free()
+	
+	return response	
 # --------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------
-func recruit_new_researcher(total_options:int) -> bool:
-	GameplayNode.current_recruit_step = GameplayNode.RECRUIT_STEPS.OPEN
-	await U.tick()
-	GameplayNode.SelectResearcherScreen.total_options = total_options 
-	return await GameplayNode.on_recruit_complete		
-# ---------------------------------------------------------------------------get-----------------------
+## --------------------------------------------------------------------------------------------------
+#func recruit_new_researcher(total_options:int) -> bool:
+	#GameplayNode.current_recruit_step = GameplayNode.RECRUIT_STEPS.OPEN
+	#await U.tick()
+	#GameplayNode.SelectResearcherScreen.total_options = total_options 
+	#return await GameplayNode.on_recruit_complete		
+## ---------------------------------------------------------------------------get-----------------------
 
 # ------------------------------------------------------------------------------
 func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
@@ -851,7 +916,20 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	return confirm
 # ------------------------------------------------------------------------------
 
-
+# ------------------------------------------------------------------------------
+func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], color_bg:Color = Color(0, 0, 0, 0), activation_cost:Array = []) -> bool:
+	var ConfirmNode:Control = ConfirmModalPreload.instantiate()
+	ConfirmNode.z_index = 100	
+	GameplayNode.add_child(ConfirmNode)
+	ConfirmNode.set_props(title, subtitle, img_src, color_bg)
+	await ConfirmNode.activate(false)
+	ConfirmNode.activation_requirements = activation_requirements
+	
+	ConfirmNode.start()
+	var confirm:bool = await ConfirmNode.user_response	
+	ConfirmNode.queue_free()
+	return confirm
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	
 #region SCP ACTION QUEUE (assign/unassign/dismiss, etc)

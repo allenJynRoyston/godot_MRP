@@ -12,6 +12,7 @@ func _ready() -> void:
 func start(duration:float = 0.3) -> void:
 	TextureRectUI.show()
 	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+	TextureRectUI.material.set_shader_parameter("sensitivity", 0)
 	await U.tween_range(0.0, 1.0, duration, func(val:float) -> void:
 		TextureRectUI.material.set_shader_parameter("sensitivity", val)
 	).finished

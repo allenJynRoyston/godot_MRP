@@ -527,6 +527,7 @@ func start(new_game_data_config:Dictionary = {}) -> void:
 	await U.tick()
 	start_new_game(new_game_data_config)
 	
+	
 func exit_to_titlescreen() -> void:
 	onExitGame.call(false)
 
@@ -608,6 +609,9 @@ func start_new_game(game_data_config:Dictionary) -> void:
 
 	# update phase and start game
 	current_phase = PHASE.PLAYER
+	
+	# start action
+	ActionContainer.start()
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -1280,39 +1284,39 @@ func open_store() -> bool:
 
 	return response
 # ------------------------
-
-# ------------------------
-func hire_researcher(total_options:int = 3) -> bool:
-	var node:Control = SelectResearcherScreenPreload.instantiate()
-	add_child(node)
-	node.z_index = 10
-	node.total_options = total_options 	
-	
-	await node.activate()
-	await node.start()
-	
-	var response:bool = await node.user_response
-	node.queue_free()
-	
-	return response
-# ------------------------
-
-# ------------------------
-func promote_researchers() -> bool:
-	var node:Control = ResearchersContainerPreload.instantiate()
-	add_child(node)
-	node.z_index = 10
-	
-	await U.tick()
-	node.activate()
-	await U.tick()
-	node.promote(hired_lead_researchers_arr.map(func(i): return i[0])	)
-	
-	var response:Dictionary = await node.user_response
-	node.queue_free()
-	
-	return response.action == ACTION.RESEARCHERS.PROMOTED
-# ------------------------
+#
+## ------------------------
+#func hire_researcher(total_options:int = 3) -> bool:
+	#var node:Control = SelectResearcherScreenPreload.instantiate()
+	#add_child(node)
+	#node.z_index = 10
+	#node.total_options = total_options 	
+	#
+	#await node.activate()
+	#await node.start()
+	#
+	#var response:bool = await node.user_response
+	#node.queue_free()
+	#
+	#return response
+## ------------------------
+#
+## ------------------------
+#func promote_researchers() -> bool:
+	#var node:Control = ResearchersContainerPreload.instantiate()
+	#add_child(node)
+	#node.z_index = 10
+	#
+	#await U.tick()
+	#node.activate()
+	#await U.tick()
+	##node.promote(hired_lead_researchers_arr.map(func(i): return i[0])	)
+	#
+	#var response:Dictionary = await node.user_response
+	#node.queue_free()
+	#
+	#return response.action == ACTION.RESEARCHERS.PROMOTED
+## ------------------------
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -1425,50 +1429,7 @@ func on_current_researcher_step_update() -> void:
 		# ------------------------
 		RESEARCHERS_STEPS.RESET:
 			SUBSCRIBE.suppress_click = false
-		# ------------------------
-		RESEARCHERS_STEPS.ASSIGN:
-			SUBSCRIBE.suppress_click = true
-			
-			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
-			add_child(ResearchersContainer)
-			ResearchersContainer.z_index = 10
-			
-			await U.tick()
-			ResearchersContainer.activate()
-		
-			var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
-				return U.dictionaries_equal(i[9].assigned_to_room, current_location)
-			).map(func(i): return i[0])
-			
-			await U.tick()						
-			ResearchersContainer.assign(assigned_uids, false)
-			var response:Dictionary = await ResearchersContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
-			ResearchersContainer.queue_free()
-			
-			on_researcher_component_complete.emit(response)
-			current_researcher_step = RESEARCHERS_STEPS.RESET
-		# --------------------------------------
-		RESEARCHERS_STEPS.PROMOTE:
-			SUBSCRIBE.suppress_click = true
-			
-			var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
-			add_child(ResearchersContainer)
-			ResearchersContainer.z_index = 10			
-			
-			await U.tick()			
-			ResearchersContainer.activate()
 
-			var uids:Array =  hired_lead_researchers_arr.map(func(i): return i[0])
-			await U.tick()									
-			ResearchersContainer.promote(uids)
-			var response:Dictionary = await ResearchersContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			ResearchersContainer.queue_free()
-#
-			on_researcher_component_complete.emit(response)
-			current_researcher_step = RESEARCHERS_STEPS.RESET
-		# ------------------------
 
 #endregion
 # ------------------------------------------------------------------------------		

@@ -125,7 +125,6 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
 	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)
 	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
-	print(researchers_per_room)
 	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM, researchers_per_room)	
 	
 	DoorScene.onLogin = func() -> void:

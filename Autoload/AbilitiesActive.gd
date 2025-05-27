@@ -2,9 +2,8 @@ extends Node
 
 enum REF {
 	TRIGGER_ONSITE_NUKE,
-	HIRE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
 	
-	
+	CLONE_RESEARCHER, HIRE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
 	
 	UNLOCK_FACILITIES,
 	
@@ -40,7 +39,16 @@ var promote_researchers:Dictionary = {
 	"science_cost": 50,
 	"cooldown_duration":  5, 
 	"effect": func() -> bool:
-		return await GBL.find_node(REFS.GAMEPLAY_LOOP).promote_researchers(),
+		return await GAME_UTIL.promote_researcher(),
+}
+
+var clone_researcher:Dictionary = {
+	"name": "CLONE RESEARCHER",
+	"description": "Clone a researcher.",
+	"science_cost": 50,
+	"cooldown_duration":  0, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.clone_researcher(),
 }
 
 var hire_researcher:Dictionary = {
@@ -49,7 +57,7 @@ var hire_researcher:Dictionary = {
 	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		return await GBL.find_node(REFS.GAMEPLAY_LOOP).hire_researcher(3),
+		return await GAME_UTIL.hire_researcher(3)
 }
 
 var add_trait:Dictionary = {
@@ -125,6 +133,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.TRIGGER_ONSITE_NUKE:
 			ability = trigger_onsite_nuke
 		# -----------------------------
+		
 	
 		# -----------------------------
 		REF.UNLOCK_FACILITIES:
@@ -136,6 +145,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = hire_researcher
 		REF.PROMOTE_RESEARCHER:
 			ability = promote_researchers
+		REF.CLONE_RESEARCHER:
+			ability = clone_researcher
 		REF.ADD_TRAIT:
 			ability = add_trait
 		REF.REMOVE_TRAIT:

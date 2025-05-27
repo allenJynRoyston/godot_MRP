@@ -36,7 +36,6 @@ func _ready() -> void:
 # --------------------------------------	
 func on_hired_lead_researchers_update(new_val:Array) -> void:
 	hired_lead_researchers = new_val
-	print(hired_lead_researchers) 
 # --------------------------------------	
 
 # --------------------------------------	

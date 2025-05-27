@@ -151,25 +151,25 @@ border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 [node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2
 
-[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("10_klncf")]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tcow0")
-is_small = true
-title = "NAME"
-border_color = Color(0.821379, 0.0352417, 0.41483, 1)
-
 [node name="CardDrawerLevel" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("10_klncf")]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_6kiql")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tcow0")
 content = "0"
-title = "LEVEL"
+title = "LVL"
+border_color = Color(0.821379, 0.0352417, 0.41483, 1)
+
+[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("10_klncf")]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6kiql")
+is_small = true
+title = "NAME"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
 [node name="CardDrawerSpec" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("10_klncf")]
-custom_minimum_size = Vector2(0, 0)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2tpuf")
 is_small = true
@@ -178,7 +178,7 @@ title = "SPECIALIZATION"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
 [node name="CardDrawerTrait" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("10_klncf")]
-custom_minimum_size = Vector2(0, 0)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_klncf")
 is_small = true

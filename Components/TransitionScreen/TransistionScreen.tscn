@@ -24,5 +24,6 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6f1yw")
 
 [node name="TextureRect" type="TextureRect" parent="PanelContainer"]
+z_index = 1
 material = ExtResource("2_ac3g3")
 layout_mode = 2

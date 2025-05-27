@@ -2,30 +2,37 @@ extends SubscribeWrapper
 
 var specialization_data:Dictionary = { 
 	RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
+		"shortname": "ADMIN",
 		"name": "ADMINISTRATION",
 		"icon": SVGS.TYPE.ENERGY,
 	},
 	RESEARCHER.SPECIALIZATION.BIOLOGIST: {
+		"shortname": "BIO",
 		"name": "BIOLOGY",
 		"icon": SVGS.TYPE.ENERGY,
 	},
 	RESEARCHER.SPECIALIZATION.ENGINEERING: {
+		"shortname": "ENG",
 		"name": "ENGINEERING",
 		"icon": SVGS.TYPE.ENERGY,
 	},
 	RESEARCHER.SPECIALIZATION.COMPUTER_SCIENCE: {
+		"shortname": "CS",
 		"name": "COMPUTER SCIENCE",
 		"icon": SVGS.TYPE.ENERGY,
 	},
 	RESEARCHER.SPECIALIZATION.MATHEMATICS: {
+		"shortname": "MATHS",
 		"name": "MATHEMATICS",
 		"icon": SVGS.TYPE.ENERGY,
 	},
 	RESEARCHER.SPECIALIZATION.PHYSICS: {
+		"shortname": "PHY",
 		"name": "PHYSICS",
 		"icon": SVGS.TYPE.ENERGY,
 	},
 	RESEARCHER.SPECIALIZATION.CHEMISTRY: {
+		"shortname": "CHEM",
 		"name": "CHEMISTRY",
 		"icon": SVGS.TYPE.ENERGY,
 	},
@@ -531,7 +538,6 @@ func generate_researcher() -> Array:
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
-
 func get_user_object(val:Array) -> Dictionary:
 	var uid_val:String = val[0]
 	var name_val:int = val[1]
@@ -711,6 +717,21 @@ func get_randomized_traits(amount:int, exclude:Array) -> Array:
 	return traits
 # ------------------------------------------------------------------------------		
 
+# ------------------------------------------------------------------------------		
+func get_specilization(spec:int, start_at:int, limit:int) -> Dictionary:
+	var list:Array = hired_lead_researchers_arr.map(func(x): return return_data_with_uid(x[0]))
+	var filteredlist = list.filter(func(x): 
+		return spec in x.specializations if spec != -1 else x
+	)
+	
+	return {
+		"list": filteredlist, 
+		"size": filteredlist.size(), 
+		"has_more": filteredlist.size() > (filteredlist.size() + start_at)
+	}	
+# ------------------------------------------------------------------------------		
+
+
 # ------------------------------------------------------------------------------	
 func promote_researcher(researcher_details:Dictionary, new_trait:int) -> void:
 	var new_trait_list:Array = researcher_details.traits + [new_trait]
@@ -745,3 +766,14 @@ func add_experience(uid:String, amount:int) -> bool:
 func check_for_promotions() -> Array:	
 	return hired_lead_researchers_arr.filter(func(i): return i[9].can_promote).map(func(i): return {"uid": i[0]})
 # ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------		
+func get_list_of_specilizations() -> Array:
+	var list:Array = []
+	for ref in specialization_data:
+		var spec:Dictionary = specialization_data[ref]
+		spec.ref = ref
+		list.push_back(spec)
+	return list
+# ------------------------------------------------------------------------------		
+	

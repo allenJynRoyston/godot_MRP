@@ -19,7 +19,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.6, 0.6, 0.6, 1)
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -67,19 +67,19 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.6, 0.6, 0.6, 1)
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [node name="ShopMiniCard" type="PanelContainer"]
+modulate = Color(1, 1, 1, 0.6)
 custom_minimum_size = Vector2(150, 150)
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_i4yqh")
 script = ExtResource("1_7gy44")
-card_type = 1
 ref = 0
 
 [node name="CardTextureRect" type="TextureRect" parent="."]
@@ -93,7 +93,7 @@ size = Vector2i(175, 175)
 
 [node name="CardBody" parent="SubViewport" instance=ExtResource("2_6v8ap")]
 card_size = Vector2(175, 175)
-border_color = Color(0.6, 0.6, 0.6, 1)
+border_color = Color(0, 0, 0, 1)
 
 [node name="TextureRect" parent="SubViewport/CardBody" index="0"]
 texture = SubResource("ViewportTexture_ak4pd")

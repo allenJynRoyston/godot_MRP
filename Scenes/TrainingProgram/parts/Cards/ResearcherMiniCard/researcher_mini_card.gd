@@ -1,10 +1,17 @@
-@tool
 extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody
-@onready var CardTitle:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle
-@onready var CardResource:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerResource
-@onready var CardDrawerStatus:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerStatus
+@onready var Level:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/Lvl
+@onready var Name:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/Name
+@onready var Spec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Spec
+
+@onready var AlreadyAssigned:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/AlreadyAssignedPanel
+
+@onready var IncompatablePanel:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/IncompatablePanel
+@onready var IncompatableLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/IncompatablePanel/CenterContainer/Label
+
+@onready var AssignedElsewhere:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/AssignedElsewhere
+@onready var AssignedElsewhereLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/AssignedElsewhere/CenterContainer/Label
 
 enum CARD_TYPE {UNLOCK, PURCHASE}
 
@@ -28,10 +35,25 @@ enum CARD_TYPE {UNLOCK, PURCHASE}
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 
 var index:int
-var resources_data:Dictionary = {} 
-var shop_unlock_purchase:Array = []
+var border_color:Color
 
 var is_clickable:bool = false
+var is_already_assigned:bool = false : 
+	set(val):
+		is_already_assigned = val
+		U.debounce(str(self.name, "_on_panel_update"), on_panel_update)
+		
+var spec_required:Dictionary = {} 
+var is_incompatable:bool = false : 
+	set(val):
+		is_incompatable = val
+		U.debounce(str(self.name, "_on_panel_update"), on_panel_update)
+		
+var assigned_elsewhere_data:Dictionary = {}
+var is_assigned_elsewhere:bool = false :
+	set(val):
+		is_assigned_elsewhere = val
+		U.debounce(str(self.name, "_on_panel_update"), on_panel_update)
 
 var onClick:Callable = func():pass
 var onHover:Callable = func():pass
@@ -52,16 +74,38 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	super._ready()
-	
 	on_focus()
 	on_uid_update()
 	on_is_highlighted_update()
+	reset()
+	
+	
+func reset() -> void:
+	modulate = Color(1, 1, 1, 0.6)
+	border_color = Color.BLACK
+	
+	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere]
+	for node in panel_nodes:
+		node.hide()
+	
+	is_already_assigned = false
+	is_incompatable = false
+	is_assigned_elsewhere = false
+	is_clickable = false
+	is_highlighted = false
+# --------------------------------------
+
+# --------------------------------------
+func on_panel_update() -> void:
+	if !is_node_ready():return
+	update_content()
 # --------------------------------------
 
 # --------------------------------------	
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
-	
+	CardBody.border_color = border_color.lightened(0.3) if is_highlighted else border_color
+	self.modulate = Color(1, 1, 1, 1 if is_highlighted else 0.6)
 # --------------------------------------		
 
 # --------------------------------------	
@@ -69,73 +113,79 @@ func on_flip_update() -> void:
 	if !is_node_ready():return
 	CardBody.flip = flip
 	
-func on_shop_unlock_purchases_update(new_val:Array) -> void:
-	shop_unlock_purchase = new_val
-	update_content()
-	
-func on_resources_data_update(new_val:Dictionary) -> void:
-	resources_data = new_val
-	update_content()
-
 func on_uid_update() -> void:
-	modulate = Color(1, 1, 1, 0.5 if uid == "" else 1)
+	if !is_node_ready():return	
+	CardBody.instant_flip(uid == "")	
 	update_content()
 # --------------------------------------		
 
 # --------------------------------------		
 func update_content() -> void:	
-	if !is_node_ready() or resources_data.is_empty() or uid == "":return
-	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)
+	if !is_node_ready():return
 	
-	#CardTitle.content = room_details.shortname
-	#is_clickable = true
-#
-	#match card_type:
-		## --------------------
-		#CARD_TYPE.UNLOCK:
-			#CardResource.title = "UNLOCK COST"
-			#if !room_details.requires_unlock or room_details.ref in shop_unlock_purchase:
-				#CardBody.border_color = Color(0.6, 0.6, 0.6)
-				#CardResource.hide()
-#
-				#CardDrawerStatus.content = "Already researched."
-				#CardDrawerStatus.show() 
-				#is_clickable = false
-			#else:
-				#CardBody.border_color = Color(0.275, 0.562, 1.0)
-				#
-				#CardResource.list = [{
-					#"title": str(room_details.costs.unlock),
-					#"icon": SVGS.TYPE.RESEARCH,
-					#"is_negative": resources_data[RESOURCE.CURRENCY.SCIENCE].amount < room_details.costs.unlock
-				#}]
-				#CardResource.show()
-				#
-				#CardDrawerStatus.hide() 
-		## --------------------
-		#CARD_TYPE.PURCHASE:
-			#if ROOM_UTIL.at_own_limit(ref):
-				#CardBody.border_color = Color(0.6, 0.6, 0.6)
-				#
-				#CardResource.title = "PURCHASE COST"
-#
-				#CardResource.hide()
-				#CardDrawerStatus.show()
-				#CardDrawerStatus.content = "Only one allowed."
-			#else:
-				#CardBody.border_color = Color(0.275, 0.562, 1.0)
-				#
-				#CardResource.list = [{
-					#"title": str(room_details.costs.purchase),
-					#"icon": SVGS.TYPE.MONEY,
-					#"is_negative": resources_data[RESOURCE.CURRENCY.MONEY].amount < room_details.costs.purchase 
-				#}]
-				#
-				#CardResource.show()
-				#
-				#CardDrawerStatus.hide() 
-				#is_clickable = false
-			#
+	if uid == "":
+		is_clickable = false
+		return
+		
+	is_clickable = true
+	
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)
+	#var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specilization).name)
+	var spec_str:String = ""
+	for spec_id in researcher_details.specializations:
+		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)
+		spec_str += dict.name 
+	
+	Name.content = researcher_details.name
+	Level.content = str(researcher_details.level)
+	Spec.content = spec_str
+	border_color = COLOR_UTIL.researcher_color
+
+	var name_title_str:String = "Dr. %s, Ph.D in %s" % [researcher_details.name, spec_str]
+	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere]
+	
+	hint_title = "RESEARCHER"
+	hint_icon = SVGS.TYPE.DRS	
+	hint_description = name_title_str
+
+
+	if is_already_assigned:
+		for node in panel_nodes:
+			if node in [AlreadyAssigned]:
+				node.show() 
+			else:
+				node.hide()
+		hint_icon = SVGS.TYPE.CHECKBOX
+		hint_description = "%s %s." % [name_title_str, "(currently assigned here)"]
+		return
+		
+	if is_incompatable:
+		for node in panel_nodes:
+			if node in [IncompatablePanel]:
+				node.show() 
+			else:
+				node.hide()
+		hint_icon = SVGS.TYPE.STOP
+		hint_description = "%s %s." % [name_title_str, "(lacks correct specilization)"]
+		
+		if !spec_required.is_empty():
+			hint_icon = spec_required.icon
+			hint_description = "Specilization %s required." % spec_required.name
+			IncompatableLabel.text = "INCOMPATABLE" 
+		return
+	
+	if is_assigned_elsewhere:
+		for node in panel_nodes:
+			if node in [AssignedElsewhere]:
+				node.show() 
+			else:
+				node.hide()
+		hint_icon = SVGS.TYPE.STOP
+		hint_description = "%s %s." % [name_title_str, "(assigned to %s)" % [assigned_elsewhere_data.room.details.name]]
+		AssignedElsewhereLabel.text = "ASSIGNED to\r%s" % [assigned_elsewhere_data.room.details.name]
+		
+		return
+
 # --------------------------------------		
 
 # --------------------------------------	

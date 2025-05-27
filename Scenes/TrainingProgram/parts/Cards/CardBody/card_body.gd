@@ -110,6 +110,13 @@ func on_flip_update() -> void:
 # ------------------------------------------------
 
 # ------------------------------------------------
+func instant_flip(state:bool) -> void:
+	Front.hide() if state else Front.show()
+	Back.show() if state else Back.hide()
+# ------------------------------------------------
+
+
+# ------------------------------------------------
 func on_border_color_update() -> void:
 	if !is_node_ready():return
 	for panel in [FrontPanel, BackPanel]:

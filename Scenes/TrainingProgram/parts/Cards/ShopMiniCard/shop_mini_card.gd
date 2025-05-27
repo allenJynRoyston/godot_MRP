@@ -6,10 +6,6 @@ extends MouseInteractions
 @onready var CardResource:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerResource
 @onready var CardDrawerStatus:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerStatus
 
-enum CARD_TYPE {UNLOCK, PURCHASE}
-
-@export var card_type:CARD_TYPE = CARD_TYPE.UNLOCK
-
 @export var flip:bool = false : 
 	set(val):
 		flip = val
@@ -31,6 +27,7 @@ var index:int
 var resources_data:Dictionary = {} 
 var shop_unlock_purchase:Array = []
 
+var border_color:Color
 var is_clickable:bool = false
 
 var onClick:Callable = func():pass
@@ -56,12 +53,17 @@ func _ready() -> void:
 	on_focus()
 	on_ref_update()
 	on_is_highlighted_update()
+
+func reset() -> void:
+	modulate = Color(1, 1, 1, 0.6)
+	CardBody.border_color = Color.BLACK
 # --------------------------------------
 
 # --------------------------------------	
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
-	
+	CardBody.border_color = border_color.lightened(0.3) if is_highlighted else border_color
+	self.modulate = Color(1, 1, 1, 1 if is_highlighted else 0.6)
 # --------------------------------------		
 
 # --------------------------------------	
@@ -78,7 +80,8 @@ func on_resources_data_update(new_val:Dictionary) -> void:
 	update_content()
 
 func on_ref_update() -> void:
-	modulate = Color(1, 1, 1, 0 if ref == -1 else 1)
+	if !is_node_ready():return
+	CardBody.instant_flip(ref == -1)
 	update_content()
 # --------------------------------------		
 
@@ -90,52 +93,34 @@ func update_content() -> void:
 	CardTitle.content = room_details.shortname
 	is_clickable = true
 
-	match card_type:
-		# --------------------
-		CARD_TYPE.UNLOCK:
-			CardResource.title = "UNLOCK COST"
-			if !room_details.requires_unlock or room_details.ref in shop_unlock_purchase:
-				CardBody.border_color = Color(0.6, 0.6, 0.6)
-				CardResource.hide()
+	CardResource.title = "UNLOCK COST"
+	if !room_details.requires_unlock or room_details.ref in shop_unlock_purchase:
+		border_color = Color(0.6, 0.6, 0.6)
+		CardResource.hide()
 
-				CardDrawerStatus.content = "Already researched."
-				CardDrawerStatus.show() 
-				is_clickable = false
-			else:
-				CardBody.border_color = Color(0.275, 0.562, 1.0)
-				
-				CardResource.list = [{
-					"title": str(room_details.costs.unlock),
-					"icon": SVGS.TYPE.RESEARCH,
-					"is_negative": resources_data[RESOURCE.CURRENCY.SCIENCE].amount < room_details.costs.unlock
-				}]
-				CardResource.show()
-				
-				CardDrawerStatus.hide() 
-		# --------------------
-		CARD_TYPE.PURCHASE:
-			if ROOM_UTIL.at_own_limit(ref):
-				CardBody.border_color = Color(0.6, 0.6, 0.6)
-				
-				CardResource.title = "PURCHASE COST"
+		CardDrawerStatus.content = "Already researched."
+		CardDrawerStatus.show() 
+		is_clickable = false
+		
+		hint_title = room_details.name
+		hint_icon = SVGS.TYPE.BUILD
+		hint_description = room_details.description
+	else:
+		border_color = Color(0.275, 0.562, 1.0)
+		
+		CardResource.list = [{
+			"title": str(room_details.costs.unlock),
+			"icon": SVGS.TYPE.RESEARCH,
+			"is_negative": resources_data[RESOURCE.CURRENCY.SCIENCE].amount < room_details.costs.unlock
+		}]
+		CardResource.show()
+		
+		CardDrawerStatus.hide() 
+		
+		hint_title = room_details.name
+		hint_icon = SVGS.TYPE.BUILD
+		hint_description = "UNLOCK REQUIRED: %s" % room_details.description		
 
-				CardResource.hide()
-				CardDrawerStatus.show()
-				CardDrawerStatus.content = "Only one allowed."
-			else:
-				CardBody.border_color = Color(0.275, 0.562, 1.0)
-				
-				CardResource.list = [{
-					"title": str(room_details.costs.purchase),
-					"icon": SVGS.TYPE.MONEY,
-					"is_negative": resources_data[RESOURCE.CURRENCY.MONEY].amount < room_details.costs.purchase 
-				}]
-				
-				CardResource.show()
-				
-				CardDrawerStatus.hide() 
-				is_clickable = false
-			
 # --------------------------------------		
 
 # --------------------------------------	

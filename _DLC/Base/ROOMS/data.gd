@@ -50,8 +50,9 @@ var DEBUG_ROOM:Dictionary = {
 		return [
 			#ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0),
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
-			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
+			ABL.get_ability(ABL.REF.CLONE_RESEARCHER, 0),
 			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
+			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 1),
 			#ABL.get_ability(ABL.REF.ADD_TRAIT, 0),
 			#ABL.get_ability(ABL.REF.REMOVE_TRAIT, 0),
 			#
@@ -68,8 +69,8 @@ var DEBUG_ROOM:Dictionary = {
 		return [
 			#ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL),
 			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 0),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 0),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
 			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
 			#ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 2),
@@ -394,7 +395,7 @@ var TEST2:Dictionary = {
 	# ------------------------------------------
 	"name": "TEST (CONTAINMENT)",
 	"shortname": "ENG.BAY",
-	"categories": [ROOM.CATEGORY.CONTAINMENT],
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -425,5 +426,7 @@ var list:Array[Dictionary] = [
 	# ---------------
 	WEAPONS_RANGE, ENGINEERING_BAY, ENERGY_STORAGE,
 	TEST1, TEST2, TEST3,
+	TEST1, TEST2, TEST3,
+	TEST1, TEST2, TEST3
 ]
 # -----------------------------------	

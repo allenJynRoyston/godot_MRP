@@ -76,6 +76,7 @@ alignment = 1
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 icon = 14
+static_color = Color(0.561, 1, 0, 1)
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer"]
@@ -110,7 +111,7 @@ theme_override_constants/separation = -5
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "AVAILABLE SLOT"
+text = "ADD RESEARCHER"
 label_settings = SubResource("LabelSettings_q5tva")
 vertical_alignment = 1
 

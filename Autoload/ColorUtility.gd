@@ -1,11 +1,15 @@
 @tool
 extends Node
 
-var neon_green:Color = Color("00f647")
-var dim_green:Color = Color("004115")
-var light_green:Color = Color("008747")
-var invalid_red:Color = Color("ff3400")
-var invalid_red_dim:Color = Color("861600")
+const neon_green:Color = Color("00f647")
+const dim_green:Color = Color("004115")
+const light_green:Color = Color("008747")
+const invalid_red:Color = Color("ff3400")
+const invalid_red_dim:Color = Color("861600")
+
+const scp_color:Color = Color(0.736, 0.247, 0.9)
+const room_color:Color = Color(0.337, 0.275, 1.0)
+const researcher_color:Color = Color(1.0, 0.108, 0.485)
 
 # ------------------------------------------------
 func get_window_color(ref:COLORS.WINDOW) -> Color:

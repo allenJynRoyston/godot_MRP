@@ -88,6 +88,7 @@ extends GameContainer
 
 enum BOOKMARK_TYPE { GLOBAL, RING }
 enum MODE { 
+	NONE,
 	ACTIONS,
 	INVESTIGATE, 
 	ABILITY,
@@ -102,7 +103,7 @@ const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts
 const NametagPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.tscn")
 const ActiveMenuPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ActiveMenu.tscn")
 
-var current_mode:MODE = MODE.ACTIONS : 
+var current_mode:MODE = MODE.NONE : 
 	set(val):
 		current_mode = val
 		on_current_mode_update()
@@ -254,6 +255,12 @@ func activate() -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
+func start() -> void:
+	current_mode = MODE.ACTIONS
+# --------------------------------------------------------------------------------------------------	
+
+
+# --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
 	update_control_pos(true)
 # --------------------------------------------------------------------------------------------------	
@@ -264,24 +271,24 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	
 	# for elements in the bottom left corner
 	control_pos[ActionPanel] = {
-		"show": control_pos_default[ActionPanel].y, 
-		"hide": control_pos_default[ActionPanel].y + ActionMarginPanel.size.y 
+		"show": 0, 
+		"hide": ActionMarginPanel.size.y 
 	}
 	
 	control_pos[InvestigatePanel] = {
-		"show": control_pos_default[InvestigatePanel].y, 
-		"hide": control_pos_default[InvestigatePanel].y + InvestigateMargin.size.y
+		"show": 0, 
+		"hide": InvestigateMargin.size.y
 	}	
 	
 	# for eelements in the top right
 	control_pos[MiniCardPanel] = {
-		"show": control_pos_default[MiniCardPanel].x, 
-		"hide": control_pos_default[MiniCardPanel].x - MiniCardMargin.size.x
+		"show": 0, 
+		"hide": -MiniCardMargin.size.x
 	}
 	
 	control_pos[FloorPreviewPanel] = {
-		"show": control_pos_default[FloorPreviewPanel].x, 
-		"hide": control_pos_default[FloorPreviewPanel].x - FloorPreviewMargin.size.x
+		"show": 0, 
+		"hide":  -FloorPreviewMargin.size.x
 	}	
 	
 	ActionPanel.position.y = control_pos[ActionPanel].hide
@@ -670,10 +677,11 @@ func after_use_passive_ability() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return
+	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty() or current_mode == MODE.NONE:return
 	
 	var btnlist:Array = [GotoFloorBtn, GotoWingBtn, GotoGeneratorBtn]
 	var actionpanels:Array = [WingActionPanel, FacilityActionPanel, GenActionPanel]
+	
 	
 	match camera_settings.type:
 		# ----------------------
@@ -919,6 +927,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	var duration:float = 0.0 if skip_animation else 0.3
 	
 	match current_mode:
+		MODE.NONE:
+			BtnControls.reveal(false)
+			RoomDetailsControl.reveal(false) 
+			ControllerOverlay.hide()
+			
+			reveal_cardminipanel(false, duration)
 		# --------------
 		MODE.ACTIONS:
 			# start at ring level

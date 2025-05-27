@@ -129,7 +129,6 @@ func _ready() -> void:
 	
 	ABtn.onClick = func() -> void:
 		if !is_node_ready():return
-		
 		if !itemlist.is_empty():
 			var node:Control = itemlist[item_index]
 			

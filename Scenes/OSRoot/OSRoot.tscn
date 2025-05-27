@@ -74,6 +74,7 @@ start_at_ring_level = true
 skip_objectives = true
 max_energy = false
 all_personnel = true
+researchers_per_room = 1
 
 [node name="SubViewportBG" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
