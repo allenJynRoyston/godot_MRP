@@ -100,23 +100,24 @@ func update_room_label() -> void:
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 	
 	var TextNode:Control = RoomDetails.get_child(1)
-	
+	var LvlNode:Control = RoomDetails.get_child(0)
+
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:
 		node.abl_lvl = abl_lvl
 
-	TextNode.content = "%s  (Lvl %s)" % [room_details.shortname if !room_details.is_empty() else "EMPTY", abl_lvl]
-
+	TextNode.content = "%s" % [room_details.name]
+	LvlNode.content = str(abl_lvl)
+	
 var previous_room_ref:int
 func on_room_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
-	var ImgNode:Control = RoomDetails.get_child(0)
+	var LvlNode:Control = RoomDetails.get_child(0)
 	var TextNode:Control = RoomDetails.get_child(1)
 	
 	if room_ref == -1:
 		RoomDetails.modulate = Color(1, 1, 1, 0.5)
 		TextNode.content = "EMPTY"		
-		ImgNode.img_src = ""
-		ImgNode.use_static = true
+		LvlNode.content = "-"
 		CardDrawerResearchers.hide()
 		CardDrawerActiveAbilities.hide()
 		CardDrawerPassiveAbilities.hide()
@@ -137,8 +138,6 @@ func on_room_ref_update() -> void:
 	
 	RoomDetails.modulate = Color(1, 1, 1, 1)
 	update_room_label()
-	ImgNode.img_src = room_details.img_src	if !room_details.is_empty() else null
-	ImgNode.use_static = false
 	
 	# attach scp data (if applicable)
 	CardDrawerScp.scp_ref = -1
@@ -166,7 +165,6 @@ func on_room_ref_update() -> void:
 		CardDrawerActiveAbilities.use_location = use_location			
 		CardDrawerActiveAbilities.room_details = room_details
 		show_abilities = true
-		
 	
 	# hide container
 	ListContainers.show() if (show_passives or show_abilities or show_researchers) else ListContainers.hide()

@@ -31,6 +31,7 @@ layout_mode = 2
 color = Color(0.52, 0.0866667, 0, 0.603922)
 
 [node name="MiniCardControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="MiniCardPanel" type="PanelContainer" parent="MiniCardControl"]
@@ -75,7 +76,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_24078")
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/margin_left = 200
+theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 100

@@ -1,8 +1,7 @@
-[gd_scene load_steps=22 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=21 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_s7sdo"]
-[ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_r0ia4"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_djb7u"]
 [ext_resource type="PackedScene" uid="uid://cus6h1nu75y1e" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerRoomAbilities.tscn" id="5_djb7u"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_4uruu"]
@@ -27,25 +26,25 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqrfb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4uruu"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337, 0.275, 1, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uh585"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ihy8r"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337, 0.275, 1, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -157,25 +156,22 @@ theme_override_constants/separation = 10
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 
-[node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("3_r0ia4")]
-custom_minimum_size = Vector2(50, 50)
+[node name="CardDrawerLevel" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("4_djb7u")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_wqrfb")
-use_static = true
-title = ""
-is_left_side = true
-border_color = Color(0.337, 0.275, 1, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_4uruu")
+content = "0"
+title = "LVL"
+border_color = Color(0.337255, 0.27451, 1, 1)
 
-[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("4_djb7u")]
-custom_minimum_size = Vector2(0, 50)
+[node name="CardDrawerName2" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("4_djb7u")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_uh585")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ihy8r")
 is_small = true
-content = "EMPTY"
-title = ""
-border_color = Color(0.337, 0.275, 1, 1)
+title = "NAME"
+border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="ListContainers" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2

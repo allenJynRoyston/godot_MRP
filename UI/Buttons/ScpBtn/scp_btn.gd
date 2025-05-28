@@ -5,10 +5,7 @@ extends BtnBase
 
 @onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/IconBtn
 @onready var LvlLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/Label
-
 @onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/NameLabel
-@onready var SpecLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Spec
-@onready var TraitLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Trait
 
 @export var panel_color:Color = Color("0e0e0ecb") : 
 	set(val):
@@ -17,38 +14,45 @@ extends BtnBase
 
 var use_location:Dictionary = {}
 
-var hired_lead_researchers:Array = []
-
-#var scp_ref:Dictionary = {} : 
-	#set(val):
-		#researcher = val
-		#on_researcher_update()
+var scp_ref:int = -1 : 
+	set(val):
+		scp_ref = val
+		on_scp_ref_update()
 
 var is_selected:bool = false : 
 	set(val):
 		is_selected = val
 		on_is_selected_update()
 
+var scp_data:Dictionary = {}
+
 var is_available:bool = true
-var has_pairing:bool = false
 
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
-	#SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
+	SUBSCRIBE.subscribe_to_scp_data(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
-	#SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
+	SUBSCRIBE.unsubscribe_to_scp_data(self)
 
 func _ready() -> void:
 	super._ready()	
-	#on_hired_lead_researchers_arr_update()
+	on_scp_data_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_scp_ref_update() -> void:
+	if !is_node_ready():return
+
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val
+	if !is_node_ready():return
+	print(scp_data)
+	
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	var panel_color:Color = Color.BLACK if !is_selected else Color.WHITE

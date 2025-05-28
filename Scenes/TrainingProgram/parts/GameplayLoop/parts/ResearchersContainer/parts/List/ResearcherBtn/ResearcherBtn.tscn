@@ -75,7 +75,7 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # --------------------------------------		
 "
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnlox"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sug36"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0)
 
 [node name="ResearcherBtn" type="PanelContainer"]
@@ -96,6 +96,6 @@ layout_mode = 2
 
 [node name="NameLabel" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wer02")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fnlox")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sug36")
 panel_color = Color(0.054902, 0.054902, 0.054902, 0)
 is_hoverable = false

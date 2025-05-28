@@ -36,7 +36,6 @@ func on_is_disabled_updated() -> void:
 func on_focus(state:bool = is_focused) -> void:	
 	if !is_node_ready():return	
 	is_focused = state
-	print(is_focused)
 	
 	if state:
 		onFocus.call_deferred(self)

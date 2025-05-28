@@ -101,7 +101,7 @@ func on_room_details_update() -> void:
 				btn_node.ability_data = ability			
 				
 				btn_node.onClick = func() -> void:
-					if preview_mode or !is_visible_in_tree():return
+					if preview_mode or !is_visible_in_tree() or !btn_node.is_clickable():return
 					GAME_UTIL.toggle_passive_ability(room_details.ref, ability_index, use_location)
 					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 					if ActionContainerNode.is_visible_in_tree():

@@ -114,12 +114,12 @@ func update_text() -> void:
 	if !is_node_ready():return
 	
 	if researcher.is_empty():
-		IconBtn.icon = SVGS.TYPE.ASSIGN
+		IconBtn.icon = SVGS.TYPE.PLUS
 		LvlLabel.hide()
 		NameLabel.text = "ADD RESEARCHER"
 		
 		hint_title = "ASSIGN RESEARCHER"
-		hint_icon = SVGS.TYPE.ASSIGN
+		hint_icon = SVGS.TYPE.PLUS
 		hint_description = "Assigning a researcher to this room will increase its level."
 		return
 	
@@ -131,7 +131,7 @@ func update_text() -> void:
 	traits = traits.left(traits.length() - 3)
 	
 	
-	IconBtn.icon = SVGS.TYPE.PLUS
+	IconBtn.icon = SVGS.TYPE.ASSIGN
 	LvlLabel.text = str(researcher.level)
 	LvlLabel.show()
 	

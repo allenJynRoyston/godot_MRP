@@ -157,9 +157,9 @@ func on_ref_update() -> void:
 	CardDrawerVibes.metrics = scp_details.metrics
 	# -----------
 	CardDrawerPairsWith.spec_name = spec_name
-	CardDrawerPairsWith.trait_name = trait_name
+	#CardDrawerPairsWith.trait_name = trait_name
 	CardDrawerPairsWith.has_spec = has_spec_bonus
-	CardDrawerPairsWith.has_trait = has_trait_bonus
+	#CardDrawerPairsWith.has_trait = has_trait_bonus
 	# -----------
 	CardDrawerCurrency.spec_name = spec_name
 	CardDrawerCurrency.trait_name = trait_name

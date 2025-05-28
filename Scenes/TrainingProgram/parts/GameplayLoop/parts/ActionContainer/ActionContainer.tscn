@@ -896,6 +896,7 @@ icon = 27
 allow_hint = false
 
 [node name="ScpBtnPanel" type="PanelContainer" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_hvn03")

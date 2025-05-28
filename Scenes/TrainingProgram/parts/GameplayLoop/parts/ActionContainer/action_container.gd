@@ -74,13 +74,13 @@ extends GameContainer
 @onready var BuildBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
 @onready var DeconstructBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
-@onready var ResearcherBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel
-@onready var ResearcherPanelLabel:Label = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/CenterLabel
-@onready var AssignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
-@onready var UnassignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
+#@onready var ResearcherBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel
+#@onready var ResearcherPanelLabel:Label = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/CenterLabel
+#@onready var AssignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
+#@onready var UnassignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
 
-@onready var ScpBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel
-@onready var ContainBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
+#@onready var ScpBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel
+#@onready var ContainBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
 
 @onready var HotkeyContainer:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/HotkeyContainer
 @onready var InvestigateBackBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/InvestigateBackBtn
@@ -166,27 +166,27 @@ func _ready() -> void:
 	AbilityBtn.onClick = func() -> void:
 		current_mode = MODE.ABILITY			
 
-	ContainBtn.onClick = func() -> void:
-		investigate_wrapper(func(): 
-			await GAME_UTIL.contain_scp()
-		)
+	#ContainBtn.onClick = func() -> void:
+		#investigate_wrapper(func(): 
+			#await GAME_UTIL.contain_scp()
+		#)
 		
 	DeconstructBtn.onClick = func() -> void:
 		investigate_wrapper(func():
 			await GAME_UTIL.reset_room()
 		)
 	
-	AssignBtn.onClick = func() -> void:
-		investigate_wrapper(func():
-			await GAME_UTIL.assign_researcher()
-		)
-	
-	UnassignBtn.onClick = func() -> void:
-		investigate_wrapper(func(): 
-			var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-			var researcher_data:Dictionary = room_extract.researchers[0]
-			await GAME_UTIL.unassign_researcher(researcher_data)	
-		)
+	#AssignBtn.onClick = func() -> void:
+		#investigate_wrapper(func():
+			#await GAME_UTIL.assign_researcher()
+		#)
+	#
+	#UnassignBtn.onClick = func() -> void:
+		#investigate_wrapper(func(): 
+			#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
+			#var researcher_data:Dictionary = room_extract.researchers[0]
+			#await GAME_UTIL.unassign_researcher(researcher_data)	
+		#)
 	# -------------------------------------
 	
 	# -------------------------------------
@@ -760,9 +760,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
 		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
-		ResearcherBtnPanel.hide() #if room_extract.is_room_empty else ResearcherBtnPanel.show()
-		ScpBtnPanel.hide() if room_extract.is_room_empty or !room_extract.can_contain else ScpBtnPanel.show()		
-	
+		#ResearcherBtnPanel.hide() #if room_extract.is_room_empty else ResearcherBtnPanel.show()
+		#ScpBtnPanel.hide() if room_extract.is_room_empty or !room_extract.can_contain else ScpBtnPanel.show()		
+	#
 		if previous_designation != U.location_to_designation(current_location):
 			previous_designation = U.location_to_designation(current_location)	
 			SummaryCard.use_location = current_location
@@ -804,11 +804,11 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			# set button states
 			BuildBtn.is_disabled = !room_extract.is_room_empty
 			DeconstructBtn.is_disabled = room_extract.is_room_empty
-			ContainBtn.is_disabled = !room_extract.scp.is_empty()
-			AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or hired_lead_researchers_arr.size() == 0
-			UnassignBtn.is_disabled = room_extract.researchers.size() == 0
-			ResearcherPanelLabel.text = "RESEARCHERS (%s)" % [hired_lead_researchers_arr.size()]
-						
+			#ContainBtn.is_disabled = !room_extract.scp.is_empty()
+			#AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or hired_lead_researchers_arr.size() == 0
+			#UnassignBtn.is_disabled = room_extract.researchers.size() == 0
+			#ResearcherPanelLabel.text = "RESEARCHERS (%s)" % [hired_lead_researchers_arr.size()]
+						#
 			if can_take_action:
 				AbilityBtn.is_disabled = !is_activated or (abilities.is_empty() and passive_abilities.is_empty())
 				DeconstructBtn.is_disabled = !room_extract.can_destroy
@@ -1004,12 +1004,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					RoomDetailsControl.show_researcher_card = true	
 				# ----------------------
 				if "scp_ref" in node:
-					RoomDetailsControl.scp_ref = node.scp_ref
+					RoomDetailsControl.scp_ref = -1 #node.scp_ref if node.scp_ref else -1
 					RoomDetailsControl.cycle_to_scp(true)
 					await U.tick()
 					RoomDetailsControl.show_room_card = false
 					RoomDetailsControl.show_scp_card = true
-					RoomDetailsControl.show_researcher_card = true						
+					RoomDetailsControl.show_researcher_card = false						
 
 			BtnControls.onBack = func() -> void:
 				current_mode = MODE.INVESTIGATE	

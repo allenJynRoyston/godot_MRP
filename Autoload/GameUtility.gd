@@ -652,7 +652,7 @@ func contain_scp() -> bool:
 	SUBSCRIBE.scp_data = scp_data
 	
 	# play event
-	await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
+	#await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
 	
 	# return true
 	return true
@@ -918,7 +918,7 @@ func get_new_scp() -> Dictionary:
 	
 	# if this is the first one, always make item 0 the first item
 	if scp_data.contained_list.size() == 0:
-		list = [0]
+		list = [0, 1, 2]
 	else:
 		# check for specific days that only supply specific scps
 		if progress_data.day == 4:

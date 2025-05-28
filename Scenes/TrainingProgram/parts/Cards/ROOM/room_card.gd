@@ -9,7 +9,8 @@ extends MouseInteractions
 
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
+@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerLevel
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerName
 @onready var CardDrawerStaffingRequirements:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerStaffingRequirements
 @onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerPairsWith
 
@@ -62,6 +63,7 @@ extends MouseInteractions
 
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 
+var room_config:Dictionary
 var index:int = -1
 var use_location:Dictionary = {}
 var current_metrics:Dictionary = {}
@@ -72,7 +74,14 @@ var onClick:Callable = func():pass
 
 signal flip_complete
 
+
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_room_config(self)
+
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+
 func _ready() -> void:
 	super._ready()
 
@@ -85,10 +94,7 @@ func _ready() -> void:
 	Front.show()
 	Back.hide()
 	
-	
 	default_border_color = CardDrawerName.border_color
-
-	#on_show_assigned_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -99,6 +105,10 @@ func on_flip_update() -> void:
 	flip_complete.emit()
 	on_ref_update()
 
+func on_room_config_update(new_val:Dictionary) -> void:
+	room_config = new_val
+	on_ref_update()
+	
 func on_is_active_update() -> void:
 	if !is_node_ready():return
 
@@ -120,7 +130,7 @@ func on_reveal_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
-	if !is_node_ready():return	
+	if !is_node_ready() or room_config.is_empty():return	
 	
 	if ref == -1:
 		CardDrawerImage.use_static = true
@@ -164,8 +174,14 @@ func on_ref_update() -> void:
 	for node in [CardBody]:
 		node.border_color = default_border_color if is_activated else Color.RED
 
+	var abl_lvl:int = 0
+	if !use_location.is_empty():
+		var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
+		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 
 	# -----------
+	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerDescription.content = room_details.description if !is_locked else "[REDACTED]"
 	CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel

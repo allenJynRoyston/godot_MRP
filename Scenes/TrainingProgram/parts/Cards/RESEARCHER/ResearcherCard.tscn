@@ -141,6 +141,9 @@ texture = SubResource("ViewportTexture_qnqh7")
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_ughr2")
 
+[node name="FrontDrawerContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer" index="0"]
+theme_override_constants/separation = 10
+
 [node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("9_2tpuf")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ng244")
@@ -152,7 +155,7 @@ border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 layout_mode = 2
 
 [node name="CardDrawerLevel" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("10_klncf")]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_tcow0")
@@ -161,7 +164,7 @@ title = "LVL"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
 [node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("10_klncf")]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_6kiql")
 is_small = true
