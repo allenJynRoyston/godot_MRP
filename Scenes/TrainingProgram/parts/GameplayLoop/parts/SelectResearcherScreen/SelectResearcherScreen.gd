@@ -50,11 +50,11 @@ func start() -> void:
 # -----------------------------------------------
 
 # -----------------------------------------------
-func end(response:bool) -> void:
+func end(uid:String = "") -> void:
 	current_mode = MODE.HIDE
 	await hide_complete
 	await TransitionScreen.end()	
-	user_response.emit(response)
+	user_response.emit(uid)
 # -----------------------------------------------	
 
 # -----------------------------------------------
@@ -128,7 +128,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.reveal(true)
 			
 			BtnControls.onBack = func() -> void:
-				end(false)			
+				end()			
 		# ---------------------
 		MODE.CONFIRM_RESEARCHERS:
 			BtnControls.a_btn_title = "CONFIRM"
@@ -153,7 +153,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			# subscribe
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 			
-			end(true)
+	
+			end(new_hire_list[researcher_active_index][0])
 			
 	await U.set_timeout(0.3)
 	is_animating = false

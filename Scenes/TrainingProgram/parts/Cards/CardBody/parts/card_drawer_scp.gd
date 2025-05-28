@@ -3,7 +3,7 @@ extends CardDrawerClass
 
 @onready var List:VBoxContainer = $MarginContainer/MarginContainer/List
 
-#const RoomResearchersBtnPreload:PackedScene = preload("res://UI/Buttons/RoomResearcherBtn/RoomResearcherBtn.tscn")
+const ScpBtnPreload:PackedScene = preload("res://UI/Buttons/ScpBtn/ScpBtn.tscn")
 
 var scp_ref:int = 0 : 
 	set(val):
@@ -26,6 +26,11 @@ func clear() -> void:
 func on_scp_ref_update() -> void:
 	if !is_node_ready():return
 	clear()
+	
+	var new_btn:Control = ScpBtnPreload.instantiate()
+	new_btn.index = 0
+	new_btn.use_location = use_location
+	List.add_child(new_btn)
 
 	#for index in range(0, researchers_per_room):
 		#var new_btn:Control = RoomResearchersBtnPreload.instantiate()

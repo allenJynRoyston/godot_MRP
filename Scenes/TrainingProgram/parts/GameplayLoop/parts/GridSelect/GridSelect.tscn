@@ -137,7 +137,7 @@ theme_override_constants/separation = -10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = -20
+theme_override_constants/separation = 20
 
 [node name="LessBtn" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_nl7vn")]
 layout_mode = 2

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=24 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" uid="uid://d14ehnxlj0jud" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_h7wp5"]
@@ -6,11 +6,12 @@
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_6n6tl"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="4_kdo1o"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_amr3s"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_5xty8"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_fgcdw"]
 [ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="7_3dcps"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="9_h7wp5"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_h7wp5"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="12_1e555"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t5faq"]
 
@@ -50,20 +51,21 @@ viewport_path = NodePath("ContentControl/MarginContainer/VBoxContainer/PanelCont
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ke4bq"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_bndyi"]
-font = ExtResource("6_5xty8")
-font_color = Color(0.678944, 0.678944, 0.678944, 1)
+[sub_resource type="LabelSettings" id="LabelSettings_h7wp5"]
+font = ExtResource("9_h7wp5")
+font_size = 24
+font_color = Color(0.272047, 0.272047, 0.272047, 1)
 outline_size = 8
-outline_color = Color(0.381703, 0.381703, 0.381703, 0.796078)
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_53aak"]
-font = ExtResource("6_5xty8")
+[sub_resource type="LabelSettings" id="LabelSettings_1e555"]
+font = ExtResource("9_h7wp5")
+font_size = 24
 outline_size = 8
-outline_color = Color(0.332881, 0.332881, 0.332881, 1)
-shadow_size = 0
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h7wp5"]
-bg_color = Color(0, 0, 0, 0)
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="EventContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -325,7 +327,6 @@ theme_override_constants/margin_top = -2
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 48
-flip_v = false
 is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer"]
@@ -336,7 +337,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ke4bq")
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
-label_settings = SubResource("LabelSettings_bndyi")
+label_settings = SubResource("LabelSettings_h7wp5")
 autowrap_mode = 3
 visible_characters_behavior = 1
 
@@ -344,7 +345,7 @@ visible_characters_behavior = 1
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
-label_settings = SubResource("LabelSettings_53aak")
+label_settings = SubResource("LabelSettings_1e555")
 autowrap_mode = 3
 visible_characters_behavior = 1
 
@@ -390,4 +391,8 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="BtnControls" parent="." instance=ExtResource("11_h7wp5")]
+layout_mode = 2
+
+[node name="TransistionScreen" parent="." instance=ExtResource("12_1e555")]
+z_index = 1
 layout_mode = 2

@@ -29,7 +29,7 @@ var unlock_facilities:Dictionary = {
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		return await GBL.find_node(REFS.GAMEPLAY_LOOP).open_store(),
+		return await GAME_UTIL.open_store(),
 }
 
 # ---------------------------------

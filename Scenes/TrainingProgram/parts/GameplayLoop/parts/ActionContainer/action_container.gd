@@ -982,6 +982,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.offset = SummaryCard.global_position
 			
 			BtnControls.onUpdate = func(node:Control) -> void:
+				# toggle is selected
+				for _node in BtnControls.itemlist:
+					if "is_selected" in _node:
+						_node.is_selected = _node == node
+										
 				# ----------------------
 				if "ability_data" in node:
 					RoomDetailsControl.cycle_to_room(true)

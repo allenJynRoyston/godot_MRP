@@ -28,6 +28,11 @@ extends BtnBase
 		on_cooldown = val
 		on_cooldown_update()	
 		
+@export var not_enough_resources:bool = false : 
+	set(val):
+		not_enough_resources = val
+		on_not_enough_resources_update()	
+		
 @export var preview_mode:bool = false
 @export var abl_lvl:int = 0 :
 	set(val):
@@ -38,15 +43,23 @@ extends BtnBase
 
 var cooldown_val:int = 0
 var base_states:Dictionary = {} 
+var resources_data:Dictionary = {}
+var border_color:Color
+
 var use_location:Dictionary = {} : 
 	set(val):
 		use_location = val
 		on_base_states_update()
-		
+
 var lvl_locked:bool = false : 
 	set(val):
 		lvl_locked = val
 		on_lvl_locked_update()
+		
+var is_selected:bool = false : 
+	set(val):
+		is_selected = val
+		on_is_selected_update()
 
 # directly access, do not remove
 var ability_index:int
@@ -63,14 +76,18 @@ const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram
 func _init() -> void:
 	super._init()
 	SUBSCRIBE.subscribe_to_base_states(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_base_states(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	
 	
 func _ready() -> void:
 	super._ready()
 	on_base_states_update()
+	on_is_selected_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -85,12 +102,24 @@ func on_base_states_update(new_val:Dictionary = base_states) -> void:
 		
 	cooldown_val = base_states.room[designation].ability_on_cooldown[ability_uid]		
 	on_cooldown = base_states.room[designation].ability_on_cooldown[ability_uid] > 0
-	
+
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val
+	if !is_node_ready() or ability_data.is_empty():return
+	not_enough_resources = ability_data.science_cost > resources_data[RESOURCE.CURRENCY.SCIENCE].amount
 
 func update_all() -> void:
 	update_font_color()
 	on_panel_color_update()
 	update_text()	
+
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	var panel_color:Color = Color.BLACK if !is_selected else Color.WHITE
+	
+	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
+	new_stylebox.bg_color = panel_color
+	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 
 func on_is_disabled_updated() -> void:
 	U.debounce(str(self.name, "_update_all"), update_all)
@@ -106,9 +135,13 @@ func on_ability_data_update() -> void:
 	if ability_data.is_empty():return
 	U.debounce(str(self.name, "_update_all"), update_all)
 
+func on_not_enough_resources_update() -> void:
+	U.debounce(str(self.name, "_update_all"), update_all)
+	
 func on_ability_name_update() -> void:
 	if !is_node_ready():return
 	NameLabel.text = str(ability_name)
+	on_resources_data_update()
 
 func on_cost_update() -> void:
 	if !is_node_ready():return
@@ -123,34 +156,28 @@ func update_font_color() -> void:
 	if !is_node_ready():return
 	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
 	var new_color:Color = Color.WHITE	
+	var altered:bool = false
 	
 	if !preview_mode:
-		if on_cooldown:
-			new_color = Color.SKY_BLUE		
-		if lvl_locked:
+		if on_cooldown and !altered:
+			new_color = Color.SKY_BLUE
+			altered = true
+		if lvl_locked and !altered:
 			new_color = Color.WEB_GRAY
-	
+			altered = true
+		if not_enough_resources and !altered:
+			new_color = Color.RED
+			altered = true
 	
 	label_duplicate.font_color = new_color
 	for node in [NameLabel, CostLabel]:
 		node.label_settings = label_duplicate	
-		
-	IconBtn.static_color = new_color		
+	IconBtn.static_color = new_color
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	var new_color:Color = panel_color
-	
-	if !preview_mode:
-		if on_cooldown:
-			new_color = panel_color		
-		if lvl_locked:
-			new_color = panel_color
+	#border_color = panel_color
 
-
-	new_stylebox.bg_color = new_color
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 	
 func update_text() -> void:
 	if !is_node_ready():return
@@ -166,7 +193,7 @@ func update_text() -> void:
 	else:
 		if lvl_locked:
 			ability_name = "LVL %s REQUIRED" % [ability_data.lvl_required]
-			hint_description = "Level requirement must be higher to use this program."
+			hint_description = "%s %s" % [ability_data.description, "(Level requirement must be higher to use this program)."]
 			IconBtn.icon = SVGS.TYPE.LOCK
 			cost = ability_data.lvl_required
 			return
@@ -174,9 +201,17 @@ func update_text() -> void:
 		if on_cooldown:
 			ability_name = ability_data.name
 			hint_title = ability_data.name
-			hint_description = "Program on cooldown for %s %s." % [cooldown_val, "days" if cooldown_val > 1 else "day"]
+			hint_description = "%s %s" % [ability_data.description, "(On cooldown for %s %s)." % [cooldown_val, "days" if cooldown_val > 1 else "day"]]
 			IconBtn.icon = SVGS.TYPE.FROZEN
 			cost = cooldown_val
+			return
+		
+		if not_enough_resources:
+			ability_name = ability_data.name
+			hint_title = ability_data.name
+			hint_description = "%s %s" % [ability_data.description, "(Not enough resources to run this program)."]
+			IconBtn.icon = SVGS.TYPE.RESEARCH
+			cost = ability_data.science_cost
 			return
 	
 		
@@ -190,6 +225,9 @@ func update_text() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func is_clickable() -> bool:
+	return !on_cooldown and !lvl_locked and !not_enough_resources
+	
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
 	if !is_node_ready():return

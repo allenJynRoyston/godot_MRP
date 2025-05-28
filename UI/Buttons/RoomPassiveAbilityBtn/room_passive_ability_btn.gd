@@ -44,6 +44,12 @@ var lvl_locked:bool = false :
 		on_lvl_locked_update()
 
 var is_active:bool = false 
+var border_color:Color
+
+var is_selected:bool = false : 
+	set(val):
+		is_selected = val
+		on_is_selected_update()
 
 # directly access, do not remove
 var type:String 
@@ -68,6 +74,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	on_base_states_update()
+	on_is_selected_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -79,6 +86,13 @@ func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	is_active = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false
 	U.debounce(str(self.name, "_update_all"), update_all)
 	
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	var panel_color:Color = Color.BLACK if !is_selected else Color.WHITE
+	
+	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
+	new_stylebox.bg_color = panel_color
+	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 
 func update_all() -> void:
 	update_font_color()
@@ -126,15 +140,7 @@ func update_font_color() -> void:
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	var new_color:Color = panel_color
-
-	if !preview_mode:
-		if lvl_locked:
-			new_color = panel_color
-			
-	new_stylebox.bg_color = new_color
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
+	#border_color = panel_color
 	
 func update_text() -> void:
 	if !is_node_ready():return

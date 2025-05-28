@@ -412,6 +412,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="Label" type="Label" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "FACILITY"
@@ -462,6 +463,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="Label" type="Label" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "WING"
@@ -512,6 +514,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="Label" type="Label" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "GENERATOR"
@@ -570,6 +573,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="Label" type="Label" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "FACILITY"
@@ -633,6 +637,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="Label" type="Label" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "SYSTEM"
@@ -728,6 +733,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="CenterLabel" type="Label" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 label_settings = ExtResource("2_i3yab")
@@ -790,6 +796,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="RoomBtnPanelLabel" type="Label" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "NAME"
@@ -906,6 +913,7 @@ theme_override_constants/separation = 5
 alignment = 2
 
 [node name="CenterLabel" type="Label" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "SCP"

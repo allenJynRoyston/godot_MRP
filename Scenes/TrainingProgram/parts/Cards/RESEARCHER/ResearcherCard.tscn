@@ -183,7 +183,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_klncf")
 is_small = true
 content = "Trait"
-title = "KNOWN TRAITS"
+title = "PERSONALITY TRAIT"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
 [node name="CardDrawerAssigned" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("10_klncf")]

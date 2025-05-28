@@ -36,441 +36,156 @@ var specialization_data:Dictionary = {
 		"name": "CHEMISTRY",
 		"icon": SVGS.TYPE.ENERGY,
 	},
-	#RESEARCHER.SPECIALIZATION.MEDICINE: {
-		#"name": "MEDICINE",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},	
-	#RESEARCHER.SPECIALIZATION.PHARMACOLOGY: {
-		#"name": "PHARMACOLOGY",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},
-	#RESEARCHER.SPECIALIZATION.NEUROSCIENCE: {
-		#"name": "NEUROSCIENCE",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},
-	#RESEARCHER.SPECIALIZATION.SOCIOLOGY: {
-		#"name": "SOCIOLOGY",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},
-	#RESEARCHER.SPECIALIZATION.ANTHROPOLOGY: {
-		#"name": "ANTHROPOLOGY",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},
-	#RESEARCHER.SPECIALIZATION.PHILOSOPHY: {
-		#"name": "PHILOSOPHY",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},
-	#RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
-		#"name": "ADMINISTRATION",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},	
-	#RESEARCHER.SPECIALIZATION.PARAZOOLOGIST: {
-		#"name": "PARAZOOLOGIST",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},
-	#RESEARCHER.SPECIALIZATION.THAUMATURGIC_ANALYST: {
-		#"name": "THAUMATURGIC ANALYST",
-		#"icon": SVGS.TYPE.ENERGY,
-	#},
-	#RESEARCHER.SPECIALIZATION.XENOBIOLOGIST: {
-		#"name": "XENOBIOLOGIST",
-		#"icon": SVGS.TYPE.ENERGY,
-	#}
 };
 
-
-
 var trait_data: Dictionary = {
-	# ---------------------------------
 	RESEARCHER.TRAITS.HARD_WORKING: {
 		"name": "HARD WORKING",
-		"description": "Increases READINESS by 1.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data:Dictionary) -> Dictionary:
-			return {
-				"metrics": {
-					RESOURCE.METRICS.READINESS: 1
-				}
-			},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "Colleagues nod approvingly — 'They earned it. They'll probably pick up the slack too.'",
+			"effect": func(): pass
+		}
 	},
 	RESEARCHER.TRAITS.MOTIVATED: {
 		"name": "MOTIVATED",
-		"description": "Increases MORALE by 1.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			return {
-				"metrics": {
-					RESOURCE.METRICS.MORALE: 1
-				}
-			},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "'That one’s always pushing for results,' others say. Expectations are high — maybe too high.",
+			"effect": func(): pass
+		}
 	},
 	RESEARCHER.TRAITS.DISCIPLINED: {
 		"name": "DISCIPLINED",
-		"description": "Increases SAFETY by 1.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			return {
-				"metrics": {
-					RESOURCE.METRICS.SAFETY: 1
-				}
-			},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "'Good. They'll keep the team in line,' someone remarks. Most expect a structured, by-the-book leader.",
+			"effect": func(): pass
+		}
 	},
-	# ---------------------------------
-	RESEARCHER.TRAITS.IMPULSIVE: {
-		"name": "IMPULSIVE",
-		"description": "Reduces SAFETY by 1.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			return {
-				"metrics": {
-					RESOURCE.METRICS.SAFETY: -1
-				}
-			},
-	},
-	RESEARCHER.TRAITS.PESSIMISTIC: {
-		"name": "PESSIMISTIC",
-		"description": "Reduces MORALE by 1.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			return {
-				"metrics": {
-					RESOURCE.METRICS.MORALE: -1
-				}
-			},
-	},
-	RESEARCHER.TRAITS.STUBBORN: {
-		"name": "STUBBORN",
-		"description": "Reduces READINESS by 1.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			return {
-				"metrics": {
-					RESOURCE.METRICS.READINESS: -1
-				}
-			},
-	},
-	# ---------------------------------
 	RESEARCHER.TRAITS.CLEVER: {
 		"name": "CLEVER",
-		"description": "Produces the same amount of SCIENCE as it does FUNDING.",
-		"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(config_data: Dictionary) -> Dictionary:
-			#if config_data.room_data.is_empty():
-				#return {}
-			#
-			#var amount:int = 0
-			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			##if !config_data.scp_data.is_empty():
-				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-				#
-			#for item in list:
-				#if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
-					#amount += item.amount
-					#
-			#return {
-				#"resource": {
-					#RESOURCE.CURRENCY.SCIENCE: amount
-				#}
-			#},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "'Smart move,' someone says. 'Just keep an eye on them — brilliance can be... unpredictable.'",
+			"effect": func(): pass
+		}
 	},
 	RESEARCHER.TRAITS.ADAPTABLE: {
 		"name": "ADAPTABLE",
-		"description": "Doubles the SCIENCE output of a facility.",
-		"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(config_data: Dictionary) -> Dictionary:
-			#if config_data.room_data.is_empty():
-				#return {}
-			#
-			#var amount:int = 0
-			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			##if !config_data.scp_data.is_empty():
-				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							#
-			#for item in list:
-				#if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
-					#amount += item.amount
-					#
-			#return {
-				#"resource": {
-					#RESOURCE.CURRENCY.SCIENCE: amount
-				#}
-			#},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "Generally met with approval — 'They can handle whatever the Foundation throws at them.'",
+			"effect": func(): pass
+		}
 	},
 	RESEARCHER.TRAITS.RESOURCEFUL: {
 		"name": "RESOURCEFUL",
-		"description": "Room always produces some SCIENCE and FUNDING.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(details: Dictionary) -> Dictionary:
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.MONEY: 5,
-					RESOURCE.CURRENCY.SCIENCE: 5
-				}
-			},
-	},	
-	# ---------------------------------
-	RESEARCHER.TRAITS.WASTEFUL: {
-		"name": "WASTEFUL",
-		"description": "Doubles the cost of a facility.",
-		"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(config_data: Dictionary) -> Dictionary:
-			#if config_data.room_data.is_empty():
-				#return {}
-			#
-			#var amount:int = 0
-			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			#if !config_data.scp_data.is_empty():
-				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							#
-			#for item in list:
-				#if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount < 0:
-					#amount += item.amount
-					#
-			#return {
-				#"resource": {
-					#RESOURCE.CURRENCY.MONEY: amount
-				#}
-			#},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "'They'll find a way out of any mess,' says a team lead. Some feel safer already.",
+			"effect": func(): pass
+		}
 	},
-	RESEARCHER.TRAITS.SCIENTIFIC: {
-		"name": "SCIENTIFIC",
-		"description": "Converts FUNDING into SCIENCE.",
-		"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(config_data: Dictionary) -> Dictionary:
-			#if config_data.room_data.is_empty():
-				#return {}
-			#
-			#var amount:int = 0
-			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			#if !config_data.scp_data.is_empty():
-				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							#
-			#for item in list:
-				#if item.resource.ref == RESOURCE.CURRENCY.MONEY and item.amount > 0:
-					#amount += item.amount
-					#
-			#return {
-				#"resource": {
-					#RESOURCE.CURRENCY.MONEY: -amount,
-					#RESOURCE.CURRENCY.SCIENCE: amount,
-				#}
-			#},
-	},	
 	RESEARCHER.TRAITS.FRUGAL: {
 		"name": "FRUGAL",
-		"description": "Converts facility SCIENCE into FUNDING.",
-		"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(config_data: Dictionary) -> Dictionary:
-			#if config_data.room_data.is_empty():
-				#return {}
-			#
-			#var amount:int = 0
-			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			##if !config_data.scp_data.is_empty():
-				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							#
-			#for item in list:
-				#if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount > 0:
-					#amount += item.amount
-					#
-			#return {
-				#"resource": {
-					#RESOURCE.CURRENCY.MONEY: amount,
-					#RESOURCE.CURRENCY.SCIENCE: -amount,
-				#}
-			#},
-	},	
-	# ---------------------------------
-	RESEARCHER.TRAITS.EXCITABLE: {
-		"name": "EXCITABLE",
-		"description": "If facility produces at least 25 SCIENCE, MORALE is increased.",
-		"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(config_data: Dictionary) -> Dictionary:
-			#if config_data.room_data.is_empty():
-				#return {}
-			#
-			#var amount:int = 0
-			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			##if !config_data.scp_data.is_empty():
-				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							#
-			#for item in list:
-				#if item.resource.ref == RESOURCE.CURRENCY.SCIENCE and item.amount:
-					#amount += item.amount
-					#
-			#return {
-				#"metrics": {
-					#RESOURCE.METRICS.MORALE: 1 if amount > 25 else 0
-				#},
-			#},
-	},	
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "'Good — finally someone who won’t waste grant funds,' say the accountants. Others fear corner-cutting.",
+			"effect": func(): pass
+		}
+	},
 	RESEARCHER.TRAITS.METICULOUS: {
 		"name": "METICULOUS",
-		"description": "If facility produces at least 25 FUNDING, SAFETY is increased.",
-		"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(config_data: Dictionary) -> Dictionary:
-			#if config_data.room_data.is_empty():
-				#return {}
-			#
-			#var amount:int = 0
-			#var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			##if !config_data.scp_data.is_empty():
-				##list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-							#
-			#for item in list:
-				#if item.resource.ref == RESOURCE.CURRENCY.MONEY:
-					#amount += item.amount
-					#
-			#return {
-				#"metrics": {
-					#RESOURCE.METRICS.SAFETY: 1 if amount > 25 else 0
-				#},
-			#},
-	},	
-	RESEARCHER.TRAITS.INTROVERT: {
-		"name": "INTROVERT",
-		"description": "Produces SCIENCE and FUNDING if the researcher is alone.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.MONEY: 10 if config_data.researchers.size() == 1 else 0,
-					RESOURCE.CURRENCY.SCIENCE: 10 if config_data.researchers.size() == 1 else 0,
-				}
-			},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "'That lab's about to run like clockwork,' someone says. Others brace for micromanagement.",
+			"effect": func(): pass
+		}
 	},
-	RESEARCHER.TRAITS.EXTROVERT: {
-		"name": "EXTROVERT",
-		"description": "Produces SCIENCE and FUNDING if the researcher is not alone.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.MONEY: 10 if config_data.researchers.size() > 1 else 0,
-					RESOURCE.CURRENCY.SCIENCE: 10 if config_data.researchers.size() > 1 else 0,
-				}
-			},
-	},
+	# -----------------------------------
 	RESEARCHER.TRAITS.BRAVE: {
 		"name": "BRAVE",
-		"description": "If working with an SCP item, SCIENCE output is increased.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.scp_data.is_empty():
-				return {}
-			
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			#if !config_data.scp_data.is_empty():
-				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-			
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
-					amount = item.amount 
-			
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.SCIENCE: 0 if config_data.scp_data.is_empty() else amount
-				},
-			},
+		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
+		"on_promotion": {
+			"description": "'They won't flinch when it matters,' others agree. Trusted in the field, but caution is advised.",
+			"effect": func(): pass
+		}
+	},
+	RESEARCHER.TRAITS.IMPULSIVE: {
+		"name": "IMPULSIVE",
+		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
+		"on_promotion": {
+			"description": "Raised eyebrows and a few muttered concerns — 'Let’s just hope they don’t do anything rash.'",
+			"effect": func(): pass
+		}
+	},
+	RESEARCHER.TRAITS.PESSIMISTIC: {
+		"name": "PESSIMISTIC",
+		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
+		"on_promotion": {
+			"description": "'That’s... surprising,' one researcher says. Morale dips slightly — no one expects optimism from them.",
+			"effect": func(): pass
+		}
+	},
+	RESEARCHER.TRAITS.STUBBORN: {
+		"name": "STUBBORN",
+		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
+		"on_promotion": {
+			"description": "'Well, at least they'll never back down,' says one. Others worry about inflexibility during crises.",
+			"effect": func(): pass
+		}
+	},
+	RESEARCHER.TRAITS.WASTEFUL: {
+		"name": "WASTEFUL",
+		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
+		"on_promotion": {
+			"description": "Audible groans — 'There goes the equipment budget.' Fiscal officers aren't pleased.",
+			"effect": func(): pass
+		}
+	},
+	RESEARCHER.TRAITS.EXCITABLE: {
+		"name": "EXCITABLE",
+		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
+		"on_promotion": {
+			"description": "Some smirk. Others sigh. 'Let’s hope they don’t panic the next time something breaches containment.'",
+			"effect": func(): pass
+		}
 	},
 	RESEARCHER.TRAITS.COWARD: {
 		"name": "COWARD",
-		"description": "If working with an SCP item, SCIENCE output is reduced.",
-		"icon": SVGS.TYPE.ENERGY,
-		"get_effect": func(config_data: Dictionary) -> Dictionary:
-			if config_data.scp_data.is_empty():
-				return {}
-	
-			var amount:int = 0
-			var list:Array = ROOM_UTIL.return_operating_cost(config_data.room_data.details.ref)
-			#if !config_data.scp_data.is_empty():
-				#list += SCP_UTIL.return_ongoing_containment_rewards(config_data.scp_data.ref)
-				
-			for item in list:
-				if item.resource.ref == RESOURCE.CURRENCY.SCIENCE:
-					amount = item.amount 				
-			
-			return {
-				"resource": {
-					RESOURCE.CURRENCY.SCIENCE: 0 if config_data.scp_data.is_empty() else -roundi(amount/2)
-				},
-			},
+		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
+		"on_promotion": {
+			"description": "Confusion and concern spread — 'Them? Really? Hope they don’t bolt when shit hits the fan.'",
+			"effect": func(): pass
+		}
 	},
-}
-
-var synergy_trait_data: Dictionary = {
-	#RESEARCHER.SYNERGY_TRAITS.DREAM_TEAM: {
-		#"name": "DREAM TEAM",
-		#"description": "Combines cleverness and motivation to overcome challenges with creativity and determination.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-	#RESEARCHER.SYNERGY_TRAITS.ARCHITECTS_OF_SUCCESS: {
-		#"name": "ARCHITECTS OF SUCCESS",
-		#"description": "Resourcefulness and meticulous planning ensure every project is built to last.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-	#RESEARCHER.SYNERGY_TRAITS.BALANCING_ACT: {
-		#"name": "BALANCING ACT",
-		#"description": "A perfect harmony of pragmatic realism and boundless optimism, keeping projects grounded yet ambitious.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-	#RESEARCHER.SYNERGY_TRAITS.POWER_PAIR: {
-		#"name": "POWER PAIR",
-		#"description": "Charisma and strategy combine to lead teams with vision and precision.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-	#
-	#
-	#RESEARCHER.SYNERGY_TRAITS.TRAILBLAZER: {
-		#"name": "TRAILBLAZER",
-		#"description": "Combines innovation and courage to forge new paths and tackle the unknown head-on.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-#
-	#RESEARCHER.SYNERGY_TRAITS.SPARK_AND_GRIND: {
-		#"name": "SPARK AND GRIND",
-		#"description": "Merges cleverness and hard work to achieve breakthroughs through insight and relentless effort.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-#
-	#RESEARCHER.SYNERGY_TRAITS.ADAPTIVE_THINKER: {
-		#"name": "ADAPTIVE THINKER",
-		#"description": "Combines adaptability and strategy to navigate challenges with flexible, well-planned approaches.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-#
-	#RESEARCHER.SYNERGY_TRAITS.VISIONARY: {
-		#"name": "VISIONARY",
-		#"description": "Blends optimism and curiosity to see possibilities where others see obstacles.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},
-#
-	#RESEARCHER.SYNERGY_TRAITS.MAD_GENIUS: {
-		#"name": "MAD GENIUS",
-		#"description": "Combines wild innovation with impulsive action, leading to groundbreaking discoveries—or spectacular failures.",
-		#"icon": SVGS.TYPE.ENERGY,
-		#"get_effect": func(details: Dictionary) -> Dictionary:
-			#return {},
-	#},	
-	#
-}
+	# -----------------------------------
+	RESEARCHER.TRAITS.SCIENTIFIC: {
+		"name": "SCIENTIFIC",
+		"type": RESEARCHER.TRAIT_TYPE.NEUTRAL,
+		"on_promotion": {
+			"description": "‘Makes sense,’ others nod. Cold logic is appreciated, though some worry about empathy gaps.",
+			"effect": func(): pass
+		}
+	},
+	RESEARCHER.TRAITS.INTROVERT: {
+		"name": "INTROVERT",
+		"type": RESEARCHER.TRAIT_TYPE.NEUTRAL,
+		"on_promotion": {
+			"description": "'Quiet choice,' one remarks. Some worry about communication, others trust their focus.",
+			"effect": func(): pass
+		}
+	},
+	RESEARCHER.TRAITS.EXTROVERT: {
+		"name": "EXTROVERT",
+		"type": RESEARCHER.TRAIT_TYPE.NEUTRAL,
+		"on_promotion": {
+			"description": "Mixed reactions — 'They’ll boost morale,' says one, while another mutters, 'Too loud for the lab.'",
+			"effect": func(): pass
+		}
+	}
+};
 
 # ------------------------------------------------------------------------------
 func generate_new_researcher_hires(number:int) -> Array:
@@ -533,7 +248,8 @@ func generate_researcher() -> Array:
 		0, 				# 6	STRESS
 		0, 				# 7 EXP
 		1, 				# 8 LVL
-		{"assigned_to_room": {}, "can_promote": false}	# 9
+		{"clone_iteration": 0, "original_uid": null}, # 9 CLONE TRACKER
+		{"assigned_to_room": {}}	# 10
 	]
 # ------------------------------------------------------------------------------
 	
@@ -548,7 +264,8 @@ func get_user_object(val:Array) -> Dictionary:
 	var stress:int = val[6]
 	var experience:int = val[7] 
 	var level:int = val[8]
-	var props:Dictionary = val[9]
+	var clone_props:Dictionary = val[9]
+	var props:Dictionary = val[10]
 	
 	var img_src:String = "res://Media/images/researcher_female_02.jpg"
 	
@@ -561,10 +278,25 @@ func get_user_object(val:Array) -> Dictionary:
 	var specializations:Array = []
 	for t in specializations_list:
 		specializations.push_back(t)
-
+	
+	# if original, this is the number of clones "you" have
+	var number_of_clones:int = hired_lead_researchers_arr.filter(func(x): return x[9].original_uid == uid_val).size()
+	
+	# if you're a clone, this is how many "copies" of you exists
+	var clone_copies:int = 0 if clone_props.clone_iteration == 0 else hired_lead_researchers_arr.filter(func(x): return x[9].original_uid == clone_props.original_uid).size()
+	
+	# if you're a clone, this is what iteration you are 
+	var clone_iteration:int = clone_props.clone_iteration
+	
+	var clone_str:String = ""
+	if clone_iteration > 0:
+		clone_str = " (CLONE)"
+	if number_of_clones > 2 or clone_copies > 2:
+		clone_str = " (CLONE?)"
+	
 	return {
 		"uid": uid_val,
-		"name": "%s" % [lname],
+		"name": "%s%s" % [lname, clone_str],
 		"img_src": img_src,
 		"traits": traits,
 		"specializations": specializations,
@@ -573,6 +305,12 @@ func get_user_object(val:Array) -> Dictionary:
 		"stress": stress,
 		"experience": experience,
 		"level": level,
+		"clone": {
+			"number_of_clones": number_of_clones,
+			"clone_copies": clone_copies,
+			"clone_iteration": clone_props.clone_iteration,
+			"original_uid": clone_props.original_uid
+		},
 		"props": props
 	}
 # ------------------------------------------------------------------------------
@@ -622,19 +360,13 @@ func return_trait_details(ref:int, use_location:Dictionary, use_config:Dictionar
 			#var amount:int = effect.resource[key]
 			#resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
 
-	return {"details": traits_detail, "effect": {"metrics": [], "currencies": []}}
+	return {"details": traits_detail, "effect": {"vibes": [], "resources": []}}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func return_trait_data(key:RESEARCHER.TRAITS) -> Dictionary:
 	trait_data[key].ref = key
 	return trait_data[key]
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func return_synergy_trait_data(key:RESEARCHER.SYNERGY_TRAITS) -> Dictionary:
-	synergy_trait_data[key].ref = key
-	return synergy_trait_data[key]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -649,20 +381,6 @@ func return_wing_effect(researcher_data:Dictionary) -> Dictionary:
 		#var trait_data:Dictionary = return_trait_data(trait_key)
 		#return trait_data.wing_effect.call(researcher_data)
 	return {}
-# ------------------------------------------------------------------------------		
-
-# ------------------------------------------------------------------------------		
-func return_trait_synergy(t1:Array, t2:Array) -> Array:
-	var synergy_traits:Array = []
-	for t1key in t1:
-		for t2key in t2:
-			var match_val:int = t1key + t2key
-			for key in RESEARCHER.SYNERGY_TRAITS:
-				var syn_val:int = RESEARCHER.SYNERGY_TRAITS[key]
-				if syn_val == match_val:					
-					synergy_traits.push_back(return_synergy_trait_data(syn_val))
-
-	return synergy_traits
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
@@ -733,19 +451,34 @@ func get_specilization(spec:int, start_at:int, limit:int) -> Dictionary:
 
 
 # ------------------------------------------------------------------------------	
-func promote_researcher(researcher_details:Dictionary, new_trait:int) -> void:
-	var new_trait_list:Array = researcher_details.traits + [new_trait]
-	
+func promote_researcher(uid:String) -> void:	
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-		if i[0] == researcher_details.uid:
-			# i[7] is xp
-			i[7] -= 10
-			i[2] = new_trait_list
+		if i[0] == uid:
+			# i[8] is level
 			i[8] += 1
-			i[9].can_promote = i[7] > 10
 		return i
 	) 		
-# ------------------------------------------------------------------------------		
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func clone_researcher(uid:String) -> void:
+	var cloned_researcher = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			return i
+		)[0].duplicate(true)
+	
+	var is_original:bool = cloned_researcher[9].original_uid == null
+	
+	cloned_researcher[0] = U.generate_uid()
+	cloned_researcher[9].clone_iteration += 1
+	cloned_researcher[9].original_uid = uid if is_original else cloned_researcher[9].original_uid
+	cloned_researcher[10].assigned_to_room = {}
+	
+	hired_lead_researchers_arr.push_back(cloned_researcher)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func add_experience(uid:String, amount:int) -> bool:
@@ -753,7 +486,6 @@ func add_experience(uid:String, amount:int) -> bool:
 		if i[0] == uid:
 			# i[7] is xp
 			i[7] += amount
-			i[9].can_promote = i[7] > 10
 		return i
 	) 	
 	
@@ -763,8 +495,8 @@ func add_experience(uid:String, amount:int) -> bool:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func check_for_promotions() -> Array:	
-	return hired_lead_researchers_arr.filter(func(i): return i[9].can_promote).map(func(i): return {"uid": i[0]})
+func can_be_promoted(uid:String) -> bool:	
+	return hired_lead_researchers_arr.filter(func(i): return i[7] >= 10 and i[0] == uid).size() > 0
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		

@@ -1,8 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bw15rh8totdjb"]
+[gd_scene load_steps=8 format=3 uid="uid://drucry14qot6f"]
 
-[ext_resource type="Script" uid="uid://v4is71ut1uax" path="res://UI/Buttons/RoomResearcherBtn/room_researcher_btn.gd" id="1_q5tva"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_v34aq"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_eolxu"]
+[ext_resource type="Script" uid="uid://c2dlikqxf610s" path="res://UI/Buttons/ScpBtn/scp_btn.gd" id="1_00exf"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_1o44w"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_ne0d8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a255s"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -19,31 +19,22 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_a255s"]
-font = ExtResource("3_eolxu")
+font = ExtResource("3_ne0d8")
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_q5tva"]
-font = ExtResource("3_eolxu")
+[sub_resource type="LabelSettings" id="LabelSettings_2tjjk"]
+font = ExtResource("3_ne0d8")
 font_color = Color(0.561, 1, 0, 1)
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_2wbbd"]
-font = ExtResource("3_eolxu")
-font_color = Color(0.560784, 1, 0, 1)
-outline_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
-
-[node name="RoomResearcherBtn" type="PanelContainer"]
+[node name="ScpBtn" type="PanelContainer"]
 offset_right = 194.0
 offset_bottom = 29.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_a255s")
-script = ExtResource("1_q5tva")
-hint_icon = 26
-hint_title = "ASSIGN RESEARCHER"
-hint_description = "Assigning a researcher to this room will increase its level."
+script = ExtResource("1_00exf")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -72,10 +63,10 @@ layout_mode = 2
 theme_override_constants/separation = -5
 alignment = 1
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("2_v34aq")]
-custom_minimum_size = Vector2(15, 15)
+[node name="IconBtn" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("2_1o44w")]
+custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
-icon = 26
+icon = 29
 static_color = Color(0.561, 1, 0, 1)
 is_hoverable = false
 
@@ -111,27 +102,6 @@ theme_override_constants/separation = -5
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ADD RESEARCHER"
-label_settings = SubResource("LabelSettings_q5tva")
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Spec" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Spec"
-label_settings = SubResource("LabelSettings_2wbbd")
-vertical_alignment = 1
-
-[node name="Trait" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Quirk"
-label_settings = SubResource("LabelSettings_2wbbd")
-horizontal_alignment = 2
+text = "CONTAIN ANAMOLLY"
+label_settings = SubResource("LabelSettings_2tjjk")
 vertical_alignment = 1

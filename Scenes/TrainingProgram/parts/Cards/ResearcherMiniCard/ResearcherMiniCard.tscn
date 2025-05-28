@@ -161,6 +161,7 @@ title = "SPECIALIZATION"
 border_color = Color(0.6, 0.6, 0.6, 1)
 
 [node name="IncompatablePanel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="1"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_px4g2")
 
@@ -187,6 +188,7 @@ text = "ASSIGNED HERE"
 label_settings = SubResource("LabelSettings_kkpci")
 
 [node name="AssignedElsewhere" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="3"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_px4g2")
 
@@ -196,6 +198,21 @@ layout_mode = 2
 [node name="Label" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/AssignedElsewhere/CenterContainer"]
 layout_mode = 2
 text = "ASSIGNED TO..."
+label_settings = SubResource("LabelSettings_h2ft1")
+horizontal_alignment = 1
+
+[node name="CannotPromote" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="4"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_px4g2")
+
+[node name="CenterContainer" type="CenterContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/CannotPromote"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/CannotPromote/CenterContainer"]
+layout_mode = 2
+text = "NOT ELIGIBLE
+FOR PROMOTION"
 label_settings = SubResource("LabelSettings_h2ft1")
 horizontal_alignment = 1
 

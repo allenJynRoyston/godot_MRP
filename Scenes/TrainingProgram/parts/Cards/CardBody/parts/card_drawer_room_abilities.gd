@@ -12,7 +12,6 @@ extends CardDrawerClass
 
 enum ABILITY_TYPE {ACTIVE, PASSIVE}
 
-		
 const RoomAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomAbilityBtn/RoomAbilityBtn.tscn")		
 const RoomPassiveAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomPassiveAbilityBtn/RoomPassiveAbilityBtn.tscn")
 
@@ -60,7 +59,7 @@ func on_room_details_update() -> void:
 				btn_node.ability_data = ability
 				
 				btn_node.onClick = func() -> void:
-					if preview_mode or !is_visible_in_tree() or btn_node.on_cooldown or btn_node.lvl_locked:return
+					if preview_mode or !is_visible_in_tree() or !btn_node.is_clickable():return
 					
 					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 					if ActionContainerNode.is_visible_in_tree():

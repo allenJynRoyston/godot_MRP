@@ -6,6 +6,7 @@ extends MouseInteractions
 @onready var Spec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Spec
 
 @onready var AlreadyAssigned:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/AlreadyAssignedPanel
+@onready var CannotPromote:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/CannotPromote
 
 @onready var IncompatablePanel:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/IncompatablePanel
 @onready var IncompatableLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/IncompatablePanel/CenterContainer/Label
@@ -55,6 +56,12 @@ var is_assigned_elsewhere:bool = false :
 		is_assigned_elsewhere = val
 		U.debounce(str(self.name, "_on_panel_update"), on_panel_update)
 
+var check_for_promotions:bool = false 
+var can_be_promoted:bool = false : 
+	set(val):
+		can_be_promoted = val
+		U.debounce(str(self.name, "_on_panel_update"), on_panel_update)
+
 var onClick:Callable = func():pass
 var onHover:Callable = func():pass
 var onDismiss:Callable = func():pass
@@ -74,6 +81,10 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	super._ready()
+
+	for node in [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]:
+		node.hide()		
+	
 	on_focus()
 	on_uid_update()
 	on_is_highlighted_update()
@@ -83,16 +94,16 @@ func _ready() -> void:
 func reset() -> void:
 	modulate = Color(1, 1, 1, 0.6)
 	border_color = Color.BLACK
-	
-	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere]
-	for node in panel_nodes:
-		node.hide()
-	
+
+	check_for_promotions = false
+	can_be_promoted = false
 	is_already_assigned = false
 	is_incompatable = false
 	is_assigned_elsewhere = false
 	is_clickable = false
-	is_highlighted = false
+	is_highlighted = false	
+
+
 # --------------------------------------
 
 # --------------------------------------
@@ -127,27 +138,38 @@ func update_content() -> void:
 		is_clickable = false
 		return
 		
-	is_clickable = true
-	
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)
-	#var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specilization).name)
 	var spec_str:String = ""
-	for spec_id in researcher_details.specializations:
+	var hint_des_str:String = ""
+	for index in researcher_details.specializations.size():
+		var spec_id:int = researcher_details.specializations[index]
 		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)
-		spec_str += dict.name 
-	
+		spec_str += str(dict.name, "\r")
+		hint_des_str += dict.name
+			
 	Name.content = researcher_details.name
 	Level.content = str(researcher_details.level)
 	Spec.content = spec_str
 	border_color = COLOR_UTIL.researcher_color
 
-	var name_title_str:String = "Dr. %s, Ph.D in %s" % [researcher_details.name, spec_str]
-	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere]
+	var name_title_str:String = "Researcher %s, %s specialist" % [researcher_details.name, hint_des_str]
+	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]
 	
 	hint_title = "RESEARCHER"
 	hint_icon = SVGS.TYPE.DRS	
-	hint_description = name_title_str
-
+	hint_description = str(name_title_str, ".")
+	is_clickable = true
+	
+	if !can_be_promoted and check_for_promotions:
+		for node in panel_nodes:
+			if node in [CannotPromote]:
+				node.show() 
+			else:
+				node.hide()
+		hint_icon = SVGS.TYPE.STOP
+		hint_description = "%s %s" % [name_title_str, "(not eligible for promotion)."]
+		is_clickable = false
+		return
 
 	if is_already_assigned:
 		for node in panel_nodes:
@@ -156,7 +178,8 @@ func update_content() -> void:
 			else:
 				node.hide()
 		hint_icon = SVGS.TYPE.CHECKBOX
-		hint_description = "%s %s." % [name_title_str, "(currently assigned here)"]
+		hint_description = "%s %s" % [name_title_str, "(currently assigned here)."]
+		is_clickable = false
 		return
 		
 	if is_incompatable:
@@ -166,11 +189,12 @@ func update_content() -> void:
 			else:
 				node.hide()
 		hint_icon = SVGS.TYPE.STOP
-		hint_description = "%s %s." % [name_title_str, "(lacks correct specilization)"]
+		hint_description = "%s %s" % [name_title_str, "(lacks correct specilization)."]
+		is_clickable = false
 		
 		if !spec_required.is_empty():
 			hint_icon = spec_required.icon
-			hint_description = "Specilization %s required." % spec_required.name
+			hint_description = "%s specilization required." % spec_required.name
 			IncompatableLabel.text = "INCOMPATABLE" 
 		return
 	
@@ -181,12 +205,13 @@ func update_content() -> void:
 			else:
 				node.hide()
 		hint_icon = SVGS.TYPE.STOP
-		hint_description = "%s %s." % [name_title_str, "(assigned to %s)" % [assigned_elsewhere_data.room.details.name]]
+		hint_description = "%s %s" % [name_title_str, "(assigned to %s)." % [assigned_elsewhere_data.room.details.name]]
 		AssignedElsewhereLabel.text = "ASSIGNED to\r%s" % [assigned_elsewhere_data.room.details.name]
-		
+		is_clickable = true
 		return
-
 # --------------------------------------		
+
+
 
 # --------------------------------------	
 func on_focus(state:bool = false) -> void:

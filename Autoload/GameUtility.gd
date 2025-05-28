@@ -8,6 +8,8 @@ var ToastContainer:Control
 const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
 const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
 const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
+const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
+const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
 
 
 # -----------------------------------
@@ -541,8 +543,8 @@ func reset_room() -> bool:
 			
 			hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 				# clear out prior researchers
-				if U.dictionaries_equal(i[9].assigned_to_room, current_location):
-					i[9].assigned_to_room = {}
+				if U.dictionaries_equal(i[10].assigned_to_room, current_location):
+					i[10].assigned_to_room = {}
 				return i
 			)
 			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
@@ -568,6 +570,22 @@ func construct_room(allow_placement:bool = true) -> void:
 	#GameplayNode.BuildContainer.allow_placement = allow_placement
 	await GameplayNode.on_store_purchase_complete	
 # ---------------------
+
+# ---------------------
+func trigger_event(event_data:Array) -> Dictionary:
+	var EventContainer:Control = EventContainerPreload.instantiate()
+	GameplayNode.add_child(EventContainer)
+	EventContainer.z_index = 10
+	
+	await U.tick()
+	EventContainer.activate()
+	await U.tick()
+	EventContainer.start(event_data)
+	var event_res:Dictionary = await EventContainer.user_response
+	EventContainer.queue_free()
+	return event_res
+# ---------------------
+
 
 # --------------------------------------------------------------------------------------------------	
 func contain_scp() -> bool:
@@ -640,7 +658,6 @@ func contain_scp() -> bool:
 	return true
 # --------------------------------------------------------------------------------------------------	
 
-
 # --------------------------------------------------------------------------------------------------	
 func clone_researcher() -> bool:
 	var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
@@ -649,14 +666,30 @@ func clone_researcher() -> bool:
 	
 	await ResearchersContainer.activate()
 	ResearchersContainer.start()
-	var response:Dictionary = await ResearchersContainer.user_response
+	var uid:String = await ResearchersContainer.user_response
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 	ResearchersContainer.queue_free()
 	
-	if response.action == ACTION.RESEARCHERS.BACK:
-		return false	
+	# empty response means cancel
+	if uid == "":
+		return false
+		
+	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+		EVT.TYPE.CLONE_RESEARCHER, 
+			{
+				"researcher": RESEARCHER_UTIL.return_data_with_uid(uid),
+				"onSelection": func(selection:Dictionary) -> void:
+					# add buff, debuff
+					print("todo: ADD BUFF OR DEBUFF")
+					print(selection),
+			}
+		)
+	])
 	
-	return response.action == ACTION.RESEARCHERS.PROMOTED
+	# promote to level
+	RESEARCHER_UTIL.clone_researcher(uid)	
+	
+	return true
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -667,15 +700,64 @@ func promote_researcher() -> bool:
 	ResearchersContainer.z_index = 10
 	
 	await ResearchersContainer.activate()	
-	ResearchersContainer.start()
-	var response:Dictionary = await ResearchersContainer.user_response
+	ResearchersContainer.promote()
+	var uid:String = await ResearchersContainer.user_response
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 	ResearchersContainer.queue_free()
 	
-	if response.action == ACTION.RESEARCHERS.BACK:
+	# empty response means cancel
+	if uid == "":
+		return false
+	
+	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+		EVT.TYPE.PROMOTE_RESEARCHER, 
+			{
+				"researcher": RESEARCHER_UTIL.return_data_with_uid(uid),
+				"onSelection": func(selection:Dictionary) -> void:
+					# add buff, debuff
+					print("todo: ADD BUFF OR DEBUFF")
+					print(selection),
+			}
+		)
+	])
+	#print(res)
+	
+	# promote to level
+	RESEARCHER_UTIL.promote_researcher(uid)
+	
+	return true
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func hire_researcher(total_options:int) -> bool:
+	var node:Control = SelectResearcherScreenPreload.instantiate()
+	GameplayNode.add_child(node)
+	node.z_index = 10
+	node.total_options = total_options 	
+	
+	await node.activate()
+	await node.start()
+	
+	var uid:String = await node.user_response
+	node.queue_free()
+
+	if uid == "":
 		return false	
 	
-	return response.action == ACTION.RESEARCHERS.PROMOTED
+	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+		EVT.TYPE.HIRE_RESEARCHER, 
+			{
+				"researcher": RESEARCHER_UTIL.return_data_with_uid(uid),
+				"onSelection": func(selection:Dictionary) -> void:
+					# add buff, debuff
+					print("todo: ADD BUFF OR DEBUFF")
+					print(selection),
+			}
+		)
+	])
+		#
+	
+	return true	
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -686,23 +768,24 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 	ResearchersContainer.z_index = 10
 	
 	var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
-		return U.dictionaries_equal(i[9].assigned_to_room, current_location)
+		return U.dictionaries_equal(i[10].assigned_to_room, current_location)
 	).map(func(i): return i[0])	
 	
 	await ResearchersContainer.activate()
 	ResearchersContainer.start(assigned_uids, current_location)
-	var response:Dictionary = await ResearchersContainer.user_response
+	var uid:String = await ResearchersContainer.user_response
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 	ResearchersContainer.queue_free()
 
-	if response.action == ACTION.RESEARCHERS.BACK:
+	# empty response means cancel
+	if uid == "":
 		return false
 	
-	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(response.uid)
+	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		# add current users
-		if i[0] in response.uid:
-			i[9].assigned_to_room = location_data.duplicate()
+		if i[0] in uid:
+			i[10].assigned_to_room = location_data.duplicate()
 		return i
 	)
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
@@ -721,7 +804,7 @@ func unassign_researcher(researcher_data:Dictionary) -> bool:
 	if confirm:
 		SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 			if i[0] == researcher_data.uid:
-				i[9].assigned_to_room = {}
+				i[10].assigned_to_room = {}
 			return i
 		)
 		return true
@@ -816,7 +899,17 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> bool
 
 # --------------------------------------------------------------------------------------------------		
 func open_store() -> bool:	
-	return await GameplayNode.on_store_purchase_complete
+	var StoreNode:Control = StoreContainerPreload.instantiate()
+	GameplayNode.add_child(StoreNode)
+	StoreNode.z_index = 10
+	
+	await StoreNode.activate()
+	await StoreNode.start()
+	
+	var response:bool = await StoreNode.user_response
+	StoreNode.queue_free()
+
+	return response
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	
@@ -852,30 +945,6 @@ func get_new_scp() -> Dictionary:
 	
 	return res
 # --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func hire_researcher(total_options:int) -> bool:
-	var node:Control = SelectResearcherScreenPreload.instantiate()
-	GameplayNode.add_child(node)
-	node.z_index = 10
-	node.total_options = total_options 	
-	
-	await node.activate()
-	await node.start()
-	
-	var response:bool = await node.user_response
-	node.queue_free()
-	
-	return response	
-# --------------------------------------------------------------------------------------------------	
-
-## --------------------------------------------------------------------------------------------------
-#func recruit_new_researcher(total_options:int) -> bool:
-	#GameplayNode.current_recruit_step = GameplayNode.RECRUIT_STEPS.OPEN
-	#await U.tick()
-	#GameplayNode.SelectResearcherScreen.total_options = total_options 
-	#return await GameplayNode.on_recruit_complete		
-## ---------------------------------------------------------------------------get-----------------------
 
 # ------------------------------------------------------------------------------
 func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:

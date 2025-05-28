@@ -71,5 +71,5 @@ func on_ref_update() -> void:
 	if !is_node_ready() or ref == -1:return
 	var details:Dictionary = RESEARCHER_UTIL.return_synergy_trait_data(ref) if is_synergy else RESEARCHER_UTIL.return_trait_data(ref)
 	NameLabel.text = details.name
-	DescriptionLabel.text = details.description
+	#DescriptionLabel.text = details.description
 	

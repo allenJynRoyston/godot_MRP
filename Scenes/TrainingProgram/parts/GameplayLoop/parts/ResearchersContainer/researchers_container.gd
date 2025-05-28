@@ -16,6 +16,7 @@ const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/par
 var use_location:Dictionary = {}
 var assigned_uids:Array = []
 var check_for_compatability:bool = false
+var check_for_promotions:bool = false
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
@@ -66,6 +67,7 @@ func setup_gridselect() -> void:
 		node.index = index
 		node.uid = data.uid
 		node.is_hoverable = true
+		node.check_for_promotions = check_for_promotions
 		
 		if check_for_compatability:
 			var extract_data:Dictionary = GAME_UTIL.extract_room_details(use_location)
@@ -79,6 +81,8 @@ func setup_gridselect() -> void:
 			node.is_incompatable = false
 			node.is_assigned_elsewhere = false
 			node.is_already_assigned = false
+			node.can_be_promoted = RESEARCHER_UTIL.can_be_promoted(data.uid)
+
 				
 		node.onHover = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
@@ -87,7 +91,7 @@ func setup_gridselect() -> void:
 			SummaryImage.texture = CACHE.fetch_image(data.img_src)
 			
 		node.onClick = func() -> void:
-			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or node.is_already_assigned or node.is_incompatable:return
+			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable:return
 			GridSelect.grid_index = index
 			
 			if node.is_assigned_elsewhere:
@@ -97,7 +101,7 @@ func setup_gridselect() -> void:
 					GridSelect.freeze_and_disable(false, true)
 					return
 
-			end({"action": ACTION.RESEARCHERS.SELECT, "uid": data.uid})
+			end(data.uid)
 	
 	GridSelect.onValidCheck = func(node:Control) -> bool:
 		return node.uid != ""
@@ -106,7 +110,7 @@ func setup_gridselect() -> void:
 		pass
 		
 	GridSelect.onEnd = func():
-		end({"action": ACTION.RESEARCHERS.BACK})	
+		end()	
 
 func activate() -> void:
 	await U.tick()
@@ -117,7 +121,6 @@ func activate() -> void:
 	}	
 
 	SummaryPanel.position.x = control_pos[SummaryPanel].hide
-	
 
 func start(_assigned_uids:Array = [], _use_location:Dictionary = {}) -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
@@ -130,12 +133,24 @@ func start(_assigned_uids:Array = [], _use_location:Dictionary = {}) -> void:
 	var init_func:Callable = func(node:Control) -> void:
 		node.uid = ""
 	GridSelect.start(ResearcherMiniCard, init_func)
+
+
+func promote() -> void:
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
+	TransitionScreen.start()	
+	
+	check_for_promotions = true
+	check_for_compatability = false
+	
+	var init_func:Callable = func(node:Control) -> void:
+		node.uid = ""
+	GridSelect.start(ResearcherMiniCard, init_func)
 	
 	
-func end(response:Dictionary) -> void:
+func end(uid:String = "") -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.3)	
 	await TransitionScreen.end()
-	user_response.emit(response)
+	user_response.emit(uid)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c3mdqgb5unwur" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_scp.gd" id="1_dy7w8"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_urot6"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bvpfu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dy7w8"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -20,7 +20,7 @@ custom_minimum_size = Vector2(200, 50)
 offset_right = 200.0
 offset_bottom = 50.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_bvpfu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_dy7w8")
 script = ExtResource("1_dy7w8")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -34,7 +34,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "RESEARCHERS "
+text = "TITLE LABEL "
 label_settings = ExtResource("2_urot6")
 horizontal_alignment = 2
 

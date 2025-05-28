@@ -5,6 +5,7 @@ extends GameContainer
 @onready var RightControlPanel:PanelContainer = $RightControl/PanelContainer
 @onready var LeftControlPanel:PanelContainer = $LeftControl/PanelContainer
 @onready var ContentControlPanel:MarginContainer	 = $ContentControl/MarginContainer
+@onready var TransitionScreen:Control = $TransistionScreen
 
 @onready var LeftHeaderLabel:Label = $LeftControl/PanelContainer/MarginContainer/VBoxContainer/OutputTexture/MarginContainer/HeaderLabel
 @onready var LeftTextureRect:TextureRect = $LeftControl/PanelContainer/MarginContainer/VBoxContainer/OutputTexture/SubViewport/TextureRect
@@ -145,6 +146,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		# ---------
 		MODE.ACTIVE:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)				
+			TransitionScreen.start()
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration)				
 			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show, duration)			
 			BtnControls.reveal(true)
@@ -195,8 +197,10 @@ func end() -> void:
 	U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide)
 	U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide)
 	await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide)
+	
+	await TransitionScreen.end()	
+
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
-		
 	user_response.emit(event_output)
 # --------------------------------------------------------------------------------------------------		
 
@@ -205,7 +209,7 @@ func next_event(inc:bool = false) -> void:
 	if inc:
 		event_instruction_index += 1
 
-		
+	
 	if event_instruction_index >= event_data.size():
 		end()
 	else:
@@ -221,6 +225,8 @@ func next_instruction(inc:bool = false) -> void:
 	
 	if instruction_index + 1 >= current_event_instruction.event_instructions.size():
 		BtnControls.a_btn_title = "CLOSE"
+		BtnControls.onAction = func() -> void:
+			end()
 		has_more = false
 	else:
 		has_more = true

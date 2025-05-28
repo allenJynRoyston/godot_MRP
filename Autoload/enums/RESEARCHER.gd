@@ -1,6 +1,10 @@
 @tool
 extends Node
 
+enum TRAIT_TYPE {
+	POSITIVE, NEGATIVE, NEUTRAL
+}
+
 enum TRAITS { 
 	# -----------
 	HARD_WORKING,
@@ -48,44 +52,6 @@ enum TRAITS {
 	#INDEPENDENT,
 	#CURIOUS,
 	
-}
-
-enum SYNERGY_TRAITS {
-	# ----
-	#DREAM_TEAM = TRAITS.CLEVER + TRAITS.MOTIVATED,        # Brain meets drive.
-	#ARCHITECTS_OF_SUCCESS = TRAITS.RESOURCEFUL + TRAITS.METICULOUS, # Improviser meets perfectionist.
-	#BALANCING_ACT = TRAITS.PRAGMATIC + TRAITS.OPTIMISTIC, # Realist meets dreamer.
-	#POWER_PAIR = TRAITS.CHARISMATIC + TRAITS.STRATEGIC,   # Influence meets planning.
-#
-   	## ----
-	#TRAILBLAZER = TRAITS.INNOVATIVE + TRAITS.COURAGEOUS,  # Vision meets bravery.
-	#SPARK_AND_GRIND = TRAITS.CLEVER + TRAITS.HARD_WORKING, # Insight meets effort.
-	#ADAPTIVE_THINKER = TRAITS.ADAPTABLE + TRAITS.STRATEGIC, # Flexible meets calculating.
-	#VISIONARY = TRAITS.OPTIMISTIC + TRAITS.CURIOUS,       # Dreamer meets seeker.
-	#MAD_GENIUS = TRAITS.INNOVATIVE + TRAITS.IMPULSIVE,    # Wild ideas meet action.
-
-	## ----
-	#INSPIRED_LEADER = TRAITS.CHARISMATIC + TRAITS.AMBITIOUS, # Charmer meets climber.
-	#TRUSTED_GUIDE = TRAITS.EMPATHETIC + TRAITS.PATIENT,   # Listener meets steady hand.
-	#DIPLOMAT = TRAITS.HUMBLE + TRAITS.ASSERTIVE,          # Modesty meets conviction.
-	#RALLY_POINT = TRAITS.RESOURCEFUL + TRAITS.LOYAL,      # Problem-solver meets faithful.
-	#PACESETTER = TRAITS.AMBITIOUS + TRAITS.DISCIPLINED,   # Hustler meets structure.
-#
-	## ----
-	#ROCK_SOLID = TRAITS.LOYAL + TRAITS.HARD_WORKING,      # Faithful meets dedicated.
-	#REALITY_CHECK = TRAITS.REALISTIC + TRAITS.PATIENT,    # Grounded meets calm.
-	#TACTICIAN = TRAITS.STRATEGIC + TRAITS.PESSIMISTIC,    # Planner meets skeptic.
-	#GUARDIAN = TRAITS.LOYAL + TRAITS.COURAGEOUS,          # Protector meets bravery.
-	#SAFETY_NET = TRAITS.REALISTIC + TRAITS.RESOURCEFUL,   # Pragmatist meets fixer.
-	#ENDURANCE_ENGINE = TRAITS.STUBBORN + TRAITS.DISCIPLINED, # Tenacity meets routine.
-#
-   ## ----
-	#PEACEMAKER = TRAITS.EMPATHETIC + TRAITS.PATIENT,      # Heart meets calm.
-	#FIREBRAND = TRAITS.ASSERTIVE + TRAITS.COURAGEOUS,     # Bold meets fearless.
-	#FREE_SPIRIT = TRAITS.INDEPENDENT + TRAITS.IMPULSIVE,  # Rebel meets wild card.
-	#WISE_COUNSEL = TRAITS.PATIENT + TRAITS.STRATEGIC,     # Planner meets calm.
-	#DARK_HORSE = TRAITS.PESSIMISTIC + TRAITS.AMBITIOUS,   # Doubter meets climber.
-	#SECRET_WEAPON = TRAITS.CLEVER + TRAITS.LOYAL,         # Genius meets devotion.
 }
 
 

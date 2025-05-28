@@ -19,13 +19,13 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_f8eie"]
+[sub_resource type="LabelSettings" id="LabelSettings_jg673"]
 font = ExtResource("2_jg673")
 font_color = Color(0.827451, 0.827451, 0.827451, 1)
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axmus"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f8eie"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -38,6 +38,7 @@ offset_bottom = 29.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jg673")
 script = ExtResource("1_4sylx")
+panel_color = Color(0.275367, 0.56172, 0.999992, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -75,7 +76,7 @@ is_hoverable = false
 custom_minimum_size = Vector2(15, 25)
 layout_mode = 2
 text = "99"
-label_settings = SubResource("LabelSettings_f8eie")
+label_settings = SubResource("LabelSettings_jg673")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -94,7 +95,7 @@ layout_mode = 2
 
 [node name="CheckBox" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer" instance=ExtResource("2_f8eie")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_axmus")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f8eie")
 no_bg = true
 is_hoverable = false
 
@@ -102,5 +103,5 @@ is_hoverable = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-label_settings = SubResource("LabelSettings_f8eie")
+label_settings = SubResource("LabelSettings_jg673")
 vertical_alignment = 1

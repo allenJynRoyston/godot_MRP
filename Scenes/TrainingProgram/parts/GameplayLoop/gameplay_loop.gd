@@ -26,13 +26,13 @@ var SelectResearcherScreen:Control
 #var StoreContainer:Control
 var EventContainer:Control 
 
-const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
-const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
-const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
+#const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
+#const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
+#const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
 const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
 #const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
-const BuildContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn")
-const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
+#const BuildContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn")
+#const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
 
 enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, GAME_WON, GAME_LOST }
 
@@ -354,52 +354,18 @@ var completed_actions:Array = [] :
 	set(val):
 		completed_actions = val
 
-			
-var event_data:Array = [] : 
-	set(val):
-		event_data = val
-		if !event_data.is_empty():
-			current_event_step = EVENT_STEPS.START
 
 var current_phase:PHASE = PHASE.STARTUP : 
 	set(val):
 		current_phase = val
 		on_current_phase_update()
 
-var current_contain_step:CONTAIN_STEPS = CONTAIN_STEPS.RESET : 
-	set(val):
-		current_contain_step = val
-		on_current_contain_step_update()
-		
-#var current_recruit_step:RECRUIT_STEPS = RECRUIT_STEPS.RESET : 
-	#set(val):
-		#current_recruit_step = val
-		#on_current_recruit_step_update()
-
-var current_event_step:EVENT_STEPS = EVENT_STEPS.RESET : 
-	set(val):
-		current_event_step = val
-		on_current_event_step_update()
-
-var current_researcher_step:RESEARCHERS_STEPS = RESEARCHERS_STEPS.RESET : 
-	set(val):
-		current_researcher_step = val
-		on_current_researcher_step_update()
-
-var current_summary_step:SUMMARY_STEPS = SUMMARY_STEPS.RESET : 
-	set(val):
-		current_summary_step = val
-		on_current_summary_step_update()
 		
 var current_select_scp_step:SELECT_SCP_STEPS = SELECT_SCP_STEPS.RESET : 
 	set(val):
 		current_select_scp_step = val
 		on_current_select_scp_step_update()
 
-#var current_researcher_promotion_step:PROMOTE_RESEARCHER_STEPS = PROMOTE_RESEARCHER_STEPS.RESET : 
-	#set(val):
-		#current_researcher_promotion_step = val
-		#on_current_researcher_promotion_step_update()
 
 var current_objective_state:OBJECTIVES_STATE = OBJECTIVES_STATE.HIDE : 
 	set(val):
@@ -479,7 +445,6 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
-	
 	
 	# first these
 	on_show_structures_update()
@@ -738,7 +703,10 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		DialogueContainer, 
 		ResourceContainer,
 		ObjectivesContainer,
-		RoomInfo, FloorInfo, PhaseAnnouncement, ToastContainer
+		RoomInfo, 
+		FloorInfo, 
+		PhaseAnnouncement, 
+		ToastContainer
 	].filter(func(node): return node not in exclude)
 # ------------------------------------------------------------------------------	
 
@@ -816,19 +784,19 @@ func update_tenative_location(location:Dictionary) -> void:
 	tenative_location = location	
 # -----------------------------------
 
-# -----------------------------------
-func check_events(ref:int, event_ref:SCP.EVENT_TYPE, props:Dictionary = {}) -> void:
-	var res:Array = SCP_UTIL.check_for_events(ref, event_ref, props)
-	
-	if !res.is_empty():
-		GBL.find_node(REFS.LINE_DRAW).clear()
-		event_data = res
-		await on_events_complete
-	else:
-		restore_player_hud()
-		
-	await U.tick()
-# -----------------------------------
+## -----------------------------------
+#func check_events(ref:int, event_ref:SCP.EVENT_TYPE, props:Dictionary = {}) -> void:
+	#var res:Array = SCP_UTIL.check_for_events(ref, event_ref, props)
+	#
+	#if !res.is_empty():
+		#GBL.find_node(REFS.LINE_DRAW).clear()
+		#event_data = res
+		#await on_events_complete
+	#else:
+		#restore_player_hud()
+		#
+	#await U.tick()
+## -----------------------------------
 
 # -----------------------------------
 func calculate_daily_costs(costs:Array) -> void:
@@ -855,7 +823,7 @@ func calculate_daily_costs(costs:Array) -> void:
 										pass
 										
 						}
-						await triggger_event(EVT.TYPE.IN_DEBT_WARNING, props)
+						#await triggger_event(EVT.TYPE.IN_DEBT_WARNING, props)
 				#----------------------------
 # -----------------------------------
 
@@ -954,15 +922,15 @@ func execute_record_audit() -> void:
 							}
 						})
 						
-						# add experience
-						var leveled_up:bool = RESEARCHER_UTIL.add_experience(researcher.uid, xp_amount)
-						progress_data.record.push_back({
-							"source": REFS.SOURCE.RESEARCHERS,
-							"data": {
-								"xp": xp_amount
-							}
-						})
-						
+						## add experience
+						#var leveled_up:bool = RESEARCHER_UTIL.add_experience(researcher.uid, xp_amount)
+						#progress_data.record.push_back({
+							#"source": REFS.SOURCE.RESEARCHERS,
+							#"data": {
+								#"xp": xp_amount
+							#}
+						#})
+						#
 						
 						#calculate_daily_costs(science_diff)
 # -----------------------------------
@@ -977,11 +945,11 @@ func next_day() -> void:
 
 # ------------------------------------------------------------------------------	
 #region GAMEPLAY FUNCS
-# -----------------------------------
-func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
-	event_data = [EVENT_UTIL.run_event(event, props)]
-	await on_events_complete
-# -----------------------------------
+## -----------------------------------
+#func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
+	#event_data = [EVENT_UTIL.run_event(event, props)]
+	#await on_events_complete
+## -----------------------------------
 
 # -----------------------------------
 func game_over() -> void:
@@ -1188,9 +1156,9 @@ func on_current_phase_update() -> void:
 				PhaseAnnouncement.start("EVENTS")	
 				await U.set_timeout(1.5)
 				# plays any scp events
-				for item in timeline_filter:
-					if "event" in item and !item.event.is_empty():
-						await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
+				#for item in timeline_filter:
+					#if "event" in item and !item.event.is_empty():
+						#await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
 			
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
@@ -1254,136 +1222,6 @@ func on_current_objective_state_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------	SHOP STEPS
-#region ABILITIES
-func open_build() -> bool:
-	var node:Control = BuildContainerPreload.instantiate()
-	node.z_index = 10	
-	add_child(node)
-	
-	await node.activate()
-	await node.start()
-
-	var response:bool = await node.user_response
-	node.queue_free()
-	
-	return response
-# ------------------------
-
-# ------------------------
-func open_store() -> bool:
-	var node:Control = StoreContainerPreload.instantiate()
-	add_child(node)
-	node.z_index = 10
-	
-	await node.activate()
-	await node.start()
-	
-	var response:bool = await node.user_response
-	node.queue_free()
-
-	return response
-# ------------------------
-#
-## ------------------------
-#func hire_researcher(total_options:int = 3) -> bool:
-	#var node:Control = SelectResearcherScreenPreload.instantiate()
-	#add_child(node)
-	#node.z_index = 10
-	#node.total_options = total_options 	
-	#
-	#await node.activate()
-	#await node.start()
-	#
-	#var response:bool = await node.user_response
-	#node.queue_free()
-	#
-	#return response
-## ------------------------
-#
-## ------------------------
-#func promote_researchers() -> bool:
-	#var node:Control = ResearchersContainerPreload.instantiate()
-	#add_child(node)
-	#node.z_index = 10
-	#
-	#await U.tick()
-	#node.activate()
-	#await U.tick()
-	##node.promote(hired_lead_researchers_arr.map(func(i): return i[0])	)
-	#
-	#var response:Dictionary = await node.user_response
-	#node.queue_free()
-	#
-	#return response.action == ACTION.RESEARCHERS.PROMOTED
-## ------------------------
-#endregion
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------	CONTAIN STEPS
-#region CONTAIN STEPS
-func on_current_contain_step_update() -> void:
-	if !is_node_ready():return
-	pass	
-# ------------------------------------------------------------------------------	RECRUIT STEPS
-#endregion
-# ------------------------------------------------------------------------------		
-
-
-# ------------------------------------------------------------------------------		
-#region CURRENT EVENT STEPS
-func on_current_event_step_update() -> void:
-	if !is_node_ready():return
-
-	match current_event_step:
-		EVENT_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-		EVENT_STEPS.START:
-			SUBSCRIBE.suppress_click = true
-			EventContainer = EventContainerPreload.instantiate()
-			add_child(EventContainer)
-			EventContainer.z_index = 10
-			
-			await U.tick()
-			EventContainer.activate()
-			await U.tick()
-			EventContainer.start(event_data)
-			var event_res:Dictionary = await EventContainer.user_response
-			EventContainer.queue_free()
-			
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			# trigger signal
-			on_events_complete.emit(event_res)			
-			# reset and evempty event_data
-			event_data = []
-			#restore_player_hud()
-			current_event_step = EVENT_STEPS.RESET
-#endregion
-# ------------------------------------------------------------------------------		
-
-# ------------------------------------------------------------------------------		
-#region SUMMARY STEPS
-func on_current_summary_step_update() -> void:
-	if !is_node_ready():return
-
-	#match current_summary_step:
-		#SUMMARY_STEPS.RESET:
-			#SUBSCRIBE.suppress_click = false
-			#await restore_player_hud()
-		#SUMMARY_STEPS.START:
-			#SUBSCRIBE.suppress_click = true
-			#await show_only([EndOfPhaseContainer])
-			#EndOfPhaseContainer.start()
-			#await EndOfPhaseContainer.user_response
-			#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			#current_summary_step = SUMMARY_STEPS.RESET
-			#await U.set_timeout(0.5)
-			## trigger signal
-			#on_summary_complete.emit()
-			#
-#endregion
-# ------------------------------------------------------------------------------		
-
 # ------------------------------------------------------------------------------	
 #region SELECT SCP STEPS
 func on_current_select_scp_step_update() -> void:
@@ -1420,19 +1258,6 @@ func on_current_select_scp_step_update() -> void:
 #endregion
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------		
-#region RESEARCHER STEPS
-func on_current_researcher_step_update() -> void:
-	if !is_node_ready():return
-	
-	match current_researcher_step:
-		# ------------------------
-		RESEARCHERS_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-
-
-#endregion
-# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------	CONTROLS
 #region CONTROL UPDATE
