@@ -333,14 +333,19 @@ func _ready() -> void:
 	await U.tick()
 	LineDrawContainer.show()
 	show_only([])
-	
+
+func exit_to_titlescreen() -> void:
+	onExitGame.call(false)
+
+func exit_game() -> void:
+	onExitGame.call(true)
 #endregion
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	START GAME
 #region START GAME
 func start(new_game_data_config:Dictionary = {}) -> void:
-	show()	
+	show()
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	set_process(true)
 	set_physics_process(true)		
@@ -349,13 +354,6 @@ func start(new_game_data_config:Dictionary = {}) -> void:
 	start_new_game(new_game_data_config)
 	
 
-	
-func exit_to_titlescreen() -> void:
-	onExitGame.call(false)
-
-func exit_game() -> void:
-	onExitGame.call(true)
-	
 func setup_scenario(is_new_game:bool) -> void:
 	scenario_data.objectives.push_back({
 		"title": "SURVIVE FOR %s DAYS." % [scenario_data.day_limit],
@@ -431,14 +429,18 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
 		await GAME_UTIL.open_objectives()
 		quicksave(true)
-		
+				
 	# animate out
 	await SetupContainer.end()
 	# update phase and start game
 	current_phase = PHASE.PLAYER
 	
 	# start action
-	ActionContainer.start()
+	# start at ring level
+	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
+		ActionContainer.start(true)		
+	else:
+		ActionContainer.start()
 #endregion
 # ------------------------------------------------------------------------------
 

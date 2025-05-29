@@ -126,7 +126,39 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	super._ready()
+	modulate = Color(1, 1, 1, 0)
+	BtnControls.freeze_and_disable(true)			
+	# set defaults
+	BtnControls.reveal(false)
 	
+	# set reference 
+	GBL.direct_ref["SummaryCard"] = SummaryCard	
+
+	# CREATE NAMETAGS AND ADD THEM TO SCENE
+	for index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+		var new_node:Control = NametagPreload.instantiate()
+		new_node.index = index
+		NameControl.add_child(new_node)
+	
+	hide()		
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------
+func activate() -> void:
+	await U.tick()
+	
+	control_pos_default[ActionPanel] = ActionPanel.position
+	control_pos_default[InvestigatePanel] = InvestigatePanel.position
+	control_pos_default[MiniCardPanel] = MiniCardPanel.position
+	control_pos_default[FloorPreviewPanel] = FloorPreviewPanel.position
+	
+	lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
+
+	update_control_pos(false)
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func start(start_at_ring_level:bool = false) -> void:
 	# -------------------------------------
 	GotoFloorBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
@@ -165,28 +197,11 @@ func _ready() -> void:
 
 	AbilityBtn.onClick = func() -> void:
 		current_mode = MODE.ABILITY			
-
-	#ContainBtn.onClick = func() -> void:
-		#investigate_wrapper(func(): 
-			#await GAME_UTIL.contain_scp()
-		#)
 		
 	DeconstructBtn.onClick = func() -> void:
 		investigate_wrapper(func():
 			await GAME_UTIL.reset_room()
 		)
-	
-	#AssignBtn.onClick = func() -> void:
-		#investigate_wrapper(func():
-			#await GAME_UTIL.assign_researcher()
-		#)
-	#
-	#UnassignBtn.onClick = func() -> void:
-		#investigate_wrapper(func(): 
-			#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-			#var researcher_data:Dictionary = room_extract.researchers[0]
-			#await GAME_UTIL.unassign_researcher(researcher_data)	
-		#)
 	# -------------------------------------
 	
 	# -------------------------------------
@@ -224,39 +239,11 @@ func _ready() -> void:
 			NameControl.show()
 	# -------------------------------------
 	
-	# set defaults
-	BtnControls.reveal(false)
-	
-	# set reference 
-	GBL.direct_ref["SummaryCard"] = SummaryCard	
-
-	# CREATE NAMETAGS AND ADD THEM TO SCENE
-	for index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
-		var new_node:Control = NametagPreload.instantiate()
-		new_node.index = index
-		NameControl.add_child(new_node)
-	
-	hide()		
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------
-func activate() -> void:
-	show()
-	await U.tick()
-	
-	control_pos_default[ActionPanel] = ActionPanel.position
-	control_pos_default[InvestigatePanel] = InvestigatePanel.position
-	control_pos_default[MiniCardPanel] = MiniCardPanel.position
-	control_pos_default[FloorPreviewPanel] = FloorPreviewPanel.position
-	
-	lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
-
-	update_control_pos(false)
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func start() -> void:
 	current_mode = MODE.ACTIONS
+	modulate = Color(1, 1, 1, 1)
+	if start_at_ring_level:
+		camera_settings.type = CAMERA.TYPE.WING_SELECT
+		SUBSCRIBE.camera_settings = camera_settings		
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -691,7 +678,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	var btnlist:Array = [GotoFloorBtn, GotoWingBtn, GotoGeneratorBtn]
 	var actionpanels:Array = [WingActionPanel, FacilityActionPanel, GenActionPanel]
 	
-	
 	match camera_settings.type:
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -849,6 +835,8 @@ func set_backdrop_state(state:bool) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func reveal_floorpreview(state:bool, duration:float = 0.3) -> void:
+	if control_pos.is_empty():return
+	
 	if state:
 		FloorPreviewControl.show()
 		var subviewport:SubViewport = GBL.find_node(REFS.ROOM_NODES).get_preview_viewport()
@@ -863,6 +851,8 @@ func reveal_floorpreview(state:bool, duration:float = 0.3) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_investigate_controls(state:bool, duration:float = 0.3) -> void:
+	if control_pos.is_empty():return
+	
 	is_in_transition = true
 	await U.tween_node_property(InvestigatePanel, "position:y", control_pos[InvestigatePanel].show if state else control_pos[InvestigatePanel].hide, duration)
 	is_in_transition = false
@@ -870,6 +860,8 @@ func reveal_investigate_controls(state:bool, duration:float = 0.3) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_action_controls(state:bool, duration:float = 0.3) -> void:
+	if control_pos.is_empty():return
+	
 	is_in_transition = true
 	await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].show if state else control_pos[ActionPanel].hide, duration)
 	is_in_transition = false
@@ -943,12 +935,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			reveal_cardminipanel(false, duration)
 		# --------------
-		MODE.ACTIONS:
-			# start at ring level
-			if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
-				camera_settings.type = CAMERA.TYPE.WING_SELECT
-				SUBSCRIBE.camera_settings = camera_settings
-					
+		MODE.ACTIONS:					
 			enable_room_focus(false)
 			set_backdrop_state(false)	
 
