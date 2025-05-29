@@ -3,12 +3,10 @@ extends Control
 @onready var TransitionPanel:PanelContainer = $PanelContainer
 @onready var TextureRectUI:TextureRect = $PanelContainer/TextureRect
 
-
 func _ready() -> void:
 	await U.tick()
 	TextureRectUI.hide()
 	
-
 func start(duration:float = 0.3) -> void:
 	TextureRectUI.show()
 	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))

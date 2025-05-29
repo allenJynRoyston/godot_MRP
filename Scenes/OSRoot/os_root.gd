@@ -55,6 +55,10 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var max_energy:bool = true
 @export var all_personnel:bool = false
 @export var researchers_per_room:int = 3
+@export var researchers_by_default:int = 5
+
+@export_category("RESEARCHERS DEBUG")
+@export var xp_needed_for_promotion:int = 0
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
@@ -125,16 +129,23 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
 	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)
 	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
-	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM, researchers_per_room)	
+	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM, researchers_per_room if !is_production_build else 1)
+	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT, researchers_by_default if !is_production_build else 0)
 	
+	# researchers
+	DEBUG.assign(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)	
+	
+
 	DoorScene.onLogin = func() -> void:
 		start_os_layer()
 	
 	OSNode.onBack = func() -> void:
 		current_layer = LAYER.DOOR_LAYER
 	
-	if !Engine.is_editor_hint():
-		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	#if !Engine.is_editor_hint():
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	MousePointer.hide()
+
 
 	if start_at_fullscreen:
 		on_fullscreen_update(resolution)

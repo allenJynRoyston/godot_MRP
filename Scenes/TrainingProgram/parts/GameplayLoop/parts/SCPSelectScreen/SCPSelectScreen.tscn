@@ -1,18 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://cwowqrsr48d6k"]
+[gd_scene load_steps=9 format=3 uid="uid://cwowqrsr48d6k"]
 
-[ext_resource type="Script" uid="uid://bg8kefvvqfmkp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/scp_select_screen.gd" id="1_gm8am"]
+[ext_resource type="Script" uid="uid://bg8kefvvqfmkp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpSelectScreen/ScpSelectScreen.gd" id="1_gm8am"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_rj7tl"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_5kuqm"]
-[ext_resource type="PackedScene" uid="uid://mvalbebjx6bu" path="res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/ScpMiniCard.tscn" id="3_c0hdb"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_4n0e7"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_lyjb2"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="5_hgv5f"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="7_c0hdb"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="9_kbw1j"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7xi8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5kuqm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_24078"]
 
@@ -29,37 +24,6 @@ script = ExtResource("1_gm8am")
 material = ExtResource("2_rj7tl")
 layout_mode = 2
 color = Color(0.52, 0.0866667, 0, 0.603922)
-
-[node name="MiniCardControl" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="MiniCardPanel" type="PanelContainer" parent="MiniCardControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_5kuqm")
-
-[node name="MarginContainer" type="MarginContainer" parent="MiniCardControl/MiniCardPanel"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/margin_left = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MiniCardControl/MiniCardPanel/MarginContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="MiniCardControl/MiniCardPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "ANAMOLOUS EFFECT"
-label_settings = ExtResource("3_5kuqm")
-horizontal_alignment = 1
-
-[node name="ScpMiniCard" parent="MiniCardControl/MiniCardPanel/MarginContainer/VBoxContainer" instance=ExtResource("3_c0hdb")]
-layout_mode = 2
 
 [node name="ContentControl" type="Control" parent="."]
 layout_mode = 2
@@ -91,18 +55,12 @@ layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "SELECT AN SCP"
 label_settings = ExtResource("4_lyjb2")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 400)
 layout_mode = 2
-
-[node name="LessBtn" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4n0e7")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
-flip_h = true
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -111,11 +69,6 @@ theme_override_constants/margin_left = 0
 [node name="ScpList" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
-
-[node name="MoreBtn" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4n0e7")]
-layout_mode = 2
-icon = 10
-inactive_color = Color(1, 1, 1, 1)
 
 [node name="AvailableLabel" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
 visible = false

@@ -35,10 +35,10 @@ enum CARD_TYPE {UNLOCK, PURCHASE}
 		
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 
+var freeze_inputs:bool = false
 var index:int
 var border_color:Color
 
-var is_clickable:bool = false
 var is_already_assigned:bool = false : 
 	set(val):
 		is_already_assigned = val
@@ -92,18 +92,21 @@ func _ready() -> void:
 	
 	
 func reset() -> void:
-	modulate = Color(1, 1, 1, 0.6)
-	border_color = Color.BLACK
+	for node in [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]:
+		node.hide()			
 
 	check_for_promotions = false
 	can_be_promoted = false
 	is_already_assigned = false
 	is_incompatable = false
 	is_assigned_elsewhere = false
-	is_clickable = false
 	is_highlighted = false	
-
-
+	spec_required = {}
+	
+	await U.tick()
+	
+	modulate = Color(1, 1, 1, 0.6)
+	border_color = Color.BLACK
 # --------------------------------------
 
 # --------------------------------------
@@ -135,7 +138,6 @@ func update_content() -> void:
 	if !is_node_ready():return
 	
 	if uid == "":
-		is_clickable = false
 		return
 		
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)
@@ -158,7 +160,6 @@ func update_content() -> void:
 	hint_title = "RESEARCHER"
 	hint_icon = SVGS.TYPE.DRS	
 	hint_description = str(name_title_str, ".")
-	is_clickable = true
 	
 	if !can_be_promoted and check_for_promotions:
 		for node in panel_nodes:
@@ -168,7 +169,6 @@ func update_content() -> void:
 				node.hide()
 		hint_icon = SVGS.TYPE.STOP
 		hint_description = "%s %s" % [name_title_str, "(not eligible for promotion)."]
-		is_clickable = false
 		return
 
 	if is_already_assigned:
@@ -179,9 +179,8 @@ func update_content() -> void:
 				node.hide()
 		hint_icon = SVGS.TYPE.CHECKBOX
 		hint_description = "%s %s" % [name_title_str, "(currently assigned here)."]
-		is_clickable = false
 		return
-		
+	
 	if is_incompatable:
 		for node in panel_nodes:
 			if node in [IncompatablePanel]:
@@ -190,7 +189,6 @@ func update_content() -> void:
 				node.hide()
 		hint_icon = SVGS.TYPE.STOP
 		hint_description = "%s %s" % [name_title_str, "(lacks correct specilization)."]
-		is_clickable = false
 		
 		if !spec_required.is_empty():
 			hint_icon = spec_required.icon
@@ -207,11 +205,15 @@ func update_content() -> void:
 		hint_icon = SVGS.TYPE.STOP
 		hint_description = "%s %s" % [name_title_str, "(assigned to %s)." % [assigned_elsewhere_data.room.details.name]]
 		AssignedElsewhereLabel.text = "ASSIGNED to\r%s" % [assigned_elsewhere_data.room.details.name]
-		is_clickable = true
 		return
 # --------------------------------------		
 
-
+# --------------------------------------	
+func is_clickable() -> bool:
+	if uid == "" or freeze_inputs or is_incompatable or is_already_assigned or (!can_be_promoted and check_for_promotions):
+		return false
+	return true 
+# --------------------------------------	
 
 # --------------------------------------	
 func on_focus(state:bool = false) -> void:

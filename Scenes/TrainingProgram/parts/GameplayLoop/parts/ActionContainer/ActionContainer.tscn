@@ -5,7 +5,7 @@
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_i3yab"]
 [ext_resource type="PackedScene" uid="uid://mvalbebjx6bu" path="res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/ScpMiniCard.tscn" id="3_xathl"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_n6idl"]
-[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="7_ah17n"]
+[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="7_ah17n"]
 [ext_resource type="PackedScene" uid="uid://2wr0honpqb2p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/HotkeyContainer.tscn" id="8_bk83u"]
 [ext_resource type="PackedScene" uid="uid://2egdont4wbiv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ControllerOverlay/ControllerOverlay.tscn" id="9_bk83u"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_58xi4"]
@@ -479,7 +479,7 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_58xi4")
-title = "FLOORPLAN"
+title = "ACTIONS"
 assigned_key = "E"
 icon = 29
 is_disabled = false

@@ -91,24 +91,21 @@ func set_props(new_title:String = "", new_subtitle:String = "", new_image:String
 
 # --------------------------------------------------------------------------------------------------		
 func end(made_changes:bool) -> void:
-	allow_controls = false
+	BtnControls.reveal(false)
+	
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 
-	U.tween_range(1.0, 0.0, 0.3, func(val:float) -> void:
+	await U.tween_range(1.0, 0.0, 0.3, func(val:float) -> void:
 		TextureRectUI.material.set_shader_parameter("bend_amount", val)
 	).finished	
 	
-	U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
-	
-	await BtnControls.reveal(false)
+	await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].hide)
 
 	await U.set_timeout(0.3)
-	
-	confirm_only = false
-	activation_requirements = []
 			
 	user_response.emit(made_changes)
+	queue_free()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------

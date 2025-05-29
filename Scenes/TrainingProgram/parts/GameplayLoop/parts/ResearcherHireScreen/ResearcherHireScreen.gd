@@ -55,6 +55,7 @@ func end(uid:String = "") -> void:
 	await hide_complete
 	await TransitionScreen.end()	
 	user_response.emit(uid)
+	queue_free()
 # -----------------------------------------------	
 
 # -----------------------------------------------

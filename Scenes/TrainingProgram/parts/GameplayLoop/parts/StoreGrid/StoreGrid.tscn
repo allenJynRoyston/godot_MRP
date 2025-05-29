@@ -1,0 +1,107 @@
+[gd_scene load_steps=13 format=3 uid="uid://d35m668pfaxmj"]
+
+[ext_resource type="Script" uid="uid://cuo7fn44s3f17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/store_grid.gd" id="1_v8g2t"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_rerlm"]
+[ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_2ktk6"]
+[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_ne0x7"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="5_it3qm"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_wq8yk"]
+[ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="7_jhptp"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="8_v07qp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jvufl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v8g2t"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rerlm"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[node name="StoreContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.08494, 0.982777)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_d3jd6")
+script = ExtResource("1_v8g2t")
+
+[node name="ColorRectBG" type="ColorRect" parent="."]
+material = ExtResource("2_rerlm")
+layout_mode = 2
+color = Color(0.120418, 0.120418, 0.120418, 1)
+
+[node name="GridSelect" parent="." instance=ExtResource("3_2ktk6")]
+layout_mode = 2
+
+[node name="DetailPanel" parent="." instance=ExtResource("4_ne0x7")]
+layout_mode = 2
+show_researcher_card = false
+show_scp_card = false
+
+[node name="SummaryControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jvufl")
+
+[node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SummaryControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="CostResourceItem" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("5_it3qm")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v8g2t")
+icon = 44
+no_bg = true
+title = "999"
+display_at_bottom = true
+icon_size = Vector2(50, 50)
+
+[node name="IconBtn" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_wq8yk")]
+layout_mode = 2
+icon = 27
+is_hoverable = false
+
+[node name="CostResourceItemDiff" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("5_it3qm")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rerlm")
+icon = 44
+no_bg = true
+title = "999"
+display_at_bottom = true
+is_negative = true
+icon_size = Vector2(50, 50)
+
+[node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("7_jhptp")]
+custom_minimum_size = Vector2(0, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+preview_mode = true
+
+[node name="TransistionScreen" parent="." instance=ExtResource("8_v07qp")]
+z_index = 1
+layout_mode = 2

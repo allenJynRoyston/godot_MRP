@@ -1,16 +1,23 @@
 extends SubscribeWrapper
 
 var GameplayNode:Control
-var ConfirmModal:Control
+#var ConfirmModal:Control
 var Structure3dContainer:Control
 var ToastContainer:Control
 
-const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
-const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
-const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
-const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
-const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
+const ObjectivesPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/ObjectivesContainer.tscn")
 
+const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
+const ResearcherHireScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherHireScreen/ResearcherHireScreen.tscn")
+const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/ResearcherGrid.tscn")
+
+const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
+
+const StoreGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/StoreGrid.tscn")
+const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
+const ScpGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/ScpGrid.tscn")
+
+const z_index_lvl:int = 10
 
 # -----------------------------------
 func find_in_contained(ref:int) -> Dictionary:
@@ -51,7 +58,7 @@ func find_in_available(ref:int) -> Dictionary:
 # ------------------------------------------------------------------------------
 func assign_nodes() -> void:	
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
-	ConfirmModal = GameplayNode.ConfirmModal
+	#ConfirmModal = GameplayNode.ConfirmModal
 	Structure3dContainer = GameplayNode.Structure3dContainer
 	ToastContainer = GameplayNode.ToastContainer
 # ------------------------------------------------------------------------------
@@ -496,24 +503,6 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-
-#func recruit_new_personel(type:RESOURCE.TYPE, amount:int) -> bool:
-	#var dict:Dictionary = RESOURCE_UTIL.return_currency(type)
-	#
-	#ConfirmModal.set_props("Hire %s %s?" % [amount, dict.name], "%s" % ["Overcrowding will occur." if amount > resources_data[type].amount else ""])
-	#await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	#
-	#var confirm:bool = await ConfirmModal.user_response
-	#if confirm:
-		#resources_data[type].amount += amount
-		#SUBSCRIBE.resources_data = resources_data
-		#ToastContainer.add("Hired %s %s!" % [amount, dict.name])
-	#
-	#GameplayNode.restore_showing_state()
-	#return confirm
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
 func reset_room() -> bool:
 	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room
 	var unavailable_rooms:Array = []
@@ -523,10 +512,7 @@ func reset_room() -> bool:
 			unavailable_rooms.push_back(designation)
 	SUBSCRIBE.unavailable_rooms = unavailable_rooms
 
-	ConfirmModal.allow_controls = false
-	ConfirmModal.set_props("Reset room?", "Room will be destroyed, researchers will be unassigned.")
-	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	var confirm:bool = await ConfirmModal.user_response
+	var confirm:bool = await create_modal("Reset room?", "Room will be destroyed, researchers will be unassigned.")
 	SUBSCRIBE.unavailable_rooms = []
 	
 	if confirm:	
@@ -534,7 +520,6 @@ func reset_room() -> bool:
 		var ring_index:int = current_location.ring
 		var room_index:int = current_location.room
 		var reset_arr:Array = purchased_facility_arr.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-		GameplayNode.restore_player_hud()
 		# ---------------------
 		if reset_arr.size() > 0:
 			var reset_item:Dictionary = reset_arr[0]
@@ -559,8 +544,15 @@ func reset_room() -> bool:
 
 # -----------------------------------
 func open_objectives() -> void:
-	GameplayNode.current_objective_state = GameplayNode.OBJECTIVES_STATE.SHOW
-	await GameplayNode.on_objective_signal
+	var ObjectivesNode:Control = ObjectivesPreload.instantiate()
+	ObjectivesNode.z_index = z_index_lvl
+	GameplayNode.add_child(ObjectivesNode)
+	await ObjectivesNode.activate(GameplayNode.scenario_data.objectives)
+	await GameplayNode.show_only([GameplayNode.Structure3dContainer])
+	ObjectivesNode.start()
+
+	await ObjectivesNode.user_response
+	GameplayNode.restore_player_hud()
 # -----------------------------------
 
 # ------------------------------------------------------------------------------	
@@ -575,9 +567,7 @@ func construct_room(allow_placement:bool = true) -> void:
 func trigger_event(event_data:Array) -> Dictionary:
 	var EventContainer:Control = EventContainerPreload.instantiate()
 	GameplayNode.add_child(EventContainer)
-	EventContainer.z_index = 10
-	
-	await U.tick()
+	EventContainer.z_index = z_index_lvl
 	EventContainer.activate()
 	await U.tick()
 	EventContainer.start(event_data)
@@ -586,70 +576,124 @@ func trigger_event(event_data:Array) -> Dictionary:
 	return event_res
 # ---------------------
 
+# ---------------------
+func reveal_scp() -> bool:
+	var list:Array = []
+	
+	# if this is the first one, always make item 0 the first item
+	if scp_data.contained_list.size() == 0:
+		list = [0]
+	else:
+		# check for specific days that only supply specific scps
+		if progress_data.day == 4:
+			list = [4]
+		if progress_data.day == 20:
+			list = [20]
+		if progress_data.day == 24:
+			list = [24]
+	
+	# otherwise, produce three randomly that are not in the contained list
+	if list.is_empty():
+		var unavailable_list:Array = scp_data.contained_list.map(func(x): return x.ref)
+		list = scp_data.available_refs
+	
+	if list.is_empty():
+		return false
+		
+	var ScpSelectScreen:Control = ScpSelectScreenPreload.instantiate()
+	GameplayNode.add_child(ScpSelectScreen)
+	ScpSelectScreen.z_index = z_index_lvl
+	
+	await ScpSelectScreen.activate(list)
+	ScpSelectScreen.start()
+	var response:int = await ScpSelectScreen.user_response
+	
+	if response == -1:
+		return false
+			
+	return true
+# ---------------------
+
 
 # --------------------------------------------------------------------------------------------------	
 func contain_scp() -> bool:
-	var res:Dictionary = await get_new_scp()
+	var ScpGridNode:Control = ScpGridPreload.instantiate()
+	#var res:Dictionary = await get_new_scp()
 	
-	if res.is_empty:
-		ConfirmModal.confirm_only = true
-		ConfirmModal.set_props("There are no items available for containment.")
-		await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-		await ConfirmModal.user_response
-		GameplayNode.restore_player_hud()
-		return false
+	#print("response: ", response)
+	#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+	#
+	#if response.made_selection:
+		#scp_data.available_refs	= SCP_UTIL.get_next_available_refs(response.selected_scp)
+		#SUBSCRIBE.scp_data = scp_data
+	#
+	#SCPSelectScreen.queue_free()	
+	#
+	#await U.tick()
+		#
+	#GameplayNode.SCPSelectScreen.start_selection(list)
+	#var res:Dictionary = await GameplayNode.on_scp_select_complete
+	#res.is_empty = false	
 	
-	if !res.made_selection:
-		GameplayNode.restore_player_hud()
-		return false
-
-	var scp_ref:int = res.selected_scp
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	var breach_events_at:Array = []
-	var use_location:Dictionary = current_location.duplicate(true)
-	
-	for index in scp_details.breach_events_at.size():
-		var val:int = scp_details.breach_events_at[index]
-		var day:int = val + progress_data.day
-		breach_events_at.push_back(day)
-		add_timeline_item({
-			"title": scp_details.name,
-			"icon": SVGS.TYPE.WARNING,
-			"description": "WARNING",
-			"day": day - 2,
-			"location": current_location.duplicate(true),
-			"event": {
-				"scp_ref": scp_ref,
-				"event_ref": SCP.EVENT_TYPE.WARNING,
-				"use_location": use_location,
-				"event_count": index,
-			}
-		})
-		
-		add_timeline_item({
-			"title": scp_details.name,
-			"icon": SVGS.TYPE.DANGER,
-			"description": "DANGER",
-			"day": day,
-			"location": use_location,
-			"event": {
-				"scp_ref": scp_ref,
-				"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
-				"use_location": use_location,
-				"event_count": index,
-			}
-		})		
-
-	# then add to contained list...
-	scp_data.contained_list.push_back({ 
-		"ref": scp_ref,
-		"location": use_location,
-		"contained_on": progress_data.day,
-		"current_phase": 0
-	})
-	
-	# update 
-	SUBSCRIBE.scp_data = scp_data
+	#if res.is_empty():
+		#ConfirmModal.confirm_only = true
+		#ConfirmModal.set_props("There are no items available for containment.")
+		#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
+		#await ConfirmModal.user_response
+		#GameplayNode.restore_player_hud()
+		#return false
+	#
+	#if !res.made_selection:
+		#GameplayNode.restore_player_hud()
+		#return false
+#
+	#var scp_ref:int = res.selected_scp
+	#var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	#var breach_events_at:Array = []
+	#var use_location:Dictionary = current_location.duplicate(true)
+	#
+	#for index in scp_details.breach_events_at.size():
+		#var val:int = scp_details.breach_events_at[index]
+		#var day:int = val + progress_data.day
+		#breach_events_at.push_back(day)
+		#add_timeline_item({
+			#"title": scp_details.name,
+			#"icon": SVGS.TYPE.WARNING,
+			#"description": "WARNING",
+			#"day": day - 2,
+			#"location": current_location.duplicate(true),
+			#"event": {
+				#"scp_ref": scp_ref,
+				#"event_ref": SCP.EVENT_TYPE.WARNING,
+				#"use_location": use_location,
+				#"event_count": index,
+			#}
+		#})
+		#
+		#add_timeline_item({
+			#"title": scp_details.name,
+			#"icon": SVGS.TYPE.DANGER,
+			#"description": "DANGER",
+			#"day": day,
+			#"location": use_location,
+			#"event": {
+				#"scp_ref": scp_ref,
+				#"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
+				#"use_location": use_location,
+				#"event_count": index,
+			#}
+		#})		
+#
+	## then add to contained list...
+	#scp_data.contained_list.push_back({ 
+		#"ref": scp_ref,
+		#"location": use_location,
+		#"contained_on": progress_data.day,
+		#"current_phase": 0
+	#})
+	#
+	## update 
+	#SUBSCRIBE.scp_data = scp_data
 	
 	# play event
 	#await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
@@ -660,15 +704,13 @@ func contain_scp() -> bool:
 
 # --------------------------------------------------------------------------------------------------	
 func clone_researcher() -> bool:
-	var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
-	GameplayNode.add_child(ResearchersContainer)
-	ResearchersContainer.z_index = 10
+	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
+	GameplayNode.add_child(ResearcherGrid)
+	ResearcherGrid.z_index = z_index_lvl
 	
-	await ResearchersContainer.activate()
-	ResearchersContainer.start()
-	var uid:String = await ResearchersContainer.user_response
-	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
-	ResearchersContainer.queue_free()
+	await ResearcherGrid.activate()
+	ResearcherGrid.start()
+	var uid:String = await ResearcherGrid.user_response
 	
 	# empty response means cancel
 	if uid == "":
@@ -695,15 +737,14 @@ func clone_researcher() -> bool:
 
 # --------------------------------------------------------------------------------------------------	
 func promote_researcher() -> bool:	
-	var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
-	GameplayNode.add_child(ResearchersContainer)
-	ResearchersContainer.z_index = 10
+	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
+	GameplayNode.add_child(ResearcherGrid)
+	ResearcherGrid.z_index = z_index_lvl
 	
-	await ResearchersContainer.activate()	
-	ResearchersContainer.promote()
-	var uid:String = await ResearchersContainer.user_response
-	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
-	ResearchersContainer.queue_free()
+	await ResearcherGrid.activate()	
+	ResearcherGrid.promote()
+	var uid:String = await ResearcherGrid.user_response
+
 	
 	# empty response means cancel
 	if uid == "":
@@ -730,16 +771,15 @@ func promote_researcher() -> bool:
 
 # --------------------------------------------------------------------------------------------------	
 func hire_researcher(total_options:int) -> bool:
-	var node:Control = SelectResearcherScreenPreload.instantiate()
-	GameplayNode.add_child(node)
-	node.z_index = 10
-	node.total_options = total_options 	
+	var ResearcherHireNode:Control = ResearcherHireScreenPreload.instantiate()
+	GameplayNode.add_child(ResearcherHireNode)
+	ResearcherHireNode.z_index = z_index_lvl
+	ResearcherHireNode.total_options = total_options 	
 	
-	await node.activate()
-	await node.start()
+	await ResearcherHireNode.activate()
+	ResearcherHireNode.start()
 	
-	var uid:String = await node.user_response
-	node.queue_free()
+	var uid:String = await ResearcherHireNode.user_response
 
 	if uid == "":
 		return false	
@@ -763,19 +803,18 @@ func hire_researcher(total_options:int) -> bool:
 
 # --------------------------------------------------------------------------------------------------	
 func assign_researcher(location_data:Dictionary = current_location) -> bool:
-	var ResearchersContainer:Control = ResearchersContainerPreload.instantiate()
-	GameplayNode.add_child(ResearchersContainer)
-	ResearchersContainer.z_index = 10
+	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
+	GameplayNode.add_child(ResearcherGrid)
+	ResearcherGrid.z_index = 10
 	
 	var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
 		return U.dictionaries_equal(i[10].assigned_to_room, current_location)
 	).map(func(i): return i[0])	
 	
-	await ResearchersContainer.activate()
-	ResearchersContainer.start(assigned_uids, current_location)
-	var uid:String = await ResearchersContainer.user_response
+	await ResearcherGrid.activate()
+	ResearcherGrid.start(assigned_uids, current_location)
+	var uid:String = await ResearcherGrid.user_response
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
-	ResearchersContainer.queue_free()
 
 	# empty response means cancel
 	if uid == "":
@@ -794,13 +833,8 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 
 # --------------------------------------------------------------------------------------------------	
 func unassign_researcher(researcher_data:Dictionary) -> bool:
-	ConfirmModal.allow_controls = false
-	ConfirmModal.set_props("Unassign researcher from this room?", "Researcher will become available.", researcher_data.img_src)
-	await GameplayNode.show_only([Structure3dContainer, ConfirmModal])
-	var confirm:bool = await ConfirmModal.user_response
-	
-	GameplayNode.restore_player_hud()
-	
+	var confirm:bool = await create_modal("Unassign researcher from this room?", "Researcher will become available.", researcher_data.img_src)
+
 	if confirm:
 		SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 			if i[0] == researcher_data.uid:
@@ -808,7 +842,7 @@ func unassign_researcher(researcher_data:Dictionary) -> bool:
 			return i
 		)
 		return true
-
+#
 	return false
 # --------------------------------------------------------------------------------------------------	
 
@@ -832,10 +866,8 @@ func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) 
 	title = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
 	subtitle = "All wings will have their actions frozen." if state else ""
 			
-	ConfirmModal.set_props(title, subtitle)
-	await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
-
+	var confirm:bool = await create_modal(title, subtitle)
+	
 	if confirm:
 		room_config.floor[use_location.floor].in_lockdown = state
 		SUBSCRIBE.room_config = room_config
@@ -843,7 +875,6 @@ func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) 
 	GameplayNode.restore_showing_state()	
 	return confirm
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 func activate_floor(floor_val:int) -> bool:
@@ -856,36 +887,30 @@ func activate_floor(floor_val:int) -> bool:
 	var activation_cost:int = activated_count * 50
 	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
 	
-	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
-	ConfirmModal.set_props("Activate floor %s?" % floor_val)
-	await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
-	
+	var activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
+	var title:String = "Activate floor %s?" % floor_val
+	var subtitle:String = ""
+
+	var confirm:bool = await create_modal(title, subtitle, "", activation_requirements)
+
 	if confirm:
 		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
 		room_config.floor[floor_val].is_powered = true
 		SUBSCRIBE.room_config = room_config
 		SUBSCRIBE.resources_data = resources_data
 			
-	GameplayNode.restore_showing_state()	
 	return confirm
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func upgrade_generator_level(use_location:Dictionary = current_location) -> bool:
-	var title:String
-	var subtitle:String
-
 	var activation_cost:int = 25
 	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
+	var title:String = "Upgrade generator?"
+	var subtitle:String = "X energy will be available per ring."
 
-	title = "Upgrade generator?"
-	subtitle = "X energy will be available per ring."
-	
-	ConfirmModal.activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
-	ConfirmModal.set_props(title, subtitle)
-	await GameplayNode.show_only([GameplayNode.ConfirmModal, GameplayNode.Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
+	var activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
+	var confirm:bool = await create_modal(title, subtitle, "", activation_requirements)
 
 	if confirm:
 		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
@@ -893,58 +918,22 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> bool
 		SUBSCRIBE.base_states = base_states
 		SUBSCRIBE.resources_data = resources_data
 
-	GameplayNode.restore_showing_state()	
 	return confirm
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
 func open_store() -> bool:	
-	var StoreNode:Control = StoreContainerPreload.instantiate()
-	GameplayNode.add_child(StoreNode)
-	StoreNode.z_index = 10
+	var StoreGrid:Control = StoreGridPreload.instantiate()
+	GameplayNode.add_child(StoreGrid)
+	StoreGrid.z_index = 10
 	
-	await StoreNode.activate()
-	await StoreNode.start()
+	await StoreGrid.activate()
+	StoreGrid.start()
 	
-	var response:bool = await StoreNode.user_response
-	StoreNode.queue_free()
+	var response:bool = await StoreGrid.user_response
 
 	return response
 # --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------	
-func get_new_scp() -> Dictionary:
-	var list:Array = []
-	
-	# if this is the first one, always make item 0 the first item
-	if scp_data.contained_list.size() == 0:
-		list = [0, 1, 2]
-	else:
-		# check for specific days that only supply specific scps
-		if progress_data.day == 4:
-			list = [4]
-		if progress_data.day == 20:
-			list = [20]
-		if progress_data.day == 24:
-			list = [24]
-	
-	# otherwise, produce three randomly that are not in the contained list
-	if list.is_empty():
-		var unavailable_list:Array = scp_data.contained_list.map(func(x): return x.ref)
-		list = scp_data.available_refs
-	
-	if list.is_empty():
-		return {"is_empty": true}
-		
-	GameplayNode.current_select_scp_step = GameplayNode.SELECT_SCP_STEPS.START
-	await U.tick()
-		
-	GameplayNode.SCPSelectScreen.start_selection(list)
-	var res:Dictionary = await GameplayNode.on_scp_select_complete
-	res.is_empty = false
-	
-	return res
-# --------------------------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
@@ -953,50 +942,52 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var testing_index:int = scp_data.contained_list[contained_data.index].testing_completed
 	
-	if testing_index >= scp_details.testing_options.size():
-		ConfirmModal.set_props("There's no additional test scenarios available.")
-		await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-		await ConfirmModal.user_response
-		GameplayNode.restore_showing_state()	
-		return true
-	
-	var testing_event:Dictionary = scp_details.testing_options[testing_index]
-	ConfirmModal.activation_requirements = SCP_UTIL.return_testing_requirements(scp_ref, testing_index)
-	ConfirmModal.set_props("Begin testing on %s?" % [scp_details.name], "THERE ARE RISKS ASSOCIATED WITH TESTING.", scp_details.img_src)
-	await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-	var confirm:bool = await ConfirmModal.user_response
+	#if testing_index >= scp_details.testing_options.size():
+		#ConfirmModal.set_props("There's no additional test scenarios available.")
+		#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
+		#await ConfirmModal.user_response
+		#GameplayNode.restore_showing_state()	
+		#return true
+	#
+	#var testing_event:Dictionary = scp_details.testing_options[testing_index]
+	#ConfirmModal.activation_requirements = SCP_UTIL.return_testing_requirements(scp_ref, testing_index)
+	#ConfirmModal.set_props("Begin testing on %s?" % [scp_details.name], "THERE ARE RISKS ASSOCIATED WITH TESTING.", scp_details.img_src)
+	#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
+	#var confirm:bool = await ConfirmModal.user_response
 	
 	#TODO: ADD EVENT 	
-	if confirm:
-		SUBSCRIBE.resources_data = SCP_UTIL.calculate_testing_costs(scp_ref, testing_index)
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details(from_location)		
-		GameplayNode.event_data = [{"event_instructions": testing_event.event_instructions.call(extract_data, 0)}]
-		await GameplayNode.on_events_complete
-		# increament and save
-		scp_data.contained_list[contained_data.index].testing_completed = U.min_max( contained_data.data.testing_completed + 1, 0, scp_details.testing_options.size())
-		SUBSCRIBE.scp_data = scp_data		
-		# need to restore hud here
-		await U.tick()
-		GameplayNode.restore_player_hud()
-		
-	else:
-		GameplayNode.restore_showing_state()	
-	
-	return confirm
+	#if confirm:
+		#SUBSCRIBE.resources_data = SCP_UTIL.calculate_testing_costs(scp_ref, testing_index)
+		#var extract_data:Dictionary = GAME_UTIL.extract_room_details(from_location)		
+		#GameplayNode.event_data = [{"event_instructions": testing_event.event_instructions.call(extract_data, 0)}]
+		#await GameplayNode.on_events_complete
+		## increament and save
+		#scp_data.contained_list[contained_data.index].testing_completed = U.min_max( contained_data.data.testing_completed + 1, 0, scp_details.testing_options.size())
+		#SUBSCRIBE.scp_data = scp_data		
+		## need to restore hud here
+		#await U.tick()
+		#GameplayNode.restore_player_hud()
+		#
+	#else:
+		#GameplayNode.restore_showing_state()	
+	#
+	#return confirm
+	return false
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], color_bg:Color = Color(0, 0, 0, 0), activation_cost:Array = []) -> bool:
+func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
 	var ConfirmNode:Control = ConfirmModalPreload.instantiate()
 	ConfirmNode.z_index = 100	
 	GameplayNode.add_child(ConfirmNode)
 	ConfirmNode.set_props(title, subtitle, img_src, color_bg)
+	ConfirmNode.allow_controls = allow_controls
+	
 	await ConfirmNode.activate(false)
 	ConfirmNode.activation_requirements = activation_requirements
 	
 	ConfirmNode.start()
 	var confirm:bool = await ConfirmNode.user_response	
-	ConfirmNode.queue_free()
 	return confirm
 # ------------------------------------------------------------------------------
 

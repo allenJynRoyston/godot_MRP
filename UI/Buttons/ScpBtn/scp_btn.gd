@@ -51,7 +51,7 @@ func on_scp_ref_update() -> void:
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
 	if !is_node_ready():return
-	print(scp_data)
+	#print(scp_data)
 	
 func on_is_selected_update() -> void:
 	if !is_node_ready():return

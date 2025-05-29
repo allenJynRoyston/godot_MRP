@@ -109,7 +109,6 @@ layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_q6d11")
 no_bg = true
-checkbox_color = Color(1, 1, 1, 1)
 is_checked = true
 title = "BUILD HQ"
 
@@ -118,7 +117,6 @@ layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_h6i7u")
 no_bg = true
-checkbox_color = Color(1, 1, 1, 1)
 title = "BUILD DIRECTORS OFFICE"
 
 [node name="CheckBox3" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList" instance=ExtResource("3_hbjce")]
@@ -126,7 +124,6 @@ layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_s3s3v")
 no_bg = true
-checkbox_color = Color(1, 1, 1, 1)
 title = "CONTAIN ONE SCP"
 
 [node name="BtnControls" parent="." instance=ExtResource("4_q6d11")]

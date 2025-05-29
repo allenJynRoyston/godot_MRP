@@ -1,0 +1,67 @@
+[gd_scene load_steps=8 format=3 uid="uid://bqjbewhv2mf4t"]
+
+[ext_resource type="Script" uid="uid://c7eagduyswmvv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/researcher_grid.gd" id="1_rkkng"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_2ut8e"]
+[ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_40vgl"]
+[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_wj66r"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_i3ues"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gm34h"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
+
+[node name="ResearcherGrid" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_gm34h")
+script = ExtResource("1_rkkng")
+
+[node name="ColorRectBG" type="ColorRect" parent="."]
+material = ExtResource("2_2ut8e")
+layout_mode = 2
+color = Color(0.120418, 0.120418, 0.120418, 1)
+
+[node name="SummaryControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_18rtl")
+
+[node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SummaryControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 1200)
+layout_mode = 2
+expand_mode = 4
+stretch_mode = 6
+
+[node name="GridSelect" parent="." instance=ExtResource("3_40vgl")]
+layout_mode = 2
+
+[node name="DetailPanel" parent="." instance=ExtResource("4_wj66r")]
+layout_mode = 2
+show_room_card = false
+show_scp_card = false
+
+[node name="TransistionScreen" parent="." instance=ExtResource("5_i3ues")]
+z_index = 1
+layout_mode = 2

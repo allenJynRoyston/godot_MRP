@@ -394,7 +394,7 @@ func on_current_instruction_update() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func on_option_select() -> void:
-	if option_selected_index == -1 or OptionsListContainer.get_child(option_selected_index).is_locked:return
+	if option_selected_index == -1 or option_selected_index > OptionsListContainer.get_child_count() or OptionsListContainer.get_child(option_selected_index).is_locked:return
 	
 	update_next_btn(false)
 	

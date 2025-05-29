@@ -178,7 +178,7 @@ func on_tab_index_update() -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func on_grid_index_update() -> void:
-	if !is_node_ready() or grid_index == -1:return
+	if !is_node_ready() or grid_index == -1 or grid_list_data.is_empty():return
 	BtnControls.item_index = grid_index
 
 	if current_mode == MODE.CONTENT_SELECT:
@@ -205,6 +205,11 @@ func reveal_tabs(show:bool, duration:float = 0.3) -> void:
 func freeze_and_disable(state:bool, animate:bool = false) -> void:
 	if animate:
 		await BtnControls.reveal(!state)
+
+	for n in GridContent.get_child_count():
+		var card_node:Control = GridContent.get_child(n)
+		if "freeze_inputs" in card_node:
+			card_node.freeze_inputs = state
 			
 	BtnControls.freeze_and_disable(state)	
 	freeze_inputs = state
@@ -287,7 +292,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			reveal_tabs(true)
 			await reveal_content(true)			
 			
-			BtnControls.reveal(true)
 			BtnControls.itemlist = Tabs.get_children()
 			BtnControls.directional_pref = "LR"
 			BtnControls.disable_active_btn = false
@@ -298,6 +302,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				pass
 				
 			await U.tick()
+			BtnControls.reveal(true)
 			BtnControls.item_index = tab_index
 
 			for n in GridContent.get_child_count():

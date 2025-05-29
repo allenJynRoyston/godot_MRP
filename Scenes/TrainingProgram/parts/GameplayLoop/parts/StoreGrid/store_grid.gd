@@ -58,10 +58,10 @@ func setup_gridselect() -> void:
 		CostResourceDiff.title = str(U.min_max(resources_data[RESOURCE.CURRENCY.SCIENCE].amount - data.details.costs.unlock, 0, resources_data[RESOURCE.CURRENCY.SCIENCE].capacity))
 		CostResourceDiff.is_negative = !can_afford
 		
+		GridSelect.BtnControls.disable_active_btn = !can_afford
+		
 		if data.details.requires_unlock:
-			if data.ref not in shop_unlock_purchases:
-				GridSelect.BtnControls.disable_active_btn = !can_afford
-			else:
+			if data.ref in shop_unlock_purchases:
 				GridSelect.BtnControls.disable_active_btn = true
 		else:
 			GridSelect.BtnControls.disable_active_btn = true
@@ -105,10 +105,12 @@ func activate() -> void:
 		"show": 0, 
 		"hide": -SummaryMargin.size.x
 	}	
+	await U.tick()
 
 	SummaryPanel.position.x = control_pos[SummaryPanel].hide
+	await U.tick()
 	
-
+	
 func start() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	TransitionScreen.start()	
@@ -118,11 +120,11 @@ func start() -> void:
 	GridSelect.start(ShopMiniCardPreload, init_func)
 	
 	
-	
 func end() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.3)	
 	await TransitionScreen.end()
 	user_response.emit(made_changes)
+	queue_free()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -140,7 +142,7 @@ func unlock_room(ref:int) -> void:
 		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)
 	}]
 	
-	var confirm:bool = await GAME_UTIL.create_modal("Unlock %s?" % room_details.name, room_details.description, room_details.img_src, activation_requirements, Color(0, 0, 0, 0.7))
+	var confirm:bool = await GAME_UTIL.create_modal("Unlock %s?" % room_details.name, room_details.description, room_details.img_src, activation_requirements, false)
 	if confirm:
 		if room_details.ref not in shop_unlock_purchases:
 			shop_unlock_purchases.push_back(room_details.ref)
@@ -167,5 +169,5 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 
 # --------------------------------------------------------------------------------------------------			
 func can_afford_check(cost:int) -> bool:
-	return resources_data[RESOURCE.CURRENCY.MONEY].amount > abs(cost)
+	return resources_data[RESOURCE.CURRENCY.SCIENCE].amount >= abs(cost)
 # --------------------------------------------------------------------------------------------------			

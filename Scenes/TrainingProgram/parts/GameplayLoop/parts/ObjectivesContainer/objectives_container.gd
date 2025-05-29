@@ -2,11 +2,7 @@ extends GameContainer
 
 @onready var ObjectivesControlPanel:MarginContainer = $ObjectivesControl/MarginContainer
 @onready var ObjectivesList:VBoxContainer = $ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList
-
 @onready var BtnControls:Control = $BtnControls
-#@onready var BtnControlPanel:MarginContainer = $BtnControl/MarginContainer
-#@onready var RightSideBtnList:HBoxContainer = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList
-#@onready var BackBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/BackBtn
 
 enum MODE {HIDE, ACTIVE}
 
@@ -25,60 +21,42 @@ var objectives:Array = [] :
 		on_objectives_update()
 		
 # --------------------------------------------------------------------------------------------------
-func _init() -> void:
-	super._init()
-
-func _exit_tree() -> void:
-	super._exit_tree()
-
 func _ready() -> void:
 	super._ready()
-	
-	BtnControls.onBack = func() -> void:
-		end()
+	modulate = Color(1, 1, 1, 0)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func start() -> void:
 	current_mode = MODE.ACTIVE
+	modulate = Color(1, 1, 1, 1)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:						
-	current_mode = MODE.HIDE
-	await mode_updated
+	BtnControls.reveal(false)
+	await U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].hide)
 	user_response.emit()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
-func activate() -> void:
-	show()
+func activate(_objectives:Array = []) -> void:
+	objectives = _objectives
 	await U.tick()
 
 	control_pos_default[ObjectivesControlPanel] = ObjectivesControlPanel.position
-
-	update_control_pos()
-	on_is_showing_update()
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func on_fullscreen_update(state:bool) -> void:
-	update_control_pos()
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------		
-func update_control_pos() -> void:	
-	await U.tick()
-	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
-	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
 	
-	# for eelements in the top right
+	await U.tick()
 	control_pos[ObjectivesControlPanel] = {
-		"show": control_pos_default[ObjectivesControlPanel].y, 
-		"hide": control_pos_default[ObjectivesControlPanel].y - ObjectivesControlPanel.size.y
+		"show": 0, 
+		"hide": -ObjectivesControlPanel.size.y
 	}	
 	
-	on_current_mode_update(true)
+	await U.tick()
+	ObjectivesControlPanel.position.y = control_pos[ObjectivesControlPanel].hide
+	on_room_config_update()	
+	
+	await U.tick()	
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
@@ -86,19 +64,15 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
 	var duration:float = 0 if skip_animation else 0.3
 	match current_mode:
-		MODE.HIDE:
-			BtnControls.reveal(false)
-			await U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].hide, duration)
-			hide()
 		MODE.ACTIVE:
 			await U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].show, duration)	
 			await BtnControls.reveal(true)
-	
-	mode_updated.emit()
+			BtnControls.onBack = func() -> void:
+				end()			
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_room_config_update(new_val:Dictionary) -> void:
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	super.on_room_config_update(new_val)
 	if !is_node_ready():return
 	for index in objectives.size():

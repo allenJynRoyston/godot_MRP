@@ -1,38 +1,17 @@
 extends PanelContainer
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
-
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var ResourceContainer:Control = $ResourceContainer
-@onready var ObjectivesContainer:PanelContainer = $ObjectivesContainer
 @onready var LineDrawContainer:PanelContainer = $LineDrawContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
-
-@onready var RoomInfo:PanelContainer = $RoomInfo
-@onready var FloorInfo:PanelContainer = $FloorInfo
-
-@onready var ConfirmModal:PanelContainer = $ConfirmModal
 @onready var WaitContainer:PanelContainer = $WaitContainer
-@onready var SetupContainer:PanelContainer = $SetupContainer
+@onready var TransitionScreen:Control = $TransitionScreen
 
-@onready var TransitionScreen:Control = $TransistionScreen
-
-#var BuildContainer:Control 
-var SCPSelectScreen:Control 
-var SelectResearcherScreen:Control
-#var StoreContainer:Control
-var EventContainer:Control 
-
-#const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
-#const StoreContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/StoreContainer.tscn")
-#const SelectResearcherScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SelectResearcherScreen/SelectResearcherScreen.tscn")
-const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
-#const ResearcherPromotionScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherPromotionScreen/ResearcherPromotionScreen.tscn")
-#const BuildContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BuildContainer/BuildContainer.tscn")
-#const ResearchersContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/ResearchersContainer.tscn")
+const SetupContainedPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn")
 
 enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, GAME_WON, GAME_LOST }
 
@@ -41,41 +20,10 @@ enum OBJECTIVES_STATE {
 	SHOW
 }
 
-enum SHOP_STEPS {
-	RESET, 
-	OPEN
-}
-
-enum BUILDER_STEPS {
-	RESET, 
-	OPEN
-}
-
-enum RECRUIT_STEPS {
-	RESET, 
-	OPEN
-}
-
-enum CONTAIN_STEPS {
-	RESET, START, SHOW, PLACEMENT, CONFIRM_PLACEMENT, 
-	ON_REJECT, ON_TRANSFER_CANCEL, 
-	ON_TRANSFER_TO_NEW_LOCATION, 
-	CONFIRM, FINALIZE
-}
-
-enum ACTION_COMPLETE_STEPS {RESET, START, FINALIZE}
-enum SUMMARY_STEPS {RESET, START, DISMISS}
-enum RESEARCHERS_STEPS {RESET, DETAILS_ONLY, ASSIGN, PROMOTE}
-enum EVENT_STEPS {RESET, START}
 enum SELECT_SCP_STEPS { RESET, START }
-enum PROMOTE_RESEARCHER_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
-#@export var skip_progress_screen:bool = true
-#@export var debug_energy:bool = false
-#@export var debug_personnel:bool = false
-
 var show_structures:bool = true: 
 	set(val):
 		show_structures = val
@@ -91,11 +39,6 @@ var show_actions:bool = false :
 		show_actions = val
 		on_show_actions_update()
 
-var show_objectives:bool = false : 
-	set(val):
-		show_objectives = val
-		on_show_objectives_update()		
-
 var show_dialogue:bool = false : 
 	set(val):
 		show_dialogue = val
@@ -105,11 +48,6 @@ var show_linedraw:bool = true :
 	set(val):
 		show_linedraw = val
 		on_show_linedraw_update()
-		
-var show_confirm_modal:bool = false : 
-	set(val):
-		show_confirm_modal = val
-		on_show_confirm_modal_update()
 		
 var show_resources:bool = false : 
 	set(val):
@@ -333,14 +271,6 @@ var is_busy:bool = false :
 var setup_complete:bool = false
 var scenario_data:Dictionary
 var scenario_ref:int
-var selected_support_hire:Dictionary = {}
-var selected_lead_hire:Dictionary = {}
-var selected_shop_item:Dictionary = {}
-var selected_refund_item:Dictionary = {}
-var selected_contain_item:Dictionary = {} 
-var selected_researcher_item:Dictionary = {}
-var selected_scp_details:Dictionary = {} 
-var expired_scp_items:Array = [] 
 var awarded_rooms:Array = []
 
 var current_location_snapshot:Dictionary 
@@ -354,44 +284,13 @@ var completed_actions:Array = [] :
 	set(val):
 		completed_actions = val
 
-
 var current_phase:PHASE = PHASE.STARTUP : 
 	set(val):
 		current_phase = val
 		on_current_phase_update()
 
-		
-var current_select_scp_step:SELECT_SCP_STEPS = SELECT_SCP_STEPS.RESET : 
-	set(val):
-		current_select_scp_step = val
-		on_current_select_scp_step_update()
-
-
-var current_objective_state:OBJECTIVES_STATE = OBJECTIVES_STATE.HIDE : 
-	set(val):
-		current_objective_state = val
-		on_current_objective_state_update()
-
 signal phase_cycle_complete
-signal store_select_location
-signal on_complete_build_complete
-signal on_expired_scp_items_complete
 signal on_events_complete
-signal on_summary_complete
-signal on_store_closedt
-#signal on_store_purchase_complete
-signal on_confirm_complete
-signal on_cancel_construction_complete
-signal on_reset_room_complete
-
-signal on_contain_reset
-signal on_recruit_complete
-signal on_researcher_component_complete
-signal on_assign_researcher_complete
-signal on_scp_testing_complete
-signal on_scp_select_complete
-signal on_promote_researcher_complete 
-signal on_promotions_complete
 signal on_objective_signal
 
 #endregion
@@ -445,6 +344,11 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
+
+	# initially all animation speed is set to 0 but after this is all ready, set animation speed
+	for node in get_all_container_nodes():
+		node.set_process(false)
+		node.set_physics_process(false)			
 	
 	# first these
 	on_show_structures_update()
@@ -452,11 +356,9 @@ func _ready() -> void:
 
 	on_show_dialogue_update()
 	on_show_resources_update()
-	on_show_objectives_update()
 	on_show_linedraw_update()
 	
 	# other
-	on_show_confirm_modal_update()
 	on_is_busy_update()
 
 	# get default showing state
@@ -465,11 +367,6 @@ func _ready() -> void:
 	# assign
 	GAME_UTIL.assign_nodes()
 	
-	# initially all animation speed is set to 0 but after this is all ready, set animation speed
-	for node in get_all_container_nodes():
-		node.set_process(false)
-		node.set_physics_process(false)		
-
 	await U.tick()
 	LineDrawContainer.show()
 	show_only([])
@@ -484,14 +381,11 @@ func start(new_game_data_config:Dictionary = {}) -> void:
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	set_process(true)
 	set_physics_process(true)		
-	for node in get_all_container_nodes():
-		node.set_process(true)
-		node.set_physics_process(true)
-		node.activate()
 	
 	await U.tick()
 	start_new_game(new_game_data_config)
 	
+
 	
 func exit_to_titlescreen() -> void:
 	onExitGame.call(false)
@@ -505,10 +399,7 @@ func setup_scenario(is_new_game:bool) -> void:
 		"is_completed": func() -> bool:
 			return progress_data.day >= scenario_data.day_limit
 	})
-	
-	# updates objectives
-	ObjectivesContainer.objectives = scenario_data.objectives	
-	
+		
 	# add endgame timeline object
 	if is_new_game:
 		GAME_UTIL.add_timeline_item({
@@ -522,56 +413,64 @@ func setup_scenario(is_new_game:bool) -> void:
 
 func start_new_game(game_data_config:Dictionary) -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	
-	# trigger reset if applicable
-	for node in get_all_container_nodes():
-		if "on_reset" in node:
-			node.on_reset()	
+	# -----------------------
+	var SetupContainer:Control = SetupContainedPreload.instantiate()
+	add_child(SetupContainer)
+	SetupContainer.z_index = 100
 	
-	# progress screen
-	if !skip_progress_screen:
-		SetupContainer.show()
-		SetupContainer.title = "SETTING UP... PLEASE WAIT."
-		SetupContainer.subtitle = "SORTING FILES..."
-		SetupContainer.progressbar_val = 0
-		await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.7)
-		
-		SetupContainer.subtitle = "RESETING THE MATRIX..."
-		SetupContainer.progressbar_val = 0.3
-		await U.set_timeout(0.5)	
-
-		SetupContainer.subtitle = "LOADING SAVE FILE..."
-		SetupContainer.progressbar_val = 0.7
-		await U.set_timeout(0.5)		
-		await parse_restore_data(game_data_config)
+	await SetupContainer.start()
+	SetupContainer.title = "SETTING UP... PLEASE WAIT."
+	SetupContainer.subtitle = "SORTING FILES..."
+	SetupContainer.progressbar_val = 0
+	# 1.) loading game data config
+	await parse_restore_data(game_data_config)
+	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
 	
-		SetupContainer.subtitle = "PREDICTING THE FUTURE..."
-		SetupContainer.progressbar_val = 0.9
-		await U.set_timeout(0.5)			
-	
-		SetupContainer.subtitle = "READY!  PROGRAM STARTING..."
-		SetupContainer.progressbar_val = 1.0	
-		await U.set_timeout(0.5)
-	else:
-		U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0)
-		await parse_restore_data(game_data_config)
-		await U.set_timeout(1.0)
-	
-	# runs room config once everything is ready
-	await U.tween_node_property(SetupContainer, "modulate", Color(1, 1, 1, 0), 0.7)
-	SetupContainer.queue_free()
+	# -----------------------
+	SetupContainer.subtitle = "READING DATA CONFIG..."
+	SetupContainer.progressbar_val = 0.3
+	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
+	# 2.) setup game
 	setup_complete = true
 	update_room_config()	
-	setup_scenario(game_data_config.filedata.is_empty())
-		
-	# show objectives on game start
+	setup_scenario(game_data_config.filedata.is_empty())					
+
+	# -----------------------
+	SetupContainer.subtitle = "SETTING DEBUG VALUES..."
+	SetupContainer.progressbar_val = 0.7
+	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
+	# 3.) load any debug options
+	var starting_number_of_researchers:int = DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT)
+	if DEBUG.get_val(DEBUG.NEW_QUICKSAVE_FILE) and starting_number_of_researchers > 0:
+			SUBSCRIBE.hired_lead_researchers_arr = RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers)
+	
+	# -----------------------
+	SetupContainer.subtitle = "CLEANUP..."
+	SetupContainer.progressbar_val = 0.9
+	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)
+	# 4.) reset any nodes
+	for node in get_all_container_nodes():
+		node.set_process(true)
+		node.set_physics_process(true)
+		node.activate()
+		if "on_reset" in node:
+			node.on_reset()			
+	
+	# -----------------------
+	# then show player hud
+	await restore_player_hud()					
+	SetupContainer.subtitle = "STARTING PROGRAM..."
+	SetupContainer.progressbar_val = 1.0	
+	await U.set_timeout(0.3)	
+	# 5.) render everything to screen
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
 		await GAME_UTIL.open_objectives()
 		quicksave(true)
-
-	# then show player hud
-	await restore_player_hud()	
-
+		
+	# animate out
+	await SetupContainer.end()
 	# update phase and start game
 	current_phase = PHASE.PLAYER
 	
@@ -600,7 +499,6 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 		"in_lockdown": false,
 		"array_size": array_size,
 		# --------------
-
 		"ring": { 
 			0: get_ring_defaults(array_size),
 			1: get_ring_defaults(array_size),
@@ -698,13 +596,11 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, 
 		TimelineContainer,
-		ConfirmModal,
 		ActionContainer, 
 		DialogueContainer, 
 		ResourceContainer,
-		ObjectivesContainer,
-		RoomInfo, 
-		FloorInfo, 
+		#RoomInfo, 
+		#FloorInfo, 
 		PhaseAnnouncement, 
 		ToastContainer
 	].filter(func(node): return node not in exclude)
@@ -727,7 +623,6 @@ func restore_showing_state() -> void:
 	await show_only(visible_nodes)
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func capture_default_showing_state() -> void:
 	for node in get_all_container_nodes():
@@ -736,8 +631,7 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	#GBL.find_node(REFS.LINE_DRAW).clear()
-	await show_only([Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer, RoomInfo, FloorInfo])
+	await show_only([Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer])
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -762,28 +656,6 @@ func show_only(nodes:Array = []) -> void:
 
 # ------------------------------------------------------------------------------	
 #region LOCAL FUNCS
-# -----------------------------------
-func get_data_snapshot(self_ref:Dictionary = {}) -> Dictionary:
-	return {
-		"room_config": room_config.duplicate(true),
-		"hired_lead_researchers_arr": hired_lead_researchers_arr.duplicate(true),
-		"scp_data": scp_data.duplicate(true),
-		"resources_data": resources_data.duplicate(true),
-		"purchased_base_arr": purchased_base_arr.duplicate(true),
-		"purchased_facility_arr": purchased_facility_arr.duplicate(true),
-		"purchased_research_arr": purchased_research_arr.duplicate(true),
-		"self_ref": self_ref,
-	}
-	
-func wait_please(duration:float = 0.5) -> void:
-	is_busy = true
-	await U.set_timeout(duration)
-	is_busy = false	
-
-func update_tenative_location(location:Dictionary) -> void:
-	tenative_location = location	
-# -----------------------------------
-
 ## -----------------------------------
 #func check_events(ref:int, event_ref:SCP.EVENT_TYPE, props:Dictionary = {}) -> void:
 	#var res:Array = SCP_UTIL.check_for_events(ref, event_ref, props)
@@ -945,12 +817,6 @@ func next_day() -> void:
 
 # ------------------------------------------------------------------------------	
 #region GAMEPLAY FUNCS
-## -----------------------------------
-#func triggger_event(event:EVT.TYPE, props:Dictionary = {}) -> void:
-	#event_data = [EVENT_UTIL.run_event(event, props)]
-	#await on_events_complete
-## -----------------------------------
-
 # -----------------------------------
 func game_over() -> void:
 	await show_only([])	
@@ -964,9 +830,6 @@ func game_over() -> void:
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
-
-
-
 
 # ------------------------------------------------------------------------------	
 #region local SAVABLE ONUPDATES
@@ -1064,21 +927,10 @@ func on_show_dialogue_update() -> void:
 	DialogueContainer.is_showing = show_dialogue
 	showing_states[DialogueContainer] = show_dialogue
 
-func on_show_confirm_modal_update() -> void:
-	if !is_node_ready():return
-	ConfirmModal.is_showing = show_confirm_modal
-	showing_states[ConfirmModal] = show_confirm_modal
-
 func on_show_resources_update() -> void:
 	if !is_node_ready():return
 	ResourceContainer.is_showing = show_resources
 	showing_states[ResourceContainer] = show_resources
-
-func on_show_objectives_update() -> void:
-	if !is_node_ready():return
-	ObjectivesContainer.is_showing = show_objectives
-	showing_states[ObjectivesContainer] = show_objectives
-
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -1197,80 +1049,6 @@ func on_current_phase_update() -> void:
 		# ------------------------
 # ------------------------------------------------------------------------------
 
-
-# ------------------------------------------------------------------------------	SHOP STEPS
-#region SHOP STATES
-func on_current_objective_state_update() -> void:
-	if !is_node_ready():return
-	
-	match current_objective_state:
-		# ---------------
-		OBJECTIVES_STATE.HIDE:
-			SUBSCRIBE.suppress_click = false
-		# ---------------
-		OBJECTIVES_STATE.SHOW:
-			SUBSCRIBE.suppress_click = true
-			ObjectivesContainer.start()
-			await show_only([ObjectivesContainer, Structure3dContainer])
-			await ObjectivesContainer.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			await restore_player_hud()
-			on_objective_signal.emit()	
-			current_objective_state = OBJECTIVES_STATE.HIDE
-		## ---------------
-
-#endregion
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------	
-#region SELECT SCP STEPS
-func on_current_select_scp_step_update() -> void:
-	if !is_node_ready():return
-
-	match current_select_scp_step:
-		# ------------------------
-		SELECT_SCP_STEPS.RESET:
-			SUBSCRIBE.suppress_click = false
-		# ------------------------
-		SELECT_SCP_STEPS.START:
-			SUBSCRIBE.suppress_click = true
-			SCPSelectScreen = ScpSelectScreenPreload.instantiate()
-			add_child(SCPSelectScreen)
-			SCPSelectScreen.z_index = 10
-				
-			await U.tick()
-			SCPSelectScreen.activate()
-			
-			var response:Dictionary = await SCPSelectScreen.user_response
-			GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-			
-			if response.made_selection:
-				scp_data.available_refs	= SCP_UTIL.get_next_available_refs(response.selected_scp)
-				SUBSCRIBE.scp_data = scp_data
-			
-			SCPSelectScreen.queue_free()
-						
-			
-			# trigger signal
-			on_scp_select_complete.emit(response)
-			current_select_scp_step = SELECT_SCP_STEPS.RESET
-		# ------------------------
-#endregion
-# ------------------------------------------------------------------------------	
-
-
-# ------------------------------------------------------------------------------	CONTROLS
-#region CONTROL UPDATE
-func is_occupied() -> bool:
-	if is_busy or processing_next_day:
-		return true
-	if current_phase != PHASE.PLAYER:
-		return true
-	return false
-
-
-#endregion
-# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	SAVE/LOAD
 #region SAVE/LOAD

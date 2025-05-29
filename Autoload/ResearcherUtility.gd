@@ -436,17 +436,32 @@ func get_randomized_traits(amount:int, exclude:Array) -> Array:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
-func get_specilization(spec:int, start_at:int, limit:int) -> Dictionary:
-	var list:Array = hired_lead_researchers_arr.map(func(x): return return_data_with_uid(x[0]))
-	var filteredlist = list.filter(func(x): 
-		return spec in x.specializations if spec != -1 else x
-	)
+func sort_ascending(a:Dictionary, b:Dictionary) -> bool:
+	return a.level > b.level
 	
+func sort_descending(a:Dictionary, b:Dictionary) -> bool:
+	return a.level < b.level
+	
+func get_specilization(spec:int, start_at:int, limit:int, sort_asc:bool = true) -> Dictionary:
+	var list:Array = hired_lead_researchers_arr.map(func(x): return return_data_with_uid(x[0]))
+
+	# Sort list
+	list.sort_custom(sort_ascending if sort_asc else sort_descending)
+
+	# Filter by specialization
+	var filtered_list: Array = []
+	for item in list:
+		if spec == -1 or spec in item.specializations:
+			filtered_list.append(item)
+
+	# Slice the list based on start_at and limit
+	var sliced_list: Array = filtered_list.slice(start_at, start_at + limit)
+
 	return {
-		"list": filteredlist, 
-		"size": filteredlist.size(), 
-		"has_more": filteredlist.size() > (filteredlist.size() + start_at)
-	}	
+		"list": sliced_list,
+		"size": sliced_list.size(),
+		"has_more": start_at + limit < filtered_list.size()
+	}
 # ------------------------------------------------------------------------------		
 
 
@@ -496,7 +511,8 @@ func add_experience(uid:String, amount:int) -> bool:
 
 # ------------------------------------------------------------------------------	
 func can_be_promoted(uid:String) -> bool:	
-	return hired_lead_researchers_arr.filter(func(i): return i[7] >= 10 and i[0] == uid).size() > 0
+	var xp_required_for_promotion:int = DEBUG.get_val(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION)
+	return hired_lead_researchers_arr.filter(func(i): return i[7] >= xp_required_for_promotion and i[0] == uid).size() > 0
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		

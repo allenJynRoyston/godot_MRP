@@ -21,9 +21,17 @@ var progressbar_val:float = 0.0 :
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	self.modulate = Color(1, 1, 1, 0)
 	on_progressbar_val_update()
 	on_title_update()
 	on_subtitle_update()
+
+func start() -> void:
+	self.modulate = Color(1, 1, 1, 1)
+
+func end() -> void:
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.5)
+	self.queue_free()	
 
 func on_title_update() -> void:
 	if !is_node_ready():return

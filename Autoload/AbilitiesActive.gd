@@ -1,6 +1,8 @@
 extends Node
 
 enum REF {
+	REVEAL_SCP, 
+	
 	TRIGGER_ONSITE_NUKE,
 	
 	CLONE_RESEARCHER, HIRE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
@@ -9,6 +11,17 @@ enum REF {
 	
 	MONEY_HACK, SCIENCE_HACK, CONVERT_TO_SCIENCE, CONVERT_TO_MONEY
 }
+
+# ---------------------------------
+var reveal_scp:Dictionary = {
+	"name": "REVEAL SCP",
+	"description": "Reveal an SCP's anamolous effect.",
+	"science_cost": 0,
+	"cooldown_duration":  0, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.reveal_scp(),
+}
+# ---------------------------------
 
 # ---------------------------------
 var trigger_onsite_nuke:Dictionary = {
@@ -36,8 +49,8 @@ var unlock_facilities:Dictionary = {
 var promote_researchers:Dictionary = {
 	"name": "PROMOTE RESEARCHER",
 	"description": "Promote a researcher.",
-	"science_cost": 50,
-	"cooldown_duration":  5, 
+	"science_cost": 0,
+	"cooldown_duration":  0, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.promote_researcher(),
 }
@@ -54,8 +67,8 @@ var clone_researcher:Dictionary = {
 var hire_researcher:Dictionary = {
 	"name": "HIRE RESEARCHER",
 	"description": "Hire a researcher.",
-	"science_cost": 50,
-	"cooldown_duration":  1, 
+	"science_cost": 0,
+	"cooldown_duration":  0, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.hire_researcher(3)
 }
@@ -129,6 +142,8 @@ var convert_science_to_money:Dictionary = {
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
 	match ref:
+		REF.REVEAL_SCP:
+			ability = reveal_scp
 		# -----------------------------=
 		REF.TRIGGER_ONSITE_NUKE:
 			ability = trigger_onsite_nuke

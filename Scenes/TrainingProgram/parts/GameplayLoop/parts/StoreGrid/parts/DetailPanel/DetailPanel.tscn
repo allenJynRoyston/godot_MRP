@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://cxkkni8jbnrqq"]
 
-[ext_resource type="Script" uid="uid://b121casmumllb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/detail_panel.gd" id="1_ifskr"]
+[ext_resource type="Script" uid="uid://b121casmumllb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/detail_panel.gd" id="1_ifskr"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_8ajdb"]
 [ext_resource type="PackedScene" uid="uid://cey4msk4p7tpa" path="res://Scenes/TrainingProgram/parts/Cards/ROOM/RoomCard.tscn" id="2_xwi2o"]
 [ext_resource type="PackedScene" uid="uid://dmgj730nihsve" path="res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn" id="3_xwi2o"]

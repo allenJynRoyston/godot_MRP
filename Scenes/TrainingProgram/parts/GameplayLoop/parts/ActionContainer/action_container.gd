@@ -440,7 +440,7 @@ func show_build_options() -> void:
 	
 	# ACTIVATE NODE
 	add_child(ActiveMenuNode)
-	await U.tick()
+	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
 	
 
@@ -510,7 +510,7 @@ func show_generator_updates() -> void:
 	
 	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
-	await U.tick()
+	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
 
@@ -550,7 +550,7 @@ func show_facility_updates() -> void:
 	
 	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
-	await U.tick()
+	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
 
@@ -609,6 +609,15 @@ func show_settings() -> void:
 						"description": "Exit your current game."
 					},
 					"action": func() -> void:
+						get_tree().quit(),
+				},				
+				{
+					"title": "Return to Desktop",
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"description": "Exit your current game."
+					},
+					"action": func() -> void:
 						await GameplayNode.quicksave()
 						GameplayNode.exit_game(),
 				},
@@ -646,7 +655,7 @@ func show_settings() -> void:
 	ActiveMenuNode.options_list = options
 	
 	add_child(ActiveMenuNode)
-	await U.tick()
+	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
 
@@ -1053,7 +1062,7 @@ func check_if_contain_is_valid() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or GameplayNode.is_occupied() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_showing or is_in_transition or freeze_inputs or is_busy:return	
+	if !is_node_ready() or !is_visible_in_tree() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_showing or is_in_transition or freeze_inputs or is_busy:return	
 	if current_mode == MODE.ABILITY:return
 	var key:String = input_data.key
 	is_busy = true

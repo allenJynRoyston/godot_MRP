@@ -1,26 +1,26 @@
-[gd_scene load_steps=8 format=3 uid="uid://bqjbewhv2mf4t"]
+[gd_scene load_steps=8 format=3 uid="uid://h60sdjb0774i"]
 
-[ext_resource type="Script" uid="uid://c7eagduyswmvv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearchersContainer/researchers_container.gd" id="1_u5c0a"]
-[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_oj23j"]
-[ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_xudhu"]
-[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreContainer/parts/DetailPanel/DetailPanel.tscn" id="4_d8g8h"]
-[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="13_oj23j"]
+[ext_resource type="Script" uid="uid://c7eagduyswmvv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/researcher_grid.gd" id="1_hgl7s"]
+[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_miqia"]
+[ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_fypad"]
+[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_dlnnq"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_dsv86"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gm34h"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
 
-[node name="ResearcherContainer" type="PanelContainer"]
+[node name="ScpGrid" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_gm34h")
-script = ExtResource("1_u5c0a")
+script = ExtResource("1_hgl7s")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_oj23j")
+material = ExtResource("2_miqia")
 layout_mode = 2
 color = Color(0.120418, 0.120418, 0.120418, 1)
 
@@ -54,14 +54,14 @@ layout_mode = 2
 expand_mode = 4
 stretch_mode = 6
 
-[node name="GridSelect" parent="." instance=ExtResource("3_xudhu")]
+[node name="GridSelect" parent="." instance=ExtResource("3_fypad")]
 layout_mode = 2
 
-[node name="DetailPanel" parent="." instance=ExtResource("4_d8g8h")]
+[node name="DetailPanel" parent="." instance=ExtResource("4_dlnnq")]
 layout_mode = 2
 show_room_card = false
 show_scp_card = false
 
-[node name="TransistionScreen" parent="." instance=ExtResource("13_oj23j")]
+[node name="TransistionScreen" parent="." instance=ExtResource("5_dsv86")]
 z_index = 1
 layout_mode = 2

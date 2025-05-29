@@ -107,7 +107,6 @@ func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	HintControl.hide()	
 	on_hint_border_color_update()
-	activate()
 	CardBody.reveal = false
 	GBL.direct_ref["ActiveMenu"] = CardBody
 # ------------------------------------------------------------------------------
@@ -119,17 +118,19 @@ func activate() -> void:
 	
 	control_pos_default[MenuPanel] = MenuPanel.position
 	control_pos_default[BtnPanel] = BtnPanel.position
+	await U.tick()
 
 	control_pos[MenuPanel] = {
-		"show": control_pos_default[MenuPanel].x, 
-		"hide": control_pos_default[MenuPanel].x - MenuMargin.size.x
+		"show": 0, 
+		"hide": -MenuMargin.size.x
 	}
 	
 	control_pos[BtnPanel] = {
-		"show": control_pos_default[BtnPanel].y, 
-		"hide": control_pos_default[BtnPanel].y + BtnMargin.size.y
+		"show": 0, 
+		"hide": BtnMargin.size.y
 	}	
 	
+	await U.tick()
 	MenuPanel.position.x = control_pos[MenuPanel].hide
 	BtnPanel.position.y = control_pos[BtnPanel].hide
 # ------------------------------------------------------------------------------
@@ -152,16 +153,20 @@ func close() -> void:
 	queue_free()
 
 func lock() -> void:
+	freeze_inputs = true
 	for btn in [ABtn, BBtn]:
 		btn.is_disabled = true
+		
 	await U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].hide, 0.3)	
 	await U.set_timeout(0.2)
 
 func unlock() -> void:
 	await U.tween_node_property(BtnPanel, "position:y", control_pos[BtnPanel].show, 0.3)
+	await U.set_timeout(0.2)
+	
 	for btn in [ABtn, BBtn]:
 		btn.is_disabled = false
-	await U.set_timeout(0.2)
+	freeze_inputs = false
 # ------------------------------------------------------------------------------
 
 	
