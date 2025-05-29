@@ -17,7 +17,7 @@ colors = PackedColorArray(0, 0, 0, 0, 0.133196, 0.133196, 0.133196, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_xwi2o"]
 gradient = SubResource("Gradient_e52w3")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8kq0r"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qemqr"]
 bg_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
 border_width_left = 2
 border_width_top = 2
@@ -29,7 +29,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tayen"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v48pi"]
 bg_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
 border_width_left = 2
 border_width_top = 2
@@ -41,7 +41,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4ujr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wo0v0"]
 bg_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
 border_width_left = 2
 border_width_top = 2
@@ -139,7 +139,7 @@ alignment = 1
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_8kq0r")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qemqr")
 title = "PREV"
 assigned_key = "L1"
 icon = 28
@@ -150,7 +150,7 @@ hide_icon_panel = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_tayen")
+theme_override_styles/panel = SubResource("StyleBoxFlat_v48pi")
 title = "FLIP"
 assigned_key = "F"
 icon = 56
@@ -161,7 +161,7 @@ hide_icon_panel = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_b4ujr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wo0v0")
 title = "NEXT"
 assigned_key = "R1"
 icon = 27

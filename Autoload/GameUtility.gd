@@ -1,59 +1,21 @@
 extends SubscribeWrapper
 
-var GameplayNode:Control
-#var ConfirmModal:Control
-var Structure3dContainer:Control
-var ToastContainer:Control
-
 const ObjectivesPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/ObjectivesContainer.tscn")
-
 const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
-const ResearcherHireScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherHireScreen/ResearcherHireScreen.tscn")
-const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/ResearcherGrid.tscn")
-
 const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
 
-const StoreGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/StoreGrid.tscn")
+const ResearcherHireScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherHireScreen/ResearcherHireScreen.tscn")
 const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
+
+const StoreGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/StoreGrid.tscn")
 const ScpGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/ScpGrid.tscn")
+const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/ResearcherGrid.tscn")
 
 const z_index_lvl:int = 10
 
-# -----------------------------------
-func find_in_contained(ref:int) -> Dictionary:
-	var index:int = -1
-	var res_data:Dictionary = {} 
-
-	for ind in scp_data.contained_list.size():
-		var data:Dictionary = scp_data.contained_list[ind]
-		if data.ref == ref:
-			index = ind
-			res_data = data
-			break	
-	
-	return {
-		"index": index,
-		"data": res_data
-	}
-# -----------------------------------	
-
-# -----------------------------------
-func find_in_available(ref:int) -> Dictionary:
-	var index:int = -1
-	var res_data:Dictionary = {} 
-
-	for ind in scp_data.available_list.size():
-		var data:Dictionary = scp_data.available_list[ind]
-		if data.ref == ref:
-			index = ind
-			res_data = data
-			break	
-	
-	return {
-		"index": index,
-		"data": res_data
-	}
-# -----------------------------------	
+var GameplayNode:Control
+var Structure3dContainer:Control
+var ToastContainer:Control
 
 # ------------------------------------------------------------------------------
 func assign_nodes() -> void:	
@@ -548,7 +510,7 @@ func open_objectives() -> void:
 	ObjectivesNode.z_index = z_index_lvl
 	GameplayNode.add_child(ObjectivesNode)
 	await ObjectivesNode.activate(GameplayNode.scenario_data.objectives)
-	await GameplayNode.show_only([GameplayNode.Structure3dContainer])
+	GameplayNode.show_only([Structure3dContainer])
 	ObjectivesNode.start()
 
 	await ObjectivesNode.user_response
@@ -618,72 +580,52 @@ func reveal_scp() -> bool:
 # --------------------------------------------------------------------------------------------------	
 func contain_scp() -> bool:
 	var ScpGridNode:Control = ScpGridPreload.instantiate()
-	#var res:Dictionary = await get_new_scp()
+	GameplayNode.add_child(ScpGridNode)
+	ScpGridNode.z_index = z_index_lvl
 	
-	#print("response: ", response)
-	#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-	#
-	#if response.made_selection:
-		#scp_data.available_refs	= SCP_UTIL.get_next_available_refs(response.selected_scp)
-		#SUBSCRIBE.scp_data = scp_data
-	#
-	#SCPSelectScreen.queue_free()	
-	#
-	#await U.tick()
-		#
-	#GameplayNode.SCPSelectScreen.start_selection(list)
-	#var res:Dictionary = await GameplayNode.on_scp_select_complete
-	#res.is_empty = false	
+	await ScpGridNode.activate()
+	ScpGridNode.start()
+	var scp_ref:int = await ScpGridNode.user_response
 	
-	#if res.is_empty():
-		#ConfirmModal.confirm_only = true
-		#ConfirmModal.set_props("There are no items available for containment.")
-		#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-		#await ConfirmModal.user_response
-		#GameplayNode.restore_player_hud()
-		#return false
-	#
-	#if !res.made_selection:
-		#GameplayNode.restore_player_hud()
-		#return false
+	if scp_ref == -1:
+		return false
 #
-	#var scp_ref:int = res.selected_scp
-	#var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	#var breach_events_at:Array = []
-	#var use_location:Dictionary = current_location.duplicate(true)
-	#
-	#for index in scp_details.breach_events_at.size():
-		#var val:int = scp_details.breach_events_at[index]
-		#var day:int = val + progress_data.day
-		#breach_events_at.push_back(day)
-		#add_timeline_item({
-			#"title": scp_details.name,
-			#"icon": SVGS.TYPE.WARNING,
-			#"description": "WARNING",
-			#"day": day - 2,
-			#"location": current_location.duplicate(true),
-			#"event": {
-				#"scp_ref": scp_ref,
-				#"event_ref": SCP.EVENT_TYPE.WARNING,
-				#"use_location": use_location,
-				#"event_count": index,
-			#}
-		#})
-		#
-		#add_timeline_item({
-			#"title": scp_details.name,
-			#"icon": SVGS.TYPE.DANGER,
-			#"description": "DANGER",
-			#"day": day,
-			#"location": use_location,
-			#"event": {
-				#"scp_ref": scp_ref,
-				#"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
-				#"use_location": use_location,
-				#"event_count": index,
-			#}
-		#})		
-#
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	var breach_events_at:Array = []
+	var use_location:Dictionary = current_location.duplicate(true)
+	
+	for index in scp_details.breach_events_at.size():
+		var val:int = scp_details.breach_events_at[index]
+		var day:int = val + progress_data.day
+		breach_events_at.push_back(day)
+		add_timeline_item({
+			"title": scp_details.name,
+			"icon": SVGS.TYPE.WARNING,
+			"description": "WARNING",
+			"day": day - 2,
+			"location": current_location.duplicate(true),
+			"event": {
+				"scp_ref": scp_ref,
+				"event_ref": SCP.EVENT_TYPE.WARNING,
+				"use_location": use_location,
+				"event_count": index,
+			}
+		})
+		
+		add_timeline_item({
+			"title": scp_details.name,
+			"icon": SVGS.TYPE.DANGER,
+			"description": "DANGER",
+			"day": day,
+			"location": use_location,
+			"event": {
+				"scp_ref": scp_ref,
+				"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
+				"use_location": use_location,
+				"event_count": index,
+			}
+		})		
+
 	## then add to contained list...
 	#scp_data.contained_list.push_back({ 
 		#"ref": scp_ref,
@@ -694,6 +636,7 @@ func contain_scp() -> bool:
 	#
 	## update 
 	#SUBSCRIBE.scp_data = scp_data
+	#print(SUBSCRIBE.scp_data)
 	
 	# play event
 	#await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
@@ -938,9 +881,9 @@ func open_store() -> bool:
 # ------------------------------------------------------------------------------
 func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	SUBSCRIBE.suppress_click = true
-	var contained_data:Dictionary = find_in_contained(scp_ref)
+	#var contained_data:Dictionary = find_in_contained(scp_ref)
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	var testing_index:int = scp_data.contained_list[contained_data.index].testing_completed
+	#var testing_index:int = scp_data.contained_list[contained_data.index].testing_completed
 	
 	#if testing_index >= scp_details.testing_options.size():
 		#ConfirmModal.set_props("There's no additional test scenarios available.")

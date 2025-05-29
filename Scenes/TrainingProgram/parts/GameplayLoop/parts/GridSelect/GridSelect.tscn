@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://m5qomxk6amc4"]
+[gd_scene load_steps=9 format=3 uid="uid://m5qomxk6amc4"]
 
 [ext_resource type="Script" uid="uid://b2dei8vuk454c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/grid_select.gd" id="1_7gsg3"]
-[ext_resource type="PackedScene" uid="uid://cd46j3ltrkmdv" path="res://UI/Buttons/TabBtn/TabBtn.tscn" id="2_vcb3m"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_nl7vn"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_56hia"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="6_gdquo"]
@@ -52,20 +51,6 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 50
 alignment = 1
-
-[node name="TabBtn" parent="TabControl/PanelContainer/MarginContainer/Categories/Tabs" instance=ExtResource("2_vcb3m")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-is_selected = true
-title = "FACILITY"
-
-[node name="TabBtn2" parent="TabControl/PanelContainer/MarginContainer/Categories/Tabs" instance=ExtResource("2_vcb3m")]
-layout_mode = 2
-title = "CONTAINMENT"
-
-[node name="TabBtn3" parent="TabControl/PanelContainer/MarginContainer/Categories/Tabs" instance=ExtResource("2_vcb3m")]
-layout_mode = 2
-title = "SUPPORT"
 
 [node name="HeaderControl" type="Control" parent="."]
 layout_mode = 2

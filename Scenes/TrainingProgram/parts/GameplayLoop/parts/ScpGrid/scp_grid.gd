@@ -2,6 +2,7 @@ extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var BtnControls:Control = $BtnControls
+@onready var DetailsPanel:Control = $DetailPanel
 
 @onready var GridSelect:Control = $GridSelect
 @onready var DetailPanel:Control = $DetailPanel
@@ -9,108 +10,72 @@ extends GameContainer
 
 @onready var SummaryPanel:Control = $SummaryControl/PanelContainer
 @onready var SummaryMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
-@onready var SummaryImage:TextureRect = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/TextureRect
 
-const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
+const ScpMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/ScpMiniCard.tscn")
 
 var use_location:Dictionary = {}
-var assigned_uids:Array = []
-var check_for_compatability:bool = false
-var check_for_promotions:bool = false
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	self.modulate = Color(1, 1, 1, 0)
-	DetailPanel.cycle_to_reseacher(true)
-	
+	DetailsPanel.cycle_to_scp(true)
 	setup_gridselect()		
 
 func setup_gridselect() -> void:
 	# ---------------- GRID_SELECT CONFIG
 	var tabs:Array = [
 		{
-			"title": "CONTAINED",
+			"title": "AVAILABLE",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return RESEARCHER_UTIL.get_specilization(-1, start_at, end_at),
+				return SCP_UTIL.get_list(start_at, end_at),
 		}
 	]
 	
-	var available_specs:Array = RESEARCHER_UTIL.get_list_of_specilizations()
-	for item in available_specs:
-		tabs.push_back({
-			"title": item.shortname,
-			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return RESEARCHER_UTIL.get_specilization(item.ref, start_at, end_at),
-		})	
-	
+
 	GridSelect.tabs = tabs
 	
 	GridSelect.onModeTab = func() -> void:
 		reveal_node(SummaryPanel, false)
-		DetailPanel.reveal(false)
+		DetailsPanel.reveal(false)
+
 	
 	GridSelect.onModeContent = func() -> void:
 		reveal_node(SummaryPanel, true)
-		DetailPanel.reveal(true)
-	
+		DetailsPanel.reveal(true)
+		
 	GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
-		var is_compatable:bool = true
-		GridSelect.BtnControls.disable_active_btn = !is_compatable
+		pass
+		#GridSelect.BtnControls.disable_active_btn = !is_compatable
+
 			
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
-		node.uid = ""
+		node.scp_ref = -1
 		node.onHover = func() -> void: pass
 		node.onClick = func() -> void: pass		
 	
 	GridSelect.onUpdateNode = func(node:Control, data:Dictionary, index:int) -> void:		
 		node.index = index
-		node.uid = data.uid
-		node.is_hoverable = true
-		node.check_for_promotions = check_for_promotions
-		
-		if check_for_compatability:
-			var extract_data:Dictionary = GAME_UTIL.extract_room_details(use_location)
-			var res:Dictionary = ROOM_UTIL.check_for_pairing(extract_data.room.details.ref, [data])
-			node.spec_required = RESEARCHER_UTIL.return_specialization_data(extract_data.room.details.pairs_with.specilization)
-			node.is_incompatable = !res.match_spec
-			node.assigned_elsewhere_data = {} if data.props.assigned_to_room.is_empty() else GAME_UTIL.extract_room_details(data.props.assigned_to_room)
-			node.is_assigned_elsewhere = !data.props.assigned_to_room.is_empty() and data.uid not in assigned_uids
-			node.is_already_assigned = data.uid in assigned_uids
-		else:
-			node.is_incompatable = false
-			node.is_assigned_elsewhere = false
-			node.is_already_assigned = false
-			node.can_be_promoted = RESEARCHER_UTIL.can_be_promoted(data.uid)
+		node.scp_ref = data.ref
 
-				
 		node.onHover = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
 			GridSelect.grid_index = index
-			DetailPanel.researcher_uid = data.uid
-			SummaryImage.texture = CACHE.fetch_image(data.img_src)
+			DetailPanel.scp_ref = data.ref
 			
 		node.onClick = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable():return
 			GridSelect.freeze_and_disable(true)
 			GridSelect.grid_index = index
-			
-			if node.is_assigned_elsewhere:
-				await GridSelect.freeze_and_disable(true, true)
-				var confirm:bool = await GAME_UTIL.create_modal(str("Reassign researcher %s to this facility?" % [data.name]), "Will be removed from %s." % node.assigned_elsewhere_data.room.details.name , data.img_src)
-				if !confirm:
-					GridSelect.freeze_and_disable(false, true)
-					return
-
-			end(data.uid)
+			end(data.ref)
 	
 	GridSelect.onValidCheck = func(node:Control) -> bool:
-		return node.uid != ""
+		return true
 	
-	GridSelect.onAction = func():
+	GridSelect.onAction = func() -> void:
 		pass
 		
-	GridSelect.onEnd = func():
+	GridSelect.onEnd = func() -> void:
 		end()	
 
 func activate() -> void:
@@ -120,38 +85,27 @@ func activate() -> void:
 		"show": 0, 
 		"hide": -SummaryMargin.size.x
 	}	
+	
+	await DetailsPanel.reveal(false)
 
 	SummaryPanel.position.x = control_pos[SummaryPanel].hide
+	
+	await U.tick()
 
 func start(_assigned_uids:Array = [], _use_location:Dictionary = {}) -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	TransitionScreen.start()	
-	
 	use_location = _use_location
-	assigned_uids = _assigned_uids
-	check_for_compatability = !use_location.is_empty()
 	
 	var init_func:Callable = func(node:Control) -> void:
-		node.uid = ""
-	GridSelect.start(ResearcherMiniCard, init_func)
-
-
-func promote() -> void:
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
-	TransitionScreen.start()	
+		node.scp_ref = -1
+		
+	GridSelect.start(ScpMiniCardPreload, init_func)
 	
-	check_for_promotions = true
-	check_for_compatability = false
-	
-	var init_func:Callable = func(node:Control) -> void:
-		node.uid = ""
-	GridSelect.start(ResearcherMiniCard, init_func)
-	
-	
-func end(uid:String = "") -> void:
+func end(scp_ref:int = -1) -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.3)	
 	await TransitionScreen.end()
-	user_response.emit(uid)
+	user_response.emit(scp_ref)
 	queue_free()
 # --------------------------------------------------------------------------------------------------
 

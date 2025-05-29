@@ -238,8 +238,6 @@ var SCP_TEMPLATE:Dictionary = {
 }
 
 
-
-
 # ------------------------------------------------------------------------------
 func _enter_tree() -> void:
 	var dlc_dir:DirAccess = DirAccess.open(dlc_folder)
@@ -339,14 +337,17 @@ func fill_template(data:Dictionary, ref:int) -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func get_next_available_refs(just_added_scp:int) -> Array:
-	var already_contained:Array = scp_data.contained_list.map(func(x): return x.ref)
-	already_contained.push_back(just_added_scp)
-	
-	var filtered:Array = reference_list.filter(func(x): return x not in already_contained)
-	filtered.shuffle()
+func get_list(start_at:int, limit:int) -> Dictionary:
+	var list:Array = reference_list.map(func(x): return return_data(x))
 
-	return filtered.slice(0, min(3, filtered.size()))
+	# Slice the list based on start_at and limit
+	var sliced_list:Array = list.slice(start_at, start_at + limit)
+
+	return {
+		"list": sliced_list,
+		"size": sliced_list.size(),
+		"has_more": start_at + limit < sliced_list.size()
+	}
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

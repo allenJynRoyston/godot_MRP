@@ -126,11 +126,6 @@ var reference_list:Dictionary = {
 					return ROOM_UTIL.owns_and_is_active(0),
 			},
 			{
-				"title": "Contain an anamolous object in a containment cell.", 
-				"is_completed":func() -> bool:
-					return scp_data.contained_list.size() > 0,
-			},
-			{
 				"title": "Hire a lead researcher.", 
 				"is_completed":func() -> bool:
 					return ROOM_UTIL.owns_and_is_active(0),
@@ -172,11 +167,6 @@ var reference_list:Dictionary = {
 					return ROOM_UTIL.owns_and_is_active(0),
 			},
 			{
-				"title": "Contain an anamolous object in a containment cell.", 
-				"is_completed":func() -> bool:
-					return scp_data.contained_list.size() > 0,
-			},
-			{
 				"title": "Hire a lead researcher.", 
 				"is_completed":func() -> bool:
 					return ROOM_UTIL.owns_and_is_active(0),
@@ -216,11 +206,6 @@ var reference_list:Dictionary = {
 				"title": "Build a CONTAINMENT CELL.", 
 				"is_completed":func() -> bool:
 					return ROOM_UTIL.owns_and_is_active(0),
-			},
-			{
-				"title": "Contain an anamolous object in a containment cell.", 
-				"is_completed":func() -> bool:
-					return scp_data.contained_list.size() > 0,
 			},
 			{
 				"title": "Hire a lead researcher.", 

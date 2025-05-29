@@ -207,7 +207,7 @@ func on_room_ref_update() -> void:
 	RoomCard.ref = room_ref
 	
 func on_scp_ref_update() -> void:
-	if !is_node_ready() or use_location.is_empty():return
+	if !is_node_ready() or (use_location.is_empty() and !disable_location):return
 	ScpCard.use_location = use_location if !disable_location else {}
 	ScpCard.ref = scp_ref
 	

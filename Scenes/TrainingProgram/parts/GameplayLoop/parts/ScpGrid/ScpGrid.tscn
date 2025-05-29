@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://h60sdjb0774i"]
 
-[ext_resource type="Script" uid="uid://c7eagduyswmvv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/researcher_grid.gd" id="1_hgl7s"]
+[ext_resource type="Script" uid="uid://crkc5a52sevq1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/scp_grid.gd" id="1_ibfck"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_miqia"]
 [ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_fypad"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_dlnnq"]
@@ -17,7 +17,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_gm34h")
-script = ExtResource("1_hgl7s")
+script = ExtResource("1_ibfck")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
 material = ExtResource("2_miqia")
@@ -48,19 +48,14 @@ layout_mode = 2
 theme_override_constants/separation = 25
 alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 1200)
-layout_mode = 2
-expand_mode = 4
-stretch_mode = 6
-
 [node name="GridSelect" parent="." instance=ExtResource("3_fypad")]
 layout_mode = 2
 
 [node name="DetailPanel" parent="." instance=ExtResource("4_dlnnq")]
 layout_mode = 2
+show_researcher_card = false
 show_room_card = false
-show_scp_card = false
+disable_location = true
 
 [node name="TransistionScreen" parent="." instance=ExtResource("5_dsv86")]
 z_index = 1

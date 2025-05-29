@@ -560,10 +560,10 @@ func show_settings() -> void:
 		return GBL.is_fullscreen
 		
 	var is_enable_nametags_checked:Callable = func() -> bool:
-		return gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_NAMETAGS]
+		return true
 		
 	var is_ability_hints_checked:Callable = func() -> bool:
-		return gameplay_conditionals[CONDITIONALS.TYPE.UI_ENABLE_ABILITY_HINTS]
+		return true
 	
 	var options:Array = [
 		{

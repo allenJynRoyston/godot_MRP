@@ -24,14 +24,14 @@ func on_scp_data_update(new_val:Dictionary) -> void:
 
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or scp_data.is_empty():return
-	var designation:String = str(current_location.floor, current_location.ring)
-	var use_ref:int = -1
-	for item in scp_data.contained_list:
-		var scp_designation:String = str(item.location.floor, item.location.ring)
-		if designation == scp_designation:
-			use_ref = item.ref
-	ref = use_ref
-			
+	#var designation:String = str(current_location.floor, current_location.ring)
+	#var use_ref:int = -1
+	#for item in scp_data.contained_list:
+		#var scp_designation:String = str(item.location.floor, item.location.ring)
+		#if designation == scp_designation:
+			#use_ref = item.ref
+	#ref = use_ref
+			#
 
 func on_ref_update() -> void:
 	if !is_node_ready():return

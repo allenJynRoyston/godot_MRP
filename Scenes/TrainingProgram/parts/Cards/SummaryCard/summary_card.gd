@@ -28,10 +28,10 @@ var room_ref:int = -1 :
 		room_ref = val
 		on_room_ref_update()
 		
-#var scp_ref:int = -1 : 
-	#set(val):
-		#scp_ref = val
-		#on_scp_ref_update()
+var scp_ref:int = -1 : 
+	set(val):
+		scp_ref = val
+		on_scp_ref_update()
 		#
 #var researchers:Array = [] : 
 	#set(val):
@@ -108,7 +108,6 @@ func update_room_label() -> void:
 	TextNode.content = "%s" % [room_details.name]
 	LvlNode.content = str(abl_lvl)
 	
-var previous_room_ref:int
 func on_room_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
 	var LvlNode:Control = RoomDetails.get_child(0)
@@ -171,6 +170,12 @@ func on_room_ref_update() -> void:
 	await U.tick()
 	CardControlBody.size = Vector2(1, 1)
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_scp_ref_update() -> void:
+	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func get_ability_btns() -> Array:
