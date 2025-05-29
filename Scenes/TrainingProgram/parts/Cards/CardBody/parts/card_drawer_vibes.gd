@@ -12,6 +12,8 @@ extends CardDrawerClass
 		metrics = val
 		on_metrics_update()
 
+var is_researched:bool = true
+
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
 func _ready() -> void:
@@ -26,8 +28,8 @@ func on_metrics_update() -> void:
 		var amount:int = metrics[key]
 		match key:
 			RESOURCE.METRICS.MORALE:
-				MoraleLabel.text = "%s%s" % ["+" if amount > 0 else "", amount]
+				MoraleLabel.text = "%s%s" % ["+" if amount > 0 else "", amount] if is_researched else "?"
 			RESOURCE.METRICS.SAFETY:
-				SafetyLabel.text = "%s%s" % ["+" if amount > 0 else "", amount]
+				SafetyLabel.text = "%s%s" % ["+" if amount > 0 else "", amount]  if is_researched else "?"
 			RESOURCE.METRICS.READINESS:
-				ReadinessLabel.text = "%s%s" % ["+" if amount > 0 else "", amount]
+				ReadinessLabel.text = "%s%s" % ["+" if amount > 0 else "", amount]  if is_researched else "?"

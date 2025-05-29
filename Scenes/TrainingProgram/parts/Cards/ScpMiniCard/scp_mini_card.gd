@@ -1,8 +1,8 @@
 extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody
-@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle
-@onready var ScpImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
+@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
+@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
 
 @export var flip:bool = false : 
 	set(val):
@@ -18,8 +18,10 @@ extends MouseInteractions
 	set(val):
 		scp_ref = val
 		on_scp_ref_update()
-		
+
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
+
+var scp_data:Dictionary = {}
 
 var freeze_inputs:bool = false
 var index:int
@@ -32,9 +34,11 @@ var onDismiss:Callable = func():pass
 # --------------------------------------
 func _init() -> void:
 	super._init()
+	SUBSCRIBE.subscribe_to_scp_data(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_scp_data(self)
 
 
 func _ready() -> void:
@@ -46,6 +50,7 @@ func _ready() -> void:
 	on_focus()
 	on_scp_ref_update()
 	on_is_highlighted_update()
+	on_scp_data_update()
 	reset()
 	
 	
@@ -81,19 +86,31 @@ func on_scp_ref_update() -> void:
 	if !is_node_ready():return	
 	CardBody.instant_flip(scp_ref == -1)	
 	update_content()
+
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val
+	if !is_node_ready():return
+	update_content()
 # --------------------------------------		
 
 # --------------------------------------		
 func update_content() -> void:	
-	if !is_node_ready():return
+	if !is_node_ready() or scp_data.is_empty():return
 	
 	if scp_ref == -1:
+		ScpName.content = ""
+		ScpEffect.content = ""
 		return
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	var is_researched:bool = scp_ref in scp_data.researched
 	
 	ScpName.content = "%s\r%s" % [scp_details.name, scp_details.nickname]
-	ScpImage.img_src = scp_details.img_src
+	ScpEffect.content = scp_details.effects.description if is_researched else "UNKNOWN"
+
+	hint_title = "HINT"
+	hint_icon = SVGS.TYPE.CONTAIN
+	hint_description = scp_details.description 	
 # --------------------------------------		
 
 # --------------------------------------	

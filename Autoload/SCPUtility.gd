@@ -337,7 +337,7 @@ func fill_template(data:Dictionary, ref:int) -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func get_list(start_at:int, limit:int) -> Dictionary:
+func get_paginated_list(start_at:int, limit:int) -> Dictionary:
 	var list:Array = reference_list.map(func(x): return return_data(x))
 
 	# Slice the list based on start_at and limit
@@ -345,8 +345,8 @@ func get_list(start_at:int, limit:int) -> Dictionary:
 
 	return {
 		"list": sliced_list,
-		"size": sliced_list.size(),
-		"has_more": start_at + limit < sliced_list.size()
+		"size": list.size(),
+		"has_more": limit < list.size()
 	}
 # ------------------------------------------------------------------------------	
 

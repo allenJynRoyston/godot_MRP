@@ -1402,19 +1402,17 @@ func room_final_pass(new_room_config:Dictionary) -> void:
 		}
 
 func scp_final_pass(new_room_config:Dictionary) -> void:
-	pass
-	# final scp pass, tally currencies
-	#for item in scp_data.contained_list:
-		#var floor:int = item.location.floor
-		#var ring:int = item.location.ring
-		#var room:int = item.location.room	
-		#var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		#
-		## first, add to room config data
-		#room_config.scp_data = {
-			#"ref": item.ref,
-			#"details": SCP_UTIL.return_data(item.ref), 
-		#}			
+	for ref in scp_data.ref:
+		var sdata:Dictionary = scp_data.ref[ref]
+		var floor:int = sdata.location.floor
+		var ring:int = sdata.location.ring
+		var room:int = sdata.location.room	
+		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		# add to room config data
+		room_config.scp_data = {
+			"ref": ref,
+			"details": SCP_UTIL.return_data(ref), 
+		}			
 
 func update_room_config(force_setup:bool = false) -> void:
 	if !setup_complete:return

@@ -346,9 +346,10 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		ability.is_enabled = passives_enabled[ability_uid] if ability_uid in passives_enabled else false
 		passive_abilities.push_back(ability)
 
-	var scp_data:Dictionary = room_config.scp_data 
-	var is_scp_empty:bool = scp_data.is_empty()
-	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(scp_data.ref)
+	var sdata:Dictionary = room_config.scp_data 
+	var is_scp_empty:bool = sdata.is_empty()
+	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(sdata.ref)
+	var is_researched:bool = scp_details.ref in scp_data.researched if !scp_details.is_empty() else false
 
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
@@ -356,7 +357,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			return true
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-	
+		
 	return {
 		"floor_config": floor_config,
 		"ring_config": ring_config,
@@ -370,6 +371,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		"can_destroy": can_destroy,
 		# ------
 		"researchers_count": researchers.size(),
+		"scp_is_researched": is_researched,
 		# -----
 		"room": {
 			"details": room_details,
@@ -530,49 +532,70 @@ func trigger_event(event_data:Array) -> Dictionary:
 	var EventContainer:Control = EventContainerPreload.instantiate()
 	GameplayNode.add_child(EventContainer)
 	EventContainer.z_index = z_index_lvl
-	EventContainer.activate()
-	await U.tick()
+	await EventContainer.activate()
 	EventContainer.start(event_data)
 	var event_res:Dictionary = await EventContainer.user_response
-	EventContainer.queue_free()
 	return event_res
 # ---------------------
 
 # ---------------------
-func reveal_scp() -> bool:
-	var list:Array = []
+#func research_scp() -> bool:
+	#var list:Array = []
+	#
+	## if this is the first one, always make item 0 the first item
+	#if scp_data.contained_list.size() == 0:
+		#list = [0]
+	#else:
+		## check for specific days that only supply specific scps
+		#if progress_data.day == 4:
+			#list = [4]
+		#if progress_data.day == 20:
+			#list = [20]
+		#if progress_data.day == 24:
+			#list = [24]
+	#
+	## otherwise, produce three randomly that are not in the contained list
+	#if list.is_empty():
+		#var unavailable_list:Array = scp_data.contained_list.map(func(x): return x.ref)
+		#list = scp_data.available_refs
+	#
+	#if list.is_empty():
+		#return false
+		#
+	#var ScpSelectScreen:Control = ScpSelectScreenPreload.instantiate()
+	#GameplayNode.add_child(ScpSelectScreen)
+	#ScpSelectScreen.z_index = z_index_lvl
+	#
+	#await ScpSelectScreen.activate(list)
+	#ScpSelectScreen.start()
+	#var response:int = await ScpSelectScreen.user_response
+	#
+	#if response == -1:
+		#return false
+			#
+	#return true
+# ---------------------
+
+# ---------------------
+func research_scp() -> bool:
+	var ScpGridNode:Control = ScpGridPreload.instantiate()
+	GameplayNode.add_child(ScpGridNode)
+	ScpGridNode.z_index = z_index_lvl
 	
-	# if this is the first one, always make item 0 the first item
-	if scp_data.contained_list.size() == 0:
-		list = [0]
-	else:
-		# check for specific days that only supply specific scps
-		if progress_data.day == 4:
-			list = [4]
-		if progress_data.day == 20:
-			list = [20]
-		if progress_data.day == 24:
-			list = [24]
+	await ScpGridNode.activate()
+	ScpGridNode.research()
+	var scp_ref:int = await ScpGridNode.user_response
 	
-	# otherwise, produce three randomly that are not in the contained list
-	if list.is_empty():
-		var unavailable_list:Array = scp_data.contained_list.map(func(x): return x.ref)
-		list = scp_data.available_refs
-	
-	if list.is_empty():
+	if scp_ref == -1:
 		return false
+	
+	if scp_ref not in scp_data.researched:
+		scp_data.researched.push_back(scp_ref)
+		SUBSCRIBE.scp_data = scp_data
 		
-	var ScpSelectScreen:Control = ScpSelectScreenPreload.instantiate()
-	GameplayNode.add_child(ScpSelectScreen)
-	ScpSelectScreen.z_index = z_index_lvl
+		resources_data[RESOURCE.CURRENCY.CORE].amount -= 1
+		SUBSCRIBE.resources_data = resources_data
 	
-	await ScpSelectScreen.activate(list)
-	ScpSelectScreen.start()
-	var response:int = await ScpSelectScreen.user_response
-	
-	if response == -1:
-		return false
-			
 	return true
 # ---------------------
 
@@ -592,7 +615,6 @@ func contain_scp() -> bool:
 #
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var breach_events_at:Array = []
-	var use_location:Dictionary = current_location.duplicate(true)
 	
 	for index in scp_details.breach_events_at.size():
 		var val:int = scp_details.breach_events_at[index]
@@ -603,11 +625,9 @@ func contain_scp() -> bool:
 			"icon": SVGS.TYPE.WARNING,
 			"description": "WARNING",
 			"day": day - 2,
-			"location": current_location.duplicate(true),
 			"event": {
 				"scp_ref": scp_ref,
 				"event_ref": SCP.EVENT_TYPE.WARNING,
-				"use_location": use_location,
 				"event_count": index,
 			}
 		})
@@ -617,30 +637,31 @@ func contain_scp() -> bool:
 			"icon": SVGS.TYPE.DANGER,
 			"description": "DANGER",
 			"day": day,
-			"location": use_location,
 			"event": {
 				"scp_ref": scp_ref,
 				"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
-				"use_location": use_location,
 				"event_count": index,
 			}
 		})		
 
-	## then add to contained list...
-	#scp_data.contained_list.push_back({ 
-		#"ref": scp_ref,
-		#"location": use_location,
-		#"contained_on": progress_data.day,
-		#"current_phase": 0
-	#})
-	#
-	## update 
-	#SUBSCRIBE.scp_data = scp_data
-	#print(SUBSCRIBE.scp_data)
+	# create dict if it doesn't exist
+	if scp_ref not in scp_data.ref:
+		scp_data.ref[scp_ref] = {}
 	
-	# play event
+	# then update entry
+	scp_data.ref[scp_ref] = {
+		"location": current_location.duplicate(true),
+		"contained_on": progress_data.day,
+		"breach_results": {}
+	}
+	
+	# save
+	SUBSCRIBE.scp_data = scp_data
+	
+	# TODO: todo trigger event, one for if it's already researched and for one if it isn't	
+	var is_researched:bool = scp_ref in scp_data.researched
+	print("TODO: trigger event: is_researched ", is_researched)
 	#await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
-	
 	# return true
 	return true
 # --------------------------------------------------------------------------------------------------	
@@ -950,7 +971,7 @@ func add_timeline_item(dict:Dictionary) -> void:
 		"icon": dict.icon,
 		"description": dict.description,
 		"day": dict.day,
-		"location": dict.location,
+		"location": dict.location if "location" in dict else {},
 		"event": dict.event if "event" in dict else {},
 	})
 	

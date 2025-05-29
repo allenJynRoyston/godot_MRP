@@ -1,36 +1,22 @@
 @tool
 extends CardDrawerClass
 
-@onready var List:VBoxContainer = $MarginContainer/MarginContainer/List
+@onready var ScpBtn:BtnBase = $MarginContainer/MarginContainer/VBoxContainer/ScpBtn
 
-const ScpBtnPreload:PackedScene = preload("res://UI/Buttons/ScpBtn/ScpBtn.tscn")
-
-var scp_ref:int = 0 : 
-	set(val):
-		scp_ref = val
-		on_scp_ref_update()
-		
 var preview_mode:bool = false
-var use_location:Dictionary = {}
+var use_location:Dictionary = {} : 
+	set(val):
+		use_location = val
+		on_use_location_update()
+		
 var onLock:Callable = func() -> void:pass
 var onUnlock:Callable = func() -> void:pass
 
 func _ready() -> void:
 	super._ready()
-	on_scp_ref_update()
-
-func clear() -> void:
-	for node in List.get_children():
-		node.free()
-
-func on_scp_ref_update() -> void:
-	if !is_node_ready():return
-	clear()
 	
-	var new_btn:Control = ScpBtnPreload.instantiate()
-	new_btn.index = 0
-	new_btn.use_location = use_location
-	new_btn.onClick = func() -> void:
+	ScpBtn.index = 0	
+	ScpBtn.onClick = func() -> void:
 		var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 		# first, disables btns in the card
 		onLock.call()
@@ -43,13 +29,13 @@ func on_scp_ref_update() -> void:
 		# unlocks
 		onUnlock.call()
 		await ActionContainerNode.after_use_ability()	
-	List.add_child(new_btn)
 
-
+func on_use_location_update() -> void:
+	if !is_node_ready():return
+	ScpBtn.use_location = use_location
 
 func lock_btns(state:bool) -> void:
-	for btn in List.get_children():
-		btn.is_hoverable = !state
+	ScpBtn.is_hoverable = !state
 
 func get_btns() -> Array:	
-	return List.get_children()
+	return [ScpBtn]

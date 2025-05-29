@@ -48,7 +48,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.REVEAL_SCP, 0),
+			ABL.get_ability(ABL.REF.RESEARCH_SCP, 0),
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
 			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),

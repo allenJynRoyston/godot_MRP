@@ -79,6 +79,7 @@ func _ready() -> void:
 	clear()
 	self.modulate = Color(1, 1, 1, 0)
 	BtnControls.onDirectional = on_key_press
+	BtnControls.freeze_and_disable(true)
 	
 	await U.tick()
 	control_pos[HeaderPanel]  = {
@@ -301,8 +302,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.onAction = func() -> void:
 				pass
 				
-			await U.tick()
-			BtnControls.reveal(true)
+			await BtnControls.reveal(true)
 			BtnControls.item_index = tab_index
 
 			for n in GridContent.get_child_count():

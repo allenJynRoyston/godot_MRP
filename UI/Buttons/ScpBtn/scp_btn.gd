@@ -42,16 +42,28 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()	
 	on_scp_data_update()
+	update_all()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_scp_ref_update() -> void:
 	if !is_node_ready():return
-
+	update_all()
+	
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-	if !is_node_ready():return
-	#print(scp_data)
+	if !is_node_ready() or scp_data.is_empty():return
+	for ref in scp_data.ref:
+		var entry:Dictionary = scp_data.ref[ref]
+		if entry.location == use_location:
+			is_available = false
+			scp_ref = ref
+			return
+			
+	# is empty
+	is_available = true		
+	scp_ref = -1
+			
 	
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
@@ -91,6 +103,14 @@ func on_panel_color_update() -> void:
 	
 func update_text() -> void:
 	if !is_node_ready():return
+	
+	if scp_ref == -1:
+		NameLabel.text = "CONTAIN..."
+		return
+	
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	NameLabel.text = "%s (%s)" % [scp_details.name, scp_details.nickname]
+	
 	
 	#if researcher.is_empty():
 		#IconBtn.icon = SVGS.TYPE.ASSIGN

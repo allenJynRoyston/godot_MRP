@@ -750,8 +750,10 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
 	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
 	var is_room_empty:bool = room_extract.is_room_empty
+	var is_scp_empty:bool = room_extract.is_scp_empty
 	var is_activated:bool = room_extract.is_activated
 	var can_take_action:bool = is_powered and !in_lockdown
+	
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
 		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
@@ -770,6 +772,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			ControllerOverlay.show_directional = true
 			WingActionBtn.is_disabled = !is_powered or in_lockdown
 			WingActionBtn.icon = SVGS.TYPE.DELETE if !is_powered or in_lockdown else SVGS.TYPE.CONTAIN
+			
+			camera_settings.type = CAMERA.TYPE.WING_SELECT
+			SUBSCRIBE.camera_settings = camera_settings
 		# -----------
 		MODE.INVESTIGATE:
 			NameControl.hide()
@@ -788,8 +793,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			RoomDetailsControl.show_researcher_card = false	
 			
 			RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
-			RoomDetailsControl.scp_ref = -1 
 			RoomDetailsControl.researcher_uid = -1 
+			
 
 			RoomDetailsControl.disable_location = false
 			RoomDetailsControl.reveal(!room_extract.is_room_empty)
@@ -799,11 +804,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			# set button states
 			BuildBtn.is_disabled = !room_extract.is_room_empty
 			DeconstructBtn.is_disabled = room_extract.is_room_empty
-			#ContainBtn.is_disabled = !room_extract.scp.is_empty()
-			#AssignBtn.is_disabled = room_extract.researchers.size() >= researchers_per_room or hired_lead_researchers_arr.size() == 0
-			#UnassignBtn.is_disabled = room_extract.researchers.size() == 0
-			#ResearcherPanelLabel.text = "RESEARCHERS (%s)" % [hired_lead_researchers_arr.size()]
-						#
+
 			if can_take_action:
 				AbilityBtn.is_disabled = !is_activated or (abilities.is_empty() and passive_abilities.is_empty())
 				DeconstructBtn.is_disabled = !room_extract.can_destroy
@@ -945,6 +946,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			reveal_cardminipanel(false, duration)
 			await lock_actions(false)
+			
 		# --------------
 		MODE.INVESTIGATE:
 			InvestigateBackBtn.onClick = func() -> void:
@@ -954,6 +956,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await reveal_investigate_controls(false)
 				reveal_action_controls(true)
 				current_mode = MODE.ACTIONS
+				
+				
 
 			enable_room_focus(true)
 			set_backdrop_state(true)	
@@ -1000,7 +1004,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					RoomDetailsControl.show_researcher_card = true	
 				# ----------------------
 				if "scp_ref" in node:
-					RoomDetailsControl.scp_ref = -1 #node.scp_ref if node.scp_ref else -1
+					RoomDetailsControl.scp_ref = node.scp_ref 
 					RoomDetailsControl.cycle_to_scp(true)
 					await U.tick()
 					RoomDetailsControl.show_room_card = false

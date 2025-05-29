@@ -23,7 +23,7 @@ font = ExtResource("3_ne0d8")
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_2tjjk"]
+[sub_resource type="LabelSettings" id="LabelSettings_00exf"]
 font = ExtResource("3_ne0d8")
 font_color = Color(0.561, 1, 0, 1)
 outline_size = 8
@@ -103,5 +103,5 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "CONTAIN ANAMOLLY"
-label_settings = SubResource("LabelSettings_2tjjk")
+label_settings = SubResource("LabelSettings_00exf")
 vertical_alignment = 1

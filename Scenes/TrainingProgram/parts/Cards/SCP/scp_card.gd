@@ -6,8 +6,8 @@ extends MouseInteractions
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerDesignation:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerDesignation
-@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerName
-@onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerItemClass
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
+@onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerItemClass
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 @onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerEffect
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
@@ -63,6 +63,8 @@ extends MouseInteractions
 
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 
+var scp_data:Dictionary = {}
+
 var index:int = -1
 var use_location:Dictionary = {}
 var onFocus:Callable = func(node:Control):pass
@@ -70,6 +72,14 @@ var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass
 
 # ------------------------------------------------------------------------------
+func _init() -> void:
+	super._init()
+	SUBSCRIBE.subscribe_to_scp_data(self)
+	
+func _exit_tree() -> void:
+	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_scp_data(self)	
+	
 func _ready() -> void:
 	super._ready()
 
@@ -79,9 +89,14 @@ func _ready() -> void:
 	on_is_selected_update()
 	on_is_deselected_update()
 	on_show_assigned_update()
+	on_scp_data_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
+	scp_data = new_val
+	on_ref_update()
+
 func on_flip_update() -> void:
 	if !is_node_ready():return
 	CardBody.flip = flip
@@ -113,7 +128,7 @@ func on_reveal_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
-	if !is_node_ready():return	
+	if !is_node_ready() or scp_data.is_empty():return	
 	
 	if ref not in SCP_UTIL.reference_data:
 		CardDrawerImage.use_static = true
@@ -129,6 +144,7 @@ func on_ref_update() -> void:
 	var has_spec_bonus:bool = false
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0	
+	var is_researched:bool = ref in scp_data.researched
 	
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
@@ -136,7 +152,7 @@ func on_ref_update() -> void:
 		if !extract_data.scp.is_empty():
 			has_spec_bonus = extract_data.scp.pairs_with.specilization
 			has_trait_bonus = extract_data.scp.pairs_with.trait
-	
+
 
 	for key in scp_details.currencies:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
@@ -151,16 +167,19 @@ func on_ref_update() -> void:
 	CardDrawerDesignation.content = scp_details.name
 	CardDrawerName.content = scp_details.nickname
 	CardDrawerDescription.content = scp_details.description
-	CardDrawerEffect.content = scp_details.effects.description
+	CardDrawerEffect.content = scp_details.effects.description if is_researched else "UNKNOWN"
 	CardDrawerImage.img_src = scp_details.img_src
 	CardDrawerImage.use_static = false	
+	
+	CardDrawerVibes.is_researched = is_researched	
 	CardDrawerVibes.metrics = scp_details.metrics
 	# -----------
-	CardDrawerPairsWith.spec_name = spec_name
+	CardDrawerPairsWith.spec_name = spec_name if is_researched else "UNKNOWN"
 	#CardDrawerPairsWith.trait_name = trait_name
 	CardDrawerPairsWith.has_spec = has_spec_bonus
 	#CardDrawerPairsWith.has_trait = has_trait_bonus
 	# -----------
+	CardDrawerCurrency.is_researched = is_researched		
 	CardDrawerCurrency.spec_name = spec_name
 	CardDrawerCurrency.trait_name = trait_name
 	CardDrawerCurrency.has_spec_bonus = has_spec_bonus
@@ -169,14 +188,16 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.list = currency_list
 	CardDrawerCurrency.update_labels()
 
-
-	match scp_details.item_class:
-		SCP_UTIL.ITEM_CLASS.SAFE:
-			CardDrawerItemClass.content = "SAFE"
-		SCP_UTIL.ITEM_CLASS.EUCLID:
-			CardDrawerItemClass.content = "EUCLID"
-		SCP_UTIL.ITEM_CLASS.KETER:
-			CardDrawerItemClass.content = "KETER"
+	if is_researched:
+		match scp_details.item_class:
+			SCP_UTIL.ITEM_CLASS.SAFE:
+				CardDrawerItemClass.content = "SAFE"
+			SCP_UTIL.ITEM_CLASS.EUCLID:
+				CardDrawerItemClass.content = "EUCLID"
+			SCP_UTIL.ITEM_CLASS.KETER:
+				CardDrawerItemClass.content = "KETER"
+	else:
+		CardDrawerItemClass.content = "UNKNOWN"
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

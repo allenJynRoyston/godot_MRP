@@ -1,7 +1,6 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-@onready var BtnControls:Control = $BtnControls
 
 @onready var GridSelect:Control = $GridSelect
 @onready var DetailPanel:Control = $DetailPanel
@@ -23,8 +22,7 @@ func _ready() -> void:
 	super._ready()
 	self.modulate = Color(1, 1, 1, 0)
 	DetailPanel.cycle_to_reseacher(true)
-	
-	setup_gridselect()		
+		
 
 func setup_gridselect() -> void:
 	# ---------------- GRID_SELECT CONFIG
@@ -32,7 +30,7 @@ func setup_gridselect() -> void:
 		{
 			"title": "ALL",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return RESEARCHER_UTIL.get_specilization(-1, start_at, end_at),
+				return RESEARCHER_UTIL.get_paginated_list(-1, start_at, end_at),
 		}
 	]
 	
@@ -41,7 +39,7 @@ func setup_gridselect() -> void:
 		tabs.push_back({
 			"title": item.shortname,
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return RESEARCHER_UTIL.get_specilization(item.ref, start_at, end_at),
+				return RESEARCHER_UTIL.get_paginated_list(item.ref, start_at, end_at),
 		})	
 	
 	GridSelect.tabs = tabs
@@ -125,7 +123,8 @@ func activate() -> void:
 
 func start(_assigned_uids:Array = [], _use_location:Dictionary = {}) -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
-	TransitionScreen.start()	
+	await TransitionScreen.start()	
+	setup_gridselect()	
 	
 	use_location = _use_location
 	assigned_uids = _assigned_uids

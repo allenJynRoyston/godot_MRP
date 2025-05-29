@@ -18,6 +18,8 @@ extends CardDrawerClass
 @export var	has_trait_bonus:bool = false 
 @export var	morale_val:int = 0
 
+var is_researched:bool = true
+
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
 func _ready() -> void:
@@ -68,7 +70,7 @@ func on_list_update() -> void:
 		var new_node:Control = ResourceItemPreload.instantiate()
 		new_node.no_bg = true
 		new_node.display_at_bottom = true
-		new_node.title = str(item.title)
+		new_node.title = str(item.title) if is_researched else "?"
 		new_node.icon = item.icon
 		new_node.icon_size = Vector2(20, 20)
 		

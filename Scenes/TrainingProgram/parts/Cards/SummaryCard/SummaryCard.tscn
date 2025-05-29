@@ -86,7 +86,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4uruu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgan4"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -202,7 +202,7 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="CardDrawerScp" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("7_wi2bx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4uruu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jgan4")
 title = "CONTAINMENT"
 is_left_side = true
 border_color = Color(0.337255, 0.27451, 1, 1)

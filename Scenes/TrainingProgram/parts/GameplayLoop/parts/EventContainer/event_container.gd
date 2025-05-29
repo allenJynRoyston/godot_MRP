@@ -3,7 +3,7 @@ extends GameContainer
 @onready var PanelRoot:PanelContainer = $"."
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var RightControlPanel:PanelContainer = $RightControl/PanelContainer
-@onready var LeftControlPanel:PanelContainer = $LeftControl/PanelContainer
+#@onready var LeftControlPanel:PanelContainer = $LeftControl/PanelContainer
 @onready var ContentControlPanel:MarginContainer	 = $ContentControl/MarginContainer
 @onready var TransitionScreen:Control = $TransistionScreen
 
@@ -88,42 +88,31 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------
 func activate() -> void:
 	control_pos_default[RightControlPanel] = RightControlPanel.position
-	control_pos_default[LeftControlPanel] = LeftControlPanel.position
+	#control_pos_default[LeftControlPanel] = LeftControlPanel.position
 	control_pos_default[ContentControlPanel] = ContentControlPanel.position
-	
-	update_control_pos()
-# --------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------	
-func on_fullscreen_update(state:bool) -> void:
-	update_control_pos()
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------		
-func update_control_pos() -> void:	
 	await U.tick()
-	var h_diff:int = (1080 - 720) # difference between 1080 and 720 resolution - gives you 360
-	var y_diff =  (0 if !GBL.is_fullscreen else h_diff) if !initalized_at_fullscreen else (0 if GBL.is_fullscreen else -h_diff)
-	
+
 	# center elements
 	control_pos[ContentControlPanel] = {
-		"show": control_pos_default[ContentControlPanel].y, 
-		"hide": control_pos_default[ContentControlPanel].y - ContentControlPanel.size.y
+		"show": 0, 
+		"hide": -ContentControlPanel.size.y
 	}
 
-	control_pos[LeftControlPanel] = {
-		"show": control_pos_default[LeftControlPanel].y + y_diff, 
-		"hide": control_pos_default[LeftControlPanel].y + y_diff + LeftControlPanel.size.y
-	}
-	
-	# for eelements in the top right
+
 	control_pos[RightControlPanel] = {
-		"show": control_pos_default[RightControlPanel].y, 
-		"hide": control_pos_default[RightControlPanel].y - RightControlPanel.size.y
+		"show": 0, 
+		"hide": -RightControlPanel.size.y
 	}	
 
-	on_current_mode_update(true)
+	await U.tick()
+	
+	ContentControlPanel.position.y = control_pos[ContentControlPanel].hide	
+	RightControlPanel.position.y = control_pos[RightControlPanel].hide
+	
+	await U.tick()
 # --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------		
 func on_current_mode_update(skip_animation:bool = false) -> void:
@@ -132,24 +121,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	
 	match current_mode:
 		# ---------
-		MODE.HIDE:
-			BtnControls.freeze_and_disable(true)
-			BtnControls.reveal(false)
-			BtnControls.onBack = func() -> void:pass
-			BtnControls.onAction = func() -> void:pass
-			
-			U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide, duration)
-			U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide, duration)
-			U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide, duration)
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0), duration)
-			
-		# ---------
 		MODE.ACTIVE:
-			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)				
-			TransitionScreen.start()
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration)				
-			await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show, duration)			
-			BtnControls.reveal(true)
+			U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show, duration)			
+			await BtnControls.reveal(true)
 			BtnControls.disable_back_btn = true
 			BtnControls.onBack = func() -> void:pass
 			BtnControls.onAction = func() -> void:pass
@@ -183,6 +158,9 @@ func reset_content_nodes() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func start(new_event_data:Array) -> void:
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))				
+	await TransitionScreen.start()	
+	
 	event_data = new_event_data
 	current_mode = MODE.ACTIVE
 	if event_data.size() > 0:
@@ -195,13 +173,14 @@ func start(new_event_data:Array) -> void:
 func end() -> void:
 	BtnControls.reveal(false)
 	U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide)
-	U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide)
+	#U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide)
 	await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide)
 	
-	await TransitionScreen.end()	
-
+	TransitionScreen.end()	
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
+	
 	user_response.emit(event_output)
+	queue_free()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -305,7 +284,7 @@ func on_current_instruction_update() -> void:
 		var p_details:Dictionary = current_instruction.portrait
 		ContentProfileTextureRect.texture = CACHE.fetch_image(p_details.img_src if "img_src" in p_details else "")
 		ContentHeaderLabel.text = p_details.title if "title" in p_details else "[REDACTED]"
-		await U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].show)
+		#await U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].show)
 	# -----------------------------------
 
 	# -----------------------------------

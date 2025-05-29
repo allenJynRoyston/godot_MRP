@@ -212,7 +212,7 @@ border_color = Color(0.735717, 0.247227, 0.9, 1)
 layout_mode = 2
 
 [node name="CardDrawerDesignation" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
 is_small = true
@@ -220,22 +220,22 @@ content = "SCP-T-01"
 title = "DESIGNATION"
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
-[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 60)
+[node name="CardDrawerItemClass" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3" instance=ExtResource("11_y252v")]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bbv36")
 is_small = true
-content = "Sofa"
-title = "OBJECT"
+content = "KETER"
+title = "ITEM CLASS"
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
-[node name="CardDrawerItemClass" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(200, 60)
+[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("11_y252v")]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xvhpf")
 is_small = true
-content = "KETER"
-title = "ITEM CLASS"
+content = "Sofa"
+title = "OBJECT"
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
 [node name="CardDrawerDescription" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4" instance=ExtResource("11_y252v")]

@@ -1,7 +1,7 @@
 extends Node
 
 enum REF {
-	REVEAL_SCP, 
+	RESEARCH_SCP, 
 	
 	TRIGGER_ONSITE_NUKE,
 	
@@ -13,13 +13,13 @@ enum REF {
 }
 
 # ---------------------------------
-var reveal_scp:Dictionary = {
-	"name": "REVEAL SCP",
+var RESEARCH_SCP:Dictionary = {
+	"name": "RESEARCH SCP",
 	"description": "Reveal an SCP's anamolous effect.",
 	"science_cost": 0,
 	"cooldown_duration":  0, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.reveal_scp(),
+		return await GAME_UTIL.research_scp(),
 }
 # ---------------------------------
 
@@ -142,8 +142,8 @@ var convert_science_to_money:Dictionary = {
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
 	match ref:
-		REF.REVEAL_SCP:
-			ability = reveal_scp
+		REF.RESEARCH_SCP:
+			ability = RESEARCH_SCP
 		# -----------------------------=
 		REF.TRIGGER_ONSITE_NUKE:
 			ability = trigger_onsite_nuke

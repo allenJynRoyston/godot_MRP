@@ -64,7 +64,7 @@ font_size = 24
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h7wp5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1e555"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="EventContainer" type="PanelContainer"]
@@ -360,7 +360,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_h7wp5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e555")
 
 [node name="Label" type="Label" parent="ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Footer"]
 layout_mode = 2

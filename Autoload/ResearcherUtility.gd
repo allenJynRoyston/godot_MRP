@@ -442,7 +442,7 @@ func sort_ascending(a:Dictionary, b:Dictionary) -> bool:
 func sort_descending(a:Dictionary, b:Dictionary) -> bool:
 	return a.level < b.level
 	
-func get_specilization(spec:int, start_at:int, limit:int, sort_asc:bool = true) -> Dictionary:
+func get_paginated_list(spec:int, start_at:int, limit:int, sort_asc:bool = true) -> Dictionary:
 	var list:Array = hired_lead_researchers_arr.map(func(x): return return_data_with_uid(x[0]))
 
 	# Sort list
@@ -459,8 +459,8 @@ func get_specilization(spec:int, start_at:int, limit:int, sort_asc:bool = true) 
 
 	return {
 		"list": sliced_list,
-		"size": sliced_list.size(),
-		"has_more": start_at + limit < filtered_list.size()
+		"size": list.size(),
+		"has_more": limit < filtered_list.size()
 	}
 # ------------------------------------------------------------------------------		
 

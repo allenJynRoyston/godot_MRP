@@ -1,14 +1,24 @@
-[gd_scene load_steps=8 format=3 uid="uid://h60sdjb0774i"]
+[gd_scene load_steps=12 format=3 uid="uid://h60sdjb0774i"]
 
 [ext_resource type="Script" uid="uid://crkc5a52sevq1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/scp_grid.gd" id="1_ibfck"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_miqia"]
 [ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_fypad"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_skfir"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_dlnnq"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_nhwoo"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_dsv86"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gm34h"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_skfir"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhwoo"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
 [node name="ScpGrid" type="PanelContainer"]
 anchors_preset = 15
@@ -47,6 +57,34 @@ theme_override_constants/margin_right = 10
 layout_mode = 2
 theme_override_constants/separation = 25
 alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="CostResourceItem" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_skfir")
+icon = 39
+no_bg = true
+title = "999"
+display_at_bottom = true
+icon_size = Vector2(50, 50)
+
+[node name="IconBtn" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_nhwoo")]
+layout_mode = 2
+icon = 27
+is_hoverable = false
+
+[node name="CostResourceItemDiff" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nhwoo")
+icon = 39
+no_bg = true
+title = "999"
+display_at_bottom = true
+is_negative = true
+icon_size = Vector2(50, 50)
 
 [node name="GridSelect" parent="." instance=ExtResource("3_fypad")]
 layout_mode = 2

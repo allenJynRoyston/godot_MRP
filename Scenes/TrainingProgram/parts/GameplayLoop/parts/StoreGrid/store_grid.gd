@@ -1,7 +1,6 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-@onready var BtnControls:Control = $BtnControls
 
 @onready var GridSelect:Control = $GridSelect
 @onready var DetailPanel:Control = $DetailPanel
@@ -21,9 +20,20 @@ var made_changes:bool = false
 func _ready() -> void:
 	super._ready()
 	self.modulate = Color(1, 1, 1, 0)
-	setup_gridselect()		
 	on_resources_data_update()	
 
+func activate() -> void:
+	await U.tick()
+
+	control_pos[SummaryPanel] = {
+		"show": 0, 
+		"hide": -SummaryMargin.size.x
+	}	
+	await U.tick()
+
+	SummaryPanel.position.x = control_pos[SummaryPanel].hide
+	await U.tick()
+	
 func setup_gridselect() -> void:
 	# ---------------- GRID_SELECT CONFIG
 	GridSelect.tabs = [
@@ -98,27 +108,15 @@ func setup_gridselect() -> void:
 	GridSelect.onEnd = func():
 		end()	
 
-func activate() -> void:
-	await U.tick()
-
-	control_pos[SummaryPanel] = {
-		"show": 0, 
-		"hide": -SummaryMargin.size.x
-	}	
-	await U.tick()
-
-	SummaryPanel.position.x = control_pos[SummaryPanel].hide
-	await U.tick()
-	
-	
 func start() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
-	TransitionScreen.start()	
+	await TransitionScreen.start()	
+	setup_gridselect()		
 	
 	var init_func:Callable = func(node:Control) -> void:
 		node.ref = -1
+		
 	GridSelect.start(ShopMiniCardPreload, init_func)
-	
 	
 func end() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.3)	
