@@ -23,7 +23,7 @@ func _ready() -> void:
 			onLock.call()
 			# then disables the btn controls
 			await ActionContainerNode.before_use()
-			#if new_btn.researcher.is_empty():
+			
 			await GAME_UTIL.contain_scp()
 			# unlocks
 			onUnlock.call()

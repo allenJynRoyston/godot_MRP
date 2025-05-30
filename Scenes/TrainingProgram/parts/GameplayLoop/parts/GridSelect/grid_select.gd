@@ -116,8 +116,8 @@ func start(use_node:PackedScene, init_func:Callable) -> void:
 func end() -> void:
 	BtnControls.freeze_and_disable(true)
 	reveal_header(false)
-	reveal_content(false)
-	reveal_tabs(false)
+	await reveal_tabs(false)
+	await reveal_content(false)
 	await BtnControls.reveal(false)
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.3)	
 	onEnd.call()
@@ -145,14 +145,7 @@ func on_tab_index_update() -> void:
 	if !is_node_ready():return
 	onTabUpdate.call(tab_index)
 	
-	for n in GridContent.get_child_count():
-		var node:Control = GridContent.get_child(n)
-		if "is_hoverable" in node:
-			node.is_hoverable = false
-		if "reset" in node:
-			node.reset()
 	
-
 	for index in Tabs.get_child_count():
 		var tab:Control = Tabs.get_child(index)
 		# ---------------------------------------
@@ -170,10 +163,18 @@ func on_tab_index_update() -> void:
 			if current_mode != MODE.TAB_SELECT:return
 			HeaderLabel.text = tab.title
 			current_mode = MODE.CONTENT_SELECT			
-			await U.tick()
-			grid_index = 0
-			
+	
+	update_grid_content(tab_index)
+	update_grid_items()
 
+
+func update_grid_items() -> void:
+	for n in GridContent.get_child_count():
+		var node:Control = GridContent.get_child(n)
+		if "is_hoverable" in node:
+			node.is_hoverable = false
+		if "reset" in node:
+			node.reset()				
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------			
@@ -221,7 +222,7 @@ func update_grid_content(index:int = tab_index) -> void:
 	var start_at:int = page_tracker[index] * grid_size
 	var end_at:int = start_at + grid_size
 	var query:Dictionary = tabs[index].onSelect.call(index, start_at, end_at)
-
+		
 	if query.is_empty():
 		BtnControls.disable_active_btn = true
 		return
@@ -251,6 +252,8 @@ func update_grid_content(index:int = tab_index) -> void:
 			onUpdateEmptyNode.call(card_node)
 		else:	
 			onUpdateNode.call(card_node, grid_list_data[n], n)
+	
+	update_grid_items()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------			
@@ -287,12 +290,15 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			await BtnControls.reveal(false)
 		# -------------------
 		MODE.TAB_SELECT:
+			onModeTab.call()
 			BtnControls.freeze_and_disable(true)
 			reveal_header(false, duration)
-			reveal_tabs(true)
+			await reveal_tabs(true)
 			await reveal_content(true)			
-			
+
 			BtnControls.itemlist = Tabs.get_children()
+			BtnControls.item_index = tab_index
+			
 			BtnControls.directional_pref = "LR"
 			BtnControls.disable_active_btn = false
 			
@@ -302,19 +308,24 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				pass
 				
 			await BtnControls.reveal(true)
-			BtnControls.item_index = tab_index
+			
 			
 			BtnControls.freeze_and_disable(false)
-			onModeTab.call()
 		# -------------------
 		MODE.CONTENT_SELECT:
+			for tab in Tabs.get_children():
+				tab.is_selected = false
+				
+			onModeContent.call()			
 			BtnControls.freeze_and_disable(true)
-			await reveal_tabs(false)
+			
+			reveal_tabs(false)
 			await reveal_header(true)
 						
 			BtnControls.directional_pref = "NONE"
 			BtnControls.itemlist = GridContent.get_children()
-			
+			BtnControls.item_index = 0
+
 			BtnControls.onBack = func() -> void:
 				BtnControls.freeze_and_disable(true)
 				await reveal_header(false, duration)
@@ -323,7 +334,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				pass
 				
 			await U.tick()
-			BtnControls.item_index = 0
+			grid_index = 0
 			
 			for n in GridContent.get_child_count():
 				var node:Control = GridContent.get_child(n)
@@ -331,7 +342,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					node.is_hoverable = true
 					
 			BtnControls.freeze_and_disable(false)
-			onModeContent.call()
+			
 		# -------------------
 	
 	is_animating = false

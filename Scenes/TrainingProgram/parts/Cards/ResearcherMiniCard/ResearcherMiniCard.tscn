@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cyv8vf7k1e1s4"]
+[gd_scene load_steps=19 format=3 uid="uid://cyv8vf7k1e1s4"]
 
 [ext_resource type="Script" uid="uid://bfgk648834pnk" path="res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/researcher_mini_card.gd" id="1_ni348"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="3_qyov1"]
@@ -93,6 +93,13 @@ font_size = 24
 outline_size = 12
 outline_color = Color(0, 0.464856, 0.91301, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_2d0eq"]
+font = ExtResource("6_816jx")
+font_size = 24
+outline_size = 12
+outline_color = Color(0, 0.506867, 0.225805, 1)
+shadow_size = 12
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8x5y6"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
@@ -180,6 +187,7 @@ custom_minimum_size = Vector2(0, 125)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_kkpci")
+is_left_side = true
 
 [node name="IncompatablePanel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="1"]
 visible = false
@@ -219,7 +227,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/AssignedElsewhere/CenterContainer"]
 layout_mode = 2
 text = "ASSIGNED TO..."
-label_settings = SubResource("LabelSettings_h2ft1")
+label_settings = SubResource("LabelSettings_2d0eq")
 horizontal_alignment = 1
 
 [node name="CannotPromote" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="4"]

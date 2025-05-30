@@ -4,7 +4,8 @@ extends MouseInteractions
 @onready var CardBody:Control = $SubViewport/CardBody
 @onready var CardTitle:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle
 @onready var CardResource:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerResource
-@onready var CardDrawerStatus:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerStatus
+
+@onready var AlreadyResearched:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/AlreadyResearched
 
 @export var flip:bool = false : 
 	set(val):
@@ -55,8 +56,8 @@ func _ready() -> void:
 	on_is_highlighted_update()
 
 func reset() -> void:
-	modulate = Color(1, 1, 1, 0.6)
-	CardBody.border_color = Color.BLACK
+	is_highlighted = false
+	update_content()
 # --------------------------------------
 
 # --------------------------------------	
@@ -90,36 +91,39 @@ func update_content() -> void:
 	if !is_node_ready() or resources_data.is_empty() or ref == -1:return
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	
+	var panel_nodes:Array = [AlreadyResearched]
+	for node in panel_nodes:
+		node.hide()
+	
 	CardTitle.content = room_details.shortname
 	is_clickable = true
 
 	CardResource.title = "UNLOCK COST"
+	CardResource.list = [{
+		"title": str(room_details.costs.unlock),
+		"icon": SVGS.TYPE.RESEARCH,
+		"is_negative": resources_data[RESOURCE.CURRENCY.SCIENCE].amount < room_details.costs.unlock
+	}]	
+	
 	if !room_details.requires_unlock or room_details.ref in shop_unlock_purchase:
-		border_color = Color(0.6, 0.6, 0.6)
-		CardResource.hide()
+		for node in panel_nodes:
+			if node in [AlreadyResearched]:
+				node.show() 
+			else:
+				node.hide()
 
-		CardDrawerStatus.content = "Already researched."
-		CardDrawerStatus.show() 
 		is_clickable = false
 		
 		hint_title = room_details.name
 		hint_icon = SVGS.TYPE.BUILD
 		hint_description = room_details.description
-	else:
-		border_color = Color(0.275, 0.562, 1.0)
-		
-		CardResource.list = [{
-			"title": str(room_details.costs.unlock),
-			"icon": SVGS.TYPE.RESEARCH,
-			"is_negative": resources_data[RESOURCE.CURRENCY.SCIENCE].amount < room_details.costs.unlock
-		}]
-		CardResource.show()
-		
-		CardDrawerStatus.hide() 
-		
-		hint_title = room_details.name
-		hint_icon = SVGS.TYPE.BUILD
-		hint_description = "UNLOCK REQUIRED: %s" % room_details.description		
+		return
+
+
+
+	hint_title = room_details.name
+	hint_icon = SVGS.TYPE.BUILD
+	hint_description = "UNLOCK REQUIRED: %s" % room_details.description		
 
 # --------------------------------------		
 

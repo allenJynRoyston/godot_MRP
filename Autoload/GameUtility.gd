@@ -619,7 +619,7 @@ func contain_scp() -> bool:
 	ScpGridNode.z_index = z_index_lvl
 	
 	await ScpGridNode.activate()
-	ScpGridNode.start()
+	ScpGridNode.contain()
 	var scp_ref:int = await ScpGridNode.user_response
 	
 	if scp_ref == -1:
@@ -632,17 +632,17 @@ func contain_scp() -> bool:
 		var val:int = scp_details.breach_events_at[index]
 		var day:int = val + progress_data.day
 		breach_events_at.push_back(day)
-		add_timeline_item({
-			"title": scp_details.name,
-			"icon": SVGS.TYPE.WARNING,
-			"description": "WARNING",
-			"day": day - 2,
-			"event": {
-				"scp_ref": scp_ref,
-				"event_ref": SCP.EVENT_TYPE.WARNING,
-				"event_count": index,
-			}
-		})
+		#add_timeline_item({
+			#"title": scp_details.name,
+			#"icon": SVGS.TYPE.WARNING,
+			#"description": "WARNING",
+			#"day": day - 2,
+			#"event": {
+				#"scp_ref": scp_ref,
+				#"event_ref": SCP.EVENT_TYPE.WARNING,
+				#"event_count": index,
+			#}
+		#})
 		
 		add_timeline_item({
 			"title": scp_details.name,

@@ -218,7 +218,8 @@ func on_current_mode_update() -> void:
 		MODE.TITLE:
 			BtnControls.directional_pref = "UD"
 			BtnControls.itemlist = btn_arr
-		
+			BtnControls.item_index = previous_btn_index_title
+
 			BtnControls.onBack = func() -> void:
 				BtnControls.reveal(false)
 				end('quit')
@@ -229,7 +230,6 @@ func on_current_mode_update() -> void:
 				pass
 				
 			await U.tick()
-			BtnControls.item_index = previous_btn_index_title
 			
 			await U.set_timeout(0.1)
 			ScenarioPanel.hide()
@@ -242,6 +242,8 @@ func on_current_mode_update() -> void:
 
 			BtnControls.directional_pref = "LR"
 			BtnControls.itemlist = ScenarioPanel.get_children()
+			BtnControls.item_index = 0
+			
 			
 			BtnControls.onBack = func() -> void:
 				current_mode = MODE.TITLE
@@ -260,8 +262,6 @@ func on_current_mode_update() -> void:
 						scenario_index = U.min_max(scenario_index + 1, 0, ScenarioList.get_child_count() - 1)
 			
 			
-			await U.tick()
-			BtnControls.item_index = 0
 			scenario_index = 0	
 			
 	

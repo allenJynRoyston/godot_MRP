@@ -234,11 +234,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			BtnControls.directional_pref = "NONE"
 			BtnControls.itemlist = GridContent.get_children()
+			BtnControls.item_index = previous_grid_index
+			
 			BtnControls.onBack = func() -> void:
 				end(false)
 			BtnControls.onAction = func() -> void:
 				previous_grid_index = grid_index
-			BtnControls.item_index = previous_grid_index
 			
 			DetailPanel.reveal(true)			
 			await BtnControls.reveal(true)

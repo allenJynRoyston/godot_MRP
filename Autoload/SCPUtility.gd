@@ -291,8 +291,8 @@ func fill_template(data:Dictionary, ref:int) -> void:
 	
 	# now assign it a deterministic spec/trait
 	template_copy.pairs_with = {
-		"specilization":RESEARCHER.SPECIALIZATION.BIOLOGIST, # spec_count,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
-		"trait": RESEARCHER.TRAITS.HARD_WORKING			#trait_count,		
+		"specilization": [], 		# spec_count,# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
+		"trait": []					#trait_count,		
 	}
 	
 	# deterministically determine which item gets rewarded what

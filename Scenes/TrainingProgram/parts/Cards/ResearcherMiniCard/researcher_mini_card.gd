@@ -84,7 +84,7 @@ func _ready() -> void:
 
 	for node in [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]:
 		node.hide()		
-	
+
 	on_focus()
 	on_uid_update()
 	on_is_highlighted_update()
@@ -92,21 +92,8 @@ func _ready() -> void:
 	
 	
 func reset() -> void:
-	for node in [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]:
-		node.hide()			
-
-	check_for_promotions = false
-	can_be_promoted = false
-	is_already_assigned = false
-	is_incompatable = false
-	is_assigned_elsewhere = false
-	is_highlighted = false	
-	spec_required = {}
-	
-	await U.tick()
-	
-	modulate = Color(1, 1, 1, 0.6)
-	border_color = Color.BLACK
+	is_highlighted = false
+	update_content()
 # --------------------------------------
 
 # --------------------------------------
@@ -119,7 +106,7 @@ func on_panel_update() -> void:
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
 	CardBody.border_color = border_color.lightened(0.3) if is_highlighted else border_color
-	self.modulate = Color(1, 1, 1, 1 if is_highlighted else 0.6)
+	self.modulate = Color(1, 1, 1, 1 if is_highlighted else 0.7)
 # --------------------------------------		
 
 # --------------------------------------	
@@ -137,6 +124,10 @@ func on_uid_update() -> void:
 func update_content() -> void:	
 	if !is_node_ready():return
 	
+	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]
+	for node in panel_nodes:
+		node.hide()				
+	
 	if uid == "":
 		return
 		
@@ -152,10 +143,8 @@ func update_content() -> void:
 	Name.content = researcher_details.name
 	Level.content = str(researcher_details.level)
 	Spec.content = spec_str
-	border_color = COLOR_UTIL.researcher_color
 
 	var name_title_str:String = "Researcher %s, %s specialist" % [researcher_details.name, hint_des_str]
-	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]
 	
 	hint_title = "RESEARCHER"
 	hint_icon = SVGS.TYPE.DRS	
@@ -204,7 +193,7 @@ func update_content() -> void:
 				node.hide()
 		hint_icon = SVGS.TYPE.STOP
 		hint_description = "%s %s" % [name_title_str, "(assigned to %s)." % [assigned_elsewhere_data.room.details.name]]
-		AssignedElsewhereLabel.text = "ASSIGNED to\r%s" % [assigned_elsewhere_data.room.details.name]
+		AssignedElsewhereLabel.text = "ASSIGNED to\r%s" % [assigned_elsewhere_data.room.details.shortname]
 		return
 # --------------------------------------		
 

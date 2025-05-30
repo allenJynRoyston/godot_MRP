@@ -4,6 +4,8 @@ extends MouseInteractions
 @onready var ScpImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 #@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
 #@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
+@onready var InContainment:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/InContainment
+@onready var MaxLevel:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/MaxLevel
 
 @export var flip:bool = false : 
 	set(val):
@@ -23,6 +25,18 @@ extends MouseInteractions
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
 
 var scp_data:Dictionary = {}
+
+var check_in_containment:bool = false
+var in_containment:bool = false : 
+	set(val):
+		in_containment = val
+		U.debounce(str(self.name, "_on_panel_update"), on_panel_update)
+
+var check_max_level:bool = false
+var at_max_level:bool = false : 
+	set(val):
+		at_max_level = val
+		U.debounce(str(self.name, "_on_panel_update"), on_panel_update)		
 
 var freeze_inputs:bool = false
 var index:int
@@ -56,13 +70,8 @@ func _ready() -> void:
 	
 	
 func reset() -> void:
-	for node in []:
-		node.hide()			
-
-	await U.tick()
-	
-	modulate = Color(1, 1, 1, 0.6)
-	border_color = Color.BLACK
+	is_highlighted = false
+	update_content()
 # --------------------------------------
 
 # --------------------------------------
@@ -97,10 +106,13 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 # --------------------------------------		
 func update_content() -> void:	
 	if !is_node_ready():return
-	
+
+	var panel_nodes:Array = [InContainment, MaxLevel]
+	for node in panel_nodes:
+		node.hide()
+		
 	if scp_ref == -1:
 		ScpImage.img_src = ""
-		#ScpEffect.content = ""
 		return
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
@@ -108,15 +120,37 @@ func update_content() -> void:
 	
 	ScpImage.title = "%s - LVL%s" % [scp_details.name, level]
 	ScpImage.img_src = scp_details.img_src
-
+	
+	
 	hint_title = "HINT"
 	hint_icon = SVGS.TYPE.CONTAIN
 	hint_description = scp_details.description 	
+	
+	if in_containment and check_in_containment:
+		for node in panel_nodes:
+			if node in [InContainment]:
+				node.show() 
+			else:
+				node.hide()
+		hint_icon = SVGS.TYPE.STOP
+		hint_description = str(scp_details.description, " (ALREADY IN CONTAINMENT)")
+		return	
+	
+	if at_max_level and check_max_level:
+		for node in panel_nodes:
+			if node in [MaxLevel]:
+				node.show() 
+			else:
+				node.hide()
+		hint_icon = SVGS.TYPE.STOP
+		hint_description = str(scp_details.description, " (MAX LEVEL)")
+		return
+
 # --------------------------------------		
 
 # --------------------------------------	
 func is_clickable() -> bool:
-	if scp_ref == -1:
+	if scp_ref == -1 or (at_max_level and check_max_level) or (in_containment and check_in_containment):
 		return false
 	return true 
 # --------------------------------------	

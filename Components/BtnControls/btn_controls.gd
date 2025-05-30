@@ -260,8 +260,7 @@ func freeze_and_disable(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------
 func on_itemlist_update() -> void:
 	if !is_node_ready() or itemlist.is_empty():return
-	await U.tick()
-	item_index = itemlist.size() - 1 if reset_to_last else 0
+
 
 func add_to_itemlist(list:Array) -> void:
 	for node in list:

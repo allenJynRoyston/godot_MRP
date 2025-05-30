@@ -224,13 +224,13 @@ func start(start_at_ring_level:bool = false) -> void:
 		await lock_actions(true)
 		
 		BtnControls.itemlist = GBL.find_node(REFS.GAMEPLAY_HEADER).get_hint_buttons()
+		BtnControls.item_index = 0
+		
 		BtnControls.directional_pref = "LR"
 		BtnControls.offset = Vector2(0, 0)
 		BtnControls.hide_a_btn = true
-		BtnControls.reveal(true)
+		await BtnControls.reveal(true)
 		
-		await U.tick()
-		BtnControls.item_index = 0
 		BtnControls.onBack = func() -> void:
 			await BtnControls.reveal(false)
 			lock_actions(false)
@@ -979,9 +979,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
 
 			BtnControls.itemlist = SummaryCard.get_ability_btns()
+			BtnControls.item_index = 0
+			
 			BtnControls.directional_pref = "UD"
 			BtnControls.offset = SummaryCard.global_position
-			
+
 			BtnControls.onUpdate = func(node:Control) -> void:
 				# toggle is selected
 				for _node in BtnControls.itemlist:
@@ -1019,8 +1021,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			clear_lines()
 			await lock_investigate(true)			
 			await BtnControls.reveal(true)
-			await U.tick()
-			BtnControls.item_index = 0
 		# --------------
 		MODE.BUILD:
 			clear_lines()

@@ -5,4 +5,4 @@
 [resource]
 shader = ExtResource("1_rhw3y")
 shader_parameter/bend_amount = 1.0
-shader_parameter/bend_offset = 0.313
+shader_parameter/bend_offset = 0.0

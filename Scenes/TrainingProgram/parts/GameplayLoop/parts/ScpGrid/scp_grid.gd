@@ -17,7 +17,7 @@ extends GameContainer
 
 const ScpMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/ScpMiniCard.tscn")
 
-enum TYPE { SELECT, RESEARCH }
+enum TYPE { SELECT, CONTAIN, RESEARCH }
 
 var type:TYPE
 
@@ -82,7 +82,13 @@ func setup_gridselect() -> void:
 	GridSelect.onUpdateNode = func(node:Control, data:Dictionary, index:int) -> void:		
 		node.index = index
 		node.scp_ref = data.ref
+		
+		node.check_in_containment = type == TYPE.CONTAIN
+		node.in_containment = !scp_data[data.ref].location.is_empty() if data.ref in scp_data else false
 
+		node.check_max_level = type == TYPE.RESEARCH
+		node.at_max_level = scp_data[data.ref].level == 3 if data.ref in scp_data else false
+		
 		node.onHover = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
 			GridSelect.grid_index = index
@@ -121,6 +127,10 @@ func activate() -> void:
 
 func start() -> void:
 	type = TYPE.SELECT
+	setup()
+
+func contain() -> void:
+	type = TYPE.CONTAIN
 	setup()
 
 func research() -> void:
