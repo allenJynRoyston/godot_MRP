@@ -1,9 +1,10 @@
-extends MouseInteractions
+extends Control
 
 @onready var CardBody:Control = $SubViewport/CardBody
-@onready var ScpImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-#@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
-#@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
+@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
+@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
+@onready var ScpBreach:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpBreach
+@onready var ScpNeutralize:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpNeutralize
 
 @export var flip:bool = false : 
 	set(val):
@@ -34,41 +35,18 @@ var onDismiss:Callable = func():pass
 
 # --------------------------------------
 func _init() -> void:
-	super._init()
 	SUBSCRIBE.subscribe_to_scp_data(self)
 
 func _exit_tree() -> void:
-	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 
-
 func _ready() -> void:
-	super._ready()
-
 	for node in []:
 		node.hide()		
 	
-	on_focus()
 	on_scp_ref_update()
 	on_is_highlighted_update()
 	on_scp_data_update()
-	reset()
-	
-	
-func reset() -> void:
-	for node in []:
-		node.hide()			
-
-	await U.tick()
-	
-	modulate = Color(1, 1, 1, 0.6)
-	border_color = Color.BLACK
-# --------------------------------------
-
-# --------------------------------------
-func on_panel_update() -> void:
-	if !is_node_ready():return
-	update_content()
 # --------------------------------------
 
 # --------------------------------------	
@@ -97,46 +75,16 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 # --------------------------------------		
 func update_content() -> void:	
 	if !is_node_ready():return
-	
 	if scp_ref == -1:
-		ScpImage.img_src = ""
-		#ScpEffect.content = ""
+		for node in [ScpName, ScpEffect, ScpBreach, ScpNeutralize]:
+			node.content = ""
 		return
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var level:int = 0 if scp_ref not in scp_data else scp_data[scp_ref].level
 	
-	ScpImage.title = "%s - LVL%s" % [scp_details.name, level]
-	ScpImage.img_src = scp_details.img_src
-
-	hint_title = "HINT"
-	hint_icon = SVGS.TYPE.CONTAIN
-	hint_description = scp_details.description 	
-# --------------------------------------		
-
-# --------------------------------------	
-func is_clickable() -> bool:
-	if scp_ref == -1:
-		return false
-	return true 
-# --------------------------------------	
-
-# --------------------------------------	
-func on_focus(state:bool = false) -> void:
-	if !is_node_ready():return
-		
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-		onHover.call()
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-# --------------------------------------	
-
-# --------------------------------------	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover:
-		if !is_clickable:return
-		onClick.call()
-	else:
-		onDismiss.call()
+	ScpName.content = "%s\r%s" % [scp_details.name, scp_details.nickname]
+	ScpEffect.content = scp_details.effects.description if level > 0 else "UNKNOWN\r(EVALUATION REQUIRED)"
+	ScpBreach.content = scp_details.effects.description if level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
+	ScpNeutralize.content = scp_details.effects.description if level > 2 else "UNKNOWN\r(EVALUATION REQUIRED)"
 # --------------------------------------		

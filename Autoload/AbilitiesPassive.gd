@@ -13,12 +13,15 @@ enum REF {
 	
 	TECH_SUPPORT,
 	
+	GENERATE_RESEARCH_FROM_SCP,
+	GENERATE_MONEY_FROM_SCP,
+	
 	
 	MEMETIC_SHILEDING
 }
 
 # ---------------------------------
-var upgrade_abl_level:Dictionary = {
+var UPGRADE_ABL_LVL:Dictionary = {
 	"name": "LVL +1",
 	"description": "Increases the ability level of ALL rooms in a wing.",
 	"lvl_required": 0,
@@ -29,7 +32,7 @@ var upgrade_abl_level:Dictionary = {
 }
 
 # ---------------------------------
-var supply_security:Dictionary = {
+var SUPPLY_SECURITY:Dictionary = {
 	"name": "EMPLOY SECURITY",
 	"description": "Makes SECURITY personnel available for the entire wing.",
 	"lvl_required": 0,
@@ -40,7 +43,7 @@ var supply_security:Dictionary = {
 }
 
 # ---------------------------------
-var supply_staff:Dictionary = {
+var SUPPLY_STAFF:Dictionary = {
 	"name": "EMPLOY STAFF",
 	"description": "Makes STAFF personnel available for the entire wing.",
 	"lvl_required": 0,
@@ -51,7 +54,7 @@ var supply_staff:Dictionary = {
 }
 
 # ---------------------------------
-var supply_technicians:Dictionary = {
+var SUPPLY_TECHNICIANS:Dictionary = {
 	"name": "EMPLOY TECHNICIANS",
 	"description": "Makes TECHNICIANS personnel available for the entire wing.",
 	"lvl_required": 0,
@@ -62,7 +65,7 @@ var supply_technicians:Dictionary = {
 }
 
 # ---------------------------------
-var supply_dclass:Dictionary = {
+var SUPPLY_DCLASS:Dictionary = {
 	"name": "CONSCRIPT DCLASS",
 	"description": "Makes DCLASS personnel available for the testing for the entire wing.",
 	"lvl_required": 0,
@@ -73,7 +76,7 @@ var supply_dclass:Dictionary = {
 }
 
 # ---------------------------------
-var firearm_training:Dictionary = {
+var FIREARM_TRAINING:Dictionary = {
 	"name": "FIREARM TRAINING",
 	"description": "Increases SAFETY rating by 1.",
 	"lvl_required": 0,
@@ -84,7 +87,7 @@ var firearm_training:Dictionary = {
 }
 
 # ---------------------------------
-var heavy_weapons_training:Dictionary = {
+var HEAVY_WEAPONS_TRAINING:Dictionary = {
 	"name": "HEAVY WEAPONS TRAINING",
 	"description": "Increases READINESS rating by 1.",
 	"lvl_required": 0,
@@ -95,7 +98,7 @@ var heavy_weapons_training:Dictionary = {
 }
 
 # ---------------------------------
-var tech_support:Dictionary = {
+var TECH_SUPPORT:Dictionary = {
 	"name": "TECH SUPPORT",
 	"description": "Increases READINESS rating by 1.",
 	"lvl_required": 0,
@@ -107,7 +110,7 @@ var tech_support:Dictionary = {
 
 
 # ---------------------------------
-var memetic_shielding:Dictionary = {
+var MEMETIC_SHIELDING:Dictionary = {
 	"name": "MEMETIC SHIELDING",
 	"description": "Increases READINESS rating by 1.",
 	"lvl_required": 0,
@@ -117,6 +120,28 @@ var memetic_shielding:Dictionary = {
 	}
 }
 
+# ---------------------------------
+var GENERATE_RESEARCH_FROM_SCP:Dictionary = {
+	"name": "Generate Research",
+	"description": "Research into contained object generates research.",
+	"lvl_required": 0,
+	"energy_cost": 4,
+	"scp_required": true,
+	"currencies":{
+		RESOURCE.CURRENCY.SCIENCE: 100
+	}
+}
+
+var GENERATE_MONEY_FROM_SCP:Dictionary = {
+	"name": "Generate Money",
+	"description": "Research into contained object generates money.",
+	"lvl_required": 0,
+	"energy_cost": 4,
+	"scp_required": true,
+	"currencies":{
+		RESOURCE.CURRENCY.MONEY: 100
+	}
+}
 
 # ---------------------------------
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
@@ -124,27 +149,32 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	match ref:
 		# ------------------
 		REF.UPGRADE_ABL_LVL:
-			ability = upgrade_abl_level
+			ability = UPGRADE_ABL_LVL
 		# ------------------	
 		REF.SUPPLY_SECURITY:
-			ability = supply_security
+			ability = SUPPLY_SECURITY
 		REF.SUPPLY_STAFF:
-			ability = supply_staff
+			ability = SUPPLY_STAFF
 		REF.SUPPLY_TECHNICIANS:
-			ability = supply_technicians
+			ability = SUPPLY_TECHNICIANS
 		REF.SUPPLY_DCLASS:
-			ability = supply_dclass
+			ability = SUPPLY_DCLASS
 		# ------------------
 		REF.FIREARM_TRAINING:
-			ability = firearm_training
+			ability = FIREARM_TRAINING
 		REF.HEAVY_WEAPONS_TRAINING:
-			ability = heavy_weapons_training
+			ability = HEAVY_WEAPONS_TRAINING
 		# ------------------
 		REF.TECH_SUPPORT:
-			ability = tech_support
+			ability = TECH_SUPPORT
 		# ------------------
 		REF.MEMETIC_SHILEDING:
-			ability = memetic_shielding
+			ability = MEMETIC_SHIELDING
+		# ------------------
+		REF.GENERATE_RESEARCH_FROM_SCP:
+			ability = GENERATE_RESEARCH_FROM_SCP
+		REF.GENERATE_MONEY_FROM_SCP:
+			ability = GENERATE_MONEY_FROM_SCP
 	
 	ability.ref = ref
 	ability.lvl_required = lvl_required

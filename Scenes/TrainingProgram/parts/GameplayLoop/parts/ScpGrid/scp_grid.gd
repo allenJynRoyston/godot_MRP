@@ -10,8 +10,10 @@ extends GameContainer
 
 @onready var SummaryPanel:Control = $SummaryControl/PanelContainer
 @onready var SummaryMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
+@onready var SummaryImage:TextureRect = $SummaryControl/PanelContainer/MarginContainer/SummaryImage
 @onready var CostResourceItem:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CostResourceItem
 @onready var CostResourceDiff:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CostResourceItemDiff
+@onready var ScpEffectCard:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/ScpEffectCard
 
 const ScpMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/ScpMiniCard.tscn")
 
@@ -59,15 +61,18 @@ func setup_gridselect() -> void:
 	GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
 		var research_cost:int = 1
 		var can_afford:bool = can_afford_check( research_cost )
-		var already_researched:bool = data.ref in scp_data.researched
+		var research_level:int = 0 if data.ref not in scp_data else scp_data[data.ref].level
 		CostResourceDiff.title = str(U.min_max(resources_data[RESOURCE.CURRENCY.CORE].amount - research_cost, 0, resources_data[RESOURCE.CURRENCY.CORE].capacity))
 		CostResourceDiff.is_negative = !can_afford
+		ScpEffectCard.scp_ref = data.ref
+		DetailPanel.scp_ref = data.ref
+		SummaryImage.texture = CACHE.fetch_image(data.img_src)
 		
 		match type:
 			TYPE.SELECT:
 				GridSelect.BtnControls.disable_active_btn = false
 			TYPE.RESEARCH:
-				GridSelect.BtnControls.disable_active_btn = !can_afford or already_researched
+				GridSelect.BtnControls.disable_active_btn = !can_afford or research_level >= 3
 			
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
 		node.scp_ref = -1
@@ -105,6 +110,8 @@ func activate() -> void:
 		"show": 0, 
 		"hide": -SummaryMargin.size.x
 	}	
+	
+	await U.tick()
 	
 	await DetailsPanel.reveal(false)
 

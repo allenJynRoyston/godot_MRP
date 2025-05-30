@@ -4,37 +4,37 @@ var specialization_data:Dictionary = {
 	RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
 		"shortname": "ADMIN",
 		"name": "ADMINISTRATION",
-		"icon": SVGS.TYPE.ENERGY,
+		"title": "ADMINISTRATIONIST"
 	},
 	RESEARCHER.SPECIALIZATION.BIOLOGIST: {
 		"shortname": "BIO",
 		"name": "BIOLOGY",
-		"icon": SVGS.TYPE.ENERGY,
+		"title": "BIOLOGIST"
 	},
 	RESEARCHER.SPECIALIZATION.ENGINEERING: {
 		"shortname": "ENG",
 		"name": "ENGINEERING",
-		"icon": SVGS.TYPE.ENERGY,
+		"title": "ENGINEER"
 	},
 	RESEARCHER.SPECIALIZATION.COMPUTER_SCIENCE: {
 		"shortname": "CS",
 		"name": "COMPUTER SCIENCE",
-		"icon": SVGS.TYPE.ENERGY,
+		"title": "COMPUTER SCIENTIST"
 	},
 	RESEARCHER.SPECIALIZATION.MATHEMATICS: {
 		"shortname": "MATHS",
 		"name": "MATHEMATICS",
-		"icon": SVGS.TYPE.ENERGY,
+		"title": "MATHMATICIAN"
 	},
 	RESEARCHER.SPECIALIZATION.PHYSICS: {
 		"shortname": "PHY",
 		"name": "PHYSICS",
-		"icon": SVGS.TYPE.ENERGY,
+		"title": "PHYSICIST"
 	},
 	RESEARCHER.SPECIALIZATION.CHEMISTRY: {
 		"shortname": "CHEM",
 		"name": "CHEMISTRY",
-		"icon": SVGS.TYPE.ENERGY,
+		"title": "CHEMIST"
 	},
 };
 
@@ -371,6 +371,14 @@ func return_trait_data(key:RESEARCHER.TRAITS) -> Dictionary:
 
 # ------------------------------------------------------------------------------
 func return_specialization_data(key:RESEARCHER.SPECIALIZATION) -> Dictionary:
+	if key == -1:
+		return {
+			"ref": -1,
+			"shortname": "ANY",
+			"name": "ANY",
+			"icon": SVGS.TYPE.ENERGY
+		}
+	
 	specialization_data[key].ref = key
 	return specialization_data[key]
 # ------------------------------------------------------------------------------

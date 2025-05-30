@@ -41,7 +41,7 @@ offset_bottom = 29.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_a255s")
 script = ExtResource("1_q5tva")
-hint_icon = 26
+hint_icon = 14
 hint_title = "ASSIGN RESEARCHER"
 hint_description = "Assigning a researcher to this room will increase its level."
 
@@ -75,7 +75,7 @@ alignment = 1
 [node name="IconBtn" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("2_v34aq")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-icon = 26
+icon = 14
 static_color = Color(0.561, 1, 0, 1)
 is_hoverable = false
 
@@ -111,7 +111,7 @@ theme_override_constants/separation = -5
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ADD RESEARCHER"
+text = "ASSIGN RESEARCHER"
 label_settings = SubResource("LabelSettings_q5tva")
 vertical_alignment = 1
 

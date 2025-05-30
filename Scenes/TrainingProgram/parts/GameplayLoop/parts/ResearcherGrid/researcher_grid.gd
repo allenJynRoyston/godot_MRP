@@ -8,7 +8,7 @@ extends GameContainer
 
 @onready var SummaryPanel:Control = $SummaryControl/PanelContainer
 @onready var SummaryMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
-@onready var SummaryImage:TextureRect = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/TextureRect
+@onready var SummaryImage:TextureRect = $SummaryControl/PanelContainer/MarginContainer/SummaryImage
 
 const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ResearcherMiniCard/ResearcherMiniCard.tscn")
 
@@ -137,7 +137,8 @@ func start(_assigned_uids:Array = [], _use_location:Dictionary = {}) -> void:
 
 func promote() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
-	TransitionScreen.start()	
+	await TransitionScreen.start()	
+	setup_gridselect()	
 	
 	check_for_promotions = true
 	check_for_compatability = false

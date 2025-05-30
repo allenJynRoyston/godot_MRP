@@ -191,7 +191,7 @@ func update_content() -> void:
 		hint_description = "%s %s" % [name_title_str, "(lacks correct specilization)."]
 		
 		if !spec_required.is_empty():
-			hint_icon = spec_required.icon
+			hint_icon = SVGS.TYPE.DRS
 			hint_description = "%s specilization required." % spec_required.name
 			IncompatableLabel.text = "INCOMPATABLE" 
 		return

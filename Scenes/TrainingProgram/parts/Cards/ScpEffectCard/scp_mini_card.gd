@@ -1,9 +1,8 @@
 extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody
-@onready var ScpImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-#@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
-#@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
+@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
+@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
 
 @export var flip:bool = false : 
 	set(val):
@@ -99,15 +98,15 @@ func update_content() -> void:
 	if !is_node_ready():return
 	
 	if scp_ref == -1:
-		ScpImage.img_src = ""
-		#ScpEffect.content = ""
+		ScpName.content = ""
+		ScpEffect.content = ""
 		return
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var level:int = 0 if scp_ref not in scp_data else scp_data[scp_ref].level
 	
-	ScpImage.title = "%s - LVL%s" % [scp_details.name, level]
-	ScpImage.img_src = scp_details.img_src
+	ScpName.content = "%s\r%s" % [scp_details.name, scp_details.nickname]
+	ScpEffect.content = scp_details.effects.description if level > 0 else "UNKNOWN"
 
 	hint_title = "HINT"
 	hint_icon = SVGS.TYPE.CONTAIN

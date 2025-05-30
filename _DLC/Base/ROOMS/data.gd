@@ -48,7 +48,6 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.RESEARCH_SCP, 0),
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
 			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
@@ -62,8 +61,7 @@ var DEBUG_ROOM:Dictionary = {
 			#ABL.get_ability(ABL.REF.CONVERT_TO_MONEY, 0),
 		],	
 	# ------------------------------------------
-
-	
+		
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
@@ -91,7 +89,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": false,
 	"can_assign_researchers": false,
 	"requires_unlock": false,	
@@ -109,6 +107,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
+			ABL.get_ability(ABL.REF.EVAL_SCP, 0),
 			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0)
 		],	
 	# ------------------------------------------
@@ -166,7 +165,7 @@ var HQ:Dictionary = {
 var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
 	#"type_ref": ROOM.TYPE.CONTAINMENT_CELL,
-	"name": "STANDARD CONTAINMENT CELL",
+	"name": "STANDARD CONTAINMENT",
 	"shortname": "S.CONTAINMENT",
 	"categories": [ROOM.CATEGORY.CONTAINMENT],
 	"img_src": "res://Media/rooms/research_lab.jpg",
@@ -174,6 +173,10 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 		
 	# ------------------------------------------
 	"can_contain": true,
+	"can_destroy": true,
+	"can_assign_researchers": true,
+	"requires_unlock": false,	
+	"build_time": 1,
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -182,13 +185,28 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 		"purchase": 100,
 	},
 	# ------------------------------------------
+	
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 1,
+		RESOURCE.CURRENCY.MATERIAL: 2,
+		RESOURCE.CURRENCY.SCIENCE: 3,
+		RESOURCE.CURRENCY.CORE: 4,
+	},	
 		
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			
+
 		],	
 	# ------------------------------------------	
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.GENERATE_RESEARCH_FROM_SCP, 0),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_FROM_SCP, 1)
+		],	
+	# ------------------------------------------			
 }
 
 var PRISONER_BLOCK:Dictionary = {

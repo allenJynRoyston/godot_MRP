@@ -12,6 +12,12 @@ const ScpGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/G
 const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/ResearcherGrid.tscn")
 
 const z_index_lvl:int = 10
+const new_scp_entry:Dictionary = {
+	"level": 0,
+	"location": {},
+	"contained_on": null,
+	"breach_results": {}
+}
 
 var GameplayNode:Control
 var Structure3dContainer:Control
@@ -271,47 +277,53 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func apply_scp_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> int:
-	var floor:int = use_location.floor
-	var ring:int = use_location.ring
-	var room:int = use_location.room
-	
-	var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
-	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
-	# double the amount if specilization has a match
-	if room_config.scp_paired_with.specilization:
-		amount = amount * 2
-		
-	# double room_config amount if trait has a match	
-	if room_config.scp_paired_with.trait:
-		amount = amount * 2
-		
-	var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
-	var bonus_val:int = ceili( amount * morale_val )
-	
-	return amount + bonus_val
+#func apply_scp_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> int:
+	#var floor:int = use_location.floor
+	#var ring:int = use_location.ring
+	#var room:int = use_location.room
+	#
+	#var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
+	#var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
+	## double the amount if specilization has a match
+	#if room_config.scp_paired_with.specilization:
+		#amount = amount * 2
+		#
+	## double room_config amount if trait has a match	
+	#if room_config.scp_paired_with.trait:
+		#amount = amount * 2
+		#
+	#var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
+	#var bonus_val:int = ceili( amount * morale_val )
+	#
+	#return amount + bonus_val
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func apply_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> int:
+func apply_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> Dictionary:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room
 	
 	var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
 	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
+	var applied_bonus:float = 0
 	# double the amount if specilization has a match
 	if room_config.room_paired_with.specilization:
-		amount = amount * 2
+		applied_bonus += 1
 		
 	# double room_config amount if trait has a match	
 	if room_config.room_paired_with.trait:
-		amount = amount * 2
+		applied_bonus += 1
 		
 	var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
-	var bonus_val:int = ceili( amount * morale_val )
+	applied_bonus += morale_val
 	
-	return amount + bonus_val
+	var value_with_bonus:int = ceili( amount * applied_bonus )
+	
+	return {
+		"applied_bonus": applied_bonus,
+		"amount": amount + value_with_bonus
+	}
 # ------------------------------------------------------------------------------
 
 
@@ -349,7 +361,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var sdata:Dictionary = room_config.scp_data 
 	var is_scp_empty:bool = sdata.is_empty()
 	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(sdata.ref)
-	var is_researched:bool = scp_details.ref in scp_data.researched if !scp_details.is_empty() else false
 
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
@@ -371,7 +382,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		"can_destroy": can_destroy,
 		# ------
 		"researchers_count": researchers.size(),
-		"scp_is_researched": is_researched,
 		# -----
 		"room": {
 			"details": room_details,
@@ -382,7 +392,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		} if !is_room_empty else {},
 		"scp": {
 			"details": scp_details,
-			"pairs_with": room_config.scp_paired_with,
 		} if !is_scp_empty else {},
 		"researchers": researchers
 	}
@@ -577,7 +586,7 @@ func trigger_event(event_data:Array) -> Dictionary:
 # ---------------------
 
 # ---------------------
-func research_scp() -> bool:
+func eval_scp() -> bool:
 	var ScpGridNode:Control = ScpGridPreload.instantiate()
 	GameplayNode.add_child(ScpGridNode)
 	ScpGridNode.z_index = z_index_lvl
@@ -589,12 +598,15 @@ func research_scp() -> bool:
 	if scp_ref == -1:
 		return false
 	
-	if scp_ref not in scp_data.researched:
-		scp_data.researched.push_back(scp_ref)
-		SUBSCRIBE.scp_data = scp_data
-		
-		resources_data[RESOURCE.CURRENCY.CORE].amount -= 1
-		SUBSCRIBE.resources_data = resources_data
+	# create dict if it doesn't exist
+	if scp_ref not in scp_data:
+		scp_data[scp_ref] = new_scp_entry.duplicate(true)
+	
+	scp_data[scp_ref].level += 1
+	SUBSCRIBE.scp_data = scp_data
+	
+	resources_data[RESOURCE.CURRENCY.CORE].amount -= 1
+	SUBSCRIBE.resources_data = resources_data
 	
 	return true
 # ---------------------
@@ -645,22 +657,20 @@ func contain_scp() -> bool:
 		})		
 
 	# create dict if it doesn't exist
-	if scp_ref not in scp_data.ref:
-		scp_data.ref[scp_ref] = {}
+	if scp_ref not in scp_data:
+		scp_data[scp_ref] = new_scp_entry.duplicate(true)
 	
 	# then update entry
-	scp_data.ref[scp_ref] = {
-		"location": current_location.duplicate(true),
-		"contained_on": progress_data.day,
-		"breach_results": {}
-	}
-	
+	scp_data[scp_ref].location = current_location.duplicate(true)
+	scp_data[scp_ref].contained_on = progress_data.day
+	scp_data[scp_ref].breach_results = {}
+ 
 	# save
 	SUBSCRIBE.scp_data = scp_data
 	
 	# TODO: todo trigger event, one for if it's already researched and for one if it isn't	
-	var is_researched:bool = scp_ref in scp_data.researched
-	print("TODO: trigger event: is_researched ", is_researched)
+	var level:int = scp_data[scp_ref].level
+	print("TODO: trigger event: is_researched ", level)
 	#await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
 	# return true
 	return true

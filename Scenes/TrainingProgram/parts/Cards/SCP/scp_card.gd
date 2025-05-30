@@ -6,15 +6,19 @@ extends MouseInteractions
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerDesignation:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerDesignation
-@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerName
-@onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerItemClass
+@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
+#@onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerItemClass
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
-@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerEffect
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
 # back
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
-@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPairsWith
-@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
+@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
+@onready var CardDrawerBreach:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerBreach
+@onready var CardDrawerNeutralize:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerNeutralize
+
+#@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPairsWith
+#@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
 
 @export var ref:int = -1: 
 	set(val):
@@ -128,11 +132,10 @@ func on_reveal_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
-	if !is_node_ready() or scp_data.is_empty():return	
-	
+	if !is_node_ready():return	
 	if ref not in SCP_UTIL.reference_data:
 		CardDrawerImage.use_static = true
-		for node in [CardDrawerDesignation, CardDrawerItemClass, CardDrawerDescription, CardDrawerEffect, CardDrawerAssigned, CardDrawerName]:
+		for node in [CardDrawerLevel, CardDrawerDesignation, CardDrawerDescription, CardDrawerEffect, CardDrawerAssigned, CardDrawerName]:
 			node.content = "-"
 		return
 		
@@ -144,60 +147,23 @@ func on_ref_update() -> void:
 	var has_spec_bonus:bool = false
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0	
-	var is_researched:bool = ref in scp_data.researched
-	
-	if !use_location.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		morale_val = extract_data.ring_config.metrics[RESOURCE.METRICS.MORALE]
-		if !extract_data.scp.is_empty():
-			has_spec_bonus = extract_data.scp.pairs_with.specilization
-			has_trait_bonus = extract_data.scp.pairs_with.trait
+	var research_level:int = 0 if ref not in scp_data else scp_data[ref].level
 
-
-	for key in scp_details.currencies:
-		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-		var amount:int = scp_details.currencies[key]
-		
-		# apply bonus
-		if !use_location.is_empty():
-			amount = GAME_UTIL.apply_scp_pair_and_morale_bonus(use_location, amount)
-		currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})		
-	
 	# -----------
 	CardDrawerDesignation.content = scp_details.name
 	CardDrawerName.content = scp_details.nickname
 	CardDrawerDescription.content = scp_details.description
-	CardDrawerEffect.content = scp_details.effects.description if is_researched else "UNKNOWN"
 	CardDrawerImage.img_src = scp_details.img_src
 	CardDrawerImage.use_static = false	
+	CardDrawerLevel.content = str(research_level)
 	
-	CardDrawerVibes.is_researched = is_researched	
+	CardDrawerVibes.is_researched = research_level > 0	
 	CardDrawerVibes.metrics = scp_details.metrics
+	CardDrawerEffect.content = scp_details.effects.description if research_level > 0 else "UNKNOWN\r(EVALUATION REQUIRED)"
+	CardDrawerBreach.content =  scp_details.effects.description if research_level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
+	CardDrawerNeutralize.content =  scp_details.effects.description if research_level > 2 else "UNKNOWN\r(EVALUATION REQUIRED)"
 	# -----------
-	CardDrawerPairsWith.spec_name = spec_name if is_researched else "UNKNOWN"
-	#CardDrawerPairsWith.trait_name = trait_name
-	CardDrawerPairsWith.has_spec = has_spec_bonus
-	#CardDrawerPairsWith.has_trait = has_trait_bonus
-	# -----------
-	CardDrawerCurrency.is_researched = is_researched		
-	CardDrawerCurrency.spec_name = spec_name
-	CardDrawerCurrency.trait_name = trait_name
-	CardDrawerCurrency.has_spec_bonus = has_spec_bonus
-	CardDrawerCurrency.has_trait_bonus = has_trait_bonus
-	CardDrawerCurrency.morale_val = morale_val
-	CardDrawerCurrency.list = currency_list
-	CardDrawerCurrency.update_labels()
-
-	if is_researched:
-		match scp_details.item_class:
-			SCP_UTIL.ITEM_CLASS.SAFE:
-				CardDrawerItemClass.content = "SAFE"
-			SCP_UTIL.ITEM_CLASS.EUCLID:
-				CardDrawerItemClass.content = "EUCLID"
-			SCP_UTIL.ITEM_CLASS.KETER:
-				CardDrawerItemClass.content = "KETER"
-	else:
-		CardDrawerItemClass.content = "UNKNOWN"
+	
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

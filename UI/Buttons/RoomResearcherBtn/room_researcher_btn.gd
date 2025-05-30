@@ -10,13 +10,12 @@ extends BtnBase
 @onready var SpecLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Spec
 @onready var TraitLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Trait
 #
-
-
 @export var panel_color:Color = Color("0e0e0ecb") : 
 	set(val):
 		panel_color = val
 		on_panel_color_update()		
 
+var pairs_with:Array = []
 var use_location:Dictionary = {}
 
 var hired_lead_researchers:Array = []
@@ -113,10 +112,12 @@ func on_panel_color_update() -> void:
 func update_text() -> void:
 	if !is_node_ready():return
 	
+	var room_pairs_with_spec:Dictionary = RESEARCHER_UTIL.return_specialization_data(pairs_with[0] if pairs_with.size() > 0 else -1)
+	
 	if researcher.is_empty():
 		IconBtn.icon = SVGS.TYPE.PLUS
 		LvlLabel.hide()
-		NameLabel.text = "ADD RESEARCHER"
+		NameLabel.text = "ASSIGN %s" % room_pairs_with_spec.title
 		
 		hint_title = "ASSIGN RESEARCHER"
 		hint_icon = SVGS.TYPE.PLUS

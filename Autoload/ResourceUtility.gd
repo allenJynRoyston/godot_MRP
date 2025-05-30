@@ -16,13 +16,13 @@ var SCIENCE:Dictionary = {
 var CORE:Dictionary = {
 	"id": RESOURCE.CURRENCY.CORE,
 	"name": "CORE",
-	"icon": SVGS.TYPE.DOT
+	"icon": SVGS.TYPE.GLOBAL
 }
 
 var MATERIAL:Dictionary = {
 	"id": RESOURCE.CURRENCY.MATERIAL,
 	"name": "MATERIAL",
-	"icon": SVGS.TYPE.CONVERSATION
+	"icon": SVGS.TYPE.TARGET
 }
 
 var ENERGY:Dictionary = {

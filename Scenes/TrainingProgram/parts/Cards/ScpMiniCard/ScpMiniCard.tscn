@@ -1,8 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://mvalbebjx6bu"]
+[gd_scene load_steps=10 format=3 uid="uid://mvalbebjx6bu"]
 
 [ext_resource type="Script" uid="uid://tkqatcpj06gb" path="res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/scp_mini_card.gd" id="1_ca1ce"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_5lpm0"]
-[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_4vkgm"]
+[ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_n8iws"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n8iws"]
 
@@ -30,25 +30,13 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.735717, 0.247227, 0.9, 1)
+border_color = Color(1, 0.108, 0.485, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_20tj0"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_saevx"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -96,26 +84,14 @@ offset_bottom = 175.0
 [node name="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_4vkgm")
 
-[node name="ScpName" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_4vkgm")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_n8iws")
-is_small = true
-content = "Roomname"
-title = ""
-border_color = Color(0.735717, 0.247227, 0.9, 1)
-
-[node name="ScpEffect" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1" instance=ExtResource("3_4vkgm")]
+[node name="CardDrawerImage" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_n8iws")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_20tj0")
-is_small = true
-content = "Roomname"
-title = ""
-border_color = Color(0.735717, 0.247227, 0.9, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_n8iws")
+is_left_side = true
 
 [node name="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_saevx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_20tj0")
 
 [editable path="SubViewport/CardBody"]

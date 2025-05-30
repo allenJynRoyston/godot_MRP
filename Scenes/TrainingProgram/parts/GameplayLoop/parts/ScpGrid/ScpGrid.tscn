@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://h60sdjb0774i"]
+[gd_scene load_steps=13 format=3 uid="uid://h60sdjb0774i"]
 
 [ext_resource type="Script" uid="uid://crkc5a52sevq1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/scp_grid.gd" id="1_ibfck"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_miqia"]
@@ -7,16 +7,17 @@
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_dlnnq"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_nhwoo"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_dsv86"]
+[ext_resource type="PackedScene" uid="uid://bc5q7xomkxaom" path="res://Scenes/TrainingProgram/parts/Cards/ScpEffectCard/ScpEffectCard.tscn" id="5_nhwoo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gm34h"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_skfir"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhwoo"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhwoo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ljatq"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -47,11 +48,18 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_18rtl")
 
 [node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 0
 theme_override_constants/margin_right = 10
+
+[node name="SummaryImage" type="TextureRect" parent="SummaryControl/PanelContainer/MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 1200)
+layout_mode = 2
+expand_mode = 4
+stretch_mode = 6
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SummaryControl/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -64,7 +72,7 @@ alignment = 1
 
 [node name="CostResourceItem" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_skfir")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nhwoo")
 icon = 39
 no_bg = true
 title = "999"
@@ -78,13 +86,17 @@ is_hoverable = false
 
 [node name="CostResourceItemDiff" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nhwoo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ljatq")
 icon = 39
 no_bg = true
 title = "999"
 display_at_bottom = true
 is_negative = true
 icon_size = Vector2(50, 50)
+
+[node name="ScpEffectCard" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_nhwoo")]
+layout_mode = 2
+size_flags_horizontal = 4
 
 [node name="GridSelect" parent="." instance=ExtResource("3_fypad")]
 layout_mode = 2

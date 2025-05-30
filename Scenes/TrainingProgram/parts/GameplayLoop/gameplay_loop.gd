@@ -71,13 +71,7 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"scp_data": func() -> Dictionary:
 		return {
-			# researched, whows their effects
-			"researched": [],
-			
-			# references
-			"ref": {
-				# [0 - scp_ref]: {use_location: ...}	
-			}
+
 		},
 	# ----------------------------------
 	"progress_data": func() -> Dictionary:
@@ -530,6 +524,7 @@ func get_room_defaults() -> Dictionary:
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
+		"applied_bonus": 0,
 		# --------------
 		"scp_paired_with": {
 			"specilization": false,
@@ -1100,49 +1095,50 @@ func setup_default_energy_and_metrics(new_room_config:Dictionary) -> void:
 			ring_config.energy.used = 0
 
 func scp_run_first_effects(new_room_config:Dictionary) -> void:
-	pass
 	# CALCULATE CONTAINED SCP - LAST THING TO BE COMPUTED
-	#for item in scp_data.contained_list:
-		#var floor:int = item.location.floor
-		#var ring:int = item.location.ring
-		#var room:int = item.location.room	
-		#var floor_ring_designation:String = str(floor, ring)
-		#var floor_config:Dictionary = new_room_config.floor[floor]
-		#var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
-		#var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		#var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
-		#
-		## run first level effects to get personnel
-		#if "personnel" in scp_details.effects:
-			#for key in scp_details.effects.personnel:
-				#ring_config.personnel[key] = scp_details.effects.personnel[key]
-				#room_config.personnel[key] = scp_details.effects.personnel[key]
-		#
-		## run first level effects to get metrics		
-		#if "metrics" in scp_details.effects:
-			#for key in scp_details.effects.metrics:		
-				#var amount:int = scp_details.effects.metrics[key]
-				#ring_config.metrics[key] += amount
-				#room_config.metrics[key] += amount
-				#
-		## run first level effects to get metrics		
-		#if "currencies" in scp_details.effects:
-			#for key in scp_details.effects.currencies:		
-				#var amount:int = scp_details.effects.currencies[key]
-				#floor_config.currencies[key] += amount
-				#ring_config.currencies[key] += amount
-				#room_config.currencies[key] += amount				
-				#
-		## NEXT, check if any researchers pair with this SCP
-		#for researcher in hired_lead_researchers_arr:
-			#var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
-			#var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
-			#if assigned_to_room == item.location:
-				## TODO; remove not later
-				#if scp_details.pairs_with.specilization in researcher_details.specializations:
-					#room_config.scp_paired_with.specilization = true
-				#if scp_details.pairs_with.trait in researcher_details.traits:
-					#room_config.scp_paired_with.trait = true	
+	for ref in scp_data:
+		var sdata:Dictionary = scp_data[ref]
+		if !sdata.location.is_empty():
+			var floor:int = sdata.location.floor
+			var ring:int = sdata.location.ring
+			var room:int = sdata.location.room	
+			var floor_ring_designation:String = str(floor, ring)
+			var floor_config:Dictionary = new_room_config.floor[floor]
+			var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
+			var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+			
+			# run first level effects to get personnel
+			if "personnel" in scp_details.effects:
+				for key in scp_details.effects.personnel:
+					ring_config.personnel[key] = scp_details.effects.personnel[key]
+					room_config.personnel[key] = scp_details.effects.personnel[key]
+			
+			# run first level effects to get metrics		
+			if "metrics" in scp_details.effects:
+				for key in scp_details.effects.metrics:		
+					var amount:int = scp_details.effects.metrics[key]
+					ring_config.metrics[key] += amount
+					room_config.metrics[key] += amount
+					
+			# run first level effects to get metrics		
+			if "currencies" in scp_details.effects:
+				for key in scp_details.effects.currencies:		
+					var amount:int = scp_details.effects.currencies[key]
+					floor_config.currencies[key] += amount
+					ring_config.currencies[key] += amount
+					room_config.currencies[key] += amount				
+					
+			## NEXT, check if any researchers pair with this SCP
+			#for researcher in hired_lead_researchers_arr:
+				#var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
+				#var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
+				#if assigned_to_room == item.location:
+					## TODO; remove not later
+					#if scp_details.pairs_with.specilization in researcher_details.specializations:
+						#room_config.scp_paired_with.specilization = true
+					#if scp_details.pairs_with.trait in researcher_details.traits:
+						#room_config.scp_paired_with.trait = true	
 		
 func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
@@ -1302,22 +1298,23 @@ func room_calculate_metrics(new_room_config:Dictionary) -> void:
 				room_config.metrics[key] += amount
 
 func scp_calculate_metrics(new_room_config:Dictionary) -> void:
-	pass
-	#for item in scp_data.contained_list:
-		#var floor:int = item.location.floor
-		#var ring:int = item.location.ring
-		#var room:int = item.location.room	
-		#var floor_ring_designation:String = str(floor, ring)
-		#var floor_config:Dictionary = new_room_config.floor[floor]		
-		#var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
-		#var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		#var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
-		#
-		## add to ring level metrics
-		#for key in scp_details.metrics:
-			#var amount:int = scp_details.metrics[key]
-			#ring_config.metrics[key] += amount
-			#room_config.metrics[key] += amount
+	for ref in scp_data:
+		var sdata:Dictionary = scp_data[ref]
+		if !sdata.location.is_empty():
+			var floor:int = sdata.location.floor
+			var ring:int = sdata.location.ring
+			var room:int = sdata.location.room	
+			var floor_ring_designation:String = str(floor, ring)
+			var floor_config:Dictionary = new_room_config.floor[floor]		
+			var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
+			var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+			
+			# add to ring level metrics
+			for key in scp_details.metrics:
+				var amount:int = scp_details.metrics[key]
+				ring_config.metrics[key] += amount
+				room_config.metrics[key] += amount
 				
 func room_calculate_curriences(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
@@ -1328,35 +1325,25 @@ func room_calculate_curriences(new_room_config:Dictionary) -> void:
 		var floor_config:Dictionary = new_room_config.floor[floor]
 		var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		#print(room_config.currencies)
+
 		if room_config.is_activated:
 			var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
 			# tally their currencies
-			for key in room_data.currencies:
+			for key in room_config.currencies:
 				var amount:int = room_data.currencies[key]
+				var added_amount:int = room_config.currencies[key]
+				var total_amount:int = amount + added_amount
+				var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
 				
-				amount = GAME_UTIL.apply_pair_and_morale_bonus(item.location, amount, new_room_config)
-				floor_config.currencies[key] += amount
-				ring_config.currencies[key] += amount
-				room_config.currencies[key] += amount
+				var res:Dictionary = GAME_UTIL.apply_pair_and_morale_bonus(item.location, total_amount, new_room_config)
+				# add to totals
+				floor_config.currencies[key] += res.amount
+				ring_config.currencies[key] += res.amount
+				# set as final amount
+				room_config.currencies[key] = res.amount
+				room_config.applied_bonus = res.applied_bonus
 
-func scp_calculate_currencies(new_room_config:Dictionary) -> void:
-	pass
-	#for item in scp_data.contained_list:
-		#var floor:int = item.location.floor
-		#var ring:int = item.location.ring
-		#var room:int = item.location.room	
-		#var floor_ring_designation:String = str(floor, ring)
-		#var floor_config:Dictionary = new_room_config.floor[floor]		
-		#var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
-		#var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		#var scp_details:Dictionary = SCP_UTIL.return_data(item.ref)
-#
-		#for key in scp_details.currencies:
-			#var amount:int = scp_details.currencies[key]
-			#amount = GAME_UTIL.apply_scp_pair_and_morale_bonus(item.location, amount, new_room_config)
-			#floor_config.currencies[key] += amount
-			#ring_config.currencies[key] += amount
-			#room_config.currencies[key] += amount
 
 func scp_run_final_effects(new_room_config:Dictionary) -> void:
 	# CALCULATE CONTAINED SCP - LAST THING TO BE COMPUTED
@@ -1394,7 +1381,7 @@ func room_final_pass(new_room_config:Dictionary) -> void:
 			
 		# add to ref count
 		ring_config.room_refs.push_back(item.ref)
-
+		
 		# set room config data
 		room_config.room_data = {
 			"ref": item.ref,
@@ -1402,17 +1389,18 @@ func room_final_pass(new_room_config:Dictionary) -> void:
 		}
 
 func scp_final_pass(new_room_config:Dictionary) -> void:
-	for ref in scp_data.ref:
-		var sdata:Dictionary = scp_data.ref[ref]
-		var floor:int = sdata.location.floor
-		var ring:int = sdata.location.ring
-		var room:int = sdata.location.room	
-		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		# add to room config data
-		room_config.scp_data = {
-			"ref": ref,
-			"details": SCP_UTIL.return_data(ref), 
-		}			
+	for ref in scp_data:
+		var sdata:Dictionary = scp_data[ref]
+		if !sdata.location.is_empty():
+			var floor:int = sdata.location.floor
+			var ring:int = sdata.location.ring
+			var room:int = sdata.location.room	
+			var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+			# add to room config data
+			room_config.scp_data = {
+				"ref": ref,
+				"details": SCP_UTIL.return_data(ref), 
+			}			
 
 func update_room_config(force_setup:bool = false) -> void:
 	if !setup_complete:return
@@ -1436,9 +1424,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	# calculte metrics	
 	room_calculate_metrics(new_room_config) 
 	scp_calculate_metrics(new_room_config)
-	
 	room_calculate_curriences(new_room_config)
-	scp_calculate_currencies(new_room_config)
 	
 	# final pass	
 	scp_run_final_effects(new_room_config)

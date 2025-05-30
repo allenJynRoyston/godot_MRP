@@ -126,17 +126,20 @@ func on_room_ref_update() -> void:
 	var show_passives:bool = false
 	var show_abilities:bool = false
 	var show_researchers:bool = false	
+	var show_scp:bool = false 
 	
 	RoomDetails.modulate = Color(1, 1, 1, 1)
 	update_room_label()
 	# attach scp data (if applicable)
 	CardDrawerScp.use_location = use_location
 	CardDrawerScp.show() if room_details.can_contain and !preview_mode else CardDrawerScp.hide()
+	show_scp = room_details.can_contain and !preview_mode
 	
 	# attach researcher data
+	CardDrawerResearchers.pairs_with = [room_details.pairs_with.specilization]
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.researchers_per_room = researchers_per_room
-	CardDrawerResearchers.show() if researchers_per_room > 0 else CardDrawerResearchers.hide()
+	CardDrawerResearchers.show() if researchers_per_room > 0 and room_details.can_assign_researchers  else CardDrawerResearchers.hide()
 	
 	# attach passives
 	if "passive_abilities" not in room_details or room_details.passive_abilities.call().is_empty():
@@ -157,14 +160,24 @@ func on_room_ref_update() -> void:
 		show_abilities = true
 	
 	# hide container
-	ListContainers.show() if (show_passives or show_abilities or show_researchers) else ListContainers.hide()
+	ListContainers.show() if (show_passives or show_abilities or show_researchers or show_scp) else ListContainers.hide()
 	await U.tick()
 	CardControlBody.size = Vector2(1, 1)
 # ------------------------------------------------------------------------------
 
+
+# ------------------------------------------------------------------------------
+func deselect_btns() -> void:
+	var btn_list:Array = []
+	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerResearchers, CardDrawerScp]:
+		if node.is_visible_in_tree():
+			for btn in node.get_btns():
+				if "is_selected" in btn:
+					btn.is_selected = false
+# ------------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------------
 func get_ability_btns() -> Array:
-	await U.tick()
 	var btn_list:Array = []
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerResearchers, CardDrawerScp]:
 		if node.is_visible_in_tree():

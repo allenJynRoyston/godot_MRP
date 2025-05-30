@@ -659,10 +659,10 @@ func investigate_wrapper(action:Callable) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func before_use_ability() -> void:
+func before_use() -> void:
 	await BtnControls.reveal(false)
 	
-func after_use_ability() -> void:
+func after_use() -> void:
 	BtnControls.reveal(true)
 	
 func after_use_passive_ability() -> void:
@@ -752,7 +752,10 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var is_room_empty:bool = room_extract.is_room_empty
 	var is_scp_empty:bool = room_extract.is_scp_empty
 	var is_activated:bool = room_extract.is_activated
-	var can_take_action:bool = is_powered and !in_lockdown
+	var can_contain:bool = false if is_room_empty else room_extract.room.details.can_contain
+	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
+	var can_take_action:bool = (is_powered and !in_lockdown)
+	var has_options:bool = SummaryCard.get_ability_btns().size() > 0
 	
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
@@ -806,7 +809,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			DeconstructBtn.is_disabled = room_extract.is_room_empty
 
 			if can_take_action:
-				AbilityBtn.is_disabled = !is_activated or (abilities.is_empty() and passive_abilities.is_empty())
+				AbilityBtn.is_disabled = !is_activated and has_options
 				DeconstructBtn.is_disabled = !room_extract.can_destroy
 			else:
 				AbilityBtn.is_disabled = true
@@ -956,8 +959,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await reveal_investigate_controls(false)
 				reveal_action_controls(true)
 				current_mode = MODE.ACTIONS
-				
-				
 
 			enable_room_focus(true)
 			set_backdrop_state(true)	
@@ -977,7 +978,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			var is_powered:bool = room_config.floor[current_location.floor].is_powered
 			var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
 
-			BtnControls.itemlist = await SummaryCard.get_ability_btns()
+			BtnControls.itemlist = SummaryCard.get_ability_btns()
 			BtnControls.directional_pref = "UD"
 			BtnControls.offset = SummaryCard.global_position
 			
@@ -1013,6 +1014,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			BtnControls.onBack = func() -> void:
 				current_mode = MODE.INVESTIGATE	
+				SummaryCard.deselect_btns()				
 			
 			clear_lines()
 			await lock_investigate(true)			

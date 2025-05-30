@@ -150,10 +150,9 @@ func on_tab_index_update() -> void:
 		if "is_hoverable" in node:
 			node.is_hoverable = false
 		if "reset" in node:
-			node.reset()					
+			node.reset()
 	
-	await U.tick()
-	
+
 	for index in Tabs.get_child_count():
 		var tab:Control = Tabs.get_child(index)
 		# ---------------------------------------
@@ -304,13 +303,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 			await BtnControls.reveal(true)
 			BtnControls.item_index = tab_index
-
-			for n in GridContent.get_child_count():
-				var node:Control = GridContent.get_child(n)
-				if "is_hoverable" in node:
-					node.is_hoverable = false
-				if "reset" in node:
-					node.reset()
 			
 			BtnControls.freeze_and_disable(false)
 			onModeTab.call()

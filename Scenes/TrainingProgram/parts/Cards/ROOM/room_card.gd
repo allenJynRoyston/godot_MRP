@@ -163,14 +163,11 @@ func on_ref_update() -> void:
 			has_spec_bonus = extract_data.room.pairs_with.specilization
 			has_trait_bonus = extract_data.room.pairs_with.trait
 
-	for key in room_details.currencies:
-		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(key)
-		var amount:int = room_details.currencies[key]
-		
+	for ref in room_details.currencies:
+		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+		var amount:int = room_details.currencies[ref]
 		# apply bonus
-		if !use_location.is_empty():
-			amount = GAME_UTIL.apply_pair_and_morale_bonus(use_location, amount)
-		currency_list.push_back({"icon": resource_details.icon, "title": str(amount)})	
+		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})	
 
 	for node in [CardBody]:
 		node.border_color = default_border_color if is_activated else Color.RED
@@ -188,6 +185,7 @@ func on_ref_update() -> void:
 	CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel
 	CardDrawerImage.img_src = room_details.img_src if !is_locked else ""
 	CardDrawerImage.use_static = !is_activated
+	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list
 	CardDrawerVibes.metrics = room_details.metrics	
 	# -----------

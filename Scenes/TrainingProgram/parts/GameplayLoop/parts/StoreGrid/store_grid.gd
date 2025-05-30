@@ -9,6 +9,7 @@ extends GameContainer
 @onready var SummaryPanel:Control = $SummaryControl/PanelContainer
 @onready var SummaryMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
 @onready var SummaryCard:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/SummaryCard
+@onready var SummaryImage:TextureRect = $SummaryControl/PanelContainer/MarginContainer/SummaryImage
 @onready var CostResourceItem:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CostResourceItem
 @onready var CostResourceDiff:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CostResourceItemDiff
 
@@ -67,6 +68,7 @@ func setup_gridselect() -> void:
 		DetailPanel.room_ref = data.ref
 		CostResourceDiff.title = str(U.min_max(resources_data[RESOURCE.CURRENCY.SCIENCE].amount - data.details.costs.unlock, 0, resources_data[RESOURCE.CURRENCY.SCIENCE].capacity))
 		CostResourceDiff.is_negative = !can_afford
+		SummaryImage.texture = CACHE.fetch_image(data.details.img_src)
 		
 		GridSelect.BtnControls.disable_active_btn = !can_afford
 		

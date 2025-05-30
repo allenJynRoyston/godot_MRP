@@ -186,7 +186,7 @@ theme_override_constants/separation = -1
 [node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-text = "CURRENCIES"
+text = "ECONOMY"
 label_settings = ExtResource("3_bsj2a")
 horizontal_alignment = 1
 vertical_alignment = 1

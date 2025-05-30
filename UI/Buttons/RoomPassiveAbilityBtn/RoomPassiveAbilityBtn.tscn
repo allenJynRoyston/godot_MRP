@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_f8eie"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jg673"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -19,13 +19,13 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_jg673"]
+[sub_resource type="LabelSettings" id="LabelSettings_f8eie"]
 font = ExtResource("2_jg673")
 font_color = Color(0.827451, 0.827451, 0.827451, 1)
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f8eie"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axmus"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -76,7 +76,7 @@ is_hoverable = false
 custom_minimum_size = Vector2(15, 25)
 layout_mode = 2
 text = "99"
-label_settings = SubResource("LabelSettings_jg673")
+label_settings = SubResource("LabelSettings_f8eie")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -95,7 +95,7 @@ layout_mode = 2
 
 [node name="CheckBox" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer" instance=ExtResource("2_f8eie")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f8eie")
+theme_override_styles/panel = SubResource("StyleBoxFlat_axmus")
 no_bg = true
 is_hoverable = false
 
@@ -103,5 +103,5 @@ is_hoverable = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-label_settings = SubResource("LabelSettings_jg673")
+label_settings = SubResource("LabelSettings_f8eie")
 vertical_alignment = 1

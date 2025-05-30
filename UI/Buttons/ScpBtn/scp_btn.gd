@@ -12,7 +12,10 @@ extends BtnBase
 		panel_color = val
 		on_panel_color_update()		
 
-var use_location:Dictionary = {}
+var use_location:Dictionary = {} : 
+	set(val):
+		use_location = val
+		on_use_location_update()
 
 var scp_ref:int = -1 : 
 	set(val):
@@ -34,6 +37,7 @@ const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram
 func _init() -> void:
 	super._init()
 	SUBSCRIBE.subscribe_to_scp_data(self)
+	
 
 func _exit_tree() -> void:
 	super._exit_tree()
@@ -50,16 +54,19 @@ func on_scp_ref_update() -> void:
 	if !is_node_ready():return
 	update_all()
 	
+func on_use_location_update() -> void:
+	if !is_node_ready():return
+	on_scp_data_update()
+	
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-	if !is_node_ready() or scp_data.is_empty():return
-	for ref in scp_data.ref:
-		var entry:Dictionary = scp_data.ref[ref]
+	if !is_node_ready():return
+	for ref in scp_data:
+		var entry:Dictionary = scp_data[ref]
 		if entry.location == use_location:
 			is_available = false
 			scp_ref = ref
 			return
-			
 	# is empty
 	is_available = true		
 	scp_ref = -1
@@ -103,44 +110,13 @@ func on_panel_color_update() -> void:
 	
 func update_text() -> void:
 	if !is_node_ready():return
-	
 	if scp_ref == -1:
-		NameLabel.text = "CONTAIN..."
+		NameLabel.text = "ASSIGN OBJECT"
 		return
 	
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	NameLabel.text = "%s (%s)" % [scp_details.name, scp_details.nickname]
 	
-	
-	#if researcher.is_empty():
-		#IconBtn.icon = SVGS.TYPE.ASSIGN
-		#LvlLabel.hide()
-		#NameLabel.text = "ADD RESEARCHER"
-		#
-		#hint_title = "ASSIGN RESEARCHER"
-		#hint_icon = SVGS.TYPE.ASSIGN
-		#hint_description = "Assigning a researcher to this room will increase its level."
-		#return
-	#
-	#var spec:String = "" if researcher.is_empty() else RESEARCHER_UTIL.return_specialization_data(researcher.specializations[0]).shortname	
-	#var traits:String = ""
-	#
-	#for ref in researcher.traits:
-		#traits += str(RESEARCHER_UTIL.return_trait_data(ref).name, " , ")
-	#traits = traits.left(traits.length() - 3)
-	#
-	
-	#IconBtn.icon = SVGS.TYPE.PLUS
-	#LvlLabel.text = str(researcher.level)
-	#LvlLabel.show()
-	#
-	#NameLabel.text = ("%s, %s" % [researcher.name, spec])
-	#SpecLabel.text = spec
-	#TraitLabel.text = traits
-	#
-	#hint_title = "RESEARCHER"
-	#hint_icon = SVGS.TYPE.DRS if has_pairing else SVGS.TYPE.DRS
-	#hint_description = ("Researcher %s, %s specialist." % [researcher.name, spec])
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	

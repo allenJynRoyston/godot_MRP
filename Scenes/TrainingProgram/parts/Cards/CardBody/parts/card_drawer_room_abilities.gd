@@ -66,12 +66,12 @@ func on_room_details_update() -> void:
 						# first, disables btns in the card
 						onLock.call()
 						# then disables the btn controls
-						await ActionContainerNode.before_use_ability()
+						await ActionContainerNode.before_use()
 						# perform the ability
 						await GAME_UTIL.use_active_ability(ability, room_details.ref, ability_index, use_location)
 						# unlocks
 						onUnlock.call()
-						ActionContainerNode.after_use_ability()
+						ActionContainerNode.after_use()
 						return
 				
 					GAME_UTIL.use_active_ability(ability, room_details.room_ref, ability_index, use_location)
@@ -85,10 +85,12 @@ func on_room_details_update() -> void:
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
 				var btn_node:Control = RoomPassiveAbilityBtnPreload.instantiate()
-				var abl_lvl:int = 10 if preview_mode else 0				
+				var abl_lvl:int = 10 if preview_mode else 0	
 				if !use_location.is_empty():
 					var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 					abl_lvl = extract_data.room.abl_lvl
+					
+				#print(room_details)
 				
 				btn_node.room_ref = room_details.ref
 				btn_node.ability_index = ability_index
