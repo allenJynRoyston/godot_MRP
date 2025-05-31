@@ -119,25 +119,25 @@ func on_current_bookmark_type_update() -> void:
 			#ShortcutToggleBtn.icon = SVGS.TYPE.RING
 			#ShortcutToggleBtn.title = "RING"			
 
-	build_shortcuts()
+	#build_shortcuts()
 # --------------------------------------------------------------------------------------------------					
 
 # --------------------------------------------------------------------------------------------------		
 func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	base_states = new_val
-	U.debounce("build_shortcuts", build_shortcuts)
+	#U.debounce("build_shortcuts", build_shortcuts)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
-	U.debounce("build_shortcuts", build_shortcuts)
+	#U.debounce("build_shortcuts", build_shortcuts)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	U.debounce("build_shortcuts", build_shortcuts)
+	#U.debounce("build_shortcuts", build_shortcuts)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -146,9 +146,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	if current_location.is_empty():return
 	var designation:String = str(current_location.floor, current_location.ring)
 
-	if previous_designation != designation:
-		previous_designation = designation
-		U.debounce("build_shortcuts", build_shortcuts)
+	#if previous_designation != designation:
+		#previous_designation = designation
+		#U.debounce("build_shortcuts", build_shortcuts)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -260,65 +260,66 @@ func on_lock_btns_update() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func build_shortcuts() -> void:
-	if current_location.is_empty():return
-	var designation:String = str(current_location.floor, current_location.ring)
+	pass
+	#if current_location.is_empty():return
+	#var designation:String = str(current_location.floor, current_location.ring)
+##
+	#var use_dict:Dictionary = base_states.global_hotkeys
+	#
+	#for index in ShortcutBtnGrid.get_child_count():		
+		#var btn:Control = ShortcutBtnGrid.get_child(index)
 #
-	var use_dict:Dictionary = base_states.global_hotkeys
-	
-	for index in ShortcutBtnGrid.get_child_count():		
-		var btn:Control = ShortcutBtnGrid.get_child(index)
-
-		#----------------------------
-		if index in use_dict:			
-			var shortcut_data:Dictionary = use_dict[index]
-			if !shortcut_data.is_empty():
-				match shortcut_data.type:
-					0:
-						var action_data:Dictionary = action_func_lookup.call(shortcut_data.lookup_ref)
-						btn.get_icon_func = func() -> SVGS.TYPE:
-							return SVGS.TYPE.MEDIA_PLAY
-						btn.get_not_ready_func = func() -> bool:
-							return false
-						btn.title = action_data.title
-						btn.hint_description = "ACTION DESCRIPTION"
-					1:
-						var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.index)
-						var funcs:Dictionary = ability_funcs.call(ability, shortcut_data.use_location)
-						btn.get_icon_func = funcs.get_icon_func	
-						btn.get_not_ready_func = funcs.get_not_ready_func
-						btn.get_invalid_func = funcs.get_invalid_func
-						btn.title = ability.name
-						btn.hint_description = "ABILITY DESCRIPTION"
-					2:
-						var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.room_ref, shortcut_data.index)
-						var funcs:Dictionary = passive_funcs.call(shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
-						btn.get_icon_func = funcs.get_icon_func	
-						btn.get_not_ready_func = funcs.get_not_ready_func
-						btn.get_invalid_func = funcs.get_invalid_func
-						btn.title = ability.name
-						
-						btn.hint_description = "PASSIVE DESCRIPTION"
-				
-				btn.onReset = func() -> void:
-					use_dict.erase(index)
-					
-				btn.onClick = func() -> void:
-					match shortcut_data.type:
-						0:
-							var action_data:Dictionary = action_func_lookup.call(shortcut_data.lookup_ref)
-							action_data.onSelect.call(-1) # number passed doesn't matter
-						1:
-							#await lock_btns(true)
-							var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.index)
-							await GAME_UTIL.use_active_ability(ability, shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
-							#lock_btns(false)
-						2:
-							GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
-				
-				btn.update_self()
-		#----------------------------
-		else:
-			btn.reset()
+		##----------------------------
+		#if index in use_dict:			
+			#var shortcut_data:Dictionary = use_dict[index]
+			#if !shortcut_data.is_empty():
+				#match shortcut_data.type:
+					#0:
+						#var action_data:Dictionary = action_func_lookup.call(shortcut_data.lookup_ref)
+						#btn.get_icon_func = func() -> SVGS.TYPE:
+							#return SVGS.TYPE.MEDIA_PLAY
+						#btn.get_not_ready_func = func() -> bool:
+							#return false
+						#btn.title = action_data.title
+						#btn.hint_description = "ACTION DESCRIPTION"
+					#1:
+						#var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.index)
+						#var funcs:Dictionary = ability_funcs.call(ability, shortcut_data.use_location)
+						#btn.get_icon_func = funcs.get_icon_func	
+						#btn.get_not_ready_func = funcs.get_not_ready_func
+						#btn.get_invalid_func = funcs.get_invalid_func
+						#btn.title = ability.name
+						#btn.hint_description = "ABILITY DESCRIPTION"
+					#2:
+						#var ability:Dictionary = ROOM_UTIL.return_passive_ability(shortcut_data.room_ref, shortcut_data.index)
+						#var funcs:Dictionary = passive_funcs.call(shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
+						#btn.get_icon_func = funcs.get_icon_func	
+						#btn.get_not_ready_func = funcs.get_not_ready_func
+						#btn.get_invalid_func = funcs.get_invalid_func
+						#btn.title = ability.name
+						#
+						#btn.hint_description = "PASSIVE DESCRIPTION"
+				#
+				#btn.onReset = func() -> void:
+					#use_dict.erase(index)
+					#
+				#btn.onClick = func() -> void:
+					#match shortcut_data.type:
+						#0:
+							#var action_data:Dictionary = action_func_lookup.call(shortcut_data.lookup_ref)
+							#action_data.onSelect.call(-1) # number passed doesn't matter
+						#1:
+							##await lock_btns(true)
+							#var ability:Dictionary = ROOM_UTIL.return_ability(shortcut_data.room_ref, shortcut_data.index)
+							#await GAME_UTIL.use_active_ability(ability, shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
+							##lock_btns(false)
+						#2:
+							#GAME_UTIL.toggle_passive_ability(shortcut_data.room_ref, shortcut_data.index, shortcut_data.use_location)
+				#
+				#btn.update_self()
+		##----------------------------
+		#else:
+			#btn.reset()
 # --------------------------------------------------------------------------------------------------		
 
 

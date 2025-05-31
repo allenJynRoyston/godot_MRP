@@ -60,6 +60,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_67w08")
+new_quicksave_file = true
 skip_intro = true
 intro_skip_logo = true
 intro_skip_title = true

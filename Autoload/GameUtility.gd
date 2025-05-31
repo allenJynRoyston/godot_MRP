@@ -299,30 +299,18 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func apply_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> Dictionary:
+func apply_morale_bonus(use_location:Dictionary, total_morale_val:int, resource_amount:int,  use_room_config:Dictionary = room_config) -> Dictionary:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room
-	
-	var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
 	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
-	var applied_bonus:float = 0
-	# double the amount if specilization has a match
-	if room_config.room_paired_with.specilization:
-		applied_bonus += 1
-		
-	# double room_config amount if trait has a match	
-	if room_config.room_paired_with.trait:
-		applied_bonus += 1
-		
-	var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
-	applied_bonus += morale_val
-	
-	var value_with_bonus:int = ceili( amount * applied_bonus )
+	var applied_bonus:float = (total_morale_val * 10) * 0.01		
+	var amount:int = resource_amount + ceili( resource_amount * applied_bonus )
 	
 	return {
 		"applied_bonus": applied_bonus,
-		"amount": amount + value_with_bonus
+		"total_morale_val": total_morale_val,
+		"amount": amount
 	}
 # ------------------------------------------------------------------------------
 

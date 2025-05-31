@@ -139,14 +139,18 @@ var initial_values:Dictionary = {
 		# ------------------------------
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
-				"generator_level": 0
+				"generator_level": 0,
+				"buffs": [{"ref": BASE.BUFF.MORALE_BOOST, "duration": 3}],
+				"debuffs": [],
 			} 
 			# ------------------------------
 			for ring_index in [0, 1, 2, 3]:
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"researchers_per_room": DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM),
-					"hotkeys": {},
+					#"hotkeys": {},
+					"buffs": [{"ref": BASE.BUFF.MORALE_BOOST, "duration": 3}],
+					"debuffs": [],
 				}
 				
 				# ------------------------------
@@ -154,11 +158,13 @@ var initial_values:Dictionary = {
 					room[str(floor_index, ring_index, room_index)] = {
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
+						"buffs": [{"ref": BASE.BUFF.MORALE_BOOST, "duration": 3}],
+						"debuffs": [],
 					}	
 
 		
 		return {
-			"global_hotkeys": {},
+			#"global_hotkeys": {},
 			"floor": floor, 	# not currently used for anything
 			"ring": ring,
 			"room": room		 # not currently used for anything
@@ -443,16 +449,27 @@ func start_new_game(game_data_config:Dictionary) -> void:
 func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 	return { 
 		# --------------  # FLOOR WIDE STATS
+		"metrics": {
+			RESOURCE.METRICS.MORALE: 0,
+			RESOURCE.METRICS.SAFETY: 0,
+			RESOURCE.METRICS.READINESS: 0
+		},
+		"personnel": {
+			RESOURCE.PERSONNEL.TECHNICIANS: false,
+			RESOURCE.PERSONNEL.STAFF: false,
+			RESOURCE.PERSONNEL.SECURITY: false,
+			RESOURCE.PERSONNEL.DCLASS: false	
+		},		
 		"currencies": {
 			RESOURCE.CURRENCY.MONEY: 0,
 			RESOURCE.CURRENCY.MATERIAL: 0,
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
-		# --------------
-		"active_buffs": [],
+		"buffs": [],
+		"debuffs": [],
 		"room_refs": [],
-		"scp_refs": [],
+		"scp_refs": [],		
 		# --------------
 		"is_powered": is_powered,
 		"in_lockdown": false,
@@ -489,15 +506,16 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
+		"buffs": [],
+		"debuffs": [],
+		"room_refs": [],
+		"scp_refs": [],		
 		# --------------
 		"abl_lvl": 0,
 		"energy": {
 			"available": 0,
 			"used": 0
 		},
-		"active_buffs": [],
-		"room_refs": [],
-		"scp_refs": [],
 		# --------------
 		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 		"room": room
@@ -524,12 +542,10 @@ func get_room_defaults() -> Dictionary:
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
+		"buffs": [],
+		"debuffs": [],		
 		"applied_bonus": 0,
 		# --------------
-		"scp_paired_with": {
-			"specilization": false,
-			"trait": false
-		},
 		"room_paired_with": {
 			"specilization": false,
 			"trait": false
@@ -538,8 +554,8 @@ func get_room_defaults() -> Dictionary:
 		"energy_used": 0, 		
 		"damage_val": 0,
 		"abl_lvl": 0,
+		# --------------
 		"is_activated": false,
-		"build_data": {},
 		"room_data": {},
 		"scp_data": {},
 	}
@@ -559,8 +575,6 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		ActionContainer, 
 		DialogueContainer, 
 		ResourceContainer,
-		#RoomInfo, 
-		#FloorInfo, 
 		PhaseAnnouncement, 
 		ToastContainer
 	].filter(func(node): return node not in exclude)
@@ -610,7 +624,6 @@ func show_only(nodes:Array = []) -> void:
 			node.is_showing = true
 	
 	await U.set_timeout(0.5)
-	
 #endregion
 # ------------------------------------------------------------------------------	
 
@@ -631,32 +644,32 @@ func show_only(nodes:Array = []) -> void:
 ## -----------------------------------
 
 # -----------------------------------
-func calculate_daily_costs(costs:Array) -> void:
-	# MINUS RESOURCES
-	for cost in costs:
-		if cost.resource_ref in resources_data:
-			resources_data[cost.resource_ref].amount += cost.amount
-			var capacity:int = resources_data[cost.resource_ref].capacity
-			match cost.resource_ref:
-				#----------------------------
-				# trigger in debt if less than 50.  
-				RESOURCE.CURRENCY.MONEY:
-					var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, -50, capacity)
-					resources_data[cost.resource_ref].amount = new_val
-					
-					if new_val < -5:
-						var props:Dictionary = {
-							"count": base_states.counts.in_debt,
-							"onSelection": func(val:EVT.IN_DEBT_OPTIONS) -> void:
-								match val:
-									EVT.IN_DEBT_OPTIONS.EMERGENCY_FUNDS:
-										resources_data[cost.resource_ref].amount = 20
-									EVT.IN_DEBT_OPTIONS.DO_NOTHING:
-										pass
-										
-						}
-						#await triggger_event(EVT.TYPE.IN_DEBT_WARNING, props)
-				#----------------------------
+#func calculate_daily_costs(costs:Array) -> void:
+	## MINUS RESOURCES
+	#for cost in costs:
+		#if cost.resource_ref in resources_data:
+			#resources_data[cost.resource_ref].amount += cost.amount
+			#var capacity:int = resources_data[cost.resource_ref].capacity
+			#match cost.resource_ref:
+				##----------------------------
+				## trigger in debt if less than 50.  
+				#RESOURCE.CURRENCY.MONEY:
+					#var new_val:int = U.min_max(resources_data[cost.resource_ref].amount, -50, capacity)
+					#resources_data[cost.resource_ref].amount = new_val
+					#
+					#if new_val < -5:
+						#var props:Dictionary = {
+							#"count": base_states.counts.in_debt,
+							#"onSelection": func(val:EVT.IN_DEBT_OPTIONS) -> void:
+								#match val:
+									#EVT.IN_DEBT_OPTIONS.EMERGENCY_FUNDS:
+										#resources_data[cost.resource_ref].amount = 20
+									#EVT.IN_DEBT_OPTIONS.DO_NOTHING:
+										#pass
+										#
+						#}
+						##await triggger_event(EVT.TYPE.IN_DEBT_WARNING, props)
+				##----------------------------
 # -----------------------------------
 
 # -----------------------------------
@@ -670,101 +683,102 @@ func execute_record_audit() -> void:
 	for floor_index in room_config.floor.size():
 		for ring_index in room_config.floor[floor_index].ring.size():
 			for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
-				var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index})
-				var is_room_empty:bool = extract_data.is_room_empty
-				var is_room_active:bool = extract_data.is_activated
-				var is_scp_empty:bool = extract_data.is_scp_empty
-
-				var researchers:Array = extract_data.researchers
-				var location:Dictionary = {
-					"designation": "%s%s%s" % [floor_index, ring_index, room_index],
-					"floor": floor_index,
-					"ring": ring_index,
-					"room": room_index,
-				}
-
-				# ------- GETS ROOM DATA PROFITS/COSTS
-				if !is_room_empty and is_room_active:
-					var room_details:Dictionary = extract_data.room.details
-					var diff:Array = ROOM_UTIL.return_operating_cost(room_details.ref).map(func(i):
-						return {
-							"amount": i.amount, 
-							"resource_ref": i.resource.ref
-						}
-					)
-					
-					if diff.size() > 0:
-						progress_data.record.push_back({
-							"source": REFS.SOURCE.FACILITY,
-							"data": {
-								"name": room_details.name,
-								"day": progress_data.day,
-								"location": location,
-								"diff": diff
-							}
-						})
-						
-						#calculate_daily_costs(diff)
-					
-
-				# ------- GETS SCP DATA PROFITS
-				if !is_scp_empty:
-					var scp_details:Dictionary = extract_data.scp.details
-					#var diff:Array = SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref).map(func(i):
+				pass
+				#var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": room_index})
+				#var is_room_empty:bool = extract_data.is_room_empty
+				#var is_room_active:bool = extract_data.is_activated
+				#var is_scp_empty:bool = extract_data.is_scp_empty
+#
+				#var researchers:Array = extract_data.researchers
+				#var location:Dictionary = {
+					#"designation": "%s%s%s" % [floor_index, ring_index, room_index],
+					#"floor": floor_index,
+					#"ring": ring_index,
+					#"room": room_index,
+				#}
+#
+				## ------- GETS ROOM DATA PROFITS/COSTS
+				#if !is_room_empty and is_room_active:
+					#var room_details:Dictionary = extract_data.room.details
+					#var diff:Array = ROOM_UTIL.return_operating_cost(room_details.ref).map(func(i):
 						#return {
 							#"amount": i.amount, 
 							#"resource_ref": i.resource.ref
 						#}
 					#)
-					
-					#progress_data.record.push_back({
-						#"source": REFS.SOURCE.SCPS,
-						#"data": {
-							#"name": scp_details.name,
-							#"day": progress_data.day,
-							#"location": location,
-							#"diff": diff
-						#}
-					#})
 					#
-					#calculate_daily_costs(diff)
-					
-					# CALUCLATE SCIENCE FROM SCP's
-					for researcher in researchers:
-						var science_amount:int = 1
-						var xp_amount:int = 2 - (researchers.size() - 1)   # 2xp if 1 researcher attached, 1xp if 2 are attached
-						#for specilization in researcher.specializations:
-							#if specilization in scp_details.researcher_preferences:
-								#science_amount = scp_details.researcher_preferences[specilization]
-						
-						var science_diff:Array = [{
-							"amount": science_amount, 
-							"resource_ref": RESOURCE.CURRENCY.SCIENCE
-						}]
-						
-						progress_data.record.push_back({
-							"source": REFS.SOURCE.TESTING,
-							"data": {
-								"scp_ref": scp_details,
-								"researcher_uid": researcher.uid,
-								"name": researcher.name,
-								"day": progress_data.day,
-								"location": location,
-								"diff": science_diff
-							}
-						})
-						
-						## add experience
-						#var leveled_up:bool = RESEARCHER_UTIL.add_experience(researcher.uid, xp_amount)
+					#if diff.size() > 0:
 						#progress_data.record.push_back({
-							#"source": REFS.SOURCE.RESEARCHERS,
+							#"source": REFS.SOURCE.FACILITY,
 							#"data": {
-								#"xp": xp_amount
+								#"name": room_details.name,
+								#"day": progress_data.day,
+								#"location": location,
+								#"diff": diff
 							#}
 						#})
 						#
-						
-						#calculate_daily_costs(science_diff)
+						##calculate_daily_costs(diff)
+					#
+#
+				## ------- GETS SCP DATA PROFITS
+				#if !is_scp_empty:
+					#var scp_details:Dictionary = extract_data.scp.details
+					##var diff:Array = SCP_UTIL.return_ongoing_containment_rewards(scp_details.ref).map(func(i):
+						##return {
+							##"amount": i.amount, 
+							##"resource_ref": i.resource.ref
+						##}
+					##)
+					#
+					##progress_data.record.push_back({
+						##"source": REFS.SOURCE.SCPS,
+						##"data": {
+							##"name": scp_details.name,
+							##"day": progress_data.day,
+							##"location": location,
+							##"diff": diff
+						##}
+					##})
+					##
+					##calculate_daily_costs(diff)
+					#
+					## CALUCLATE SCIENCE FROM SCP's
+					#for researcher in researchers:
+						#var science_amount:int = 1
+						#var xp_amount:int = 2 - (researchers.size() - 1)   # 2xp if 1 researcher attached, 1xp if 2 are attached
+						##for specilization in researcher.specializations:
+							##if specilization in scp_details.researcher_preferences:
+								##science_amount = scp_details.researcher_preferences[specilization]
+						#
+						#var science_diff:Array = [{
+							#"amount": science_amount, 
+							#"resource_ref": RESOURCE.CURRENCY.SCIENCE
+						#}]
+						#
+						#progress_data.record.push_back({
+							#"source": REFS.SOURCE.TESTING,
+							#"data": {
+								#"scp_ref": scp_details,
+								#"researcher_uid": researcher.uid,
+								#"name": researcher.name,
+								#"day": progress_data.day,
+								#"location": location,
+								#"diff": science_diff
+							#}
+						#})
+						#
+						### add experience
+						##var leveled_up:bool = RESEARCHER_UTIL.add_experience(researcher.uid, xp_amount)
+						##progress_data.record.push_back({
+							##"source": REFS.SOURCE.RESEARCHERS,
+							##"data": {
+								##"xp": xp_amount
+							##}
+						##})
+						##
+						#
+						##calculate_daily_costs(science_diff)
 # -----------------------------------
 
 # -----------------------------------
@@ -1139,7 +1153,7 @@ func scp_run_first_effects(new_room_config:Dictionary) -> void:
 						#room_config.scp_paired_with.specilization = true
 					#if scp_details.pairs_with.trait in researcher_details.traits:
 						#room_config.scp_paired_with.trait = true	
-		
+
 func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1322,27 +1336,75 @@ func room_calculate_curriences(new_room_config:Dictionary) -> void:
 		var ring:int = item.location.ring
 		var room:int = item.location.room
 		var floor_ring_designation:String = str(floor, ring)
-		var floor_config:Dictionary = new_room_config.floor[floor]
-		var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
-		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		var floor_config_data:Dictionary = new_room_config.floor[floor]
+		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		#print(room_config.currencies)
 
-		if room_config.is_activated:
+		if room_config_data.is_activated:
 			var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
 			# tally their currencies
-			for key in room_config.currencies:
+			for key in room_config_data.currencies:
 				var amount:int = room_data.currencies[key]
-				var added_amount:int = room_config.currencies[key]
+				var added_amount:int = room_config_data.currencies[key]
 				var total_amount:int = amount + added_amount
-				var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
+				var floor_morale_val:int = floor_config_data.metrics[RESOURCE.METRICS.MORALE]
+				var ring_morale_val:int = ring_config_data.metrics[RESOURCE.METRICS.MORALE]
+				var room_morale_val:int = room_config_data.metrics[RESOURCE.METRICS.MORALE]
+				var total_morale_val:float = floor_morale_val + ring_morale_val + room_morale_val
+				var res:Dictionary = GAME_UTIL.apply_morale_bonus(item.location, total_morale_val, total_amount, new_room_config)
 				
-				var res:Dictionary = GAME_UTIL.apply_pair_and_morale_bonus(item.location, total_amount, new_room_config)
 				# add to totals
-				floor_config.currencies[key] += res.amount
-				ring_config.currencies[key] += res.amount
+				floor_config_data.currencies[key] += res.amount
+				ring_config_data.currencies[key] += res.amount
+				
 				# set as final amount
-				room_config.currencies[key] = res.amount
-				room_config.applied_bonus = res.applied_bonus
+				room_config_data.currencies[key] = res.amount
+				room_config_data.applied_bonus = res.applied_bonus
+
+func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
+	for floor_index in new_room_config.floor.size():
+		var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
+		var floor_config:Dictionary = new_room_config.floor[floor_index]
+		
+		# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
+		for prop in ["buffs", "debuffs"]:	
+			for item in floor_base_state[prop]:
+				var data:Dictionary = BASE_UTIL.return_buff(item.ref)
+				floor_config[prop].push_back({"data": data, "duration": item.duration})
+				if "metrics" in data:
+					for key in data.metrics:
+						var amount:int = data.metrics[key]
+						floor_config.metrics[key] += amount
+		# --------------------------------------------------------------
+		
+		# --------------------------------------------------------------		RING BUFFS/DEBUFFS
+		for ring_index in new_room_config.floor[floor_index].ring.size():
+			var ring_base_state:Dictionary = base_states.ring[str(floor_index, ring_index)]
+			var ring_config:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
+			for prop in ["buffs", "debuffs"]:	
+				for item in ring_base_state[prop]:
+					var data:Dictionary = BASE_UTIL.return_buff(item.ref)
+					ring_config.buffs.push_back({"data": data, "duration": item.duration})
+					if "metrics" in data:
+						for key in data.metrics:
+							var amount:int = data.metrics[key]
+							ring_config.metrics[key] += amount
+		# --------------------------------------------------------------
+		
+		# --------------------------------------------------------------		ROOM BUFFS/DEBUFFS
+			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
+				var room_base_state:Dictionary = base_states.room[str(floor_index, ring_index, room_index)]
+				var room_config:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
+				for prop in ["buffs", "debuffs"]:	
+					for item in room_base_state[prop]:
+						var data:Dictionary = BASE_UTIL.return_buff(item.ref)
+						room_config.buffs.push_back({"data": data, "duration": item.duration})
+						if "metrics" in data:
+							for key in data.metrics:
+								var amount:int = data.metrics[key]
+								room_config.metrics[key] += amount
+		# --------------------------------------------------------------
 
 
 func scp_run_final_effects(new_room_config:Dictionary) -> void:
@@ -1411,6 +1473,9 @@ func update_room_config(force_setup:bool = false) -> void:
 	# EXECUTE IN THIS ORDER
 	# zero out defaults 
 	setup_default_energy_and_metrics(new_room_config)
+	
+	# check for buffs/debuffs
+	check_for_buffs_and_debuffs(new_room_config)		
 	
 	# SCP, run first effects
 	scp_run_first_effects(new_room_config)

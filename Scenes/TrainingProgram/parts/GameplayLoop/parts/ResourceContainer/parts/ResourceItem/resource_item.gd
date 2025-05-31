@@ -2,10 +2,14 @@
 extends MouseInteractions
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var HeaderLabel:Label = $MarginContainer/ResourceItem/HeaderLabel
-@onready var IconBtn:Control = $MarginContainer/ResourceItem/HBoxContainer/IconBtn
-@onready var ItemLabel:Label = $MarginContainer/ResourceItem/HBoxContainer/ItemLabel
-@onready var BtmItemLabel:Label = $MarginContainer/ResourceItem/BtmItemLabel
+@onready var HeaderLabel:Label = $MarginContainer/ResourceItem/VBoxContainer/HeaderLabel
+@onready var IconBtn:Control = $MarginContainer/ResourceItem/VBoxContainer/HBoxContainer/IconBtn
+@onready var ItemLabel:Label = $MarginContainer/ResourceItem/VBoxContainer/HBoxContainer/ItemLabel
+@onready var BtmItemLabel:Label = $MarginContainer/ResourceItem/VBoxContainer/BtmItemLabel
+
+@onready var SecondValContainer:VBoxContainer = $MarginContainer/ResourceItem/SecondValContainer
+@onready var SecondValIcon:BtnBase = $MarginContainer/ResourceItem/SecondValContainer/IconBtn
+@onready var SecondValLabel:Label = $MarginContainer/ResourceItem/SecondValContainer/MarginContainer/Label
 
 @export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
 	set(val):
@@ -21,6 +25,8 @@ extends MouseInteractions
 	set(val):
 		header = val
 		on_header_update()
+
+@export var actual_val:int
 
 @export var title:String = ""	: 
 	set(val):
@@ -47,6 +53,18 @@ extends MouseInteractions
 		is_faded = val
 		on_is_faded_updated()
 		
+@export var use_second_val:bool = false : 
+	set(val):
+		use_second_val = val
+		on_use_second_val_update()
+		
+@export var second_val:int  = -1 : 
+	set(val):
+		second_val = val
+		on_second_val_update()
+
+
+		
 var onClick:Callable = func():pass
 var onDismiss:Callable = func():pass
 
@@ -61,7 +79,22 @@ func _ready() -> void:
 	on_title_update()
 	on_icon_size_update()
 	on_is_faded_updated()
+	on_use_second_val_update()
+	on_second_val_update()
 	on_no_bg_update.call_deferred()
+
+func on_use_second_val_update() -> void:
+	if !is_node_ready():return
+	SecondValContainer.show() if use_second_val else SecondValContainer.hide()
+
+func on_second_val_update() -> void:
+	if !is_node_ready() or !use_second_val:return	
+	SecondValLabel.text = str(second_val)
+	var sv_label_settings:LabelSettings = SecondValLabel.label_settings.duplicate()
+	var use_color:Color = Color.WHITE if second_val == 0 else (Color.GREEN if second_val > actual_val else Color.RED)
+	sv_label_settings.font_color = use_color
+	SecondValIcon.static_color = use_color
+	SecondValLabel.label_settings = sv_label_settings	
 
 func on_header_update() -> void:
 	if !is_node_ready():return

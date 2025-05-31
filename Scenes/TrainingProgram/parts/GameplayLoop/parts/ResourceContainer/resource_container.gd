@@ -11,7 +11,9 @@ extends GameContainer
 @onready var LocationWingLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/Location/Wing/CenterLabel2
 @onready var LocationRoomLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/Location/Room/CenterLabel2
 
-@onready var StatusLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/StatusLabel
+@onready var FloorLabelContainer:HBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/VBoxContainer/FloorLabelContainer
+@onready var RingLabelContainer:HBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/VBoxContainer/RingLabelContainer
+@onready var RoomLabelContainer:HBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/VBoxContainer/RoomLabelContainer
 
 @onready var CurrencyMoney:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Money
 @onready var CurrencyMaterials:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Materials
@@ -49,6 +51,8 @@ extends GameContainer
 
 # this button does not need to be linked; the listener is on the root level
 @onready var TaskbarBtn:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/TaskbarBtn
+
+const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
 
 var previous_location:Dictionary = {}
 
@@ -152,6 +156,17 @@ func update_vibe_color(node:Control, val:int) -> void:
 	var label_setting_copy:LabelSettings = node.label_settings.duplicate()
 	label_setting_copy.font_color = Color.RED if val < 0 else Color.WHITE
 	node.label_settings = label_setting_copy
+
+func update_status_container(status_list:Array, container:Control) -> void:
+	# status
+	for node in container.get_children():
+		node.queue_free()
+	
+	for item in status_list:
+		var new_label:Label = Label.new()
+		new_label.text = "%s%s" % [item.title, "" if item.duration == -1 else ("(%s)" % item.duration)]
+		new_label.label_settings = LabelSettingsPreload.duplicate()
+		container.add_child(new_label)	
 # -----------------------------------------------
 
 
@@ -159,16 +174,14 @@ func update_vibe_color(node:Control, val:int) -> void:
 func update_panels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or camera_settings.is_empty():return
 	
-	var floor_config:Dictionary = room_config.floor[current_location.floor]
-	var ring_config:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]	
+	var floor_config_data:Dictionary = room_config.floor[current_location.floor]
+	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]	
+	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]	
 	
 	# update location label
 	LocationFloorLabel.text = str(current_location.floor)
 	LocationWingLabel.text = str(current_location.ring)
 	LocationRoomLabel.text = str(current_location.room)
-
-	# status
-	StatusLabel.text = "POWERED" if floor_config.is_powered else "NO POWER"	
 		
 	# currency
 	CurrencyMoney.title = "%s" % [resources_data[RESOURCE.CURRENCY.MONEY].amount]
@@ -178,19 +191,48 @@ func update_panels() -> void:
 	
 	# vibes
 	VibesContainer.hide() if camera_settings.is_locked and camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else VibesContainer.show()
-	update_vibes(ring_config.metrics[RESOURCE.METRICS.MORALE], ring_config.metrics[RESOURCE.METRICS.SAFETY], ring_config.metrics[RESOURCE.METRICS.READINESS])
+	var floor_level_metrics:Dictionary = floor_config_data.metrics	
+	var ring_level_metrics:Dictionary = ring_config_data.metrics
+	var total_metrics:Dictionary = {}
+	for dict in [floor_level_metrics, ring_level_metrics]:
+		for ref in dict:
+			if ref not in total_metrics:
+				total_metrics[ref] = 0
+			total_metrics[ref] += dict[ref]	
+	update_vibes(total_metrics[RESOURCE.METRICS.MORALE], total_metrics[RESOURCE.METRICS.SAFETY], total_metrics[RESOURCE.METRICS.READINESS])
 	
+	# floor status
+	var status_list:Array = [
+		{"title": "POWERED" if floor_config_data.is_powered else "NO POWER", "duration": -1}
+	]	
+	
+	# get buffs
+	for buff in floor_config_data.buffs:
+		status_list.push_back({
+			"title": buff.data.name,
+			"duration": buff.duration
+		})
+	
+	for debuff in floor_config_data.debuffs:
+		status_list.push_back({
+			"title": debuff.data.name,
+			"duration": debuff.duration
+		})
+		
+	update_status_container(status_list, FloorLabelContainer)	
+	
+			
 	# energy
 	EnergyContainer.hide() if camera_settings.is_locked and camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else EnergyContainer.show()	
-	Energy.title = "%s/%s" % [ring_config.energy.available - ring_config.energy.used, ring_config.energy.available]
+	Energy.title = "%s/%s" % [ring_config_data.energy.available - ring_config_data.energy.used, ring_config_data.energy.available]
 
 	## personnel
 	Personnel.hide() if camera_settings.is_locked and camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else Personnel.show()	
-	PersonnelStaff.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.STAFF]
-	PersonnelTechnicians.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.TECHNICIANS]
-	PersonnelSecurity.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.SECURITY]
-	PersonnelDClass.is_negative = !ring_config.personnel[RESOURCE.PERSONNEL.DCLASS]	
-		
+	PersonnelStaff.is_negative = !ring_config_data.personnel[RESOURCE.PERSONNEL.STAFF]
+	PersonnelTechnicians.is_negative = !ring_config_data.personnel[RESOURCE.PERSONNEL.TECHNICIANS]
+	PersonnelSecurity.is_negative = !ring_config_data.personnel[RESOURCE.PERSONNEL.SECURITY]
+	PersonnelDClass.is_negative = !ring_config_data.personnel[RESOURCE.PERSONNEL.DCLASS]	
+
 	# update everything else
 	match camera_settings.type:
 		# -----------------------
@@ -211,6 +253,23 @@ func update_panels() -> void:
 		CAMERA.TYPE.WING_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_ring_summary(current_location)	
 
+			# get status effects
+			for cf in [{"config": ring_config_data, "container": RingLabelContainer}]:
+				var list:Array = []	
+				for buff in cf.config.buffs:
+					list.push_back({
+						"title": buff.data.name,
+						"duration": buff.duration
+					})
+				
+				for debuff in cf.config.debuffs:
+					list.push_back({
+						"title": debuff.data.name,
+						"duration": debuff.duration
+					})
+				
+				update_status_container(list, cf.container)
+
 			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
 			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
 			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
@@ -224,6 +283,28 @@ func update_panels() -> void:
 		# -----------------------
 		CAMERA.TYPE.ROOM_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_room_summary(current_location)	
+			
+			# get status effects
+			for cf in [
+				{"config": ring_config_data, "container": RingLabelContainer},
+				{"config": ring_config_data, "container": RoomLabelContainer}
+			]:
+				var list:Array = []	
+				for buff in cf.config.buffs:
+					list.push_back({
+						"title": buff.data.name,
+						"duration": buff.duration
+					})
+				
+				for debuff in cf.config.debuffs:
+					list.push_back({
+						"title": debuff.data.name,
+						"duration": debuff.duration
+					})
+				
+				update_status_container(list, cf.container)			
+			
+			
 			#currency diff
 			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
 			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 

@@ -177,6 +177,7 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tq8sf")
 script = ExtResource("1_tq8sf")
 reveal = true
+preview_mode = null
 
 [node name="CardBody" parent="." instance=ExtResource("1_soqd8")]
 layout_mode = 2

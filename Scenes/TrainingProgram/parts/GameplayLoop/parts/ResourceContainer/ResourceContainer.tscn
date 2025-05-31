@@ -1,7 +1,6 @@
-[gd_scene load_steps=21 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=20 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" uid="uid://da8752kxl16py" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/resource_container.gd" id="1_qt3uu"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_7q6wh"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_bsj2a"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="4_4m2u1"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_5bupg"]
@@ -22,6 +21,10 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7q6wh"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0dffn"]
 bg_color = Color(1, 1, 1, 0)
@@ -56,10 +59,6 @@ bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbbqs"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pubiq"]
 bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
@@ -146,11 +145,23 @@ text = "1"
 label_settings = ExtResource("5_5bupg")
 horizontal_alignment = 1
 
-[node name="StatusLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2"]
 layout_mode = 2
-text = "Status"
-label_settings = ExtResource("2_7q6wh")
-horizontal_alignment = 1
+
+[node name="FloorLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RingLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RoomLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl"]
 layout_mode = 2
@@ -198,11 +209,14 @@ alignment = 1
 
 [node name="Money" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7q6wh")
 icon = 31
 no_bg = true
+actual_val = 0
 title = "99"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 31
 hint_title = "Money"
 hint_description = "Money description."
@@ -210,11 +224,14 @@ allow_hint = true
 
 [node name="Materials" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
 icon = 41
 no_bg = true
+actual_val = 0
 title = "99"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 41
 hint_title = "Materials"
 hint_description = "Materials description."
@@ -222,11 +239,14 @@ allow_hint = true
 
 [node name="Research" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4m2u1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
 icon = 44
 no_bg = true
+actual_val = 0
 title = "99"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 44
 hint_title = "Research"
 hint_description = "Research description."
@@ -234,11 +254,14 @@ allow_hint = true
 
 [node name="Core" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5bupg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4m2u1")
 icon = 39
 no_bg = true
+actual_val = 0
 title = "10"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 39
 hint_title = "CORE"
 hint_description = "Core description."
@@ -409,11 +432,14 @@ alignment = 1
 
 [node name="EnergyItem" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kd4jj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5bupg")
 icon = 32
 no_bg = true
+actual_val = 0
 title = "99/99"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 32
 hint_title = "Energy"
 hint_description = "Required for powering room modules."
@@ -463,11 +489,14 @@ alignment = 1
 
 [node name="Staff" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rk4y0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kd4jj")
 icon = 35
 no_bg = true
+actual_val = 0
 title = "STF"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 35
 hint_title = "Staff"
 hint_description = "Staff description."
@@ -475,11 +504,14 @@ allow_hint = true
 
 [node name="Technicians" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bd2ap")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rk4y0")
 icon = 34
 no_bg = true
+actual_val = 0
 title = "TCH"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 34
 hint_title = "Technicians"
 hint_description = "Technicians description."
@@ -487,11 +519,14 @@ allow_hint = true
 
 [node name="Security" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_erj62")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bd2ap")
 icon = 36
 no_bg = true
+actual_val = 0
 title = "SEC"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 36
 hint_title = "Security"
 hint_description = "Security descriptions."
@@ -499,11 +534,14 @@ allow_hint = true
 
 [node name="DClass" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rbbqs")
+theme_override_styles/panel = SubResource("StyleBoxFlat_erj62")
 icon = 33
 no_bg = true
+actual_val = 0
 title = "DCL"
 display_at_bottom = true
+use_second_val = false
+second_val = -1
 hint_icon = 33
 hint_title = "D-Class"
 hint_description = "D-Class Description."
@@ -538,7 +576,7 @@ use_icon = true
 [node name="TaskbarBtn" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right" instance=ExtResource("8_xre08")]
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pubiq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rbbqs")
 title = "TASKBAR"
 assigned_key = "DELETE"
 icon = 67

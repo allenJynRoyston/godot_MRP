@@ -59,6 +59,8 @@ extends MouseInteractions
 	set(val):
 		card_border_color = val
 		on_is_selected_update()
+		
+@export var preview_mode:bool = false
 	
 
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
@@ -198,7 +200,8 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.has_trait_bonus = has_trait_bonus
 	CardDrawerCurrency.morale_val = morale_val
 	CardDrawerCurrency.list = currency_list
-	CardDrawerCurrency.update_labels()		
+	CardDrawerCurrency.preview_mode = preview_mode
+	#CardDrawerCurrency.()		
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

@@ -1,4 +1,10 @@
 @tool
 extends Node
 
-enum TYPE {UNLOCK_FLOOR_2, UNLOCK_FLOOR_3, UNLOCK_FLOOR_4, UNLOCK_FLOOR_5}
+enum BUFF {
+	MORALE_BOOST
+}
+
+enum DEBUFF {
+	MORALE_DRAIN
+}
