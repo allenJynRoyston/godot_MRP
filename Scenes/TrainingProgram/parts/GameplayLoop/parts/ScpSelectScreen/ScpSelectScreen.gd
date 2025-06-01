@@ -97,8 +97,6 @@ func on_refs_update() -> void:
 	if !is_node_ready() or current_location.is_empty():return
 	clear_list()
 	
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	var wing_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
 	# fills in the scp cards
 	for index in refs.size():
 		var ref:int = refs[index]

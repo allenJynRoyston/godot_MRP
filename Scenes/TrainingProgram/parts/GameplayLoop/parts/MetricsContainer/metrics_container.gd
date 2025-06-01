@@ -90,13 +90,11 @@ func update_status() -> void:
 func update_metrics_labels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
 	var ring_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
-	var extract_data:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	
 	# ROOM INDIVIDUAL CHANGES 
 	#MoraleNode.value = extract_data.metric_details.total[RESOURCE.METRICS.MORALE] if RESOURCE.METRICS.MORALE in extract_data.metric_details.total else 0
 	#ReadinessNode.value = extract_data.metric_details.total[RESOURCE.METRICS.READINESS] if RESOURCE.METRICS.READINESS in extract_data.metric_details.total else 0
 	#SafeteyNode.value = extract_data.metric_details.total[RESOURCE.METRICS.SAFETY] if RESOURCE.METRICS.SAFETY in extract_data.metric_details.total else 0
-
 	
 	for key in ring_data.metrics:
 		var amount:int = ring_data.metrics[key]

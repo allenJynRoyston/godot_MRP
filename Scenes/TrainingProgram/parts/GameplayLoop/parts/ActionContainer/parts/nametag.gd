@@ -120,12 +120,12 @@ func update_node(shift_val:int = 10) -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or index == -1:return
 	shifted_val = shift_val
 	
+	# get location
 	var use_location:Dictionary = current_location.duplicate()
 	use_location.room = index
 	
+	# config data
 	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-	
-
 	
 	# hide/show personnel icons
 	for key in room_config_data.personnel:
@@ -142,8 +142,10 @@ func update_node(shift_val:int = 10) -> void:
 
 	# hide/show currency icons
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
-	self.modulate = Color(1, 1, 1, 1 if !room_extract.is_room_empty or !fade else 0)
-	if !room_extract.is_room_empty:
+	var is_room_empty:bool = room_extract.room.is_empty()
+	self.modulate = Color(1, 1, 1, 1 if !is_room_empty or !fade else 0)
+	
+	if !is_room_empty:
 		var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
 		var currencies_check:Dictionary = {
 			RESOURCE.CURRENCY.MONEY: 0,
@@ -171,10 +173,10 @@ func update_node(shift_val:int = 10) -> void:
 				RESOURCE.CURRENCY.CORE:
 					CoreIcon.hide() if amount <= 0 else CoreIcon.show()
 		
-		name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.is_activated else ""])  if !room_extract.is_room_empty else "EMPTY"
+		name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.room.is_activated else ""])  if !is_room_empty else "EMPTY"
 		
 
-	hide() if room_extract.is_room_empty else show()
+	hide() if is_room_empty else show()
 # --------------------------------------------
 
 # --------------------------------------------

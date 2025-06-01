@@ -299,13 +299,30 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func get_morale_val(use_location:Dictionary = {}) -> int:
+	if use_location.is_empty():
+		use_location = current_location
+		
+	var floor_config_data:Dictionary = room_config.floor[use_location.floor]
+	var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]
+	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+	
+	var floor_morale_val:int = floor_config_data.metrics[RESOURCE.METRICS.MORALE]
+	var ring_morale_val:int = ring_config_data.metrics[RESOURCE.METRICS.MORALE]
+	var room_morale_val:int = room_config_data.metrics[RESOURCE.METRICS.MORALE]
+	
+	return floor_morale_val + ring_morale_val + room_morale_val	
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
 func apply_morale_bonus(use_location:Dictionary, total_morale_val:int, resource_amount:int,  use_room_config:Dictionary = room_config) -> Dictionary:
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room
 	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
 	var applied_bonus:float = (total_morale_val * 10) * 0.01		
-	var amount:int = resource_amount + ceili( resource_amount * applied_bonus )
+	var amount:int = resource_amount + floori( resource_amount * applied_bonus )
 	
 	return {
 		"applied_bonus": applied_bonus,
@@ -318,7 +335,6 @@ func apply_morale_bonus(use_location:Dictionary, total_morale_val:int, resource_
 # ------------------------------------------------------------------------------
 func extract_room_details(use_location:Dictionary = current_location, use_config:Dictionary = room_config) -> Dictionary:
 	if use_config.is_empty():return {}
-	
 	var designation:String = U.location_to_designation(use_location)
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
@@ -330,9 +346,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 
 	var is_room_empty:bool = room_config.room_data.is_empty()
 	var room_details:Dictionary = {} if is_room_empty else room_config.room_data.details 
-	var is_activated:bool = false if is_room_empty else room_config.is_activated 
-	var can_contain:bool = false if is_room_empty else room_details.can_contain
-	var can_destroy:bool = false if is_room_empty else room_details.can_destroy
 	
 	var abilities:Array = [] if (is_room_empty or "abilities" not in room_details) else room_details.abilities.call()	
 	var passives_enabled:Dictionary = room_base_state.passives_enabled	
@@ -358,76 +371,48 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 		
 	return {
-		"floor_config": floor_config,
-		"ring_config": ring_config,
-		"room_config": room_config,
-		# -----
-		"is_room_empty": room_details.is_empty(),
-		"is_scp_empty": is_scp_empty,
 		# ------
-		"is_activated": is_activated,
-		"can_contain": can_contain,
-		"can_destroy": can_destroy,
-		# ------
-		"researchers_count": researchers.size(),
 		# -----
 		"room": {
 			"details": room_details,
 			"abilities": abilities,
 			"passive_abilities": passive_abilities,
-			"pairs_with": room_config.room_paired_with,
+			"is_activated": false if is_room_empty else room_config.is_activated,
+			"can_destroy": false if is_room_empty else room_details.can_contain,
+			"can_contain": false if is_room_empty else room_details.can_destroy,
 			"abl_lvl": room_config.abl_lvl + ring_config.abl_lvl,		
 		} if !is_room_empty else {},
+		# -----------
 		"scp": {
 			"details": scp_details,
 		} if !is_scp_empty else {},
-		"researchers": researchers
+		# -----------
+		"researchers": researchers,
+		"researchers_count": researchers.size(),
 	}
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------
-func does_passive_ability_exists_in_ring(ability:Dictionary, use_location:Dictionary = current_location) -> bool:
-	var extract_data:Dictionary = extract_wing_details(use_location)
-	for key in extract_data.passive_abilities:
-		for item in extract_data.passive_abilities[key]:
-			if ability.name == item.details.name:
-				return true
-				break
-	return false
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------
-func does_ability_exists_in_ring(ability:Dictionary, use_location:Dictionary = current_location) -> bool:
-	var extract_data:Dictionary = extract_wing_details(use_location)
-	for key in extract_data.abilities:
-		for item in extract_data.abilities[key]:
-			if ability.name == item.details.name:
-				return true
-				break
-	return false
-# ------------------------------------------------------------------------------	
-
-## ------------------------------------------------------------------------------
-func get_passive_ability_state(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> bool:
-	var designation:String = U.location_to_designation(use_location)
-	var passives_enabled:Dictionary = base_states.room[designation].passives_enabled
-	var ability_uid:String = str(room_ref, ability_index)
-	
-
-	return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
-## ------------------------------------------------------------------------------	
-
-## ------------------------------------------------------------------------------
-func get_ability_cooldown(ability:Dictionary, use_location:Dictionary = current_location) -> int:
-	var designation:String = U.location_to_designation(use_location)
-	var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability.ref)	
-	var cooldown_duration:int = 0
-	
-	if ability_uid in base_states.room[designation].ability_on_cooldown:
-		cooldown_duration = base_states.room[designation].ability_on_cooldown[ability_uid]	
-
-	return cooldown_duration
-## ------------------------------------------------------------------------------	
+### ------------------------------------------------------------------------------
+#func get_passive_ability_state(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> bool:
+	#var designation:String = U.location_to_designation(use_location)
+	#var passives_enabled:Dictionary = base_states.room[designation].passives_enabled
+	#var ability_uid:String = str(room_ref, ability_index)
+	#
+#
+	#return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
+### ------------------------------------------------------------------------------	
+#
+### ------------------------------------------------------------------------------
+#func get_ability_cooldown(ability:Dictionary, use_location:Dictionary = current_location) -> int:
+	#var designation:String = U.location_to_designation(use_location)
+	#var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability.ref)	
+	#var cooldown_duration:int = 0
+	#
+	#if ability_uid in base_states.room[designation].ability_on_cooldown:
+		#cooldown_duration = base_states.room[designation].ability_on_cooldown[ability_uid]	
+#
+	#return cooldown_duration
+### ------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use_location:Dictionary) -> void:

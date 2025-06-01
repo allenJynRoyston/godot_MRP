@@ -152,18 +152,13 @@ func on_ref_update() -> void:
 	var currency_list:Array = []
 	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specilization).name)
 	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(room_details.pairs_with.trait).name)
-	var bonus_str:String = "%s or %s" % [spec_name, trait_name]	
-	var has_spec_bonus:bool = false
-	var has_trait_bonus:bool = false
-	var morale_val:int = 0
+	var morale_val:int = GAME_UTIL.get_morale_val(use_location)
 	
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		if !extract_data.room.is_empty():
-			morale_val = extract_data.ring_config.metrics[RESOURCE.METRICS.MORALE]
-			is_activated = extract_data.is_activated
-			has_spec_bonus = extract_data.room.pairs_with.specilization
-			has_trait_bonus = extract_data.room.pairs_with.trait
+			is_activated = extract_data.room.is_activated
+
 
 	for ref in room_details.currencies:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
@@ -192,16 +187,12 @@ func on_ref_update() -> void:
 	CardDrawerVibes.metrics = room_details.metrics	
 	# -----------
 	CardDrawerPairsWith.spec_name = spec_name
-	CardDrawerPairsWith.has_spec = has_spec_bonus
 	# -----------
 	CardDrawerCurrency.spec_name = spec_name
 	CardDrawerCurrency.trait_name = trait_name
-	CardDrawerCurrency.has_spec_bonus = has_spec_bonus
-	CardDrawerCurrency.has_trait_bonus = has_trait_bonus
 	CardDrawerCurrency.morale_val = morale_val
 	CardDrawerCurrency.list = currency_list
 	CardDrawerCurrency.preview_mode = preview_mode
-	#CardDrawerCurrency.()		
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

@@ -264,7 +264,7 @@ func owns_and_is_active(ref:int) -> bool:
 	if filter.size() == 0:
 		return false
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(filter[0].location)
-	return room_extract.is_activated
+	return room_extract.room.is_activated
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

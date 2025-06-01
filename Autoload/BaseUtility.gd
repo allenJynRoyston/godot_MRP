@@ -11,8 +11,21 @@ var MORALE_BOOST:Dictionary = {
 	}
 }
 
+var CONTRACTORS:Dictionary = {
+	"ref": BASE.BUFF.CONTRACTORS,
+	"name": "CONTRACTORS",
+	"img_src": "res://Media/rooms/redacted.jpg",
+	"description": "Temporary employees that are used to fill any staffing postion (excluding D-Class).",
+	"personnel": [
+		RESOURCE.PERSONNEL.TECHNICIANS,
+		RESOURCE.PERSONNEL.STAFF,
+		RESOURCE.PERSONNEL.SECURITY
+	]
+}
+
 var buff_data:Dictionary = {
-	BASE.BUFF.MORALE_BOOST: MORALE_BOOST
+	BASE.BUFF.MORALE_BOOST: MORALE_BOOST,
+	BASE.BUFF.CONTRACTORS: CONTRACTORS
 }
 # ----------------------------------------
 

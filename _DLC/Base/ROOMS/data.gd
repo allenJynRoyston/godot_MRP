@@ -354,7 +354,7 @@ var ENGINEERING_BAY:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"resource_requirements": [
+	"required_personnel": [
 		RESOURCE.PERSONNEL.TECHNICIANS
 	],
 	# ------------------------------------------
@@ -385,7 +385,7 @@ var ENERGY_STORAGE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"resource_requirements": [
+	"required_personnel": [
 		RESOURCE.PERSONNEL.TECHNICIANS
 	],
 	# ------------------------------------------

@@ -27,7 +27,7 @@ func on_extract_data_update() -> void:
 	clear_list()
 
 	#var test:String 
-	#if extract_data.is_room_empty:
+	#if extract_data.room.is_empty():
 		#hide()
 		#return
 	#

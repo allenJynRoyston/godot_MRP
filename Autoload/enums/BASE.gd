@@ -2,7 +2,8 @@
 extends Node
 
 enum BUFF {
-	MORALE_BOOST
+	MORALE_BOOST,
+	CONTRACTORS
 }
 
 enum DEBUFF {

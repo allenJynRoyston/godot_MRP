@@ -68,7 +68,7 @@ func on_ref_update() -> void:
 	
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		is_activated = extract_data.is_activated
+		is_activated = extract_data.room.is_activated
 	
 	#DeactivatedPanel.hide() if is_activated else DeactivatedPanel.show()
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:

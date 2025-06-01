@@ -172,13 +172,14 @@ func update_boards() -> void:
 						var room_node:Node3D = NodeContainer.get_child(room_index)
 						var ref_index:int = room_node.ref_index
 						var room_extract:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": ref_index})
+						var is_room_empty:bool = room_extract.room.is_empty()
 						
 						# ----------------------------------------
 						var left_label_3d:Label3D = LeftBoardRoomLabels.find_child(str(ref_index))
 						var left_status_label:Label3D = left_label_3d.get_child(0)
 						for text_node in [left_label_3d, left_status_label]:
-							text_node.modulate = Color(0.984, 0.439, 0.184) if (room_extract.room.is_empty() or !room_extract.is_activated) else Color(0.525, 1, 0.443, 1)
-						left_label_3d.text = "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.room.is_empty() else room_extract.room.details.shortname]
+							text_node.modulate = Color(0.984, 0.439, 0.184) if (is_room_empty or !room_extract.room.is_activated) else Color(0.525, 1, 0.443, 1)
+						left_label_3d.text = "%s  %s" % [room_node.room_number, "EMPTY" if is_room_empty else room_extract.room.details.shortname]
 						left_status_label.text = ""
 						if !room_extract.room.is_empty():
 							left_status_label.text = "NO ISSUES" if room_extract.is_activated else "NOT POWERED"

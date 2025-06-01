@@ -215,18 +215,19 @@ func build_room_details() -> void:
 	if room_config.is_empty() or current_location.is_empty() or ref_index == -1 or room_ref == "":return
 	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
 	var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": assigned_floor, "ring": assigned_wing, "room": ref_index})
+	var is_room_empty:bool = extract_data.room.is_empty()
+	var is_scp_empty:bool = extract_data.scp.is_empty()
 	var mesh_duplicate = MainMesh.mesh.duplicate()
 	var material_copy = RoomMaterialBuilt.duplicate() 
 	material_copy.albedo_color = Color.SLATE_GRAY
 
 	RoomNumberLabel.text = "%s" % [room_number]	
-	#NameLabel.text = "EMPTY" if extract_data.is_room_empty else extract_data.room.details.name
 	
 	var scp_color:Color = Color(0.511, 0.002, 0.717)
 	var room_color:Color = Color(0, 0.529, 1)
 	var special_color:Color = Color(0, 0, 0)
 
-	if extract_data.is_room_empty:
+	if is_room_empty:
 		DoorLabel.text = "EMPTY"
 		ActivationIndicatorLight.omni_attenuation = 1.0
 		ActivationIndicatorLight.light_color = Color.TRANSPARENT
@@ -238,9 +239,9 @@ func build_room_details() -> void:
 			#ROOM.CATEGORY.FACILITY:
 				#material_copy.albedo_color = special_color if extract_data.is_directors_office else room_color
 		ActivationIndicatorLight.omni_attenuation = 6.5
-		ActivationIndicatorLight.light_color = Color.GREEN if extract_data.is_activated else Color.ORANGE_RED
+		ActivationIndicatorLight.light_color = Color.GREEN if extract_data.room.is_activated else Color.ORANGE_RED
 	
-	if extract_data.is_scp_empty:
+	if is_scp_empty:
 		ScpIndicatorLight.omni_attenuation = 0.0
 		ScpIndicatorLight.light_color = Color.TRANSPARENT
 		is_pulsing = false

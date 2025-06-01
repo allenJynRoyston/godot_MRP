@@ -29,7 +29,7 @@ func _ready() -> void:
 func on_extract_data_update() -> void:
 	if !is_node_ready() or extract_data.is_empty():return
 	
-	if extract_data.is_room_empty:
+	if extract_data.room.is_empty():
 		StatusTag.hide()
 		TitleLabel.text = " NOTHING ASSIGNED " 
 		LevelLabel.text = ""
@@ -40,7 +40,7 @@ func on_extract_data_update() -> void:
 		ProfileImage.texture = CACHE.fetch_image(extract_data.room.details.img_src)
 		ProfileImage.material = null
 		#LevelLabel.text = "LVL %s " % [extract_data.room.upgrade_level]
-		if !extract_data.is_activated:
+		if !extract_data.room.is_activated:
 			StatusTag.show()
 			StatusLabel.text = "INACTIVE"
 		else:

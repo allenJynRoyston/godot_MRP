@@ -749,20 +749,18 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
 	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
-	var is_room_empty:bool = room_extract.is_room_empty
-	var is_scp_empty:bool = room_extract.is_scp_empty
-	var is_activated:bool = room_extract.is_activated
+	var is_room_empty:bool = room_extract.room.is_empty()
+	var is_scp_empty:bool = room_extract.scp.is_empty()
+	var is_activated:bool = false if is_room_empty else room_extract.room.is_activated
 	var can_contain:bool = false if is_room_empty else room_extract.room.details.can_contain
 	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
 	var can_take_action:bool = (is_powered and !in_lockdown)
 	var has_options:bool = SummaryCard.get_ability_btns().size() > 0
 	
 	if !room_extract.is_empty():
-		AbilityBtn.show() if !room_extract.is_room_empty else AbilityBtn.hide()
-		BuildBtn.show() if room_extract.is_room_empty else BuildBtn.hide()
-		#ResearcherBtnPanel.hide() #if room_extract.is_room_empty else ResearcherBtnPanel.show()
-		#ScpBtnPanel.hide() if room_extract.is_room_empty or !room_extract.can_contain else ScpBtnPanel.show()		
-	#
+		AbilityBtn.show() if !is_room_empty else AbilityBtn.hide()
+		BuildBtn.show() if is_room_empty else BuildBtn.hide()
+
 		if previous_designation != U.location_to_designation(current_location):
 			previous_designation = U.location_to_designation(current_location)	
 			SummaryCard.use_location = current_location
@@ -782,8 +780,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		MODE.INVESTIGATE:
 			NameControl.hide()
 			ControllerOverlay.show_directional = false
-			var abilities:Array = room_extract.room.abilities if !room_extract.is_room_empty else []
-			var passive_abilities:Array = room_extract.room.passive_abilities if !room_extract.is_room_empty else []
+			var abilities:Array = room_extract.room.abilities if !is_room_empty else []
+			var passive_abilities:Array = room_extract.room.passive_abilities if !is_room_empty else []
 			var researchers_per_room:int = base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room
 			var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 			
@@ -791,7 +789,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			Input.warp_mouse(warp_to_pos)
 			
 			# update roomDetailsControl
-			RoomDetailsControl.show_room_card = !room_extract.is_room_empty
+			RoomDetailsControl.show_room_card = !is_room_empty
 			RoomDetailsControl.show_scp_card = false
 			RoomDetailsControl.show_researcher_card = false	
 			
@@ -800,17 +798,17 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			
 
 			RoomDetailsControl.disable_location = false
-			RoomDetailsControl.reveal(!room_extract.is_room_empty)
+			RoomDetailsControl.reveal(!is_room_empty)
 			
 			RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
 			
 			# set button states
-			BuildBtn.is_disabled = !room_extract.is_room_empty
-			DeconstructBtn.is_disabled = room_extract.is_room_empty
+			BuildBtn.is_disabled = !is_room_empty
+			DeconstructBtn.is_disabled = is_room_empty
 
 			if can_take_action:
 				AbilityBtn.is_disabled = !is_activated and has_options
-				DeconstructBtn.is_disabled = !room_extract.can_destroy
+				DeconstructBtn.is_disabled = true if is_room_empty else !room_extract.room.can_destroy
 			else:
 				AbilityBtn.is_disabled = true
 				DeconstructBtn.is_disabled = true
@@ -976,7 +974,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.ABILITY:
 			var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
 			var is_powered:bool = room_config.floor[current_location.floor].is_powered
-			var room_name:String = extract_room_data.room.details.name if !extract_room_data.is_room_empty else "EMPTY"
+			var is_room_empty:bool = extract_room_data.room.is_empty()
+			var room_name:String = extract_room_data.room.details.name if !is_room_empty else "EMPTY"
 
 			BtnControls.itemlist = SummaryCard.get_ability_btns()
 			BtnControls.item_index = 0
@@ -1037,7 +1036,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------	
 func check_if_remove_is_valid() -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-	var is_room_empty:bool = room_extract.is_room_empty
+	var is_room_empty:bool = room_extract.room.is_empty()
 	
 	#ConfirmBtn.title = "DESTROY"
 	#ConfirmBtn.is_disabled = is_room_empty
@@ -1046,8 +1045,8 @@ func check_if_remove_is_valid() -> void:
 # --------------------------------------------------------------------------------------------------
 func check_if_contain_is_valid() -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-	var is_room_empty:bool = room_extract.is_room_empty
-	var can_contain:bool = room_extract.can_contain
+	var is_room_empty:bool = room_extract.room.is_empty()
+	var can_contain:bool = false if is_room_empty else room_extract.room.can_contain
 	#
 	#ConfirmBtn.title = "CONTAIN"
 	#ConfirmBtn.is_disabled = is_room_empty or !can_contain
