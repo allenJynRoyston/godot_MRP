@@ -26,9 +26,9 @@ extends GameContainer
 @onready var CoreTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CoreTag
 
 @onready var VibesContainer:PanelContainer = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes
-@onready var MoraleLabel:Label = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Morale/Label
-@onready var SafetyLabel:Label = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Safety/Label
-@onready var ReadinessLabel:Label = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Readiness/Label
+@onready var VibeMorale:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeMorale
+@onready var VibeSafety:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeSafety
+@onready var VibeReadiness:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeReadiness
 
 @onready var MoraleTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MoraleTag
 @onready var SafetyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SafetyTag
@@ -52,7 +52,10 @@ extends GameContainer
 # this button does not need to be linked; the listener is on the root level
 @onready var TaskbarBtn:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/TaskbarBtn
 
+# buff or debuff
+const BuffOrDebuffTag:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/BuffOrDebuffTag/BuffOrDebuffTag.tscn")
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
+
 
 var previous_location:Dictionary = {}
 
@@ -78,9 +81,9 @@ func _ready() -> void:
 	GBL.direct_ref["SciencePanel"] = CurrencyResearch
 	GBL.direct_ref["MoneyPanel"] = CurrencyMoney
 	#
-	GBL.direct_ref["MoralePanel"] = MoraleLabel
-	GBL.direct_ref["SafetyPanel"] = SafetyLabel
-	GBL.direct_ref["ReadinessPanel"] = ReadinessLabel
+	GBL.direct_ref["MoralePanel"] = VibeMorale
+	GBL.direct_ref["SafetyPanel"] = VibeSafety
+	GBL.direct_ref["ReadinessPanel"] = VibeReadiness
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -95,7 +98,11 @@ func activate() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func get_hint_buttons() -> Array:
-	return [CurrencyMoney, CurrencyMaterials, CurrencyResearch, CurrencyCore, Energy, PersonnelStaff, PersonnelTechnicians, PersonnelSecurity, PersonnelDClass]
+	var btns:Array =  [CurrencyMoney, CurrencyMaterials, CurrencyResearch, CurrencyCore, VibeMorale, VibeSafety, VibeReadiness, Energy, PersonnelStaff, PersonnelTechnicians, PersonnelSecurity, PersonnelDClass]
+	for node in [FloorLabelContainer, RingLabelContainer, RoomLabelContainer]:
+		for child in node.get_children():
+			btns.push_back(child)
+	return btns
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -145,17 +152,10 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 
 # -----------------------------------------------
 func update_vibes(morale_val:int, safety_val:int, readiness_val:int) -> void:
-	MoraleLabel.text = str(morale_val)
-	SafetyLabel.text = str(safety_val)
-	ReadinessLabel.text = str(readiness_val)
-	update_vibe_color(MoraleLabel, morale_val)
-	update_vibe_color(SafetyLabel, safety_val)
-	update_vibe_color(ReadinessLabel, readiness_val)
+	VibeMorale.value = morale_val
+	VibeSafety.value = safety_val
+	VibeReadiness.value = readiness_val
 
-func update_vibe_color(node:Control, val:int) -> void:
-	var label_setting_copy:LabelSettings = node.label_settings.duplicate()
-	label_setting_copy.font_color = Color.RED if val < 0 else Color.WHITE
-	node.label_settings = label_setting_copy
 
 func update_status_container(status_list:Array, container:Control) -> void:
 	# status
@@ -163,10 +163,12 @@ func update_status_container(status_list:Array, container:Control) -> void:
 		node.queue_free()
 	
 	for item in status_list:
-		var new_label:Label = Label.new()
-		new_label.text = "%s%s" % [item.title, "" if item.duration == -1 else ("(%s)" % item.duration)]
-		new_label.label_settings = LabelSettingsPreload.duplicate()
-		container.add_child(new_label)	
+		var new_node:Control = BuffOrDebuffTag.instantiate()
+		container.add_child(new_node)	
+		new_node.title = item.title
+		new_node.duration = item.duration
+		new_node.hint_description = item.hint_description
+		new_node.type = item.type
 # -----------------------------------------------
 
 
@@ -201,22 +203,36 @@ func update_panels() -> void:
 			total_metrics[ref] += dict[ref]	
 	update_vibes(total_metrics[RESOURCE.METRICS.MORALE], total_metrics[RESOURCE.METRICS.SAFETY], total_metrics[RESOURCE.METRICS.READINESS])
 	
+	# update buffs/debuffs/status
+	for node in [FloorLabelContainer, RingLabelContainer, RoomLabelContainer]:
+		for child in node.get_children():
+			child.queue_free()				
+	
 	# floor status
 	var status_list:Array = [
-		{"title": "POWERED" if floor_config_data.is_powered else "NO POWER", "duration": -1}
+		{
+			"title": "POWERED" if floor_config_data.is_powered else "NO POWER", 
+			"duration": -1,
+			"hint_description": "Wing is being supplied power." if floor_config_data.is_powered else "Wing has no power.",
+			"type": BASE.TYPE.BUFF
+		}
 	]	
 	
 	# get buffs
 	for buff in floor_config_data.buffs:
 		status_list.push_back({
 			"title": buff.data.name,
-			"duration": buff.duration
+			"duration": buff.duration,
+			"hint_description": buff.data.description,
+			"type": BASE.TYPE.BUFF
 		})
 	
 	for debuff in floor_config_data.debuffs:
 		status_list.push_back({
 			"title": debuff.data.name,
-			"duration": debuff.duration
+			"duration": debuff.duration,
+			"hint_description": debuff.data.description,
+			"type": BASE.TYPE.DEBUFF
 		})
 		
 	update_status_container(status_list, FloorLabelContainer)	
@@ -259,13 +275,17 @@ func update_panels() -> void:
 				for buff in cf.config.buffs:
 					list.push_back({
 						"title": buff.data.name,
-						"duration": buff.duration
+						"duration": buff.duration,
+						"hint_description": buff.data.description,
+						"type": BASE.TYPE.BUFF
 					})
 				
 				for debuff in cf.config.debuffs:
 					list.push_back({
 						"title": debuff.data.name,
-						"duration": debuff.duration
+						"duration": debuff.duration,
+						"hint_description": debuff.data.description,
+						"type": BASE.TYPE.DEBUFF	
 					})
 				
 				update_status_container(list, cf.container)
@@ -283,6 +303,7 @@ func update_panels() -> void:
 		# -----------------------
 		CAMERA.TYPE.ROOM_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_room_summary(current_location)	
+		
 			
 			# get status effects
 			for cf in [
@@ -293,13 +314,17 @@ func update_panels() -> void:
 				for buff in cf.config.buffs:
 					list.push_back({
 						"title": buff.data.name,
-						"duration": buff.duration
+						"duration": buff.duration,
+						"hint_description": buff.data.description,
+						"type": BASE.TYPE.BUFF
 					})
 				
 				for debuff in cf.config.debuffs:
 					list.push_back({
 						"title": debuff.data.name,
-						"duration": debuff.duration
+						"duration": debuff.duration,
+						"hint_description": debuff.data.description,
+						"type": BASE.TYPE.DEBUFF	
 					})
 				
 				update_status_container(list, cf.container)			

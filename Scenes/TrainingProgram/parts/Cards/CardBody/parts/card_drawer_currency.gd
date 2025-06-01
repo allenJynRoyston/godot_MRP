@@ -12,10 +12,6 @@ extends CardDrawerClass
 		list = val
 		on_list_update()
 
-@export var spec_name:String = "" 
-@export var trait_name:String = "" 
-@export var	has_spec_bonus:bool = false 
-@export var	has_trait_bonus:bool = false 
 @export var	morale_val:int = 0
 
 var room_config:Dictionary = {}
@@ -54,10 +50,13 @@ func on_list_update() -> void:
 	if list.is_empty():return
 	for item in list:
 		var new_node:Control = ResourceItemPreload.instantiate()
+		var base_value:int = int(item.title)
+		
 		new_node.no_bg = true
 		new_node.display_at_bottom = true
-		new_node.actual_val = int(item.title)
+		new_node.actual_val = base_value
 		# if a location is provided, it pulls for the total calculated in room_config
+
 		if !preview_mode:
 			if !use_location.is_empty():
 				var currencies:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies
@@ -75,10 +74,11 @@ func on_list_update() -> void:
 				var total_morale_val:int = floor_morale_val + ring_morale_val + room_morale_val
 				var res:Dictionary = GAME_UTIL.apply_morale_bonus(current_location, total_morale_val, int(item.title), room_config)
 				var applied_bonus:int = int(res.applied_bonus * 100)
-				
+				var applied_value:int = res.amount
 				AppliedBonusLabel.text = str("%s %s %s%s" % ["Morale", "bonus" if applied_bonus > 0 else "debuff", "+" if applied_bonus > 0 else "", applied_bonus], "%") if applied_bonus != 0 else "No bonuses"
 				new_node.second_val = str(res.amount)
-				new_node.use_second_val = applied_bonus != 0
+				
+				new_node.use_second_val = applied_bonus != 0 and (base_value != res.amount)
 		else:
 			new_node.use_second_val = false
 

@@ -3,9 +3,9 @@ extends CardDrawerClass
 
 @onready var ListContainer:HBoxContainer = $MarginContainer/MarginContainer/ListContainer
 
-@onready var MoraleLabel:Label = $MarginContainer/MarginContainer/HBoxContainer/Morale/Label
-@onready var SafetyLabel:Label = $MarginContainer/MarginContainer/HBoxContainer/Safety/Label
-@onready var ReadinessLabel:Label = $MarginContainer/MarginContainer/HBoxContainer/Readiness/Label
+@onready var VibeMorale:Control = $MarginContainer/MarginContainer/HBoxContainer/VibeMorale
+@onready var VibeSafety:Control = $MarginContainer/MarginContainer/HBoxContainer/VibeSafety
+@onready var VibeReadiness:Control = $MarginContainer/MarginContainer/HBoxContainer/VibeReadiness
 
 @export var metrics:Dictionary = {} : 
 	set(val):
@@ -28,8 +28,8 @@ func on_metrics_update() -> void:
 		var amount:int = metrics[key]
 		match key:
 			RESOURCE.METRICS.MORALE:
-				MoraleLabel.text = "%s%s" % ["+" if amount > 0 else "", amount] if is_researched else "?"
+				VibeMorale.value = amount
 			RESOURCE.METRICS.SAFETY:
-				SafetyLabel.text = "%s%s" % ["+" if amount > 0 else "", amount]  if is_researched else "?"
+				VibeSafety.value = amount
 			RESOURCE.METRICS.READINESS:
-				ReadinessLabel.text = "%s%s" % ["+" if amount > 0 else "", amount]  if is_researched else "?"
+				VibeReadiness.value = amount

@@ -12,7 +12,7 @@ extends MouseInteractions
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
 # back
-@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
+#@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
 @onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
 @onready var CardDrawerBreach:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerBreach
 @onready var CardDrawerNeutralize:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerNeutralize
@@ -157,8 +157,8 @@ func on_ref_update() -> void:
 	CardDrawerImage.use_static = false	
 	CardDrawerLevel.content = str(research_level)
 	
-	CardDrawerVibes.is_researched = research_level > 0	
-	CardDrawerVibes.metrics = scp_details.metrics
+	#CardDrawerVibes.is_researched = true
+	#CardDrawerVibes.metrics = scp_details.metrics
 	CardDrawerEffect.content = scp_details.effects.description if research_level > 0 else "UNKNOWN\r(EVALUATION REQUIRED)"
 	CardDrawerBreach.content =  scp_details.effects.description if research_level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
 	CardDrawerNeutralize.content =  scp_details.effects.description if research_level > 2 else "UNKNOWN\r(EVALUATION REQUIRED)"

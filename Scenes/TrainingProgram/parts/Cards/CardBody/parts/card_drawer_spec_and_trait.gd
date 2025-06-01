@@ -12,10 +12,10 @@ extends CardDrawerClass
 		outline_color = val
 		update_label_settings()
 
-@export var spec_name:String = "Spec" :
+@export var spec_ref:int = -1 :
 	set(val):
-		spec_name = val 
-		on_spec_name_update()
+		spec_ref = val 
+		on_spec_ref_update()
 		
 
 @export var has_spec:bool = false : 
@@ -25,18 +25,21 @@ extends CardDrawerClass
 		
 func _ready() -> void:
 	super._ready()
-	on_spec_name_update()
+	on_spec_ref_update()
 	on_has_spec_update()
-	update_label_settings()
 
 func clear() -> void:
 	SpecLabel.text = "-"
 	SpecCheckbox.is_checked = false
 	
-func on_spec_name_update() -> void:
+func on_spec_ref_update() -> void:
 	if !is_node_ready():return
-	SpecLabel.text = spec_name 
-	
+	if spec_ref == --1:
+		SpecLabel.text = "-" 
+		return	
+	SpecLabel.text = str(RESEARCHER_UTIL.return_specialization_data(spec_ref).name)
+
+
 func on_has_spec_update() -> void:
 	if !is_node_ready():return
 	SpecLabel.modulate = Color(1,1, 1, 1 if has_spec else 0.5) 

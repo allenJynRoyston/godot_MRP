@@ -147,24 +147,28 @@ func on_ref_update() -> void:
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-	var is_locked:bool = false
 	var is_activated:bool = true
-	var currency_list:Array = []
-	var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specilization).name)
-	var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(room_details.pairs_with.trait).name)
-	var morale_val:int = GAME_UTIL.get_morale_val(use_location)
 	
+	var morale_val:int = GAME_UTIL.get_morale_val(use_location)
+	var metrics:Dictionary = room_details.metrics
+	var currency_list:Array = []
+
+	# if location is provided, return extract data
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		if !extract_data.room.is_empty():
 			is_activated = extract_data.room.is_activated
+			metrics = extract_data.room.metrics
+			currency_list = extract_data.room.currency_list
+	
+	# else, use just the room details
+	else:
+		for ref in room_details.currencies:
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+			var amount:int = room_details.currencies[ref]
+			# apply bonus
+			currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
 
-
-	for ref in room_details.currencies:
-		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-		var amount:int = room_details.currencies[ref]
-		# apply bonus
-		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})	
 
 	for node in [CardBody]:
 		node.border_color = default_border_color if is_activated else Color.RED
@@ -177,22 +181,21 @@ func on_ref_update() -> void:
 
 	# -----------
 	CardDrawerLevel.content = str(abl_lvl)
-	CardDrawerName.content = "%s" % [room_details.name if !is_locked else "[REDACTED]"] if is_activated else "%s (INACTIVE)" % [room_details.name]
-	CardDrawerDescription.content = room_details.description if !is_locked else "[REDACTED]"
+	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel
-	CardDrawerImage.img_src = room_details.img_src if !is_locked else ""
+	CardDrawerImage.img_src = room_details.img_src
 	CardDrawerImage.use_static = !is_activated
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list
-	CardDrawerVibes.metrics = room_details.metrics	
 	# -----------
-	CardDrawerPairsWith.spec_name = spec_name
+	CardDrawerPairsWith.spec_ref = room_details.pairs_with.specilization
 	# -----------
-	CardDrawerCurrency.spec_name = spec_name
-	CardDrawerCurrency.trait_name = trait_name
+	CardDrawerVibes.metrics = metrics
 	CardDrawerCurrency.morale_val = morale_val
 	CardDrawerCurrency.list = currency_list
 	CardDrawerCurrency.preview_mode = preview_mode
+	CardDrawerDescription.content = room_details.description
+	
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

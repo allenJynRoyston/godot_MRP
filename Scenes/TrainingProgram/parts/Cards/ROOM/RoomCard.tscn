@@ -177,7 +177,6 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tq8sf")
 script = ExtResource("1_tq8sf")
 reveal = true
-preview_mode = null
 
 [node name="CardBody" parent="." instance=ExtResource("1_soqd8")]
 layout_mode = 2
@@ -265,7 +264,7 @@ border_color = Color(0.3672, 0.378, 0.9, 1)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_b2rkc")
-spec_name = "Speclization"
+spec_ref = -1
 title = "SPECLIZATION REQUIRED"
 is_left_side = true
 border_color = Color(0.3672, 0.378, 0.9, 1)
@@ -273,28 +272,31 @@ border_color = Color(0.3672, 0.378, 0.9, 1)
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_jvq23")
 
+[node name="BackDrawerContainer" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer" index="0"]
+theme_override_constants/separation = 10
+
 [node name="CardDrawerVibes" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="0" instance=ExtResource("7_p42hl")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wteek")
 title = "EFFECTS TO VIBE"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
-[node name="CardDrawerCurrency" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="1" instance=ExtResource("7_8cpo2")]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_cws0w")
-title = "AWARDED/COSTS PER DAY"
-border_color = Color(0.3672, 0.378, 0.9, 1)
-
-[node name="CardDrawerDescription" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="2" instance=ExtResource("3_uk1cn")]
+[node name="CardDrawerDescription" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="1" instance=ExtResource("3_uk1cn")]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_vkt6k")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cws0w")
 is_small = true
 content = "-"
 title = "DESCRIPTION"
 is_left_side = false
+border_color = Color(0.3672, 0.378, 0.9, 1)
+
+[node name="CardDrawerCurrency" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="2" instance=ExtResource("7_8cpo2")]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_vkt6k")
+title = "AWARDED/COSTS PER DAY"
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [editable path="CardBody"]

@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="4_4m2u1"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_5bupg"]
 [ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="6_0dffn"]
-[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="6_kd4jj"]
+[ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/VibeItem/VibeItem.tscn" id="6_7q6wh"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_xre08"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5xs2u"]
@@ -147,20 +147,21 @@ horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2"]
 layout_mode = 2
+theme_override_constants/separation = 6
 
 [node name="FloorLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 5
 alignment = 1
 
 [node name="RingLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 5
 alignment = 1
 
 [node name="RoomLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 5
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl"]
@@ -212,11 +213,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7q6wh")
 icon = 31
 no_bg = true
-actual_val = 0
 title = "99"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 31
 hint_title = "Money"
 hint_description = "Money description."
@@ -227,11 +225,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
 icon = 41
 no_bg = true
-actual_val = 0
 title = "99"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 41
 hint_title = "Materials"
 hint_description = "Materials description."
@@ -242,11 +237,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
 icon = 44
 no_bg = true
-actual_val = 0
 title = "99"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 44
 hint_title = "Research"
 hint_description = "Research description."
@@ -257,11 +249,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4m2u1")
 icon = 39
 no_bg = true
-actual_val = 0
 title = "10"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 39
 hint_title = "CORE"
 hint_description = "Core description."
@@ -278,7 +267,9 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="CurrencyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
+val = 1
 
 [node name="MaterialTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 layout_mode = 2
@@ -314,71 +305,42 @@ vertical_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 2
 alignment = 1
 
-[node name="Morale" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+[node name="VibeMorale" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_7q6wh")]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = -2
-alignment = 1
+hint_title = "HINT"
+hint_description = "Morale description."
 
-[node name="Label2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Morale"]
-layout_mode = 2
-text = "MORALE"
-label_settings = ExtResource("6_kd4jj")
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Morale"]
-layout_mode = 2
-text = "0"
-label_settings = ExtResource("5_5bupg")
-horizontal_alignment = 1
-
-[node name="Safety" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+[node name="VibeSafety" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_7q6wh")]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = -2
-alignment = 1
+metric = 1
+hint_title = "HINT"
+hint_description = "Safety description."
 
-[node name="Label2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Safety"]
-layout_mode = 2
-text = "SAFETY"
-label_settings = ExtResource("6_kd4jj")
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Safety"]
-layout_mode = 2
-text = "0"
-label_settings = ExtResource("5_5bupg")
-horizontal_alignment = 1
-
-[node name="Readiness" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+[node name="VibeReadiness" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_7q6wh")]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = -2
-alignment = 1
-
-[node name="Label2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Readiness"]
-layout_mode = 2
-text = "READINESS"
-label_settings = ExtResource("6_kd4jj")
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/Readiness"]
-layout_mode = 2
-text = "0"
-label_settings = ExtResource("5_5bupg")
-horizontal_alignment = 1
+metric = 2
+hint_title = "HINT"
+hint_description = "Readiness description."
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = 0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
@@ -388,7 +350,7 @@ alignment = 1
 [node name="MoraleTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-val = -1
+val = 1
 
 [node name="SafetyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 layout_mode = 2
@@ -435,11 +397,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5bupg")
 icon = 32
 no_bg = true
-actual_val = 0
 title = "99/99"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 32
 hint_title = "Energy"
 hint_description = "Required for powering room modules."
@@ -492,11 +451,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kd4jj")
 icon = 35
 no_bg = true
-actual_val = 0
 title = "STF"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 35
 hint_title = "Staff"
 hint_description = "Staff description."
@@ -507,11 +463,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_rk4y0")
 icon = 34
 no_bg = true
-actual_val = 0
 title = "TCH"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 34
 hint_title = "Technicians"
 hint_description = "Technicians description."
@@ -522,11 +475,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bd2ap")
 icon = 36
 no_bg = true
-actual_val = 0
 title = "SEC"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 36
 hint_title = "Security"
 hint_description = "Security descriptions."
@@ -537,11 +487,8 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_erj62")
 icon = 33
 no_bg = true
-actual_val = 0
 title = "DCL"
 display_at_bottom = true
-use_second_val = false
-second_val = -1
 hint_icon = 33
 hint_title = "D-Class"
 hint_description = "D-Class Description."

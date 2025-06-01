@@ -85,7 +85,7 @@ func _ready() -> void:
 
 func on_use_second_val_update() -> void:
 	if !is_node_ready():return
-	SecondValContainer.show() if use_second_val else SecondValContainer.hide()
+	SecondValContainer.modulate = Color(1, 1, 1, 1 if use_second_val else 0)
 
 func on_second_val_update() -> void:
 	if !is_node_ready() or !use_second_val:return	

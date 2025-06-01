@@ -28,11 +28,9 @@ var trigger_onsite_nuke:Dictionary = {
 	"name": "TRIGGER ONSITE NUKE",
 	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  WARNING:  this action cannot be undone and will result in a game over.",
 	"science_cost": 0,
-	"cooldown_duration":  99, 
+	"cooldown_duration": 5, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
-		#return await GAME_UTIL.trigger_nuke(),
+		return await GAME_UTIL.set_onsite_nuke(),
 }
 
 # ---------------------------------

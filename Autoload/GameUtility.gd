@@ -339,56 +339,60 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room
-	var floor_config:Dictionary = room_config.floor[floor]
-	var ring_config:Dictionary = room_config.floor[floor].ring[ring]
-	var room_config:Dictionary = room_config.floor[floor].ring[ring].room[room]
-	var room_base_state:Dictionary = base_states.room[str(current_location.floor, current_location.ring, current_location.room)]
-
-	var is_room_empty:bool = room_config.room_data.is_empty()
-	var room_details:Dictionary = {} if is_room_empty else room_config.room_data.details 
+	var floor_level:Dictionary = use_config.floor[floor]
+	var ring_level:Dictionary = use_config.floor[floor].ring[ring]
+	var room_level:Dictionary = use_config.floor[floor].ring[ring].room[room]
 	
-	var abilities:Array = [] if (is_room_empty or "abilities" not in room_details) else room_details.abilities.call()	
-	var passives_enabled:Dictionary = room_base_state.passives_enabled	
-	var passive_list:Array = [] if (is_room_empty or "passive_abilities" not in room_details) else room_details.passive_abilities.call()	
-	var passive_abilities:Array = []
+	var is_room_empty:bool = room_level.room_data.is_empty()
+	var is_scp_empty:bool = room_level.scp_data.is_empty()
 	
-	for index in passive_list.size():
-		var ability:Dictionary = passive_list[index]
-		var ability_uid:String = str(room_details.ref, index)
-		ability.index = index
-		ability.is_enabled = passives_enabled[ability_uid] if ability_uid in passives_enabled else false
-		passive_abilities.push_back(ability)
-
-	var sdata:Dictionary = room_config.scp_data 
-	var is_scp_empty:bool = sdata.is_empty()
-	var scp_details:Dictionary = {} if is_scp_empty else SCP_UTIL.return_data(sdata.ref)
-
+	var room_details:Dictionary = {} if is_room_empty else room_level.room_data.details 
+	var scp_details:Dictionary = {} if is_scp_empty else room_level.scp_data.details
+	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
 		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
 			return true
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
+	
+	# compiles metrics
+	var metrics:Dictionary = {}
+	for dict in [room_details, scp_details]:
+		if "metrics" in dict:
+			for ref in dict.metrics:
+				var amount:int = dict.metrics[ref]
+				if ref not in metrics:
+					metrics[ref] = 0
+				metrics[ref] += amount
+	
+	# get currency this room is producing (combines room/scp/etc)
+	var currency_list:Array = []
+	for ref in room_level.currencies:
+		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+		var amount:int = room_level.currencies[ref]		
+		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
+		
 		
 	return {
-		# ------
-		# -----
+		# -----------
 		"room": {
 			"details": room_details,
-			"abilities": abilities,
-			"passive_abilities": passive_abilities,
-			"is_activated": false if is_room_empty else room_config.is_activated,
-			"can_destroy": false if is_room_empty else room_details.can_contain,
-			"can_contain": false if is_room_empty else room_details.can_destroy,
-			"abl_lvl": room_config.abl_lvl + ring_config.abl_lvl,		
+			"can_destroy": room_details.can_contain,
+			"can_contain": room_details.can_destroy,
+			"is_activated": false if is_room_empty else room_level.is_activated,
+			"metrics": metrics,
+			"abl_lvl": 0, #room_config.abl_lvl + ring_config.abl_lvl,		
+			"currency_list": currency_list
 		} if !is_room_empty else {},
+		
 		# -----------
 		"scp": {
 			"details": scp_details,
 		} if !is_scp_empty else {},
+		
 		# -----------
-		"researchers": researchers,
-		"researchers_count": researchers.size(),
+		"researchers": researchers
 	}
 # ------------------------------------------------------------------------------	
 
@@ -419,7 +423,6 @@ func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use
 	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
 	var apply_cooldown:bool = await ability.effect.call()
-		
 	if apply_cooldown:
 		if ability_uid not in base_states.room[designation].ability_on_cooldown:
 			base_states.room[designation].ability_on_cooldown[ability_uid] = 0		
@@ -518,6 +521,19 @@ func trigger_event(event_data:Array) -> Dictionary:
 	EventContainer.start(event_data)
 	var event_res:Dictionary = await EventContainer.user_response
 	return event_res
+# ---------------------
+
+# ---------------------
+func set_onsite_nuke() -> bool:
+	var confirm:bool = await create_modal("Set the onsite nuclear to trigger?", "Panic will ensure.")
+	
+	if !confirm:
+		return false
+	
+	base_states.base.onsite_nuke.triggered = true
+	SUBSCRIBE.base_states = base_states		
+
+	return false
 # ---------------------
 
 # ---------------------

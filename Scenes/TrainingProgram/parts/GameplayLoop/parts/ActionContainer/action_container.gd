@@ -780,8 +780,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		MODE.INVESTIGATE:
 			NameControl.hide()
 			ControllerOverlay.show_directional = false
-			var abilities:Array = room_extract.room.abilities if !is_room_empty else []
-			var passive_abilities:Array = room_extract.room.passive_abilities if !is_room_empty else []
 			var researchers_per_room:int = base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room
 			var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 			

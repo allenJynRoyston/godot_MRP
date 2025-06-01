@@ -41,8 +41,22 @@ var MORALE_DRAIN:Dictionary = {
 	}
 }
 
+var PANIC:Dictionary = {
+	"ref": BASE.DEBUFF.PANIC,
+	"name": "PANIC!",
+	"img_src": "res://Media/rooms/redacted.jpg",
+	"description": "Everybody is panicking!",
+	"metrics": {
+		RESOURCE.METRICS.MORALE: -5,
+		RESOURCE.METRICS.SAFETY: -5,
+		RESOURCE.METRICS.READINESS: -5
+	}
+		
+}
+
 var debuff_data:Dictionary = {
-	BASE.DEBUFF.MORALE_DRAIN: MORALE_DRAIN
+	BASE.DEBUFF.MORALE_DRAIN: MORALE_DRAIN,
+	BASE.DEBUFF.PANIC: PANIC
 }
 # ----------------------------------------
 

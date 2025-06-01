@@ -112,7 +112,7 @@ var initial_values:Dictionary = {
 			"base": {
 				"in_brownout": false,
 				"in_debt": false,
-				"generator_lvl": 0,
+				"generator_lvl": 0
 			},
 			"floor": {
 				0: get_floor_default(true, 3),
@@ -140,8 +140,8 @@ var initial_values:Dictionary = {
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
 				"generator_level": 0,
-				"buffs": [{"ref": BASE.BUFF.MORALE_BOOST, "duration": 3}],
-				"debuffs": [],
+				"buffs": [],
+				"debuffs": [{"ref": BASE.DEBUFF.PANIC, "duration": 5}],
 			} 
 			# ------------------------------
 			for ring_index in [0, 1, 2, 3]:
@@ -164,6 +164,11 @@ var initial_values:Dictionary = {
 
 		
 		return {
+			"base": {
+				"onsite_nuke": {
+					"triggered": false
+				}
+			},
 			"floor": floor, 	# not currently used for anything
 			"ring": ring,
 			"room": room		 # not currently used for anything
@@ -1138,12 +1143,91 @@ func setup_default_energy_and_metrics(new_room_config:Dictionary) -> void:
 	for floor_index in new_room_config.floor.size():		
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]				
+			var ring_designation:String = str(floor_index, ring_index)
+			var ring_base_state:Dictionary = base_states.ring[ring_designation]			
 			var ring_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
-			
+
 			# setup initial energy
 			ring_level.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
 			ring_level.energy.used = 0
+			
+			# set emergency mode
+			if base_states.base.onsite_nuke.triggered:
+				ring_level.emergency_mode = ROOM.EMERGENCY_MODES.DANGER
 
+func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
+	var floor_added:Array = []
+	var ring_added:Array = []
+	var room_added:Array = []
+
+	for floor_index in new_room_config.floor.size():
+		var floor_level:Dictionary = new_room_config.floor[floor_index]
+
+		for ring_index in new_room_config.floor[floor_index].ring.size():
+			var ring_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index]				
+
+			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
+				var room_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]				
+
+				var floor_designation:String = str(floor_index)
+				var floor_base_state:Dictionary = base_states.floor[floor_designation]
+				
+				var ring_designation:String = str(floor_index, ring_index)
+				var ring_base_state:Dictionary = base_states.ring[ring_designation]
+				
+				var room_designation:String = str(floor_index, ring_index, room_index)
+				var room_base_state:Dictionary = base_states.room[room_designation]
+
+				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
+				if floor_designation not in floor_added:
+					floor_added.push_back(floor_designation)
+					for prop in ["buffs", "debuffs"]:	
+						for item in floor_base_state[prop]:
+							var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
+							floor_level[prop].push_back({"data": data, "duration": item.duration})
+							if "metrics" in data:
+								for key in data.metrics:
+									var amount:int = data.metrics[key]
+									floor_level.metrics[key] += amount
+							if "personnel" in data:
+								for key in data.personnel:
+									floor_level.personnel[key] = true
+							if "effect" in data:
+								data.effect.call(new_room_config)
+				# --------------------------------------------------------------
+				
+				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
+				if ring_designation not in ring_added:
+					ring_added.push_back(ring_designation)
+					for prop in ["buffs", "debuffs"]:	
+						for item in ring_base_state[prop]:
+							var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
+							ring_level[prop].push_back({"data": data, "duration": item.duration})
+							if "metrics" in data:
+								for key in data.metrics:
+									var amount:int = data.metrics[key]
+									ring_level.metrics[key] += amount
+							if "personnel" in data:
+								for key in data.personnel:
+									ring_level.personnel[key] = true
+				# --------------------------------------------------------------
+				
+				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
+				if room_designation not in room_added:
+					room_added.push_back(room_designation)
+					for prop in ["buffs", "debuffs"]:	
+						for item in room_base_state[prop]:
+							var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
+							room_level[prop].push_back({"data": data, "duration": item.duration})
+							if "metrics" in data:
+								for key in data.metrics:
+									var amount:int = data.metrics[key]
+									room_level.metrics[key] += amount
+							if "personnel" in data:
+								for key in data.personnel:
+									room_level.personnel[key] = true
+				# --------------------------------------------------------------				
+				
 func scp_run_first_effects(new_room_config:Dictionary) -> void:
 	# CALCULATE CONTAINED SCP - LAST THING TO BE COMPUTED
 	for ref in scp_data:
@@ -1179,17 +1263,6 @@ func scp_run_first_effects(new_room_config:Dictionary) -> void:
 					ring_config.currencies[key] += amount
 					room_config.currencies[key] += amount				
 					
-			## NEXT, check if any researchers pair with this SCP
-			#for researcher in hired_lead_researchers_arr:
-				#var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
-				#var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
-				#if assigned_to_room == item.location:
-					## TODO; remove not later
-					#if scp_details.pairs_with.specilization in researcher_details.specializations:
-						#room_config.scp_paired_with.specilization = true
-					#if scp_details.pairs_with.trait in researcher_details.traits:
-						#room_config.scp_paired_with.trait = true	
-
 func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1223,7 +1296,6 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 				#if room_data.pairs_with.specilization in researcher_details.specializations:
 					##room_config_data.room_paired_with.specilization = true
 					#room_config_data.abl_lvl += researcher_details.level
-
 
 func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 	# NEXT check for passives in rooms
@@ -1401,80 +1473,6 @@ func room_calculate_curriences(new_room_config:Dictionary) -> void:
 				# set as final amount
 				room_config_data.currencies[key] = res.amount
 				room_config_data.applied_bonus = res.applied_bonus
-
-func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
-	var floor_added:Array = []
-	var ring_added:Array = []
-	var room_added:Array = []
-
-	for floor_index in new_room_config.floor.size():
-		var floor_level:Dictionary = new_room_config.floor[floor_index]
-
-		for ring_index in new_room_config.floor[floor_index].ring.size():
-			var ring_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index]				
-
-			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
-				var room_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]				
-
-				var floor_designation:String = str(floor_index)
-				var floor_base_state:Dictionary = base_states.floor[floor_designation]
-				
-				var ring_designation:String = str(floor_index, ring_index)
-				var ring_base_state:Dictionary = base_states.ring[ring_designation]
-				
-				var room_designation:String = str(floor_index, ring_index, room_index)
-				var room_base_state:Dictionary = base_states.room[room_designation]
-
-				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
-				if floor_designation not in floor_added:
-					floor_added.push_back(floor_designation)
-					for prop in ["buffs", "debuffs"]:	
-						for item in floor_base_state[prop]:
-							var data:Dictionary = BASE_UTIL.return_buff(item.ref)
-							floor_level[prop].push_back({"data": data, "duration": item.duration})
-							if "metrics" in data:
-								for key in data.metrics:
-									var amount:int = data.metrics[key]
-									floor_level.metrics[key] += amount
-							if "personnel" in data:
-								for key in data.personnel:
-									floor_level.personnel[key] = true
-				# --------------------------------------------------------------
-				
-				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
-				if ring_designation not in ring_added:
-					ring_added.push_back(ring_designation)
-					for prop in ["buffs", "debuffs"]:	
-						for item in ring_base_state[prop]:
-							var data:Dictionary = BASE_UTIL.return_buff(item.ref)
-							ring_level[prop].push_back({"data": data, "duration": item.duration})
-							if "metrics" in data:
-								for key in data.metrics:
-									var amount:int = data.metrics[key]
-									ring_level.metrics[key] += amount
-							if "personnel" in data:
-								for key in data.personnel:
-									ring_level.personnel[key] = true
-				# --------------------------------------------------------------
-				
-				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
-				if room_designation not in room_added:
-					room_added.push_back(room_designation)
-					for prop in ["buffs", "debuffs"]:	
-						for item in room_base_state[prop]:
-							var data:Dictionary = BASE_UTIL.return_buff(item.ref)
-							room_level[prop].push_back({"data": data, "duration": item.duration})
-							if "metrics" in data:
-								for key in data.metrics:
-									var amount:int = data.metrics[key]
-									room_level.metrics[key] += amount
-							if "personnel" in data:
-								for key in data.personnel:
-									room_level.personnel[key] = true
-				# --------------------------------------------------------------				
-				
-				
-
 
 func scp_run_final_effects(new_room_config:Dictionary) -> void:
 	# CALCULATE CONTAINED SCP - LAST THING TO BE COMPUTED

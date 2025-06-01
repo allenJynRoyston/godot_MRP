@@ -283,6 +283,7 @@ border_color = Color(0.735717, 0.247227, 0.9, 1)
 theme_override_styles/panel = SubResource("StyleBoxFlat_v5kwt")
 
 [node name="CardDrawerVibes" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer" index="0" instance=ExtResource("7_aydr2")]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_omwaq")
 title = "EFFECTS TO VIBE"
