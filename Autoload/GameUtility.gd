@@ -523,6 +523,27 @@ func trigger_event(event_data:Array) -> Dictionary:
 	return event_res
 # ---------------------
 
+## ---------------------
+#func add_debuff(debuff:BASE.DEBUFF, duration:int, effected_floors:Array = [], effect_rings:Array = [], effected_rooms:Array = []) -> void:
+	#
+	#for floor_index in room_config.floor.size():
+		#if floor_index in effected_floors:
+			#base_states.floor[str(floor_index)].debuffs.push_back({
+				#"ref": debuff, 
+				#"duration": duration
+			#})
+#
+		#for ring_index in room_config.floor[floor_index].ring.size():
+			#if ring_index in effect_rings:
+				#base_states.ring[str(floor_index, ring_index)].debuffs.push_back({"ref": debuff, "duration": duration})
+			##
+			##for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+				##if layer == "room" and room_index in effected_rooms:
+					##base_states.room[str(floor_index, ring_index, room_index)].debuffs.push_back({"ref": debuff, "duration": duration})
+## ---------------------
+#
+
+
 # ---------------------
 func set_onsite_nuke() -> bool:
 	var confirm:bool = await create_modal("Set the onsite nuclear to trigger?", "Panic will ensure.")
@@ -530,6 +551,9 @@ func set_onsite_nuke() -> bool:
 	if !confirm:
 		return false
 	
+	# add applies panic debuff to all floors
+	BASE_UTIL.add_buff_to_rooms(BASE.TYPE.DEBUFF, BASE.DEBUFF.PANIC, 3, 1, [1, 2], [0, 2, 4])
+
 	base_states.base.onsite_nuke.triggered = true
 	SUBSCRIBE.base_states = base_states		
 

@@ -72,6 +72,7 @@ texture = SubResource("ViewportTexture_urwmy")
 
 [node name="WingScene" type="Node3D" parent="SubViewport/Rendering"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 2.89305, 0, 0)
+visible = false
 
 [node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/WingScene"]
 own_world_3d = true
@@ -97,6 +98,7 @@ texture = SubResource("ViewportTexture_pgdfi")
 
 [node name="GeneratorScene" type="Node3D" parent="SubViewport/Rendering"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 5.93274, 0, 0)
+visible = false
 
 [node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/GeneratorScene"]
 own_world_3d = true

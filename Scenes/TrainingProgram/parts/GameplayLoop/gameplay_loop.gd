@@ -112,7 +112,9 @@ var initial_values:Dictionary = {
 			"base": {
 				"in_brownout": false,
 				"in_debt": false,
-				"generator_lvl": 0
+				"generator_lvl": 0,
+				"buffs": [],
+				"debuffs": [],
 			},
 			"floor": {
 				0: get_floor_default(true, 3),
@@ -141,7 +143,7 @@ var initial_values:Dictionary = {
 			floor[str(floor_index)] = {
 				"generator_level": 0,
 				"buffs": [],
-				"debuffs": [{"ref": BASE.DEBUFF.PANIC, "duration": 5}],
+				"debuffs": [],
 			} 
 			# ------------------------------
 			for ring_index in [0, 1, 2, 3]:

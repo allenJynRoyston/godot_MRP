@@ -69,7 +69,9 @@ var in_lockdown:bool = false
 var is_powered:bool = false
 var in_brownout:bool = false
 var emergency_mode:ROOM.EMERGENCY_MODES
+var default_camera_rotation:Vector3
 
+var camera_tween:Tween 
 
 signal menu_response
 
@@ -94,6 +96,7 @@ func _ready() -> void:
 	on_assigned_location_update()
 	on_is_active_update()
 	on_enable_room_focus()
+	default_camera_rotation = MainCamera.rotation_degrees
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -111,7 +114,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		designation = U.location_to_designation(current_location)
 		
 		menu_index = 0
-		transition()
 		on_assigned_location_update()
 
 	assigned_location = current_location
@@ -122,15 +124,64 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 	if !is_node_ready() or assigned_location.is_empty():return
 		
 	if previous_floor != assigned_location.floor or previous_ring != assigned_location.ring:
+		if camera_tween != null and camera_tween.is_running():
+			camera_tween.stop()		
+			
+		if previous_floor < assigned_location.floor:
+			MainCamera.rotation_degrees.x = default_camera_rotation.x + 5
+			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:x'), 0.1)
+			transition()
+		if previous_floor > assigned_location.floor:
+			MainCamera.rotation_degrees.x = default_camera_rotation.x - 5
+			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:x'), 0.1)	
+			transition()
+			
+		if previous_ring > assigned_location.ring:
+			MainCamera.rotation_degrees.y = default_camera_rotation.y - 5
+			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:y'), 0.1)
+			transition()
+			
+		if previous_ring < assigned_location.ring:
+			MainCamera.rotation_degrees.y = default_camera_rotation.y - 5
+			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:y'), 0.1)
+			transition()
+			
 		previous_floor = assigned_location.floor
 		previous_ring = assigned_location.ring
-		
 		previous_emergency_mode = -1
 		
 		update_nodes()
 		#update_boards()		
 		update_room_lighting()	
+		
+	
+	
+func animate_camera(prop)-> void:
+	camera_tween = create_tween()
+	tween_node_property(camera_tween, MainCamera, prop, default_camera_rotation.x, 0.3)
 # --------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------		
+func tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD) -> void:
+	if duration == 0:
+		duration = 0.02
+		
+	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
+	await tween.finished
+# --------------------------------------------------------------------------------------------------		
+
+
+# ------------------------------------------------
+func transition() -> void:
+	TransitionRect.show()
+	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
+	var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
+	await U.tween_range(current_val, 1.0, 0.3, func(val:float) -> void:
+		TransitionRect.material.set_shader_parameter("sensitivity", val)
+	).finished	
+	TransitionRect.hide()
+	TransitionRect.material.set_shader_parameter("sensitivity", 0.0)
+# ------------------------------------------------
 
 # --------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
@@ -140,18 +191,6 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	#update_boards()	
 	update_room_lighting(true)	
 # --------------------------------------------------------
-
-# ------------------------------------------------
-func transition() -> void:
-	TransitionRect.show()
-	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
-	var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
-	await U.tween_range(current_val, 1.0, 0.2, func(val:float) -> void:
-		TransitionRect.material.set_shader_parameter("sensitivity", val)
-	).finished	
-	TransitionRect.hide()
-	TransitionRect.material.set_shader_parameter("sensitivity", 0.0)
-# ------------------------------------------------
 
 
 # --------------------------------------------------------

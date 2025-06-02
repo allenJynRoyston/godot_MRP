@@ -175,7 +175,7 @@ func update_status_container(status_list:Array, container:Control) -> void:
 # -----------------------------------------------
 func update_panels() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or camera_settings.is_empty():return
-	
+	var base_config_data:Dictionary = room_config.base
 	var floor_config_data:Dictionary = room_config.floor[current_location.floor]
 	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]	
 	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]	
@@ -217,6 +217,22 @@ func update_panels() -> void:
 			"type": BASE.TYPE.BUFF
 		}
 	]	
+	
+	for buff in base_config_data.buffs:
+		status_list.push_back({
+			"title": buff.data.name,
+			"duration": buff.duration,
+			"hint_description": buff.data.description,
+			"type": BASE.TYPE.BUFF
+		})
+		
+	for debuff in base_config_data.debuffs:
+		status_list.push_back({
+			"title": debuff.data.name,
+			"duration": debuff.duration,
+			"hint_description": debuff.data.description,
+			"type": BASE.TYPE.DEBUFF
+		})		
 	
 	# get buffs
 	for buff in floor_config_data.buffs:

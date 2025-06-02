@@ -71,3 +71,81 @@ func return_debuff(ref:int) -> Dictionary:
 	debuff_data[ref].ref = ref
 	return debuff_data[ref]
 # ------------------------------------------------------------------------------
+
+
+# ---------------------
+func add_buff_to_base(type:BASE.TYPE, ref:int, duration:int) -> void:
+	# add applies panic debuff to all floors (and rings
+	for floor_index in room_config.floor.size():
+		match type: 
+			BASE.TYPE.BUFF:		
+				base_states.floor[str(floor_index)].buffs.push_back({
+					"ref": ref, 
+					"duration": 5
+				})	
+			BASE.TYPE.DEBUFF:		
+				base_states.floor[str(floor_index)].debuffs.push_back({
+					"ref": ref, 
+					"duration": 5
+				})	
+# ---------------------
+
+# ---------------------
+func add_buff_to_floor(type:BASE.TYPE, ref:int, duration:int, for_floor:int) -> void:
+	# add applies panic debuff to all floors (and rings
+	for floor_index in room_config.floor.size():
+		if floor_index == for_floor:
+			for ring_index in room_config.floor[floor_index].ring.size():
+				match type: 
+					BASE.TYPE.BUFF:		
+						
+						base_states.ring[str(floor_index, ring_index)].buffs.push_back({
+							"ref": ref, 
+							"duration": 5
+						})	
+					BASE.TYPE.DEBUFF:		
+						base_states.ring[str(floor_index, ring_index)].debuffs.push_back({
+							"ref": ref, 
+							"duration": 5
+						})	
+# ---------------------
+
+# ---------------------
+func add_buff_to_floor_and_rings(type:BASE.TYPE, ref:int, duration:int, for_floor:int, rings:Array = []) -> void:
+	# add applies panic debuff to all floors (and rings
+	for floor_index in room_config.floor.size():
+		if floor_index == for_floor:
+			for ring_index in rings:
+				match type: 
+					BASE.TYPE.BUFF:		
+						base_states.ring[str(floor_index, ring_index)].buffs.push_back({
+							"ref": ref, 
+							"duration": 5
+						})	
+					BASE.TYPE.DEBUFF:		
+						base_states.ring[str(floor_index, ring_index)].debuffs.push_back({
+							"ref": ref, 
+							"duration": 5
+						})	
+# ---------------------
+
+# ---------------------
+func add_buff_to_rooms(type:BASE.TYPE, ref:int, duration:int, for_floor:int, rings:Array = [], for_rooms:Array = []) -> void:
+	# add applies panic debuff to all floors (and rings
+	for floor_index in room_config.floor.size():
+		if floor_index == for_floor:
+			for ring_index in rings:
+				for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+					if room_index in for_rooms:
+						match type: 
+							BASE.TYPE.BUFF:		
+								base_states.room[str(floor_index, ring_index, room_index)].buffs.push_back({
+									"ref": ref, 
+									"duration": 5
+								})	
+							BASE.TYPE.DEBUFF:		
+								base_states.room[str(floor_index, ring_index, room_index)].debuffs.push_back({
+									"ref": ref, 
+									"duration": 5
+								})	
+# ---------------------
