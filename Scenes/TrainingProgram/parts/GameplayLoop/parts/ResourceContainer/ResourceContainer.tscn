@@ -317,15 +317,12 @@ alignment = 1
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-hint_title = "HINT"
-hint_description = "Morale description."
 
 [node name="VibeSafety" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_7q6wh")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 metric = 1
-hint_title = "HINT"
 hint_description = "Safety description."
 
 [node name="VibeReadiness" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_7q6wh")]
@@ -333,7 +330,6 @@ custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 metric = 2
-hint_title = "HINT"
 hint_description = "Readiness description."
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]

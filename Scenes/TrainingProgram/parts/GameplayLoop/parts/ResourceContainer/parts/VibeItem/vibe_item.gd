@@ -75,7 +75,7 @@ func on_value_update() -> void:
 	
 func on_alt_value_update() -> void:
 	if !is_node_ready():return
-	AltLabel.text = str(alt_value)
+	AltLabel.text = str("+", alt_value)
 	
 func on_show_alt_update() -> void:
 	if !is_node_ready():return

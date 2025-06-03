@@ -48,6 +48,9 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
+			ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),	
+			ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 0),			
+			
 			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
 			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
@@ -107,7 +110,6 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.EVAL_SCP, 0),
 			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0)
 		],	
 	# ------------------------------------------

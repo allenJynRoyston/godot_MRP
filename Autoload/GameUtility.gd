@@ -523,27 +523,6 @@ func trigger_event(event_data:Array) -> Dictionary:
 	return event_res
 # ---------------------
 
-## ---------------------
-#func add_debuff(debuff:BASE.DEBUFF, duration:int, effected_floors:Array = [], effect_rings:Array = [], effected_rooms:Array = []) -> void:
-	#
-	#for floor_index in room_config.floor.size():
-		#if floor_index in effected_floors:
-			#base_states.floor[str(floor_index)].debuffs.push_back({
-				#"ref": debuff, 
-				#"duration": duration
-			#})
-#
-		#for ring_index in room_config.floor[floor_index].ring.size():
-			#if ring_index in effect_rings:
-				#base_states.ring[str(floor_index, ring_index)].debuffs.push_back({"ref": debuff, "duration": duration})
-			##
-			##for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
-				##if layer == "room" and room_index in effected_rooms:
-					##base_states.room[str(floor_index, ring_index, room_index)].debuffs.push_back({"ref": debuff, "duration": duration})
-## ---------------------
-#
-
-
 # ---------------------
 func set_onsite_nuke() -> bool:
 	var confirm:bool = await create_modal("Set the onsite nuclear to trigger?", "Panic will ensure.")
@@ -551,14 +530,60 @@ func set_onsite_nuke() -> bool:
 	if !confirm:
 		return false
 	
-	# add applies panic debuff to all floors
-	BASE_UTIL.add_buff_to_rooms(BASE.TYPE.DEBUFF, BASE.DEBUFF.PANIC, 3, 1, [1, 2], [0, 2, 4])
-
+	# update trigger event
 	base_states.base.onsite_nuke.triggered = true
 	SUBSCRIBE.base_states = base_states		
+	
+	# update debuff
+	#for floor in range(0, room_config.floor.size()):
+	add_debuff_to_base(BASE.DEBUFF.PANIC, 3)
 
 	return false
 # ---------------------
+
+
+# --------------------------------------------------------------------------------------------------
+# Add buff to an entire floor
+func add_buff_to_floor(buff_ref:int, duration:int, floor:int = current_location.floor) -> void:
+	BASE_UTIL.add_buff_or_debuff_to_floor(BASE.TYPE.BUFF, buff_ref, duration, floor)
+# ---------------------
+
+# ---------------------
+# Add buff to an entire floor, but can add specific rings.
+func add_buff_to_floor_and_rings(buff_ref:int, duration:int, floor:int = current_location.floor, rings:Array = [current_location.ring]) -> void:
+	BASE_UTIL.add_buff_or_debuff_to_ring(BASE.TYPE.BUFF, buff_ref, duration, floor, rings)
+# ---------------------
+
+# ---------------------
+# Add buff to an entire floor, but can add specific rings and rooms
+func add_buff_to_floor_and_rings_rooms(buff_ref:int, duration:int, floor:int = current_location.floor, rings:Array = [current_location.ring], rooms:Array = [current_location.room]) -> void:
+	BASE_UTIL.add_buff_or_debuff_to_rooms(BASE.TYPE.BUFF, buff_ref, duration, floor, rings, rooms)
+# ---------------------
+
+# ---------------------
+# Add DEbuff to an entire base
+func add_debuff_to_base(debuff_ref:int, duration:int) -> void:
+	BASE_UTIL.add_buff_or_deubff_to_base(BASE.TYPE.DEBUFF, debuff_ref, duration)
+# ---------------------
+
+# ---------------------
+# Add DEbuff to an entire floor
+func add_debuff_to_floor(debuff_ref:int, duration:int, floor:int = current_location.floor) -> void:
+	BASE_UTIL.add_buff_or_debuff_to_floor(BASE.TYPE.DEBUFF, debuff_ref, duration, floor)
+# ---------------------
+
+# ---------------------
+# Add DEbuff to an entire floor, but can add specific rings.
+func add_debuff_to_floor_and_rings(debuff_ref:int, duration:int, floor:int = current_location.floor, rings:Array = [current_location.ring]) -> void:
+	BASE_UTIL.add_buff_or_debuff_to_ring(BASE.TYPE.DEBUFF, debuff_ref, duration, floor, rings)
+# ---------------------
+
+# ---------------------
+# Add DEbuff to an entire floor, but can add specific rings and rooms
+func add_debuff_to_floor_and_rings_rooms(debuff_ref:int, duration:int, floor:int = current_location.floor, rings:Array = [current_location.ring], rooms:Array = [current_location.room]) -> void:
+	BASE_UTIL.add_buff_or_debuff_to_rooms(BASE.TYPE.DEBUFF, debuff_ref, duration, floor, rings, rooms)
+# --------------------------------------------------------------------------------------------------
+
 
 # ---------------------
 #func research_scp() -> bool:
@@ -869,7 +894,7 @@ func activate_floor(floor_val:int) -> bool:
 
 	var activated_count:int = 0
 	for floor_index in room_config.floor.size():
-		if room_config.floor[floor_index].is_powered:
+		if base_states.floor[str(floor_index)].is_powered:
 			activated_count += 1
 	var activation_cost:int = activated_count * 50
 	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
@@ -882,8 +907,8 @@ func activate_floor(floor_val:int) -> bool:
 
 	if confirm:
 		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
-		room_config.floor[floor_val].is_powered = true
-		SUBSCRIBE.room_config = room_config
+		base_states.floor[str(floor_val)].is_powered = true
+		SUBSCRIBE.base_states = base_states 
 		SUBSCRIBE.resources_data = resources_data
 			
 	return confirm

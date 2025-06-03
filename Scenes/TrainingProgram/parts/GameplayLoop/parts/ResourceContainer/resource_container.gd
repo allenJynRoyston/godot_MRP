@@ -209,15 +209,8 @@ func update_panels() -> void:
 			child.queue_free()				
 	
 	# floor status
-	var status_list:Array = [
-		{
-			"title": "POWERED" if floor_config_data.is_powered else "NO POWER", 
-			"duration": -1,
-			"hint_description": "Wing is being supplied power." if floor_config_data.is_powered else "Wing has no power.",
-			"type": BASE.TYPE.BUFF
-		}
-	]	
-	
+	var status_list:Array = []	
+		
 	for buff in base_config_data.buffs:
 		status_list.push_back({
 			"title": buff.data.name,
@@ -250,7 +243,7 @@ func update_panels() -> void:
 			"hint_description": debuff.data.description,
 			"type": BASE.TYPE.DEBUFF
 		})
-		
+	
 	update_status_container(status_list, FloorLabelContainer)	
 	
 			
@@ -324,7 +317,7 @@ func update_panels() -> void:
 			# get status effects
 			for cf in [
 				{"config": ring_config_data, "container": RingLabelContainer},
-				{"config": ring_config_data, "container": RoomLabelContainer}
+				{"config": room_config_data, "container": RoomLabelContainer}
 			]:
 				var list:Array = []	
 				for buff in cf.config.buffs:
@@ -342,9 +335,8 @@ func update_panels() -> void:
 						"hint_description": debuff.data.description,
 						"type": BASE.TYPE.DEBUFF	
 					})
-				
+					
 				update_status_container(list, cf.container)			
-			
 			
 			#currency diff
 			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
@@ -353,7 +345,7 @@ func update_panels() -> void:
 			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
 			# update vibes
-			MoraleTag.val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
+			VibeMorale.alt_value = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
 			SafetyTag.val = summary_data.metric_diff[RESOURCE.METRICS.SAFETY]
 			ReadinessTag.val = summary_data.metric_diff[RESOURCE.METRICS.READINESS]
 			#update_vibes(summary_data.metric_diff[RESOURCE.METRICS.MORALE], summary_data.metric_diff[RESOURCE.METRICS.SAFETY], summary_data.metric_diff[RESOURCE.METRICS.READINESS])

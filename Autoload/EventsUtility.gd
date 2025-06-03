@@ -610,6 +610,133 @@ var PROMOTE_RESEARCHER:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var HAPPY_HOUR:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"selected": null
+		}
+		var onSelected = func(selected) -> void:
+			option_selected.selected = selected.option.val
+		
+
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "HAPPY HOUR EVENT",
+					"img_src": "res://Media/images/redacted.png",
+					"text": ["HAPPY HOUR"],
+					#"portrait": {
+						#"title": props.researcher.name,
+						#"img_src": props.researcher.img_src
+					#},
+					"options": [
+						# ----------------------------------------- NON-RESPONSE
+						{
+							"include": true,
+							"title": "OPTION A.",
+							"val": {
+								"response": "RESPONSE A HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "OPTION B.",
+							"val": {
+								"response": "RESPONSE B HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "OPTION C.",
+							"val": {
+								"response": "RESPONSE C HERE",
+							},
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				if "onSelection" in props:
+					props.onSelection.call(option_selected.selected)
+					
+				return {
+					"text": [
+						option_selected.selected.response
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var UNHAPPY_HOUR:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"selected": null
+		}
+		var onSelected = func(selected) -> void:
+			option_selected.selected = selected.option.val
+		
+
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "UNHAPPY HOUR",
+					"img_src": "res://Media/images/redacted.png",
+					"text": ["HAPPY HOUR"],
+					#"portrait": {
+						#"title": props.researcher.name,
+						#"img_src": props.researcher.img_src
+					#},
+					"options": [
+						# ----------------------------------------- NON-RESPONSE
+						{
+							"include": true,
+							"title": "OPTION A.",
+							"val": {
+								"response": "RESPONSE A HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "OPTION B.",
+							"val": {
+								"response": "RESPONSE B HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "OPTION C.",
+							"val": {
+								"response": "RESPONSE C HERE",
+							},
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				if "onSelection" in props:
+					props.onSelection.call(option_selected.selected)
+					
+				return {
+					"text": [
+						option_selected.selected.response
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+
 var reference_data:Dictionary = {
 	EVT.TYPE.GAME_OVER: GAME_OVER,
 	EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,
@@ -620,7 +747,9 @@ var reference_data:Dictionary = {
 	EVT.TYPE.READINESS: READINESS,
 	EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,
 	EVT.TYPE.CLONE_RESEARCHER: CLONE_RESEARCHER,
-	EVT.TYPE.PROMOTE_RESEARCHER: PROMOTE_RESEARCHER
+	EVT.TYPE.PROMOTE_RESEARCHER: PROMOTE_RESEARCHER,
+	EVT.TYPE.HAPPY_HOUR: HAPPY_HOUR,
+	EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR
 }
 
 # ------------------------------------------------------------------------

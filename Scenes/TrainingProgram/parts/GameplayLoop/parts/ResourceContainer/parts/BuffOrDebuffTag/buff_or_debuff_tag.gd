@@ -41,7 +41,7 @@ func on_title_update() -> void:
 
 func on_duration_update() -> void:
 	if !is_node_ready():return
-	DurationLabel.hide() if duration == -1 else DurationLabel.show()
+	DurationLabel.hide() if duration >= 20 else DurationLabel.show()
 	DurationLabel.text = "(%s)" % duration
 
 func on_type_update() -> void:

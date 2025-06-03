@@ -1,17 +1,25 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqrsajf65ravg"]
+[gd_scene load_steps=7 format=3 uid="uid://bqrsajf65ravg"]
 
 [ext_resource type="Script" uid="uid://d2lwr0dms23ca" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/VibeItem/vibe_item.gd" id="1_7egax"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_n01x0"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_0anxo"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_7egax"]
 [ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="4_fu0o0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_n01x0"]
+font = ExtResource("3_7egax")
+font_size = 32
+outline_size = 12
+outline_color = Color(0, 0, 0, 1)
 
 [node name="PanelContainer" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_s7ffi")
 script = ExtResource("1_7egax")
+hint_title = "HINT"
+hint_description = "Morale description."
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -35,17 +43,18 @@ horizontal_alignment = 1
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "0"
-label_settings = ExtResource("3_0anxo")
+label_settings = SubResource("LabelSettings_n01x0")
 horizontal_alignment = 1
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
 
 [node name="AltLabel" type="Label" parent="Control"]
-offset_left = 25.0
+layout_mode = 0
+offset_left = 31.0
 offset_top = 16.0
-offset_right = 37.0
+offset_right = 43.0
 offset_bottom = 24.0
-text = "+0"
+text = "0"
 label_settings = ExtResource("4_fu0o0")
 horizontal_alignment = 1

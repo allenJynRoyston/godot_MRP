@@ -93,10 +93,11 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.ROOM_NODES)
 	
 func _ready() -> void:
+	default_camera_rotation = MainCamera.rotation_degrees
+	await U.tick()	
 	on_assigned_location_update()
 	on_is_active_update()
 	on_enable_room_focus()
-	default_camera_rotation = MainCamera.rotation_degrees
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -129,21 +130,22 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 			
 		if previous_floor < assigned_location.floor:
 			MainCamera.rotation_degrees.x = default_camera_rotation.x + 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:x'), 0.1)
+			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
 			transition()
+			
 		if previous_floor > assigned_location.floor:
 			MainCamera.rotation_degrees.x = default_camera_rotation.x - 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:x'), 0.1)	
+			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)	
 			transition()
 			
 		if previous_ring > assigned_location.ring:
 			MainCamera.rotation_degrees.y = default_camera_rotation.y - 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:y'), 0.1)
+			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
 			transition()
 			
 		if previous_ring < assigned_location.ring:
-			MainCamera.rotation_degrees.y = default_camera_rotation.y - 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera.bind('rotation_degrees:y'), 0.1)
+			MainCamera.rotation_degrees.y = default_camera_rotation.y + 5
+			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
 			transition()
 			
 		previous_floor = assigned_location.floor
@@ -155,10 +157,9 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 		update_room_lighting()	
 		
 	
-	
-func animate_camera(prop)-> void:
-	camera_tween = create_tween()
-	tween_node_property(camera_tween, MainCamera, prop, default_camera_rotation.x, 0.3)
+func animate_camera()-> void:
+	camera_tween = create_tween()	
+	tween_node_property(camera_tween, MainCamera, 'rotation_degrees', default_camera_rotation, 0.3)
 # --------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
@@ -169,7 +170,6 @@ func tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:
 	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
 	await tween.finished
 # --------------------------------------------------------------------------------------------------		
-
 
 # ------------------------------------------------
 func transition() -> void:
@@ -303,7 +303,7 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 	if room_config.is_empty() or current_location.is_empty():return
 	var lights:Array = [NoPowerLights, NormalLights, CautionLights, WarningLights, DangerLights]
 
-	in_brownout = room_config.base.in_brownout
+	#in_brownout = room_config.base.in_brownout
 	in_lockdown = room_config.floor[current_location.floor].in_lockdown
 	is_powered = room_config.floor[current_location.floor].is_powered
 	emergency_mode = room_config.floor[current_location.floor].ring[current_location.ring].emergency_mode
@@ -316,8 +316,6 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 		RightBoardRoomLabels.hide()
 		return
 
-	if in_brownout:
-		return
 	
 	# reset lights
 	if reset_lights and previous_emergency_mode != emergency_mode:		

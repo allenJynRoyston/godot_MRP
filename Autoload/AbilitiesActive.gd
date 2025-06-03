@@ -9,6 +9,8 @@ enum REF {
 	
 	UNLOCK_FACILITIES,
 	
+	HAPPY_HOUR, UNHAPPY_HOUR,
+	
 	MONEY_HACK, SCIENCE_HACK, CONVERT_TO_SCIENCE, CONVERT_TO_MONEY
 }
 
@@ -94,6 +96,49 @@ var remove_trait:Dictionary = {
 
 
 # --------------------------------- TODO
+var HAPPY_HOUR:Dictionary = {
+	"name": "HAPPY HOUR", 
+	"description": "Gain the HAPPY HOUR buff.",
+	"science_cost": 50,
+	"cooldown_duration":  7, 
+	"effect": func() -> bool:
+		await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+			EVT.TYPE.HAPPY_HOUR, 
+				{
+					"onSelection": func(selection:Dictionary) -> void:
+						# add buff, debuff
+						print("todo: ADD BUFF OR DEBUFF depending on option")
+						print(selection),
+				}
+			)
+		])
+		
+		GAME_UTIL.add_buff_to_floor_and_rings(BASE.BUFF.MORALE_BOOST, 3)
+		return true,
+}
+
+# --------------------------------- TODO
+var UNHAPPY_HOUR:Dictionary = {
+	"name": "UNHAPPY HOUR", 
+	"description": "Gain the HAPPY HOUR buff.",
+	"science_cost": 50,
+	"cooldown_duration":  7, 
+	"effect": func() -> bool:
+		await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+			EVT.TYPE.UNHAPPY_HOUR, 
+				{
+					"onSelection": func(selection:Dictionary) -> void:
+						# add buff, debuff
+						print("todo: ADD BUFF OR DEBUFF depending on option")
+						print(selection),
+				}
+			)
+		])
+		
+		GAME_UTIL.add_debuff_to_floor_and_rings(BASE.DEBUFF.MORALE_DRAIN, 3)
+		return true,
+}
+
 var money_hack:Dictionary = {
 	"name": "MONEY HACK", 
 	"description": "Gain +25% of your current MONEY.",
@@ -147,7 +192,6 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = trigger_onsite_nuke
 		# -----------------------------
 		
-	
 		# -----------------------------
 		REF.UNLOCK_FACILITIES:
 			ability =  unlock_facilities
@@ -166,6 +210,13 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = remove_trait
 		# -----------------------------
 		
+		# -----------------------------
+		REF.HAPPY_HOUR:
+			ability = HAPPY_HOUR
+		REF.UNHAPPY_HOUR:
+			ability = UNHAPPY_HOUR
+		# -----------------------------
+
 		# -----------------------------
 		REF.MONEY_HACK:
 			ability = money_hack

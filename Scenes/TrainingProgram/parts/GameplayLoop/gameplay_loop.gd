@@ -110,20 +110,39 @@ var initial_values:Dictionary = {
 	"room_config": func() -> Dictionary:
 		return {
 			"base": {
-				"in_brownout": false,
-				"in_debt": false,
-				"generator_lvl": 0,
+				# --------------  # FLOOR WIDE STATS
+				"metrics": {
+					RESOURCE.METRICS.MORALE: 0,
+					RESOURCE.METRICS.SAFETY: 0,
+					RESOURCE.METRICS.READINESS: 0
+				},
+				"personnel": {
+					RESOURCE.PERSONNEL.TECHNICIANS: false,
+					RESOURCE.PERSONNEL.STAFF: false,
+					RESOURCE.PERSONNEL.SECURITY: false,
+					RESOURCE.PERSONNEL.DCLASS: false	
+				},		
+				"currencies": {
+					RESOURCE.CURRENCY.MONEY: 0,
+					RESOURCE.CURRENCY.MATERIAL: 0,
+					RESOURCE.CURRENCY.SCIENCE: 0,
+					RESOURCE.CURRENCY.CORE: 0,
+				},
 				"buffs": [],
 				"debuffs": [],
+				"onsite_nuke": {
+					"triggered": false
+				},				
+				"generator_lvl": 0,
 			},
 			"floor": {
-				0: get_floor_default(true, 3),
-				1: get_floor_default(true, 3),
-				2: get_floor_default(false, 3),
-				3: get_floor_default(false, 3),
-				4: get_floor_default(false, 3),
-				5: get_floor_default(false, 3),
-				6: get_floor_default(false, 3),
+				0: get_floor_default(3),
+				1: get_floor_default(3),
+				2: get_floor_default(3),
+				3: get_floor_default(3),
+				4: get_floor_default(3),
+				5: get_floor_default(3),
+				6: get_floor_default(3),
 			}
 		},
 	# ----------------------------------
@@ -141,6 +160,7 @@ var initial_values:Dictionary = {
 		# ------------------------------
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
+				"is_powered": floor_index in [0],
 				"generator_level": 0,
 				"buffs": [],
 				"debuffs": [],
@@ -169,7 +189,9 @@ var initial_values:Dictionary = {
 			"base": {
 				"onsite_nuke": {
 					"triggered": false
-				}
+				},
+				"buffs": [],
+				"debuffs": []
 			},
 			"floor": floor, 	# not currently used for anything
 			"ring": ring,
@@ -452,7 +474,7 @@ func start_new_game(game_data_config:Dictionary) -> void:
 
 # ------------------------------------------------------------------------------
 #region defaults functions
-func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
+func get_floor_default(array_size:int) -> Dictionary:
 	return { 
 		# --------------  # FLOOR WIDE STATS
 		"metrics": {
@@ -474,11 +496,9 @@ func get_floor_default(is_powered:bool, array_size:int) -> Dictionary:
 		},
 		"buffs": [],
 		"debuffs": [],
-		"room_refs": [],
-		"scp_refs": [],		
 		# --------------
-		"is_powered": is_powered,
 		"in_lockdown": false,
+		"is_powered": false,
 		"array_size": array_size,
 		# --------------
 		"ring": { 
@@ -514,16 +534,14 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 		},
 		"buffs": [],
 		"debuffs": [],
-		"room_refs": [],
-		"scp_refs": [],		
 		# --------------
+		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,		
 		"abl_lvl": 0,
 		"energy": {
 			"available": 0,
 			"used": 0
 		},
 		# --------------
-		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 		"room": room
 		# --------------
 	}
@@ -550,12 +568,8 @@ func get_room_defaults() -> Dictionary:
 		},
 		"buffs": [],
 		"debuffs": [],		
-		"applied_bonus": 0,
 		# --------------
-		#"room_paired_with": {
-			#"specilization": false,
-			#"trait": false
-		#},
+		"applied_bonus": 0,
 		# --------------
 		"energy_used": 0, 		
 		"damage_val": 0,
@@ -1142,12 +1156,20 @@ func setup_default_energy_and_metrics(new_room_config:Dictionary) -> void:
 	# energy availble per levels
 	const energy_levels:Array = [5, 10, 15, 20, 25]
 	
+	# duplicate base config nuke status
+	new_room_config.base.onsite_nuke = base_states.base.onsite_nuke.duplicate()
+	
 	for floor_index in new_room_config.floor.size():		
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]				
-			var ring_designation:String = str(floor_index, ring_index)
-			var ring_base_state:Dictionary = base_states.ring[ring_designation]			
+			var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
+			var ring_base_state:Dictionary = base_states.ring[str(floor_index, ring_index)]			
+			
+			var floor_level:Dictionary = new_room_config.floor[floor_index]
 			var ring_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
+
+			# set is_powered state
+			floor_level.is_powered = floor_base_state.is_powered
 
 			# setup initial energy
 			ring_level.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
@@ -1161,7 +1183,26 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 	var floor_added:Array = []
 	var ring_added:Array = []
 	var room_added:Array = []
+		
+	# --------------------------------------------------------------		ADD BUFFS/DEBUFFS at the BASE level
+	var base_level:Dictionary = new_room_config.base
+	for prop in ["buffs", "debuffs"]:	
+		for item in base_states.base[prop]:
+			if (prop == "buffs" and !base_states.base.onsite_nuke.triggered or prop == "debuffs"):
+				var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
+				base_level[prop].push_back({"data": data, "duration": item.duration})
+				if "metrics" in data:
+					for key in data.metrics:
+						var amount:int = data.metrics[key]
+						base_level.metrics[key] += amount
+				if "personnel" in data:
+					for key in data.personnel:
+						base_level.personnel[key] = true
+				if "effect" in data:
+					data.effect.call(new_room_config)
+	# --------------------------------------------------------------
 
+	# --------------------------------------------------------------
 	for floor_index in new_room_config.floor.size():
 		var floor_level:Dictionary = new_room_config.floor[floor_index]
 
@@ -1183,51 +1224,67 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
 				if floor_designation not in floor_added:
 					floor_added.push_back(floor_designation)
-					for prop in ["buffs", "debuffs"]:	
-						for item in floor_base_state[prop]:
-							var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
-							floor_level[prop].push_back({"data": data, "duration": item.duration})
-							if "metrics" in data:
-								for key in data.metrics:
-									var amount:int = data.metrics[key]
-									floor_level.metrics[key] += amount
-							if "personnel" in data:
-								for key in data.personnel:
-									floor_level.personnel[key] = true
-							if "effect" in data:
-								data.effect.call(new_room_config)
+					
+					if floor_base_state.is_powered:
+						var data:Dictionary = BASE_UTIL.return_buff(BASE.BUFF.POWERED)
+						floor_level.buffs.push_back({"data": data, "duration": 100})
+					else:
+						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.UNPOWERED)
+						floor_level.debuffs.push_back({"data": data, "duration": 100})
+
+					
+					for prop in ["buffs", "debuffs"]:
+						# buffs only work when nuke is NOT triggered	
+						if (prop == "buffs" and !base_states.base.onsite_nuke.triggered or prop == "debuffs"):						
+							for item in floor_base_state[prop]:
+								var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
+								floor_level[prop].push_back({"data": data, "duration": item.duration})
+								
+								if "metrics" in data:
+									for key in data.metrics:
+										var amount:int = data.metrics[key]
+										floor_level.metrics[key] += amount
+								if "personnel" in data:
+									for key in data.personnel:
+										floor_level.personnel[key] = true
+								if "effect" in data:
+									data.effect.call(new_room_config)
 				# --------------------------------------------------------------
 				
 				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
 				if ring_designation not in ring_added:
 					ring_added.push_back(ring_designation)
 					for prop in ["buffs", "debuffs"]:	
-						for item in ring_base_state[prop]:
-							var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
-							ring_level[prop].push_back({"data": data, "duration": item.duration})
-							if "metrics" in data:
-								for key in data.metrics:
-									var amount:int = data.metrics[key]
-									ring_level.metrics[key] += amount
-							if "personnel" in data:
-								for key in data.personnel:
-									ring_level.personnel[key] = true
+						# buffs only work when nuke is NOT triggered	
+						if (prop == "buffs" and !base_states.base.onsite_nuke.triggered or prop == "debuffs"):						
+							for item in ring_base_state[prop]:
+								var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
+								ring_level[prop].push_back({"data": data, "duration": item.duration})
+								if "metrics" in data:
+									for key in data.metrics:
+										var amount:int = data.metrics[key]
+										ring_level.metrics[key] += amount
+								if "personnel" in data:
+									for key in data.personnel:
+										ring_level.personnel[key] = true
 				# --------------------------------------------------------------
 				
 				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
 				if room_designation not in room_added:
 					room_added.push_back(room_designation)
 					for prop in ["buffs", "debuffs"]:	
-						for item in room_base_state[prop]:
-							var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
-							room_level[prop].push_back({"data": data, "duration": item.duration})
-							if "metrics" in data:
-								for key in data.metrics:
-									var amount:int = data.metrics[key]
-									room_level.metrics[key] += amount
-							if "personnel" in data:
-								for key in data.personnel:
-									room_level.personnel[key] = true
+						# buffs only work when nuke is NOT triggered	
+						if (prop == "buffs" and !base_states.base.onsite_nuke.triggered or prop == "debuffs"):						
+							for item in room_base_state[prop]:
+								var data:Dictionary = BASE_UTIL.return_buff(item.ref) if prop == "buffs" else BASE_UTIL.return_debuff(item.ref)
+								room_level[prop].push_back({"data": data, "duration": item.duration})
+								if "metrics" in data:
+									for key in data.metrics:
+										var amount:int = data.metrics[key]
+										room_level.metrics[key] += amount
+								if "personnel" in data:
+									for key in data.personnel:
+										room_level.personnel[key] = true
 				# --------------------------------------------------------------				
 				
 func scp_run_first_effects(new_room_config:Dictionary) -> void:
@@ -1511,7 +1568,7 @@ func room_final_pass(new_room_config:Dictionary) -> void:
 		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 			
 		# add to ref count
-		ring_config.room_refs.push_back(item.ref)
+		#ring_config.room_refs.push_back(item.ref)
 		
 		# set room config data
 		room_config.room_data = {

@@ -745,8 +745,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	
 	# update room details control
 	RoomDetailsControl.use_location = current_location
-		
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
+	var nuke_activated:bool = room_config.base.onsite_nuke.triggered
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
 	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
 	var is_room_empty:bool = room_extract.room.is_empty()
@@ -756,6 +756,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
 	var can_take_action:bool = (is_powered and !in_lockdown)
 	var has_options:bool = SummaryCard.get_ability_btns().size() > 0
+	
 	
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !is_room_empty else AbilityBtn.hide()
@@ -801,12 +802,12 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
 			
 			# set button states
-			BuildBtn.is_disabled = !is_room_empty
+			BuildBtn.is_disabled = (!is_room_empty) or nuke_activated
 			DeconstructBtn.is_disabled = is_room_empty
 
 			if can_take_action:
-				AbilityBtn.is_disabled = !is_activated and has_options
-				DeconstructBtn.is_disabled = true if is_room_empty else !room_extract.room.can_destroy
+				AbilityBtn.is_disabled = (!is_activated and has_options) or nuke_activated
+				DeconstructBtn.is_disabled = (true if is_room_empty else !room_extract.room.can_destroy) or nuke_activated
 			else:
 				AbilityBtn.is_disabled = true
 				DeconstructBtn.is_disabled = true
