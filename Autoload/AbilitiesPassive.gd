@@ -2,6 +2,7 @@ extends Node
 
 enum REF {
 	UPGRADE_ABL_LVL,
+	ADDITIONAL_STORE_UNLOCKS,
 	
 	SUPPLY_SECURITY,
 	SUPPLY_STAFF,
@@ -26,9 +27,20 @@ var UPGRADE_ABL_LVL:Dictionary = {
 	"description": "Increases the ability level of ALL rooms in a wing.",
 	"lvl_required": 0,
 	"energy_cost": 4,
-	"wing": func(new_room_config:Dictionary, use_location:Dictionary) -> Dictionary:
-		new_room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl += 1
-		return new_room_config,
+	#"wing": func(new_room_config:Dictionary, use_location:Dictionary) -> Dictionary:
+		#new_room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl += 1
+		#return new_room_config,
+}
+
+var ADDITIONAL_STORE_UNLOCKS:Dictionary = {
+	"name": "ADDITIONAL STORE UNLOCKS",
+	"description": "Additional facilities can be unlocked in the store.",
+	"lvl_required": 0,
+	"energy_cost": 4,
+	"floor_effect": func(floor_config_data:Dictionary) -> void:
+		if floor_config_data.room_unlock_val < 1:
+			floor_config_data.room_unlock_val = 1
+		
 }
 
 # ---------------------------------
@@ -150,6 +162,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# ------------------
 		REF.UPGRADE_ABL_LVL:
 			ability = UPGRADE_ABL_LVL
+		REF.ADDITIONAL_STORE_UNLOCKS:
+			ability = ADDITIONAL_STORE_UNLOCKS
 		# ------------------	
 		REF.SUPPLY_SECURITY:
 			ability = SUPPLY_SECURITY

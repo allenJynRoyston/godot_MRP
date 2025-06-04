@@ -14,7 +14,6 @@ var DEBUG_ROOM:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"build_time": 1,
 	# ------------------------------------------
 
 	# ------------------------------------------	
@@ -39,22 +38,21 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	
 	# --------------------------------------
-	"pairs_with": {
-		"specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
-		#"trait": RESEARCHER.TRAITS.DISCIPLINED
-	},
+	"requiers_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 	# ------------------------------------------	
 	
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),	
-			ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 0),			
+			#ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),	
+			#ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 0),			
+			ABL.get_ability(ABL.REF.SET_WARNING_MODE),
+			ABL.get_ability(ABL.REF.SET_DANGER_MODE),
 			
-			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
-			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
-			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
-			ABL.get_ability(ABL.REF.CLONE_RESEARCHER, 0),
+			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
+			#ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
+			#ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
+			#ABL.get_ability(ABL.REF.CLONE_RESEARCHER, 0),
 			#ABL.get_ability(ABL.REF.ADD_TRAIT, 0),
 			#ABL.get_ability(ABL.REF.REMOVE_TRAIT, 0),
 			#
@@ -68,7 +66,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			#ABL_P.get_ability(ABL_P.REF.UPGRADE_ABL_LVL),
+			ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS),
 			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
 			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
 			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
@@ -96,7 +94,6 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"can_destroy": false,
 	"can_assign_researchers": false,
 	"requires_unlock": false,	
-	"build_time": 1,
 	"own_limit": 1,	
 	# ------------------------------------------
 
@@ -137,7 +134,6 @@ var HQ:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"build_time": 1,
 	"own_limit": 1,	
 	# ------------------------------------------
 
@@ -149,10 +145,7 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 
 	# --------------------------------------
-	"pairs_with": {
-		"specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
-		#"trait": RESEARCHER.TRAITS.DISCIPLINED
-	},
+	"requiers_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -179,7 +172,6 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"build_time": 1,
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -188,13 +180,6 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 		"purchase": 100,
 	},
 	# ------------------------------------------
-	
-	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 1,
-		RESOURCE.CURRENCY.MATERIAL: 2,
-		RESOURCE.CURRENCY.SCIENCE: 3,
-		RESOURCE.CURRENCY.CORE: 4,
-	},	
 		
 	# ------------------------------------------
 	"abilities": func() -> Array: 
@@ -268,6 +253,7 @@ var OPERATIONS_SUPPORT:Dictionary = {
 	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies technicians.",
+	"unlock_level": 1,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -292,6 +278,7 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies security.",
+	"unlock_level": 1,		
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -316,6 +303,7 @@ var WEAPONS_RANGE:Dictionary = {
 	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Increases security and provides training.",
+	"unlock_level": 1,		
 	# ------------------------------------------
 
 	# ------------------------------------------

@@ -541,6 +541,40 @@ func set_onsite_nuke() -> bool:
 	return false
 # ---------------------
 
+# ---------------------
+func set_warning_mode() -> bool:
+	var confirm:bool = await create_modal("Set the wing to WARNING mode?", "")
+	
+	if !confirm:
+		return false
+			
+
+	# set emergency mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.WARNING
+	SUBSCRIBE.base_states = base_states
+	
+	# add debuff
+	add_debuff_to_base(BASE.DEBUFF.PANIC, 2)
+	
+	return true
+# ---------------------
+
+# ---------------------
+func set_danger_mode() -> bool:
+	var confirm:bool = await create_modal("Set the wing to DANGER mode?", "")
+	
+	if !confirm:
+		return false
+			
+	# set emergency mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.DANGER
+	SUBSCRIBE.base_states = base_states
+	
+	# add debuff
+	add_debuff_to_base(BASE.DEBUFF.PANIC, 2)
+	
+	return true
+# ---------------------
 
 # --------------------------------------------------------------------------------------------------
 # Add buff to an entire floor

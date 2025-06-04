@@ -69,7 +69,7 @@ func setup_gridselect() -> void:
 		
 		if check_for_compatability:
 			var extract_data:Dictionary = GAME_UTIL.extract_room_details(use_location)
-			var spec_requird:int = extract_data.room.details.pairs_with.specialization
+			var spec_requird:int = extract_data.room.details.requires_specialization
 			node.is_incompatable = false if spec_requird == RESEARCHER.SPECIALIZATION.ANY else data.specialization.ref != spec_requird 
 			node.assigned_elsewhere_data = {} if data.props.assigned_to_room.is_empty() else GAME_UTIL.extract_room_details(data.props.assigned_to_room)
 			node.is_assigned_elsewhere = !data.props.assigned_to_room.is_empty() and data.uid not in assigned_uids

@@ -119,7 +119,7 @@ func add_buff_or_deubff_to_base(type:BASE.TYPE, ref:int, duration:int) -> void:
 					"duration": duration
 				})	
 			else:
-				base_states.debase.buffs.map(func(x): 
+				base_states.base.debuffs.map(func(x): 
 					if x.ref == ref:
 						x.duration += duration
 					return x

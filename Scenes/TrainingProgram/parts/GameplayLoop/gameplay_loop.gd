@@ -497,6 +497,7 @@ func get_floor_default(array_size:int) -> Dictionary:
 		"buffs": [],
 		"debuffs": [],
 		# --------------
+		"room_unlock_val": 0,
 		"in_lockdown": false,
 		"is_powered": false,
 		"array_size": array_size,
@@ -1178,6 +1179,8 @@ func setup_default_energy_and_metrics(new_room_config:Dictionary) -> void:
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
 				ring_level.emergency_mode = ROOM.EMERGENCY_MODES.DANGER
+			else:
+				ring_level.emergency_mode = ring_base_state.emergency_mode
 
 func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 	var floor_added:Array = []
@@ -1327,6 +1330,7 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
+		var floor_config_data:Dictionary = new_room_config.floor[floor]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
@@ -1341,6 +1345,16 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 				# creates default state if it doesn't exist
 				if ability_uid not in room_base_state.passives_enabled:
 					room_base_state.passives_enabled[ability_uid] = false
+				
+				if room_base_state.passives_enabled[ability_uid]:
+					if "base_effect" in ability:
+						ability.base_effect.call(new_room_config.base)
+					if "floor_effect" in ability:
+						ability.floor_effect.call(floor_config_data)
+					if "ring_effect" in ability:
+						ability.ring_effect.call(ring_config_data)
+					if "room_effect" in ability:
+						ability.room_effect.call(room_config_data)
 		
 		# TODO: replace this with a room level system, where 
 		# the room level is independent of the researchers level

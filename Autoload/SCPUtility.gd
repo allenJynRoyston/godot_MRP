@@ -31,11 +31,10 @@ var SCP_TEMPLATE:Dictionary = {
 	},	
 	# ------------------------------------------
 
-
 	# ------------------------------------------
 	"abilities": func() -> Array:
 		return [
-			
+			ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),
 		],
 	# ------------------------------------------
 
@@ -49,6 +48,12 @@ var SCP_TEMPLATE:Dictionary = {
 			#RESOURCE.PERSONNEL.SECURITY: true,
 			#RESOURCE.PERSONNEL.DCLASS: true
 		#},
+		#"currencies": {
+			#RESOURCE.CURRENCY.MONEY: 0,
+			#RESOURCE.CURRENCY.SCIENCE: 0,
+			#RESOURCE.CURRENCY.MATERIAL: 0,
+			#RESOURCE.CURRENCY.CORE: 0,
+		#},		
 	},
 	# ------------------------------------------
 	
@@ -97,7 +102,9 @@ var SCP_TEMPLATE:Dictionary = {
 		# -----------------
 		"consequence":{
 			EVT.CONSEQUNCE.UNSUPERVISED: {
-				"text": ["UNSUPERVISED story results"],
+				"text": [
+					"UNSUPERVISED story results"
+				],
 				"allowed_responses": [],
 				"effect": func(is_success:bool) -> void:
 					if is_success:
@@ -106,7 +113,9 @@ var SCP_TEMPLATE:Dictionary = {
 						print("RUN BAD EFFECT FAIL"),
 			},
 			EVT.CONSEQUNCE.NEUTRAL: {
-				"text": ["NEUTRAL story results"],
+				"text": [
+					"NEUTRAL story results"
+				],
 				"allowed_responses": [],
 				"effect": func(is_success:bool) -> void:
 					if is_success:
@@ -115,7 +124,9 @@ var SCP_TEMPLATE:Dictionary = {
 						print("RUN NEUTRAL EFFECT FAIL"),
 			},			
 			EVT.CONSEQUNCE.GOOD: {
-				"text": ["GOOD story results"],
+				"text": [
+					"GOOD story results"
+				],
 				"allowed_responses": [EVT.RESPONSE.MORALE],
 				"effect": func(is_success:bool) -> void:
 					if is_success:
@@ -125,7 +136,9 @@ var SCP_TEMPLATE:Dictionary = {
 				
 			},
 			EVT.CONSEQUNCE.BAD: {
-				"text": ["BAD story results"],
+				"text": [
+					"BAD story results"
+				],
 				"allowed_responses": [EVT.RESPONSE.SAFETY, EVT.RESPONSE.READINESS],
 				"effect": func(is_success:bool) -> void:
 					if is_success:
@@ -138,14 +151,14 @@ var SCP_TEMPLATE:Dictionary = {
 		"default_consequence": EVT.CONSEQUNCE.NEUTRAL,
 		# -----------------
 		"specialization": {
-			RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
-				"text": ["ADMINISTRATION story"],
-				"consequence_result": EVT.CONSEQUNCE.GOOD,
-			},
-			RESEARCHER.SPECIALIZATION.ENGINEERING: {
-				"text": ["ENGINEERING story"],
-				"consequence_result": EVT.CONSEQUNCE.BAD,
-			},
+			#RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
+				#"text": ["ADMINISTRATION story"],
+				#"consequence_result": EVT.CONSEQUNCE.GOOD,
+			#},
+			#RESEARCHER.SPECIALIZATION.ENGINEERING: {
+				#"text": ["ENGINEERING story"],
+				#"consequence_result": EVT.CONSEQUNCE.BAD,
+			#},
 		}
 		# -----------------
 	},

@@ -19,7 +19,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"can_assign_researchers": true,
 	"requires_unlock": true,	
 	"own_limit": 99,
-	"build_time": 1,
+	"unlock_level": 0,
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -30,6 +30,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------	
 	
 	# ------------------------------------------
+	"requires_specialization": RESEARCHER.SPECIALIZATION.ANY,	
 	"required_personnel": [
 		# RESOURCE.PERSONNEL.STAFF
 	],	
@@ -47,13 +48,6 @@ var ROOM_TEMPLATE:Dictionary = {
 		return [
 
 		],		
-	# ------------------------------------------
-	
-	# ------------------------------------------	
-	"pairs_with": {
-		"specialization": RESEARCHER.SPECIALIZATION.ANY,
-		#"trait": RESEARCHER.TRAITS.HARD_WORKING
-	},
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -217,7 +211,7 @@ func return_activation_cost(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
 	var room_data:Dictionary = return_data(ref)	
-	return room_data.pairs_with.specialization == researcher.specialization.ref
+	return room_data.requires_specialization == researcher.specialization.ref
 # ------------------------------------------------------------------------------
 
 
@@ -260,9 +254,10 @@ func owns_and_is_active(ref:int) -> bool:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func get_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary:
+func get_category(category:ROOM.CATEGORY, unlock_level:int, start_at:int, limit:int) -> Dictionary:
+	print("unlock_level: ", unlock_level)
 	var filter:Callable = func(list:Array) -> Array:
-		return list.filter(func(i): return category in i.details.categories)
+		return list.filter(func(i): return (category in i.details.categories) and (unlock_level >= i.details.unlock_level))
 	
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------

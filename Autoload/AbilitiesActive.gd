@@ -4,6 +4,7 @@ enum REF {
 	EVAL_SCP, 
 	
 	TRIGGER_ONSITE_NUKE,
+	SET_WARNING_MODE, SET_DANGER_MODE, 
 	
 	CLONE_RESEARCHER, HIRE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
 	
@@ -26,13 +27,31 @@ var EVAL_SCP:Dictionary = {
 # ---------------------------------
 
 # ---------------------------------
-var trigger_onsite_nuke:Dictionary = {
+var TRIGGER_ONSITE_NUKE:Dictionary = {
 	"name": "TRIGGER ONSITE NUKE",
 	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  WARNING:  this action cannot be undone and will result in a game over.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.set_onsite_nuke(),
+}
+
+var SET_WARNING_MODE:Dictionary = {
+	"name": "SET WARNING MODE",
+	"description": "Setting the floor level to WARNING.",
+	"science_cost": 0,
+	"cooldown_duration": 5, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.set_warning_mode(),
+}
+
+var SET_DANGER_MODE:Dictionary = {
+	"name": "SET DANGER MODE",
+	"description": "Setting the floor level to DANGER.",
+	"science_cost": 0,
+	"cooldown_duration": 5, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.set_danger_mode(),
 }
 
 # ---------------------------------
@@ -189,7 +208,11 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = EVAL_SCP
 		# -----------------------------=
 		REF.TRIGGER_ONSITE_NUKE:
-			ability = trigger_onsite_nuke
+			ability = TRIGGER_ONSITE_NUKE
+		REF.SET_WARNING_MODE:
+			ability = SET_WARNING_MODE
+		REF.SET_DANGER_MODE:
+			ability = SET_DANGER_MODE
 		# -----------------------------
 		
 		# -----------------------------

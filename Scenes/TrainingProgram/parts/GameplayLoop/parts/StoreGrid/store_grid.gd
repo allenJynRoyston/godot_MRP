@@ -36,22 +36,23 @@ func activate() -> void:
 	await U.tick()
 	
 func setup_gridselect() -> void:
+	var room_unlock_level:int = room_config.floor[current_location.floor].room_unlock_val
 	# ---------------- GRID_SELECT CONFIG
 	GridSelect.tabs = [
 		{
 			"title": "FACILITY",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.STANDARD, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.STANDARD, room_unlock_level, start_at, end_at),
 		},
 		{
 			"title": "CONTAINMENT",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, room_unlock_level, start_at, end_at),
 		},
 		{
 			"title": "SPECIAL",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.SPECIAL, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.SPECIAL, room_unlock_level, start_at, end_at),
 		}
 	]
 	

@@ -757,7 +757,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var can_take_action:bool = (is_powered and !in_lockdown)
 	var has_options:bool = SummaryCard.get_ability_btns().size() > 0
 	
-	
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !is_room_empty else AbilityBtn.hide()
 		BuildBtn.show() if is_room_empty else BuildBtn.hide()
