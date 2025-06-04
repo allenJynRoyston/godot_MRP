@@ -1,9 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=8 format=3 uid="uid://doexmbeotqsd4"]
 
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_ryuwo"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="2_aisjx"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_w80op"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_hvfea"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0f73"]
 bg_color = Color(0, 0, 0, 0.796078)
@@ -22,11 +22,6 @@ bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4l8vf"]
 bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="LabelSettings" id="LabelSettings_hvfea"]
-font = ExtResource("4_w80op")
-font_size = 8
-font_color = Color(0, 0.964706, 0.278431, 1)
 
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
@@ -50,7 +45,6 @@ theme_override_constants/separation = 5
 layout_mode = 2
 icon = 49
 inactive_color = Color(1, 1, 1, 1)
-flip_v = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -64,14 +58,13 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hvfea")
 icon = 43
 panel_color = Color(0, 0, 0, 0)
-is_disabled = true
 title = "[PREREQUISITES MISSING]"
+is_disabled = true
 
 [node name="OptionTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4l8vf")
 icon = 67
-icon_placement = 1
 panel_color = Color(0, 0, 0, 0)
 inactive_color = Color(0.448712, 0.448712, 0.448712, 1)
 title = "Option title goes here"
@@ -79,7 +72,8 @@ is_hoverable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
+size_flags_horizontal = 4
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
@@ -88,9 +82,8 @@ custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 size_flags_vertical = 1
 text = "Description item..."
-label_settings = SubResource("LabelSettings_hvfea")
+label_settings = ExtResource("4_hvfea")
 autowrap_mode = 2
-uppercase = true
 metadata/_edit_group_ = true
 
 [node name="DescriptionListContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]

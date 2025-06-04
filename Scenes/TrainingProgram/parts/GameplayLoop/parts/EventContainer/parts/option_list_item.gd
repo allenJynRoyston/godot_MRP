@@ -93,8 +93,8 @@ func on_data_update() -> void:
 		is_locked = true
 		on_is_selected_update()
 	
-	if "description" in data and data.description.length() > 0:
-		DescriptionLabel.text = "%s %s" % ["[%s SUCCESS] -" % [str(data.success_rate.call(),'%')] if "success_rate" in data else "", data.description]
+	if "success_rate" in data:
+		DescriptionLabel.text = "%s %s" % ["(%s SUCCESS)" % [str(data.success_rate,'%')], str(" - ", data.description) if "description" in data else ""]
 		show_description = show_description
 	else:
 		show_description = false

@@ -90,7 +90,7 @@ var mood_data:Dictionary = {
 # ------------------------------------------------------------------------------
 func generate_new_researcher_hires(number:int) -> Array:
 	var researchers:Array = []
-	for n in range(0, number):
+	for n in range(1, number):
 		researchers.push_back(generate_researcher(n))
 	return researchers
 # ------------------------------------------------------------------------------
@@ -114,12 +114,12 @@ func generate_researcher(assign_spec:int = -1) -> Array:
 	# var img_src:String = "res://Media/images/example_doctor.jpg"		
 	var specialization:int
 	if assign_spec == -1:
-		specialization = U.generate_rand(0, RESEARCHER.SPECIALIZATION.size() - 1)
+		specialization = U.generate_rand(1, RESEARCHER.SPECIALIZATION.size() - 1)
 	else:
 		if assign_spec < (RESEARCHER.SPECIALIZATION.size() - 1):
 			specialization = assign_spec
 		else:
-			specialization = U.generate_rand(0, RESEARCHER.SPECIALIZATION.size() - 1)
+			specialization = U.generate_rand(1, RESEARCHER.SPECIALIZATION.size() - 1)
 	
 	var traits:int = RESEARCHER.TRAITS.NORMAL
 	var mood:int = RESEARCHER.MOODS.NORMAL
@@ -411,7 +411,7 @@ func can_be_promoted(uid:String) -> bool:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
-func get_list_of_specilizations() -> Array:
+func get_list_of_specializations() -> Array:
 	var list:Array = []
 	for ref in specialization_data:
 		var spec:Dictionary = specialization_data[ref]

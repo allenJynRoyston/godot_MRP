@@ -55,37 +55,89 @@ var SCP_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	"on_contain": {
 		"description": "CONTAIN EVENT DESCRIPTION GOES HERE",
+		# -----------------
 		"text": [
 			"Contain story goes here.",
 		],
+		# -----------------
+		"responses": {
+			EVT.RESPONSE.ALWAYS: {
+				"title": "DO NOTHING",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["ALWAYS PASS STORY"]
+					else:
+						return ["ALWAYS FAIL STORY"],
+			},
+			EVT.RESPONSE.MORALE: {
+				"title": "MORALE RESPONSE",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["MORALE PASS STORY"]
+					else:
+						return ["MORALE FAIL STORY"],
+			},
+			EVT.RESPONSE.SAFETY: {
+				"title": "SAFETY RESPONSE",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["SAFETY PASS STORY"]
+					else:
+						return ["SAFETY FAIL STORY"],
+			},
+			EVT.RESPONSE.READINESS: {
+				"title": "READINESS",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["READINESS PASS STORY"]
+					else:
+						return ["READINESS FAIL STORY"],
+			}
+		},
+		# -----------------
 		"consequence":{
 			EVT.CONSEQUNCE.UNSUPERVISED: {
-				"description": "UNSUPERVISED consequence.",
 				"text": ["UNSUPERVISED story results"],
-				"effect": func() -> void:
-					pass,
+				"allowed_responses": [],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN BAD EFFECT SUCCESS")
+					else:
+						print("RUN BAD EFFECT FAIL"),
 			},
 			EVT.CONSEQUNCE.NEUTRAL: {
-				"description": "NEUTRAL consequence.",
 				"text": ["NEUTRAL story results"],
-				"effect": func() -> void:
-					pass,
+				"allowed_responses": [],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN NEUTRAL EFFECT SUCCESS")
+					else:
+						print("RUN NEUTRAL EFFECT FAIL"),
 			},			
 			EVT.CONSEQUNCE.GOOD: {
-				"description": "GOOD consequence.",
 				"text": ["GOOD story results"],
-				"effect": func() -> void:
-					pass,
+				"allowed_responses": [EVT.RESPONSE.MORALE],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN GOOD EFFECT SUCCESS")
+					else:
+						print("RUN GOOD EFFECT FAIL"),
+				
 			},
 			EVT.CONSEQUNCE.BAD: {
-				"description": "BAD consequence.",
 				"text": ["BAD story results"],
-				"effect": func() -> void:
-					pass,
+				"allowed_responses": [EVT.RESPONSE.SAFETY, EVT.RESPONSE.READINESS],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN BAD EFFECT SUCCESS")
+					else:
+						print("RUN BAD EFFECT FAIL"),
 			},
 		},
-		"default_consequence": EVT.CONSEQUNCE.BAD,
-		"specilization": {
+		# -----------------
+		"default_consequence": EVT.CONSEQUNCE.NEUTRAL,
+		# -----------------
+		"specialization": {
 			RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
 				"text": ["ADMINISTRATION story"],
 				"consequence_result": EVT.CONSEQUNCE.GOOD,
@@ -94,29 +146,8 @@ var SCP_TEMPLATE:Dictionary = {
 				"text": ["ENGINEERING story"],
 				"consequence_result": EVT.CONSEQUNCE.BAD,
 			},
-		},
-		"responses": {
-			EVT.RESPONSE.ALWAYS: {
-				"title": "DO NOTHING",
-				"pass": ["PASS STORY"],
-				"fail": ["FAIL STORY"]				
-			},
-			EVT.RESPONSE.MORALE: {
-				"title": "[MORALE] RESPONSE",
-				"pass": ["PASS STORY"],
-				"fail": ["FAIL STORY"]				
-			},
-			EVT.RESPONSE.SAFETY: {
-				"title": "[SAFETY] Lockdown the room.",
-				"pass": ["PASS STORY"],
-				"fail": ["FAIL STORY"]				
-			},
-			EVT.RESPONSE.READINESS: {
-				"title": "[READINESS] Send in an MTF.",
-				"pass": ["PASS STORY"],
-				"fail": ["FAIL STORY"]
-			}			
 		}
+		# -----------------
 	},
 	# ------------------------------------------
 	
@@ -356,7 +387,7 @@ func return_data(ref:int) -> Dictionary:
 	#var match_trait:bool = false
 	#
 	#for researcher in researchers:
-		#if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
+		#if !match_spec and (scp_details.pairs_with.specialization in researcher.specializations):
 			#match_spec = true
 		#if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
 			#match_trait = true

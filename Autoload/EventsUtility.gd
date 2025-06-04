@@ -327,27 +327,59 @@ var SCP_ON_CONTAIN:Dictionary = {
 		var scp_data:Dictionary = props.scp_data
 		var researchers:Array = props.researchers
 		
-		var options:Array = []
-		var responses:Dictionary = scp_details.on_contain.responses
-		var selected_consequence:int = scp_details.on_contain.default_consequence 
-		var consequences:Dictionary = scp_details.on_contain.consequence
+		var event:Dictionary = scp_details.on_contain
+		var selected_consequence:int = event.default_consequence 
+		var consequences:Dictionary = event.consequence
+		var responses:Dictionary = event.responses
+		var specializations:Dictionary = scp_details.on_contain.specialization
 		var selected_researcher:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		
+		var story_text:Array = []
+		for line in scp_details.on_contain.text:
+			story_text.push_back(line)
 
 		# IF NO RESEARCHERS ASSIGNED, PICK THIS CONSEQUENCE	
 		if researchers.size() == 0:
-			selected_consequence = scp_details.on_contain.consequence[EVT.CONSEQUNCE.UNSUPERVISED]
+			selected_consequence = EVT.CONSEQUNCE.UNSUPERVISED
 		else:
-			# ELSE, check for a trait, grab it and add it to the story, then prime the consequence
-			print(selected_researcher.specilization)
-			
+			# ELSE, check for a trait, grab it and add it to the story, then prime set the consequence
+			if selected_researcher.specialization.ref in specializations:
+				selected_consequence = specializations[selected_researcher.specialization.ref].consequence_result
+				for line in specializations[selected_researcher.specialization.ref].text:
+					story_text.push_back(line)
+					
+		# add consequnce to to story text
+		var consequence_data:Dictionary = event.consequence[selected_consequence]			
+		for line in consequence_data.text:
+			story_text.push_back(line)
 
-		
-		for ref in responses:
+		# then build responses
+		var options:Array = []
+		var allowed_responses:Array = [EVT.RESPONSE.ALWAYS] + consequence_data.allowed_responses
+		for ref in allowed_responses:
 			var response:Dictionary = responses[ref]
+			var success_rate:int = 100
+			var title:String = response.title
+			
+			match ref:
+				EVT.RESPONSE.ALWAYS:
+					success_rate = 100
+				EVT.RESPONSE.MORALE:
+					success_rate = 25 + (GAME_UTIL.get_metric_val(current_location, RESOURCE.METRICS.MORALE) * 20)
+					title = str('[MORALE]: ', response.title)
+				EVT.RESPONSE.SAFETY:
+					success_rate = 25 + (GAME_UTIL.get_metric_val(current_location, RESOURCE.METRICS.SAFETY) * 20)
+					title = str('[SAFETY]: ', response.title)
+				EVT.RESPONSE.READINESS:
+					success_rate = 25 + (GAME_UTIL.get_metric_val(current_location, RESOURCE.METRICS.READINESS) * 20)
+					title = str('[READINESS]: ', response.title)
+			
 			options.push_back({
 				"show": true,
-				"title": response.title,
+				"title": title,
 				"val": ref,
+				"description": "Chances of success.",
+				"success_rate": success_rate,
 				"onSelected": onSelected
 			})
 		
@@ -357,16 +389,20 @@ var SCP_ON_CONTAIN:Dictionary = {
 			func() -> Dictionary:
 				return {
 					"header": "SCP_ON_CONTAIN",
-					"img_src": "res://Media/images/redacted.png",
-					"text": scp_details.on_contain.text,
+					"img_src": scp_details.img_src,
+					"text": story_text,
 					"options": options
 				},
 			# ---------
 			func() -> Dictionary:
-				consequences[selected_consequence].effect.call()
+				var random_int:int = U.generate_rand(0, 100)
+				var is_success:bool = (option_selected.val.option.success_rate) > random_int			
+				var response_selected:Dictionary = responses[option_selected.val.option.val]
+				var res_story:Array = response_selected.story.call(is_success)
+				consequences[selected_consequence].effect.call(is_success)
 				
 				return {
-					"text": consequences[selected_consequence].text
+					"text": consequences[selected_consequence].text + res_story
 				}	
 		],
 }

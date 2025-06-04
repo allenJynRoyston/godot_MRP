@@ -51,7 +51,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	
 	# ------------------------------------------	
 	"pairs_with": {
-		"specilization": RESEARCHER.SPECIALIZATION.ANY,
+		"specialization": RESEARCHER.SPECIALIZATION.ANY,
 		#"trait": RESEARCHER.TRAITS.HARD_WORKING
 	},
 	# ------------------------------------------
@@ -189,7 +189,7 @@ func return_activation_cost(ref:int) -> Array:
 	#var details:Dictionary = {}
 	#if "pairs_with" in room_data:
 		#details = {
-			#"specilization": RESEARCHER_UTIL.return_specialization_data(room_data.pairs_with.specilization),
+			#"specialization": RESEARCHER_UTIL.return_specialization_data(room_data.pairs_with.specialization),
 			##"trait": RESEARCHER_UTIL.return_trait_data(room_data.pairs_with.trait),
 		#}
 #
@@ -202,7 +202,7 @@ func return_activation_cost(ref:int) -> Array:
 	#var match_spec:bool = false
 	#
 	#for researcher in researchers:
-		#if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
+		#if !match_spec and (scp_details.pairs_with.specialization in researcher.specializations):
 			#match_spec = true
 		##if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
 			##match_trait = true
@@ -217,7 +217,7 @@ func return_activation_cost(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
 	var room_data:Dictionary = return_data(ref)	
-	return room_data.pairs_with.specilization == researcher.specialization.ref
+	return room_data.pairs_with.specialization == researcher.specialization.ref
 # ------------------------------------------------------------------------------
 
 

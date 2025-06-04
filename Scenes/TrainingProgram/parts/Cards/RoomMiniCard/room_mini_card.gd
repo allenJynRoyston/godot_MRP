@@ -109,7 +109,7 @@ func on_ref_update() -> void:
 	#if level_with_details.is_empty():
 		#CardDrawerResearcherPref.content = "None"
 	#else:
-		#var spec_str:String = level_with_details.specilization.name
+		#var spec_str:String = level_with_details.specialization.name
 		##var trait_str:String = level_with_details.trait.name
 		#CardDrawerResearcherPref.content = "%s or %s" % [spec_str, trait_str]
 # ------------------------------------------------------------------------------

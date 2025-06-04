@@ -277,6 +277,8 @@ func on_current_instruction_update() -> void:
 		RightHeaderLabel.text = "VIDEO FEED"
 		RightFooterLabel.text = "" # not currently used
 		await U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].show)
+	else:
+		await U.set_timeout(0.3)
 	# -----------------------------------
 	
 	# -----------------------------------

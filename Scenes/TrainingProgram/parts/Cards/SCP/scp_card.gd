@@ -140,7 +140,7 @@ func on_ref_update() -> void:
 		return
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-	#var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(scp_details.pairs_with.specilization).name)
+	#var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(scp_details.pairs_with.specialization).name)
 	#var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(scp_details.pairs_with.trait).name)
 	#var bonus_str:String = "%s or %s" % [spec_name, trait_name]
 	var currency_list:Array = []

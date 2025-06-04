@@ -5,6 +5,114 @@ var SCP0:Dictionary = {
 	# -----------------------------------
 	"nickname": "First Snow",
 	"description": "█████ and ██████ standing beside a snowman, both smiling. On the back it reads: 'Our first winter together.'",
+
+	# ------------------------------------------
+	"effects": {
+		"description": "Adds 150 MONEY per day.", 
+		"currencies": {
+			RESOURCE.CURRENCY.MONEY: 150
+		},
+	},
+	# ------------------------------------------
+	# ------------------------------------------
+	"on_contain": {
+		# -----------------
+		"text": [
+			"Contain story goes here.",
+		],
+		# -----------------
+		"responses": {
+			EVT.RESPONSE.ALWAYS: {
+				"title": "DO NOTHING",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["ALWAYS PASS STORY"]
+					else:
+						return ["ALWAYS FAIL STORY"],
+			},
+			EVT.RESPONSE.MORALE: {
+				"title": "Split the money.",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["MORALE PASS STORY"]
+					else:
+						return ["MORALE FAIL STORY"],
+			},
+			EVT.RESPONSE.SAFETY: {
+				"title": "Lockdown the room.",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["SAFETY PASS STORY"]
+					else:
+						return ["SAFETY FAIL STORY"],
+			},
+			EVT.RESPONSE.READINESS: {
+				"title": "Send in an MTF.",
+				"story": func(is_successful:bool) -> Array:
+					if is_successful:
+						return ["READINESS PASS STORY"]
+					else:
+						return ["READINESS FAIL STORY"],
+			}
+		},
+		# -----------------
+		"consequence":{
+			EVT.CONSEQUNCE.UNSUPERVISED: {
+				"text": ["UNSUPERVISED story results"],
+				"allowed_responses": [],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN BAD EFFECT SUCCESS")
+					else:
+						print("RUN BAD EFFECT FAIL"),
+			},
+			EVT.CONSEQUNCE.NEUTRAL: {
+				"text": ["NEUTRAL story results"],
+				"allowed_responses": [],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN NEUTRAL EFFECT SUCCESS")
+					else:
+						print("RUN NEUTRAL EFFECT FAIL"),
+			},			
+			EVT.CONSEQUNCE.GOOD: {
+				"text": ["GOOD story results"],
+				"allowed_responses": [EVT.RESPONSE.MORALE],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN GOOD EFFECT SUCCESS")
+					else:
+						print("RUN GOOD EFFECT FAIL"),
+				
+			},
+			EVT.CONSEQUNCE.BAD: {
+				"text": ["BAD story results"],
+				"allowed_responses": [EVT.RESPONSE.SAFETY, EVT.RESPONSE.READINESS],
+				"effect": func(is_success:bool) -> void:
+					if is_success:
+						print("RUN BAD EFFECT SUCCESS")
+					else:
+						print("RUN BAD EFFECT FAIL"),
+			},
+		},
+		# -----------------
+		"default_consequence": EVT.CONSEQUNCE.NEUTRAL,
+		# -----------------
+		"specialization": {
+			RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
+				"text": ["ADMINISTRATION story"],
+				"consequence_result": EVT.CONSEQUNCE.GOOD,
+			},
+			RESEARCHER.SPECIALIZATION.ENGINEERING: {
+				"text": ["ENGINEERING story"],
+				"consequence_result": EVT.CONSEQUNCE.BAD,
+			},
+		}
+		# -----------------
+	},
+	# ------------------------------------------
+	
+		
 	# -----------------------------------
 }
 

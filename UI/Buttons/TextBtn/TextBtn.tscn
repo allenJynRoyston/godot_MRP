@@ -38,10 +38,11 @@ custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
-flip_v = false
+static_color = Color(0.662745, 0.662745, 0.662745, 1)
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+modulate = Color(0.662745, 0.662745, 0.662745, 1)
 layout_mode = 2
 label_settings = ExtResource("2_vmudk")
 uppercase = true
@@ -51,5 +52,5 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
-flip_v = false
+static_color = Color(0.662745, 0.662745, 0.662745, 1)
 is_hoverable = false

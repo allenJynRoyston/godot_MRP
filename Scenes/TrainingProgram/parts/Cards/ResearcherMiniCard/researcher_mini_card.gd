@@ -175,11 +175,11 @@ func update_content() -> void:
 			else:
 				node.hide()
 		hint_icon = SVGS.TYPE.STOP
-		hint_description = "%s %s" % [name_title_str, "(lacks correct specilization)."]
+		hint_description = "%s %s" % [name_title_str, "(lacks correct specialization)."]
 		
 		if !spec_required.is_empty():
 			hint_icon = SVGS.TYPE.DRS
-			hint_description = "%s specilization required." % spec_required.name
+			hint_description = "%s specialization required." % spec_required.name
 			IncompatableLabel.text = "INCOMPATABLE" 
 		return
 	

@@ -767,9 +767,9 @@ func execute_record_audit() -> void:
 					#for researcher in researchers:
 						#var science_amount:int = 1
 						#var xp_amount:int = 2 - (researchers.size() - 1)   # 2xp if 1 researcher attached, 1xp if 2 are attached
-						##for specilization in researcher.specializations:
-							##if specilization in scp_details.researcher_preferences:
-								##science_amount = scp_details.researcher_preferences[specilization]
+						##for specialization in researcher.specializations:
+							##if specialization in scp_details.researcher_preferences:
+								##science_amount = scp_details.researcher_preferences[specialization]
 						#
 						#var science_diff:Array = [{
 							#"amount": science_amount, 
@@ -1352,8 +1352,8 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 			#var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(researcher[0])
 			#var assigned_to_room:Dictionary = researcher_details.props.assigned_to_room
 			#if assigned_to_room == item.location:
-				#if room_data.pairs_with.specilization in researcher_details.specializations:
-					##room_config_data.room_paired_with.specilization = true
+				#if room_data.pairs_with.specialization in researcher_details.specializations:
+					##room_config_data.room_paired_with.specialization = true
 					#room_config_data.abl_lvl += researcher_details.level
 
 func room_passive_check_for_effect(new_room_config:Dictionary) -> void:

@@ -284,8 +284,8 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 	#
 	#var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
 	#var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
-	## double the amount if specilization has a match
-	#if room_config.scp_paired_with.specilization:
+	## double the amount if specialization has a match
+	#if room_config.scp_paired_with.specialization:
 		#amount = amount * 2
 		#
 	## double room_config amount if trait has a match	
@@ -299,7 +299,7 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_morale_val(use_location:Dictionary = {}) -> int:
+func get_metric_val(use_location:Dictionary, metric_ref:RESOURCE.METRICS) -> int:
 	if use_location.is_empty():
 		use_location = current_location
 		
@@ -307,11 +307,11 @@ func get_morale_val(use_location:Dictionary = {}) -> int:
 	var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]
 	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 	
-	var floor_morale_val:int = floor_config_data.metrics[RESOURCE.METRICS.MORALE]
-	var ring_morale_val:int = ring_config_data.metrics[RESOURCE.METRICS.MORALE]
-	var room_morale_val:int = room_config_data.metrics[RESOURCE.METRICS.MORALE]
+	var floor_val:int = floor_config_data.metrics[metric_ref]
+	var ring_val:int = ring_config_data.metrics[metric_ref]
+	var room_val:int = room_config_data.metrics[metric_ref]
 	
-	return floor_morale_val + ring_morale_val + room_morale_val	
+	return floor_val + ring_val + room_val	
 # ------------------------------------------------------------------------------
 
 

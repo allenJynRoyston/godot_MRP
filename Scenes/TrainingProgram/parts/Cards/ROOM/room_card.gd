@@ -149,7 +149,7 @@ func on_ref_update() -> void:
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_activated:bool = true
 	
-	var morale_val:int = GAME_UTIL.get_morale_val(use_location)
+	var morale_val:int = GAME_UTIL.get_metric_val(use_location, RESOURCE.METRICS.MORALE)
 	var metrics:Dictionary = room_details.metrics
 	var currency_list:Array = []
 
@@ -188,7 +188,7 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list
 	# -----------
-	CardDrawerPairsWith.spec_name = RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specilization).name 
+	CardDrawerPairsWith.spec_name = RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specialization).name 
 	# -----------
 	CardDrawerVibes.metrics = metrics
 	CardDrawerCurrency.morale_val = morale_val

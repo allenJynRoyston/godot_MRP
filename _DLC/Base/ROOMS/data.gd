@@ -40,7 +40,7 @@ var DEBUG_ROOM:Dictionary = {
 	
 	# --------------------------------------
 	"pairs_with": {
-		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+		"specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 		#"trait": RESEARCHER.TRAITS.DISCIPLINED
 	},
 	# ------------------------------------------	
@@ -150,7 +150,7 @@ var HQ:Dictionary = {
 
 	# --------------------------------------
 	"pairs_with": {
-		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+		"specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 		#"trait": RESEARCHER.TRAITS.DISCIPLINED
 	},
 	# ------------------------------------------
