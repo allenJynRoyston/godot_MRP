@@ -273,47 +273,47 @@ func on_researcher_active_index_update() -> void:
 func on_selected_researchers_update(force_check:bool = false) -> void:
 	if !is_node_ready():return
 
-	for child in [TraitList, SynergyTraitList]:
-		for item in child.get_children():
-			item.queue_free()
-		
-	var total_traits_list := []
-	var synergy_traits := []
-	var dup_list := []
-	
-	if researcher_active_index != -1 and !new_hire_list.is_empty():
-		
-		# get traits from selected researchers	
-		var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( new_hire_list[researcher_active_index] )
-		total_traits_list.push_back(researcher_details.traits)
-
-		# presents as list
-		for traits in total_traits_list:
-			for t in traits:
-				if t not in dup_list:
-					dup_list.push_back(t)
-					var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(t)				
-					var card:Control = TraitCardPreload.instantiate()
-					card.ref = traits_detail.ref
-					TraitList.add_child(card)
-				
-		# then if there's two researchers, compares there traits and looks for combos
-		if total_traits_list.size() == 2:
-			var synergy_traits_list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
-			SynergyContainer.hide() if synergy_traits_list.is_empty() else SynergyContainer.show()
-			for item in synergy_traits_list:
-				var card:Control = TraitCardPreload.instantiate()
-				card.ref = item.ref
-				card.is_synergy = true
-				SynergyTraitList.add_child(card)			
-		else:
-			SynergyContainer.hide()
+	#for child in [TraitList, SynergyTraitList]:
+		#for item in child.get_children():
+			#item.queue_free()
+		#
+	#var total_traits_list := []
+	#var synergy_traits := []
+	#var dup_list := []
+	#
+	#if researcher_active_index != -1 and !new_hire_list.is_empty():
+		#
+		## get traits from selected researchers	
+		#var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object( new_hire_list[researcher_active_index] )
+		#total_traits_list.push_back(researcher_details.traits)
+#
+		## presents as list
+		#for traits in total_traits_list:
+			#for t in traits:
+				#if t not in dup_list:
+					#dup_list.push_back(t)
+					#var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(t)				
+					#var card:Control = TraitCardPreload.instantiate()
+					#card.ref = traits_detail.ref
+					#TraitList.add_child(card)
+				#
+		## then if there's two researchers, compares there traits and looks for combos
+		#if total_traits_list.size() == 2:
+			#var synergy_traits_list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
+			#SynergyContainer.hide() if synergy_traits_list.is_empty() else SynergyContainer.show()
+			#for item in synergy_traits_list:
+				#var card:Control = TraitCardPreload.instantiate()
+				#card.ref = item.ref
+				#card.is_synergy = true
+				#SynergyTraitList.add_child(card)			
+		#else:
+			#SynergyContainer.hide()
 	
 	if control_pos.is_empty():return
-	if total_traits_list.size() > 0:
-		U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].show)
-	else:
-		U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide)
+	#if total_traits_list.size() > 0:
+		#U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].show)
+	#else:
+		#U.tween_node_property(TraitPanel, "position:y", control_pos[TraitPanel].hide)
 # -----------------------------------------------		
 
 # -----------------------------------------------	

@@ -70,7 +70,9 @@ func setup_gridselect() -> void:
 		
 		match type:
 			TYPE.SELECT:
-				GridSelect.BtnControls.disable_active_btn = false
+				GridSelect.BtnControls.disable_active_btn = false			
+			TYPE.CONTAIN:
+				GridSelect.BtnControls.disable_active_btn = research_level == 0
 			TYPE.RESEARCH:
 				GridSelect.BtnControls.disable_active_btn = !can_afford or research_level >= 3
 			

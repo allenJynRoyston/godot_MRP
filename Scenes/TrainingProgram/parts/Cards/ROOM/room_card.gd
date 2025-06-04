@@ -188,7 +188,7 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list
 	# -----------
-	CardDrawerPairsWith.spec_ref = room_details.pairs_with.specilization
+	CardDrawerPairsWith.spec_name = RESEARCHER_UTIL.return_specialization_data(room_details.pairs_with.specilization).name 
 	# -----------
 	CardDrawerVibes.metrics = metrics
 	CardDrawerCurrency.morale_val = morale_val

@@ -41,7 +41,7 @@ var DEBUG_ROOM:Dictionary = {
 	# --------------------------------------
 	"pairs_with": {
 		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
-		"trait": RESEARCHER.TRAITS.DISCIPLINED
+		#"trait": RESEARCHER.TRAITS.DISCIPLINED
 	},
 	# ------------------------------------------	
 	
@@ -110,6 +110,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
+			ABL.get_ability(ABL.REF.EVAL_SCP, 0),
 			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0)
 		],	
 	# ------------------------------------------
@@ -150,7 +151,7 @@ var HQ:Dictionary = {
 	# --------------------------------------
 	"pairs_with": {
 		"specilization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
-		"trait": RESEARCHER.TRAITS.DISCIPLINED
+		#"trait": RESEARCHER.TRAITS.DISCIPLINED
 	},
 	# ------------------------------------------
 		

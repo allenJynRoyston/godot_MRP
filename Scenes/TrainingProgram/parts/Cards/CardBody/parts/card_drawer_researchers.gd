@@ -10,7 +10,6 @@ var researchers_per_room:int = 0 :
 		researchers_per_room = val
 		on_researchers_per_room_update()
 		
-var pairs_with:Array = []
 var preview_mode:bool = false
 var use_location:Dictionary = {}
 var onLock:Callable = func() -> void:pass
@@ -27,12 +26,13 @@ func clear() -> void:
 func on_researchers_per_room_update() -> void:
 	if !is_node_ready():return
 	clear()
+	
 
 	for index in range(0, researchers_per_room):
 		var new_btn:Control = RoomResearchersBtnPreload.instantiate()
 		new_btn.index = index
 		new_btn.use_location = use_location
-		new_btn.pairs_with = pairs_with
+		#new_btn.pairs_with = pairs_with
 		new_btn.onClick = func() -> void:
 			var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 			# first, disables btns in the card

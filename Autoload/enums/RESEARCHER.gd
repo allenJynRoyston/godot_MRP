@@ -1,69 +1,42 @@
 @tool
 extends Node
 
-enum TRAIT_TYPE {
-	POSITIVE, NEGATIVE, NEUTRAL
+#enum TRAIT_TYPE {
+	#POSITIVE, NEGATIVE, NEUTRAL
+#}
+
+enum TRAITS {
+	# -----------
+	NORMAL, 				
+	ACROPHOBIA,			# Fear of heights
+	THALASSOPHOBIA,		# Fear of deep bodies of water
+	NYCTOPHOBIA,		# Fear of the dark
+	ATYCHIPHOBIA,		# Fear of failure
+	ATHAZAGORAPHOBIA	# Fear of being forgotten or ignored
+	# -----------
 }
 
-enum TRAITS { 
+enum MOODS { 
 	# -----------
-	HARD_WORKING,
-	MOTIVATED, 
-	DISCIPLINED,
+	NORMAL,
+	WEIRD,
+	DEPRESSED, 
+	#WEIRD,
+	#UNEASY,
+	#ANXIOUS,
 	# -----------
-	IMPULSIVE,
-	PESSIMISTIC,
-	STUBBORN,
-	# -----------
-	CLEVER,
-	ADAPTABLE,
-	RESOURCEFUL,
-	# -----------
-	WASTEFUL,
-	SCIENTIFIC,
-	FRUGAL,
-	# -----------
-	EXCITABLE,
-	METICULOUS,
-	INTROVERT,
-	EXTROVERT,
-	# -----------
-	BRAVE,
-	COWARD,
-	#STUBBORN,
-	
-	#ADAPTABLE,
-	#CHARISMATIC,
-	#PATIENT,
-	#ASSERTIVE,
-	#EMPATHETIC,
-
-	#AMBITIOUS,
-	#INNOVATIVE,
-	#LOYAL,
-	#PRAGMATIC,
-	#METICULOUS,
-	#OPTIMISTIC,
-	#REALISTIC,
-	#HUMBLE,
-	#COURAGEOUS,
-	#STRATEGIC,
-	
-	#INDEPENDENT,
-	#CURIOUS,
-	
 }
-
 
 enum SPECIALIZATION { 
+	ANY,
 	ADMINISTRATION,
 	# ---------
 	ENGINEERING,
 	COMPUTER_SCIENCE,
-	MATHEMATICS,
-	PHYSICS,
-	CHEMISTRY,
-	BIOLOGIST,
+	#MATHEMATICS,
+	#PHYSICS,
+	#CHEMISTRY,
+	#BIOLOGIST,
 
   	# ---------
 	#PSYCHOLOGY,

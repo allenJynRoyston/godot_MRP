@@ -15,7 +15,6 @@ extends BtnBase
 		panel_color = val
 		on_panel_color_update()		
 
-var pairs_with:Array = []
 var use_location:Dictionary = {}
 
 var hired_lead_researchers:Array = []
@@ -111,38 +110,29 @@ func on_panel_color_update() -> void:
 	
 func update_text() -> void:
 	if !is_node_ready():return
-	
-	var room_pairs_with_spec:Dictionary = RESEARCHER_UTIL.return_specialization_data(pairs_with[0] if pairs_with.size() > 0 else -1)
+	#var room_pairs_with_spec:Dictionary = RESEARCHER_UTIL.return_specialization_data(pairs_with[0] if pairs_with.size() > 0 else -1)
 	
 	if researcher.is_empty():
 		IconBtn.icon = SVGS.TYPE.PLUS
 		LvlLabel.hide()
-		NameLabel.text = "ASSIGN %s" % room_pairs_with_spec.title
+		NameLabel.text = "ASSIGN RESEARCHER"
 		
 		hint_title = "ASSIGN RESEARCHER"
 		hint_icon = SVGS.TYPE.PLUS
 		hint_description = "Assigning a researcher to this room will increase its level."
 		return
 	
-	var spec:String = "" if researcher.is_empty() else RESEARCHER_UTIL.return_specialization_data(researcher.specializations[0]).shortname	
-	var traits:String = ""
-	
-	for ref in researcher.traits:
-		traits += str(RESEARCHER_UTIL.return_trait_data(ref).name, " , ")
-	traits = traits.left(traits.length() - 3)
-	
-	
 	IconBtn.icon = SVGS.TYPE.ASSIGN
 	LvlLabel.text = str(researcher.level)
 	LvlLabel.show()
 	
-	NameLabel.text = ("%s, %s" % [researcher.name, spec])
-	SpecLabel.text = spec
-	TraitLabel.text = traits
+	NameLabel.text = ("%s, %s" % [researcher.name, researcher.specialization.details.name])
+	SpecLabel.text = "" if researcher.is_empty() else researcher.specialization.details.name	
+	TraitLabel.text = "" if researcher.is_empty() else researcher.trait.details.name
 	
 	hint_title = "RESEARCHER"
 	hint_icon = SVGS.TYPE.DRS if has_pairing else SVGS.TYPE.DRS
-	hint_description = ("Researcher %s, %s specialist." % [researcher.name, spec])
+	hint_description = ("Researcher %s, %s specialist." % [researcher.name, researcher.specialization.details.name])
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	

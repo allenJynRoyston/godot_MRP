@@ -3,144 +3,142 @@ extends SubscribeWrapper
 
 var SCP0:Dictionary = {
 	# -----------------------------------
-	"nickname": "Sofa",
-	"description": "A three-seat upholstered sofa with a hardwood frame and high-density foam cushions. It provides seating in living rooms and features fabric or leather upholstery.",
+	"nickname": "First Snow",
+	"description": "█████ and ██████ standing beside a snowman, both smiling. On the back it reads: 'Our first winter together.'",
 	# -----------------------------------
 }
 
 var SCP1:Dictionary = {
 	# -----------------------------------
-	"nickname": "Coffee table",
-	"description": "A rectangular wooden coffee table with a smooth surface. It typically holds beverages, magazines, or decorative items.",
+	"nickname": "Picnic Afternoon",
+	"description": "█████ pouring wine while ██████ laughs. A red-checkered blanket is spread out under a large oak tree.",
 	# -----------------------------------
 }
 
 var SCP2:Dictionary = {
 	# -----------------------------------
-	"nickname": "Dining table",
-	"description": "A wooden dining table designed to seat multiple people. It is typically placed in dining rooms for meals or gatherings.",
+	"nickname": "The Proposal",
+	"description": "█████ kneeling before ██████ near a cliffside view. The sky is overcast. On the back it reads: 'She said yes.'",
 	# -----------------------------------
 }
 
 var SCP3:Dictionary = {
 	# -----------------------------------
-	"nickname": "Bed",
-	"description": "A queen-size bed with a metal frame and soft bedding. It is designed for sleeping and provides comfort during rest.",
+	"nickname": "Broken Glass",
+	"description": "Shards visible across a kitchen tile floor. ██████ appears mid-gesture. ██████ is partially out of frame, turning away.",
 	# -----------------------------------
 }
 
 var SCP4:Dictionary = {
 	# -----------------------------------
-	"nickname": "TV",
-	"description": "A flat-screen LED television mounted on a wall. It displays television programs, movies, and other media.",
+	"nickname": "City Lights",
+	"description": "██████ and ██████ on a rooftop at night, arms around each other. Neon reflections glow in the background.",
 	# -----------------------------------
 }
 
 var SCP5:Dictionary = {
 	# -----------------------------------
-	"nickname": "Refrigerator",
-	"description": "A two-door refrigerator with a freezer compartment on top. It keeps food cold and preserves perishable items.",
+	"nickname": "Final Argument",
+	"description": "Blurry capture. ██████ facing the camera; ██████ in profile, mid-sentence. A chair is overturned. Timestamp matches night of disappearance.",
 	# -----------------------------------
 }
 
 var SCP6:Dictionary = {
 	# -----------------------------------
-	"nickname": "Microwave",
-	"description": "A countertop microwave oven that heats food using electromagnetic radiation. It includes various presets for different foods.",
+	"nickname": "Quiet Morning",
+	"description": "██████ and ██████ seated at a table, both reading. A half-eaten breakfast is visible. Light enters from the left.",
 	# -----------------------------------
 }
 
 var SCP7:Dictionary = {
 	# -----------------------------------
-	"nickname": "Toaster",
-	"description": "A two-slice toaster that browns bread and other items by exposing them to heated coils. It includes adjustable settings for toast crispness.",
+	"nickname": "The Garden",
+	"description": "██████ planting herbs while ██████ holds a watering can. Soil is freshly turned. On the back: 'Spring — finally ours.'",
 	# -----------------------------------
 }
 
 var SCP8:Dictionary = {
 	# -----------------------------------
-	"nickname": "Blender",
-	"description": "A countertop blender used for mixing or pureeing food. It has a glass jar and stainless steel blades.",
+	"nickname": "Shared Umbrella",
+	"description": "Subjects standing close under a large umbrella. Rain visibly falling. ██████ appears to be speaking. Streetlights are active.",
 	# -----------------------------------
 }
 
 var SCP9:Dictionary = {
 	# -----------------------------------
-	"nickname": "Vacuum cleaner",
-	"description": "A bagless vacuum cleaner that uses suction to remove dirt from floors. It includes a rotating brush for carpet cleaning.",
+	"nickname": "Disappearance",
+	"description": "██████ stands alone at the station platform. ██████ is not visible. On the back: 'Waited. Never came.'",
 	# -----------------------------------
 }
 
 var SCP10:Dictionary = {
 	# -----------------------------------
-	"nickname": "Washing machine",
-	"description": "A front-loading washing machine with multiple wash cycles. It has an automatic detergent dispenser and a high-spin cycle for efficient drying.",
+	"nickname": "Laundry Day",
+	"description": "██████ and ██████ folding clothes in a shared space. Light streaming in through a nearby window. On the back: 'Normal can be good.'",
 	# -----------------------------------
 }
 
 var SCP11:Dictionary = {
 	# -----------------------------------
-	"nickname": "Dishwasher",
-	"description": "A built-in dishwasher with adjustable racks, multiple wash modes, and a drying function. It uses a combination of hot water and detergent to clean dishes efficiently.",
+	"nickname": "Dinner for Two",
+	"description": "A table set for two. ██████ is pouring wine; ██████ is laughing. Candles are lit. On the back: 'Tried that recipe. Nailed it.'",
 	# -----------------------------------
 }
 
 var SCP12:Dictionary = {
 	# -----------------------------------
-	"nickname": "Electric kettle",
-	"description": "A stainless steel electric kettle with an automatic shut-off feature. It boils water quickly and includes a cord-free design for easy pouring.",
+	"nickname": "Morning Routine",
+	"description": "██████ brushing hair while ██████ prepares tea in the background. Mirror captures both subjects. Photo slightly faded.",
 	# -----------------------------------
 }
 
 var SCP13:Dictionary = {
 	# -----------------------------------
-	"nickname": "Bookshelf",
-	"description": "A wooden bookshelf with five adjustable shelves. It is designed to hold books, decorative items, or other small objects.",
+	"nickname": "Library Silence",
+	"description": "██████ and ██████ seated on the floor between bookshelves. ██████ is asleep, head resting on ██████'s shoulder. No date marked.",
 	# -----------------------------------
 }
 
 var SCP14:Dictionary = {
 	# -----------------------------------
-	"nickname": "Office desk",
-	"description": "A rectangular office desk made of wood with a smooth laminate surface. It includes drawers for storage and space for a computer or paperwork.",
+	"nickname": "Work Trip",
+	"description": "██████ in formal attire, suitcase in hand. ██████ behind glass door. On the back: 'One week. Promise.'",
 	# -----------------------------------
 }
 
 var SCP15:Dictionary = {
 	# -----------------------------------
-	"nickname": "Chair",
-	"description": "A padded, ergonomic office chair with adjustable height and lumbar support. It is designed for comfort during extended periods of sitting.",
+	"nickname": "The Chair",
+	"description": "Single image of ██████ sitting in a dimly lit office chair. ██████ stands behind, face obscured. Photo is torn at the edges.",
 	# -----------------------------------
 }
 
 var SCP16:Dictionary = {
 	# -----------------------------------
-	"nickname": "Floor lamp",
-	"description": "A tall floor lamp with a lampshade and adjustable arm. It provides ambient lighting and can be positioned to illuminate different areas of a room.",
+	"nickname": "Lights Out",
+	"description": "███ and ██████ under blankets, flashlight between them. Shadows on the wall form unclear patterns. On the back: 'Power cut — best night.'",
 	# -----------------------------------
 }
 
 var SCP17:Dictionary = {
 	# -----------------------------------
-	"nickname": "Wall clock",
-	"description": "A wall-mounted clock with a classic design, featuring hour, minute, and second hands. It operates on a quartz movement and requires a single AA battery.",
+	"nickname": "Missed Time",
+	"description": "███ and ██████ sitting apart on a bench. Clock in background reads 3:14 AM. Both subjects appear unaware of the camera.",
 	# -----------------------------------
 }
 
 var SCP18:Dictionary = {
 	# -----------------------------------
-	"nickname": "Mirror",
-	"description": "A rectangular mirror with a wooden frame, designed for hanging on the wall. It reflects light and provides a clear view of one’s reflection.",
+	"nickname": "Reflection",
+	"description": "██████ taking a photo in a mirror; ██████ visible behind, smiling. Note on back: 'Caught him sneaking up again.'",
 	# -----------------------------------
 }
 
 var SCP19:Dictionary = {
 	# -----------------------------------
-	"nickname": "Painting",
-	"description": "A framed piece of art, typically oil or acrylic, designed to be hung on a wall. It adds aesthetic value to living spaces.",
-	# -----------------------------------
+	"nickname": "Framed Memory",
+	"description": "Portrait of ██████ and ██████ hung on a wall. Frame cracked. On the back: 'We looked happy. Maybe we were.'",
 }
-
 
 # -----------------------------------
 var list:Array[Dictionary] = [

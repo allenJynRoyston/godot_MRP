@@ -877,13 +877,14 @@ func reveal_cardminipanel(state:bool, duration:float = 0.3) -> void:
 func enable_room_focus(state:bool) -> void:
 	GBL.find_node(REFS.ROOM_NODES).enable_room_focus = state
 # --------------------------------------------------------------------------------------------------	
-# --------------------------------------------------------------------------------------------------
-func hide_nametags(state:bool, fast:bool = false) -> void:
-	for nametag in NameControl.get_children():
-		nametag.fade = state
-		if !fast:
-			await U.set_timeout(0.02)
-# --------------------------------------------------------------------------------------------------		
+
+## --------------------------------------------------------------------------------------------------
+#func hide_nametags(state:bool, fast:bool = false) -> void:
+	#for nametag in NameControl.get_children():
+		#nametag.fade = state
+		#if !fast:
+			#await U.set_timeout(0.02)
+## --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func lock_panel_btn_state(state:bool, panels:Array) -> void:
@@ -1032,24 +1033,24 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	on_camera_settings_update()
 # --------------------------------------------------------------------------------------------------			
 
-# --------------------------------------------------------------------------------------------------	
-func check_if_remove_is_valid() -> void:
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-	var is_room_empty:bool = room_extract.room.is_empty()
-	
-	#ConfirmBtn.title = "DESTROY"
-	#ConfirmBtn.is_disabled = is_room_empty
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------
-func check_if_contain_is_valid() -> void:
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-	var is_room_empty:bool = room_extract.room.is_empty()
-	var can_contain:bool = false if is_room_empty else room_extract.room.can_contain
+## --------------------------------------------------------------------------------------------------	
+#func check_if_remove_is_valid() -> void:
+	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
+	#var is_room_empty:bool = room_extract.room.is_empty()
 	#
-	#ConfirmBtn.title = "CONTAIN"
-	#ConfirmBtn.is_disabled = is_room_empty or !can_contain
-# --------------------------------------------------------------------------------------------------	
+	##ConfirmBtn.title = "DESTROY"
+	##ConfirmBtn.is_disabled = is_room_empty
+## --------------------------------------------------------------------------------------------------		
+#
+## --------------------------------------------------------------------------------------------------
+#func check_if_contain_is_valid() -> void:
+	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
+	#var is_room_empty:bool = room_extract.room.is_empty()
+	#var can_contain:bool = false if is_room_empty else room_extract.room.can_contain
+	##
+	##ConfirmBtn.title = "CONTAIN"
+	##ConfirmBtn.is_disabled = is_room_empty or !can_contain
+## --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
@@ -1109,55 +1110,3 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	await U.set_timeout(0.1)
 	is_busy = false
 # --------------------------------------------------------------------------------------------------	
-
-## --------------------------------------------------------------------------------------------------
-#func open_alarm_setting() -> void:
-	#options_list.push_back({
-		#"title": "BACK",
-		#"onSelect": func() -> void:
-			#ActiveMenu.close()
-			#set_btn_disabled_state(false)
-	#})	
-	#
-	#options_list.push_back({
-		#"title": "NORMAL",
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true
-			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.NORMAL)
-			#ActiveMenu.freeze_inputs = false
-			#if response.has_changes:
-				#open_alarm_setting()
-	#})		
-						#
-	#options_list.push_back({
-		#"title": "CAUTION",
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true
-			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.CAUTION)
-			#ActiveMenu.freeze_inputs = false
-			#if response.has_changes:
-				#open_alarm_setting()			
-	#})
-	#
-	#options_list.push_back({
-		#"title": "WARNING",
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true
-			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.WARNING)
-			#ActiveMenu.freeze_inputs = false
-			#if response.has_changes:
-				#open_alarm_setting()			
-	#})	
-#
-	#options_list.push_back({
-		#"title": "DANGER",
-		#"onSelect": func() -> void:
-			#ActiveMenu.freeze_inputs = true
-			#var response:Dictionary = await GameplayNode.set_wing_emergency_mode(current_location.duplicate(), ROOM.EMERGENCY_MODES.DANGER)
-			#ActiveMenu.freeze_inputs = false
-			#if response.has_changes:
-				#open_alarm_setting()	
-	#})	
-		
-# --------------------------------------------------------------------------------------------------
-	

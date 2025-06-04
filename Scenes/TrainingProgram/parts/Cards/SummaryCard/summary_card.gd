@@ -136,7 +136,7 @@ func on_room_ref_update() -> void:
 	show_scp = room_details.can_contain and !preview_mode
 	
 	# attach researcher data
-	CardDrawerResearchers.pairs_with = [room_details.pairs_with.specilization]
+	#CardDrawerResearchers.pairs_with = room_details.pairs_with.specilization
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.researchers_per_room = researchers_per_room
 	CardDrawerResearchers.show() if researchers_per_room > 0 and room_details.can_assign_researchers  else CardDrawerResearchers.hide()

@@ -161,21 +161,9 @@ func update_nodes(researcher_details:Dictionary) -> void:
 	else:
 		CardDrawerAssigned.content = "None"
 
-
-	var spec_str:String = ""
-	for spec_id in researcher_details.specializations:
-		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)
-		spec_str += dict.name + " / "
-	spec_str = spec_str.left(spec_str.length() - 3)
-	CardDrawerSpec.content = spec_str
+	CardDrawerSpec.content = researcher_details.specialization.details.name
+	CardDrawerTraits.content = researcher_details.trait.details.name
 	
-	var trait_str:String = ""
-	for trait_id in researcher_details.traits:
-		var dict:Dictionary = RESEARCHER_UTIL.return_trait_data(trait_id)
-		trait_str += dict.name + " / "
-	trait_str = trait_str.left(trait_str.length() - 3)
-	CardDrawerTraits.content = trait_str
-
 # ------------------------------------------------------------------------------
 	
 	

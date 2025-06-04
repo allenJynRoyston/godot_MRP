@@ -85,6 +85,6 @@ func update_content() -> void:
 	
 	ScpName.content = "%s\r%s" % [scp_details.name, scp_details.nickname]
 	ScpEffect.content = scp_details.effects.description if level > 0 else "UNKNOWN\r(EVALUATION REQUIRED)"
-	ScpBreach.content = scp_details.effects.description if level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
+	ScpBreach.content = scp_details.breach.description if level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
 	ScpNeutralize.content = scp_details.effects.description if level > 2 else "UNKNOWN\r(EVALUATION REQUIRED)"
 # --------------------------------------		

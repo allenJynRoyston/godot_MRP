@@ -51,8 +51,8 @@ var ROOM_TEMPLATE:Dictionary = {
 	
 	# ------------------------------------------	
 	"pairs_with": {
-		"specilization": RESEARCHER.SPECIALIZATION.BIOLOGIST,
-		"trait": RESEARCHER.TRAITS.HARD_WORKING
+		"specilization": RESEARCHER.SPECIALIZATION.ANY,
+		#"trait": RESEARCHER.TRAITS.HARD_WORKING
 	},
 	# ------------------------------------------
 	
@@ -184,48 +184,40 @@ func return_activation_cost(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_pairs_with_details(ref:int) -> Dictionary:
-	var room_data:Dictionary = return_data(ref)
-	var details:Dictionary = {}
-	if "pairs_with" in room_data:
-		details = {
-			"specilization": RESEARCHER_UTIL.return_specialization_data(room_data.pairs_with.specilization),
-			"trait": RESEARCHER_UTIL.return_trait_data(room_data.pairs_with.trait),
-		}
-
-	return details
+#func return_pairs_with_details(ref:int) -> Dictionary:
+	#var room_data:Dictionary = return_data(ref)
+	#var details:Dictionary = {}
+	#if "pairs_with" in room_data:
+		#details = {
+			#"specilization": RESEARCHER_UTIL.return_specialization_data(room_data.pairs_with.specilization),
+			##"trait": RESEARCHER_UTIL.return_trait_data(room_data.pairs_with.trait),
+		#}
+#
+	#return details
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
-	var scp_details:Dictionary = return_data(ref)
-	var match_spec:bool = false
-	var match_trait:bool = false
-	
-	for researcher in researchers:
-		if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
-			match_spec = true
-		if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
-			match_trait = true
-	
-	return {
-		"match_spec": match_spec,
-		"match_trait": match_trait,
-		
-	}
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func check_for_pairing(ref:int, researchers:Array) -> bool:
+	#var scp_details:Dictionary = return_data(ref)
+	#var match_spec:bool = false
+	#
+	#for researcher in researchers:
+		#if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
+			#match_spec = true
+		##if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
+			##match_trait = true
+	#
+	#return {
+		#"match_spec": match_spec,
+		##"match_trait": match_trait,
+		#
+	#}
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
-	var room_data:Dictionary = return_data(ref)
-	
-	if room_data.pairs_with.specilization in researcher.specializations:
-		return true
-	
-	if room_data.pairs_with.trait in researcher.traits:
-		return true
-	
-	return false
+	var room_data:Dictionary = return_data(ref)	
+	return room_data.pairs_with.specilization == researcher.specialization.ref
 # ------------------------------------------------------------------------------
 
 
@@ -298,19 +290,19 @@ func get_unlocked_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> D
 
 # ------------------------------------------------------------------------------
 # remove this later
-func return_wing_effects_list(room_extract:Dictionary) -> Array:
-	return []
-	#return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.room.details.ref), room_extract, "activation_effect")
-# ------------------------------------------------------------------------------	
+#func return_wing_effects_list(room_extract:Dictionary) -> Array:
+	#return []
+	##return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.room.details.ref), room_extract, "activation_effect")
+## ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------		
-func return_wing_effect(extract_data:Dictionary) -> Dictionary:
-	var room_data:Dictionary = return_data(extract_data.room.details.ref)
-	if "wing_effect" in room_data:
-		return room_data.wing_effect.call(extract_data)
-	
-	return {}
-# ------------------------------------------------------------------------------		
+## ------------------------------------------------------------------------------		
+#func return_wing_effect(extract_data:Dictionary) -> Dictionary:
+	#var room_data:Dictionary = return_data(extract_data.room.details.ref)
+	#if "wing_effect" in room_data:
+		#return room_data.wing_effect.call(extract_data)
+	#
+	#return {}
+## ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func has_prerequisites(ref:int, arr:Array) -> bool:

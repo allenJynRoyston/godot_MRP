@@ -134,11 +134,9 @@ func update_content() -> void:
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)
 	var spec_str:String = ""
 	var hint_des_str:String = ""
-	for index in researcher_details.specializations.size():
-		var spec_id:int = researcher_details.specializations[index]
-		var dict:Dictionary = RESEARCHER_UTIL.return_specialization_data(spec_id)
-		spec_str += str(dict.name, "\r")
-		hint_des_str += dict.name
+	
+	spec_str += str(researcher_details.specialization.details.name, "\r")
+	hint_des_str += researcher_details.specialization.details.name
 			
 	Name.content = researcher_details.name
 	Level.content = str(researcher_details.level)

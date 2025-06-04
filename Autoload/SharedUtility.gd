@@ -304,32 +304,32 @@ func calculate_resources(details:Dictionary, dict_property:String, resources_dat
 	return resource_data_copy
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func return_wing_effects_list(details:Dictionary, room_extract:Dictionary, property_name:String) -> Array:
-	var list:Array = []
-	if "wing_effect" in details:
-		var wing_effects:Dictionary =  details.wing_effect.call(room_extract)
-		for key in wing_effects:
-			var amount:int = wing_effects[key]
-			var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
-			
-			match key:
-				RESOURCE.METRICS.MORALE:
-					list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
-				RESOURCE.METRICS.READINESS:
-					list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
-				RESOURCE.METRICS.SAFETY:
-					list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})	
-						
-	#if property_name in details and "resources" in details[property_name]:
-		#for property in ["capacity", "amount"]:
-			#if property in details[property_name].resources:
-				#var dict:Dictionary = details[property_name].resources[property].call()
-				#for key in dict:
-					#var amount:int = dict[key]
-					#var resource_data:Dictionary = RESOURCE_UTIL.return_currency(key)
-					#list.push_back({"resource_data": resource_data, "property": property, "amount": amount})
-
-									
-	return list
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func return_wing_effects_list(details:Dictionary, room_extract:Dictionary, property_name:String) -> Array:
+	#var list:Array = []
+	#if "wing_effect" in details:
+		#var wing_effects:Dictionary =  details.wing_effect.call(room_extract)
+		#for key in wing_effects:
+			#var amount:int = wing_effects[key]
+			#var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
+			#
+			#match key:
+				#RESOURCE.METRICS.MORALE:
+					#list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
+				#RESOURCE.METRICS.READINESS:
+					#list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
+				#RESOURCE.METRICS.SAFETY:
+					#list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})	
+						#
+	##if property_name in details and "resources" in details[property_name]:
+		##for property in ["capacity", "amount"]:
+			##if property in details[property_name].resources:
+				##var dict:Dictionary = details[property_name].resources[property].call()
+				##for key in dict:
+					##var amount:int = dict[key]
+					##var resource_data:Dictionary = RESOURCE_UTIL.return_currency(key)
+					##list.push_back({"resource_data": resource_data, "property": property, "amount": amount})
+#
+									#
+	#return list
+## ------------------------------------------------------------------------------

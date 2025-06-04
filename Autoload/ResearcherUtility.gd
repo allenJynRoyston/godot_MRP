@@ -1,15 +1,15 @@
 extends SubscribeWrapper
 
 var specialization_data:Dictionary = { 
+	RESEARCHER.SPECIALIZATION.ANY: {
+		"shortname": "ANY",
+		"name": "ANY",
+		"title": "ANY"
+	},	
 	RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
 		"shortname": "ADMIN",
 		"name": "ADMINISTRATION",
 		"title": "ADMINISTRATIONIST"
-	},
-	RESEARCHER.SPECIALIZATION.BIOLOGIST: {
-		"shortname": "BIO",
-		"name": "BIOLOGY",
-		"title": "BIOLOGIST"
 	},
 	RESEARCHER.SPECIALIZATION.ENGINEERING: {
 		"shortname": "ENG",
@@ -21,177 +21,77 @@ var specialization_data:Dictionary = {
 		"name": "COMPUTER SCIENCE",
 		"title": "COMPUTER SCIENTIST"
 	},
-	RESEARCHER.SPECIALIZATION.MATHEMATICS: {
-		"shortname": "MATHS",
-		"name": "MATHEMATICS",
-		"title": "MATHMATICIAN"
-	},
-	RESEARCHER.SPECIALIZATION.PHYSICS: {
-		"shortname": "PHY",
-		"name": "PHYSICS",
-		"title": "PHYSICIST"
-	},
-	RESEARCHER.SPECIALIZATION.CHEMISTRY: {
-		"shortname": "CHEM",
-		"name": "CHEMISTRY",
-		"title": "CHEMIST"
-	},
+	#RESEARCHER.SPECIALIZATION.BIOLOGIST: {
+		#"shortname": "BIO",
+		#"name": "BIOLOGY",
+		#"title": "BIOLOGIST"
+	#},	
+	#RESEARCHER.SPECIALIZATION.MATHEMATICS: {
+		#"shortname": "MATHS",
+		#"name": "MATHEMATICS",
+		#"title": "MATHMATICIAN"
+	#},
+	#RESEARCHER.SPECIALIZATION.PHYSICS: {
+		#"shortname": "PHY",
+		#"name": "PHYSICS",
+		#"title": "PHYSICIST"
+	#},
+	#RESEARCHER.SPECIALIZATION.CHEMISTRY: {
+		#"shortname": "CHEM",
+		#"name": "CHEMISTRY",
+		#"title": "CHEMIST"
+	#},
 };
 
 var trait_data: Dictionary = {
-	RESEARCHER.TRAITS.HARD_WORKING: {
-		"name": "HARD WORKING",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "Colleagues nod approvingly — 'They earned it. They'll probably pick up the slack too.'",
-			"effect": func(): pass
-		}
+	RESEARCHER.TRAITS.NORMAL: {
+		"name": "Normal",
+		"description": "No obvious phobias present."
+	},	
+	RESEARCHER.TRAITS.ACROPHOBIA: {
+		"name": "Acrophobia",
+		"description": "An intense fear of heights that can trigger anxiety and avoidance behaviors in elevated environments."
 	},
-	RESEARCHER.TRAITS.MOTIVATED: {
-		"name": "MOTIVATED",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "'That one’s always pushing for results,' others say. Expectations are high — maybe too high.",
-			"effect": func(): pass
-		}
+	RESEARCHER.TRAITS.THALASSOPHOBIA: {
+		"name": "Thalassophobia",
+		"description": "A persistent fear of deep or vast bodies of water, often accompanied by feelings of dread or panic."
 	},
-	RESEARCHER.TRAITS.DISCIPLINED: {
-		"name": "DISCIPLINED",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "'Good. They'll keep the team in line,' someone remarks. Most expect a structured, by-the-book leader.",
-			"effect": func(): pass
-		}
+	RESEARCHER.TRAITS.NYCTOPHOBIA: {
+		"name": "Nyctophobia",
+		"description": "A fear of darkness or nighttime that can cause distress and difficulty in low-light situations."
 	},
-	RESEARCHER.TRAITS.CLEVER: {
-		"name": "CLEVER",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "'Smart move,' someone says. 'Just keep an eye on them — brilliance can be... unpredictable.'",
-			"effect": func(): pass
-		}
+	RESEARCHER.TRAITS.ATYCHIPHOBIA: {
+		"name": "Atychiphobia",
+		"description": "An irrational fear of failure leading to excessive caution and avoidance of challenging tasks."
 	},
-	RESEARCHER.TRAITS.ADAPTABLE: {
-		"name": "ADAPTABLE",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "Generally met with approval — 'They can handle whatever the Foundation throws at them.'",
-			"effect": func(): pass
-		}
+	RESEARCHER.TRAITS.ATHAZAGORAPHOBIA: {
+		"name": "Athazagoraphobia",
+		"description": "A fear of being forgotten or ignored, often resulting in social withdrawal or anxiety."
 	},
-	RESEARCHER.TRAITS.RESOURCEFUL: {
-		"name": "RESOURCEFUL",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "'They'll find a way out of any mess,' says a team lead. Some feel safer already.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.FRUGAL: {
-		"name": "FRUGAL",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "'Good — finally someone who won’t waste grant funds,' say the accountants. Others fear corner-cutting.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.METICULOUS: {
-		"name": "METICULOUS",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "'That lab's about to run like clockwork,' someone says. Others brace for micromanagement.",
-			"effect": func(): pass
-		}
-	},
-	# -----------------------------------
-	RESEARCHER.TRAITS.BRAVE: {
-		"name": "BRAVE",
-		"type": RESEARCHER.TRAIT_TYPE.POSITIVE,
-		"on_promotion": {
-			"description": "'They won't flinch when it matters,' others agree. Trusted in the field, but caution is advised.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.IMPULSIVE: {
-		"name": "IMPULSIVE",
-		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
-		"on_promotion": {
-			"description": "Raised eyebrows and a few muttered concerns — 'Let’s just hope they don’t do anything rash.'",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.PESSIMISTIC: {
-		"name": "PESSIMISTIC",
-		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
-		"on_promotion": {
-			"description": "'That’s... surprising,' one researcher says. Morale dips slightly — no one expects optimism from them.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.STUBBORN: {
-		"name": "STUBBORN",
-		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
-		"on_promotion": {
-			"description": "'Well, at least they'll never back down,' says one. Others worry about inflexibility during crises.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.WASTEFUL: {
-		"name": "WASTEFUL",
-		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
-		"on_promotion": {
-			"description": "Audible groans — 'There goes the equipment budget.' Fiscal officers aren't pleased.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.EXCITABLE: {
-		"name": "EXCITABLE",
-		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
-		"on_promotion": {
-			"description": "Some smirk. Others sigh. 'Let’s hope they don’t panic the next time something breaches containment.'",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.COWARD: {
-		"name": "COWARD",
-		"type": RESEARCHER.TRAIT_TYPE.NEGATIVE,
-		"on_promotion": {
-			"description": "Confusion and concern spread — 'Them? Really? Hope they don’t bolt when shit hits the fan.'",
-			"effect": func(): pass
-		}
-	},
-	# -----------------------------------
-	RESEARCHER.TRAITS.SCIENTIFIC: {
-		"name": "SCIENTIFIC",
-		"type": RESEARCHER.TRAIT_TYPE.NEUTRAL,
-		"on_promotion": {
-			"description": "‘Makes sense,’ others nod. Cold logic is appreciated, though some worry about empathy gaps.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.INTROVERT: {
-		"name": "INTROVERT",
-		"type": RESEARCHER.TRAIT_TYPE.NEUTRAL,
-		"on_promotion": {
-			"description": "'Quiet choice,' one remarks. Some worry about communication, others trust their focus.",
-			"effect": func(): pass
-		}
-	},
-	RESEARCHER.TRAITS.EXTROVERT: {
-		"name": "EXTROVERT",
-		"type": RESEARCHER.TRAIT_TYPE.NEUTRAL,
-		"on_promotion": {
-			"description": "Mixed reactions — 'They’ll boost morale,' says one, while another mutters, 'Too loud for the lab.'",
-			"effect": func(): pass
-		}
-	}
 };
+
+
+var mood_data:Dictionary = {
+	RESEARCHER.MOODS.NORMAL: {
+		"name": "Normal",
+		"description": "The subject exhibits typical emotional stability and behavior without significant deviations."
+	},
+	RESEARCHER.MOODS.WEIRD: {
+		"name": "Happy",
+		"description": "The subject shows signs of positive affect, increased energy, and an overall elevated mood."
+	},
+	RESEARCHER.MOODS.DEPRESSED: {
+		"name": "Depressed",
+		"description": "The subject displays low mood, diminished interest in activities, and reduced energy levels."
+	},	
+}
+
 
 # ------------------------------------------------------------------------------
 func generate_new_researcher_hires(number:int) -> Array:
 	var researchers:Array = []
 	for n in range(0, number):
-		researchers.push_back(generate_researcher())
+		researchers.push_back(generate_researcher(n))
 	return researchers
 # ------------------------------------------------------------------------------
 
@@ -207,44 +107,31 @@ func return_data_with_uid(uid:String) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-var count:int = 0
-func generate_researcher() -> Array:
+func generate_researcher(assign_spec:int = -1) -> Array:
 	var uid:String = U.generate_uid()
 	var lname:int =  U.generate_rand(0, 5)
-	
-	var specialization:Array = []
-	for i in [100, 10, 5]:
-		var rand:int = U.generate_rand(0, 100)
-		if i < rand:
-			break
-		var val:int = U.generate_rand(0, RESEARCHER.SPECIALIZATION.size() - 1)
-		if val not in specialization:
-			specialization.push_back( val )
-		
-	
-	var traits:Array = []
-	for i in [100, 25, 5]:
-		var rand:int = U.generate_rand(0, 100)
-		if i < rand:
-			break
-		var val:int = U.generate_rand(0, RESEARCHER.TRAITS.size() - 1)
-		if val not in traits:
-			traits.push_back( val )
-	
-
-	var rval:int = U.generate_rand(0, 9)
-	var lval:int = U.generate_rand(0, 9)
-	
 	# TODO: add this in later
 	# var img_src:String = "res://Media/images/example_doctor.jpg"		
-		
+	var specialization:int
+	if assign_spec == -1:
+		specialization = U.generate_rand(0, RESEARCHER.SPECIALIZATION.size() - 1)
+	else:
+		if assign_spec < (RESEARCHER.SPECIALIZATION.size() - 1):
+			specialization = assign_spec
+		else:
+			specialization = U.generate_rand(0, RESEARCHER.SPECIALIZATION.size() - 1)
+	
+	var traits:int = RESEARCHER.TRAITS.NORMAL
+	var mood:int = RESEARCHER.MOODS.NORMAL
+	var lval:int = U.generate_rand(0, 9)
+	
 	return [ 
 		uid, 		 	# 0 UID
 		lname, 			# 1 LASTNAME
 		traits, 		# 2 TRAITS
 		specialization, # 3 SPECS
-		rval, 			# 4 RANDOM VALUE?
-		lval, 			# 5 RANDOM VALUE?
+		mood, 			# 4 MOOD
+		lval, 			# 5 LUCK VALUE
 		0, 				# 6	STRESS
 		0, 				# 7 EXP
 		1, 				# 8 LVL
@@ -257,9 +144,9 @@ func generate_researcher() -> Array:
 func get_user_object(val:Array) -> Dictionary:
 	var uid_val:String = val[0]
 	var name_val:int = val[1]
-	var traits_list:Array = val[2]
-	var specializations_list:Array = val[3]
-	var r_val:int = val[4]
+	var trait_val:int = val[2]
+	var spec_val:int = val[3]
+	var mood_val:int = val[4]
 	var l_val:int = val[5]
 	var stress:int = val[6]
 	var experience:int = val[7] 
@@ -270,14 +157,6 @@ func get_user_object(val:Array) -> Dictionary:
 	var img_src:String = "res://Media/images/researcher_female_02.jpg"
 	
 	var lname:String = get_lname(name_val)
-	
-	var traits:Array = []
-	for i in traits_list:
-		traits.push_back(i)
-		
-	var specializations:Array = []
-	for t in specializations_list:
-		specializations.push_back(t)
 	
 	# if original, this is the number of clones "you" have
 	var number_of_clones:int = hired_lead_researchers_arr.filter(func(x): return x[9].original_uid == uid_val).size()
@@ -294,13 +173,15 @@ func get_user_object(val:Array) -> Dictionary:
 	if number_of_clones > 2 or clone_copies > 2:
 		clone_str = " (CLONE?)"
 	
+	#print("spec_val: ", spec_val)
+	
 	return {
 		"uid": uid_val,
 		"name": "%s%s" % [lname, clone_str],
 		"img_src": img_src,
-		"traits": traits,
-		"specializations": specializations,
-		"r_val": r_val,
+		"trait": {"ref": trait_val, "details": return_trait_data(trait_val)},
+		"specialization": {"ref": spec_val, "details": return_specialization_data(spec_val)},
+		"mood": {"ref": mood_val, "details": return_mood_data(mood_val)},
 		"l_val": l_val,
 		"stress": stress,
 		"experience": experience,
@@ -328,83 +209,89 @@ func get_lname(i:int) -> String:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_trait_details(ref:int, use_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
-	var floor:int = use_location.floor
-	var ring:int = use_location.ring
-	var room:int = use_location.room	
-	var designation:String = str(floor, room, room)
-	var config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
-
-	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
-		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
-		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
-			return true
-		return false	
-	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-	config_data.researchers = researchers
-				
-	var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(ref)
-	#var effect:Dictionary = traits_detail.get_effect.call(config_data)
-	#var resource_list:Array = []
-	#var metric_list:Array = []
+#func return_trait_details(ref:int, use_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
+	#var floor:int = use_location.floor
+	#var ring:int = use_location.ring
+	#var room:int = use_location.room	
+	#var designation:String = str(floor, room, room)
+	#var config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
 #
-	## -------------------
-	#if "metrics" in effect:
-		#for key in effect.metrics:
-			#var amount:int = effect.metrics[key]
-			#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})
-#
+	#var researchers:Array = hired_lead_researchers_arr.filter(func(x):
+		#var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
+		#if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
+			#return true
+		#return false	
+	#).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
+	#config_data.researchers = researchers
+				#
+	#var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(ref)
+	##var effect:Dictionary = traits_detail.get_effect.call(config_data)
+	##var resource_list:Array = []
+	##var metric_list:Array = []
+##
 	### -------------------
-	#if "resource" in effect:
-		#for key in effect.resource:
-			#var amount:int = effect.resource[key]
-			#resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
-
-	return {"details": traits_detail, "effect": {"vibes": [], "resources": []}}
+	##if "metrics" in effect:
+		##for key in effect.metrics:
+			##var amount:int = effect.metrics[key]
+			##metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})
+##
+	#### -------------------
+	##if "resource" in effect:
+		##for key in effect.resource:
+			##var amount:int = effect.resource[key]
+			##resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
+#
+	#return {"details": traits_detail, "effect": {"vibes": [], "resources": []}}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_trait_data(key:RESEARCHER.TRAITS) -> Dictionary:
-	trait_data[key].ref = key
-	return trait_data[key]
+func return_trait_data(ref:RESEARCHER.TRAITS) -> Dictionary:
+	trait_data[ref].ref = ref
+	return trait_data[ref]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_specialization_data(key:RESEARCHER.SPECIALIZATION) -> Dictionary:
-	if key == -1:
+func return_specialization_data(ref:RESEARCHER.SPECIALIZATION) -> Dictionary:
+	if ref == -1:
 		return {
 			"ref": -1,
 			"shortname": "ANY",
 			"name": "ANY",
-			"icon": SVGS.TYPE.ENERGY
+			"title": "ANY"
 		}
 	
-	specialization_data[key].ref = key
-	return specialization_data[key]
+	specialization_data[ref].ref = ref
+	return specialization_data[ref]
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------		
-func return_wing_effect(researcher_data:Dictionary) -> Dictionary:
+# ------------------------------------------------------------------------------
+func return_mood_data(ref:RESEARCHER.MOODS) -> Dictionary:
+	mood_data[ref].ref = ref
+	return specialization_data[ref]
+# ------------------------------------------------------------------------------
+
+## ------------------------------------------------------------------------------		
+#func return_wing_effect(researcher_data:Dictionary) -> Dictionary:
+	##for trait_key in researcher_data.traits:
+		##var trait_data:Dictionary = return_trait_data(trait_key)
+		##return trait_data.wing_effect.call(researcher_data)
+	#return {}
+## ------------------------------------------------------------------------------		
+#
+## ------------------------------------------------------------------------------
+#func return_wing_effects_list(researcher_data:Dictionary) -> Array:
+	#var list:Array = []
 	#for trait_key in researcher_data.traits:
 		#var trait_data:Dictionary = return_trait_data(trait_key)
-		#return trait_data.wing_effect.call(researcher_data)
-	return {}
-# ------------------------------------------------------------------------------		
-
-# ------------------------------------------------------------------------------
-func return_wing_effects_list(researcher_data:Dictionary) -> Array:
-	var list:Array = []
-	for trait_key in researcher_data.traits:
-		var trait_data:Dictionary = return_trait_data(trait_key)
-		var effects_dict:Dictionary = trait_data.wing_effect.call(researcher_data)
-		for key in effects_dict:
-			var amount:int = effects_dict[key]
-			var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
-			if amount > 0:
-				list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
-
-	return list
-# ------------------------------------------------------------------------------	
+		#var effects_dict:Dictionary = trait_data.wing_effect.call(researcher_data)
+		#for key in effects_dict:
+			#var amount:int = effects_dict[key]
+			#var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
+			#if amount > 0:
+				#list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
+#
+	#return list
+## ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
 func get_details_from_extract(location:Dictionary) -> Dictionary:
@@ -459,7 +346,7 @@ func get_paginated_list(spec:int, start_at:int, limit:int, sort_asc:bool = true)
 	# Filter by specialization
 	var filtered_list: Array = []
 	for item in list:
-		if spec == -1 or spec in item.specializations:
+		if spec == -1 or spec == item.specialization.ref:
 			filtered_list.append(item)
 
 	# Slice the list based on start_at and limit

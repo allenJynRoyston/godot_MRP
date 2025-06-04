@@ -160,7 +160,7 @@ func on_ref_update() -> void:
 	#CardDrawerVibes.is_researched = true
 	#CardDrawerVibes.metrics = scp_details.metrics
 	CardDrawerEffect.content = scp_details.effects.description if research_level > 0 else "UNKNOWN\r(EVALUATION REQUIRED)"
-	CardDrawerBreach.content =  scp_details.effects.description if research_level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
+	CardDrawerBreach.content =  scp_details.breach.description if research_level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
 	CardDrawerNeutralize.content =  scp_details.effects.description if research_level > 2 else "UNKNOWN\r(EVALUATION REQUIRED)"
 	# -----------
 	

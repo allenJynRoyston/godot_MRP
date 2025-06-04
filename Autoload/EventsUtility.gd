@@ -47,313 +47,326 @@ var GAME_OVER:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
-var DISMISS_RESEARCHER:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"val": null
-		}
-		var onSelected = func(val) -> void:
-			option_selected.val = val
-			
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"header": "Event header",
-					"img_src": "res://Media/images/redacted.png",
-					"text": [
-						"You've decided that %s should be dismissed." % [props.name],
-						"Should you take any other precautions?"
-					],
-					"options": [
-						{
-							"show": true,
-							"title": "Thank them for their service.",
-							"val": EVT.DISMISS_TYPE.THANK_AND_DISMISS,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Administer Class-B amnestics.",
-							"val": EVT.DISMISS_TYPE.ADMINISTER_AMNESTICS,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Terminate them and destroy their research.",
-							"val": EVT.DISMISS_TYPE.TERMINATE,
-							"onSelected": onSelected
-						}						
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				props.onSelection.call(option_selected.val)
-				return {
-					"text": [
-						"You selected %s" % [option_selected.val],
-					]
-				}	
-		],
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var SITEWIDE_BROWNOUT:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"val": null
-		}
-		var onSelected = func(val) -> void:
-			option_selected.val = val
-			
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"header": "Event header",
-					"img_src": "res://Media/images/redacted.png",
-					"text": [
-						"The lights begin to flicker as the power in the facility fluctuates.  Your batteries are almost out of juice.",
-					],
-					"options": [
-						{
-							"show": true,
-							"title": "Utilize the emergency backup generators.",
-							"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Do nothing",
-							"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
-							"onSelected": onSelected
-						}
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				props.onSelection.call(option_selected.val)
-				return {
-					"text": [
-						"You selected %s" % [option_selected.val],
-					]
-				}	
-		],
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var IN_DEBT_WARNING:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"val": null
-		}
-		var onSelected = func(val) -> void:
-			option_selected.val = val
-			
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"header": "Event header",
-					"img_src": "res://Media/images/redacted.png",
-					"text": [
-						"IN DEBT WARNING",
-					],
-					"options": [
-						{
-							"show": true,
-							"title": "Utilize the emergency funds.",
-							"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Do nothing",
-							"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
-							"onSelected": onSelected
-						}
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				props.onSelection.call(option_selected.val)
-				return {
-					"text": [
-						"You selected %s" % [option_selected.val],
-					]
-				}	
-		],
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var MORALE:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"selected": null
-		}
-		var onSelected = func(option:Dictionary) -> void:
-			option_selected.selected = option
+#var DISMISS_RESEARCHER:Dictionary = {
+	#"event_instructions": func(props:Dictionary) -> Array:
+		#var option_selected:Dictionary = {
+			#"val": null
+		#}
+		#var onSelected = func(val) -> void:
 			#option_selected.val = val
+			#
+		#return [
+			## ---------
+			#func() -> Dictionary:
+				#return {
+					#"header": "Event header",
+					#"img_src": "res://Media/images/redacted.png",
+					#"text": [
+						#"You've decided that %s should be dismissed." % [props.name],
+						#"Should you take any other precautions?"
+					#],
+					#"options": [
+						#{
+							#"show": true,
+							#"title": "Thank them for their service.",
+							#"val": EVT.DISMISS_TYPE.THANK_AND_DISMISS,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Administer Class-B amnestics.",
+							#"val": EVT.DISMISS_TYPE.ADMINISTER_AMNESTICS,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Terminate them and destroy their research.",
+							#"val": EVT.DISMISS_TYPE.TERMINATE,
+							#"onSelected": onSelected
+						#}						
+					#]
+				#},
+			## ---------
+			#func() -> Dictionary:
+				#props.onSelection.call(option_selected.val)
+				#return {
+					#"text": [
+						#"You selected %s" % [option_selected.val],
+					#]
+				#}	
+		#],
+#}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+#var SITEWIDE_BROWNOUT:Dictionary = {
+	#"event_instructions": func(props:Dictionary) -> Array:
+		#var option_selected:Dictionary = {
+			#"val": null
+		#}
+		#var onSelected = func(val) -> void:
+			#option_selected.val = val
+			#
+		#return [
+			## ---------
+			#func() -> Dictionary:
+				#return {
+					#"header": "Event header",
+					#"img_src": "res://Media/images/redacted.png",
+					#"text": [
+						#"The lights begin to flicker as the power in the facility fluctuates.  Your batteries are almost out of juice.",
+					#],
+					#"options": [
+						#{
+							#"show": true,
+							#"title": "Utilize the emergency backup generators.",
+							#"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Do nothing",
+							#"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
+							#"onSelected": onSelected
+						#}
+					#]
+				#},
+			## ---------
+			#func() -> Dictionary:
+				#props.onSelection.call(option_selected.val)
+				#return {
+					#"text": [
+						#"You selected %s" % [option_selected.val],
+					#]
+				#}	
+		#],
+#}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+#var IN_DEBT_WARNING:Dictionary = {
+	#"event_instructions": func(props:Dictionary) -> Array:
+		#var option_selected:Dictionary = {
+			#"val": null
+		#}
+		#var onSelected = func(val) -> void:
+			#option_selected.val = val
+			#
+		#return [
+			## ---------
+			#func() -> Dictionary:
+				#return {
+					#"header": "Event header",
+					#"img_src": "res://Media/images/redacted.png",
+					#"text": [
+						#"IN DEBT WARNING",
+					#],
+					#"options": [
+						#{
+							#"show": true,
+							#"title": "Utilize the emergency funds.",
+							#"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Do nothing",
+							#"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
+							#"onSelected": onSelected
+						#}
+					#]
+				#},
+			## ---------
+			#func() -> Dictionary:
+				#props.onSelection.call(option_selected.val)
+				#return {
+					#"text": [
+						#"You selected %s" % [option_selected.val],
+					#]
+				#}	
+		#],
+#}
+# ------------------------------------------------------------------------
+
+## ------------------------------------------------------------------------
+#var MORALE:Dictionary = {
+	#"event_instructions": func(props:Dictionary) -> Array:
+		#var option_selected:Dictionary = {
+			#"selected": null
+		#}
+		#var onSelected = func(option:Dictionary) -> void:
+			#option_selected.selected = option
+			##option_selected.val = val
+			#
+		#return [
+			## ---------
+			#func() -> Dictionary:
+				#return {
+					#"header": "Morale 1 event",
+					#"img_src": "res://Media/images/redacted.png",
+					#"portrait": {
+						#"title": "DR SMITHERS",
+						#"img_src": 	"res://Media/images/example_doctor.jpg",
+					#},					
+					#"text": [
+						#"MORALE EVENT 1",
+					#],
+					#"options": [
+						#{
+							#"show": true,
+							#"title": "Option a",
+							#"description": "Description goes here.",
+							#"success_rate": func() -> int:
+								#return 60,
+							#"val": 0,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Option b",
+							#"description": "Description goes here.",
+							#"success_rate": func() -> int:
+								#return 80,
+							#"val": 1,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Option c",
+							#"description": "Description goes here.",
+							#"success_rate": func() -> int:
+								#return 90,
+							#"val": 2,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Do nothing",
+							#"success_rate": func() -> int:
+								#return 100,
+							#"val": -1,
+							#"onSelected": onSelected
+						#}
+					#]
+				#},
+			## ---------
+			#func() -> Dictionary:
+				#props.onSelection.call(option_selected)
+				#return {
+					#"text": [
+						#"You selected %s" % [option_selected.selected.option.title],
+					#]
+				#},
+			## ---------
+			#func() -> Dictionary:
+				#return {
+					#"text": [
+						#"And yet they soldiered on.",
+					#]
+				#}					
+				#
+		#],
+#}
+## ------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------
+#var SAFETY:Dictionary = {
+	#"event_instructions": func(props:Dictionary) -> Array:
+		#var option_selected:Dictionary = {
+			#"val": null
+		#}
+		#var onSelected = func(val) -> void:
+			#option_selected.val = val
+			#
+		#return [
+			## ---------
+			#func() -> Dictionary:
+				#return {
+					#"header": "SAFETY 1 event",
+					#"img_src": "res://Media/images/redacted.png",
+					#"text": [
+						#"SAFETY EVENT 1",
+					#],
+					#"options": [
+						#{
+							#"show": true,
+							#"title": "Option a",
+							#"val": 0,
+							#"onSelected": onSelected
+						#},
+						#{
+							#"show": true,
+							#"title": "Do nothing",
+							#"val": -1,
+							#"onSelected": onSelected
+						#}
+					#]
+				#},
+			## ---------
+			#func() -> Dictionary:
+				#props.onSelection.call(option_selected.val)
+				#return {
+					#"text": [
+						#"You selected %s" % [option_selected.val],
+					#]
+				#}	
+		#],
+#}
+## ------------------------------------------------------------------------
+#
+# ------------------------------------------------------------------------
+var SCP_ON_CONTAIN:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+		
+		var scp_details:Dictionary = props.scp_details
+		var scp_data:Dictionary = props.scp_data
+		var researchers:Array = props.researchers
+		
+		var options:Array = []
+		var responses:Dictionary = scp_details.on_contain.responses
+		var selected_consequence:int = scp_details.on_contain.default_consequence 
+		var consequences:Dictionary = scp_details.on_contain.consequence
+		var selected_researcher:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+
+		# IF NO RESEARCHERS ASSIGNED, PICK THIS CONSEQUENCE	
+		if researchers.size() == 0:
+			selected_consequence = scp_details.on_contain.consequence[EVT.CONSEQUNCE.UNSUPERVISED]
+		else:
+			# ELSE, check for a trait, grab it and add it to the story, then prime the consequence
+			print(selected_researcher.specilization)
+			
+
+		
+		for ref in responses:
+			var response:Dictionary = responses[ref]
+			options.push_back({
+				"show": true,
+				"title": response.title,
+				"val": ref,
+				"onSelected": onSelected
+			})
+		
 			
 		return [
 			# ---------
 			func() -> Dictionary:
 				return {
-					"header": "Morale 1 event",
+					"header": "SCP_ON_CONTAIN",
 					"img_src": "res://Media/images/redacted.png",
-					"portrait": {
-						"title": "DR SMITHERS",
-						"img_src": 	"res://Media/images/example_doctor.jpg",
-					},					
-					"text": [
-						"MORALE EVENT 1",
-					],
-					"options": [
-						{
-							"show": true,
-							"title": "Option a",
-							"description": "Description goes here.",
-							"success_rate": func() -> int:
-								return 60,
-							"val": 0,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Option b",
-							"description": "Description goes here.",
-							"success_rate": func() -> int:
-								return 80,
-							"val": 1,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Option c",
-							"description": "Description goes here.",
-							"success_rate": func() -> int:
-								return 90,
-							"val": 2,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Do nothing",
-							"success_rate": func() -> int:
-								return 100,
-							"val": -1,
-							"onSelected": onSelected
-						}
-					]
+					"text": scp_details.on_contain.text,
+					"options": options
 				},
 			# ---------
 			func() -> Dictionary:
-				props.onSelection.call(option_selected)
-				return {
-					"text": [
-						"You selected %s" % [option_selected.selected.option.title],
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				return {
-					"text": [
-						"And yet they soldiered on.",
-					]
-				}					
+				consequences[selected_consequence].effect.call()
 				
-		],
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var SAFETY:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"val": null
-		}
-		var onSelected = func(val) -> void:
-			option_selected.val = val
-			
-		return [
-			# ---------
-			func() -> Dictionary:
 				return {
-					"header": "SAFETY 1 event",
-					"img_src": "res://Media/images/redacted.png",
-					"text": [
-						"SAFETY EVENT 1",
-					],
-					"options": [
-						{
-							"show": true,
-							"title": "Option a",
-							"val": 0,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Do nothing",
-							"val": -1,
-							"onSelected": onSelected
-						}
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				props.onSelection.call(option_selected.val)
-				return {
-					"text": [
-						"You selected %s" % [option_selected.val],
-					]
-				}	
-		],
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var READINESS:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"val": null
-		}
-		var onSelected = func(val) -> void:
-			option_selected.val = val
-			
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"header": "READINESS 1 event",
-					"img_src": "res://Media/images/redacted.png",
-					"text": [
-						"READINESS EVENT 1",
-					],
-					"options": [
-						{
-							"show": true,
-							"title": "Option a",
-							"val": 0,
-							"onSelected": onSelected
-						},
-						{
-							"show": true,
-							"title": "Do nothing",
-							"val": -1,
-							"onSelected": onSelected
-						}
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				props.onSelection.call(option_selected.val)
-				return {
-					"text": [
-						"You selected %s" % [option_selected.val],
-					]
+					"text": consequences[selected_consequence].text
 				}	
 		],
 }
@@ -381,7 +394,7 @@ var HIRE_RESEARCHER:Dictionary = {
 			# ---------
 			func() -> Dictionary:
 				return {
-					"header": "CLONING EVENT",
+					"header": "HIRE RESEARCHER EVENT",
 					"img_src": "res://Media/images/redacted.png",
 					"text": text,
 					"portrait": {
@@ -738,18 +751,25 @@ var UNHAPPY_HOUR:Dictionary = {
 
 
 var reference_data:Dictionary = {
+	# ------------------
 	EVT.TYPE.GAME_OVER: GAME_OVER,
-	EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,
-	EVT.TYPE.SITEWIDE_BROWNOUT: SITEWIDE_BROWNOUT,
-	EVT.TYPE.IN_DEBT_WARNING: IN_DEBT_WARNING,
-	EVT.TYPE.MORALE: MORALE,
-	EVT.TYPE.SAFETY: SAFETY,
-	EVT.TYPE.READINESS: READINESS,
+	# ------------------
+	
+	# ------------------ 
+	EVT.TYPE.SCP_ON_CONTAIN: SCP_ON_CONTAIN,
+	#EVT.TYPE.SCP_BREACH: SCP_BREACH,
+	
+	# ------------------
 	EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,
 	EVT.TYPE.CLONE_RESEARCHER: CLONE_RESEARCHER,
 	EVT.TYPE.PROMOTE_RESEARCHER: PROMOTE_RESEARCHER,
+	#EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,	
+	# ------------------
+	
+	# ------------------
 	EVT.TYPE.HAPPY_HOUR: HAPPY_HOUR,
 	EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR
+	# ------------------
 }
 
 # ------------------------------------------------------------------------

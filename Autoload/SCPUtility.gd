@@ -16,16 +16,6 @@ var SCP_TEMPLATE:Dictionary = {
 	"img_src": "res://Media/images/redacted.png",		# image reference
 	# -----------------------------------
 	
-	# -----------------------------------	
-	"item_class": ITEM_CLASS.SAFE,  					# assigned when generated, could be SAFE/EUCLID/KETER, 
-														# acts as multipler for rewards
-	"pairs_with": {										# asssigned when generated
-		"specilization": null,							# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
-		"trait": null,									# must be a trait (HAPPY, SAD, etc).  Can only be one.  1.5x reward if researcher has assigned trait.
-	},													
-	"breach_events_at": [],								# assigned when generated, based off item_class
-	# -----------------------------------	
-	
 	# ------------------------------------------
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 0,
@@ -33,207 +23,265 @@ var SCP_TEMPLATE:Dictionary = {
 		RESOURCE.CURRENCY.MATERIAL: 0,
 		RESOURCE.CURRENCY.CORE: 0
 	},
-	# ------------------------------------------
-	
-	# ------------------------------------------
+		
 	"metrics": {
 		RESOURCE.METRICS.MORALE: 0,
 		RESOURCE.METRICS.SAFETY: 0,
 		RESOURCE.METRICS.READINESS: 0,
 	},	
 	# ------------------------------------------
-	
-	## -----------------------------------
-	#"scenario_data":{
-		## STARTING SCP (or tutorial scp)
-		#"contain_order": [0],  
-		## rewards gained after winning
-		#"reward": [],
-		## objectives and their respective checks
-		#"objectives": [
-			#{
-				#"title": "Build a HQ", 
-				#"is_completed":func() -> bool:
-					#return ROOM_UTIL.owns_and_is_active(ROOM.TYPE.HQ),
-			#},
-		#],
-		## limit to scenario
-		#"day_limit": 3,
-	#},
-	## -----------------------------------	
 
-	# -----------------------------------
+
+	# ------------------------------------------
+	"abilities": func() -> Array:
+		return [
+			
+		],
+	# ------------------------------------------
+
+
+	# ------------------------------------------
 	"effects": {
-		"description": "Makes all personnel resources available for the wing.", 
-		"personnel": {
-			RESOURCE.PERSONNEL.TECHNICIANS: true,
-			RESOURCE.PERSONNEL.STAFF: true,
-			RESOURCE.PERSONNEL.SECURITY: true,
-			RESOURCE.PERSONNEL.DCLASS: true
-		},
-		#"before": func(new_room_config:Dictionary, location:Dictionary) -> Dictionary:
-			#var ring_config_data:Dictionary = new_room_config.floor[location.floor].ring[location.ring]
-			#ring_config_data.personnel = {
-				#RESOURCE.PERSONNEL.TECHNICIANS: true,
-				#RESOURCE.PERSONNEL.STAFF: true,
-				#RESOURCE.PERSONNEL.SECURITY: true,
-				#RESOURCE.PERSONNEL.DCLASS: true
-			#}
-			#return new_room_config,
+		"description": "EFFECT DESCRIPTION GOES HERE", 
+		#"personnel": {
+			#RESOURCE.PERSONNEL.TECHNICIANS: true,
+			#RESOURCE.PERSONNEL.STAFF: true,
+			#RESOURCE.PERSONNEL.SECURITY: true,
+			#RESOURCE.PERSONNEL.DCLASS: true
+		#},
 	},
-	# -----------------------------------
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"on_contain": {
+		"description": "CONTAIN EVENT DESCRIPTION GOES HERE",
+		"text": [
+			"Contain story goes here.",
+		],
+		"consequence":{
+			EVT.CONSEQUNCE.UNSUPERVISED: {
+				"description": "UNSUPERVISED consequence.",
+				"text": ["UNSUPERVISED story results"],
+				"effect": func() -> void:
+					pass,
+			},
+			EVT.CONSEQUNCE.NEUTRAL: {
+				"description": "NEUTRAL consequence.",
+				"text": ["NEUTRAL story results"],
+				"effect": func() -> void:
+					pass,
+			},			
+			EVT.CONSEQUNCE.GOOD: {
+				"description": "GOOD consequence.",
+				"text": ["GOOD story results"],
+				"effect": func() -> void:
+					pass,
+			},
+			EVT.CONSEQUNCE.BAD: {
+				"description": "BAD consequence.",
+				"text": ["BAD story results"],
+				"effect": func() -> void:
+					pass,
+			},
+		},
+		"default_consequence": EVT.CONSEQUNCE.BAD,
+		"specilization": {
+			RESEARCHER.SPECIALIZATION.ADMINISTRATION: {
+				"text": ["ADMINISTRATION story"],
+				"consequence_result": EVT.CONSEQUNCE.GOOD,
+			},
+			RESEARCHER.SPECIALIZATION.ENGINEERING: {
+				"text": ["ENGINEERING story"],
+				"consequence_result": EVT.CONSEQUNCE.BAD,
+			},
+		},
+		"responses": {
+			EVT.RESPONSE.ALWAYS: {
+				"title": "DO NOTHING",
+				"pass": ["PASS STORY"],
+				"fail": ["FAIL STORY"]				
+			},
+			EVT.RESPONSE.MORALE: {
+				"title": "[MORALE] RESPONSE",
+				"pass": ["PASS STORY"],
+				"fail": ["FAIL STORY"]				
+			},
+			EVT.RESPONSE.SAFETY: {
+				"title": "[SAFETY] Lockdown the room.",
+				"pass": ["PASS STORY"],
+				"fail": ["FAIL STORY"]				
+			},
+			EVT.RESPONSE.READINESS: {
+				"title": "[READINESS] Send in an MTF.",
+				"pass": ["PASS STORY"],
+				"fail": ["FAIL STORY"]
+			}			
+		}
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"breach": {
+		"description": "BREACH EVENT DESCRIPTION GOES HERE",
+		"story": {
+			
+		}
+	},
+	# ------------------------------------------
+	
+
 
 	# -----------------------------------
-	"events": {
-		# -------------------------
-		SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
-			var passes_metric_check:bool = true #SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			var dict:Dictionary = {
-				"title": "PASSED METRIC CHECK.",
-				"change": {
-					OPTION.CURRENCY: {
-						RESOURCE.CURRENCY.MONEY: -100,
-					}
-				} 
-			} if passes_metric_check else {
-				"title": "FAILED METRIC CHECK.",
-				"change": {}
-			}
-			
-			return [
-					# --------------------
-					func() -> Dictionary:
-						return {
-							"header": "CONTAINMENT EVENT",
-							"img_src": scp_details.img_src,
-							"text": [
-								"I pass the metric test" if passes_metric_check else "I did NOT pass the metrics test."
-							],
-							"options": [
-								build_option(),
-								build_option(dict),
-							]
-						},
-					# --------------------
-					
-					# --------------------
-					func() -> Dictionary:
-						print(getSelectedOption())
-						return {
-							"text": [
-								"You last selected index [%s]." % [getSelectedIndex()],
-								"The value was [%s]." % [getSelectedVal()]
-							],
-						},
-					# --------------------
-			],
-		# -------------------------
-		
-		# -------------------------
-		SCP.EVENT_TYPE.WARNING: func(scp_details:Dictionary, props:Dictionary) -> Array:
-			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			print("props.event_count: ", props.event_count)
-			
-			
-			match props.event_count:
-				0:
-					# --------------------
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "WARNING 1",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door begins to hum at an alarming frequency."
-									]
-								},
-							# --------------------
-					]
-					# --------------------
-				1:
-					# --------------------
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "WARNING 2",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door begins to hum at an alarming frequency."
-									]
-								},
-							# --------------------
-					]
-					# --------------------
-			# --------------------
-			return [
-					# --------------------
-					func() -> Dictionary:
-						return {
-							"header": "WARNING 3",
-							"img_src": scp_details.img_src,
-							"text": [
-								"The door begins to hum at an alarming frequency."
-							]
-						},
-					# --------------------
-			],
-			# --------------------
-		# -------------------------
-		
-		# -------------------------
-		SCP.EVENT_TYPE.BREACH_EVENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
-			var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
-			print("passes_metric_check: ", passes_metric_check)
-						
-			match props.event_count:
-				# --------------------
-				0:
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "BREACH EVENT",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door flings open and a swarm of shadows seep out."
-									]
-								},
-							# --------------------
-					]
-				# --------------------
-				1:
-					return [
-							# --------------------
-							func() -> Dictionary:
-								return {
-									"header": "BREACH EVENT",
-									"img_src": scp_details.img_src,
-									"text": [
-										"The door flings open and a swarm of shadows seep out."
-									]
-								},
-							# --------------------
-					]
-				# --------------------
-			
-			# --------------------
-			return [
-					# --------------------
-					func() -> Dictionary:
-						return {
-							"header": "BREACH EVENT",
-							"img_src": scp_details.img_src,
-							"text": [
-								"The door flings open and a swarm of shadows seep out."
-							]
-						},
-					# --------------------
-			],
-			# --------------------
-		# -------------------------	
-		},
+	#"events": {
+		## -------------------------
+		#SCP.EVENT_TYPE.AFTER_CONTAINMENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			#var passes_metric_check:bool = true #SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			#var dict:Dictionary = {
+				#"title": "PASSED METRIC CHECK.",
+				#"change": {
+					#OPTION.CURRENCY: {
+						#RESOURCE.CURRENCY.MONEY: -100,
+					#}
+				#} 
+			#} if passes_metric_check else {
+				#"title": "FAILED METRIC CHECK.",
+				#"change": {}
+			#}
+			#
+			#return [
+					## --------------------
+					#func() -> Dictionary:
+						#return {
+							#"header": "CONTAINMENT EVENT",
+							#"img_src": scp_details.img_src,
+							#"text": [
+								#"I pass the metric test" if passes_metric_check else "I did NOT pass the metrics test."
+							#],
+							#"options": [
+								#build_option(),
+								#build_option(dict),
+							#]
+						#},
+					## --------------------
+					#
+					## --------------------
+					#func() -> Dictionary:
+						#print(getSelectedOption())
+						#return {
+							#"text": [
+								#"You last selected index [%s]." % [getSelectedIndex()],
+								#"The value was [%s]." % [getSelectedVal()]
+							#],
+						#},
+					## --------------------
+			#],
+		## -------------------------
+		#
+		## -------------------------
+		#SCP.EVENT_TYPE.WARNING: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			#var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			#print("props.event_count: ", props.event_count)
+			#
+			#
+			#match props.event_count:
+				#0:
+					## --------------------
+					#return [
+							## --------------------
+							#func() -> Dictionary:
+								#return {
+									#"header": "WARNING 1",
+									#"img_src": scp_details.img_src,
+									#"text": [
+										#"The door begins to hum at an alarming frequency."
+									#]
+								#},
+							## --------------------
+					#]
+					## --------------------
+				#1:
+					## --------------------
+					#return [
+							## --------------------
+							#func() -> Dictionary:
+								#return {
+									#"header": "WARNING 2",
+									#"img_src": scp_details.img_src,
+									#"text": [
+										#"The door begins to hum at an alarming frequency."
+									#]
+								#},
+							## --------------------
+					#]
+					## --------------------
+			## --------------------
+			#return [
+					## --------------------
+					#func() -> Dictionary:
+						#return {
+							#"header": "WARNING 3",
+							#"img_src": scp_details.img_src,
+							#"text": [
+								#"The door begins to hum at an alarming frequency."
+							#]
+						#},
+					## --------------------
+			#],
+			## --------------------
+		## -------------------------
+		#
+		## -------------------------
+		#SCP.EVENT_TYPE.BREACH_EVENT: func(scp_details:Dictionary, props:Dictionary) -> Array:
+			#var passes_metric_check:bool = SCP_UTIL.passes_metric_check(scp_details.ref, props.use_location)
+			#print("passes_metric_check: ", passes_metric_check)
+						#
+			#match props.event_count:
+				## --------------------
+				#0:
+					#return [
+							## --------------------
+							#func() -> Dictionary:
+								#return {
+									#"header": "BREACH EVENT",
+									#"img_src": scp_details.img_src,
+									#"text": [
+										#"The door flings open and a swarm of shadows seep out."
+									#]
+								#},
+							## --------------------
+					#]
+				## --------------------
+				#1:
+					#return [
+							## --------------------
+							#func() -> Dictionary:
+								#return {
+									#"header": "BREACH EVENT",
+									#"img_src": scp_details.img_src,
+									#"text": [
+										#"The door flings open and a swarm of shadows seep out."
+									#]
+								#},
+							## --------------------
+					#]
+				## --------------------
+			#
+			## --------------------
+			#return [
+					## --------------------
+					#func() -> Dictionary:
+						#return {
+							#"header": "BREACH EVENT",
+							#"img_src": scp_details.img_src,
+							#"text": [
+								#"The door flings open and a swarm of shadows seep out."
+							#]
+						#},
+					## --------------------
+			#],
+			## --------------------
+		## -------------------------	
+		#},
 	# -----------------------------------
 }
 
@@ -269,71 +317,16 @@ var trait_count:int = 0
 func fill_template(data:Dictionary, ref:int) -> void:
 	var template_copy:Dictionary = SCP_TEMPLATE.duplicate(true)		
 	# assign "name"
-	template_copy.name = "SCP-X-%s" % [str(0,ref + 1) if ref + 1 < 10 else ref + 1]
+	template_copy.name = "SCP-██-%s" % [str(0,ref + 1) if ref + 1 < 10 else ref + 1]
 	
 	# replace any matching keys
 	for key in data:
 		var value = data[key]
 		if key in template_copy:
 			template_copy[key] = value
-			
-	# generate the following properties
-	if ref % 2 == 0:
-		template_copy.item_class = ITEM_CLASS.SAFE 
-		template_copy.breach_events_at = [ref * 1, ref * 2, ref * 3]
-	else:
-		template_copy.item_class = ITEM_CLASS.EUCLID
-		template_copy.breach_events_at = [ref * 1, ref * 2, ref * 3]
-
-	if ref % 3 == 0:
-		template_copy.item_class = ITEM_CLASS.KETER
-		template_copy.breach_events_at = [ref * 1, ref * 2, ref * 3]
-	
-	# now assign it a deterministic spec/trait
-	template_copy.pairs_with = {
-		"specilization": [], 		# spec_count,# must be a specilization (ENGINEER, BIOLOGIST, etc).  Can only be one.  DOUBLES rewards if researcher has assigned spec.
-		"trait": []					#trait_count,		
-	}
-	
-	# deterministically determine which item gets rewarded what
-	var amount:int = 0
-	match template_copy.item_class:
-		ITEM_CLASS.SAFE:
-			amount = 1
-		ITEM_CLASS.EUCLID:
-			amount = 2
-		ITEM_CLASS.KETER:
-			amount = 3 
-	
-	var matched:bool = false
-	if ref % 2 == 0:
-		template_copy.currencies[RESOURCE.CURRENCY.MONEY] = 10
-		matched = true
-	else:
-		template_copy.currencies[RESOURCE.CURRENCY.MATERIAL] = 10
-		matched = true
-		
-	if ref % 3 == 0 and !matched:
-		template_copy.currencies[RESOURCE.CURRENCY.SCIENCE] = 10
-		matched = true
-
-	template_copy.metrics = {
-		RESOURCE.METRICS.MORALE: -1,
-		RESOURCE.METRICS.SAFETY: -2,
-		RESOURCE.METRICS.READINESS: -3,
-	}
 
 	reference_list.push_back(ref)
-	reference_data[ref] = template_copy
-	
-	spec_count += 1
-	if spec_count > RESEARCHER.SPECIALIZATION.size() - 1:
-		spec_count = 0
-	
-	trait_count += 1
-	if trait_count > RESEARCHER.TRAITS.size() - 1:
-		trait_count = 0
-	
+	reference_data[ref] = template_copy#
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
@@ -356,24 +349,24 @@ func return_data(ref:int) -> Dictionary:
 	return reference_data[ref]
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
-	var scp_details:Dictionary = return_data(ref)
-	var match_spec:bool = false
-	var match_trait:bool = false
-	
-	for researcher in researchers:
-		if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
-			match_spec = true
-		if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
-			match_trait = true
-	
-	return {
-		"match_spec": match_spec,
-		"match_trait": match_trait,
-		
-	}
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func check_for_pairing(ref:int, researchers:Array) -> Dictionary:
+	#var scp_details:Dictionary = return_data(ref)
+	#var match_spec:bool = false
+	#var match_trait:bool = false
+	#
+	#for researcher in researchers:
+		#if !match_spec and (scp_details.pairs_with.specilization in researcher.specializations):
+			#match_spec = true
+		#if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
+			#match_trait = true
+	#
+	#return {
+		#"match_spec": match_spec,
+		#"match_trait": match_trait,
+		#
+	#}
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func return_ongoing_containment_rewards(ref:int) -> Array:

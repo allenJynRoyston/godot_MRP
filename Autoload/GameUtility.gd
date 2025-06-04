@@ -31,90 +31,90 @@ func assign_nodes() -> void:
 	ToastContainer = GameplayNode.ToastContainer
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func get_ability_level(use_location:Dictionary = current_location) -> int:
-	var floor:int = use_location.floor
-	var ring:int = use_location.ring	
-	var room:int = use_location.room
-	var wing_abl_lvl:int = 	room_config.floor[floor].ring[ring].abl_lvl
-	var room_abl_lvl:int = room_config.floor[floor].ring[ring].room[room].abl_lvl
-	return wing_abl_lvl + room_abl_lvl
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func get_ability_level(use_location:Dictionary = current_location) -> int:
+	#var floor:int = use_location.floor
+	#var ring:int = use_location.ring	
+	#var room:int = use_location.room
+	#var wing_abl_lvl:int = 	room_config.floor[floor].ring[ring].abl_lvl
+	#var room_abl_lvl:int = room_config.floor[floor].ring[ring].room[room].abl_lvl
+	#return wing_abl_lvl + room_abl_lvl
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_room_traits(use_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
-	var designation:String = U.location_to_designation(use_location)	
-	var floor:int = use_location.floor
-	var ring:int = use_location.ring
-	var room:int = use_location.room
-	var config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
-	var room_data:Dictionary = config_data.room_data
-	var scp_data:Dictionary = config_data.scp_data 
-
-	var total_traits_list := []
-	var synergy_traits := []
-	var dup_list := []		
-	var trait_list := []
-	var synergy_list := []
-
-	
-	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
-		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
-		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
-			return true
-		return false	
-	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-		
-	# records bonus from traits
-	for researcher in researchers:
-		total_traits_list.push_back(researcher.traits)
-	
-	# records bonus from traits
-	for traits in total_traits_list:
-		for t in traits:
-			if t not in dup_list:
-				trait_list.push_back(RESEARCHER_UTIL.return_trait_details(t, use_location, use_config))
-				
-	# records bonus from synergy traits
-	if total_traits_list.size() == 2:
-		var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
-		#for details in list:
-			#var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-			#var resource_list:Array = []
-			#var metric_list:Array = []
-			## -------------------
-			#if "resource" in effect:
-				#for key in effect.resource:
-					#var amount:int = effect.resource[key]
-					#
-					#if key not in resource_details.synergy_traits:
-						#resource_details.synergy_traits[key] = 0
-					#if key not in resource_details.total:
-						#resource_details.total[key] = 0
-					#resource_details.synergy_traits[key] += amount
-					#resource_details.total[key] += amount
-					#
-					#resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
-			## -------------------
-			#if "metrics" in effect:
-				#for key in effect.metrics:
-					#var amount:int = effect.metrics[key]
+#func get_room_traits(use_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
+	#var designation:String = U.location_to_designation(use_location)	
+	#var floor:int = use_location.floor
+	#var ring:int = use_location.ring
+	#var room:int = use_location.room
+	#var config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
+	#var room_data:Dictionary = config_data.room_data
+	#var scp_data:Dictionary = config_data.scp_data 
 #
-					#if key not in metric_details.traits:
-						#metric_details.traits[key] = 0
-					#if key not in metric_details.total:
-						#metric_details.total[key] = 0
-					#metric_details.traits[key] += amount
-					#metric_details.total[key] += amount					
-					#
-					#metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})		
-						#
-			#synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-				
-	return {
-		"trait_list": trait_list,
-		"synergy_list": synergy_list
-	}
+	#var total_traits_list := []
+	#var synergy_traits := []
+	#var dup_list := []		
+	#var trait_list := []
+	#var synergy_list := []
+#
+	#
+	#var researchers:Array = hired_lead_researchers_arr.filter(func(x):
+		#var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
+		#if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
+			#return true
+		#return false	
+	#).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
+		#
+	## records bonus from traits
+	#for researcher in researchers:
+		#total_traits_list.push_back(researcher.traits)
+	#
+	## records bonus from traits
+	##for traits in total_traits_list:
+		##for t in traits:
+			##if t not in dup_list:
+				##trait_list.push_back(RESEARCHER_UTIL.return_trait_details(t, use_location, use_config))
+				#
+	## records bonus from synergy traits
+	##if total_traits_list.size() == 2:
+		##var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
+		##for details in list:
+			##var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
+			##var resource_list:Array = []
+			##var metric_list:Array = []
+			### -------------------
+			##if "resource" in effect:
+				##for key in effect.resource:
+					##var amount:int = effect.resource[key]
+					##
+					##if key not in resource_details.synergy_traits:
+						##resource_details.synergy_traits[key] = 0
+					##if key not in resource_details.total:
+						##resource_details.total[key] = 0
+					##resource_details.synergy_traits[key] += amount
+					##resource_details.total[key] += amount
+					##
+					##resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
+			### -------------------
+			##if "metrics" in effect:
+				##for key in effect.metrics:
+					##var amount:int = effect.metrics[key]
+##
+					##if key not in metric_details.traits:
+						##metric_details.traits[key] = 0
+					##if key not in metric_details.total:
+						##metric_details.total[key] = 0
+					##metric_details.traits[key] += amount
+					##metric_details.total[key] += amount					
+					##
+					##metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})		
+						##
+			##synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
+				#
+	#return {
+		#"trait_list": trait_list,
+		#"synergy_list": synergy_list
+	#}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -664,24 +664,13 @@ func contain_scp() -> bool:
 		return false
 #
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	var breach_events_at:Array = []
+	var breach_events_at:Array = [0, 7, 14, 28]
 	
-	for index in scp_details.breach_events_at.size():
-		var val:int = scp_details.breach_events_at[index]
+	var breach
+	for index in breach_events_at.size():
+		var val:int = breach_events_at[index]
 		var day:int = val + progress_data.day
-		breach_events_at.push_back(day)
-		#add_timeline_item({
-			#"title": scp_details.name,
-			#"icon": SVGS.TYPE.WARNING,
-			#"description": "WARNING",
-			#"day": day - 2,
-			#"event": {
-				#"scp_ref": scp_ref,
-				#"event_ref": SCP.EVENT_TYPE.WARNING,
-				#"event_count": index,
-			#}
-		#})
-		
+
 		add_timeline_item({
 			"title": scp_details.name,
 			"icon": SVGS.TYPE.DANGER,
@@ -703,14 +692,25 @@ func contain_scp() -> bool:
 	scp_data[scp_ref].contained_on = progress_data.day
 	scp_data[scp_ref].breach_results = {}
  
+	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	)		
+
 	# save
-	SUBSCRIBE.scp_data = scp_data
+	SUBSCRIBE.scp_data = scp_data	
 	
-	# TODO: todo trigger event, one for if it's already researched and for one if it isn't	
-	var level:int = scp_data[scp_ref].level
-	print("TODO: trigger event: is_researched ", level)
-	#await GameplayNode.check_events(scp_ref, SCP.EVENT_TYPE.AFTER_CONTAINMENT, {"event_count": 0, "use_location": use_location}) 
-	# return true
+	# trigger event
+	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+		EVT.TYPE.SCP_ON_CONTAIN, 
+			{
+				"scp_details": scp_details,
+				"scp_data": scp_data[scp_ref],
+				"researchers": researchers
+			}
+		)
+	])
+	
+
 	return true
 # --------------------------------------------------------------------------------------------------	
 
