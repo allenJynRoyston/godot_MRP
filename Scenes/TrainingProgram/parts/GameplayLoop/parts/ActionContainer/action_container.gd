@@ -659,12 +659,23 @@ func investigate_wrapper(action:Callable) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func hide_ui() -> void:
+	BtnControls.reveal(false)
+	RoomDetailsControl.reveal(false) 
+	ControllerOverlay.hide()
+
+var previous_room_ref:int 
 func before_use() -> void:
+	previous_room_ref = RoomDetailsControl.room_ref
 	await BtnControls.reveal(false)
 	
 func after_use() -> void:
+	BtnControls.itemlist = SummaryCard.get_ability_btns()
+	await U.tick()
 	BtnControls.reveal(true)
+	RoomDetailsControl.room_ref = previous_room_ref
 	
+		
 func after_use_passive_ability() -> void:
 	pass
 	#update_details()
@@ -794,7 +805,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
 			RoomDetailsControl.researcher_uid = -1 
 			
-
 			RoomDetailsControl.disable_location = false
 			RoomDetailsControl.reveal(!is_room_empty)
 			

@@ -4,5 +4,5 @@
 
 [resource]
 shader = ExtResource("1_jm2r1")
-shader_parameter/bend_amount = 0.0
-shader_parameter/bend_offset = 0.0
+shader_parameter/bend_amount = 0.323
+shader_parameter/bend_offset = 0.391

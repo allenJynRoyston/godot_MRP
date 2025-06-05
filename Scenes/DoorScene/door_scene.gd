@@ -2,6 +2,9 @@ extends PanelContainer
 
 @onready var ColorBG:ColorRect = $ColorBG
 @onready var TextureRender:TextureRect = $TextureRect
+@onready var NarrationPanel:PanelContainer = $NarrationControl/PanelContainer
+@onready var NarrationMargin:MarginContainer = $NarrationControl/PanelContainer/MarginContainer
+@onready var NarrationRTL:RichTextLabel = $NarrationControl/PanelContainer/MarginContainer/RichTextLabel
 @onready var RenderSubviewport:SubViewport = $RenderSubviewport
 @onready var SceneCamera:Camera3D = $RenderSubviewport/Node3D/Camera3D
 @onready var IntroSubviewport:SubViewport = $SubViewport
@@ -21,10 +24,61 @@ var current_mode:MODE = MODE.INIT :
 		on_current_mode_update()
 
 var is_ready:bool = false
-
+var current_message:String = ""
+var is_busy:bool = false
 var onLogin:Callable = func():pass
 
+
+
+var story_chapters:Array[Dictionary] = [
+	{
+		"text": [
+			"Listen carefully.  My name is Researcher [   ] and I was tasked with recording these messages for Procedure-[   ]: the Memeory Recovery Protocol, the procedure that you are now currently undergoing.",
+			"The first thing I need to tell you is you are not safe, and your life is in danger.",
+			"Thats the bad news.  The good news, is, that you can change that.  You have control here.  But.  I still need you to be a little bit afraid.",
+			"Now this is hard to understand at first, but... you've done this before.  You've undergone this exact procedure, safetly, multiple times.  You've saved your life each time.",
+			"You just don't remember.",
+			"But it's more accurate to say that you just CAN'T remember.",
+			"The reason is you exposed yourself to an incredibly potent amnestic, a synthetic chemical agent used to suppress memory and [    ].",
+			"Your inability to remember who you are, who you REALLY are, is intentional.  What we don't understand is how the mind that, the mind of somebody not you... fills in that absense.  Whoever that is, you are target we are trying to reach.",
+			"And we believe that's who we're speaking to now.",
+			"Anyways, there's a computer in front of you. I just need you to complete the tutorial.  Once you do I'll tell you more."
+		 ],
+		"objectives": [
+			{"title": "Complete the tutorial", "is_completed": func():pass}			
+		]
+	},
+	{
+		"text": [
+			"So like I said, we've done this a few times now.  Our success rate is actually [ ]%, which, you know... isn't that bad.  Considering.",
+			"But... what's really improves our odds is when you trust me.",
+			"And, unfortunately, that's going to be really difficult after I disclose the last message you sent me.",
+			"It simply said, and I quote: ",
+			"'You can't trust it.  It lies.'",
+			"End quote.",
+			"The thing is, you've sent me this exact message the last time you triggered the self destruct, but you couldn't remember what it meant, even after a successful recall.",
+			"That is... very uncomforable, to say the least.  And it leads me to only two conlusions: ",
+			"That some entity keeps forcing you to initiate the site self-destruct sequence unknowingly or worse.",  
+			"You WANT to do it, but that something keeps stopping you.",
+			"Eitherway, we need to know so we can help you.", 
+			"You've been emailed a program for the computer.  Install it and fufill the objectives and we'll talk more."
+		],
+		"objectives": [
+			{"title": "Contain 1 SCP by day 10.", "is_completed": func():pass}			
+		]
+	}	
+];
+
+
+var current_progress_val:int = 0
+var story_progress_val:int = 0
+var play_sequence:bool = true : 
+	set(val):
+		play_sequence = val
+		on_play_sequence_update()
+
 signal on_finish
+signal narration_complete
 
 # ---------------------------------------------
 func _init() -> void:
@@ -37,9 +91,14 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	on_current_mode_update()	
+	on_play_sequence_update()
+	
+	NarrationPanel.modulate = Color(1, 1, 1, 0)
+	
 	_after_ready.call_deferred()
 	BtnControls.reveal(false)
 # ---------------------------------------------
+
 
 # ---------------------------------------------
 func _after_ready() -> void:	
@@ -49,14 +108,94 @@ func _after_ready() -> void:
 	
 	BtnControls.onAction = func() -> void:
 		if !is_ready:return
-		onLogin.call()
+		await BtnControls.reveal(false)
+		
+		if play_sequence:
+			await play_story_sequence(false)
+		else:
+			onLogin.call()
+	
+	BtnControls.onCBtn = func() -> void:
+		if !is_ready:return
+		await BtnControls.reveal(false)		
+		play_story_sequence(true)
+	
 	BtnControls.onBack = func() -> void:
 		pass
 	
+	if DEBUG.get_val(DEBUG.NEW_PROGRESS_FILE):
+		FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
+	else:
+		var res:Dictionary = FS.load_file(FS.FILE.PROGRESS)
+		if res.success:
+			parse_save_data(res.filedata.data)
+		else:
+			FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
+			
+	
 	await U.tick()
 # ---------------------------------------------
-		
 
+# ---------------------------------------------
+func play_story_sequence(skip_delay:bool) -> void:
+	is_busy = true
+	if !skip_delay:
+		shifted_val = 10
+		
+	BtnControls.hide_c_btn = true
+	BtnControls.hide_a_btn = true
+	BtnControls.hide_b_btn = false
+	BtnControls.onBack = func() -> void:
+		await BtnControls.reveal(false)
+		narration_complete.emit()
+	
+	var message:String = ""
+	for text in story_chapters[current_progress_val].text:
+		message += str(text, '\r\r')
+	
+	current_message = message
+	NarrationPanel.modulate = Color(1, 1, 1, 1)	
+	
+	if !skip_delay:
+		await U.set_timeout(1.0)
+		
+	await BtnControls.reveal(true)
+	await narration_complete
+		
+	BtnControls.hide_c_btn = true
+	BtnControls.hide_a_btn = false
+	BtnControls.hide_b_btn = true	
+	BtnControls.reveal(true)
+	
+	NarrationPanel.modulate = Color(1, 1, 1, 0)	
+	play_sequence = false
+	is_busy = false
+# ---------------------------------------------
+
+		
+# ---------------------------------------------
+func parse_save_data(save_data:Dictionary) -> void:
+	story_progress_val = save_data.story_progress_val
+	current_progress_val = save_data.current_progress_val
+# ---------------------------------------------
+
+# ---------------------------------------------
+func get_current_save_state() -> Dictionary:
+	return {
+		"current_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else current_progress_val,
+		"story_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else story_progress_val,
+	}	
+# ---------------------------------------------
+
+# ---------------------------------------------
+func on_play_sequence_update() -> void:
+	if !is_node_ready():return
+	BtnControls.a_btn_title = "PLAY" if play_sequence else "START"
+	
+	BtnControls.hide_c_btn = play_sequence
+	
+# ---------------------------------------------
+	
 # ---------------------------------------------
 func start() -> void:
 	show()	
@@ -72,6 +211,12 @@ func end() -> void:
 	hide()
 	current_mode = MODE.INIT
 	on_finish.emit()
+
+func switch_to() -> void:
+	if current_mode == MODE.INIT:return
+	is_ready = false	
+	await BtnControls.reveal(true)
+	is_ready = true
 # ---------------------------------------------
 
 # ---------------------------------------------
@@ -93,6 +238,7 @@ func on_current_mode_update() -> void:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 2.0)
 			IntroAndTitleScreen.start()
 			await IntroAndTitleScreen.on_continue
+			IntroAndTitleScreen.queue_free()
 
 			RenderSubviewport.set_process(true)
 
@@ -103,17 +249,14 @@ func on_current_mode_update() -> void:
 			await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7, 2.5)
 			SceneAnimationPlayer.active = true
 			SceneAnimationPlayer.play("LightsOn")			
-			is_ready = true
 			BtnControls.reveal(true)
 
 		# ---------
-		
 		MODE.START_AT_SCREEN:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0)
-			IntroAndTitleScreen.hide()
+			IntroAndTitleScreen.queue_free()
 
 			RenderSubviewport.set_process(true)
-
 			U.tween_node_property(SceneCamera, "fov", 77, 0)
 			TextureRender.texture = RenderSubviewport.get_texture()
 			#ScreenTextureRect.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
@@ -121,9 +264,35 @@ func on_current_mode_update() -> void:
 			U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0)
 			SceneAnimationPlayer.active = true
 			SceneAnimationPlayer.play("LightsOn")			
-			is_ready = true
+			
 			BtnControls.reveal(true)
 
 		# ---------
-		
+	
+	is_ready = true
 # ---------------------------------------------	
+
+# --------------------------------------------
+func shift_string_backward(text: String, shift: int = 5) -> String:
+	var result:String = ""
+	for char in text:
+		if char == " ":
+			result += " "  # Keep spaces unchanged
+		else:
+			result += char(char.unicode_at(0) - shift)  # Convert back to character
+	return result
+# --------------------------------------------
+
+# ---------------------------------------------	
+var shifted_val:int = 10
+var shift_timer := 0.0
+var shift_interval := 0.02  # Seconds between decrements (make this bigger to go slower)
+func _physics_process(delta: float) -> void:
+	if !is_node_ready() or !is_visible_in_tree() or !is_busy:return	
+	
+	if shifted_val > 0:
+		shift_timer += delta
+		if shift_timer >= shift_interval:
+			shift_timer = 0.0
+			shifted_val -= 1
+			NarrationRTL.text = str(shift_string_backward(current_message, shifted_val))

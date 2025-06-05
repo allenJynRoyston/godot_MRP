@@ -115,7 +115,7 @@ func update_text() -> void:
 		return
 	
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	NameLabel.text = "%s (%s)" % [scp_details.name, scp_details.nickname]
+	NameLabel.text = "%s" % [scp_details.name]
 	
 # ------------------------------------------------------------------------------
 

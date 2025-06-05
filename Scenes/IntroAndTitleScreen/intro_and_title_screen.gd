@@ -23,6 +23,8 @@ enum MODE {INIT, START, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_TEXT, WAIT_FOR
 @onready var PressStartGameLabel:Label = $PressStart/PanelContainer/MarginContainer/VBoxContainer/GameTitle
 @onready var PressStartMainPanel:MarginContainer = $PressStart/PanelContainer/MarginContainer
 
+@onready var ScpControl:Control = $SCP
+
 const game_title:String = "THE VOID LAYER"
 const BlurInLetterPreload:PackedScene = preload("res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn")
 
@@ -38,6 +40,9 @@ signal on_continue
 
 var on_end:Callable = func():pass
 
+var containment_description:String = "Standard Containt Procedures:  If you are reading this, then you are currently under the influence of SCP-[  ] and subject to its effects.  Resistencing these effects is both important and nnecessary for your survival."
+var script_description:String = "SCP-[   ] is an unknown entitity actively engaging with our reality.  How this is done, and the motives for doing so, are both unknown, but is considered to be an immediate and serious escalation."
+var danger_description:String = "BREACH DETECTED, FRACTURE IMMINENENT"
 # ---------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_control_input(self)
@@ -55,6 +60,7 @@ func _ready() -> void:
 func _after_ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	TitleBGLabel.modulate = Color(1, 1, 1, 0)
+	#ScpControl.modulate = Color(1, 1, 1, 0)
 	PressStartGameLabel.text = "SCP: %s" % [game_title]
 	ColorBG.show()
 	

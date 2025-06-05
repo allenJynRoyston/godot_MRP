@@ -25,9 +25,10 @@ func _ready() -> void:
 			await ActionContainerNode.before_use()
 			
 			await GAME_UTIL.contain_scp()
-			# unlocks
-			onUnlock.call()
+
 			await ActionContainerNode.after_use()	
+			# unlocks
+			onUnlock.call()			
 
 func on_use_location_update() -> void:
 	if !is_node_ready():return

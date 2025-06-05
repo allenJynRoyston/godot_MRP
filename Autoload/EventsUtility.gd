@@ -378,7 +378,6 @@ var SCP_ON_CONTAIN:Dictionary = {
 				"show": true,
 				"title": title,
 				"val": ref,
-				"description": "Chances of success.",
 				"success_rate": success_rate,
 				"onSelected": onSelected
 			})

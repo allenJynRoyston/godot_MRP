@@ -1,12 +1,15 @@
 extends Node
 
-enum FILE {SETTINGS, PERSISTANT, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE}
+enum FILE {
+	PROGRESS, SETTINGS, PERSISTANT, QUICK_SAVE, SAVE_ONE, SAVE_TWO, SAVE_THREE
+}
 
 const save_config:Dictionary = {
 	"folder": "user://",
 	"image_ext": ".png",
 	"image_size": 400,
 	"pretty_filenames": {
+		"progress": "Progress",		
 		"settings": "Settings",
 		"persistant": "Persistant",
 		"quick_save": "Quicksave",
@@ -14,7 +17,8 @@ const save_config:Dictionary = {
 		"filesave_two": "File 2",
 		"filesave_three": "File 3"
 	},
-	"filenames": {		
+	"filenames": {
+		"progress": "PROGRESS",
 		"settings": "SETTINGS",
 		"persistant": "PERSISTANT",
 		"quicksave": "SAVE_QUICKSAVE",
@@ -26,6 +30,7 @@ const save_config:Dictionary = {
 }
 
 const folder:String = save_config.folder
+const progress_filename:String = save_config.filenames.progress
 const settings_filename:String = save_config.filenames.settings
 const persistant_filename:String = save_config.filenames.persistant
 const quick_save_filename:String = save_config.filenames.quicksave
@@ -56,6 +61,8 @@ func save_file_exist(type:FILE) -> bool:
 	var filepath:String
 	
 	match type:
+		FILE.PROGRESS:
+			filepath = str(folder, progress_filename)
 		# ----------------------------
 		FILE.SETTINGS:
 			filepath = str(folder, settings_filename)
@@ -92,6 +99,10 @@ func load_file(type:FILE) -> Dictionary:
 	var filedata:Dictionary = {}
 	
 	match type:
+		# ----------------------------
+		FILE.PROGRESS:
+			var filepath:String = str(folder, progress_filename)
+			filedata = get_file_data(filepath)
 		# ----------------------------
 		FILE.SETTINGS:
 			var filepath:String = str(folder, settings_filename)
@@ -147,6 +158,15 @@ func save_file(type:FILE, save_data:Dictionary) -> Dictionary:
 	var success:bool = false
 	
 	match type:
+		# ----------------------------
+		FILE.PROGRESS:
+			var filepath:String = str(folder, progress_filename)
+			file_data = add_savefile_metadata(progress_filename, save_data)
+			success = create_save_file(filepath, file_data)
+			if success:
+				print("PROGRESS file save success!")
+			else:
+				print("PROGRESS file save failed...")		
 		# ----------------------------
 		FILE.SETTINGS:
 			var filepath:String = str(folder, settings_filename)
@@ -254,6 +274,8 @@ func clear_file(type:FILE) -> Dictionary:
 	var dir = DirAccess.open(save_config.folder)
 	
 	match type:
+		FILE.PROGRESS:
+			filepath = str(folder, progress_filename)		
 		# ----------------------------
 		FILE.SETTINGS:
 			filepath = str(folder, settings_filename)

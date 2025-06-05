@@ -8,6 +8,7 @@ enum REF {
 	
 	CLONE_RESEARCHER, HIRE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
 	
+	UPGRADE_FACILITY,
 	UNLOCK_FACILITIES,
 	
 	HAPPY_HOUR, UNHAPPY_HOUR,
@@ -55,7 +56,7 @@ var SET_DANGER_MODE:Dictionary = {
 }
 
 # ---------------------------------
-var unlock_facilities:Dictionary = {
+var UNLOCK_FACILITIES:Dictionary = {
 	"name": "UNLOCK FACILITIES", 
 	"description": "Unlock new facilities and make them available for your site.",
 	"science_cost": 0,
@@ -64,8 +65,17 @@ var unlock_facilities:Dictionary = {
 		return await GAME_UTIL.open_store(),
 }
 
+var UPGRADE_FACILITY:Dictionary = {
+	"name": "UPGRADE FACILITY", 
+	"description": "Upgrade a facility and unlock additional properties.",
+	"science_cost": 100,
+	"cooldown_duration":  3, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.upgrade_facility(),	
+}
+
 # ---------------------------------
-var promote_researchers:Dictionary = {
+var PROMOTE_RESEARCHER:Dictionary = {
 	"name": "PROMOTE RESEARCHER",
 	"description": "Promote a researcher.",
 	"science_cost": 0,
@@ -74,7 +84,7 @@ var promote_researchers:Dictionary = {
 		return await GAME_UTIL.promote_researcher(),
 }
 
-var clone_researcher:Dictionary = {
+var CLONE_RESEARCHER:Dictionary = {
 	"name": "CLONE RESEARCHER",
 	"description": "Clone a researcher.",
 	"science_cost": 50,
@@ -83,7 +93,7 @@ var clone_researcher:Dictionary = {
 		return await GAME_UTIL.clone_researcher(),
 }
 
-var hire_researcher:Dictionary = {
+var HIRE_RESEARCHER:Dictionary = {
 	"name": "HIRE RESEARCHER",
 	"description": "Hire a researcher.",
 	"science_cost": 0,
@@ -92,7 +102,7 @@ var hire_researcher:Dictionary = {
 		return await GAME_UTIL.hire_researcher(3)
 }
 
-var add_trait:Dictionary = {
+var ADD_TRAIT:Dictionary = {
 	"name": "ADD TRAIT",
 	"description": "Allows a researcher to gain a new trait.",
 	"science_cost": 50,
@@ -102,7 +112,7 @@ var add_trait:Dictionary = {
 		return true,
 }
 
-var remove_trait:Dictionary = {
+var REMOVE_TRAIT:Dictionary = {
 	"name": "REMOVE TRAIT",
 	"description": "Allows a researcher to remove an existing trait.",
 	"science_cost": 50,
@@ -158,7 +168,7 @@ var UNHAPPY_HOUR:Dictionary = {
 		return true,
 }
 
-var money_hack:Dictionary = {
+var MONEY_HACK:Dictionary = {
 	"name": "MONEY HACK", 
 	"description": "Gain +25% of your current MONEY.",
 	"science_cost": 50,
@@ -168,7 +178,7 @@ var money_hack:Dictionary = {
 		return true,
 }
 
-var science_hack:Dictionary = {
+var SCIENCE_HACK:Dictionary = {
 	"name": "SCIENCE HACK", 
 	"description": "Gain +25% of your current SCIENCE.",
 	"science_cost": 0,
@@ -178,7 +188,7 @@ var science_hack:Dictionary = {
 		return true,
 }
 
-var convert_money_to_science:Dictionary = {
+var CONVERT_MONEY_TO_SCIENCE:Dictionary = {
 	"name": "CONVERT TO SCIENCE", 
 	"description": "Convert MONEY into SCIENCE.",
 	"science_cost": 0,
@@ -188,7 +198,7 @@ var convert_money_to_science:Dictionary = {
 		return true,
 }
 
-var convert_science_to_money:Dictionary = {
+var CONVERT_SCIENCE_TO_MONEY:Dictionary = {
 	"name": "CONVERT TO MONEY", 
 	"description": "Convert SCIENCE into MONEY.",
 	"science_cost": 0,
@@ -217,20 +227,22 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		
 		# -----------------------------
 		REF.UNLOCK_FACILITIES:
-			ability =  unlock_facilities
+			ability = UNLOCK_FACILITIES
+		REF.UPGRADE_FACILITY:
+			ability = UPGRADE_FACILITY
 		# -----------------------------
 		
 		# -----------------------------
 		REF.HIRE_RESEARCHER:
-			ability = hire_researcher
+			ability = HIRE_RESEARCHER
 		REF.PROMOTE_RESEARCHER:
-			ability = promote_researchers
+			ability = PROMOTE_RESEARCHER
 		REF.CLONE_RESEARCHER:
-			ability = clone_researcher
+			ability = CLONE_RESEARCHER
 		REF.ADD_TRAIT:
-			ability = add_trait
+			ability = ADD_TRAIT
 		REF.REMOVE_TRAIT:
-			ability = remove_trait
+			ability = REMOVE_TRAIT
 		# -----------------------------
 		
 		# -----------------------------
@@ -242,13 +254,13 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 
 		# -----------------------------
 		REF.MONEY_HACK:
-			ability = money_hack
+			ability = MONEY_HACK
 		REF.SCIENCE_HACK:
-			ability = science_hack
+			ability = SCIENCE_HACK
 		REF.CONVERT_TO_SCIENCE:
-			ability = convert_money_to_science
+			ability = CONVERT_MONEY_TO_SCIENCE
 		REF.CONVERT_TO_MONEY:
-			ability = convert_science_to_money
+			ability = CONVERT_SCIENCE_TO_MONEY
 		# -----------------------------	
 
 	

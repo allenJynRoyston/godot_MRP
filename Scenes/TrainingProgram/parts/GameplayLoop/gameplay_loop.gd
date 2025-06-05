@@ -178,6 +178,7 @@ var initial_values:Dictionary = {
 				# ------------------------------
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 					room[str(floor_index, ring_index, room_index)] = {
+						"abl_lvl": 0,
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
 						"buffs": [],
@@ -453,13 +454,15 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	SetupContainer.subtitle = "STARTING PROGRAM..."
 	SetupContainer.progressbar_val = 1.0	
 	await U.set_timeout(0.3)	
-	# 5.) render everything to screen
-	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
-		await GAME_UTIL.open_objectives()
-		quicksave(true)
 				
 	# animate out
 	await SetupContainer.end()
+	
+	# 5.) render everything to screen
+	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
+		await GAME_UTIL.open_objectives()
+		quicksave(true)	
+	
 	# update phase and start game
 	current_phase = PHASE.PLAYER
 	
@@ -1124,7 +1127,7 @@ func update_room_config(force_setup:bool = false) -> void:
 
 	# EXECUTE IN THIS ORDER
 	# zero out defaults 
-	setup_default_energy_and_metrics(new_room_config)
+	transfer_base_states_to_room_config(new_room_config)
 	
 	# check for buffs/debuffs
 	check_for_buffs_and_debuffs(new_room_config)		
@@ -1153,24 +1156,26 @@ func update_room_config(force_setup:bool = false) -> void:
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
 	
-func setup_default_energy_and_metrics(new_room_config:Dictionary) -> void:
+func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	# energy availble per levels
 	const energy_levels:Array = [5, 10, 15, 20, 25]
 	
 	# duplicate base config nuke status
 	new_room_config.base.onsite_nuke = base_states.base.onsite_nuke.duplicate()
 	
-	for floor_index in new_room_config.floor.size():		
+	# FLOOR LEVEL ------------- 
+	for floor_index in new_room_config.floor.size():
+		var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
+		var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]
+		var floor_level:Dictionary = new_room_config.floor[floor_index]
+		
+		# set is_powered state
+		floor_level.is_powered = floor_base_state.is_powered
+		
+		# RING LEVEL ------------- 
 		for ring_index in new_room_config.floor[floor_index].ring.size():
-			var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]				
-			var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
 			var ring_base_state:Dictionary = base_states.ring[str(floor_index, ring_index)]			
-			
-			var floor_level:Dictionary = new_room_config.floor[floor_index]
 			var ring_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
-
-			# set is_powered state
-			floor_level.is_powered = floor_base_state.is_powered
 
 			# setup initial energy
 			ring_level.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
@@ -1181,6 +1186,15 @@ func setup_default_energy_and_metrics(new_room_config:Dictionary) -> void:
 				ring_level.emergency_mode = ROOM.EMERGENCY_MODES.DANGER
 			else:
 				ring_level.emergency_mode = ring_base_state.emergency_mode
+				
+			# ROOM LEVEL ------------- 
+			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():
+				var room_base_state:Dictionary = base_states.room[str(floor_index, ring_index, room_index)]			
+				var room_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
+				
+				# room level ability level
+				room_level.abl_lvl = room_base_state.abl_lvl
+
 
 func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 	var floor_added:Array = []

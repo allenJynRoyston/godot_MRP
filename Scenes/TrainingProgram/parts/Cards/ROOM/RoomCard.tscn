@@ -264,6 +264,7 @@ border_color = Color(0.3672, 0.378, 0.9, 1)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_b2rkc")
+spec_name = ""
 title = "SPECLIZATION REQUIRED"
 is_left_side = true
 border_color = Color(0.3672, 0.378, 0.9, 1)

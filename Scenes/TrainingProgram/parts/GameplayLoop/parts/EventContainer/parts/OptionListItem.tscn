@@ -39,9 +39,13 @@ theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 0
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_ryuwo")]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+
+[node name="IconBtn" parent="MarginContainer/HBoxContainer/MarginContainer" instance=ExtResource("1_ryuwo")]
 layout_mode = 2
 icon = 49
 inactive_color = Color(1, 1, 1, 1)
@@ -64,7 +68,7 @@ is_disabled = true
 [node name="OptionTextBtn" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_aisjx")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4l8vf")
-icon = 67
+icon = 23
 panel_color = Color(0, 0, 0, 0)
 inactive_color = Color(0.448712, 0.448712, 0.448712, 1)
 title = "Option title goes here"

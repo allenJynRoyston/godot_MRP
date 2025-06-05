@@ -1,16 +1,27 @@
-[gd_scene load_steps=24 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=31 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://b8tjlqidemn2y" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
+[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="5_a2e5w"]
+[ext_resource type="Script" uid="uid://bqjop57mc4ev2" path="res://Scenes/OSRoot/title_splash.gd" id="5_linol"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="5_tgmfl"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="6_012ga"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="7_linol"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="8_8iit3"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="8_012ga"]
 [ext_resource type="Material" uid="uid://wrbhauo7j8f6" path="res://Shader/_template/template.tres" id="10_fsu2y"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_linol"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_14y6p"]
+font = ExtResource("8_012ga")
+font_size = 80
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
 viewport_path = NodePath("CRTShader/BorderShader")
@@ -60,6 +71,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_67w08")
+debug_story_progress = true
+story_progress = 1
+skip_splash = true
 skip_intro = true
 intro_skip_logo = true
 intro_skip_title = true
@@ -104,6 +118,145 @@ color = Color(0, 0, 0, 1)
 [node name="OS" parent="GameLayer" node_paths=PackedStringArray("background_subviewport") instance=ExtResource("2_hsa0l")]
 clip_contents = true
 background_subviewport = NodePath("../../SubViewportBG")
+
+[node name="TitleSplash" type="PanelContainer" parent="GameLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_linol")
+
+[node name="ColorRect" type="ColorRect" parent="GameLayer/TitleSplash"]
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="GameLayer/TitleSplash"]
+layout_mode = 2
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 200
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameLayer/TitleSplash/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleHeader" type="PanelContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2000, 125)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxEmpty_linol")
+
+[node name="Label" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/TitleHeader"]
+layout_mode = 2
+text = "BREACH IMMINENT"
+label_settings = SubResource("LabelSettings_14y6p")
+horizontal_alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 5
+text = "ITEM #:"
+label_settings = ExtResource("5_a2e5w")
+horizontal_alignment = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer4"]
+modulate = Color(1, 1, 1, 0.831373)
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("6_012ga")
+bbcode_enabled = true
+text = "SCP-██"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 5
+text = "OBJECT CLASS:"
+label_settings = ExtResource("5_a2e5w")
+horizontal_alignment = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(1, 1, 1, 0.831373)
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("6_012ga")
+bbcode_enabled = true
+text = "KETER (previously SAFE)"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 5
+text = "STANDARD 
+CONTAINMENT PROCEDURE: "
+label_settings = ExtResource("5_a2e5w")
+horizontal_alignment = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer3"]
+modulate = Color(1, 1, 1, 0.831373)
+custom_minimum_size = Vector2(400, 150)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("6_012ga")
+bbcode_enabled = true
+text = "If you are reading this, then containment of SCP-██ has already been compromised  It is essential that from this point on, you do all you can do resist engaging with it, ignoring it, and if at all possible, forgetting it ever existed.  Your continued ignorance of it's presence its what keeps it contained.
+
+It's containment begins when you stop reading."
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 5
+text = "DESCRIPTION"
+label_settings = ExtResource("5_a2e5w")
+horizontal_alignment = 2
+
+[node name="Label" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer2"]
+visible = false
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_vertical = 5
+text = "██ is an informational, non-corporeal,  hypotically constructed entity  that does not and cannot exist, except when acknowledged — at which point it already has. It resists classification by altering the context in which it is described, and by recursively embedding itself in the act of observation.
+
+Attempts to define it further are both unnecessary and likely ineffective; as it is best understood as the idea of itself attempting to be understood.
+
+You are already thinking too much about it."
+label_settings = ExtResource("7_linol")
+autowrap_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer2"]
+modulate = Color(1, 1, 1, 0.831373)
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("6_012ga")
+bbcode_enabled = true
+text = "SCP-██ is an informational, non-corporeal, memetic construct that remains dornment as non-existent until acknowledged by human cognition. It manifests solely through awareness, retroactively imposing its presence into perception and record. Attempts to classify or describe it are inherently unstable, as SCP-██ actively alters context and meaning, embedding itself recursively within the act of observation.
+
+Research into SCP-██-highly restricted and considered dangerous and reckless. "
 
 [node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=28 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_f7wb2"]
@@ -9,7 +9,6 @@
 [ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="5_5hhmy"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_6bd6i"]
-[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="11_bxtjv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
 bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
@@ -97,21 +96,6 @@ outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 font = ExtResource("7_6bd6i")
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6bd6i"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryx00"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [node name="IntroAndTitleScreen" type="PanelContainer"]
 z_index = 100
@@ -385,7 +369,6 @@ vertical_alignment = 1
 [node name="IconBtn" parent="Credits/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_cetvo")]
 layout_mode = 2
 icon = 22
-flip_v = false
 is_hoverable = false
 
 [node name="PressStart" type="Control" parent="."]
@@ -454,54 +437,3 @@ text = "VERSION 0.1.1"
 label_settings = SubResource("LabelSettings_ryx00")
 horizontal_alignment = 1
 vertical_alignment = 2
-
-[node name="BtnControl" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="BtnControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer"]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="BtnControl/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_6bd6i")
-
-[node name="MarginContainer" type="MarginContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 25
-
-[node name="LeftSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-theme_override_constants/separation = 10
-
-[node name="RightSideBtnList" type="HBoxContainer" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 8
-
-[node name="SelectTabBtn" parent="BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("11_bxtjv")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ryx00")
-title = "ENTER"
-assigned_key = "ENTER"
-icon = 10
-panel_color = Color(0, 0.529412, 0.278431, 1)

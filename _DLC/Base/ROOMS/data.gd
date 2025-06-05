@@ -10,7 +10,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 
 	# ------------------------------------------
-	"can_contain": true,
+	"can_contain": false,
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
@@ -38,16 +38,17 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	
 	# --------------------------------------
-	"requiers_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+	"requires_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 	# ------------------------------------------	
 	
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
 			#ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),	
-			#ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 0),			
+			#ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 0),		
+			ABL.get_ability(ABL.REF.UPGRADE_FACILITY),
 			ABL.get_ability(ABL.REF.SET_WARNING_MODE),
-			ABL.get_ability(ABL.REF.SET_DANGER_MODE),
+			ABL.get_ability(ABL.REF.SET_DANGER_MODE, 1),
 			
 			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			#ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
@@ -66,10 +67,10 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS),
 			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
 			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
+			ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS, 2),			
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
 			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
 			#ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 2),
@@ -145,7 +146,7 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 
 	# --------------------------------------
-	"requiers_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+	"requires_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 	# ------------------------------------------
 		
 	# ------------------------------------------

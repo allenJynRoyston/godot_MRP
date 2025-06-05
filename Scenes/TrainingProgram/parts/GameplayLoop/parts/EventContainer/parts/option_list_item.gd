@@ -2,23 +2,23 @@ extends MouseInteractions
 
 @onready var RootPanel:PanelContainer = $"."
 @onready var MarginContainerPanel:MarginContainer = $MarginContainer
-@onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/MarginContainer/IconBtn
 @onready var DescriptionListMarginContainer:MarginContainer = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer
 @onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionLabel
 @onready var DescriptionListContainer:VBoxContainer = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionListContainer
 @onready var LockedTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/LockedTextBtn
 @onready var OptionTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/OptionTextBtn
 
-var onClick:Callable = func() -> void:pass
-var onFocus:Callable = func() -> void:pass
+var onClick:Callable = func() -> void:
+	pass
+	
+var onFocus:Callable = func() -> void:
+	pass
 
-var enabled:bool = false 
 var index:int
-
+var enabled:bool = false 
 var is_locked:bool = false
-
 var is_enabled:bool = true
-
 
 var is_selected:bool = false : 
 	set(val):
@@ -94,7 +94,7 @@ func on_data_update() -> void:
 		on_is_selected_update()
 	
 	if "success_rate" in data:
-		DescriptionLabel.text = "%s %s" % ["(%s SUCCESS)" % [str(data.success_rate,'%')], str(" - ", data.description) if "description" in data else ""]
+		DescriptionLabel.text = "%s %s" % ["(%s rate of success)" % [str(data.success_rate,'%')], str(" - ", data.description) if "description" in data else ""]
 		show_description = show_description
 	else:
 		show_description = false

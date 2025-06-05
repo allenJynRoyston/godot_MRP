@@ -22,6 +22,7 @@ const new_scp_entry:Dictionary = {
 var GameplayNode:Control
 var Structure3dContainer:Control
 var ToastContainer:Control
+var ActionContainer:Control
 
 # ------------------------------------------------------------------------------
 func assign_nodes() -> void:	
@@ -29,6 +30,8 @@ func assign_nodes() -> void:
 	#ConfirmModal = GameplayNode.ConfirmModal
 	Structure3dContainer = GameplayNode.Structure3dContainer
 	ToastContainer = GameplayNode.ToastContainer
+	ActionContainer = GameplayNode.ActionContainer
+	print(ActionContainer)
 # ------------------------------------------------------------------------------
 
 ## ------------------------------------------------------------------------------
@@ -554,7 +557,7 @@ func set_warning_mode() -> bool:
 	SUBSCRIBE.base_states = base_states
 	
 	# add debuff
-	add_debuff_to_base(BASE.DEBUFF.PANIC, 2)
+	add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -3, current_location.floor, [current_location.ring])
 	
 	return true
 # ---------------------
@@ -571,7 +574,7 @@ func set_danger_mode() -> bool:
 	SUBSCRIBE.base_states = base_states
 	
 	# add debuff
-	add_debuff_to_base(BASE.DEBUFF.PANIC, 2)
+	add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -3, current_location.floor, [current_location.ring])
 	
 	return true
 # ---------------------
@@ -965,6 +968,52 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> bool
 		SUBSCRIBE.resources_data = resources_data
 
 	return confirm
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func upgrade_facility(blacklist_self:bool = true) -> bool:
+	var unavailable_rooms:Array = [] if !blacklist_self else [U.location_to_designation(current_location)]
+	var previous_location:Dictionary = current_location.duplicate(true)
+	
+	# determine which rooms are unavailble 
+	var floor:int = current_location.floor
+	var ring:int = current_location.ring
+	for room_index in room_config.floor[floor].ring[ring].room.size():
+		var designation:String = str(current_location.floor, current_location.ring, room_index)
+		
+		# rooms that are empty...
+		if room_config.floor[floor].ring[ring].room[room_index].room_data.is_empty():
+			unavailable_rooms.push_back(designation)
+		else:
+			# ... and rooms that are already at the max level are added to the unavailable list
+			var max_possible_level:int = ROOM_UTIL.get_max_possible_level(room_config.floor[floor].ring[ring].room[room_index].room_data.ref)
+			var current_level:int = base_states.room[designation].abl_lvl
+			if current_level >= max_possible_level:
+				unavailable_rooms.push_back(designation)
+	
+	# update all unavailable rooms
+	SUBSCRIBE.unavailable_rooms = unavailable_rooms
+		
+	# hide UI in actionContainer
+	GameplayNode.show_only([Structure3dContainer])	
+	var confirm:bool = await create_modal("Upgrade room?", "Upgrade room to level X?", "", [], true)
+	
+	# clear, warp back to previous location and restore ui
+	SUBSCRIBE.unavailable_rooms = []
+	GameplayNode.restore_player_hud()
+	
+	# cancel, warp back to previous location
+	if !confirm:
+		SUBSCRIBE.current_location = previous_location		
+		return false
+		
+	# add
+	base_states.room[U.location_to_designation(current_location)].abl_lvl += 1
+	
+	# then warp back to previous location
+	SUBSCRIBE.current_location = previous_location		
+		
+	return true
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		

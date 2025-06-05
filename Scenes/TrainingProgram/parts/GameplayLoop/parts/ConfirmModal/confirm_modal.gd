@@ -122,8 +122,9 @@ func activate(auto_start:bool = true) -> void:
 
 # -------------------------------------------------------------------------------------------------	
 func start() -> void:
-	TextureRectUI.show()
-	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+	if !allow_controls:
+		TextureRectUI.show()
+		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 	
 	self.modulate = Color(1, 1, 1, 1)
 	is_showing = true
@@ -177,11 +178,12 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	
 	self.modulate = Color(1, 1, 1, 1)	
 	
-	U.tween_range(0.0 if is_showing else 1.0, 1.0 if is_showing else 0.0, 1.0, func(val:float) -> void:
-		TextureRectUI.material.set_shader_parameter("bend_amount", val)
-	).finished	
+	if !allow_controls:
+		U.tween_range(0.0 if is_showing else 1.0, 1.0 if is_showing else 0.0, 1.0, func(val:float) -> void:
+			TextureRectUI.material.set_shader_parameter("bend_amount", val)
+		).finished	
+		await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
 		
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  duration)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide, duration)
 	await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide, duration)

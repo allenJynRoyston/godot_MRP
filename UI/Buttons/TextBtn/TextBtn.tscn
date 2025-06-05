@@ -45,7 +45,6 @@ is_hoverable = false
 modulate = Color(0.662745, 0.662745, 0.662745, 1)
 layout_mode = 2
 label_settings = ExtResource("2_vmudk")
-uppercase = true
 
 [node name="IconBtnRight" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wxkle")]
 visible = false

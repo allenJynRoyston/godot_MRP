@@ -345,7 +345,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 110
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 10
 metadata/_edit_group_ = true
 

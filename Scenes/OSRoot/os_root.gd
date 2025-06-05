@@ -7,6 +7,8 @@ extends PanelContainer
 @onready var DoorScene:PanelContainer = $GameLayer/DoorScene
 @onready var OSNode:PanelContainer = $GameLayer/OS
 
+@onready var TitleSplash:PanelContainer = $GameLayer/TitleSplash
+
 @onready var Camera3d:Camera3D = $"3dViewport/Node3D/Camera3D"
 
 enum LAYER {DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
@@ -22,13 +24,20 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 
 # DEFAULTS
 @export_category("DEBUG SAVE FILES")
+@export var new_progress_file:bool = false
 @export var new_system_file:bool = false 
 @export var new_persistant_file:bool = false
 @export var new_quicksave_file:bool = false
 
+@export_category("PROGRESS DEBUG")
+@export var debug_story_progress:bool = false
+@export var story_progress:int = 0
+
 # SKIPS
 @export_category("DEBUG START")
+@export var skip_splash:bool = false
 @export var skip_intro:bool = false 
+@export var skip_office_intro:bool = false
 
 # INTRODUCTION
 @export_category("DEBUG INTRO SCREEN")
@@ -104,25 +113,38 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.IS_PRODUCTION_BUILD, is_production_build)		
 	
 	# options
-	DEBUG.assign(DEBUG.START_AT_FULLSCREEN, start_at_fullscreen)		
+	DEBUG.assign(DEBUG.START_AT_FULLSCREEN, start_at_fullscreen)
+	
 	# save files
+	DEBUG.assign(DEBUG.NEW_PROGRESS_FILE, new_progress_file)	
 	DEBUG.assign(DEBUG.NEW_SYSTEM_FILE, new_system_file)
 	DEBUG.assign(DEBUG.NEW_PERSISTANT_FILE, new_persistant_file)
 	DEBUG.assign(DEBUG.NEW_QUICKSAVE_FILE, new_quicksave_file)
+
+	# progress 
+	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS, debug_story_progress)
+	DEBUG.assign(DEBUG.STORY_PROGRESS_VAL, story_progress)
+
 	# skips
+	DEBUG.assign(DEBUG.SKIP_SPLASH, skip_splash)	
 	DEBUG.assign(DEBUG.SKIP_INTRO, skip_intro)
+	DEBUG.assign(DEBUG.SKIP_OFFICE_INTRO, skip_office_intro)
+	
 	# intro
 	DEBUG.assign(DEBUG.INTRO_SKIP_LOGO, intro_skip_logo)
 	DEBUG.assign(DEBUG.INTRO_SKIP_TITLE, intro_skip_title)	
 	DEBUG.assign(DEBUG.INTRO_SKIP_SEQUENCE, intro_skip_sequence)
 	DEBUG.assign(DEBUG.INTRO_SKIP_STARTAT, intro_skip_start_at)
+	
 	# os
 	DEBUG.assign(DEBUG.OS_SKIP_TO_GAME, os_skip_to_game)	
 	DEBUG.assign(DEBUG.OS_SKIP_BOOT, os_skip_boot)
 	DEBUG.assign(DEBUG.OS_APP_FAST_LOAD, os_app_fast_load)
+	
 	# app
 	DEBUG.assign(DEBUG.APP_SKIP_LOADING_SCREEN, app_skip_titlescreen)	
 	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, app_skip_loading_screen)	
+	
 	# gameplayloop
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
@@ -152,7 +174,10 @@ func _ready() -> void:
 		toggle_fullscreen()
 	else:		
 		on_fullscreen_update(Vector2(1280, 720))	
-		
+	
+	
+	await TitleSplash.start(0.2 if DEBUG.get_val(DEBUG.SKIP_SPLASH) else 3.0)
+	
 	reset()
 # -----------------------------------	
 
@@ -165,7 +190,8 @@ func reset() -> void:
 		await U.tick()
 		DoorScene.fastfoward()
 		await U.tick()
-		start_os_layer()
+		if skip_office_intro:
+			start_os_layer()
 # -----------------------------------		
 
 # -----------------------------------		
@@ -186,7 +212,6 @@ func start_os_layer() -> void:
 		
 	await U.tick()
 	OSNode.show()
-
 # -----------------------------------
 
 # -----------------------------------	
@@ -270,6 +295,7 @@ func on_current_layer_update() -> void:
 					node.show()
 					node.set_process(true)
 					node.set_physics_process(true)
+					node.switch_to()
 				else: 
 					node.hide()
 					node.set_process(false)
