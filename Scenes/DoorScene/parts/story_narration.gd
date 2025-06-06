@@ -53,14 +53,13 @@ func _ready() -> void:
 	await U.tick()
 	
 	BtnControls.onBack = func() -> void:
+		trigger_interupt()		
 		await BtnControls.reveal(false)		
 		await reveal(false)		
 		on_end.emit()
 		
 	BtnControls.onAction = func() -> void:
-		interupt = true
-		await U.tick()
-		interupt = false
+		trigger_interupt()
 			
 	
 	BtnControls.reveal(false, true)
@@ -68,27 +67,32 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func trigger_interupt() -> void:
+	interupt = true
+	await U.set_timeout(0.2)
+	interupt = false
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
 func reveal(state:bool, skip_animation:bool = false) -> void:
 	var new_val:int = control_pos[StoryPanel].show if state else control_pos[StoryPanel].hide
 	var duration:float = 0 if skip_animation else 0.3
 
-	
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), duration)
 	U.tween_node_property(TextContainer, "modulate", Color(1, 1, 1, 0 if new_val else 1), duration)
 	U.tween_node_property(StoryPanel, "position:y", new_val, duration)
 		
 	if state:
 		show()
-	
 		U.tween_node_property(NarrationBG, "modulate", Color(1, 1, 1, 1), duration)
-		await U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].show if state else control_pos[PortraitPanel].hide, 0.7, 1)
+		U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].show, 0.7, 0.5)
 		fill_message()
 		BtnControls.reveal(state)
 				
 
 	if !state:
-		await U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].hide, 0.7 )
-		await U.tween_node_property(NarrationBG, "modulate", Color(1, 1, 1, 0), duration)	#BtnControls.reveal(state)
+		U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].hide)		
+		await U.tween_node_property(NarrationBG, "modulate", Color(1, 1, 1, 0), duration)	
 		BtnControls.reveal(state)
 		reset_message()
 		hide()
@@ -116,9 +120,9 @@ func reset_message() -> void:
 	BtnControls.c_btn_title = "SKIP"
 	
 	BtnControls.onCBtn = func() -> void:
-		interupt = true
-		await U.tick()
-		interupt = false		
+		trigger_interupt()
+
+	trigger_interupt()
 	
 func fill_message() -> void:
 	var count:int = 0

@@ -290,10 +290,19 @@ texture = SubResource("ViewportTexture_3omms")
 [node name="Screenbend" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect" type="TextureRect" parent="Screenbend"]
+[node name="Control3" type="Control" parent="Screenbend"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Screenbend/Control3"]
 material = ExtResource("8_8iit3")
-offset_right = 1920.0
-offset_bottom = 1080.0
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 1922.0
+offset_bottom = 1082.0
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 
@@ -304,15 +313,15 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="TextureRect2" type="TextureRect" parent="Screenbend/Control"]
-self_modulate = Color(0.52549, 0.0117647, 0.72549, 0.843137)
+self_modulate = Color(0.52549, 0.0117647, 0.72549, 0.321569)
 layout_mode = 0
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 1820.0
-offset_bottom = 980.0
+offset_left = -50.0
+offset_top = 10.0
+offset_right = 1870.0
+offset_bottom = 1090.0
+scale = Vector2(1.25, 1.25)
 texture = SubResource("ViewportTexture_jk85w")
-expand_mode = 2
-stretch_mode = 6
+stretch_mode = 2
 
 [node name="Control2" type="Control" parent="Screenbend"]
 layout_mode = 3
@@ -323,11 +332,9 @@ offset_bottom = 40.0
 [node name="TextureRect2" type="TextureRect" parent="Screenbend/Control2"]
 modulate = Color(0.980392, 0.956863, 0.894118, 0.745098)
 layout_mode = 0
-offset_left = -10.0
-offset_top = -5.0
-offset_right = 1910.0
-offset_bottom = 1075.0
-rotation = 0.00349066
+offset_right = 1920.0
+offset_bottom = 1080.0
+rotation = 0.00174533
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 

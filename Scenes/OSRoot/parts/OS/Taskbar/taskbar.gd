@@ -53,6 +53,9 @@ func _ready() -> void:
 	on_show_media_player_update()
 	on_task_index()
 	
+	self.modulate = Color(1, 1, 1, 0)
+	
+	
 	#DesktopBtn.onFocus = func(_node:Control) -> void:
 		#onDesktopBtnFocus.call()
 #
@@ -91,6 +94,8 @@ func _ready() -> void:
 		"hide": -TaskbarPanel.size.y - 20
 	}
 	
+	TaskbarControl.position.y = control_pos[TaskbarControl].hide
+	
 	await U.tick()
 	set_show_taskbar(false, true)
 # ------------------------------------------------------------------------------
@@ -109,14 +114,24 @@ func on_task_index() -> void:
 # ------------------------------------------------------------------------------	
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 	show_taskbar = state
+	if state:
+		self.modulate = Color(1, 1, 1, 1)
+
+	
 	if !state:
 		if skip_animation:
 			BtnControl.reveal(state)
 		else:
 			await BtnControl.reveal(state)	
+		
 	await U.tween_node_property(TaskbarControl, "position:y", control_pos[TaskbarControl].show if show_taskbar else control_pos[TaskbarControl].hide, 0 if skip_animation else 0.3)
+	
 	if state:
 		BtnControl.reveal(state)	
+		
+	if !state:
+		self.modulate = Color(1, 1, 1, 0)
+		
 		
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return

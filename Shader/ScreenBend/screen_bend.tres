@@ -33,5 +33,5 @@ void fragment() {
 
 [resource]
 shader = SubResource("Shader_14y6p")
-shader_parameter/bend_amount = 0.264
-shader_parameter/bend_offset = 0.412
+shader_parameter/bend_amount = 0.062
+shader_parameter/bend_offset = 0.264

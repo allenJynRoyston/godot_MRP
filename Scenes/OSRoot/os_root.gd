@@ -289,6 +289,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 func on_current_layer_update() -> void:
 	if !is_node_ready():return
 	#TransitionScreen.start()
+
 	
 	match current_layer:
 		# -----------
