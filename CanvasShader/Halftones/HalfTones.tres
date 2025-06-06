@@ -4,7 +4,8 @@
 
 [resource]
 shader = ExtResource("1_lej54")
-shader_parameter/size = 256
-shader_parameter/dot_size = 1.0
-shader_parameter/value_multiplier = 1.0
+shader_parameter/size = 124
+shader_parameter/dot_size = 3.0
+shader_parameter/value_multiplier = 1.5
 shader_parameter/invert = true
+shader_parameter/dot_color = Color(0.909804, 1, 0.901961, 0.756863)

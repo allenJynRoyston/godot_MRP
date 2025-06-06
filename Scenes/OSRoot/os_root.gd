@@ -8,6 +8,7 @@ extends PanelContainer
 @onready var OSNode:PanelContainer = $GameLayer/OS
 
 @onready var TitleSplash:PanelContainer = $GameLayer/TitleSplash
+@onready var TransitionScreen:Control = $GameLayer/TransitionScreen
 
 @onready var Camera3d:Camera3D = $"3dViewport/Node3D/Camera3D"
 
@@ -287,6 +288,8 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 # -----------------------------------
 func on_current_layer_update() -> void:
 	if !is_node_ready():return
+	#TransitionScreen.start()
+	
 	match current_layer:
 		# -----------
 		LAYER.DOOR_LAYER:

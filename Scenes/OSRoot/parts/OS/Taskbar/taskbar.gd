@@ -34,6 +34,11 @@ var onItemSelect:Callable = func(_dict:Dictionary) -> void:pass
 var onItemClose:Callable = func(_dict:Dictionary) -> void:pass
 var onItemFocus:Callable = func() -> void:pass
 
+var task_index:int = -1:
+	set(val):
+		task_index = val
+		on_task_index()
+
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_music_player(self)	
@@ -46,16 +51,37 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_music_data_update()
 	on_show_media_player_update()
+	on_task_index()
 	
-	DesktopBtn.onFocus = func(_node:Control) -> void:
-		onDesktopBtnFocus.call()
-
-	# setup controls
-	DesktopBtn.onClick = func() -> void:
-		onBackToDesktop.call()
-
+	#DesktopBtn.onFocus = func(_node:Control) -> void:
+		#onDesktopBtnFocus.call()
+#
+	## setup controls
+	#DesktopBtn.onClick = func() -> void:
+		#onBackToDesktop.call()
+	
+	BtnControl.onDirectional = func(key:String) -> void:
+		if !is_visible_in_tree() or !is_node_ready(): return
+		match key:
+			"A":
+				task_index = U.min_max(task_index - 1, -1, RunningTasks.get_child_count() - 1)
+			"D":
+				task_index = U.min_max(task_index + 1, -1, RunningTasks.get_child_count() - 1)
+	
+	BtnControl.onAction = func() -> void:
+		if task_index == -1:
+			onBackToDesktop.call()
+			return
+			
+		onBack.call()		
+	
 	BtnControl.onBack = func() -> void:
-		onBack.call()
+		#GBL.find_node(REFS.OS_ROOT).play_door()
+		pass #
+		# onBack.call()
+	BtnControl.onCBtn = func() -> void:
+		await U.set_timeout(1.0)
+		onBack.call()	
 		
 	BtnControl.directional_pref = "LR"
 	
@@ -67,7 +93,17 @@ func _ready() -> void:
 	
 	await U.tick()
 	set_show_taskbar(false, true)
-	update_itemlist()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func on_task_index() -> void:
+	if !is_node_ready():return
+	if task_index == -1:
+		GBL.find_node(REFS.OS_LAYOUT).set_pause_container(true) 
+	else: 
+		GBL.find_node(REFS.OS_LAYOUT).set_pause_container(false)
+	
+	## RunningTasks.hide() if task_index == -1 else RunningTasks.show()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	
@@ -85,7 +121,7 @@ func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()
-	update_itemlist()
+	
 
 func add_item(item:Dictionary) -> void:
 	if !is_node_ready():return
@@ -105,8 +141,6 @@ func add_item(item:Dictionary) -> void:
 	
 	RunningTasks.add_child(new_node)	
 	
-	await U.tick()
-	update_itemlist()
 	
 func remove_item(ref:int) -> void:
 	if !is_node_ready():return
@@ -115,21 +149,6 @@ func remove_item(ref:int) -> void:
 			RunningTasks.remove_child(node)
 			node.queue_free()
 	
-	await U.tick()
-	update_itemlist()
-
-func update_itemlist() -> void:
-	var itemlist:Array = [DesktopBtn]
-	
-	for node in RunningTasks.get_children():
-		for btn in node.get_buttons():
-			itemlist.push_back(btn)
-	
-	if show_media_player:
-		for btn in MediaPlayer.get_buttons():
-			itemlist.push_back(btn)
-
-	BtnControl.itemlist = itemlist	
 
 func on_music_data_update() -> void:
 	show_media_player = !music_data.is_empty()

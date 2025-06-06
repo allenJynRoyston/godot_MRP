@@ -1,3 +1,13 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://cgpps4s7b2f56"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cgpps4s7b2f56"]
+
+[ext_resource type="Shader" uid="uid://c8radrll5ai3t" path="res://CanvasShader/LightWavey/LightWavey.gdshader" id="1_g3r6t"]
 
 [resource]
+shader = ExtResource("1_g3r6t")
+shader_parameter/opacity = 0.273
+shader_parameter/use_texture_alpha = false
+shader_parameter/use_dynamic_opacity = false
+shader_parameter/enable_line_scroll = true
+shader_parameter/scroll_speed = 1.595
+shader_parameter/scroll_amplitude = 0.022
+shader_parameter/scroll_frequency = 13.93

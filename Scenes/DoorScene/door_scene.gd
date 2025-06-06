@@ -2,9 +2,6 @@ extends PanelContainer
 
 @onready var ColorBG:ColorRect = $ColorBG
 @onready var TextureRender:TextureRect = $TextureRect
-@onready var NarrationPanel:PanelContainer = $NarrationControl/PanelContainer
-@onready var NarrationMargin:MarginContainer = $NarrationControl/PanelContainer/MarginContainer
-@onready var NarrationRTL:RichTextLabel = $NarrationControl/PanelContainer/MarginContainer/RichTextLabel
 @onready var RenderSubviewport:SubViewport = $RenderSubviewport
 @onready var SceneCamera:Camera3D = $RenderSubviewport/Node3D/Camera3D
 @onready var IntroSubviewport:SubViewport = $SubViewport
@@ -13,6 +10,8 @@ extends PanelContainer
 @onready var ScreenTextureRect:TextureRect = $RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport/TextureRect
 
 @onready var BtnControls:Control = $BtnControls
+
+@onready var StoryNarration:Control = $StoryNarration
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
@@ -24,11 +23,7 @@ var current_mode:MODE = MODE.INIT :
 		on_current_mode_update()
 
 var is_ready:bool = false
-var current_message:String = ""
-var is_busy:bool = false
 var onLogin:Callable = func():pass
-
-
 
 var story_chapters:Array[Dictionary] = [
 	{
@@ -78,7 +73,6 @@ var play_sequence:bool = true :
 		on_play_sequence_update()
 
 signal on_finish
-signal narration_complete
 
 # ---------------------------------------------
 func _init() -> void:
@@ -93,15 +87,8 @@ func _ready() -> void:
 	on_current_mode_update()	
 	on_play_sequence_update()
 	
-	NarrationPanel.modulate = Color(1, 1, 1, 0)
-	
-	_after_ready.call_deferred()
 	BtnControls.reveal(false)
-# ---------------------------------------------
 
-
-# ---------------------------------------------
-func _after_ready() -> void:	
 	IntroAndTitleScreen.on_end = func() -> void:
 		IntroSubviewport.set_process(false)
 		IntroSubviewport.get_child(0).hide()
@@ -109,11 +96,7 @@ func _after_ready() -> void:
 	BtnControls.onAction = func() -> void:
 		if !is_ready:return
 		await BtnControls.reveal(false)
-		
-		if play_sequence:
-			await play_story_sequence(false)
-		else:
-			onLogin.call()
+		onLogin.call()
 	
 	BtnControls.onCBtn = func() -> void:
 		if !is_ready:return
@@ -122,7 +105,9 @@ func _after_ready() -> void:
 	
 	BtnControls.onBack = func() -> void:
 		pass
+			
 	
+	await U.tick()
 	if DEBUG.get_val(DEBUG.NEW_PROGRESS_FILE):
 		FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
 	else:
@@ -132,44 +117,16 @@ func _after_ready() -> void:
 		else:
 			FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
 			
-	
-	await U.tick()
 # ---------------------------------------------
 
 # ---------------------------------------------
-func play_story_sequence(skip_delay:bool) -> void:
-	is_busy = true
-	if !skip_delay:
-		shifted_val = 10
-		
-	BtnControls.hide_c_btn = true
-	BtnControls.hide_a_btn = true
-	BtnControls.hide_b_btn = false
-	BtnControls.onBack = func() -> void:
-		await BtnControls.reveal(false)
-		narration_complete.emit()
-	
-	var message:String = ""
-	for text in story_chapters[current_progress_val].text:
-		message += str(text, '\r\r')
-	
-	current_message = message
-	NarrationPanel.modulate = Color(1, 1, 1, 1)	
-	
-	if !skip_delay:
-		await U.set_timeout(1.0)
-		
-	await BtnControls.reveal(true)
-	await narration_complete
-		
-	BtnControls.hide_c_btn = true
-	BtnControls.hide_a_btn = false
-	BtnControls.hide_b_btn = true	
+func play_story_sequence(skip_delay:bool) -> void:	
+	StoryNarration.text_list = story_chapters[current_progress_val].text 
+	await StoryNarration.reveal(true)
+	await StoryNarration.on_end
 	BtnControls.reveal(true)
-	
-	NarrationPanel.modulate = Color(1, 1, 1, 0)	
+		
 	play_sequence = false
-	is_busy = false
 # ---------------------------------------------
 
 		
@@ -190,10 +147,8 @@ func get_current_save_state() -> Dictionary:
 # ---------------------------------------------
 func on_play_sequence_update() -> void:
 	if !is_node_ready():return
-	BtnControls.a_btn_title = "PLAY" if play_sequence else "START"
-	
-	BtnControls.hide_c_btn = play_sequence
-	
+	BtnControls.c_btn_title = "REPLAY MESSAGE" if !play_sequence else "PLAY MESSAGE"
+	BtnControls.hide_a_btn = play_sequence
 # ---------------------------------------------
 	
 # ---------------------------------------------
@@ -271,28 +226,3 @@ func on_current_mode_update() -> void:
 	
 	is_ready = true
 # ---------------------------------------------	
-
-# --------------------------------------------
-func shift_string_backward(text: String, shift: int = 5) -> String:
-	var result:String = ""
-	for char in text:
-		if char == " ":
-			result += " "  # Keep spaces unchanged
-		else:
-			result += char(char.unicode_at(0) - shift)  # Convert back to character
-	return result
-# --------------------------------------------
-
-# ---------------------------------------------	
-var shifted_val:int = 10
-var shift_timer := 0.0
-var shift_interval := 0.02  # Seconds between decrements (make this bigger to go slower)
-func _physics_process(delta: float) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or !is_busy:return	
-	
-	if shifted_val > 0:
-		shift_timer += delta
-		if shift_timer >= shift_interval:
-			shift_timer = 0.0
-			shifted_val -= 1
-			NarrationRTL.text = str(shift_string_backward(current_message, shifted_val))

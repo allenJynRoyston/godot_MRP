@@ -940,14 +940,16 @@ func on_currently_running_app_update() -> void:
 	
 	for app in RunningAppsContainer.get_children():
 		if app == currently_running_app:
+			print(app)
 			app.show() 
 		else:
 			app.hide()
 			
-	if currently_running_app == null:
-		RunningAppsContainer.hide()
-	else:
-		RunningAppsContainer.show()
+	#if currently_running_app == null:
+		#RunningAppsContainer.hide()
+	#else:
+		#
+	RunningAppsContainer.show()
 		
 # -----------------------------------	
 #endregion
@@ -1029,6 +1031,14 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 # -----------------------------------
 
 # -----------------------------------
+func set_pause_container(state:bool) -> void:
+	if !is_node_ready():return
+	PauseContainer.show() if state else PauseContainer.hide()
+	RunningAppsContainer.show() if !state else RunningAppsContainer.hide()
+# -----------------------------------
+	
+
+# -----------------------------------
 func toggle_show_taskbar() -> void:		
 	show_taskbar = !show_taskbar
 	
@@ -1039,7 +1049,8 @@ func toggle_show_taskbar() -> void:
 		KeyBtn.is_disabled = false
 		#HeaderControls.hide()
 		if PauseContainer.background_image == null:
-			await take_background_snapshot()
+			pass
+			#await take_background_snapshot()
 		PauseContainer.show()
 		
 		# pause any runnning apps

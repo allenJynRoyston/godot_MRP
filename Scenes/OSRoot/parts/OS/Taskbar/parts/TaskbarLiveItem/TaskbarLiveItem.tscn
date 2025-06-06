@@ -5,7 +5,7 @@
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_282hj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34og0"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
+bg_color = Color(0.9938, 0.267588, 0.635946, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jhtup"]
 bg_color = Color(0.156863, 0.156863, 0.156863, 0.827451)
@@ -31,7 +31,6 @@ layout_mode = 2
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
 icon = 6
-flip_v = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
@@ -60,7 +59,6 @@ layout_mode = 2
 icon = 1
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0, 0.964706, 0.278431, 1)
-flip_v = false
 
 [node name="MinBtnContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer/HBoxContainer"]
 visible = false
@@ -77,4 +75,3 @@ layout_mode = 2
 icon = 11
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0, 0.964706, 0.278431, 1)
-flip_v = false

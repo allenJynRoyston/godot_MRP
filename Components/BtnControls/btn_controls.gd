@@ -14,6 +14,10 @@ extends Control
 @export_category("OPTIONS")
 @export var reset_to_last:bool = false
 @export var offset:Vector2 = Vector2(2, 5)
+@export var margin_offsets:Vector2 = Vector2(10, 10) : 
+	set(val):
+		margin_offsets = val
+		on_margin_offsets_update()
 
 @export_category("A BUTTON")
 @export var a_btn_title:String = "NEXT" : 
@@ -112,6 +116,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_fullscreen_update()
 	on_disable_active_btn_update()
+	on_margin_offsets_update()	
 	
 	on_a_btn_title_update()
 	on_b_btn_title_update()
@@ -160,6 +165,11 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func on_margin_offsets_update() -> void:
+	if !is_node_ready():return
+	BtnMarginContainer.set('theme_override_constants/margin_left', margin_offsets.x)
+	BtnMarginContainer.set('theme_override_constants/margin_right', margin_offsets.y)
+	
 func on_a_btn_title_update() -> void:
 	if !is_node_ready():return
 	ABtn.title = str(a_btn_title)
@@ -234,12 +244,13 @@ func update_control_pos() -> void:
 func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
 	if control_pos.is_empty():return
 	var duration:float = 0 if skip_animation else 0.3
+	var pos_val:int = control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide
 	is_revealed = state
 	
 	if !state:
 		freeze_and_disable(true)
-			
-	await U.tween_node_property(BtnControlPanel, "position:y", control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide, duration)
+	
+	await U.tween_node_property(BtnControlPanel, "position:y", pos_val, duration)
 	
 	if state:
 		freeze_and_disable(false)

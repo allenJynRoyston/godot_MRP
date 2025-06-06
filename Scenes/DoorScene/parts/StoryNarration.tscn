@@ -1,0 +1,110 @@
+[gd_scene load_steps=9 format=3 uid="uid://bbo8dutfowpc6"]
+
+[ext_resource type="Script" uid="uid://cehjigucmd63m" path="res://Scenes/DoorScene/parts/story_narration.gd" id="1_nskse"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_2i2yr"]
+[ext_resource type="Texture2D" uid="uid://c0w62ba8jtw6e" path="res://Media/images/researcher_girl_01.jpg" id="2_gfp2v"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_nskse"]
+[ext_resource type="Material" uid="uid://yeprohyubuxc" path="res://CanvasShader/Halftones/HalfTones.tres" id="2_rdfqw"]
+[ext_resource type="Material" uid="uid://cgpps4s7b2f56" path="res://Shader/_template/Wavey.tres" id="4_nmgxl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nmgxl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2i2yr"]
+
+[node name="StoryNarration" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nskse")
+
+[node name="NarrationBG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.635294)
+
+[node name="PortraitPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nmgxl")
+
+[node name="MarginContainer" type="MarginContainer" parent="PortraitPanel"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 100
+
+[node name="TextureRect" type="TextureRect" parent="PortraitPanel/MarginContainer"]
+material = ExtResource("2_rdfqw")
+layout_mode = 2
+texture = ExtResource("2_gfp2v")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TextureRect2" type="TextureRect" parent="PortraitPanel/MarginContainer"]
+material = ExtResource("4_nmgxl")
+layout_mode = 2
+texture = ExtResource("2_gfp2v")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_2i2yr")
+
+[node name="TextContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/margin_left = 250
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="BtmLabel" type="Label" parent="PanelContainer/TextContainer"]
+modulate = Color(0.448712, 0.448712, 0.448712, 1)
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+size_flags_vertical = 1
+label_settings = ExtResource("2_2i2yr")
+autowrap_mode = 2
+
+[node name="Control" type="Control" parent="PanelContainer/TextContainer"]
+layout_mode = 2
+
+[node name="TopLabel" type="Label" parent="PanelContainer/TextContainer/Control"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+offset_left = 2.0
+offset_top = -2.0
+offset_right = 602.0
+offset_bottom = 978.0
+size_flags_vertical = 1
+label_settings = ExtResource("2_2i2yr")
+autowrap_mode = 2
+visible_characters = 0
+visible_ratio = 0.12
+
+[node name="BtnControls" parent="." instance=ExtResource("2_nskse")]
+layout_mode = 1
+margin_offsets = Vector2(20, 10)
+a_btn_title = "FASTFOWARD"
+hide_a_btn = true
+b_btn_title = "END"
+b_btn_icon = 16
+c_btn_title = ""
+hide_c_btn = false
