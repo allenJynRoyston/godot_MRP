@@ -152,7 +152,6 @@ func _ready() -> void:
 	
 	BBtn.onClick = func() -> void:
 		if !is_node_ready():return
-		clear_itemlist()
 		onBack.call()
 
 	disabled_state = {
@@ -312,7 +311,7 @@ func on_item_index_update() -> void:
 			HintContainer.show()			
 	else:
 		HintContainer.hide()
-
+	
 	onUpdate.call(node)
 	Input.warp_mouse(node.global_position + offset)
 # --------------------------------------------------------------------------------------------------

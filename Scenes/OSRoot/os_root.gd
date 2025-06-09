@@ -35,13 +35,13 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var story_progress:int = 0
 
 # SKIPS
-@export_category("DEBUG START")
+@export_category("SKIPS START")
 @export var skip_splash:bool = false
 @export var skip_intro:bool = false 
 @export var skip_office_intro:bool = false
 
 # INTRODUCTION
-@export_category("DEBUG INTRO SCREEN")
+@export_category("INTRO SCREEN")
 @export var intro_skip_logo:bool = false
 @export var intro_skip_title:bool = false
 @export var intro_skip_sequence:bool = false
@@ -54,9 +54,9 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var os_app_fast_load:bool = false
 
 # INTRODUCTION
-@export_category("APP")
-@export var app_skip_titlescreen:bool = false
-@export var app_skip_loading_screen:bool = false
+@export_category("SITE DIRECTOR")
+@export var stdr_skip_titlescreen:bool = false
+@export var stdr_skip_loadingscreen:bool = false
 
 @export_category("DEBUG GAMEPLAYLOOP")
 @export var skip_setup_progress:bool = false
@@ -143,8 +143,8 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.OS_APP_FAST_LOAD, os_app_fast_load)
 	
 	# app
-	DEBUG.assign(DEBUG.APP_SKIP_LOADING_SCREEN, app_skip_titlescreen)	
-	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, app_skip_loading_screen)	
+	DEBUG.assign(DEBUG.APP_SKIP_LOADING_SCREEN, stdr_skip_titlescreen)	
+	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, stdr_skip_loadingscreen)	
 	
 	# gameplayloop
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
@@ -167,7 +167,7 @@ func _ready() -> void:
 	
 	#if !Engine.is_editor_hint():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	MousePointer.hide()
+	#MousePointer.hide()
 
 
 	if start_at_fullscreen:
@@ -176,8 +176,9 @@ func _ready() -> void:
 	else:		
 		on_fullscreen_update(Vector2(1280, 720))	
 	
-	
-	await TitleSplash.start(0.2 if DEBUG.get_val(DEBUG.SKIP_SPLASH) else 3.0)
+	if !DEBUG.get_val(DEBUG.SKIP_SPLASH):
+		TitleSplash.start()
+		await TitleSplash.on_complete
 	
 	reset()
 # -----------------------------------	

@@ -1,21 +1,3 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b23ed7ev8b5v8"]
-
-[ext_resource type="Shader" uid="uid://b8ooeff1np3vr" path="res://Shader/CRT/CRT.gdshader" id="1_yrsjd"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b23ed7ev8b5v8"]
 
 [resource]
-shader = ExtResource("1_yrsjd")
-shader_parameter/resolution = Vector2(640, 480)
-shader_parameter/scan_line_amount = 1.0
-shader_parameter/warp_amount = 0.0
-shader_parameter/noise_amount = 0.052
-shader_parameter/interference_amount = 0.2
-shader_parameter/grille_amount = 0.123
-shader_parameter/grille_size = 1.0
-shader_parameter/vignette_amount = 1.241
-shader_parameter/vignette_intensity = 0.241
-shader_parameter/aberation_amount = 0.313
-shader_parameter/roll_line_amount = 0.028
-shader_parameter/roll_speed = -0.413
-shader_parameter/scan_line_strength = -8.0
-shader_parameter/pixel_strength = -2.0
-shader_parameter/blend_factor = 0.063

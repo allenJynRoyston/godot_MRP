@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://d04lnq4yhp80o"]
+[gd_scene load_steps=12 format=3 uid="uid://d04lnq4yhp80o"]
 
 [ext_resource type="Script" uid="uid://brj5kk7yojux4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/timeline_container.gd" id="1_4mrhk"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_go307"]
 [ext_resource type="PackedScene" uid="uid://cgp6oftk1itbm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineItem.tscn" id="2_hg1uk"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_so6r3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gu0f8"]
 
@@ -31,6 +32,12 @@ colors = PackedColorArray(0.427493, 0.427493, 0.427493, 0.356863, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_r6wmq"]
 gradient = SubResource("Gradient_q3i3u")
+
+[sub_resource type="LabelSettings" id="LabelSettings_ipnk1"]
+font = ExtResource("2_so6r3")
+font_size = 32
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [node name="TimelineContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -81,7 +88,15 @@ theme_override_constants/margin_bottom = 5
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
+
+[node name="DateLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Day 4 "
+label_settings = SubResource("LabelSettings_ipnk1")
+horizontal_alignment = 2
 
 [node name="DayLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -91,18 +106,11 @@ text = "Monday "
 label_settings = ExtResource("2_go307")
 horizontal_alignment = 2
 
-[node name="DateLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
-text = "Day 4 "
-label_settings = ExtResource("2_go307")
-horizontal_alignment = 2
-
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 0
 
 [node name="ListScrollContainer" type="ScrollContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]

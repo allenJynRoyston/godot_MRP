@@ -54,6 +54,7 @@ SCENARIO_UTIL="*res://Autoload/ScenarioUtility.gd"
 EVT="*res://Autoload/enums/EVENTS.gd"
 Debug="*res://debug.gd"
 DEBUG="*res://Autoload/Debug.gd"
+STORY="*res://Autoload/StoryData.gd"
 
 [display]
 
@@ -68,7 +69,7 @@ window/main_scene="res://Scenes/Computer/Computer.tscn"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/csg_converter/plugin.cfg")
+enabled=PackedStringArray("res://addons/csg_converter/plugin.cfg", "res://addons/script-ide/plugin.cfg")
 
 [rendering]
 

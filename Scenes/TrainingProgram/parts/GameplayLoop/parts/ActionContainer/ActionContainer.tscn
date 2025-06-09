@@ -29,7 +29,7 @@ bg_color = Color(0.05, 0.05, 0.05, 0)
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xathl"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -41,7 +41,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah17n"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -53,7 +53,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_58xi4"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -65,7 +65,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x63m5"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -77,7 +77,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nld38"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -89,7 +89,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_273dx"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -101,7 +101,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2gjl"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -113,7 +113,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8fc8h"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -125,7 +125,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fx5xy"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -431,6 +431,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "UPGRADE"
 assigned_key = "E"
 icon = 46
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -442,6 +443,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "END TURN"
 assigned_key = "ENTER"
 icon = 27
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -482,6 +484,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_58xi4")
 title = "ACTIONS"
 assigned_key = "E"
 icon = 29
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -493,6 +496,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_x63m5")
 title = "END TURN"
 assigned_key = "ENTER"
 icon = 27
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -533,6 +537,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
 title = "UPGRADES"
 assigned_key = "E"
 icon = 29
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -544,6 +549,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
 title = "END TURN"
 assigned_key = "ENTER"
 icon = 27
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -592,6 +598,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 title = "STRUCTURE"
 assigned_key = "1"
 icon = 55
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -602,6 +609,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
 title = "FLOORPLAN"
 assigned_key = "2"
 icon = 55
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 allow_hint = false
 
 [node name="GotoGeneratorBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
@@ -611,6 +619,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
 title = "GENERATOR"
 assigned_key = "3"
 icon = 10
+panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 allow_hint = false
 
 [node name="Right" type="HBoxContainer" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2"]

@@ -37,18 +37,15 @@ window_label = "Site Director Training Program"
 
 [node name="IconBtn" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/LabelContainer/MarginContainer/HBoxContainer" index="0"]
 icon = 6
-flip_v = false
 
 [node name="Label" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/LabelContainer/MarginContainer/HBoxContainer" index="1"]
 text = "Site Director Training Program"
 
 [node name="MaxBtn" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/BtnContainer/HBoxContainer" index="0"]
 visible = true
-flip_v = false
 
 [node name="CloseBtn" parent="WindowUI/MarginContainer/VBoxContainer/Header/HBoxContainer/BtnContainer/HBoxContainer" index="1"]
 visible = true
-flip_v = false
 
 [node name="TrainingProgram" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_68i6h")]
 layout_mode = 2

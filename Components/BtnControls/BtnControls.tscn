@@ -82,6 +82,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_e24g7")
 
 [node name="BtnMarginContainer" type="MarginContainer" parent="BtnControlPanel"]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/margin_left = 5
@@ -115,7 +116,7 @@ theme_override_constants/separation = 10
 [node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("2_re623")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
-title = "BACK"
+title = "SAVE AND QUIT"
 assigned_key = "B"
 icon = 28
 panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
@@ -130,7 +131,7 @@ size_flags_vertical = 8
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
 title = "ALT"
-assigned_key = "F"
+assigned_key = "R"
 icon = 23
 panel_color = Color(0, 0.529412, 0.278431, 1)
 allow_hint = false

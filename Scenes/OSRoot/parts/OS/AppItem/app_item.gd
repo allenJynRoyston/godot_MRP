@@ -22,29 +22,21 @@ var data:Dictionary = {} :
 		on_data_update()
 
 var init_pos:Vector2 = Vector2()
-
 var pos_offset:Vector2 = Vector2() : 
 	set(val):
 		pos_offset = val
 		on_position_update.call_deferred()
 
-var can_release:bool = true
-var is_dragging:bool = false
-var drag_start_pos:Vector2 = Vector2(0, 0)
-var is_selectable:bool = true : 
+var is_selected:bool = false : 
 	set(val):
-		is_selectable = val
-		if !val:
-			is_dragging = false
-		on_focus()
+		is_selected = val
+		on_is_selected_update()
 
-var onClick:Callable = func(node:Node, btn:int, is_focused:bool) -> void:pass
-var onDragStart:Callable = func(node:Node) -> void:pass
-var onDragEnd:Callable = func(new_offset:Vector2, node:Control) -> void:pass		
+var onClick:Callable = func(node:Node, btn:int, is_focused:bool) -> void:pass	
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
-var onDblClick:Callable = func(node:Control, is_focused:bool, data:Dictionary) -> void:pass
-var onRightClick:Callable = func() -> void:pass
+#var onDblClick:Callable = func(node:Control, is_focused:bool, data:Dictionary) -> void:pass
+#var onRightClick:Callable = func() -> void:pass
 
 
 # ------------------------------------------------------------------------------
@@ -94,24 +86,18 @@ func on_focus(state:bool = is_focused) -> void:
 	else:
 		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 	
-	if !is_selectable: 
-		update_color(false)
-		return	
-	update_color(is_focused)
-	
-func update_color(state:bool) -> void:
-	if Engine.is_editor_hint() or !is_node_ready():
-		return
-		
-	#IconButton.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
-	
+
+func on_is_selected_update() -> void:
+	if !is_node_ready(): return
+
+	IconButton.static_color = Color.WHITE if is_selected else Color.LIGHT_SLATE_GRAY
+
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+	label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if is_selected else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
 	AppLabel.label_settings = label_setting
 	
 
-func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !is_selectable: return
-	if on_hover and btn == MOUSE_BUTTON_LEFT:
-		onClick.call()
+#func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
+	#if on_hover and btn == MOUSE_BUTTON_LEFT:
+		#onClick.call()
 # ------------------------------------------------------------------------------

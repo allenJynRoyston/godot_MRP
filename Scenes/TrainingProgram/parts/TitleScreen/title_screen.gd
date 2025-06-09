@@ -2,10 +2,10 @@ extends PanelContainer
 
 @onready var MenuList:VBoxContainer = $CenterContainer/VBoxContainer/MenuList
 
-@onready var StoryBtn:Control = $CenterContainer/VBoxContainer/MenuList/StoryBtn
-@onready var TutorialBtn:Control = $CenterContainer/VBoxContainer/MenuList/TutorialBtn
-@onready var ScenarioBtn:Control = $CenterContainer/VBoxContainer/MenuList/ScenairoBtn
 @onready var ContinueBtn:Control = $CenterContainer/VBoxContainer/MenuList/ContinueBtn
+@onready var NewBtn:Control = $CenterContainer/VBoxContainer/MenuList/NewBtn
+#@onready var TutorialBtn:Control = $CenterContainer/VBoxContainer/MenuList/TutorialBtn
+#@onready var ScenarioBtn:Control = $CenterContainer/VBoxContainer/MenuList/ScenairoBtn
 
 @onready var BtnControls:Control = $BtnControl
 #@onready var QuitBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/QuitBtn
@@ -38,7 +38,7 @@ var freeze_inputs:bool = false :
 	set(val):
 		freeze_inputs = val
 		on_freeze_inputs_update()
-var quickload_data:Dictionary = {}
+		
 var btn_arr:Array[Control] = []
 var slist:Array = []
 var selected_index:int = 0 : 
@@ -53,28 +53,30 @@ var scenario_index:int = 0 :
 
 signal wait_for_input
 
+func _init() -> void:
+	self.modulate = Color(1, 1, 1, 0)
+
 # ------------------------------------------
 func _ready() -> void:
-	ScenarioPanel.hide()
-	disable_btns(true)
-	hide()
-	
-	StoryBtn.onClick = func() -> void:
-		end("story")
-		
-	TutorialBtn.onClick = func() -> void:
-		build_tutorial_list() 
-		current_mode = MODE.SCENARIO
+	self.modulate = Color(1, 1, 1, 1)
 
-	ScenarioBtn.onClick = func() -> void:
-		build_scenario_list()
-		current_mode = MODE.SCENARIO
+	ScenarioPanel.hide()	
 		
 	ContinueBtn.onClick = func() -> void:
 		end("continue")
+			
+	NewBtn.onClick = func() -> void:
+		end("story")
 		
-	
-	btn_arr = [ContinueBtn, TutorialBtn, ScenarioBtn, StoryBtn]
+	#TutorialBtn.onClick = func() -> void:
+		#build_tutorial_list() 
+		#current_mode = MODE.SCENARIO
+#
+	#ScenarioBtn.onClick = func() -> void:
+		#build_scenario_list()
+		#current_mode = MODE.SCENARIO
+
+	btn_arr = [ContinueBtn, NewBtn] 
 	
 	for btn in btn_arr:
 		btn.onFocus = func(node:Control) -> void:
@@ -83,7 +85,6 @@ func _ready() -> void:
 				if btn_node == node:
 					selected_index = index
 	
-	ContinueDetails.hide()
 	ScenarioMarginContainer.set("theme_override_constants/margin_left", GBL.game_resolution.x/2 - 110)
 	
 	# show and setup btns
@@ -93,21 +94,22 @@ func _ready() -> void:
 
 # ------------------------------------------
 func start(fast_boot:bool = false) -> void:
-	disable_btns(false)	
 	show()
+
+	var quickload_res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
+	has_quicksave = false if DEBUG.get_val(DEBUG.NEW_QUICKSAVE_FILE) else quickload_res.success 
+	var restore_data:Dictionary = quickload_res.filedata.data if has_quicksave else {}	
 	
-	ContinueBtn.show() if has_quicksave else ContinueBtn.hide()
-	selected_index = 0 if has_quicksave else 1	
+
+	NewBtn.is_disabled = false
+	ContinueBtn.is_disabled = !has_quicksave
+	selected_index = 0
 	
 	if has_quicksave:
-		var scenario_details:Dictionary = SCENARIO_UTIL.get_scenario_data(quickload_data.filedata.data.scenario_ref)
-		var modification_date:Dictionary = quickload_data.filedata.metadata.modification_date
-		DetailName.text = "[DetailName]"
-		DetailDay.text = "DAY %s" % [quickload_data.filedata.data.progress_data.day]
+		var modification_date:Dictionary = quickload_res.filedata.metadata.modification_date		
+		DetailName.text = "QUICKSAVE"
+		DetailDay.text = "DAY %s" % [restore_data.progress_data.day + 1]
 		DetailDate.text = "%s/%s/%s" % [modification_date.day, modification_date.month, modification_date.year]
-
-	ScenarioBtn.title = "???" if disable_scenario else "SCENARIOS"
-	StoryBtn.title = "???" if disable_story else "STORY"
 
 	await U.set_timeout(0.3)
 	BtnControls.reveal(true)
@@ -132,14 +134,8 @@ func on_freeze_inputs_update() -> void:
 
 # ------------------------------------------
 func disable_btns(state:bool) -> void:
-	if !state:
-		ContinueBtn.is_disabled = !has_quicksave
-		TutorialBtn.is_disabled = false
-		StoryBtn.is_disabled = disable_story
-		ScenarioBtn.is_disabled = disable_scenario
-	else:
-		for btn in [StoryBtn, TutorialBtn, ScenarioBtn, ContinueBtn]:
-			btn.is_disabled = true
+	for btn in [ContinueBtn, NewBtn]:
+		btn.is_disabled = state
 # ------------------------------------------
 
 # ------------------------------------------
@@ -151,7 +147,7 @@ func on_selected_index_update() -> void:
 		btn_node.icon = SVGS.TYPE.NEXT if index == selected_index else SVGS.TYPE.NONE
 		btn_node.is_active(index == selected_index)
 		if index == selected_index:
-			if btn_node == ContinueBtn:
+			if btn_node == ContinueBtn and has_quicksave:
 				ContinueDetails.global_position = ContinueBtn.global_position + Vector2(ContinueBtn.size.x + 10, -ContinueBtn.size.y/4)
 				ContinueDetails.show() 
 			else:

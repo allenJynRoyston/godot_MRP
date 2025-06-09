@@ -35,17 +35,29 @@ func quit() -> void:
 	quit_complete.emit()
 	self.queue_free()
 	
+func on_taskbar_is_open_update(state:bool) -> void:
+	if state:
+		pause()
+	else:
+		unpause()	
+	
 func pause() -> void:
 	if !is_paused:
 		is_paused = true
-		PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+		await TrainingProgram.pause()
+		if is_visible_in_tree():
+			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 		PauseContainer.show()
 		TrainingProgram.hide()
 	
 func unpause() -> void:
-	await U.tick()
 	is_paused = false
 	PauseContainer.hide()
 	TrainingProgram.show()
 	TrainingProgram.unpause()
+	await U.set_timeout(0.3)
+	TrainingProgram.unpause()
+	
+func force_save_and_quit() -> void:
+	await TrainingProgram.force_save_and_quit()
 # ------------------------------------------------------------------------------

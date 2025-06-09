@@ -42,11 +42,9 @@ size_flags_vertical = 4
 loading_text = "Loadinge Emails..."
 
 [node name="EmailComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="1" instance=ExtResource("3_0i4ns")]
-visible = false
 layout_mode = 2
 
 [node name="PauseContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="2" instance=ExtResource("5_fh1d2")]
-visible = false
 layout_mode = 2
 
 [editable path="WindowUI"]

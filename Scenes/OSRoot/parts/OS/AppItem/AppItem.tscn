@@ -1,20 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://r8fxl3w206rc"]
+[gd_scene load_steps=6 format=3 uid="uid://r8fxl3w206rc"]
 
 [ext_resource type="Script" uid="uid://c8wncqmj781bb" path="res://Scenes/OSRoot/parts/OS/AppItem/app_item.gd" id="1_tkkct"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_w4olv"]
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_12a8c"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_k6wcv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhp16"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ruqfy"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_rxw4r"]
-font = ExtResource("4_12a8c")
-font_color = Color(0, 0.965, 0.278, 1)
-outline_color = Color(0, 0.529412, 0.278431, 1)
-shadow_size = 0
-shadow_color = Color(0, 0.784314, 0, 1)
-shadow_offset = Vector2(0, 0)
 
 [node name="AppItem" type="PanelContainer"]
 offset_right = 110.0
@@ -33,10 +25,11 @@ layout_mode = 2
 [node name="IconBtn" parent="VBoxContainer/CenterContainer" instance=ExtResource("2_w4olv")]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
-icon = 3
+icon = 22
+static_color = Color(0.796243, 0.796243, 0.796243, 1)
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.672751, 0.672752, 0.672751, 1)
-flip_v = false
+is_hoverable = false
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -53,7 +46,7 @@ theme_override_constants/margin_bottom = 5
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Application"
-label_settings = SubResource("LabelSettings_rxw4r")
+label_settings = ExtResource("3_k6wcv")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2

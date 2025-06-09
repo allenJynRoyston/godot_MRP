@@ -25,44 +25,46 @@ var current_mode:MODE = MODE.INIT :
 var is_ready:bool = false
 var onLogin:Callable = func():pass
 
-var story_chapters:Array[Dictionary] = [
-	{
-		"text": [
-			"Listen carefully.  My name is Researcher [   ] and I was tasked with recording these messages for Procedure-[   ]: the Memeory Recovery Protocol, the procedure that you are now currently undergoing.",
-			"The first thing I need to tell you is you are not safe, and your life is in danger.",
-			"Thats the bad news.  The good news, is, that you can change that.  You have control here.  But.  I still need you to be a little bit afraid.",
-			"Now this is hard to understand at first, but... you've done this before.  You've undergone this exact procedure, safetly, multiple times.  You've saved your life each time.",
-			"You just don't remember.",
-			"But it's more accurate to say that you just CAN'T remember.",
-			"The reason is you exposed yourself to an incredibly potent amnestic, a synthetic chemical agent used to suppress memory and [    ].",
-			"Your inability to remember who you are, who you REALLY are, is intentional.  What we don't understand is how the mind that, the mind of somebody not you... fills in that absense.  Whoever that is, you are target we are trying to reach.",
-			"And we believe that's who we're speaking to now.",
-			"Anyways, there's a computer in front of you. I just need you to complete the tutorial.  Once you do I'll tell you more."
-		 ],
-		"objectives": [
-			{"title": "Complete the tutorial", "is_completed": func():pass}			
-		]
-	},
-	{
-		"text": [
-			"So like I said, we've done this a few times now.  Our success rate is actually [ ]%, which, you know... isn't that bad.  Considering.",
-			"But... what's really improves our odds is when you trust me.",
-			"And, unfortunately, that's going to be really difficult after I disclose the last message you sent me.",
-			"It simply said, and I quote: ",
-			"'You can't trust it.  It lies.'",
-			"End quote.",
-			"The thing is, you've sent me this exact message the last time you triggered the self destruct, but you couldn't remember what it meant, even after a successful recall.",
-			"That is... very uncomforable, to say the least.  And it leads me to only two conlusions: ",
-			"That some entity keeps forcing you to initiate the site self-destruct sequence unknowingly or worse.",  
-			"You WANT to do it, but that something keeps stopping you.",
-			"Eitherway, we need to know so we can help you.", 
-			"You've been emailed a program for the computer.  Install it and fufill the objectives and we'll talk more."
-		],
-		"objectives": [
-			{"title": "Contain 1 SCP by day 10.", "is_completed": func():pass}			
-		]
-	}	
-];
+#var story_chapters:Array[Dictionary] = [
+	#{
+		#"text": [
+			#"Listen carefully.  My name is Researcher [   ] and I was tasked with recording these messages for Procedure-[   ]: the Memeory Recovery Protocol, the procedure that you are now currently undergoing.",
+			#"The first thing I need to tell you is you are not safe, and your life is in danger.",
+			#"Thats the bad news.  The good news, is, that you can change that.  You have control here.  But.  I still need you to be a little bit afraid.",
+			#"Now this is hard to understand at first, but... you've done this before.  You've undergone this exact procedure, safetly, multiple times.  You've saved your life each time.",
+			#"You just don't remember.",
+			#"But it's more accurate to say that you just CAN'T remember.",
+			#"The reason is you exposed yourself to an incredibly potent amnestic, a synthetic chemical agent used to suppress memory and [    ].",
+			#"Your inability to remember who you are, who you REALLY are, is intentional.  What we don't understand is how the mind that, the mind of somebody not you... fills in that absense.  Whoever that is, you are target we are trying to reach.",
+			#"And we believe that's who we're speaking to now.",
+			#"Anyways, there's a computer in front of you. I just need you to complete the tutorial.  Once you do I'll tell you more."
+		 #],
+		#"objectives": [
+			#{
+				#"title": "Complete the tutorial", "is_completed": func():pass
+			#}			
+		#]
+	#},
+	#{
+		#"text": [
+			#"So like I said, we've done this a few times now.  Our success rate is actually [ ]%, which, you know... isn't that bad.  Considering.",
+			#"But... what's really improves our odds is when you trust me.",
+			#"And, unfortunately, that's going to be really difficult after I disclose the last message you sent me.",
+			#"It simply said, and I quote: ",
+			#"'You can't trust it.  It lies.'",
+			#"End quote.",
+			#"The thing is, you've sent me this exact message the last time you triggered the self destruct, but you couldn't remember what it meant, even after a successful recall.",
+			#"That is... very uncomforable, to say the least.  And it leads me to only two conlusions: ",
+			#"That some entity keeps forcing you to initiate the site self-destruct sequence unknowingly or worse.",  
+			#"You WANT to do it, but that something keeps stopping you.",
+			#"Eitherway, we need to know so we can help you.", 
+			#"You've been emailed a program for the computer.  Install it and fufill the objectives and we'll talk more."
+		#],
+		#"objectives": [
+			#{"title": "Contain 1 SCP by day 10.", "is_completed": func():pass}			
+		#]
+	#}	
+#];
 
 
 var current_progress_val:int = 0
@@ -110,18 +112,19 @@ func _ready() -> void:
 	await U.tick()
 	if DEBUG.get_val(DEBUG.NEW_PROGRESS_FILE):
 		FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
+		await U.tick()
+	
+	var res:Dictionary = FS.load_file(FS.FILE.PROGRESS)
+	if res.success:
+		parse_save_data(res.filedata.data)
 	else:
-		var res:Dictionary = FS.load_file(FS.FILE.PROGRESS)
-		if res.success:
-			parse_save_data(res.filedata.data)
-		else:
-			FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
-			
+		FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
+		
 # ---------------------------------------------
 
 # ---------------------------------------------
 func play_story_sequence(skip_delay:bool) -> void:	
-	StoryNarration.text_list = story_chapters[current_progress_val].text 
+	StoryNarration.text_list = STORY.chapters[current_progress_val].text 
 	await StoryNarration.reveal(true)
 	await StoryNarration.on_end
 	BtnControls.reveal(true)
@@ -134,12 +137,12 @@ func play_story_sequence(skip_delay:bool) -> void:
 func parse_save_data(save_data:Dictionary) -> void:
 	story_progress_val = save_data.story_progress_val
 	current_progress_val = save_data.current_progress_val
+	GBL.progres_save_data = save_data
 # ---------------------------------------------
 
 # ---------------------------------------------
 func get_current_save_state() -> Dictionary:
 	return {
-		"current_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else current_progress_val,
 		"story_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else story_progress_val,
 	}	
 # ---------------------------------------------

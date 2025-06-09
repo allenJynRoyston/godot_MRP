@@ -159,6 +159,13 @@ func activate() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func start(start_at_ring_level:bool = false) -> void:
+	for btn in [GenEndTurnBtn, WingEndTurnBtn, FacilityEndTurnBtn]:
+		btn.onClick = func() -> void:
+			await lock_actions(true)
+			await GameplayNode.next_day()
+			lock_actions(false)
+
+	
 	# -------------------------------------
 	GotoFloorBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
@@ -207,13 +214,13 @@ func start(start_at_ring_level:bool = false) -> void:
 	# -------------------------------------
 	ObjectivesBtn.onClick = func() -> void:
 		await lock_actions(true)
-		await GAME_UTIL.open_objectives()
+		await GAME_UTIL.open_objectives(GameplayNode.objectives)
 		lock_actions(false)
 		on_current_mode_update()
 	
 	SettingsBtn.onClick = func() -> void:
 		ControllerOverlay.hide()
-		NameControl.hide()		
+		NameControl.hide()
 		await lock_actions(true)
 		show_settings()
 		
@@ -659,11 +666,6 @@ func investigate_wrapper(action:Callable) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func hide_ui() -> void:
-	BtnControls.reveal(false)
-	RoomDetailsControl.reveal(false) 
-	ControllerOverlay.hide()
-
 var previous_room_ref:int 
 func before_use() -> void:
 	previous_room_ref = RoomDetailsControl.room_ref

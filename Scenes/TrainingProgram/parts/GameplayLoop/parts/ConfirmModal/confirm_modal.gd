@@ -95,8 +95,8 @@ func end(made_changes:bool) -> void:
 	
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 
-	await U.tween_range(1.0, 0.0, 0.3, func(val:float) -> void:
-		TextureRectUI.material.set_shader_parameter("bend_amount", val)
+	await U.tween_range(TextureRectUI.material.get_shader_parameter("blur_radius"), 0.0, 0.3, func(val:float) -> void:
+		TextureRectUI.material.set_shader_parameter("blur_radius", val)
 	).finished	
 	
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].hide)
@@ -138,6 +138,7 @@ func on_fullscreen_update(state:bool) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func check_for_unavailable_rooms() -> void:
+	if current_location.is_empty():return
 	var designation:String = U.location_to_designation(current_location)	
 	BtnControls.disable_active_btn = designation in unavailable_rooms
 # --------------------------------------------------------------------------------------------------	
@@ -178,11 +179,13 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 	
 	self.modulate = Color(1, 1, 1, 1)	
 	
+	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0.3 if is_showing else 0), duration)
+	
+	
 	if !allow_controls:
-		U.tween_range(0.0 if is_showing else 1.0, 1.0 if is_showing else 0.0, 1.0, func(val:float) -> void:
-			TextureRectUI.material.set_shader_parameter("bend_amount", val)
+		U.tween_range(0 if is_showing else 4.0, 4 if is_showing else 0, duration, func(val:float) -> void:
+			TextureRectUI.material.set_shader_parameter("blur_radius", val)
 		).finished	
-		await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1 if is_showing else 0), duration)
 		
 	U.tween_node_property(ContentPanelContainer, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  duration)
 	U.tween_node_property(StaffingControlPanel, "position:y", control_pos[StaffingControlPanel].show if is_showing else control_pos[StaffingControlPanel].hide, duration)
@@ -284,6 +287,7 @@ func on_key_press(key:String) -> void:
 		# ----------------------------
 		"A":
 			U.room_left()
+	
 	
 	check_for_unavailable_rooms()
 # --------------------------------------------------------------------------------------------------	

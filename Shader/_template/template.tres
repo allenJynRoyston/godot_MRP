@@ -1,6 +1,12 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://wrbhauo7j8f6"]
 
-[ext_resource type="Shader" path="res://Shader/_template/template.gdshader" id="1_uih0u"]
+[ext_resource type="Shader" uid="uid://bklhaafc63hm4" path="res://Shader/_template/template.gdshader" id="1_uih0u"]
 
 [resource]
 shader = ExtResource("1_uih0u")
+shader_parameter/blur_radius = 8
+shader_parameter/blur_scale = 1.0
+shader_parameter/darkness = 0.8
+shader_parameter/fade_direction = 0
+shader_parameter/fade_cutoff = 0.2
+shader_parameter/fade_intensity = 2.0

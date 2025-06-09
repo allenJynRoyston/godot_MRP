@@ -4,20 +4,9 @@ extends Node
 enum PLACEMENT {LEFT, RIGHT, TOP, BOTTOM}
 
 # ------------------------------------------------------------------------------
-var projected_3D_objects:Dictionary = {}
+# SAVE STATES
+var progres_save_data:Dictionary = {}
 
-func update_projected_3D_objects_position(key:String, normalized_position:Vector2 = Vector2(0, 0)) -> void:
-	if key not in projected_3D_objects:
-		projected_3D_objects[key] = normalized_position
-	projected_3D_objects[key] = normalized_position 
-
-func remove_from_projected_3d_objects(key:String) -> void:
-	projected_3D_objects.erase(key)
-
-func get_projected_3d_object_normalized_position(key:String) -> Vector2:
-	if key in projected_3D_objects:
-		return projected_3D_objects[key]
-	return Vector2(-1, -1)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

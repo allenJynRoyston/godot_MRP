@@ -64,7 +64,6 @@ visible = false
 layout_mode = 2
 icon = 27
 flip_h = true
-flip_v = false
 is_hoverable = false
 
 [node name="CategoryLabel" type="Label" parent="HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
@@ -77,7 +76,6 @@ horizontal_alignment = 1
 visible = false
 layout_mode = 2
 icon = 27
-flip_v = false
 is_hoverable = false
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer"]
@@ -182,3 +180,4 @@ layout_mode = 2
 offset = Vector2(2, 2)
 a_btn_title = "OPEN"
 b_btn_title = "CLOSE"
+hide_b_btn = true

@@ -1,6 +1,5 @@
 extends Control
 
-@onready var RenderTextureRect:TextureRect = $TextureRect
 @onready var TransitionRect:TextureRect = $TransitionRect
 @onready var RenderSubviewport:SubViewport = $SubViewport
 
@@ -18,8 +17,6 @@ extends Control
 @onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
 @onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
 @onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
-
-const TransitionShader:ShaderMaterial = preload("res://CanvasShader/Dissolve/Dissolve.tres")
 
 var camera_settings:Dictionary = {} 
 var previous_camera_type:int

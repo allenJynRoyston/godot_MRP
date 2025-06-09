@@ -23,6 +23,11 @@ var default_setup:Dictionary = {}
 var is_windows:bool = DisplayServer.get_name() == "Windows"
 var is_ready_and_activated:bool = false
 
+var taskbar_is_open:bool = false : 
+	set(val):
+		taskbar_is_open = val
+		on_taskbar_is_open_update(taskbar_is_open)
+		
 signal is_ready
 signal quit_complete
 
@@ -39,6 +44,8 @@ func _ready() -> void:
 	
 func pause() -> void:pass
 func unpause() -> void:pass
+func on_taskbar_is_open_update(_state:bool) -> void:pass
+func force_save_and_quit() -> void:pass
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

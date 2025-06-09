@@ -82,20 +82,26 @@ func quit() -> void:
 	LoadingComponent.hide()
 	events.close.call()
 
-	
+func on_taskbar_is_open_update(state:bool) -> void:
+	if state:
+		pause()
+	else:
+		unpause()
+
 func pause() -> void:
 	if !is_paused:
 		is_paused = true
-		EmailComponent.set_control_pos_visibility(false)
-		await U.tick()
-		PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+		await EmailComponent.pause()
+		if is_visible_in_tree():
+			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 		PauseContainer.show()
 		EmailComponent.hide()
-		EmailComponent.set_control_pos_visibility(true)
 	
 func unpause() -> void:
 	is_paused = false
 	PauseContainer.hide()
 	EmailComponent.show()
+	EmailComponent.unpause()
+	await U.set_timeout(0.3)
 	EmailComponent.unpause()
 # ------------------------------------------------------------------------------

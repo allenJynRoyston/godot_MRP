@@ -32,7 +32,6 @@ theme_override_constants/separation = 10
 [node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_7ovhd")]
 layout_mode = 2
 icon = 4
-flip_v = false
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]

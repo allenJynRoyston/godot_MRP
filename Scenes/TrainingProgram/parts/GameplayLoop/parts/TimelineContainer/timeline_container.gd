@@ -104,7 +104,7 @@ func on_progress_data_update(new_val:Dictionary) -> void:
 			new_pos += node.size.y + 10
 	
 	DayLabel.text = "Monday"	
-	DateLabel.text = "Day %s" % [progress_data.day + 1]
+	DateLabel.text = "Day %s" % [progress_data.day]
 
 	U.tween_node_property(ListScrollContainer, "scroll_vertical", new_pos, delay, 0.5)
 # --------------------------------------------------------------------------------------------------	

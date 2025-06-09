@@ -18,7 +18,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6u7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tw6u7"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0.337255, 0.27451, 1, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -48,50 +48,43 @@ layout_mode = 2
 layout_mode = 2
 color = Color(0.119391, 0.17303, 3.60981e-08, 0.886275)
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="Desktop" type="PanelContainer" parent="MarginContainer"]
+[node name="Desktop" type="PanelContainer" parent="."]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_1wtgv")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Desktop"]
+[node name="MarginContainer" type="MarginContainer" parent="Desktop"]
 layout_mode = 2
 theme_override_constants/margin_left = 80
 theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 80
 theme_override_constants/margin_bottom = 80
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/Desktop/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Desktop/MarginContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Desktop/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Desktop/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DesktopIconContainer" type="GridContainer" parent="MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="DesktopIconContainer" type="GridContainer" parent="Desktop/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 20
 columns = 6
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/Desktop/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Desktop/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 
-[node name="RecycleBin" parent="MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2" instance=ExtResource("4_e3kl5")]
+[node name="RecycleBin" parent="Desktop/MarginContainer/HBoxContainer/VBoxContainer2" instance=ExtResource("4_e3kl5")]
 visible = false
 layout_mode = 2
 title = "Recycle Bin"
 icon = 0
 
-[node name="Taskbar" parent="MarginContainer" instance=ExtResource("3_v00j4")]
+[node name="Taskbar" parent="." instance=ExtResource("3_v00j4")]
 z_index = 5
 z_as_relative = false
 layout_mode = 2
@@ -99,6 +92,7 @@ layout_mode = 2
 [node name="PauseContainer" parent="." instance=ExtResource("8_13atc")]
 visible = false
 layout_mode = 2
+use_transition = true
 
 [node name="RunningAppsContainer" type="Control" parent="."]
 layout_mode = 2
@@ -118,7 +112,7 @@ layout_mode = 1
 
 [node name="BtnControl" parent="." instance=ExtResource("6_b7tym")]
 layout_mode = 2
-offset = Vector2(50, 10)
+offset = Vector2(30, 5)
 a_btn_title = "LOAD"
 b_btn_title = "EXIT"
 
@@ -140,7 +134,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_tw6u7")
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HeaderControls/PanelContainer/MarginContainer"]
@@ -151,9 +145,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="KeyBtn" parent="HeaderControls/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("8_tw6u7")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_tw6u7")
 title = "TASKBAR"
 assigned_key = "BACKSPACE"
-icon = 15
+icon = 67
+panel_color = Color(0.337255, 0.27451, 1, 1)
+is_disabled = false

@@ -129,22 +129,22 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 			camera_tween.stop()		
 			
 		if previous_floor < assigned_location.floor:
-			MainCamera.rotation_degrees.x = default_camera_rotation.x + 5
+			#MainCamera.rotation_degrees.x = default_camera_rotation.x + 5
 			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
 			transition()
 			
 		if previous_floor > assigned_location.floor:
-			MainCamera.rotation_degrees.x = default_camera_rotation.x - 5
+			#MainCamera.rotation_degrees.x = default_camera_rotation.x - 5
 			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)	
 			transition()
 			
 		if previous_ring > assigned_location.ring:
-			MainCamera.rotation_degrees.y = default_camera_rotation.y - 5
+			#MainCamera.rotation_degrees.y = default_camera_rotation.y - 5
 			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
 			transition()
 			
 		if previous_ring < assigned_location.ring:
-			MainCamera.rotation_degrees.y = default_camera_rotation.y + 5
+			#MainCamera.rotation_degrees.y = default_camera_rotation.y + 5
 			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
 			transition()
 			
@@ -159,7 +159,7 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 	
 func animate_camera()-> void:
 	camera_tween = create_tween()	
-	tween_node_property(camera_tween, MainCamera, 'rotation_degrees', default_camera_rotation, 0.3)
+	#tween_node_property(camera_tween, MainCamera, 'rotation_degrees', default_camera_rotation, 0.3)
 # --------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		

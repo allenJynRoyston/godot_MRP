@@ -1,37 +1,43 @@
 [gd_scene load_steps=6 format=3 uid="uid://cieqo2p3d5xly"]
 
 [ext_resource type="Script" uid="uid://45s2ql7e6fvy" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/MediaPlayer/media_player.gd" id="1_bcpof"]
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_f1wu2"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_h8jx3"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_dd8iw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qcy4p"]
-bg_color = Color(0, 0.254902, 0.0823529, 1)
+bg_color = Color(0.477079, 0.622808, 0.7162, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_ae3nu"]
-font = ExtResource("4_f1wu2")
-font_size = 15
-shadow_size = 0
+[sub_resource type="LabelSettings" id="LabelSettings_h8jx3"]
+font = ExtResource("3_h8jx3")
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [node name="MediaPlayer" type="HBoxContainer"]
 theme_override_constants/separation = 5
 script = ExtResource("1_bcpof")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
+theme_override_constants/separation = 5
 
-[node name="LogoBtn" parent="MarginContainer" instance=ExtResource("5_dd8iw")]
+[node name="PlayPauseBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
-icon = 12
+icon = 9
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.672752, 0.672752, 0.672751, 1)
-flip_v = false
+hint_title = "Hint"
+hint_description = "Pause/Play music."
+
+[node name="NextBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
+layout_mode = 2
+icon = 8
+active_color = Color(1, 1, 1, 1)
+inactive_color = Color(0.672752, 0.672752, 0.672751, 1)
+hint_title = "Hint"
+hint_description = "Next track."
 
 [node name="TrackNameScrollContainer" type="ScrollContainer" parent="."]
-custom_minimum_size = Vector2(200, 15)
+custom_minimum_size = Vector2(300, 15)
 layout_mode = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
@@ -44,9 +50,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_qcy4p")
 
 [node name="MarginContainer" type="MarginContainer" parent="TrackNameScrollContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 4
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 4
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 0
 
 [node name="TrackName" type="Label" parent="TrackNameScrollContainer/PanelContainer/MarginContainer"]
@@ -54,27 +60,23 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "TRACK NAME..."
-label_settings = SubResource("LabelSettings_ae3nu")
+label_settings = SubResource("LabelSettings_h8jx3")
 vertical_alignment = 1
 uppercase = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 2
 
-[node name="PlayPauseBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
+[node name="LogoBtn" parent="MarginContainer" instance=ExtResource("5_dd8iw")]
 layout_mode = 2
-icon = 9
+icon = 12
 active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.672752, 0.672752, 0.672751, 1)
-flip_v = false
-
-[node name="NextBtn" parent="HBoxContainer" instance=ExtResource("5_dd8iw")]
-layout_mode = 2
-icon = 8
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0.672752, 0.672752, 0.672751, 1)
-flip_v = false
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+pitch_scale = 0.86
 autoplay = true

@@ -1,20 +1,20 @@
-[gd_scene load_steps=32 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=35 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://b8tjlqidemn2y" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="5_a2e5w"]
 [ext_resource type="Script" uid="uid://bqjop57mc4ev2" path="res://Scenes/OSRoot/title_splash.gd" id="5_linol"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="5_tgmfl"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="6_012ga"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="7_linol"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="8_8iit3"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="8_012ga"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_14y6p"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="10_14y6p"]
-[ext_resource type="Material" uid="uid://wrbhauo7j8f6" path="res://Shader/_template/template.tres" id="10_fsu2y"]
+[ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="12_14y6p"]
+[ext_resource type="Material" uid="uid://4rhangikf6nd" path="res://Shader/BitSampler/BitSampler.tres" id="15_yhfgh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
 
@@ -23,6 +23,18 @@
 [sub_resource type="LabelSettings" id="LabelSettings_14y6p"]
 font = ExtResource("8_012ga")
 font_size = 80
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_14y6p"]
+bg_color = Color(0.675147, 0, 0.298457, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
 viewport_path = NodePath("CRTShader/BorderShader")
@@ -41,6 +53,42 @@ viewport_path = NodePath("Screenbend")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_e7if0"]
 viewport_path = NodePath("Empty")
+
+[sub_resource type="Shader" id="Shader_14y6p"]
+code = "shader_type canvas_item;
+
+uniform float bend_amount : hint_range(0.0, 1.0) = 0.1;     // Strength of CRT bending effect
+uniform float bend_offset : hint_range(0.0, 0.5) = 0.2;     // Offset for bending effect from the edges
+
+// Function to bend the image outward with an offset
+vec2 crt_bend(vec2 uv, float ba, float bo) {
+    vec2 offset = uv - vec2(0.5);  // Center the UV coordinates
+    float radius = length(offset); // Calculate the distance from the center
+
+    // Apply an inward offset so the bend starts away from the edges
+    radius = max(radius - bo, 0.0);  // Ensure bending only happens within the region after offset
+
+    // Apply the bend effect based on the radius and bend amount
+    offset *= (1.0 + ba * radius * radius);  // Bending becomes stronger further from the center
+
+    return offset + vec2(0.5);  // Recenter the UV coordinates
+}
+
+void fragment() {
+    // Apply CRT bend with offset to the UV coordinates
+    vec2 bent_uv = crt_bend(UV, bend_amount, bend_offset);
+
+    // Sample the texture with the bent UV coordinates
+    vec4 final_color = texture(TEXTURE, bent_uv);
+
+    // Output the final color
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_linol"]
+shader = SubResource("Shader_14y6p")
+shader_parameter/bend_amount = 0.114
+shader_parameter/bend_offset = 0.323
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_yhfgh"]
 viewport_path = NodePath("ColorDepthShader")
@@ -76,6 +124,7 @@ debug_story_progress = true
 story_progress = 1
 skip_splash = true
 skip_intro = true
+skip_office_intro = true
 intro_skip_logo = true
 intro_skip_title = true
 intro_skip_sequence = true
@@ -83,8 +132,6 @@ intro_skip_start_at = true
 os_skip_boot = true
 os_skip_to_game = true
 os_app_fast_load = true
-app_skip_titlescreen = true
-app_skip_loading_screen = true
 skip_setup_progress = true
 start_at_ring_level = true
 skip_objectives = true
@@ -141,7 +188,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GameLayer/TitleSplash/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 40
 alignment = 1
 
 [node name="TitleHeader" type="PanelContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
@@ -152,7 +199,8 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_linol")
 
 [node name="Label" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/TitleHeader"]
 layout_mode = 2
-text = "BREACH IMMINENT"
+text = "COGNITOHAZARD
+WARNING"
 label_settings = SubResource("LabelSettings_14y6p")
 horizontal_alignment = 1
 
@@ -161,103 +209,35 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer4"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_vertical = 5
-text = "ITEM #:"
-label_settings = ExtResource("5_a2e5w")
-horizontal_alignment = 2
-
-[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer4"]
+[node name="RichTextLabel2" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer4"]
 modulate = Color(1, 1, 1, 0.831373)
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("6_012ga")
 bbcode_enabled = true
-text = "SCP-██"
+text = "
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
+The following document contains an active cognitohazard posing severe risk to mental integrity. 
+
+[wave]You are already affected.[/wave]
+
+Remain calm and do not panic. Immediately close this document and cease all interactions.  Every moment of continued exposure increases the risk of non-recoverable neural disintegration
+
+
+
+"
+fit_content = true
+
+[node name="KeyBtn" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer" instance=ExtResource("8_14y6p")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_vertical = 5
-text = "OBJECT CLASS:"
-label_settings = ExtResource("5_a2e5w")
-horizontal_alignment = 2
-
-[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer"]
-modulate = Color(1, 1, 1, 0.831373)
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("6_012ga")
-bbcode_enabled = true
-text = "KETER (previously SAFE)"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer3"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_vertical = 5
-text = "STANDARD 
-CONTAINMENT PROCEDURE: "
-label_settings = ExtResource("5_a2e5w")
-horizontal_alignment = 2
-
-[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer3"]
-modulate = Color(1, 1, 1, 0.831373)
-custom_minimum_size = Vector2(400, 150)
-layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("6_012ga")
-bbcode_enabled = true
-text = "If you are reading this, then containment of SCP-██ has already been compromised  It is essential that from this point on, you do all you can do resist engaging with it, ignoring it, and if at all possible, forgetting it ever existed.  Your continued ignorance of it's presence its what keeps it contained.
-
-It's containment begins when you stop reading."
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="Label2" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 5
-text = "DESCRIPTION"
-label_settings = ExtResource("5_a2e5w")
-horizontal_alignment = 2
-
-[node name="Label" type="Label" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer2"]
-visible = false
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_vertical = 5
-text = "██ is an informational, non-corporeal,  hypotically constructed entity  that does not and cannot exist, except when acknowledged — at which point it already has. It resists classification by altering the context in which it is described, and by recursively embedding itself in the act of observation.
-
-Attempts to define it further are both unnecessary and likely ineffective; as it is best understood as the idea of itself attempting to be understood.
-
-You are already thinking too much about it."
-label_settings = ExtResource("7_linol")
-autowrap_mode = 2
-
-[node name="RichTextLabel" type="RichTextLabel" parent="GameLayer/TitleSplash/MarginContainer/VBoxContainer/HBoxContainer2"]
-modulate = Color(1, 1, 1, 0.831373)
-custom_minimum_size = Vector2(400, 200)
-layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("6_012ga")
-bbcode_enabled = true
-text = "SCP-██ is an informational, non-corporeal, memetic construct that remains dornment as non-existent until acknowledged by human cognition. It manifests solely through awareness, retroactively imposing its presence into perception and record. Attempts to classify or describe it are inherently unstable, as SCP-██ actively alters context and meaning, embedding itself recursively within the act of observation.
-
-Research into SCP-██-highly restricted and considered dangerous and reckless. "
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_14y6p")
+title = "ACKNOWLEDGE YOUR WEAKNESS"
+assigned_key = "ENTER"
+icon = 20
+panel_color = Color(0.675147, 0, 0.298457, 1)
+is_disabled = false
 
 [node name="TransitionScreen" parent="GameLayer" instance=ExtResource("10_14y6p")]
 
@@ -274,6 +254,13 @@ texture = SubResource("ViewportTexture_y3p8a")
 size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="CRTShader"]
+material = ExtResource("12_14y6p")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_a5ilm")
+
+[node name="TextureRect2" type="TextureRect" parent="CRTShader"]
+modulate = Color(1, 1, 1, 0.831373)
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_a5ilm")
@@ -299,10 +286,8 @@ offset_bottom = 40.0
 [node name="TextureRect" type="TextureRect" parent="Screenbend/Control3"]
 material = ExtResource("8_8iit3")
 layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 1922.0
-offset_bottom = 1082.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 
@@ -313,12 +298,11 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="TextureRect2" type="TextureRect" parent="Screenbend/Control"]
-self_modulate = Color(0.52549, 0.0117647, 0.72549, 0.321569)
+self_modulate = Color(0, 0.898039, 0.815686, 0.588235)
 layout_mode = 0
-offset_left = -50.0
-offset_top = 10.0
-offset_right = 1870.0
-offset_bottom = 1090.0
+offset_left = -150.0
+offset_right = 1770.0
+offset_bottom = 1080.0
 scale = Vector2(1.25, 1.25)
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
@@ -330,7 +314,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="TextureRect2" type="TextureRect" parent="Screenbend/Control2"]
-modulate = Color(0.980392, 0.956863, 0.894118, 0.745098)
+modulate = Color(0.980392, 0.956863, 0.894118, 0.941176)
+material = ExtResource("6_1ky4c")
+use_parent_material = true
 layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
@@ -351,6 +337,7 @@ stretch_mode = 2
 size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="ColorDepthShader"]
+material = ExtResource("15_yhfgh")
 offset_right = 1920.0
 offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_e7if0")
@@ -360,7 +347,7 @@ stretch_mode = 2
 size = Vector2i(1920, 1080)
 
 [node name="FinalComposite" type="TextureRect" parent="FinalComposition"]
-material = ExtResource("10_fsu2y")
+material = SubResource("ShaderMaterial_linol")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

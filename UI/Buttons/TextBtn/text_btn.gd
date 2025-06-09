@@ -44,7 +44,6 @@ enum SIDE {LEFT, RIGHT}
 		on_title_update()
 		
 	
-
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()

@@ -1,21 +1,26 @@
 @tool
 extends PanelContainer
 
-@onready var RootPanel:PanelContainer = $"."
 @onready var BtnControl:Control = $BtnControl
-
 @onready var TaskbarControl:Control = $TaskbarControl
 @onready var TaskbarPanel:PanelContainer = $TaskbarControl/PanelContainer
-@onready var DesktopBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/LeftContainer/DesktopBtn
-@onready var TimeAndSettings:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/TimeAndSettings
-@onready var MediaPlayer:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer
+@onready var DesktopBtn:Control = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/LeftContainer/DesktopBtn
+
+# tasks
 @onready var RunningTasks:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RunningTasks
+@onready var TimeAndSettings:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/TimeAndSettings
+
+# media player buttons
+@onready var MediaPlayer:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer
+@onready var PlayBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/HBoxContainer/PlayPauseBtn
+@onready var NextBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/HBoxContainer/NextBtn
 
 @export var show_media_player:bool = false : 
 	set(val):
 		show_media_player = val
 		on_show_media_player_update()
 
+const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
 const TaskbarLiveItemPreload:PackedScene = preload("res://Scenes/OSRoot/parts/OS/Taskbar/parts/TaskbarLiveItem/TaskbarLiveItem.tscn")
 
 var control_pos_default:Dictionary
@@ -27,20 +32,24 @@ var music_data:Dictionary = {} :
 		on_music_data_update()
 
 var show_taskbar:bool = false 
+var is_busy:bool = false
+var selected_node:Control 
+
 var onBackToDesktop:Callable = func() -> void:pass
-var onDesktopBtnFocus:Callable = func() -> void:pass
+#var onDesktopBtnFocus:Callable = func() -> void:pass
 var onBack:Callable = func() -> void:pass
 var onItemSelect:Callable = func(_dict:Dictionary) -> void:pass
 var onItemClose:Callable = func(_dict:Dictionary) -> void:pass
 var onItemFocus:Callable = func() -> void:pass
 
-var task_index:int = -1:
-	set(val):
-		task_index = val
-		on_task_index()
+#var task_index:int = -1:
+	#set(val):
+		#task_index = val
+		#on_task_index()
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
+	self.modulate = Color(1, 1, 1, 0)	
 	GBL.subscribe_to_music_player(self)	
 	GBL.subscribe_to_control_input(self)
 
@@ -51,40 +60,54 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_music_data_update()
 	on_show_media_player_update()
-	on_task_index()
 	
-	self.modulate = Color(1, 1, 1, 0)
-	
-	
-	#DesktopBtn.onFocus = func(_node:Control) -> void:
-		#onDesktopBtnFocus.call()
-#
-	## setup controls
-	#DesktopBtn.onClick = func() -> void:
-		#onBackToDesktop.call()
-	
-	BtnControl.onDirectional = func(key:String) -> void:
-		if !is_visible_in_tree() or !is_node_ready(): return
-		match key:
-			"A":
-				task_index = U.min_max(task_index - 1, -1, RunningTasks.get_child_count() - 1)
-			"D":
-				task_index = U.min_max(task_index + 1, -1, RunningTasks.get_child_count() - 1)
-	
+	BtnControl.onUpdate = func(_node:Control) -> void:
+		for node in BtnControl.itemlist:
+			node.modulate = Color(1, 1, 1, 1 if node == _node else 0.7)
+		selected_node = _node
+		BtnControl.hide_b_btn = selected_node == DesktopBtn 
+		BtnControl.hide_a_btn = selected_node not in [PlayBtn, NextBtn]
+
+		# desktop btn
+		if selected_node == DesktopBtn:
+			get_parent().currently_running_app = null
+			return
+
+		# media buttons desktop
+		if selected_node in [PlayBtn, NextBtn]:
+			get_parent().currently_running_app = null
+			return			
+			
+		# preview of any current apps
+		if "data" in selected_node:
+			get_parent().currently_running_app = selected_node.data.node
+			
 	BtnControl.onAction = func() -> void:
-		if task_index == -1:
-			onBackToDesktop.call()
+		# media buttons desktop
+		if selected_node == PlayBtn:
+			MediaPlayer.on_pause()
+			return		
+			
+		if selected_node == NextBtn:
+			MediaPlayer.on_next()
 			return
 			
-		onBack.call()		
-	
 	BtnControl.onBack = func() -> void:
-		#GBL.find_node(REFS.OS_ROOT).play_door()
-		pass #
-		# onBack.call()
-	BtnControl.onCBtn = func() -> void:
-		await U.set_timeout(1.0)
-		onBack.call()	
+		await BtnControl.reveal(false)
+		is_busy = true
+		var confirm:bool = await create_modal("Quit this program?", "Your progress will be saved.")
+		is_busy = false
+		BtnControl.reveal(true)	
+		if confirm:
+			if selected_node in [PlayBtn, NextBtn]:
+				show_media_player = false
+				await U.tick()
+				BtnControl.itemlist = get_itemlist()
+				BtnControl.item_index = 0				
+				return
+	
+			if "data" in selected_node:
+				remove_item(selected_node.data.ref)
 		
 	BtnControl.directional_pref = "LR"
 	
@@ -96,38 +119,28 @@ func _ready() -> void:
 	
 	TaskbarControl.position.y = control_pos[TaskbarControl].hide
 	
-	await U.tick()
 	set_show_taskbar(false, true)
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func on_task_index() -> void:
-	if !is_node_ready():return
-	if task_index == -1:
-		GBL.find_node(REFS.OS_LAYOUT).set_pause_container(true) 
-	else: 
-		GBL.find_node(REFS.OS_LAYOUT).set_pause_container(false)
-	
-	## RunningTasks.hide() if task_index == -1 else RunningTasks.show()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 	show_taskbar = state
+	
 	if state:
 		self.modulate = Color(1, 1, 1, 1)
 
-	
-	if !state:
-		if skip_animation:
-			BtnControl.reveal(state)
-		else:
-			await BtnControl.reveal(state)	
-		
+	BtnControl.reveal(state)
 	await U.tween_node_property(TaskbarControl, "position:y", control_pos[TaskbarControl].show if show_taskbar else control_pos[TaskbarControl].hide, 0 if skip_animation else 0.3)
 	
 	if state:
-		BtnControl.reveal(state)	
+		BtnControl.itemlist = get_itemlist()
+		if get_parent().currently_running_app != null:			
+			for index in RunningTasks.get_child_count():
+				var node:Control = RunningTasks.get_child(index)
+				if node.data.node == get_parent().currently_running_app:
+					BtnControl.item_index = index + 1
+		else:
+			BtnControl.item_index = 0
 		
 	if !state:
 		self.modulate = Color(1, 1, 1, 0)
@@ -136,36 +149,66 @@ func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()
-	
+	if !show_media_player:
+		MediaPlayer.on_stop()
 
+	
 func add_item(item:Dictionary) -> void:
 	if !is_node_ready():return
 	var new_node:Control = TaskbarLiveItemPreload.instantiate()
 	new_node.data = item
-	new_node.show_min_button = false
 	
-	new_node.onFocus = func() -> void:
-		onItemFocus.call(item)
+	new_node.modulate = Color(1, 1, 1, 0.7)
+	new_node.hint_description = "Switch to %s." % [item.title]
+	new_node.hint_title = "HINT"
+	new_node.hint_icon = SVGS.TYPE.INFO
 	
 	new_node.onClose = func() -> void:
 		onItemClose.call(item)
-		
-	new_node.onClick = func() -> void:
-		onBack.call()
-		onItemSelect.call(item)
 	
 	RunningTasks.add_child(new_node)	
 	
-	
 func remove_item(ref:int) -> void:
 	if !is_node_ready():return
-	for node in RunningTasks.get_children():
-		if node.data.ref == ref:
-			RunningTasks.remove_child(node)
-			node.queue_free()
-	
+	for task in RunningTasks.get_children():
+		if task.data.ref == ref:
+			await task.data.node.force_save_and_quit()
+			RunningTasks.remove_child(task)
+			get_parent().close_app(ref, true)
+			
+	await U.tick()
+	BtnControl.itemlist = get_itemlist()
+	BtnControl.item_index = 0
+
+
+func get_itemlist() -> Array:
+	var list:Array = [DesktopBtn] 
+	for btn in RunningTasks.get_children():
+		list.push_back(btn)
+	if show_media_player:
+		for btn in [PlayBtn, NextBtn]:
+			list.push_back(btn)		
+	return list
 
 func on_music_data_update() -> void:
+	if MediaPlayer.is_already_playing():return
 	show_media_player = !music_data.is_empty()
 	MediaPlayer.data = music_data
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+	var ConfirmNode:Control = ConfirmModalPreload.instantiate()
+	ConfirmNode.z_index = 100	
+	add_child(ConfirmNode)
+	ConfirmNode.set_props(title, subtitle, img_src, color_bg)
+	ConfirmNode.allow_controls = allow_controls
+	
+	await ConfirmNode.activate(false)
+	ConfirmNode.activation_requirements = activation_requirements
+	
+	ConfirmNode.start()
+	var confirm:bool = await ConfirmNode.user_response	
+	return confirm
 # ------------------------------------------------------------------------------

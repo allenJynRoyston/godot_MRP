@@ -27,32 +27,50 @@ func _ready() -> void:
 	on_focus(false)	
 	on_pause_or_play_update()
 	
-	for node in [PlayPauseBtn, NextBtn]:
-		node.onBlur = func(node:Control):
-			hover_nodes.erase(node)
-			
-		node.onFocus = func(node:Control):
-			if node not in hover_nodes:
-				hover_nodes.push_back(node)
+	#for node in [PlayPauseBtn, NextBtn]:
+		#node.onBlur = func(node:Control):
+			#hover_nodes.erase(node)
+			#
+		#node.onFocus = func(node:Control):
+			#if node not in hover_nodes:
+				#hover_nodes.push_back(node)
 	
-	PlayPauseBtn.onClick = func():
-		AudioStreamPlayerUI.playing = !AudioStreamPlayerUI.playing
-		on_pause_or_play_update()
-		
-	NextBtn.onClick = func():
-		selected_track = (selected_track + 1) % track_list.size()
-		play_selected_track()
+	#PlayPauseBtn.onClick = func():
+		#AudioStreamPlayerUI.playing = !AudioStreamPlayerUI.playing
+		#on_pause_or_play_update()
+		#
+	#NextBtn.onClick = func():
+		#selected_track = (selected_track + 1) % track_list.size()
+		#play_selected_track()
 # --------------------------------------	
+
+# --------------------------------------	
+func on_pause() -> void:
+	AudioStreamPlayerUI.playing = !AudioStreamPlayerUI.playing
+	on_pause_or_play_update()	
+# --------------------------------------	
+
+# --------------------------------------	
+func on_next() -> void:
+	selected_track = (selected_track + 1) % track_list.size()
+	play_selected_track()	
+# --------------------------------------	
+
+# --------------------------------------	
+func on_stop() -> void:
+	AudioStreamPlayerUI.stop()
+# --------------------------------------	
+
+# --------------------------------------	
+func is_already_playing() -> bool:
+	return AudioStreamPlayerUI.playing
+# --------------------------------------	
+
 
 # --------------------------------------	
 func skip_to_track(track_data:Dictionary) -> void:
 	selected_track = 1
 	play_selected_track()
-# --------------------------------------		
-
-# --------------------------------------		
-func get_buttons() -> Array:
-	return [PlayPauseBtn, NextBtn]
 # --------------------------------------		
 
 # --------------------------------------	
@@ -78,7 +96,7 @@ func play_selected_track() -> void:
 	var track_data:Dictionary = track_list[selected_track]
 	var details:Dictionary = track_data.details if "details" in track_data else {"name": "No details...", "author": "unknown"}
 	
-	TrackNameLabel.text = " Playing %s by %s" % [details.name, details.author]
+	TrackNameLabel.text = "%s by %s" % [details.name, details.author]
 	
 	if "file" not in track_data:
 		print("No file in track_data")
@@ -91,10 +109,10 @@ func play_selected_track() -> void:
 	
 func check_track_scroll() -> void:
 	if TrackNameLabel.size.x >= TrackNameScrollContainer.size.x:		
-		TrackNameLabel.text = "                                          %s                                          " % [TrackNameLabel.text]
+		TrackNameLabel.text = "                                                              %s          " % [TrackNameLabel.text]
 		scroll_name = true
 		var start_at_halfway:Callable = func():
-			TrackNameScrollContainer.scroll_horizontal = TrackNameLabel.size.x/3
+			TrackNameScrollContainer.scroll_horizontal = TrackNameLabel.size.x/2
 		start_at_halfway.call_deferred()
 	else:
 		scroll_name = false	
@@ -102,13 +120,14 @@ func check_track_scroll() -> void:
 
 # --------------------------------------	
 func on_focus(state:bool) -> void:
+	pass
 	#var shader_material:ShaderMaterial = Logo.material.duplicate()	
 	#shader_material.set_shader_parameter("tint_color", COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if state else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE))
 	#Logo.material = shader_material
 	
-	var label_setting:LabelSettings = TrackNameLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
-	TrackNameLabel.label_settings = label_setting
+	#var label_setting:LabelSettings = TrackNameLabel.label_settings.duplicate()
+	#label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
+	#TrackNameLabel.label_settings = label_setting
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and hover_nodes.is_empty():
@@ -116,16 +135,17 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 		layout_node.open_media_player_mini(self)
 # --------------------------------------		
 
+
 # --------------------------------------		
 func on_process_update(delta: float) -> void:
 	super.on_process_update(delta)
-	if scroll_name:
-		frame_counter += 1
-		
-		if frame_counter >= frames_to_skip:
-			frame_counter = 0		
-			TrackNameScrollContainer.scroll_horizontal += 1
-			var amount_left:int = TrackNameLabel.size.x - (TrackNameScrollContainer.custom_minimum_size.x + TrackNameScrollContainer.scroll_horizontal)
-			if amount_left < 10:
-				TrackNameScrollContainer.scroll_horizontal = 0
+	#if scroll_name:
+	frame_counter += 1
+	
+	if frame_counter >= frames_to_skip:
+		frame_counter = 0		
+		TrackNameScrollContainer.scroll_horizontal += 1
+		var amount_left:int = TrackNameLabel.size.x - (TrackNameScrollContainer.custom_minimum_size.x + TrackNameScrollContainer.scroll_horizontal)
+		if amount_left < 10:
+			TrackNameScrollContainer.scroll_horizontal = 0
 # --------------------------------------		

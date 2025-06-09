@@ -20,16 +20,16 @@ var onMinimize:Callable = func():pass
 var onClose:Callable = func():pass
 var onFocus:Callable = func():pass
 
-@export var show_min_button:bool = false : 
-	set(val):
-		show_min_button = val
-		on_show_min_button_update()
+#@export var show_min_button:bool = false : 
+	#set(val):
+		#show_min_button = val
+		#on_show_min_button_update()
 
 # --------------------------------------	
 func _ready() -> void:
 	super._ready()
 	on_data_update()
-	on_show_min_button_update()
+	#on_show_min_button_update()
 	on_focus(false)
 	
 	IconButton.onClick = func() -> void:
@@ -54,11 +54,11 @@ func _ready() -> void:
 		focus_busy = false
 # --------------------------------------	
 
-# --------------------------------------	
-func on_show_min_button_update() -> void:	
-	if is_node_ready():
-		MinButtonContainer.show() if show_min_button else MinButtonContainer.hide()
-# --------------------------------------	
+## --------------------------------------	
+#func on_show_min_button_update() -> void:	
+	#if is_node_ready():
+		#MinButtonContainer.show() if show_min_button else MinButtonContainer.hide()
+## --------------------------------------	
 
 # --------------------------------------	
 func on_data_update() -> void:
@@ -75,10 +75,10 @@ func get_buttons() -> Array:
 # --------------------------------------	
 func on_focus(state:bool) -> void:
 	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
-	new_stylebox.bg_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
-	if state:
-		onFocus.call()
+	#new_stylebox.bg_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
+	#RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	#if state:
+		#onFocus.call()
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT and !focus_busy:

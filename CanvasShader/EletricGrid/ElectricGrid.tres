@@ -1,8 +1,8 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cjoa71jo6rgsx"]
 
-[ext_resource type="Shader" uid="uid://cokg6ou17km52" path="res://Shaders/electricGrid.gdshader" id="1_skbq1"]
+[ext_resource type="Shader" uid="uid://cokg6ou17km52" path="res://CanvasShader/EletricGrid/electricGrid.gdshader" id="1_skbq1"]
 
 [resource]
 shader = ExtResource("1_skbq1")
-shader_parameter/color = Color(1.39579e-06, 0.705926, 0.397172, 1)
-shader_parameter/zoom = 8.0
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/zoom = 16.0

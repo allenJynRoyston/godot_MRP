@@ -86,7 +86,7 @@ func on_objectives_update() -> void:
 	if !is_node_ready():return
 	for child in ObjectivesList.get_children():
 		child.queue_free()
-	
+
 	for objective in objectives:
 		var new_btn:Control = CheckBoxButtonPreload.instantiate()
 		new_btn.title = str(objective.title).to_upper()

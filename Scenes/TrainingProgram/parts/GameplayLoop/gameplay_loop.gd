@@ -9,18 +9,10 @@ extends PanelContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
 @onready var WaitContainer:PanelContainer = $WaitContainer
-@onready var TransitionScreen:Control = $TransitionScreen
 
 const SetupContainedPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn")
 
 enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, GAME_WON, GAME_LOST }
-
-enum OBJECTIVES_STATE {
-	HIDE, 
-	SHOW
-}
-
-enum SELECT_SCP_STEPS { RESET, START }
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
@@ -81,22 +73,22 @@ var initial_values:Dictionary = {
 			"previous_records": []
 		},
 	# ----------------------------------
-	"resources_data": func(starting_resources:Dictionary = {}) -> Dictionary:
+	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": starting_resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 300 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": starting_resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 200 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": starting_resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 100 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": starting_resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 10, 
+				"amount": 1 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 10, 
 				"capacity": 10
 			},						
 		},
@@ -244,13 +236,14 @@ var bookmarked_rooms:Array # ["000", "201"] <- "floor_index, ring_index, room_in
 var unavailable_rooms:Array 
 var hired_lead_researchers_arr:Array
 var gameplay_conditionals:Dictionary
+var objectives:Array = []
 
 #endregion
 # ------------------------------------------------------------------------------ 
 
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
-var onEndGame:Callable = func(_scenario_ref:int, _scenario_data:Dictionary, _endgame_state:bool) -> void:pass
+var onEndGame:Callable = func(_scenario_ref:int, _quicksave_data:Dictionary = {}) -> void:pass
 var onExitGame:Callable = func(_exit_game:bool) -> void:pass
 
 var processing_next_day:bool = false
@@ -261,7 +254,7 @@ var is_busy:bool = false :
 		on_is_busy_update()
 		
 var setup_complete:bool = false
-var scenario_data:Dictionary
+#var scenario_data:Dictionary
 var scenario_ref:int
 var awarded_rooms:Array = []
 
@@ -282,8 +275,6 @@ var current_phase:PHASE = PHASE.STARTUP :
 		on_current_phase_update()
 
 signal phase_cycle_complete
-signal on_events_complete
-signal on_objective_signal
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -375,6 +366,7 @@ func exit_game() -> void:
 #region START GAME
 func start(new_game_data_config:Dictionary = {}) -> void:
 	show()
+		
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	set_process(true)
 	set_physics_process(true)		
@@ -383,27 +375,28 @@ func start(new_game_data_config:Dictionary = {}) -> void:
 	start_new_game(new_game_data_config)
 	
 
-func setup_scenario(is_new_game:bool) -> void:
-	scenario_data.objectives.push_back({
-		"title": "SURVIVE FOR %s DAYS." % [scenario_data.day_limit],
-		"is_completed": func() -> bool:
-			return progress_data.day >= scenario_data.day_limit
-	})
-		
-	# add endgame timeline object
-	if is_new_game:
-		GAME_UTIL.add_timeline_item({
-			"title": "SCENARIO END",
-			"icon": SVGS.TYPE.CONVERSATION,
-			"description": "Win or lose...",
-			"day": scenario_data.day_limit,
-			"location": {"floor": 0, "ring": 0, "room": 0}
-		})
+#func setup_scenario(is_new_game:bool) -> void:
+	#scenario_data.objectives.push_back({
+		#"title": "SURVIVE FOR %s DAYS." % [scenario_data.day_limit],
+		#"is_completed": func() -> bool:
+			#return progress_data.day >= scenario_data.day_limit
+	#})
+		#
+	## add endgame timeline object
+	#if is_new_game:
+		#GAME_UTIL.add_timeline_item({
+			#"title": "SCENARIO END",
+			#"icon": SVGS.TYPE.CONVERSATION,
+			#"description": "Win or lose...",
+			#"day": scenario_data.day_limit,
+			#"location": {"floor": 0, "ring": 0, "room": 0}
+		#})
 
 
 func start_new_game(game_data_config:Dictionary) -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
+	
 	
 	# -----------------------
 	var SetupContainer:Control = SetupContainedPreload.instantiate()
@@ -425,7 +418,11 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	# 2.) setup game
 	setup_complete = true
 	update_room_config()	
-	setup_scenario(game_data_config.filedata.is_empty())					
+	# build out objectives from current story val
+	var progress_data:Dictionary = FS.load_file(FS.FILE.PROGRESS)
+	objectives = STORY.get_objectives(progress_data.filedata.data.story_progress_val if progress_data.success else 0)
+	
+	#setup_scenario(game_data_config.filedata.is_empty())					
 
 	# -----------------------
 	SetupContainer.subtitle = "SETTING DEBUG VALUES..."
@@ -459,9 +456,9 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	await SetupContainer.end()
 	
 	# 5.) render everything to screen
-	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
-		await GAME_UTIL.open_objectives()
-		quicksave(true)	
+	#if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
+	await GAME_UTIL.open_objectives(objectives)
+	#quicksave(true)	
 	
 	# update phase and start game
 	current_phase = PHASE.PLAYER
@@ -958,18 +955,18 @@ func on_current_phase_update() -> void:
 			
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 
-			execute_record_audit()
-			if progress_data.record.size() > 0:
-				for record in progress_data.record:				
-					match record.source:
-						REFS.SOURCE.FACILITY:
-							SUBSCRIBE.current_location = record.data.location
-							for item in record.data.diff:
-								var resource_details:Dictionary = RESOURCE_UTIL.return_currency(item.resource_ref)
-								ToastContainer.add("%s %s %s %s" % [record.data.name, "generated" if item.amount > 0 else "spent", item.amount, resource_details.name])				
-								await U.set_timeout(0.3)
-							
-					SUBSCRIBE.resources_data = resources_data		
+			#execute_record_audit()
+			#if progress_data.record.size() > 0:
+				#for record in progress_data.record:				
+					#match record.source:
+						#REFS.SOURCE.FACILITY:
+							#SUBSCRIBE.current_location = record.data.location
+							#for item in record.data.diff:
+								#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(item.resource_ref)
+								#ToastContainer.add("%s %s %s %s" % [record.data.name, "generated" if item.amount > 0 else "spent", item.amount, resource_details.name])				
+								#await U.set_timeout(0.3)
+							#
+					#SUBSCRIBE.resources_data = resources_data		
 				
 			
 			await U.set_timeout(1.0)
@@ -1014,14 +1011,27 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.CONCLUDE:	
 			# CHECK IF SCENARIO DATA IS COMPLETE
-			var objectives_completed:bool = true
-			for objective in scenario_data.objectives:
+			var objective_failed:Dictionary = {}
+			var objective_days:Array = objectives.map(func(x): return x.complete_by_day)
+			objective_days.sort()
+			var last_day_for_objectives:int = objective_days[objective_days.size() - 1]
+
+			for objective in objectives:
 				if !objective.is_completed.call():
-					objectives_completed = false
+					if progress_data.day > objective.complete_by_day:
+						objective_failed = objective
+						break
 			
-			if progress_data.day >= scenario_data.day_limit:
+			# CHECK FOR FAIL STATE
+			if objective_failed:
 				await U.set_timeout(1.0)
-				current_phase = PHASE.GAME_WON if objectives_completed else PHASE.GAME_LOST
+				current_phase = PHASE.GAME_LOST
+				return
+			
+			# CHECK FOR WIN STATE
+			if progress_data.day >= last_day_for_objectives and !objective_failed:
+				await U.set_timeout(1.0)
+				current_phase = PHASE.GAME_WON
 				return
 			
 			PhaseAnnouncement.end()
@@ -1037,12 +1047,14 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.GAME_WON:
 			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")	
-			onEndGame.call(scenario_ref, scenario_data, true)
+			await U.set_timeout(3.0)
+			onEndGame.call(true)
 			return
 		# ------------------------
 		PHASE.GAME_LOST:
 			PhaseAnnouncement.start("FAILED TO MEET OBJECTIVES...")	
-			onEndGame.call(scenario_ref, scenario_data, false)
+			await U.set_timeout(3.0)
+			onEndGame.call(false)
 			return
 		# ------------------------
 # ------------------------------------------------------------------------------
@@ -1050,13 +1062,13 @@ func on_current_phase_update() -> void:
 
 # ------------------------------------------------------------------------------	SAVE/LOAD
 #region SAVE/LOAD
-func quicksave(skip_timeout:bool = false) -> void:
+func quicksave(skip_timeout:bool = false) -> Dictionary:
 	is_busy = true
 
 	var save_data := {
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
 		# OF ALL THE OTHER DATA THAT'S HERE		
-		"scenario_ref": scenario_ref,
+		#"scenario_ref": scenario_ref,
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
 		"timeline_array": timeline_array,
@@ -1074,23 +1086,21 @@ func quicksave(skip_timeout:bool = false) -> void:
 	FS.save_file(FS.FILE.QUICK_SAVE, save_data)
 	if !skip_timeout:
 		await U.set_timeout(1.0)
+		
 	is_busy = false
+	return save_data
 
 
 func parse_restore_data(game_data_config:Dictionary) -> void:
 	var restore_data:Dictionary = game_data_config.filedata
 	var is_new_game:bool = restore_data.is_empty() 
-	
-	# load the scenario_data
-	scenario_ref = game_data_config.scenario_ref if is_new_game else restore_data.scenario_ref
-	scenario_data = SCENARIO_UTIL.get_scenario_data(scenario_ref)
-	
+
 	# modify if starting a new game
-	var resources_data:Dictionary = initial_values.resources_data.call(scenario_data.start_conditions.resources) if is_new_game else restore_data.resources_data	
+	var resources_data:Dictionary = initial_values.resources_data.call() if is_new_game else restore_data.resources_data	
 	SUBSCRIBE.resources_data = resources_data
 	
 	# any rooms completed by scenarios become allowed
-	SUBSCRIBE.awarded_rooms = game_data_config.awarded_rooms
+	SUBSCRIBE.awarded_rooms = [] #game_data_config.awarded_rooms
 	
 	# reactive data
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if is_new_game else restore_data.progress_data

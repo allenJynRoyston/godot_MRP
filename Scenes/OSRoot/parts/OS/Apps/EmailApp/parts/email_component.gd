@@ -60,9 +60,12 @@ func _ready() -> void:
 func start() -> void:
 	BtnControls.reveal(true)
 	show()
+
+func pause() -> void:
+	await BtnControls.reveal(false)
 	
 func unpause() -> void:
-	BtnControls.on_item_index_update()
+	await BtnControls.reveal(true)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -124,10 +127,4 @@ func parse_email(data:Dictionary, index:int) -> void:
 	if index not in read_emails:
 		markAsRead.call(index)
 		
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-func set_control_pos_visibility(state:bool) -> void:
-	BtnControls.show() if state else BtnControls.hide()
 # ------------------------------------------------------------------------------

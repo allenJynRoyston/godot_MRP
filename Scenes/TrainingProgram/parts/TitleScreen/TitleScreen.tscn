@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=20 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
@@ -8,6 +8,7 @@
 [ext_resource type="LabelSettings" uid="uid://cwsa8o7i4f0n3" path="res://Fonts/game/label_medium_thick.tres" id="6_kfvw8"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_oonus"]
 [ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="7_3sdtd"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="7_46a2l"]
 [ext_resource type="PackedScene" uid="uid://dpuqbxd6wb6sa" path="res://Scenes/TrainingProgram/parts/TitleScreen/parts/ScenarioBtn.tscn" id="7_ousww"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_3sdtd"]
 
@@ -18,15 +19,8 @@ bg_color = Color(0.20871, 0.20871, 0.20871, 0.521569)
 font = ExtResource("3_id14l")
 font_size = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46a2l"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0, 0, 0, 0.733333)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -41,6 +35,13 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q51us"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8mru"]
+bg_color = Color(0, 0, 0, 0.733333)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -75,7 +76,7 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
-theme_override_constants/separation = 25
+theme_override_constants/separation = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
@@ -96,11 +97,12 @@ vertical_alignment = 1
 
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "V.0.1"
+text = "TUTORIAL"
 label_settings = SubResource("LabelSettings_f0u0i")
 horizontal_alignment = 2
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "SELECT A SCENARIO"
 label_settings = ExtResource("6_kfvw8")
@@ -116,30 +118,34 @@ alignment = 1
 [node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
+panel_color = Color(0, 0, 0, 0.733333)
 inactive_color = Color(1, 1, 1, 0.796078)
-title = "Continue"
+title = "Continue Progress"
 
 [node name="TutorialBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
-custom_minimum_size = Vector2(120, 40)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "TUTORIAL"
-
-[node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+visible = false
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_w78h0")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "???"
+title = "TUTORIAL"
 
-[node name="StoryBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+[node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+visible = false
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_q51us")
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
 title = "???"
+
+[node name="NewBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s8mru")
+panel_color = Color(0, 0, 0, 0.733333)
+inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
+title = "New Game"
 
 [node name="ContinueControl" type="Control" parent="."]
 layout_mode = 2
@@ -156,7 +162,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ktom1")
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -5
+theme_override_constants/margin_top = -10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
@@ -177,17 +183,17 @@ alignment = 2
 [node name="DetailName" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "SCENARIO NAME"
-label_settings = ExtResource("5_p3swr")
+label_settings = ExtResource("7_46a2l")
 
 [node name="DetailDay" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "DAY 1"
-label_settings = ExtResource("5_p3swr")
+label_settings = ExtResource("7_46a2l")
 
 [node name="DetailDate" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "01/12/2024"
-label_settings = ExtResource("5_p3swr")
+label_settings = ExtResource("7_46a2l")
 
 [node name="ScenarioPanel" type="Control" parent="."]
 visible = false
@@ -264,7 +270,6 @@ grow_vertical = 2
 [node name="IconBtn" parent="ScenarioPanel/Control/CenterContainer" instance=ExtResource("6_oonus")]
 layout_mode = 2
 icon = 37
-flip_v = false
 is_hoverable = false
 
 [node name="CenterContainer2" type="CenterContainer" parent="ScenarioPanel/Control"]

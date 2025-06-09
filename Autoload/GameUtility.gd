@@ -31,7 +31,6 @@ func assign_nodes() -> void:
 	Structure3dContainer = GameplayNode.Structure3dContainer
 	ToastContainer = GameplayNode.ToastContainer
 	ActionContainer = GameplayNode.ActionContainer
-	print(ActionContainer)
 # ------------------------------------------------------------------------------
 
 ## ------------------------------------------------------------------------------
@@ -495,11 +494,13 @@ func reset_room() -> bool:
 # --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------
-func open_objectives() -> void:
+func open_objectives(objectives:Array = []) -> void:
 	var ObjectivesNode:Control = ObjectivesPreload.instantiate()
 	ObjectivesNode.z_index = z_index_lvl
 	GameplayNode.add_child(ObjectivesNode)
-	await ObjectivesNode.activate(GameplayNode.scenario_data.objectives)
+	
+	await ObjectivesNode.activate(objectives)
+	
 	GameplayNode.show_only([Structure3dContainer])
 	ObjectivesNode.start()
 
