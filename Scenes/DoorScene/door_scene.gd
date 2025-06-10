@@ -67,7 +67,7 @@ var onLogin:Callable = func():pass
 #];
 
 
-var current_progress_val:int = 0
+#var current_progress_val:int = 0
 var story_progress_val:int = 0
 var play_sequence:bool = true : 
 	set(val):
@@ -80,10 +80,12 @@ signal on_finish
 func _init() -> void:
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_fullscreen(self)
+	GBL.register_node(REFS.DOOR_SCENE, self)
 
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_fullscreen(self)
+	GBL.unregister_node(REFS.DOOR_SCENE)
 
 func _ready() -> void:
 	on_current_mode_update()	
@@ -124,7 +126,7 @@ func _ready() -> void:
 
 # ---------------------------------------------
 func play_story_sequence(skip_delay:bool) -> void:	
-	StoryNarration.text_list = STORY.chapters[current_progress_val].text 
+	StoryNarration.text_list = STORY.chapters[story_progress_val].text 
 	await StoryNarration.reveal(true)
 	await StoryNarration.on_end
 	BtnControls.reveal(true)
@@ -132,11 +134,30 @@ func play_story_sequence(skip_delay:bool) -> void:
 	play_sequence = false
 # ---------------------------------------------
 
+# ---------------------------------------------
+func update_progress_and_update_objective() -> Array:
+	var RootNode:Control = GBL.find_node(REFS.OS_ROOT)
+	var next_progress_val:int = story_progress_val + 1		
+	RootNode.current_layer = RootNode.LAYER.DOOR_LAYER
+	print("add door layer control so you can play next objective")
+	await U.set_timeout(3.0)
+	
+	# update story progress val 
+	var res:Dictionary = FS.load_file(FS.FILE.PROGRESS)
+	var progress_data:Dictionary = res.filedata.data
+	progress_data.story_progress_val = next_progress_val
+	FS.save_file(FS.FILE.PROGRESS, progress_data)
+	
+	# wait for user input
+	RootNode.current_layer = RootNode.LAYER.OS_lAYER
+	
+	# return new objectives
+	return STORY.get_objectives(next_progress_val)
+# ---------------------------------------------
 		
 # ---------------------------------------------
 func parse_save_data(save_data:Dictionary) -> void:
 	story_progress_val = save_data.story_progress_val
-	current_progress_val = save_data.current_progress_val
 	GBL.progres_save_data = save_data
 # ---------------------------------------------
 
@@ -146,6 +167,8 @@ func get_current_save_state() -> Dictionary:
 		"story_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else story_progress_val,
 	}	
 # ---------------------------------------------
+
+
 
 # ---------------------------------------------
 func on_play_sequence_update() -> void:

@@ -517,12 +517,13 @@ layout_mode = 2
 use_icon = true
 
 [node name="TaskbarBtn" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right" instance=ExtResource("8_xre08")]
+modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_rbbqs")
-title = ""
-assigned_key = ""
-icon = 69
+title = "TASKBAR"
+assigned_key = "BACKSPACE"
+icon = 15
 panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false

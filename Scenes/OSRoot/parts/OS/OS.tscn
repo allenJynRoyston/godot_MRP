@@ -117,6 +117,7 @@ a_btn_title = "LOAD"
 b_btn_title = "EXIT"
 
 [node name="HeaderControls" type="Control" parent="."]
+visible = false
 z_index = 10
 layout_mode = 2
 
@@ -133,7 +134,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_tw6u7")
 [node name="MarginContainer" type="MarginContainer" parent="HeaderControls/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 

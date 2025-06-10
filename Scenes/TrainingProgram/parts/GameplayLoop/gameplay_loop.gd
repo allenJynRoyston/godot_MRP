@@ -3,7 +3,6 @@ extends PanelContainer
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
-@onready var DialogueContainer:MarginContainer = $DialogueContainer
 @onready var ResourceContainer:Control = $ResourceContainer
 @onready var LineDrawContainer:PanelContainer = $LineDrawContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
@@ -13,6 +12,9 @@ extends PanelContainer
 const SetupContainedPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn")
 
 enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, GAME_WON, GAME_LOST }
+
+var options:Dictionary = {}
+var is_tutorial:bool = false
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
@@ -30,11 +32,6 @@ var show_actions:bool = false :
 	set(val):
 		show_actions = val
 		on_show_actions_update()
-
-var show_dialogue:bool = false : 
-	set(val):
-		show_dialogue = val
-		on_show_dialogue_update()
 		
 var show_linedraw:bool = true : 
 	set(val):
@@ -336,8 +333,6 @@ func _ready() -> void:
 	# first these
 	on_show_structures_update()
 	on_show_actions_update()
-
-	on_show_dialogue_update()
 	on_show_resources_update()
 	on_show_linedraw_update()
 	
@@ -375,28 +370,15 @@ func start(new_game_data_config:Dictionary = {}) -> void:
 	start_new_game(new_game_data_config)
 	
 
-#func setup_scenario(is_new_game:bool) -> void:
-	#scenario_data.objectives.push_back({
-		#"title": "SURVIVE FOR %s DAYS." % [scenario_data.day_limit],
-		#"is_completed": func() -> bool:
-			#return progress_data.day >= scenario_data.day_limit
-	#})
-		#
-	## add endgame timeline object
-	#if is_new_game:
-		#GAME_UTIL.add_timeline_item({
-			#"title": "SCENARIO END",
-			#"icon": SVGS.TYPE.CONVERSATION,
-			#"description": "Win or lose...",
-			#"day": scenario_data.day_limit,
-			#"location": {"floor": 0, "ring": 0, "room": 0}
-		#})
-
-
 func start_new_game(game_data_config:Dictionary) -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
+	var is_new_game:bool = game_data_config.filedata.is_empty()
 	
+	# set tutorial flag
+	is_tutorial = options.is_tutorial if "is_tutorial" in options else false
+	
+	# fade in
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.7)
 	
 	# -----------------------
 	var SetupContainer:Control = SetupContainedPreload.instantiate()
@@ -419,11 +401,9 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	setup_complete = true
 	update_room_config()	
 	# build out objectives from current story val
-	var progress_data:Dictionary = FS.load_file(FS.FILE.PROGRESS)
-	objectives = STORY.get_objectives(progress_data.filedata.data.story_progress_val if progress_data.success else 0)
+	var progress_data_file:Dictionary = FS.load_file(FS.FILE.PROGRESS)
+	objectives = STORY.get_objectives(progress_data_file.filedata.data.story_progress_val if progress_data_file.success else 0)
 	
-	#setup_scenario(game_data_config.filedata.is_empty())					
-
 	# -----------------------
 	SetupContainer.subtitle = "SETTING DEBUG VALUES..."
 	SetupContainer.progressbar_val = 0.7
@@ -446,29 +426,47 @@ func start_new_game(game_data_config:Dictionary) -> void:
 			node.on_reset()			
 	
 	# -----------------------
+	# 5.) SETUP OBJECTIVES, progress timeline to correct day
+	if is_new_game:
+		for objective in objectives:
+			GAME_UTIL.add_timeline_item({
+				"title": objective.title,
+				"icon": SVGS.TYPE.INFO,
+				"description": "Objective",
+				"day": objective.complete_by_day
+			})
+	else:
+		SUBSCRIBE.timeline_array = timeline_array
+		SUBSCRIBE.progress_data = progress_data
+	
+	# ----------------------- LAST PHASE, START EVERYTHING AND REMOVE SETUP
 	# then show player hud
 	await restore_player_hud()					
 	SetupContainer.subtitle = "STARTING PROGRAM..."
 	SetupContainer.progressbar_val = 1.0	
 	await U.set_timeout(0.3)	
-				
-	# animate out
-	await SetupContainer.end()
-	
-	# 5.) render everything to screen
-	#if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
-	await GAME_UTIL.open_objectives(objectives)
-	#quicksave(true)	
-	
+	await SetupContainer.end()	
+
 	# update phase and start game
-	current_phase = PHASE.PLAYER
-	
-	# start action
-	# start at ring level
+	if is_tutorial:
+		await GAME_UTIL.add_dialogue({})	
+		if is_new_game:
+			print("play tutorial")
+		else:
+			print("welcome back tutorial")	
+			
+	# show objectives
+	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
+		await GAME_UTIL.open_objectives(objectives)
+
+	# start actionContainer or start at ring level
 	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
 		ActionContainer.start(true)		
 	else:
 		ActionContainer.start()
+	
+	current_phase = PHASE.PLAYER
+		
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -594,7 +592,6 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		Structure3dContainer, 
 		TimelineContainer,
 		ActionContainer, 
-		DialogueContainer, 
 		ResourceContainer,
 		PhaseAnnouncement, 
 		ToastContainer
@@ -916,11 +913,6 @@ func on_show_linedraw_update() -> void:
 	if !is_node_ready():return
 	LineDrawContainer.is_showing = show_linedraw
 	showing_states[LineDrawContainer] = show_linedraw
-		
-func on_show_dialogue_update() -> void:
-	if !is_node_ready():return
-	DialogueContainer.is_showing = show_dialogue
-	showing_states[DialogueContainer] = show_dialogue
 
 func on_show_resources_update() -> void:
 	if !is_node_ready():return
@@ -1047,9 +1039,13 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.GAME_WON:
 			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")	
-			await U.set_timeout(3.0)
-			onEndGame.call(true)
-			return
+			var new_objectives = await GBL.find_node(REFS.DOOR_SCENE).update_progress_and_update_objective()
+			objectives = new_objectives
+			PhaseAnnouncement.end()
+			await GAME_UTIL.open_objectives(objectives)			
+			
+			current_phase = PHASE.PLAYER
+			phase_cycle_complete.emit()
 		# ------------------------
 		PHASE.GAME_LOST:
 			PhaseAnnouncement.start("FAILED TO MEET OBJECTIVES...")	
@@ -1101,7 +1097,7 @@ func parse_restore_data(game_data_config:Dictionary) -> void:
 	
 	# any rooms completed by scenarios become allowed
 	SUBSCRIBE.awarded_rooms = [] #game_data_config.awarded_rooms
-	
+
 	# reactive data
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if is_new_game else restore_data.progress_data
 	SUBSCRIBE.scp_data = initial_values.scp_data.call() if is_new_game else restore_data.scp_data

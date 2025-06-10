@@ -2,6 +2,8 @@ extends Control
 
 @onready var BtnControlPanel:PanelContainer = $BtnControlPanel
 @onready var BtnMarginContainer:MarginContainer = $BtnControlPanel/BtnMarginContainer
+@onready var BtnPanel:PanelContainer = $BtnControlPanel/BtnMarginContainer/PanelContainer
+
 @onready var ABtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/ABtn
 @onready var BBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/BBtn
 @onready var CBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/CBtn
@@ -12,7 +14,11 @@ extends Control
 @onready var HintIcon:Control = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintIcon
 
 @export_category("OPTIONS")
-@export var reset_to_last:bool = false
+@export var include_blackbar:bool = false : 
+	set(val):
+		include_blackbar = val 
+		on_include_blackbar_update()
+		
 @export var offset:Vector2 = Vector2(2, 5)
 @export var margin_offsets:Vector2 = Vector2(10, 10) : 
 	set(val):
@@ -117,6 +123,7 @@ func _ready() -> void:
 	on_fullscreen_update()
 	on_disable_active_btn_update()
 	on_margin_offsets_update()	
+	on_include_blackbar_update()
 	
 	on_a_btn_title_update()
 	on_b_btn_title_update()
@@ -218,7 +225,13 @@ func on_hide_b_btn_update() -> void:
 
 func on_hide_c_btn_update() -> void:
 	if !is_node_ready():return
-	CBtn.hide() if hide_c_btn else CBtn.show()		
+	CBtn.hide() if hide_c_btn else CBtn.show()
+	
+func on_include_blackbar_update() -> void:
+	if !is_node_ready():return
+	var new_stylebox:StyleBoxFlat = BtnPanel.get_theme_stylebox('panel').duplicate()	
+	new_stylebox.bg_color = Color(0.221, 0.244, 0.331) if include_blackbar else Color(0, 0, 0, 0)
+	BtnPanel.add_theme_stylebox_override("panel", new_stylebox)
 # --------------------------------------------------------------------------------------------------
 	
 # --------------------------------------------------------------------------------------------------

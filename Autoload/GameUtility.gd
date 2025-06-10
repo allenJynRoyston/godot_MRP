@@ -11,6 +11,8 @@ const StoreGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts
 const ScpGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/ScpGrid.tscn")
 const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/ResearcherGrid.tscn")
 
+const DialogPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn")
+
 const z_index_lvl:int = 10
 const new_scp_entry:Dictionary = {
 	"level": 0,
@@ -1106,8 +1108,22 @@ func add_timeline_item(dict:Dictionary) -> void:
 		"location": dict.location if "location" in dict else {},
 		"event": dict.event if "event" in dict else {},
 	})
-	
+
 	SUBSCRIBE.timeline_array = timeline_array
 # -----------------------------------
 #endregion	
 # ------------------------------------------------------------------------------	
+
+func add_dialogue(data:Dictionary) -> void:
+		
+	var DialogNode:Control = DialogPreload.instantiate()
+	DialogNode.z_index = z_index_lvl
+	GameplayNode.add_child(DialogNode)
+	
+	await DialogNode.activate()
+	
+	GameplayNode.show_only([Structure3dContainer])
+	DialogNode.start(data)
+
+	await DialogNode.user_response
+	GameplayNode.restore_player_hud()

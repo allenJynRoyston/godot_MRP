@@ -16,8 +16,11 @@ var chapters:Array = [
 		 ],
 		"objectives": [
 			{
-				"title": "Complete the tutorial", "is_completed": func():pass
-			}			
+				"title": "TEST 1", 
+				"complete_by_day": 2,
+				"is_completed": func() -> bool:
+					return true,
+			},
 		],
 		"completed_by_day": 10
 	},
@@ -37,7 +40,12 @@ var chapters:Array = [
 			"You've been emailed a program for the computer.  Install it and fufill the objectives and we'll talk more."
 		],
 		"objectives": [
-			{"title": "Contain 1 SCP by day 10.", "is_completed": func():pass}			
+			{
+				"title": "TEST 2", 
+				"complete_by_day": 8,
+				"is_completed": func() -> bool:
+					return false,
+			},
 		],
 		"completed_by_day": 20	
 	}	
@@ -45,20 +53,11 @@ var chapters:Array = [
 
 
 func get_objectives(story_progress_val:int) -> Array:
+	var objectives:Array = []
+	for index in chapters.size():
+		if index <= story_progress_val: 
+			for objective in chapters[index].objectives:
+				objectives.push_back(objective)
 	
-
-	return [
-		{
-			"title": "TEST 1", 
-			"complete_by_day": 3,
-			"is_completed": func() -> bool:
-				return true,
-		},
-		{
-			"title": "TEST 2", 
-			"complete_by_day": 5,
-			"is_completed": func() -> bool:
-				return true,
-		}		
-	
-	]
+	print("objectives: ", objectives)
+	return objectives

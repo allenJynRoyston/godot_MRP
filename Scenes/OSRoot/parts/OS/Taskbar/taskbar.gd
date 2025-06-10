@@ -62,11 +62,12 @@ func _ready() -> void:
 	on_show_media_player_update()
 	
 	BtnControl.onUpdate = func(_node:Control) -> void:
+		selected_node = _node
+		
+		BtnControl.disable_back_btn = selected_node == DesktopBtn 
+		BtnControl.hide_a_btn = selected_node not in [PlayBtn, NextBtn]
 		for node in BtnControl.itemlist:
 			node.modulate = Color(1, 1, 1, 1 if node == _node else 0.7)
-		selected_node = _node
-		BtnControl.hide_b_btn = selected_node == DesktopBtn 
-		BtnControl.hide_a_btn = selected_node not in [PlayBtn, NextBtn]
 
 		# desktop btn
 		if selected_node == DesktopBtn:
@@ -80,6 +81,7 @@ func _ready() -> void:
 			
 		# preview of any current apps
 		if "data" in selected_node:
+			print(get_parent())
 			get_parent().currently_running_app = selected_node.data.node
 			
 	BtnControl.onAction = func() -> void:
@@ -166,7 +168,11 @@ func add_item(item:Dictionary) -> void:
 	new_node.onClose = func() -> void:
 		onItemClose.call(item)
 	
-	RunningTasks.add_child(new_node)	
+	RunningTasks.add_child(new_node)
+	
+	await U.tick()
+	BtnControl.itemlist = get_itemlist()
+	BtnControl.item_index = 0	
 	
 func remove_item(ref:int) -> void:
 	if !is_node_ready():return
@@ -174,7 +180,7 @@ func remove_item(ref:int) -> void:
 		if task.data.ref == ref:
 			await task.data.node.force_save_and_quit()
 			RunningTasks.remove_child(task)
-			get_parent().close_app(ref, true)
+			get_parent().close_app(ref)
 			
 	await U.tick()
 	BtnControl.itemlist = get_itemlist()

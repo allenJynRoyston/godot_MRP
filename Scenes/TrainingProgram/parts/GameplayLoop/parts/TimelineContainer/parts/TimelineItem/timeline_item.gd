@@ -95,11 +95,11 @@ func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:
-	super.on_focus(state)
-	#if !is_node_ready() or progress_data.is_empty() or modulate.a == 0:return
-	#U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else get_alpha()))
-	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	super.on_mouse_click(node, btn, on_hover)
+#func on_focus(state:bool = is_focused) -> void:
+	#super.on_focus(state)
+	##if !is_node_ready() or progress_data.is_empty() or modulate.a == 0:return
+	##U.tween_node_property(self, "modulate", Color(1, 1, 1, 1 if state else get_alpha()))
+	#
+#func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	#super.on_mouse_click(node, btn, on_hover)
 # ------------------------------------------------------------------------------

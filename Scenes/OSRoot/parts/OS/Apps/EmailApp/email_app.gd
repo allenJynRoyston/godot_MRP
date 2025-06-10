@@ -18,7 +18,7 @@ var email_data:Array[Dictionary] = [
 					"installer_data": {
 						"filename": attachment.title,
 						"duration": 3,
-						"ref": Layout.APPS.SDT
+						"ref": Layout.APPS.SDT_FULL
 					}
 				}),
 		}

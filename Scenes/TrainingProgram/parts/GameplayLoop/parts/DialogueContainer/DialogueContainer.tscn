@@ -1,98 +1,120 @@
-[gd_scene load_steps=9 format=3 uid="uid://cq8rakc0xcf22"]
+[gd_scene load_steps=13 format=3 uid="uid://cq8rakc0xcf22"]
 
 [ext_resource type="Script" uid="uid://cg4ot4jg0otsc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/dialogue_container.gd" id="1_d66cv"]
-[ext_resource type="LabelSettings" uid="uid://bfnac4b326jm0" path="res://Fonts/game/dialogue.tres" id="1_jc764"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_0xw3q"]
-[ext_resource type="Shader" uid="uid://cur3l862r5woy" path="res://Shader/Reveal/reveal.gdshader" id="2_1cw7e"]
+[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_nbieq"]
+[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="2_0bxat"]
+[ext_resource type="Material" uid="uid://dqa3gw7ngocec" path="res://Shader/GausBlur/GausBlur.tres" id="2_em1py"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="5_s72ly"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="6_s72ly"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_amy1r"]
-shader = ExtResource("2_1cw7e")
-shader_parameter/percentage = 1.0
-shader_parameter/angle_degrees = 0.0
-shader_parameter/line_width = 0.02
-shader_parameter/line_color = Color(0, 0.964706, 0.278431, 1)
-shader_parameter/laser_color = Color(1, 0, 0, 1)
-shader_parameter/glow_width = 0.05
-shader_parameter/trail_fade = 0.5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_def7h"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_62b7e"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_em1py"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_s72ly"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_api2j"]
-bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ks5si"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_f58qn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfomw"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
-[node name="DialogueContainer" type="MarginContainer"]
-offset_right = 640.0
-offset_bottom = 115.0
-size_flags_horizontal = 0
-size_flags_vertical = 0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffycc"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="DialogueContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_def7h")
 script = ExtResource("1_d66cv")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_amy1r")
+material = ExtResource("2_em1py")
 layout_mode = 2
-texture = SubResource("ViewportTexture_62b7e")
-stretch_mode = 2
 
-[node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(640, 115)
+[node name="ColorRectBG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0, 0, 0, 0)
 
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
-offset_right = 640.0
-offset_bottom = 115.0
+[node name="Content" type="Control" parent="."]
+layout_mode = 2
+
+[node name="ContentPanel" type="PanelContainer" parent="Content"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_em1py")
+
+[node name="ContentMargin" type="MarginContainer" parent="Content/ContentPanel"]
+layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_api2j")
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer"]
+[node name="CardBody" parent="Content/ContentPanel/ContentMargin" instance=ExtResource("1_nbieq")]
 layout_mode = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 20
+size_flags_vertical = 4
+card_size = Vector2(600, 200)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer"]
+[node name="TextureRect" parent="Content/ContentPanel/ContentMargin/CardBody" index="0"]
+texture = SubResource("ViewportTexture_s72ly")
+
+[node name="SubViewport" parent="Content/ContentPanel/ContentMargin/CardBody" index="1"]
+size = Vector2i(600, 200)
+
+[node name="CardBody" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(600, 200)
+offset_right = 600.0
+offset_bottom = 200.0
+
+[node name="PanelContainer" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control/CardBody/Front" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_ks5si")
+
+[node name="CardDrawerTitle" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("2_0bxat")]
 layout_mode = 2
-theme_override_constants/separation = 20
-alignment = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_vfomw")
+content = "HELLO, MY NAME IS TUTORIAL"
+title = "NAMETAG"
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(75, 75)
+[node name="PanelContainer" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control/CardBody/Back" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_ffycc")
+
+[node name="BtnControls" parent="." instance=ExtResource("5_s72ly")]
 layout_mode = 2
-texture = SubResource("PlaceholderTexture2D_f58qn")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(400, 0)
+[node name="TransitionScreen" parent="." instance=ExtResource("6_s72ly")]
 layout_mode = 2
-size_flags_horizontal = 0
-horizontal_scroll_mode = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer/ScrollContainer/PanelContainer"]
-layout_mode = 2
-size_flags_vertical = 1
-text = "The quick brown fox.
-The quick brown fox.
-The quick brown fox.
-The quick brown fox.
-The quick brown fox.
-The quick brown fox.
-The quick brown fox.
-"
-label_settings = ExtResource("1_jc764")
-
-[node name="NextBtn" parent="SubViewport/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("2_0xw3q")]
-custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
-icon = 10
-flip_v = false
-
-[connection signal="item_rect_changed" from="SubViewport/PanelContainer" to="SubViewport/PanelContainer/MarginContainer/HBoxContainer/NextBtn" method="_on_subviewport_child_changed"]
+[editable path="Content/ContentPanel/ContentMargin/CardBody"]

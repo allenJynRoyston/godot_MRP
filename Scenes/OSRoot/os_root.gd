@@ -1,6 +1,6 @@
 extends PanelContainer
 
-@onready var MousePointer:TextureRect = $Control/MousePointer
+@onready var MousePointer:TextureRect = $GameLayer/MousePointer
 @onready var Output:TextureRect = $Control/Output
 
 @onready var Gamelayer:SubViewport = $GameLayer

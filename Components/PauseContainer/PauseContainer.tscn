@@ -28,16 +28,17 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_dutpr")
 script = ExtResource("1_mejih")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 material = ExtResource("2_gmgei")
 layout_mode = 2
 texture = SubResource("PlaceholderTexture2D_0p0en")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 100
-theme_override_constants/margin_top = 100
-theme_override_constants/margin_right = 100
-theme_override_constants/margin_bottom = 100
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer2"]
 modulate = Color(1, 1, 1, 0.945098)

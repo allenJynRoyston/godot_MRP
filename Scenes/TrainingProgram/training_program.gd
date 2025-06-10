@@ -7,6 +7,7 @@ const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/pa
 
 # options
 var fast_start:bool = false
+var options:Dictionary = {} 
 
 # control
 var GameplayLoopNode:Control
@@ -40,6 +41,7 @@ func start() -> void:
 	await LogoScreen.finished
 	
 	# start gamescreen
+	TitleScreen.is_tutorial = options.is_tutorial if "is_tutorial" in options else false
 	TitleScreen.start(fast_start)
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
@@ -68,6 +70,7 @@ func force_save_and_quit() -> void:
 # ---------------------------------------------
 func start_game(filedata:Dictionary) -> void:
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
+	GameplayLoopNode.options = options
 	GameplayLoopNode.onEndGame = on_end_game	
 	GameplayLoopNode.onExitGame = on_exit_game
 	GameplayLoopNode.hide()

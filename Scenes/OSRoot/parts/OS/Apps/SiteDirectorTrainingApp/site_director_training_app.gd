@@ -17,7 +17,8 @@ func start() -> void:
 		is_ready_and_activated = true
 		LoadingComponent.start(fast_load)
 		await LoadingComponent.on_complete	
-		
+
+		TrainingProgram.options = options
 		TrainingProgram.fast_start = fast_load
 		TrainingProgram.start()
 		is_ready.emit()

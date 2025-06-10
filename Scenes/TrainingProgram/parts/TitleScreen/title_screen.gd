@@ -1,6 +1,7 @@
 extends PanelContainer
 
 @onready var MenuList:VBoxContainer = $CenterContainer/VBoxContainer/MenuList
+@onready var SubTitle:Label = $CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer/SubTitle
 
 @onready var ContinueBtn:Control = $CenterContainer/VBoxContainer/MenuList/ContinueBtn
 @onready var NewBtn:Control = $CenterContainer/VBoxContainer/MenuList/NewBtn
@@ -23,6 +24,8 @@ extends PanelContainer
 enum MODE {TITLE, SCENARIO}
 
 const ScenarioBtnPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/TitleScreen/parts/ScenarioBtn.tscn")
+
+var is_tutorial:bool = false
 
 var scenario_list:Array = []
 var current_mode:MODE = MODE.TITLE : 
@@ -58,8 +61,6 @@ func _init() -> void:
 
 # ------------------------------------------
 func _ready() -> void:
-	self.modulate = Color(1, 1, 1, 1)
-
 	ScenarioPanel.hide()	
 		
 	ContinueBtn.onClick = func() -> void:
@@ -94,7 +95,9 @@ func _ready() -> void:
 
 # ------------------------------------------
 func start(fast_boot:bool = false) -> void:
-	show()
+	self.modulate = Color(1, 1, 1, 1)
+	
+	SubTitle.text = "TUTORIAL" if is_tutorial else "v1.0"
 
 	var quickload_res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
 	has_quicksave = false if DEBUG.get_val(DEBUG.NEW_QUICKSAVE_FILE) else quickload_res.success 

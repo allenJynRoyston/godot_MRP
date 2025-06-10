@@ -11,6 +11,8 @@ bg_color = Color(0.477079, 0.622808, 0.7162, 1)
 font = ExtResource("3_h8jx3")
 font_color = Color(0, 0, 0, 1)
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+shadow_size = 2
+shadow_color = Color(0.129412, 0.129412, 0.129412, 0.345098)
 
 [node name="MediaPlayer" type="HBoxContainer"]
 theme_override_constants/separation = 5
