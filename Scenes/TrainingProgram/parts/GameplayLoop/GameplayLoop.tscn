@@ -1,10 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=12 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" uid="uid://b07g7jcbtop8c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
 [ext_resource type="PackedScene" uid="uid://d04lnq4yhp80o" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/TimelineContainer.tscn" id="5_1tp62"]
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
-[ext_resource type="PackedScene" uid="uid://cq8rakc0xcf22" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn" id="9_2cue2"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
 [ext_resource type="PackedScene" uid="uid://bjpif0yvapqdn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/ResourceContainer.tscn" id="13_goe6f"]
 [ext_resource type="PackedScene" uid="uid://p7chmumf3rm2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/LineDrawContainer.tscn" id="14_g12vl"]
@@ -47,10 +46,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="ResourceContainer" parent="." instance=ExtResource("13_goe6f")]
-layout_mode = 2
-
-[node name="DialogueContainer" parent="." instance=ExtResource("9_2cue2")]
-visible = false
 layout_mode = 2
 
 [node name="PhaseAnnouncement" parent="." instance=ExtResource("20_q3yo6")]

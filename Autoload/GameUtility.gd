@@ -496,6 +496,19 @@ func reset_room() -> bool:
 # --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------
+func update_objectives(objectives:Array = []) -> void:
+	for objective in objectives:
+		if progress_data.day < objective.complete_by_day:
+			GAME_UTIL.add_timeline_item({
+				"title": objective.title,
+				"icon": SVGS.TYPE.INFO,
+				"description": "Objective",
+				"day": objective.complete_by_day
+			})
+# -----------------------------------
+
+
+# -----------------------------------
 func open_objectives(objectives:Array = []) -> void:
 	var ObjectivesNode:Control = ObjectivesPreload.instantiate()
 	ObjectivesNode.z_index = z_index_lvl

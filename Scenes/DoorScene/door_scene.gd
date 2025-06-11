@@ -15,6 +15,7 @@ extends PanelContainer
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
+var OSRootNode:Control
 var control_pos:Dictionary = {}
 
 var current_mode:MODE = MODE.INIT : 
@@ -25,56 +26,16 @@ var current_mode:MODE = MODE.INIT :
 var is_ready:bool = false
 var onLogin:Callable = func():pass
 
-#var story_chapters:Array[Dictionary] = [
-	#{
-		#"text": [
-			#"Listen carefully.  My name is Researcher [   ] and I was tasked with recording these messages for Procedure-[   ]: the Memeory Recovery Protocol, the procedure that you are now currently undergoing.",
-			#"The first thing I need to tell you is you are not safe, and your life is in danger.",
-			#"Thats the bad news.  The good news, is, that you can change that.  You have control here.  But.  I still need you to be a little bit afraid.",
-			#"Now this is hard to understand at first, but... you've done this before.  You've undergone this exact procedure, safetly, multiple times.  You've saved your life each time.",
-			#"You just don't remember.",
-			#"But it's more accurate to say that you just CAN'T remember.",
-			#"The reason is you exposed yourself to an incredibly potent amnestic, a synthetic chemical agent used to suppress memory and [    ].",
-			#"Your inability to remember who you are, who you REALLY are, is intentional.  What we don't understand is how the mind that, the mind of somebody not you... fills in that absense.  Whoever that is, you are target we are trying to reach.",
-			#"And we believe that's who we're speaking to now.",
-			#"Anyways, there's a computer in front of you. I just need you to complete the tutorial.  Once you do I'll tell you more."
-		 #],
-		#"objectives": [
-			#{
-				#"title": "Complete the tutorial", "is_completed": func():pass
-			#}			
-		#]
-	#},
-	#{
-		#"text": [
-			#"So like I said, we've done this a few times now.  Our success rate is actually [ ]%, which, you know... isn't that bad.  Considering.",
-			#"But... what's really improves our odds is when you trust me.",
-			#"And, unfortunately, that's going to be really difficult after I disclose the last message you sent me.",
-			#"It simply said, and I quote: ",
-			#"'You can't trust it.  It lies.'",
-			#"End quote.",
-			#"The thing is, you've sent me this exact message the last time you triggered the self destruct, but you couldn't remember what it meant, even after a successful recall.",
-			#"That is... very uncomforable, to say the least.  And it leads me to only two conlusions: ",
-			#"That some entity keeps forcing you to initiate the site self-destruct sequence unknowingly or worse.",  
-			#"You WANT to do it, but that something keeps stopping you.",
-			#"Eitherway, we need to know so we can help you.", 
-			#"You've been emailed a program for the computer.  Install it and fufill the objectives and we'll talk more."
-		#],
-		#"objectives": [
-			#{"title": "Contain 1 SCP by day 10.", "is_completed": func():pass}			
-		#]
-	#}	
-#];
+# new values
+var story_progress:Dictionary = {}
 
-
-#var current_progress_val:int = 0
-var story_progress_val:int = 0
-var play_sequence:bool = true : 
-	set(val):
-		play_sequence = val
-		on_play_sequence_update()
+#var play_sequence:bool = true : 
+	#set(val):
+		#play_sequence = val
+		#on_play_sequence_update()
 
 signal on_finish
+signal wait_for_story
 
 # ---------------------------------------------
 func _init() -> void:
@@ -88,8 +49,10 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.DOOR_SCENE)
 
 func _ready() -> void:
+	OSRootNode = GBL.find_node(REFS.OS_ROOT)
+	
 	on_current_mode_update()	
-	on_play_sequence_update()
+	#on_play_sequence_update()
 	
 	BtnControls.reveal(false)
 
@@ -97,84 +60,115 @@ func _ready() -> void:
 		IntroSubviewport.set_process(false)
 		IntroSubviewport.get_child(0).hide()
 	
-	BtnControls.onAction = func() -> void:
-		if !is_ready:return
-		await BtnControls.reveal(false)
-		onLogin.call()
-	
 	BtnControls.onCBtn = func() -> void:
 		if !is_ready:return
 		await BtnControls.reveal(false)		
-		play_story_sequence(true)
+		play_current_story_sequence()
 	
 	BtnControls.onBack = func() -> void:
 		pass
-			
 	
-	await U.tick()
-	if DEBUG.get_val(DEBUG.NEW_PROGRESS_FILE):
-		FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
-		await U.tick()
-	
-	var res:Dictionary = FS.load_file(FS.FILE.PROGRESS)
-	if res.success:
-		parse_save_data(res.filedata.data)
-	else:
-		FS.save_file(FS.FILE.PROGRESS, get_current_save_state())
+	# 
+	BtnControls.onDirectional = func(key:String):
+		if !is_visible_in_tree() or !is_node_ready():return
 		
+		match key:
+			"A":
+				print("go back to previous objective")
+			"D":
+				print("go to next to objective")
+	
+	# check needs to be deferred to load correctly
+	check_btn_states.call_deferred(false)
 # ---------------------------------------------
 
 # ---------------------------------------------
-func play_story_sequence(skip_delay:bool) -> void:	
-	StoryNarration.text_list = STORY.chapters[story_progress_val].text 
+func play_current_story_sequence() -> void:	
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	
+	StoryNarration.text_list = STORY.chapters[story_progress.current_story_val].story_message 
 	await StoryNarration.reveal(true)
 	await StoryNarration.on_end
-	BtnControls.reveal(true)
-		
-	play_sequence = false
+	
+	# update current progress val to story value ONLY if it's the first one
+	if story_progress.play_message_required:
+		GBL.active_user_profile.story_progress.play_message_required = false
+		GBL.update_and_save_user_profile(GBL.active_user_profile)
+
+	# update btn states, reveal buttons
+	check_btn_states(false)	
+	
+	await U.tick()
+	await BtnControls.reveal(true)
+	wait_for_story.emit()
+	
 # ---------------------------------------------
 
 # ---------------------------------------------
-func update_progress_and_update_objective() -> Array:
-	var RootNode:Control = GBL.find_node(REFS.OS_ROOT)
-	var next_progress_val:int = story_progress_val + 1		
-	RootNode.current_layer = RootNode.LAYER.DOOR_LAYER
-	print("add door layer control so you can play next objective")
-	await U.set_timeout(3.0)
+func update_progress_and_get_next_objective() -> Array:
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	
-	# update story progress val 
-	var res:Dictionary = FS.load_file(FS.FILE.PROGRESS)
-	var progress_data:Dictionary = res.filedata.data
-	progress_data.story_progress_val = next_progress_val
-	FS.save_file(FS.FILE.PROGRESS, progress_data)
+	# TODO: need to add a check to ensure that there IS more story to tell
+	if story_progress.current_story_val == story_progress.max_story_val:
+		story_progress.max_story_val += 1	
+		story_progress.play_message_required = true
+		
+	# increament current story 
+	story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
+
+	# update and save user profile
+	GBL.update_and_save_user_profile(GBL.active_user_profile)
+
+	# update available buttons
+	await BtnControls.reveal(true)	
+	check_btn_states(true)
 	
-	# wait for user input
-	RootNode.current_layer = RootNode.LAYER.OS_lAYER
+	# change the root node to show this scene...
+	OSRootNode.current_layer = OSRootNode.LAYER.DOOR_LAYER
+	
+	# wait for story sequence to complete
+	await wait_for_story
+	
+	# ... then revert to os scene
+	OSRootNode.current_layer = OSRootNode.LAYER.OS_lAYER
 	
 	# return new objectives
-	return STORY.get_objectives(next_progress_val)
+	return STORY.get_objectives(story_progress.current_story_val)
 # ---------------------------------------------
 		
-# ---------------------------------------------
-func parse_save_data(save_data:Dictionary) -> void:
-	story_progress_val = save_data.story_progress_val
-	GBL.progres_save_data = save_data
-# ---------------------------------------------
+## ---------------------------------------------
+#func get_current_save_state() -> Dictionary:
+	#return {
+		## this can be debugged if you need to start on a different story sequence
+		#"story_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else progress_data.story_progress_val,
+		## these are read-only
+		#"play_message_required": progress_data.play_message_required,
+		#"current_progress_val": progress_data.current_progress_val,
+		#"quicksave_snapshots": progress_data.quicksave_snapshots
+	#}	
+## ---------------------------------------------
 
 # ---------------------------------------------
-func get_current_save_state() -> Dictionary:
-	return {
-		"story_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else story_progress_val,
-	}	
-# ---------------------------------------------
+func check_btn_states(use_for_skip:bool = false) -> void:
+	var play_message_required:bool = GBL.active_user_profile.story_progress.play_message_required
 
-
-
-# ---------------------------------------------
-func on_play_sequence_update() -> void:
-	if !is_node_ready():return
-	BtnControls.c_btn_title = "REPLAY MESSAGE" if !play_sequence else "PLAY MESSAGE"
-	BtnControls.hide_a_btn = play_sequence
+	# if the story val is 0 (new game), then hide until the first story segement has been completed
+	BtnControls.hide_a_btn = play_message_required
+	
+	# c btn title
+	BtnControls.c_btn_title = "PLAY MESSAGE" if (play_message_required) else "REPLAY MESSAGE"
+	
+	# modify on action so it skips
+	BtnControls.a_btn_title = "SKIP" if use_for_skip else "LOGIN"
+		
+	BtnControls.onAction = func() -> void:
+		await BtnControls.reveal(false)		
+		if use_for_skip:
+			wait_for_story.emit()
+		else:
+			onLogin.call()
+				
+		
 # ---------------------------------------------
 	
 # ---------------------------------------------

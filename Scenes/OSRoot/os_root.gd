@@ -19,20 +19,23 @@ const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourgla
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
 
 # GAMEPLAY OPTIONS
-@export_category("DEBUG OPTIONS")
+@export_category("PRODUCTION DEBUG")
 @export var is_production_build:bool = false
+
+# GRAPHICS DEBUG
+@export_category("GRAPHIC DEBUG")
 @export var start_at_fullscreen:bool = false
 
-# DEFAULTS
-@export_category("DEBUG SAVE FILES")
-@export var new_progress_file:bool = false
-@export var new_system_file:bool = false 
-@export var new_persistant_file:bool = false
-@export var new_quicksave_file:bool = false
+# USER PROFILE DEBUG
+@export_category("USER_PROFILE DEBUG")
+@export var reset_userprofile_save:bool = false
 
-@export_category("PROGRESS DEBUG")
+# USERPROFILE DEBUG
+@export_category("STORYPROGRESS DEBUG")
 @export var debug_story_progress:bool = false
+@export var user_profile_ref:FS.FILE = FS.FILE.SAVE_ONE
 @export var story_progress:int = 0
+@export var current_story_val:int = 0
 
 # SKIPS
 @export_category("SKIPS START")
@@ -59,6 +62,7 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var stdr_skip_loadingscreen:bool = false
 
 @export_category("DEBUG GAMEPLAYLOOP")
+@export var use_fresh_base:bool = false
 @export var skip_setup_progress:bool = false
 @export var start_at_ring_level:bool = false
 @export var skip_objectives:bool = false
@@ -70,19 +74,45 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export_category("RESEARCHERS DEBUG")
 @export var xp_needed_for_promotion:int = 0
 
+# SAVE FILE STRUCTURE/DEFAULTS
+var default_save_profiles:Dictionary = {
+	"snapshots": {
+		"restore_checkpoint": {},
+		"quicksaves": {}
+	}	
+}
+
+# DEFAULT (NEW) USER PROFILE SCHEMA
+var user_profile_schema:Dictionary = {
+	"story_progress": {
+		"play_message_required": true,
+		"max_story_val": 0,
+		"current_story_val": 0,
+	},
+	"use_save_profile": FS.FILE.SAVE_ONE,
+	"save_profiles":{
+		FS.FILE.SAVE_ONE: default_save_profiles.duplicate(),
+		FS.FILE.SAVE_TWO: default_save_profiles.duplicate()
+	}
+}
+
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()
 var is_animating:bool = false
-
 
 var current_layer:LAYER : 
 	set(val):
 		current_layer = val
 		on_current_layer_update()
+		
+
+
+
 
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
 func _init() -> void:
+	
 	if FileAccess.file_exists("user://config.json"):
 		var file = FileAccess.open("user://config.json", FileAccess.READ)
 		var result = JSON.parse_string(file.get_as_text())
@@ -108,23 +138,49 @@ func _exit_tree() -> void:
 
 # -----------------------------------	
 func _ready() -> void:
-	
+	# register node
 	GBL.register_node(REFS.GAMELAYER_SUBVIEWPORT, Gamelayer)
+	
+	# assign debugs
+	assign_debugs()
+
+	# assign functions
+	assign_funcs()
+	
+	# start
+	start()
+# -----------------------------------	
+
+# -----------------------------------	
+func assign_funcs() -> void:
+	DoorScene.onLogin = func() -> void:
+		start_os_layer()
+	
+	OSNode.onBack = func() -> void:
+		current_layer = LAYER.DOOR_LAYER
+# -----------------------------------	
+
+# -----------------------------------	
+func assign_debugs() -> void:
 	# IS PRODUCTION
 	DEBUG.assign(DEBUG.IS_PRODUCTION_BUILD, is_production_build)		
 	
-	# options
+	# GRAPHICS
 	DEBUG.assign(DEBUG.START_AT_FULLSCREEN, start_at_fullscreen)
 	
-	# save files
-	DEBUG.assign(DEBUG.NEW_PROGRESS_FILE, new_progress_file)	
-	DEBUG.assign(DEBUG.NEW_SYSTEM_FILE, new_system_file)
-	DEBUG.assign(DEBUG.NEW_PERSISTANT_FILE, new_persistant_file)
-	DEBUG.assign(DEBUG.NEW_QUICKSAVE_FILE, new_quicksave_file)
 
 	# progress 
-	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS, debug_story_progress)
+	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS, debug_story_progress)	
+	
+	# 
 	DEBUG.assign(DEBUG.STORY_PROGRESS_VAL, story_progress)
+	
+	
+	# save files
+	DEBUG.assign(DEBUG.NEW_SYSTEM_FILE, false)	
+	DEBUG.assign(DEBUG.NEW_PROGRESS_FILE, false)	
+	DEBUG.assign(DEBUG.NEW_PERSISTANT_FILE, false)
+	DEBUG.assign(DEBUG.NEW_QUICKSAVE_FILE, false)	
 
 	# skips
 	DEBUG.assign(DEBUG.SKIP_SPLASH, skip_splash)	
@@ -147,6 +203,8 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, stdr_skip_loadingscreen)	
 	
 	# gameplayloop
+	DEBUG.assign(DEBUG.GAMEPLAY_USE_FRESH_BASE, use_fresh_base)	
+	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
@@ -156,20 +214,29 @@ func _ready() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT, researchers_by_default if !is_production_build else 0)
 	
 	# researchers
-	DEBUG.assign(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)	
-	
+	DEBUG.assign(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)		
+# -----------------------------------	
 
-	DoorScene.onLogin = func() -> void:
-		start_os_layer()
-	
-	OSNode.onBack = func() -> void:
-		current_layer = LAYER.DOOR_LAYER
-	
-	#if !Engine.is_editor_hint():
+
+# -----------------------------------	
+func start() -> void:
+	# mouse behavior
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	#MousePointer.hide()
+	
+	# -------------------
+	if reset_userprofile_save:
+		print("RESET USER PROFILE")
+		update_and_save_user_profile(user_profile_schema.duplicate())
+	else:
+		var res:Dictionary = FS.load_file(FS.FILE.USER_PROFILE)
+		if res.success:
+			print("USER PROFILE DATA FOUND AND LOADED SUCCESSFULLY!")
+			GBL.active_user_profile = res.filedata.data		
+		else:
+			print("NEW USER PROFILE CREATED!")
+			update_and_save_user_profile(user_profile_schema.duplicate())
 
-
+	# -------------------
 	if start_at_fullscreen:
 		on_fullscreen_update(resolution)
 		toggle_fullscreen()
@@ -178,22 +245,20 @@ func _ready() -> void:
 	
 	if !DEBUG.get_val(DEBUG.SKIP_SPLASH):
 		TitleSplash.start()
-		await TitleSplash.on_complete
+		await TitleSplash.on_complete	
 	
-	reset()
-# -----------------------------------	
-
-# -----------------------------------	
-func reset() -> void:
+	# -------------------
 	if !DEBUG.get_val(DEBUG.SKIP_INTRO):
-		await play_door()	
-	else:
-		current_layer = LAYER.DOOR_LAYER	
-		await U.tick()
-		DoorScene.fastfoward()
-		await U.tick()
-		if skip_office_intro:
-			start_os_layer()
+		await play_door()
+		return
+	
+	# -------------------
+	current_layer = LAYER.DOOR_LAYER	
+	await U.tick()
+	DoorScene.fastfoward()
+	await U.tick()
+	if skip_office_intro:
+		start_os_layer()
 # -----------------------------------		
 
 # -----------------------------------		
@@ -317,17 +382,15 @@ func on_current_layer_update() -> void:
 					node.set_process(false)
 					node.set_physics_process(false)	
 # -----------------------------------	
-
-# -----------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or is_animating:return
-	var key:String = input_data.key
-	#match key:
-		#"R":
-			#reset()
-		#"F":
-			#toggle_fullscreen()
+	
 # -----------------------------------		
+func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
+	# save file...
+	FS.save_file(FS.FILE.USER_PROFILE, user_profile_data)	
+	# then push to global space
+	GBL.active_user_profile = user_profile_data		
+# -----------------------------------		
+
 	
 # -----------------------------------	
 func on_process_update(delta: float) -> void:

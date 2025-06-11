@@ -359,7 +359,7 @@ func exit_game() -> void:
 
 # ------------------------------------------------------------------------------	START GAME
 #region START GAME
-func start(new_game_data_config:Dictionary = {}) -> void:
+func start() -> void:
 	show()
 		
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
@@ -367,12 +367,12 @@ func start(new_game_data_config:Dictionary = {}) -> void:
 	set_physics_process(true)		
 	
 	await U.tick()
-	start_new_game(new_game_data_config)
+	start_new_game()
 	
 
-func start_new_game(game_data_config:Dictionary) -> void:
+func start_new_game() -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
-	var is_new_game:bool = game_data_config.filedata.is_empty()
+	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
 	
 	# set tutorial flag
 	is_tutorial = options.is_tutorial if "is_tutorial" in options else false
@@ -390,7 +390,7 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	SetupContainer.subtitle = "SORTING FILES..."
 	SetupContainer.progressbar_val = 0
 	# 1.) loading game data config
-	await parse_restore_data(game_data_config)
+	await parse_restore_data()
 	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
 	
 	# -----------------------
@@ -401,16 +401,17 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	setup_complete = true
 	update_room_config()	
 	# build out objectives from current story val
-	var progress_data_file:Dictionary = FS.load_file(FS.FILE.PROGRESS)
-	objectives = STORY.get_objectives(progress_data_file.filedata.data.story_progress_val if progress_data_file.success else 0)
-	
+
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	objectives = STORY.get_objectives(story_progress.current_story_val)
+		
 	# -----------------------
 	SetupContainer.subtitle = "SETTING DEBUG VALUES..."
 	SetupContainer.progressbar_val = 0.7
 	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
 	# 3.) load any debug options
 	var starting_number_of_researchers:int = DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT)
-	if DEBUG.get_val(DEBUG.NEW_QUICKSAVE_FILE) and starting_number_of_researchers > 0:
+	if DEBUG.get_val(DEBUG.GAMEPLAY_USE_FRESH_BASE) and starting_number_of_researchers > 0:
 			SUBSCRIBE.hired_lead_researchers_arr = RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers)
 	
 	# -----------------------
@@ -428,17 +429,11 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	# -----------------------
 	# 5.) SETUP OBJECTIVES, progress timeline to correct day
 	if is_new_game:
-		for objective in objectives:
-			GAME_UTIL.add_timeline_item({
-				"title": objective.title,
-				"icon": SVGS.TYPE.INFO,
-				"description": "Objective",
-				"day": objective.complete_by_day
-			})
+		GAME_UTIL.update_objectives(objectives)
 	else:
 		SUBSCRIBE.timeline_array = timeline_array
 		SUBSCRIBE.progress_data = progress_data
-	
+
 	# ----------------------- LAST PHASE, START EVERYTHING AND REMOVE SETUP
 	# then show player hud
 	await restore_player_hud()					
@@ -447,13 +442,20 @@ func start_new_game(game_data_config:Dictionary) -> void:
 	await U.set_timeout(0.3)	
 	await SetupContainer.end()	
 
+
+	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
+	# needs to be done after setup is complete
+	if is_new_game:
+		create_checkpoint(true)
+	
+
 	# update phase and start game
-	if is_tutorial:
-		await GAME_UTIL.add_dialogue({})	
-		if is_new_game:
-			print("play tutorial")
-		else:
-			print("welcome back tutorial")	
+	#if is_tutorial:
+		#await GAME_UTIL.add_dialogue({})	
+		#if is_new_game:
+			#print("play tutorial")
+		#else:
+			#print("welcome back tutorial")	
 			
 	# show objectives
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
@@ -1022,7 +1024,6 @@ func on_current_phase_update() -> void:
 			
 			# CHECK FOR WIN STATE
 			if progress_data.day >= last_day_for_objectives and !objective_failed:
-				await U.set_timeout(1.0)
 				current_phase = PHASE.GAME_WON
 				return
 			
@@ -1038,12 +1039,23 @@ func on_current_phase_update() -> void:
 			
 		# ------------------------
 		PHASE.GAME_WON:
-			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")	
-			var new_objectives = await GBL.find_node(REFS.DOOR_SCENE).update_progress_and_update_objective()
-			objectives = new_objectives
-			PhaseAnnouncement.end()
-			await GAME_UTIL.open_objectives(objectives)			
+			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")
+
+			# fetch next objective, update objective
+			objectives = await GBL.find_node(REFS.DOOR_SCENE).update_progress_and_get_next_objective()
+			GAME_UTIL.update_objectives(objectives)
+						
+			# create a quicksave
+			quicksave(true)
 			
+			# also create a checkpoint
+			create_checkpoint(true)
+			
+			# display next objectives
+			await GAME_UTIL.open_objectives(objectives)
+			
+			# continue game
+			PhaseAnnouncement.end()			
 			current_phase = PHASE.PLAYER
 			phase_cycle_complete.emit()
 		# ------------------------
@@ -1058,10 +1070,8 @@ func on_current_phase_update() -> void:
 
 # ------------------------------------------------------------------------------	SAVE/LOAD
 #region SAVE/LOAD
-func quicksave(skip_timeout:bool = false) -> Dictionary:
-	is_busy = true
-
-	var save_data := {
+func get_save_state() -> Dictionary:
+	return {
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
 		# OF ALL THE OTHER DATA THAT'S HERE		
 		#"scenario_ref": scenario_ref,
@@ -1078,17 +1088,54 @@ func quicksave(skip_timeout:bool = false) -> Dictionary:
 		"researcher_hire_list": researcher_hire_list,
 		"shop_unlock_purchases": shop_unlock_purchases,
 		"base_states": base_states,
-	}	
-	FS.save_file(FS.FILE.QUICK_SAVE, save_data)
+	}.duplicate(true)
+
+func quicksave(skip_timeout:bool = false) -> void:
+	is_busy = true
+
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	var quicksaves:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves
+	
+	# save snapshot
+	if story_progress.current_story_val not in quicksaves:
+		quicksaves[story_progress.current_story_val] = {}
+	quicksaves[story_progress.current_story_val] = get_save_state()	
+
+	# update and save user profile
+	GBL.update_and_save_user_profile(GBL.active_user_profile)
+	
 	if !skip_timeout:
 		await U.set_timeout(1.0)
 		
 	is_busy = false
-	return save_data
 
+func create_checkpoint(skip_timeout:bool = false) -> void:
+	is_busy = true
+	
+	print("creat3e checkpoint")
+	
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint = get_save_state()
+	
+	# update and save user profile
+	GBL.update_and_save_user_profile(GBL.active_user_profile)	
+	
+	if !skip_timeout:
+		await U.set_timeout(1.0)
+	is_busy = false
+	
 
-func parse_restore_data(game_data_config:Dictionary) -> void:
-	var restore_data:Dictionary = game_data_config.filedata
+func load_checkpoint() -> void:
+	var restore_checkpoint:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint
+	if restore_checkpoint.is_empty():return
+	GBL.loaded_gameplay_data = restore_checkpoint
+	print(GBL.loaded_gameplay_data.progress_data)
+	
+	
+	await U.tick()
+	start_new_game()
+
+func parse_restore_data() -> void:
+	var restore_data:Dictionary = GBL.loaded_gameplay_data
 	var is_new_game:bool = restore_data.is_empty() 
 
 	# modify if starting a new game

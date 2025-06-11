@@ -4,9 +4,15 @@ extends Node
 enum PLACEMENT {LEFT, RIGHT, TOP, BOTTOM}
 
 # ------------------------------------------------------------------------------
-# SAVE STATES
-var progres_save_data:Dictionary = {}
+var active_user_profile:Dictionary = {}
+var loaded_gameplay_data:Dictionary = {}
 
+func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
+	# save file...
+	FS.save_file(FS.FILE.USER_PROFILE, user_profile_data)	
+	
+	# then push to global space
+	active_user_profile = user_profile_data		
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -586,11 +586,22 @@ func show_settings() -> void:
 					"title": "Quicksave",
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
-						"description": "Save your current progress"
+						"description": "Save your current progress."
 					},
 					"action": func() -> void:
 						GameplayNode.quicksave(),
-				}
+												
+				},
+				{
+					"title": "Load Previous Checkpoint",
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"description": "Load from the last checkpoint."
+					},
+					"action": func() -> void:
+						GameplayNode.load_checkpoint(),
+												
+				}				
 			]
 		},
 		{

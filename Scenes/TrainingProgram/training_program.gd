@@ -24,16 +24,16 @@ func _ready() -> void:
 func start() -> void:	
 	show()
 	
-	# check if quicksave files exists
-	var quickload_res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
-	var has_quicksave:bool = false if DEBUG.get_val(DEBUG.NEW_QUICKSAVE_FILE) else quickload_res.success 
-	var restore_data:Dictionary = quickload_res.filedata.data if has_quicksave else {}
-
-	# ... if it does, and skip exists, 
+	
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	var quicksaves:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves
+	var has_savedata = false if quicksaves.is_empty() or story_progress.current_story_val not in quicksaves else true	
+	var savedata:Dictionary = quicksaves[story_progress.current_story_val] if has_savedata else {}
+	
+	# ... DEBUG, JUMP STRAIGHT TO GAME WITH MOST CURRENT SAVE DATA, IF ONE DOESN'T EXIST LOADS EMPTY DATA
 	if DEBUG.get_val(DEBUG.APP_SKIP_TITLESCREEN):
-		# same as continue OR if blank start a new game
-		start_game(restore_data)
-		return
+		GBL.loaded_gameplay_data = savedata		
+		start_game(savedata)
 
 	# start logo screen
 	LogoScreen.show()
@@ -42,13 +42,16 @@ func start() -> void:
 	
 	# start gamescreen
 	TitleScreen.is_tutorial = options.is_tutorial if "is_tutorial" in options else false
+	TitleScreen.show()			
 	TitleScreen.start(fast_start)
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
 		"story":
+			story_progress.current_story_val = 0
+			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game({})
 		"continue":
-			start_game(restore_data)
+			start_game(savedata)
 		"quit":
 			on_quit.emit()
 
@@ -80,7 +83,8 @@ func start_game(filedata:Dictionary) -> void:
 	add_child(GameplayLoopNode)
 	await U.tick()
 
-	GameplayLoopNode.start({ "filedata": filedata })
+	GBL.loaded_gameplay_data = filedata
+	GameplayLoopNode.start()
 
 
 func on_exit_game(exit_game:bool) -> void:

@@ -512,7 +512,6 @@ func open_app(data:Dictionary, options:Dictionary = {}) -> void:
 	
 	# grab background image for pause continaer	
 	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
-
 	
 	# ... now open the "app"
 	if data.ref not in running_apps_list.map(func(i): return i.ref):		

@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/OSRoot/parts/Background/Background.tscn" id="2_yv40d"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="3_ni4fo"]
 [ext_resource type="Script" uid="uid://bqjop57mc4ev2" path="res://Scenes/OSRoot/title_splash.gd" id="5_linol"]
-[ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="5_myocl"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="5_tgmfl"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="6_1ky4c"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="6_012ga"]
@@ -14,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_14y6p"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="10_14y6p"]
 [ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="12_14y6p"]
+[ext_resource type="Texture2D" uid="uid://bilb0xan3arxj" path="res://Textures/97227770-led-screen-texture-diode-screen-seamless-pattern.jpg" id="15_14y6p"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
 
@@ -29,7 +29,7 @@ shadow_size = 4
 shadow_color = Color(1, 1, 1, 0.803922)
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_linol"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_14y6p"]
 bg_color = Color(0.675147, 0, 0.298457, 1)
 border_width_left = 2
 border_width_top = 2
@@ -92,8 +92,8 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_linol"]
 shader = SubResource("Shader_14y6p")
-shader_parameter/bend_amount = 0.114
-shader_parameter/bend_offset = 0.323
+shader_parameter/bend_amount = 0.223
+shader_parameter/bend_offset = 0.273
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_yhfgh"]
 viewport_path = NodePath("ColorDepthShader")
@@ -125,7 +125,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_67w08")
-new_progress_file = true
+is_production_build = true
 debug_story_progress = true
 skip_splash = true
 skip_intro = true
@@ -236,7 +236,7 @@ fit_content = true
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_linol")
+theme_override_styles/panel = SubResource("StyleBoxFlat_14y6p")
 title = "ACKNOWLEDGE YOUR WEAKNESS"
 assigned_key = "ENTER"
 icon = 20
@@ -281,9 +281,8 @@ texture = SubResource("ViewportTexture_a5ilm")
 size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="CRTShader/BorderShader"]
-material = ExtResource("5_myocl")
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_3omms")
 
 [node name="Screenbend" type="SubViewport" parent="."]
@@ -312,11 +311,11 @@ offset_bottom = 40.0
 [node name="TextureRect2" type="TextureRect" parent="Screenbend/Control"]
 self_modulate = Color(0.6, 0.423529, 0.992157, 0.596078)
 layout_mode = 0
-offset_left = -50.0
-offset_top = -5.0
-offset_right = 1870.0
-offset_bottom = 1075.0
-scale = Vector2(1.1, 1.1)
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 1900.0
+offset_bottom = 1070.0
+scale = Vector2(1.01, 1.01)
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 
@@ -340,7 +339,20 @@ stretch_mode = 2
 [node name="Empty" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
+[node name="TextureRect2" type="TextureRect" parent="Empty"]
+modulate = Color(1, 1, 1, 0.00784314)
+material = ExtResource("12_14y6p")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("15_14y6p")
+expand_mode = 1
+stretch_mode = 6
+
 [node name="TextureRect" type="TextureRect" parent="Empty"]
+modulate = Color(1, 1, 1, 0.968627)
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_1d3xd")

@@ -99,21 +99,24 @@ func start(fast_boot:bool = false) -> void:
 	
 	SubTitle.text = "TUTORIAL" if is_tutorial else "v1.0"
 
-	var quickload_res:Dictionary = FS.load_file(FS.FILE.QUICK_SAVE)
-	has_quicksave = false if DEBUG.get_val(DEBUG.NEW_QUICKSAVE_FILE) else quickload_res.success 
-	var restore_data:Dictionary = quickload_res.filedata.data if has_quicksave else {}	
-	
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	var quicksaves:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves
+	has_quicksave = false if quicksaves.is_empty() or story_progress.current_story_val not in quicksaves else true
 
 	NewBtn.is_disabled = false
 	ContinueBtn.is_disabled = !has_quicksave
 	selected_index = 0
 	
 	if has_quicksave:
-		var modification_date:Dictionary = quickload_res.filedata.metadata.modification_date		
+		var quicksave_data:Dictionary = quicksaves[story_progress.current_story_val]
+		GBL.loaded_gameplay_data = quicksave_data
+		#var modification_date:Dictionary = quickload_res.filedata.metadata.modification_date		
 		DetailName.text = "QUICKSAVE"
-		DetailDay.text = "DAY %s" % [restore_data.progress_data.day + 1]
-		DetailDate.text = "%s/%s/%s" % [modification_date.day, modification_date.month, modification_date.year]
-
+		DetailDay.text = "DAY %s" % [quicksave_data.progress_data.day]
+		DetailDate.text = "%s/%s/%s" % [1, 2, 2025]
+	else:
+		GBL.loaded_gameplay_data = {} 
+		
 	await U.set_timeout(0.3)
 	BtnControls.reveal(true)
 # ------------------------------------------
