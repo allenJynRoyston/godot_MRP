@@ -82,6 +82,7 @@ func _ready() -> void:
 		# preview of any current apps
 		if "data" in selected_node:
 			print(get_parent())
+			print(selected_node)
 			get_parent().currently_running_app = selected_node.data.node
 			
 	BtnControl.onAction = func() -> void:

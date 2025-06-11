@@ -26,6 +26,12 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export_category("GRAPHIC DEBUG")
 @export var start_at_fullscreen:bool = false
 
+# SKIPS
+@export_category("SKIPS")
+@export var skip_splash:bool = false
+@export var skip_intro:bool = false 
+@export var skip_office_intro:bool = false
+
 # USER PROFILE DEBUG
 @export_category("USER_PROFILE DEBUG")
 @export var reset_userprofile_save:bool = false
@@ -36,12 +42,6 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var user_profile_ref:FS.FILE = FS.FILE.SAVE_ONE
 @export var story_progress:int = 0
 @export var current_story_val:int = 0
-
-# SKIPS
-@export_category("SKIPS START")
-@export var skip_splash:bool = false
-@export var skip_intro:bool = false 
-@export var skip_office_intro:bool = false
 
 # INTRODUCTION
 @export_category("INTRO SCREEN")
@@ -86,10 +86,10 @@ var default_save_profiles:Dictionary = {
 var user_profile_schema:Dictionary = {
 	"story_progress": {
 		"play_message_required": true,
-		"max_story_val": 0,
-		"current_story_val": 0,
+		"max_story_val": 0 if !user_profile_ref else story_progress,
+		"current_story_val": 0 if !user_profile_ref else current_story_val,
 	},
-	"use_save_profile": FS.FILE.SAVE_ONE,
+	"use_save_profile": FS.FILE.SAVE_ONE if !user_profile_ref else user_profile_ref,
 	"save_profiles":{
 		FS.FILE.SAVE_ONE: default_save_profiles.duplicate(),
 		FS.FILE.SAVE_TWO: default_save_profiles.duplicate()
@@ -105,9 +105,6 @@ var current_layer:LAYER :
 		current_layer = val
 		on_current_layer_update()
 		
-
-
-
 
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
@@ -168,14 +165,12 @@ func assign_debugs() -> void:
 	# GRAPHICS
 	DEBUG.assign(DEBUG.START_AT_FULLSCREEN, start_at_fullscreen)
 	
-
 	# progress 
 	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS, debug_story_progress)	
-	
-	# 
-	DEBUG.assign(DEBUG.STORY_PROGRESS_VAL, story_progress)
-	
-	
+	DEBUG.assign(DEBUG.DEBUG_USER_PROFILE_REF, user_profile_ref)
+	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS_VAL, story_progress)
+	DEBUG.assign(DEBUG.DEBUG_CURRENT_STORY_VAL, current_story_val)
+		
 	# save files
 	DEBUG.assign(DEBUG.NEW_SYSTEM_FILE, false)	
 	DEBUG.assign(DEBUG.NEW_PROGRESS_FILE, false)	
@@ -230,8 +225,7 @@ func start() -> void:
 	else:
 		var res:Dictionary = FS.load_file(FS.FILE.USER_PROFILE)
 		if res.success:
-			print("USER PROFILE DATA FOUND AND LOADED SUCCESSFULLY!")
-			GBL.active_user_profile = res.filedata.data		
+			GBL.active_user_profile = res.filedata.data
 		else:
 			print("NEW USER PROFILE CREATED!")
 			update_and_save_user_profile(user_profile_schema.duplicate())
@@ -387,6 +381,7 @@ func on_current_layer_update() -> void:
 func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
 	# save file...
 	FS.save_file(FS.FILE.USER_PROFILE, user_profile_data)	
+	
 	# then push to global space
 	GBL.active_user_profile = user_profile_data		
 # -----------------------------------		
