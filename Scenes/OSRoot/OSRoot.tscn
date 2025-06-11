@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=35 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://b8tjlqidemn2y" path="res://Scenes/OSRoot/os_root.gd" id="1_67w08"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/OSRoot/parts/OS/OS.tscn" id="2_hsa0l"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="10_14y6p"]
 [ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="12_14y6p"]
 [ext_resource type="Texture2D" uid="uid://bilb0xan3arxj" path="res://Textures/97227770-led-screen-texture-diode-screen-seamless-pattern.jpg" id="15_14y6p"]
+[ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="15_yhfgh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
 
@@ -29,7 +30,7 @@ shadow_size = 4
 shadow_color = Color(1, 1, 1, 0.803922)
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_14y6p"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_linol"]
 bg_color = Color(0.675147, 0, 0.298457, 1)
 border_width_left = 2
 border_width_top = 2
@@ -42,13 +43,10 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
-viewport_path = NodePath("CRTShader/BorderShader")
+viewport_path = NodePath("GameLayer")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_a5ilm"]
 viewport_path = NodePath("GlitchShader")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
-viewport_path = NodePath("GameLayer")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_jk85w"]
 viewport_path = NodePath("CRTShader")
@@ -58,6 +56,9 @@ viewport_path = NodePath("Screenbend")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_e7if0"]
 viewport_path = NodePath("Empty")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
+viewport_path = NodePath("ColorDepthShader")
 
 [sub_resource type="Shader" id="Shader_14y6p"]
 code = "shader_type canvas_item;
@@ -95,8 +96,8 @@ shader = SubResource("Shader_14y6p")
 shader_parameter/bend_amount = 0.223
 shader_parameter/bend_offset = 0.273
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_yhfgh"]
-viewport_path = NodePath("ColorDepthShader")
+[sub_resource type="ViewportTexture" id="ViewportTexture_linol"]
+viewport_path = NodePath("BorderShader")
 
 [sub_resource type="Environment" id="Environment_tgmfl"]
 background_mode = 2
@@ -236,7 +237,7 @@ fit_content = true
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_14y6p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_linol")
 title = "ACKNOWLEDGE YOUR WEAKNESS"
 assigned_key = "ENTER"
 icon = 20
@@ -261,6 +262,7 @@ material = ExtResource("6_1ky4c")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_y3p8a")
+stretch_mode = 2
 
 [node name="CRTShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
@@ -276,14 +278,6 @@ modulate = Color(1, 1, 1, 0.831373)
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_a5ilm")
-
-[node name="BorderShader" type="SubViewport" parent="CRTShader"]
-size = Vector2i(1920, 1080)
-
-[node name="TextureRect" type="TextureRect" parent="CRTShader/BorderShader"]
-offset_right = 1920.0
-offset_bottom = 1080.0
-texture = SubResource("ViewportTexture_3omms")
 
 [node name="Screenbend" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
@@ -367,6 +361,16 @@ offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_e7if0")
 stretch_mode = 2
 
+[node name="BorderShader" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="BorderShader"]
+material = ExtResource("15_yhfgh")
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_3omms")
+stretch_mode = 2
+
 [node name="FinalComposition" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
@@ -377,7 +381,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("ViewportTexture_yhfgh")
+texture = SubResource("ViewportTexture_linol")
 stretch_mode = 2
 
 [node name="3dViewport" type="SubViewport" parent="."]
