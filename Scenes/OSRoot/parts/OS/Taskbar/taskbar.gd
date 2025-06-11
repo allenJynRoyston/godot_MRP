@@ -80,9 +80,7 @@ func _ready() -> void:
 			return			
 			
 		# preview of any current apps
-		if "data" in selected_node:
-			print(get_parent())
-			print(selected_node)
+		if ("data" in selected_node) and ("node" not in selected_node.data):
 			get_parent().currently_running_app = selected_node.data.node
 			
 	BtnControl.onAction = func() -> void:
@@ -96,8 +94,8 @@ func _ready() -> void:
 			return
 			
 	BtnControl.onBack = func() -> void:
+		is_busy = true		
 		await BtnControl.reveal(false)
-		is_busy = true
 		var confirm:bool = await create_modal("Quit this program?", "Your progress will be saved.")
 		is_busy = false
 		BtnControl.reveal(true)	
@@ -127,6 +125,8 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------	
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
+	is_busy = true		
+
 	show_taskbar = state
 	
 	if state:
@@ -147,6 +147,8 @@ func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 		
 	if !state:
 		self.modulate = Color(1, 1, 1, 0)
+		
+	is_busy = false
 		
 		
 func on_show_media_player_update() -> void:

@@ -57,5 +57,5 @@ void fragment() {
 shader = SubResource("Shader_w3kav")
 shader_parameter/zoom_speed = 0.0
 shader_parameter/distortion_speed = 0.08
-shader_parameter/max_iterations = 15
-shader_parameter/color_tint = Color(0.0162652, 0.186062, 0.0882955, 1)
+shader_parameter/max_iterations = 16
+shader_parameter/color_tint = Color(0.344305, 0.356895, 0.457433, 1)

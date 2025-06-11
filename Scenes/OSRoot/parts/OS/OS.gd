@@ -727,6 +727,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	match input_data.key:
 		"BACKSPACE":
+			print(Taskbar.is_busy)
 			if Taskbar.is_busy:return
 			toggle_show_taskbar()
 # ------------------------------------------

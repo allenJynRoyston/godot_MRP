@@ -439,7 +439,7 @@ func start_new_game() -> void:
 	await restore_player_hud()					
 	SetupContainer.subtitle = "STARTING PROGRAM..."
 	SetupContainer.progressbar_val = 1.0	
-	await U.set_timeout(0.3)	
+	await U.set_timeout(1.0)	
 	await SetupContainer.end()	
 
 

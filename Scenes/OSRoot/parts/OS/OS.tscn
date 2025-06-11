@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=16 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/OSRoot/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="Material" uid="uid://dsv8nn10bcabo" path="res://Shader/Pixelate/template.tres" id="2_pdkdd"]
+[ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="3_2l3oe"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/OSRoot/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
 [ext_resource type="PackedScene" uid="uid://r8fxl3w206rc" path="res://Scenes/OSRoot/parts/OS/AppItem/AppItem.tscn" id="4_e3kl5"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
@@ -45,8 +46,9 @@ material = ExtResource("2_pdkdd")
 layout_mode = 2
 
 [node name="ColorRect" type="ColorRect" parent="."]
+material = ExtResource("3_2l3oe")
 layout_mode = 2
-color = Color(0.119391, 0.17303, 3.60981e-08, 0.886275)
+color = Color(0.109804, 0.109804, 0.109804, 0.431373)
 
 [node name="Desktop" type="PanelContainer" parent="."]
 layout_mode = 2
