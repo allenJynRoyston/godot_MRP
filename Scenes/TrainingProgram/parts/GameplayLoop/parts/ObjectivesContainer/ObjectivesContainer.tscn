@@ -1,8 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://b2glyeqvwy3vs"]
+[gd_scene load_steps=7 format=3 uid="uid://b2glyeqvwy3vs"]
 
 [ext_resource type="Script" uid="uid://cama33xd6387p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/objectives_container.gd" id="1_5mn2c"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_q73ge"]
-[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="3_hbjce"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_q6d11"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uyd7x"]
@@ -15,27 +14,6 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ego76"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6d11"]
-bg_color = Color(1, 1, 1, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h6i7u"]
-bg_color = Color(1, 1, 1, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3s3v"]
-bg_color = Color(1, 1, 1, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [node name="ObjectivesContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -65,7 +43,6 @@ theme_override_constants/margin_top = 150
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_dpj5t")
 
 [node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl/MarginContainer/PanelContainer"]
@@ -103,28 +80,6 @@ label_settings = ExtResource("2_q73ge")
 [node name="ObjectivesList" type="VBoxContainer" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
-
-[node name="CheckBox" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList" instance=ExtResource("3_hbjce")]
-layout_mode = 2
-size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_q6d11")
-no_bg = true
-is_checked = true
-title = "BUILD HQ"
-
-[node name="CheckBox2" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList" instance=ExtResource("3_hbjce")]
-layout_mode = 2
-size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_h6i7u")
-no_bg = true
-title = "BUILD DIRECTORS OFFICE"
-
-[node name="CheckBox3" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList" instance=ExtResource("3_hbjce")]
-layout_mode = 2
-size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_s3s3v")
-no_bg = true
-title = "CONTAIN ONE SCP"
 
 [node name="BtnControls" parent="." instance=ExtResource("4_q6d11")]
 layout_mode = 2

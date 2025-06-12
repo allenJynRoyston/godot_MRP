@@ -233,7 +233,6 @@ var bookmarked_rooms:Array # ["000", "201"] <- "floor_index, ring_index, room_in
 var unavailable_rooms:Array 
 var hired_lead_researchers_arr:Array
 var gameplay_conditionals:Dictionary
-var objectives:Array = []
 
 #endregion
 # ------------------------------------------------------------------------------ 
@@ -403,7 +402,6 @@ func start_new_game() -> void:
 	# build out objectives from current story val
 
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	objectives = STORY.get_objectives(story_progress.current_story_val)
 		
 	# -----------------------
 	SetupContainer.subtitle = "SETTING DEBUG VALUES..."
@@ -429,7 +427,7 @@ func start_new_game() -> void:
 	# -----------------------
 	# 5.) SETUP OBJECTIVES, progress timeline to correct day
 	if is_new_game:
-		GAME_UTIL.update_objectives(objectives)
+		GAME_UTIL.add_objectives_to_timeline(STORY.get_objectives())
 	else:
 		SUBSCRIBE.timeline_array = timeline_array
 		SUBSCRIBE.progress_data = progress_data
@@ -459,7 +457,7 @@ func start_new_game() -> void:
 			
 	# show objectives
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
-		await GAME_UTIL.open_objectives(objectives)
+		await GAME_UTIL.open_objectives()
 
 	# start actionContainer or start at ring level
 	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
@@ -995,7 +993,7 @@ func on_current_phase_update() -> void:
 			var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day)	
 			if timeline_filter.size() > 0:
 				PhaseAnnouncement.start("EVENTS")	
-				await U.set_timeout(1.5)
+				await U.set_timeout(1.0)
 				# plays any scp events
 				#for item in timeline_filter:
 					#if "event" in item and !item.event.is_empty():
@@ -1005,28 +1003,29 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.CONCLUDE:	
 			# CHECK IF SCENARIO DATA IS COMPLETE
-			var objective_failed:Dictionary = {}
-			var objective_days:Array = objectives.map(func(x): return x.complete_by_day)
-			objective_days.sort()
-			var last_day_for_objectives:int = objective_days[objective_days.size() - 1]
-
-			for objective in objectives:
-				if !objective.is_completed.call():
-					if progress_data.day > objective.complete_by_day:
-						objective_failed = objective
+			var objectives:Array = STORY.get_objectives()
+			var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			print("story_progress.current_story_val: ", story_progress.current_story_val)
+			var current_objectives:Dictionary = objectives[story_progress.current_story_val]
+			var completed_by_day:int = current_objectives.complete_by_day
+			
+			# check for objectivess fail/succeed on appropriate day
+			if progress_data.day >= completed_by_day:
+				PhaseAnnouncement.start("CHECKING OBJECTIVES")
+				await U.set_timeout(1.0)				
+								
+				# CHECK FOR FAIL STATE
+				var objective_failed:bool = false
+				for objective in current_objectives.list:
+					if !objective.is_completed.call():
+						objective_failed = true
 						break
-			
-			# CHECK FOR FAIL STATE
-			if objective_failed:
-				await U.set_timeout(1.0)
-				current_phase = PHASE.GAME_LOST
+		
+										
+				current_phase = PHASE.GAME_LOST if objective_failed else PHASE.GAME_WON
 				return
 			
-			# CHECK FOR WIN STATE
-			if progress_data.day >= last_day_for_objectives and !objective_failed:
-				current_phase = PHASE.GAME_WON
-				return
-			
+			# continue
 			PhaseAnnouncement.end()
 			await U.set_timeout(1.0)
 			# revert
@@ -1042,8 +1041,7 @@ func on_current_phase_update() -> void:
 			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")
 
 			# fetch next objective, update objective
-			objectives = await GBL.find_node(REFS.DOOR_SCENE).update_progress_and_get_next_objective()
-			GAME_UTIL.update_objectives(objectives)
+			await GBL.find_node(REFS.DOOR_SCENE).update_progress_and_get_next_objective()
 						
 			# create a quicksave
 			quicksave(true)
@@ -1052,7 +1050,7 @@ func on_current_phase_update() -> void:
 			create_checkpoint(true)
 			
 			# display next objectives
-			await GAME_UTIL.open_objectives(objectives)
+			await GAME_UTIL.open_objectives()
 			
 			# continue game
 			PhaseAnnouncement.end()			

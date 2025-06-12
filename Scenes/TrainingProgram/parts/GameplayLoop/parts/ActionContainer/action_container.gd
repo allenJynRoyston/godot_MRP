@@ -214,7 +214,7 @@ func start(start_at_ring_level:bool = false) -> void:
 	# -------------------------------------
 	ObjectivesBtn.onClick = func() -> void:
 		await lock_actions(true)
-		await GAME_UTIL.open_objectives(GameplayNode.objectives)
+		await GAME_UTIL.open_objectives()
 		lock_actions(false)
 		on_current_mode_update()
 	

@@ -98,14 +98,14 @@ func play_current_story_sequence() -> void:
 	# update btn states, reveal buttons
 	check_btn_states(false)	
 	
-	await U.tick()
-	await BtnControls.reveal(true)
 	wait_for_story.emit()
 	
+	await U.set_timeout(0.3)
+	BtnControls.reveal(true)
 # ---------------------------------------------
 
 # ---------------------------------------------
-func update_progress_and_get_next_objective() -> Array:
+func update_progress_and_get_next_objective() -> void:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	
 	# TODO: need to add a check to ensure that there IS more story to tell
@@ -133,7 +133,7 @@ func update_progress_and_get_next_objective() -> Array:
 	OSRootNode.current_layer = OSRootNode.LAYER.OS_lAYER
 	
 	# return new objectives
-	return STORY.get_objectives(story_progress.current_story_val)
+	#return STORY.get_objectives(story_progress.current_story_val)
 # ---------------------------------------------
 		
 ## ---------------------------------------------

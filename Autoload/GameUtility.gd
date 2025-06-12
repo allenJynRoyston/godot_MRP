@@ -496,25 +496,24 @@ func reset_room() -> bool:
 # --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------
-func update_objectives(objectives:Array = []) -> void:
+func add_objectives_to_timeline(objectives:Array = []) -> void:
 	for objective in objectives:
-		if progress_data.day < objective.complete_by_day:
-			GAME_UTIL.add_timeline_item({
-				"title": objective.title,
-				"icon": SVGS.TYPE.INFO,
-				"description": "Objective",
-				"day": objective.complete_by_day
-			})
+		GAME_UTIL.add_timeline_item({
+			"title": "Objectives deadline",
+			"icon": SVGS.TYPE.INFO,
+			"description": "Objective",
+			"day": objective.complete_by_day
+		})
 # -----------------------------------
 
 
 # -----------------------------------
-func open_objectives(objectives:Array = []) -> void:
+func open_objectives() -> void:	
 	var ObjectivesNode:Control = ObjectivesPreload.instantiate()
 	ObjectivesNode.z_index = z_index_lvl
 	GameplayNode.add_child(ObjectivesNode)
 	
-	await ObjectivesNode.activate(objectives)
+	await ObjectivesNode.activate()
 	
 	GameplayNode.show_only([Structure3dContainer])
 	ObjectivesNode.start()

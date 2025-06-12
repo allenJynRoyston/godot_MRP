@@ -17,37 +17,77 @@ var chapters:Array = [
 		"complete_message": [
 			"Okay. First phase complete. You’re doing fine."
 		],
-		"objetive": "COMPLETE THE TUTORIAL",
-		"objectives": [
-			{
-				"title": "Establish the facility", 
-				"complete_by_day": 3,
-				"is_completed": func() -> bool:
-					return false,
-			},
-			{
-				"title": "Build a Director's Office", 
-				"complete_by_day": 3,
-				"is_completed": func() -> bool:
-					return false,
-			},
-			{
-				"title": "Build an HQ", 
-				"complete_by_day": 3,
-				"is_completed": func() -> bool:
-					return false,
-			},						
-		]
+		"objectives": {
+			"title": "Establish the base.",
+			"list":[
+				{
+					"title": "Establish the facility", 
+					"is_completed": func() -> bool:
+						return true,
+				},
+				{
+					"title": "Build a Director's Office", 
+					"is_completed": func() -> bool:
+						return true,
+				},
+				{
+					"title": "Build an HQ", 
+					"is_completed": func() -> bool:
+						return true,
+				},						
+			],
+			"complete_by_day": 3,
+		},
 	},
 	# ----------------------------------------------------------------------------------------------
+	
+	# ----------------------------------------------------------------------------------------------
+	{
+		"story_message": [
+			"Story 1",
+		],
+		"complete_message": [
+			"Okay. First phase complete. You’re doing fine."
+		],
+		"objectives": {
+			"title": "Establish the base.",
+			"list":[
+				{
+					"title": "Objective 1", 
+					"is_completed": func() -> bool:
+						return true,
+				},
+			],
+			"complete_by_day": 5,
+		},
+	},
+	# ----------------------------------------------------------------------------------------------	
+	
+	
+	# ----------------------------------------------------------------------------------------------
+	{
+		"story_message": [
+			"Story 2",
+		],
+		"complete_message": [
+			"Okay. First phase complete. You’re doing fine."
+		],
+		"objectives": {
+			"title": "Establish the base.",
+			"list":[
+				{
+					"title": "Objectives 2", 
+					"is_completed": func() -> bool:
+						return false,
+				},
+			],
+			"complete_by_day": 10,
+		},
+	},
+	# ----------------------------------------------------------------------------------------------		
 ];
 
-
-func get_objectives(story_progress_val:int) -> Array:
-	var objectives:Array = []
-	for index in chapters.size():
-		if index <= story_progress_val: 
-			for objective in chapters[index].objectives:
-				objectives.push_back(objective)
-
-	return objectives
+# ----------------------------------------------------------------------------------------------
+func get_objectives() -> Array:
+	return chapters.map(func(x): return x.objectives).duplicate(true)
+# ----------------------------------------------------------------------------------------------
