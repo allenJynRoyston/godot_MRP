@@ -3,8 +3,8 @@ extends MouseInteractions
 @onready var RootPanel:PanelContainer = $"."
 @onready var ItemLabel:Label = $MarginContainer/HBoxContainer/Label
 @onready var IconButton:Control = $MarginContainer/HBoxContainer/IconBtn
-@onready var CloseButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/CloseBtn
-@onready var MinButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer/MarginContainer2/MinBtn
+#@onready var CloseButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/CloseBtn
+#@onready var MinButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer/MarginContainer2/MinBtn
 
 @onready var MinButtonContainer:PanelContainer = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer
 
@@ -35,23 +35,6 @@ func _ready() -> void:
 	IconButton.onClick = func() -> void:
 		onClick.call()
 	
-	MinButton.onClick = func() -> void:		
-		onMinimize.call()
-	
-	MinButton.onFocus = func(node:Control) -> void:
-		focus_busy = true
-	
-	MinButton.onBlur = func(node:Control) -> void:
-		focus_busy = false	
-	
-	CloseButton.onClick = func() -> void:
-		onClose.call()
-		
-	CloseButton.onFocus = func(node:Control) -> void:
-		focus_busy = true
-	
-	CloseButton.onBlur = func(node:Control) -> void:
-		focus_busy = false
 # --------------------------------------	
 
 ## --------------------------------------	
@@ -69,7 +52,7 @@ func on_data_update() -> void:
 
 # --------------------------------------		
 func get_buttons() -> Array:
-	return [IconButton, CloseButton]
+	return [IconButton]
 # --------------------------------------	
 	
 # --------------------------------------	

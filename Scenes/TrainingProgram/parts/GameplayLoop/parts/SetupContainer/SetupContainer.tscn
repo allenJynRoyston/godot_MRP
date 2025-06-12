@@ -49,7 +49,6 @@ layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_tqy2x")
 theme_override_styles/fill = SubResource("StyleBoxFlat_j2rtl")
 max_value = 1.0
-value = 0.5
 show_percentage = false
 
 [node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]

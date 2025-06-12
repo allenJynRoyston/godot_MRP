@@ -390,7 +390,7 @@ func start_new_game() -> void:
 	SetupContainer.progressbar_val = 0
 	# 1.) loading game data config
 	await parse_restore_data()
-	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
+	await U.set_timeout(0.5)	
 	
 	# -----------------------
 	SetupContainer.subtitle = "READING DATA CONFIG..."

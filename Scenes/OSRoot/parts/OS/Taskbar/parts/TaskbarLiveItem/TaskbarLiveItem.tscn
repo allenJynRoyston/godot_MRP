@@ -32,7 +32,7 @@ theme_override_constants/separation = 10
 alignment = 1
 
 [node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_jsu1p")]
-custom_minimum_size = Vector2(25, 25)
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_constants/margin_top = 4
