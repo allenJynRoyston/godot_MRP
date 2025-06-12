@@ -6,18 +6,20 @@ extends AppWrapper
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	WindowUI = $WindowUI
-	TrainingProgram.hide()
-	PauseContainer.hide()
-	LoadingComponent.hide()
+	WindowUI = $WindowUI	
 	super._ready()
+	
+	for node in [PauseContainer, TrainingProgram, LoadingComponent]:
+		node.hide()
 
 func start() -> void:
 	if !is_ready_and_activated:
 		is_ready_and_activated = true
+		
+		TrainingProgram.show()		
 		LoadingComponent.start(fast_load)
 		await LoadingComponent.on_complete	
-
+		
 		TrainingProgram.options = options
 		TrainingProgram.fast_start = fast_load
 		TrainingProgram.start()

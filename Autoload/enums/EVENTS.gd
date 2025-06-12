@@ -8,6 +8,10 @@ enum TYPE {
 	# ------------
 	SCP_ON_CONTAIN,
 	# ------------
+	
+	# ------------
+	OBJECTIVE_REWARD,
+	# ------------
 
 	# -------------
 	HIRE_RESEARCHER,

@@ -10,6 +10,14 @@ extends GameContainer
 @onready var ControllerOverlay:Control = $ControllerOverlay
 #  ---------------------------------------
 
+# NOTIFICATION
+#  ---------------------------------------
+@onready var NotificationPanel:PanelContainer = $NotificationControls/PanelContainer
+@onready var NotificationMargin:MarginContainer = $NotificationControls/PanelContainer/MarginContainer
+@onready var NewMessageBtn:BtnBase = $NotificationControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewMessageBtn
+#  ---------------------------------------
+
+
 #  ---------------------------------------
 # FLOOR PREVIEW
 @onready var FloorPreviewControl:Control = $FloorPreviewControl
@@ -74,14 +82,6 @@ extends GameContainer
 @onready var BuildBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
 @onready var DeconstructBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
 
-#@onready var ResearcherBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel
-#@onready var ResearcherPanelLabel:Label = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/CenterLabel
-#@onready var AssignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/AssignBtn
-#@onready var UnassignBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UnassignBtn
-
-#@onready var ScpBtnPanel:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel
-#@onready var ContainBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ContainBtn
-
 @onready var HotkeyContainer:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/HotkeyContainer
 @onready var InvestigateBackBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/InvestigateBackBtn
 #  ---------------------------------------
@@ -111,6 +111,10 @@ var current_mode:MODE = MODE.NONE :
 var prev_draw_state:Dictionary	= {}
 var is_in_transition:bool = false 
 var is_busy:bool = false
+var show_new_message_btn:bool = false : 
+	set(val):
+		show_new_message_btn = val
+		reveal_new_message(val)
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -122,12 +126,12 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.ACTION_CONTAINER)
 		# set reference 
 	GBL.direct_ref.erase("SummaryCard")
-
 	
 func _ready() -> void:
 	super._ready()
+	
 	modulate = Color(1, 1, 1, 0)
-	BtnControls.freeze_and_disable(true)			
+	BtnControls.freeze_and_disable(true)
 	# set defaults
 	BtnControls.reveal(false)
 	
@@ -151,6 +155,7 @@ func activate() -> void:
 	control_pos_default[InvestigatePanel] = InvestigatePanel.position
 	control_pos_default[MiniCardPanel] = MiniCardPanel.position
 	control_pos_default[FloorPreviewPanel] = FloorPreviewPanel.position
+	control_pos_default[NotificationPanel] = NotificationPanel.position
 	
 	lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
 
@@ -161,11 +166,22 @@ func activate() -> void:
 func start(start_at_ring_level:bool = false) -> void:
 	for btn in [GenEndTurnBtn, WingEndTurnBtn, FacilityEndTurnBtn]:
 		btn.onClick = func() -> void:
+			reveal_notification(false)
 			await lock_actions(true)
 			await GameplayNode.next_day()
+			reveal_notification(true)			
 			lock_actions(false)
 
-	
+	# -------------------------------------
+	NewMessageBtn.onClick = func() -> void:
+		lock_panel_btn_state(true, [ActionPanel])
+		await reveal_notification(false)
+		show_new_message_btn = false
+		await GBL.find_node(REFS.DOOR_SCENE).play_next_sequence()
+		lock_panel_btn_state(false, [ActionPanel])
+		
+	# -------------------------------------
+
 	# -------------------------------------
 	GotoFloorBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
@@ -213,20 +229,25 @@ func start(start_at_ring_level:bool = false) -> void:
 	
 	# -------------------------------------
 	ObjectivesBtn.onClick = func() -> void:
+		reveal_notification(false)
 		await lock_actions(true)
 		await GAME_UTIL.open_objectives()
+		reveal_notification(true)		
+		
 		lock_actions(false)
 		on_current_mode_update()
 	
 	SettingsBtn.onClick = func() -> void:
 		ControllerOverlay.hide()
 		NameControl.hide()
+		reveal_notification(false)		
 		await lock_actions(true)
 		show_settings()
 		
 	HintInfoBtn.onClick = func() -> void:
 		ControllerOverlay.hide()
 		NameControl.hide()
+		reveal_notification(false)
 		set_backdrop_state(true)
 		await lock_actions(true)
 		
@@ -240,6 +261,7 @@ func start(start_at_ring_level:bool = false) -> void:
 		
 		BtnControls.onBack = func() -> void:
 			await BtnControls.reveal(false)
+			reveal_notification(true)
 			lock_actions(false)
 			set_backdrop_state(false)
 			ControllerOverlay.show()
@@ -253,6 +275,12 @@ func start(start_at_ring_level:bool = false) -> void:
 		SUBSCRIBE.camera_settings = camera_settings		
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------	
+func reveal_new_message(state:bool) -> void:
+	if !is_node_ready() or control_pos.is_empty():return
+	NewMessageBtn.show()	if state else NewMessageBtn.hide()
+	await reveal_notification(state)	
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
@@ -283,11 +311,21 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	control_pos[FloorPreviewPanel] = {
 		"show": 0, 
 		"hide":  -FloorPreviewMargin.size.x
-	}	
+	}
 	
-	ActionPanel.position.y = control_pos[ActionPanel].hide
-	InvestigatePanel.position.y = control_pos[InvestigatePanel].hide
-	FloorPreviewPanel.position.x = control_pos[FloorPreviewPanel].hide
+	control_pos[NotificationPanel] = {
+		"show": 0,
+		"hide": NotificationMargin.size.x
+	}
+	
+	for node in [ActionPanel, InvestigatePanel]: 
+		node.position.y = control_pos[node].hide
+
+	for node in [NotificationPanel, FloorPreviewPanel]: 
+		node.position.x = control_pos[node].hide
+	
+	# hide by default
+	NewMessageBtn.is_disabled = true
 	
 	on_current_mode_update(skip_animation)
 # --------------------------------------------------------------------------------------------------	
@@ -549,7 +587,7 @@ func show_facility_updates() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func show_settings() -> void:			
+func show_settings() -> void:
 	var is_fullscreen_checked:Callable = func() -> bool:
 		return GBL.is_fullscreen
 		
@@ -639,7 +677,7 @@ func show_settings() -> void:
 			]
 		},		
 	]
-	
+
 	set_backdrop_state(true)
 
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
@@ -653,6 +691,7 @@ func show_settings() -> void:
 	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
 		await lock_actions(false)
+		reveal_notification(true)
 		on_current_mode_update()
 
 	
@@ -667,6 +706,7 @@ func show_settings() -> void:
 # --------------------------------------------------------------------------------------------------
 func investigate_wrapper(action:Callable) -> void:
 	clear_lines()
+	
 	await lock_investigate(true)
 	await action.call()
 	await U.tick() 
@@ -857,6 +897,17 @@ func set_backdrop_state(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
+func reveal_notification(state:bool, duration:float = 0.3) -> void:
+	if control_pos.is_empty() or !show_new_message_btn:return	
+	NewMessageBtn.is_disabled = true
+	
+	await U.tween_node_property(NotificationPanel, "position:x", control_pos[NotificationPanel].show if state else control_pos[NotificationPanel].hide , duration)
+
+	NewMessageBtn.is_disabled = !show_new_message_btn
+# --------------------------------------------------------------------------------------------------	
+	
+
+# --------------------------------------------------------------------------------------------------	
 func reveal_floorpreview(state:bool, duration:float = 0.3) -> void:
 	if control_pos.is_empty():return
 	
@@ -916,6 +967,10 @@ func lock_panel_btn_state(state:bool, panels:Array) -> void:
 			if root_panel != null:
 				for child in root_panel.get_children():
 					for node in child.get_children():
+						if node is BtnBase and "is_disabled" in node:
+							node.is_disabled = state
+							print("*: ", node)
+						
 						var btn_list:HBoxContainer = node.get_node('./MarginContainer/VBoxContainer/HBoxContainer/')
 						if btn_list != null:
 							for btn in btn_list.get_children():
@@ -926,24 +981,25 @@ func lock_panel_btn_state(state:bool, panels:Array) -> void:
 func lock_actions(state:bool, ignore_panel:bool = false) -> void:
 	if state:
 		freeze_inputs = true		
-		lock_panel_btn_state(state, [InvestigatePanel, ActionPanel])
+		lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
 	
 	await reveal_action_controls(!state)
 	
+	
 	if !state:
 		freeze_inputs = false
-		lock_panel_btn_state(state, [ActionPanel])
+		lock_panel_btn_state(false, [ActionPanel])
 		
 func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
 	if state:
 		freeze_inputs = true
-		lock_panel_btn_state(state, [InvestigatePanel, ActionPanel])
-		
+		lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
+	
 	await reveal_investigate_controls(!state)
 	
 	if !state:
 		freeze_inputs = false
-		lock_panel_btn_state(state, [InvestigatePanel])		
+		lock_panel_btn_state(false, [InvestigatePanel])		
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -959,7 +1015,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			reveal_cardminipanel(false, duration)
 		# --------------
-		MODE.ACTIONS:					
+		MODE.ACTIONS:
 			enable_room_focus(false)
 			set_backdrop_state(false)	
 
@@ -972,12 +1028,16 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 		# --------------
 		MODE.INVESTIGATE:
+			NewMessageBtn.is_disabled = true
+		
 			InvestigateBackBtn.onClick = func() -> void:
 				await lock_investigate(true)
 				clear_lines()
 				reveal_cardminipanel(false)
-				await reveal_investigate_controls(false)
-				reveal_action_controls(true)
+				reveal_investigate_controls(false)
+				await reveal_action_controls(true)
+				await U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].show)
+				NewMessageBtn.is_disabled = !show_new_message_btn
 				current_mode = MODE.ACTIONS
 
 			enable_room_focus(true)
@@ -991,6 +1051,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			await lock_actions(true)			
 			await lock_investigate(false)
+		
+			U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].hide)
 		
 		# --------------
 		MODE.ABILITY:

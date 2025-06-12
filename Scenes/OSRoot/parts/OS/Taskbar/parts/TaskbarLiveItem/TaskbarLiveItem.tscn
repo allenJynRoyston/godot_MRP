@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://btadhfwtptr10"]
+[gd_scene load_steps=6 format=3 uid="uid://btadhfwtptr10"]
 
 [ext_resource type="Script" uid="uid://covec4eqq4fid" path="res://Scenes/OSRoot/parts/OS/Taskbar/parts/TaskbarLiveItem/taskbar_live_item.gd" id="1_pvm5v"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_jsu1p"]
@@ -13,9 +13,6 @@ font_color = Color(0, 0, 0, 1)
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 shadow_size = 2
 shadow_color = Color(0.129412, 0.129412, 0.129412, 0.345098)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jhtup"]
-bg_color = Color(0.156863, 0.156863, 0.156863, 0.827451)
 
 [node name="TaskbarLiveItem" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
@@ -32,10 +29,12 @@ theme_override_constants/margin_bottom = 0
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
+alignment = 1
 
 [node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_jsu1p")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
+size_flags_horizontal = 1
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
 icon = 67
@@ -44,45 +43,9 @@ is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "DESKTOP"
 label_settings = SubResource("LabelSettings_282hj")
+horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jhtup")
-
-[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/HBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
-
-[node name="CloseBtn" parent="MarginContainer/HBoxContainer/HBoxContainer/PanelContainer/MarginContainer2" instance=ExtResource("2_jsu1p")]
-layout_mode = 2
-icon = 1
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0, 0.964706, 0.278431, 1)
-
-[node name="MinBtnContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer/HBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jhtup")
-
-[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
-
-[node name="MinBtn" parent="MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer/MarginContainer2" instance=ExtResource("2_jsu1p")]
-layout_mode = 2
-icon = 11
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(0, 0.964706, 0.278431, 1)

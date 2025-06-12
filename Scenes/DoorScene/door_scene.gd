@@ -105,19 +105,8 @@ func play_current_story_sequence() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
-func update_progress_and_get_next_objective() -> void:
+func play_next_sequence() -> void:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	
-	# TODO: need to add a check to ensure that there IS more story to tell
-	if story_progress.current_story_val == story_progress.max_story_val:
-		story_progress.max_story_val += 1	
-		story_progress.play_message_required = true
-		
-	# increament current story 
-	story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
-
-	# update and save user profile
-	GBL.update_and_save_user_profile(GBL.active_user_profile)
 
 	# update available buttons
 	await BtnControls.reveal(true)	
@@ -132,8 +121,7 @@ func update_progress_and_get_next_objective() -> void:
 	# ... then revert to os scene
 	OSRootNode.current_layer = OSRootNode.LAYER.OS_lAYER
 	
-	# return new objectives
-	#return STORY.get_objectives(story_progress.current_story_val)
+	await U.set_timeout(0.3)
 # ---------------------------------------------
 		
 ## ---------------------------------------------

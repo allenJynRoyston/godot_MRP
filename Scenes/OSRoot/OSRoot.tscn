@@ -129,6 +129,7 @@ script = ExtResource("1_67w08")
 skip_splash = true
 skip_intro = true
 skip_office_intro = true
+reset_userprofile_save = true
 story_progress = 5
 current_story_val = 1
 intro_skip_logo = true

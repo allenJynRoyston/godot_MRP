@@ -18,7 +18,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6u7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tw6u7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2l3oe"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -92,7 +92,6 @@ z_as_relative = false
 layout_mode = 2
 
 [node name="PauseContainer" parent="." instance=ExtResource("8_13atc")]
-visible = false
 layout_mode = 2
 use_transition = true
 
@@ -119,7 +118,6 @@ a_btn_title = "LOAD"
 b_btn_title = "EXIT"
 
 [node name="HeaderControls" type="Control" parent="."]
-visible = false
 z_index = 10
 layout_mode = 2
 
@@ -137,21 +135,19 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_tw6u7")
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HeaderControls/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HeaderControls/PanelContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HeaderControls/PanelContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="KeyBtn" parent="HeaderControls/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("8_tw6u7")]
+[node name="TaskbarBtn" parent="HeaderControls/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_tw6u7")]
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_tw6u7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2l3oe")
 title = "TASKBAR"
 assigned_key = "BACKSPACE"
 icon = 67

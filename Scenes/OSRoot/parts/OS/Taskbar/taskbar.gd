@@ -36,16 +36,9 @@ var is_busy:bool = false
 var selected_node:Control 
 
 var onBackToDesktop:Callable = func() -> void:pass
-#var onDesktopBtnFocus:Callable = func() -> void:pass
 var onBack:Callable = func() -> void:pass
-var onItemSelect:Callable = func(_dict:Dictionary) -> void:pass
 var onItemClose:Callable = func(_dict:Dictionary) -> void:pass
-var onItemFocus:Callable = func() -> void:pass
 
-#var task_index:int = -1:
-	#set(val):
-		#task_index = val
-		#on_task_index()
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -80,7 +73,7 @@ func _ready() -> void:
 			return			
 			
 		# preview of any current apps
-		if ("data" in selected_node) and ("node" not in selected_node.data):
+		if ("data" in selected_node) and ("node" in selected_node.data):
 			get_parent().currently_running_app = selected_node.data.node
 			
 	BtnControl.onAction = func() -> void:
@@ -204,7 +197,6 @@ func on_music_data_update() -> void:
 	show_media_player = !music_data.is_empty()
 	MediaPlayer.data = music_data
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:

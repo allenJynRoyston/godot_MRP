@@ -27,5 +27,6 @@ func on_background_image_update() -> void:
 	
 
 func _on_visibility_changed() -> void:
+	if !is_node_ready():return	
 	if is_visible_in_tree() and use_transition:
 		TransitionScreen.start()

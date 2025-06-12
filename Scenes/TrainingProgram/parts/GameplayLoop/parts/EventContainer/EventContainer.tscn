@@ -86,12 +86,11 @@ layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="RightControl"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = -170.0
-offset_bottom = 196.0
-grow_horizontal = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxEmpty_rgg1a")
@@ -99,7 +98,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_rgg1a")
 [node name="MarginContainer" type="MarginContainer" parent="RightControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
-size_flags_vertical = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -108,6 +106,7 @@ theme_override_constants/margin_bottom = 10
 [node name="VBoxContainer" type="VBoxContainer" parent="RightControl/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
+alignment = 1
 
 [node name="OutputTexture" type="TextureRect" parent="RightControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2

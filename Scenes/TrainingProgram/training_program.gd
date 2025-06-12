@@ -2,6 +2,8 @@ extends PanelContainer
 
 @onready var LogoScreen:PanelContainer = $LogoScreen
 @onready var TitleScreen:PanelContainer = $TitleScreen
+@onready var WinConditionScreen:PanelContainer = $WinConditionScreen
+@onready var TransitionScreen:Control = $TransitionScreen
 
 const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/GameplayLoop.tscn")
 
@@ -17,14 +19,13 @@ signal on_quit
 
 # ---------------------------------------------
 func _ready() -> void:
-	hide()
+	for node in [LogoScreen, TitleScreen, WinConditionScreen]:
+		node.modulate = Color(1, 1, 1, 0)
+		node.hide()
 # ---------------------------------------------
 
 # ---------------------------------------------
 func start() -> void:	
-	show()
-	
-	
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var quicksaves:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves
 	var has_savedata = false if quicksaves.is_empty() or story_progress.current_story_val not in quicksaves else true	
@@ -36,7 +37,8 @@ func start() -> void:
 		start_game(savedata)
 
 	# start logo screen
-	LogoScreen.show()
+	await transition_node(LogoScreen, true)			
+	
 	LogoScreen.start(fast_start)
 	await LogoScreen.finished
 	
@@ -44,6 +46,8 @@ func start() -> void:
 	TitleScreen.is_tutorial = options.is_tutorial if "is_tutorial" in options else false
 	TitleScreen.show()			
 	TitleScreen.start(fast_start)
+	await transition_node(TitleScreen, true)			
+	
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
 		"story":
@@ -74,51 +78,69 @@ func force_save_and_quit() -> void:
 func start_game(filedata:Dictionary) -> void:
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
 	GameplayLoopNode.options = options
-	GameplayLoopNode.onEndGame = on_end_game	
+	GameplayLoopNode.onGameOver = on_game_over	
 	GameplayLoopNode.onExitGame = on_exit_game
-	GameplayLoopNode.hide()
-	LogoScreen.hide()
-	TitleScreen.hide()
-		
-	add_child(GameplayLoopNode)
-	await U.tick()
-
+	
 	GBL.loaded_gameplay_data = filedata
-	GameplayLoopNode.start()
+		
+	# fade out
+	transition_node(TitleScreen, false)		
+	await transition_node(LogoScreen, false)	
+	
+	add_child(GameplayLoopNode)
+	GameplayLoopNode.start()	
+
+
+func transition_node(node:Control, fade_in:bool, duration:float = 1.0) -> void:
+	if fade_in:
+		node.show()
+			
+	U.tween_node_property(node, "modulate", Color(1, 1, 1, 1 if fade_in else 0), duration)
+	
+	TransitionScreen.show()
+	await TransitionScreen.start()
+	TransitionScreen.hide()
+	
+	if !fade_in:
+		node.hide()
 
 
 func on_exit_game(exit_game:bool) -> void:
+	await transition_node(GameplayLoopNode, 1.0)
 	GameplayLoopNode.queue_free()
-	await U.set_timeout(0.3)
+
 	# quit game
 	if exit_game:
 		on_quit.emit()
 		return
 	# else, reset game
 	start()		
-	
 
-func on_end_game(win_state:bool, save_data:Dictionary = {}) -> void:
-	# if scenario win...
-	if win_state:
-		await update_progress(save_data)
-		
+
+func on_game_over() -> void:
 	# then clear
+	await transition_node(GameplayLoopNode, 1.0)
 	GameplayLoopNode.queue_free()
 	
-	# restart
-	await U.set_timeout(0.3)
-	start()
-# ---------------------------------------------
-
-# ---------------------------------------------
-func update_progress(quicksave:Dictionary) -> void:
-	var progress_data:Dictionary = FS.load_file(FS.FILE.PROGRESS).filedata.data
+	# set win condition screen
+	WinConditionScreen.modulate = Color(1, 1, 1, 0)
+	WinConditionScreen.show()
+			
+	# show win condition and start
+	await transition_node(WinConditionScreen, 1.0)
 	
-	# update story progress val
-	progress_data.story_progress_val += 1
-	# then update progress data
-	FS.save_file(FS.FILE.PROGRESS, progress_data)
+	WinConditionScreen.start()
+	var action:String = await WinConditionScreen.wait_for_response
 	
-	await U.tick()
+	await transition_node(WinConditionScreen, 0)
+	
+	match action:
+		"RETRY":
+			var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			var checkpoint:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint
+			start_game({} if checkpoint.is_empty() else checkpoint)
+		"RESTART": 
+			start_game({})
+		"QUIT":
+			on_quit.emit()
 # ---------------------------------------------

@@ -3,6 +3,8 @@ extends GameContainer
 @onready var PanelRoot:PanelContainer = $"."
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var RightControlPanel:PanelContainer = $RightControl/PanelContainer
+@onready var RightControlMargin:MarginContainer = $RightControl/PanelContainer/MarginContainer
+
 #@onready var LeftControlPanel:PanelContainer = $LeftControl/PanelContainer
 @onready var ContentControlPanel:MarginContainer	 = $ContentControl/MarginContainer
 @onready var TransitionScreen:Control = $TransistionScreen
@@ -87,12 +89,6 @@ func _ready() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func activate() -> void:
-	control_pos_default[RightControlPanel] = RightControlPanel.position
-	#control_pos_default[LeftControlPanel] = LeftControlPanel.position
-	control_pos_default[ContentControlPanel] = ContentControlPanel.position
-
-	await U.tick()
-
 	# center elements
 	control_pos[ContentControlPanel] = {
 		"show": 0, 
@@ -102,11 +98,10 @@ func activate() -> void:
 
 	control_pos[RightControlPanel] = {
 		"show": 0, 
-		"hide": -RightControlPanel.size.y
+		"hide": RightControlMargin.size.y
 	}	
 
-	await U.tick()
-	
+
 	ContentControlPanel.position.y = control_pos[ContentControlPanel].hide	
 	RightControlPanel.position.y = control_pos[RightControlPanel].hide
 	

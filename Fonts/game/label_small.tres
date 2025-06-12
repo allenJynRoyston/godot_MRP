@@ -7,3 +7,6 @@ font = ExtResource("1_si525")
 font_size = 8
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
+shadow_size = 2
+shadow_color = Color(0.489622, 0.489622, 0.489622, 0.780392)
+shadow_offset = Vector2(-1, -1)

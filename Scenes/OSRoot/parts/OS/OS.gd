@@ -6,7 +6,9 @@ class_name Layout
 @onready var HeaderControls:Control = $HeaderControls
 @onready var HeaderPanel:PanelContainer = $HeaderControls/PanelContainer
 @onready var HeaderMargin:MarginContainer = $HeaderControls/PanelContainer/MarginContainer
-@onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/HBoxContainer/KeyBtn
+@onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/TaskbarBtn
+@onready var NewMessageBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewMessageBtn
+@onready var NewEmailBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewEmailBtn
 
 @onready var Taskbar:Control = $Taskbar
 @onready var BackgroundWindow:PanelContainer = $MarginContainer/BackgroundWindow
@@ -367,8 +369,11 @@ func _ready() -> void:
 		if freeze_inputs:return
 		toggle_show_taskbar()
 	
-	#TaskbarBtn.is_disabled = true
+
+		#await GBL.find_node(REFS.DOOR_SCENE).play_next_sequence()
+
 	
+	#TaskbarBtn.is_disabled = true
 # -----------------------------------
 
 # -----------------------------------
@@ -727,7 +732,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	match input_data.key:
 		"BACKSPACE":
-			print(Taskbar.is_busy)
 			if Taskbar.is_busy:return
 			toggle_show_taskbar()
 # ------------------------------------------

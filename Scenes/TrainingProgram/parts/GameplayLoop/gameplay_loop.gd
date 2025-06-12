@@ -239,7 +239,7 @@ var gameplay_conditionals:Dictionary
 
 # ------------------------------------------------------------------------------	LOCAL DATA
 #region LOCAL DATA
-var onEndGame:Callable = func(_scenario_ref:int, _quicksave_data:Dictionary = {}) -> void:pass
+var onGameOver:Callable = func() -> void:pass
 var onExitGame:Callable = func(_exit_game:bool) -> void:pass
 
 var processing_next_day:bool = false
@@ -942,7 +942,7 @@ func on_current_phase_update() -> void:
 			if camera_settings_snapshot.type != CAMERA.TYPE.WING_SELECT:
 				camera_settings.type = CAMERA.TYPE.WING_SELECT
 				SUBSCRIBE.camera_settings = camera_settings	
-				await U.set_timeout(1.0)
+				await U.set_timeout(0.5)
 			
 			
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
@@ -961,7 +961,7 @@ func on_current_phase_update() -> void:
 					#SUBSCRIBE.resources_data = resources_data		
 				
 			
-			await U.set_timeout(1.0)
+			await U.set_timeout(0.5)
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
@@ -985,15 +985,16 @@ func on_current_phase_update() -> void:
 			SUBSCRIBE.progress_data = progress_data
 			SUBSCRIBE.base_states = base_states
 			
-			await U.set_timeout(1.0)
+			await U.set_timeout(0.5)
 			current_phase = PHASE.SCHEDULED_EVENTS
 		# ------------------------
 		PHASE.SCHEDULED_EVENTS:
+			PhaseAnnouncement.start("EVENTS")	
+			await U.set_timeout(0.5)
+						
 			# EVENT FIRES			
 			var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day)	
-			if timeline_filter.size() > 0:
-				PhaseAnnouncement.start("EVENTS")	
-				await U.set_timeout(1.0)
+			#if timeline_filter.size() > 0:
 				# plays any scp events
 				#for item in timeline_filter:
 					#if "event" in item and !item.event.is_empty():
@@ -1005,14 +1006,13 @@ func on_current_phase_update() -> void:
 			# CHECK IF SCENARIO DATA IS COMPLETE
 			var objectives:Array = STORY.get_objectives()
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			print("story_progress.current_story_val: ", story_progress.current_story_val)
 			var current_objectives:Dictionary = objectives[story_progress.current_story_val]
 			var completed_by_day:int = current_objectives.complete_by_day
 			
 			# check for objectivess fail/succeed on appropriate day
 			if progress_data.day >= completed_by_day:
 				PhaseAnnouncement.start("CHECKING OBJECTIVES")
-				await U.set_timeout(1.0)				
+				await U.set_timeout(0.5)				
 								
 				# CHECK FOR FAIL STATE
 				var objective_failed:bool = false
@@ -1038,11 +1038,36 @@ func on_current_phase_update() -> void:
 			
 		# ------------------------
 		PHASE.GAME_WON:
-			PhaseAnnouncement.start("OBJECTIVES COMPLETE!")
-
+			await show_only([])
+			
+			# trigger reward event
+			await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+				EVT.TYPE.OBJECTIVE_REWARD, 
+					{
+						"onSelection": func(selection:Dictionary) -> void:
+							# add buff, debuff
+							print(selection),
+					}
+				)
+			])	
+				
 			# fetch next objective, update objective
-			await GBL.find_node(REFS.DOOR_SCENE).update_progress_and_get_next_objective()
-						
+			var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			var show_new_message:bool = false
+			
+			# ... if you're at the max story val, increament
+			if story_progress.current_story_val == story_progress.max_story_val and !story_progress.at_story_limit:
+				# update story progress
+				story_progress.max_story_val = U.min_max(story_progress.max_story_val + 1, 0, STORY.get_objectives().size() - 1)	
+				story_progress.play_message_required = true
+				story_progress.at_story_limit = story_progress.max_story_val == STORY.get_objectives().size() - 1				
+				# then update
+				GBL.update_and_save_user_profile(GBL.active_user_profile)
+				show_new_message = true
+
+			# increament current story val
+			story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
+			
 			# create a quicksave
 			quicksave(true)
 			
@@ -1050,7 +1075,11 @@ func on_current_phase_update() -> void:
 			create_checkpoint(true)
 			
 			# display next objectives
+			PhaseAnnouncement.start("OBJECTIVES HAVE BEEN UPDATED.")
 			await GAME_UTIL.open_objectives()
+			
+			if show_new_message:
+				ActionContainer.show_new_message_btn = true
 			
 			# continue game
 			PhaseAnnouncement.end()			
@@ -1059,8 +1088,7 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.GAME_LOST:
 			PhaseAnnouncement.start("FAILED TO MEET OBJECTIVES...")	
-			await U.set_timeout(3.0)
-			onEndGame.call(false)
+			onGameOver.call()
 			return
 		# ------------------------
 # ------------------------------------------------------------------------------
@@ -1110,8 +1138,6 @@ func quicksave(skip_timeout:bool = false) -> void:
 func create_checkpoint(skip_timeout:bool = false) -> void:
 	is_busy = true
 	
-	print("creat3e checkpoint")
-	
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint = get_save_state()
 	
 	# update and save user profile
@@ -1125,9 +1151,7 @@ func create_checkpoint(skip_timeout:bool = false) -> void:
 func load_checkpoint() -> void:
 	var restore_checkpoint:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint
 	if restore_checkpoint.is_empty():return
-	GBL.loaded_gameplay_data = restore_checkpoint
-	print(GBL.loaded_gameplay_data.progress_data)
-	
+	GBL.loaded_gameplay_data = restore_checkpoint	
 	
 	await U.tick()
 	start_new_game()

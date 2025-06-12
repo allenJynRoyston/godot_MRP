@@ -21,11 +21,6 @@ var chapters:Array = [
 			"title": "Establish the base.",
 			"list":[
 				{
-					"title": "Establish the facility", 
-					"is_completed": func() -> bool:
-						return true,
-				},
-				{
 					"title": "Build a Director's Office", 
 					"is_completed": func() -> bool:
 						return true,
@@ -36,7 +31,7 @@ var chapters:Array = [
 						return true,
 				},						
 			],
-			"complete_by_day": 3,
+			"complete_by_day": 2,
 		},
 	},
 	# ----------------------------------------------------------------------------------------------
@@ -58,7 +53,7 @@ var chapters:Array = [
 						return true,
 				},
 			],
-			"complete_by_day": 5,
+			"complete_by_day": 7,
 		},
 	},
 	# ----------------------------------------------------------------------------------------------	

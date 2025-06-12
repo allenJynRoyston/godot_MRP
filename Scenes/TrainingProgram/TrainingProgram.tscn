@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dam3228oxnp8k"]
+[gd_scene load_steps=7 format=3 uid="uid://dam3228oxnp8k"]
 
 [ext_resource type="Script" uid="uid://bp7a6iivfvdnb" path="res://Scenes/TrainingProgram/training_program.gd" id="1_kkc02"]
 [ext_resource type="PackedScene" uid="uid://dbbfm67s1r6vm" path="res://Scenes/TrainingProgram/parts/LogoScreen/LogoScreen.tscn" id="2_rckpd"]
 [ext_resource type="PackedScene" uid="uid://ccfxehln1766x" path="res://Scenes/TrainingProgram/parts/TitleScreen/TitleScreen.tscn" id="3_8ygkj"]
+[ext_resource type="PackedScene" uid="uid://dpn30udt7bfeb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FailStateContainer/FailStateContainer.tscn" id="4_8qqsj"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_vpp5c"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ie45v"]
 
@@ -16,7 +18,16 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ie45v")
 script = ExtResource("1_kkc02")
 
 [node name="LogoScreen" parent="." instance=ExtResource("2_rckpd")]
+visible = false
 layout_mode = 2
 
 [node name="TitleScreen" parent="." instance=ExtResource("3_8ygkj")]
+visible = false
+layout_mode = 2
+
+[node name="WinConditionScreen" parent="." instance=ExtResource("4_8qqsj")]
+visible = false
+layout_mode = 2
+
+[node name="TransitionScreen" parent="." instance=ExtResource("5_vpp5c")]
 layout_mode = 2

@@ -784,6 +784,71 @@ var UNHAPPY_HOUR:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var OBJECTIVE_REWARD:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"selected": null
+		}
+		var onSelected = func(selected) -> void:
+			option_selected.selected = selected.option.val
+		
+		var text:Array = []
+		
+		# -------------  ORIGINAL, NO CLONES 
+		text = [
+			"Well done.  Please select a reward."
+		]
+
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "OBJECTIVE_REWARD EVENT",
+					"img_src": "res://Media/images/redacted.png",
+					"text": text,
+					"options": [
+						# ----------------------------------------- NON-RESPONSE
+						{
+							"include": true,
+							"title": "GAIN MONEY!",
+							"val": {
+								"response": "RESPONSE GOES HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "GAIN SCIENCE!",
+							"val": {
+								"response": "RESPONSE GOES HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "GAIN MATERIAL!",
+							"val": {
+								"response": "RESPONSE GOES HERE",
+							},
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				if "onSelection" in props:
+					props.onSelection.call(option_selected.selected)
+					
+				return {
+					"text": [
+						option_selected.selected.response
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
 
 var reference_data:Dictionary = {
 	# ------------------
@@ -799,6 +864,10 @@ var reference_data:Dictionary = {
 	EVT.TYPE.CLONE_RESEARCHER: CLONE_RESEARCHER,
 	EVT.TYPE.PROMOTE_RESEARCHER: PROMOTE_RESEARCHER,
 	#EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,	
+	# ------------------
+	
+	# ------------------
+	EVT.TYPE.OBJECTIVE_REWARD: OBJECTIVE_REWARD,
 	# ------------------
 	
 	# ------------------

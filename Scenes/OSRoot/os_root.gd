@@ -88,6 +88,7 @@ var user_profile_schema:Dictionary = {
 		"play_message_required": true,
 		"max_story_val": 0 if !user_profile_ref else story_progress,
 		"current_story_val": 0 if !user_profile_ref else current_story_val,
+		"at_story_limit": false,		
 	},
 	"use_save_profile": FS.FILE.SAVE_ONE if !user_profile_ref else user_profile_ref,
 	"save_profiles":{
