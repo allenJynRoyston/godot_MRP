@@ -1,8 +1,8 @@
 @tool
 extends MouseInteractions
 
-@onready var IconButton:Control = $VBoxContainer/CenterContainer/IconBtn
-@onready var AppLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/Label
+@onready var IconButton:Control = $MarginContainer/VBoxContainer/CenterContainer/IconBtn
+@onready var AppLabel:Label = $MarginContainer/VBoxContainer/PanelContainer/MarginContainer/Label
 
 @export var title:String = "Application" : 
 	set(val):

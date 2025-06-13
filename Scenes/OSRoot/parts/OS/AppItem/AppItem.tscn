@@ -1,28 +1,51 @@
-[gd_scene load_steps=6 format=3 uid="uid://r8fxl3w206rc"]
+[gd_scene load_steps=7 format=3 uid="uid://r8fxl3w206rc"]
 
 [ext_resource type="Script" uid="uid://c8wncqmj781bb" path="res://Scenes/OSRoot/parts/OS/AppItem/app_item.gd" id="1_tkkct"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_w4olv"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_k6wcv"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_k6wcv"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhp16"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k6wcv"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.00119745, 0.00119745, 0.00119745, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ruqfy"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_xnjxr"]
+font = ExtResource("3_k6wcv")
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
 [node name="AppItem" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 120)
 offset_right = 110.0
 offset_bottom = 65.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_nhp16")
+theme_override_styles/panel = SubResource("StyleBoxFlat_k6wcv")
 script = ExtResource("1_tkkct")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="IconBtn" parent="VBoxContainer/CenterContainer" instance=ExtResource("2_w4olv")]
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/CenterContainer" instance=ExtResource("2_w4olv")]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 icon = 3
@@ -31,22 +54,22 @@ active_color = Color(1, 1, 1, 1)
 inactive_color = Color(0.672751, 0.672752, 0.672751, 1)
 is_hoverable = false
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ruqfy")
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Application"
-label_settings = ExtResource("3_k6wcv")
+text = "App Name"
+label_settings = SubResource("LabelSettings_xnjxr")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2

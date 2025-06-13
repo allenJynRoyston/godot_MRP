@@ -71,7 +71,6 @@ var ROOM_TEMPLATE:Dictionary = {
 var reference_data:Dictionary = {}
 var reference_list:Array = []
 
-
 # ------------------------------------------------------------------------------
 func _enter_tree() -> void:
 	var dlc_dir:DirAccess = DirAccess.open(dlc_folder)
@@ -114,7 +113,8 @@ func fill_template(data:Dictionary, ref:int) -> void:
 		for key in data.currencies:
 			var amount:int = data.currencies[key]
 			template_copy.currencies[key] = amount
-			
+
+
 
 	reference_list.push_back(ref)
 	reference_data[ref] = template_copy
