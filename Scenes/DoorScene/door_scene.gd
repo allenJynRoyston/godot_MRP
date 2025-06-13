@@ -97,10 +97,10 @@ func play_current_story_sequence() -> void:
 
 	# update btn states, reveal buttons
 	check_btn_states(false)	
-	
+		
+	await U.set_timeout(0.3)
 	wait_for_story.emit()
 	
-	await U.set_timeout(0.3)
 	BtnControls.reveal(true)
 # ---------------------------------------------
 

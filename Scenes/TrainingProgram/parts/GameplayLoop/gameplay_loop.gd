@@ -446,7 +446,6 @@ func start_new_game() -> void:
 	if is_new_game:
 		create_checkpoint(true)
 	
-
 	# update phase and start game
 	#if is_tutorial:
 		#await GAME_UTIL.add_dialogue({})	
@@ -458,6 +457,9 @@ func start_new_game() -> void:
 	# show objectives
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
 		await GAME_UTIL.open_objectives()
+		await U.set_timeout(0.3)
+		
+		
 
 	# start actionContainer or start at ring level
 	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):

@@ -3,17 +3,17 @@ extends GameContainer
 @onready var HeaderContainer:PanelContainer = $PanelContainer
 @onready var MarginControl:MarginContainer = $PanelContainer/MarginControl
 
-@onready var LocationFloor:VBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/Location/Floor
-@onready var LocationWing:VBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/Location/Wing
-@onready var LocationRoom:VBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/Location/Room
+@onready var LocationFloor:VBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/Location/Floor
+@onready var LocationWing:VBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/Location/Wing
+@onready var LocationRoom:VBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/Location/Room
 
-@onready var LocationFloorLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/Location/Floor/CenterLabel2
-@onready var LocationWingLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/Location/Wing/CenterLabel2
-@onready var LocationRoomLabel:Label = $PanelContainer/MarginControl/VBoxContainer2/Location/Room/CenterLabel2
+@onready var LocationFloorLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Location/Floor/CenterLabel2
+@onready var LocationWingLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Location/Wing/CenterLabel2
+@onready var LocationRoomLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Location/Room/CenterLabel2
 
-@onready var FloorLabelContainer:HBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/VBoxContainer/FloorLabelContainer
-@onready var RingLabelContainer:HBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/VBoxContainer/RingLabelContainer
-@onready var RoomLabelContainer:HBoxContainer = $PanelContainer/MarginControl/VBoxContainer2/VBoxContainer/RoomLabelContainer
+@onready var FloorBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FloorBuffsContainer
+@onready var RingBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RingBuffsContainer
+@onready var RoomBuffContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RoomBuffContainer
 
 @onready var CurrencyMoney:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Money
 @onready var CurrencyMaterials:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Materials
@@ -49,15 +49,8 @@ extends GameContainer
 @onready var SecTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SecTag
 @onready var DClassTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/DClassTag
 
-# this button does not need to be linked; the listener is on the root level
-@onready var TaskbarBtn:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/TaskbarBtn
-
 # buff or debuff
 const BuffOrDebuffTag:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/BuffOrDebuffTag/BuffOrDebuffTag.tscn")
-const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
-
-
-var previous_location:Dictionary = {}
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -99,7 +92,7 @@ func activate() -> void:
 # --------------------------------------------------------------------------------------------------	
 func get_hint_buttons() -> Array:
 	var btns:Array =  [CurrencyMoney, CurrencyMaterials, CurrencyResearch, CurrencyCore, VibeMorale, VibeSafety, VibeReadiness, Energy, PersonnelStaff, PersonnelTechnicians, PersonnelSecurity, PersonnelDClass]
-	for node in [FloorLabelContainer, RingLabelContainer, RoomLabelContainer]:
+	for node in [FloorBuffsContainer, RingBuffsContainer, RoomBuffContainer]:
 		for child in node.get_children():
 			btns.push_back(child)
 	return btns
@@ -204,7 +197,7 @@ func update_panels() -> void:
 	update_vibes(total_metrics[RESOURCE.METRICS.MORALE], total_metrics[RESOURCE.METRICS.SAFETY], total_metrics[RESOURCE.METRICS.READINESS])
 	
 	# update buffs/debuffs/status
-	for node in [FloorLabelContainer, RingLabelContainer, RoomLabelContainer]:
+	for node in [FloorBuffsContainer, RingBuffsContainer, RoomBuffContainer]:
 		for child in node.get_children():
 			child.queue_free()				
 	
@@ -244,7 +237,7 @@ func update_panels() -> void:
 			"type": BASE.TYPE.DEBUFF
 		})
 	
-	update_status_container(status_list, FloorLabelContainer)	
+	update_status_container(status_list, FloorBuffsContainer)	
 	
 			
 	# energy
@@ -279,7 +272,7 @@ func update_panels() -> void:
 			var summary_data:Dictionary = GAME_UTIL.get_ring_summary(current_location)	
 
 			# get status effects
-			for cf in [{"config": ring_config_data, "container": RingLabelContainer}]:
+			for cf in [{"config": ring_config_data, "container": RingBuffsContainer}]:
 				var list:Array = []	
 				for buff in cf.config.buffs:
 					list.push_back({
@@ -316,8 +309,8 @@ func update_panels() -> void:
 			
 			# get status effects
 			for cf in [
-				{"config": ring_config_data, "container": RingLabelContainer},
-				{"config": room_config_data, "container": RoomLabelContainer}
+				{"config": ring_config_data, "container": RingBuffsContainer},
+				{"config": room_config_data, "container": RoomBuffContainer}
 			]:
 				var list:Array = []	
 				for buff in cf.config.buffs:

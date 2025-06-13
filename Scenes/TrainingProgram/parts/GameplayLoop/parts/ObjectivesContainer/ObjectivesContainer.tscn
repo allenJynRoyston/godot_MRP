@@ -1,10 +1,53 @@
-[gd_scene load_steps=7 format=3 uid="uid://b2glyeqvwy3vs"]
+[gd_scene load_steps=14 format=3 uid="uid://b2glyeqvwy3vs"]
 
 [ext_resource type="Script" uid="uid://cama33xd6387p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/objectives_container.gd" id="1_5mn2c"]
+[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_q6d11"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_q73ge"]
+[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_h6i7u"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_q6d11"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0mj1b"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uyd7x"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_h6i7u"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3s3v"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubjmu"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2g7pg"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpj5t"]
 bg_color = Color(0, 0, 0, 0.796078)
@@ -21,31 +64,73 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_uyd7x")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_0mj1b")
 script = ExtResource("1_5mn2c")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0, 0, 0, 0.447059)
 
 [node name="ObjectivesControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl"]
+[node name="PanelContainer" type="PanelContainer" parent="ObjectivesControl"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -130.0
-offset_right = 130.0
-offset_bottom = 86.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 150
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_uyd7x")
 
-[node name="PanelContainer" type="PanelContainer" parent="ObjectivesControl/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl/PanelContainer"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 100
+
+[node name="CardBody" parent="ObjectivesControl/PanelContainer/MarginContainer" instance=ExtResource("2_q6d11")]
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 1
+card_size = Vector2(300, 400)
+border_color = Color(1, 0, 1, 1)
+
+[node name="TextureRect" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody" index="0"]
+texture = SubResource("ViewportTexture_h6i7u")
+
+[node name="SubViewport" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody" index="1"]
+size = Vector2i(300, 400)
+
+[node name="CardBody" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(300, 0)
+offset_right = 300.0
+offset_bottom = 66.0
+
+[node name="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_s3s3v")
+
+[node name="CardDrawerTitle" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_h6i7u")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ubjmu")
+is_small = true
+content = "Objectives"
+title = ""
+
+[node name="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Back" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_2g7pg")
+
+[node name="PanelContainer" type="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer"]
+visible = false
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dpj5t")
 
-[node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl/MarginContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_left = 10
@@ -53,34 +138,36 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="OverlayContainer" type="PanelContainer" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer"]
+[node name="OverlayContainer" type="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ego76")
 
-[node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/OverlayContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_top = -19
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "OBJECTIVES "
 label_settings = ExtResource("2_q73ge")
 
-[node name="ObjectivesList" type="VBoxContainer" parent="ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
+[node name="ObjectivesList" type="VBoxContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="BtnControls" parent="." instance=ExtResource("4_q6d11")]
 layout_mode = 2
 hide_a_btn = true
+
+[editable path="ObjectivesControl/PanelContainer/MarginContainer/CardBody"]

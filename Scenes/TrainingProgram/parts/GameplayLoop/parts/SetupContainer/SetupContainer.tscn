@@ -13,7 +13,7 @@ bg_color = Color(0, 0, 0, 1)
 bg_color = Color(0, 0.721626, 0.301365, 1)
 
 [node name="SetupContainer" type="PanelContainer"]
-z_index = 10
+z_index = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

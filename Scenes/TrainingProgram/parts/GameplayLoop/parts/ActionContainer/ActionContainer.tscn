@@ -294,7 +294,7 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ls27"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3de1l"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -358,7 +358,7 @@ custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 110
+theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 10
 metadata/_edit_group_ = true
@@ -1001,7 +1001,7 @@ alignment = 2
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_8ls27")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3de1l")
 title = "NEW MESSAGE"
 assigned_key = "SHIFT"
 icon = 67

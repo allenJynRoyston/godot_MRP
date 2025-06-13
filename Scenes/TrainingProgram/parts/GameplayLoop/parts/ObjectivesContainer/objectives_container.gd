@@ -1,19 +1,14 @@
 extends GameContainer
 
-@onready var ObjectivesControlPanel:MarginContainer = $ObjectivesControl/MarginContainer
-@onready var ObjectivesList:VBoxContainer = $ObjectivesControl/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList
 @onready var BtnControls:Control = $BtnControls
 
-enum MODE {HIDE, ACTIVE}
+@onready var ObjectivePanel:PanelContainer = $ObjectivesControl/PanelContainer
+@onready var ObjectiveMargin:MarginContainer = $ObjectivesControl/PanelContainer/MarginContainer
+@onready var ObjectivesList:VBoxContainer = $ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList
 
 const CheckBoxButtonPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 
 signal mode_updated
-
-var current_mode:MODE = MODE.HIDE : 
-	set(val):
-		current_mode = val
-		on_current_mode_update()
 
 var story_progress:Dictionary	
 var objectives:Array = []
@@ -26,6 +21,9 @@ var objective_index:int :
 func _ready() -> void:
 	super._ready()
 	modulate = Color(1, 1, 1, 0)
+	
+	BtnControls.onBack = func() -> void:
+		end()
 	
 	BtnControls.onDirectional = func(key:String):
 		if !is_visible_in_tree() or !is_node_ready():return
@@ -41,14 +39,17 @@ func _ready() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func start() -> void:
-	current_mode = MODE.ACTIVE
-	modulate = Color(1, 1, 1, 1)
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+	U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].show)	
+	await BtnControls.reveal(true)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:						
 	BtnControls.reveal(false)
-	await U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].hide)
+	await U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].hide)
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0))
+	
 	user_response.emit()
 	queue_free()
 # --------------------------------------------------------------------------------------------------		
@@ -61,14 +62,14 @@ func activate() -> void:
 	objective_index = story_progress.current_story_val
 	
 	await U.tick()
-	control_pos_default[ObjectivesControlPanel] = ObjectivesControlPanel.position
-	
-	control_pos[ObjectivesControlPanel] = {
+	control_pos[ObjectivePanel] = {
 		"show": 0, 
-		"hide": -ObjectivesControlPanel.size.y
-	}	
+		"hide": -ObjectiveMargin.size.x
+	}
 	
-	ObjectivesControlPanel.position.y = control_pos[ObjectivesControlPanel].hide
+	print(control_pos[ObjectivePanel])
+	
+	ObjectivePanel.position.x = control_pos[ObjectivePanel].hide
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -96,17 +97,17 @@ func on_objective_index_update() -> void:
 # --------------------------------------------------------------------------------------------------	
 	
 
-# --------------------------------------------------------------------------------------------------		
-func on_current_mode_update(skip_animation:bool = false) -> void:
-	if !is_node_ready() or control_pos.is_empty():return	
-	var duration:float = 0 if skip_animation else 0.3
-	match current_mode:
-		MODE.ACTIVE:
-			await U.tween_node_property(ObjectivesControlPanel, "position:y", control_pos[ObjectivesControlPanel].show, duration)	
-			await BtnControls.reveal(true)
-			BtnControls.onBack = func() -> void:
-				end()			
-# --------------------------------------------------------------------------------------------------		
+## --------------------------------------------------------------------------------------------------		
+#func on_current_mode_update(skip_animation:bool = false) -> void:
+	#if !is_node_ready() or control_pos.is_empty():return	
+	#var duration:float = 0 if skip_animation else 0.3
+	#match current_mode:
+		#MODE.ACTIVE:
+			#await U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].show, duration)	
+			#await BtnControls.reveal(true)
+			#BtnControls.onBack = func() -> void:
+				#end()			
+## --------------------------------------------------------------------------------------------------		
 
 ## --------------------------------------------------------------------------------------------------		
 #func on_room_config_update(new_val:Dictionary = room_config) -> void:

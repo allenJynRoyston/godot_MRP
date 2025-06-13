@@ -1,6 +1,9 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ef45nkvjkp5x"]
 
-[ext_resource type="Shader" path="res://Shader/BrightnessBleed/BrightnessBleed.gdshader" id="1_psrs0"]
+[ext_resource type="Shader" uid="uid://bejxg2q2p01po" path="res://Shader/BrightnessBleed/BrightnessBleed.gdshader" id="1_psrs0"]
 
 [resource]
 shader = ExtResource("1_psrs0")
+shader_parameter/glow_intensity = 1.976
+shader_parameter/glow_radius = 8.387
+shader_parameter/opacity = 0.363

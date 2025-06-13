@@ -24,10 +24,9 @@ size_flags_horizontal = 5
 
 [node name="Title" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "[M]"
+text = "[]"
 label_settings = ExtResource("2_6neei")
 
 [node name="Status" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "GOOD"
 label_settings = ExtResource("2_6neei")

@@ -35,6 +35,7 @@ func start() -> void:
 	if DEBUG.get_val(DEBUG.APP_SKIP_TITLESCREEN):
 		GBL.loaded_gameplay_data = savedata		
 		start_game(savedata)
+		return
 
 	# start logo screen
 	await transition_node(LogoScreen, true)			

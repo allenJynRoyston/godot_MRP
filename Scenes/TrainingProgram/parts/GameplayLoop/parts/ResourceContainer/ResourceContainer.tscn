@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bjpif0yvapqdn"]
+[gd_scene load_steps=18 format=3 uid="uid://bjpif0yvapqdn"]
 
 [ext_resource type="Script" uid="uid://da8752kxl16py" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/resource_container.gd" id="1_qt3uu"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_bsj2a"]
@@ -6,7 +6,6 @@
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_5bupg"]
 [ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="6_0dffn"]
 [ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/VibeItem/VibeItem.tscn" id="6_7q6wh"]
-[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_xre08"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5xs2u"]
 
@@ -21,6 +20,10 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5xs2u"]
+bg_color = Color(1, 1, 1, 0)
+border_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7q6wh"]
 bg_color = Color(1, 1, 1, 0)
@@ -54,22 +57,6 @@ border_color = Color(1, 1, 1, 0)
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erj62"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbbqs"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [node name="Header" type="Control"]
 layout_mode = 3
 anchors_preset = 0
@@ -86,83 +73,88 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5xs2u")
 
-[node name="MarginControl" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
-size_flags_vertical = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_top = 30
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/MarginControl"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 25
 
-[node name="Location" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2"]
+[node name="Location" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Floor" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/Location"]
+[node name="Floor" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Location"]
 layout_mode = 2
 
-[node name="CenterLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Floor"]
+[node name="CenterLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Location/Floor"]
 layout_mode = 2
 text = "FLOOR"
 label_settings = ExtResource("3_bsj2a")
 
-[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Floor"]
+[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Location/Floor"]
 layout_mode = 2
 text = "1"
 label_settings = ExtResource("5_5bupg")
 horizontal_alignment = 1
 
-[node name="Wing" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/Location"]
+[node name="Wing" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Location"]
 layout_mode = 2
 
-[node name="CenterLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Wing"]
+[node name="CenterLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Location/Wing"]
 layout_mode = 2
 text = "WING"
 label_settings = ExtResource("3_bsj2a")
 
-[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Wing"]
+[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Location/Wing"]
 layout_mode = 2
 text = "A"
 label_settings = ExtResource("5_5bupg")
 horizontal_alignment = 1
 
-[node name="Room" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/Location"]
+[node name="Room" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Location"]
 layout_mode = 2
 
-[node name="CenterLabel" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Room"]
+[node name="CenterLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Location/Room"]
 layout_mode = 2
 text = "ROOM"
 label_settings = ExtResource("3_bsj2a")
 
-[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginControl/VBoxContainer2/Location/Room"]
+[node name="CenterLabel2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Location/Room"]
 layout_mode = 2
 text = "1"
 label_settings = ExtResource("5_5bupg")
 horizontal_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 6
 
-[node name="FloorLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
+[node name="FloorBuffsContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="RingLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
+[node name="RingBuffsContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="RoomLabelContainer" type="HBoxContainer" parent="PanelContainer/MarginControl/VBoxContainer2/VBoxContainer"]
+[node name="RoomBuffContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 1
+
+[node name="MarginControl" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginControl"]
 layout_mode = 2
@@ -210,7 +202,7 @@ alignment = 1
 
 [node name="Money" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7q6wh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5xs2u")
 icon = 31
 no_bg = true
 title = "99"
@@ -222,7 +214,7 @@ allow_hint = true
 
 [node name="Materials" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7q6wh")
 icon = 41
 no_bg = true
 title = "99"
@@ -234,7 +226,7 @@ allow_hint = true
 
 [node name="Research" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
 icon = 44
 no_bg = true
 title = "99"
@@ -246,7 +238,7 @@ allow_hint = true
 
 [node name="Core" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4m2u1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
 icon = 39
 no_bg = true
 title = "10"
@@ -390,7 +382,7 @@ alignment = 1
 
 [node name="EnergyItem" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5bupg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4m2u1")
 icon = 32
 no_bg = true
 title = "99/99"
@@ -444,7 +436,7 @@ alignment = 1
 
 [node name="Staff" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kd4jj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5bupg")
 icon = 35
 no_bg = true
 title = "STF"
@@ -456,7 +448,7 @@ allow_hint = true
 
 [node name="Technicians" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rk4y0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kd4jj")
 icon = 34
 no_bg = true
 title = "TCH"
@@ -468,7 +460,7 @@ allow_hint = true
 
 [node name="Security" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bd2ap")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rk4y0")
 icon = 36
 no_bg = true
 title = "SEC"
@@ -480,7 +472,7 @@ allow_hint = true
 
 [node name="DClass" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_erj62")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bd2ap")
 icon = 33
 no_bg = true
 title = "DCL"
@@ -515,15 +507,3 @@ use_icon = true
 [node name="DClassTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 layout_mode = 2
 use_icon = true
-
-[node name="TaskbarBtn" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right" instance=ExtResource("8_xre08")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rbbqs")
-title = "TASKBAR"
-assigned_key = "BACKSPACE"
-icon = 15
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
-is_disabled = false
-allow_hint = false

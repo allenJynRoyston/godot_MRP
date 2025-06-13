@@ -358,6 +358,7 @@ func _ready() -> void:
 	PauseContainer.hide()
 	
 	Taskbar.onBack = func() -> void:
+		if freeze_inputs or Taskbar.is_busy:return
 		toggle_show_taskbar(false)
 	
 	Background.texture = background_subviewport.get_texture()
@@ -366,7 +367,7 @@ func _ready() -> void:
 		pause()
 				
 	TaskbarBtn.onClick = func() -> void:
-		if freeze_inputs:return
+		if freeze_inputs or Taskbar.is_busy:return		
 		toggle_show_taskbar()
 	
 
@@ -689,7 +690,7 @@ func on_show_taskbar_update() -> void:
 	if !is_node_ready():return
 
 # -----------------------------------
-func toggle_show_taskbar(state:bool = !show_taskbar) -> void:		
+func toggle_show_taskbar(state:bool = !show_taskbar) -> void:						
 	show_taskbar = state
 	freeze_inputs = true
 	
@@ -728,10 +729,9 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 
 # ------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or freeze_inputs: return
+	if !is_node_ready() or freeze_inputs or Taskbar.is_busy:return		
 
 	match input_data.key:
 		"BACKSPACE":
-			if Taskbar.is_busy:return
 			toggle_show_taskbar()
 # ------------------------------------------

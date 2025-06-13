@@ -519,6 +519,7 @@ func open_objectives() -> void:
 	ObjectivesNode.start()
 
 	await ObjectivesNode.user_response
+	
 	GameplayNode.restore_player_hud()
 # -----------------------------------
 

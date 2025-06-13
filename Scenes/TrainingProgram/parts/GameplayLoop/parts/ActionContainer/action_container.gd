@@ -132,6 +132,7 @@ func _ready() -> void:
 	
 	modulate = Color(1, 1, 1, 0)
 	BtnControls.freeze_and_disable(true)
+	
 	# set defaults
 	BtnControls.reveal(false)
 	
@@ -240,6 +241,7 @@ func start(start_at_ring_level:bool = false) -> void:
 	SettingsBtn.onClick = func() -> void:
 		ControllerOverlay.hide()
 		NameControl.hide()
+		
 		reveal_notification(false)		
 		await lock_actions(true)
 		show_settings()
@@ -279,6 +281,7 @@ func start(start_at_ring_level:bool = false) -> void:
 func reveal_new_message(state:bool) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	NewMessageBtn.show()	if state else NewMessageBtn.hide()
+	print("state?: ", state)
 	await reveal_notification(state)	
 # --------------------------------------------------------------------------------------------------	
 
@@ -693,12 +696,15 @@ func show_settings() -> void:
 		await lock_actions(false)
 		reveal_notification(true)
 		on_current_mode_update()
-
+		GameplayNode.restore_player_hud()
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
 	add_child(ActiveMenuNode)
+	
+	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+	
 	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
@@ -1013,6 +1019,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			RoomDetailsControl.reveal(false) 
 			ControllerOverlay.hide()
 			
+			reveal_new_message(false)
 			reveal_cardminipanel(false, duration)
 		# --------------
 		MODE.ACTIONS:

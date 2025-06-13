@@ -139,6 +139,8 @@ intro_skip_start_at = true
 os_skip_boot = true
 os_skip_to_game = true
 os_app_fast_load = true
+stdr_skip_titlescreen = true
+stdr_skip_loadingscreen = true
 skip_setup_progress = true
 start_at_ring_level = true
 max_energy = false
@@ -321,9 +323,8 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="TextureRect2" type="TextureRect" parent="Screenbend/Control2"]
-modulate = Color(0.980392, 0.956863, 0.894118, 0.941176)
+modulate = Color(0.980392, 0.956863, 0.894118, 0.898039)
 self_modulate = Color(1, 1, 1, 0.878431)
-material = ExtResource("6_1ky4c")
 use_parent_material = true
 layout_mode = 0
 offset_right = 1920.0
