@@ -4,5 +4,5 @@
 
 [resource]
 shader = ExtResource("1_skbq1")
-shader_parameter/color = Color(1, 1, 1, 1)
-shader_parameter/zoom = 16.0
+shader_parameter/color = Color(0, 0.648387, 0.162505, 1)
+shader_parameter/zoom = 4.0

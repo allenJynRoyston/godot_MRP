@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=3 uid="uid://bf3827l1mdr17"]
+
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_e76ta"]
+[ext_resource type="Script" uid="uid://d3uknw4ypees8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_item.gd" id="1_qkbpp"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_qkbpp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmabp"]
+bg_color = Color(0, 0, 0, 0.733333)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 10
+shadow_offset = Vector2(0, 2)
+
+[node name="ObjectiveItem" type="PanelContainer"]
+modulate = Color(1, 1, 1, 0.5)
+custom_minimum_size = Vector2(100, 50)
+offset_right = 253.0
+offset_bottom = 50.0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wmabp")
+script = ExtResource("1_qkbpp")
+hint_title = "HINT"
+hint_description = "Objective"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_e76ta")]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+icon = 51
+is_hoverable = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="ContentLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Content"
+label_settings = ExtResource("3_qkbpp")
+
+[node name="YouHaveLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "You have X."
+label_settings = ExtResource("3_qkbpp")

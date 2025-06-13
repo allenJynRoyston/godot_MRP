@@ -340,11 +340,11 @@ func _ready() -> void:
 
 	# get default showing state
 	capture_default_showing_state()
-	
-	# assign
-	GAME_UTIL.assign_nodes()
-	
+
 	await U.tick()
+	# assign
+	GAME_UTIL.assign_nodes()	
+	
 	LineDrawContainer.show()
 	show_only([])
 

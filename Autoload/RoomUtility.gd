@@ -5,7 +5,6 @@ const dlc_folder:String = "res://_DLC/"
 
 var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
-	"type_ref": null,
 	"name": "FULL NAME",
 	"shortname": "SHORTNAME",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -121,14 +120,6 @@ func fill_template(data:Dictionary, ref:int) -> void:
 	reference_data[ref] = template_copy
 # ------------------------------------------------------------------------------	
 
-# ------------------------------------------------------------------------------	
-func type_ref_to_ref(type_ref:int) -> int:
-	for ref in reference_data:
-		if reference_data[ref].type_ref == type_ref:
-			return ref
-	return -1
-# ------------------------------------------------------------------------------	
-	
 
 # ------------------------------------------------------------------------------
 func return_data(ref:int) -> Dictionary:
@@ -261,8 +252,14 @@ func calculate_operating_costs(ref:int, add:bool = true) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func build_count(ref:int) -> int:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
+	return filter.size()
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
 func owns_and_is_active(ref:int) -> bool:
-	var filter:Array = purchased_facility_arr.filter(func(i):return i.type_ref == ref)
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
 	if filter.size() == 0:
 		return false
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(filter[0].location)
@@ -271,7 +268,6 @@ func owns_and_is_active(ref:int) -> bool:
 
 # ------------------------------------------------------------------------------
 func get_category(category:ROOM.CATEGORY, unlock_level:int, start_at:int, limit:int) -> Dictionary:
-	print("unlock_level: ", unlock_level)
 	var filter:Callable = func(list:Array) -> Array:
 		return list.filter(func(i): return (category in i.details.categories) and (unlock_level >= i.details.unlock_level))
 	

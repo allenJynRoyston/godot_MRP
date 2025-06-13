@@ -3,13 +3,13 @@ extends GameContainer
 @onready var HeaderContainer:PanelContainer = $PanelContainer
 @onready var MarginControl:MarginContainer = $PanelContainer/MarginControl
 
-@onready var LocationFloor:VBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/Location/Floor
-@onready var LocationWing:VBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/Location/Wing
-@onready var LocationRoom:VBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/Location/Room
+@onready var LocationFloor:VBoxContainer = $PanelContainer/MarginContainer2/Location/Floor
+@onready var LocationWing:VBoxContainer = $PanelContainer/MarginContainer2/Location/Wing
+@onready var LocationRoom:VBoxContainer = $PanelContainer/MarginContainer2/Location/Room
 
-@onready var LocationFloorLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Location/Floor/CenterLabel2
-@onready var LocationWingLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Location/Wing/CenterLabel2
-@onready var LocationRoomLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Location/Room/CenterLabel2
+@onready var LocationFloorLabel:Label = $PanelContainer/MarginContainer2/Location/Room/CenterLabel2
+@onready var LocationWingLabel:Label = $PanelContainer/MarginContainer2/Location/Wing/CenterLabel2
+@onready var LocationRoomLabel:Label = $PanelContainer/MarginContainer2/Location/Room/CenterLabel2
 
 @onready var FloorBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FloorBuffsContainer
 @onready var RingBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RingBuffsContainer

@@ -1,53 +1,32 @@
-[gd_scene load_steps=14 format=3 uid="uid://b2glyeqvwy3vs"]
+[gd_scene load_steps=15 format=3 uid="uid://b2glyeqvwy3vs"]
 
 [ext_resource type="Script" uid="uid://cama33xd6387p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/objectives_container.gd" id="1_5mn2c"]
-[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_q6d11"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_h6i7u"]
+[ext_resource type="PackedScene" uid="uid://d33nsdab6tg1o" path="res://Scenes/TrainingProgram/parts/Cards/ObjectiveCard/ObjectiveCard.tscn" id="2_q6d11"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_q73ge"]
-[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_h6i7u"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_s3s3v"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_ubjmu"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_q6d11"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0mj1b"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uyd7x"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_h6i7u"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3s3v"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0, 1, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q6d11"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubjmu"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
+bg_color = Color(0.337255, 0.27451, 1, 0.870588)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0.752941, 0.831373)
+shadow_size = 10
+shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2g7pg"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0, 1, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="LabelSettings" id="LabelSettings_2g7pg"]
+font = ExtResource("3_ubjmu")
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uyd7x"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpj5t"]
 bg_color = Color(0, 0, 0, 0.796078)
@@ -71,6 +50,67 @@ script = ExtResource("1_5mn2c")
 layout_mode = 2
 color = Color(0, 0, 0, 0.447059)
 
+[node name="TitleControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="TitleControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_q6d11")
+
+[node name="MarginContainer" type="MarginContainer" parent="TitleControl/PanelContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_bottom = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TitleControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 80
+alignment = 1
+
+[node name="ObjectiveHeader" type="Label" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "OBJECTIVE:"
+label_settings = ExtResource("2_h6i7u")
+horizontal_alignment = 1
+uppercase = true
+
+[node name="PanelContainer" type="PanelContainer" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ubjmu")
+
+[node name="MarginContainer" type="MarginContainer" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ObjectiveTitle" type="Label" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Something goes here"
+label_settings = SubResource("LabelSettings_2g7pg")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ObjectiveDeadline" type="Label" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+text = "Must be completed by day X.
+(You have x days remaining)."
+label_settings = ExtResource("3_s3s3v")
+horizontal_alignment = 1
+
 [node name="ObjectivesControl" type="Control" parent="."]
 layout_mode = 2
 
@@ -92,36 +132,8 @@ theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 100
 
-[node name="CardBody" parent="ObjectivesControl/PanelContainer/MarginContainer" instance=ExtResource("2_q6d11")]
+[node name="ObjectiveCard" parent="ObjectivesControl/PanelContainer/MarginContainer" instance=ExtResource("2_q6d11")]
 layout_mode = 2
-size_flags_horizontal = 1
-size_flags_vertical = 1
-card_size = Vector2(300, 400)
-border_color = Color(1, 0, 1, 1)
-
-[node name="TextureRect" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody" index="0"]
-texture = SubResource("ViewportTexture_h6i7u")
-
-[node name="SubViewport" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody" index="1"]
-size = Vector2i(300, 400)
-
-[node name="CardBody" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control" index="0"]
-custom_minimum_size = Vector2(300, 0)
-offset_right = 300.0
-offset_bottom = 66.0
-
-[node name="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_s3s3v")
-
-[node name="CardDrawerTitle" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_h6i7u")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ubjmu")
-is_small = true
-content = "Objectives"
-title = ""
-
-[node name="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_2g7pg")
 
 [node name="PanelContainer" type="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer"]
 visible = false
@@ -169,5 +181,3 @@ theme_override_constants/separation = 0
 [node name="BtnControls" parent="." instance=ExtResource("4_q6d11")]
 layout_mode = 2
 hide_a_btn = true
-
-[editable path="ObjectivesControl/PanelContainer/MarginContainer/CardBody"]

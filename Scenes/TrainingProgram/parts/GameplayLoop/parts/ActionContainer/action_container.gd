@@ -281,7 +281,6 @@ func start(start_at_ring_level:bool = false) -> void:
 func reveal_new_message(state:bool) -> void:
 	if !is_node_ready() or control_pos.is_empty():return
 	NewMessageBtn.show()	if state else NewMessageBtn.hide()
-	print("state?: ", state)
 	await reveal_notification(state)	
 # --------------------------------------------------------------------------------------------------	
 
@@ -364,7 +363,6 @@ func query_items(cards_on_screen:int, category:ROOM.CATEGORY, page:int, return_l
 				# update
 				purchased_facility_arr.push_back({
 					"ref": x.details.ref,
-					"type_ref": x.details.type_ref,
 					"location": current_location.duplicate()
 				})
 				

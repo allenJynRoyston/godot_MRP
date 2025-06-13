@@ -43,6 +43,8 @@ extends PanelContainer
 
 @export var auto_color_panels:bool = true
 
+@export var auto_fit:bool = false
+
 # do not remove
 const is_container:bool = true
 

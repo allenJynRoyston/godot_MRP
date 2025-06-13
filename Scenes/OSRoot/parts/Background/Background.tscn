@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://eqyg3c15y82h"]
 
-[ext_resource type="Material" uid="uid://2jrpoatnq0tx" path="res://Shader/Fractal/Factal.tres" id="1_04mdp"]
+[ext_resource type="Material" uid="uid://bbb1iurub67bv" path="res://CanvasShader/Hexagon/Hexagon.tres" id="1_snueh"]
 [ext_resource type="Material" uid="uid://xaeua0jc0ktp" path="res://Shader/Ripple/Ripple.tres" id="3_jqj67"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_52o18"]
@@ -22,7 +22,7 @@ size_flags_vertical = 3
 size = Vector2i(640, 480)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport"]
-material = ExtResource("1_04mdp")
+material = ExtResource("1_snueh")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

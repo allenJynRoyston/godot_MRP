@@ -65,5 +65,6 @@ func on_focus(state:bool) -> void:
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT and !focus_busy:
-		data.onClick.call()
+		if "onClick" in data:
+			data.onClick.call()
 # --------------------------------------		

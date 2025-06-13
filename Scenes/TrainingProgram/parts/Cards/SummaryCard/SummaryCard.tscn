@@ -135,6 +135,7 @@ layout_mode = 2
 card_size = Vector2(275, 70)
 border_color = Color(0.337255, 0.27451, 1, 1)
 auto_color_panels = false
+auto_fit = false
 
 [node name="TextureRect" parent="CardBody" index="0"]
 texture = SubResource("ViewportTexture_4uruu")

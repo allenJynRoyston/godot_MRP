@@ -1,5 +1,8 @@
 extends SubscribeWrapper
 
+enum {HAVE_AT_LEAST, HAVE_MORE_THAN, HAVE_NO_MORE_THAN, HAVE_LESS_THAN, HAVE_EXACTLY}
+enum {CURRENCY, BUILDING}
+
 var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
@@ -18,18 +21,24 @@ var chapters:Array = [
 			"Okay. First phase complete. You’re doing fine."
 		],
 		"objectives": {
-			"title": "Establish the base.",
+			"title": "Setup the facility.",
 			"list":[
 				{
-					"title": "Build a Director's Office", 
-					"is_completed": func() -> bool:
-						return true,
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1,
+						"type": BUILDING,
+						"ref": 1
+					},
 				},
 				{
-					"title": "Build an HQ", 
-					"is_completed": func() -> bool:
-						return true,
-				},						
+					"criteria": {
+						"action": HAVE_EXACTLY,
+						"amount": 1,
+						"type": BUILDING,
+						"ref": 2
+					},
+				},
 			],
 			"complete_by_day": 2,
 		},
@@ -45,12 +54,23 @@ var chapters:Array = [
 			"Okay. First phase complete. You’re doing fine."
 		],
 		"objectives": {
-			"title": "Establish the base.",
+			"title": "Objective title 1.",
 			"list":[
 				{
-					"title": "Objective 1", 
-					"is_completed": func() -> bool:
-						return true,
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 500,
+						"type": CURRENCY,
+						"ref": RESOURCE.CURRENCY.MONEY
+					},
+				},
+				{
+					"criteria": {
+						"action": HAVE_MORE_THAN,
+						"amount": 50,
+						"type": CURRENCY,
+						"ref": RESOURCE.CURRENCY.SCIENCE
+					},
 				},
 			],
 			"complete_by_day": 7,
@@ -68,12 +88,15 @@ var chapters:Array = [
 			"Okay. First phase complete. You’re doing fine."
 		],
 		"objectives": {
-			"title": "Establish the base.",
+			"title": "Objective title 2.",
 			"list":[
 				{
-					"title": "Objectives 2", 
-					"is_completed": func() -> bool:
-						return false,
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 500,
+						"type": CURRENCY,
+						"ref": RESOURCE.CURRENCY.MONEY
+					},
 				},
 			],
 			"complete_by_day": 10,
@@ -82,7 +105,95 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------		
 ];
 
+
+# ----------------------------------------------------------------------------------------------		
+func get_action_str(val:int) -> String:
+	match val:
+		STORY.HAVE_AT_LEAST:
+			return "HAVE AT LEAST"	
+		STORY.HAVE_MORE_THAN:
+			return "HAVE MORE THAN"	
+		STORY.HAVE_NO_MORE_THAN:
+			return "HAVE NO MORE THAN"
+		STORY.HAVE_LESS_THAN:
+			return "HAVE LESS THAN"
+		STORY.HAVE_EXACTLY:
+			return "HAVE EXACTLY"
+	return ""
+
+func get_type_str(val:int, ref:int) -> String:
+	match val:
+		# -------
+		STORY.CURRENCY:
+			return RESOURCE_UTIL.return_currency(ref).name
+		STORY.BUILDING:
+			return ROOM_UTIL.return_data(ref).name
+		# -------
+	return "UNDEFINED"
+
+func check_for_criteria(criteria:Dictionary) -> bool:
+	var current_amount = check_for_current(criteria)
+
+	match criteria.action:
+		STORY.HAVE_AT_LEAST:
+			return current_amount >= criteria.amount
+		STORY.HAVE_MORE_THAN:
+			return current_amount > criteria.amount
+		STORY.HAVE_NO_MORE_THAN:
+			return current_amount <= criteria.amount
+		STORY.HAVE_LESS_THAN:
+			return current_amount < criteria.amount
+		STORY.HAVE_EXACTLY:
+			return current_amount == criteria.amount
+			
+	return false
+	
+func check_for_current(criteria:Dictionary) -> int:
+	match criteria.type:
+		# --------
+		STORY.CURRENCY:
+			return resources_data[criteria.ref].amount 
+		STORY.BUILDING:
+			return ROOM_UTIL.build_count(criteria.ref)
+			
+	return -1
+# ----------------------------------------------------------------------------------------------		
+
 # ----------------------------------------------------------------------------------------------
 func get_objectives() -> Array:
-	return chapters.map(func(x): return x.objectives).duplicate(true)
+	var objective_list:Array = []
+	for chapter in chapters:
+		var list:Array = []	
+		for objective in chapter.objectives.list:
+			if "criteria" in objective:
+				var title:String = ""
+				var ref:int = objective.criteria.ref
+				
+				for key in objective.criteria:
+					var val = objective.criteria[key]
+					match key:
+						'action':
+							title += str(get_action_str(val), " ")
+						'amount':
+							title += "%s" % str(val, " ")
+						'type':
+							title += str(get_type_str(val, ref), ".")
+
+								
+				list.push_back({
+					"title": title,
+					"you_have": func() -> int: 
+						return check_for_current(objective.criteria),
+					"is_completed": func() -> bool:
+						return check_for_criteria(objective.criteria),
+				})
+		
+		objective_list.push_back({
+			"title": chapter.objectives.title,
+			"list": list,
+			"complete_by_day": chapter.objectives.complete_by_day
+		})	
+				
+	
+	return objective_list
 # ----------------------------------------------------------------------------------------------

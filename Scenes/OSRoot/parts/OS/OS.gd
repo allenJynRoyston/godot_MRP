@@ -1,7 +1,6 @@
 extends MouseInteractions
 class_name Layout
 
-@onready var Background:TextureRect = $BG
 @onready var PauseContainer:PanelContainer = $PauseContainer
 @onready var HeaderControls:Control = $HeaderControls
 @onready var HeaderPanel:PanelContainer = $HeaderControls/PanelContainer
@@ -360,9 +359,7 @@ func _ready() -> void:
 	Taskbar.onBack = func() -> void:
 		if freeze_inputs or Taskbar.is_busy:return
 		toggle_show_taskbar(false)
-	
-	Background.texture = background_subviewport.get_texture()
-	
+		
 	BtnControls.onBack = func() -> void:
 		pause()
 				

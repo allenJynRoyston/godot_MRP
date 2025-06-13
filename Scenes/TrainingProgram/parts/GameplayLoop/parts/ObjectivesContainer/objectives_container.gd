@@ -4,9 +4,13 @@ extends GameContainer
 
 @onready var ObjectivePanel:PanelContainer = $ObjectivesControl/PanelContainer
 @onready var ObjectiveMargin:MarginContainer = $ObjectivesControl/PanelContainer/MarginContainer
-@onready var ObjectivesList:VBoxContainer = $ObjectivesControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/OverlayContainer/MarginContainer/VBoxContainer/ObjectivesList
+@onready var ObjectiveItemList:VBoxContainer = $ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ObjectiveItemList
 
-const CheckBoxButtonPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
+@onready var ObjectiveHeader:Label = $TitleControl/PanelContainer/MarginContainer/VBoxContainer/ObjectiveHeader
+@onready var ObjectiveTitle:Label =  $TitleControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/ObjectiveTitle
+@onready var ObjectiveDeadline:Label = $TitleControl/PanelContainer/MarginContainer/VBoxContainer/ObjectiveDeadline
+
+@onready var ObjectiveCard:Control = $ObjectivesControl/PanelContainer/MarginContainer/ObjectiveCard
 
 signal mode_updated
 
@@ -17,10 +21,14 @@ var objective_index:int :
 		objective_index = val
 		on_objective_index_update()
 		
+var selected_index:int = 0
+		
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	modulate = Color(1, 1, 1, 0)
+	
+	BtnControls.directional_pref = "UD"
 	
 	BtnControls.onBack = func() -> void:
 		end()
@@ -28,12 +36,15 @@ func _ready() -> void:
 	BtnControls.onDirectional = func(key:String):
 		if !is_visible_in_tree() or !is_node_ready():return
 		var story_progress:Dictionary = GBL.active_user_profile.story_progress
+		
+		var total_objectives:int = objectives.size() - 1
+		var max_val:int = U.min_max(story_progress.current_story_val + 1, 0, total_objectives)
 
 		match key:
 			"A":
-				objective_index = U.min_max(objective_index - 1, 0, objectives.size() - 1)
+				objective_index = U.min_max(objective_index - 1, 0, max_val )
 			"D":
-				objective_index = U.min_max(objective_index + 1, 0, objectives.size() - 1)
+				objective_index = U.min_max(objective_index + 1, 0, max_val )
 		
 # --------------------------------------------------------------------------------------------------		
 
@@ -67,57 +78,47 @@ func activate() -> void:
 		"hide": -ObjectiveMargin.size.x
 	}
 	
-	print(control_pos[ObjectivePanel])
 	
+	BtnControls.offset = ObjectiveCard.global_position
+
+
 	ObjectivePanel.position.x = control_pos[ObjectivePanel].hide
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func on_objective_index_update() -> void:
 	if !is_node_ready():return
-	for node in ObjectivesList.get_children():
-		node.queue_free()
-	
+
 	var current_objectives:Dictionary = objectives[objective_index]	
 	var is_upcoming:bool = objective_index > story_progress.current_story_val 
 	var is_expired:bool = objective_index < story_progress.current_story_val 
+
+	ObjectiveCard.at_start = objective_index == 0
+	ObjectiveCard.at_end = objective_index == objectives.size() - 1
+	ObjectiveCard.is_upcoming = is_upcoming
+	ObjectiveCard.is_expired = is_expired
+	ObjectiveCard.objectives = current_objectives
 	
-	for items in [current_objectives]:
-		for objective in items.list:
-			var new_btn:Control = CheckBoxButtonPreload.instantiate()
-			new_btn.title = "???" if is_upcoming else str(objective.title).to_upper()
-			new_btn.is_checked = true if is_expired else objective.is_completed.call() 
-			if (!is_upcoming and !is_expired):
-				new_btn.checkbox_color = Color.WHITE
-			if is_upcoming:
-				new_btn.checkbox_color = Color.SKY_BLUE
-			if is_expired:
-				new_btn.checkbox_color = Color.YELLOW
-			ObjectivesList.add_child(new_btn)	
+	if is_upcoming:
+		ObjectiveHeader.text = "Upcoming Objective"	
+		ObjectiveCard.title = "OBJECTIVES"
+		ObjectiveTitle.text = "???"
+		ObjectiveDeadline.text = ""
+		
+	if is_expired:
+		ObjectiveHeader.text = "Previous Objective"
+		ObjectiveCard.title = "COMPLETED"
+		ObjectiveTitle.text = current_objectives.title
+		ObjectiveDeadline.text = ""
+		
+	if objective_index == story_progress.current_story_val:
+		ObjectiveHeader.text = "Current Objective"
+		ObjectiveCard.title = "OBJECTIVES" 
+		ObjectiveTitle.text = current_objectives.title
+		ObjectiveDeadline.text = "Must be completed by day %s.\r(You have %s days remaining)." % [current_objectives.complete_by_day, current_objectives.complete_by_day - progress_data.day]		
+		
+	await U.tick()
+	BtnControls.itemlist = ObjectiveCard.get_buttons()
+	BtnControls.item_index = 0
 # --------------------------------------------------------------------------------------------------	
 	
-
-## --------------------------------------------------------------------------------------------------		
-#func on_current_mode_update(skip_animation:bool = false) -> void:
-	#if !is_node_ready() or control_pos.is_empty():return	
-	#var duration:float = 0 if skip_animation else 0.3
-	#match current_mode:
-		#MODE.ACTIVE:
-			#await U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].show, duration)	
-			#await BtnControls.reveal(true)
-			#BtnControls.onBack = func() -> void:
-				#end()			
-## --------------------------------------------------------------------------------------------------		
-
-## --------------------------------------------------------------------------------------------------		
-#func on_room_config_update(new_val:Dictionary = room_config) -> void:
-	#super.on_room_config_update(new_val)
-	#if !is_node_ready():return
-#
-	#for item in objectives:
-		#for index in item.list.size():
-			#var objective:Dictionary = item.list[index]
-			#var btn_node:Control = ObjectivesList.get_child(index)
-			#print(objective.is_completed.call())
-			#btn_node.is_checked = objective.is_completed.call()
-## --------------------------------------------------------------------------------------------------		

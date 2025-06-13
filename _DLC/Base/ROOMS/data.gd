@@ -82,7 +82,6 @@ var DEBUG_ROOM:Dictionary = {
 
 var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
-	#"type_ref": ROOM.TYPE.DIRECTORS_OFFICE,
 	"name": "DIRECTORS OFFICE",
 	"shortname": "D.OFFICE",
 	"categories": [ROOM.CATEGORY.SPECIAL],
@@ -123,7 +122,6 @@ var DIRECTORS_OFFICE:Dictionary = {
 
 var HQ:Dictionary = {
 	# ------------------------------------------
-	#"type_ref": ROOM.TYPE.HQ,
 	"name": "HEADQUARTERS",
 	"shortname": "HQ",
 	"categories": [ROOM.CATEGORY.SPECIAL],
@@ -141,7 +139,7 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 	"costs": {
 		"unlock": 50,
-		"purchase": 100,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 
@@ -423,7 +421,6 @@ var TEST3:Dictionary = {
 	# ------------------------------------------
 	"own_limit": 1,	
 	# ------------------------------------------
-
 }
 
 # -----------------------------------	
