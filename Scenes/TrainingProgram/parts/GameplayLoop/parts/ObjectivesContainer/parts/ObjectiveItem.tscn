@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://d3uknw4ypees8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_item.gd" id="1_qkbpp"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_qkbpp"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmabp"]
-bg_color = Color(0, 0, 0, 0.733333)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qkbpp"]
+bg_color = Color(0, 0, 0, 0.7)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -17,12 +17,12 @@ corner_radius_bottom_left = 10
 shadow_offset = Vector2(0, 2)
 
 [node name="ObjectiveItem" type="PanelContainer"]
-modulate = Color(1, 1, 1, 0.5)
+modulate = Color(1, 1, 1, 0.8)
 custom_minimum_size = Vector2(100, 50)
 offset_right = 253.0
 offset_bottom = 50.0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_wmabp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qkbpp")
 script = ExtResource("1_qkbpp")
 hint_title = "HINT"
 hint_description = "Objective"
@@ -51,11 +51,26 @@ theme_override_constants/separation = 0
 alignment = 1
 
 [node name="ContentLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-text = "Content"
+text = "Objective goes here:  the quick brown fox jumps over the "
 label_settings = ExtResource("3_qkbpp")
+autowrap_mode = 3
 
 [node name="YouHaveLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-text = "You have X."
+text = "(You currently have .)"
 label_settings = ExtResource("3_qkbpp")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="BookmarkIcon" parent="Control" instance=ExtResource("1_e76ta")]
+layout_mode = 0
+offset_left = -31.0
+offset_top = 10.0
+offset_right = -6.0
+offset_bottom = 35.0
+icon = 19
+is_hoverable = false

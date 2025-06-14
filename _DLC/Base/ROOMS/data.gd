@@ -2,6 +2,7 @@ extends Node
 
 var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.DEBUG_ROOM,
 	"name": "Debug Room",
 	"shortname": "Debug",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -82,6 +83,7 @@ var DEBUG_ROOM:Dictionary = {
 
 var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.DIRECTORS_OFFICE,	
 	"name": "DIRECTORS OFFICE",
 	"shortname": "D.OFFICE",
 	"categories": [ROOM.CATEGORY.SPECIAL],
@@ -122,6 +124,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 
 var HQ:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.HQ,		
 	"name": "HEADQUARTERS",
 	"shortname": "HQ",
 	"categories": [ROOM.CATEGORY.SPECIAL],
@@ -159,7 +162,7 @@ var HQ:Dictionary = {
 
 var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
-	#"type_ref": ROOM.TYPE.CONTAINMENT_CELL,
+	"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL,		
 	"name": "STANDARD CONTAINMENT",
 	"shortname": "S.CONTAINMENT",
 	"categories": [ROOM.CATEGORY.CONTAINMENT],
@@ -198,6 +201,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 
 var PRISONER_BLOCK:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.PRISONER_BLOCK,	
 	"name": "PRISONER BLOCK",
 	"shortname": "P.BLOCK",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -222,7 +226,7 @@ var PRISONER_BLOCK:Dictionary = {
 
 var HR_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
-	#"type_ref": ROOM.TYPE.HR_DEPARTMENT,
+	"ref": ROOM.REF.HR_DEPARTMENT,
 	"name": "HR DEPARTMENT",
 	"shortname": "HR",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -247,6 +251,7 @@ var HR_DEPARTMENT:Dictionary = {
 
 var OPERATIONS_SUPPORT:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.OPERATIONS_SUPPORT,
 	"name": "OPERATIONS_SUPPORT",
 	"shortname": "OP.SUPPORT",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -272,6 +277,7 @@ var OPERATIONS_SUPPORT:Dictionary = {
 
 var SECURITY_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.SECURITY_DEPARTMENT,
 	"name": "SECURITY DEPARTMENT",
 	"shortname": "SEC.DPT",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -297,6 +303,7 @@ var SECURITY_DEPARTMENT:Dictionary = {
 
 var WEAPONS_RANGE:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.WEAPONS_RANGE,
 	"name": "WEAPONS RANGE",
 	"shortname": "W.RANGE",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -329,6 +336,7 @@ var WEAPONS_RANGE:Dictionary = {
 
 var ENGINEERING_BAY:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.ENGINEERING_BAY,
 	"name": "ENGINEERING BAY",
 	"shortname": "ENG.BAY",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -360,6 +368,7 @@ var ENGINEERING_BAY:Dictionary = {
 
 var ENERGY_STORAGE:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.ENERGY_STORAGE,
 	"name": "ENERGY STORAGE",
 	"shortname": "E.STORAGE",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -391,6 +400,7 @@ var ENERGY_STORAGE:Dictionary = {
 
 var TEST1:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.TEST1,
 	"name": "TEST (STANDARD)",
 	"shortname": "ENG.BAY",
 	"categories": [ROOM.CATEGORY.STANDARD],
@@ -401,9 +411,10 @@ var TEST1:Dictionary = {
 
 var TEST2:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.TEST2,	
 	"name": "TEST (CONTAINMENT)",
 	"shortname": "ENG.BAY",
-	"categories": [ROOM.CATEGORY.STANDARD],
+	"categories": [ROOM.CATEGORY.CONTAINMENT],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -411,6 +422,7 @@ var TEST2:Dictionary = {
 
 var TEST3:Dictionary = {
 	# ------------------------------------------
+	"ref": ROOM.REF.TEST3,		
 	"name": "TEST (SPECIAL)",
 	"shortname": "ENG.BAY",
 	"categories": [ROOM.CATEGORY.SPECIAL],

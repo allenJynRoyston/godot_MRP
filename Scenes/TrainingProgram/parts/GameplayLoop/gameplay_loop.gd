@@ -2,6 +2,7 @@ extends PanelContainer
 
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
+@onready var MarkedObjectivesContainer:PanelContainer = $MarkedObjectivesContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var ResourceContainer:Control = $ResourceContainer
 @onready var LineDrawContainer:PanelContainer = $LineDrawContainer
@@ -18,22 +19,27 @@ var is_tutorial:bool = false
 
 # ------------------------------------------------------------------------------	EXPORT VARS
 #region EXPORT VARS
-var show_structures:bool = true: 
+var show_structures:bool = false: 
 	set(val):
 		show_structures = val
 		on_show_structures_update()
 		
-var show_timeline:bool = true : 
+var show_timeline:bool = false : 
 	set(val):
 		show_timeline = val
 		on_show_timeline_update()
+		
+var show_marked_objectives:bool = false : 
+	set(val):
+		show_marked_objectives = val
+		on_show_marked_objectives_update()
 
 var show_actions:bool = false : 
 	set(val):
 		show_actions = val
 		on_show_actions_update()
 		
-var show_linedraw:bool = true : 
+var show_linedraw:bool = false : 
 	set(val):
 		show_linedraw = val
 		on_show_linedraw_update()
@@ -334,6 +340,7 @@ func _ready() -> void:
 	on_show_actions_update()
 	on_show_resources_update()
 	on_show_linedraw_update()
+	on_show_marked_objectives_update()
 	
 	# other
 	on_is_busy_update()
@@ -344,7 +351,7 @@ func _ready() -> void:
 	await U.tick()
 	# assign
 	GAME_UTIL.assign_nodes()	
-	
+		
 	LineDrawContainer.show()
 	show_only([])
 
@@ -372,6 +379,7 @@ func start() -> void:
 func start_new_game() -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
+	var duration:float = 0.02 if skip_progress_screen else 0.5
 	
 	# set tutorial flag
 	is_tutorial = options.is_tutorial if "is_tutorial" in options else false
@@ -385,37 +393,35 @@ func start_new_game() -> void:
 	SetupContainer.z_index = 100
 	
 	await SetupContainer.start()
-	SetupContainer.title = "SETTING UP... PLEASE WAIT."
-	SetupContainer.subtitle = "SORTING FILES..."
+	SetupContainer.title = "SETTING UP. PLEASE WAIT."
+	SetupContainer.subtitle = "Initializing systems..."
 	SetupContainer.progressbar_val = 0
 	# 1.) loading game data config
 	await parse_restore_data()
-	await U.set_timeout(0.5)	
-	
+	await U.set_timeout(duration)	
+
 	# -----------------------
-	SetupContainer.subtitle = "READING DATA CONFIG..."
-	SetupContainer.progressbar_val = 0.3
-	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
+	SetupContainer.subtitle = "Calibrating visual interface..."
+	SetupContainer.progressbar_val = 0.2
+	await U.set_timeout(duration)	
 	# 2.) setup game
 	setup_complete = true
 	update_room_config()	
-	# build out objectives from current story val
-
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 		
 	# -----------------------
-	SetupContainer.subtitle = "SETTING DEBUG VALUES..."
-	SetupContainer.progressbar_val = 0.7
-	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)	
+	SetupContainer.subtitle = "Synchronizing mission parameters..."
+	SetupContainer.progressbar_val = 0.5
+	await U.set_timeout(duration)	
 	# 3.) load any debug options
 	var starting_number_of_researchers:int = DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT)
 	if DEBUG.get_val(DEBUG.GAMEPLAY_USE_FRESH_BASE) and starting_number_of_researchers > 0:
 			SUBSCRIBE.hired_lead_researchers_arr = RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers)
-	
+
 	# -----------------------
-	SetupContainer.subtitle = "CLEANUP..."
-	SetupContainer.progressbar_val = 0.9
-	await U.set_timeout(0.5 if !skip_progress_screen else 0.02)
+	SetupContainer.subtitle = "Finalizing deployment protocols..."
+	SetupContainer.progressbar_val = 0.7
+	await U.set_timeout(duration)
+	
 	# 4.) reset any nodes
 	for node in get_all_container_nodes():
 		node.set_process(true)
@@ -435,11 +441,10 @@ func start_new_game() -> void:
 	# ----------------------- LAST PHASE, START EVERYTHING AND REMOVE SETUP
 	# then show player hud
 	await restore_player_hud()					
-	SetupContainer.subtitle = "STARTING PROGRAM..."
+	SetupContainer.subtitle = "Initilization simulation."
 	SetupContainer.progressbar_val = 1.0	
-	await U.set_timeout(1.0)	
+	await U.set_timeout(duration)	
 	await SetupContainer.end()	
-
 
 	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
 	# needs to be done after setup is complete
@@ -458,9 +463,9 @@ func start_new_game() -> void:
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
 		await GAME_UTIL.open_objectives()
 		await U.set_timeout(0.3)
-		
-		
+	show_marked_objectives = true
 
+		
 	# start actionContainer or start at ring level
 	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
 		ActionContainer.start(true)		
@@ -625,7 +630,7 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	await show_only([Structure3dContainer, ActionContainer, TimelineContainer, ResourceContainer])
+	await show_only([Structure3dContainer, ActionContainer, TimelineContainer, MarkedObjectivesContainer, ResourceContainer])
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -911,6 +916,12 @@ func on_show_timeline_update() -> void:
 	TimelineContainer.is_showing = show_timeline
 	showing_states[TimelineContainer] = show_timeline
 
+func on_show_marked_objectives_update() -> void:
+	if !is_node_ready():return
+	MarkedObjectivesContainer.is_showing = show_marked_objectives
+	showing_states[MarkedObjectivesContainer] = show_marked_objectives
+
+
 func on_show_linedraw_update() -> void:
 	if !is_node_ready():return
 	LineDrawContainer.is_showing = show_linedraw
@@ -1004,26 +1015,19 @@ func on_current_phase_update() -> void:
 			
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
-		PHASE.CONCLUDE:	
+		PHASE.CONCLUDE:
 			# CHECK IF SCENARIO DATA IS COMPLETE
 			var objectives:Array = STORY.get_objectives()
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
 			var current_objectives:Dictionary = objectives[story_progress.current_story_val]
-			var completed_by_day:int = current_objectives.complete_by_day
-			
+						
 			# check for objectivess fail/succeed on appropriate day
-			if progress_data.day >= completed_by_day:
+			if progress_data.day >= current_objectives.complete_by_day:
 				PhaseAnnouncement.start("CHECKING OBJECTIVES")
 				await U.set_timeout(0.5)				
-								
+
 				# CHECK FOR FAIL STATE
-				var objective_failed:bool = false
-				for objective in current_objectives.list:
-					if !objective.is_completed.call():
-						objective_failed = true
-						break
-		
-										
+				var objective_failed:bool = GAME_UTIL.are_objectives_complete()
 				current_phase = PHASE.GAME_LOST if objective_failed else PHASE.GAME_WON
 				return
 			
@@ -1069,15 +1073,18 @@ func on_current_phase_update() -> void:
 
 			# increament current story val
 			story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
-			
+						
 			# create a quicksave
 			quicksave(true)
 			
 			# also create a checkpoint
 			create_checkpoint(true)
 			
-			# display next objectives
+			# update objectives
 			PhaseAnnouncement.start("OBJECTIVES HAVE BEEN UPDATED.")
+			# clear any bookmarked objectives
+			SUBSCRIBE.bookmarked_objectives = []
+			# display next objectives
 			await GAME_UTIL.open_objectives()
 			
 			if show_new_message:
@@ -1167,8 +1174,9 @@ func parse_restore_data() -> void:
 	SUBSCRIBE.resources_data = resources_data
 	
 	# any rooms completed by scenarios become allowed
-	SUBSCRIBE.awarded_rooms = [] #game_data_config.awarded_rooms
-
+	SUBSCRIBE.awarded_rooms = [] #	game_data_config.awarded_rooms
+	SUBSCRIBE.bookmarked_objectives = [] # always starts blank
+	
 	# reactive data
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if is_new_game else restore_data.progress_data
 	SUBSCRIBE.scp_data = initial_values.scp_data.call() if is_new_game else restore_data.scp_data

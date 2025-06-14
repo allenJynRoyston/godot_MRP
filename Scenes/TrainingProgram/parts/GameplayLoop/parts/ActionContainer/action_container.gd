@@ -17,7 +17,6 @@ extends GameContainer
 @onready var NewMessageBtn:BtnBase = $NotificationControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewMessageBtn
 #  ---------------------------------------
 
-
 #  ---------------------------------------
 # FLOOR PREVIEW
 @onready var FloorPreviewControl:Control = $FloorPreviewControl
@@ -193,6 +192,7 @@ func start(start_at_ring_level:bool = false) -> void:
 		SUBSCRIBE.camera_settings = camera_settings
 	
 	WingActionBtn.onClick = func() -> void:
+		GameplayNode.show_marked_objectives = false
 		on_current_location_update()
 		current_mode = MODE.INVESTIGATE	
 		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
@@ -230,13 +230,14 @@ func start(start_at_ring_level:bool = false) -> void:
 	
 	# -------------------------------------
 	ObjectivesBtn.onClick = func() -> void:
+		GameplayNode.show_marked_objectives = false
 		reveal_notification(false)
 		await lock_actions(true)
 		await GAME_UTIL.open_objectives()
 		reveal_notification(true)		
-		
 		lock_actions(false)
 		on_current_mode_update()
+		GameplayNode.show_marked_objectives = true
 	
 	SettingsBtn.onClick = func() -> void:
 		ControllerOverlay.hide()
@@ -249,6 +250,7 @@ func start(start_at_ring_level:bool = false) -> void:
 	HintInfoBtn.onClick = func() -> void:
 		ControllerOverlay.hide()
 		NameControl.hide()
+		GameplayNode.TimelineContainer.show_details(true)
 		reveal_notification(false)
 		set_backdrop_state(true)
 		await lock_actions(true)
@@ -263,6 +265,7 @@ func start(start_at_ring_level:bool = false) -> void:
 		
 		BtnControls.onBack = func() -> void:
 			await BtnControls.reveal(false)
+			GameplayNode.TimelineContainer.show_details(false)
 			reveal_notification(true)
 			lock_actions(false)
 			set_backdrop_state(false)
@@ -331,12 +334,6 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	
 	on_current_mode_update(skip_animation)
 # --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------		
-func on_is_showing_update(skip_animation:bool = false) -> void:	
-	super.on_is_showing_update()
-	if !is_node_ready() or control_pos.is_empty():return
-# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------				
 func clear_lines() -> void:
@@ -695,12 +692,14 @@ func show_settings() -> void:
 		reveal_notification(true)
 		on_current_mode_update()
 		GameplayNode.restore_player_hud()
+		GameplayNode.show_marked_objectives = true
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
 	add_child(ActiveMenuNode)
 	
+	GameplayNode.show_marked_objectives = false
 	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
 	
 	await ActiveMenuNode.activate()
@@ -1044,6 +1043,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].show)
 				NewMessageBtn.is_disabled = !show_new_message_btn
 				current_mode = MODE.ACTIONS
+				GameplayNode.show_marked_objectives = true
+
 
 			enable_room_focus(true)
 			set_backdrop_state(true)	

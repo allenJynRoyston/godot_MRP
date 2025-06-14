@@ -122,6 +122,26 @@ func assign_nodes() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func are_objectives_complete() -> bool:
+	# CHECK IF SCENARIO DATA IS COMPLETE
+	var objectives:Array = STORY.get_objectives()
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	var current_objectives:Dictionary = objectives[story_progress.current_story_val]
+	var completed_by_day:int = current_objectives.complete_by_day
+	
+					
+	# CHECK FOR FAIL STATE
+	var objective_failed:bool = false
+	for objective in current_objectives.list:
+		if !objective.is_completed.call():
+			objective_failed = true
+			break	
+	
+	return objective_failed
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
 func extract_wing_details(use_location:Dictionary = current_location) -> Dictionary:	
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring

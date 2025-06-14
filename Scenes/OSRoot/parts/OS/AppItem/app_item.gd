@@ -1,8 +1,9 @@
 @tool
 extends MouseInteractions
 
-@onready var IconButton:Control = $MarginContainer/VBoxContainer/CenterContainer/IconBtn
-@onready var AppLabel:Label = $MarginContainer/VBoxContainer/PanelContainer/MarginContainer/Label
+@onready var RootPanel:Control = $"."
+@onready var IconButton:Control = $MarginContainer2/VBoxContainer/IconBtn
+@onready var AppLabel:Label = $MarginContainer2/VBoxContainer/Label
 
 @export var title:String = "Application" : 
 	set(val):
@@ -35,9 +36,6 @@ var is_selected:bool = false :
 var onClick:Callable = func(node:Node, btn:int, is_focused:bool) -> void:pass	
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
-#var onDblClick:Callable = func(node:Control, is_focused:bool, data:Dictionary) -> void:pass
-#var onRightClick:Callable = func() -> void:pass
-
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -46,7 +44,7 @@ func _ready() -> void:
 
 func after_ready():
 	init_pos = position
-
+	
 	on_focus(false)
 	on_title_update()
 	on_icon_update()
@@ -59,6 +57,8 @@ func on_data_update() -> void:
 	if is_node_ready() and !data.is_empty():
 		title = data.title
 		icon = data.icon
+		hint_description = "Run application: %s" % data.title
+
 		
 func on_title_update() -> void:
 	if is_node_ready():
@@ -89,13 +89,21 @@ func on_focus(state:bool = is_focused) -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready(): return
-
-	IconButton.static_color = Color.WHITE if is_selected else Color.LIGHT_SLATE_GRAY
-
+	var new_color:Color = Color.BLACK if is_selected else Color(0.247, 0.247, 0.247) 
+	
+	# update icon
+	IconButton.static_color = new_color	
+	
+	# update label
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) if is_selected else COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE)
+	label_setting.font_color = new_color
 	AppLabel.label_settings = label_setting
 	
+	# update panel
+	var flat_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
+	flat_stylebox.border_color = Color.WHITE if is_selected else new_color
+	flat_stylebox.bg_color = Color(0.478, 0.624, 0.8, 1) if is_selected else Color(0.478, 0.624, 0.8, 0.8) 
+	RootPanel.set('theme_override_styles/panel', flat_stylebox)
 
 #func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	#if on_hover and btn == MOUSE_BUTTON_LEFT:

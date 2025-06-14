@@ -97,7 +97,7 @@ func _enter_tree() -> void:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
-func fill_template(data:Dictionary, ref:int) -> void:
+func fill_template(data:Dictionary, ref_count:int) -> void:
 	var template_copy:Dictionary = ROOM_TEMPLATE.duplicate(true)
 	for key in data:
 		var value = data[key]
@@ -114,10 +114,12 @@ func fill_template(data:Dictionary, ref:int) -> void:
 			var amount:int = data.currencies[key]
 			template_copy.currencies[key] = amount
 
-
-
-	reference_list.push_back(ref)
-	reference_data[ref] = template_copy
+	if "ref" in data:
+		reference_list.push_back(data.ref)
+		reference_data[data.ref] = template_copy		
+	else:
+		reference_list.push_back(ref_count)
+		reference_data[ref_count] = template_copy
 # ------------------------------------------------------------------------------	
 
 

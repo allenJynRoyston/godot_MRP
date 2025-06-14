@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://d33nsdab6tg1o"]
+[gd_scene load_steps=13 format=3 uid="uid://d33nsdab6tg1o"]
 
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_fauax"]
 [ext_resource type="Script" uid="uid://b4b20axee6byi" path="res://Scenes/TrainingProgram/parts/Cards/ObjectiveCard/objective_card.gd" id="1_ykk6s"]
@@ -38,6 +38,18 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mbx5t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rakey"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 10
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cyy12"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -57,7 +69,7 @@ script = ExtResource("1_ykk6s")
 
 [node name="CardBody" parent="." instance=ExtResource("1_fauax")]
 layout_mode = 2
-card_size = Vector2(275, 70)
+card_size = Vector2(300, 140)
 border_color = Color(0.337255, 0.27451, 1, 1)
 auto_color_panels = false
 
@@ -65,11 +77,12 @@ auto_color_panels = false
 texture = SubResource("ViewportTexture_vnmty")
 
 [node name="SubViewport" parent="CardBody" index="1"]
-size = Vector2i(275, 70)
+size = Vector2i(300, 140)
 
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
-custom_minimum_size = Vector2(275, 70)
-offset_bottom = 132.0
+custom_minimum_size = Vector2(300, 140)
+offset_right = 300.0
+offset_bottom = 140.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_pjqb0")
@@ -106,15 +119,20 @@ is_hoverable = false
 visible = false
 layout_mode = 2
 
-[node name="ObjectiveItemList" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+[node name="MarginContainer" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+
+[node name="ObjectiveItemList" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="ObjectiveItem" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ObjectiveItemList" instance=ExtResource("4_vnmty")]
-modulate = Color(1, 1, 1, 0.7)
+[node name="ObjectiveItem" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/ObjectiveItemList" instance=ExtResource("4_vnmty")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rakey")
+is_naked = true
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_rakey")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cyy12")
 
 [editable path="CardBody"]

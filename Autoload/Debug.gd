@@ -40,20 +40,7 @@ enum {
 	RESEARCHER_XP_REQUIRED_FOR_PROMOTION
 }
 
-#@export var new_permanent_file:bool = false
-#@export var skip_title_screen:bool = true
-#
-##export 
-#
-#@export_category("Gameplay Loop")
-#@export var new_quicksave_file:bool = false
-#@export var skip_progress_screen:bool = false
-#@export var debug_energy:bool = true
-#@export var debug_personnel:bool = false
 
-#@export var gameplay_skip_loading_screen:bool = false
-#@export var gameplay_max_energy:bool = true
-#@export var gameplay_all_personnel:bool = false
 
 var refs:Dictionary = {}
 

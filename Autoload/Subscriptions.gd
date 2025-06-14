@@ -284,6 +284,28 @@ func unsubscribe_to_bookmarked_rooms(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------	
+var bookmarked_objectives_subscriptions:Array = []
+
+var bookmarked_objectives:Array = [] : 
+	set(val):
+		bookmarked_objectives = val
+		for node in bookmarked_objectives_subscriptions:
+			if "on_bookmarked_objectives_update" in node:
+				node.on_bookmarked_objectives_update.call(bookmarked_objectives)
+
+func subscribe_to_bookmarked_objectives(node:Node) -> void:
+	if node not in bookmarked_objectives_subscriptions:
+		bookmarked_objectives_subscriptions.push_back(node)
+		if "on_bookmarked_objectives_update" in node:
+			node.on_bookmarked_objectives_update.call(bookmarked_objectives)
+				
+func unsubscribe_to_bookmarked_objectives(node:Node) -> void:
+	bookmarked_objectives_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+
+
+# ------------------------------------------------------------	
 var awarded_rooms_subscriptions:Array = []
 
 var awarded_rooms:Array = [] : 

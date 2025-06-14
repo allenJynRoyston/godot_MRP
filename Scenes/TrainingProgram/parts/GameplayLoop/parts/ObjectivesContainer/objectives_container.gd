@@ -1,6 +1,7 @@
 extends GameContainer
 
 @onready var BtnControls:Control = $BtnControls
+@onready var TransitionScreen:Control = $TransitionScreen
 
 @onready var ObjectivePanel:PanelContainer = $ObjectivesControl/PanelContainer
 @onready var ObjectiveMargin:MarginContainer = $ObjectivesControl/PanelContainer/MarginContainer
@@ -22,6 +23,11 @@ var objective_index:int :
 		on_objective_index_update()
 		
 var selected_index:int = 0
+var bookmark_data:Dictionary = {} : 
+	set(val):
+		bookmark_data = val
+		if !is_node_ready():return
+		BtnControls.disable_active_btn = bookmark_data.is_empty()
 		
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
@@ -30,8 +36,21 @@ func _ready() -> void:
 	
 	BtnControls.directional_pref = "UD"
 	
+	BtnControls.onAction = func() -> void:
+		var obj:Dictionary = bookmark_data.list[BtnControls.item_index]
+		var already_exists:bool = bookmarked_objectives.filter(func(x): return x.title == obj.title).size() > 0
+		if already_exists:
+			bookmarked_objectives = bookmarked_objectives.filter(func(x): return x.title != obj.title)
+		else:
+			bookmarked_objectives.push_back(obj)
+		SUBSCRIBE.bookmarked_objectives = bookmarked_objectives
+	
 	BtnControls.onBack = func() -> void:
 		end()
+		
+	BtnControls.onUpdate = func(node:Control) -> void:
+		if !is_visible_in_tree() or !is_node_ready():return
+		pass
 	
 	BtnControls.onDirectional = func(key:String):
 		if !is_visible_in_tree() or !is_node_ready():return
@@ -50,7 +69,8 @@ func _ready() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func start() -> void:
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+	await TransitionScreen.start()
 	U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].show)	
 	await BtnControls.reveal(true)
 # --------------------------------------------------------------------------------------------------		
@@ -75,7 +95,7 @@ func activate() -> void:
 	await U.tick()
 	control_pos[ObjectivePanel] = {
 		"show": 0, 
-		"hide": -ObjectiveMargin.size.x
+		"hide": -ObjectiveMargin.size.x - 20
 	}
 	
 	
@@ -104,18 +124,22 @@ func on_objective_index_update() -> void:
 		ObjectiveCard.title = "OBJECTIVES"
 		ObjectiveTitle.text = "???"
 		ObjectiveDeadline.text = ""
+		bookmark_data = {}
 		
 	if is_expired:
 		ObjectiveHeader.text = "Previous Objective"
 		ObjectiveCard.title = "COMPLETED"
 		ObjectiveTitle.text = current_objectives.title
 		ObjectiveDeadline.text = ""
+		bookmark_data = {}
 		
 	if objective_index == story_progress.current_story_val:
 		ObjectiveHeader.text = "Current Objective"
 		ObjectiveCard.title = "OBJECTIVES" 
 		ObjectiveTitle.text = current_objectives.title
 		ObjectiveDeadline.text = "Must be completed by day %s.\r(You have %s days remaining)." % [current_objectives.complete_by_day, current_objectives.complete_by_day - progress_data.day]		
+		bookmark_data = current_objectives
+		
 		
 	await U.tick()
 	BtnControls.itemlist = ObjectiveCard.get_buttons()

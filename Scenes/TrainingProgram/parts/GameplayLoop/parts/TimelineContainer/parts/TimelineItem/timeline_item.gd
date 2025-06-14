@@ -19,6 +19,7 @@ var items:Array = [] :
 		on_items_update()
 var delay:float = 0.0 
 
+
 # --------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -59,6 +60,21 @@ func on_timeline_array_update(new_val:Array) -> void:
 # --------------------------------------------------
 
 # --------------------------------------------------
+func get_items() -> Array:
+	return ListContainer.get_children()
+# --------------------------------------------------
+
+# --------------------------------------------------
+func on_focus(state:bool = is_focused) -> void:
+	super.on_focus(state)
+	if !is_node_ready():return
+	for node in ListContainer.get_children():
+		if "show_details" in node:
+			node.show_details = state
+# --------------------------------------------------
+
+
+# --------------------------------------------------
 func on_items_update() -> void:
 	if !is_node_ready():
 		return 
@@ -71,7 +87,6 @@ func on_items_update() -> void:
 		list_item.data = item
 		ListContainer.add_child(list_item)
 	
-
 	if items.size() > 0:
 		await U.tick()
 # --------------------------------------------------

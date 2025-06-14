@@ -10,9 +10,7 @@ class_name Layout
 @onready var NewEmailBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewEmailBtn
 
 @onready var Taskbar:Control = $Taskbar
-@onready var BackgroundWindow:PanelContainer = $MarginContainer/BackgroundWindow
-@onready var DesktopIconContainer:Control = $Desktop/MarginContainer/HBoxContainer/VBoxContainer/DesktopIconContainer
-@onready var RecycleBin:PanelContainer = $MarginContainer/Desktop/MarginContainer/HBoxContainer/VBoxContainer2/RecycleBin
+@onready var DesktopGrid:Control =  $Desktop/MarginContainer/DesktopGrid
 
 @onready var BtnControls:Control = $BtnControl
 @onready var RunningAppsContainer:Control = $RunningAppsContainer
@@ -77,17 +75,17 @@ var event_switches:Dictionary = {
 	"show_status_on_boot": true
 }
 
-var app_positions:Dictionary = {
-	APPS.SDT_TUTORIAL: Vector2(0, 0),
-	APPS.SDT_FULL: Vector2(0, 0),
-	APPS.SDT_MODS: Vector2(0, 0),
-	APPS.SETTINGS: Vector2(0, 0),
-	APPS.README: Vector2(0, 0),
-	APPS.EMAIL: Vector2(0, 0),
-	APPS.MUSIC_PLAYER: Vector2(0, 0),
-}
-
-var default_app_positions:Dictionary = app_positions.duplicate()
+#var app_positions:Dictionary = {
+	#APPS.SDT_TUTORIAL: Vector2(0, 0),
+	#APPS.SDT_FULL: Vector2(0, 0),
+	#APPS.SDT_MODS: Vector2(0, 0),
+	#APPS.SETTINGS: Vector2(0, 0),
+	#APPS.README: Vector2(0, 0),
+	#APPS.EMAIL: Vector2(0, 0),
+	#APPS.MUSIC_PLAYER: Vector2(0, 0),
+#}
+#
+#var default_app_positions:Dictionary = app_positions.duplicate()
 
 var tracklist_unlocks:Dictionary = {
 	PLAYLIST.TRACK_1: true,
@@ -306,16 +304,6 @@ var icon_focus_list:Array[Control] = []
 var running_apps_list:Array = []
 var app_in_fullscreen:bool = false 
 
-var top_level_icon:Control
-#var top_level_window:Control : 
-	#set(val):
-		#top_level_window = val
-		#set_node_selectable_state(top_level_window == null)
-
-#var selected_index:int = 0: 
-	#set(val):
-		#selected_index = val
-		#on_selected_index_update()
 var control_pos:Dictionary
 var btnlist:Array = []	
 var freeze_inputs:bool = false
@@ -366,12 +354,6 @@ func _ready() -> void:
 	TaskbarBtn.onClick = func() -> void:
 		if freeze_inputs or Taskbar.is_busy:return		
 		toggle_show_taskbar()
-	
-
-		#await GBL.find_node(REFS.DOOR_SCENE).play_next_sequence()
-
-	
-	#TaskbarBtn.is_disabled = true
 # -----------------------------------
 
 # -----------------------------------
@@ -585,7 +567,7 @@ func close_app(ref:int) -> void:
 
 func on_currently_running_app_update() -> void:
 	# hide/show any desktop icons 
-	for node in DesktopIconContainer.get_children():
+	for node in DesktopGrid.get_children():
 		if currently_running_app == null:
 			node.show() 
 		else: 
@@ -627,9 +609,9 @@ func sort_desktop_icons() -> void:
 	var context_menu_node:Control = null
 	
 	# first, repositions all desktop icons back to their default 
-	app_positions = default_app_positions.duplicate()
-	for node in DesktopIconContainer.get_children():
-		node.pos_offset = app_positions[node.data.ref]
+	#app_positions = default_app_positions.duplicate()
+	#for node in DesktopIconContainer.get_children():
+	#	node.pos_offset = app_positions[node.data.ref]
 	
 	# save
 	save_state()
@@ -646,7 +628,7 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 	var column_tracker := {}
 	
 	# remove and rerender icons, waitTime used to wait for changes
-	for child in DesktopIconContainer.get_children():
+	for child in DesktopGrid.get_children():
 		child.queue_free()
 		
 	icon_focus_list = []	
@@ -656,13 +638,12 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 	for item in app_list:
 		if item.installed.call():
 			var new_node:Control = AppItemPreload.instantiate()	
-			DesktopIconContainer.add_child(new_node)
+			DesktopGrid.add_child(new_node)
 			btnlist.push_back(new_node)
-			new_node.pos_offset = app_positions[item.details.ref]
 			new_node.data = item.details
 				
 			new_node.onFocus = func(node:Control) -> void:
-				for child in DesktopIconContainer.get_children():
+				for child in DesktopGrid.get_children():
 					child.is_selected = child == node
 				
 			new_node.onClick = func() -> void:
@@ -678,15 +659,6 @@ func render_desktop_icons(wait_time:float = 1.0) -> void:
 # -----------------------------------
 
 # -----------------------------------
-func set_pause_container(state:bool) -> void:
-	if !is_node_ready():return
-	RunningAppsContainer.show() if !state else RunningAppsContainer.hide()
-# -----------------------------------
-
-func on_show_taskbar_update() -> void:
-	if !is_node_ready():return
-
-# -----------------------------------
 func toggle_show_taskbar(state:bool = !show_taskbar) -> void:						
 	show_taskbar = state
 	freeze_inputs = true
@@ -699,7 +671,6 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 		TaskbarBtn.icon = SVGS.TYPE.CLEAR
 		
 		await BtnControls.reveal(false)	
-		#await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
 		
 		if currently_running_app == null:
 			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))			

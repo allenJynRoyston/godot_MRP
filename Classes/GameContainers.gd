@@ -21,6 +21,7 @@ var resources_data:Dictionary = {}
 var purchased_facility_arr:Array = [] 
 var purchased_base_arr:Array = []
 var bookmarked_rooms:Array = [] 
+var bookmarked_objectives:Array = []
 var hired_lead_researchers_arr:Array = [] 
 var current_location:Dictionary = {} 
 var progress_data:Dictionary = {}
@@ -52,6 +53,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_timeline_array(self)
 	SUBSCRIBE.subscribe_to_bookmarked_rooms(self)
+	SUBSCRIBE.subscribe_to_bookmarked_objectives(self)	
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
@@ -77,6 +79,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
 	SUBSCRIBE.unsubscribe_to_timeline_array(self)
 	SUBSCRIBE.unsubscribe_to_bookmarked_rooms(self)
+	SUBSCRIBE.unsubscribe_to_bookmarked_objectives(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_researcher_hire_list(self)
 	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
@@ -123,6 +126,8 @@ func on_timeline_array_update(new_val:Array) -> void:
 	timeline_array = new_val
 func on_bookmarked_rooms_update(new_val:Array) -> void:
 	bookmarked_rooms = new_val
+func on_bookmarked_objectives_update(new_val:Array) -> void:
+	bookmarked_objectives = new_val	
 func on_researcher_hire_list_update(new_val:Array) -> void:
 	researcher_hire_list = new_val
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:

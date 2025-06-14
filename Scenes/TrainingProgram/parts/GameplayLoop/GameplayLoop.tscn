@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=13 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" uid="uid://b07g7jcbtop8c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
+[ext_resource type="PackedScene" uid="uid://djft0vod8xyqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MarkedObjectivesContainer/MarkedObjectivesContainer.tscn" id="4_lgd8l"]
 [ext_resource type="PackedScene" uid="uid://d04lnq4yhp80o" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/TimelineContainer.tscn" id="5_1tp62"]
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
@@ -36,7 +37,9 @@ visible = false
 layout_mode = 2
 
 [node name="TimelineContainer" parent="." instance=ExtResource("5_1tp62")]
-visible = false
+layout_mode = 2
+
+[node name="MarkedObjectivesContainer" parent="." instance=ExtResource("4_lgd8l")]
 layout_mode = 2
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]

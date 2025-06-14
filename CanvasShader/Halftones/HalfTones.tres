@@ -7,5 +7,5 @@ shader = ExtResource("1_lej54")
 shader_parameter/size = 64
 shader_parameter/dot_size = 3.0
 shader_parameter/value_multiplier = 1.0
-shader_parameter/invert = false
-shader_parameter/dot_color = Color(0.199483, 0.339905, 0.115881, 1)
+shader_parameter/invert = true
+shader_parameter/dot_color = Color(0.0952267, 0.486101, 0.723379, 1)

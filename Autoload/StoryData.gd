@@ -28,7 +28,7 @@ var chapters:Array = [
 						"action": HAVE_AT_LEAST,
 						"amount": 1,
 						"type": BUILDING,
-						"ref": 1
+						"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
 					},
 				},
 				{
@@ -36,7 +36,7 @@ var chapters:Array = [
 						"action": HAVE_EXACTLY,
 						"amount": 1,
 						"type": BUILDING,
-						"ref": 2
+						"ref": ROOM.REF.HQ
 					},
 				},
 			],

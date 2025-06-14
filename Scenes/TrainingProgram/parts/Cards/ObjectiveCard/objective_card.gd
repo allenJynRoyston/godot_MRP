@@ -6,7 +6,7 @@ extends MouseInteractions
 @onready var CardBodySubviewport:SubViewport = $CardBody/SubViewport
 
 # drawer items
-@onready var ObjectiveItemList:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ObjectiveItemList
+@onready var ObjectiveItemList:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/ObjectiveItemList
 
 # title/next/back buttons
 @onready var CardDrawerTitle:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle
@@ -49,11 +49,17 @@ func on_objectives_update() -> void:
 		
 	for objective in objectives.list:
 		var new_btn:Control = ObjectiveItemPreload.instantiate()
+		new_btn.show_bookmark = false
+		new_btn.is_naked = false
 		new_btn.is_expired = is_expired
 		new_btn.is_upcoming = is_upcoming
 		new_btn.content = "???" if is_upcoming else objective.title
 		new_btn.you_have = str(objective.you_have.call())
 		new_btn.is_completed = true if is_expired else (false if is_upcoming else objective.is_completed.call())
+		new_btn.onFocus = func(node:Control) -> void:
+			for child in ObjectiveItemList.get_children():
+				child.is_selected = child == node		
+		
 		ObjectiveItemList.add_child(new_btn)	
 	
 	await U.tick()
