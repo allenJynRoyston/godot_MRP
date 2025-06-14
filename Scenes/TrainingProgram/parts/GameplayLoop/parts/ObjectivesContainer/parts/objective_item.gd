@@ -56,7 +56,7 @@ func _ready() -> void:
 	use_color = Color.GREEN
 	
 	if !is_completed:
-		use_color = Color.WHITE
+		use_color = Color(0.337, 0.275, 1.0)
 	if is_expired:
 		use_color = Color(0.337, 0.275, 1.0).lightened(0.5)
 		
