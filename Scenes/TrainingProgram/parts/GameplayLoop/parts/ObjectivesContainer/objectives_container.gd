@@ -36,15 +36,6 @@ func _ready() -> void:
 	
 	BtnControls.directional_pref = "UD"
 	
-	BtnControls.onAction = func() -> void:
-		var obj:Dictionary = bookmark_data.list[BtnControls.item_index]
-		var already_exists:bool = bookmarked_objectives.filter(func(x): return x.title == obj.title).size() > 0
-		if already_exists:
-			bookmarked_objectives = bookmarked_objectives.filter(func(x): return x.title != obj.title)
-		else:
-			bookmarked_objectives.push_back(obj)
-		SUBSCRIBE.bookmarked_objectives = bookmarked_objectives
-	
 	BtnControls.onBack = func() -> void:
 		end()
 		

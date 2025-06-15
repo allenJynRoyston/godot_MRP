@@ -181,6 +181,7 @@ theme_override_constants/separation = 0
 layout_mode = 2
 a_btn_title = "BOOKMARK"
 a_btn_icon = 14
+hide_a_btn = true
 
 [node name="TransitionScreen" parent="." instance=ExtResource("8_2g7pg")]
 layout_mode = 2

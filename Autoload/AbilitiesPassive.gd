@@ -1,6 +1,11 @@
 extends Node
 
 enum REF {
+	# --- DIRECTORS OFFICE
+	PREDICTIVE_TIMELINE,
+	ENABLE_OBJECTIVES,
+	
+	
 	UPGRADE_ABL_LVL,
 	ADDITIONAL_STORE_UNLOCKS,
 	
@@ -19,9 +24,28 @@ enum REF {
 	
 	
 	MEMETIC_SHILEDING
+	
+	
 }
 
 # ---------------------------------
+var PREDICTIVE_TIMELINE:Dictionary = {
+	"name": "PREDICTIVE TIMELINE",
+	"description": "Show a most likely timeline of events.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"conditionals": [CONDITIONALS.TYPE.ENABLE_TIMELINE]
+}
+
+var ENABLE_OBJECTIVES:Dictionary = {
+	"name": "ENABLE OBJECTIVES",
+	"description": "Objectives are always visible on the main screen.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"conditionals": [CONDITIONALS.TYPE.ENABLE_OBJECTIVES]
+}
+
+
 var UPGRADE_ABL_LVL:Dictionary = {
 	"name": "LVL +1",
 	"description": "Increases the ability level of ALL rooms in a wing.",
@@ -159,6 +183,12 @@ var GENERATE_MONEY_FROM_SCP:Dictionary = {
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
 	match ref:
+		# ------------------
+		REF.PREDICTIVE_TIMELINE:
+			ability = PREDICTIVE_TIMELINE
+		REF.ENABLE_OBJECTIVES:	
+			ability = ENABLE_OBJECTIVES
+		
 		# ------------------
 		REF.UPGRADE_ABL_LVL:
 			ability = UPGRADE_ABL_LVL

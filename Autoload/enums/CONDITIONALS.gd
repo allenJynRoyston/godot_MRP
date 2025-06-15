@@ -1,5 +1,6 @@
 extends Node
 
 enum TYPE {
-
+	ENABLE_TIMELINE,
+	ENABLE_OBJECTIVES
 }

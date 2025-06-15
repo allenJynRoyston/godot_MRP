@@ -109,7 +109,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.EVAL_SCP, 0),
+			#ABL.get_ability(ABL.REF.EVAL_SCP, 0),
 			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0)
 		],	
 	# ------------------------------------------
@@ -117,7 +117,9 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
+			ABL_P.get_ability(ABL_P.REF.PREDICTIVE_TIMELINE),
+			ABL_P.get_ability(ABL_P.REF.ENABLE_OBJECTIVES),
+			
 		],	
 	# ------------------------------------------		
 }

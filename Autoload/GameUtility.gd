@@ -122,6 +122,20 @@ func assign_nodes() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func mark_current_objectives() -> void:
+	var objectives:Array = STORY.get_objectives()
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	var current_objectives:Dictionary = objectives[story_progress.current_story_val]	
+	
+	var bookmarked_objectives:Array = []
+	for objective in current_objectives.list:
+		bookmarked_objectives.push_back(objective)
+		
+	SUBSCRIBE.bookmarked_objectives = bookmarked_objectives
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
 func are_objectives_complete() -> bool:
 	# CHECK IF SCENARIO DATA IS COMPLETE
 	var objectives:Array = STORY.get_objectives()

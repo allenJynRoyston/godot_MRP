@@ -196,7 +196,16 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"gameplay_conditionals": func() -> Dictionary:
 		return {						
-
+			CONDITIONALS.TYPE.ENABLE_TIMELINE: {
+				"val": false,
+				"on_change": func(val:bool) -> void:
+					pass,
+			},
+			CONDITIONALS.TYPE.ENABLE_OBJECTIVES: {
+				"val": false,
+				"on_change": func(val:bool) -> void:
+					pass,
+			}
 		},
 	# ----------------------------------
 	"timeline_array": func() -> Array:
@@ -397,7 +406,7 @@ func start_new_game() -> void:
 	SetupContainer.subtitle = "Initializing systems..."
 	SetupContainer.progressbar_val = 0
 	# 1.) loading game data config
-	await parse_restore_data()
+	parse_restore_data()
 	await U.set_timeout(duration)	
 
 	# -----------------------
@@ -421,7 +430,6 @@ func start_new_game() -> void:
 	SetupContainer.subtitle = "Finalizing deployment protocols..."
 	SetupContainer.progressbar_val = 0.7
 	await U.set_timeout(duration)
-	
 	# 4.) reset any nodes
 	for node in get_all_container_nodes():
 		node.set_process(true)
@@ -433,16 +441,17 @@ func start_new_game() -> void:
 	# -----------------------
 	# 5.) SETUP OBJECTIVES, progress timeline to correct day
 	if is_new_game:
-		GAME_UTIL.add_objectives_to_timeline(STORY.get_objectives())
+		GAME_UTIL.add_objectives_to_timeline(STORY.get_objectives())		
 	else:
 		SUBSCRIBE.timeline_array = timeline_array
 		SUBSCRIBE.progress_data = progress_data
+		
 
 	# ----------------------- LAST PHASE, START EVERYTHING AND REMOVE SETUP
 	# then show player hud
-	await restore_player_hud()					
 	SetupContainer.subtitle = "Initilization simulation."
 	SetupContainer.progressbar_val = 1.0	
+	restore_player_hud()	
 	await U.set_timeout(duration)	
 	await SetupContainer.end()	
 
@@ -462,10 +471,11 @@ func start_new_game() -> void:
 	# show objectives
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
 		await GAME_UTIL.open_objectives()
-		await U.set_timeout(0.3)
-	show_marked_objectives = true
+		await U.set_timeout(duration)
 
-		
+	# then build marked objectives
+	GAME_UTIL.mark_current_objectives()
+	
 	# start actionContainer or start at ring level
 	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
 		ActionContainer.start(true)		
@@ -597,8 +607,9 @@ func on_is_busy_update() -> void:
 func get_all_container_nodes(exclude:Array = []) -> Array:
 	return [
 		Structure3dContainer, 
-		TimelineContainer,
 		ActionContainer, 
+		TimelineContainer,
+		MarkedObjectivesContainer,
 		ResourceContainer,
 		PhaseAnnouncement, 
 		ToastContainer
@@ -630,7 +641,9 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	await show_only([Structure3dContainer, ActionContainer, TimelineContainer, MarkedObjectivesContainer, ResourceContainer])
+	await show_only([Structure3dContainer, ActionContainer,  ResourceContainer])
+	show_marked_objectives = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val	
+	show_timeline = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_TIMELINE].val			
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -952,6 +965,9 @@ func on_current_phase_update() -> void:
 			current_location_snapshot = current_location.duplicate(true)
 			camera_settings_snapshot = camera_settings.duplicate(true)
 			
+			# hide objectives
+			show_marked_objectives = false
+			
 			if camera_settings_snapshot.type != CAMERA.TYPE.WING_SELECT:
 				camera_settings.type = CAMERA.TYPE.WING_SELECT
 				SUBSCRIBE.camera_settings = camera_settings	
@@ -1056,6 +1072,8 @@ func on_current_phase_update() -> void:
 					}
 				)
 			])	
+			
+			restore_player_hud()
 				
 			# fetch next objective, update objective
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -1069,10 +1087,14 @@ func on_current_phase_update() -> void:
 				story_progress.at_story_limit = story_progress.max_story_val == STORY.get_objectives().size() - 1				
 				# then update
 				GBL.update_and_save_user_profile(GBL.active_user_profile)
-				show_new_message = true
-
-			# increament current story val
-			story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
+				# increament current story val
+				story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
+				var chapter:Dictionary = STORY.get_chapter(story_progress.current_story_val )
+				show_new_message = "story_message" in chapter
+				
+			else:	
+				# increament current story val
+				story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
 						
 			# create a quicksave
 			quicksave(true)
@@ -1082,15 +1104,17 @@ func on_current_phase_update() -> void:
 			
 			# update objectives
 			PhaseAnnouncement.start("OBJECTIVES HAVE BEEN UPDATED.")
-			# clear any bookmarked objectives
-			SUBSCRIBE.bookmarked_objectives = []
+			
 			# display next objectives
-			await GAME_UTIL.open_objectives()
+			#await GAME_UTIL.open_objectives()
+			# update bookmarked objectives
+			GAME_UTIL.mark_current_objectives()
 			
 			if show_new_message:
 				ActionContainer.show_new_message_btn = true
 			
 			# continue game
+			
 			PhaseAnnouncement.end()			
 			current_phase = PHASE.PLAYER
 			phase_cycle_complete.emit()
@@ -1181,7 +1205,7 @@ func parse_restore_data() -> void:
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if is_new_game else restore_data.progress_data
 	SUBSCRIBE.scp_data = initial_values.scp_data.call() if is_new_game else restore_data.scp_data
 	SUBSCRIBE.timeline_array = initial_values.timeline_array.call() if is_new_game else restore_data.timeline_array
-	SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() #if no_save else restore_data.gameplay_conditionals	
+	#SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() #if no_save else restore_data.gameplay_conditionals	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if is_new_game else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if is_new_game else restore_data.purchased_base_arr
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if is_new_game else restore_data.bookmarked_rooms
@@ -1221,7 +1245,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	scp_run_first_effects(new_room_config)
 		
 	# ROOM, setup and loop
-	room_setup_passives_and_ability_level(new_room_config)
+	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
 	room_passive_check_for_effect(new_room_config)
 	room_activation_check(new_room_config)
 	room_passive_activation_check(new_room_config)	
@@ -1236,6 +1260,13 @@ func update_room_config(force_setup:bool = false) -> void:
 	room_final_pass(new_room_config)
 	scp_final_pass(new_room_config) 
 	
+	# trigger any gameplay conditional effects
+	for key in new_gameplay_conditionals:
+		var conditional_dict:Dictionary = new_gameplay_conditionals[key]
+		var val = conditional_dict.val
+		if "on_change" in conditional_dict:
+			conditional_dict.on_change.call(val)
+		
 	# update subscriptions
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
@@ -1424,7 +1455,7 @@ func scp_run_first_effects(new_room_config:Dictionary) -> void:
 					ring_config.currencies[key] += amount
 					room_config.currencies[key] += amount				
 					
-func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
+func room_setup_passives_and_ability_level(new_room_config:Dictionary, new_gameplay_conditionals:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
@@ -1454,6 +1485,9 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 						ability.ring_effect.call(ring_config_data)
 					if "room_effect" in ability:
 						ability.room_effect.call(room_config_data)
+					if "conditionals" in ability:
+						for conditional in ability.conditionals:
+							new_gameplay_conditionals[conditional].val = true
 		
 		# TODO: replace this with a room level system, where 
 		# the room level is independent of the researchers level
