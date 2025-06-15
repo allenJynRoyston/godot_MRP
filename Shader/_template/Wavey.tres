@@ -4,10 +4,10 @@
 
 [resource]
 shader = ExtResource("1_g3r6t")
-shader_parameter/opacity = 0.273
+shader_parameter/opacity = 0.128
 shader_parameter/use_texture_alpha = false
 shader_parameter/use_dynamic_opacity = false
 shader_parameter/enable_line_scroll = true
-shader_parameter/scroll_speed = 1.595
-shader_parameter/scroll_amplitude = 0.022
-shader_parameter/scroll_frequency = 13.93
+shader_parameter/scroll_speed = 1.675
+shader_parameter/scroll_amplitude = 0.027
+shader_parameter/scroll_frequency = 37.317

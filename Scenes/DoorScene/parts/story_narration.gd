@@ -7,6 +7,9 @@ extends Control
 @onready var PortraitPanel:PanelContainer = $PortraitPanel
 @onready var PortraitMargin:MarginContainer = $PortraitPanel/MarginContainer
 
+@onready var NametagPanel:PanelContainer = $Nametag/PanelContainer
+@onready var NametagMargin:MarginContainer = $Nametag/PanelContainer/MarginContainer
+
 @onready var TextContainer:MarginContainer = $PanelContainer/TextContainer
 @onready var TopLabel:Label = $PanelContainer/TextContainer/Control/TopLabel
 @onready var BtmLabel:Label = $PanelContainer/TextContainer/BtmLabel
@@ -18,6 +21,8 @@ var text_list:Array = [] :
 	set(val):
 		text_list = val
 		on_text_list_update()
+
+var story_val:int
 
 var interupt:bool = false
 
@@ -44,11 +49,17 @@ func _ready() -> void:
 		"hide": 0 - PortraitMargin.size.x
 	}
 	
+	control_pos[NametagPanel]= {
+		"show": 0, 
+		"hide": 0 - NametagMargin.size.x
+	}	
+	
 	
 	TextContainer.modulate = Color(1, 1, 1, 0)
 	NarrationBG.modulate = Color(1, 1, 1, 0)
 	PortraitPanel.position.x = control_pos[PortraitPanel].hide
 	StoryPanel.position.y = control_pos[StoryPanel].hide
+	NametagPanel.position.x = control_pos[NametagPanel].hide
 	
 	await U.tick()
 	
@@ -85,13 +96,16 @@ func reveal(state:bool, skip_animation:bool = false) -> void:
 	if state:
 		show()
 		U.tween_node_property(NarrationBG, "modulate", Color(1, 1, 1, 1), duration)
-		U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].show, 0.7, 0.5)
+		U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].show, 0.7, 0.4)
+		U.tween_node_property(NametagPanel, "position:x", control_pos[NametagPanel].show, 0.7, 0.5)
+		
 		fill_message()
 		BtnControls.reveal(state)
 				
 
 	if !state:
-		U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].hide)		
+		await U.tween_node_property(NametagPanel, "position:x", control_pos[NametagPanel].hide, duration)		
+		await U.tween_node_property(PortraitPanel, "position:x", control_pos[PortraitPanel].hide, duration)
 		await U.tween_node_property(NarrationBG, "modulate", Color(1, 1, 1, 0), duration)	
 		BtnControls.reveal(state)
 		reset_message()

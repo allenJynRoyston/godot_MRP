@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bbo8dutfowpc6"]
+[gd_scene load_steps=12 format=3 uid="uid://bbo8dutfowpc6"]
 
 [ext_resource type="Script" uid="uid://cehjigucmd63m" path="res://Scenes/DoorScene/parts/story_narration.gd" id="1_nskse"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_2i2yr"]
@@ -6,10 +6,22 @@
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_nskse"]
 [ext_resource type="Material" uid="uid://yeprohyubuxc" path="res://CanvasShader/Halftones/HalfTones.tres" id="2_rdfqw"]
 [ext_resource type="Material" uid="uid://cgpps4s7b2f56" path="res://Shader/_template/Wavey.tres" id="4_nmgxl"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_kkeqb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nmgxl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2i2yr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kkeqb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bi8ty"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.337255, 0.27451, 1, 1)
+shadow_size = 1
+shadow_offset = Vector2(10, 10)
 
 [node name="StoryNarration" type="Control"]
 layout_mode = 3
@@ -98,6 +110,58 @@ label_settings = ExtResource("2_2i2yr")
 autowrap_mode = 2
 visible_characters = 0
 visible_ratio = 0.12
+
+[node name="Nametag" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Nametag"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_kkeqb")
+
+[node name="MarginContainer" type="MarginContainer" parent="Nametag/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="Nametag/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bi8ty")
+
+[node name="MarginContainer" type="MarginContainer" parent="Nametag/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Nametag/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.672752, 0.672752, 0.672751, 1)
+theme_override_fonts/normal_font = ExtResource("6_kkeqb")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "[wave]Researcher Ambrose[/wave]"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="BtnControls" parent="." instance=ExtResource("2_nskse")]
 layout_mode = 1

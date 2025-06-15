@@ -23,14 +23,14 @@ var chapters:Array = [
 		"objectives": {
 			"title": "Setup the facility.",
 			"list":[
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": BUILDING,
-						"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
-					},
-				},
+				#{
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 1,
+						#"type": BUILDING,
+						#"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
+					#},
+				#},
 				{
 					"criteria": {
 						"action": HAVE_EXACTLY,
@@ -47,7 +47,9 @@ var chapters:Array = [
 	
 	# ----------------------------------------------------------------------------------------------
 	{
-
+		"story_message": [
+			"Hello, Site Director. My name is Researcher Cowan, and if you’re hearing this message, then something’s gone horribly, horribly wrong."
+		],
 		"complete_message": [
 			"Okay. First phase complete. You’re doing fine."
 		],
@@ -60,14 +62,6 @@ var chapters:Array = [
 						"amount": 500,
 						"type": CURRENCY,
 						"ref": RESOURCE.CURRENCY.MONEY
-					},
-				},
-				{
-					"criteria": {
-						"action": HAVE_MORE_THAN,
-						"amount": 50,
-						"type": CURRENCY,
-						"ref": RESOURCE.CURRENCY.SCIENCE
 					},
 				},
 			],

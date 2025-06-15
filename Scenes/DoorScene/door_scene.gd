@@ -2,6 +2,9 @@ extends PanelContainer
 
 @onready var ColorBG:ColorRect = $ColorBG
 @onready var TextureRender:TextureRect = $TextureRect
+@onready var BtnControls:Control = $BtnControls
+@onready var StoryNarration:Control = $StoryNarration
+
 @onready var RenderSubviewport:SubViewport = $RenderSubviewport
 @onready var SceneCamera:Camera3D = $RenderSubviewport/Node3D/Camera3D
 @onready var IntroSubviewport:SubViewport = $SubViewport
@@ -9,9 +12,7 @@ extends PanelContainer
 @onready var SceneAnimationPlayer:AnimationPlayer = $RenderSubviewport/Node3D/SceneAnimationPlayer
 @onready var ScreenTextureRect:TextureRect = $RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport/TextureRect
 
-@onready var BtnControls:Control = $BtnControls
 
-@onready var StoryNarration:Control = $StoryNarration
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
@@ -29,6 +30,8 @@ var onLogin:Callable = func():pass
 # new values
 var story_progress:Dictionary = {}
 
+var story_index:int
+var allow_replay:bool = true
 #var play_sequence:bool = true : 
 	#set(val):
 		#play_sequence = val
@@ -67,31 +70,34 @@ func _ready() -> void:
 	
 	BtnControls.onBack = func() -> void:
 		pass
-	
 	# 
 	BtnControls.onDirectional = func(key:String):
-		if !is_visible_in_tree() or !is_node_ready():return
+		if !is_visible_in_tree() or !is_node_ready() or !allow_replay:return
+		var story_progress:Dictionary = GBL.active_user_profile.story_progress
+		var max_story_val:int = mini(story_progress.current_story_val, STORY.chapters.size() - 1)
 		
 		match key:
 			"A":
-				print("go back to previous objective")
+				story_index = U.min_max(story_index - 1, 0, max_story_val)
 			"D":
-				print("go to next to objective")
+				story_index = U.min_max(story_index + 1, 0, max_story_val)
+		
+		print(story_index)
+		check_btn_states()
 	
-	# check needs to be deferred to load correctly
-	check_btn_states.call_deferred(false)
+	start()
 # ---------------------------------------------
 
 # ---------------------------------------------
 func play_current_story_sequence() -> void:	
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	
-	StoryNarration.text_list = STORY.chapters[story_progress.current_story_val].story_message 
+	StoryNarration.text_list = STORY.chapters[story_index].story_message 
 	await StoryNarration.reveal(true)
 	await StoryNarration.on_end
-	
 	# update current progress val to story value ONLY if it's the first one
-	if story_progress.play_message_required:
+	
+	if story_index == story_progress.max_story_val and story_progress.play_message_required:
 		GBL.active_user_profile.story_progress.play_message_required = false
 		GBL.update_and_save_user_profile(GBL.active_user_profile)
 
@@ -101,12 +107,16 @@ func play_current_story_sequence() -> void:
 	await U.set_timeout(0.3)
 	wait_for_story.emit()
 	
+
 	BtnControls.reveal(true)
+
 # ---------------------------------------------
 
 # ---------------------------------------------
 func play_next_sequence() -> void:
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	story_index = GBL.active_user_profile.story_progress.current_story_val
+	
+	allow_replay = false
 
 	# update available buttons
 	await BtnControls.reveal(true)	
@@ -122,40 +132,39 @@ func play_next_sequence() -> void:
 	OSRootNode.current_layer = OSRootNode.LAYER.OS_lAYER
 	
 	await U.set_timeout(0.3)
+	
+	allow_replay = true
 # ---------------------------------------------
-		
-## ---------------------------------------------
-#func get_current_save_state() -> Dictionary:
-	#return {
-		## this can be debugged if you need to start on a different story sequence
-		#"story_progress_val": DEBUG.get_val(DEBUG.STORY_PROGRESS_VAL) if DEBUG.get_val(DEBUG.DEBUG_STORY_PROGRESS) else progress_data.story_progress_val,
-		## these are read-only
-		#"play_message_required": progress_data.play_message_required,
-		#"current_progress_val": progress_data.current_progress_val,
-		#"quicksave_snapshots": progress_data.quicksave_snapshots
-	#}	
-## ---------------------------------------------
 
 # ---------------------------------------------
 func check_btn_states(use_for_skip:bool = false) -> void:
-	var play_message_required:bool = GBL.active_user_profile.story_progress.play_message_required
-
-	# if the story val is 0 (new game), then hide until the first story segement has been completed
-	BtnControls.hide_a_btn = play_message_required
-	
-	# c btn title
-	BtnControls.c_btn_title = "PLAY MESSAGE" if (play_message_required) else "REPLAY MESSAGE"
-	
-	# modify on action so it skips
-	BtnControls.a_btn_title = "SKIP" if use_for_skip else "LOGIN"
+	if allow_replay:
+		var play_message_required:bool = GBL.active_user_profile.story_progress.play_message_required
 		
-	BtnControls.onAction = func() -> void:
-		await BtnControls.reveal(false)		
-		if use_for_skip:
+		# if the story val is 0 (new game), then hide until the first story segement has been completed
+		BtnControls.hide_a_btn = play_message_required
+		
+		# c btn title
+		BtnControls.c_btn_title = "PLAY MESSAGE" if (play_message_required) else "REPLAY MESSAGE"
+		
+		# modify on action so it skips
+		BtnControls.a_btn_title = "SKIP" if use_for_skip else "LOGIN"
+			
+		BtnControls.onAction = func() -> void:
+			await BtnControls.reveal(false)		
+			if use_for_skip:
+				wait_for_story.emit()
+			else:
+				onLogin.call()
+	
+	else:
+		# modify on action so it skips
+		BtnControls.c_btn_title = "PLAY MESSAGE"
+		BtnControls.hide_a_btn = true
+			
+		BtnControls.onAction = func() -> void:
+			await BtnControls.reveal(false)		
 			wait_for_story.emit()
-		else:
-			onLogin.call()
-				
 		
 # ---------------------------------------------
 	
@@ -163,6 +172,9 @@ func check_btn_states(use_for_skip:bool = false) -> void:
 func start() -> void:
 	show()	
 	await U.tick()	
+	story_index = GBL.active_user_profile.story_progress.current_story_val
+	check_btn_states(false)	
+
 	current_mode = MODE.START
 
 func fastfoward() -> void:
@@ -195,7 +207,6 @@ func on_current_mode_update() -> void:
 				node.show()
 
 			ColorBG.color = Color.BLACK			
-		
 		# ---------
 		MODE.START:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 2.0)
