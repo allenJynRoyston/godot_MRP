@@ -1,6 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=16 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
+[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
+[ext_resource type="Material" uid="uid://yeprohyubuxc" path="res://CanvasShader/Halftones/HalfTones.tres" id="3_pabxy"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/Main/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
 [ext_resource type="PackedScene" uid="uid://8hxxm66kio4n" path="res://Scenes/Main/parts/OS/Installer/Installer.tscn" id="6_dhnyo"]
@@ -11,11 +13,14 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41nkp"]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_oddaw"]
+viewport_path = NodePath("SubViewportBG")
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1wtgv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6u7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8at83"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b50hp"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -37,6 +42,23 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_41nkp")
 script = ExtResource("1_rk64t")
+
+[node name="SubViewportBG" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="Background" parent="SubViewportBG" instance=ExtResource("2_b50hp")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="Background" type="TextureRect" parent="."]
+material = ExtResource("3_pabxy")
+layout_mode = 2
+texture = SubResource("ViewportTexture_oddaw")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Desktop" type="PanelContainer" parent="."]
 layout_mode = 2
@@ -89,7 +111,7 @@ a_btn_title = "LOAD"
 b_btn_title = "EXIT"
 
 [node name="HeaderControls" type="Control" parent="."]
-z_index = 20
+z_index = 1000
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="HeaderControls"]
@@ -118,7 +140,7 @@ alignment = 2
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_8at83")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b50hp")
 title = "TASKBAR"
 assigned_key = "BACKSPACE"
 icon = 67

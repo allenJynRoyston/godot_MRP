@@ -59,6 +59,12 @@ func _ready() -> void:
 		
 		BtnControl.disable_back_btn = selected_node == DesktopBtn 
 		BtnControl.hide_a_btn = selected_node not in [PlayBtn, NextBtn]
+		
+		if selected_node == PlayBtn:
+			update_action_btn_for_mediaplayer()
+		elif selected_node == NextBtn:
+			BtnControl.a_btn_title = "NEXT TRACK"
+		
 		for node in BtnControl.itemlist:
 			node.modulate = Color(1, 1, 1, 1 if node == _node else 0.7)
 
@@ -80,10 +86,12 @@ func _ready() -> void:
 		# media buttons desktop
 		if selected_node == PlayBtn:
 			MediaPlayer.on_pause()
+			update_action_btn_for_mediaplayer()
 			return		
 			
 		if selected_node == NextBtn:
 			MediaPlayer.on_next()
+			update_action_btn_for_mediaplayer()
 			return
 			
 	BtnControl.onBack = func() -> void:
@@ -115,6 +123,9 @@ func _ready() -> void:
 	
 	set_show_taskbar(false, true)
 # ------------------------------------------------------------------------------
+
+func update_action_btn_for_mediaplayer() -> void:
+	BtnControl.a_btn_title = "PLAY" if !MediaPlayer.is_already_playing() else 'PAUSE'
 
 # ------------------------------------------------------------------------------	
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:

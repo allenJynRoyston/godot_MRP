@@ -1,8 +1,6 @@
-[gd_scene load_steps=26 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=23 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
-[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_hkvnm"]
-[ext_resource type="Material" uid="uid://yeprohyubuxc" path="res://CanvasShader/Halftones/HalfTones.tres" id="3_5ci8a"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="4_18xdc"]
 [ext_resource type="PackedScene" uid="uid://c4jcka6l73m7c" path="res://Scenes/IntroAndTitleScreen/IntroAndTitleScreen.tscn" id="4_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/Main/parts/OS/OS.tscn" id="5_epx8f"]
@@ -15,9 +13,6 @@
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_14y6p"]
-viewport_path = NodePath("SubViewportBG")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
 viewport_path = NodePath("GameLayer")
@@ -94,33 +89,15 @@ skip_splash = true
 skip_intro = true
 debug_story_progress = true
 
-[node name="SubViewportBG" type="SubViewport" parent="."]
-size = Vector2i(1920, 1080)
-
-[node name="Background" parent="SubViewportBG" instance=ExtResource("2_hkvnm")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-
 [node name="GameLayer" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
-
-[node name="TextureRect" type="TextureRect" parent="GameLayer"]
-material = ExtResource("3_5ci8a")
-offset_right = 1920.0
-offset_bottom = 1080.0
-texture = SubResource("ViewportTexture_14y6p")
-stretch_mode = 2
 
 [node name="IntroAndTitleScreen" parent="GameLayer" instance=ExtResource("4_cv8e0")]
 
 [node name="DoorScene" parent="GameLayer" instance=ExtResource("4_18xdc")]
 
-[node name="OS" parent="GameLayer" node_paths=PackedStringArray("background_subviewport") instance=ExtResource("5_epx8f")]
+[node name="OS" parent="GameLayer" instance=ExtResource("5_epx8f")]
 clip_contents = true
-background_subviewport = NodePath("../../SubViewportBG")
 
 [node name="MousePointer" type="TextureRect" parent="GameLayer"]
 z_index = 10

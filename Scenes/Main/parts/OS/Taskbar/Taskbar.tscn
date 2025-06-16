@@ -81,6 +81,6 @@ layout_mode = 2
 layout_mode = 2
 include_blackbar = true
 offset = Vector2(20, 20)
-a_btn_title = "RETURN"
+a_btn_title = "USE"
 b_btn_title = "CLOSE"
 c_btn_title = "QUIT"
