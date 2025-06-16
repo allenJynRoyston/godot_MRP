@@ -7,12 +7,9 @@ extends PanelContainer
 
 @onready var RenderSubviewport:SubViewport = $RenderSubviewport
 @onready var SceneCamera:Camera3D = $RenderSubviewport/Node3D/Camera3D
-@onready var IntroSubviewport:SubViewport = $SubViewport
-@onready var IntroAndTitleScreen:Control = $SubViewport/IntroAndTitleScreen
+
 @onready var SceneAnimationPlayer:AnimationPlayer = $RenderSubviewport/Node3D/SceneAnimationPlayer
 @onready var ScreenTextureRect:TextureRect = $RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport/TextureRect
-
-
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
@@ -29,13 +26,9 @@ var onLogin:Callable = func():pass
 
 # new values
 var story_progress:Dictionary = {}
-
 var story_index:int
 var allow_replay:bool = true
-#var play_sequence:bool = true : 
-	#set(val):
-		#play_sequence = val
-		#on_play_sequence_update()
+
 
 signal on_finish
 signal wait_for_story
@@ -59,9 +52,9 @@ func _ready() -> void:
 	
 	BtnControls.reveal(false)
 
-	IntroAndTitleScreen.on_end = func() -> void:
-		IntroSubviewport.set_process(false)
-		IntroSubviewport.get_child(0).hide()
+	#IntroAndTitleScreen.on_end = func() -> void:
+		#IntroSubviewport.set_process(false)
+		#IntroSubviewport.get_child(0).hide()
 	
 	BtnControls.onCBtn = func() -> void:
 		if !is_ready:return
@@ -82,10 +75,8 @@ func _ready() -> void:
 			"D":
 				story_index = U.min_max(story_index + 1, 0, max_story_val)
 		
-		print(story_index)
 		check_btn_states()
 	
-	start()
 # ---------------------------------------------
 
 # ---------------------------------------------
@@ -188,7 +179,8 @@ func end() -> void:
 	on_finish.emit()
 
 func switch_to() -> void:
-	if current_mode == MODE.INIT:return
+	if current_mode == MODE.INIT:
+		return
 	is_ready = false	
 	await BtnControls.reveal(true)
 	is_ready = true
@@ -200,25 +192,22 @@ func on_current_mode_update() -> void:
 	match current_mode:
 		# ---------
 		MODE.INIT:
-			for subviewport in [IntroSubviewport, RenderSubviewport]:
+			for subviewport in [ RenderSubviewport]:
 				subviewport.set_process(false)
 
 			for node in [ColorBG, TextureRender]:
 				node.show()
 
-			ColorBG.color = Color.BLACK			
+			ColorBG.color = Color.BLACK	
 		# ---------
 		MODE.START:
-			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 2.0)
-			IntroAndTitleScreen.start()
-			await IntroAndTitleScreen.on_continue
-			IntroAndTitleScreen.queue_free()
+			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1.0)
+
 
 			RenderSubviewport.set_process(true)
 
 			U.tween_node_property(SceneCamera, "fov", 77, 4.0, 0, Tween.TRANS_EXPO)
 			TextureRender.texture = RenderSubviewport.get_texture()
-			#ScreenTextureRect.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
 			
 			await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7, 2.5)
 			SceneAnimationPlayer.active = true
@@ -228,12 +217,10 @@ func on_current_mode_update() -> void:
 		# ---------
 		MODE.START_AT_SCREEN:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0)
-			IntroAndTitleScreen.queue_free()
 
 			RenderSubviewport.set_process(true)
 			U.tween_node_property(SceneCamera, "fov", 77, 0)
 			TextureRender.texture = RenderSubviewport.get_texture()
-			#ScreenTextureRect.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
 			
 			U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0)
 			SceneAnimationPlayer.active = true

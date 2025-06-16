@@ -1,10 +1,45 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cgpps4s7b2f56"]
 
-[ext_resource type="Shader" uid="uid://c8radrll5ai3t" path="res://CanvasShader/LightWavey/LightWavey.gdshader" id="1_g3r6t"]
+[sub_resource type="Shader" id="Shader_qxhy4"]
+code = "shader_type canvas_item;
+
+// === Opacity Controls ===
+uniform float opacity : hint_range(0.0, 1.0) = 1.0;
+uniform bool use_texture_alpha = false;
+uniform bool use_dynamic_opacity = false;
+
+// === NES Line Scroll Emulation ===
+uniform bool enable_line_scroll = true;
+uniform float scroll_speed : hint_range(0.0, 10.0) = 1.0;     // Speed of scroll movement
+uniform float scroll_amplitude : hint_range(0.0, 0.2) = 0.05; // How far each line moves horizontally
+uniform float scroll_frequency : hint_range(0.0, 100.0) = 40.0; // How dense the waves are
+
+void fragment() {
+    vec2 uv = UV;
+
+    if (enable_line_scroll) {
+        // Emulate NES scanline scroll offset
+        float offset = sin(uv.y * scroll_frequency + TIME * scroll_speed) * scroll_amplitude;
+        uv.x += offset;
+    }
+
+    vec4 tex = texture(TEXTURE, uv);
+
+    float final_alpha = opacity;
+    if (use_dynamic_opacity) {
+        final_alpha *= (0.5 + 0.5 * sin(TIME));
+    }
+    if (use_texture_alpha) {
+        final_alpha *= tex.a;
+    }
+
+    COLOR = vec4(tex.rgb, final_alpha);
+}
+"
 
 [resource]
-shader = ExtResource("1_g3r6t")
-shader_parameter/opacity = 0.128
+shader = SubResource("Shader_qxhy4")
+shader_parameter/opacity = 0.137
 shader_parameter/use_texture_alpha = false
 shader_parameter/use_dynamic_opacity = false
 shader_parameter/enable_line_scroll = true

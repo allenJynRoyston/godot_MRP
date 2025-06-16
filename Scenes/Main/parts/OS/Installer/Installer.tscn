@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://8hxxm66kio4n"]
+
+[ext_resource type="Script" uid="uid://bkf1donwhpv06" path="res://Scenes/Main/parts/OS/Installer/installer.gd" id="1_6q8w5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cw2gi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xe4jy"]
+
+[node name="InstallerContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxEmpty_cw2gi")
+script = ExtResource("1_6q8w5")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xe4jy")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 100
+
+[node name="ListContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+alignment = 2

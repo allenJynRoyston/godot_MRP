@@ -1,0 +1,274 @@
+[gd_scene load_steps=26 format=3 uid="uid://jjndhgp0ekhh"]
+
+[ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
+[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_hkvnm"]
+[ext_resource type="Material" uid="uid://yeprohyubuxc" path="res://CanvasShader/Halftones/HalfTones.tres" id="3_5ci8a"]
+[ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="4_18xdc"]
+[ext_resource type="PackedScene" uid="uid://c4jcka6l73m7c" path="res://Scenes/IntroAndTitleScreen/IntroAndTitleScreen.tscn" id="4_cv8e0"]
+[ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/Main/parts/OS/OS.tscn" id="5_epx8f"]
+[ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="7_qdkat"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="8_udh0u"]
+[ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="9_xggvw"]
+[ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="10_xd21n"]
+[ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="11_iwp64"]
+[ext_resource type="Texture2D" uid="uid://bilb0xan3arxj" path="res://Textures/97227770-led-screen-texture-diode-screen-seamless-pattern.jpg" id="12_4etfk"]
+[ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_14y6p"]
+viewport_path = NodePath("SubViewportBG")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
+viewport_path = NodePath("GameLayer")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_a5ilm"]
+viewport_path = NodePath("GlitchShader")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jk85w"]
+viewport_path = NodePath("CRTShader")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1d3xd"]
+viewport_path = NodePath("Screenbend")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_e7if0"]
+viewport_path = NodePath("Texture")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_3omms"]
+viewport_path = NodePath("ColorDepthShader")
+
+[sub_resource type="Shader" id="Shader_14y6p"]
+code = "shader_type canvas_item;
+
+uniform float bend_amount : hint_range(0.0, 1.0) = 0.1;     // Strength of CRT bending effect
+uniform float bend_offset : hint_range(0.0, 0.5) = 0.2;     // Offset for bending effect from the edges
+
+// Function to bend the image outward with an offset
+vec2 crt_bend(vec2 uv, float ba, float bo) {
+    vec2 offset = uv - vec2(0.5);  // Center the UV coordinates
+    float radius = length(offset); // Calculate the distance from the center
+
+    // Apply an inward offset so the bend starts away from the edges
+    radius = max(radius - bo, 0.0);  // Ensure bending only happens within the region after offset
+
+    // Apply the bend effect based on the radius and bend amount
+    offset *= (1.0 + ba * radius * radius);  // Bending becomes stronger further from the center
+
+    return offset + vec2(0.5);  // Recenter the UV coordinates
+}
+
+void fragment() {
+    // Apply CRT bend with offset to the UV coordinates
+    vec2 bent_uv = crt_bend(UV, bend_amount, bend_offset);
+
+    // Sample the texture with the bent UV coordinates
+    vec4 final_color = texture(TEXTURE, bent_uv);
+
+    // Output the final color
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_linol"]
+shader = SubResource("Shader_14y6p")
+shader_parameter/bend_amount = 0.309
+shader_parameter/bend_offset = 0.351
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_linol"]
+viewport_path = NodePath("BorderShader")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_cv8e0"]
+viewport_path = NodePath("FinalComposition")
+
+[node name="Main" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.00251, 1.00136)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
+script = ExtResource("1_cv8e0")
+skip_splash = true
+skip_intro = true
+debug_story_progress = true
+
+[node name="SubViewportBG" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="Background" parent="SubViewportBG" instance=ExtResource("2_hkvnm")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="GameLayer" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="GameLayer"]
+material = ExtResource("3_5ci8a")
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_14y6p")
+stretch_mode = 2
+
+[node name="IntroAndTitleScreen" parent="GameLayer" instance=ExtResource("4_cv8e0")]
+
+[node name="DoorScene" parent="GameLayer" instance=ExtResource("4_18xdc")]
+
+[node name="OS" parent="GameLayer" node_paths=PackedStringArray("background_subviewport") instance=ExtResource("5_epx8f")]
+clip_contents = true
+background_subviewport = NodePath("../../SubViewportBG")
+
+[node name="MousePointer" type="TextureRect" parent="GameLayer"]
+z_index = 10
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("7_qdkat")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="GlitchShader" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="GlitchShader"]
+material = ExtResource("9_xggvw")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_y3p8a")
+stretch_mode = 2
+
+[node name="CRTShader" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="CRTShader"]
+material = ExtResource("10_xd21n")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_a5ilm")
+
+[node name="TextureRect2" type="TextureRect" parent="CRTShader"]
+modulate = Color(1, 1, 1, 0.831373)
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_a5ilm")
+
+[node name="Screenbend" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="Control3" type="Control" parent="Screenbend"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Screenbend/Control3"]
+material = ExtResource("11_iwp64")
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_jk85w")
+stretch_mode = 2
+
+[node name="Control" type="Control" parent="Screenbend"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect2" type="TextureRect" parent="Screenbend/Control"]
+self_modulate = Color(0.6, 0.423529, 0.992157, 0.596078)
+layout_mode = 0
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 1900.0
+offset_bottom = 1070.0
+scale = Vector2(1.01, 1.01)
+texture = SubResource("ViewportTexture_jk85w")
+stretch_mode = 2
+
+[node name="Control2" type="Control" parent="Screenbend"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect2" type="TextureRect" parent="Screenbend/Control2"]
+modulate = Color(0.980392, 0.956863, 0.894118, 0.898039)
+self_modulate = Color(1, 1, 1, 0.878431)
+use_parent_material = true
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_jk85w")
+stretch_mode = 2
+
+[node name="Texture" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect2" type="TextureRect" parent="Texture"]
+modulate = Color(1, 1, 1, 0.00784314)
+material = ExtResource("10_xd21n")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_4etfk")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TextureRect" type="TextureRect" parent="Texture"]
+modulate = Color(1, 1, 1, 0.980392)
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_1d3xd")
+stretch_mode = 2
+
+[node name="ColorDepthShader" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="ColorDepthShader"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_e7if0")
+stretch_mode = 2
+
+[node name="BorderShader" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="BorderShader"]
+material = ExtResource("13_oa1gp")
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_3omms")
+stretch_mode = 2
+
+[node name="FinalComposition" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="FinalComposite" type="TextureRect" parent="FinalComposition"]
+material = SubResource("ShaderMaterial_linol")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_linol")
+stretch_mode = 2
+
+[node name="TransitionScreen" parent="FinalComposition" instance=ExtResource("8_udh0u")]
+
+[node name="FinalOutput" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Output" type="TextureRect" parent="FinalOutput"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_cv8e0")

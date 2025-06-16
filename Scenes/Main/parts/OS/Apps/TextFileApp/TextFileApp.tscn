@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3 uid="uid://b61dv5ws7o2c5"]
+
+[ext_resource type="Script" uid="uid://go7m3m3do6ue" path="res://Scenes/Main/parts/OS/Apps/TextFileApp/text_file_app.gd" id="1_ycmlw"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_d2y37"]
+[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="3_6bivp"]
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_1kg77"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2473v"]
+
+[node name="TextFileApp" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_2473v")
+script = ExtResource("1_ycmlw")
+
+[node name="WindowUI" parent="." instance=ExtResource("2_d2y37")]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+enable_close_btn = true
+enable_max_btn = true
+window_label = "Text Reader"
+window_size = Vector2(250, 0)
+header_icon = 7
+
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+enable_max_btn = true
+enable_close_btn = true
+window_label = "Text Reader"
+
+[node name="MarginContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body" index="0"]
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Title"
+label_settings = ExtResource("3_6bivp")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("4_1kg77")
+bbcode_enabled = true
+text = "some text"
+fit_content = true
+
+[editable path="WindowUI"]

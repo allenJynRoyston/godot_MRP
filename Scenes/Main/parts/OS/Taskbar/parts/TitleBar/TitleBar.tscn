@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://c2137vkv86l50"]
+
+[ext_resource type="Script" uid="uid://cwybo0wmycasf" path="res://Scenes/Main/parts/OS/Taskbar/parts/TitleBar/title_bar.gd" id="1_7oi70"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_mhefv"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_mmijy"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ygn0n"]
+font = ExtResource("3_mmijy")
+font_size = 8
+font_color = Color(0.662745, 0.662745, 0.662745, 1)
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[node name="TitleBar" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 5
+script = ExtResource("1_7oi70")
+
+[node name="IconBtn" parent="." instance=ExtResource("2_mhefv")]
+layout_mode = 2
+icon = 17
+static_color = Color(0.662745, 0.662745, 0.662745, 1)
+flip_v = false
+is_hoverable = false
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Titlebar"
+label_settings = SubResource("LabelSettings_ygn0n")
+uppercase = true
+
+[node name="IsBusyBtn" parent="." instance=ExtResource("2_mhefv")]
+layout_mode = 2
+icon = 22
+static_color = Color(0.662745, 0.662745, 0.662745, 1)
+flip_v = false
+is_hoverable = false

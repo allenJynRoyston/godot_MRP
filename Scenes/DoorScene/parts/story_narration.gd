@@ -29,12 +29,6 @@ var interupt:bool = false
 signal on_end
 
 # --------------------------------------------------------------------------------------------------
-func _init() -> void:
-	pass
-
-func _exit_tree() -> void:
-	pass
-
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	await U.tick()

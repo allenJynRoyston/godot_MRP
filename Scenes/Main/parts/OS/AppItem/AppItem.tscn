@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=3 uid="uid://r8fxl3w206rc"]
+
+[ext_resource type="Script" uid="uid://c8wncqmj781bb" path="res://Scenes/Main/parts/OS/AppItem/app_item.gd" id="1_tkkct"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_w4olv"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_k6wcv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k6wcv"]
+bg_color = Color(0.631657, 0.742398, 0.878193, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_xnjxr"]
+font = ExtResource("3_k6wcv")
+font_color = Color(0.246588, 0.246588, 0.246588, 1)
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+shadow_size = 2
+shadow_color = Color(0.129412, 0.129412, 0.129412, 0.345098)
+
+[node name="AppItem" type="PanelContainer"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 134.0
+offset_bottom = 120.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_k6wcv")
+script = ExtResource("1_tkkct")
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
+layout_mode = 2
+alignment = 1
+
+[node name="IconBtn" parent="MarginContainer2/VBoxContainer" instance=ExtResource("2_w4olv")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+icon = 3
+static_color = Color(0.162066, 0.162066, 0.162066, 1)
+is_hoverable = false
+
+[node name="Label" type="Label" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Application"
+label_settings = SubResource("LabelSettings_xnjxr")
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2

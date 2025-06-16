@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7cc2qds8fes4"]
+
+[ext_resource type="Script" uid="uid://pmngfasd5nlo" path="res://Scenes/Main/parts/OS/Apps/RecycleBin/recycle_bin.gd" id="1_ocn2x"]
+[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="2_vloug"]
+[ext_resource type="PackedScene" uid="uid://bifvm0qbufqhk" path="res://UI/VList/VList.tscn" id="3_au8j4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_krx26"]
+
+[node name="RecycleBin" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_krx26")
+script = ExtResource("1_ocn2x")
+
+[node name="WindowUI" parent="." instance=ExtResource("2_vloug")]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+enable_close_btn = true
+window_label = "Recycle Bin"
+window_size = Vector2(250, 0)
+header_icon = 0
+
+[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
+enable_close_btn = true
+window_label = "Recycle Bin"
+
+[node name="VList" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_au8j4")]
+layout_mode = 2
+
+[editable path="WindowUI"]
