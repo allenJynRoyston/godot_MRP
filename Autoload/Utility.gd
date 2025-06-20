@@ -262,10 +262,14 @@ func room_left(allow_floor_change:bool = false) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func get_viewport_feed(viewport:SubViewport) -> ViewportTexture:
+	return viewport.get_texture()
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
 func get_viewport_texture(viewport:SubViewport) -> Texture2D:
 	var viewport_capture:Image = viewport.get_texture().get_image()
-	var texture:Texture2D = ImageTexture.create_from_image(viewport_capture).duplicate()
-	return texture
+	return ImageTexture.create_from_image(viewport_capture).duplicate()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		

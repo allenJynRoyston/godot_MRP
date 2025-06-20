@@ -1,4 +1,3 @@
-@tool
 extends PanelContainer
 
 @onready var BtnControl:Control = $BtnControl
@@ -11,9 +10,9 @@ extends PanelContainer
 @onready var TimeAndSettings:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/TimeAndSettings
 
 # media player buttons
-@onready var MediaPlayer:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer
-@onready var PlayBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/HBoxContainer/PlayPauseBtn
-@onready var NextBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/HBoxContainer/NextBtn
+@onready var MediaPlayer:PanelContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer
+@onready var PlayBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/MarginContainer/HBoxContainer/HBoxContainer/PlayPauseBtn
+@onready var NextBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/MarginContainer/HBoxContainer/HBoxContainer/NextBtn
 
 @export var show_media_player:bool = false : 
 	set(val):
@@ -37,12 +36,10 @@ var selected_node:Control
 
 var onBackToDesktop:Callable = func() -> void:pass
 var onBack:Callable = func() -> void:pass
-var onItemClose:Callable = func(_dict:Dictionary) -> void:pass
 
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
-	self.modulate = Color(1, 1, 1, 0)	
 	GBL.subscribe_to_music_player(self)	
 	GBL.subscribe_to_control_input(self)
 
@@ -51,65 +48,74 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)
 	
 func _ready() -> void:
+	self.modulate = Color(1, 1, 1, 0)		
 	on_music_data_update()
 	on_show_media_player_update()
 	
+	var update_media_player:Callable = func() -> void:
+		BtnControl.a_btn_title = "PLAY" if !MediaPlayer.is_already_playing() else 'PAUSE'	
+		
 	BtnControl.onUpdate = func(_node:Control) -> void:
 		selected_node = _node
-		
-		BtnControl.disable_back_btn = selected_node == DesktopBtn 
-		BtnControl.hide_a_btn = selected_node not in [PlayBtn, NextBtn]
-		
-		if selected_node == PlayBtn:
-			update_action_btn_for_mediaplayer()
-		elif selected_node == NextBtn:
-			BtnControl.a_btn_title = "NEXT TRACK"
+		if BtnControl.itemlist.size() <= 1:return
 		
 		for node in BtnControl.itemlist:
-			node.modulate = Color(1, 1, 1, 1 if node == _node else 0.7)
+			node.modulate = Color(1, 1, 1, 1 if node == _node else 0.7)		
+		
+		match selected_node:
+			PlayBtn:
+				BtnControl.hide_c_btn = true
+				update_media_player.call()
+				get_parent().currently_running_app = null
+			NextBtn:
+				BtnControl.hide_c_btn = true
+				BtnControl.a_btn_title = "NEXT TRACK"
+				# replace with music node later
+				get_parent().currently_running_app = null
+			DesktopBtn:
+				BtnControl.hide_c_btn = true
+				# replace with music node later
+				get_parent().currently_running_app = null
+			_:
+				BtnControl.hide_c_btn = false
+				if "node" in selected_node.data and selected_node.data.node != null:
+					get_parent().currently_running_app = selected_node.data.node
 
-		# desktop btn
-		if selected_node == DesktopBtn:
-			get_parent().currently_running_app = null
-			return
-
-		# media buttons desktop
-		if selected_node in [PlayBtn, NextBtn]:
-			get_parent().currently_running_app = null
-			return			
-			
-		# preview of any current apps
-		if ("data" in selected_node) and ("node" in selected_node.data):
-			get_parent().currently_running_app = selected_node.data.node
-			
 	BtnControl.onAction = func() -> void:
-		# media buttons desktop
-		if selected_node == PlayBtn:
-			MediaPlayer.on_pause()
-			update_action_btn_for_mediaplayer()
-			return		
+		match selected_node:
+			PlayBtn:
+				MediaPlayer.on_pause()
+				update_media_player.call()
+			NextBtn:
+				MediaPlayer.on_next()
+				update_media_player.call()
+			DesktopBtn:
+				await set_show_taskbar(false)
+				GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()
+			_:
+				await set_show_taskbar(false)
+				GBL.find_node(REFS.OS_LAYOUT).return_to_app(selected_node.data.ref)
+				
 			
-		if selected_node == NextBtn:
-			MediaPlayer.on_next()
-			update_action_btn_for_mediaplayer()
-			return
-			
-	BtnControl.onBack = func() -> void:
+	BtnControl.onCBtn = func() -> void:
 		is_busy = true		
 		await BtnControl.reveal(false)
 		var confirm:bool = await create_modal("Quit this program?", "Your progress will be saved.")
-		is_busy = false
 		BtnControl.reveal(true)	
 		if confirm:
-			if selected_node in [PlayBtn, NextBtn]:
-				show_media_player = false
-				await U.tick()
-				BtnControl.itemlist = get_itemlist()
-				BtnControl.item_index = 0				
-				return
-	
-			if "data" in selected_node:
-				remove_item(selected_node.data.ref)
+			match selected_node:
+				PlayBtn:
+					show_media_player = false
+				NextBtn:
+					show_media_player = false
+				_:
+					GBL.find_node(REFS.OS_LAYOUT).close_app(selected_node.data.ref)
+			
+			await U.tick()
+			BtnControl.itemlist = get_itemlist()
+			BtnControl.item_index = 0				
+			
+		is_busy = false
 		
 	BtnControl.directional_pref = "LR"
 	
@@ -123,9 +129,6 @@ func _ready() -> void:
 	
 	set_show_taskbar(false, true)
 # ------------------------------------------------------------------------------
-
-func update_action_btn_for_mediaplayer() -> void:
-	BtnControl.a_btn_title = "PLAY" if !MediaPlayer.is_already_playing() else 'PAUSE'
 
 # ------------------------------------------------------------------------------	
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
@@ -171,10 +174,7 @@ func add_item(item:Dictionary) -> void:
 	new_node.hint_description = "Switch to %s." % [item.title]
 	new_node.hint_title = "HINT"
 	new_node.hint_icon = SVGS.TYPE.INFO
-	
-	new_node.onClose = func() -> void:
-		onItemClose.call(item)
-	
+
 	RunningTasks.add_child(new_node)
 	
 	await U.tick()
@@ -185,9 +185,7 @@ func remove_item(ref:int) -> void:
 	if !is_node_ready():return
 	for task in RunningTasks.get_children():
 		if task.data.ref == ref:
-			await task.data.node.force_save_and_quit()
 			RunningTasks.remove_child(task)
-			get_parent().close_app(ref)
 			
 	await U.tick()
 	BtnControl.itemlist = get_itemlist()

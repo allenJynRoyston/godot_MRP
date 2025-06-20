@@ -126,7 +126,7 @@ func _init() -> void:
 		GBL.save_resolution(DisplayServer.screen_get_size())
 	
 	GBL.subscribe_to_process(self)
-	GBL.register_node(REFS.OS_ROOT, self)	
+	GBL.register_node(REFS.MAIN, self)	
 	GBL.subscribe_to_control_input(self)	
 	GBL.subscribe_to_mouse_icons(self)
 # ------------------------------------------------------------------------------
@@ -134,7 +134,7 @@ func _init() -> void:
 # -----------------------------------	
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
-	GBL.unregister_node(REFS.OS_ROOT)
+	GBL.unregister_node(REFS.MAIN)
 	GBL.unregister_node(REFS.GAMELAYER_SUBVIEWPORT)
 	GBL.unsubscribe_to_mouse_icons(self)
 	GBL.unsubscribe_to_control_input(self)	

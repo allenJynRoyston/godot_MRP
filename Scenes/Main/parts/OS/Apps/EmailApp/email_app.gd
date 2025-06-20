@@ -1,8 +1,9 @@
 extends AppWrapper
 
-@onready var EmailComponent:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/EmailComponent
-@onready var LoadingComponent:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/LoadingComponent
-@onready var PauseContainer:PanelContainer = $WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer/PauseContainer
+@onready var LoadingComponent:PanelContainer = $LoadingComponent
+@onready var EmailComponent:PanelContainer = $EmailComponent
+@onready var PauseContainer:PanelContainer = $PauseContainer
+@onready var TransitionScreen:Control = $TransitionScreen
 
 var email_data:Array[Dictionary] = [
 	{
@@ -41,67 +42,58 @@ var email_data:Array[Dictionary] = [
 					}
 				}),
 		}
-
 	}
 ]
 
-# signals
-signal on_quit
-
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	WindowUI = $WindowUI
-	PauseContainer.hide()	
-	LoadingComponent.hide()
-	EmailComponent.hide()
-	
 	EmailComponent.markAsRead = func(index:int) -> void:
 		events.mark.call(index)
 		EmailComponent.read_emails = events.fetch_read_emails.call()
 		
-	EmailComponent.onQuit = func() -> void:quit()
-
+	EmailComponent.onQuit = func() -> void:
+		quit()
+	
+	EmailComponent.onBackToDesktop = func() -> void:
+		await pause()
+		GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()
+		
 	EmailComponent.email_data = email_data			
 	EmailComponent.read_emails = events.fetch_read_emails.call()
 
-	super._ready()	
 
-func start() -> void:
-	if !is_ready_and_activated:
-		is_ready_and_activated = true	
-		LoadingComponent.start(fast_load)
-		await LoadingComponent.on_complete	
-		EmailComponent.start()
-		is_ready.emit()
+func start(fast_load:bool) -> void:
+	LoadingComponent.loading_text = str(details.title).to_upper()
+	await LoadingComponent.start(fast_load)
+	await TransitionScreen.start(0.7, true)
+
+	# start app
+	EmailComponent.start()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func quit() -> void:
-	EmailComponent.hide()
-	PauseContainer.hide()
-	LoadingComponent.hide()
+func quit(skip_close:bool = false) -> void:
 	events.close.call()
-
+	queue_free()
+	
 func on_taskbar_is_open_update(state:bool) -> void:
-	if state:
-		pause()
-	else:
-		unpause()
+	await pause() if state else await unpause()
 
 func pause() -> void:
-	if !is_paused:
-		is_paused = true
-		await EmailComponent.pause()
-		if is_visible_in_tree():
-			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
-		PauseContainer.show()
-		EmailComponent.hide()
-	
+	pass
+	#if !is_paused:
+		#is_paused = true
+		#await EmailComponent.pause()
+		#if is_visible_in_tree():
+			#PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+		#PauseContainer.show()
+		#EmailComponent.hide()
+	#
 func unpause() -> void:
-	is_paused = false
-	PauseContainer.hide()
-	EmailComponent.show()
-	EmailComponent.unpause()
-	await U.set_timeout(0.3)
-	EmailComponent.unpause()
+	pass
+	#is_paused = false
+	#PauseContainer.hide()
+	#EmailComponent.show()
+	#await U.set_timeout(0.3)
+	#EmailComponent.unpause()
 # ------------------------------------------------------------------------------

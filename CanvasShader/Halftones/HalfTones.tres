@@ -7,10 +7,10 @@ uniform int size = 64; // amount of dots
 uniform float dot_size = 2.0; // dots are multiplied by dot_size
 uniform float value_multiplier = 1.0; // reduce or increase value, useful when it's too bright
 uniform bool invert = false;
-uniform vec4 dot_color : source_color = vec4(1.0, 1.0, 1.0, 1.0); // Selectable color (RGBA)
+uniform bool keep_original_colors = false; // New: Use original texture colors
+uniform vec4 dot_color : source_color = vec4(1.0, 1.0, 1.0, 1.0); // Tint color
 
 vec3 rgb2hsv(vec3 tex) {
-	vec3 hsv;
 	vec3 c = tex;
 	vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
 	vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
@@ -25,16 +25,22 @@ void fragment() {
 	vec2 ratio = vec2(1.0, TEXTURE_PIXEL_SIZE.x / TEXTURE_PIXEL_SIZE.y);
 	vec2 pixelated_uv = floor(UV * fSize * ratio) / (fSize * ratio);
 
-	float dots = length(fract(UV * fSize * ratio) - vec2(0.5)) * dot_size;
-	float value = rgb2hsv(texture(TEXTURE, pixelated_uv).rgb).z;
+	vec4 original = texture(TEXTURE, UV);
+	vec4 pixelated = texture(TEXTURE, pixelated_uv);
+	float value = rgb2hsv(pixelated.rgb).z;
 
+	float dots = length(fract(UV * fSize * ratio) - vec2(0.5)) * dot_size;
 	dots = mix(dots, 1.0 - dots, float(invert));
 	dots += value * value_multiplier;
 	dots = pow(dots, 5.0);
 	dots = clamp(dots, 0.0, 1.0);
 
-	COLOR.rgb = dot_color.rgb * dots;
-	COLOR.a = texture(TEXTURE, UV).a * dot_color.a; // Optional: modulate alpha too
+	if (keep_original_colors) {
+		COLOR.rgb = original.rgb * dots;
+	} else {
+		COLOR.rgb = dot_color.rgb * dots;
+	}
+	COLOR.a = original.a * dot_color.a;
 }
 "
 
@@ -44,4 +50,5 @@ shader_parameter/size = 112
 shader_parameter/dot_size = 3.0
 shader_parameter/value_multiplier = 1.2
 shader_parameter/invert = true
-shader_parameter/dot_color = Color(0.818368, 0.842507, 0.694138, 1)
+shader_parameter/keep_original_colors = false
+shader_parameter/dot_color = Color(0.111405, 0.994315, 0, 1)

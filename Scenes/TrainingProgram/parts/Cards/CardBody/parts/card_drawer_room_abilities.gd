@@ -60,7 +60,6 @@ func on_room_details_update() -> void:
 				
 				btn_node.onClick = func() -> void:
 					if preview_mode or !is_visible_in_tree() or !btn_node.is_clickable():return
-					
 					var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 					if ActionContainerNode.is_visible_in_tree():
 						# first, disables btns in the card

@@ -1,12 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://eqyg3c15y82h"]
+[gd_scene load_steps=7 format=3 uid="uid://eqyg3c15y82h"]
 
-[ext_resource type="Material" uid="uid://bbb1iurub67bv" path="res://CanvasShader/Hexagon/Hexagon.tres" id="1_snueh"]
-[ext_resource type="Material" uid="uid://xaeua0jc0ktp" path="res://Shader/Ripple/Ripple.tres" id="3_jqj67"]
+[ext_resource type="Script" uid="uid://c7tynm067h14t" path="res://Scenes/Main/parts/Background/background.gd" id="1_h1t15"]
+[ext_resource type="Shader" uid="uid://bsxi1d0tasle3" path="res://CanvasShader/AudioShader/audio_shader.gdshader" id="2_vjfrr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vgw3k"]
+shader = ExtResource("2_vjfrr")
+shader_parameter/audio_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/time = 0.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_52o18"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_7jiq0"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_vgw3k"]
 viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_3gehf"]
+viewport_path = NodePath("SubViewport2")
 
 [node name="Background" type="PanelContainer"]
 clip_contents = true
@@ -17,12 +25,13 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("1_h1t15")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(640, 480)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport"]
-material = ExtResource("1_snueh")
+material = SubResource("ShaderMaterial_vgw3k")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -32,9 +41,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("NoiseTexture2D_52o18")
 
+[node name="SubViewport2" type="SubViewport" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport2"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_vgw3k")
+expand_mode = 1
+stretch_mode = 2
+
 [node name="FinalOutput" type="TextureRect" parent="."]
-material = ExtResource("3_jqj67")
 layout_mode = 2
 size_flags_horizontal = 3
-texture = SubResource("ViewportTexture_7jiq0")
+texture = SubResource("ViewportTexture_3gehf")
 expand_mode = 1
+stretch_mode = 6

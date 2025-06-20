@@ -65,6 +65,8 @@ extends GameContainer
 @onready var SettingsBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
 @onready var ObjectivesBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/ObjectivesBtn
 @onready var HintInfoBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/HintInfoBtn
+@onready var TutorialBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/TutorialBtn
+
 
 # ACTION CONTROLS 
 @onready var RoomBtnPanel:PanelContainer = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel
@@ -85,7 +87,6 @@ extends GameContainer
 @onready var InvestigateBackBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/InvestigateBackBtn
 #  ---------------------------------------
 
-enum BOOKMARK_TYPE { GLOBAL, RING }
 enum MODE { 
 	NONE,
 	ACTIONS,
@@ -95,7 +96,6 @@ enum MODE {
 	RESET_ROOM, 
 	DISMISS_RESEARCHER 
 }
-enum MENU_TYPE { ACTIONS = 0, ABILITIES = 1, PASSIVES = 2 }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
 const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
@@ -110,6 +110,7 @@ var current_mode:MODE = MODE.NONE :
 var prev_draw_state:Dictionary	= {}
 var is_in_transition:bool = false 
 var is_busy:bool = false
+var is_started:bool = false
 var show_new_message_btn:bool = false : 
 	set(val):
 		show_new_message_btn = val
@@ -137,14 +138,12 @@ func _ready() -> void:
 	
 	# set reference 
 	GBL.direct_ref["SummaryCard"] = SummaryCard	
-
+	
 	# CREATE NAMETAGS AND ADD THEM TO SCENE
 	for index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		var new_node:Control = NametagPreload.instantiate()
 		new_node.index = index
 		NameControl.add_child(new_node)
-	
-
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -162,8 +161,55 @@ func activate() -> void:
 	update_control_pos(false)
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------		
+func update_control_pos(skip_animation:bool = false) -> void:	
+	await U.tick()
+	
+	# for elements in the bottom left corner
+	control_pos[ActionPanel] = {
+		"show": 0, 
+		"hide": ActionMarginPanel.size.y 
+	}
+	
+	control_pos[InvestigatePanel] = {
+		"show": 0, 
+		"hide": InvestigateMargin.size.y
+	}	
+	
+	# for eelements in the top right
+	control_pos[MiniCardPanel] = {
+		"show": 0, 
+		"hide": -MiniCardMargin.size.x
+	}
+	
+	control_pos[FloorPreviewPanel] = {
+		"show": 0, 
+		"hide":  -FloorPreviewMargin.size.x
+	}
+	
+	control_pos[NotificationPanel] = {
+		"show": 0,
+		"hide": NotificationMargin.size.x
+	}
+	
+	for node in [ActionPanel, InvestigatePanel]: 
+		node.position.y = control_pos[node].hide
+
+	for node in [NotificationPanel, FloorPreviewPanel]: 
+		node.position.x = control_pos[node].hide
+	
+	# hide by default
+	NewMessageBtn.is_disabled = true
+	
+	on_current_mode_update(skip_animation)
 # --------------------------------------------------------------------------------------------------	
-func start(start_at_ring_level:bool = false) -> void:
+
+
+# --------------------------------------------------------------------------------------------------	
+func start(start_at_ring_level:bool = false) -> void:	
+	is_started = true
+	
+	# -------------------------------------
 	for btn in [GenEndTurnBtn, WingEndTurnBtn, FacilityEndTurnBtn]:
 		btn.onClick = func() -> void:
 			reveal_notification(false)
@@ -171,6 +217,10 @@ func start(start_at_ring_level:bool = false) -> void:
 			await GameplayNode.next_day()
 			reveal_notification(true)			
 			lock_actions(false)
+	
+	# -------------------------------------
+	if !GameplayNode.is_tutorial:
+		TutorialBtn.queue_free()
 
 	# -------------------------------------
 	NewMessageBtn.onClick = func() -> void:
@@ -190,6 +240,7 @@ func start(start_at_ring_level:bool = false) -> void:
 	GotoWingBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.WING_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
+					
 	
 	WingActionBtn.onClick = func() -> void:
 		GameplayNode.show_marked_objectives = false
@@ -198,6 +249,7 @@ func start(start_at_ring_level:bool = false) -> void:
 		current_mode = MODE.INVESTIGATE	
 		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
+		
 		
 	GotoGeneratorBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.GENERATOR
@@ -270,13 +322,47 @@ func start(start_at_ring_level:bool = false) -> void:
 			set_backdrop_state(false)
 			ControllerOverlay.show()
 			NameControl.show()
+	
+	TutorialBtn.onClick = func() -> void:
+		freeze_inputs = true
+		await lock_actions(true)
+		await GAME_UTIL.get_last_tutorial()
+		lock_actions(false)
+		freeze_inputs = false
 	# -------------------------------------
 	
+	# -------------------------------------
 	current_mode = MODE.ACTIONS
-	modulate = Color(1, 1, 1, 1)
+	# -------------------------------------	
+
 	if start_at_ring_level:
 		camera_settings.type = CAMERA.TYPE.WING_SELECT
-		SUBSCRIBE.camera_settings = camera_settings		
+		SUBSCRIBE.camera_settings = camera_settings
+		
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3, 0.5)
+
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func tutorial_is_running(is_running:bool) -> void:
+	freeze_inputs = is_running
+	
+	var ActiveNode = GBL.find_node(REFS.ACTIVE_MENU)
+	if ActiveNode != null:
+		ActiveNode.tutorial_is_open = is_running
+	
+	match current_mode:
+		MODE.NONE:
+			await BtnControls.reveal(is_running)
+		# --------------
+		MODE.ACTIONS:
+			await lock_actions(is_running)
+		# --------------
+		MODE.INVESTIGATE:	
+			await lock_investigate(is_running)
+		# --------------	
+		MODE.BUILD:
+			await RoomDetailsControl.reveal(is_running)			
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -289,49 +375,6 @@ func reveal_new_message(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 func on_fullscreen_update(state:bool) -> void:
 	update_control_pos(true)
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------		
-func update_control_pos(skip_animation:bool = false) -> void:	
-	await U.tick()
-	
-	# for elements in the bottom left corner
-	control_pos[ActionPanel] = {
-		"show": 0, 
-		"hide": ActionMarginPanel.size.y 
-	}
-	
-	control_pos[InvestigatePanel] = {
-		"show": 0, 
-		"hide": InvestigateMargin.size.y
-	}	
-	
-	# for eelements in the top right
-	control_pos[MiniCardPanel] = {
-		"show": 0, 
-		"hide": -MiniCardMargin.size.x
-	}
-	
-	control_pos[FloorPreviewPanel] = {
-		"show": 0, 
-		"hide":  -FloorPreviewMargin.size.x
-	}
-	
-	control_pos[NotificationPanel] = {
-		"show": 0,
-		"hide": NotificationMargin.size.x
-	}
-	
-	for node in [ActionPanel, InvestigatePanel]: 
-		node.position.y = control_pos[node].hide
-
-	for node in [NotificationPanel, FloorPreviewPanel]: 
-		node.position.x = control_pos[node].hide
-	
-	# hide by default
-	NewMessageBtn.is_disabled = true
-	
-	on_current_mode_update(skip_animation)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------				
@@ -436,7 +479,6 @@ func show_build_options() -> void:
 		if !skip_reveal:
 			await RoomDetailsControl.reveal(false)
 		current_mode = MODE.INVESTIGATE
-		
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update card
@@ -459,11 +501,17 @@ func show_build_options() -> void:
 		clear_lines()
 	
 	ActiveMenuNode.onClose = func() -> void:
-		onClose.call(false)
+		await onClose.call(false)
+		
+		if GameplayNode.is_tutorial:
+			if ROOM_UTIL.build_count(ROOM.REF.DIRECTORS_OFFICE) == 1:
+				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_DIRECTORS_OFFICE, 1.0)
+			if ROOM_UTIL.build_count(ROOM.REF.HQ) == 1:	
+				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_HQ, 1.0)
 		
 	ActiveMenuNode.onAction = func() -> void:
 		await ActiveMenuNode.close()
-			
+		
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
@@ -610,7 +658,7 @@ func show_settings() -> void:
 					"is_checked": await is_fullscreen_checked.call(),
 					"get_checked_state": is_fullscreen_checked,
 					"action": func() -> void:
-						GBL.find_node(REFS.OS_ROOT).toggle_fullscreen(),
+						GBL.find_node(REFS.MAIN).toggle_fullscreen(),
 				},
 			]
 		},
@@ -781,7 +829,10 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			if !is_in_transition:
 				for btn in btnlist:
 					btn.is_disabled = btn == GotoWingBtn
-					
+			
+			if GameplayNode.is_tutorial:
+				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.FLOORPLAN, 0.3)
+			
 		# ----------------------
 		CAMERA.TYPE.GENERATOR:
 			reveal_floorpreview(false)
@@ -970,7 +1021,6 @@ func lock_panel_btn_state(state:bool, panels:Array) -> void:
 					for node in child.get_children():
 						if node is BtnBase and "is_disabled" in node:
 							node.is_disabled = state
-							print("*: ", node)
 						
 						var btn_list:HBoxContainer = node.get_node('./MarginContainer/VBoxContainer/HBoxContainer/')
 						if btn_list != null:
@@ -985,7 +1035,6 @@ func lock_actions(state:bool, ignore_panel:bool = false) -> void:
 		lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
 	
 	await reveal_action_controls(!state)
-	
 	
 	if !state:
 		freeze_inputs = false
@@ -1057,7 +1106,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			await lock_investigate(false)
 		
 			U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].hide)
-		
+			
+			if GameplayNode.is_tutorial:
+				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.INVESTIGATE, 0.5)
 		# --------------
 		MODE.ABILITY:
 			var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
@@ -1108,6 +1159,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			clear_lines()
 			await lock_investigate(true)			
 			await BtnControls.reveal(true)
+			
+			if GameplayNode.is_tutorial:
+				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.ACTIONS)			
 		# --------------
 		MODE.BUILD:
 			clear_lines()
@@ -1116,6 +1170,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			await lock_investigate(true)
 			await show_build_options()
 			RoomDetailsControl.reveal(true)
+			
+			if GameplayNode.is_tutorial:
+				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.BUILD, 0.5)
 	
 	on_current_location_update()	
 	on_camera_settings_update()
@@ -1142,7 +1199,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_showing or is_in_transition or freeze_inputs or is_busy:return	
+	if !is_node_ready() or !is_visible_in_tree() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or !is_showing or is_in_transition or freeze_inputs or is_busy:return	
 	if current_mode == MODE.ABILITY:return
 	var key:String = input_data.key
 	is_busy = true

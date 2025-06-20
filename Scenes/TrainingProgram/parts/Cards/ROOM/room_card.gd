@@ -17,8 +17,7 @@ extends MouseInteractions
 # back
 @onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
-@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
-
+@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 
 @export var ref:int = -1: 
 	set(val):
@@ -139,7 +138,6 @@ func on_ref_update() -> void:
 		CardDrawerName.content = "-"
 		CardDrawerDescription.content = "-"
 		CardDrawerImage.img_src = "-"
-		CardDrawerDescription.content = "-"
 		CardDrawerCurrency.list = []
 		CardDrawerVibes.metrics = {}
 		CardDrawerStaffingRequirements.clear()

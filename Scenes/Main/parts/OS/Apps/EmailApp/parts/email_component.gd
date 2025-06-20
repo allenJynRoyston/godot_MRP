@@ -29,19 +29,18 @@ var read_emails:Array = [] :
 var email_list:Array = []
 var sidebar_list:Array = []
 
+var onBackToDesktop:Callable = func():pass
 var onQuit:Callable = func():pass
 var markAsRead:Callable = func(_index:int):pass
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	hide()
 	on_email_data_update()
 	
 	BtnControls.directional_pref = "UD"
 	BtnControls.onBack = func() -> void:
-		await BtnControls.reveal(false)
-		await U.set_timeout(0.3)
-		onQuit.call()
+		onBackToDesktop.call()
+		
 	BtnControls.onDirectional = func(key:String):
 		if !is_visible_in_tree() or !is_node_ready() or sidebar_list.is_empty(): 
 				return
@@ -59,7 +58,6 @@ func _ready() -> void:
 
 func start() -> void:
 	BtnControls.reveal(true)
-	show()
 
 func pause() -> void:
 	await BtnControls.reveal(false)

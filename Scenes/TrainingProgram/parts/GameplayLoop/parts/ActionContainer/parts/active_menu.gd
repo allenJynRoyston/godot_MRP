@@ -83,6 +83,7 @@ var hint_border_color:Color = Color(0.337, 0.275, 1.0) :
 var control_pos_default:Dictionary
 var control_pos:Dictionary
 
+var tutorial_is_open:bool = false
 var wait_for_release:bool = false
 var allow_shortcut:bool = false
 var stored_size:Vector2 
@@ -97,9 +98,13 @@ var onAction:Callable = func():pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
+	print('init')
+	GBL.register_node(REFS.ACTIVE_MENU, self)
 	GBL.subscribe_to_control_input(self)
 
 func _exit_tree() -> void:
+	print("exit")
+	GBL.unregister_node(REFS.ACTIVE_MENU)	
 	GBL.unsubscribe_to_control_input(self)
 	GBL.direct_ref.erase("ActiveMenu")
 	
@@ -304,7 +309,7 @@ func on_action() -> void:
 				
 # ------------------------------------------------------------------------------
 func on_control_input_update(input_data:Dictionary) -> void:	
-	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs:return
+	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or tutorial_is_open:return
 	var key:String = input_data.key
 
 	match key:

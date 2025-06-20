@@ -4,6 +4,6 @@
 
 [resource]
 shader = ExtResource("1_r72kl")
-shader_parameter/ripple_center_x = 1.0
+shader_parameter/ripple_center_x = 4.75e-08
 shader_parameter/ripple_center_y = -1.0
-shader_parameter/ripple_speed = 0.2
+shader_parameter/ripple_speed = 0.0

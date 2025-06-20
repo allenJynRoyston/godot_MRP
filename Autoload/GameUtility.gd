@@ -1161,16 +1161,106 @@ func add_timeline_item(dict:Dictionary) -> void:
 #endregion	
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
 func add_dialogue(data:Dictionary) -> void:
-		
 	var DialogNode:Control = DialogPreload.instantiate()
 	DialogNode.z_index = z_index_lvl
 	GameplayNode.add_child(DialogNode)
-	
-	await DialogNode.activate()
-	
-	GameplayNode.show_only([Structure3dContainer])
+		
+	await U.tick()
 	DialogNode.start(data)
 
 	await DialogNode.user_response
 	GameplayNode.restore_player_hud()
+# ------------------------------------------------------------------------------	
+
+
+
+# ------------------------------------------------------------------------------	TUTORIAL
+#region START GAME
+var tutorial_completed:Dictionary = {}
+
+func setup_tutorial() -> void:
+	for key in TUTORIAL.TYPE:
+		tutorial_completed[TUTORIAL.TYPE[key]] = false
+		
+func get_last_tutorial() -> void:
+	var keys:Array = []
+	
+	for key in TUTORIAL.TYPE:
+		keys.push_back(key)
+	
+	keys.reverse()
+	
+	for key in keys:
+		if tutorial_completed[TUTORIAL.TYPE[key]]:
+			await check_tutorial(TUTORIAL.TYPE[key], 0.02, true)
+			break
+
+func check_tutorial(key:TUTORIAL.TYPE, delay:float = 0.1, force:bool = false) -> void:
+	if tutorial_completed[key] and !force:
+		await U.tick()
+		return
+	
+	var text:Array = []
+	var title:String = ""
+	
+	await U.set_timeout(delay)
+	
+	match key:
+		# --------------------------- START TUTORIAL
+		TUTORIAL.TYPE.INTRO:	
+			title = "HOW TO PLAY"
+			text = [
+				'Welcome Site Director.',
+				'You must complete the objectives.'
+			]
+		# ---------------------------
+		TUTORIAL.TYPE.FLOORPLAN:	
+			title = "FLOORPLAN"
+			text = [
+				'Something something.'
+			]
+		# ---------------------------
+		TUTORIAL.TYPE.INVESTIGATE:	
+			title = "INVESTIGATE"
+			text = [
+				'Something something.'
+			]
+		# ---------------------------		
+		TUTORIAL.TYPE.ACTIONS:	
+			title = "ACTIONS"
+			text = [
+				'Something something.'
+			]
+		# ---------------------------
+		TUTORIAL.TYPE.BUILD:	
+			title = "BUILD"
+			text = [
+				'Something something.'
+			]
+		# ---------------------------
+		TUTORIAL.TYPE.AFTER_BUILD_DIRECTORS_OFFICE:	
+			title = "AFTER_BUILD DIRECTORS OFFICE"
+			text = [
+				'Something something.'
+			]
+		# ---------------------------
+		TUTORIAL.TYPE.AFTER_BUILD_HQ:	
+			title = "AFTER_BUILD HQ"
+			text = [
+				'Something something.'
+			]
+		# ---------------------------		
+		
+		
+		
+	await add_dialogue({
+		"title": title,
+		"text": text
+	})
+	
+	tutorial_completed[key] = true
+	
+#endregion
+# ------------------------------------------------------------------------------

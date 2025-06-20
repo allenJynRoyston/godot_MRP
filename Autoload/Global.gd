@@ -235,12 +235,12 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		for node in control_input_subscriptions:
 			if "on_control_input_release_update" in node:
 				node.on_control_input_release_update()
-				
+		
 	if event.is_pressed():
 		for node in control_input_subscriptions:
 			if "on_control_input_update" in node:
 				var key:String = ""
-				
+
 				match event.keycode:
 					# --------------
 					48:
@@ -296,6 +296,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "G"
 					72:
 						key = "H"
+					78:
+						key = "N"
 					65:
 						key = "A"
 					68:
@@ -316,7 +318,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "L1"
 					93:
 						key = "R1"
-						
 						
 				node.on_control_input_update({"keycode": event.keycode, "key": key})
 # ------------------------------------------------------------------------------

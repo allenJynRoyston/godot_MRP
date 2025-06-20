@@ -13,7 +13,6 @@ bg_color = Color(0.220654, 0.244283, 0.331351, 1)
 shadow_offset = Vector2(0, 2)
 
 [node name="Taskbar" type="PanelContainer"]
-modulate = Color(1, 1, 1, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -74,13 +73,15 @@ size_flags_horizontal = 3
 alignment = 1
 
 [node name="MediaPlayer" parent="TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("3_7up16")]
-visible = false
 layout_mode = 2
 
 [node name="BtnControl" parent="." instance=ExtResource("5_nyp1d")]
 layout_mode = 2
 include_blackbar = true
-offset = Vector2(20, 20)
+offset = Vector2(10, 10)
 a_btn_title = "USE"
 b_btn_title = "CLOSE"
-c_btn_title = "QUIT"
+hide_b_btn = true
+c_btn_title = "CLOSE"
+c_btn_icon = 16
+hide_c_btn = false

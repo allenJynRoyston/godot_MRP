@@ -133,20 +133,18 @@ var mods_data:Array[Dictionary] = [
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	WindowUI = $WindowUI
-	super._ready()	
-	
-	LoadingComponent.delay = 0.3 if fast_load else 1.0
-	ModComponent.hide()
-	LoadingComponent.start()
-	await LoadingComponent.on_complete	
-	ModComponent.show()
-	
-	var mod_settings:Array = [] #app_props.get_mod_settings.call()
-
-	for item in mods_data:
-		var setting:Array = mod_settings.filter(func(d): return d.ref == item.ref)		
-		item.selected = [] if setting.size() == 0 else setting[0].selected
+	pass
+	#LoadingComponent.delay = 0.3 if fast_load else 1.0
+	#ModComponent.hide()
+	#LoadingComponent.start()
+	#await LoadingComponent.on_complete	
+	#ModComponent.show()
+	#
+	#var mod_settings:Array = [] #app_props.get_mod_settings.call()
+#
+	#for item in mods_data:
+		#var setting:Array = mod_settings.filter(func(d): return d.ref == item.ref)		
+		#item.selected = [] if setting.size() == 0 else setting[0].selected
 
 	## make sure has_read first so email_data can reference it
 	#ModComponent.not_new = app_props.get_not_new.call()

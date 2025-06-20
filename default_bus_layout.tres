@@ -1,0 +1,35 @@
+[gd_resource type="AudioBusLayout" load_steps=5 format=3 uid="uid://ck3nxtq0yohyf"]
+
+[sub_resource type="AudioEffectSpectrumAnalyzer" id="AudioEffectSpectrumAnalyzer_j3pel"]
+resource_name = "SpectrumAnalyzer"
+
+[sub_resource type="AudioEffectSpectrumAnalyzer" id="AudioEffectSpectrumAnalyzer_g28q7"]
+resource_name = "SpectrumAnalyzer"
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
+resource_name = "Reverb"
+room_size = 0.23
+damping = 0.48
+spread = 0.43
+hipass = 0.29
+dry = 0.49
+wet = 0.67
+
+[sub_resource type="AudioEffectFilter" id="AudioEffectFilter_j3pel"]
+resource_name = "Filter"
+
+[resource]
+bus/0/effect/0/effect = SubResource("AudioEffectSpectrumAnalyzer_j3pel")
+bus/0/effect/0/enabled = true
+bus/1/name = &"Reverb"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = -11.9576
+bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("AudioEffectSpectrumAnalyzer_g28q7")
+bus/1/effect/0/enabled = true
+bus/1/effect/1/effect = SubResource("AudioEffectReverb_j3pel")
+bus/1/effect/1/enabled = true
+bus/1/effect/2/effect = SubResource("AudioEffectFilter_j3pel")
+bus/1/effect/2/enabled = true

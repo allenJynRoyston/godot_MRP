@@ -1,13 +1,17 @@
 extends PanelContainer
 
-@onready var MousePointer:TextureRect = $GameLayer/MousePointer
+@onready var MousePointer:TextureRect = $FinalComposition/MousePointer
 @onready var Output:TextureRect = $FinalOutput/Output
 
 @onready var Gamelayer:SubViewport = $GameLayer
 @onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
 @onready var DoorScene:PanelContainer = $GameLayer/DoorScene
-@onready var OSNode:PanelContainer = $GameLayer/OS
-@onready var TransitionScreen:Control = $FinalComposition/TransitionScreen
+@onready var OSViewport:SubViewport = $OS
+@onready var OSNode:PanelContainer = $OS/OSPanel
+@onready var OSTexture:TextureRect = $GameLayer/OSTexture
+@onready var TransitionScreen:Control = $GameLayer/TransitionScreen
+
+@onready var MusicShaderTexture:TextureRect = $MusicShader/MusicShaderTexture
 
 enum LAYER {DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
 
@@ -111,7 +115,6 @@ var current_layer:LAYER :
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
 func _init() -> void:
-	
 	if FileAccess.file_exists("user://config.json"):
 		var file = FileAccess.open("user://config.json", FileAccess.READ)
 		var result = JSON.parse_string(file.get_as_text())
@@ -121,7 +124,7 @@ func _init() -> void:
 		GBL.save_resolution(DisplayServer.screen_get_size())
 	
 	GBL.subscribe_to_process(self)
-	GBL.register_node(REFS.OS_ROOT, self)	
+	GBL.register_node(REFS.MAIN, self)	
 	GBL.subscribe_to_control_input(self)	
 	GBL.subscribe_to_mouse_icons(self)
 # ------------------------------------------------------------------------------
@@ -129,7 +132,7 @@ func _init() -> void:
 # -----------------------------------	
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
-	GBL.unregister_node(REFS.OS_ROOT)
+	GBL.unregister_node(REFS.MAIN)
 	GBL.unregister_node(REFS.GAMELAYER_SUBVIEWPORT)
 	GBL.unsubscribe_to_mouse_icons(self)
 	GBL.unsubscribe_to_control_input(self)	
@@ -149,6 +152,9 @@ func _ready() -> void:
 	# start
 	start()
 # -----------------------------------	
+
+func get_os_viewport() -> SubViewport:
+	return OSViewport	
 
 # -----------------------------------	
 func assign_funcs() -> void:
@@ -329,17 +335,22 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 
 # -----------------------------------	
 func switch_to_node(use_node:Control) -> void:
+	TransitionScreen.start(0.7, true)
 	for node in [DoorScene, OSNode]:
 		if node == use_node:
+			node.z_index = 1
 			node.show()
 			node.set_process(true)
 			node.set_physics_process(true)
 			if "switch_to" in node:
 				node.switch_to()
 		else: 
-			node.hide()
+			node.z_index = -1
+			if node == DoorScene:
+				node.hide()			
 			node.set_process(false)
 			node.set_physics_process(false)
+			
 # -----------------------------------	
 
 
@@ -351,11 +362,15 @@ func on_current_layer_update() -> void:
 		# -----------
 		LAYER.DOOR_LAYER:
 			switch_to_node(DoorScene)
-			#TransitionScreen.start(1.0)
+			if GBL.find_node(REFS.MEDIA_PLAYER) != null:
+				GBL.find_node(REFS.MEDIA_PLAYER).change_bus('Reverb')
+	
 		# -----------
 		LAYER.OS_lAYER:
 			switch_to_node(OSNode)
-			#TransitionScreen.start(1.0)
+			if GBL.find_node(REFS.MEDIA_PLAYER) != null:
+				GBL.find_node(REFS.MEDIA_PLAYER).change_bus('Master')
+	
 # -----------------------------------	
 	
 # -----------------------------------		
@@ -366,7 +381,6 @@ func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
 	GBL.active_user_profile = user_profile_data		
 # -----------------------------------		
 
-	
 # -----------------------------------	
 func on_process_update(delta: float) -> void:
 	var mouse_pos:Vector2 = get_global_mouse_position()

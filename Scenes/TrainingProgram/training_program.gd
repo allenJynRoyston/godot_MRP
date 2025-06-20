@@ -15,7 +15,7 @@ var options:Dictionary = {}
 var GameplayLoopNode:Control
 
 # signals
-signal on_quit
+var onQuit:Callable = func() -> void:pass
 
 # ---------------------------------------------
 func _ready() -> void:
@@ -47,7 +47,7 @@ func start() -> void:
 	TitleScreen.is_tutorial = options.is_tutorial if "is_tutorial" in options else false
 	TitleScreen.show()			
 	TitleScreen.start(fast_start)
-	await transition_node(TitleScreen, true)			
+	await transition_node(TitleScreen, true)
 	
 	var res:Dictionary = await TitleScreen.wait_for_input
 	match res.action:
@@ -58,7 +58,8 @@ func start() -> void:
 		"continue":
 			start_game(savedata)
 		"quit":
-			on_quit.emit()
+			onQuit.call()
+			
 
 func pause() -> void:
 	hide()
@@ -112,7 +113,7 @@ func on_exit_game(exit_game:bool) -> void:
 
 	# quit game
 	if exit_game:
-		on_quit.emit()
+		onQuit.call()
 		return
 	# else, reset game
 	start()		
@@ -143,5 +144,5 @@ func on_game_over() -> void:
 		"RESTART": 
 			start_game({})
 		"QUIT":
-			on_quit.emit()
+			onQuit.call()
 # ---------------------------------------------

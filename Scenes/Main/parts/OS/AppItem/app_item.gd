@@ -33,7 +33,6 @@ var is_selected:bool = false :
 		is_selected = val
 		on_is_selected_update()
 
-var onClick:Callable = func(node:Node, btn:int, is_focused:bool) -> void:pass	
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
 

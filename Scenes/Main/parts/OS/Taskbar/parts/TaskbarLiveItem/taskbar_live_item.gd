@@ -58,10 +58,11 @@ func get_buttons() -> Array:
 # --------------------------------------	
 func on_focus(state:bool) -> void:
 	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
-	#new_stylebox.bg_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.SHADING)
-	#RootPanel.add_theme_stylebox_override("panel", new_stylebox)
-	#if state:
-		#onFocus.call()
+	
+	if state:
+		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	else:
+		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 
 func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 	if on_hover and btn == MOUSE_BUTTON_LEFT and !focus_busy:

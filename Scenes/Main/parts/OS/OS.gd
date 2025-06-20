@@ -1,26 +1,27 @@
 extends MouseInteractions
 class_name Layout
 
-@onready var PauseContainer:PanelContainer = $PauseContainer
-@onready var HeaderControls:Control = $HeaderControls
-@onready var HeaderPanel:PanelContainer = $HeaderControls/PanelContainer
-@onready var HeaderMargin:MarginContainer = $HeaderControls/PanelContainer/MarginContainer
-@onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/TaskbarBtn
-@onready var NewMessageBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewMessageBtn
-@onready var NewEmailBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewEmailBtn
-
-@onready var Taskbar:Control = $Taskbar
-@onready var DesktopGrid:Control =  $Desktop/MarginContainer/DesktopGrid
-
 @onready var BtnControls:Control = $BtnControl
+@onready var Taskbar:Control = $Taskbar
+@onready var PauseContainer:PanelContainer = $PauseContainer
+@onready var TransitionScreen:Control = $TransitionScreen
 @onready var RunningAppsContainer:Control = $RunningAppsContainer
 
+@onready var StartOptionControl:Control = $StartOptionControl
+@onready var StartOptionsList:VBoxContainer = $StartOptionControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionsContainer
+@onready var StartOptionStartBtn:Control = $StartOptionControl/PanelContainer/MarginContainer/VBoxContainer/StartBtn
+
+
+
+@onready var DesktopGrid:Control =  $Desktop/MarginContainer/DesktopGrid
 @onready var LoginContainer:PanelContainer = $NodeControl/LoginContainer
 @onready var Installer:PanelContainer = $NodeControl/Installer
 @onready var NotificationContainer:PanelContainer = $NodeControl/NotificationContainer
 
-
-@export var background_subviewport:SubViewport
+@onready var HeaderControls:Control = $HeaderControls
+@onready var HeaderPanel:PanelContainer = $HeaderControls/PanelContainer
+@onready var HeaderMargin:MarginContainer = $HeaderControls/PanelContainer/MarginContainer
+@onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/TaskbarBtn
 
 const AppItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
@@ -31,6 +32,8 @@ const TaskBarMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Ap
 const ContextMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/ContextMenuApp/ContextMenuApp.tscn")
 const TextFileAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/TextFileApp/TextFileApp.tscn")
 const RecycleBinAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/RecycleBin/RecycleBin.tscn")
+
+const CheckboxPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 
 enum APPS {
 	SDT_TUTORIAL, SDT_FULL, SDT_MODS, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, 
@@ -75,18 +78,6 @@ var event_switches:Dictionary = {
 	"show_status_on_boot": true
 }
 
-#var app_positions:Dictionary = {
-	#APPS.SDT_TUTORIAL: Vector2(0, 0),
-	#APPS.SDT_FULL: Vector2(0, 0),
-	#APPS.SDT_MODS: Vector2(0, 0),
-	#APPS.SETTINGS: Vector2(0, 0),
-	#APPS.README: Vector2(0, 0),
-	#APPS.EMAIL: Vector2(0, 0),
-	#APPS.MUSIC_PLAYER: Vector2(0, 0),
-#}
-#
-#var default_app_positions:Dictionary = app_positions.duplicate()
-
 var tracklist_unlocks:Dictionary = {
 	PLAYLIST.TRACK_1: true,
 	PLAYLIST.TRACK_2: true,
@@ -114,6 +105,10 @@ var read_emails:Array = []
 var apps_installed:Array = [] 
 var apps_installing:Array = []
 var has_started:bool = false
+
+
+var desktop_itemlist:Array = []
+var previous_desktop_index:int = 0
 #endregion
 # -----------------------------------
 
@@ -123,27 +118,42 @@ var app_list:Array[Dictionary] = [
 	# ----------
 	{
 		"details": {
-			"ref": APPS.SDT_TUTORIAL,
-			"title": "Tutorial Program",
-			"icon": SVGS.TYPE.EXE_FILE,
-			"app": SiteDirectorTrainingAppPreload,
+			"title": "LOGOUT",
+			"icon": SVGS.TYPE.BACK,
 		},
 		"installed": func() -> bool:
 			return true,
 		"events": {
 			"open": func(data:Dictionary) -> void:
-				open_app(data, {"is_tutorial": true}),
-			"close": func() -> void:
-				close_app(APPS.SDT_TUTORIAL),
+				pause(),
 		}
 	},
 	# ----------
+		
+	## ----------
+	#{
+		#"details": {
+			#"ref": APPS.SDT_TUTORIAL,
+			#"title": "Tutorial Program",
+			#"icon": SVGS.TYPE.EXE_FILE,
+			#"app": SiteDirectorTrainingAppPreload,
+		#},
+		#"installed": func() -> bool:
+			#return true,
+		#"events": {
+			#"open": func(data:Dictionary) -> void:
+				#open_app(data, {"is_tutorial": true}),
+			#"close": func() -> void:
+				#close_app(APPS.SDT_TUTORIAL),
+		#}
+	#},
+	## ----------
 	
 	# ----------
 	{
 		"details": {
 			"ref": APPS.SDT_FULL,
-			"title": "Site Director Training Program",
+			"title": "Sim Site Director 2000",
 			"icon": SVGS.TYPE.EXE_FILE,
 			"app": SiteDirectorTrainingAppPreload,
 		},
@@ -151,9 +161,19 @@ var app_list:Array[Dictionary] = [
 			return APPS.SDT_FULL in apps_installed,
 		"events": {
 			"open": func(data:Dictionary) -> void:
+				if data.ref not in running_apps_list.map(func(i): return i.ref):
+					var res:Dictionary = await open_options([
+						{
+							"title": "TUTORIAL MODE", "key": "is_tutorial", "value": true
+						}
+					])
+					if !res.continue:
+						return
+					print(res.properties)
+					open_app(data, res.properties)
+					return
+					
 				open_app(data),
-			"close": func() -> void:
-				close_app(APPS.SDT_FULL),
 		}
 	},
 	# ----------	
@@ -295,18 +315,14 @@ var simulate_busy:bool = false :
 		simulate_busy = val
 		on_simulated_busy_update()
 
-var icon_focus_list:Array[Control] = []
-#var window_focus_list:Array[Control] = [] : 
-	#set(val):
-		#window_focus_list = val
-		#on_window_focus_list_update()
-		
 var running_apps_list:Array = []
 var app_in_fullscreen:bool = false 
 
 var control_pos:Dictionary
-var btnlist:Array = []	
-var freeze_inputs:bool = false
+var freeze_inputs:bool = false : 
+	set(val):
+		freeze_inputs = val
+		on_freeze_inputs_update()
 var show_taskbar:bool = false
 		
 var currently_running_app:Control : 
@@ -319,6 +335,7 @@ var onBack:Callable = func() -> void:pass
 signal on_confirm
 #endregion
 # -----------------------------------
+
 
 #region local functions
 # -----------------------------------
@@ -339,21 +356,25 @@ func _ready() -> void:
 	hide()
 	set_process(false)
 	set_physics_process(false)	
-	
-	LoginContainer.show()
-	
+		
+	# hide
+	StartOptionControl.hide()
 	PauseContainer.hide()
 	
+	# show
+	LoginContainer.show()
+	
+	# setup
 	Taskbar.onBack = func() -> void:
 		if freeze_inputs or Taskbar.is_busy:return
 		toggle_show_taskbar(false)
-		
-	BtnControls.onBack = func() -> void:
-		pause()
 				
 	TaskbarBtn.onClick = func() -> void:
 		if freeze_inputs or Taskbar.is_busy:return		
 		toggle_show_taskbar()
+		
+	StartOptionStartBtn.onClick = func() -> void:
+		on_confirm.emit(true)		
 # -----------------------------------
 
 # -----------------------------------
@@ -378,7 +399,7 @@ func start() -> void:
 	
 	control_pos[HeaderPanel] = {
 		"show": 0,
-		"hide": 40
+		"hide": -HeaderMargin.size.y
 	}
 		
 	await U.set_timeout(1.0 if !skip_boot else 0)
@@ -390,37 +411,74 @@ func start() -> void:
 		
 	await render_desktop_icons()	
 	await U.set_timeout(0.3 if !skip_boot else 0)
-	
-	#Taskbar.set_show_taskbar(false)	
-	#TaskbarBtn.is_disabled = false
-	await BtnControls.reveal(true)			
+	await BtnControls.reveal(true)
 	
 	if skip_to_game:
 		var app:Dictionary = find_in_app_list(APPS.SDT_TUTORIAL)
 		app.events.open.call(app.details)
+		
+func return_to_desktop() -> void:
+	currently_running_app = null	
+	PauseContainer.hide()
+	await toggle_show_taskbar(false)
+	BtnControls.reveal(true)
+	
+func return_to_app(ref:int) -> void:
+	PauseContainer.hide()
+	await toggle_show_taskbar(false)
+	currently_running_app = running_apps_list.filter(func(i): return i.ref == ref)[0].node
+	currently_running_app.unpause()
 # -----------------------------------	
 
 # -----------------------------------	
 func on_simulated_busy_update() -> void:	
 	if !is_node_ready():return
+	# DOES NOTHING RIGHT NOW
 # -----------------------------------		
 
 # -----------------------------------		
 func simulate_wait(duration:float, show_busy:bool = true) -> void:
 	if show_busy and duration > 0:
 		simulate_busy = true
-		#GBL.change_mouse_icon(GBL.MOUSE_ICON.BUSY)
 		
 	await U.set_timeout(duration * 1.0)
 	
 	if show_busy and duration > 0:
 		simulate_busy = false
-		#GBL.end_mouse_busy()
 # -----------------------------------		
 
 # -----------------------------------
+func open_options(arr:Array = []) -> Dictionary:
+	StartOptionControl.show()
+	
+	var properties:Dictionary = {}
+	
+	for child in StartOptionsList.get_children():
+		child.queue_free()
+		
+	for item in arr:
+		var new_checkbox:Control = CheckboxPreload.instantiate()
+		properties[item.key] = item.value
+		
+		new_checkbox.title = item.title
+		new_checkbox.no_bg = true
+		new_checkbox.checkbox_color = Color(0, 0, 0, 1)
+		new_checkbox.is_checked = item.value
+		new_checkbox.onClick = func():
+			new_checkbox.is_checked = !new_checkbox.is_checked
+			properties[item.key] = new_checkbox.is_checked
+		StartOptionsList.add_child(new_checkbox)
+	
+	await U.tick()
+	set_btn_to_app_open_mode()
+	
+	var res:bool = await on_confirm
+	StartOptionControl.hide()
+	set_btn_to_desktop_mode()
+	return {"continue": res, "properties": properties}
+
 func find_in_app_list(ref:APPS) -> Dictionary:
-	return app_list.filter(func(i): return i.details.ref == ref)[0]
+	return app_list.filter(func(i): return ("ref" in i.details) and (i.details.ref == ref))[0]
 	
 func installing_app_start(ref:APPS) -> void:
 	if ref not in apps_installing:
@@ -430,7 +488,7 @@ func install_app_complete(ref:APPS) -> void:
 	apps_installing.erase(ref)
 	if ref not in apps_installed:
 		apps_installed.push_back(ref)
-	render_desktop_icons(0)
+	await render_desktop_icons()
 	save_state()
 # -----------------------------------
 #endregion
@@ -476,18 +534,6 @@ func restore_state(restore_data:Dictionary = {}) -> void:
 # -----------------------------------
 
 # -----------------------------------	
-func take_background_snapshot() -> void:
-	BtnControls.hide()
-	HeaderPanel.hide()
-	await U.tick()	
-	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
-	BtnControls.show()
-	if currently_running_app == null:
-		HeaderPanel.show()
-# -----------------------------------	
-
-
-# -----------------------------------	
 func open_app(data:Dictionary, options:Dictionary = {}) -> void:
 	if simulate_busy or freeze_inputs:return
 	
@@ -497,31 +543,35 @@ func open_app(data:Dictionary, options:Dictionary = {}) -> void:
 	
 	# grab background image for pause continaer	
 	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
-	
+
 	# ... now open the "app"
-	if data.ref not in running_apps_list.map(func(i): return i.ref):		
+	if data.ref not in running_apps_list.map(func(i): return i.ref):
+		simulate_busy = true
 		var app:Dictionary = find_in_app_list(data.ref) 
 		var new_node:Control = data.app.instantiate()
 		var previously_loaded:bool = data.ref in already_loaded
-		running_apps_list.push_back({"ref": data.ref, "node": new_node})		
-
+		
+		# added to running apps list
+		running_apps_list.push_back({
+			"ref": data.ref, 
+			"node": new_node
+		})		
+		
+		# add to already loaded list
 		if data.ref not in already_loaded:
 			already_loaded.push_back(data.ref)
 		
-		# and events
+		# pass properties
 		if "events" in app:
 			new_node.events = app.events
-
-		# start in fullscreen or not, pass previously loaded
 		new_node.options = options
-		new_node.fast_load = previously_loaded or DEBUG.get_val(DEBUG.OS_APP_FAST_LOAD)
 		new_node.in_fullscreen = true
-		new_node.onCloseBtn = func(node:Control, window_node:Control) -> void:			
-			close_app(data.ref)
-			
-		# determines which container to add it  to
+		new_node.details = app.details
+		
+		# add child 
 		RunningAppsContainer.add_child( new_node )
 		
+		# add to taskbar
 		Taskbar.add_item({
 			"title": data.title,
 			"icon": data.icon,
@@ -529,43 +579,35 @@ func open_app(data:Dictionary, options:Dictionary = {}) -> void:
 			"node": new_node,
 			"events": app.events
 		}) 
-
+		
+		# start app
+		await U.tick()
 		currently_running_app = new_node
-		
-		# adds a mock loading splash
-		if !previously_loaded:
-			await simulate_wait(0.2 if previously_loaded else 0.7)
-		
-		new_node.start()
-		await new_node.is_ready
-			
-		#await U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].hide)
+		await new_node.start( previously_loaded or DEBUG.get_val(DEBUG.OS_APP_FAST_LOAD) )
+	
 		
 	else:
 		currently_running_app = running_apps_list.filter(func(i): return i.ref == data.ref)[0].node
 		currently_running_app.unpause()
-
+	
+	simulate_busy = false
 	freeze_inputs = false		
 	
-func close_app(ref:int) -> void:	
-	if running_apps_list.is_empty():return
-	
-	var node:Control = running_apps_list.filter(func(item): return item.ref == ref)[0].node
+func close_app(ref:int) -> void:
+	var filtered:Array = running_apps_list.filter(func(item): return item.ref == ref)
+	if !filtered.is_empty():
+		# quit node
+		filtered[0].node.queue_free()
+		# remove from taskbar
+		Taskbar.remove_item(ref)
+		
 	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)
-	
-	if running_apps_list.size() == 0:
-		currently_running_app = null		
-		Taskbar.set_show_taskbar(false)
-		PauseContainer.hide()
-		BtnControls.reveal(true)
-		toggle_show_taskbar(false)
-	else:
+	if running_apps_list.is_empty():
 		currently_running_app = null
-
-	node.queue_free()
-	Taskbar.remove_item(ref)
+	
 
 func on_currently_running_app_update() -> void:
+	TransitionScreen.start(0.2, true)
 	# hide/show any desktop icons 
 	for node in DesktopGrid.get_children():
 		if currently_running_app == null:
@@ -590,107 +632,113 @@ func on_currently_running_app_update() -> void:
 
 # -----------------------------------
 #region LIST AND NODE BEHAVIOR
-## -----------------------------------	
-#func set_node_selectable_state(state:bool, exclude = null) -> void:
-	#if DesktopIconContainer != null:
-		#for child in DesktopIconContainer.get_children():
-			#if exclude != child:
-				#child.is_selectable = state
-## -----------------------------------			
-
-# -----------------------------------			
-#func set_desktop_hoverable_state(state:bool) -> void:
-	#for child in DesktopIconContainer.get_children():
-		#child.is_hoverable = state
-## -----------------------------------			
-
-# -----------------------------------
-func sort_desktop_icons() -> void:	
-	var context_menu_node:Control = null
-	
-	# first, repositions all desktop icons back to their default 
-	#app_positions = default_app_positions.duplicate()
-	#for node in DesktopIconContainer.get_children():
-	#	node.pos_offset = app_positions[node.data.ref]
-	
-	# save
-	save_state()
-	
-	# then close
-	close_app(APPS.CONTEXT_MENU)
-# -----------------------------------
-
 # -----------------------------------	
+func set_btn_to_desktop_mode() -> void:
+	BtnControls.offset = Vector2(5, 5)
+
+	await U.tick()
+	BtnControls.directional_pref = "LR"
+	BtnControls.itemlist = desktop_itemlist
+	BtnControls.item_index = previous_desktop_index
+	
+	BtnControls.hide_b_btn = true
+	
+	BtnControls.onBack = func() -> void:
+		pass
+			
+	BtnControls.onAction = func() -> void:
+		selected_app.events.open.call(selected_app.details)	
+				
+
+
+func set_btn_to_app_open_mode() -> void:
+	previous_desktop_index = BtnControls.item_index
+	BtnControls.offset = Vector2(5, 5)
+	
+	BtnControls.hide_b_btn = false
+			
+	var itemlist:Array = []
+	for item in StartOptionsList.get_children():
+		itemlist.push_back(item)
+	itemlist.push_back(StartOptionStartBtn)
+	
+	await U.tick()
+	BtnControls.directional_pref = "UD"
+	BtnControls.itemlist = itemlist 
+	BtnControls.item_index = 0
+	
+	BtnControls.onBack = func() -> void:
+		on_confirm.emit(false)
+		set_btn_to_desktop_mode()
+		
+	BtnControls.onAction = func() -> void:
+		pass
+	
+
+
+var selected_app:Dictionary
 func render_desktop_icons(wait_time:float = 1.0) -> void:
 	freeze_inputs = true
-	await simulate_wait(wait_time)
+	await BtnControls.reveal(false)
 	
-	var column_tracker := {}
-	
-	# remove and rerender icons, waitTime used to wait for changes
+	desktop_itemlist = []
+
 	for child in DesktopGrid.get_children():
-		child.queue_free()
-		
-	icon_focus_list = []	
-	await U.tick()
-	btnlist = []
+		child.free()
+			
 	
-	for item in app_list:
-		if item.installed.call():
+	for app in app_list:
+		if app.installed.call():
 			var new_node:Control = AppItemPreload.instantiate()	
 			DesktopGrid.add_child(new_node)
-			btnlist.push_back(new_node)
-			new_node.data = item.details
-				
+			desktop_itemlist.push_back(new_node)
+			new_node.data = app.details
+
 			new_node.onFocus = func(node:Control) -> void:
 				for child in DesktopGrid.get_children():
 					child.is_selected = child == node
+					if child == node:
+						selected_app = app
 				
-			new_node.onClick = func() -> void:
-				item.events.open.call(item.details)
-			
-	BtnControls.directional_pref = "LR"
-	BtnControls.itemlist = btnlist
-	BtnControls.item_index = 0
-	
+	# sets 
+	set_btn_to_desktop_mode()
+	await BtnControls.reveal(true)
 	freeze_inputs = false
 # -----------------------------------
 #endregion
 # -----------------------------------
 
+func on_freeze_inputs_update() -> void:
+	if !is_node_ready():return
+	TaskbarBtn.is_disabled = freeze_inputs
+	
+
 # -----------------------------------
-func toggle_show_taskbar(state:bool = !show_taskbar) -> void:						
+func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 	show_taskbar = state
 	freeze_inputs = true
 	
 	for app in RunningAppsContainer.get_children():
-		app.taskbar_is_open = state
-	
-	if show_taskbar:
-		TaskbarBtn.title = "RETURN"
-		TaskbarBtn.icon = SVGS.TYPE.CLEAR
+		await app.pause() if state else await app.unpause()
 		
+	TaskbarBtn.title = "TASKBAR"	if show_taskbar else "RETURN"
+	TaskbarBtn.icon = SVGS.TYPE.CLEAR if show_taskbar else SVGS.TYPE.ARROW_DOWN
+		
+	
+	if show_taskbar:		
+		if currently_running_app == null:
+			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+		PauseContainer.show()	
+		Taskbar.set_show_taskbar(show_taskbar)
 		await BtnControls.reveal(false)	
 		
-		if currently_running_app == null:
-			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))			
-	
-		Taskbar.set_show_taskbar(show_taskbar)
 		
-		PauseContainer.show()	
-
 	if !show_taskbar:
-		TaskbarBtn.title = "TASKBAR"
-		TaskbarBtn.icon = SVGS.TYPE.ARROW_DOWN
-
-		U.tween_node_property(HeaderPanel, "position:y", control_pos[HeaderPanel].show)		
 		await Taskbar.set_show_taskbar(false)		
 		PauseContainer.hide()
 		
 		if currently_running_app == null:
 			await BtnControls.reveal(true)
-		await U.set_timeout(0.4)
-
 
 	freeze_inputs = false		
 # -----------------------------------

@@ -389,7 +389,10 @@ func start_new_game() -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
 	var duration:float = 0.02 if skip_progress_screen else 0.5
-	
+
+	# skip_progress_screen assign set to true after the first load screen
+	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, true)	
+
 	# set tutorial flag
 	is_tutorial = options.is_tutorial if "is_tutorial" in options else false
 	
@@ -461,12 +464,10 @@ func start_new_game() -> void:
 		create_checkpoint(true)
 	
 	# update phase and start game
-	#if is_tutorial:
-		#await GAME_UTIL.add_dialogue({})	
-		#if is_new_game:
-			#print("play tutorial")
-		#else:
-			#print("welcome back tutorial")	
+	if is_tutorial:
+		await GAME_UTIL.setup_tutorial()
+		await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.INTRO)
+		await U.set_timeout(0.2)
 			
 	# show objectives
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
@@ -486,6 +487,8 @@ func start_new_game() -> void:
 		
 #endregion
 # ------------------------------------------------------------------------------
+
+
 
 # ------------------------------------------------------------------------------
 #region defaults functions

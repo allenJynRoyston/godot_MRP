@@ -1,54 +1,23 @@
-[gd_scene load_steps=13 format=3 uid="uid://cq8rakc0xcf22"]
+[gd_scene load_steps=11 format=3 uid="uid://cq8rakc0xcf22"]
 
 [ext_resource type="Script" uid="uid://cg4ot4jg0otsc" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/dialogue_container.gd" id="1_d66cv"]
-[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_nbieq"]
-[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="2_0bxat"]
-[ext_resource type="Material" uid="uid://dqa3gw7ngocec" path="res://Shader/GausBlur/GausBlur.tres" id="2_em1py"]
+[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="2_vfomw"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="5_s72ly"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="5_vfomw"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="6_ffycc"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="6_s72ly"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_def7h"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vfomw"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_em1py"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_s72ly"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ks5si"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfomw"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffycc"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="LabelSettings" id="LabelSettings_lrdf0"]
+font = ExtResource("5_vfomw")
+font_color = Color(0.321728, 0.321728, 0.321728, 1)
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [node name="DialogueContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -59,13 +28,26 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_def7h")
 script = ExtResource("1_d66cv")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-material = ExtResource("2_em1py")
-layout_mode = 2
-
 [node name="ColorRectBG" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0, 0, 0, 0)
+color = Color(0.0364, 0.07384, 0.13, 0.760784)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_vfomw")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer"]
+material = ExtResource("2_vfomw")
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Content" type="Control" parent="."]
 layout_mode = 2
@@ -82,39 +64,23 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_em1py")
 [node name="ContentMargin" type="MarginContainer" parent="Content/ContentPanel"]
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_constants/margin_top = 0
 
-[node name="CardBody" parent="Content/ContentPanel/ContentMargin" instance=ExtResource("1_nbieq")]
+[node name="BackgroundText" type="Label" parent="Content/ContentPanel/ContentMargin"]
 layout_mode = 2
-size_flags_vertical = 4
-card_size = Vector2(600, 200)
+text = "The quick brown fox jumps over the fence."
+label_settings = SubResource("LabelSettings_lrdf0")
 
-[node name="TextureRect" parent="Content/ContentPanel/ContentMargin/CardBody" index="0"]
-texture = SubResource("ViewportTexture_s72ly")
-
-[node name="SubViewport" parent="Content/ContentPanel/ContentMargin/CardBody" index="1"]
-size = Vector2i(600, 200)
-
-[node name="CardBody" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control" index="0"]
-custom_minimum_size = Vector2(600, 200)
-offset_right = 600.0
-offset_bottom = 200.0
-
-[node name="PanelContainer" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_ks5si")
-
-[node name="CardDrawerTitle" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("2_0bxat")]
+[node name="ForegroundText" type="Label" parent="Content/ContentPanel/ContentMargin"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vfomw")
-content = "HELLO, MY NAME IS TUTORIAL"
-title = "NAMETAG"
-
-[node name="PanelContainer" parent="Content/ContentPanel/ContentMargin/CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_ffycc")
-
-[node name="BtnControls" parent="." instance=ExtResource("5_s72ly")]
-layout_mode = 2
+text = "The quick brown fox jumps over the fence."
+label_settings = ExtResource("6_ffycc")
+visible_characters = 0
+visible_ratio = 0.0
 
 [node name="TransitionScreen" parent="." instance=ExtResource("6_s72ly")]
 layout_mode = 2
 
-[editable path="Content/ContentPanel/ContentMargin/CardBody"]
+[node name="BtnControls" parent="." instance=ExtResource("5_s72ly")]
+layout_mode = 2
+include_blackbar = true

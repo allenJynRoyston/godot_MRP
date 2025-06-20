@@ -1,15 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://b3f8ve03806mt"]
+[gd_scene load_steps=7 format=3 uid="uid://b3f8ve03806mt"]
 
 [ext_resource type="Script" uid="uid://b4chbhsde8qht" path="res://Components/PauseContainer/pause_container.gd" id="1_mejih"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_0p0en"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="2_gmgei"]
-[ext_resource type="Material" uid="uid://cmmp50ucb1lm1" path="res://Shader/Sephia/Sephia.tres" id="3_gmgei"]
+[ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="2_gmgei"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_gmgei"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dutpr"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0p0en"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dc6ks"]
 font = ExtResource("2_0p0en")
@@ -27,12 +24,6 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dutpr")
 script = ExtResource("1_mejih")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-material = ExtResource("2_gmgei")
-layout_mode = 2
-texture = SubResource("PlaceholderTexture2D_0p0en")
-
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -42,12 +33,13 @@ theme_override_constants/margin_bottom = 0
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer2"]
 modulate = Color(1, 1, 1, 0.945098)
-material = ExtResource("3_gmgei")
+material = ExtResource("2_gmgei")
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 layout_mode = 2
 color = Color(0, 0, 0, 0.447059)
 
@@ -76,6 +68,11 @@ layout_mode = 2
 text = "8:00:00"
 label_settings = SubResource("LabelSettings_dc6ks")
 horizontal_alignment = 1
+
+[node name="ColorRectBG" type="ColorRect" parent="."]
+visible = false
+layout_mode = 2
+color = Color(0.28, 0.568, 1, 0.4)
 
 [node name="TransitionScreen" parent="." instance=ExtResource("5_gmgei")]
 layout_mode = 2

@@ -1,50 +1,33 @@
-[gd_scene load_steps=8 format=3 uid="uid://co7xxdhyq4c2t"]
+[gd_scene load_steps=7 format=3 uid="uid://co7xxdhyq4c2t"]
 
-[ext_resource type="PackedScene" uid="uid://ywk37ko3ue05" path="res://UI/WindowUI/WindowUI.tscn" id="1_jstkg"]
 [ext_resource type="Script" uid="uid://c5ejbr1frn4a0" path="res://Scenes/Main/parts/OS/Apps/EmailApp/email_app.gd" id="1_wtx1q"]
 [ext_resource type="PackedScene" uid="uid://btxy5mypwrlao" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/EmailComponent.tscn" id="3_0i4ns"]
 [ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="3_gbgu8"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_0cq6e"]
 [ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="5_fh1d2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fh1d2"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_623hu"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_bottom = 2
-border_color = Color(0, 0.964706, 0.278431, 1)
-
 [node name="EmailApp" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fh1d2")
 script = ExtResource("1_wtx1q")
 
-[node name="WindowUI" parent="." instance=ExtResource("1_jstkg")]
-custom_minimum_size = Vector2(800, 400)
-layout_mode = 2
-enable_close_btn = true
-enable_max_btn = true
-window_label = "Email"
-window_size = Vector2(800, 400)
-header_icon = 5
-
-[node name="Header" parent="WindowUI/MarginContainer/VBoxContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_623hu")
-enable_max_btn = true
-enable_close_btn = true
-window_label = "Email"
-
-[node name="LoadingComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="0" instance=ExtResource("3_gbgu8")]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-loading_text = "Loadinge Emails..."
-
-[node name="EmailComponent" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="1" instance=ExtResource("3_0i4ns")]
+[node name="EmailComponent" parent="." instance=ExtResource("3_0i4ns")]
 layout_mode = 2
 
-[node name="PauseContainer" parent="WindowUI/MarginContainer/VBoxContainer/Body/MarginContainer" index="2" instance=ExtResource("5_fh1d2")]
+[node name="LoadingComponent" parent="." instance=ExtResource("3_gbgu8")]
+layout_mode = 2
+loading_text = "Loading EMAILS..."
+
+[node name="PauseContainer" parent="." instance=ExtResource("5_fh1d2")]
+visible = false
 layout_mode = 2
 
-[editable path="WindowUI"]
+[node name="TransitionScreen" parent="." instance=ExtResource("5_0cq6e")]
+layout_mode = 2

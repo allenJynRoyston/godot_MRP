@@ -13,7 +13,7 @@ extends PanelContainer
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
-var OSRootNode:Control
+var MAIN_NODE:Control
 var control_pos:Dictionary = {}
 
 var current_mode:MODE = MODE.INIT : 
@@ -45,13 +45,14 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.DOOR_SCENE)
 
 func _ready() -> void:
-	OSRootNode = GBL.find_node(REFS.OS_ROOT)
+	MAIN_NODE = GBL.find_node(REFS.MAIN)
 	
 	on_current_mode_update()	
 	#on_play_sequence_update()
 	
 	BtnControls.reveal(false)
-
+	
+	
 	#IntroAndTitleScreen.on_end = func() -> void:
 		#IntroSubviewport.set_process(false)
 		#IntroSubviewport.get_child(0).hide()
@@ -114,13 +115,13 @@ func play_next_sequence() -> void:
 	check_btn_states(true)
 	
 	# change the root node to show this scene...
-	OSRootNode.current_layer = OSRootNode.LAYER.DOOR_LAYER
+	MAIN_NODE.current_layer = MAIN_NODE.LAYER.DOOR_LAYER
 	
 	# wait for story sequence to complete
 	await wait_for_story
 	
 	# ... then revert to os scene
-	OSRootNode.current_layer = OSRootNode.LAYER.OS_lAYER
+	MAIN_NODE.current_layer = MAIN_NODE.LAYER.OS_lAYER
 	
 	await U.set_timeout(0.3)
 	
@@ -181,6 +182,9 @@ func end() -> void:
 func switch_to() -> void:
 	if current_mode == MODE.INIT:
 		return
+		
+	ScreenTextureRect.texture = 	GBL.find_node(REFS.MAIN).OSTexture.texture #U.get_viewport_feed(MAIN_NODE.get_os_viewport())
+		
 	is_ready = false	
 	await BtnControls.reveal(true)
 	is_ready = true
