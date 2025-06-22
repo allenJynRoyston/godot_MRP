@@ -14,7 +14,7 @@ func _ready() -> void:
 	on_data_update()
 	on_focus(false)
 	
-var onClick:Callable = func(_data:Dictionary):pass
+#var onClick:Callable = func(_data:Dictionary):pass
 
 # --------------------------------------		
 func on_data_update() -> void:
@@ -22,24 +22,24 @@ func on_data_update() -> void:
 		AttachmentLabel.text = data.title
 # --------------------------------------	
 
-# --------------------------------------	
-func on_focus(state:bool) -> void:
-	if !is_node_ready():return
-	IconButton.static_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
-	
-	var label_setting:LabelSettings = AttachmentLabel.label_settings.duplicate()
-	label_setting.font_color = COLOR_UTIL.get_window_color(COLORS.WINDOW.ACTIVE) if state else COLOR_UTIL.get_window_color(COLORS.WINDOW.INACTIVE)
-	AttachmentLabel.label_settings = label_setting
-	DownloadLabel.label_settings = label_setting
-		
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-# --------------------------------------	
-
-# --------------------------------------	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover:
-		onClick.call()
-# --------------------------------------		
+## --------------------------------------	
+#func on_focus(state:bool) -> void:
+	#if !is_node_ready():return
+	#IconButton.static_color = Color(1, 1, 1, 1 if state else 0.5)
+	#
+	#var label_setting:LabelSettings = AttachmentLabel.label_settings.duplicate()
+	#label_setting.font_color = Color(1, 1, 1, 1 if state else 0.5)
+	#AttachmentLabel.label_settings = label_setting
+	#DownloadLabel.label_settings = label_setting
+		#
+	#if state:
+		#GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	#else:
+		#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+## --------------------------------------	
+#
+## --------------------------------------	
+#func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	#if on_hover:
+		#onClick.call()
+## --------------------------------------		

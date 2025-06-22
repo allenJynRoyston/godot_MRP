@@ -136,7 +136,7 @@ var app_list:Array[Dictionary] = [
 			"open": func(data:Dictionary) -> void:
 				if data.ref not in running_apps_list.map(func(i): return i.ref):
 					var res:Dictionary = await open_options(
-						"RUN",
+						"LAUNCH...",
 						[
 							{
 								"title": "ENABLE TUTORIAL", 
@@ -217,7 +217,7 @@ var app_list:Array[Dictionary] = [
 		"events": {
 			"open": func(data:Dictionary) -> void:
 				var res:Dictionary = await open_options(
-					"APPLY",
+					"APPLY CHANGES...",
 					[
 						{
 							"title": "FULLSCREEN", 
@@ -499,9 +499,9 @@ func restore_state(restore_data:Dictionary = {}) -> void:
 	var no_save:bool = DEBUG.get_val(DEBUG.NEW_SYSTEM_FILE) or restore_data.is_empty() 
 	if no_save:
 		print("No SYSTEM_FILE available: creating new one.")
-	
+		
 	settings = restore_data.settings if !no_save else settings
-	read_emails = restore_data.read_emails if !no_save else read_emails
+	read_emails =  read_emails
 	installed_mods = restore_data.installed_mods if !no_save else installed_mods
 	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
 	modifications_unlocked = restore_data.modifications_unlocked if !no_save else modifications_unlocked
@@ -625,7 +625,9 @@ func on_currently_running_app_update() -> void:
 # -----------------------------------		
 func render_desktop_icons() -> void:
 	freeze_inputs = true
-	await BtnControls.reveal(false)
+	
+	if currently_running_app == null:
+		await BtnControls.reveal(false)
 	
 	desktop_itemlist = []
 
@@ -654,15 +656,13 @@ func render_desktop_icons() -> void:
 	BtnControls.item_index = previous_desktop_index
 	BtnControls.hide_b_btn = true
 
-	BtnControls.onBack = func() -> void:
-		pass
-	
 	BtnControls.onAction = func() -> void:
 		if selected_app.is_empty():return
 		await BtnControls.reveal(false)
 		selected_app.events.open.call(selected_app.details)
-		
-	await BtnControls.reveal(true)
+	
+	if currently_running_app == null:
+		await BtnControls.reveal(true)
 	
 	freeze_inputs = false
 # -----------------------------------

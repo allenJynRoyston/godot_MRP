@@ -42,7 +42,13 @@ enum SIDE {LEFT, RIGHT}
 	set(val): 
 		title = val
 		on_title_update()
-		
+	
+	
+var is_selected:bool = false : 
+	set(val):
+		is_selected = val
+		on_is_selected_update()
+	
 	
 # ------------------------------------------------------------------------------
 func _ready() -> void:
@@ -57,6 +63,7 @@ func _ready() -> void:
 	on_icon_placement_update()
 	on_panel_color_update()
 	on_is_disabled_updated()
+	on_is_selected_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -80,8 +87,19 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	var m:Color = self.modulate
+	var sc:Color = IconBtnLeft.static_color
+	modulate.a = 1 if is_selected else 0.5
+	
+	IconBtnLeft.static_color = Color(sc.r, sc.g, sc.b,  1 if is_selected else 0.5)
+	IconBtnRight.static_color = Color(sc.r, sc.g, sc.b,  1 if is_selected else 0.5)
+
+
+	
 func on_is_disabled_updated() -> void:
-	modulate = Color(1, 0, 0, 1) if is_disabled else Color(1, 1, 1, 1)
+	modulate = Color(1, 0, 0) if is_disabled else Color(1, 1, 1)
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return

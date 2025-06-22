@@ -1,17 +1,17 @@
 extends PanelContainer
 
 @onready var BtnControls:Control = $BtnControl
-@onready var BackBtn:BtnBase = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BackBtn
-@onready var CategoryLabel:Label = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/CategoryLabel
-@onready var NextBtn:BtnBase = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NextBtn
-@onready var List:VBoxContainer = $HBoxContainer/ScrollContainer2/PanelContainer/MarginContainer/VBoxContainer/List
+@onready var CategoryLabel:Label = $HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CategoryLabel
+@onready var List:VBoxContainer = $HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List
+@onready var WaitContainer:Control = $WaitContainer
 
-@onready var EmailContentContainer:PanelContainer = $HBoxContainer/ScrollContainer/EmailContentContainer
-@onready var SubjectLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer/SubjectLabel
-@onready var FromLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer2/FromLabel
-@onready var DateLabel:Label = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/HBoxContainer3/DateLabel
-@onready var EmailContentRichText:RichTextLabel = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/EmailContentRichText
-@onready var AttachmentContainer:PanelContainer = $HBoxContainer/ScrollContainer/EmailContentContainer/MarginContainer/VBoxContainer/AttachmentContainer
+@onready var EmailContentContainer:PanelContainer = $HBoxContainer/EmailContentContainer
+@onready var EmailContent:MarginContainer = $HBoxContainer/EmailContentContainer/EmailContent
+@onready var SubjectLabel:Label = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer/SubjectLabel
+@onready var FromLabel:Label = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2/FromLabel
+@onready var DateLabel:Label = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3/DateLabel
+@onready var EmailContentRichText:RichTextLabel = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/EmailContentRichText
+@onready var AttachmentContainer:PanelContainer = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/AttachmentContainer
 
 const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
 
@@ -20,7 +20,6 @@ var email_data:Array[Dictionary] = [] :
 		email_data = val
 		on_email_data_update()
 
-var previous_index:int
 var read_emails:Array = [] : 
 	set(val):
 		read_emails = val
@@ -28,49 +27,76 @@ var read_emails:Array = [] :
 		
 var email_list:Array = []
 var sidebar_list:Array = []
+var selected_node:Control
 
 var onBackToDesktop:Callable = func():pass
-var onQuit:Callable = func():pass
 var markAsRead:Callable = func(_index:int):pass
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	on_email_data_update()
 	
+	EmailContent.hide()
+	
 	BtnControls.directional_pref = "UD"
+	
 	BtnControls.onBack = func() -> void:
 		onBackToDesktop.call()
+	
+	BtnControls.onUpdate = func(node:Control) -> void:
+		EmailContent.show()
+		WaitContainer.hide()
+		for index in List.get_child_count():
+			var n:Control = List.get_child(index)
+			n.is_selected = node == n
+			if node == n:
+				selected_node = node
+				var item:Dictionary = email_data[index]
+				parse_email(item, index)
+				
+				BtnControls.hide_a_btn = sidebar_list.is_empty()	
+	
+	BtnControls.onAction = func() -> void:
+		if selected_node == null:return
+		var index:int = selected_node.index
+		var item:Dictionary = email_data[index]
 		
-	BtnControls.onDirectional = func(key:String):
-		if !is_visible_in_tree() or !is_node_ready() or sidebar_list.is_empty(): 
-				return
-		match key:
-			"A":
-				BtnControls.a_btn_title = "SELECT"
-				BtnControls.itemlist = email_list
-				await U.tick()
-				BtnControls.item_index = previous_index
-			"D":
-				BtnControls.a_btn_title = "INSTALL"
-				previous_index = BtnControls.item_index
-				BtnControls.itemlist = sidebar_list		
-
+		if index not in read_emails:
+			markAsRead.call(index)
+			item.attachment.onClick.call(item.attachment)
+		
 
 func start() -> void:
 	BtnControls.reveal(true)
 
 func pause() -> void:
-	print("pause email")
 	await BtnControls.reveal(false)
 	
 func unpause() -> void:
-	print("unpause email")
 	await BtnControls.reveal(true)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func parse_email(data:Dictionary, index:int) -> void:
+	EmailContentContainer.show()	
+
+	SubjectLabel.text = data.title
+	FromLabel.text = data.from	
+	DateLabel.text = data.date
+	EmailContentRichText.text = data.content
+	
+	if ("attachment" in data) and (index not in read_emails):
+		AttachmentContainer.show()
+		AttachmentContainer.data = data.attachment
+		sidebar_list = [AttachmentContainer]
+		return
+		
+	AttachmentContainer.hide()
+	sidebar_list = []
+	if index not in read_emails:
+		markAsRead.call(index)
+
 func on_read_emails_update() -> void:
-	await U.tick()
 	for index in read_emails:
 		var node:Control = List.get_child(index)
 		node.icon = SVGS.TYPE.CHECKBOX
@@ -84,47 +110,16 @@ func on_email_data_update() -> void:
 	for index in email_data.size():
 		var item:Dictionary = email_data[index]
 		var new_btn:Control = TextBtnPreload.instantiate()
+		
+		new_btn.index = index
 		new_btn.title = item.title
-		new_btn.icon = SVGS.TYPE.EMPTY_CHECKBOX	
-		new_btn.active_color = Color(1, 1, 1, 1)
-		new_btn.inactive_color = Color(1, 1, 1, 0.5)
-		new_btn.custom_minimum_size = Vector2(1, 30)
+		new_btn.icon = SVGS.TYPE.CHECKBOX if index in read_emails else SVGS.TYPE.EMPTY_CHECKBOX
+		new_btn.is_hoverable = false
 		new_btn.panel_color = Color(1, 1, 1, 0)
 		
-		new_btn.onClick = func() -> void:
-			parse_email(item, index)
-
 		email_list.push_back(new_btn)
 		List.add_child(new_btn)
 		
 	BtnControls.itemlist = email_list
-	if email_data.size() == 0:
-		EmailContentContainer.hide()
-	else:
-		parse_email(email_data[0], 0)
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func parse_email(data:Dictionary, index:int) -> void:
-	EmailContentContainer.show()	
-
-	SubjectLabel.text = data.title
-	FromLabel.text = data.from	
-	DateLabel.text = data.date
-	EmailContentRichText.text = data.content
-	
-	if "attachment" in data:
-		AttachmentContainer.show()
-		AttachmentContainer.data = data.attachment
-		AttachmentContainer.onClick = func() -> void:
-			data.attachment.onClick.call(data.attachment)
-			
-		sidebar_list = [AttachmentContainer]
-	else:
-		AttachmentContainer.hide()
-		sidebar_list = []
-		
-	if index not in read_emails:
-		markAsRead.call(index)
-		
+	BtnControls.item_index = 0
 # ------------------------------------------------------------------------------

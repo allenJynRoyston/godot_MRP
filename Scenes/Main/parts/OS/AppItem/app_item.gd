@@ -98,20 +98,23 @@ func on_focus(state:bool = is_focused) -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready(): return
-	var new_color:Color = Color.BLACK if is_selected else Color(0.247, 0.247, 0.247) 
-	
+	var new_color:Color = Color(1, 1, 1)
+	var flat_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
+	var alpha:float = 1 if is_selected else 0.7
+
 	# update icon
-	IconButton.static_color = new_color	
+	IconButton.static_color.a = alpha
 	
 	# update label
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
-	label_setting.font_color = new_color
+	#label_setting.font_color = Color.BLACK
+	label_setting.font_color.a = alpha
 	AppLabel.label_settings = label_setting
 	
 	# update panel
-	var flat_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
-	flat_stylebox.border_color = Color.WHITE if is_selected else new_color
-	flat_stylebox.bg_color = Color(0.478, 0.624, 0.8, 1) if is_selected else Color(0.478, 0.624, 0.8, 1) 
+	flat_stylebox.border_color = Color(new_color.r, new_color.g, new_color.b, alpha).inverted()
+	flat_stylebox.bg_color = Color(new_color.r, new_color.g, new_color.b, alpha)
+	#flat_stylebox.bg_color = Color(0.478, 0.624, 0.8, 1) if is_selected else Color(0.478, 0.624, 0.8, 1) 
 	RootPanel.set('theme_override_styles/panel', flat_stylebox)
 
 #func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:

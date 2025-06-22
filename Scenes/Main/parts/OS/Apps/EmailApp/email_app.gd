@@ -13,6 +13,8 @@ var email_data:Array[Dictionary] = [
 		"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your cuerent situation.  VERY IMPORTANT:  DO NOT venture out into the darkness.  It will kill you.  It will [REMOVE ALL YOUR PROGRESS - ESSENTIALLY A HARD RESET].",
 		"attachment": {
 			"title": "Site_Director_Training_Program.exe",
+			"is_installed": func() -> bool:
+				return Layout.APPS.SDT_FULL in GBL.find_node(REFS.OS_LAYOUT).apps_installed,
 			"onClick": func(attachment:Dictionary) -> void:
 				events.install.call({
 					"type": "download", 
@@ -26,23 +28,17 @@ var email_data:Array[Dictionary] = [
 
 	},	
 	{
-		"title": "INSTALL THIS (OPTIONAL)",
+		"title": "TEST 2",
 		"from": "@unknown",
 		"date": "unknown",
-		"content": "SOMETHING ABOUT THIS SHOULD RESTORE YOUR MEMORY.",
-		"attachment": {
-			"title": "Music_Player.exe",
-			"onClick": func(attachment:Dictionary) -> void:
-				events.install.call({
-					"type": "download", 
-					"installer_data": {
-						"filename": attachment.title,
-						"duration": 3,
-						"ref": Layout.APPS.MUSIC_PLAYER
-					}
-				}),
-		}
-	}
+		"content": "SOMETHING ABOUT THIS SHOULD RESTORE YOUR MEMORY."
+	},
+	{
+		"title": "TEST 3",
+		"from": "@unknown",
+		"date": "unknown",
+		"content": "Somethig something something."
+	}	
 ]
 
 # ------------------------------------------------------------------------------
@@ -51,9 +47,6 @@ func _ready() -> void:
 		events.mark.call(index)
 		EmailComponent.read_emails = events.fetch_read_emails.call()
 		
-	EmailComponent.onQuit = func() -> void:
-		quit()
-	
 	EmailComponent.onBackToDesktop = func() -> void:
 		await pause()
 		GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()

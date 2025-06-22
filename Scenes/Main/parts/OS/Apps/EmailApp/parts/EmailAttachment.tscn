@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2xiva1hpi0f4"]
+[gd_scene load_steps=6 format=3 uid="uid://b2xiva1hpi0f4"]
 
 [ext_resource type="Script" uid="uid://b60uuqkimgfwr" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_7ovhd"]
-[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="4_2gnm4"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_psari"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8egu3"]
 bg_color = Color(0.0728426, 0.0728426, 0.0728426, 1)
@@ -10,6 +10,14 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_03pfx"]
+font = ExtResource("3_psari")
+font_size = 8
+font_color = Color(0, 0.8, 0.32, 1)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)
 
 [node name="AttachmentContainer" type="PanelContainer"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_8egu3")
@@ -32,15 +40,17 @@ theme_override_constants/separation = 10
 [node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_7ovhd")]
 layout_mode = 2
 icon = 4
+static_color = Color(0.431373, 0.803922, 0.329412, 1)
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "INSTALL:"
-label_settings = ExtResource("4_2gnm4")
+text = "ATTACHMENT:"
+label_settings = SubResource("LabelSettings_03pfx")
 uppercase = true
 
 [node name="AttachmentLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "filename"
-label_settings = ExtResource("4_2gnm4")
+label_settings = SubResource("LabelSettings_03pfx")
+uppercase = true

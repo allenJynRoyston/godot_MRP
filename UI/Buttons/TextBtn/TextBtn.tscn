@@ -30,7 +30,7 @@ layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="IconBtnLeft" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wxkle")]
-custom_minimum_size = Vector2(18, 18)
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
@@ -44,6 +44,7 @@ label_settings = ExtResource("2_vmudk")
 
 [node name="IconBtnRight" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_wxkle")]
 visible = false
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
