@@ -1,10 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://cbwnq2nmqkgf0"]
+[gd_scene load_steps=7 format=3 uid="uid://cbwnq2nmqkgf0"]
 
 [ext_resource type="Script" uid="uid://y2k3wyjctrpj" path="res://Scenes/Main/parts/OS/LoginScreen/login_screen.gd" id="1_w1kdg"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="2_p6og1"]
+[ext_resource type="Texture2D" uid="uid://buoc227nx6p7" path="res://Media/images/wondertainment_logo.jpg" id="2_ccst5"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_ya276"]
+[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_sifuj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y2fyr"]
-bg_color = Color(0.0708272, 0.0708272, 0.0708272, 1)
+bg_color = Color(0.12549, 0.129412, 0.137255, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_n3vdj"]
+font = ExtResource("3_ya276")
+font_color = Color(0, 0.8, 0.32, 1)
+outline_size = 16
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [node name="LoginContainer" type="PanelContainer"]
 z_index = 10
@@ -16,23 +24,33 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_y2fyr")
 script = ExtResource("1_w1kdg")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(600, 400)
 layout_mode = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 100
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(400, 400)
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/separation = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
-alignment = 1
+texture = ExtResource("2_ccst5")
+expand_mode = 2
+stretch_mode = 5
 
-[node name="Label" type="Label" parent="CenterContainer/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Logging into system..."
-label_settings = ExtResource("2_p6og1")
+text = "Loading, please wait..."
+label_settings = SubResource("LabelSettings_n3vdj")
 horizontal_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0.431373, 0.803922, 0.329412, 1)
+theme_override_fonts/normal_font = ExtResource("4_sifuj")
+fit_content = true

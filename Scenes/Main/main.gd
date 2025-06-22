@@ -11,13 +11,34 @@ extends PanelContainer
 @onready var OSTexture:TextureRect = $GameLayer/OSTexture
 @onready var TransitionScreen:Control = $GameLayer/TransitionScreen
 
+# TEXT RECTS with SHADERS
+@onready var GlitchShaderTextureRect:TextureRect = $GlitchShader/TextureRect
+@onready var CRTShaderTextureRect:TextureRect = $CRTShader/TextureRect
+@onready var ScreenBendTextureRect:TextureRect = $Screenbend/Bend/TextureRect
+@onready var BrightnessTextureRect:TextureRect = $Screenbend/Brightness/TextureRect2
+@onready var BorderShaderTextureRect:TextureRect = $BorderShader/TextureRect
+@onready var FinalCompositeTextureRect:TextureRect = $FinalComposition/FinalComposite
+
+# COLORRECT bluescreens
+@onready var CRTColorRect:ColorRect = $CRTShader/ColorRectBG
+@onready var FinalCompositionColorRect:ColorRect = $FinalComposition/ColorRectBG
+
 @onready var MusicShaderTexture:TextureRect = $MusicShader/MusicShaderTexture
 
+
 enum LAYER {DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
+enum SHADER_PROFILE {NONE, ALL}
 
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
+
+@export_category("PRODUCTION DEBUG")
+@export var shader_profile:SHADER_PROFILE = SHADER_PROFILE.ALL : 
+	set(val):
+		shader_profile = val
+		on_shader_profile_update()
+
 
 # GAMEPLAY OPTIONS
 @export_category("PRODUCTION DEBUG")
@@ -80,6 +101,60 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export_category("RESEARCHERS DEBUG")
 @export var xp_needed_for_promotion:int = 0
 
+# SHADER VARS
+@onready var shader_arr:Array = [ 
+	[GlitchShaderTextureRect, "glitch"], 
+	[CRTShaderTextureRect, "crt"], 
+	[ScreenBendTextureRect, "bend"], 
+	[BrightnessTextureRect, "brightness"], 
+	[BorderShaderTextureRect, "border"], 
+	[FinalCompositeTextureRect, "final"]
+]
+
+@onready var shader_list:Array = [
+	GlitchShaderTextureRect, 
+	CRTShaderTextureRect, 
+	ScreenBendTextureRect,
+	BrightnessTextureRect,
+	BorderShaderTextureRect, 
+	FinalCompositeTextureRect
+]
+
+@onready var color_rect_arr:Array = [ 
+	[CRTColorRect, "crt"],
+	[FinalCompositionColorRect, "final"]
+]
+
+@onready var color_rect_list:Array = [
+	FinalCompositionColorRect, 
+	CRTColorRect
+]
+
+var color_rect_props:Dictionary = {
+	"node": null,
+	"color": null
+}
+
+var shader_props:Dictionary = {
+	"node": null,
+	"material": null,
+	"shader": null
+}
+	
+var shader_defaults:Dictionary = {
+	"glitch": shader_props.duplicate(true),
+	"bend": shader_props.duplicate(true),
+	"brightness": shader_props.duplicate(true),
+	"crt": shader_props.duplicate(true),
+	"border": shader_props.duplicate(true),
+	"final": shader_props.duplicate(true),
+}
+
+var colorrect_defaults:Dictionary = {
+	"crt": color_rect_props.duplicate(true),
+	"final": color_rect_props.duplicate(true)
+}
+
 # SAVE FILE STRUCTURE/DEFAULTS
 var default_save_profiles:Dictionary = {
 	"snapshots": {
@@ -110,7 +185,7 @@ var current_layer:LAYER :
 	set(val):
 		current_layer = val
 		on_current_layer_update()
-		
+
 
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
@@ -147,23 +222,23 @@ func _ready() -> void:
 	assign_debugs()
 
 	# assign functions
-	assign_funcs()
-	
-	# start
-	start()
-# -----------------------------------	
-
-func get_os_viewport() -> SubViewport:
-	return OSViewport	
-
-# -----------------------------------	
-func assign_funcs() -> void:
 	DoorScene.onLogin = func() -> void:
 		start_os_layer()
 	
 	OSNode.onBack = func() -> void:
 		current_layer = LAYER.DOOR_LAYER
+		
+	# get default parameters
+	duplicate_shader_defaults()
+	duplicate_colorrect_defaults()
+	
+	# apply shader profile
+	on_shader_profile_update()
+	
+	# start
+	start()
 # -----------------------------------	
+
 
 # -----------------------------------	
 func assign_debugs() -> void:
@@ -220,7 +295,6 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)		
 # -----------------------------------	
 
-
 # -----------------------------------	
 func start() -> void:
 	# mouse behavior
@@ -253,19 +327,19 @@ func start() -> void:
 	current_layer = LAYER.DOOR_LAYER	
 	await U.tick()
 	
-	if !office_skip_animation:
+	
+	if !DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
 		DoorScene.start()
 	else:
 		DoorScene.fastfoward()
 	
-	if skip_office_intro:
-		start_os_layer()
+	if DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
+		DoorScene.skip_to_login()
 # -----------------------------------			
 
 # -----------------------------------		
 func start_os_layer() -> void:
 	current_layer = LAYER.OS_lAYER		
-
 	if !OSNode.has_started:
 		OSNode.start()	
 	else:
@@ -335,7 +409,6 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 
 # -----------------------------------	
 func switch_to_node(use_node:Control) -> void:
-	TransitionScreen.start(0.7, true)
 	for node in [DoorScene, OSNode]:
 		if node == use_node:
 			node.z_index = 1
@@ -347,9 +420,18 @@ func switch_to_node(use_node:Control) -> void:
 		else: 
 			node.z_index = -1
 			if node == DoorScene:
-				node.hide()			
+				node.hide()
 			node.set_process(false)
 			node.set_physics_process(false)
+	
+	TransitionScreen.start(0.7, true)
+	
+	match use_node:
+		DoorScene:
+			shader_profile = SHADER_PROFILE.NONE
+				
+		OSNode:
+			shader_profile = SHADER_PROFILE.ALL
 			
 # -----------------------------------	
 
@@ -369,10 +451,9 @@ func on_current_layer_update() -> void:
 		LAYER.OS_lAYER:
 			switch_to_node(OSNode)
 			if GBL.find_node(REFS.MEDIA_PLAYER) != null:
-				GBL.find_node(REFS.MEDIA_PLAYER).change_bus('Master')
-	
+				GBL.find_node(REFS.MEDIA_PLAYER).change_bus('Master')	
 # -----------------------------------	
-	
+
 # -----------------------------------		
 func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
 	# save file...
@@ -380,6 +461,143 @@ func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
 	# then push to global space
 	GBL.active_user_profile = user_profile_data		
 # -----------------------------------		
+
+# -----------------------------------		SHADER STUFF
+func duplicate_shader_defaults() -> void:
+	for item in shader_arr:
+		var node:Control = item[0]
+		var key:String = item[1]
+		
+		shader_defaults[key].node = node
+		shader_defaults[key].material = node.material
+		shader_defaults[key].shader = node.material.shader
+		
+
+func duplicate_colorrect_defaults() -> void:
+	for item in color_rect_arr:
+		var node:Control = item[0]
+		var key:String = item[1]
+		
+		colorrect_defaults[key].node = node
+		colorrect_defaults[key].color = node.color
+		
+# -----------------------------------	
+
+# -----------------------------------	
+func add_all_shaders() -> void:
+	for item in shader_arr:		
+		var node:Control = item[0]
+		var key:String = item[1]
+		
+		node = shader_defaults[key].node
+		node.material = shader_defaults[key].material
+		node.material.shader = shader_defaults[key].shader
+# -----------------------------------	
+
+# -----------------------------------	
+func remove_all_shaders() -> void:
+	for node in shader_list:
+		node.material = null
+		
+# -----------------------------------	
+
+# -----------------------------------	
+func set_monitor_overlay(state:bool) -> void:
+	for node in color_rect_list:
+		if state:
+			node.show()
+		else:
+			node.hide()
+# -----------------------------------	
+
+# -----------------------------------	
+func use_focus_shader_settings() -> void:
+	var duration:float = 0.7
+	# set new color 
+	for item in color_rect_arr:
+		var node:Control = item[0]
+		U.tween_node_property(node, 'color:a', 0, duration)
+	
+	# set new bend amount
+	for item in [ [ScreenBendTextureRect, "bend"], [FinalCompositeTextureRect, "final"] ]:
+		var node:Control = item[0]
+		var key:String = item[1]
+		var material_dupe = shader_defaults[key].material.duplicate(true)
+		var new_amount:float = 0
+		node.material = material_dupe
+
+		U.tween_range(material_dupe.get_shader_parameter("bend_amount"), new_amount, duration, func(val:float) -> void:
+			material_dupe.set_shader_parameter("bend_amount", val)
+		).finished
+	
+	# remove border 
+	for item in [ [BorderShaderTextureRect, "border"] ]:
+		var node:Control = item[0]
+		var key:String = item[1]
+		var material_dupe = shader_defaults[key].material.duplicate(true)
+		var new_amount:float = 0
+		node.material = material_dupe
+
+		U.tween_range(material_dupe.get_shader_parameter("top_bottom_border_pixels"), new_amount, duration, func(val:float) -> void:
+			material_dupe.set_shader_parameter("top_bottom_border_pixels", val)
+		).finished		
+		
+		await U.tween_range(material_dupe.get_shader_parameter("left_right_border_pixels"), new_amount, duration, func(val:float) -> void:
+			material_dupe.set_shader_parameter("left_right_border_pixels", val)
+		).finished				
+			
+func use_full_shader_settings() -> void:
+	var duration:float = 0.7
+	
+	# restore colors
+	for item in color_rect_arr:
+		var node:Control = item[0]
+		var key:String = item[1]
+		var color:Color = colorrect_defaults[key].color
+		U.tween_node_property(node, 'color:a', color.a, duration)
+	
+	# restores bend amount
+	for item in [ [ScreenBendTextureRect, "bend"], [FinalCompositeTextureRect, "final"] ]:
+		var node:Control = item[0]
+		var key:String = item[1]
+		var material_dupe = shader_defaults[key].material.duplicate(true)
+		var new_amount:float = material_dupe.get_shader_parameter("bend_amount")
+		node.material = material_dupe
+
+		U.tween_range(material_dupe.get_shader_parameter("bend_amount"), new_amount, duration, func(val:float) -> void:
+			material_dupe.set_shader_parameter("bend_amount", val)
+		).finished
+		
+	for item in [ [BorderShaderTextureRect, "border"] ]:
+		var node:Control = item[0]
+		var key:String = item[1]
+		var material_dupe = shader_defaults[key].material.duplicate(true)
+		var new_amount_top:float = material_dupe.get_shader_parameter("top_bottom_border_pixels")
+		var new_amount_sides:float = material_dupe.get_shader_parameter("left_right_border_pixels")
+
+		node.material = material_dupe
+
+		U.tween_range(material_dupe.get_shader_parameter("top_bottom_border_pixels"), new_amount_top, duration, func(val:float) -> void:
+			material_dupe.set_shader_parameter("top_bottom_border_pixels", val)
+		).finished		
+		
+		await U.tween_range(material_dupe.get_shader_parameter("left_right_border_pixels"), new_amount_sides, duration, func(val:float) -> void:
+			material_dupe.set_shader_parameter("left_right_border_pixels", val)
+		).finished						
+# -----------------------------------	
+
+
+# -----------------------------------	
+func on_shader_profile_update() -> void:
+	match shader_profile:
+		SHADER_PROFILE.NONE:
+			remove_all_shaders()
+			set_monitor_overlay(false)
+		SHADER_PROFILE.ALL:
+			add_all_shaders()
+			set_monitor_overlay(true)
+# -----------------------------------	
+
 
 # -----------------------------------	
 func on_process_update(delta: float) -> void:

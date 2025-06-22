@@ -10,11 +10,11 @@ func _ready() -> void:
 	for node in [PauseContainer, TrainingProgram]:
 		node.hide()	
 
-func start(fast_load:bool) -> void:
+func start(fast_load:bool) -> void:	
 	LoadingComponent.loading_text = str(details.title).to_upper()
 	await LoadingComponent.start(fast_load)
 	await TransitionScreen.start(0.7, true)
-	
+
 	# start app
 	TrainingProgram.show()	
 	TrainingProgram.options = options
@@ -41,11 +41,12 @@ func pause() -> void:
 		TrainingProgram.hide()
 	
 func unpause() -> void:
-	is_paused = false
-	PauseContainer.hide()
-	TrainingProgram.show()
-	await U.set_timeout(0.3)
-	TrainingProgram.unpause()
+	if is_paused:
+		is_paused = false
+		PauseContainer.hide()
+		TrainingProgram.show()
+		await U.set_timeout(0.3)
+		TrainingProgram.unpause()
 	
 func force_save_and_quit() -> void:
 	await TrainingProgram.force_save_and_quit()

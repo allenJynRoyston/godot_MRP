@@ -80,20 +80,19 @@ func on_taskbar_is_open_update(state:bool) -> void:
 	await pause() if state else await unpause()
 
 func pause() -> void:
-	pass
-	#if !is_paused:
-		#is_paused = true
-		#await EmailComponent.pause()
-		#if is_visible_in_tree():
-			#PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
-		#PauseContainer.show()
-		#EmailComponent.hide()
+	if !is_paused:
+		is_paused = true
+		await EmailComponent.pause()
+		if is_visible_in_tree():
+			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+		PauseContainer.show()
+		EmailComponent.hide()
 	#
 func unpause() -> void:
-	pass
-	#is_paused = false
-	#PauseContainer.hide()
-	#EmailComponent.show()
-	#await U.set_timeout(0.3)
-	#EmailComponent.unpause()
+	if is_paused:
+		is_paused = false
+		PauseContainer.hide()
+		EmailComponent.show()
+		await U.set_timeout(0.3)
+		EmailComponent.unpause()
 # ------------------------------------------------------------------------------

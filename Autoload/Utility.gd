@@ -152,12 +152,12 @@ func dict_has_diff(new_val:Dictionary, current:Dictionary, list_property:String,
 # ------------------------------------------------------------------------------		
 	
 # --------------------------------------------------------------------------------------------------		
-func tween_node_property(node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD) -> void:
+func tween_node_property(node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD, ease:int = Tween.EASE_IN_OUT) -> void:
 	if duration == 0:
 		duration = 0.02
 		
 	var tween:Tween = create_tween()
-	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
+	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_ease(ease).set_delay(delay)
 	await tween.finished
 # --------------------------------------------------------------------------------------------------		
 
@@ -169,32 +169,6 @@ func tween_range(start_at:float, end_at:float, duration:float, callback:Callable
 	tween.tween_method(callback, start_at, end_at, duration)
 	return tween
 # -----------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------		
-func dict_deep_copy(value):
-	var new_dict:Dictionary = {}
-	for key in value:
-		var assign:Callable = func():
-			return value[key]
-		new_dict[key] = assign.call()
-		
-	#if value is Dictionary:
-		#var new_dict:Dictionary = {}
-		#for key in value.keys():
-			#new_dict[key] = dict_deep_copy(value[key])  # Recursively copy values
-		#return new_dict
-	#elif value is Array:
-		#var new_array = []
-		#for item in value:
-			#new_array.append(dict_deep_copy(item))  # Recursively copy items
-		#return new_array
-	#elif value is Object and value.duplicate != null:
-		#return value.duplicate(true)  # Duplicate resources like textures/materials
-	#else:
-		#return value
-		
-	return new_dict
-# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
 func inc_floor() -> void:

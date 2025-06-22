@@ -1,0 +1,131 @@
+[gd_scene load_steps=10 format=3 uid="uid://cyjoo87vkcy0s"]
+
+[ext_resource type="Script" uid="uid://b2jg6t1bontc2" path="res://Scenes/Main/parts/OS/Options/options.gd" id="1_1xncx"]
+[ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://Scenes/Main/parts/OS/Options/parts/OptionItem.tscn" id="2_1xncx"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_h2ypb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xncx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2ypb"]
+bg_color = Color(0.162066, 0.162066, 0.162066, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_jbhxw"]
+color = Color(1, 1, 1, 0.607843)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klbsx"]
+bg_color = Color(0.162, 0.162, 0.162, 0.5)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.4)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1xncx"]
+bg_color = Color(0.162, 0.162, 0.162, 0.5)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.4)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jbhxw"]
+bg_color = Color(0.162, 0.162, 0.162, 0.5)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.4)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="OptionsMenu" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1xncx")
+script = ExtResource("1_1xncx")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.08, 0.08, 0.08, 0.443137)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 1
+offset_left = 32.0
+offset_top = 41.0
+offset_right = 241.0
+offset_bottom = 164.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_h2ypb")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HSeparator2" type="HSeparator" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jbhxw")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="OptionList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="OptionItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_klbsx")
+title = "Option A"
+
+[node name="OptionItem2" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1xncx")
+title = "Option B"
+
+[node name="HSeparator" type="HSeparator" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jbhxw")
+
+[node name="BtnList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StartBtn" parent="Control/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("2_1xncx")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jbhxw")
+title = "RUN"
+
+[node name="BtnControls" parent="." instance=ExtResource("4_h2ypb")]
+layout_mode = 2
+offset = Vector2(5, 10)

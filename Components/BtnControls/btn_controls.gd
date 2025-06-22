@@ -20,10 +20,10 @@ extends Control
 		on_include_blackbar_update()
 		
 @export var offset:Vector2 = Vector2(2, 5)
-@export var margin_offsets:Vector2 = Vector2(10, 10) : 
-	set(val):
-		margin_offsets = val
-		on_margin_offsets_update()
+#@export var margin_offsets:Vector2 = Vector2(10, 10) : 
+	#set(val):
+		#margin_offsets = val
+		#on_margin_offsets_update()
 
 @export_category("A BUTTON")
 @export var a_btn_title:String = "NEXT" : 
@@ -122,7 +122,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	on_fullscreen_update()
 	on_disable_active_btn_update()
-	on_margin_offsets_update()	
+	#on_margin_offsets_update()	
 	on_include_blackbar_update()
 	
 	on_a_btn_title_update()
@@ -171,10 +171,10 @@ func _ready() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func on_margin_offsets_update() -> void:
-	if !is_node_ready():return
-	BtnMarginContainer.set('theme_override_constants/margin_left', margin_offsets.x)
-	BtnMarginContainer.set('theme_override_constants/margin_right', margin_offsets.y)
+#func on_margin_offsets_update() -> void:
+	#if !is_node_ready():return
+	#BtnMarginContainer.set('theme_override_constants/margin_left', margin_offsets.x)
+	#BtnMarginContainer.set('theme_override_constants/margin_right', margin_offsets.y)
 	
 func on_a_btn_title_update() -> void:
 	if !is_node_ready():return

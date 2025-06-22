@@ -1,10 +1,9 @@
-[gd_scene load_steps=26 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=20 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_25k47"]
+[ext_resource type="PackedScene" uid="uid://cyjoo87vkcy0s" path="res://Scenes/Main/parts/OS/Options/Options.tscn" id="3_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/Main/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
-[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="4_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_b50hp"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
 [ext_resource type="PackedScene" uid="uid://8hxxm66kio4n" path="res://Scenes/Main/parts/OS/Installer/Installer.tscn" id="6_dhnyo"]
@@ -21,36 +20,6 @@ viewport_path = NodePath("SubViewportBG")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1wtgv"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pabxy"]
-bg_color = Color(0.478431, 0.623529, 0.717647, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_25k47"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_25k47"]
-bg_color = Color(1, 1, 1, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jsaqf"]
-bg_color = Color(1, 1, 1, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fxpyd"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pabxy"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_oddaw"]
@@ -64,7 +33,7 @@ shadow_color = Color(0.699653, 0.699653, 0.699653, 0)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6u7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_naebg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oddaw"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -121,75 +90,8 @@ theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 columns = 6
 
-[node name="StartOptionControl" type="Control" parent="."]
+[node name="OptionsMenu" parent="." instance=ExtResource("3_jsaqf")]
 layout_mode = 2
-
-[node name="ColorRect" type="ColorRect" parent="StartOptionControl"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.08, 0.08, 0.08, 0.443137)
-
-[node name="PanelContainer" type="PanelContainer" parent="StartOptionControl"]
-custom_minimum_size = Vector2(100, 50)
-layout_mode = 1
-offset_left = 101.0
-offset_top = 245.0
-offset_right = 201.0
-offset_bottom = 295.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_pabxy")
-
-[node name="MarginContainer" type="MarginContainer" parent="StartOptionControl/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="StartOptionControl/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HSeparator2" type="HSeparator" parent="StartOptionControl/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_25k47")
-
-[node name="MarginContainer" type="MarginContainer" parent="StartOptionControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="OptionsContainer" type="VBoxContainer" parent="StartOptionControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="PROPERTY 1" parent="StartOptionControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" instance=ExtResource("4_jsaqf")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_25k47")
-no_bg = true
-checkbox_color = Color(0, 0, 0, 1)
-title = "OPTION A"
-
-[node name="PROPERTY 2" parent="StartOptionControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" instance=ExtResource("4_jsaqf")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jsaqf")
-no_bg = true
-checkbox_color = Color(0, 0, 0, 1)
-title = "OPTION B"
-
-[node name="HSeparator" type="HSeparator" parent="StartOptionControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_25k47")
-
-[node name="StartBtn" parent="StartOptionControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_25k47")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fxpyd")
-icon = 69
-icon_placement = 1
-title = "START PROGRAM"
 
 [node name="LogoControl" type="Control" parent="."]
 z_index = 4
@@ -197,19 +99,20 @@ layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="LogoControl"]
 layout_mode = 1
-anchors_preset = 9
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 208.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pabxy")
 
 [node name="MarginContainer" type="MarginContainer" parent="LogoControl/PanelContainer"]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/margin_left = 20
+theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_bottom = 80
 
 [node name="Label" type="Label" parent="LogoControl/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -282,7 +185,7 @@ alignment = 2
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_naebg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oddaw")
 title = "TASKBAR"
 assigned_key = "BACKSPACE"
 icon = 67

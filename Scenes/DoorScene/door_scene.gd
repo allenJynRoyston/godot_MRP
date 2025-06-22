@@ -159,7 +159,8 @@ func check_btn_states(use_for_skip:bool = false) -> void:
 			wait_for_story.emit()
 		
 # ---------------------------------------------
-	
+
+
 # ---------------------------------------------
 func start() -> void:
 	show()	
@@ -173,6 +174,10 @@ func fastfoward() -> void:
 	await U.tick()	
 	current_mode = MODE.START_AT_SCREEN
 	show()	
+	
+func skip_to_login() -> void:
+	await BtnControls.reveal(false)		
+	onLogin.call()
 
 func end() -> void:
 	hide()
@@ -183,7 +188,7 @@ func switch_to() -> void:
 	if current_mode == MODE.INIT:
 		return
 		
-	ScreenTextureRect.texture = 	GBL.find_node(REFS.MAIN).OSTexture.texture #U.get_viewport_feed(MAIN_NODE.get_os_viewport())
+	ScreenTextureRect.texture = 	GBL.find_node(REFS.MAIN).OSTexture.texture
 		
 	is_ready = false	
 	await BtnControls.reveal(true)
@@ -206,7 +211,6 @@ func on_current_mode_update() -> void:
 		# ---------
 		MODE.START:
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1.0)
-
 
 			RenderSubviewport.set_process(true)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=25 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="4_18xdc"]
@@ -10,7 +10,6 @@
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="9_xggvw"]
 [ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="10_xd21n"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="11_iwp64"]
-[ext_resource type="Texture2D" uid="uid://bilb0xan3arxj" path="res://Textures/97227770-led-screen-texture-diode-screen-seamless-pattern.jpg" id="12_4etfk"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
@@ -85,6 +84,10 @@ viewport_path = NodePath("FinalComposition")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.00251, 1.00136)
@@ -94,11 +97,15 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
 skip_splash = true
 skip_intro = true
-skip_office_intro = true
 debug_story_progress = true
 os_skip_boot = true
+os_skip_to_game = true
+os_app_fast_load = true
 stdr_skip_titlescreen = true
 stdr_skip_loadingscreen = true
+skip_setup_progress = true
+start_at_ring_level = true
+skip_objectives = true
 
 [node name="OS" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
@@ -164,34 +171,36 @@ color = Color(0.28, 0.568, 1, 0.152941)
 [node name="Screenbend" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="Control3" type="Control" parent="Screenbend"]
+[node name="Bend" type="Control" parent="Screenbend"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="Screenbend/Control3"]
+[node name="TextureRect" type="TextureRect" parent="Screenbend/Bend"]
 material = ExtResource("11_iwp64")
-layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 
-[node name="Control" type="Control" parent="Screenbend"]
+[node name="Brightness" type="Control" parent="Screenbend"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="TextureRect2" type="TextureRect" parent="Screenbend/Control"]
+[node name="TextureRect2" type="TextureRect" parent="Screenbend/Brightness"]
 material = ExtResource("9_wgovn")
 layout_mode = 0
-offset_left = -3.0
-offset_top = -6.0
-offset_right = 1917.0
-offset_bottom = 1074.0
-scale = Vector2(1.02, 1.02)
+offset_right = 1920.0
+offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_jk85w")
 stretch_mode = 2
 
@@ -214,20 +223,8 @@ stretch_mode = 2
 [node name="Texture" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="TextureRect2" type="TextureRect" parent="Texture"]
-modulate = Color(1, 1, 1, 0.00784314)
-material = ExtResource("10_xd21n")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("12_4etfk")
-expand_mode = 1
-stretch_mode = 6
-
 [node name="TextureRect" type="TextureRect" parent="Texture"]
-modulate = Color(1, 1, 1, 0.980392)
+modulate = Color(1, 1, 1, 0.945098)
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_1d3xd")
@@ -255,8 +252,11 @@ stretch_mode = 2
 [node name="MusicShader" type="SubViewport" parent="."]
 
 [node name="MusicShaderTexture" type="TextureRect" parent="MusicShader"]
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = SubResource("ViewportTexture_hkvnm")
 
 [node name="FinalComposition" type="SubViewport" parent="."]

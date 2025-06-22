@@ -60,9 +60,11 @@ func start() -> void:
 	BtnControls.reveal(true)
 
 func pause() -> void:
+	print("pause email")
 	await BtnControls.reveal(false)
 	
 func unpause() -> void:
+	print("unpause email")
 	await BtnControls.reveal(true)
 # ------------------------------------------------------------------------------
 

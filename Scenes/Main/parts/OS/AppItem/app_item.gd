@@ -3,6 +3,7 @@ extends MouseInteractions
 
 @onready var RootPanel:Control = $"."
 @onready var IconButton:Control = $MarginContainer2/VBoxContainer/IconBtn
+@onready var RunningButton:Control = $Control2/RunningBtn
 @onready var AppLabel:Label = $MarginContainer2/VBoxContainer/Label
 
 @export var title:String = "Application" : 
@@ -33,6 +34,11 @@ var is_selected:bool = false :
 		is_selected = val
 		on_is_selected_update()
 
+var is_running:bool = false : 
+	set(val):
+		is_running = val
+		on_is_runnning_update()
+
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
 
@@ -49,23 +55,23 @@ func after_ready():
 	on_icon_update()
 	on_data_update()
 	on_position_update()	
+	on_is_runnning_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_data_update() -> void:
-	if is_node_ready() and !data.is_empty():
-		title = data.title
-		icon = data.icon
-		hint_description = "Run application: %s" % data.title
-
+	if !is_node_ready() or data.is_empty():return
+	title = data.title
+	icon = data.icon
+	hint_description = "Run application: %s" % data.title
 		
 func on_title_update() -> void:
-	if is_node_ready():
-		AppLabel.text = title
+	if !is_node_ready():return
+	AppLabel.text = title
 
 func on_icon_update() -> void:
-	if is_node_ready():		
-		IconButton.icon = icon
+	if !is_node_ready():return
+	IconButton.icon = icon
 		
 func on_position_update() -> void:
 	position = pos_offset + init_pos
@@ -74,6 +80,10 @@ func on_position_update() -> void:
 		global_position.x = 0
 	if global_position.y < 0:
 		global_position.y = 0	
+
+func on_is_runnning_update() -> void:
+	if !is_node_ready():return
+	RunningButton.show() if is_running else RunningButton.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

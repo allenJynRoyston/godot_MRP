@@ -13,11 +13,12 @@ func _ready() -> void:
 	LoadingvBox.modulate = Color(1, 1, 1, 0)
 	
 func start(fast:bool) -> void:
-	await U.set_timeout(0.3)
-	LoadingvBox.modulate = Color(1, 1, 1, 1)
-	await U.set_timeout(1.0 if fast else 2.0)
-	LoadingvBox.modulate = Color(1, 1, 1, 0)
-	await U.set_timeout(0.3)
+	if !fast:
+		await U.set_timeout(0.3)
+		LoadingvBox.modulate = Color(1, 1, 1, 1)
+		await U.set_timeout(1.0)
+		LoadingvBox.modulate = Color(1, 1, 1, 0)
+		await U.set_timeout(0.3)
 	queue_free()	
 
 func on_loading_text_update() -> void:

@@ -27,8 +27,6 @@ shadow_color = Color(0.129412, 0.129412, 0.129412, 0.345098)
 custom_minimum_size = Vector2(100, 100)
 offset_right = 134.0
 offset_bottom = 120.0
-size_flags_horizontal = 0
-size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_k6wcv")
 script = ExtResource("1_tkkct")
 
@@ -64,3 +62,17 @@ uppercase = true
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
+
+[node name="Control2" type="Control" parent="."]
+layout_mode = 2
+
+[node name="RunningBtn" parent="Control2" instance=ExtResource("2_w4olv")]
+visible = false
+layout_mode = 0
+offset_left = 5.0
+offset_top = 6.0
+offset_right = 30.0
+offset_bottom = 31.0
+icon = 42
+static_color = Color(0.176419, 0.176419, 0.176419, 1)
+is_hoverable = false

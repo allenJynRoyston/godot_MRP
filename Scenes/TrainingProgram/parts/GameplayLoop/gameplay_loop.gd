@@ -384,7 +384,6 @@ func start() -> void:
 	await U.tick()
 	start_new_game()
 	
-
 func start_new_game() -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()

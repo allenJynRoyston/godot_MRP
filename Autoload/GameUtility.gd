@@ -543,6 +543,8 @@ func add_objectives_to_timeline(objectives:Array = []) -> void:
 
 # -----------------------------------
 func open_objectives() -> void:	
+	disable_taskbar(true)
+	
 	var ObjectivesNode:Control = ObjectivesPreload.instantiate()
 	ObjectivesNode.z_index = z_index_lvl
 	GameplayNode.add_child(ObjectivesNode)
@@ -555,6 +557,7 @@ func open_objectives() -> void:
 	await ObjectivesNode.user_response
 	
 	GameplayNode.restore_player_hud()
+	disable_taskbar(false)
 # -----------------------------------
 
 # ------------------------------------------------------------------------------	
@@ -567,12 +570,16 @@ func construct_room(allow_placement:bool = true) -> void:
 
 # ---------------------
 func trigger_event(event_data:Array) -> Dictionary:
+	disable_taskbar(true)
+	
 	var EventContainer:Control = EventContainerPreload.instantiate()
 	GameplayNode.add_child(EventContainer)
 	EventContainer.z_index = z_index_lvl
 	await EventContainer.activate()
 	EventContainer.start(event_data)
 	var event_res:Dictionary = await EventContainer.user_response
+	
+	disable_taskbar(false)
 	return event_res
 # ---------------------
 
@@ -1122,6 +1129,8 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 
 # ------------------------------------------------------------------------------
 func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+	disable_taskbar(true)
+	
 	var ConfirmNode:Control = ConfirmModalPreload.instantiate()
 	ConfirmNode.z_index = 100	
 	GameplayNode.add_child(ConfirmNode)
@@ -1133,6 +1142,8 @@ func create_modal(title:String = "", subtitle:String = "", img_src:String = "", 
 	
 	ConfirmNode.start()
 	var confirm:bool = await ConfirmNode.user_response	
+	
+	disable_taskbar(false)
 	return confirm
 # ------------------------------------------------------------------------------
 
@@ -1162,7 +1173,14 @@ func add_timeline_item(dict:Dictionary) -> void:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
+func disable_taskbar(state:bool) -> void:
+	GBL.find_node(REFS.OS_LAYOUT).freeze_inputs = state
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
 func add_dialogue(data:Dictionary) -> void:
+	disable_taskbar(true)
+	
 	var DialogNode:Control = DialogPreload.instantiate()
 	DialogNode.z_index = z_index_lvl
 	GameplayNode.add_child(DialogNode)
@@ -1172,6 +1190,8 @@ func add_dialogue(data:Dictionary) -> void:
 
 	await DialogNode.user_response
 	GameplayNode.restore_player_hud()
+	
+	disable_taskbar(false)
 # ------------------------------------------------------------------------------	
 
 
