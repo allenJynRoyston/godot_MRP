@@ -171,6 +171,11 @@ var user_profile_schema:Dictionary = {
 		"current_story_val": 0 if !user_profile_ref else current_story_val,
 		"at_story_limit": false,		
 	},
+	"graphics": {
+		"shaders":{
+			"crt_effect": true
+		}	
+	},
 	"use_save_profile": FS.FILE.SAVE_ONE if !user_profile_ref else user_profile_ref,
 	"save_profiles":{
 		FS.FILE.SAVE_ONE: default_save_profiles.duplicate(),
@@ -511,8 +516,8 @@ func set_monitor_overlay(state:bool) -> void:
 # -----------------------------------	
 
 # -----------------------------------	
-func use_focus_shader_settings() -> void:
-	var duration:float = 0.7
+func use_focus_shader_settings(instant:bool = false) -> void:
+	var duration:float = 0.7 if !instant else 0
 	# set new color 
 	for item in color_rect_arr:
 		var node:Control = item[0]
@@ -546,8 +551,8 @@ func use_focus_shader_settings() -> void:
 			material_dupe.set_shader_parameter("left_right_border_pixels", val)
 		).finished				
 			
-func use_full_shader_settings() -> void:
-	var duration:float = 0.7
+func use_full_shader_settings(instant:bool = false) -> void:
+	var duration:float = 0.7 if !instant else 0
 	
 	# restore colors
 	for item in color_rect_arr:

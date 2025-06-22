@@ -98,12 +98,10 @@ var onAction:Callable = func():pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
-	print('init')
 	GBL.register_node(REFS.ACTIVE_MENU, self)
 	GBL.subscribe_to_control_input(self)
 
 func _exit_tree() -> void:
-	print("exit")
 	GBL.unregister_node(REFS.ACTIVE_MENU)	
 	GBL.unsubscribe_to_control_input(self)
 	GBL.direct_ref.erase("ActiveMenu")

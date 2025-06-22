@@ -228,7 +228,7 @@ var app_list:Array[Dictionary] = [
 						{
 							"title": "CRT FX", 
 							"key": "crt_filter",
-							"value": false,
+							"value": GBL.active_user_profile.graphics.shaders.crt_effect,
 							"hint_description": "Enable/Disable crt effect."
 						},
 						{
@@ -247,11 +247,13 @@ var app_list:Array[Dictionary] = [
 					var val:bool = res.properties[key]
 					match key:
 						"crt_filter":
-							if val:
-								GBL.find_node(REFS.MAIN).use_full_shader_settings()
-							else:
-								GBL.find_node(REFS.MAIN).use_focus_shader_settings()
-				,
+							GBL.active_user_profile.graphics.shaders.crt_effect = val
+
+								
+				# update settings
+				check_graphics_settings()
+				# update and save profile
+				GBL.update_and_save_user_profile(GBL.active_user_profile),
 				
 		},
 	}
@@ -374,6 +376,7 @@ func start() -> void:
 	var skip_to_game:bool = DEBUG.get_val(DEBUG.OS_SKIP_TO_GAME)
 	
 	has_started = true
+	check_graphics_settings(true)
 	load_state()	
 	on_simulated_busy_update()
 	
@@ -440,7 +443,6 @@ func open_options(title:String, list:Array = []) -> Dictionary:
 	var app_pos:Vector2 = selected_app_item.global_position + Vector2(0, selected_app_item.size.y + 10) 
 	OptionsMenu.setup(title, list, app_pos)
 	var res:Dictionary = await OptionsMenu.wait_for_response
-	print("open options")
 	BtnControls.reveal(true)
 	freeze_inputs = false
 
@@ -465,6 +467,14 @@ func install_app_complete(ref:APPS) -> void:
 
 # -----------------------------------
 #region SAVE/LOAD
+func check_graphics_settings(instant:bool = false) -> void:
+	var use_crt_effect:bool = GBL.active_user_profile.graphics.shaders.crt_effect
+	if use_crt_effect:
+		GBL.find_node(REFS.MAIN).use_full_shader_settings(instant) 
+	else:
+		GBL.find_node(REFS.MAIN).use_focus_shader_settings(instant)	
+
+
 func save_state(duration:float = 0.2) -> void:
 	var save_data:Dictionary = {
 		"settings": settings,
