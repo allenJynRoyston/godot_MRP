@@ -22,7 +22,6 @@ extends MouseInteractions
 		title = val
 		on_title_update()
 		
-
 @export var at_end:bool = false : 
 	set(val):
 		at_end = val
@@ -47,8 +46,11 @@ func on_objectives_update() -> void:
 	for node in ObjectiveItemList.get_children():
 		node.queue_free()
 		
-	for objective in objectives.list:
+	for index in objectives.list.size():
+		var objective:Dictionary = objectives.list[index]
 		var new_btn:Control = ObjectiveItemPreload.instantiate()
+		
+		new_btn.index = index
 		new_btn.show_bookmark = false
 		new_btn.is_naked = false
 		new_btn.is_expired = is_expired

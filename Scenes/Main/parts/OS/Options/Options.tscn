@@ -97,6 +97,18 @@ visible = false
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_jbhxw")
 
+[node name="BtnList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StartBtn" parent="Control/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("2_1xncx")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_klbsx")
+title = "RUN"
+
+[node name="HSeparator" type="HSeparator" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jbhxw")
+
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -106,25 +118,13 @@ theme_override_constants/separation = 5
 
 [node name="OptionItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_klbsx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1xncx")
 title = "Option A"
 
 [node name="OptionItem2" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1xncx")
-title = "Option B"
-
-[node name="HSeparator" type="HSeparator" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_jbhxw")
-
-[node name="BtnList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="StartBtn" parent="Control/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("2_1xncx")]
-layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jbhxw")
-title = "RUN"
+title = "Option B"
 
 [node name="BtnControls" parent="." instance=ExtResource("4_h2ypb")]
 layout_mode = 2

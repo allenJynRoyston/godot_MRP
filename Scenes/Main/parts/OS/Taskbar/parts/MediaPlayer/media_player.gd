@@ -184,7 +184,7 @@ func on_process_update(delta: float) -> void:
 		for i in range(VU_COUNT):
 			fft.append(lerp(min_values[i], max_values[i], ANIMATION_SPEED))
 			
-		AudioNode.update_music_shader(fft)
+		AudioNode.update_music_shader(fft, current_audio_stream_player.get_playback_position())
 
 	#if scroll_name:
 	frame_counter += 1

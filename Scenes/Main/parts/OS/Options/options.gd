@@ -76,7 +76,7 @@ func setup(title:String, new_list:Array, new_position:Vector2 = Vector2()) -> vo
 	var list:Array = new_list
 		
 	# reset
-	itemlist = []
+	itemlist = [StartBtn]
 	properties = {}
 	clear()
 	
@@ -98,7 +98,6 @@ func setup(title:String, new_list:Array, new_position:Vector2 = Vector2()) -> vo
 			properties[item.key] = new_node.is_checked
 		OptionList.add_child(new_node)
 	
-	itemlist.push_back(StartBtn)
 	
 	# add to btnlist
 	BtnControls.itemlist = itemlist

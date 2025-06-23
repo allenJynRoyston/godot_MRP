@@ -1,18 +1,18 @@
 extends PanelContainer
 
 @onready var BtnControl:Control = $BtnControl
-@onready var TaskbarControl:Control = $TaskbarControl
 @onready var TaskbarPanel:PanelContainer = $TaskbarControl/PanelContainer
-@onready var DesktopBtn:Control = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/LeftContainer/DesktopBtn
+@onready var TaskbarMargin:MarginContainer = $TaskbarControl/PanelContainer/MarginContainer
+@onready var DesktopBtn:Control = $TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftContainer/DesktopBtn
 
 # tasks
-@onready var RunningTasks:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RunningTasks
-@onready var TimeAndSettings:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/TimeAndSettings
+@onready var RunningTasks:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/RunningTasks
+@onready var TimeAndSettings:HBoxContainer = $TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightContainer/TimeAndSettings
 
 # media player buttons
-@onready var MediaPlayer:PanelContainer = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer
-@onready var PlayBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/MarginContainer/HBoxContainer/HBoxContainer/PlayPauseBtn
-@onready var NextBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/MarginContainer/HBoxContainer/HBoxContainer/NextBtn
+@onready var MediaPlayer:PanelContainer = $TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer
+@onready var PlayBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/MarginContainer/HBoxContainer/HBoxContainer/PlayPauseBtn
+@onready var NextBtn:BtnBase = $TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightContainer/MediaPlayer/MarginContainer/HBoxContainer/HBoxContainer/NextBtn
 
 @export var show_media_player:bool = false : 
 	set(val):
@@ -57,7 +57,6 @@ func _ready() -> void:
 		
 	BtnControl.onUpdate = func(_node:Control) -> void:
 		selected_node = _node
-		if BtnControl.itemlist.size() <= 1:return
 		
 		for node in BtnControl.itemlist:
 			node.modulate = Color(1, 1, 1, 1 if node == _node else 0.7)		
@@ -96,7 +95,6 @@ func _ready() -> void:
 				await set_show_taskbar(false)
 				GBL.find_node(REFS.OS_LAYOUT).return_to_app(selected_node.data.ref)
 				
-			
 	BtnControl.onCBtn = func() -> void:
 		is_busy = true		
 		await BtnControl.reveal(false)
@@ -109,38 +107,36 @@ func _ready() -> void:
 				NextBtn:
 					show_media_player = false
 				_:
-					GBL.find_node(REFS.OS_LAYOUT).close_app(selected_node.data.ref)
+					GBL.find_node(REFS.OS_LAYOUT).force_close_app(selected_node.data.ref)
 			
 			await U.tick()
 			BtnControl.itemlist = get_itemlist()
-			BtnControl.item_index = 0				
-			
+			BtnControl.item_index = BtnControl.itemlist.size() - 1
 		is_busy = false
 		
 	BtnControl.directional_pref = "LR"
-	
-	await U.tick()
-	control_pos[TaskbarControl] = {
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func activate() -> void:
+	control_pos[TaskbarPanel] = {
 		"show": 0, 
-		"hide": -TaskbarPanel.size.y - 20
+		"hide": -TaskbarMargin.size.y - 20
 	}
 	
-	TaskbarControl.position.y = control_pos[TaskbarControl].hide
-	
-	set_show_taskbar(false, true)
+	TaskbarPanel.position.y = control_pos[TaskbarPanel].hide	
+	self.modulate = Color(1, 1, 1, 1)
 # ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------	
 func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 	is_busy = true		
 
 	show_taskbar = state
-	
-	if state:
-		self.modulate = Color(1, 1, 1, 1)
 
 	BtnControl.reveal(state)
-	await U.tween_node_property(TaskbarControl, "position:y", control_pos[TaskbarControl].show if show_taskbar else control_pos[TaskbarControl].hide, 0 if skip_animation else 0.3)
+	await U.tween_node_property(TaskbarPanel, "position:y", control_pos[TaskbarPanel].show if show_taskbar else control_pos[TaskbarPanel].hide, 0 if skip_animation else 0.3)
 	
 	if state:
 		BtnControl.itemlist = get_itemlist()
@@ -152,18 +148,14 @@ func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 		else:
 			BtnControl.item_index = 0
 		
-	if !state:
-		self.modulate = Color(1, 1, 1, 0)
-		
+
 	is_busy = false
-		
 		
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()
 	if !show_media_player:
 		MediaPlayer.on_stop()
-
 	
 func add_item(item:Dictionary) -> void:
 	if !is_node_ready():return
@@ -186,11 +178,6 @@ func remove_item(ref:int) -> void:
 	for task in RunningTasks.get_children():
 		if task.data.ref == ref:
 			RunningTasks.remove_child(task)
-			
-	await U.tick()
-	BtnControl.itemlist = get_itemlist()
-	BtnControl.item_index = 0
-
 
 func get_itemlist() -> Array:
 	var list:Array = [DesktopBtn] 

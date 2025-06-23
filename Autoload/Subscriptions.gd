@@ -464,18 +464,26 @@ func subscribe_to_gameplay_conditionals(node:Node) -> void:
 			node.on_gameplay_conditionals_update.call( gameplay_conditionals)
 			
 func unsubscribe_to_gameplay_conditionals(node:Node) -> void:
-	gameplay_conditionals_subscriptions.erase(node)				
+	gameplay_conditionals_subscriptions.erase(node)
 # ------------------------------------------------------------	
 
 
 # ------------------------------------------------------------	
-#
-#func subscribe_to_gameplay_conditionals(node:Node) -> void:
-	#if node not in gameplay_conditionals_subscriptions:
-		#gameplay_conditionals_subscriptions.push_back(node)
-		#if "on_gameplay_conditionals_update" in node:
-			#node.on_gameplay_conditionals_update.call( gameplay_conditionals)
-			#
-#func unsubscribe_to_gameplay_conditionals(node:Node) -> void:
-	#gameplay_conditionals_subscriptions.erase(node)				
+var hints_unlocked_subscriptions:Array = []
+
+var hints_unlocked:Array = [] :
+	set(val):
+		hints_unlocked = val 
+		for node in hints_unlocked_subscriptions:
+			if "on_hints_unlocked_update" in node:
+				node.on_hints_unlocked_update.call( hints_unlocked )
+				
+func subscribe_to_hints_unlocked(node:Node) -> void:
+	if node not in hints_unlocked_subscriptions:
+		hints_unlocked_subscriptions.push_back(node)
+		if "on_hints_unlocked_update" in node:
+			node.on_hints_unlocked_update.call( hints_unlocked )
+			
+func unsubscribe_to_hints_unlocked(node:Node) -> void:
+	hints_unlocked_subscriptions.erase(node)				
 # ------------------------------------------------------------	

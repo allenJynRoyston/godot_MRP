@@ -1,14 +1,14 @@
 [gd_scene load_steps=7 format=3 uid="uid://eqyg3c15y82h"]
 
 [ext_resource type="Script" uid="uid://c7tynm067h14t" path="res://Scenes/Main/parts/Background/background.gd" id="1_h1t15"]
-[ext_resource type="Shader" uid="uid://bsxi1d0tasle3" path="res://CanvasShader/AudioShader/audio_shader.gdshader" id="2_vjfrr"]
+[ext_resource type="Shader" uid="uid://6r13xmwr8jsw" path="res://CanvasShader/AudioShader/audio_shader_2.gdshader" id="2_6cd5x"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vgw3k"]
-shader = ExtResource("2_vjfrr")
+shader = ExtResource("2_6cd5x")
 shader_parameter/audio_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 shader_parameter/time = 0.0
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_52o18"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6cd5x"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_vgw3k"]
 viewport_path = NodePath("SubViewport")
@@ -39,7 +39,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = SubResource("NoiseTexture2D_52o18")
+texture = SubResource("NoiseTexture2D_6cd5x")
 
 [node name="SubViewport2" type="SubViewport" parent="."]
 

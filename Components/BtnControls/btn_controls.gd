@@ -312,6 +312,7 @@ func on_item_index_update() -> void:
 	# prevents it from warping all over the place
 	if !is_node_ready() or itemlist.is_empty() or !is_visible_in_tree() or !is_revealed:return
 	var node:Control = itemlist[item_index]
+	
 	if "get_hint" in node and !node.get_hint().is_empty():
 		var hint:Dictionary = node.get_hint()
 		if hint.title == "" and hint.description == "":

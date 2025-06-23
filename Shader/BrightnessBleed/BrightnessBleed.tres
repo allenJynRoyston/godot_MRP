@@ -7,4 +7,4 @@ shader = ExtResource("1_psrs0")
 shader_parameter/glow_intensity = 1.976
 shader_parameter/glow_radius = 3.064
 shader_parameter/opacity = 0.605
-shader_parameter/glow_offset = Vector2(-5, -5)
+shader_parameter/glow_offset = Vector2(-5, -10)

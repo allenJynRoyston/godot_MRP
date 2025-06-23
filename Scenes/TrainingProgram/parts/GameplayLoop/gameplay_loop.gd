@@ -80,19 +80,23 @@ var initial_values:Dictionary = {
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
 				"amount": 300 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"diff": 100,
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
 				"amount": 200 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"diff": 50,
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
 				"amount": 100 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"diff": 10,
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": 1 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 10, 
-				"capacity": 10
+				"amount": 10 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 100, 
+				"diff": 1,
+				"capacity": 100
 			},						
 		},
 	# ----------------------------------
@@ -101,6 +105,9 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"shop_unlock_purchases": func() -> Array:
 		return [],
+	# ----------------------------------
+	"hints_unlocked": func() -> Array:
+		return [],		
 	# ----------------------------------
 	"room_config": func() -> Dictionary:
 		return {
@@ -244,6 +251,7 @@ var action_queue_data:Array
 var purchased_facility_arr:Array 
 var purchased_base_arr:Array
 var purchased_research_arr:Array 
+var hints_unlocked:Array 
 var bookmarked_rooms:Array # ["000", "201"] <- "floor_index, ring_index, room_index"]
 var unavailable_rooms:Array 
 var hired_lead_researchers_arr:Array
@@ -313,6 +321,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_camera_settings(self)	
 	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
 	SUBSCRIBE.subscribe_to_awarded_room(self)
+	SUBSCRIBE.subscribe_to_hints_unlocked(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.GAMEPLAY_LOOP)
@@ -335,6 +344,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
 	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
 	SUBSCRIBE.unsubscribe_to_awarded_room(self)
+	SUBSCRIBE.unsubscribe_to_hints_unlocked(self)
 
 func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
@@ -358,6 +368,7 @@ func _ready() -> void:
 	capture_default_showing_state()
 
 	await U.tick()
+	
 	# assign
 	GAME_UTIL.assign_nodes()	
 		
@@ -464,9 +475,7 @@ func start_new_game() -> void:
 	
 	# update phase and start game
 	if is_tutorial:
-		await GAME_UTIL.setup_tutorial()
-		await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.INTRO)
-		await U.set_timeout(0.2)
+		await GAME_UTIL.start_tutorial()
 			
 	# show objectives
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
@@ -880,6 +889,9 @@ func on_gameplay_conditionals_update(new_val:Dictionary = gameplay_conditionals)
 	
 func on_awarded_rooms_update(new_val:Array = awarded_rooms) -> void:
 	awarded_rooms = new_val
+	
+func on_hints_unlocked_update(new_val:Array = hints_unlocked) -> void:
+	hints_unlocked = new_val
 
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
@@ -1143,6 +1155,7 @@ func get_save_state() -> Dictionary:
 		"purchased_base_arr": purchased_base_arr,
 		"purchased_facility_arr": purchased_facility_arr,
 		"purchased_research_arr": purchased_research_arr,
+		"hints_unlocked": hints_unlocked,
 		"hired_lead_researchers_arr": hired_lead_researchers_arr,
 		"resources_data": resources_data,
 		"bookmarked_rooms": bookmarked_rooms,
@@ -1211,6 +1224,8 @@ func parse_restore_data() -> void:
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if is_new_game else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if is_new_game else restore_data.purchased_base_arr
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if is_new_game else restore_data.bookmarked_rooms
+	SUBSCRIBE.hints_unlocked = initial_values.hints_unlocked.call() if is_new_game else restore_data.hints_unlocked
+	
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if is_new_game else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if is_new_game else restore_data.purchased_research_arr
 	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if is_new_game else restore_data.shop_unlock_purchases

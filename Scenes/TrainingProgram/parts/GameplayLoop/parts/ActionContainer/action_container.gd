@@ -220,7 +220,7 @@ func start(start_at_ring_level:bool = false) -> void:
 	
 	# -------------------------------------
 	if !GameplayNode.is_tutorial:
-		TutorialBtn.queue_free()
+		TutorialBtn.hide()
 
 	# -------------------------------------
 	NewMessageBtn.onClick = func() -> void:
@@ -503,11 +503,11 @@ func show_build_options() -> void:
 	ActiveMenuNode.onClose = func() -> void:
 		await onClose.call(false)
 		
-		if GameplayNode.is_tutorial:
-			if ROOM_UTIL.build_count(ROOM.REF.DIRECTORS_OFFICE) == 1:
-				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_DIRECTORS_OFFICE, 1.0)
-			if ROOM_UTIL.build_count(ROOM.REF.HQ) == 1:	
-				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_HQ, 1.0)
+		#if GameplayNode.is_tutorial:
+			#if ROOM_UTIL.build_count(ROOM.REF.DIRECTORS_OFFICE) == 1:
+				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_DIRECTORS_OFFICE, 1.0)
+			#if ROOM_UTIL.build_count(ROOM.REF.HQ) == 1:	
+				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_HQ, 1.0)
 		
 	ActiveMenuNode.onAction = func() -> void:
 		await ActiveMenuNode.close()
@@ -830,8 +830,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 				for btn in btnlist:
 					btn.is_disabled = btn == GotoWingBtn
 			
-			if GameplayNode.is_tutorial:
-				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.FLOORPLAN, 0.3)
+			#if GameplayNode.is_tutorial:
+				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.FLOORPLAN, 0.3)
 			
 		# ----------------------
 		CAMERA.TYPE.GENERATOR:
@@ -1107,8 +1107,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		
 			U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].hide)
 			
-			if GameplayNode.is_tutorial:
-				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.INVESTIGATE, 0.5)
+			#if GameplayNode.is_tutorial:
+				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.INVESTIGATE, 0.5)
 		# --------------
 		MODE.ABILITY:
 			var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
@@ -1160,8 +1160,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			await lock_investigate(true)			
 			await BtnControls.reveal(true)
 			
-			if GameplayNode.is_tutorial:
-				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.ACTIONS)			
+			#if GameplayNode.is_tutorial:
+				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.ACTIONS)			
 		# --------------
 		MODE.BUILD:
 			clear_lines()
@@ -1171,8 +1171,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			await show_build_options()
 			RoomDetailsControl.reveal(true)
 			
-			if GameplayNode.is_tutorial:
-				await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.BUILD, 0.5)
+			#if GameplayNode.is_tutorial:
+				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.BUILD, 0.5)
 	
 	on_current_location_update()	
 	on_camera_settings_update()

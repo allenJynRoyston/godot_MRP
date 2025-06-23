@@ -1,29 +1,31 @@
-[gd_scene load_steps=16 format=3 uid="uid://b2glyeqvwy3vs"]
+[gd_scene load_steps=18 format=3 uid="uid://b2glyeqvwy3vs"]
 
 [ext_resource type="Script" uid="uid://cama33xd6387p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/objectives_container.gd" id="1_5mn2c"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_h6i7u"]
 [ext_resource type="PackedScene" uid="uid://d33nsdab6tg1o" path="res://Scenes/TrainingProgram/parts/Cards/ObjectiveCard/ObjectiveCard.tscn" id="2_q6d11"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_q73ge"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_s3s3v"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_ubjmu"]
+[ext_resource type="PackedScene" uid="uid://cv350lyuukxss" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveHint.tscn" id="4_2g7pg"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_q6d11"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="8_2g7pg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0mj1b"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q6d11"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2g7pg"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubjmu"]
-bg_color = Color(0, 0, 0, 0.796078)
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u5qmr"]
+bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_2g7pg"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ul6yg"]
+color = Color(1, 1, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tv5pb"]
 font = ExtResource("3_ubjmu")
+font_size = 64
+outline_size = 16
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q6d11"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uyd7x"]
 
@@ -47,12 +49,68 @@ script = ExtResource("1_5mn2c")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0.27451, 0.560784, 1, 0.231373)
+color = Color(0.19, 0.19, 0.19, 0.596078)
 
-[node name="TitleControl" type="Control" parent="."]
+[node name="Control" type="Control" parent="."]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="TitleControl"]
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_2g7pg")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 110
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_u5qmr")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "DAYS REMAINING"
+label_settings = ExtResource("3_s3s3v")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ul6yg")
+
+[node name="DaysReamining" type="Label" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "99"
+label_settings = SubResource("LabelSettings_tv5pb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HintControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HintControl"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,54 +119,19 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_q6d11")
 
-[node name="MarginContainer" type="MarginContainer" parent="TitleControl/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="HintControl/PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/margin_top = 40
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_bottom = 100
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TitleControl/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HintControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 80
-alignment = 1
+theme_override_constants/separation = 20
 
-[node name="ObjectiveHeader" type="Label" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ObjectiveHint" parent="HintControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_2g7pg")]
 layout_mode = 2
-text = "OBJECTIVE:"
-label_settings = ExtResource("2_h6i7u")
-horizontal_alignment = 1
-uppercase = true
-
-[node name="PanelContainer" type="PanelContainer" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(400, 100)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ubjmu")
-
-[node name="MarginContainer" type="MarginContainer" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="ObjectiveTitle" type="Label" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
-custom_minimum_size = Vector2(1, 1)
-layout_mode = 2
-size_flags_vertical = 1
-text = "Something goes here"
-label_settings = SubResource("LabelSettings_2g7pg")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="ObjectiveDeadline" type="Label" parent="TitleControl/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-text = "Must be completed by day X.
-(You have x days remaining)."
-label_settings = ExtResource("3_s3s3v")
-horizontal_alignment = 1
 
 [node name="ObjectivesControl" type="Control" parent="."]
 layout_mode = 2
@@ -127,7 +150,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 150
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 100
 
@@ -179,9 +202,9 @@ theme_override_constants/separation = 0
 
 [node name="BtnControls" parent="." instance=ExtResource("4_q6d11")]
 layout_mode = 2
-a_btn_title = "BOOKMARK"
-a_btn_icon = 14
-hide_a_btn = true
+offset = Vector2(10, 15)
+a_btn_title = "PURCHASE HINT"
+a_btn_icon = 39
 
 [node name="TransitionScreen" parent="." instance=ExtResource("8_2g7pg")]
 layout_mode = 2

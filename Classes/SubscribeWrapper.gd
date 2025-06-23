@@ -19,6 +19,7 @@ var bookmarked_rooms:Array
 var unavailable_rooms:Array 
 var hired_lead_researchers_arr:Array
 var awarded_rooms:Array
+var hints_unlocked:Array
 
 var previous_floor:int = -1
 var previous_ring:int = -1
@@ -40,6 +41,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_base_states(self)
 	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
 	SUBSCRIBE.subscribe_to_awarded_room(self)
+	SUBSCRIBE.subscribe_to_hints_unlocked(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
@@ -57,7 +59,8 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
 	SUBSCRIBE.unsubscribe_to_awarded_room(self)
-	
+	SUBSCRIBE.unsubscribe_to_hints_unlocked(self)
+
 	
 func on_resources_data_update(new_val:Dictionary) -> void:
 	resources_data = new_val
@@ -98,6 +101,9 @@ func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	
 func on_purchased_research_arr_update(new_val:Array) -> void:
 	purchased_research_arr = new_val
+	
+func on_hints_unlocked_update(new_val:Array) -> void:
+	hints_unlocked = new_val	
 	
 func on_camera_settings_update(new_val:Dictionary) -> void:
 	camera_settings = new_val

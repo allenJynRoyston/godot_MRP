@@ -26,6 +26,7 @@ var hired_lead_researchers_arr:Array = []
 var current_location:Dictionary = {} 
 var progress_data:Dictionary = {}
 var timeline_array:Array = [] 
+var hints_unlocked:Array = []
 var room_config:Dictionary = {} 
 var researcher_hire_list:Array = [] 
 var shop_unlock_purchases:Array = []
@@ -68,6 +69,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_scp_data(self)
 	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
 	SUBSCRIBE.subscribe_to_unavailable_rooms(self)
+	SUBSCRIBE.subscribe_to_hints_unlocked(self)
 	
 	GBL.subscribe_to_control_input(self)
 	GBL.subscribe_to_process(self)
@@ -94,6 +96,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_scp_data(self)
 	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
 	SUBSCRIBE.unsubscribe_to_unavailable_rooms(self)
+	SUBSCRIBE.unsubscribe_to_hints_unlocked(self)
 
 	GBL.unsubscribe_to_control_input(self)
 	GBL.unsubscribe_to_process(self)
@@ -132,6 +135,8 @@ func on_researcher_hire_list_update(new_val:Array) -> void:
 	researcher_hire_list = new_val
 func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	hired_lead_researchers_arr = new_val
+func on_hints_unlocked_update(new_val:Array) -> void:
+	hints_unlocked = new_val	
 func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	shop_unlock_purchases = new_val
 func on_purchased_research_arr_update(new_val:Array) -> void:

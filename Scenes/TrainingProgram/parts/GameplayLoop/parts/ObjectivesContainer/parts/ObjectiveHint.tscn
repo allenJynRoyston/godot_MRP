@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://cv350lyuukxss"]
+
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="1_pxn83"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6teih"]
+bg_color = Color(0, 0, 0, 0.796078)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="ObjectiveHint" type="PanelContainer"]
+custom_minimum_size = Vector2(400, 100)
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6teih")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ObjectiveTitle" type="Label" parent="MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Objective"
+label_settings = ExtResource("1_pxn83")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

@@ -10,7 +10,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
+border_color = Color(0.337, 0.275, 1, 1)
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 10
@@ -42,6 +42,7 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 51
+static_color = Color(0.337, 0.275, 1, 1)
 is_hoverable = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
@@ -53,24 +54,26 @@ alignment = 1
 [node name="ContentLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-text = "Objective goes here:  the quick brown fox jumps over the "
+text = "Objective"
 label_settings = ExtResource("3_qkbpp")
 autowrap_mode = 3
 
 [node name="YouHaveLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
-text = "(You currently have .)"
+text = "(You currently have )."
 label_settings = ExtResource("3_qkbpp")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
 
 [node name="BookmarkIcon" parent="Control" instance=ExtResource("1_e76ta")]
+visible = false
 layout_mode = 0
 offset_left = -31.0
 offset_top = 10.0
 offset_right = -6.0
 offset_bottom = 35.0
 icon = 19
+static_color = Color(1, 1, 1, 0.6)
 is_hoverable = false

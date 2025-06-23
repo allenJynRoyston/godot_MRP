@@ -7,7 +7,7 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"Greetings, D-Class [REDACTED], my name is Researcher Amborosia, and I'm here to infrom you that you're about to undertake procedure-1102, which won't mean anything to you right now, but I have to tell you that it may or may not kill you.",
+			"Good evening, D-[REDACTED], my name is Researcher Amborosia.",
 			"I'm sure you have many questions so lets start with the most obvious:  why?  Why you?  I can't tell you.  And when I explain why you'll understand.  But what I can tell you i this.",
 			"You deserve to be here.",
 			"Look, I'm... not here to judge you, but you do something... you do something bad.  Many people have been killed or are going to die because of you.",
@@ -31,7 +31,6 @@ var chapters:Array = [
 		"objectives": {
 			"title": "Setup the facility.",
 			"list":[
-				
 				# HAVE A BUNCH OF EASY GOALS THAT TEACH YOU HOW TO PLAY THE GAME, SO YOU DON'T REALLY NEED A TUTORIAL
 				# THINGS LIKE:
 				# HAVE AT LEAST 100 MONEY, 100 SCIENCE, 
@@ -48,7 +47,30 @@ var chapters:Array = [
 				# - other "symbols" can be researched
 				# - that way you can build many containment cells "types" and have them do something unique
 				# - scp rooms have a preference (saves a researcher based on their personality/auirks) or kills them.  
-				
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1,
+						"type": BUILDING,
+						"ref": ROOM.REF.DIRECTORS_OFFICE
+					},
+					"hints": [
+						{"title": "Step 1", "cost": 1},
+						{"title": "Step 2", "cost": 2},
+						{"title": "Step 3", "cost": 5},
+					]
+				},
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1,
+						"type": BUILDING,
+						"ref": ROOM.REF.HQ
+					},
+					"hints": [
+						
+					]
+				},
 				{
 					"criteria": {
 						"action": HAVE_AT_LEAST,
@@ -56,7 +78,11 @@ var chapters:Array = [
 						"type": BUILDING,
 						"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
 					},
+					"hints": [
+						
+					]
 				},
+
 				#{
 					#"criteria": {
 						#"action": HAVE_EXACTLY,
@@ -180,9 +206,26 @@ func check_for_current(criteria:Dictionary) -> int:
 # ----------------------------------------------------------------------------------------------
 func get_objectives() -> Array:
 	var objective_list:Array = []
-	for chapter in chapters:
+	for c_index in chapters.size():
+		var chapter:Dictionary = chapters[c_index]
 		var list:Array = []	
-		for objective in chapter.objectives.list:
+		for o_index in chapter.objectives.list.size():
+			var objective:Dictionary = chapter.objectives.list[o_index]
+			var hints:Array = []
+			
+			if "hints" in objective:
+				for h_index in objective.hints.size():
+					var hint:Dictionary = objective.hints[h_index]
+					var uid:String = str(c_index, o_index, h_index)
+					
+					hints.push_back({
+						"title": hint.title,
+						"cost": hint.cost,
+						"uid": uid, 
+						"is_purchased": func() -> bool:
+							return uid in SUBSCRIBE.hints_unlocked
+					})
+			
 			if "criteria" in objective:
 				var title:String = ""
 				var ref:int = objective.criteria.ref
@@ -196,10 +239,11 @@ func get_objectives() -> Array:
 							title += "%s" % str(val, " ")
 						'type':
 							title += str(get_type_str(val, ref), ".")
-
 								
 				list.push_back({
+					"uid": str(c_index, o_index),
 					"title": title,
+					"hints": hints,
 					"you_have": func() -> int: 
 						return check_for_current(objective.criteria),
 					"is_completed": func() -> bool:

@@ -133,6 +133,8 @@ var app_list:Array[Dictionary] = [
 		"installed": func() -> bool:
 			return APPS.SDT_FULL in apps_installed,
 		"events": {
+			"close": func() -> void:
+				close_app(APPS.SDT_FULL),			
 			"open": func(data:Dictionary) -> void:
 				if data.ref not in running_apps_list.map(func(i): return i.ref):
 					var res:Dictionary = await open_options(
@@ -375,6 +377,7 @@ func start() -> void:
 	var skip_boot:bool = DEBUG.get_val(DEBUG.OS_SKIP_BOOT)
 	var skip_to_game:bool = DEBUG.get_val(DEBUG.OS_SKIP_TO_GAME)
 	
+	
 	has_started = true
 	check_graphics_settings(true)
 	load_state()	
@@ -395,6 +398,8 @@ func start() -> void:
 		await LoginContainer.start()
 		
 	await render_desktop_icons()	
+	Taskbar.activate()
+
 	
 	if skip_to_game:
 		var app:Dictionary = find_in_app_list(APPS.SDT_FULL)
@@ -437,6 +442,9 @@ func simulate_wait(duration:float, show_busy:bool = true) -> void:
 
 # -----------------------------------
 func open_options(title:String, list:Array = []) -> Dictionary:
+	if selected_app_item == null:
+		return {"continue": false}
+	
 	freeze_inputs = true
 	await BtnControls.reveal(false)
 	
@@ -572,8 +580,8 @@ func open_app(data:Dictionary, options:Dictionary = {}) -> void:
 	
 	simulate_busy = false
 	freeze_inputs = false		
-	
-func close_app(ref:int) -> void:
+
+func force_close_app(ref:int) -> void:
 	var filtered:Array = running_apps_list.filter(func(item): return item.ref == ref)
 	if !filtered.is_empty():
 		# quit node
@@ -582,9 +590,23 @@ func close_app(ref:int) -> void:
 		Taskbar.remove_item(ref)
 		
 	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)
-	if running_apps_list.is_empty():
-		currently_running_app = null
+	
+	mark_as_running()
+
+func close_app(ref:int) -> void:
+	var filtered:Array = running_apps_list.filter(func(item): return item.ref == ref)
 		
+	if !filtered.is_empty():
+		# quit node
+		filtered[0].node.queue_free()
+		# remove from taskbar
+		Taskbar.remove_item(ref)
+		
+	running_apps_list = running_apps_list.filter(func(item): return item.ref != ref)
+
+	currently_running_app = null
+	BtnControls.reveal(true)
+	
 	mark_as_running()
 
 func mark_as_running() -> void:
@@ -700,10 +722,10 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 	else:
 		await Taskbar.set_show_taskbar(false)		
 		PauseContainer.hide()
-		
-		if currently_running_app == null:
+		if Taskbar.BtnControl.item_index == 0:
+			currently_running_app = null
 			await BtnControls.reveal(true)
-
+		
 	freeze_inputs = false		
 # -----------------------------------
 
