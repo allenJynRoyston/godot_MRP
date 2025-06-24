@@ -3,13 +3,20 @@ extends GameContainer
 @onready var HeaderContainer:PanelContainer = $PanelContainer
 @onready var MarginControl:MarginContainer = $PanelContainer/MarginControl
 
-@onready var LocationFloor:VBoxContainer = $PanelContainer/MarginContainer2/Location/Floor
-@onready var LocationWing:VBoxContainer = $PanelContainer/MarginContainer2/Location/Wing
-@onready var LocationRoom:VBoxContainer = $PanelContainer/MarginContainer2/Location/Room
+@onready var LocationFloor:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/Floor
+@onready var LocationWing:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/Wing
+@onready var LocationRoom:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/Room
 
-@onready var LocationFloorLabel:Label = $PanelContainer/MarginContainer2/Location/Room/CenterLabel2
-@onready var LocationWingLabel:Label = $PanelContainer/MarginContainer2/Location/Wing/CenterLabel2
-@onready var LocationRoomLabel:Label = $PanelContainer/MarginContainer2/Location/Room/CenterLabel2
+@onready var LocationFloorLabel:Label = $PanelContainer/MarginContainer2/VBoxContainer/Location/Floor/CenterLabel2
+@onready var LocationWingLabel:Label = $PanelContainer/MarginContainer2/VBoxContainer/Location/Wing/CenterLabel2
+@onready var LocationRoomLabel:Label = $PanelContainer/MarginContainer2/VBoxContainer/Location/Room/CenterLabel2
+
+@onready var FloorVisualizer:Control = $PanelContainer/MarginContainer2/VBoxContainer/Location/FloorVisualizer
+@onready var WingVisualizer:Control = $PanelContainer/MarginContainer2/VBoxContainer/Location/WingVisualizer
+@onready var RoomVisualizer:Control = $PanelContainer/MarginContainer2/VBoxContainer/RoomVisualizer
+
+@onready var WingHBox:HBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/WingVisualizer/WingHBox
+@onready var FloorVBox:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/FloorVisualizer/HBoxContainer/FloorVBox
 
 @onready var FloorBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FloorBuffsContainer
 @onready var RingBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RingBuffsContainer
@@ -52,6 +59,9 @@ extends GameContainer
 # buff or debuff
 const BuffOrDebuffTag:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/BuffOrDebuffTag/BuffOrDebuffTag.tscn")
 
+
+var room_visualizer_nodes:Array = []
+
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -77,6 +87,10 @@ func _ready() -> void:
 	GBL.direct_ref["MoralePanel"] = VibeMorale
 	GBL.direct_ref["SafetyPanel"] = VibeSafety
 	GBL.direct_ref["ReadinessPanel"] = VibeReadiness
+	
+	for HBoxNode in RoomVisualizer.get_children():
+		for child in HBoxNode.get_children():
+			room_visualizer_nodes.push_back(child)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -129,6 +143,19 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 func on_current_location_update(new_val:Dictionary) -> void:
 	super.on_current_location_update(new_val)
 	U.debounce(str(self.name, "_update_energy_panel"), update_panels)
+	if !is_node_ready() or new_val.is_empty():return
+	
+	for index in WingHBox.get_child_count():
+		var IconBtn:Control = WingHBox.get_child(index)
+		IconBtn.static_color = Color(1, 1, 1, 1 if index == new_val.ring else 0.5)
+	
+	for index in FloorVBox.get_child_count():
+		var IconBtn:Control = FloorVBox.get_child(index)
+		IconBtn.static_color = Color(1, 1, 1, 1 if index == new_val.floor else 0.5)
+	
+	for index in room_visualizer_nodes.size():
+		var IconBtn:Control = room_visualizer_nodes[index]
+		IconBtn.static_color = Color(1, 1, 1, 1 if index == new_val.room else 0.5)
 # -----------------------------------------------			
 
 # -----------------------------------------------			
@@ -141,6 +168,23 @@ func on_room_config_update(new_val:Dictionary) -> void:
 func on_camera_settings_update(new_val:Dictionary) -> void: 
 	super.on_camera_settings_update(new_val)	
 	U.debounce(str(self.name, "_update_energy_panel"), update_panels)
+	if new_val.is_empty():return
+	
+	var nodes:Array = [FloorVisualizer, WingVisualizer, RoomVisualizer]
+
+	match new_val.type:
+		CAMERA.TYPE.FLOOR_SELECT:
+			for node in nodes:
+				node.modulate = Color(1, 1, 1, 1 if node in [FloorVisualizer] else 0 )
+					
+		CAMERA.TYPE.WING_SELECT:
+			for node in nodes:
+				node.modulate = Color(1, 1, 1, 1 if node in [FloorVisualizer, WingVisualizer] else 0 )
+				
+		CAMERA.TYPE.ROOM_SELECT:
+			for node in nodes:
+				node.modulate = Color(1, 1, 1, 1)
+	
 # -----------------------------------------------			
 
 # -----------------------------------------------

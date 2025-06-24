@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ck7jv3heocium"
-path="res://.godot/imported/music-svgrepo-com.svg-3d21e94fe4241730c6565f77f4e6bfaf.ctex"
+uid="uid://cauejl60y700o"
+path="res://.godot/imported/studio_logo.png-62f9ef1da7d9395e6867b65f9c93dd3c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/music-svgrepo-com.svg"
-dest_files=["res://.godot/imported/music-svgrepo-com.svg-3d21e94fe4241730c6565f77f4e6bfaf.ctex"]
+source_file="res://Media/images/studio_logo.png"
+dest_files=["res://.godot/imported/studio_logo.png-62f9ef1da7d9395e6867b65f9c93dd3c.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

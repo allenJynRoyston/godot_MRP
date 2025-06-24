@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3 uid="uid://5ra6miceqhv7"]
+
+[ext_resource type="Script" uid="uid://kmom1pmj4erj" path="res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/parts/media_player_main.gd" id="1_nyf86"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_8cl27"]
+[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_6akow"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_h37dp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cp5dc"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tawco"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[node name="MediaPlayerMain" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nyf86")
+
+[node name="WaitContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="WaitContainer"]
+layout_mode = 2
+text = "Loading please wait..."
+label_settings = ExtResource("2_8cl27")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_cp5dc")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="CategoryLabel" type="Label" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "MEDIA PLAYER"
+label_settings = ExtResource("2_8cl27")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="List" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextBtn" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_6akow")]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tawco")
+
+[node name="BtnControl" parent="." instance=ExtResource("6_h37dp")]
+layout_mode = 2
+offset = Vector2(25, 5)
+a_btn_title = "PLAY"
+a_btn_icon = 12
+b_btn_title = "BACK TO DESKTOP"

@@ -25,16 +25,16 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="LabelSettings" id="LabelSettings_64sar"]
 font = ExtResource("3_ed473")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i3f5h"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_caqaq"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7jkvu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qbccl"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iewkq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jd2ye"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dk5e0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rjv0v"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 
 [node name="LocationContainer" type="MarginContainer"]
@@ -125,6 +125,7 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingA" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect" instance=ExtResource("5_0rbbm")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -136,7 +137,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_i3f5h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_caqaq")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -149,6 +150,7 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingB" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect2" instance=ExtResource("5_0rbbm")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -160,7 +162,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_7jkvu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qbccl")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -173,6 +175,7 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingC" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect3" instance=ExtResource("5_0rbbm")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -184,7 +187,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_iewkq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jd2ye")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)
@@ -197,6 +200,7 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingD" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect4" instance=ExtResource("5_0rbbm")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -208,7 +212,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_dk5e0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rjv0v")
 icon = 50
 icon_placement = 1
 panel_color = Color(0.05, 0.05, 0.05, 0)

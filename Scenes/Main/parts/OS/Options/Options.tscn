@@ -17,9 +17,6 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_jbhxw"]
-color = Color(1, 1, 1, 0.607843)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klbsx"]
 bg_color = Color(0.162, 0.162, 0.162, 0.5)
 border_width_left = 2
@@ -31,6 +28,9 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_jbhxw"]
+color = Color(1, 1, 1, 0.607843)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1xncx"]
 bg_color = Color(0.162, 0.162, 0.162, 0.5)
@@ -73,12 +73,12 @@ color = Color(0.08, 0.08, 0.08, 0.443137)
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Control"]
-custom_minimum_size = Vector2(100, 50)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 1
 offset_left = 32.0
 offset_top = 41.0
 offset_right = 241.0
-offset_bottom = 164.0
+offset_bottom = 55.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h2ypb")
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
@@ -92,13 +92,9 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HSeparator2" type="HSeparator" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_jbhxw")
-
 [node name="BtnList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 5
 
 [node name="StartBtn" parent="Control/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("2_1xncx")]
 layout_mode = 2

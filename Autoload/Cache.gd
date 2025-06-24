@@ -153,7 +153,10 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 			texture = load("res://SVGs/up-arrow-svgrepo-com.svg")						
 		SVGS.TYPE.SWAP:
 			texture = load("res://SVGs/swap-fill-svgrepo-com.svg")
-			
+		SVGS.TYPE.LAYER:
+			texture = load("res://SVGs/top-face-rhombus-black.svg")
+		SVGS.TYPE.LAYERS:
+			texture = load("res://SVGs/layers-svgrepo-com.svg")			
 		SVGS.TYPE.ZERO:
 			texture = load("res://SVGs/number-small-0-svgrepo-com.svg")
 		SVGS.TYPE.ONE:

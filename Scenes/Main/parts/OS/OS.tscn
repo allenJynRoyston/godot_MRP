@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=22 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
@@ -14,6 +14,16 @@
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="11_pabxy"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41nkp"]
+
+[sub_resource type="Gradient" id="Gradient_oddaw"]
+offsets = PackedFloat32Array(0, 0.485, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.435, 0.435, 0.435, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_25k47"]
+gradient = SubResource("Gradient_oddaw")
+fill_from = Vector2(0.130435, 0.0434783)
+metadata/_snap_enabled = true
+metadata/_snap_count = 23
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_oddaw"]
 viewport_path = NodePath("SubViewportBG")
@@ -66,7 +76,11 @@ anchor_bottom = 0.0
 offset_right = 1920.0
 offset_bottom = 1080.0
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="BG" type="TextureRect" parent="."]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_25k47")
+
+[node name="AudioVisualizer" type="TextureRect" parent="."]
 layout_mode = 2
 texture = SubResource("ViewportTexture_oddaw")
 expand_mode = 1
@@ -88,7 +102,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
-columns = 6
+columns = 5
 
 [node name="OptionsMenu" parent="." instance=ExtResource("3_jsaqf")]
 layout_mode = 2
@@ -152,7 +166,7 @@ layout_mode = 1
 [node name="BtnControl" parent="." instance=ExtResource("6_b7tym")]
 layout_mode = 2
 offset = Vector2(5, 5)
-a_btn_title = "LOAD"
+a_btn_title = "SELECT"
 b_btn_title = "EXIT"
 hide_b_btn = true
 

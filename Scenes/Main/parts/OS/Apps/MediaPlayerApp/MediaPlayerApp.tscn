@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://dg64opu458p85"]
+
+[ext_resource type="Script" uid="uid://diakuq0hv76ww" path="res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/media_player_app.gd" id="1_xh3ws"]
+[ext_resource type="PackedScene" uid="uid://5ra6miceqhv7" path="res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/parts/MediaPlayerMain.tscn" id="2_n0iao"]
+[ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="3_h2hvn"]
+[ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="4_5d6xn"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_t8nhp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fh1d2"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="MediaPlayerApp" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fh1d2")
+script = ExtResource("1_xh3ws")
+
+[node name="MediaPlayerMain" parent="." instance=ExtResource("2_n0iao")]
+layout_mode = 2
+
+[node name="LoadingComponent" parent="." instance=ExtResource("3_h2hvn")]
+layout_mode = 2
+loading_text = "Loading EMAILS..."
+
+[node name="PauseContainer" parent="." instance=ExtResource("4_5d6xn")]
+visible = false
+layout_mode = 2
+
+[node name="TransitionScreen" parent="." instance=ExtResource("5_t8nhp")]
+layout_mode = 2

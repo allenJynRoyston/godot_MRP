@@ -9,7 +9,13 @@ extends GameContainer
 
 @onready var HintPanel:PanelContainer = $HintControl/PanelContainer
 @onready var HintMargin:MarginContainer = $HintControl/PanelContainer/MarginContainer
-@onready var HintList:VBoxContainer = $HintControl/PanelContainer/MarginContainer/VBoxContainer
+@onready var HintList:VBoxContainer = $HintControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer
+
+@onready var ResourcePanel:PanelContainer = $ResourceControl/PanelContainer
+@onready var ResourceMargin:MarginContainer = $ResourceControl/PanelContainer/MarginContainer
+@onready var DaysRemainingLabel:Label = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/DaysRemaining/MarginContainer/VBoxContainer/DaysLabel
+@onready var CoreLabel:Label = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Cores/MarginContainer/VBoxContainer/CoreLabel
+@onready var CoreCount:Label = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Cores/MarginContainer/VBoxContainer/CoreCount
 
 @onready var ObjectiveCard:Control = $ObjectivesControl/PanelContainer/MarginContainer/ObjectiveCard
 
@@ -25,13 +31,14 @@ var objective_index:int :
 		on_objective_index_update()
 		
 var selected_index:int = 0
-var bookmark_data:Dictionary = {} : 
-	set(val):
-		bookmark_data = val
-		if !is_node_ready():return
-		BtnControls.disable_active_btn = bookmark_data.is_empty()
+#var bookmark_data:Dictionary = {} : 
+	#set(val):
+		#bookmark_data = val
+		#if !is_node_ready():return
+		#BtnControls.disable_active_btn = bookmark_data.is_empty()
 
 var hint_index:int
+var current_objective:Dictionary
 var current_hints:Array = []
 var purchase_hint:Dictionary
 
@@ -62,16 +69,15 @@ func _ready() -> void:
 			SUBSCRIBE.resources_data = resources_data
 			SUBSCRIBE.hints_unlocked = hints_unlocked
 			
-			check_for_next_hint()
 			build_hints()
 		
 		BtnControls.reveal(true)
 
 
 	BtnControls.onUpdate = func(node:Control) -> void:
+		current_objective = objectives[objective_index].list[node.index]
 		current_hints = objectives[objective_index].list[node.index].hints
 		build_hints(current_hints)
-		check_for_next_hint(current_hints)
 	
 	BtnControls.onDirectional = func(key:String):
 		var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -101,29 +107,58 @@ func activate() -> void:
 		"hide": -ObjectiveMargin.size.x - 20
 	}
 	
+	control_pos[ResourcePanel] = {
+		"show": 0,
+		"hide": ResourceMargin.size.x
+	}
+	
+	control_pos[HintPanel] = {
+		"show": 0,
+		"hide": -HintMargin.size.y
+	}
+	
 	BtnControls.offset = ObjectiveCard.global_position
 
 	ObjectivePanel.position.x = control_pos[ObjectivePanel].hide
+	ResourcePanel.position.x = control_pos[ResourcePanel].hide
+	HintPanel.position.y = control_pos[HintPanel].hide
+	
 # --------------------------------------------------------------------------------------------------	
 
 
 # --------------------------------------------------------------------------------------------------		
 func start() -> void:
+	on_resources_data_update()
+	DaysRemainingLabel.text = str(88)
+
+	
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
-	await TransitionScreen.start()
+	await TransitionScreen.start(0.7)
 	U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].show)	
+	U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].show)
 	await BtnControls.reveal(true)
+		
+	U.tween_node_property(HintPanel, "position:y", control_pos[HintPanel].show)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:						
 	BtnControls.reveal(false)
+	U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].hide)
 	await U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].hide)
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0))
 	
 	user_response.emit()
 	queue_free()
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	super.on_resources_data_update(new_val)
+	if !is_node_ready():return
+	CoreCount.text = str(resources_data[RESOURCE.CURRENCY.CORE].amount)
+# --------------------------------------------------------------------------------------------------		
+
 
 # --------------------------------------------------------------------------------------------------		
 func clear_hints() -> void:
@@ -135,25 +170,56 @@ func clear_hints() -> void:
 func build_hints(hints:Array = current_hints) -> void:
 	clear_hints()
 	
-	# THIS ONE IS FOR THE OBJECTIVE
-	var new_hint:Control = ObjectiveHintPreload.instantiate()
-	HintList.add_child(new_hint)	
+	var is_expired:bool = objective_index < story_progress.current_story_val 	
+	var already_completed:bool = current_objective.is_completed.call()	
+	var filter_arr:Array = hints.filter(func(x): return x.is_purchased.call() )
 	
-	# THESE are for the HINTS
+	# all hints
 	var all_complete:bool = true
-	for hint in hints:
+	var last_index:int
+	
+	# has none and is expired
+	if is_expired and filter_arr.size() == 0:
+		var new_hint:Control = ObjectiveHintPreload.instantiate()
+		new_hint.is_expired = true
+		new_hint.is_locked = false
+		new_hint.has_more = false
+		new_hint.title = "None"
+		HintList.add_child(new_hint)
+	
+	# build hint list
+	for index in hints.size():
+		var hint:Dictionary = hints[index]
 		if !hint.is_purchased.call():
 			all_complete = false
+			last_index = index
 			break
-		new_hint = ObjectiveHintPreload.instantiate()
+		var new_hint:Control = ObjectiveHintPreload.instantiate()
+		new_hint.index = index
+		new_hint.title = hint.title
+		new_hint.cost = hint.cost
+		new_hint.is_complete = already_completed or is_expired
+		new_hint.is_locked = false
+		new_hint.has_more = (index < filter_arr.size() - 1) if (already_completed or is_expired) else (index < hints.size() - 1)
 		HintList.add_child(new_hint)
 		
 	# THIS ONE IS label ??? if there is another hint
-	if !all_complete:
-		new_hint = ObjectiveHintPreload.instantiate()
-		HintList.add_child(new_hint)			
+	if !all_complete and !already_completed and !is_expired:
+		var hint:Dictionary = hints[last_index]		
+		var new_hint:Control = ObjectiveHintPreload.instantiate()
+		new_hint.is_locked = true
+		new_hint.has_more = false
+		new_hint.cost = hint.cost
+		HintList.add_child(new_hint)
+	
+	
+	BtnControls.disable_active_btn = already_completed
+	
+	if !already_completed:
+		check_for_next_hint(current_hints)
 # --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
 func check_for_next_hint(hints:Array = current_hints) -> void:
 	for index in hints.size():
 		var hint:Dictionary = hints[index]
@@ -165,6 +231,8 @@ func check_for_next_hint(hints:Array = current_hints) -> void:
 	
 	purchase_hint = {}
 	BtnControls.disable_active_btn = true
+# --------------------------------------------------------------------------------------------------	
+
 # --------------------------------------------------------------------------------------------------	
 func on_objective_index_update() -> void:
 	if !is_node_ready():return
@@ -180,19 +248,22 @@ func on_objective_index_update() -> void:
 	ObjectiveCard.objectives = current_objectives
 	
 	
-	#if is_upcoming:
-		#ObjectiveHeader.text = "Upcoming Objective"	
-		#ObjectiveCard.title = "OBJECTIVES"
-		#ObjectiveTitle.text = "???"
-		#ObjectiveDeadline.text = ""
-		#bookmark_data = {}
-		#
-	#if is_expired:
-		#ObjectiveHeader.text = "Previous Objective"
+	if is_upcoming:
+		ObjectiveCard.title = "UPCOMING OBJECTIVES"
+		HintPanel.hide()
+
+		
+	elif is_expired:
+		ObjectiveCard.title = "PREVIOUS OBJECTIVES"
+		HintPanel.show()
 		#ObjectiveCard.title = "COMPLETED"
 		#ObjectiveTitle.text = current_objectives.title
 		#ObjectiveDeadline.text = ""
 		#bookmark_data = {}
+	
+	else:
+		ObjectiveCard.title = "OBJECTIVES"
+		HintPanel.show()
 		#
 	#if objective_index == story_progress.current_story_val:
 		#ObjectiveHeader.text = "Current Objective"

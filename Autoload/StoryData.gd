@@ -68,7 +68,7 @@ var chapters:Array = [
 						"ref": ROOM.REF.HQ
 					},
 					"hints": [
-						
+						{"title": "Step 1", "cost": 1},
 					]
 				},
 				{
@@ -79,7 +79,7 @@ var chapters:Array = [
 						"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
 					},
 					"hints": [
-						
+						{"title": "Step 1", "cost": 1},
 					]
 				},
 
@@ -115,6 +115,9 @@ var chapters:Array = [
 						"type": CURRENCY,
 						"ref": RESOURCE.CURRENCY.MONEY
 					},
+					"hints": [
+						{"title": "Step 1", "cost": 1},
+					]
 				},
 			],
 			"complete_by_day": 7,

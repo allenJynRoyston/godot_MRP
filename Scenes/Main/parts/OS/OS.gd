@@ -1,6 +1,9 @@
 extends MouseInteractions
 class_name Layout
 
+@onready var BG:TextureRect = $BG
+@onready var AudioVisualizer:TextureRect = $AudioVisualizer
+
 @onready var BtnControls:Control = $BtnControl
 @onready var Taskbar:Control = $Taskbar
 @onready var PauseContainer:PanelContainer = $PauseContainer
@@ -21,13 +24,16 @@ class_name Layout
 
 const AppItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
-const SiteDirectorTrainingModsAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/ModApp/ModApp.tscn")
 const EmailAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/EmailApp/EmailApp.tscn")
-const MediaPlayerMiniAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/MediaPlayerMiniApp/MediaPlayerMiniApp.tscn")
-const TaskBarMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/TaskbarMenuApp/TaskbarMenuApp.tscn")
-const ContextMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/ContextMenuApp/ContextMenuApp.tscn")
-const TextFileAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/TextFileApp/TextFileApp.tscn")
-const RecycleBinAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/RecycleBin/RecycleBin.tscn")
+const MediaPlayerAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/MediaPlayerApp.tscn")
+
+
+#const SiteDirectorTrainingModsAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/ModApp/ModApp.tscn")
+#const MediaPlayerMiniAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/MediaPlayerMiniApp/MediaPlayerMiniApp.tscn")
+#const TaskBarMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/TaskbarMenuApp/TaskbarMenuApp.tscn")
+#const ContextMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/ContextMenuApp/ContextMenuApp.tscn")
+#const TextFileAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/TextFileApp/TextFileApp.tscn")
+#const RecycleBinAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/RecycleBin/RecycleBin.tscn")
 
 enum APPS {
 	SDT_TUTORIAL, SDT_FULL, SDT_MODS, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, 
@@ -136,25 +142,49 @@ var app_list:Array[Dictionary] = [
 			"close": func() -> void:
 				close_app(APPS.SDT_FULL),			
 			"open": func(data:Dictionary) -> void:
+				var options:Array = [
+					{
+						"title": "ENABLE TUTORIAL", 
+						"key": "is_tutorial",
+						"value": true,
+						"hint_description": "Enable/Disable tutorial mode."
+					}
+				]
+				
 				if data.ref not in running_apps_list.map(func(i): return i.ref):
-					var res:Dictionary = await open_options(
-						"LAUNCH...",
+					open_options(
+						# ------- BTNS
 						[
 							{
-								"title": "ENABLE TUTORIAL", 
-								"key": "is_tutorial",
-								"value": true,
-								"hint_description": "Enable/Disable tutorial mode."
+								"title": "LAUNCH...",
+								"onClick": func(_options:Dictionary) -> void:
+									open_app(data, _options),
+							},
+							{
+								"title": "OPEN INSTRUCTION MANUAL",
+								"onClick": func(_options:Dictionary) -> void:
+									open_app(data, _options),
+							}
+						],
+						# ------- OPTIONS
+						options
+					)
+				else:
+					open_options(
+						# ------- BTNS
+						[
+							{
+								"title": "RESUME",
+								"onClick": func(_options:Dictionary) -> void:
+									open_app(data),
+							},
+							{
+								"title": "FORCE QUIT",
+								"onClick": func(_options:Dictionary) -> void:
+									close_app(data.ref),
 							}
 						]
-					)
-					if !res.continue:
-						return
-					
-					open_app(data, res.properties)
-					return
-					
-				open_app(data),
+					),
 		}
 	},
 	# ----------	
@@ -192,17 +222,61 @@ var app_list:Array[Dictionary] = [
 		"details": {
 			"ref": APPS.MUSIC_PLAYER,
 			"title": "Music Player",
-			"icon": SVGS.TYPE.MUSIC
+			"icon": SVGS.TYPE.MUSIC,
+			"app": MediaPlayerAppPreload
 		},
 		"installed": func() -> bool:
 			return true,
 		"events": {
 			"open": func(data:Dictionary) -> void:
-				# open music player, no music selected
-				GBL.music_data = {
-					"track_list": music_track_list,
-					"selected": 1,
-				},
+				var options:Array = 	[
+						{
+							"title": "ENABLE AUDIO VISUALIZER", 
+							"key": "audio_visualizer",
+							"value": true,
+							"hint_description": "Enable/Disable audio visulizer."
+						}
+					]
+				
+				if data.ref not in running_apps_list.map(func(i): return i.ref):
+					open_options(
+						# ------- BTNS
+						[
+							{
+								"title": "LAUNCH...",
+								"onClick": func(_options:Dictionary) -> void:
+									await open_app(data, _options)
+									AudioVisualizer.show() if _options.audio_visualizer else AudioVisualizer.hide(),
+
+							}
+						],
+						# ------- OPTIONS
+						options
+					)
+				else:
+					open_options(
+						# ------- BTNS
+						[
+							{
+								"title": "RESUME",
+								"onClick": func(_options:Dictionary) -> void:
+									open_app(data),
+							},
+							{
+								"title": "FORCE QUIT",
+								"onClick": func(_options:Dictionary) -> void:
+									close_app(data.ref),
+							},
+							{
+								"title": "APPLY CHANGES...",
+								"onClick": func(_options:Dictionary) -> void:
+									AudioVisualizer.show() if _options.audio_visualizer else AudioVisualizer.hide(),
+							},							
+						],
+						# ------- OPTIONS
+						options
+					),
+					
 		},
 	},
 	# ----------
@@ -218,8 +292,25 @@ var app_list:Array[Dictionary] = [
 			return true,
 		"events": {
 			"open": func(data:Dictionary) -> void:
-				var res:Dictionary = await open_options(
-					"APPLY CHANGES...",
+				open_options(
+					[
+						{
+							"title": "APPLY CHANGES...",
+							"onClick": func(options:Dictionary) -> void:
+								# TODO: add changes to settings here (like adding/removing filters)
+								for key in options:
+									var val:bool = options[key]
+									match key:
+										"crt_filter":
+											GBL.active_user_profile.graphics.shaders.crt_effect = val
+
+												
+								# update settings
+								check_graphics_settings()
+								# update and save profile
+								GBL.update_and_save_user_profile(GBL.active_user_profile),
+						},
+					],
 					[
 						{
 							"title": "FULLSCREEN", 
@@ -234,65 +325,30 @@ var app_list:Array[Dictionary] = [
 							"hint_description": "Enable/Disable crt effect."
 						},
 						{
-							"title": "SOMETHING ELSE", 
-							"key": "crt_filter",
+							"title": "SCREEN BEND", 
+							"key": "screen_bend",
 							"value": false,
-							"hint_description": "Enable/Disable crt effect."
+							"hint_description": "Enable/Disable screen bend effect."
+						},
+						{
+							"title": "SCREEN BURN", 
+							"key": "screen_burn",
+							"value": false,
+							"hint_description": "Enable/Disable screen burn effect."
+						},
+						{
+							"title": "MONITOR OVERLAY", 
+							"key": "monitor_overlay",
+							"value": false,
+							"hint_description": "Enable/Disable monitor overlay color."
 						}
 					]
-				)
-				
-				if !res.continue:
-					return
-				# TODO: add changes to settings here (like adding/removing filters)
-				for key in res.properties:
-					var val:bool = res.properties[key]
-					match key:
-						"crt_filter":
-							GBL.active_user_profile.graphics.shaders.crt_effect = val
-
-								
-				# update settings
-				check_graphics_settings()
-				# update and save profile
-				GBL.update_and_save_user_profile(GBL.active_user_profile),
+				),
 				
 		},
 	}
 ]
 
-var music_track_list:Array = [
-	{
-		"details": {
-			"name": "ghost trick finale",
-			"author": "capcom",
-			"ref": PLAYLIST.TRACK_1,
-		},
-		"unlocked": func(data:Dictionary) -> bool:
-			return tracklist_unlocks[data.ref],
-		"file": preload("res://Media/mp3/ghost_trick_test_track.mp3")
-	},
-	{
-		"details": {
-			"name": "phoenix wright",
-			"author": "capcom",
-			"ref": PLAYLIST.TRACK_2,
-		},
-		"unlocked": func(data:Dictionary) -> bool:
-			return tracklist_unlocks[data.ref],
-		"file": preload("res://Media/mp3/phoenix wright.mp3")
-	},
-	{
-		"details": {
-			"name": "The Weeknd - Popular",
-			"author": "Vidojean X Oliver Loenn Amapiano Remix",
-			"ref": PLAYLIST.TRACK_3,
-		},
-		"unlocked": func(data:Dictionary) -> bool:
-			return tracklist_unlocks[data.ref],
-		"file": preload("res://Media/mp3/The Weeknd - Popular (Vidojean X Oliver Loenn Amapiano Remix).mp3")
-	}							
-]
 
 var desktop_itemlist:Array = []
 var already_loaded:Array = []
@@ -347,6 +403,7 @@ func _ready() -> void:
 	
 	# hide
 	PauseContainer.hide()
+	AudioVisualizer.hide()
 	
 	# show
 	LoginContainer.show()
@@ -441,20 +498,18 @@ func simulate_wait(duration:float, show_busy:bool = true) -> void:
 # -----------------------------------		
 
 # -----------------------------------
-func open_options(title:String, list:Array = []) -> Dictionary:
-	if selected_app_item == null:
-		return {"continue": false}
-	
+func open_options(btn_list:Array, option_list:Array = []) -> void:
+	if selected_app_item == null:return
+		
 	freeze_inputs = true
 	await BtnControls.reveal(false)
 	
 	var app_pos:Vector2 = selected_app_item.global_position + Vector2(0, selected_app_item.size.y + 10) 
-	OptionsMenu.setup(title, list, app_pos)
-	var res:Dictionary = await OptionsMenu.wait_for_response
+	OptionsMenu.setup(btn_list, option_list, app_pos)
+	await OptionsMenu.wait_for_response
 	BtnControls.reveal(true)
 	freeze_inputs = false
 
-	return res
 
 func find_in_app_list(ref:APPS) -> Dictionary:
 	return app_list.filter(func(i): return ("ref" in i.details) and (i.details.ref == ref))[0]

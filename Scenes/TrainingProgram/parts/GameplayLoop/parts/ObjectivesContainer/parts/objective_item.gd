@@ -46,9 +46,9 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	
-	ContentLabel.text = str("[s]%s[/s]" % content) if is_expired else content
-	YouHaveLabel.text = "" if is_expired or is_upcoming else ("(You currently have %s)." % you_have)
-	YouHaveLabel.hide() if you_have == "" else YouHaveLabel.show()
+	ContentLabel.text = "Upcoming..." if is_upcoming else content
+	YouHaveLabel.text = "(Objective complete)" if is_expired else ("(Currently have %s.)" % you_have)
+	YouHaveLabel.hide() if (you_have == "" or is_upcoming) else YouHaveLabel.show()
 	IconBtn.icon = SVGS.TYPE.CLEAR if is_expired else (SVGS.TYPE.CHECKBOX if is_completed else SVGS.TYPE.EMPTY_CHECKBOX)
 	BookmarkIcon.show() if show_bookmark else BookmarkIcon.hide()
 	on_is_bookmarked_update()

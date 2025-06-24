@@ -53,7 +53,7 @@ func _ready() -> void:
 	on_show_media_player_update()
 	
 	var update_media_player:Callable = func() -> void:
-		BtnControl.a_btn_title = "PLAY" if !MediaPlayer.is_already_playing() else 'PAUSE'	
+		BtnControl.a_btn_title = "RESUME TRACK" if !MediaPlayer.is_already_playing() else 'PAUSE TRACK'	
 		
 	BtnControl.onUpdate = func(_node:Control) -> void:
 		selected_node = _node
@@ -72,11 +72,14 @@ func _ready() -> void:
 				# replace with music node later
 				get_parent().currently_running_app = null
 			DesktopBtn:
+				BtnControl.a_btn_title = "DESKTOP"
 				BtnControl.hide_c_btn = true
 				# replace with music node later
 				get_parent().currently_running_app = null
 			_:
 				BtnControl.hide_c_btn = false
+				BtnControl.a_btn_title = "SWITCH"
+
 				if "node" in selected_node.data and selected_node.data.node != null:
 					get_parent().currently_running_app = selected_node.data.node
 

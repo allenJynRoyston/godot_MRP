@@ -2,10 +2,15 @@ extends PanelContainer
 
 @onready var ColorBG:ColorRect = $ColorRect
 @onready var BtnControls:Control = $BtnControls
-@onready var StartBtn:Control = $Control/PanelContainer/MarginContainer/VBoxContainer/BtnList/StartBtn
+#@onready var StartBtn:Control = $Control/PanelContainer/MarginContainer/VBoxContainer/BtnList/StartBtn
+
 
 @onready var OptionPanel:PanelContainer = $Control/PanelContainer
+@onready var OptionSeperator:HSeparator = $Control/PanelContainer/MarginContainer/VBoxContainer/HSeparator
+@onready var OptionListContainer:MarginContainer = $Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer
 @onready var OptionList:VBoxContainer = $Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList
+@onready var BtnList:VBoxContainer = $Control/PanelContainer/MarginContainer/VBoxContainer/BtnList
+
 
 const OptionItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Options/parts/OptionItem.tscn")
 
@@ -30,22 +35,9 @@ func _ready() -> void:
 			n.is_selected = n == node
 			if n == node:
 				SelectedNode = node
-
 	
 	BtnControls.onBack = func() -> void:
-		await end()
-		wait_for_response.emit({
-			"continue": false
-		})
-		
-	BtnControls.onAction = func() -> void:
-		match SelectedNode:
-			StartBtn:
-				await end()
-				wait_for_response.emit({
-					"continue": true,
-					"properties": properties
-				})
+		end()
 # ----------------------------------------------	
 
 # ----------------------------------------------	
@@ -60,31 +52,47 @@ func end() -> void:
 
 	hide()
 	clear()
+	wait_for_response.emit()
 # ----------------------------------------------	
 
 # ----------------------------------------------	
 func clear() -> void:
 	# clear
-	for arr in [OptionList]:
+	for arr in [BtnList, OptionList]:
 		for child in arr.get_children():
 			child.queue_free()	
 # ----------------------------------------------	
 
 # ----------------------------------------------
-func setup(title:String, new_list:Array, new_position:Vector2 = Vector2()) -> void:
+func setup(btn_list:Array, option_list:Array, new_position:Vector2 = Vector2()) -> void:
 	show()
-	var list:Array = new_list
 		
 	# reset
-	itemlist = [StartBtn]
+	itemlist = []
 	properties = {}
 	clear()
 	
-	StartBtn.title = title
+	#StartBtn.title = title
 	OptionPanel.position = new_position - Vector2(0, -10)
 	
-	# list
-	for item in list:
+	OptionSeperator.hide() if option_list.is_empty() else OptionSeperator.show()
+	OptionListContainer.hide() if option_list.is_empty() else OptionListContainer.show()
+	BtnList.hide() if btn_list.is_empty() else BtnList.show()
+	
+	for item in btn_list:
+		var new_node:Control = OptionItemPreload.instantiate()
+		itemlist.push_back(new_node)
+		
+		new_node.title = item.title
+		new_node.display_checkmark = false
+		new_node.onClick = func() -> void:
+			await end()
+			item.onClick.call(properties)		
+			
+		BtnList.add_child(new_node)	
+	
+	# options_list
+	for item in option_list:
 		var new_node:Control = OptionItemPreload.instantiate()
 		properties[item.key] = item.value
 		itemlist.push_back(new_node)
@@ -93,11 +101,11 @@ func setup(title:String, new_list:Array, new_position:Vector2 = Vector2()) -> vo
 		new_node.display_checkmark = true
 		new_node.title = item.title
 		new_node.is_checked = item.value
-		new_node.onClick = func():
+		new_node.onClick = func() -> void:
 			new_node.is_checked = !new_node.is_checked
 			properties[item.key] = new_node.is_checked
 		OptionList.add_child(new_node)
-	
+
 	
 	# add to btnlist
 	BtnControls.itemlist = itemlist
@@ -105,13 +113,15 @@ func setup(title:String, new_list:Array, new_position:Vector2 = Vector2()) -> vo
 	BtnControls.item_index = 0
 
 	await U.tick()
-	
-	# fade in
+		
+	#resizeb
 	OptionPanel.size.y = 1
+
+	# fade in
 	U.tween_node_property(ColorBG, 'color:a', 0.4)		
 	U.tween_node_property(OptionPanel, 'modulate:a', 1)
 	await U.tween_node_property(OptionPanel, 'position:y', new_position.y, 0.4)
-	
+
 	# reveal buttons
-	await BtnControls.reveal(true)
+	BtnControls.reveal(true)
 # ----------------------------------------------

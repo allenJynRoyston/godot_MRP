@@ -1,33 +1,96 @@
-[gd_scene load_steps=3 format=3 uid="uid://cv350lyuukxss"]
+[gd_scene load_steps=7 format=3 uid="uid://cv350lyuukxss"]
 
+[ext_resource type="Script" uid="uid://dge56fay4bb51" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_hint.gd" id="1_6teih"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="1_pxn83"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_c704x"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_gkvqa"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6teih"]
 bg_color = Color(0, 0, 0, 0.796078)
-border_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="ObjectiveHint" type="PanelContainer"]
+[sub_resource type="LabelSettings" id="LabelSettings_gkvqa"]
+font = ExtResource("4_gkvqa")
+font_size = 32
+outline_size = 16
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
+[node name="ObjectiveHint" type="VBoxContainer"]
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 398.0
+offset_bottom = 98.0
+theme_override_constants/separation = 20
+script = ExtResource("1_6teih")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6teih")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 20
 
-[node name="ObjectiveTitle" type="Label" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="LockIcon" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_c704x")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+icon = 48
+is_hoverable = false
+
+[node name="OrderLabel" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_vertical = 3
+text = "1"
+label_settings = SubResource("LabelSettings_gkvqa")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ObjectiveTitle" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Objective"
 label_settings = ExtResource("1_pxn83")
-horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="CostLabel" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Cost X to unlock"
+label_settings = ExtResource("1_pxn83")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HasMoreBtn" parent="." instance=ExtResource("3_c704x")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 37
+is_hoverable = false

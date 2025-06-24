@@ -26,6 +26,8 @@ var Structure3dContainer:Control
 var ToastContainer:Control
 var ActionContainer:Control
 
+var previous_show_taskbar_state:bool
+
 # ------------------------------------------------------------------------------
 func assign_nodes() -> void:	
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
@@ -1053,7 +1055,9 @@ func upgrade_facility(blacklist_self:bool = true) -> bool:
 		
 	# hide UI in actionContainer
 	GameplayNode.show_only([Structure3dContainer])	
-	var confirm:bool = await create_modal("Upgrade room?", "Upgrade room to level X?", "", [], true)
+	
+	var activation_requirements = [{"amount": 100, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)}]
+	var confirm:bool = await create_modal("Upgrade room?", "Upgrade room to level X?", "", activation_requirements, true, Color(0, 0, 0, 0))
 	
 	# clear, warp back to previous location and restore ui
 	SUBSCRIBE.unavailable_rooms = []
@@ -1129,6 +1133,7 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 
 # ------------------------------------------------------------------------------
 func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
 	disable_taskbar(true)
 	
 	var ConfirmNode:Control = ConfirmModalPreload.instantiate()
@@ -1143,7 +1148,7 @@ func create_modal(title:String = "", subtitle:String = "", img_src:String = "", 
 	ConfirmNode.start()
 	var confirm:bool = await ConfirmNode.user_response	
 	
-	disable_taskbar(false)
+	disable_taskbar(previous_show_taskbar_state)
 	return confirm
 # ------------------------------------------------------------------------------
 
