@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_rylm3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t1vmv"]
-bg_color = Color(0.275367, 0.56172, 0.999992, 1)
+bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5

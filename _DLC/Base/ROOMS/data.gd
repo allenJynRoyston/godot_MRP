@@ -15,14 +15,15 @@ var DEBUG_ROOM:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY, RESEARCHER.SPECIALIZATION.ENGINEERING],
 	# ------------------------------------------
 
 	# ------------------------------------------	
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 5,
-		RESOURCE.CURRENCY.MATERIAL: 10,
-		RESOURCE.CURRENCY.SCIENCE: 20,
-		RESOURCE.CURRENCY.CORE: 1,
+		RESOURCE.CURRENCY.MONEY: -10,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0,
 	},
 	"metrics": {
 		RESOURCE.METRICS.MORALE: 1,
@@ -39,7 +40,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	
 	# --------------------------------------
-	"requires_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+	#"requires_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
 	# ------------------------------------------	
 	
 	# ------------------------------------------
@@ -68,9 +69,9 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
-			ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS, 2),			
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY, 0),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
+			#ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS, 2),			
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
 			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),

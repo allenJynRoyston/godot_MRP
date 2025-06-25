@@ -5,10 +5,10 @@ extends CardDrawerClass
 
 const RoomResearchersBtnPreload:PackedScene = preload("res://UI/Buttons/RoomResearcherBtn/RoomResearcherBtn.tscn")
 
-var researchers_per_room:int = 0 : 
+var required_staffing:Array = [] : 
 	set(val):
-		researchers_per_room = val
-		on_researchers_per_room_update()
+		required_staffing = val
+		on_required_staffing_update()
 		
 var preview_mode:bool = false
 var use_location:Dictionary = {}
@@ -17,18 +17,17 @@ var onUnlock:Callable = func() -> void:pass
 
 func _ready() -> void:
 	super._ready()
-	on_researchers_per_room_update()
+	on_required_staffing_update()
 
 func clear() -> void:
 	for node in List.get_children():
 		node.free()
 
-func on_researchers_per_room_update() -> void:
+func on_required_staffing_update() -> void:
 	if !is_node_ready():return
 	clear()
 	
-
-	for index in range(0, researchers_per_room):
+	for index in range(0, required_staffing.size()):
 		var new_btn:Control = RoomResearchersBtnPreload.instantiate()
 		new_btn.index = index
 		new_btn.use_location = use_location
@@ -41,7 +40,7 @@ func on_researchers_per_room_update() -> void:
 			await ActionContainerNode.before_use()
 			# perform the ability
 			if new_btn.researcher.is_empty():
-				await GAME_UTIL.assign_researcher()
+				await GAME_UTIL.assign_researcher(required_staffing[index])
 			else:
 				await GAME_UTIL.unassign_researcher(new_btn.researcher)
 			# unlocks

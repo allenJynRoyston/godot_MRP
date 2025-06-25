@@ -15,6 +15,8 @@ enum ABILITY_TYPE {ACTIVE, PASSIVE}
 const RoomAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomAbilityBtn/RoomAbilityBtn.tscn")		
 const RoomPassiveAbilityBtnPreload:PackedScene = preload("res://UI/Buttons/RoomPassiveAbilityBtn/RoomPassiveAbilityBtn.tscn")
 
+var room_config:Dictionary = {}
+
 var preview_mode:bool = false
 var use_location:Dictionary = {}
 var abl_lvl:int = 0 : 
@@ -25,12 +27,32 @@ var abl_lvl:int = 0 :
 var onLock:Callable = func() -> void:pass
 var onUnlock:Callable = func() -> void:pass
 
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_room_config(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+
 func _ready() -> void:
 	super._ready()
 
 func clear() -> void:
 	for node in AbilityList.get_children():
 		node.free()
+
+func get_is_activated() -> bool:
+	if !use_location.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		return extract_data.room.is_activated		
+		
+	return false
+	
+func on_room_config_update(new_val:Dictionary) -> void:
+	room_config = new_val
+	if !is_node_ready():return
+	for btn_node in AbilityList.get_children():
+		btn_node.is_disabled = !get_is_activated()
+	
 
 func on_room_details_update() -> void:
 	if !is_node_ready() or room_details.is_empty():return
@@ -48,6 +70,7 @@ func on_room_details_update() -> void:
 					abl_lvl = extract_data.room.abl_lvl
 				
 				# set
+				btn_node.is_disabled = !get_is_activated()
 				btn_node.room_ref = room_details.ref
 				btn_node.ability_index = ability_index
 				btn_node.use_location = use_location
@@ -90,7 +113,7 @@ func on_room_details_update() -> void:
 					abl_lvl = extract_data.room.abl_lvl
 					
 				#print(room_details)
-				
+				btn_node.is_disabled = !get_is_activated()
 				btn_node.room_ref = room_details.ref
 				btn_node.ability_index = ability_index
 				btn_node.ability_name = ability.name

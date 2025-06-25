@@ -14,6 +14,7 @@ const ResearcherMiniCard:PackedScene = preload("res://Scenes/TrainingProgram/par
 
 var use_location:Dictionary = {}
 var assigned_uids:Array = []
+var filter_for_type:RESEARCHER.SPECIALIZATION = RESEARCHER.SPECIALIZATION.ANY
 var check_for_compatability:bool = false
 var check_for_promotions:bool = false
 
@@ -69,8 +70,7 @@ func setup_gridselect() -> void:
 		
 		if check_for_compatability:
 			var extract_data:Dictionary = GAME_UTIL.extract_room_details(use_location)
-			var spec_requird:int = extract_data.room.details.requires_specialization
-			node.is_incompatable = false if spec_requird == RESEARCHER.SPECIALIZATION.ANY else data.specialization.ref != spec_requird 
+			node.is_incompatable = false if filter_for_type == RESEARCHER.SPECIALIZATION.ANY else data.specialization.ref != filter_for_type 
 			node.assigned_elsewhere_data = {} if data.props.assigned_to_room.is_empty() else GAME_UTIL.extract_room_details(data.props.assigned_to_room)
 			node.is_assigned_elsewhere = !data.props.assigned_to_room.is_empty() and data.uid not in assigned_uids
 			node.is_already_assigned = data.uid in assigned_uids
@@ -120,11 +120,12 @@ func activate() -> void:
 
 	SummaryPanel.position.x = control_pos[SummaryPanel].hide
 
-func start(_assigned_uids:Array = [], _use_location:Dictionary = {}) -> void:
+func start(_assigned_uids:Array = [], _filter_for_type:int = RESEARCHER.SPECIALIZATION.ANY, _use_location:Dictionary = {}) -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	await TransitionScreen.start()	
 	setup_gridselect()	
 	
+	filter_for_type = _filter_for_type
 	use_location = _use_location
 	assigned_uids = _assigned_uids
 	check_for_compatability = !use_location.is_empty()

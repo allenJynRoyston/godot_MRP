@@ -2,6 +2,28 @@
 extends Node
 
 # ------------------------------------------------------------	
+var music_data_subscriptions:Array = []
+
+var music_data:Dictionary = {} : 
+	set(val): 
+		music_data = val
+		on_music_data_update()
+		
+func on_music_data_update() -> void:
+	for node in music_data_subscriptions:
+		if "on_music_data_update" in node:
+			node.on_music_data_update.call( music_data )
+
+func subscribe_to_music_player(node:Control) -> void:
+	if node not in music_data_subscriptions:
+		music_data_subscriptions.push_back(node)
+		
+func unsubscribe_to_music_player(node:Control) -> void:
+	music_data_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+
+# ------------------------------------------------------------	
 var camera_settings_subscriptions:Array = []
 
 var camera_settings:Dictionary = {} : 
@@ -365,6 +387,8 @@ func subscribe_to_room_config(node:Node) -> void:
 func unsubscribe_to_room_config(node:Node) -> void:
 	room_config_subscriptions.erase(node)
 # ------------------------------------------------------------	
+
+
 
 
 # ------------------------------------------------------------	

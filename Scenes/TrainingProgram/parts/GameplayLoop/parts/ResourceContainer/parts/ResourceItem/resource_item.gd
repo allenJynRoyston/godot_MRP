@@ -85,11 +85,13 @@ func _ready() -> void:
 
 func on_use_second_val_update() -> void:
 	if !is_node_ready():return
-	SecondValContainer.modulate = Color(1, 1, 1, 1 if use_second_val else 0)
+	SecondValContainer.show() if use_second_val else SecondValContainer.hide()
 
 func on_second_val_update() -> void:
 	if !is_node_ready() or !use_second_val:return	
 	SecondValLabel.text = str(second_val)
+	SecondValContainer.modulate = Color(1, 1, 1, 1 if actual_val != second_val else 0)
+	
 	var sv_label_settings:LabelSettings = SecondValLabel.label_settings.duplicate()
 	var use_color:Color = Color.WHITE if second_val == 0 else (Color.GREEN if second_val > actual_val else Color.RED)
 	sv_label_settings.font_color = use_color

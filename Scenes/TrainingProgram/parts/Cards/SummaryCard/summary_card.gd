@@ -28,9 +28,9 @@ var room_ref:int = -1 :
 		room_ref = val
 		on_room_ref_update()
 		
-
 var room_config:Dictionary
 var base_states:Dictionary
+var hired_lead_researchers:Array
 
 const scp_color:Color = Color(0.736, 0.247, 0.9)
 const room_color:Color = Color(0.337, 0.275, 1.0)
@@ -40,10 +40,13 @@ const researcher_color:Color = Color(1.0, 0.108, 0.485)
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
+	SUBSCRIBE.subscribe_to_hired_lead_researchers_arr(self)
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
+	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
+	
 	
 func _ready() -> void:
 	BusyPanel.hide()
@@ -73,11 +76,14 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
-	U.debounce(str(self.name, "_on_room_ref_update"), update_room_label)
+	U.debounce(str(self.name, "_on_update_room_label"), update_room_label)
 
 func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val
-	U.debounce(str(self.name, "_on_room_ref_update"), update_room_label)	
+	U.debounce(str(self.name, "_on_update_room_label"), update_room_label)	
+
+func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
+	hired_lead_researchers = new_val
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -117,16 +123,23 @@ func on_room_ref_update() -> void:
 		CardControlBody.size = Vector2(1, 1)		
 		return
 	
-	var researchers_per_room:int = 0
-	if !use_location.is_empty():
-		var ring_base_states:Dictionary = base_states.ring[str(use_location.floor, use_location.ring)]
-		researchers_per_room = 0 if preview_mode else ring_base_states.researchers_per_room 
-	# --
+
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
 	var show_passives:bool = false
 	var show_abilities:bool = false
 	var show_researchers:bool = false	
 	var show_scp:bool = false 
+	var is_activated:bool = false
+	var required_staffing:Array = room_details.required_staffing
+
+	if !use_location.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		is_activated = extract_data.room.is_activated
+	
+	#if !use_location.is_empty():
+		#var ring_base_states:Dictionary = base_states.ring[str(use_location.floor, use_location.ring)]
+		#researchers_per_room = 0 if preview_mode else ring_base_states.researchers_per_room 
+	# --	
 	
 	RoomDetails.modulate = Color(1, 1, 1, 1)
 	update_room_label()
@@ -138,11 +151,16 @@ func on_room_ref_update() -> void:
 	# attach researcher data
 	#CardDrawerResearchers.pairs_with = room_details.pairs_with.specialization
 	CardDrawerResearchers.use_location = use_location			
-	CardDrawerResearchers.researchers_per_room = researchers_per_room
-	CardDrawerResearchers.show() if researchers_per_room > 0 and room_details.can_assign_researchers  else CardDrawerResearchers.hide()
+	CardDrawerResearchers.required_staffing = required_staffing
+	CardDrawerResearchers.show() if required_staffing.size() > 0 else CardDrawerResearchers.hide()
+	
+	var filtered:Array = hired_lead_researchers.filter(func(x): 
+		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
+		return !researcher_data.props.assigned_to_room.is_empty() and (use_location == researcher_data.props.assigned_to_room) 
+	)	
 	
 	# attach passives
-	if "passive_abilities" not in room_details or room_details.passive_abilities.call().is_empty():
+	if ("passive_abilities" not in room_details) or room_details.passive_abilities.call().is_empty():
 		CardDrawerPassiveAbilities.hide()
 	else:
 		CardDrawerPassiveAbilities.show()
@@ -151,7 +169,7 @@ func on_room_ref_update() -> void:
 		show_passives = true
 	
 	# attach abilities
-	if "abilities" not in room_details or room_details.abilities.call().is_empty():
+	if ("abilities" not in room_details) or room_details.abilities.call().is_empty():
 		CardDrawerActiveAbilities.hide()
 	else:
 		CardDrawerActiveAbilities.show()
@@ -160,7 +178,7 @@ func on_room_ref_update() -> void:
 		show_abilities = true
 	
 	# hide container
-	ListContainers.show() if (show_passives or show_abilities or show_researchers or show_scp) else ListContainers.hide()
+	ListContainers.show() #if (show_passives or show_abilities or show_researchers or show_scp) else ListContainers.hide()
 	await U.tick()
 	CardControlBody.size = Vector2(1, 1)
 # ------------------------------------------------------------------------------
@@ -178,8 +196,8 @@ func deselect_btns() -> void:
 
 # ------------------------------------------------------------------------------
 func get_ability_btns() -> Array:
-	var btn_list:Array = []
-	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerResearchers, CardDrawerScp]:
+	var btn_list:Array = [RoomDetails]
+	for node in [CardDrawerResearchers, CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerScp]:
 		if node.is_visible_in_tree():
 			for btn in node.get_btns():
 				btn_list.push_back(btn)
@@ -188,18 +206,18 @@ func get_ability_btns() -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:	
-	if !is_node_ready():return	
-	is_focused = state
-	onFocus.call(self) if state else onBlur.call(self)	
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover and btn == MOUSE_BUTTON_LEFT:		
-		onClick.call()
+#func on_focus(state:bool = is_focused) -> void:	
+	#if !is_node_ready():return	
+	#is_focused = state
+	#onFocus.call(self) if state else onBlur.call(self)	
+	#if state:
+		#GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	#else:
+		#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+#
+#func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	#if on_hover and btn == MOUSE_BUTTON_LEFT:		
+		#onClick.call()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

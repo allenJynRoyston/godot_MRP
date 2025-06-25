@@ -30,17 +30,16 @@ var hover_nodes:Array = []
 var track_list:Array = []
 var selected_track:int = 0
 var scroll_name:bool = false
-var data:Dictionary = {} : 
-	set(val): 
-		data = val
-		on_data_update()
 		
 # --------------------------------------	
 func _init() -> void:
 	GBL.register_node(REFS.MEDIA_PLAYER, self)
+	SUBSCRIBE.subscribe_to_music_player(self)
 
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.MEDIA_PLAYER)
+	SUBSCRIBE.unsubscribe_to_music_player(self)
+
 	
 func _ready() -> void:
 	super._ready()
@@ -81,14 +80,20 @@ func change_bus(bus:String) -> void:
 
 # --------------------------------------	
 func on_pause() -> void:
+	if track_list.is_empty():return	
 	current_audio_stream_player.playing = !current_audio_stream_player.playing
 	on_pause_or_play_update()	
 # --------------------------------------	
 
 # --------------------------------------	
 func on_next() -> void:
+	if track_list.is_empty():return
 	selected_track = (selected_track + 1) % track_list.size()
-	play_selected_track()	
+	SUBSCRIBE.music_data = {
+		"track_list": track_list,
+		"selected": selected_track,
+	}
+	#play_selected_track()	
 # --------------------------------------	
 
 # --------------------------------------	
@@ -102,27 +107,18 @@ func is_already_playing() -> bool:
 # --------------------------------------	
 
 # --------------------------------------	
-func skip_to_track(track_data:Dictionary) -> void:
-	selected_track = 1
-	play_selected_track()
+#func skip_to_track(track_data:Dictionary) -> void:
+	#selected_track = 1
+	#SUBSCRIBE.music_data = {
+		#"track_list": track_list,
+		#"selected": selected_track,
+	#}	
+	##play_selected_track()
 # --------------------------------------		
 
 # --------------------------------------	
 func on_pause_or_play_update() -> void:
 	PlayPauseBtn.icon = SVGS.TYPE.MEDIA_PLAY if !current_audio_stream_player.playing else SVGS.TYPE.MEDIA_PAUSE	
-# --------------------------------------	
-
-# --------------------------------------	
-func on_data_update() -> void:	
-	if "track_list" in data and data.track_list.size() > 0:		
-		track_list = data.track_list.filter(func(item):
-			if "unlocked" in item:
-				return item.unlocked.call(item.details)
-			return true
-		)
-		
-		selected_track = data.selected if "selected" in data else 0
-		play_selected_track()
 # --------------------------------------	
 
 # --------------------------------------	
@@ -155,7 +151,16 @@ func check_track_scroll() -> void:
 # --------------------------------------	
 
 # --------------------------------------		
-
+func on_music_data_update(music_data:Dictionary) -> void:
+	if "track_list" in music_data and music_data.track_list.size() > 0:		
+		track_list = music_data.track_list.filter(func(item):
+			if "unlocked" in item:
+				return item.unlocked.call(item.details)
+			return true
+		)
+		
+		selected_track = music_data.selected if "selected" in music_data else 0
+		play_selected_track()
 
 func on_process_update(delta: float) -> void:
 	super.on_process_update(delta)

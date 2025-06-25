@@ -22,6 +22,7 @@ outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 [node name="ResourceItem" type="PanelContainer"]
 offset_right = 50.0
 offset_bottom = 20.0
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_0wirc")
 script = ExtResource("1_l01xo")
 allow_hint = false
@@ -73,14 +74,11 @@ label_settings = SubResource("LabelSettings_rcc13")
 vertical_alignment = 1
 
 [node name="BtmItemLabel" type="Label" parent="MarginContainer/ResourceItem/VBoxContainer"]
-visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_n01h6")
 horizontal_alignment = 1
 
 [node name="SecondValContainer" type="VBoxContainer" parent="MarginContainer/ResourceItem"]
-visible = false
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_constants/separation = 5
 

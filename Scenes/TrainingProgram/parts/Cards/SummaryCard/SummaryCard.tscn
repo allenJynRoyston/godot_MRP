@@ -1,8 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=23 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_s7sdo"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_djb7u"]
+[ext_resource type="PackedScene" uid="uid://car8yud4yb0pj" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerVibes.tscn" id="4_ihy8r"]
 [ext_resource type="PackedScene" uid="uid://cus6h1nu75y1e" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerRoomAbilities.tscn" id="5_djb7u"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_4uruu"]
 [ext_resource type="PackedScene" uid="uid://dy0x4w2beaa05" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerResearchers.tscn" id="6_ihy8r"]
@@ -45,6 +46,18 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_budmt"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3672, 0.378, 0.9, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -177,10 +190,25 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 layout_mode = 2
 theme_override_constants/separation = 10
 
+[node name="CardDrawerVibes" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("4_ihy8r")]
+visible = false
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_budmt")
+title = ""
+border_color = Color(0.3672, 0.378, 0.9, 1)
+
+[node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("6_ihy8r")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uh585")
+is_left_side = true
+border_color = Color(0.337255, 0.27451, 1, 1)
+
 [node name="CardDrawerActiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("5_djb7u")]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_uh585")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hex5u")
 title = "PROGRAMS"
 is_left_side = true
 border_color = Color(0.337255, 0.27451, 1, 1)
@@ -188,15 +216,9 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 [node name="CardDrawerPassiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("5_djb7u")]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_hex5u")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3otej")
 ability_type = 1
 title = "MODULES"
-is_left_side = true
-border_color = Color(0.337255, 0.27451, 1, 1)
-
-[node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("6_ihy8r")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3otej")
 is_left_side = true
 border_color = Color(0.337255, 0.27451, 1, 1)
 

@@ -24,12 +24,6 @@ const TaskbarLiveItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/T
 
 var control_pos_default:Dictionary
 var control_pos:Dictionary
-
-var music_data:Dictionary = {} : 
-	set(val): 
-		music_data = val
-		on_music_data_update()
-
 var show_taskbar:bool = false 
 var is_busy:bool = false
 var selected_node:Control 
@@ -40,16 +34,15 @@ var onBack:Callable = func() -> void:pass
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
-	GBL.subscribe_to_music_player(self)	
+	GBL.register_node(REFS.TASKBAR, self)
 	GBL.subscribe_to_control_input(self)
 
 func _exit_tree() -> void:
-	GBL.unsubscribe_to_music_player(self)
+	GBL.unregister_node(REFS.TASKBAR)	
 	GBL.unsubscribe_to_control_input(self)
 	
 func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)		
-	on_music_data_update()
 	on_show_media_player_update()
 	
 	var update_media_player:Callable = func() -> void:
@@ -105,10 +98,6 @@ func _ready() -> void:
 		BtnControl.reveal(true)	
 		if confirm:
 			match selected_node:
-				PlayBtn:
-					show_media_player = false
-				NextBtn:
-					show_media_player = false
 				_:
 					GBL.find_node(REFS.OS_LAYOUT).force_close_app(selected_node.data.ref)
 			
@@ -190,11 +179,6 @@ func get_itemlist() -> Array:
 		for btn in [PlayBtn, NextBtn]:
 			list.push_back(btn)		
 	return list
-
-func on_music_data_update() -> void:
-	if MediaPlayer.is_already_playing():return
-	show_media_player = !music_data.is_empty()
-	MediaPlayer.data = music_data
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

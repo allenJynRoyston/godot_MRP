@@ -51,6 +51,8 @@ func start(fast_load:bool) -> void:
 	LoadingComponent.loading_text = str(details.title).to_upper()
 	await LoadingComponent.start(fast_load)
 	await TransitionScreen.start(0.7, true)
+	
+	GBL.find_node(REFS.TASKBAR).show_media_player = true
 
 	# start app
 	MediaPlayerMain.start()
@@ -58,6 +60,8 @@ func start(fast_load:bool) -> void:
 
 # ------------------------------------------------------------------------------
 func quit(skip_close:bool = false) -> void:
+	GBL.find_node(REFS.TASKBAR).show_media_player = false
+	
 	events.close.call()
 	queue_free()
 	

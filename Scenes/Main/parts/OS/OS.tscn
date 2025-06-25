@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=21 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
@@ -24,9 +24,6 @@ gradient = SubResource("Gradient_oddaw")
 fill_from = Vector2(0.130435, 0.0434783)
 metadata/_snap_enabled = true
 metadata/_snap_count = 23
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_oddaw"]
-viewport_path = NodePath("SubViewportBG")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1wtgv"]
 
@@ -66,25 +63,12 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_41nkp")
 script = ExtResource("1_rk64t")
 
-[node name="SubViewportBG" type="SubViewport" parent="."]
-size = Vector2i(1920, 1080)
-
-[node name="Background" parent="SubViewportBG" instance=ExtResource("2_b50hp")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-
 [node name="BG" type="TextureRect" parent="."]
 layout_mode = 2
 texture = SubResource("GradientTexture2D_25k47")
 
-[node name="AudioVisualizer" type="TextureRect" parent="."]
+[node name="AudioVisualizer" parent="." instance=ExtResource("2_b50hp")]
 layout_mode = 2
-texture = SubResource("ViewportTexture_oddaw")
-expand_mode = 1
-stretch_mode = 6
 
 [node name="Desktop" type="PanelContainer" parent="."]
 layout_mode = 2

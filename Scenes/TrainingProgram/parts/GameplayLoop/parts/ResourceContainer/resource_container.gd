@@ -294,17 +294,23 @@ func update_panels() -> void:
 	PersonnelTechnicians.is_negative = !ring_config_data.personnel[RESOURCE.PERSONNEL.TECHNICIANS]
 	PersonnelSecurity.is_negative = !ring_config_data.personnel[RESOURCE.PERSONNEL.SECURITY]
 	PersonnelDClass.is_negative = !ring_config_data.personnel[RESOURCE.PERSONNEL.DCLASS]	
+	
+	#currency diff
+	CurrenyTag.val = resources_data[RESOURCE.CURRENCY.MONEY].diff
+	MaterialTag.val = resources_data[RESOURCE.CURRENCY.MATERIAL].diff
+	ScienceTag.val = resources_data[RESOURCE.CURRENCY.SCIENCE].diff 
+	CoreTag.val = resources_data[RESOURCE.CURRENCY.CORE].diff
 
 	# update everything else
 	match camera_settings.type:
 		# -----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_floor_summary(current_location) if camera_settings.is_locked else GAME_UTIL.get_ring_summary(current_location)
-
-			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
-			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
-			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
-			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
+#
+			#CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
+			#MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
+			#ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
+			#CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
 			for node in [LocationFloor, LocationWing, LocationRoom, MoraleTag, SafetyTag, ReadinessTag, EnergyTag, StaffTag, TechTag, SecTag, DClassTag]:
 				if node in [LocationFloor]:
@@ -336,10 +342,10 @@ func update_panels() -> void:
 				
 				update_status_container(list, cf.container)
 
-			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
-			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
-			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
-			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
+			#CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
+			#MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
+			#ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
+			#CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 						
 			for node in [LocationFloor, LocationWing, LocationRoom, MoraleTag, SafetyTag, ReadinessTag, EnergyTag, StaffTag, TechTag, SecTag, DClassTag]:
 				if node in [LocationFloor, LocationWing]:
@@ -350,7 +356,6 @@ func update_panels() -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			var summary_data:Dictionary = GAME_UTIL.get_room_summary(current_location)	
 		
-			
 			# get status effects
 			for cf in [
 				{"config": ring_config_data, "container": RingBuffsContainer},
@@ -376,10 +381,10 @@ func update_panels() -> void:
 				update_status_container(list, cf.container)			
 			
 			#currency diff
-			CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
-			MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
-			ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
-			CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
+			#CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
+			#MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
+			#ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
+			#CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
 			# update vibes
 			VibeMorale.alt_value = summary_data.metric_diff[RESOURCE.METRICS.MORALE]

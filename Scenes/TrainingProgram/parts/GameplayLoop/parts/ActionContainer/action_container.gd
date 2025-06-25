@@ -503,11 +503,6 @@ func show_build_options() -> void:
 	ActiveMenuNode.onClose = func() -> void:
 		await onClose.call(false)
 		
-		#if GameplayNode.is_tutorial:
-			#if ROOM_UTIL.build_count(ROOM.REF.DIRECTORS_OFFICE) == 1:
-				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_DIRECTORS_OFFICE, 1.0)
-			#if ROOM_UTIL.build_count(ROOM.REF.HQ) == 1:	
-				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.AFTER_BUILD_HQ, 1.0)
 		
 	ActiveMenuNode.onAction = func() -> void:
 		await ActiveMenuNode.close()
@@ -867,11 +862,13 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
 	var is_room_empty:bool = room_extract.room.is_empty()
 	var is_scp_empty:bool = room_extract.scp.is_empty()
+	var abilities:Array = [] if is_room_empty else room_extract.room.details.abilities.call()
+	var passive_abilities:Array = [] if is_room_empty else room_extract.room.details.passive_abilities.call()
 	var is_activated:bool = false if is_room_empty else room_extract.room.is_activated
 	var can_contain:bool = false if is_room_empty else room_extract.room.details.can_contain
 	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
 	var can_take_action:bool = (is_powered and !in_lockdown)
-	var has_options:bool = SummaryCard.get_ability_btns().size() > 0
+	var has_options:bool = !abilities.is_empty() or !passive_abilities.is_empty()
 	
 	if !room_extract.is_empty():
 		AbilityBtn.show() if !is_room_empty else AbilityBtn.hide()
@@ -896,21 +893,22 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		MODE.INVESTIGATE:
 			NameControl.hide()
 			ControllerOverlay.show_directional = false
-			var researchers_per_room:int = base_states.ring[str(current_location.floor, current_location.ring)].researchers_per_room
 			var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 			
 			# update mouse
 			Input.warp_mouse(warp_to_pos)
 			
+			# set this flat first
+			RoomDetailsControl.disable_location = false
+
 			# update roomDetailsControl
+			RoomDetailsControl.preview_mode = false
 			RoomDetailsControl.show_room_card = !is_room_empty
 			RoomDetailsControl.show_scp_card = false
 			RoomDetailsControl.show_researcher_card = false	
 			
 			RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
 			RoomDetailsControl.researcher_uid = -1 
-			
-			RoomDetailsControl.disable_location = false
 			RoomDetailsControl.reveal(!is_room_empty)
 			
 			RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
@@ -920,7 +918,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			DeconstructBtn.is_disabled = is_room_empty
 
 			if can_take_action:
-				AbilityBtn.is_disabled = (!is_activated and has_options) or nuke_activated
+				AbilityBtn.is_disabled = !has_options or nuke_activated
 				DeconstructBtn.is_disabled = (true if is_room_empty else !room_extract.room.can_destroy) or nuke_activated
 			else:
 				AbilityBtn.is_disabled = true
@@ -935,10 +933,10 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			}, 0 )
 		# -----------	
 		MODE.BUILD:
+			RoomDetailsControl.preview_mode = true
 			RoomDetailsControl.show_room_card = true
 			RoomDetailsControl.show_scp_card = false
 			RoomDetailsControl.show_researcher_card = false	
-			RoomDetailsControl.disable_location = true
 			RoomDetailsControl.reveal(true)
 
 # --------------------------------------------------------------------------------------------------
@@ -1127,22 +1125,22 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				for _node in BtnControls.itemlist:
 					if "is_selected" in _node:
 						_node.is_selected = _node == node
-										
+				
+				
 				# ----------------------
 				if "ability_data" in node:
-					RoomDetailsControl.cycle_to_room(true)
-					await U.tick()
-					RoomDetailsControl.show_room_card = true
-					RoomDetailsControl.show_scp_card = false
-					RoomDetailsControl.show_researcher_card = false
+					RoomDetailsControl.hide()
+					return
 				# ----------------------
 				if "researcher" in node:
+					RoomDetailsControl.hide() if node.researcher.is_empty() else RoomDetailsControl.show()
 					RoomDetailsControl.researcher_uid = node.researcher.uid if !node.researcher.is_empty() else -1
 					RoomDetailsControl.cycle_to_reseacher(true)
 					await U.tick()
 					RoomDetailsControl.show_room_card = false
 					RoomDetailsControl.show_scp_card = false
-					RoomDetailsControl.show_researcher_card = true	
+					RoomDetailsControl.show_researcher_card = true
+					return
 				# ----------------------
 				if "scp_ref" in node:
 					RoomDetailsControl.scp_ref = node.scp_ref 
@@ -1150,9 +1148,26 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					await U.tick()
 					RoomDetailsControl.show_room_card = false
 					RoomDetailsControl.show_scp_card = true
-					RoomDetailsControl.show_researcher_card = false						
+					RoomDetailsControl.show_researcher_card = false
+					return
+				
+				RoomDetailsControl.cycle_to_room(true)
+				RoomDetailsControl.show()				
+				await U.tick()
+				RoomDetailsControl.show_room_card = true
+				RoomDetailsControl.show_scp_card = false
+				RoomDetailsControl.show_researcher_card = false
+
+					
 
 			BtnControls.onBack = func() -> void:
+				RoomDetailsControl.cycle_to_room(true)
+				RoomDetailsControl.show()				
+				await U.tick()
+				RoomDetailsControl.show_room_card = true
+				RoomDetailsControl.show_scp_card = false
+				RoomDetailsControl.show_researcher_card = false
+								
 				current_mode = MODE.INVESTIGATE	
 				SummaryCard.deselect_btns()				
 			
@@ -1176,6 +1191,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	
 	on_current_location_update()	
 	on_camera_settings_update()
+	
+	room_config
 # --------------------------------------------------------------------------------------------------			
 
 ## --------------------------------------------------------------------------------------------------	

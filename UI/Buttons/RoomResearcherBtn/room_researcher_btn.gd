@@ -67,9 +67,9 @@ func on_researcher_update() -> void:
 	
 	if !researcher.is_empty() and !researcher.props.assigned_to_room.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher.props.assigned_to_room)
-		if !has_pairing:
-			has_pairing = ROOM_UTIL.check_for_room_pair(extract_data.room.details.ref, researcher)	
-	
+		#if !has_pairing:
+			#has_pairing = ROOM_UTIL.check_for_room_pair(extract_data.room.details.ref, researcher)	
+	#
 	update_all()
 
 func on_is_selected_update() -> void:
@@ -102,15 +102,10 @@ func update_font_color() -> void:
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	#var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	#var new_color:Color = panel_color
-			#
-	#new_stylebox.bg_color = new_color
-	#RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
+
 	
 func update_text() -> void:
 	if !is_node_ready():return
-	#var room_pairs_with_spec:Dictionary = RESEARCHER_UTIL.return_specialization_data(pairs_with[0] if pairs_with.size() > 0 else -1)
 	
 	if researcher.is_empty():
 		IconBtn.icon = SVGS.TYPE.PLUS

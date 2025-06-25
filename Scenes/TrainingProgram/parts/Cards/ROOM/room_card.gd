@@ -6,6 +6,7 @@ extends MouseInteractions
 @onready var CardBody:Control = $CardBody
 @onready var Front:Control = $CardBody/SubViewport/Control/CardBody/Front
 @onready var Back:Control = $CardBody/SubViewport/Control/CardBody/Back
+@onready var InactivePanel:Control = $CardBody/SubViewport/Control/CardBody/InactivePanel
 
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
@@ -146,7 +147,6 @@ func on_ref_update() -> void:
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_activated:bool = true
-	
 	var morale_val:int = GAME_UTIL.get_metric_val(use_location, RESOURCE.METRICS.MORALE)
 	var metrics:Dictionary = room_details.metrics
 	var currency_list:Array = []
@@ -158,6 +158,7 @@ func on_ref_update() -> void:
 			is_activated = extract_data.room.is_activated
 			metrics = extract_data.room.metrics
 			currency_list = extract_data.room.currency_list
+	
 	
 	# else, use just the room details
 	else:
@@ -178,21 +179,26 @@ func on_ref_update() -> void:
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 
 	# -----------
+	InactivePanel.show() if !is_activated else InactivePanel.hide()
 	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
-	CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel
+	#CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel
 	CardDrawerImage.img_src = room_details.img_src
 	CardDrawerImage.use_static = !is_activated
-	CardDrawerCurrency.use_location = use_location
-	CardDrawerCurrency.list = currency_list
+	CardDrawerDescription.content = room_details.description
 	# -----------
-	CardDrawerPairsWith.spec_name = RESEARCHER_UTIL.return_specialization_data(room_details.requires_specialization).name 
+	#CardDrawerPairsWith.spec_name = RESEARCHER_UTIL.return_specialization_data(room_details.requires_specialization).name 
 	# -----------
+	CardDrawerVibes.preview_mode = preview_mode	
+	CardDrawerVibes.use_location = use_location
 	CardDrawerVibes.metrics = metrics
+
+	CardDrawerCurrency.preview_mode = preview_mode
+	CardDrawerCurrency.room_details = room_details	
+	CardDrawerCurrency.use_location = use_location
+	CardDrawerCurrency.list = currency_list	
 	CardDrawerCurrency.morale_val = morale_val
 	CardDrawerCurrency.list = currency_list
-	CardDrawerCurrency.preview_mode = preview_mode
-	CardDrawerDescription.content = room_details.description
 	
 # ------------------------------------------------------------------------------
 	

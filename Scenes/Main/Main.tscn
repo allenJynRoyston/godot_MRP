@@ -95,7 +95,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-is_production_build = true
 skip_splash = true
 skip_intro = true
 skip_office_intro = true
@@ -104,9 +103,13 @@ os_skip_boot = true
 os_app_fast_load = true
 stdr_skip_titlescreen = true
 stdr_skip_loadingscreen = true
+use_fresh_base = true
 skip_setup_progress = true
 start_at_ring_level = true
 skip_objectives = true
+max_energy = false
+researchers_per_room = 1
+researchers_by_default = 9
 metadata/_edit_lock_ = true
 
 [node name="OS" type="SubViewport" parent="."]

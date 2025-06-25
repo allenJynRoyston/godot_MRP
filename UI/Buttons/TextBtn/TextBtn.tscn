@@ -8,6 +8,7 @@
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="TextBtn" type="PanelContainer"]
+modulate = Color(1, 1, 1, 0.5)
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 34.0
@@ -34,7 +35,7 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
-static_color = Color(0.662745, 0.662745, 0.662745, 1)
+static_color = Color(0.662745, 0.662745, 0.662745, 0.5)
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
@@ -48,5 +49,5 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 1
 icon = 3
-static_color = Color(0.662745, 0.662745, 0.662745, 1)
+static_color = Color(0.662745, 0.662745, 0.662745, 0.5)
 is_hoverable = false

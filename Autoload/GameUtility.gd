@@ -226,6 +226,7 @@ func get_floor_summary(use_location:Dictionary = current_location) -> Dictionary
 	
 	var currencies_diff:Dictionary = floor_config.currencies
 	
+	
 	var metrics_diff:Dictionary = {
 		RESOURCE.METRICS.MORALE: 0,
 		RESOURCE.METRICS.SAFETY: 0,
@@ -362,7 +363,8 @@ func apply_morale_bonus(use_location:Dictionary, total_morale_val:int, resource_
 	var room:int = use_location.room
 	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
 	var applied_bonus:float = (total_morale_val * 10) * 0.01		
-	var amount:int = resource_amount + floori( resource_amount * applied_bonus )
+	# if it costs money, it makes the final amount c
+	var amount:int = resource_amount - floori( resource_amount * applied_bonus ) if resource_amount < 0 else resource_amount + floori( resource_amount * applied_bonus )
 	
 	return {
 		"applied_bonus": applied_bonus,
@@ -412,8 +414,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
 		var amount:int = room_level.currencies[ref]		
 		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
-		
-		
+				
 	return {
 		# -----------
 		"room": {
@@ -910,7 +911,7 @@ func hire_researcher(total_options:int) -> bool:
 
 
 # --------------------------------------------------------------------------------------------------	
-func assign_researcher(location_data:Dictionary = current_location) -> bool:
+func assign_researcher(staffing_type:int, location_data:Dictionary = current_location) -> bool:
 	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
 	GameplayNode.add_child(ResearcherGrid)
 	ResearcherGrid.z_index = 10
@@ -919,8 +920,9 @@ func assign_researcher(location_data:Dictionary = current_location) -> bool:
 		return U.dictionaries_equal(i[10].assigned_to_room, current_location)
 	).map(func(i): return i[0])	
 	
+
 	await ResearcherGrid.activate()
-	ResearcherGrid.start(assigned_uids, current_location)
+	ResearcherGrid.start(assigned_uids, staffing_type, current_location)
 	var uid:String = await ResearcherGrid.user_response
 	GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
 

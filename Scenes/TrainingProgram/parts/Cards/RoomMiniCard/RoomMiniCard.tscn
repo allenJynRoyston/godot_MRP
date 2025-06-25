@@ -122,6 +122,7 @@ script = ExtResource("1_0jit3")
 layout_mode = 2
 card_size = Vector2(275, 75)
 border_color = Color(0.337255, 0.27451, 1, 1)
+is_activated = null
 
 [node name="TextureRect" parent="CardBody" index="0"]
 texture = SubResource("ViewportTexture_675dp")

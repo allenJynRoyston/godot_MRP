@@ -160,7 +160,8 @@ func update_font_color() -> void:
 			new_color = Color.WEB_GRAY
 		if is_active:
 			new_color = Color.YELLOW
-
+		if is_disabled:
+			new_color = Color.RED
 	
 	label_duplicate.font_color = new_color
 	for node in [NameLabel, CostLabel]:
@@ -186,6 +187,19 @@ func update_text() -> void:
 		Checkbox.is_checked = false
 		return
 	else:
+		if is_disabled:
+			ability_name = "UNAVAILABLE"
+			hint_description = "Room must be active to use this ability."
+			IconBtn.icon = SVGS.TYPE.LOCK
+			cost = ability_data.lvl_required
+			Checkbox.is_checked = false
+			Checkbox.hide()
+			CostLabel.hide()
+			return
+		
+		Checkbox.show()
+		CostLabel.show()
+			
 		if lvl_locked:
 			ability_name = "LVL %s REQUIRED" % [ability_data.lvl_required]
 			hint_description = "Level requirement must be higher to use this module."

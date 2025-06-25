@@ -29,10 +29,11 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------	
 	
 	# ------------------------------------------
-	"requires_specialization": RESEARCHER.SPECIALIZATION.ANY,	
-	"required_personnel": [
-		# RESOURCE.PERSONNEL.STAFF
-	],	
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],
+	#"requires_specialization": RESEARCHER.SPECIALIZATION.ANY,	
+	#"required_personnel": [
+		## RESOURCE.PERSONNEL.STAFF
+	#],	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -51,7 +52,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	
 	# ------------------------------------------
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MONEY: -25,
 		RESOURCE.CURRENCY.SCIENCE: 0,
 		RESOURCE.CURRENCY.MATERIAL: 0,
 		RESOURCE.CURRENCY.CORE: 0
@@ -217,11 +218,11 @@ func get_max_possible_level(ref:int) -> int:
 ## ------------------------------------------------------------------------------
 
 
-# ------------------------------------------------------------------------------
-func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
-	var room_data:Dictionary = return_data(ref)	
-	return room_data.requires_specialization == researcher.specialization.ref
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
+	#var room_data:Dictionary = return_data(ref)	
+	#return room_data.requires_specialization == researcher.specialization.ref
+## ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------

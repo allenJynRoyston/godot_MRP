@@ -92,7 +92,7 @@ func on_is_selected_update() -> void:
 	var m:Color = self.modulate
 	var sc:Color = IconBtnLeft.static_color
 	modulate.a = 1 if is_selected else 0.5
-	
+	await U.tick()
 	IconBtnLeft.static_color = Color(sc.r, sc.g, sc.b,  1 if is_selected else 0.5)
 	IconBtnRight.static_color = Color(sc.r, sc.g, sc.b,  1 if is_selected else 0.5)
 

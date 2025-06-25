@@ -54,19 +54,15 @@ alignment = 1
 [node name="VibeMorale" parent="MarginContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_tf6yb")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-hint_title = "HINT"
-hint_description = "Morale description."
 
 [node name="VibeSafety" parent="MarginContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_tf6yb")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 metric = 1
-hint_title = "HINT"
 hint_description = "Safety description."
 
 [node name="VibeReadiness" parent="MarginContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_tf6yb")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 metric = 2
-hint_title = "HINT"
 hint_description = "Readiness description."

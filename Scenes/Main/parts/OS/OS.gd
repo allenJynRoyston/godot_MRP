@@ -2,7 +2,7 @@ extends MouseInteractions
 class_name Layout
 
 @onready var BG:TextureRect = $BG
-@onready var AudioVisualizer:TextureRect = $AudioVisualizer
+@onready var AudioVisualizer:PanelContainer = $AudioVisualizer
 
 @onready var BtnControls:Control = $BtnControl
 @onready var Taskbar:Control = $Taskbar
@@ -163,7 +163,7 @@ var app_list:Array[Dictionary] = [
 							{
 								"title": "OPEN INSTRUCTION MANUAL",
 								"onClick": func(_options:Dictionary) -> void:
-									open_app(data, _options),
+									pass,
 							}
 						],
 						# ------- OPTIONS
@@ -178,6 +178,11 @@ var app_list:Array[Dictionary] = [
 								"onClick": func(_options:Dictionary) -> void:
 									open_app(data),
 							},
+							{
+								"title": "OPEN INSTRUCTION MANUAL",
+								"onClick": func(_options:Dictionary) -> void:
+										pass,
+							},							
 							{
 								"title": "FORCE QUIT",
 								"onClick": func(_options:Dictionary) -> void:

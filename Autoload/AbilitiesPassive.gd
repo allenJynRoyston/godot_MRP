@@ -1,10 +1,11 @@
 extends Node
 
 enum REF {
+	
+	
 	# --- DIRECTORS OFFICE
 	PREDICTIVE_TIMELINE,
 	ENABLE_OBJECTIVES,
-	
 	
 	UPGRADE_ABL_LVL,
 	ADDITIONAL_STORE_UNLOCKS,
@@ -22,10 +23,10 @@ enum REF {
 	GENERATE_RESEARCH_FROM_SCP,
 	GENERATE_MONEY_FROM_SCP,
 	
+	MEMETIC_SHILEDING,
 	
-	MEMETIC_SHILEDING
-	
-	
+	GENERATE_MONEY,
+	GENERATE_SCIENCE,
 }
 
 # ---------------------------------
@@ -158,7 +159,7 @@ var MEMETIC_SHIELDING:Dictionary = {
 
 # ---------------------------------
 var GENERATE_RESEARCH_FROM_SCP:Dictionary = {
-	"name": "Generate Research",
+	"name": "GENERATE RESEARCH",
 	"description": "Research into contained object generates research.",
 	"lvl_required": 0,
 	"energy_cost": 4,
@@ -169,7 +170,7 @@ var GENERATE_RESEARCH_FROM_SCP:Dictionary = {
 }
 
 var GENERATE_MONEY_FROM_SCP:Dictionary = {
-	"name": "Generate Money",
+	"name": "GENERATE MONEY",
 	"description": "Research into contained object generates money.",
 	"lvl_required": 0,
 	"energy_cost": 4,
@@ -178,6 +179,20 @@ var GENERATE_MONEY_FROM_SCP:Dictionary = {
 		RESOURCE.CURRENCY.MONEY: 100
 	}
 }
+# ---------------------------------
+
+# ---------------------------------
+var GENERATE_MONEY:Dictionary = {
+	"name": "GENERATE MONEY",
+	"description": "Room generates money.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"currencies":{
+		RESOURCE.CURRENCY.MONEY: 50
+	}
+}
+
+
 
 # ---------------------------------
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
@@ -219,6 +234,9 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = GENERATE_RESEARCH_FROM_SCP
 		REF.GENERATE_MONEY_FROM_SCP:
 			ability = GENERATE_MONEY_FROM_SCP
+		# ------------------
+		REF.GENERATE_MONEY:
+			ability = GENERATE_MONEY
 	
 	ability.ref = ref
 	ability.lvl_required = lvl_required

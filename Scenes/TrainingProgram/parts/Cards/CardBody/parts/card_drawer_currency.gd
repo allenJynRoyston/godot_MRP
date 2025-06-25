@@ -14,6 +14,7 @@ extends CardDrawerClass
 
 @export var	morale_val:int = 0
 
+var room_details:Dictionary = {}
 var room_config:Dictionary = {}
 var current_location:Dictionary = {}
 var use_location:Dictionary = {}
@@ -22,6 +23,7 @@ var is_researched:bool = true
 
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
 
+# -----------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
@@ -33,7 +35,9 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	on_list_update()
+# -----------------------------
 
+# -----------------------------
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	U.debounce(str(self.name, "_update_nodes"), on_list_update, 0.1)
@@ -42,20 +46,34 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
 	U.debounce(str(self.name, "_update_nodes"), on_list_update, 0.1)
 	
+func get_is_activated() -> bool:
+	if !use_location.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		return false if extract_data.room.is_empty() else extract_data.room.is_activated		
+		
+	return false	
+# -----------------------------
+
+# -----------------------------
 func on_list_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty():return
-	for node in ListContainer.get_children():
-		node.queue_free()
+	
+	for node in [ListContainer ]:
+		for child in node.get_children():
+			child.queue_free()
 		
 	if list.is_empty():return
+	
 	for item in list:
 		var new_node:Control = ResourceItemPreload.instantiate()
 		var base_value:int = int(item.title)
+		var base_amount:int = 0 if !get_is_activated() else room_details.currencies[item.ref]
 		
 		new_node.no_bg = true
 		new_node.display_at_bottom = true
-		new_node.actual_val = base_value
-		# if a location is provided, it pulls for the total calculated in room_config
+		new_node.actual_val = base_amount
+		new_node.title = str(base_amount) if is_researched else "?"
+		new_node.use_second_val = true
 
 		if !preview_mode:
 			if !use_location.is_empty():
@@ -63,7 +81,7 @@ func on_list_update() -> void:
 				var applied_bonus:int = int(room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].applied_bonus * 100)
 				new_node.second_val = currencies[item.ref]
 				AppliedBonusLabel.text =  str("%s %s %s%s" % ["Morale", "bonus" if applied_bonus > 0 else "debuff", "+" if applied_bonus > 0 else "", applied_bonus], "%") if applied_bonus != 0 else "No bonuses"
-				new_node.use_second_val = applied_bonus != 0
+				#new_node.use_second_val = base_amount !=  currencies[item.ref] #applied_bonus != 0
 			else:
 				var floor_config_data:Dictionary = room_config.floor[current_location.floor]
 				var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
@@ -78,17 +96,14 @@ func on_list_update() -> void:
 				AppliedBonusLabel.text = str("%s %s %s%s" % ["Morale", "bonus" if applied_bonus > 0 else "debuff", "+" if applied_bonus > 0 else "", applied_bonus], "%") if applied_bonus != 0 else "No bonuses"
 				new_node.second_val = str(res.amount)
 				
-				new_node.use_second_val = applied_bonus != 0 and (base_value != res.amount)
-		else:
-			new_node.use_second_val = false
+				#new_node.use_second_val = applied_bonus != 0 and (base_value != res.amount)
 
 
-		new_node.title = str(item.title) if is_researched else "?"
 		new_node.icon = item.icon
 		new_node.icon_size = Vector2(20, 20)
 		
 		new_node.is_hoverable = false
 		
 		ListContainer.add_child(new_node)
-		
+# -----------------------------
 	
