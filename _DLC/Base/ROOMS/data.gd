@@ -107,6 +107,14 @@ var DIRECTORS_OFFICE:Dictionary = {
 	},
 	# ------------------------------------------
 	
+	# ------------------------------------------	
+	"metrics": {
+		RESOURCE.METRICS.MORALE: 3,
+		RESOURCE.METRICS.SAFETY: 2,
+		RESOURCE.METRICS.READINESS: 1
+	},	
+	# ------------------------------------------	
+	
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
@@ -177,6 +185,9 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
+	"containment_properties": [
+		SCP.CONTAINMENT_TYPES.PHYSICAL
+	],
 	# ------------------------------------------
 
 	# ------------------------------------------

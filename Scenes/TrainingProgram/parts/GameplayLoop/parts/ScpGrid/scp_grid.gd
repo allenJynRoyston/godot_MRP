@@ -68,13 +68,13 @@ func setup_gridselect() -> void:
 		DetailPanel.scp_ref = data.ref
 		SummaryImage.texture = CACHE.fetch_image(data.img_src)
 		
-		match type:
-			TYPE.SELECT:
-				GridSelect.BtnControls.disable_active_btn = false			
-			TYPE.CONTAIN:
-				GridSelect.BtnControls.disable_active_btn = research_level == 0
-			TYPE.RESEARCH:
-				GridSelect.BtnControls.disable_active_btn = !can_afford or research_level >= 3
+		#match type:
+			#TYPE.SELECT:
+				#GridSelect.BtnControls.disable_active_btn = false			
+			#TYPE.CONTAIN:
+				#GridSelect.BtnControls.disable_active_btn = false #research_level == 0
+			#TYPE.RESEARCH:
+				#GridSelect.BtnControls.disable_active_btn = !can_afford or research_level >= 3
 			
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
 		node.scp_ref = -1

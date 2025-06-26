@@ -120,7 +120,7 @@ func on_reveal_update() -> void:
 
 func on_show_assigned_update() -> void:
 	if !is_node_ready():return
-	CardDrawerAssigned.show() if show_assigned else CardDrawerAssigned.hide()
+	#CardDrawerAssigned.show() if show_assigned else CardDrawerAssigned.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

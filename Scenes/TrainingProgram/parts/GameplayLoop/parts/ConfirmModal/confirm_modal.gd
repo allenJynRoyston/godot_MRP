@@ -92,6 +92,9 @@ func end(made_changes:bool) -> void:
 	
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 
+	var duplicate_material:Material = TextureRectUI.material.duplicate(true)
+	TextureRectUI.material = duplicate_material
+
 	await U.tween_range(TextureRectUI.material.get_shader_parameter("blur_radius"), 0.0, 0.3, func(val:float) -> void:
 		TextureRectUI.material.set_shader_parameter("blur_radius", val)
 	).finished	

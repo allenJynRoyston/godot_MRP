@@ -1,10 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b38bvj8mti387"]
+[gd_scene load_steps=7 format=3 uid="uid://b38bvj8mti387"]
 
 [ext_resource type="Script" uid="uid://dbcjx0aq66hmg" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_image.gd" id="1_ndhov"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_ndhov"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_e6u7c"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4suv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ifcb6"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -16,10 +16,51 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="Shader" id="Shader_ei827"]
+code = "shader_type canvas_item;
+
+uniform float amplitude : hint_range(0.0, 50.0) = 20.0;
+uniform float frequency : hint_range(0.0, 10.0) = 5.0;
+uniform float speed : hint_range(0.0, 10.0) = 1.0;
+uniform float opacity : hint_range(0.0, 1.0) = 1.0;
+uniform int step_count : hint_range(1, 128) = 8; // Fewer steps = chunkier movement
+
+void fragment() {
+    float pixel_height = SCREEN_PIXEL_SIZE.y;
+
+    // Get the screen-space Y coordinate in pixels
+    float y_px = floor(FRAGCOORD.y);
+
+    // Create a stepped wave based on scanline
+    float wave = sin(y_px * frequency * 0.01 + TIME * speed);
+
+    // Snap to step_count levels
+    float stepped_wave = floor(wave * float(step_count)) / float(step_count);
+
+    // Horizontal offset in pixels converted to UV
+    float offset = stepped_wave * (amplitude * SCREEN_PIXEL_SIZE.x);
+
+    vec2 distorted_uv = UV + vec2(offset, 0.0);
+
+    vec4 tex_color = texture(TEXTURE, distorted_uv);
+    tex_color.a *= opacity;
+
+    COLOR = tex_color;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y4suv"]
+shader = SubResource("Shader_ei827")
+shader_parameter/amplitude = 7.225
+shader_parameter/frequency = 3.32
+shader_parameter/speed = 0.474
+shader_parameter/opacity = 1.0
+shader_parameter/step_count = 2
+
 [node name="CardDrawerImage" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 125)
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_y4suv")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ifcb6")
 script = ExtResource("1_ndhov")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
@@ -30,6 +71,7 @@ theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
 [node name="DrawerImage" type="TextureRect" parent="MarginContainer2"]
+material = SubResource("ShaderMaterial_y4suv")
 layout_mode = 2
 texture = ExtResource("2_ndhov")
 expand_mode = 1

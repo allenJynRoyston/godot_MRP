@@ -26,4 +26,4 @@ func on_img_src_update() -> void:
 	
 func on_use_static_update() -> void:
 	if !is_node_ready():return
-	DrawerImage.material = StaticShader if use_static else null
+	#DrawerImage.material = StaticShader if use_static else null

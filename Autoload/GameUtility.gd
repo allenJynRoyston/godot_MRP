@@ -18,7 +18,7 @@ const new_scp_entry:Dictionary = {
 	"level": 0,
 	"location": {},
 	"contained_on": null,
-	"breach_results": {}
+	"breach_count": 0
 }
 
 var GameplayNode:Control
@@ -756,29 +756,27 @@ func contain_scp() -> bool:
 	await ScpGridNode.activate()
 	ScpGridNode.contain()
 	var scp_ref:int = await ScpGridNode.user_response
-	
-	if scp_ref == -1:
-		return false
-#
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	var breach_events_at:Array = [0, 7, 14, 28]
-	
-	var breach
-	for index in breach_events_at.size():
-		var val:int = breach_events_at[index]
-		var day:int = val + progress_data.day
+	if scp_ref == -1:return false
 
-		add_timeline_item({
-			"title": scp_details.name,
-			"icon": SVGS.TYPE.DANGER,
-			"description": "DANGER",
-			"day": day,
-			"event": {
-				"scp_ref": scp_ref,
-				"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
-				"event_count": index,
-			}
-		})		
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	#var breach_events_at:Array = [0, 7, 14, 28]
+	#
+	#var breach
+	#for index in breach_events_at.size():
+		#var val:int = breach_events_at[index]
+		#var day:int = val + progress_data.day
+#
+		#add_timeline_item({
+			#"title": scp_details.name,
+			#"icon": SVGS.TYPE.DANGER,
+			#"description": "DANGER",
+			#"day": day,
+			#"event": {
+				#"scp_ref": scp_ref,
+				#"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
+				#"event_count": index,
+			#}
+		#})		
 
 	# create dict if it doesn't exist
 	if scp_ref not in scp_data:
@@ -787,29 +785,38 @@ func contain_scp() -> bool:
 	# then update entry
 	scp_data[scp_ref].location = current_location.duplicate(true)
 	scp_data[scp_ref].contained_on = progress_data.day
-	scp_data[scp_ref].breach_results = {}
- 
-	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
-		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
-	)		
+	scp_data[scp_ref].breach_count = 0
 
 	# save
 	SUBSCRIBE.scp_data = scp_data	
 	
-	# trigger event
+	# Check for initial breach event
+	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	)				
+
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-		EVT.TYPE.SCP_ON_CONTAIN, 
+		EVT.TYPE.SCP_ON_CONTAINMENT, 
 			{
+				"room_details": ROOM_UTIL.return_data_via_location(current_location),
 				"scp_details": scp_details,
 				"scp_data": scp_data[scp_ref],
 				"researchers": researchers
 			}
 		)
 	])
-	
 
 	return true
 # --------------------------------------------------------------------------------------------------	
+
+func check_for_breach_event(scp_ref:int) -> bool:
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	
+	#var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+		#return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	#)		
+		
+	return false
 
 # --------------------------------------------------------------------------------------------------	
 func clone_researcher() -> bool:

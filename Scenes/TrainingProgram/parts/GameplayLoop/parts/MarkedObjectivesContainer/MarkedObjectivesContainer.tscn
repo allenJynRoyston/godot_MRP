@@ -27,8 +27,8 @@ func on_focus(state:bool) -> void:
 "
 
 [sub_resource type="Gradient" id="Gradient_q3i3u"]
-offsets = PackedFloat32Array(0.0746269, 0.992537)
-colors = PackedColorArray(0.427493, 0.427493, 0.427493, 0.356863, 0, 0, 0, 0)
+offsets = PackedFloat32Array(0, 0.992537)
+colors = PackedColorArray(0, 0, 0, 0.356863, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_q76y8"]
 gradient = SubResource("Gradient_q3i3u")

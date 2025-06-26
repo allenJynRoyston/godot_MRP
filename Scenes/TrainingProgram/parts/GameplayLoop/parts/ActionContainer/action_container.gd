@@ -1143,6 +1143,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					return
 				# ----------------------
 				if "scp_ref" in node:
+					RoomDetailsControl.hide() if node.scp_ref == -1 else RoomDetailsControl.show()
 					RoomDetailsControl.scp_ref = node.scp_ref 
 					RoomDetailsControl.cycle_to_scp(true)
 					await U.tick()

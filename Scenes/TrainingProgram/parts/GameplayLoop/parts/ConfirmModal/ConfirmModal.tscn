@@ -1,7 +1,6 @@
-[gd_scene load_steps=18 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=19 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" uid="uid://d3rdbn88vaa70" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
-[ext_resource type="Material" uid="uid://dqa3gw7ngocec" path="res://Shader/GausBlur/GausBlur.tres" id="2_t4xaw"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_upopm"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_kq5a2"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_t4xaw"]
@@ -12,6 +11,35 @@
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_t4xaw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_75o2t"]
+
+[sub_resource type="Shader" id="Shader_kq5a2"]
+code = "shader_type canvas_item;
+
+uniform float blur_radius : hint_range(0.0, 20.0) = 6.0;
+uniform vec2 blur_direction = vec2(1.0, 0.0); // Set per pass
+
+void fragment() {
+    vec2 texel_size = 1.0 / vec2(textureSize(TEXTURE, 0));
+    vec2 direction = normalize(blur_direction) * texel_size * blur_radius;
+
+    float weights[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+
+    vec4 color = texture(TEXTURE, UV) * weights[0];
+
+    for (int i = 1; i < 5; i++) {
+        vec2 offset = direction * float(i);
+        color += texture(TEXTURE, UV + offset) * weights[i];
+        color += texture(TEXTURE, UV - offset) * weights[i];
+    }
+
+    COLOR = color;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t4xaw"]
+shader = SubResource("Shader_kq5a2")
+shader_parameter/blur_radius = 3.715
+shader_parameter/blur_direction = Vector2(0.5, 0.5)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kq5a2"]
 
@@ -29,18 +57,18 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qglm5"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qglm5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pmqqh"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pmqqh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnqas"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -54,7 +82,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_75o2t")
 script = ExtResource("1_7tykf")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = ExtResource("2_t4xaw")
+material = SubResource("ShaderMaterial_t4xaw")
 layout_mode = 2
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
@@ -172,7 +200,7 @@ layout_mode = 2
 
 [node name="CheckBox" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("6_kq5a2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
 no_bg = true
 title = "1 energy required (you have X)"
 
@@ -190,7 +218,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pmqqh")
 icon = 31
 no_bg = true
 title = "99"
@@ -209,7 +237,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_pmqqh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bnqas")
 icon = 31
 no_bg = true
 title = "99"

@@ -123,12 +123,20 @@ func fill_template(data:Dictionary, ref_count:int) -> void:
 		reference_data[ref_count] = template_copy
 # ------------------------------------------------------------------------------	
 
-
 # ------------------------------------------------------------------------------
 func return_data(ref:int) -> Dictionary:
 	reference_data[ref].ref = ref
 	return reference_data[ref]
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func return_data_via_location(use_location:Dictionary) -> Dictionary:
+	for item in purchased_facility_arr:
+		if use_location == item.location:
+			return return_data(item.ref)
+	return {}
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func return_unavailable_rooms(ref:int, room_config:Dictionary) -> Array: 

@@ -47,275 +47,7 @@ var GAME_OVER:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
-#var DISMISS_RESEARCHER:Dictionary = {
-	#"event_instructions": func(props:Dictionary) -> Array:
-		#var option_selected:Dictionary = {
-			#"val": null
-		#}
-		#var onSelected = func(val) -> void:
-			#option_selected.val = val
-			#
-		#return [
-			## ---------
-			#func() -> Dictionary:
-				#return {
-					#"header": "Event header",
-					#"img_src": "res://Media/images/redacted.png",
-					#"text": [
-						#"You've decided that %s should be dismissed." % [props.name],
-						#"Should you take any other precautions?"
-					#],
-					#"options": [
-						#{
-							#"show": true,
-							#"title": "Thank them for their service.",
-							#"val": EVT.DISMISS_TYPE.THANK_AND_DISMISS,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Administer Class-B amnestics.",
-							#"val": EVT.DISMISS_TYPE.ADMINISTER_AMNESTICS,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Terminate them and destroy their research.",
-							#"val": EVT.DISMISS_TYPE.TERMINATE,
-							#"onSelected": onSelected
-						#}						
-					#]
-				#},
-			## ---------
-			#func() -> Dictionary:
-				#props.onSelection.call(option_selected.val)
-				#return {
-					#"text": [
-						#"You selected %s" % [option_selected.val],
-					#]
-				#}	
-		#],
-#}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-#var SITEWIDE_BROWNOUT:Dictionary = {
-	#"event_instructions": func(props:Dictionary) -> Array:
-		#var option_selected:Dictionary = {
-			#"val": null
-		#}
-		#var onSelected = func(val) -> void:
-			#option_selected.val = val
-			#
-		#return [
-			## ---------
-			#func() -> Dictionary:
-				#return {
-					#"header": "Event header",
-					#"img_src": "res://Media/images/redacted.png",
-					#"text": [
-						#"The lights begin to flicker as the power in the facility fluctuates.  Your batteries are almost out of juice.",
-					#],
-					#"options": [
-						#{
-							#"show": true,
-							#"title": "Utilize the emergency backup generators.",
-							#"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Do nothing",
-							#"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
-							#"onSelected": onSelected
-						#}
-					#]
-				#},
-			## ---------
-			#func() -> Dictionary:
-				#props.onSelection.call(option_selected.val)
-				#return {
-					#"text": [
-						#"You selected %s" % [option_selected.val],
-					#]
-				#}	
-		#],
-#}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-#var IN_DEBT_WARNING:Dictionary = {
-	#"event_instructions": func(props:Dictionary) -> Array:
-		#var option_selected:Dictionary = {
-			#"val": null
-		#}
-		#var onSelected = func(val) -> void:
-			#option_selected.val = val
-			#
-		#return [
-			## ---------
-			#func() -> Dictionary:
-				#return {
-					#"header": "Event header",
-					#"img_src": "res://Media/images/redacted.png",
-					#"text": [
-						#"IN DEBT WARNING",
-					#],
-					#"options": [
-						#{
-							#"show": true,
-							#"title": "Utilize the emergency funds.",
-							#"val": EVT.BROWNOUT_OPTIONS.EMERGENCY_GENERATORS,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Do nothing",
-							#"val": EVT.BROWNOUT_OPTIONS.DO_NOTHING,
-							#"onSelected": onSelected
-						#}
-					#]
-				#},
-			## ---------
-			#func() -> Dictionary:
-				#props.onSelection.call(option_selected.val)
-				#return {
-					#"text": [
-						#"You selected %s" % [option_selected.val],
-					#]
-				#}	
-		#],
-#}
-# ------------------------------------------------------------------------
-
-## ------------------------------------------------------------------------
-#var MORALE:Dictionary = {
-	#"event_instructions": func(props:Dictionary) -> Array:
-		#var option_selected:Dictionary = {
-			#"selected": null
-		#}
-		#var onSelected = func(option:Dictionary) -> void:
-			#option_selected.selected = option
-			##option_selected.val = val
-			#
-		#return [
-			## ---------
-			#func() -> Dictionary:
-				#return {
-					#"header": "Morale 1 event",
-					#"img_src": "res://Media/images/redacted.png",
-					#"portrait": {
-						#"title": "DR SMITHERS",
-						#"img_src": 	"res://Media/images/example_doctor.jpg",
-					#},					
-					#"text": [
-						#"MORALE EVENT 1",
-					#],
-					#"options": [
-						#{
-							#"show": true,
-							#"title": "Option a",
-							#"description": "Description goes here.",
-							#"success_rate": func() -> int:
-								#return 60,
-							#"val": 0,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Option b",
-							#"description": "Description goes here.",
-							#"success_rate": func() -> int:
-								#return 80,
-							#"val": 1,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Option c",
-							#"description": "Description goes here.",
-							#"success_rate": func() -> int:
-								#return 90,
-							#"val": 2,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Do nothing",
-							#"success_rate": func() -> int:
-								#return 100,
-							#"val": -1,
-							#"onSelected": onSelected
-						#}
-					#]
-				#},
-			## ---------
-			#func() -> Dictionary:
-				#props.onSelection.call(option_selected)
-				#return {
-					#"text": [
-						#"You selected %s" % [option_selected.selected.option.title],
-					#]
-				#},
-			## ---------
-			#func() -> Dictionary:
-				#return {
-					#"text": [
-						#"And yet they soldiered on.",
-					#]
-				#}					
-				#
-		#],
-#}
-## ------------------------------------------------------------------------
-#
-## ------------------------------------------------------------------------
-#var SAFETY:Dictionary = {
-	#"event_instructions": func(props:Dictionary) -> Array:
-		#var option_selected:Dictionary = {
-			#"val": null
-		#}
-		#var onSelected = func(val) -> void:
-			#option_selected.val = val
-			#
-		#return [
-			## ---------
-			#func() -> Dictionary:
-				#return {
-					#"header": "SAFETY 1 event",
-					#"img_src": "res://Media/images/redacted.png",
-					#"text": [
-						#"SAFETY EVENT 1",
-					#],
-					#"options": [
-						#{
-							#"show": true,
-							#"title": "Option a",
-							#"val": 0,
-							#"onSelected": onSelected
-						#},
-						#{
-							#"show": true,
-							#"title": "Do nothing",
-							#"val": -1,
-							#"onSelected": onSelected
-						#}
-					#]
-				#},
-			## ---------
-			#func() -> Dictionary:
-				#props.onSelection.call(option_selected.val)
-				#return {
-					#"text": [
-						#"You selected %s" % [option_selected.val],
-					#]
-				#}	
-		#],
-#}
-## ------------------------------------------------------------------------
-#
-# ------------------------------------------------------------------------
-var SCP_ON_CONTAIN:Dictionary = {
+var SCP_ON_CONTAINMENT:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
 		var option_selected:Dictionary = {
 			"val": null
@@ -323,65 +55,28 @@ var SCP_ON_CONTAIN:Dictionary = {
 		var onSelected = func(val) -> void:
 			option_selected.val = val
 		
+		var room_details:Dictionary = props.room_details
 		var scp_details:Dictionary = props.scp_details
 		var scp_data:Dictionary = props.scp_data
 		var researchers:Array = props.researchers
 		
-		var event:Dictionary = scp_details.on_contain
-		var selected_consequence:int = event.default_consequence 
-		var consequences:Dictionary = event.consequence
-		var responses:Dictionary = event.responses
-		var specializations:Dictionary = scp_details.on_contain.specialization
+		var event:Dictionary = scp_details.event[EVT.TYPE.SCP_ON_CONTAINMENT]
 		var selected_researcher:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
 		
+		# build out story
 		var story_text:Array = []
-		for line in scp_details.on_contain.text:
+		for line in event.story.call(selected_researcher, scp_details):
 			story_text.push_back(line)
-
-		# IF NO RESEARCHERS ASSIGNED, PICK THIS CONSEQUENCE	
-		if researchers.size() == 0:
-			selected_consequence = EVT.CONSEQUNCE.UNSUPERVISED
-		else:
-			# ELSE, check for a trait, grab it and add it to the story, then prime set the consequence
-			if selected_researcher.specialization.ref in specializations:
-				selected_consequence = specializations[selected_researcher.specialization.ref].consequence_result
-				for line in specializations[selected_researcher.specialization.ref].text:
-					story_text.push_back(line)
-					
-		# add consequnce to to story text
-		var consequence_data:Dictionary = event.consequence[selected_consequence]			
-		for line in consequence_data.text:
-			story_text.push_back(line)
-
-		# then build responses
-		var options:Array = []
-		var allowed_responses:Array = [EVT.RESPONSE.ALWAYS] + consequence_data.allowed_responses
-		for ref in allowed_responses:
-			var response:Dictionary = responses[ref]
-			var success_rate:int = 100
-			var title:String = response.title
-			
-			match ref:
-				EVT.RESPONSE.ALWAYS:
-					success_rate = 100
-				EVT.RESPONSE.MORALE:
-					success_rate = 25 + (GAME_UTIL.get_metric_val(current_location, RESOURCE.METRICS.MORALE) * 20)
-					title = str('[MORALE]: ', response.title)
-				EVT.RESPONSE.SAFETY:
-					success_rate = 25 + (GAME_UTIL.get_metric_val(current_location, RESOURCE.METRICS.SAFETY) * 20)
-					title = str('[SAFETY]: ', response.title)
-				EVT.RESPONSE.READINESS:
-					success_rate = 25 + (GAME_UTIL.get_metric_val(current_location, RESOURCE.METRICS.READINESS) * 20)
-					title = str('[READINESS]: ', response.title)
-			
-			options.push_back({
-				"show": true,
-				"title": title,
-				"val": ref,
-				"success_rate": success_rate,
-				"onSelected": onSelected
-			})
 		
+		# build out choices
+		var choices_data:Dictionary = event.choices.call(selected_researcher, scp_details)
+		var options:Array = []
+		for choice in choices_data.standard:
+			if "success_rate" not in choice:
+				choice.success_rate = 10 + 20
+			choice.onSelected = onSelected
+			options.append(choice)
+					
 			
 		return [
 			# ---------
@@ -395,18 +90,25 @@ var SCP_ON_CONTAIN:Dictionary = {
 			# ---------
 			func() -> Dictionary:
 				var random_int:int = U.generate_rand(0, 100)
-				var is_success:bool = (option_selected.val.option.success_rate) > random_int			
-				var response_selected:Dictionary = responses[option_selected.val.option.val]
-				var res_story:Array = response_selected.story.call(is_success)
-				consequences[selected_consequence].effect.call(is_success)
+				var is_success:bool = (option_selected.val.option.success_rate) > random_int
+				
+				# run the effect
+				if "effect" in option_selected.val.option:
+					option_selected.val.option.effect.call(selected_researcher, scp_details, is_success)
 				
 				return {
-					"text": consequences[selected_consequence].text + res_story
+					"text":option_selected.val.option.story.call(selected_researcher, scp_details, is_success)
 				}	
+
+					
 		],
 }
 # ------------------------------------------------------------------------
 
+
+var SCP_BREACH_EVENT:Dictionary = {
+	
+}
 
 # ------------------------------------------------------------------------
 var HIRE_RESEARCHER:Dictionary = {
@@ -856,8 +558,8 @@ var reference_data:Dictionary = {
 	# ------------------
 	
 	# ------------------ 
-	EVT.TYPE.SCP_ON_CONTAIN: SCP_ON_CONTAIN,
-	#EVT.TYPE.SCP_BREACH: SCP_BREACH,
+	EVT.TYPE.SCP_ON_CONTAINMENT: SCP_ON_CONTAINMENT,
+	EVT.TYPE.SCP_BREACH_EVENT: SCP_BREACH_EVENT,
 	
 	# ------------------
 	EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,

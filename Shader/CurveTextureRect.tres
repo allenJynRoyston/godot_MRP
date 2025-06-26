@@ -24,4 +24,4 @@ void fragment() {
 
 [resource]
 shader = SubResource("Shader_8b8w4")
-shader_parameter/corner_scale = 0.255
+shader_parameter/corner_scale = 0.076

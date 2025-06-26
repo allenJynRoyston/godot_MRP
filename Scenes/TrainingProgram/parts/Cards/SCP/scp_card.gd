@@ -9,13 +9,16 @@ extends MouseInteractions
 @onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
 #@onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerItemClass
-@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerDescription
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
+@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerVibes
+@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerCurrency
+
 # back
-#@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerVibes
-@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
-@onready var CardDrawerBreach:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerBreach
-@onready var CardDrawerNeutralize:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerNeutralize
+@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
+
+#@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
+#@onready var CardDrawerBreach:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerBreach
+#@onready var CardDrawerNeutralize:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerNeutralize
 
 #@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPairsWith
 #@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
@@ -135,7 +138,7 @@ func on_ref_update() -> void:
 	if !is_node_ready():return	
 	if ref not in SCP_UTIL.reference_data:
 		CardDrawerImage.use_static = true
-		for node in [CardDrawerLevel, CardDrawerDesignation, CardDrawerDescription, CardDrawerEffect, CardDrawerAssigned, CardDrawerName]:
+		for node in [CardDrawerLevel, CardDrawerDesignation, CardDrawerDescription]:
 			node.content = "-"
 		return
 		
@@ -148,20 +151,24 @@ func on_ref_update() -> void:
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0	
 	var research_level:int = 0 if ref not in scp_data else scp_data[ref].level
-
 	# -----------
 	CardDrawerDesignation.content = scp_details.name
 	CardDrawerName.content = scp_details.nickname
-	CardDrawerDescription.content = scp_details.description
+	CardDrawerDescription.content = scp_details.abstract.call(scp_details)
 	CardDrawerImage.img_src = scp_details.img_src
 	CardDrawerImage.use_static = false	
 	CardDrawerLevel.content = str(research_level)
 	
-	#CardDrawerVibes.is_researched = true
-	#CardDrawerVibes.metrics = scp_details.metrics
-	CardDrawerEffect.content = scp_details.effects.description if research_level > 0 else "UNKNOWN\r(EVALUATION REQUIRED)"
-	CardDrawerBreach.content =  scp_details.breach.description if research_level > 1 else "UNKNOWN\r(EVALUATION REQUIRED)"
-	CardDrawerNeutralize.content =  scp_details.effects.description if research_level > 2 else "UNKNOWN\r(EVALUATION REQUIRED)"
+	CardDrawerVibes.preview_mode = false	
+	CardDrawerVibes.use_location = use_location
+	CardDrawerVibes.metrics = scp_details.metrics
+
+	CardDrawerCurrency.preview_mode = false
+	CardDrawerCurrency.room_details = scp_details	
+	CardDrawerCurrency.use_location = use_location
+	CardDrawerCurrency.list = currency_list	
+	#CardDrawerCurrency.morale_val = morale_val
+	#CardDrawerCurrency.list = currency_list
 	# -----------
 	
 # ------------------------------------------------------------------------------

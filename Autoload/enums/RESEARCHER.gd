@@ -7,12 +7,12 @@ extends Node
 
 enum TRAITS {
 	# -----------
-	NORMAL, 				
+	NORMAL,
 	ACROPHOBIA,			# Fear of heights
 	THALASSOPHOBIA,		# Fear of deep bodies of water
 	NYCTOPHOBIA,		# Fear of the dark
 	ATYCHIPHOBIA,		# Fear of failure
-	ATHAZAGORAPHOBIA	# Fear of being forgotten or ignored
+	ATHAZAGORAPHOBIA, # Fear of being forgotten or ignored
 	# -----------
 }
 
@@ -21,6 +21,7 @@ enum MOODS {
 	NORMAL,
 	WEIRD,
 	DEPRESSED, 
+	PARA
 	#WEIRD,
 	#UNEASY,
 	#ANXIOUS,

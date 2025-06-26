@@ -95,6 +95,7 @@ is_negative = true
 icon_size = Vector2(50, 50)
 
 [node name="ScpEffectCard" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_nhwoo")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 

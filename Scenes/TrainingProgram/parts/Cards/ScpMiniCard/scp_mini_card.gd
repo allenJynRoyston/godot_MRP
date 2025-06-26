@@ -124,27 +124,27 @@ func update_content() -> void:
 	
 	hint_title = "HINT"
 	hint_icon = SVGS.TYPE.CONTAIN
-	hint_description = scp_details.description 	
+	hint_description = "???"
 	
-	if in_containment and check_in_containment:
-		for node in panel_nodes:
-			if node in [InContainment]:
-				node.show() 
-			else:
-				node.hide()
-		hint_icon = SVGS.TYPE.STOP
-		hint_description = str(scp_details.description, " (ALREADY IN CONTAINMENT)")
-		return	
-	
-	if at_max_level and check_max_level:
-		for node in panel_nodes:
-			if node in [MaxLevel]:
-				node.show() 
-			else:
-				node.hide()
-		hint_icon = SVGS.TYPE.STOP
-		hint_description = str(scp_details.description, " (MAX LEVEL)")
-		return
+	#if in_containment and check_in_containment:
+		#for node in panel_nodes:
+			#if node in [InContainment]:
+				#node.show() 
+			#else:
+				#node.hide()
+		#hint_icon = SVGS.TYPE.STOP
+		#hint_description = str(scp_details.abstract.call(scp_details), " (ALREADY IN CONTAINMENT)")
+		#return	
+	#
+	#if at_max_level and check_max_level:
+		#for node in panel_nodes:
+			#if node in [MaxLevel]:
+				#node.show() 
+			#else:
+				#node.hide()
+		#hint_icon = SVGS.TYPE.STOP
+		#hint_description = str(scp_details.abstract.call(scp_details), " (MAX LEVEL)")
+		#return
 
 # --------------------------------------		
 

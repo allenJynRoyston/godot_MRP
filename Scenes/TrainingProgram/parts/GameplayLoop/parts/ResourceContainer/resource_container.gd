@@ -387,7 +387,7 @@ func update_panels() -> void:
 			#CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]
 
 			# update vibes
-			VibeMorale.alt_value = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
+			MoraleTag.val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
 			SafetyTag.val = summary_data.metric_diff[RESOURCE.METRICS.SAFETY]
 			ReadinessTag.val = summary_data.metric_diff[RESOURCE.METRICS.READINESS]
 			#update_vibes(summary_data.metric_diff[RESOURCE.METRICS.MORALE], summary_data.metric_diff[RESOURCE.METRICS.SAFETY], summary_data.metric_diff[RESOURCE.METRICS.READINESS])

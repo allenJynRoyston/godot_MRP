@@ -6,7 +6,8 @@ enum TYPE {
 	# -------------
 	
 	# ------------
-	SCP_ON_CONTAIN,
+	SCP_ON_CONTAINMENT,
+	SCP_BREACH_EVENT,
 	# ------------
 	
 	# ------------

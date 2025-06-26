@@ -1,35 +1,31 @@
 extends GameContainer
 
 @onready var PanelRoot:PanelContainer = $"."
+@onready var BtnControls:Control = $BtnControls
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-@onready var RightControlPanel:PanelContainer = $RightControl/PanelContainer
-@onready var RightControlMargin:MarginContainer = $RightControl/PanelContainer/MarginContainer
-
-#@onready var LeftControlPanel:PanelContainer = $LeftControl/PanelContainer
-@onready var ContentControlPanel:MarginContainer	 = $ContentControl/MarginContainer
 @onready var TransitionScreen:Control = $TransistionScreen
 
-@onready var LeftHeaderLabel:Label = $LeftControl/PanelContainer/MarginContainer/VBoxContainer/OutputTexture/MarginContainer/HeaderLabel
-@onready var LeftTextureRect:TextureRect = $LeftControl/PanelContainer/MarginContainer/VBoxContainer/OutputTexture/SubViewport/TextureRect
-@onready var LeftFooterLabel:Label = $LeftControl/PanelContainer/MarginContainer/VBoxContainer/FooterLabel
+@onready var ImagePanel:PanelContainer = $ImageControl/PanelContainer
+@onready var ImageMargin:MarginContainer = $ImageControl/PanelContainer/MarginContainer
+@onready var ImageOutput:TextureRect = $ImageControl/PanelContainer/MarginContainer/OutputTexture
 
-@onready var RightHeaderLabel:Label = $RightControl/PanelContainer/MarginContainer/VBoxContainer/OutputTexture/MarginContainer/HeaderLabel
-@onready var RightTextureRect:TextureRect = $RightControl/PanelContainer/MarginContainer/VBoxContainer/OutputTexture/SubViewport/TextureRect
-@onready var RightFooterLabel:Label = $RightControl/PanelContainer/MarginContainer/VBoxContainer/FooterLabel
+@onready var ContentPanel:PanelContainer	 = $ContentControl/PanelContainer
+@onready var ContentMargin:MarginContainer = $ContentControl/PanelContainer/MarginContainer
 
-@onready var DialogBtn:Control = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
-@onready var ContentVBox:VBoxContainer = $ContentControl/MarginContainer/VBoxContainer
-@onready var ContentHeaderLabel:Label = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header/ContentHeaderLabel
-@onready var ContentProfileTextureRect:TextureRect = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport/ContentProfileTextureRect
-@onready var BodyContainer:Control = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
-@onready var BodyLabelBtm:Label = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
-@onready var BodyLabelTop:Label = $ContentControl/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
+@onready var DialogBtn:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
+@onready var ContentVBox:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer
+@onready var ContentHeaderLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header/ContentHeaderLabel
+@onready var ContentProfileTextureRect:TextureRect = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport/ContentProfileTextureRect
+@onready var BodyContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
+@onready var BodyLabelBtm:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
+@onready var BodyLabelTop:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
 
-@onready var OptionsContainer:Control = $ContentControl/MarginContainer/VBoxContainer/OptionsContainer
-@onready var OptionsListContainer:VBoxContainer = $ContentControl/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionListContainer
-@onready var NoteContainer:VBoxContainer = $ContentControl/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/NoteContainer
+@onready var OptionsContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
+@onready var OptionsListContainer:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionListContainer
+@onready var NoteContainer:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/NoteContainer
 
-@onready var BtnControls:Control = $BtnControls
+@onready var ImageBG:TextureRect = $ImageControl/PanelContainer/MarginContainer/OutputTexture/SubViewport/TextureRect
+
 
 enum MODE {HIDE, ACTIVE}
 enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
@@ -89,23 +85,24 @@ func _ready() -> void:
 
 # --------------------------------------------------------------------------------------------------
 func activate() -> void:
+	await U.tick()
+	
 	# center elements
-	control_pos[ContentControlPanel] = {
+	control_pos[ContentPanel] = {
 		"show": 0, 
-		"hide": -ContentControlPanel.size.y
+		"hide": -ContentMargin.size.y
 	}
 
-
-	control_pos[RightControlPanel] = {
-		"show": 0, 
-		"hide": RightControlMargin.size.y
-	}	
-
-
-	ContentControlPanel.position.y = control_pos[ContentControlPanel].hide	
-	RightControlPanel.position.y = control_pos[RightControlPanel].hide
 	
-	await U.tick()
+	#control_pos[ImagePanel] = {
+		#"show": 0, 
+		#"hide": -ImageMargin.size.x
+	#}	
+
+
+	ContentPanel.position.y = control_pos[ContentPanel].hide	
+	#ImagePanel.position.x = control_pos[ImagePanel].hide
+	
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -118,7 +115,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		# ---------
 		MODE.ACTIVE:
 			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration)				
-			U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].show, duration)			
+			U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show, duration)			
 			await BtnControls.reveal(true)
 			BtnControls.disable_back_btn = true
 			BtnControls.onBack = func() -> void:pass
@@ -129,6 +126,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 func reset() -> void:
 	if !is_node_ready():return
 	update_next_btn(false)
+	reveal_outputtexture(false, 0.0)	
 	
 	#current_controls = CONTROLS.FREEZE
 	current_event_instruction = {} 
@@ -167,15 +165,33 @@ func start(new_event_data:Array) -> void:
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
 	BtnControls.reveal(false)
-	U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].hide)
+	#U.tween_node_property(ImagePanel, "position:x", control_pos[ImagePanel].hide)
 	#U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide)
-	await U.tween_node_property(ContentControlPanel, "position:y", control_pos[ContentControlPanel].hide)
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
 	
 	TransitionScreen.end()	
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
 	
 	user_response.emit(event_output)
 	queue_free()
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func reveal_outputtexture(state:bool, duration:float) -> void:
+	var material_duplication:Material = ImageOutput.material.duplicate()
+	ImageOutput.material = material_duplication
+	
+	var start_val:float = 0 if state else 1.0
+	var end_val:float = 0.95 if state else 0
+	
+	if duration == 0:
+		ImageOutput.material.set_shader_parameter("opacity", end_val)
+		await U.tick()
+	else:
+		ImageOutput.material.set_shader_parameter("opacity", start_val)
+		await U.tween_range(start_val, end_val, duration, func(val:float) -> void:
+			ImageOutput.material.set_shader_parameter("opacity", val)
+		).finished
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -268,10 +284,12 @@ func on_current_instruction_update() -> void:
 	
 	# -----------------------------------
 	if "img_src" in current_instruction:		
-		RightTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
-		RightHeaderLabel.text = "VIDEO FEED"
-		RightFooterLabel.text = "" # not currently used
-		await U.tween_node_property(RightControlPanel, "position:y", control_pos[RightControlPanel].show)
+		ImageBG.texture = CACHE.fetch_image(current_instruction.img_src)
+		reveal_outputtexture(true, 10.0)
+		await U.set_timeout(0.3)
+		#RightHeaderLabel.text = "VIDEO FEED"
+		#RightFooterLabel.text = "" # not currently used
+		#await U.tween_node_property(ImagePanel, "position:x", control_pos[ImagePanel].show)
 	else:
 		await U.set_timeout(0.3)
 	# -----------------------------------

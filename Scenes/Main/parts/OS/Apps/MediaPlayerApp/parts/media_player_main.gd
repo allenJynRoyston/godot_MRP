@@ -74,7 +74,6 @@ func unpause() -> void:
 # ------------------------------------------------------------------------------
 func on_music_data_update(new_val:Dictionary = music_data) -> void:
 	music_data = new_val
-	print(music_data)
 	if !is_node_ready() or music_data.is_empty():return
 	for index in TrackList.get_child_count():
 		var n:Control = TrackList.get_child(index)

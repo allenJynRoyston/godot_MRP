@@ -96,8 +96,8 @@ func update_room_label() -> void:
 		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 	
-	var TextNode:Control = RoomDetails.get_child(1)
-	var LvlNode:Control = RoomDetails.get_child(0)
+	var TextNode:Control = RoomDetails.get_child(0)
+	var LvlNode:Control = RoomDetails.get_child(1)
 
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:
 		node.abl_lvl = abl_lvl
@@ -108,8 +108,8 @@ func update_room_label() -> void:
 var previous_room_ref:int
 func on_room_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
-	var LvlNode:Control = RoomDetails.get_child(0)
-	var TextNode:Control = RoomDetails.get_child(1)
+	var TextNode:Control = RoomDetails.get_child(0)	
+	var LvlNode:Control = RoomDetails.get_child(1)
 	
 	if room_ref == -1:
 		RoomDetails.modulate = Color(1, 1, 1, 0.5)
