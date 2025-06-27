@@ -7,15 +7,14 @@ extends GameContainer
 
 @onready var ImagePanel:PanelContainer = $ImageControl/PanelContainer
 @onready var ImageMargin:MarginContainer = $ImageControl/PanelContainer/MarginContainer
-@onready var ImageOutput:TextureRect = $ImageControl/PanelContainer/MarginContainer/OutputTexture
-
+@onready var ImageOutputTextureRect:TextureRect = $ImageControl/PanelContainer/MarginContainer/OutputTexture
+@onready var ImageTextureRect:TextureRect = $ImageControl/PanelContainer/MarginContainer/SubViewport/TextureRect
+@onready var ImageTitle:Label = $ImageControl/PanelContainer/MarginContainer2/VBoxContainer/Title
+@onready var ImageSubTitle:Label = $ImageControl/PanelContainer/MarginContainer2/VBoxContainer/Subtitle
 @onready var ContentPanel:PanelContainer	 = $ContentControl/PanelContainer
 @onready var ContentMargin:MarginContainer = $ContentControl/PanelContainer/MarginContainer
 
 @onready var DialogBtn:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
-@onready var ContentVBox:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer
-@onready var ContentHeaderLabel:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header/ContentHeaderLabel
-@onready var ContentProfileTextureRect:TextureRect = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport/ContentProfileTextureRect
 @onready var BodyContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
 @onready var BodyLabelBtm:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
 @onready var BodyLabelTop:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
@@ -26,20 +25,16 @@ extends GameContainer
 
 @onready var ImageBG:TextureRect = $ImageControl/PanelContainer/MarginContainer/OutputTexture/SubViewport/TextureRect
 
-
 enum MODE {HIDE, ACTIVE}
 enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
 
 const OptionListItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/OptionListItem.tscn")
 const OptionNoteItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/OptionNoteItem.tscn")
 
+var SelectedNode:Control
 var event_data:Array = [] 	
 var event_instructions:Array = []
-var option_selected_index:int = 0 : 
-	set(val):
-		option_selected_index = val
-		on_option_selected_index()
-
+var option_selected_index:int = 0
 
 var event_instruction_index:int = 0
 var current_event_instruction:Dictionary = {} : 
@@ -60,10 +55,10 @@ var current_text:String = "" :
 		current_text = val
 		on_current_text_update()
 
-var current_mode:MODE = MODE.HIDE : 
-	set(val):
-		current_mode = val
-		on_current_mode_update()
+#var current_mode:MODE = MODE.HIDE : 
+	#set(val):
+		#current_mode = val
+		#on_current_mode_update()
 		
 #var current_controls:CONTROLS = CONTROLS.FREEZE 
 var event_output:Dictionary = {}
@@ -81,6 +76,16 @@ func _ready() -> void:
 		
 	reset()
 	reset_content_nodes()
+	
+	# setup btn controls
+	BtnControls.onUpdate = func(_node:Control) -> void:
+		for index in OptionsListContainer.get_child_count():
+			var node:Control = OptionsListContainer.get_child(index)
+			option_selected_index = index
+			node.is_selected = node == _node	
+			if node == _node:
+				SelectedNode = node
+		
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
@@ -90,37 +95,15 @@ func activate() -> void:
 	# center elements
 	control_pos[ContentPanel] = {
 		"show": 0, 
+		"present": 100,
 		"hide": -ContentMargin.size.y
+		
 	}
 
-	
-	#control_pos[ImagePanel] = {
-		#"show": 0, 
-		#"hide": -ImageMargin.size.x
-	#}	
-
-
 	ContentPanel.position.y = control_pos[ContentPanel].hide	
-	#ImagePanel.position.x = control_pos[ImagePanel].hide
-	
+
 # --------------------------------------------------------------------------------------------------	
 
-
-# --------------------------------------------------------------------------------------------------		
-func on_current_mode_update(skip_animation:bool = false) -> void:
-	if !is_node_ready() or control_pos.is_empty():return	
-	var duration:float = 0 if skip_animation else 0.3
-	
-	match current_mode:
-		# ---------
-		MODE.ACTIVE:
-			U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1), duration)				
-			U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show, duration)			
-			await BtnControls.reveal(true)
-			BtnControls.disable_back_btn = true
-			BtnControls.onBack = func() -> void:pass
-			BtnControls.onAction = func() -> void:pass
-# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func reset() -> void:
@@ -128,6 +111,9 @@ func reset() -> void:
 	update_next_btn(false)
 	reveal_outputtexture(false, 0.0)	
 	
+	for node in [ImageTitle, ImageSubTitle]:
+		node.text = ""	
+
 	#current_controls = CONTROLS.FREEZE
 	current_event_instruction = {} 
 	current_instruction = {} 
@@ -152,10 +138,17 @@ func reset_content_nodes() -> void:
 # --------------------------------------------------------------------------------------------------		
 func start(new_event_data:Array) -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))				
+	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1))	
+	await BtnControls.reveal(true)
+	
+	BtnControls.disable_back_btn = true
+	BtnControls.onBack = func() -> void:pass
+	BtnControls.onAction = func() -> void:pass
+
 	await TransitionScreen.start()	
 	
 	event_data = new_event_data
-	current_mode = MODE.ACTIVE
+
 	if event_data.size() > 0:
 		next_event()
 	else:
@@ -165,11 +158,7 @@ func start(new_event_data:Array) -> void:
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
 	BtnControls.reveal(false)
-	#U.tween_node_property(ImagePanel, "position:x", control_pos[ImagePanel].hide)
-	#U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].hide)
-	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
-	
-	TransitionScreen.end()	
+	TransitionScreen.end()
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
 	
 	user_response.emit(event_output)
@@ -178,19 +167,19 @@ func end() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_outputtexture(state:bool, duration:float) -> void:
-	var material_duplication:Material = ImageOutput.material.duplicate()
-	ImageOutput.material = material_duplication
+	var material_duplication:Material = ImageOutputTextureRect.material.duplicate()
+	ImageOutputTextureRect.material = material_duplication
 	
 	var start_val:float = 0 if state else 1.0
 	var end_val:float = 0.95 if state else 0
 	
 	if duration == 0:
-		ImageOutput.material.set_shader_parameter("opacity", end_val)
+		ImageOutputTextureRect.material.set_shader_parameter("opacity", end_val)
 		await U.tick()
 	else:
-		ImageOutput.material.set_shader_parameter("opacity", start_val)
+		ImageOutputTextureRect.material.set_shader_parameter("opacity", start_val)
 		await U.tween_range(start_val, end_val, duration, func(val:float) -> void:
-			ImageOutput.material.set_shader_parameter("opacity", val)
+			ImageOutputTextureRect.material.set_shader_parameter("opacity", val)
 		).finished
 # --------------------------------------------------------------------------------------------------		
 
@@ -278,28 +267,15 @@ func on_current_instruction_update() -> void:
 	BtnControls.onAction = func() -> void:pass			
 	
 	# -----------------------------------
-	if "header" in current_instruction:
-		ContentHeaderLabel.text = "%s" % [current_instruction.header]
-	# -----------------------------------
-	
-	# -----------------------------------
+	if "title" in current_instruction:
+		ImageTitle.text = "%s" % [current_instruction.title]
+		
+	if "subtitle" in current_instruction:
+		ImageSubTitle.text = "%s" % [current_instruction.subtitle]		
+
 	if "img_src" in current_instruction:		
-		ImageBG.texture = CACHE.fetch_image(current_instruction.img_src)
-		reveal_outputtexture(true, 10.0)
-		await U.set_timeout(0.3)
-		#RightHeaderLabel.text = "VIDEO FEED"
-		#RightFooterLabel.text = "" # not currently used
-		#await U.tween_node_property(ImagePanel, "position:x", control_pos[ImagePanel].show)
-	else:
-		await U.set_timeout(0.3)
-	# -----------------------------------
-	
-	# -----------------------------------
-	if "portrait" in current_instruction:
-		var p_details:Dictionary = current_instruction.portrait
-		ContentProfileTextureRect.texture = CACHE.fetch_image(p_details.img_src if "img_src" in p_details else "")
-		ContentHeaderLabel.text = p_details.title if "title" in p_details else "[REDACTED]"
-		#await U.tween_node_property(LeftControlPanel, "position:y", control_pos[LeftControlPanel].show)
+		ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
+		reveal_outputtexture(true, 2.0)
 	# -----------------------------------
 
 	# -----------------------------------
@@ -309,6 +285,8 @@ func on_current_instruction_update() -> void:
 
 	# -----------------------------------
 	if "text" in current_instruction:
+		U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].present, 0.7)
+		
 		if current_instruction.text.size() > 0:
 			BtnControls.onAction = func() -> void:
 				next_text(true)
@@ -323,6 +301,9 @@ func on_current_instruction_update() -> void:
 
 	# -----------------------------------
 	if "options" in current_instruction:
+		await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show, 0.7)
+		await U.set_timeout(0.3)
+		
 		update_next_btn(false)
 		NoteContainer.hide()
 		
@@ -338,58 +319,42 @@ func on_current_instruction_update() -> void:
 		for index in options.size():
 			var option:Dictionary = options[index]
 			var new_node:Control = OptionListItem.instantiate()
-			var include:bool = option.include if "include" in option else true
-			var completed:bool = option.completed if "completed" in option else false
-			var locked:bool = option.locked if "locked" in option else false
-			var show_description:bool = true
-			
-			if include:
-				new_node.data = option
-				new_node.index = index 
-				new_node.is_locked = locked
-				new_node.show_description = show_description
-				new_node.is_selected = option_selected_index == index
-				new_node.onFocus = func(node:Control) -> void:
-					option_selected_index = index
-				new_node.onClick = func() -> void:
-					option_selected_index = index
-					on_option_select()
-					
-				OptionsListContainer.add_child(new_node)
+			var is_unavailable:bool = option.is_unavailable if "is_unavailable" in option else false
+			var render_if:Dictionary = option.render_if if "render_if" in option else {}
+
+			new_node.data = option
+			new_node.index = index 
+			new_node.render_if = render_if
+			new_node.is_hoverable = false
+			new_node.onClick = func() -> void:
+				if !new_node.is_available:return
+				on_option_select()
+				
+			OptionsListContainer.add_child(new_node)
 		
 		await U.tick()
-		var expand_current_val:float = ContentVBox.get('theme_override_constants/separation')
-		U.tween_node_property(OptionsContainer, "modulate", Color(1, 1, 1, 1))
-		await U.tween_range(expand_current_val, 10.0, 0.7, func(val:float) -> void:
-			ContentVBox.set("theme_override_constants/separation", val)
-		).finished 		
-
-		# wait for input
-		#current_controls = CONTROLS.OPTIONS
 		
+		# fade in options
+		for index in OptionsListContainer.get_child_count():
+			var option:Control = OptionsListContainer.get_child(index)
+			option.start()
+		
+		# add BtnControl funcs
 		BtnControls.itemlist = OptionsListContainer.get_children()
 		BtnControls.directional_pref = "UD"
 		
+		await U.tick()
+		BtnControls.item_index = 0
+		
 		update_next_btn(true)
+		return
 		
 	# -----------------------------------
-	else:
-		var expand_current_val:float = ContentVBox.get('theme_override_constants/separation')
-		if expand_current_val != -200:
-			U.tween_node_property(OptionsContainer, "modulate", Color(1, 1, 1, 0))
-			await U.tween_range(expand_current_val, -200, 0.7, func(val:float) -> void:
-				ContentVBox.set("theme_override_constants/separation", val)
-			).finished 
-			
-			for child in OptionsListContainer.get_children():
-				child.free()
-		next_instruction(true)
+	next_instruction(true)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_option_select() -> void:
-	if option_selected_index == -1 or option_selected_index > OptionsListContainer.get_child_count() or OptionsListContainer.get_child(option_selected_index).is_locked:return
-	
+func on_option_select() -> void:	
 	update_next_btn(false)
 	
 	var option:Dictionary = current_instruction.options[option_selected_index]
@@ -397,40 +362,37 @@ func on_option_select() -> void:
 	
 	for index in OptionsListContainer.get_child_count():
 		var node:Control = OptionsListContainer.get_child(index)
-		node.is_enabled = false
-		if index != option_selected_index:
-			node.fade_out() 
+		node.fade_out(0 if node != SelectedNode else 1.0) 
+	
+	await U.set_timeout(1.5)
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].present, 0.7)
 
 	if "onSelected" in option:
 		# if selected val property is available, send it
 		option.onSelected.call({"index": option_selected_index, "option": option})
 		
-	await U.set_timeout(0.3)
-	
 	# goto next instruction
 	next_instruction(true)
 # --------------------------------------------------------------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------		
-func on_option_selected_index() -> void:
-	if !is_node_ready():return
-	for child in OptionsListContainer.get_children():
-		child.is_selected = option_selected_index == child.index
-	
-	var options:Array = current_instruction.options
-	var option:Dictionary = options[option_selected_index]
-
-	for child in NoteContainer.get_children():
-		child.queue_free()	
-	NoteContainer.hide()
-	
-	if "notes" in option:
-		NoteContainer.show()
-		for data in option.notes:
-			var new_node:Control = OptionNoteItem.instantiate()
-			new_node.data = data
-			NoteContainer.add_child(new_node)
-# --------------------------------------------------------------------------------------------------		
+## --------------------------------------------------------------------------------------------------		
+#func on_option_selected_index() -> void:
+	#if !is_node_ready():return
+	#
+	#var options:Array = current_instruction.options
+	#var option:Dictionary = options[option_selected_index]
+#
+	#for child in NoteContainer.get_children():
+		#child.queue_free()	
+	#NoteContainer.hide()
+	#
+	#if "notes" in option:
+		#NoteContainer.show()
+		#for data in option.notes:
+			#var new_node:Control = OptionNoteItem.instantiate()
+			#new_node.data = data
+			#NoteContainer.add_child(new_node)
+## --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	
 func tween_reveal(node:Control, property:String, val:Color, duration:float = 0.5) -> void:

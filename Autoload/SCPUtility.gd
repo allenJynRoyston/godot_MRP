@@ -107,20 +107,6 @@ var SCP_TEMPLATE:Dictionary = {
 									pass,
 							}
 					],
-					"trait": {
-						RESEARCHER.TRAITS.THALASSOPHOBIA: {
-							"title": "Option X",
-							"success_from": RESOURCE.METRICS.MORALE,
-							"story": func(is_success:bool) -> Array: 
-								return [
-									"Option X success."
-								] if is_success else [
-									"Option X fails."
-								],
-							"effect": func(is_success:bool) -> void:
-								pass,
-						}
-					}
 			},
 		}
 	}

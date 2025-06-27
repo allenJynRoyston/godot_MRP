@@ -178,6 +178,7 @@ var initial_values:Dictionary = {
 			for ring_index in [0, 1, 2, 3]:
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
+					"has_containment_breach": false,
 					#"researchers_per_room": DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM),
 					#"hotkeys": {},
 					"buffs": [],
@@ -441,10 +442,10 @@ func start_new_game() -> void:
 	SetupContainer.subtitle = "Synchronizing mission parameters..."
 	SetupContainer.progressbar_val = 0.5
 	await U.set_timeout(duration)	
-	# 3.) load any debug options
-	var starting_number_of_researchers:int = DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT)
-	if DEBUG.get_val(DEBUG.GAMEPLAY_USE_FRESH_BASE) and starting_number_of_researchers > 0:
-			SUBSCRIBE.hired_lead_researchers_arr = RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers)
+	# 3.) generate researchers (if new game)
+	if is_new_game:
+		var starting_number_of_researchers:int = DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT) if DEBUG.get_val(DEBUG.GAMEPLAY_USE_FRESH_BASE) else 5
+		SUBSCRIBE.hired_lead_researchers_arr = RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers)
 
 	# -----------------------
 	SetupContainer.subtitle = "Finalizing deployment protocols..."
@@ -845,8 +846,6 @@ func on_current_phase_update() -> void:
 			
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 
-
-			
 			await U.set_timeout(0.5)
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
@@ -877,11 +876,42 @@ func on_current_phase_update() -> void:
 		PHASE.SCHEDULED_EVENTS:
 			PhaseAnnouncement.start("EVENTS")	
 			await U.set_timeout(0.5)
+			
+			# CHECK FOR SCP BREACH EVENTS
+			var refs:Array = []
+			for key in scp_data:
+				var data:Dictionary = scp_data[key]
+				if progress_data.day >= data.next_breach_at:
+					refs.push_back(key)
+			
+			# start breach splash
+			if refs.size() > 0:
+				# open music player, no music selected
+				SUBSCRIBE.music_data = {
+					"selected": 3,
+				}
+				
+				# get the splash
+				var BreachNode:Control = await GAME_UTIL.start_containment_breach()
+				
+				# hide phase 
+				PhaseAnnouncement.end()
+				
+				# then do them...
+				for index in refs.size():
+					await GAME_UTIL.trigger_breach_event(refs[index], BreachNode)
+					if index == refs.size() - 1:
+						await BreachNode.end()
+						BreachNode.queue_free()
 						
-			# EVENT FIRES			
-			var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day)	
+						# open music player, no music selected
+						SUBSCRIBE.music_data = {
+							"selected": 1,
+						}	
+			
+			# CHECK FOR TIMELINE EVENTS			
+			#var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day)	
 			#if timeline_filter.size() > 0:
-				# plays any scp events
 				#for item in timeline_filter:
 					#if "event" in item and !item.event.is_empty():
 						#await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
@@ -1104,14 +1134,12 @@ func update_room_config(force_setup:bool = false) -> void:
 	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
 	# check for buffs/debuffs
 	check_for_buffs_and_debuffs(new_room_config)		
-	
 	# check for passives
 	room_passive_check_for_effect(new_room_config)	
 	
 	# add metrics/currencies
 	room_calculate(new_room_config)
 	scp_calculate(new_room_config)
-
 
 	
 	# trigger any gameplay conditional effects
@@ -1455,7 +1483,6 @@ func room_calculate(new_room_config:Dictionary) -> void:
 			"details": ROOM_UTIL.return_data(item.ref), 
 		}				
 
-
 func scp_calculate(new_room_config:Dictionary) -> void:
 	for ref in scp_data:
 		var sdata:Dictionary = scp_data[ref]
@@ -1483,10 +1510,9 @@ func scp_calculate(new_room_config:Dictionary) -> void:
 					ring_config_data.metrics[key] += amount
 					room_config_data.metrics[key] += amount
 					
-			room_config.scp_data = {
+			room_config_data.scp_data = {
 				"ref": ref,
 				"details": SCP_UTIL.return_data(ref), 
 			}			
 				
-
 # -----------------------------------

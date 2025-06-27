@@ -36,7 +36,7 @@ void fragment() {
 [resource]
 shader = SubResource("Shader_ei827")
 shader_parameter/amplitude = 13.677
-shader_parameter/frequency = 0.5
-shader_parameter/speed = 0.5
+shader_parameter/frequency = 0.498
+shader_parameter/speed = 0.797
 shader_parameter/opacity = 1.0
-shader_parameter/step_count = 7
+shader_parameter/step_count = 5

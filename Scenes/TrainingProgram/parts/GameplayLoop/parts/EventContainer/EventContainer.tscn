@@ -1,14 +1,13 @@
-[gd_scene load_steps=25 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=22 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" uid="uid://d14ehnxlj0jud" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_h7wp5"]
 [ext_resource type="Material" uid="uid://bvao31du74g1" path="res://Shader/HorizontalInterupt/HorizontalInterupt.tres" id="3_fi0y4"]
 [ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="3_v6l8k"]
-[ext_resource type="Texture2D" uid="uid://ud08mpmrfob" path="res://Media/scps/typewriter.png" id="4_1e555"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="4_6n6tl"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_1e555"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_amr3s"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="6_1e555"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_fgcdw"]
-[ext_resource type="Texture2D" uid="uid://drb5pvhu3wopb" path="res://Media/images/example_doctor.jpg" id="7_3dcps"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="9_h7wp5"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_h7wp5"]
@@ -18,19 +17,8 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rgg1a"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_h8mvj"]
-viewport_path = NodePath("ImageControl/PanelContainer/MarginContainer/OutputTexture/SubViewport")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sqmdq"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="ViewportTexture" id="ViewportTexture_h7wp5"]
+viewport_path = NodePath("ImageControl/PanelContainer/MarginContainer/SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1e555"]
 
@@ -40,14 +28,11 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_cbyqt"]
-viewport_path = NodePath("ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ke4bq"]
 
@@ -108,63 +93,44 @@ modulate = Color(1, 1, 1, 0.835294)
 material = ExtResource("3_fi0y4")
 layout_mode = 2
 size_flags_vertical = 3
-texture = SubResource("ViewportTexture_h8mvj")
+texture = SubResource("ViewportTexture_h7wp5")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="SubViewport" type="SubViewport" parent="ImageControl/PanelContainer/MarginContainer/OutputTexture"]
+[node name="SubViewport" type="SubViewport" parent="ImageControl/PanelContainer/MarginContainer"]
 transparent_bg = true
 size = Vector2i(800, 640)
 
-[node name="TextureRect" type="TextureRect" parent="ImageControl/PanelContainer/MarginContainer/OutputTexture/SubViewport"]
+[node name="TextureRect" type="TextureRect" parent="ImageControl/PanelContainer/MarginContainer/SubViewport"]
 material = ExtResource("3_v6l8k")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("4_1e555")
 
-[node name="PanelContainer" type="PanelContainer" parent="ImageControl/PanelContainer/MarginContainer/OutputTexture"]
-visible = false
-clip_contents = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_sqmdq")
-
-[node name="MarginContainer" type="MarginContainer" parent="ImageControl/PanelContainer/MarginContainer/OutputTexture"]
-visible = false
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
+[node name="MarginContainer2" type="MarginContainer" parent="ImageControl/PanelContainer"]
+layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="HeaderLabel" type="Label" parent="ImageControl/PanelContainer/MarginContainer/OutputTexture/MarginContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="VBoxContainer" type="VBoxContainer" parent="ImageControl/PanelContainer/MarginContainer2"]
 layout_mode = 2
-text = "HEADER LABEL"
-label_settings = ExtResource("5_amr3s")
-horizontal_alignment = 2
-vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ImageControl/PanelContainer/MarginContainer"]
+[node name="Title" type="Label" parent="ImageControl/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
+size_flags_vertical = 0
+text = "TITLE"
+label_settings = ExtResource("5_1e555")
 
-[node name="FooterLabel" type="Label" parent="ImageControl/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
+[node name="Subtitle" type="Label" parent="ImageControl/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
-text = "FOOTER LABEL"
-label_settings = ExtResource("4_6n6tl")
-horizontal_alignment = 2
+size_flags_vertical = 0
+text = "SUBTITLE
+"
+label_settings = ExtResource("6_1e555")
 
 [node name="ContentControl" type="Control" parent="."]
 layout_mode = 2
@@ -180,12 +146,13 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_1e555")
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 120
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = -180
+theme_override_constants/separation = 20
 
 [node name="PanelContainer" type="PanelContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
 z_index = 1
@@ -198,53 +165,17 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_fm7wk")
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="Header" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ContentHeaderLabel" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header"]
-visible = false
-layout_mode = 2
-text = "RESEARCHER NAME"
-label_settings = ExtResource("5_amr3s")
-vertical_alignment = 1
-uppercase = true
-
 [node name="HBoxContainer" type="HBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="ProfileOutput" type="TextureRect" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-texture = SubResource("ViewportTexture_cbyqt")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="SubViewport" type="SubViewport" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput"]
-transparent_bg = true
-size = Vector2i(100, 175)
-
-[node name="ContentProfileTextureRect" type="TextureRect" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ProfileOutput/SubViewport"]
-material = ExtResource("3_v6l8k")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("7_3dcps")
-expand_mode = 1
-stretch_mode = 6
 
 [node name="BodyContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -309,7 +240,7 @@ label_settings = ExtResource("5_amr3s")
 vertical_alignment = 1
 
 [node name="OptionsContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(250, 400)
+custom_minimum_size = Vector2(250, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
@@ -332,6 +263,7 @@ size_flags_vertical = 0
 
 [node name="BtnControls" parent="." instance=ExtResource("11_h7wp5")]
 layout_mode = 2
+offset = Vector2(10, 10)
 
 [node name="TransistionScreen" parent="." instance=ExtResource("12_1e555")]
 z_index = 1

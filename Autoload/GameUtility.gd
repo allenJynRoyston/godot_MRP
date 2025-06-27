@@ -12,13 +12,18 @@ const ScpGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/G
 const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/ResearcherGrid.tscn")
 
 const DialogPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn")
+const ContainmentBreachPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentBreachSplash/ContainmentBreachSplash.tscn")
+
 
 const z_index_lvl:int = 10
 const new_scp_entry:Dictionary = {
 	"level": 0,
 	"location": {},
-	"contained_on": null,
-	"breach_count": 0
+	"contained_on_day": null,
+	"check_for_breaches_on": [],
+	"breach_count": 0,
+	"next_breach_at": 0,
+	"event_results": {}
 }
 
 var GameplayNode:Control
@@ -37,91 +42,6 @@ func assign_nodes() -> void:
 	ActionContainer = GameplayNode.ActionContainer
 # ------------------------------------------------------------------------------
 
-## ------------------------------------------------------------------------------
-#func get_ability_level(use_location:Dictionary = current_location) -> int:
-	#var floor:int = use_location.floor
-	#var ring:int = use_location.ring	
-	#var room:int = use_location.room
-	#var wing_abl_lvl:int = 	room_config.floor[floor].ring[ring].abl_lvl
-	#var room_abl_lvl:int = room_config.floor[floor].ring[ring].room[room].abl_lvl
-	#return wing_abl_lvl + room_abl_lvl
-## ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-#func get_room_traits(use_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
-	#var designation:String = U.location_to_designation(use_location)	
-	#var floor:int = use_location.floor
-	#var ring:int = use_location.ring
-	#var room:int = use_location.room
-	#var config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
-	#var room_data:Dictionary = config_data.room_data
-	#var scp_data:Dictionary = config_data.scp_data 
-#
-	#var total_traits_list := []
-	#var synergy_traits := []
-	#var dup_list := []		
-	#var trait_list := []
-	#var synergy_list := []
-#
-	#
-	#var researchers:Array = hired_lead_researchers_arr.filter(func(x):
-		#var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
-		#if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
-			#return true
-		#return false	
-	#).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-		#
-	## records bonus from traits
-	#for researcher in researchers:
-		#total_traits_list.push_back(researcher.traits)
-	#
-	## records bonus from traits
-	##for traits in total_traits_list:
-		##for t in traits:
-			##if t not in dup_list:
-				##trait_list.push_back(RESEARCHER_UTIL.return_trait_details(t, use_location, use_config))
-				#
-	## records bonus from synergy traits
-	##if total_traits_list.size() == 2:
-		##var list:Array = RESEARCHER_UTIL.return_trait_synergy(total_traits_list[0], total_traits_list[1])
-		##for details in list:
-			##var effect:Dictionary = details.get_effect.call({"room_details": room_details, "scp_details": scp_details, "resource_details": resource_details})
-			##var resource_list:Array = []
-			##var metric_list:Array = []
-			### -------------------
-			##if "resource" in effect:
-				##for key in effect.resource:
-					##var amount:int = effect.resource[key]
-					##
-					##if key not in resource_details.synergy_traits:
-						##resource_details.synergy_traits[key] = 0
-					##if key not in resource_details.total:
-						##resource_details.total[key] = 0
-					##resource_details.synergy_traits[key] += amount
-					##resource_details.total[key] += amount
-					##
-					##resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
-			### -------------------
-			##if "metrics" in effect:
-				##for key in effect.metrics:
-					##var amount:int = effect.metrics[key]
-##
-					##if key not in metric_details.traits:
-						##metric_details.traits[key] = 0
-					##if key not in metric_details.total:
-						##metric_details.total[key] = 0
-					##metric_details.traits[key] += amount
-					##metric_details.total[key] += amount					
-					##
-					##metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})		
-						##
-			##synergy_trait_list.push_back({"details": details, "effect": {"resource_list": resource_list, "metric_list": metric_list}} )
-				#
-	#return {
-		#"trait_list": trait_list,
-		#"synergy_list": synergy_list
-	#}
-# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func mark_current_objectives() -> void:
@@ -211,7 +131,23 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 	}
 # ------------------------------------------------------------------------------
 
-
+# ------------------------------------------------------------------------------
+func get_vibes_summary(use_location:Dictionary) -> Dictionary:
+	var floor_config_data:Dictionary = room_config.floor[use_location.floor]
+	var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
+	var floor_level_metrics:Dictionary = floor_config_data.metrics	
+	var ring_level_metrics:Dictionary = ring_config_data.metrics
+	var total_metrics:Dictionary = {}
+	
+	for dict in [floor_level_metrics, ring_level_metrics]:
+		for ref in dict:
+			if ref not in total_metrics:
+				total_metrics[ref] = 0
+			total_metrics[ref] += dict[ref]		
+	
+	return total_metrics
+# ------------------------------------------------------------------------------
+	
 # ------------------------------------------------------------------------------
 func get_floor_summary(use_location:Dictionary = current_location) -> Dictionary:
 	if use_location.is_empty():return {}
@@ -318,28 +254,6 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-#func apply_scp_pair_and_morale_bonus(use_location:Dictionary, amount:int, use_room_config:Dictionary = room_config) -> int:
-	#var floor:int = use_location.floor
-	#var ring:int = use_location.ring
-	#var room:int = use_location.room
-	#
-	#var ring_config:Dictionary = use_room_config.floor[floor].ring[ring]
-	#var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
-	## double the amount if specialization has a match
-	#if room_config.scp_paired_with.specialization:
-		#amount = amount * 2
-		#
-	## double room_config amount if trait has a match	
-	#if room_config.scp_paired_with.trait:
-		#amount = amount * 2
-		#
-	#var morale_val:float = (ring_config.metrics[RESOURCE.METRICS.MORALE] * 20) * 0.01
-	#var bonus_val:int = ceili( amount * morale_val )
-	#
-	#return amount + bonus_val
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 func get_metric_val(use_location:Dictionary, metric_ref:RESOURCE.METRICS) -> int:
 	if use_location.is_empty():
 		use_location = current_location
@@ -437,28 +351,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	}
 # ------------------------------------------------------------------------------	
 
-### ------------------------------------------------------------------------------
-#func get_passive_ability_state(room_ref:int, ability_index:int, use_location:Dictionary = current_location) -> bool:
-	#var designation:String = U.location_to_designation(use_location)
-	#var passives_enabled:Dictionary = base_states.room[designation].passives_enabled
-	#var ability_uid:String = str(room_ref, ability_index)
-	#
-#
-	#return passives_enabled[ability_uid] if (ability_uid in passives_enabled) else false
-### ------------------------------------------------------------------------------	
-#
-### ------------------------------------------------------------------------------
-#func get_ability_cooldown(ability:Dictionary, use_location:Dictionary = current_location) -> int:
-	#var designation:String = U.location_to_designation(use_location)
-	#var ability_uid:String = str(use_location.floor, use_location.ring, use_location.room, ability.ref)	
-	#var cooldown_duration:int = 0
-	#
-	#if ability_uid in base_states.room[designation].ability_on_cooldown:
-		#cooldown_duration = base_states.room[designation].ability_on_cooldown[ability_uid]	
-#
-	#return cooldown_duration
-### ------------------------------------------------------------------------------	
-
 # --------------------------------------------------------------------------------------------------
 func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use_location:Dictionary) -> void:
 	var designation:String = U.location_to_designation(use_location)
@@ -543,6 +435,19 @@ func add_objectives_to_timeline(objectives:Array = []) -> void:
 		})
 # -----------------------------------
 
+# -----------------------------------
+func start_containment_breach() -> Control:
+	var ContainmentNode:Control = ContainmentBreachPreload.instantiate()
+	ContainmentNode.z_index = z_index_lvl
+	GameplayNode.add_child(ContainmentNode)
+	
+	await ContainmentNode.activate()
+	
+	ContainmentNode.start()
+	
+	return ContainmentNode
+# -----------------------------------
+
 
 # -----------------------------------
 func open_objectives() -> void:	
@@ -577,7 +482,8 @@ func trigger_event(event_data:Array) -> Dictionary:
 	
 	var EventContainer:Control = EventContainerPreload.instantiate()
 	GameplayNode.add_child(EventContainer)
-	EventContainer.z_index = z_index_lvl
+	EventContainer.z_index = z_index_lvl - 1
+	
 	await EventContainer.activate()
 	EventContainer.start(event_data)
 	var event_res:Dictionary = await EventContainer.user_response
@@ -681,45 +587,6 @@ func add_debuff_to_floor_and_rings_rooms(debuff_ref:int, duration:int, floor:int
 	BASE_UTIL.add_buff_or_debuff_to_rooms(BASE.TYPE.DEBUFF, debuff_ref, duration, floor, rings, rooms)
 # --------------------------------------------------------------------------------------------------
 
-
-# ---------------------
-#func research_scp() -> bool:
-	#var list:Array = []
-	#
-	## if this is the first one, always make item 0 the first item
-	#if scp_data.contained_list.size() == 0:
-		#list = [0]
-	#else:
-		## check for specific days that only supply specific scps
-		#if progress_data.day == 4:
-			#list = [4]
-		#if progress_data.day == 20:
-			#list = [20]
-		#if progress_data.day == 24:
-			#list = [24]
-	#
-	## otherwise, produce three randomly that are not in the contained list
-	#if list.is_empty():
-		#var unavailable_list:Array = scp_data.contained_list.map(func(x): return x.ref)
-		#list = scp_data.available_refs
-	#
-	#if list.is_empty():
-		#return false
-		#
-	#var ScpSelectScreen:Control = ScpSelectScreenPreload.instantiate()
-	#GameplayNode.add_child(ScpSelectScreen)
-	#ScpSelectScreen.z_index = z_index_lvl
-	#
-	#await ScpSelectScreen.activate(list)
-	#ScpSelectScreen.start()
-	#var response:int = await ScpSelectScreen.user_response
-	#
-	#if response == -1:
-		#return false
-			#
-	#return true
-# ---------------------
-
 # ---------------------
 func eval_scp() -> bool:
 	var ScpGridNode:Control = ScpGridPreload.instantiate()
@@ -746,6 +613,49 @@ func eval_scp() -> bool:
 	return true
 # ---------------------
 
+# --------------------------------------------------------------------------------------------------	
+func trigger_breach_event(scp_ref:int, BreachNode:Control) -> void:	
+	# pull details
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	
+	# Check for initial breach event
+	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	)
+	
+	# update next breach event day
+	scp_data[scp_ref].next_breach_at = progress_data.day + scp_details.breach_check_frequency
+	scp_data[scp_ref].breach_count += 1
+	SUBSCRIBE.scp_data = scp_data	
+
+	# set emergency mode
+	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.DANGER
+	SUBSCRIBE.base_states = base_states
+	await U.set_timeout(3.0)	
+	GameplayNode.show_only([])
+	await BreachNode.zero()
+
+
+	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+		EVT.TYPE.SCP_BREACH_EVENT_1, 
+			{
+				"room_details": ROOM_UTIL.return_data_via_location(current_location),
+				"scp_details": scp_details,
+				"scp_entry": scp_data[scp_ref],
+				"researchers": researchers,
+			}
+		)
+	])
+	
+	# restore previous emergency mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
+	SUBSCRIBE.base_states = base_states
+	
+	# restore hud
+	GameplayNode.restore_player_hud()
+# --------------------------------------------------------------------------------------------------	
+	
 
 # --------------------------------------------------------------------------------------------------	
 func contain_scp() -> bool:
@@ -757,26 +667,7 @@ func contain_scp() -> bool:
 	ScpGridNode.contain()
 	var scp_ref:int = await ScpGridNode.user_response
 	if scp_ref == -1:return false
-
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	#var breach_events_at:Array = [0, 7, 14, 28]
-	#
-	#var breach
-	#for index in breach_events_at.size():
-		#var val:int = breach_events_at[index]
-		#var day:int = val + progress_data.day
-#
-		#add_timeline_item({
-			#"title": scp_details.name,
-			#"icon": SVGS.TYPE.DANGER,
-			#"description": "DANGER",
-			#"day": day,
-			#"event": {
-				#"scp_ref": scp_ref,
-				#"event_ref": SCP.EVENT_TYPE.BREACH_EVENT,
-				#"event_count": index,
-			#}
-		#})		
 
 	# create dict if it doesn't exist
 	if scp_ref not in scp_data:
@@ -784,39 +675,31 @@ func contain_scp() -> bool:
 	
 	# then update entry
 	scp_data[scp_ref].location = current_location.duplicate(true)
-	scp_data[scp_ref].contained_on = progress_data.day
+	scp_data[scp_ref].contained_on_day = progress_data.day
 	scp_data[scp_ref].breach_count = 0
-
+	scp_data[scp_ref].next_breach_at = progress_data.day + scp_details.breach_check_frequency
 	# save
 	SUBSCRIBE.scp_data = scp_data	
 	
 	# Check for initial breach event
 	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
 		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
-	)				
+	)
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
 		EVT.TYPE.SCP_ON_CONTAINMENT, 
 			{
 				"room_details": ROOM_UTIL.return_data_via_location(current_location),
 				"scp_details": scp_details,
-				"scp_data": scp_data[scp_ref],
+				"scp_entry": scp_data[scp_ref],
 				"researchers": researchers
 			}
 		)
 	])
+	
 
 	return true
 # --------------------------------------------------------------------------------------------------	
-
-func check_for_breach_event(scp_ref:int) -> bool:
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	
-	#var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
-		#return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
-	#)		
-		
-	return false
 
 # --------------------------------------------------------------------------------------------------	
 func clone_researcher() -> bool:

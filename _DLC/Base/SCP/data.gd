@@ -1,6 +1,54 @@
 extends SubscribeWrapper
 
+# -----------------------------------------------------------
+func get_render_from_metrics(ref:int, vibes:Dictionary, threshold_amount:int) -> Dictionary:
+	var amount:int = vibes[ref]
+	var is_threshold_met:bool = threshold_amount >= amount
+	var property:String
+	
+	match ref:
+		RESOURCE.METRICS.MORALE:
+			property = "MORALE"
+		RESOURCE.METRICS.SAFETY:
+			property = "SAFETY"
+		RESOURCE.METRICS.READINESS:
+			property = "READINESS"
+	
+	return {
+		"property": property,
+		"is_available": is_threshold_met,
+		"hint_description": "%s must be at least %s (Currently at %s)." % [property, threshold_amount, amount]
+	}
+	
+func get_render_from_currencies(ref:int, threshold_amount:int) -> Dictionary:
+	var amount:int = resources_data[ref].amount
+	var is_threshold_met:bool = threshold_amount >= amount
+	var property:String
+	
+	match ref:
+		RESOURCE.CURRENCY.MONEY:
+			property = "MONEY"
+		RESOURCE.CURRENCY.MATERIAL:
+			property = "MATERIAL"
+		RESOURCE.CURRENCY.SCIENCE:
+			property = "SCIENCE"
+		RESOURCE.CURRENCY.CORE:
+			property = "CORE"
+	
+	return {
+		"property": property,
+		"is_available": is_threshold_met,
+		"cost": {"currency": ref, "amount": threshold_amount, "text": "Expend %s %s?" % [threshold_amount, property]},
+		"hint_description": "%s must have at least %s (You currently have %s)." % [property, threshold_amount, amount]
+	}
 
+func get_success_rate(ref:int, vibes:Dictionary, baseline:int = 10, factor_of:int = 20) -> int:
+	var success_rate:int = baseline + (vibes[ref] * factor_of)
+	return U.min_max(success_rate, 0, 100)
+# -----------------------------------------------------------
+
+
+# -----------------------------------------------------------
 var SCP0:Dictionary = {
 	"nickname": "The Mirror",
 	"description": func(_scp_details:Dictionary) -> String:
@@ -8,6 +56,7 @@ var SCP0:Dictionary = {
 	"abstract": func(_scp_details:Dictionary) -> String:
 		return "A gilded picture frame that opens a window into a subtly altered mirrored version of the room it faces. Objects entering vanish without trace. Categorized as SPATIAL and CONCEPTUAL.",
 	"img_src": "res://Media/scps/mirror_frame.png",
+	"breach_check_frequency": 1,
 	
 	"containment_requirements": [
 		SCP.CONTAINMENT_TYPES.SPATIAL,
@@ -15,217 +64,603 @@ var SCP0:Dictionary = {
 	],
 
 	"event": {
+		# ----------------------------
 		EVT.TYPE.SCP_ON_CONTAINMENT: {
-			"story": func(_staff_details:Dictionary, _scp_details:Dictionary) -> Array:
+			"story": func(props:Dictionary) -> Array:
+				var _staff_details:Dictionary = props.selected_staff
+				var _scp_details:Dictionary = props.scp_details
 				return [
-					"%s has been assigned to oversee initial observation of %s." % [_staff_details.name, _scp_details.name],
+					"%s has been assigned to oversee initial observation of %s." % [_staff_details.name, _staff_details.name],
 					"As containment seals engage, the aperture within %s begins its slow 'breathing' motion — a pulsing inhale that tugs at loose objects and clothing." % _scp_details.name,
 					"Through the empty frame, the mirrored containment room appears — identical, yet off. The fluorescent lights flicker in the other room, though not in this one. A chair is slightly turned. A clipboard sits where none was placed.",
 					"Suddenly, %s notices their own reflection lagging behind — the mirrored version remains still, staring back just a moment too long before mimicking their latest movement." % _staff_details.name,
-					"The tension in the room rises. %s looks visibly uncomfortable, but transfixed on their reflection." % [_staff_details.name],
+					"The tension in the room rises. %s hesitates, unsure of what to do next." % [_staff_details.name],
 				],
 
-			"choices": func(_staff_details:Dictionary, _scp_details:Dictionary) -> Dictionary:
+			"choices": func(props:Dictionary) -> Dictionary:
+				var _staff_details:Dictionary = props.selected_staff
+				var _scp_details:Dictionary = props.scp_details
+				var _vibes:Dictionary = props.vibes
 				return {
 					"standard": [
 						{
-							"show": true,
-							"title": "Back away from the frame and seal the chamber.",
+							"title": "Exit the containment chamber.",
 							"success_rate": 50,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+							"story": func(is_success:bool) -> Array:
 								return [
-									"%s slowly moves towards the exit. The mirrored version does the same.  As the door closes, the mirror version stands there and smiles." % _staff_details.name
+									"%s makes their way to the exit, maintaining unbroken eye contact with the mirrored self. The reflection mirrors every step with unsettling precision. Just before the chamber door seals, it smiles faintly — a gesture not mirrored by %s." % [_staff_details.name, _staff_details.name]
 								] if is_success else [
-									"%s slowly moves towards the exit, but the mirrored version lingers — staring, unmoving. As the chamber door seals, a low grinding noise echoes behind it. One of the reinforced panels begins to bow outward." % _staff_details.name
+									"%s steps backward toward the exit, but the mirrored figure lags — slightly off-beat, slightly too close. As the chamber door begins to close, the reflection halts mid-step, locked in place with eyes fixed on %s." % [_staff_details.name, _staff_details.name]
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
+							"effect": func(is_success:bool) -> Dictionary:
 								if is_success:
-									# nothing happens
-									pass
+									# reduced damage
+									return {}
 								else:
-									# containment cell is damaged
-									pass,
+									# staff risk increased
+									return {},
 						},
 
+
 						{
-							"show": true,
 							"title": "Attempt to communicate with the mirror version.",
-							"success_from": RESOURCE.METRICS.MORALE,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 50),
+							"story": func(is_success:bool) -> Array:
 								return [
 									"%s speaks to the figure. It tilts its head and writes something on a clipboard: 'WE SEE YOU'." % _staff_details.name
 								] if is_success else [
 									"%s calls out, but the mirrored figure vanishes mid-motion. All camera feeds inside the chamber cut out." % _staff_details.name
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
+							"effect": func(is_success:bool) -> Dictionary:
 								if is_success:
-									# researcher has a change in mood
-									pass
+									# reduced damage
+									return {}
 								else:
-									# NOTHING HAPPENS
-									pass,
+									# staff risk increased
+									return {},
 						},
 						{
-							"show": true,
 							"title": "Send in a drone for closer analysis.",
-							"success_from": RESOURCE.METRICS.SAFETY,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 50),
+							"story": func(is_success:bool) -> Array:
 								return [
 									"A drone crosses through the aperture. The feed holds steady for a few moments, then displays a third, unknown chamber before cutting to black."
 								] if is_success else [
 									"The drone halts mid-frame and vibrates violently before disintegrating into ash."
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
+							"effect": func(is_success:bool) -> Dictionary:
 								if is_success:
-									# a resource is gained
-									pass
+									# reduced damage
+									return {}
 								else:
-									# a resource is lost
-									pass,
+									# staff risk increased
+									return {},
 						},
 						{
-							"show": true,
 							"title": "Touch the frame directly.",
-							"success_from": RESOURCE.METRICS.READINESS,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 50),
+							"story": func(is_success:bool) -> Array:
 								return [
 									"As their hand meets the frame, it pulses — and a mirrored hand lunges outward. Security intervenes just in time. %s is unharmed, but visibly disturbed." % _staff_details.name
 								] if is_success else [
 									"As their hand meets the frame, it pulses — and a mirrored hand lunges outward. It grabs %s violently, pulling them into the reflection.  Cameras monitor the cell abruptly cut out.  When security gets into the room, the room remains empty with no sign of %s anywhere." % _staff_details.name
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
+							"effect": func(is_success:bool) -> Dictionary:
 								if is_success:
-									# researcher has a change in personality (usually like a phobia)
-									pass
+									# reduced damage
+									return {}
 								else:
-									# researcher killed
-									pass,
+									# staff risk increased
+									return {},
 						}
 					],
 
-					"trait": {
-						RESEARCHER.TRAITS.ACROPHOBIA: {
-							"title": "Engage in extended observation of their reflection.",
-							"success_from": RESOURCE.METRICS.MORALE,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+					"traits": {
+						RESEARCHER.TRAITS.AVERAGE: {
+							"title": "Maintain observation without direct interaction.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
 								return [
-									"%s stares at their mirrored self for minutes. The mirror blinks first. For now, containment holds." % _staff_details.name
+									"%s remains still, recording data without approaching the anomaly. The mirrored version does the same. After several minutes, both researchers and reflection cease all motion simultaneously. No abnormalities reported." % _staff_details.name
 								] if is_success else [
-									"%s becomes transfixed. When guards pull them away, the mirrored version does not follow — it simply remains, smiling." % _staff_details.name
+									"%s maintains passive observation, but gradually becomes unsettled. The reflection does not blink — nor breathe. A subtle distortion appears in the mirrored image, though no corresponding change occurs in the real room." % _staff_details.name
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
+							"effect": func(is_success:bool) -> Dictionary:
 								if is_success:
-									# buff or debuff is applied to the facility
-									pass
+									# reduced damage
+									return {}
 								else:
-									# researcher has a change in personality (usually like a phobia)
-									pass,
+									# staff risk increased
+									return {},
+						},
+
+						
+						RESEARCHER.TRAITS.NARCISSIST: {
+							"title": "Approach the mirror to study their own reflection in detail.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s leans in, fascinated by the mirrored self. The figure responds in kind, perfectly synchronized. For a moment, a sense of connection — then the reflection mouths something silently: 'I am you.'"
+								] if is_success else [
+									"%s begins speaking to their reflection, entranced. The mirror version does not blink. It grins wide, and so does %s. When security intervenes, %s resists removal." 
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.INTROVERT: {
+							"title": "Request remote observation instead of staying in the chamber.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s requests a transfer to the monitoring suite. From behind the glass, the reflection continues to mimic. Safer, but the unease remains." 
+								] if is_success else [
+									"Even from the remote station, %s finds the reflection watching them through the feed. It taps once on the mirrored side of the camera — a sound is heard in the control room."
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.EXTROVERT: {
+							"title": "Invite another researcher in to verify what they're seeing.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s brings in an assistant. Together, they compare movements — confirming a slight delay. The mirrored versions nod to each other. Nothing else occurs."
+								] if is_success else [
+									"The second researcher does not appear in the mirror. Only %s is reflected — now alone, and staring at an empty mirrored room."
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.PARANOID: {
+							"title": "Demand immediate scan for hidden observers or surveillance devices.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s sweeps the room with a personal EMF scanner. Nothing unusual detected. They request camera logs for the last 48 hours." 
+								] if is_success else [
+									"%s insists something is recording from the mirror. They disable the chamber camera and begin dismantling equipment. Reflection mirrors the breakdown — but with tools not present in this room."
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.OPTIMIST: {
+							"title": "Smile and wave at the mirrored figure.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s waves at the mirror calmly. The mirrored version waves back — and gives a small, encouraging nod. Sensors register a brief drop in ambient EM field activity."
+								] if is_success else [
+									"%s smiles, but the mirror version does not. It frowns, then mimics the wave with a stiff, unnatural motion. The lights flicker once."
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.PESSIMIST: {
+							"title": "Assume the worst and recommend containment lockdown.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s declares the anomaly an existential threat and begins preemptive lockdown protocol. Command agrees. Mirror activity ceases for the time being." 
+								] if is_success else [
+									"%s issues a lockdown warning. Seconds later, the mirrored room darkens. The reflection remains — faintly visible, watching in the dark."
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.WORKAHOLIC: {
+							"title": "Begin logging detailed anomaly behavior despite growing risks.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s sets up live documentation, noting minor visual delays and behavior loops. They remain focused, even as the mirrored version stops mirroring and begins taking its own notes." 
+								] if is_success else [
+									"%s documents aggressively. The mirrored self grows more agitated, then begins scribbling on the glass from the other side. The notes are reversed, but they spell a name — %s's own." 
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.LAZY: {
+							"title": "Remain seated and observe from a distance.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s refuses to approach the mirror directly. From their seat, they record minor movements in the reflection — all consistent with ambient motion."
+								] if is_success else [
+									"%s lounges across the room. The mirror version stands at the frame, beckoning them. It does not leave until the chamber lights are turned off."
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.SARCASTIC: {
+							"title": "Mock the mirror figure with exaggerated gestures.",
+							"success_rate": 40,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s exaggerates movements and grimaces at the mirror. The mirrored version responds in kind — but gradually becomes out of sync, as if insulted." 
+								] if is_success else [
+									"%s mocks the reflection openly. The mirrored version stops mirroring, leans in close, and mouths something clearly: 'We are not amused.'"
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
 						}
 					}
+
 				},
 
 
-		}
+		},
+		# ----------------------------
+		
+		# ----------------------------
+		EVT.TYPE.SCP_BREACH_EVENT_1: {
+			"story": func(props:Dictionary) -> Array:
+				var _staff_details:Dictionary = props.selected_staff
+				var _scp_details:Dictionary = props.scp_details
+				return [
+					"An alarm blares suddenly as the containment chamber housing %s detects an abrupt energy surge." % _scp_details.name,
+					"The gilded frame begins to shimmer violently, the mirrored aperture fluctuating between clarity and static noise.",
+					"%s rushes into the chamber just as a figure steps out from the mirror dimension — an exact but distorted copy of themselves." % _staff_details.name,
+					"The doppelgänger moves with jerky, unnatural motions, eyes glowing faintly with an eerie light.",
+					"%s attempts to communicate, but the mirrored entity only snarls and lunges forward, forcing a rapid retreat." % _staff_details.name,
+					"The containment system fails to re-engage as the mirror flickers wildly, and several other distorted reflections appear momentarily around the room, causing chaos and confusion.",
+					"Security teams are deployed to recontain %s and subdue the intruding entities." % _scp_details.name
+				],
+
+			"choices": func(props:Dictionary) -> Dictionary:
+				var _staff_details:Dictionary = props.selected_staff
+				var _scp_details:Dictionary = props.scp_details
+				var _vibes:Dictionary = props.vibes
+				return {
+					"standard": [
+						{
+							"title": "Do nothing.",
+							"success_rate": 10,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s freezes, choosing not to interact or respond. Minutes pass. The mirrored figure mimics the stillness, posture-perfect. Then, with no warning, the mirrored version blinks — twice — and smiles faintly before walking out of frame. The real room remains unchanged." % _staff_details.name
+								] if is_success else [
+									"%s remains motionless, doing nothing. Across the frame, the mirrored version gradually desynchronizes, tilting its head with increasing curiosity. Eventually, it lifts a hand and taps on the inside of the glass. Something knocks back — from this side." % _staff_details.name
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# Small sanity bonus or insight
+									return {}
+								else:
+									# Raises internal threat level or triggers latent hazard
+									return {},
+						},
+						{
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes, 2),
+							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 50),
+							"title": "Activate emergency dimensional lockdown protocols.",
+							"story": func(is_success:bool) -> Array:
+								return [
+									"Automated barriers slide down, sealing off the chamber as energy pulses intensify within %s." % _scp_details.name,
+									"The mirror's surface distorts and then abruptly goes dark, signaling containment restoration."
+								] if is_success else [
+									"Lockdown protocols activate, but the dimensional seals falter under pressure.",
+									"%s's distorted figures slip through cracks in containment, forcing a frantic manual override." % _scp_details.name
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# containment secured
+									return {}
+								else:
+									# containment partially breached, increased risk
+									return {},
+						},
+
+						{
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes, 2),
+							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 50),
+							"title": "Attempt to communicate with the mirrored entities.",
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s tries to calm the intruders, speaking softly. One figure hesitates, then mimics a peaceful gesture before fading back into the mirror." % _staff_details.name
+								] if is_success else [
+									"Communication attempts provoke aggression. The mirrored entities howl and shatter nearby glass.",
+									"%s is forced to retreat as the mirror's surface cracks ominously." % _staff_details.name
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# morale boost, partial containment regained
+									return {}
+								else:
+									# morale penalty, containment destabilized
+									return {},
+						},
+
+						{
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes, 2),
+							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 50),
+							"title": "Deploy sedative gas into the chamber.",
+							"story": func(is_success:bool) -> Array:
+								return [
+									"The chamber fills with a fine mist. The mirrored intruders stagger, then dissolve into shadowy wisps that vanish back through the frame.",
+									"%s breathes a sigh of relief as containment stabilizes." % _staff_details.name
+								] if is_success else [
+									"Gas deployment has little effect; the entities seem unaffected and grow more agitated.",
+									"%s barely escapes the chamber as containment alarms escalate." % _staff_details.name
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# containment stabilized, minor resource loss
+									return {}
+								else:
+									# containment breach worsens, staff injured
+									return {},
+						},
+
+						{
+							"render_if": get_render_from_currencies(RESOURCE.CURRENCY.SCIENCE, 50),
+							"title": "Cut power to the containment chamber.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"Power shutdown plunges the chamber into darkness, and the mirror's glow fades.",
+									"Silence follows as the entities retreat back into the reflection."
+								] if is_success else [
+									"Power loss triggers fail-safes causing the mirror to fracture violently.",
+									"Fragments of the mirror dimension spill into the containment area, causing widespread damage."
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# emergency containment success
+									return {}
+								else:
+									# critical containment failure
+									return {},
+						}
+					],
+
+					"traits": {
+						RESEARCHER.TRAITS.PARANOID: {
+							"title": "Refuse direct confrontation and coordinate remote operations.",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s manages containment remotely, avoiding the chaotic chamber. Their cautious approach helps limit damage." % _staff_details.name
+								] if is_success else [
+									"Remote control failures force %s to enter the chamber, risking direct exposure to the anomalies." % _staff_details.name
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.EXTROVERT: {
+							"title": "Lead frontline efforts to subdue the breach.",
+							"success_rate": 55,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s inspires the security team, coordinating a strong offensive to regain control." % _staff_details.name
+								] if is_success else [
+									"Overconfidence causes %s to be overwhelmed by the entities, forcing a retreat." % _staff_details.name
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						},
+
+						RESEARCHER.TRAITS.NARCISSIST: {
+							"title": "Attempt to confront the mirror copies alone.",
+							"success_rate": 35,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s steps boldly into the chamber, confronting their mirrored doppelgängers. For a moment, tension hangs thick, but the copies back down." % _staff_details.name
+								] if is_success else [
+									"%s is quickly overwhelmed by the mirrored entities, forced to flee with assistance." % _staff_details.name
+								],
+							"effect": func(is_success:bool) -> Dictionary:
+								if is_success:
+									# reduced damage
+									return {}
+								else:
+									# staff risk increased
+									return {},
+						}
+					}
+				},
+		},
+		# ----------------------------
 	}
 }
 
 
 var SCP1:Dictionary = {
-	"nickname": "The Oracle Keys",
+	"nickname": "The Latchkeeper",
+	
 	"description": func(_scp_details:Dictionary) -> String:
-		return "%s is a heavily worn Underwood No. 5 typewriter, circa 1915. When loaded with blank paper and left unattended, %s will begin typing autonomously. The typed content consists of vivid, highly detailed descriptions of future events — often involving personnel near its vicinity or Foundation operations worldwide. Events described by %s have a 92%% accuracy rate when left unaltered. Interventions based on these writings often cause deviations, usually resulting in unintended consequences.\n\nAttempts to trace the source of the autonomous typing have revealed no internal mechanisms or power source beyond the standard mechanical components. Infrared and thermal imaging during operation show no signs of heat, pressure, or motion.\n\nNotably, %s never repeats predictions and occasionally types messages addressed directly to personnel, often using unsettlingly personal language. If forcibly interrupted mid-operation, %s will jam until repaired — typically by the person it last named." % [_scp_details.name, _scp_details.name, _scp_details.name, _scp_details.name, _scp_details.name],
+		return "%s is a rusted iron doorframe, approximately 2m by 0.9m, mounted on a mobile reinforced platform. Passing through %s causes subjects to vanish from baseline reality without return. Attempts to tether objects through it fail as tethers sever cleanly at passage. Though no physical door exists, every 37 hours %s produces a loud metallic latch noise and 'closes' for 1 hour, becoming inert. The inner edges flicker subtly, indicating dimensional discontinuity. It exhibits limited awareness, distorting in response to speech and mimicking heartbeat patterns. Personnel near %s report dreams of endless corridors and hear faint knocking from 'the other side'." % [_scp_details.name, _scp_details.name, _scp_details.name, _scp_details.name],
+		
 	"abstract": func(_scp_details:Dictionary) -> String:
-		return "A haunted typewriter that autonomously types predictions of future events with alarming accuracy. Categorized as INFOHAZARD and PSYCHIC.",
-	"img_src": "res://Media/scps/typewriter.png",
+		return "%s is a doorframe that distorts dimensional boundaries, reacts acoustically to stimuli, and imposes moral containment protocols due to its sentient, anxious behavior." % [_scp_details.name],
+	
+	"img_src": "",
 	
 	"containment_requirements": [
-		SCP.CONTAINMENT_TYPES.INFOHAZARD,
-		SCP.CONTAINMENT_TYPES.PSYCHIC
+		SCP.CONTAINMENT_TYPES.DIMENSIONAL,
+		SCP.CONTAINMENT_TYPES.ACOUSTIC,
+		SCP.CONTAINMENT_TYPES.MORAL,
 	],
 
 	"event": {
 		EVT.TYPE.SCP_ON_CONTAINMENT: {
-			"story": func(_staff_details:Dictionary, _scp_details:Dictionary) -> Array:
+			"story": func(props:Dictionary) -> Array:
+				var _staff_details:Dictionary = props.selected_staff
+				var _scp_details:Dictionary = props.scp_details
 				return [
-					"%s has been selected to lead initial assessment of %s." % [_staff_details.name, _scp_details.nickname],
-					"%s sits quietly in its containment cell, a sheet of blank paper already loaded. As power stabilizers cycle, it begins typing — loudly and with purpose." % _scp_details.name,
-					"The clack of keys echoes through the chamber. Words appear: 'DO NOT LET HIM ANSWER THE PHONE AT 14:17.'",
-					"%s leans in to read more. The paper continues: 'He dies either way. But the scream is... avoidable.'" % _staff_details.name,
-					"The room goes cold. The typewriter pauses. Then slowly types: 'Hello, %s.'" % _staff_details.name
+					"%s has been assigned to oversee initial containment of %s." % [_staff_details.name, _scp_details.name],
+					"%s was secured inside a soundproof vault with dimensional locks engaged." % [_scp_details.name],
+					"As %s adjusted the restraints, the frame emitted a low hum and vibrated gently." % [_scp_details.name],
+					"A faint knocking echoed from inside the frame despite no visible opening.",
+					"%s hesitated before whispering, 'Hello?'" % [_staff_details.name],
+					"The inner edges of %s rippled briefly, resembling a curtain stirred by wind." % [_scp_details.name],
 				],
 
-			"choices": func(_staff_details:Dictionary, _scp_details:Dictionary) -> Dictionary:
+			"choices": func(props:Dictionary) -> Dictionary:
+				var _staff_details:Dictionary = props.selected_staff
+				var _scp_details:Dictionary = props.scp_details
 				return {
 					"standard": [
 						{
-							"show": true,
-							"title": "Remove the paper and seal it for analysis.",
-							"success_rate": 100,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+							"title": "Attempt communication using harmonic acoustic protocol",
+							"success_rate": 65,
+							"story": func(is_success:bool) -> Array:
 								return [
-									"%s carefully removes the page. The keys snap once, like a farewell. The typewriter goes silent." % _staff_details.name
+									"A low harmonic tone plays through the speakers.",
+									"%s quivers softly, then stills, as a whisper says: 'Thank you for knocking.' Containment stabilizes." % [_scp_details.name]
+								] if is_success else [
+									"The tone plays, but %s suddenly emits a harsh screech, shattering nearby glass." % [_scp_details.name],
+									"%s's vibrations intensify, cracking the containment cell's walls." % [_scp_details.name],
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
-								pass,
+							"effect": func(is_success:bool) -> void:
+								if is_success:
+									# containment stabilized, no damage
+									pass
+								else:
+									# containment cell damaged
+									pass,
 						},
 						{
-							"show": true,
-							"title": "Ask it a direct question.",
-							"success_from": RESOURCE.METRICS.MORALE,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+							"title": "Physically inspect the edges of the frame",
+							"success_rate": 40,
+							"story": func(is_success:bool) -> Array:
 								return [
-									"%s asks, 'What happens to me?' The typewriter pauses, then types: 'Not today.'" % _staff_details.name
+									"%s's edges feel impossibly cold but solid, with faint pulses matching a heartbeat." % [_scp_details.name],
+									"%s remains inert during inspection." % [_scp_details.name]
 								] if is_success else [
-									"%s asks, 'What happens to me?' The typewriter hammers out: 'Turn around.' There is no one there." % _staff_details.name
+									"While touching %s, %s suddenly flinches and emits a violent pulse, knocking %s back." % [_scp_details.name, _scp_details.name, _staff_details.name],
+									"%s is shaken but unharmed; containment protocols adjusted." % [_staff_details.name]
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
-								pass,
+							"effect": func(is_success:bool) -> void:
+								if is_success:
+									# knowledge gained, no harm
+									pass
+								else:
+									# staff mood changed, containment protocols updated
+									pass,
 						},
 						{
-							"show": true,
-							"title": "Attempt to disrupt typing mid-sentence.",
-							"success_from": RESOURCE.METRICS.SAFETY,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+							"title": "Ignore subtle noises and secure the cell quickly",
+							"success_rate": 85,
+							"story": func(is_success:bool) -> Array:
 								return [
-									"%s stops the carriage arm. The machine grinds to a halt. Later diagnostics show no physical reason for the jam." % _staff_details.name
+									"%s's noises are ignored; containment cell locks successfully engaged." % [_scp_details.name],
+									"Containment is secured without incident."
 								] if is_success else [
-									"%s touches the carriage arm. It snaps shut, breaking two fingers. Blood spatters across the keys, which resume typing uninterrupted." % _staff_details.name
+									"%s emits an unexpected loud latch sound as the cell locks, startling %s." % [_scp_details.name, _staff_details.name],
+									"Anomalous vibrations damage some containment sensors."
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
-								pass,
+							"effect": func(is_success:bool) -> void:
+								if is_success:
+									# containment secured, no damage
+									pass
+								else:
+									# containment cell damaged
+									pass,
 						},
-						{
-							"show": true,
-							"title": "Read the full page aloud.",
-							"success_from": RESOURCE.METRICS.READINESS,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
-								return [
-									"%s reads aloud. As each line is spoken, the room vibrates slightly. At the last word, all equipment resets. Time skipped ahead 12 seconds." % _staff_details.name
-								] if is_success else [
-									"%s reads aloud. A klaxon sounds from a nearby wing, despite no breach. Containment systems require a full reset." % _staff_details.name
-								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
-								pass,
-						}
 					],
 
-					"trait": {
-						RESEARCHER.TRAITS.THALASSOPHOBIA: {
-							"title": "Scan the machine for hidden transmitters or trackers.",
-							"success_from": RESOURCE.METRICS.SAFETY,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+					"traits": {
+						RESEARCHER.TRAITS.AVERAGE: {
+							"title": "Use routine protocols without deviation",
+							"success_rate": 50,
+							"story": func(is_success:bool) -> Array:
 								return [
-									"%s takes apart the chassis. Inside is nothing — except a folded photo of them as a child. They never posed for it." % _staff_details.name
+									"%s follows standard procedures. Containment is uneventful." % [_staff_details.name]
 								] if is_success else [
-									"%s attempts a scan, but all instruments display nonsense characters — the same ones %s types when left without paper." % [_staff_details.name, _scp_details.name]
+									"%s's lack of flexibility leads to a missed cue; %s reacts with a sudden pulse." % [_staff_details.name, _scp_details.name]
 								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
-								pass,
-						}
+							"effect": func(is_success:bool) -> void:
+								if is_success:
+									pass
+								else:
+									# minor containment cell damage
+									pass,
+						},
+						RESEARCHER.TRAITS.PARANOID: {
+							"title": "Suspect hidden dangers and proceed cautiously",
+							"success_rate": 70,
+							"story": func(is_success:bool) -> Array:
+								return [
+									"%s is hyper-aware of every sound and vibration, preventing surprises." % [_staff_details.name]
+								] if is_success else [
+									"%s’s nervousness causes delays, agitating %s into sudden vibration." % [_staff_details.name, _scp_details.name]
+								],
+							"effect": func(is_success:bool) -> void:
+								if is_success:
+									# staff mood improved, containment stable
+									pass
+								else:
+									# containment cell damaged
+									pass,
+						},
 					}
 				},
+			},
 		}
-	}
 }
 
 
@@ -330,26 +765,6 @@ var SCP2:Dictionary = {
 									pass,
 						}
 					],
-
-					"trait": {
-						RESEARCHER.TRAITS.ACROPHOBIA: {
-							"title": "Stare into the reflection on the bell’s surface.",
-							"success_from": RESOURCE.METRICS.MORALE,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
-								return [
-									"%s sees a distorted version of themselves, then looks away, shaken but unharmed." % _staff_details.name
-								] if is_success else [
-									"%s sees a version of themselves plummeting from a high place—an event that never occurred. They become visibly distressed and refuse to approach the bell again." % _staff_details.name
-								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
-								if is_success:
-									# change in mood
-									pass
-								else:
-									# change in personality
-									pass,
-						}
-					}
 				},
 
 		}
@@ -357,28 +772,25 @@ var SCP2:Dictionary = {
 }
 
 var SCP3:Dictionary = {
-	"nickname": "Chrono Labyrinth",
+	"nickname": "The Voice in the Slide",
 	"description": func(_scp_details:Dictionary) -> String:
-		return "%s is an extradimensional maze, measuring approximately 30 meters by 30 meters in size. The walls and pathways within SCP-%s exhibit temporal anomalies, causing time loops and shifts. These anomalies manifest randomly, making navigation extremely hazardous." % [_scp_details.name, _scp_details.name],
+		return "%s is a disassembled portion of a playground slide, recovered from a condemned school in [REDACTED]. The object is composed of smooth, painted aluminum, and emits a faint humming sound when not observed directly. When assembled and used as a functional slide, any individual descending it will hear a whispered voice reciting highly specific memories—frequently those the subject has forgotten or repressed. Prolonged exposure results in temporary dissociation, vivid hallucinations, and in 27% of cases, personality displacement." % [_scp_details.name],
 	"abstract": func(_scp_details:Dictionary) -> String:
-		return "An extradimensional maze exhibiting temporal anomalies, posing significant navigational hazards.",
+		return "%s is a memetic-psychic anomaly centered on a playground slide segment. Users exposed to it experience recovered memories or assumed false identities, requiring MEMETIC and PSYCHIC containment precautions." % [_scp_details.name],
 	"img_src": "",
-	
+
 	"containment_requirements": [
-		SCP.CONTAINMENT_TYPES.SPATIAL,
-		SCP.CONTAINMENT_TYPES.TEMPORAL,
-		SCP.CONTAINMENT_TYPES.DIMENSIONAL
+		SCP.CONTAINMENT_TYPES.MEMETIC,
+		SCP.CONTAINMENT_TYPES.PSYCHIC
 	],
 
 	"event": {
 		EVT.TYPE.SCP_ON_CONTAINMENT: {
 			"story": func(_staff_details:Dictionary, _scp_details:Dictionary) -> Array:
 				return [
-					"During initial containment of SCP-3487, exploration teams reported temporal distortions intensifying near the maze's core.",
-					"Dr. %s, lead researcher, initiated a trial to stabilize the temporal flux using prototype temporal anchors." % [_staff_details.name],
-					"After activating the anchors, SCP-3487's anomalies momentarily ceased, providing a window for mapping.",
-					"However, the stability rapidly deteriorated, causing severe temporal dissonance within the maze.",
-					"Team members experienced disorientation and memory lapses, consistent with exposure to SCP-3487's effects."
+					"%s has been tasked with overseeing initial placement of %s into its sealed chamber." %[_staff_details.name, _scp_details.name],
+					"The object has been reconstructed for brief testing before long-term containment.",
+					"Security footage is restricted to prevent accidental auditory exposure."
 				],
 
 			"choices": func(_staff_details:Dictionary, _scp_details:Dictionary) -> Dictionary:
@@ -386,63 +798,95 @@ var SCP3:Dictionary = {
 					"standard": [
 						{
 							"show": true,
-							"title": "Activate Temporal Anchors",
-							"success_rate": 70,
+							"title": "Test the slide mechanism personally before sealing.",
+							"success_rate": 50,
 							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
 								return [
-									"Dr. %s successfully activated the temporal anchors, stabilizing SCP-3487 temporarily." % [_staff_details.name],
-									"Research progress was made, with valuable data on spatial-temporal shifts documented."
-								],
+										"%s descends the slide and reports a faint whisper of a childhood pet's name." % [_staff_details.name],
+										"The experience is unsettling but ultimately harmless.",
+										"%s completes the sealing process without further incident." % [_staff_details.name],
+									] if is_success else [
+										"%s descends the slide and goes silent midway." % [_staff_details.name],
+										"When recovered, they identify themselves by a different name and claim to be a teacher from 1974.",
+										"Containment proceeds, but psychiatric review is mandated." 
+									],
 							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
 								if is_success:
-									# No adverse effect on the containment cell or personnel
+									# Nothing happens
 									pass
 								else:
-									# Temporary containment breach, increased temporal instability
-									# (Outcome 5: Containment cell is damaged)
+									# Staff member has a change in personality
+									pass,
+						},
+
+						{
+							"show": true,
+							"title": "Use a D-Class to trigger activation.",
+							"success_from": RESOURCE.METRICS.MORALE,
+							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+								return  [
+										"The D-Class subject descends the slide, laughing nervously.",
+										"They report hearing a nursery rhyme they’d forgotten.",
+										"Containment is completed without incident.",
+									] if is_success else [
+										"The D-Class becomes hysterical halfway down the slide.",
+										"They scream for their 'real parents' before collapsing.",
+										"Containment is completed, but morale among nearby personnel drops."
+									],
+							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
+								if is_success:
+									# Nothing happens
+									pass
+								else:
+									# Base morale decreases
 									pass,
 						},
 						{
 							"show": true,
-							"title": "Initiate Time Dilation Protocol",
-							"success_rate": 40,
+							"title": "Shield the room with psychic dampeners.",
+							"success_from": RESOURCE.METRICS.SAFETY,
 							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
 								return [
-									"Despite precautions, time dilation caused by SCP-3487 intensified unpredictably.",
-									"Several team members reported psychological effects, including heightened anxiety and paranoia."
+									"Psychic dampeners successfully mask the anomalous effects.",
+									"%s observes no unusual behavior during transfer." % [_staff_details.name],
+									"The object is sealed and cataloged." 
+								] if is_success else  [
+									"The dampeners short-circuit midway through transfer.",
+									"%s stares at the slide and murmurs unknown names." % [_staff_details.name],
+									"Later examination reveals their emotional profile has shifted drastically."
 								],
 							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
 								if is_success:
-									# Psychological impact observed, but contained
-									# (Outcome 4: Staff member has a change in mood)
+									# Nothing happens
 									pass
 								else:
-									#// Severe psychological trauma, affecting entire team
-									#// (Outcome 7: Morale altered)
+									# Staff member has a change in mood
+									pass,
+						},
+						{
+							"show": true,
+							"title": "Seal the object without reconstruction.",
+							"success_from": RESOURCE.METRICS.READINESS,
+							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
+								return [
+									"%s orders containment without reassembly of the slide." % [_staff_details.name],
+									"No activation is triggered.",
+									"The object is successfully stored under passive memetic screening."
+								] if is_success else [
+									"Without testing, a latent activation pulse occurs during sealing.",
+									"Three guards report hearing voices in the hallway and require psychiatric evaluation.",
+									"Containment cell shielding needs immediate reinforcement."
+								],
+							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
+								if is_success:
+									# Nothing happens
+									pass
+								else:
+									# Containment cell is damaged
 									pass,
 						}
 					],
 
-					"trait": {
-						RESEARCHER.TRAITS.ACROPHOBIA: {
-							"title": "Researcher with Acrophobia",
-							"success_from": RESOURCE.METRICS.MORALE,
-							"story": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> Array:
-								return [
-									"Dr. %s, despite acrophobia, managed to contribute significantly to containment efforts." % [_staff_details.name],
-									"Exposure to SCP-3487's anomalies, surprisingly, alleviated personal fears temporarily."
-								],
-							"effect": func(_staff_details:Dictionary, _scp_details:Dictionary, is_success:bool) -> void:
-								if is_success:
-									#// Improved morale due to personal triumph
-									#// (Outcome 3: Staff member has a change in personality)
-									pass
-								else:
-									#// Increased anxiety, requiring temporary reassignment
-									#// (Outcome 4: Staff member has a change in mood)
-									pass,
-						}
-					}
 				},
 		}
 	}
@@ -559,10 +1003,12 @@ var SCP19:Dictionary = {
 	"nickname": "Framed Memory",
 	"description": "Portrait of ██████ and ██████ hung on a wall. Frame cracked. On the back: 'We looked happy. Maybe we were.'",
 }
+# -----------------------------------------------------------
 
-# -----------------------------------
+
+# -----------------------------------------------------------
 var list:Array[Dictionary] = [
-	SCP0, SCP1, SCP2, SCP3, SCP4, SCP5, SCP6, SCP7, SCP8, SCP9,
-	SCP10, SCP11, SCP12, SCP13, SCP14, SCP15, SCP16, SCP17, SCP18, SCP19
+	SCP0#, SCP1, SCP2, SCP3, SCP4, SCP5, SCP6, SCP7, SCP8, SCP9,
+	#SCP10, SCP11, SCP12, SCP13, SCP14, SCP15, SCP16, SCP17, SCP18, SCP19
 ]
-# -----------------------------------
+# -----------------------------------------------------------

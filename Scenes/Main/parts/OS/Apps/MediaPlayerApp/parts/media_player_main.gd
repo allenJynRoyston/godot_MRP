@@ -50,7 +50,6 @@ func _ready() -> void:
 		
 		# open music player, no music selected
 		SUBSCRIBE.music_data = {
-			"track_list": music_track_list,
 			"selected": track_id,
 		}
 

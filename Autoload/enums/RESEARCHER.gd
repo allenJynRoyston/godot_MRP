@@ -6,24 +6,28 @@ extends Node
 #}
 
 enum TRAITS {
-	# -----------
-	NORMAL,
-	ACROPHOBIA,			# Fear of heights
-	THALASSOPHOBIA,		# Fear of deep bodies of water
-	NYCTOPHOBIA,		# Fear of the dark
-	ATYCHIPHOBIA,		# Fear of failure
-	ATHAZAGORAPHOBIA, # Fear of being forgotten or ignored
-	# -----------
-}
+	# ----------------------------
+	AVERAGE,				# Average in every way
+	NARCISSIST,			# Fear of mirrors
+	INTROVERT,			# Social battery lasts 3 minutes
+	EXTROVERT,			# Needs an audience to think
+	PARANOID,			# Thinks the toaster is spying
+	OPTIMIST,			# Sees rain as sky hydration
+	PESSIMIST,			# Expects rain indoors
+	WORKAHOLIC,			# Vacations cause anxiety
+	LAZY,				# Would teleport to the fridge
+	SARCASTIC,			# Totally takes everything seriously
+	# ----------------------------
+};
+
 
 enum MOODS { 
 	# -----------
 	NORMAL,
 	WEIRD,
 	DEPRESSED, 
-	PARA
+	UNEASY,	
 	#WEIRD,
-	#UNEASY,
 	#ANXIOUS,
 	# -----------
 }

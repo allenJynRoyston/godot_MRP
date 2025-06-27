@@ -90,7 +90,6 @@ func on_next() -> void:
 	if track_list.is_empty():return
 	selected_track = (selected_track + 1) % track_list.size()
 	SUBSCRIBE.music_data = {
-		"track_list": track_list,
 		"selected": selected_track,
 	}
 	#play_selected_track()	
@@ -152,15 +151,14 @@ func check_track_scroll() -> void:
 
 # --------------------------------------		
 func on_music_data_update(music_data:Dictionary) -> void:
-	if "track_list" in music_data and music_data.track_list.size() > 0:		
-		track_list = music_data.track_list.filter(func(item):
-			if "unlocked" in item:
-				return item.unlocked.call(item.details)
-			return true
-		)
-		
-		selected_track = music_data.selected if "selected" in music_data else 0
-		play_selected_track()
+	track_list = MUSIC.track_list.filter(func(item):
+		if "unlocked" in item:
+			return item.unlocked.call(item.details)
+		return true
+	)
+	
+	selected_track = music_data.selected if "selected" in music_data else 0
+	play_selected_track()
 
 func on_process_update(delta: float) -> void:
 	super.on_process_update(delta)

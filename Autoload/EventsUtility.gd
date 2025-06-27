@@ -49,6 +49,7 @@ var GAME_OVER:Dictionary = {
 # ------------------------------------------------------------------------
 var SCP_ON_CONTAINMENT:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
+		var event_ref:int = EVT.TYPE.SCP_ON_CONTAINMENT
 		var option_selected:Dictionary = {
 			"val": null
 		}
@@ -57,32 +58,51 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 		
 		var room_details:Dictionary = props.room_details
 		var scp_details:Dictionary = props.scp_details
-		var scp_data:Dictionary = props.scp_data
+		var scp_entry:Dictionary = props.scp_entry
 		var researchers:Array = props.researchers
 		
-		var event:Dictionary = scp_details.event[EVT.TYPE.SCP_ON_CONTAINMENT]
-		var selected_researcher:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		var event:Dictionary = scp_details.event[event_ref]
+		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
+
+		# add additional props and send to event
+		props.selected_staff = selected_staff
+		props.vibes = vibes
 		
 		# build out story
 		var story_text:Array = []
-		for line in event.story.call(selected_researcher, scp_details):
+		for line in event.story.call(props):
 			story_text.push_back(line)
 		
 		# build out choices
-		var choices_data:Dictionary = event.choices.call(selected_researcher, scp_details)
+		var choices_data:Dictionary = event.choices.call(props)
 		var options:Array = []
-		for choice in choices_data.standard:
-			if "success_rate" not in choice:
-				choice.success_rate = 10 + 20
+		
+		# build "standard" choices
+		if "standard" in choices_data:
+			for choice in choices_data.standard:
+				choice.onSelected = onSelected
+				options.append(choice)
+		
+		# build "traits" choices
+		if "traits" in choices_data and selected_staff.trait.ref in choices_data.traits:
+			var choice:Dictionary = choices_data.traits[selected_staff.trait.ref]
 			choice.onSelected = onSelected
 			options.append(choice)
-					
+			
+		# build "mode" choices
+		if "mood" in choices_data and selected_staff.mood.ref in choices_data.mood:
+			var choice:Dictionary = choices_data.mood[selected_staff.mood.ref]
+			choice.onSelected = onSelected
+			options.append(choice)			
+			
 			
 		return [
 			# ---------
 			func() -> Dictionary:
 				return {
-					"header": "SCP_ON_CONTAIN",
+					"title": scp_details.name,
+					"subtitle": scp_details.nickname,
 					"img_src": scp_details.img_src,
 					"text": story_text,
 					"options": options
@@ -93,11 +113,17 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 				var is_success:bool = (option_selected.val.option.success_rate) > random_int
 				
 				# run the effect
+				var res:Dictionary = {}
 				if "effect" in option_selected.val.option:
-					option_selected.val.option.effect.call(selected_researcher, scp_details, is_success)
+					res = option_selected.val.option.effect.call(is_success)
+					# record event
+					if event_ref not in scp_data[scp_details.ref].event_results:
+						scp_data[scp_details.ref].event_results[event_ref] = [] 
+					scp_data[scp_details.ref].event_results[event_ref].push_back({"results": res, "title": option_selected.val.option.title})
 				
 				return {
-					"text":option_selected.val.option.story.call(selected_researcher, scp_details, is_success)
+					"set_return_val": func(): return res,
+					"text":option_selected.val.option.story.call(is_success)
 				}	
 
 					
@@ -105,10 +131,94 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var SCP_BREACH_EVENT_1:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var event_ref:int = EVT.TYPE.SCP_BREACH_EVENT_1
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+		
+		var room_details:Dictionary = props.room_details
+		var scp_details:Dictionary = props.scp_details
+		var scp_entry:Dictionary = props.scp_entry
+		var researchers:Array = props.researchers
+		var breach_count:int = scp_entry.breach_count
+				
+		var event:Dictionary = scp_details.event[event_ref]
+		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
 
-var SCP_BREACH_EVENT:Dictionary = {
-	
+		# add additional props and send to event
+		props.selected_staff = selected_staff
+		props.vibes = vibes
+		props.breach_count = breach_count
+		
+		# build out story
+		var story_text:Array = []
+		for line in event.story.call(props):
+			story_text.push_back(line)
+		
+		# build out choices
+		var choices_data:Dictionary = event.choices.call(props)
+		var options:Array = []
+		
+		# build "standard" choices
+		if "standard" in choices_data:
+			for choice in choices_data.standard:
+				choice.onSelected = onSelected
+				options.append(choice)
+		
+		# build "traits" choices
+		if "traits" in choices_data and selected_staff.trait.ref in choices_data.traits:
+			var choice:Dictionary = choices_data.traits[selected_staff.trait.ref]
+			choice.onSelected = onSelected
+			options.append(choice)
+			
+		# build "mode" choices
+		if "mood" in choices_data and selected_staff.mood.ref in choices_data.mood:
+			var choice:Dictionary = choices_data.mood[selected_staff.mood.ref]
+			choice.onSelected = onSelected
+			options.append(choice)			
+			
+			
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"title": scp_details.name,
+					"subtitle": scp_details.nickname,
+					"img_src": scp_details.img_src,
+					"text": story_text,
+					"options": options
+				},
+			# ---------
+			func() -> Dictionary:
+				var random_int:int = U.generate_rand(0, 100)
+				var is_success:bool = (option_selected.val.option.success_rate) > random_int
+				
+				# run the effect
+				var res:Dictionary = {}
+				if "effect" in option_selected.val.option:
+					res = option_selected.val.option.effect.call(is_success)
+					# record results
+					if event_ref not in scp_data[scp_details.ref].event_results:
+						scp_data[scp_details.ref].event_results[event_ref] = [] 
+					scp_data[scp_details.ref].event_results[event_ref].push_back({"results": res, "title": option_selected.val.option.title})
+					SUBSCRIBE.scp_data = scp_data
+				
+				return {
+					"set_return_val": func(): return res,
+					"text":option_selected.val.option.story.call(is_success)
+				}	
+
+					
+		],
 }
+# ------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------
 var HIRE_RESEARCHER:Dictionary = {
@@ -131,7 +241,7 @@ var HIRE_RESEARCHER:Dictionary = {
 			# ---------
 			func() -> Dictionary:
 				return {
-					"header": "HIRE RESEARCHER EVENT",
+					"title": "HIRE RESEARCHER",
 					"img_src": "res://Media/images/redacted.png",
 					"text": text,
 					"portrait": {
@@ -300,7 +410,7 @@ var PROMOTE_RESEARCHER:Dictionary = {
 			# ---------
 			func() -> Dictionary:
 				return {
-					"header": "PROMOTION EVENT",
+					"title": "PROMOTION EVENT",
 					"img_src": "res://Media/images/redacted.png",
 					"text": text,
 					"portrait": {
@@ -437,13 +547,9 @@ var UNHAPPY_HOUR:Dictionary = {
 			# ---------
 			func() -> Dictionary:
 				return {
-					"header": "UNHAPPY HOUR",
+					"title": "UNHAPPY HOUR",
 					"img_src": "res://Media/images/redacted.png",
 					"text": ["HAPPY HOUR"],
-					#"portrait": {
-						#"title": props.researcher.name,
-						#"img_src": props.researcher.img_src
-					#},
 					"options": [
 						# ----------------------------------------- NON-RESPONSE
 						{
@@ -506,7 +612,7 @@ var OBJECTIVE_REWARD:Dictionary = {
 			# ---------
 			func() -> Dictionary:
 				return {
-					"header": "OBJECTIVE_REWARD EVENT",
+					"title": "OBJECTIVE_REWARD EVENT",
 					"img_src": "res://Media/images/redacted.png",
 					"text": text,
 					"options": [
@@ -559,7 +665,7 @@ var reference_data:Dictionary = {
 	
 	# ------------------ 
 	EVT.TYPE.SCP_ON_CONTAINMENT: SCP_ON_CONTAINMENT,
-	EVT.TYPE.SCP_BREACH_EVENT: SCP_BREACH_EVENT,
+	EVT.TYPE.SCP_BREACH_EVENT_1: SCP_BREACH_EVENT_1,
 	
 	# ------------------
 	EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,

@@ -1,24 +1,25 @@
 extends MouseInteractions
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var MarginContainerPanel:MarginContainer = $MarginContainer
-@onready var IconBtn:Control = $MarginContainer/HBoxContainer/MarginContainer/IconBtn
-@onready var DescriptionListMarginContainer:MarginContainer = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer
-@onready var DescriptionLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionLabel
-@onready var DescriptionListContainer:VBoxContainer = $MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/DescriptionListContainer
-@onready var LockedTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/LockedTextBtn
-@onready var OptionTextBtn:Control = $MarginContainer/HBoxContainer/VBoxContainer/OptionTextBtn
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
 
-var onClick:Callable = func() -> void:
-	pass
-	
-var onFocus:Callable = func() -> void:
-	pass
+@onready var PropertyLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PropertyLabel
+@onready var TitleLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/TitleLabel
+@onready var CostLabel:Label = $MarginContainer2/CostLabel
+
 
 var index:int
 var enabled:bool = false 
-var is_locked:bool = false
-var is_enabled:bool = true
+
+var render_if:Dictionary = {} : 
+	set(val):
+		render_if = val
+		on_render_if_update()
+
+var is_available:bool = true : 
+	set(val):
+		is_available = val
+		is_available_update()
 
 var is_selected:bool = false : 
 	set(val):
@@ -30,96 +31,76 @@ var data:Dictionary = {} :
 		data = val
 		on_data_update()
 
-var show_description:bool = false : 
-	set(val):
-		show_description = val 
-		on_show_description_update()
+var onClick:Callable = func() -> void:pass
+var onHover:Callable = func() -> void:pass
 
 # ----------------------
+func _init() -> void:
+	super._init()
+	modulate = Color(1, 1, 1, 0)
+
 func _ready() -> void:
 	super._ready()
 	on_data_update()
-	on_show_description_update()
-	on_is_selected_update()
+	on_render_if_update.call_deferred()	
+	hint_title = "HINT"
+	
+
+func start(delay:float = 0) -> void:
+	U.tween_node_property(IconBtn, 'static_color:a', 0.6, 0.3, delay)
+	U.tween_node_property(self, 'modulate:a', 0.6, 0.3, delay)
+	await U.set_timeout(0.1)
 # ----------------------
 
 # ----------------------	
-func fade_out() -> void:
-	tween_option_color(DescriptionLabel, "modulate", Color(1, 0, 0, 0.3), 0.3)
-	for node in [IconBtn, LockedTextBtn, OptionTextBtn]:
-		tween_option_color(node, "static_color", Color(1, 1, 1, 0.3), 0.3)
-		
+func fade_out(delay:float = 0) -> void:
+	U.tween_node_property(IconBtn, 'static_color:a', 0, 0.3, delay)
+	await U.tween_node_property(self, 'modulate:a', 0, 0.3, delay)
 # ----------------------		
 
-# ----------------------
-func on_focus(state:bool) -> void:
-	if state and is_enabled:
-		if !is_locked and is_enabled:
-			onFocus.call(self)
-
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover and node == self:
-		if !is_locked and is_enabled:
-			onClick.call()
+# ----------------------	
+func is_available_update() -> void:
+	if !is_node_ready():return
+	IconBtn.hide() if is_available else IconBtn.show()
+	
+	on_is_selected_update()
+	on_data_update()
 # ----------------------	
 
 # ----------------------	
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	IconBtn.icon = SVGS.TYPE.LOCK if is_locked and !is_selected else  SVGS.TYPE.MEDIA_PLAY if is_selected else SVGS.TYPE.NONE
-	IconBtn.static_color = Color.RED if is_locked else COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if is_selected else COLORS.TEXT.INACTIVE)
-	OptionTextBtn.static_color = Color.RED if is_locked else COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE if is_selected else COLORS.TEXT.INACTIVE)
 	var stylebox:StyleBoxFlat = RootPanel.get("theme_override_styles/panel").duplicate()
-	stylebox.border_color = Color.RED if is_locked else (Color.WHITE if is_selected else Color.WEB_GRAY)
-	RootPanel.set('theme_override_styles/panel', stylebox)
+	stylebox.bg_color = Color.RED if !is_available else (Color(0.337, 0.275, 1.0) if is_selected else Color(0.162, 0.162, 0.162))
+	RootPanel.set('theme_override_styles/panel', stylebox)	
 	
-func on_show_description_update() -> void:
-	if !is_node_ready():return
-	MarginContainerPanel.add_theme_constant_override("margin_bottom", 10 if show_description else 5)
-	IconBtn.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if show_description else Control.SIZE_SHRINK_CENTER
-	DescriptionLabel.show() if show_description else DescriptionLabel.hide()
+	modulate = Color(1, 1, 1, 1 if is_selected else 0.6)
+	IconBtn.static_color.a = 1 if is_selected else 0.6
+	
+	if is_available:
+		hint_description = "Estimated chance of success: %s%s." % [data.success_rate, "%"] 
+	else:
+		hint_description = "UNAVAILABLE" if render_if.is_empty() else render_if.hint_description
 
+
+func on_render_if_update() -> void:
+	if !is_node_ready():return
+	
+	if render_if.is_empty():
+		is_available = true
+		PropertyLabel.hide()
+		CostLabel.hide()
+		return
+		
+	if "cost" in render_if:
+		CostLabel.text = str("[", render_if.cost.text, "]")
+	else:
+		CostLabel.hide()
+		
+	is_available = !render_if.is_available	
+	PropertyLabel.text = "[%s]" % render_if.property
+	
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
-	OptionTextBtn.title = data.title
-	LockedTextBtn.title = data.title
-	
-	for node in DescriptionListContainer.get_children():
-		node.queue_free()
-	
-	if "locked" in data and data.locked:
-		LockedTextBtn.show() 
-		OptionTextBtn.hide()
-		is_locked = true
-		on_is_selected_update()
-	
-	if "success_rate" in data:
-		DescriptionLabel.text = "%s %s" % ["(%s rate of success)" % [str(data.success_rate,'%')], str(" - ", data.description) if "description" in data else ""]
-		show_description = show_description
-	else:
-		show_description = false
-	
-
-	if "description_list" in data and data.description_list.size() > 0:
-		var label_setting_copy:LabelSettings = DescriptionLabel.label_settings.duplicate()
-		
-		for item in data.description_list:
-			var new_label:Label = Label.new()
-			label_setting_copy.font_color = item.font_color
-			
-			new_label.label_settings = label_setting_copy
-			new_label.text = item.text
-			DescriptionListContainer.add_child(new_label)
-
-	if !show_description and DescriptionListContainer.get_child_count() == 0:
-		DescriptionListMarginContainer.hide()
-	else:
-		DescriptionListMarginContainer.show()
+	TitleLabel.text = data.title
 # ----------------------
-
-# --------------------------------------------------------------------------------------------------		
-func tween_option_color(node:Node, prop:String, new_color:Color, duration:float = 0.3) -> void:
-	var tween:Tween = create_tween()
-	tween.tween_property(node, prop, new_color, duration).set_trans(Tween.TRANS_QUAD)
-	await tween.finished
-# --------------------------------------------------------------------------------------------------		

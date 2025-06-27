@@ -17,12 +17,12 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------	
 func on_data_update() -> void:
-	if is_node_ready() and !data.is_empty():
+	if is_node_ready():
 		var list_data:Array[Dictionary] = []
 		var author_list:Dictionary = {}
 		var all_tracks:Array = []
 		
-		for index in data.music_track_list.size():
+		for index in MUSIC.track_list.size():
 			var item:Dictionary = data.music_track_list[index]
 			var details:Dictionary = item.details
 			

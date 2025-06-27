@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dq5icchnwt717" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_0kr8o"]
+[ext_resource type="Texture2D" uid="uid://q14ayb5jrajl" path="res://Media/images/wondertainment_logo.png" id="2_1rmxq"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_chhwg"]
-[ext_resource type="Texture2D" uid="uid://buoc227nx6p7" path="res://Media/images/wondertainment_logo.jpg" id="2_eidsy"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_1rmxq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5hsv"]
@@ -42,7 +42,7 @@ custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = ExtResource("2_eidsy")
+texture = ExtResource("2_1rmxq")
 expand_mode = 1
 stretch_mode = 4
 

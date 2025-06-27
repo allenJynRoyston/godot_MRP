@@ -165,7 +165,7 @@ func tween_node_property(node:Node, prop:String, new_val, duration:float = 0.3, 
 func tween_range(start_at:float, end_at:float, duration:float, callback:Callable = func(_val):pass) -> Tween:
 	var tween:Tween = create_tween()
 	#tween.set_ease(Tween.EASE_OUT_IN)
-	tween.set_trans(Tween.TRANS_CIRC)
+	tween.set_trans(Tween.TRANS_LINEAR)
 	tween.tween_method(callback, start_at, end_at, duration)
 	return tween
 # -----------------------------------------------	

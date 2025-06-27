@@ -44,29 +44,45 @@ var specialization_data:Dictionary = {
 };
 
 var trait_data: Dictionary = {
-	RESEARCHER.TRAITS.NORMAL: {
+	RESEARCHER.TRAITS.AVERAGE: {
 		"name": "Normal",
-		"description": "No obvious phobias present."
-	},	
-	RESEARCHER.TRAITS.ACROPHOBIA: {
-		"name": "Acrophobia",
-		"description": "An intense fear of heights that can trigger anxiety and avoidance behaviors in elevated environments."
+		"description": "Subject displays baseline psychological and behavioral responses. No anomalous tendencies or notable cognitive irregularities observed."
 	},
-	RESEARCHER.TRAITS.THALASSOPHOBIA: {
-		"name": "Thalassophobia",
-		"description": "A persistent fear of deep or vast bodies of water, often accompanied by feelings of dread or panic."
+	RESEARCHER.TRAITS.NARCISSIST: {
+		"name": "Narcissist",
+		"description": "Subject exhibits a persistent preoccupation with self-image and perceived superiority. Displays hypersensitivity to criticism and an elevated need for validation."
 	},
-	RESEARCHER.TRAITS.NYCTOPHOBIA: {
-		"name": "Nyctophobia",
-		"description": "A fear of darkness or nighttime that can cause distress and difficulty in low-light situations."
+	RESEARCHER.TRAITS.INTROVERT: {
+		"name": "Introvert",
+		"description": "Subject demonstrates preference for solitary environments and reduced engagement in social stimuli. Displays elevated stress indicators during prolonged interpersonal exposure."
 	},
-	RESEARCHER.TRAITS.ATYCHIPHOBIA: {
-		"name": "Atychiphobia",
-		"description": "An irrational fear of failure leading to excessive caution and avoidance of challenging tasks."
+	RESEARCHER.TRAITS.EXTROVERT: {
+		"name": "Extrovert",
+		"description": "Subject seeks continuous social interaction and external stimulation. Performance in isolation conditions is notably degraded."
 	},
-	RESEARCHER.TRAITS.ATHAZAGORAPHOBIA: {
-		"name": "Athazagoraphobia",
-		"description": "A fear of being forgotten or ignored, often resulting in social withdrawal or anxiety."
+	RESEARCHER.TRAITS.PARANOID: {
+		"name": "Paranoid",
+		"description": "Subject displays heightened vigilance, suspicion of external intent, and a tendency to infer hostile motives. Exhibits resistance to surveillance procedures."
+	},
+	RESEARCHER.TRAITS.OPTIMIST: {
+		"name": "Optimist",
+		"description": "Subject consistently interprets adverse scenarios with an expectation of positive outcomes. Demonstrates resilience to psychological stressors but may underestimate threat severity."
+	},
+	RESEARCHER.TRAITS.PESSIMIST: {
+		"name": "Pessimist",
+		"description": "Subject maintains a negative outlook across variable conditions. Exhibits anticipatory anxiety and reduced confidence in successful outcomes."
+	},
+	RESEARCHER.TRAITS.WORKAHOLIC: {
+		"name": "Workaholic",
+		"description": "Subject shows compulsive engagement with task-oriented behavior. Tendency to neglect rest cycles and personal health in favor of perceived productivity."
+	},
+	RESEARCHER.TRAITS.LAZY: {
+		"name": "Lazy",
+		"description": "Subject avoids effort-intensive activities and demonstrates reduced motivation under standard incentives. Performance metrics show consistent underutilization of cognitive and physical capability."
+	},
+	RESEARCHER.TRAITS.SARCASTIC: {
+		"name": "Sarcastic",
+		"description": "Subject communicates using frequent irony and indirect expression. Ambiguity in statements may impact clarity of intent and operational reliability."
 	},
 };
 
@@ -90,7 +106,7 @@ var mood_data:Dictionary = {
 # ------------------------------------------------------------------------------
 func generate_new_researcher_hires(number:int) -> Array:
 	var researchers:Array = []
-	for n in range(1, number):
+	for n in range(0, number):
 		researchers.push_back(generate_researcher(n))
 	return researchers
 # ------------------------------------------------------------------------------
@@ -121,14 +137,14 @@ func generate_researcher(assign_spec:int = -1) -> Array:
 		else:
 			specialization = U.generate_rand(1, RESEARCHER.SPECIALIZATION.size() - 1)
 	
-	var traits:int = RESEARCHER.TRAITS.NORMAL
+	var traits:int = RESEARCHER.TRAITS.AVERAGE
 	var mood:int = RESEARCHER.MOODS.NORMAL
 	var lval:int = U.generate_rand(0, 9)
 	
 	return [ 
 		uid, 		 	# 0 UID
 		lname, 			# 1 LASTNAME
-		traits, 		# 2 TRAITS
+		traits, 			# 2 TRAITS
 		specialization, # 3 SPECS
 		mood, 			# 4 MOOD
 		lval, 			# 5 LUCK VALUE

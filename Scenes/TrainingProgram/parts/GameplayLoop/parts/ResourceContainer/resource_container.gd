@@ -167,9 +167,9 @@ func on_room_config_update(new_val:Dictionary) -> void:
 # ----------------------------------------------			
 func on_camera_settings_update(new_val:Dictionary) -> void: 
 	super.on_camera_settings_update(new_val)	
-	U.debounce(str(self.name, "_update_energy_panel"), update_panels)
-	if new_val.is_empty():return
+	if !is_node_ready() or new_val.is_empty():return
 	
+	U.debounce(str(self.name, "_update_energy_panel"), update_panels)
 	var nodes:Array = [FloorVisualizer, WingVisualizer, RoomVisualizer]
 
 	match new_val.type:
@@ -188,10 +188,10 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 # -----------------------------------------------			
 
 # -----------------------------------------------
-func update_vibes(morale_val:int, safety_val:int, readiness_val:int) -> void:
-	VibeMorale.value = morale_val
-	VibeSafety.value = safety_val
-	VibeReadiness.value = readiness_val
+func update_vibes(current_vibe:Dictionary) -> void:
+	VibeMorale.value = str(current_vibe[RESOURCE.METRICS.MORALE])
+	VibeSafety.value = str(current_vibe[RESOURCE.METRICS.SAFETY])
+	VibeReadiness.value = str(current_vibe[RESOURCE.METRICS.READINESS])
 
 
 func update_status_container(status_list:Array, container:Control) -> void:
@@ -230,15 +230,7 @@ func update_panels() -> void:
 	
 	# vibes
 	VibesContainer.hide() if camera_settings.is_locked and camera_settings.type == CAMERA.TYPE.FLOOR_SELECT else VibesContainer.show()
-	var floor_level_metrics:Dictionary = floor_config_data.metrics	
-	var ring_level_metrics:Dictionary = ring_config_data.metrics
-	var total_metrics:Dictionary = {}
-	for dict in [floor_level_metrics, ring_level_metrics]:
-		for ref in dict:
-			if ref not in total_metrics:
-				total_metrics[ref] = 0
-			total_metrics[ref] += dict[ref]	
-	update_vibes(total_metrics[RESOURCE.METRICS.MORALE], total_metrics[RESOURCE.METRICS.SAFETY], total_metrics[RESOURCE.METRICS.READINESS])
+	update_vibes(GAME_UTIL.get_vibes_summary(current_location))
 	
 	# update buffs/debuffs/status
 	for node in [FloorBuffsContainer, RingBuffsContainer, RoomBuffContainer]:
