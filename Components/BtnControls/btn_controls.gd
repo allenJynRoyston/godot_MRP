@@ -315,7 +315,7 @@ func on_item_index_update() -> void:
 	
 	if "get_hint" in node and !node.get_hint().is_empty():
 		var hint:Dictionary = node.get_hint()
-		if hint.title == "" and hint.description == "":
+		if hint.description == "":
 			HintContainer.hide()
 		else:
 			HintIcon.icon = hint.icon

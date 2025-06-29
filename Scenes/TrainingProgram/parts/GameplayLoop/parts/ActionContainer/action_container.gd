@@ -326,7 +326,7 @@ func start(start_at_ring_level:bool = false) -> void:
 	TutorialBtn.onClick = func() -> void:
 		freeze_inputs = true
 		await lock_actions(true)
-		await GAME_UTIL.get_last_tutorial()
+		await GAME_UTIL.start_tutorial()
 		lock_actions(false)
 		freeze_inputs = false
 	# -------------------------------------

@@ -42,7 +42,6 @@ func zero() -> void:
 	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].zero)	
 # --------------------------------	
 
-
 # --------------------------------	
 func end() -> void:
 	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide)

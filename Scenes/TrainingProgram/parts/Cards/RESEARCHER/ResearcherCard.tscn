@@ -150,6 +150,9 @@ border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 [node name="TextureRect" parent="CardBody" index="0"]
 texture = SubResource("ViewportTexture_qnqh7")
 
+[node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
+offset_bottom = 431.0
+
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_ughr2")
 

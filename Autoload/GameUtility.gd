@@ -632,10 +632,9 @@ func trigger_breach_event(scp_ref:int, BreachNode:Control) -> void:
 	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.DANGER
 	SUBSCRIBE.base_states = base_states
-	await U.set_timeout(3.0)	
+	await U.set_timeout(3.5)	
 	GameplayNode.show_only([])
 	await BreachNode.zero()
-
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
 		EVT.TYPE.SCP_BREACH_EVENT_1, 
@@ -651,9 +650,6 @@ func trigger_breach_event(scp_ref:int, BreachNode:Control) -> void:
 	# restore previous emergency mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
 	SUBSCRIBE.base_states = base_states
-	
-	# restore hud
-	GameplayNode.restore_player_hud()
 # --------------------------------------------------------------------------------------------------	
 	
 

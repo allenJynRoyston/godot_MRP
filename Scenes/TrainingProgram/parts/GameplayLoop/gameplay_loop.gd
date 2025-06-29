@@ -903,6 +903,7 @@ func on_current_phase_update() -> void:
 					if index == refs.size() - 1:
 						await BreachNode.end()
 						BreachNode.queue_free()
+
 						
 						# open music player, no music selected
 						SUBSCRIBE.music_data = {
@@ -915,7 +916,9 @@ func on_current_phase_update() -> void:
 				#for item in timeline_filter:
 					#if "event" in item and !item.event.is_empty():
 						#await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
-			
+
+			# restore hud
+			restore_player_hud()
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
 		PHASE.CONCLUDE:

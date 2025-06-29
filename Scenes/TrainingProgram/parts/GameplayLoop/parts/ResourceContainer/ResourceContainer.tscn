@@ -394,7 +394,7 @@ allow_hint = true
 [node name="Materials" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
-icon = 41
+icon = 40
 no_bg = true
 title = "99"
 display_at_bottom = true

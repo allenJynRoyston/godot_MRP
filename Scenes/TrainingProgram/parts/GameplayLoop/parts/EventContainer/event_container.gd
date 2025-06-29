@@ -4,6 +4,18 @@ extends GameContainer
 @onready var BtnControls:Control = $BtnControls
 @onready var ColorRectBG:ColorRect = $ColorRectBG
 @onready var TransitionScreen:Control = $TransistionScreen
+@onready var ResourceFloatingPanel:Control = $ResourceRequiredFloatingPanel
+@onready var ConsequenceFloatingPanel:Control = $ConsequenceFloatingPanel
+
+@onready var ResearcherPanel:PanelContainer = $ResearcherControl/PanelContainer
+@onready var ResearcherMargin:MarginContainer = $ResearcherControl/PanelContainer/MarginContainer
+@onready var ResearcherCard:Control = $ResearcherControl/PanelContainer/MarginContainer/ResearcherCard
+
+@onready var SuccessRollControl:Control = $SuccessRollControl
+@onready var RollLabel:Label = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/RollLabel
+@onready var RollIcon:Control = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Control/RollIcon
+@onready var SuccessPanel:Control = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SuccessPanel
+@onready var FailurePanel:Control = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FailurePanel
 
 @onready var ImagePanel:PanelContainer = $ImageControl/PanelContainer
 @onready var ImageMargin:MarginContainer = $ImageControl/PanelContainer/MarginContainer
@@ -81,11 +93,32 @@ func _ready() -> void:
 	BtnControls.onUpdate = func(_node:Control) -> void:
 		for index in OptionsListContainer.get_child_count():
 			var node:Control = OptionsListContainer.get_child(index)
-			option_selected_index = index
 			node.is_selected = node == _node	
 			if node == _node:
+				# assign
 				SelectedNode = node
-		
+				option_selected_index = index
+				
+				# apply special cases
+				node.apply_dyslexia = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.DYSLEXIC if "selected_staff" in current_instruction else false 
+				node.allow_for_hint = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.ANALYTICAL if "selected_staff" in current_instruction else false 
+				
+				# update and move floating resource 
+				var has_cost:bool = "render_if" in node.data and "cost" in node.data.render_if
+				ResourceFloatingPanel.reveal(has_cost)
+				ResourceFloatingPanel.update(node.data.render_if.cost if has_cost else {})
+				ResourceFloatingPanel.goto(node.global_position + node.size + Vector2(0, -node.size.y/2))
+				
+				# show negative consequence odds IF 
+				var is_pessimisstic:bool = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.PESSIMIST if "selected_staff" in current_instruction else false 
+				var is_optimistic:bool = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.OPTIMIST if "selected_staff" in current_instruction else false 
+				var show_consequences:bool = is_pessimisstic or is_optimistic
+				var type:String = "NEGATIVE" if is_pessimisstic else "POSITIVE" if is_optimistic else ""
+				
+				ConsequenceFloatingPanel.reveal(show_consequences)
+				ConsequenceFloatingPanel.update(node.data if show_consequences else {}, type)
+				ConsequenceFloatingPanel.goto(node.global_position + Vector2(0, node.size.y) + Vector2(0, -node.size.y/2))
+
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
@@ -95,13 +128,17 @@ func activate() -> void:
 	# center elements
 	control_pos[ContentPanel] = {
 		"show": 0, 
-		"present": 100,
+		"present": 140,
 		"hide": -ContentMargin.size.y
-		
+	}
+	
+	control_pos[ResearcherPanel] = {
+		"show": 0,
+		"hide": -ResearcherMargin.size.x
 	}
 
 	ContentPanel.position.y = control_pos[ContentPanel].hide	
-
+	ResearcherPanel.position.x = control_pos[ResearcherPanel].hide
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -110,6 +147,9 @@ func reset() -> void:
 	if !is_node_ready():return
 	update_next_btn(false)
 	reveal_outputtexture(false, 0.0)	
+	
+	SuccessRollControl.modulate = Color(1, 1, 1, 0)
+	SuccessRollControl.hide()
 	
 	for node in [ImageTitle, ImageSubTitle]:
 		node.text = ""	
@@ -158,6 +198,10 @@ func start(new_event_data:Array) -> void:
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
 	BtnControls.reveal(false)
+	
+	reveal_researcher(false)
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide, 0.7	 )
+	
 	TransitionScreen.end()
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
 	
@@ -166,6 +210,13 @@ func end() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func reveal_researcher(state:bool, duration:float = 0.7) -> void:
+	if !state:
+		ResearcherCard.reveal = false	
+	await U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].show if state else control_pos[ResearcherPanel].hide, duration)
+	if state:
+		ResearcherCard.reveal = true
+
 func reveal_outputtexture(state:bool, duration:float) -> void:
 	var material_duplication:Material = ImageOutputTextureRect.material.duplicate()
 	ImageOutputTextureRect.material = material_duplication
@@ -183,12 +234,26 @@ func reveal_outputtexture(state:bool, duration:float) -> void:
 		).finished
 # --------------------------------------------------------------------------------------------------		
 
+
+# --------------------------------------------------------------------------------------------------		
+func use_roll_panel(is_success:bool, duration:float = 4.0) -> void:
+	SuccessRollControl.show()
+	await U.tween_node_property(SuccessRollControl, "modulate", Color(1, 1, 1, 1))	
+
+	RollIcon.rotation_degrees = -720.0
+	await U.tween_node_property(RollIcon, "rotation_degrees", 180 if is_success else 0, duration, 0, Tween.TRANS_SPRING, Tween.EASE_IN_OUT)
+	
+	await U.tween_node_property(SuccessRollControl, "modulate", Color(1, 1, 1, 0), 0.3, 0.5)	
+	SuccessRollControl.hide()
+# --------------------------------------------------------------------------------------------------		
+
+
+
 # --------------------------------------------------------------------------------------------------		
 func next_event(inc:bool = false) -> void:
 	if inc:
 		event_instruction_index += 1
 
-	
 	if event_instruction_index >= event_data.size():
 		end()
 	else:
@@ -266,6 +331,7 @@ func on_current_instruction_update() -> void:
 	BtnControls.itemlist = []
 	BtnControls.onAction = func() -> void:pass			
 	
+	
 	# -----------------------------------
 	if "title" in current_instruction:
 		ImageTitle.text = "%s" % [current_instruction.title]
@@ -273,18 +339,34 @@ func on_current_instruction_update() -> void:
 	if "subtitle" in current_instruction:
 		ImageSubTitle.text = "%s" % [current_instruction.subtitle]		
 
-	if "img_src" in current_instruction:		
-		ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
-		reveal_outputtexture(true, 2.0)
+	if "img_src" in current_instruction:	
+		if ImageTextureRect.texture != CACHE.fetch_image(current_instruction.img_src):
+			ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
+			reveal_outputtexture(true, 2.0)
+		
+	if "selected_staff" in current_instruction:
+		if ResearcherCard.uid != current_instruction.selected_staff.uid:
+			ResearcherCard.uid = current_instruction.selected_staff.uid
+			reveal_researcher(true)
+
+	if "set_return_val" in current_instruction:
+		event_output = current_instruction.set_return_val.call()	
 	# -----------------------------------
 
 	# -----------------------------------
-	if "set_return_val" in current_instruction:
-		event_output = current_instruction.set_return_val.call()
+	if "use_success_roll" in current_instruction and current_instruction.use_success_roll:
+		reveal_researcher(false)
+		await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
+		await use_roll_panel(current_instruction.use_success_roll, 1.0)
+		await BtnControls.reveal(true)
+		if ResearcherCard.uid != null:
+			reveal_researcher(true)
 	# -----------------------------------
 
 	# -----------------------------------
 	if "text" in current_instruction:
+		BtnControls.reveal(true)
+
 		U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].present, 0.7)
 		
 		if current_instruction.text.size() > 0:
@@ -294,13 +376,13 @@ func on_current_instruction_update() -> void:
 			BodyContainer.show()
 			text_index = 0
 			current_text = current_instruction.text[0]
-			# change controls to wait for input 
-			# wait for all texts in array to finish before being allowed to continue
 			await text_phase_complete
 	# -----------------------------------
 
 	# -----------------------------------
-	if "options" in current_instruction:
+	if "options" in current_instruction and !current_instruction.options.is_empty():
+		BtnControls.reveal(true)
+		
 		await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show, 0.7)
 		await U.set_timeout(0.3)
 		
@@ -314,23 +396,33 @@ func on_current_instruction_update() -> void:
 			child.queue_free()			
 		
 		var options:Array = current_instruction.options
+		var is_paranoid:bool = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.PARANOID if "selected_staff" in current_instruction else false 
+
+		if is_paranoid:
+			options.shuffle()
 		
-		var compromised_count:int = 0
 		for index in options.size():
 			var option:Dictionary = options[index]
 			var new_node:Control = OptionListItem.instantiate()
 			var is_unavailable:bool = option.is_unavailable if "is_unavailable" in option else false
 			var render_if:Dictionary = option.render_if if "render_if" in option else {}
-
-			new_node.data = option
-			new_node.index = index 
-			new_node.render_if = render_if
-			new_node.is_hoverable = false
-			new_node.onClick = func() -> void:
-				if !new_node.is_available:return
-				on_option_select()
-				
-			OptionsListContainer.add_child(new_node)
+			var show:bool = option.show if "show" in option else true
+			
+			if !render_if.is_empty():
+				if "show" in render_if:
+					show = render_if.show
+			
+			if show:
+				new_node.is_paranoid = is_paranoid
+				new_node.data = option
+				new_node.index = index 
+				new_node.render_if = render_if
+				new_node.is_hoverable = false
+				new_node.onClick = func() -> void:
+					if !new_node.is_available:return
+					on_option_select(option)
+					
+				OptionsListContainer.add_child(new_node)
 		
 		await U.tick()
 		
@@ -348,51 +440,45 @@ func on_current_instruction_update() -> void:
 		
 		update_next_btn(true)
 		return
-		
 	# -----------------------------------
+	
+	# -----------------------------------
+	if "end" in current_instruction and current_instruction.end:
+		BtnControls.reveal(true)
+		BtnControls.a_btn_title = "CLOSE"
+		BtnControls.onAction = func() -> void:
+			end()
+		has_more = false
+		return 
+	# -----------------------------------
+	
 	next_instruction(true)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_option_select() -> void:	
-	update_next_btn(false)
+func on_option_select(option:Dictionary) -> void:	
+	await BtnControls.reveal(false)
 	
-	var option:Dictionary = current_instruction.options[option_selected_index]
+	update_next_btn(false)	
 	NoteContainer.hide()
+	
+	ResourceFloatingPanel.fade_out()
+	ConsequenceFloatingPanel.fade_out()
+	
+	RollLabel.text = option.title
 	
 	for index in OptionsListContainer.get_child_count():
 		var node:Control = OptionsListContainer.get_child(index)
 		node.fade_out(0 if node != SelectedNode else 1.0) 
 	
 	await U.set_timeout(1.5)
-	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].present, 0.7)
 
 	if "onSelected" in option:
-		# if selected val property is available, send it
 		option.onSelected.call({"index": option_selected_index, "option": option})
 		
 	# goto next instruction
 	next_instruction(true)
 # --------------------------------------------------------------------------------------------------		
-
-## --------------------------------------------------------------------------------------------------		
-#func on_option_selected_index() -> void:
-	#if !is_node_ready():return
-	#
-	#var options:Array = current_instruction.options
-	#var option:Dictionary = options[option_selected_index]
-#
-	#for child in NoteContainer.get_children():
-		#child.queue_free()	
-	#NoteContainer.hide()
-	#
-	#if "notes" in option:
-		#NoteContainer.show()
-		#for data in option.notes:
-			#var new_node:Control = OptionNoteItem.instantiate()
-			#new_node.data = data
-			#NoteContainer.add_child(new_node)
-## --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	
 func tween_reveal(node:Control, property:String, val:Color, duration:float = 0.5) -> void:
@@ -409,4 +495,16 @@ func tween_text_reveal(duration:float = 0.3) -> void:
 	text_reveal_tween.play()
 	await text_reveal_tween.finished
 	await U.set_timeout(0.5)
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func _process(delta: float) -> void:
+	if !is_node_ready() or !SuccessRollControl.is_visible_in_tree(): return
+
+	var normalized_rotation = fmod(RollIcon.rotation_degrees, 360.0)
+	if normalized_rotation < 0.0:
+		normalized_rotation += 360.0
+	
+	FailurePanel.modulate = Color(1, 1, 1, 1.0 if normalized_rotation >= 0.0 and normalized_rotation < 140.0 else 0.5)
+	SuccessPanel.modulate = Color(1, 1, 1, 1.0 if normalized_rotation >= 180.0 and normalized_rotation < 320.0 else 0.5)
 # --------------------------------------------------------------------------------------------------	

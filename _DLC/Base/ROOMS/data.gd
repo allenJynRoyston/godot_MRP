@@ -15,7 +15,7 @@ var DEBUG_ROOM:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY, RESEARCHER.SPECIALIZATION.ENGINEERING],
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY, RESEARCHER.SPECIALIZATION.STAFF],
 	# ------------------------------------------
 
 	# ------------------------------------------	
@@ -158,7 +158,7 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 
 	# --------------------------------------
-	"requires_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
+	"requires_specialization": RESEARCHER.SPECIALIZATION.STAFF,
 	# ------------------------------------------
 		
 	# ------------------------------------------

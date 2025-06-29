@@ -1,62 +1,35 @@
 @tool
 extends Node
 
-#enum TRAIT_TYPE {
-	#POSITIVE, NEGATIVE, NEUTRAL
-#}
+enum SPECIALIZATION { 
+	ANY,
+	STAFF,
+	DCLASS,
+	SECURITY,
+}
 
 enum TRAITS {
 	# ----------------------------
 	AVERAGE,				# Average in every way
-	NARCISSIST,			# Fear of mirrors
-	INTROVERT,			# Social battery lasts 3 minutes
-	EXTROVERT,			# Needs an audience to think
-	PARANOID,			# Thinks the toaster is spying
-	OPTIMIST,			# Sees rain as sky hydration
-	PESSIMIST,			# Expects rain indoors
-	WORKAHOLIC,			# Vacations cause anxiety
-	LAZY,				# Would teleport to the fridge
-	SARCASTIC,			# Totally takes everything seriously
+	
+	ANALYTICAL,			# shows likely odds as a hint
+	RESOURCEFUL,			# sometimes adds an additional choice
+	
+	OPTIMIST,			# Viewable POSITIVE CONSEQUENCES during choices
+	PESSIMIST,			# Viewable NEGATIVE CONSEQUENCES during choices
+	
+	DYSLEXIC,			# Events options are SCRAMBLED
+	PARANOID,			# Choices always render as "[PARANOID] they're all out ot get you..."
 	# ----------------------------
 };
 
 
 enum MOODS { 
 	# -----------
-	NORMAL,
-	WEIRD,
-	DEPRESSED, 
-	UNEASY,	
-	#WEIRD,
-	#ANXIOUS,
+	STABLE,
+	
+	FRIGHTENED,			# makes SAFETY choices unavailable
+	DEPRESSED, 			# makes MORALE choices unavailable
+	RELUCTANT,			# makes READINESS choices unavailable
 	# -----------
-}
-
-enum SPECIALIZATION { 
-	ANY,
-	ADMINISTRATION,
-	# ---------
-	ENGINEERING,
-	COMPUTER_SCIENCE,
-	#MATHEMATICS,
-	#PHYSICS,
-	#CHEMISTRY,
-	#BIOLOGIST,
-
-  	# ---------
-	#PSYCHOLOGY,
-	#MEDICINE,
-	#PHARMACOLOGY,
-	#NEUROSCIENCE,
-#
-   ## ---------
-	#SOCIOLOGY,
-	#ANTHROPOLOGY,
-	#PHILOSOPHY,
-	#ADMINISTRATION,
-#
-	## ---------
-	#PARAZOOLOGIST,
-	#THAUMATURGIC_ANALYST,
-	#XENOBIOLOGIST,
 }

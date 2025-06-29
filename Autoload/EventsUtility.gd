@@ -61,7 +61,7 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 		var scp_entry:Dictionary = props.scp_entry
 		var researchers:Array = props.researchers
 		
-		var event:Dictionary = scp_details.event[event_ref]
+		var event_data:Array = scp_details.event[event_ref]
 		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
 		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
 
@@ -69,65 +69,84 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 		props.selected_staff = selected_staff
 		props.vibes = vibes
 		
-		# build out story
-		var story_text:Array = []
-		for line in event.story.call(props):
-			story_text.push_back(line)
-		
-		# build out choices
-		var choices_data:Dictionary = event.choices.call(props)
-		var options:Array = []
-		
-		# build "standard" choices
-		if "standard" in choices_data:
-			for choice in choices_data.standard:
-				choice.onSelected = onSelected
-				options.append(choice)
-		
-		# build "traits" choices
-		if "traits" in choices_data and selected_staff.trait.ref in choices_data.traits:
-			var choice:Dictionary = choices_data.traits[selected_staff.trait.ref]
-			choice.onSelected = onSelected
-			options.append(choice)
+		# build seequence		
+		var sequence:Array = []
+		for item in event_data:
+						
+			# build out story
+			var story_text:Array = []
+			for line in item.story.call(props):
+				story_text.push_back(line)
 			
-		# build "mode" choices
-		if "mood" in choices_data and selected_staff.mood.ref in choices_data.mood:
-			var choice:Dictionary = choices_data.mood[selected_staff.mood.ref]
-			choice.onSelected = onSelected
-			options.append(choice)			
+			# build out choices
+			var options:Array = []
+			if "choices" in item:
+				var choices:Array = item.choices.call(props)
+				for choice in choices:
+					choice.onSelected = onSelected
+					options.append(choice)
 			
+			sequence.push_back(
+				# ---------
+				func() -> Dictionary:
+					return {
+						"title": scp_details.name,
+						"subtitle": scp_details.nickname,
+						"img_src": scp_details.img_src,
+						"selected_staff": selected_staff,
+						"text": story_text,
+						"options": options
+					}
+			)
 			
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"title": scp_details.name,
-					"subtitle": scp_details.nickname,
-					"img_src": scp_details.img_src,
-					"text": story_text,
-					"options": options
-				},
-			# ---------
-			func() -> Dictionary:
-				var random_int:int = U.generate_rand(0, 100)
-				var is_success:bool = (option_selected.val.option.success_rate) > random_int
-				
-				# run the effect
-				var res:Dictionary = {}
-				if "effect" in option_selected.val.option:
-					res = option_selected.val.option.effect.call(is_success)
-					# record event
-					if event_ref not in scp_data[scp_details.ref].event_results:
-						scp_data[scp_details.ref].event_results[event_ref] = [] 
-					scp_data[scp_details.ref].event_results[event_ref].push_back({"results": res, "title": option_selected.val.option.title})
-				
-				return {
-					"set_return_val": func(): return res,
-					"text":option_selected.val.option.story.call(is_success)
-				}	
+			if !options.is_empty():
+				sequence.push_back(
+					# ---------
+					func() -> Dictionary:
+						var random_int:int = U.generate_rand(0, 100)
+						var end:bool = false
+						var use_success_roll:bool = false
+						var result_text:Array = []
+						
+						if "story" in option_selected.val.option:
+							result_text = option_selected.val.option.story
+						
+						if "success_rate" in option_selected.val.option:
+							use_success_roll = (option_selected.val.option.success_rate) > random_int
+							
+							# run the effect					
+							if "effect" in option_selected.val.option:
+								var res:Dictionary = option_selected.val.option.effect.call(use_success_roll)
+								result_text = res.story
+								
+								# --------------------------
+								if "end" in res and res.end:
+									end = true
+								
+								# --------------------------
+								if "staff_killed" in res and res.staff_killed:
+									result_text.push_back("%s has been killed!" % selected_staff.name)
+									end = true
+								
+								# --------------------------
+								if "damage_hp" in res:
+									var damage_amount:int = res.damage_hp
+									var wounded:bool = true
+									# TODO add check to see if they have any health left
+									if wounded:
+										result_text.push_back("%s is severely wounded!" % selected_staff.name)
+										end = true
+									
 
-					
-		],
+						
+						return {
+							"end": end,
+							"use_success_roll": use_success_roll,
+							"text": result_text 
+						}	
+				)
+
+		return sequence
 }
 # ------------------------------------------------------------------------
 
@@ -147,7 +166,7 @@ var SCP_BREACH_EVENT_1:Dictionary = {
 		var researchers:Array = props.researchers
 		var breach_count:int = scp_entry.breach_count
 				
-		var event:Dictionary = scp_details.event[event_ref]
+		var event_data:Array = scp_details.event[event_ref]
 		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
 		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
 
@@ -156,66 +175,84 @@ var SCP_BREACH_EVENT_1:Dictionary = {
 		props.vibes = vibes
 		props.breach_count = breach_count
 		
-		# build out story
-		var story_text:Array = []
-		for line in event.story.call(props):
-			story_text.push_back(line)
-		
-		# build out choices
-		var choices_data:Dictionary = event.choices.call(props)
-		var options:Array = []
-		
-		# build "standard" choices
-		if "standard" in choices_data:
-			for choice in choices_data.standard:
-				choice.onSelected = onSelected
-				options.append(choice)
-		
-		# build "traits" choices
-		if "traits" in choices_data and selected_staff.trait.ref in choices_data.traits:
-			var choice:Dictionary = choices_data.traits[selected_staff.trait.ref]
-			choice.onSelected = onSelected
-			options.append(choice)
+		# build seequence		
+		var sequence:Array = []
+		for item in event_data:
+						
+			# build out story
+			var story_text:Array = []
+			for line in item.story.call(props):
+				story_text.push_back(line)
 			
-		# build "mode" choices
-		if "mood" in choices_data and selected_staff.mood.ref in choices_data.mood:
-			var choice:Dictionary = choices_data.mood[selected_staff.mood.ref]
-			choice.onSelected = onSelected
-			options.append(choice)			
+			# build out choices
+			var options:Array = []
+			if "choices" in item:
+				var choices:Array = item.choices.call(props)
+				for choice in choices:
+					choice.onSelected = onSelected
+					options.append(choice)
 			
+			sequence.push_back(
+				# ---------
+				func() -> Dictionary:
+					return {
+						"title": scp_details.name,
+						"subtitle": scp_details.nickname,
+						"img_src": scp_details.img_src,
+						"selected_staff": selected_staff,
+						"text": story_text,
+						"options": options
+					}
+			)
 			
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"title": scp_details.name,
-					"subtitle": scp_details.nickname,
-					"img_src": scp_details.img_src,
-					"text": story_text,
-					"options": options
-				},
-			# ---------
-			func() -> Dictionary:
-				var random_int:int = U.generate_rand(0, 100)
-				var is_success:bool = (option_selected.val.option.success_rate) > random_int
-				
-				# run the effect
-				var res:Dictionary = {}
-				if "effect" in option_selected.val.option:
-					res = option_selected.val.option.effect.call(is_success)
-					# record results
-					if event_ref not in scp_data[scp_details.ref].event_results:
-						scp_data[scp_details.ref].event_results[event_ref] = [] 
-					scp_data[scp_details.ref].event_results[event_ref].push_back({"results": res, "title": option_selected.val.option.title})
-					SUBSCRIBE.scp_data = scp_data
-				
-				return {
-					"set_return_val": func(): return res,
-					"text":option_selected.val.option.story.call(is_success)
-				}	
+			if !options.is_empty():
+				sequence.push_back(
+					# ---------
+					func() -> Dictionary:
+						var random_int:int = U.generate_rand(0, 100)
+						var end:bool = false
+						var use_success_roll:bool = false
+						var result_text:Array = []
+						
+						if "story" in option_selected.val.option:
+							result_text = option_selected.val.option.story
+						
+						if "success_rate" in option_selected.val.option:
+							use_success_roll = (option_selected.val.option.success_rate) > random_int
+							
+							# run the effect					
+							if "effect" in option_selected.val.option:
+								var res:Dictionary = option_selected.val.option.effect.call(use_success_roll)
+								result_text = res.story
+								
+								# --------------------------
+								if "end" in res and res.end:
+									end = true
+								
+								# --------------------------
+								if "staff_killed" in res and res.staff_killed:
+									result_text.push_back("%s has been killed!" % selected_staff.name)
+									end = true
+								
+								# --------------------------
+								if "damage_hp" in res:
+									var damage_amount:int = res.damage_hp
+									var wounded:bool = true
+									# TODO add check to see if they have any health left
+									if wounded:
+										result_text.push_back("%s is severely wounded!" % selected_staff.name)
+										end = true
+									
 
-					
-		],
+						
+						return {
+							"end": end,
+							"use_success_roll": use_success_roll,
+							"text": result_text 
+						}	
+				)
+
+		return sequence
 }
 # ------------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=30 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" uid="uid://d14ehnxlj0jud" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_h7wp5"]
@@ -10,8 +10,11 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_fgcdw"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="9_h7wp5"]
+[ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="11_8spmr"]
+[ext_resource type="PackedScene" uid="uid://hmrs6dblpe7k" path="res://UI/ResourceRequiredFloatingPanel/ResourceRequiredFloatingPanel.tscn" id="11_fi0y4"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_h7wp5"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="12_1e555"]
+[ext_resource type="PackedScene" uid="uid://txr323ki0puc" path="res://UI/ConsequenceFloatingPanel/ConsequenceFloatingPanel.tscn" id="13_ptgpd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t5faq"]
 
@@ -49,8 +52,22 @@ font_size = 24
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fi0y4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ptgpd"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wycer"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wycer"]
+bg_color = Color(0, 0, 0, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_byy7q"]
+bg_color = Color(0.330833, 0.27, 1, 0.901961)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n5dpn"]
+bg_color = Color(0, 0.727551, 0.104814, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oju27"]
+bg_color = Color(0.897857, 0.236135, 0.331585, 1)
 
 [node name="EventContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -148,15 +165,14 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_1e555")
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 120
+theme_override_constants/margin_top = 100
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 30
 
 [node name="PanelContainer" type="PanelContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
-z_index = 1
-custom_minimum_size = Vector2(800, 0)
+custom_minimum_size = Vector2(550, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -231,7 +247,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_fi0y4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ptgpd")
 
 [node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Footer"]
 layout_mode = 2
@@ -240,7 +256,7 @@ label_settings = ExtResource("5_amr3s")
 vertical_alignment = 1
 
 [node name="OptionsContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(250, 200)
+custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
@@ -261,9 +277,122 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
+[node name="ResearcherControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="ResearcherControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_wycer")
+
+[node name="MarginContainer" type="MarginContainer" parent="ResearcherControl/PanelContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="ResearcherCard" parent="ResearcherControl/PanelContainer/MarginContainer" instance=ExtResource("11_8spmr")]
+layout_mode = 2
+size_flags_vertical = 4
+card_border_color = Color(0, 0, 0, 1)
+reveal = false
+
+[node name="ResourceRequiredFloatingPanel" parent="." instance=ExtResource("11_fi0y4")]
+layout_mode = 2
+
+[node name="ConsequenceFloatingPanel" parent="." instance=ExtResource("13_ptgpd")]
+layout_mode = 2
+
+[node name="SuccessRollControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SuccessRollControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wycer")
+
+[node name="MarginContainer" type="MarginContainer" parent="SuccessRollControl/PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SuccessRollControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 100
+
+[node name="PanelContainer" type="PanelContainer" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_byy7q")
+
+[node name="MarginContainer" type="MarginContainer" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="RollLabel" type="Label" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "SCENARIO TEXT GOES HERE"
+label_settings = ExtResource("5_1e555")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SuccessPanel" type="PanelContainer" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_n5dpn")
+
+[node name="Label" type="Label" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SuccessPanel"]
+layout_mode = 2
+text = "SUCCESS!"
+label_settings = ExtResource("5_1e555")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Control" type="Control" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="RollIcon" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Control" instance=ExtResource("6_fgcdw")]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+pivot_offset = Vector2(50, 50)
+icon = 27
+is_hoverable = false
+
+[node name="FailurePanel" type="PanelContainer" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_oju27")
+
+[node name="Label" type="Label" parent="SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FailurePanel"]
+layout_mode = 2
+text = "FAILURE..."
+label_settings = ExtResource("5_1e555")
+horizontal_alignment = 1
+
 [node name="BtnControls" parent="." instance=ExtResource("11_h7wp5")]
 layout_mode = 2
-offset = Vector2(10, 10)
+offset = Vector2(10, 25)
 
 [node name="TransistionScreen" parent="." instance=ExtResource("12_1e555")]
 z_index = 1

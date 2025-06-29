@@ -1,17 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=5 format=3 uid="uid://doexmbeotqsd4"]
 
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_ryuwo"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_hvfea"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_hvfea"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvfea"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_hvfea"]
-font = ExtResource("2_hvfea")
-outline_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
@@ -42,26 +36,19 @@ size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="PropertyLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "[MORALE] "
 label_settings = ExtResource("4_hvfea")
+horizontal_alignment = 1
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-text = "Option A"
+size_flags_horizontal = 3
+text = "Option A this can be quite long but it needs to wrap"
 label_settings = ExtResource("4_hvfea")
-
-[node name="MarginContainer2" type="MarginContainer" parent="."]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -55
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 0
-
-[node name="CostLabel" type="Label" parent="MarginContainer2"]
-layout_mode = 2
-text = "[SPEND 50 WHATEVER]"
-label_settings = SubResource("LabelSettings_hvfea")
-horizontal_alignment = 2
+autowrap_mode = 2
