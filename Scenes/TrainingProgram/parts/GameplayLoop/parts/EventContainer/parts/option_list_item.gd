@@ -99,7 +99,7 @@ func on_render_if_update() -> void:
 		return
 		
 	is_available = render_if.is_available	 
-	PropertyLabel.text = "[%s]" % render_if.property
+	PropertyLabel.text = "(%s)" % render_if.property
 	
 	
 func on_data_update() -> void:
