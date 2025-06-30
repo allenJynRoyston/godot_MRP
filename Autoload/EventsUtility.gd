@@ -100,51 +100,7 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 			)
 			
 			if !options.is_empty():
-				sequence.push_back(
-					# ---------
-					func() -> Dictionary:
-						var random_int:int = U.generate_rand(0, 100)
-						var end:bool = false
-						var use_success_roll:bool = false
-						var result_text:Array = []
-						
-						if "story" in option_selected.val.option:
-							result_text = option_selected.val.option.story
-						
-						if "success_rate" in option_selected.val.option:
-							use_success_roll = (option_selected.val.option.success_rate) > random_int
-							
-							# run the effect					
-							if "effect" in option_selected.val.option:
-								var res:Dictionary = option_selected.val.option.effect.call(use_success_roll)
-								result_text = res.story
-								
-								# --------------------------
-								if "end" in res and res.end:
-									end = true
-								
-								# --------------------------
-								if "staff_killed" in res and res.staff_killed:
-									result_text.push_back("%s has been killed!" % selected_staff.name)
-									end = true
-								
-								# --------------------------
-								if "damage_hp" in res:
-									var damage_amount:int = res.damage_hp
-									var wounded:bool = true
-									# TODO add check to see if they have any health left
-									if wounded:
-										result_text.push_back("%s is severely wounded!" % selected_staff.name)
-										end = true
-									
-
-						
-						return {
-							"end": end,
-							"use_success_roll": use_success_roll,
-							"text": result_text 
-						}	
-				)
+				sequence.push_back( func() -> Dictionary: return create_sequence(option_selected, selected_staff) )
 
 		return sequence
 }
@@ -206,51 +162,7 @@ var SCP_BREACH_EVENT_1:Dictionary = {
 			)
 			
 			if !options.is_empty():
-				sequence.push_back(
-					# ---------
-					func() -> Dictionary:
-						var random_int:int = U.generate_rand(0, 100)
-						var end:bool = false
-						var use_success_roll:bool = false
-						var result_text:Array = []
-						
-						if "story" in option_selected.val.option:
-							result_text = option_selected.val.option.story
-						
-						if "success_rate" in option_selected.val.option:
-							use_success_roll = (option_selected.val.option.success_rate) > random_int
-							
-							# run the effect					
-							if "effect" in option_selected.val.option:
-								var res:Dictionary = option_selected.val.option.effect.call(use_success_roll)
-								result_text = res.story
-								
-								# --------------------------
-								if "end" in res and res.end:
-									end = true
-								
-								# --------------------------
-								if "staff_killed" in res and res.staff_killed:
-									result_text.push_back("%s has been killed!" % selected_staff.name)
-									end = true
-								
-								# --------------------------
-								if "damage_hp" in res:
-									var damage_amount:int = res.damage_hp
-									var wounded:bool = true
-									# TODO add check to see if they have any health left
-									if wounded:
-										result_text.push_back("%s is severely wounded!" % selected_staff.name)
-										end = true
-									
-
-						
-						return {
-							"end": end,
-							"use_success_roll": use_success_roll,
-							"text": result_text 
-						}	
-				)
+				sequence.push_back( func() -> Dictionary: return create_sequence(option_selected, selected_staff) )
 
 		return sequence
 }
@@ -720,6 +632,103 @@ var reference_data:Dictionary = {
 	EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR
 	# ------------------
 }
+
+
+# ------------------------------------------------------------------------
+func create_sequence(option_selected:Dictionary, selected_staff:Dictionary) -> Dictionary:
+	var random_int:int = U.generate_rand(0, 100)
+	var end:bool = false
+	var use_success_roll:bool = false
+	var result_text:Array = []
+	
+	if "story" in option_selected.val.option:
+		result_text = option_selected.val.option.story
+	
+	if "success_rate" in option_selected.val.option:
+		use_success_roll = (option_selected.val.option.success_rate) > random_int
+		
+		# run the effect					
+		if "effect" in option_selected.val.option:
+			var res:Dictionary = option_selected.val.option.effect.call(use_success_roll)
+			result_text = res.story
+			
+			# --------------------------
+			if "end" in res and res.end:
+				end = true
+			
+			# --------------------------
+			if "is_killed" in res and res.is_killed:
+				result_text.push_back("%s has been killed!" % selected_staff.name)
+				end = true
+			
+			# --------------------------
+			if "mood_changed_to" in res and res.mood_changed_to:
+				result_text.push_back("%s starts to feel %s!" % [selected_staff.name, RESEARCHER_UTIL.return_mood_data(res.mood_changed_to).name])
+			
+			if "trait_changed_to" in res and res.trait_changed_to:
+				result_text.push_back("%s is now %s!" % [selected_staff.name, RESEARCHER_UTIL.return_trait_data(res.trait_changed_to).name])
+			
+			# --------------------------
+			if "damage_sanity" in res:
+				var damage_amount:int = res.damage_sanity
+				var sanity_remaining:int = selected_staff.sanity.current - damage_amount
+				
+				if damage_amount == 1:
+					result_text.push_back("%s sanity is effected!" % [selected_staff.name])
+					
+				if damage_amount == 2:
+					result_text.push_back("%s sanity is seriously effected!" % [selected_staff.name])	
+					
+				if damage_amount == 3:
+					result_text.push_back("%s sanity is critcally effected!" % [selected_staff.name])
+				
+				if sanity_remaining <= 0:
+					result_text.push_back("%s goes insane!" % selected_staff.name)
+					end = true
+			
+			# --------------------------
+			if "damage_hp" in res:
+				var damage_amount:int = res.damage_hp
+				var health_remaining:int = selected_staff.health.current - damage_amount
+				
+				if damage_amount == 1:
+					result_text.push_back("%s is hurt!" % [selected_staff.name])
+					
+				if damage_amount == 2:
+					result_text.push_back("%s is seriously hurt!" % [selected_staff.name])	
+					
+				if damage_amount == 3:
+					result_text.push_back("%s is critically hurt!" % [selected_staff.name])
+				
+				if health_remaining <= 0:
+					result_text.push_back("%s passes out!" % selected_staff.name)
+					end = true
+			
+			# --------------------------
+			if "restore_hp" in res:
+				var health_remaining:int = selected_staff.health.current + res.restore_hp
+				
+				if health_remaining >= selected_staff.health.max:
+					result_text.push_back("%s is restored to full health!" % [selected_staff.name])
+				else:
+					result_text.push_back("%s is feeling better!" % [selected_staff.name])
+					
+			# --------------------------
+			if "restore_sanity" in res:
+				var sanity_remaining:int = selected_staff.sanity.current + res.restore_sanity
+				
+				if sanity_remaining >= selected_staff.sanity.max:
+					result_text.push_back("%s feels focused!" % [selected_staff.name])
+				else:
+					result_text.push_back("%s feels more grounded!" % [selected_staff.name])					
+	
+	
+	return {
+		"end": end,
+		"use_success_roll": use_success_roll,
+		"text": result_text 
+	}		
+# ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
 func return_data(val:EVT.TYPE) -> Dictionary:

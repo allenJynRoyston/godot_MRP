@@ -1,7 +1,8 @@
-[gd_scene load_steps=23 format=3 uid="uid://boomisn56mb2k"]
+[gd_scene load_steps=25 format=3 uid="uid://boomisn56mb2k"]
 
 [ext_resource type="Script" uid="uid://cmyh4x10di83s" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/researcher_card.gd" id="1_v8702"]
 [ext_resource type="Material" uid="uid://crigssiq4w78h" path="res://CanvasShader/CardShader/CardShader.tres" id="2_ughr2"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_ng244"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="6_ughr2"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="8_tcow0"]
 [ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="9_2tpuf"]
@@ -23,6 +24,18 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03rcy"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.108, 0.485, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ng244"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -138,7 +151,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
+border_color = Color(0.445984, 0.516268, 0.947988, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -157,13 +170,9 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2bn2"]
-bg_color = Color(0, 0, 0, 0.509804)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+bg_color = Color(0, 0, 0, 0.607843)
 
-[sub_resource type="LabelSettings" id="LabelSettings_03rcy"]
+[sub_resource type="LabelSettings" id="LabelSettings_tcow0"]
 font = ExtResource("6_ughr2")
 font_size = 32
 font_color = Color(1, 0.239216, 0, 1)
@@ -203,15 +212,23 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ughr2")
 [node name="FrontDrawerContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer" index="0"]
 theme_override_constants/separation = 10
 
-[node name="FrontImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("9_2tpuf")]
-custom_minimum_size = Vector2(200, 150)
+[node name="Spec" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("10_klncf")]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_03rcy")
+is_small = true
+content = "SPECILIZATION"
+title = "TYPE"
+
+[node name="FrontImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1" instance=ExtResource("9_2tpuf")]
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ng244")
 title = ""
 is_left_side = true
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2
 
 [node name="FrontName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer" instance=ExtResource("10_klncf")]
@@ -231,7 +248,7 @@ content = "0"
 title = "LVL"
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
-[node name="AssignedTo" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2" instance=ExtResource("10_klncf")]
+[node name="AssignedTo" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3" instance=ExtResource("10_klncf")]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
@@ -290,6 +307,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rj4sh")
 content = "3"
 title = "HEALTH"
 is_left_side = false
+border_color = Color(0.445984, 0.516268, 0.947988, 1)
 
 [node name="Sanity" parent="CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer" instance=ExtResource("10_klncf")]
 custom_minimum_size = Vector2(0, 0)
@@ -301,31 +319,29 @@ is_left_side = false
 
 [node name="StatusPanel" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody" index="2"]
 layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
 
-[node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/StatusPanel" index="0"]
+[node name="PanelContainer" type="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/StatusPanel"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_b2bn2")
 
-[node name="CenterContainer" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer" index="0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer"]
 layout_mode = 2
+alignment = 1
 
-[node name="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/CenterContainer" index="0"]
-layout_mode = 2
-
-[node name="IconBtn" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/CenterContainer/HBoxContainer" index="0"]
+[node name="StatusIcon" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/VBoxContainer" instance=ExtResource("6_ng244")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 icon = 54
 static_color = Color(1, 0.239216, 0, 1)
 is_hoverable = false
 
-[node name="Label" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/CenterContainer/HBoxContainer" index="1"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "INACTIVE"
-label_settings = SubResource("LabelSettings_03rcy")
+label_settings = SubResource("LabelSettings_tcow0")
 
 [editable path="CardBody"]

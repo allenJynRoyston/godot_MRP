@@ -410,7 +410,7 @@ func reset_room() -> bool:
 			
 			hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 				# clear out prior researchers
-				if U.dictionaries_equal(i[10].assigned_to_room, current_location):
+				if U.dictionaries_equal(i[11].assigned_to_room, current_location):
 					i[10].assigned_to_room = {}
 				return i
 			)
@@ -795,7 +795,6 @@ func hire_researcher(total_options:int) -> bool:
 	return true	
 # --------------------------------------------------------------------------------------------------	
 
-
 # --------------------------------------------------------------------------------------------------	
 func assign_researcher(staffing_type:int, location_data:Dictionary = current_location) -> bool:
 	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
@@ -803,7 +802,7 @@ func assign_researcher(staffing_type:int, location_data:Dictionary = current_loc
 	ResearcherGrid.z_index = 10
 	
 	var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
-		return U.dictionaries_equal(i[10].assigned_to_room, current_location)
+		return U.dictionaries_equal(i[11].assigned_to_room, current_location)
 	).map(func(i): return i[0])	
 	
 
@@ -820,7 +819,7 @@ func assign_researcher(staffing_type:int, location_data:Dictionary = current_loc
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		# add current users
 		if i[0] in uid:
-			i[10].assigned_to_room = location_data.duplicate()
+			i[11].assigned_to_room = location_data.duplicate()
 		return i
 	)
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
@@ -834,7 +833,7 @@ func unassign_researcher(researcher_data:Dictionary) -> bool:
 	if confirm:
 		SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 			if i[0] == researcher_data.uid:
-				i[10].assigned_to_room = {}
+				i[11].assigned_to_room = {}
 			return i
 		)
 		return true

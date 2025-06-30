@@ -38,7 +38,7 @@ func setup_gridselect() -> void:
 	var available_specs:Array = RESEARCHER_UTIL.get_list_of_specializations()
 	for item in available_specs:
 		tabs.push_back({
-			"title": item.shortname,
+			"title": item.name,
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
 				return RESEARCHER_UTIL.get_paginated_list(item.ref, start_at, end_at),
 		})	
@@ -56,6 +56,12 @@ func setup_gridselect() -> void:
 	GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
 		var is_compatable:bool = true
 		GridSelect.BtnControls.disable_active_btn = !is_compatable
+		
+		if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
+		#GridSelect.grid_index = index
+		DetailPanel.researcher_uid = data.uid
+		SummaryImage.texture = CACHE.fetch_image(data.img_src)
+
 			
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
 		node.uid = ""
@@ -81,11 +87,11 @@ func setup_gridselect() -> void:
 			node.can_be_promoted = RESEARCHER_UTIL.can_be_promoted(data.uid)
 
 				
-		node.onHover = func() -> void:
-			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
-			GridSelect.grid_index = index
-			DetailPanel.researcher_uid = data.uid
-			SummaryImage.texture = CACHE.fetch_image(data.img_src)
+		#node.onHover = func() -> void:
+			#if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
+			#GridSelect.grid_index = index
+			#DetailPanel.researcher_uid = data.uid
+			#SummaryImage.texture = CACHE.fetch_image(data.img_src)
 			
 		node.onClick = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable():return
@@ -94,7 +100,7 @@ func setup_gridselect() -> void:
 			
 			if node.is_assigned_elsewhere:
 				await GridSelect.freeze_and_disable(true, true)
-				var confirm:bool = await GAME_UTIL.create_modal(str("Reassign researcher %s to this facility?" % [data.name]), "Will be removed from %s." % node.assigned_elsewhere_data.room.details.name , data.img_src, [], false, Color(0, 0, 0, 0.7))
+				var confirm:bool = await GAME_UTIL.create_modal(str("Reassign %s to this facility?" % [data.name]), "Will be removed from %s." % node.assigned_elsewhere_data.room.details.name , data.img_src, [], false, Color(0, 0, 0, 0.7))
 				if !confirm:
 					GridSelect.freeze_and_disable(false, true)
 					return

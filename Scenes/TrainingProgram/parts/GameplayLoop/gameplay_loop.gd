@@ -445,7 +445,11 @@ func start_new_game() -> void:
 	# 3.) generate researchers (if new game)
 	if is_new_game:
 		var starting_number_of_researchers:int = DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT) if DEBUG.get_val(DEBUG.GAMEPLAY_USE_FRESH_BASE) else 5
-		SUBSCRIBE.hired_lead_researchers_arr = RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers)
+		var staff_list:Array = []
+		for ref in [RESEARCHER.SPECIALIZATION.STAFF, RESEARCHER.SPECIALIZATION.SECURITY, RESEARCHER.SPECIALIZATION.DCLASS]:
+			for item in RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers, ref):
+				staff_list.push_back(item)
+		SUBSCRIBE.hired_lead_researchers_arr = staff_list
 
 	# -----------------------
 	SetupContainer.subtitle = "Finalizing deployment protocols..."

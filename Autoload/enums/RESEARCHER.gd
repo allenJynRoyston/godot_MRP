@@ -33,3 +33,10 @@ enum MOODS {
 	RELUCTANT,			# makes READINESS choices unavailable
 	# -----------
 }
+
+enum STATUS {
+	ALIVE, 
+	WOUNDED, 
+	INSANE,
+	KIA
+}

@@ -12,7 +12,7 @@ var specialization_data:Dictionary = {
 	},
 	RESEARCHER.SPECIALIZATION.SECURITY: {
 		"shortname": "SEC",
-		"name": "SECURITY"
+		"name": "AGENT"
 	},
 	RESEARCHER.SPECIALIZATION.DCLASS: {
 		"shortname": "DC",
@@ -27,7 +27,12 @@ var trait_data: Dictionary = {
 		"description": "Subject displays baseline psychological and behavioral responses. No anomalous tendencies or notable cognitive irregularities observed."
 	},
 	
+	
 	# ---------------------------
+	RESEARCHER.TRAITS.RESOURCEFUL: {
+		"name": "RESOURCEFUL",
+		"description": "Adapts quickly.  Ocassionally reveals an additional option during EVENTS."
+	},
 	RESEARCHER.TRAITS.OPTIMIST: {
 		"name": "OPTIMIST",
 		"description": "Generally negative attitude.  Reveals positive CONSEQUENCES during events."
@@ -77,10 +82,10 @@ var mood_data:Dictionary = {
 
 
 # ------------------------------------------------------------------------------
-func generate_new_researcher_hires(number:int) -> Array:
+func generate_new_researcher_hires(number:int, specializations:RESEARCHER.SPECIALIZATION) -> Array:
 	var researchers:Array = []
-	for n in range(0, number):
-		researchers.push_back(generate_researcher(n))
+	for n in range(1, number + 1):
+		researchers.push_back(generate_researcher(specializations))
 	return researchers
 # ------------------------------------------------------------------------------
 
@@ -96,22 +101,19 @@ func return_data_with_uid(uid:String) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func generate_researcher(assign_spec:int = -1) -> Array:
+func generate_researcher(assign_spec:int = 1) -> Array:
 	var uid:String = U.generate_uid()
 	var lname:int =  U.generate_rand(0, 5)
+	
 	# TODO: add this in later
 	# var img_src:String = "res://Media/images/example_doctor.jpg"		
-	var specialization:int
-	if assign_spec == -1:
-		specialization = U.generate_rand(1, RESEARCHER.SPECIALIZATION.size() - 1)
-	else:
-		if assign_spec < (RESEARCHER.SPECIALIZATION.size() - 1):
-			specialization = assign_spec
-		else:
-			specialization = U.generate_rand(1, RESEARCHER.SPECIALIZATION.size() - 1)
+	var specialization:int = U.min_max(assign_spec, 1, RESEARCHER.SPECIALIZATION.size() - 1) 
+	var max_health:int = 3 if specialization == RESEARCHER.SPECIALIZATION.SECURITY else 2
+	var max_sanity:int = 3 if specialization == RESEARCHER.SPECIALIZATION.STAFF else 2
 	
-	var traits:int = RESEARCHER.TRAITS.AVERAGE
+	var traits:int = U.generate_rand(0, RESEARCHER.TRAITS.size() - 1)
 	var mood:int = RESEARCHER.MOODS.STABLE
+	var status:int = RESEARCHER.STATUS.ALIVE
 	
 	return [ 
 		uid, 																	 	# 0 UID
@@ -119,12 +121,14 @@ func generate_researcher(assign_spec:int = -1) -> Array:
 		traits, 																		# 2 TRAITS
 		specialization, 																# 3 SPECS
 		mood, 																		# 4 MOOD
-		3 if specialization == RESEARCHER.SPECIALIZATION.SECURITY else 2, 			# 5 HEALTH
-		0, 																			# 6	STRESS
-		0, 																			# 7 EXP
-		1, 																			# 8 LVL
-		{"clone_iteration": 0, "original_uid": null}, 								# 9 CLONE TRACKER
-		{"assigned_to_room": {}}														# 10 ASSIGNED TO ROOM
+		status,																		# 5 STATUS
+		{'current': max_health, "max": max_health}, 									# 6 HEALTH
+		{'current': max_sanity, 'max': max_sanity}, 									# 7	SANITY
+		0, 																			# 8 EXP
+		1, 																			# 9 LVL
+		{"clone_iteration": 0, "original_uid": null}, 								# 10 CLONE TRACKER
+		{"assigned_to_room": {}},													# 11 ASSIGNED TO ROOM
+		
 	]
 # ------------------------------------------------------------------------------
 	
@@ -135,43 +139,50 @@ func get_user_object(val:Array) -> Dictionary:
 	var trait_val:int = val[2]
 	var spec_val:int = val[3]
 	var mood_val:int = val[4]
-	var l_val:int = val[5]
-	var stress:int = val[6]
-	var experience:int = val[7] 
-	var level:int = val[8]
-	var clone_props:Dictionary = val[9]
-	var props:Dictionary = val[10]
+	var status:int = val[5]
+	var health:Dictionary = val[6]
+	var sanity:Dictionary = val[7]
+	var experience:int = val[8] 
+	var level:int = val[9]
+	var clone_props:Dictionary = val[10]
+	var props:Dictionary = val[11]
 	
+	# images
 	var img_src:String = "res://Media/images/researcher_female_02.jpg"
 	
+	# get name
 	var lname:String = get_lname(name_val)
 	
 	# if original, this is the number of clones "you" have
-	var number_of_clones:int = hired_lead_researchers_arr.filter(func(x): return x[9].original_uid == uid_val).size()
+	var number_of_clones:int = hired_lead_researchers_arr.filter(func(x): return x[10].original_uid == uid_val).size()
 	
 	# if you're a clone, this is how many "copies" of you exists
-	var clone_copies:int = 0 if clone_props.clone_iteration == 0 else hired_lead_researchers_arr.filter(func(x): return x[9].original_uid == clone_props.original_uid).size()
+	var clone_copies:int = 0 if clone_props.clone_iteration == 0 else hired_lead_researchers_arr.filter(func(x): return x[10].original_uid == clone_props.original_uid).size()
 	
 	# if you're a clone, this is what iteration you are 
 	var clone_iteration:int = clone_props.clone_iteration
-	
 	var clone_str:String = ""
 	if clone_iteration > 0:
-		clone_str = " (CLONE)"
+		clone_str = "(CLONE)"
 	if number_of_clones > 2 or clone_copies > 2:
-		clone_str = " (CLONE?)"
+		clone_str = "(CLONE?)"
+	var spec_data:Dictionary = return_specialization_data(spec_val)
 	
-	#print("spec_val: ", spec_val)
+	# name string
+	var name_str:String = "%s %s %s" % [spec_data.name, lname, clone_str] 
+	if spec_val == RESEARCHER.SPECIALIZATION.DCLASS:
+		name_str = "%s %s %s" % [spec_data.name, uid_val.substr(uid_val.length() - 5, 5), clone_str] 
 	
 	return {
 		"uid": uid_val,
-		"name": "%s%s" % [lname, clone_str],
+		"name": name_str,
 		"img_src": img_src,
 		"trait": {"ref": trait_val, "details": return_trait_data(trait_val)},
-		"specialization": {"ref": spec_val, "details": return_specialization_data(spec_val)},
+		"specialization": {"ref": spec_val, "details": spec_data},
 		"mood": {"ref": mood_val, "details": return_mood_data(mood_val)},
-		"l_val": l_val,
-		"stress": stress,
+		"status": status,
+		"health": health,
+		"sanity": sanity,
 		"experience": experience,
 		"level": level,
 		"clone": {
@@ -197,39 +208,11 @@ func get_lname(i:int) -> String:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-#func return_trait_details(ref:int, use_location:Dictionary, use_config:Dictionary = room_config) -> Dictionary:
-	#var floor:int = use_location.floor
-	#var ring:int = use_location.ring
-	#var room:int = use_location.room	
-	#var designation:String = str(floor, room, room)
-	#var config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
-#
-	#var researchers:Array = hired_lead_researchers_arr.filter(func(x):
-		#var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
-		#if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
-			#return true
-		#return false	
-	#).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-	#config_data.researchers = researchers
-				#
-	#var traits_detail:Dictionary = RESEARCHER_UTIL.return_trait_data(ref)
-	##var effect:Dictionary = traits_detail.get_effect.call(config_data)
-	##var resource_list:Array = []
-	##var metric_list:Array = []
-##
-	### -------------------
-	##if "metrics" in effect:
-		##for key in effect.metrics:
-			##var amount:int = effect.metrics[key]
-			##metric_list.push_back({"resource": RESOURCE_UTIL.return_metric(key), "amount": amount})
-##
-	#### -------------------
-	##if "resource" in effect:
-		##for key in effect.resource:
-			##var amount:int = effect.resource[key]
-			##resource_list.push_back({"resource": RESOURCE_UTIL.return_currency(key), "amount": amount})
-#
-	#return {"details": traits_detail, "effect": {"vibes": [], "resources": []}}
+func return_mood_data_from_string(str:String) -> Dictionary:
+	return mood_data[RESEARCHER.MOODS[str]]
+
+func return_trait_data_from_string(str:String) -> Dictionary:
+	return trait_data[RESEARCHER.TRAITS[str]]
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -248,6 +231,7 @@ func return_specialization_data(ref:RESEARCHER.SPECIALIZATION) -> Dictionary:
 			"title": "ANY"
 		}
 	
+	
 	specialization_data[ref].ref = ref
 	return specialization_data[ref]
 # ------------------------------------------------------------------------------
@@ -255,31 +239,8 @@ func return_specialization_data(ref:RESEARCHER.SPECIALIZATION) -> Dictionary:
 # ------------------------------------------------------------------------------
 func return_mood_data(ref:RESEARCHER.MOODS) -> Dictionary:
 	mood_data[ref].ref = ref
-	return specialization_data[ref]
+	return mood_data[ref]
 # ------------------------------------------------------------------------------
-
-## ------------------------------------------------------------------------------		
-#func return_wing_effect(researcher_data:Dictionary) -> Dictionary:
-	##for trait_key in researcher_data.traits:
-		##var trait_data:Dictionary = return_trait_data(trait_key)
-		##return trait_data.wing_effect.call(researcher_data)
-	#return {}
-## ------------------------------------------------------------------------------		
-#
-## ------------------------------------------------------------------------------
-#func return_wing_effects_list(researcher_data:Dictionary) -> Array:
-	#var list:Array = []
-	#for trait_key in researcher_data.traits:
-		#var trait_data:Dictionary = return_trait_data(trait_key)
-		#var effects_dict:Dictionary = trait_data.wing_effect.call(researcher_data)
-		#for key in effects_dict:
-			#var amount:int = effects_dict[key]
-			#var resource_data:Dictionary = RESOURCE_UTIL.return_metric(key)
-			#if amount > 0:
-				#list.push_back({"resource_data": resource_data, "property": "metrics", "amount": amount})
-#
-	#return list
-## ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
 func get_details_from_extract(location:Dictionary) -> Dictionary:
@@ -306,17 +267,6 @@ func get_details_from_extract(location:Dictionary) -> Dictionary:
 		"scp_ref": -1
 	}		
 # ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------	
-func get_randomized_traits(amount:int, exclude:Array) -> Array:
-	var traits:Array = []
-	while traits.size() < amount:
-		var val:int = U.generate_rand(0, RESEARCHER.TRAITS.size() - 1)
-		if val not in traits and val not in exclude:
-			traits.push_back( val )	
-	
-	return traits
-# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
 func sort_ascending(a:Dictionary, b:Dictionary) -> bool:
@@ -352,8 +302,8 @@ func get_paginated_list(spec:int, start_at:int, limit:int, sort_asc:bool = true)
 func promote_researcher(uid:String) -> void:	
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		if i[0] == uid:
-			# i[8] is level
-			i[8] += 1
+			# i[9] is level
+			i[9] += 1
 		return i
 	) 		
 # ------------------------------------------------------------------------------
@@ -365,28 +315,151 @@ func clone_researcher(uid:String) -> void:
 			return i
 		)[0].duplicate(true)
 	
-	var is_original:bool = cloned_researcher[9].original_uid == null
+	var is_original:bool = cloned_researcher[10].original_uid == null
 	
 	cloned_researcher[0] = U.generate_uid()
-	cloned_researcher[9].clone_iteration += 1
-	cloned_researcher[9].original_uid = uid if is_original else cloned_researcher[9].original_uid
-	cloned_researcher[10].assigned_to_room = {}
+	cloned_researcher[10].clone_iteration += 1
+	cloned_researcher[10].original_uid = uid if is_original else cloned_researcher[10].original_uid
+	cloned_researcher[11].assigned_to_room = {}
 	
 	hired_lead_researchers_arr.push_back(cloned_researcher)
 	
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func change_mood(uid:String, mood_ref:RESEARCHER.MOODS) -> void:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update mood
+			i[4] = mood_ref
+		return i
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func change_trait(uid:String, trait_ref:RESEARCHER.TRAITS) -> void:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update trait
+			i[2] = trait_ref
+		return i
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func kill(uid:String) -> Dictionary:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update health val
+			i[6].current = 0
+			
+			# out of hp, change status and remove from room
+			if i[6].current <= 0:
+				i[5] = RESEARCHER.STATUS.KIA
+				i[11].assigned_to_room = {}
+		return i
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+	
+	return get_user_object(filtered[0])
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func damage_sanity(uid:String, amount:int) -> Dictionary:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update val
+			i[7].current = U.min_max(i[7].current - amount, 0, i[7].max)
+			
+			# out of hp, change status and remove from room
+			if i[7].current <= 0:
+				i[5] = RESEARCHER.STATUS.INSANE
+				i[11].assigned_to_room = {}
+		return i
+	)
+	
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+
+	return get_user_object(filtered[0])
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func take_damage(uid:String, amount:int) -> Dictionary:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update val
+			i[6].current = U.min_max(i[6].current - amount, 0, i[6].max)
+			
+			# out of hp, change status and remove from room
+			if i[6].current <= 0:
+				i[5] = RESEARCHER.STATUS.WOUNDED
+				i[11].assigned_to_room = {}
+		return i
+	)
+	
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+
+	return get_user_object(filtered[0])
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func restore_health(uid:String, amount:int) -> Dictionary:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update val
+			i[6].current = U.min_max(i[6].current + amount, 0, i[6].max)
+			
+			# out of hp, change status and remove from room
+			if i[6].current > 0:
+				i[5] = RESEARCHER.STATUS.ALIVE
+
+		return i
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+
+	return get_user_object(filtered[0])
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func restore_sanity(uid:String, amount:int) -> Dictionary:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update val
+			i[7].current = U.min_max(i[6].current + amount, 0, i[7].max)
+			
+			# if was insane, revert back to ALIVE status
+			if i[5] == RESEARCHER.STATUS.INSANE:
+				i[5] = RESEARCHER.STATUS.ALIVE
+				
+		return i
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+
+	return get_user_object(filtered[0])
+# ------------------------------------------------------------------------------
+
+
 
 # ------------------------------------------------------------------------------
 func add_experience(uid:String, amount:int) -> bool:
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		if i[0] == uid:
-			# i[7] is xp
-			i[7] += amount
+			# i[8] is xp
+			i[8] += amount
 		return i
 	) 	
 	
+
 	var researcher:Array = hired_lead_researchers_arr.filter(func(i): return i[0] == uid)[0]
 	# returns if reasearcher leveled up
 	return researcher[9].can_promote
@@ -395,16 +468,17 @@ func add_experience(uid:String, amount:int) -> bool:
 # ------------------------------------------------------------------------------	
 func can_be_promoted(uid:String) -> bool:	
 	var xp_required_for_promotion:int = DEBUG.get_val(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION)
-	return hired_lead_researchers_arr.filter(func(i): return i[7] >= xp_required_for_promotion and i[0] == uid).size() > 0
+	return hired_lead_researchers_arr.filter(func(i): return i[8] >= xp_required_for_promotion and i[0] == uid).size() > 0
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
 func get_list_of_specializations() -> Array:
 	var list:Array = []
 	for ref in specialization_data:
-		var spec:Dictionary = specialization_data[ref]
-		spec.ref = ref
-		list.push_back(spec)
+		if ref != RESEARCHER.SPECIALIZATION.ANY:
+			var spec:Dictionary = specialization_data[ref]
+			spec.ref = ref
+			list.push_back(spec)
 	return list
 # ------------------------------------------------------------------------------		
 	

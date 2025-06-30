@@ -292,10 +292,102 @@ func on_current_event_instruction_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_current_text_update() -> void:
 	update_next_btn(false)
+	
 	BodyLabelBtm.text = current_text
 	BodyLabelTop.text = current_text
+
+	# watch for certain strings to apply effects
+	if ResearcherCard.uid != null:
+		var staff_detail:Dictionary = RESEARCHER_UTIL.return_data_with_uid(ResearcherCard.uid)
+		
+		
+		
+		# -------------------------------------------------	SANITY
+		# take 1 damage
+		if current_text == str(staff_detail.name, " sanity is effected!"):
+			RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 1)
+			ResearcherCard.shake(3)	
+		
+		# take 2 damage
+		if current_text == str(staff_detail.name, " sanity is seriously effected!"):
+			RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 2)
+			ResearcherCard.shake(3)	
+			
+		# take 3 damage	
+		if current_text == str(staff_detail.name, " sanity is critically effected!"):
+			RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 3)
+			ResearcherCard.shake(3)							
+			
+		if current_text == str(staff_detail.name, " goes insane!"):
+			# automatically change sstatus from take_damage
+			ResearcherCard.disappear()				
+		
+		# ------------------------------------------------- DAMAGE
+		# take 1 damage
+		if current_text == str(staff_detail.name, " is hurt!"):
+			RESEARCHER_UTIL.take_damage(staff_detail.uid, 1)
+			ResearcherCard.shake(3)
+		
+		# take 2 damage
+		if current_text == str(staff_detail.name, " is seriously hurt!"):
+			RESEARCHER_UTIL.take_damage(staff_detail.uid, 2)
+			ResearcherCard.shake(4)
+		
+		# take 3 damage
+		if current_text == str(staff_detail.name, " is critically hurt!"):
+			RESEARCHER_UTIL.take_damage(staff_detail.uid, 3)
+			ResearcherCard.shake(5)
+		
+		# ------------------------------------------------- RESTORE HEALTH
+		if current_text == str(staff_detail.name, " is restored to full health!"):
+			RESEARCHER_UTIL.restore_health(staff_detail.uid, 2)
+			ResearcherCard.shake(5)
+			
+		if current_text == str(staff_detail.name, " is feeling better!"):
+			RESEARCHER_UTIL.restore_health(staff_detail.uid, 1)
+			ResearcherCard.shake(5)
+
+		# ------------------------------------------------- RESTORE SANITY
+		if current_text == str(staff_detail.name, " feels focused!"):
+			RESEARCHER_UTIL.restore_sanity(staff_detail.uid, 2)
+			ResearcherCard.shake(5)
+			
+		if current_text == str(staff_detail.name, " feels more grounded!"):
+			RESEARCHER_UTIL.restore_sanity(staff_detail.uid, 1)
+			ResearcherCard.shake(5)
+		
+		# ------------------------------------------------- WOUNDED
+		# out of health...
+		if current_text == str(staff_detail.name, " passes out!"):
+			# automatically change sstatus from take_damage
+			ResearcherCard.disappear()
+		
+		# -------------------------------------------------	KILLED
+		# killed
+		if current_text == str(staff_detail.name, " has been killed!"):
+			ResearcherCard.shake(5)
+			await U.set_timeout(1.0)
+			RESEARCHER_UTIL.kill(staff_detail.uid)
+			ResearcherCard.reveal = false
+			ResearcherCard.is_deselected = true
+		
+		# -------------------------------------------------	CHANGES TO MOOD/TRAITS
+		# mood changed to
+		if current_text.find( str(staff_detail.name, " starts to feel") ) == 0:
+			var arr:Array = current_text.split(" ")
+			var as_string:String = arr[arr.size() - 1].rstrip("!?,.:;\"'")
+			var new_mood_data:Dictionary = RESEARCHER_UTIL.return_mood_data_from_string(as_string)
+			RESEARCHER_UTIL.change_mood(staff_detail.uid, new_mood_data.ref)
+
+		# trait changed to
+		if current_text.find( str(staff_detail.name, " is now") ) == 0:
+			var arr:Array = current_text.split(" ")
+			var as_string:String = arr[arr.size() - 1].rstrip("!?,.:;\"'")
+			var new_trait_data:Dictionary = RESEARCHER_UTIL.return_trait_data_from_string(as_string)
+			RESEARCHER_UTIL.change_trait(staff_detail.uid, new_trait_data.ref)		
+
 	await tween_text_reveal(current_text.length() * 0.01)
-	update_next_btn(true)
+	update_next_btn(true)	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -324,6 +416,8 @@ func on_current_instruction_update() -> void:
 		if ResearcherCard.uid != current_instruction.selected_staff.uid:
 			ResearcherCard.uid = current_instruction.selected_staff.uid
 			reveal_researcher(true)
+			await U.set_timeout(1.5)
+			ResearcherCard.flip = true
 
 	if "set_return_val" in current_instruction:
 		event_output = current_instruction.set_return_val.call()	
@@ -352,6 +446,7 @@ func on_current_instruction_update() -> void:
 			BodyContainer.show()
 			text_index = 0
 			current_text = current_instruction.text[0]
+			
 			await text_phase_complete
 	# -----------------------------------
 

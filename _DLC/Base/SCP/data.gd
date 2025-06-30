@@ -55,7 +55,7 @@ var SCP0:Dictionary = {
 										"story": [
 											"%s speaks to the figure. It tilts its head and writes something on a clipboard: 'WE SEE YOU'." % _staff_details.name
 										],
-										"restore_hp": 1
+										"restore_sanity": 1
 									}
 								else:
 									return {
@@ -161,7 +161,7 @@ var SCP0:Dictionary = {
 						{
 							"title": "Struggle and flee!",
 							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
-							"success_rate": 100, #get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 50),
+							"success_rate": 1, #get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 50),
 							"effect": func(is_success:bool) -> Dictionary:
 								if is_success:
 									return {
@@ -169,7 +169,6 @@ var SCP0:Dictionary = {
 											"%s lashes out instinctively, landing a solid kick that causes the doppelgänger to stagger backward into the mirror." % _staff_details.name,
 											"The emergency locks disengage. %s escapes the chamber, breath ragged but alive." % _staff_details.name
 										],
-										"restore_hp": 1
 									}
 								else:
 									return {
@@ -177,7 +176,7 @@ var SCP0:Dictionary = {
 											"%s fights back desperately but the mirror-being seems preternaturally strong." % _staff_details.name,
 											"A heavy blow lands across their face before they break free and stumble out, bleeding and shaken."
 										],
-										"damage_hp": 1,
+										"restore_sanity": 2,
 										"end": true
 									},
 						},
@@ -226,7 +225,7 @@ var SCP0:Dictionary = {
 											"%s is dragged halfway through the aperture as backup arrives too late to stop it." % _staff_details.name,
 											"A boot and a scrap of torn uniform are all that remain."
 										],
-										"staff_killed": true,
+										"is_killed": true,
 									},
 						},
 						# -----------------------------------------
@@ -251,7 +250,7 @@ var SCP0:Dictionary = {
 											"A second doppelgänger slides out of the frame, their outline flickering like corrupted video.",
 											"%s is overwhelmed before lights return. Nothing remains." % _staff_details.name
 										],
-										"staff_killed": true,
+										"is_killed": true,
 									},
 						},
 						# -----------------------------------------
@@ -275,7 +274,7 @@ var SCP0:Dictionary = {
 											"The entity lunges and drags them screaming into the mirrored world. The frame flashes once, then goes still.",
 											"%s is gone." % _staff_details.name
 										],
-										"staff_killed": true
+										"is_killed": true
 									},
 						}
 					],
