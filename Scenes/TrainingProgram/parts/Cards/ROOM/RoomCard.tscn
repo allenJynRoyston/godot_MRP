@@ -40,7 +40,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6vjof"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvj30"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -52,7 +52,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvj30"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6vjof"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
 border_width_top = 2
@@ -196,10 +196,18 @@ reveal = true
 
 [node name="CardBody" parent="." instance=ExtResource("1_soqd8")]
 layout_mode = 2
+card_size = Vector2(275, 430)
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
 texture = SubResource("ViewportTexture_f84t7")
+
+[node name="SubViewport" parent="CardBody" index="1"]
+size = Vector2i(275, 430)
+
+[node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(275, 430)
+offset_bottom = 430.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_6kgnm")
@@ -222,7 +230,7 @@ layout_mode = 2
 [node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2" instance=ExtResource("3_uk1cn")]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6vjof")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wvj30")
 is_small = true
 title = "NAME"
 border_color = Color(0.337255, 0.27451, 1, 1)
@@ -231,7 +239,7 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_wvj30")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6vjof")
 content = "0"
 title = "LVL"
 border_color = Color(0.337255, 0.27451, 1, 1)
@@ -299,7 +307,6 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_vkt6k")
-spec_name = ""
 title = "SPECLIZATION REQUIRED"
 is_left_side = true
 border_color = Color(0.3672, 0.378, 0.9, 1)

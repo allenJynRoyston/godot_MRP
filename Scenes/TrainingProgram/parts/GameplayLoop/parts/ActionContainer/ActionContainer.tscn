@@ -387,6 +387,7 @@ visible = false
 layout_mode = 2
 
 [node name="RoomDetails" parent="." instance=ExtResource("7_ah17n")]
+visible = false
 layout_mode = 2
 
 [node name="ActionControls" type="Control" parent="."]

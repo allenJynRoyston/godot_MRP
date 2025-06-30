@@ -1,0 +1,103 @@
+[gd_scene load_steps=8 format=3 uid="uid://esr6voh1ktor"]
+
+[ext_resource type="Script" uid="uid://cgujlcmqxres4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/success_roll.gd" id="1_ep8x5"]
+[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_i156o"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_j8fo3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_naahg"]
+bg_color = Color(0, 0, 0, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_igkbh"]
+bg_color = Color(0.330833, 0.27, 1, 0.901961)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgoj8"]
+bg_color = Color(0, 0.727551, 0.104814, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xl3ti"]
+bg_color = Color(0.897857, 0.236135, 0.331585, 1)
+
+[node name="SuccessRoll" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ep8x5")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_naahg")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 100
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_igkbh")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="RollLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "SCENARIO TEXT GOES HERE"
+label_settings = ExtResource("2_i156o")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SuccessPanel" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qgoj8")
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SuccessPanel"]
+layout_mode = 2
+text = "SUCCESS!"
+label_settings = ExtResource("2_i156o")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Control" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="RollIcon" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Control" instance=ExtResource("3_j8fo3")]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+pivot_offset = Vector2(50, 50)
+icon = 27
+is_hoverable = false
+
+[node name="FailurePanel" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xl3ti")
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FailurePanel"]
+layout_mode = 2
+text = "FAILURE..."
+label_settings = ExtResource("2_i156o")
+horizontal_alignment = 1

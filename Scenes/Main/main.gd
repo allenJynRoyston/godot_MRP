@@ -287,7 +287,6 @@ func assign_debugs() -> void:
 	
 	# gameplayloop
 	DEBUG.assign(DEBUG.GAMEPLAY_USE_FRESH_BASE, use_fresh_base)	
-	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
@@ -295,6 +294,8 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
 	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM, researchers_per_room if !is_production_build else 1)
 	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT, researchers_by_default if !is_production_build else 0)
+	
+	# events
 	
 	# researchers
 	DEBUG.assign(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)		

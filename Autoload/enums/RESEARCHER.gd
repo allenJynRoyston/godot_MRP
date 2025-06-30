@@ -10,7 +10,7 @@ enum SPECIALIZATION {
 
 enum TRAITS {
 	# ----------------------------
-	AVERAGE,				# Average in every way
+	AVERAGE,				# shows if if there's something good or bad
 	
 	ANALYTICAL,			# shows likely odds as a hint
 	RESOURCEFUL,			# sometimes adds an additional choice

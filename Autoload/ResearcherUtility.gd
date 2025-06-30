@@ -21,6 +21,7 @@ var specialization_data:Dictionary = {
 };
 
 var trait_data: Dictionary = {
+	# ---------------------------
 	RESEARCHER.TRAITS.AVERAGE: {
 		"name": "AVERAGE",
 		"description": "Subject displays baseline psychological and behavioral responses. No anomalous tendencies or notable cognitive irregularities observed."
@@ -42,14 +43,6 @@ var trait_data: Dictionary = {
 		"name": "ANALYTICAL",
 		"description": "Great at spotting patterns.  Reveals the likely odds of success when making CHOICES."
 	},
-	#RESEARCHER.TRAITS.INTROVERT: {
-		#"name": "Introvert",
-		#"description": "Subject demonstrates preference for solitary environments and reduced engagement in social stimuli. Displays elevated stress indicators during prolonged interpersonal exposure."
-	#},
-	#RESEARCHER.TRAITS.EXTROVERT: {
-		#"name": "Extrovert",
-		#"description": "Subject seeks continuous social interaction and external stimulation. Performance in isolation conditions is notably degraded."
-	#},
 	RESEARCHER.TRAITS.PARANOID: {
 		"name": "PARANOID",
 		"description": "Subject displays heightened vigilance, suspicion of external intent, and a tendency to infer hostile motives. Exhibits resistance to surveillance procedures."
@@ -60,22 +53,10 @@ var trait_data: Dictionary = {
 		"description": "Processess written languages differently.  Makes CHOICES harder to read."
 	},	
 
-	#RESEARCHER.TRAITS.WORKAHOLIC: {
-		#"name": "Workaholic",
-		#"description": "Subject shows compulsive engagement with task-oriented behavior. Tendency to neglect rest cycles and personal health in favor of perceived productivity."
-	#},
-	#RESEARCHER.TRAITS.LAZY: {
-		#"name": "Lazy",
-		#"description": "Subject avoids effort-intensive activities and demonstrates reduced motivation under standard incentives. Performance metrics show consistent underutilization of cognitive and physical capability."
-	#},
-	#RESEARCHER.TRAITS.SARCASTIC: {
-		#"name": "Sarcastic",
-		#"description": "Subject communicates using frequent irony and indirect expression. Ambiguity in statements may impact clarity of intent and operational reliability."
-	#},
 };
 
 
-var mood_data:Dictionary = {
+var mood_data:Dictionary = {	
 	RESEARCHER.MOODS.STABLE: {
 		"name": "STABLE",
 		"description": "Focused and mentally balanced. Can make all choices without restriction."
@@ -131,7 +112,6 @@ func generate_researcher(assign_spec:int = -1) -> Array:
 	
 	var traits:int = RESEARCHER.TRAITS.AVERAGE
 	var mood:int = RESEARCHER.MOODS.STABLE
-	var lval:int = U.generate_rand(0, 9)
 	
 	return [ 
 		uid, 																	 	# 0 UID

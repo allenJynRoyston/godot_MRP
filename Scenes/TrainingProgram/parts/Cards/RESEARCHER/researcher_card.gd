@@ -1,17 +1,26 @@
 @tool
 extends MouseInteractions
 
+@onready var CardBody:Control = $CardBody
 @onready var CardTextureRect:TextureRect = $CardBody/TextureRect
 
-@onready var CardBody:Control = $CardBody
+# status panel
+@onready var StatusPanel:MarginContainer = $Status
+@onready var StatusLabel:Label = $CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/CenterContainer/HBoxContainer/Label
 
-@onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
-@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
-@onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
-@onready var CardDrawerSpec:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerSpec
-@onready var CardDrawerTraits:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTrait
-@onready var CardDrawerImageBack:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerImage
+# FRONT
+@onready var FrontImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage
+@onready var FrontName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/FrontName
+@onready var FrontLevel:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/FrontLevel
+@onready var AssignedTo:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AssignedTo
+
+# BACK
+@onready var BackName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackName
+@onready var Health:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer/Health
+@onready var Sanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer/Sanity
+@onready var BackImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackImage
+@onready var BackTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer2/BackTrait
+@onready var BackMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer2/BackMood
 
 @export var card_border_color:Color = Color(0.0, 0.638, 0.337) : 
 	set(val): 
@@ -81,6 +90,8 @@ var onClick:Callable = func():pass
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
+	
+	StatusPanel.hide()
 
 	on_uid_update()
 	on_reveal_update()
@@ -136,8 +147,8 @@ func on_uid_update() -> void:
 	var researcher_details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(uid)		
 	
 	if uid == "-1" or researcher_details.is_empty():
-		CardDrawerImage.use_static = true
-		for node in [CardDrawerName, CardDrawerLevel, CardDrawerSpec, CardDrawerTraits, CardDrawerAssigned]:
+		FrontImage.use_static = true
+		for node in [FrontName, BackName, FrontLevel, BackTrait, BackMood]:
 			node.content = "-"
 		return
 	
@@ -147,27 +158,30 @@ func on_uid_update() -> void:
 
 # ------------------------------------------------------------------------------
 func update_nodes(researcher_details:Dictionary) -> void:
-	CardDrawerImage.use_static = false
-	CardDrawerImage.img_src = researcher_details.img_src
-	CardDrawerImageBack.img_src = researcher_details.img_src
-	CardDrawerImageBack.title = "RESEARCHER %s" % researcher_details.name
-	CardDrawerName.content = researcher_details.name
-	CardDrawerLevel.content = str(researcher_details.level)
+	FrontImage.use_static = false
+	
+	for node in [FrontImage, BackImage]:
+		node.img_src = researcher_details.img_src
+		node.use_static = false
+		node.title = "RESEARCHER %s" % researcher_details.name
+		
+	FrontName.content = researcher_details.name
+	FrontLevel.content = str(researcher_details.level)
 
 	if !researcher_details.props.assigned_to_room.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
 		if extract_data.is_empty():return
-		CardDrawerAssigned.content = extract_data.room.details.name
+		AssignedTo.content = extract_data.room.details.name
 	else:
-		CardDrawerAssigned.content = "None"
+		AssignedTo.content = "None"
 
-	CardDrawerSpec.content = researcher_details.specialization.details.name
-	CardDrawerTraits.content = researcher_details.trait.details.name
+	print(researcher_details.mood.details)
+	BackMood.content = researcher_details.mood.details.name
+	BackTrait.content = researcher_details.trait.details.name
 	
 # ------------------------------------------------------------------------------
 	
 	
-
 # ------------------------------------------------------------------------------
 func on_promotion_preview_update() -> void:
 	if !is_node_ready():return

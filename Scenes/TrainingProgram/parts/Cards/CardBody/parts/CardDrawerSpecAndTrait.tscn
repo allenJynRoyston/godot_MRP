@@ -35,7 +35,6 @@ custom_minimum_size = Vector2(200, 60)
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_453pl")
 script = ExtResource("1_ley5x")
-spec_name = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -81,7 +80,6 @@ modulate = Color(1, 1, 1, 0.5)
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Spec"
 label_settings = ExtResource("3_q2ahb")
 horizontal_alignment = 1
 autowrap_mode = 3

@@ -6,16 +6,11 @@ extends GameContainer
 @onready var TransitionScreen:Control = $TransistionScreen
 @onready var ResourceFloatingPanel:Control = $ResourceRequiredFloatingPanel
 @onready var ConsequenceFloatingPanel:Control = $ConsequenceFloatingPanel
+@onready var SuccessRoll:Control = $SuccessRoll
 
 @onready var ResearcherPanel:PanelContainer = $ResearcherControl/PanelContainer
 @onready var ResearcherMargin:MarginContainer = $ResearcherControl/PanelContainer/MarginContainer
 @onready var ResearcherCard:Control = $ResearcherControl/PanelContainer/MarginContainer/ResearcherCard
-
-@onready var SuccessRollControl:Control = $SuccessRollControl
-@onready var RollLabel:Label = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/RollLabel
-@onready var RollIcon:Control = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Control/RollIcon
-@onready var SuccessPanel:Control = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SuccessPanel
-@onready var FailurePanel:Control = $SuccessRollControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FailurePanel
 
 @onready var ImagePanel:PanelContainer = $ImageControl/PanelContainer
 @onready var ImageMargin:MarginContainer = $ImageControl/PanelContainer/MarginContainer
@@ -148,9 +143,6 @@ func reset() -> void:
 	update_next_btn(false)
 	reveal_outputtexture(false, 0.0)	
 	
-	SuccessRollControl.modulate = Color(1, 1, 1, 0)
-	SuccessRollControl.hide()
-	
 	for node in [ImageTitle, ImageSubTitle]:
 		node.text = ""	
 
@@ -234,21 +226,6 @@ func reveal_outputtexture(state:bool, duration:float) -> void:
 		).finished
 # --------------------------------------------------------------------------------------------------		
 
-
-# --------------------------------------------------------------------------------------------------		
-func use_roll_panel(is_success:bool, duration:float = 4.0) -> void:
-	SuccessRollControl.show()
-	await U.tween_node_property(SuccessRollControl, "modulate", Color(1, 1, 1, 1))	
-
-	RollIcon.rotation_degrees = -720.0
-	await U.tween_node_property(RollIcon, "rotation_degrees", 180 if is_success else 0, duration, 0, Tween.TRANS_SPRING, Tween.EASE_IN_OUT)
-	
-	await U.tween_node_property(SuccessRollControl, "modulate", Color(1, 1, 1, 0), 0.3, 0.5)	
-	SuccessRollControl.hide()
-# --------------------------------------------------------------------------------------------------		
-
-
-
 # --------------------------------------------------------------------------------------------------		
 func next_event(inc:bool = false) -> void:
 	if inc:
@@ -331,7 +308,6 @@ func on_current_instruction_update() -> void:
 	BtnControls.itemlist = []
 	BtnControls.onAction = func() -> void:pass			
 	
-	
 	# -----------------------------------
 	if "title" in current_instruction:
 		ImageTitle.text = "%s" % [current_instruction.title]
@@ -357,7 +333,7 @@ func on_current_instruction_update() -> void:
 	if "use_success_roll" in current_instruction and current_instruction.use_success_roll:
 		reveal_researcher(false)
 		await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
-		await use_roll_panel(current_instruction.use_success_roll, 1.0)
+		await SuccessRoll.use(current_instruction.use_success_roll, 1.5)
 		await BtnControls.reveal(true)
 		if ResearcherCard.uid != null:
 			reveal_researcher(true)
@@ -465,7 +441,7 @@ func on_option_select(option:Dictionary) -> void:
 	ResourceFloatingPanel.fade_out()
 	ConsequenceFloatingPanel.fade_out()
 	
-	RollLabel.text = option.title
+	SuccessRoll.set_title(option.title)
 	
 	for index in OptionsListContainer.get_child_count():
 		var node:Control = OptionsListContainer.get_child(index)
@@ -495,16 +471,4 @@ func tween_text_reveal(duration:float = 0.3) -> void:
 	text_reveal_tween.play()
 	await text_reveal_tween.finished
 	await U.set_timeout(0.5)
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func _process(delta: float) -> void:
-	if !is_node_ready() or !SuccessRollControl.is_visible_in_tree(): return
-
-	var normalized_rotation = fmod(RollIcon.rotation_degrees, 360.0)
-	if normalized_rotation < 0.0:
-		normalized_rotation += 360.0
-	
-	FailurePanel.modulate = Color(1, 1, 1, 1.0 if normalized_rotation >= 0.0 and normalized_rotation < 140.0 else 0.5)
-	SuccessPanel.modulate = Color(1, 1, 1, 1.0 if normalized_rotation >= 180.0 and normalized_rotation < 320.0 else 0.5)
 # --------------------------------------------------------------------------------------------------	
