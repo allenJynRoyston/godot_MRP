@@ -712,9 +712,6 @@ func next_day() -> void:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var current_objectives:Dictionary = objectives[story_progress.current_story_val]	
 	
-	print("GAME_UTIL.are_objectives_complete(): ", GAME_UTIL.are_objectives_complete())
-	print(progress_data.day + 1, " -> ", current_objectives.complete_by_day)
-	
 	if !GAME_UTIL.are_objectives_complete() and (progress_data.day + 1) >= current_objectives.complete_by_day:
 		var res:bool = await GAME_UTIL.create_warning("OBJECTIVES NOT MET!", "Ignore warning and continue?", "", false, Color(1, 1, 1, 0.2))
 		if res:
@@ -880,7 +877,9 @@ func on_current_phase_update() -> void:
 			#
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 			await U.set_timeout(0.5)
-			GAME_UTIL.update_daily_resources()
+			
+			await GAME_UTIL.open_tally()
+			
 			
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------

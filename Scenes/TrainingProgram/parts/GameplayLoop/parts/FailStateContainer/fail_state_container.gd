@@ -2,6 +2,7 @@ extends PanelContainer
 
 @onready var BtnControls:Control = $BtnControls
 @onready var FailStateBtnContainer:VBoxContainer = $MarginContainer/VBoxContainer/FailStateBtnContainer
+@onready var Splash:Control = $ContainmentBreachSplash
 
 @onready var ReturnToTitle:BtnBase = $MarginContainer/VBoxContainer/FailStateBtnContainer/ReturnToTitle
 @onready var RetryBtn:BtnBase = $MarginContainer/VBoxContainer/FailStateBtnContainer/RetryBtn
@@ -34,6 +35,9 @@ func start() -> void:
 	BtnControls.itemlist = FailStateBtnContainer.get_children()
 	BtnControls.item_index = 0
 	BtnControls.reveal(true)
+	
+	await Splash.activate()
+	Splash.start(true)
 	
 	
 func end(action:String) -> void:

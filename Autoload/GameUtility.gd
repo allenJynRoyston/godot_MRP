@@ -4,6 +4,7 @@ const ObjectivesPreload:PackedScene = preload("res://Scenes/TrainingProgram/part
 const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
 const WarningModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/WarningModal/WarningModal.tscn")
 const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
+const NewTallyPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/NewTallyModal/NewTallyModal.tscn")
 
 const ResearcherHireScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherHireScreen/ResearcherHireScreen.tscn")
 const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
@@ -14,7 +15,6 @@ const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram
 
 const DialogPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn")
 const ContainmentBreachPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentBreachSplash/ContainmentBreachSplash.tscn")
-
 
 const z_index_lvl:int = 10
 const new_scp_entry:Dictionary = {
@@ -43,7 +43,6 @@ func assign_nodes() -> void:
 	ActionContainer = GameplayNode.ActionContainer
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 func mark_current_objectives() -> void:
 	var objectives:Array = STORY.get_objectives()
@@ -56,7 +55,6 @@ func mark_current_objectives() -> void:
 		
 	SUBSCRIBE.bookmarked_objectives = bookmarked_objectives
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 func are_objectives_complete() -> bool:
@@ -76,7 +74,6 @@ func are_objectives_complete() -> bool:
 	
 	return !objective_failed
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 func extract_wing_details(use_location:Dictionary = current_location) -> Dictionary:	
@@ -160,9 +157,7 @@ func get_floor_summary(use_location:Dictionary = current_location) -> Dictionary
 	var floor_config:Dictionary = room_config.floor[floor]
 	var ring_config:Dictionary = room_config.floor[floor].ring[ring]
 	var room_config:Dictionary = room_config.floor[floor].ring[ring].room[room]	
-	
 	var currencies_diff:Dictionary = floor_config.currencies
-	
 	
 	var metrics_diff:Dictionary = {
 		RESOURCE.METRICS.MORALE: 0,
@@ -1008,6 +1003,23 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	#
 	#return confirm
 	return false
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func open_tally(color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
+	disable_taskbar(true)
+	
+	var NewtallyNode:Control = NewTallyPreload.instantiate()
+	NewtallyNode.z_index = 100	
+	GameplayNode.add_child(NewtallyNode)
+	await NewtallyNode.activate(false)
+	
+	NewtallyNode.start()
+	var confirm:bool = await NewtallyNode.user_response	
+	
+	disable_taskbar(previous_show_taskbar_state)
+	return confirm
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

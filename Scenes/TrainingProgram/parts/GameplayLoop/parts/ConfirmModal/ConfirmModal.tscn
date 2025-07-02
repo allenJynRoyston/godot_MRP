@@ -57,18 +57,18 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qglm5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kq5a2"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pmqqh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnqas"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qglm5"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -201,7 +201,7 @@ layout_mode = 2
 
 [node name="CheckBox" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("6_kq5a2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
 no_bg = true
 title = "1 energy required (you have X)"
 
@@ -219,7 +219,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_pmqqh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
 icon = 31
 no_bg = true
 title = "99"
@@ -238,7 +238,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_bnqas")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
 icon = 31
 no_bg = true
 title = "99"

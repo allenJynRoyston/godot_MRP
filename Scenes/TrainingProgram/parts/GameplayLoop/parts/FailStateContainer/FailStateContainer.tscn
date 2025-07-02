@@ -6,13 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_4b14y"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="5_i2pgy"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lxx8t"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhu2d"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3tkg2"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4b14y"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="FailState" type="PanelContainer"]
@@ -28,6 +28,11 @@ script = ExtResource("1_lxx8t")
 layout_mode = 2
 color = Color(0.122252, 0.122252, 0.122252, 1)
 
+[node name="ContainmentBreachSplash" parent="." instance=ExtResource("2_lxx8t")]
+layout_mode = 2
+title = "YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED "
+v_offset = 100
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 200
@@ -39,11 +44,6 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 40
 alignment = 1
-
-[node name="ContainmentBreachSplash" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_lxx8t")]
-layout_mode = 2
-title = "YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED YOU SHOULD HAVE LISTENED "
-v_offset = 0
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -67,19 +67,19 @@ theme_override_constants/separation = 10
 [node name="RetryBtn" parent="MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
 layout_mode = 2
 size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_uhu2d")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lxx8t")
 title = "Retry from checkpoint"
 
 [node name="RestartBtn" parent="MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
 layout_mode = 2
 size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_3tkg2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_uhu2d")
 title = "Restart"
 
 [node name="QuitBtn" parent="MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
 layout_mode = 2
 size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_4b14y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3tkg2")
 title = "Quit"
 
 [node name="BtnControls" parent="." instance=ExtResource("5_i2pgy")]
