@@ -2,6 +2,7 @@ extends SubscribeWrapper
 
 const ObjectivesPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/ObjectivesContainer.tscn")
 const ConfirmModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/ConfirmModal.tscn")
+const WarningModalPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/WarningModal/WarningModal.tscn")
 const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/EventContainer.tscn")
 
 const ResearcherHireScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherHireScreen/ResearcherHireScreen.tscn")
@@ -73,7 +74,7 @@ func are_objectives_complete() -> bool:
 			objective_failed = true
 			break	
 	
-	return objective_failed
+	return !objective_failed
 # ------------------------------------------------------------------------------
 
 
@@ -1007,6 +1008,26 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	#
 	#return confirm
 	return false
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func create_warning(title:String = "", subtitle:String = "", img_src:String = "", allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
+	disable_taskbar(true)
+	
+	var WarningNode:Control = WarningModalPreload.instantiate()
+	WarningNode.z_index = 100	
+	GameplayNode.add_child(WarningNode)
+	WarningNode.set_props(title, subtitle, img_src, color_bg)
+	WarningNode.allow_controls = allow_controls
+	
+	await WarningNode.activate(false)
+	
+	WarningNode.start()
+	var confirm:bool = await WarningNode.user_response	
+	
+	disable_taskbar(previous_show_taskbar_state)
+	return confirm
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

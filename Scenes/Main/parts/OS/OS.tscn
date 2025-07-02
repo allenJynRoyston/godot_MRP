@@ -130,8 +130,23 @@ columns = 5
 [node name="OptionsMenu" parent="." instance=ExtResource("3_jsaqf")]
 layout_mode = 2
 
+[node name="Taskbar" parent="." instance=ExtResource("3_v00j4")]
+z_index = 5
+z_as_relative = false
+layout_mode = 2
+
+[node name="PauseContainer" parent="." instance=ExtResource("8_13atc")]
+layout_mode = 2
+use_transition = true
+
+[node name="RunningAppsContainer" type="Control" parent="."]
+layout_mode = 2
+
+[node name="TransitionScreen" parent="." instance=ExtResource("5_b50hp")]
+layout_mode = 2
+
 [node name="LogoControl" type="Control" parent="."]
-z_index = 4
+z_index = 10
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="LogoControl"]
@@ -145,7 +160,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_25k47")
 
 [node name="MarginContainer" type="MarginContainer" parent="LogoControl/PanelContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
@@ -176,24 +191,9 @@ is_hoverable = false
 [node name="Label" type="Label" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-text = "LOGGED IN"
+text = "LOGGED IN AS SITE DIRECTOR"
 label_settings = ExtResource("5_25k47")
 vertical_alignment = 1
-
-[node name="Taskbar" parent="." instance=ExtResource("3_v00j4")]
-z_index = 5
-z_as_relative = false
-layout_mode = 2
-
-[node name="PauseContainer" parent="." instance=ExtResource("8_13atc")]
-layout_mode = 2
-use_transition = true
-
-[node name="RunningAppsContainer" type="Control" parent="."]
-layout_mode = 2
-
-[node name="TransitionScreen" parent="." instance=ExtResource("5_b50hp")]
-layout_mode = 2
 
 [node name="NodeControl" type="Control" parent="."]
 layout_mode = 2

@@ -708,8 +708,22 @@ func show_only(nodes:Array = []) -> void:
 #region LOCAL FUNCS
 # -----------------------------------
 func next_day() -> void:
+	var objectives:Array = STORY.get_objectives()
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	var current_objectives:Dictionary = objectives[story_progress.current_story_val]	
+	
+	print("GAME_UTIL.are_objectives_complete(): ", GAME_UTIL.are_objectives_complete())
+	print(progress_data.day + 1, " -> ", current_objectives.complete_by_day)
+	
+	if !GAME_UTIL.are_objectives_complete() and (progress_data.day + 1) >= current_objectives.complete_by_day:
+		var res:bool = await GAME_UTIL.create_warning("OBJECTIVES NOT MET!", "Ignore warning and continue?", "", false, Color(1, 1, 1, 0.2))
+		if res:
+			current_phase = PHASE.RESOURCE_COLLECTION
+			await phase_cycle_complete
+		return
+		
 	current_phase = PHASE.RESOURCE_COLLECTION
-	await phase_cycle_complete
+	await phase_cycle_complete		
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -953,8 +967,8 @@ func on_current_phase_update() -> void:
 				await U.set_timeout(0.5)				
 
 				# CHECK FOR FAIL STATE
-				var objective_failed:bool = GAME_UTIL.are_objectives_complete()
-				current_phase = PHASE.GAME_LOST if objective_failed else PHASE.GAME_WON
+				var is_complete:bool = GAME_UTIL.are_objectives_complete()
+				current_phase = PHASE.GAME_LOST if !is_complete else PHASE.GAME_WON
 				return
 			
 			# continue

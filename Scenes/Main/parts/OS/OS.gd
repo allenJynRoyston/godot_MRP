@@ -419,10 +419,9 @@ func start() -> void:
 	
 	control_pos[LogoPanel] = {
 		"show": 0,
-		"hide": -LogoMargin.size.x
+		"hide": -LogoMargin.size.y
 	}
-	
-	LogoPanel.position.x = control_pos[LogoPanel].show
+	LogoPanel.position.y = control_pos[LogoPanel].hide
 	
 	await U.set_timeout(1.0 if !skip_boot else 0)
 	
@@ -433,10 +432,13 @@ func start() -> void:
 		
 	await render_desktop_icons()	
 	Taskbar.activate()
-	
+		
 	if skip_to_game:
 		var app:Dictionary = find_in_app_list(APPS.SITE_DIRECTOR_TRAINING_PROGRAM)
 		open_app(app.details)
+	
+	await reveal_logo(true, 0.5)
+	reveal_logo(false, 3.0)
 		
 func return_to_desktop() -> void:
 	currently_running_app = null	
@@ -452,8 +454,8 @@ func return_to_app(ref:int) -> void:
 # -----------------------------------	
 
 # -----------------------------------	
-func reveal_logo(state:bool) -> void:
-	await U.tween_node_property(LogoPanel, 'position:x', control_pos[LogoPanel].show if state else control_pos[LogoPanel].hide)
+func reveal_logo(state:bool, delay:float = 0.0) -> void:
+	await U.tween_node_property(LogoPanel, 'position:y', control_pos[LogoPanel].show if state else control_pos[LogoPanel].hide, 0.7, delay)
 # -----------------------------------	
 
 # -----------------------------------	
@@ -642,10 +644,10 @@ func on_currently_running_app_update() -> void:
 			app.hide()
 			
 	if currently_running_app == null:
-		reveal_logo(true)
+		#reveal_logo(true)
 		RunningAppsContainer.hide()
 	else:
-		reveal_logo(false)
+		#reveal_logo(false)
 		RunningAppsContainer.show()
 		
 # -----------------------------------	

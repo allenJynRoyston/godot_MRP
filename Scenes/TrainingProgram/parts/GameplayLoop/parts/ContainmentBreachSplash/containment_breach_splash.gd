@@ -1,19 +1,29 @@
+@tool
 extends Control
 
 @onready var ColorBG:ColorRect = $ColorRect
 @onready var MainPanel:PanelContainer = $PanelContainer
+@onready var MainLabel:Label = $PanelContainer/MarginContainer/EmergencyLabel
 @onready var MainMargin:MarginContainer = $PanelContainer/MarginContainer
 
 @onready var EmergencyLabel:Label = $PanelContainer/MarginContainer/EmergencyLabel
 
 var control_pos:Dictionary
 
+@export var title:String = "CONTAINMENT BREACH IN PROGRESS" : 
+	set(val):
+		title = val
+		on_title_update()
+
+@export var v_offset:int = 0
+
 
 # --------------------------------	
 func _ready() -> void:
-	modulate = Color(1, 1, 1, 0)
+	modulate = Color(1, 1, 1, 1 if Engine.is_editor_hint() else 0)
 	ColorBG.color = Color(0, 0, 0, 0.8)
 	set_process(false)
+	on_title_update()
 # --------------------------------	
 
 # --------------------------------	
@@ -21,20 +31,29 @@ func activate() -> void:
 	await U.tick()
 	
 	control_pos[MainPanel] = {
-		"zero": 0,
-		"show": 200,
+		"zero": 0 + v_offset,
+		"show": 200  + v_offset,
 		"hide": -MainMargin.size.y
 	}
 	
 	MainPanel.position.y = control_pos[MainPanel].hide
+	
 # --------------------------------	
 
 # --------------------------------	
-func start() -> void:
+func start(use_zero:bool = false) -> void:
 	set_process(true)	
+	await U.tick()
+	
 	U.tween_node_property(ColorBG, "color:a", 0, 3.0, 1.0)	
 	U.tween_node_property(self, "modulate:a", 1, 0.5)
-	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show, 0.5, 1.0)
+	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].zero if use_zero else control_pos[MainPanel].show, 0.5, 1.0)
+# --------------------------------	
+
+# --------------------------------	
+func on_title_update() -> void:
+	if !is_node_ready():return
+	MainLabel.text = title
 # --------------------------------	
 
 # --------------------------------	

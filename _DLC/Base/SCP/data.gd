@@ -16,7 +16,7 @@ var SCP0:Dictionary = {
 	"abstract": func(_scp_details:Dictionary) -> String:
 		return "A gilded picture frame that opens a window into a subtly altered mirrored version of the room it faces. Objects entering vanish without trace. Categorized as SPATIAL and CONCEPTUAL.",
 	"img_src": "res://Media/scps/mirror_frame.png",
-	"breach_check_frequency": 5,
+	"breach_check_frequency": 7,
 	
 	"containment_requirements": [
 		SCP.CONTAINMENT_TYPES.SPATIAL,
@@ -312,6 +312,8 @@ var SCP0:Dictionary = {
 }
 
 
+
+
 var SCP1:Dictionary = {
 	"nickname": "The Latchkeeper",
 	
@@ -447,14 +449,24 @@ var SCP1:Dictionary = {
 		}
 }
 
-
 var SCP2:Dictionary = {
-	"nickname": "The Remembering Bell",
-	"description": func(_scp_details:Dictionary) -> String:
-		return "%s is a weathered brass bell approximately 0.7 meters in height, suspended within an iron frame bolted to a concrete base. When struck, the bell emits no audible sound, yet induces vivid, involuntary recollections in all sentient organisms within a 12-meter radius. These memories often involve events the subject has no recollection of ever experiencing—many of which are inconsistent with established personal history or recorded reality.\n\n%s’s effects persist for several minutes after activation and are not mitigated by ear protection, soundproof barriers, or indirect observation. Subjects exposed repeatedly may experience identity confusion, emotional instability, or develop false autobiographical narratives. The bell does not appear to degrade with use or age. Its origin remains unknown, though it was recovered from a collapsed monastery in Southern ████████." % [_scp_details.name, _scp_details.name],
+	"nickname": "The Tiny Intruder",
+	
+	"description": func(_scp_details:Dictionary) -> Array:
+		return [
+			"%s is a fully furnished miniature dollhouse, measuring approximately 0.5m in height and 0.3m in width.",
+			"It is capable of independent locomotion via two humanoid-sized legs for a human of that stature, and displays a high degree of sentience.",
+			"%s enters residential homes by unknown means, typically between 2 AM and 4 AM local time, and proceeds to commit burglary.",
+			"Security footage shows that %s will wander the premises, often rearranging small objects, changing TV channels, stealing minor trinkets that have only minor financial value, and occasionally leaving handwritten notes reading 'Nice place.'",
+			"The structure wears a custom-sized black ski mask, permanently stitched to its roof.",
+			"%s has not shown any signs of hostility, but as one can imagine, stumbling upon a tiny house-shaped with a ski mask in the middle of the night have lead to some serious confrontations.",
+			"Before containment, %s has been associated with ████ calls to 911, ██ 18 injuries — █ which were serious — and ██████ gun related fatalities, either accidental by the homeowners themselves or law enforcement." % _scp_details.name,
+			"█████ in total have been administered Class-B amnestics, while an additional ██ required serious ████████ ████████.",
+		],
 	"abstract": func(_scp_details:Dictionary) -> String:
-		return "A silent brass bell that induces false or conflicting memories in nearby observers. Categorized as MEMETIC and CONCEPTUAL.",
-	"img_src": "res://Media/scps/remembering_bell.png",
+		return "%s is a sentient miniature dollhouse wearing a ski mask that infiltrates homes at night, exhibiting curious but harmless behavior." % [_scp_details.name],
+	
+	"img_src": "res://Media/scps/tiny_intruder.jpg",
 	
 	"containment_requirements": [
 		SCP.CONTAINMENT_TYPES.MEMETIC,
