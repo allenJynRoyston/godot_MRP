@@ -133,6 +133,18 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
+[node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 0
+
+[node name="CostPanel" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer" instance=ExtResource("6_hjr8x")]
+layout_mode = 2
+icon = 71
+title = ""
+
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_hjr8x")]
 layout_mode = 2
 card_size = Vector2(250, 200)
@@ -202,17 +214,6 @@ metadata/_edit_group_ = true
 
 [node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_63pvq")
-
-[node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 0
-
-[node name="CostPanel" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer" instance=ExtResource("6_hjr8x")]
-layout_mode = 2
-title = "BUILDING COST"
 
 [node name="BtnControl" type="Control" parent="."]
 layout_mode = 2

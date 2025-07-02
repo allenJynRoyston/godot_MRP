@@ -526,7 +526,7 @@ func show_build_options() -> void:
 	# ACTIVATE NODE
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate()
-	ActiveMenuNode.open()	
+	ActiveMenuNode.open(true)	
 	
 
 # --------------------------------------------------------------------------------------------------
@@ -585,6 +585,7 @@ func show_generator_updates() -> void:
 		}
 	]
 	
+
 	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
 		await lock_actions(false)
@@ -758,7 +759,6 @@ func show_settings() -> void:
 		on_current_mode_update()
 		GameplayNode.restore_player_hud()
 
-	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	

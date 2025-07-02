@@ -134,8 +134,11 @@ func activate() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func open() -> void:
+func open(has_cost_panel:bool = false) -> void:
 	modulate = Color(1, 1, 1, 1)
+	CostPanel.modulate = Color(1, 1, 1, 0)
+	if !has_cost_panel:
+		CostPanel.hide()
 	on_tab_index_update	()
 	await animate_in(true)
 	selected_index = 0
@@ -222,6 +225,7 @@ func on_cost_data_update() -> void:
 	CostPanel.amount = cost_data.amount
 	CostPanel.icon = cost_data.icon
 	CostPanel.is_negative = cost_data.is_negative
+	CostPanel.modulate = Color(1, 1, 1, 1)	
 		
 
 func on_hint_border_color_update() -> void:
