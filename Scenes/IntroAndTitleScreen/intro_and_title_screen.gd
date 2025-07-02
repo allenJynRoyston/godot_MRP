@@ -138,7 +138,7 @@ func on_current_mode_update() -> void:
 					var letter_node:Control = TitleLetterContainers.get_child(index)
 					await letter_node.start()
 					
-				await U.set_timeout(2.0)
+				await U.set_timeout(3.0)
 				
 				for index in range(0, TitleLetterContainers.get_child_count()):
 					var letter_node:Control = TitleLetterContainers.get_child(index)
