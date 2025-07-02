@@ -1,46 +1,82 @@
-[gd_scene load_steps=21 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=23 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
+[ext_resource type="Texture2D" uid="uid://j2sk54heuc2t" path="res://Media/images/OS/bg_0.png" id="2_25k47"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
 [ext_resource type="PackedScene" uid="uid://cyjoo87vkcy0s" path="res://Scenes/Main/parts/OS/Options/Options.tscn" id="3_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/Main/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
+[ext_resource type="LabelSettings" uid="uid://cl0raoi8pa3g5" path="res://Fonts/game/label_small_black.tres" id="5_25k47"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_b50hp"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
 [ext_resource type="PackedScene" uid="uid://8hxxm66kio4n" path="res://Scenes/Main/parts/OS/Installer/Installer.tscn" id="6_dhnyo"]
 [ext_resource type="PackedScene" uid="uid://cbwnq2nmqkgf0" path="res://Scenes/Main/parts/OS/LoginScreen/LoginScreen.tscn" id="6_tw6u7"]
 [ext_resource type="PackedScene" uid="uid://clbcu7v8n62o8" path="res://Scenes/Main/parts/OS/Notification/Notification.tscn" id="7_mdufi"]
 [ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="8_13atc"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_tw6u7"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="11_pabxy"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41nkp"]
 
-[sub_resource type="Gradient" id="Gradient_oddaw"]
-offsets = PackedFloat32Array(0, 0.485, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.435, 0.435, 0.435, 1, 0, 0, 0, 1)
+[sub_resource type="Shader" id="Shader_ei827"]
+code = "shader_type canvas_item;
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_25k47"]
-gradient = SubResource("Gradient_oddaw")
-fill_from = Vector2(0.130435, 0.0434783)
-metadata/_snap_enabled = true
-metadata/_snap_count = 23
+uniform float amplitude : hint_range(0.0, 50.0) = 20.0;
+uniform float frequency : hint_range(0.0, 10.0) = 5.0;
+uniform float speed : hint_range(0.0, 10.0) = 1.0;
+uniform float opacity : hint_range(0.0, 1.0) = 1.0;
+uniform int step_count : hint_range(1, 128) = 8; // Fewer steps = chunkier movement
+
+void fragment() {
+    float pixel_height = SCREEN_PIXEL_SIZE.y;
+
+    // Get the screen-space Y coordinate in pixels
+    float y_px = floor(FRAGCOORD.y);
+
+    // Create a stepped wave based on scanline
+    float wave = sin(y_px * frequency * 0.01 + TIME * speed);
+
+    // Snap to step_count levels
+    float stepped_wave = floor(wave * float(step_count)) / float(step_count);
+
+    // Horizontal offset in pixels converted to UV
+    float offset = stepped_wave * (amplitude * SCREEN_PIXEL_SIZE.x);
+
+    vec2 distorted_uv = UV + vec2(offset, 0.0);
+
+    vec4 tex_color = texture(TEXTURE, distorted_uv);
+    tex_color.a *= opacity;
+
+    COLOR = tex_color;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_25k47"]
+shader = SubResource("Shader_ei827")
+shader_parameter/amplitude = 21.29
+shader_parameter/frequency = 0.5
+shader_parameter/speed = 0.5
+shader_parameter/opacity = 1.0
+shader_parameter/step_count = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1wtgv"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pabxy"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25k47"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_oddaw"]
-font = ExtResource("11_pabxy")
-font_size = 32
-font_color = Color(0.986499, 0.975581, 0.946731, 1)
-outline_size = 12
-outline_color = Color(0, 0, 0, 1)
-shadow_size = 2
-shadow_color = Color(0.699653, 0.699653, 0.699653, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jsaqf"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6u7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oddaw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fxpyd"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -64,10 +100,13 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_41nkp")
 script = ExtResource("1_rk64t")
 
 [node name="BG" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_25k47")
 layout_mode = 2
-texture = SubResource("GradientTexture2D_25k47")
+texture = ExtResource("2_25k47")
+expand_mode = 1
 
 [node name="AudioVisualizer" parent="." instance=ExtResource("2_b50hp")]
+visible = false
 layout_mode = 2
 
 [node name="Desktop" type="PanelContainer" parent="."]
@@ -102,22 +141,44 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_pabxy")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_25k47")
 
 [node name="MarginContainer" type="MarginContainer" parent="LogoControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 170
+size_flags_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 80
+theme_override_constants/margin_bottom = 35
 
-[node name="Label" type="Label" parent="LogoControl/PanelContainer/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="LogoControl/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
-text = "WONDERTAINMENT 
-PC-97"
-label_settings = SubResource("LabelSettings_oddaw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jsaqf")
+
+[node name="MarginContainer" type="MarginContainer" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("5_jsaqf")]
+layout_mode = 2
+icon = 3
+static_color = Color(0, 0.721569, 0, 1)
+is_hoverable = false
+
+[node name="Label" type="Label" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "LOGGED IN"
+label_settings = ExtResource("5_25k47")
+vertical_alignment = 1
 
 [node name="Taskbar" parent="." instance=ExtResource("3_v00j4")]
 z_index = 5
@@ -184,7 +245,7 @@ alignment = 2
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_oddaw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fxpyd")
 title = "TASKBAR"
 assigned_key = "BACKSPACE"
 icon = 67

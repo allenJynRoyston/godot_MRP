@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_c704x"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="4_gkvqa"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6teih"]
-bg_color = Color(0, 0, 0, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gkvqa"]
+bg_color = Color(0, 0, 0, 0.670588)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -35,7 +35,7 @@ script = ExtResource("1_6teih")
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_6teih")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gkvqa")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2

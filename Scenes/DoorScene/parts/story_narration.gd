@@ -149,7 +149,7 @@ func fill_message() -> void:
 			",":
 				await U.set_timeout(0.2)
 			":":
-				await U.set_timeout(0.2)					
+				await U.set_timeout(0.2)	
 			_:
 				await U.tick()
 		TopLabel.visible_characters = count

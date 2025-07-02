@@ -38,17 +38,17 @@ func on_taskbar_is_open_update(state:bool) -> void:
 func pause() -> void:
 	if !is_paused:
 		is_paused = true
-		#await EmailComponent.pause()
+		await MediaPlayerMain.pause()
 		if is_visible_in_tree():
 			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 		PauseContainer.show()
-		#EmailComponent.hide()
+		MediaPlayerMain.hide()
 	#
 func unpause() -> void:
 	if is_paused:
 		is_paused = false
 		PauseContainer.hide()
-		#EmailComponent.show()
+		MediaPlayerMain.show()
 		await U.set_timeout(0.3)
-		#EmailComponent.unpause()
+		MediaPlayerMain.unpause()
 # ------------------------------------------------------------------------------

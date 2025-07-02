@@ -5,16 +5,16 @@
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_qkbpp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qkbpp"]
-bg_color = Color(0, 0, 0, 0.7)
+bg_color = Color(0, 0, 0, 0.670588)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337, 0.275, 1, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
+corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
-corner_radius_bottom_left = 10
-shadow_offset = Vector2(0, 2)
+corner_radius_bottom_left = 5
 
 [node name="ObjectiveItem" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0.8)
@@ -25,7 +25,7 @@ size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_qkbpp")
 script = ExtResource("1_qkbpp")
 hint_title = "HINT"
-hint_description = "Objective"
+hint_description = "Objective "
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -61,7 +61,6 @@ autowrap_mode = 3
 [node name="YouHaveLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
-text = "(Currently have .)"
 label_settings = ExtResource("3_qkbpp")
 
 [node name="Control" type="Control" parent="."]

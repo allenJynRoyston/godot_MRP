@@ -43,7 +43,7 @@ func clear() -> void:
 func get_is_activated() -> bool:
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		return extract_data.room.is_activated		
+		return extract_data.room.is_activated	 if (extract_data.has("room") and extract_data.room.has("is_activated")) else false
 		
 	return false
 	

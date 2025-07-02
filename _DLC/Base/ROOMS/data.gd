@@ -15,7 +15,7 @@ var DEBUG_ROOM:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
-	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY, RESEARCHER.SPECIALIZATION.STAFF],
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],
 	# ------------------------------------------
 
 	# ------------------------------------------	
@@ -35,7 +35,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"costs": {
 		"unlock": 0,
-		"purchase": 0,
+		"purchase": 500,
 	},
 	# ------------------------------------------
 	
@@ -98,6 +98,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"can_assign_researchers": false,
 	"requires_unlock": false,	
 	"own_limit": 1,	
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ADMIN],
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -109,9 +110,9 @@ var DIRECTORS_OFFICE:Dictionary = {
 	
 	# ------------------------------------------	
 	"metrics": {
-		RESOURCE.METRICS.MORALE: 3,
-		RESOURCE.METRICS.SAFETY: 2,
-		RESOURCE.METRICS.READINESS: 1
+		RESOURCE.METRICS.MORALE: 1,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0
 	},	
 	# ------------------------------------------	
 	
@@ -127,7 +128,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			ABL_P.get_ability(ABL_P.REF.PREDICTIVE_TIMELINE),
-			ABL_P.get_ability(ABL_P.REF.ENABLE_OBJECTIVES),
+			ABL_P.get_ability(ABL_P.REF.OBJECTIVE_ASSIST),
 			
 		],	
 	# ------------------------------------------		
@@ -148,17 +149,14 @@ var HQ:Dictionary = {
 	"can_assign_researchers": true,
 	"requires_unlock": false,	
 	"own_limit": 1,	
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ADMIN],
 	# ------------------------------------------
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 1,
+		"unlock": 0,
+		"purchase": 0,
 	},
-	# ------------------------------------------
-
-	# --------------------------------------
-	"requires_specialization": RESEARCHER.SPECIALIZATION.STAFF,
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -182,18 +180,17 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 		
 	# ------------------------------------------
 	"can_contain": true,
-	"can_destroy": true,
-	"can_assign_researchers": true,
 	"requires_unlock": false,	
 	"containment_properties": [
 		SCP.CONTAINMENT_TYPES.PHYSICAL
 	],
+	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER, RESEARCHER.SPECIALIZATION.SECURITY],	
 	# ------------------------------------------
 
 	# ------------------------------------------
 	"costs": {
 		"unlock": 50,
-		"purchase": 100,
+		"purchase": 400,
 	},
 	# ------------------------------------------
 		
@@ -213,6 +210,39 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------			
 }
 
+var DARK_MONEY:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.DARK_MONEY,	
+	"name": "APPLIED ECONOMIC RECLIMATION DIVISION",
+	"shortname": "AERD",
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "A covert unit used to sustain Foundation operations through unofficial financial channels.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [RESEARCHER.SPECIALIZATION.SECURITY],	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 50,
+		"purchase": 100,
+	},
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.MONEY_HACK, 0),
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY),
+		],	
+	# ------------------------------------------		
+}
+
 var PRISONER_BLOCK:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.PRISONER_BLOCK,	
@@ -221,6 +251,10 @@ var PRISONER_BLOCK:Dictionary = {
 	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "A prisoner block designed specifically to house D-Class personel.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [RESEARCHER.SPECIALIZATION.SECURITY],	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -249,6 +283,12 @@ var HR_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
 
 	# ------------------------------------------
+	"requires_unlock": false,	
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ADMIN],	
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
@@ -272,6 +312,10 @@ var OPERATIONS_SUPPORT:Dictionary = {
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies technicians.",
 	"unlock_level": 1,	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER, RESEARCHER.SPECIALIZATION.RESEARCHER],	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -299,6 +343,10 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	"description": "Supplies security.",
 	"unlock_level": 1,		
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"required_staffing": [RESEARCHER.SPECIALIZATION.SECURITY, RESEARCHER.SPECIALIZATION.SECURITY],	
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"costs": {
@@ -325,6 +373,10 @@ var WEAPONS_RANGE:Dictionary = {
 	"description": "Increases security and provides training.",
 	"unlock_level": 1,		
 	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [RESEARCHER.SPECIALIZATION.SECURITY],	
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"costs": {
@@ -359,6 +411,10 @@ var ENGINEERING_BAY:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
+	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER],	
+	# ------------------------------------------
+		
+	# ------------------------------------------
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
@@ -391,6 +447,10 @@ var ENERGY_STORAGE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
+	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER],	
+	# ------------------------------------------	
+	
+	# ------------------------------------------
 	"costs": {
 		"unlock": 50,
 		"purchase": 100,
@@ -415,20 +475,21 @@ var ENERGY_STORAGE:Dictionary = {
 var TEST1:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.TEST1,
-	"name": "TEST (STANDARD)",
+	"name": "TEST 1",
 	"shortname": "ENG.BAY",
 	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
+
 	# ------------------------------------------
 }
 
 var TEST2:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.TEST2,	
-	"name": "TEST (CONTAINMENT)",
+	"name": "TEST 2",
 	"shortname": "ENG.BAY",
-	"categories": [ROOM.CATEGORY.CONTAINMENT],
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -437,9 +498,55 @@ var TEST2:Dictionary = {
 var TEST3:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.TEST3,		
-	"name": "TEST (SPECIAL)",
+	"name": "TEST 3",
 	"shortname": "ENG.BAY",
-	"categories": [ROOM.CATEGORY.SPECIAL],
+	"categories": [ROOM.CATEGORY.STANDARD],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"own_limit": 1,	
+	# ------------------------------------------
+}
+
+var TEST4:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.TEST4,		
+	"name": "TEST 4",
+	"shortname": "ENG.BAY",
+	"categories": [ROOM.CATEGORY.STANDARD],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"own_limit": 1,	
+	# ------------------------------------------
+}
+
+var TEST5:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.TEST5,		
+	"name": "TEST 5",
+	"shortname": "ENG.BAY",
+	"categories": [ROOM.CATEGORY.STANDARD],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"own_limit": 1,	
+	# ------------------------------------------
+}
+
+
+var TEST6:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.TEST6,		
+	"name": "TEST 6",
+	"shortname": "ENG.BAY",
+	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
@@ -451,15 +558,16 @@ var TEST3:Dictionary = {
 
 # -----------------------------------	
 var list:Array[Dictionary] = [
-	DIRECTORS_OFFICE, HQ, DEBUG_ROOM,
+	#DEBUG_ROOM,
+	# ---------------
+	DIRECTORS_OFFICE, HQ, 
 	# ---------------
 	STANDARD_CONTAINMENT_CELL, 
 	# ---------------
+	DARK_MONEY,
 	PRISONER_BLOCK, HR_DEPARTMENT, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
 	# ---------------
 	WEAPONS_RANGE, ENGINEERING_BAY, ENERGY_STORAGE,
-	TEST1, TEST2, TEST3,
-	TEST1, TEST2, TEST3,
-	TEST1, TEST2, TEST3
+	# TEST1, TEST2, TEST3, TEST4, TEST5, TEST6
 ]
 # -----------------------------------	

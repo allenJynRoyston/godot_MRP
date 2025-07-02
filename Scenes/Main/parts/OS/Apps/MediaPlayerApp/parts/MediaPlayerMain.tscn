@@ -45,7 +45,7 @@ theme_override_constants/separation = 15
 
 [node name="Label" type="Label" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "MEDIA PLAYER"
+text = "AVAILABLE TRACKS"
 label_settings = ExtResource("2_8cl27")
 horizontal_alignment = 1
 

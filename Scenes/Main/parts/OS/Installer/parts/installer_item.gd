@@ -39,10 +39,10 @@ func on_percentage_complete_update() -> void:
 
 # ------------------------------------------------
 func on_complete() -> void:
-	var layout_node:Control = GBL.find_node(REFS.OS_LAYOUT)
+	var OS_NODE:Control = GBL.find_node(REFS.OS_LAYOUT)
 	percentage_complete = 1.0
 	await U.set_timeout(1.0)
-	layout_node.install_app_complete(ref)
+	OS_NODE.install_app_complete(ref)
 	self.queue_free()	
 # ------------------------------------------------
 

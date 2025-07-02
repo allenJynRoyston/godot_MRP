@@ -84,7 +84,7 @@ func parse_email(data:Dictionary, index:int) -> void:
 	FromLabel.text = data.from	
 	DateLabel.text = data.date
 	EmailContentRichText.text = data.content
-	
+		
 	if ("attachment" in data) and (index not in read_emails):
 		AttachmentContainer.show()
 		AttachmentContainer.data = data.attachment
@@ -110,7 +110,6 @@ func on_email_data_update() -> void:
 	for index in email_data.size():
 		var item:Dictionary = email_data[index]
 		var new_btn:Control = TextBtnPreload.instantiate()
-		
 		new_btn.index = index
 		new_btn.title = item.title
 		new_btn.icon = SVGS.TYPE.CHECKBOX if index in read_emails else SVGS.TYPE.EMPTY_CHECKBOX

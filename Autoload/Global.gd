@@ -282,6 +282,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "I"
 					78:
 						key = "N"
+					79:
+						key = "O"
 					65:
 						key = "A"
 					68:

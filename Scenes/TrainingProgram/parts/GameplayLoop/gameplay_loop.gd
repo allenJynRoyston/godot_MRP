@@ -91,17 +91,17 @@ var initial_values:Dictionary = {
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": 200 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 100 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"diff": 0,
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": 100 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 50 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
 				"diff": 0,
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": 10 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 100, 
+				"amount": 25 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 100, 
 				"diff": 0,
 				"capacity": 100
 			},						
@@ -179,8 +179,6 @@ var initial_values:Dictionary = {
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"has_containment_breach": false,
-					#"researchers_per_room": DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM),
-					#"hotkeys": {},
 					"buffs": [],
 					"debuffs": [],
 				}
@@ -189,6 +187,7 @@ var initial_values:Dictionary = {
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 					room[str(floor_index, ring_index, room_index)] = {
 						"abl_lvl": 0,
+						"passives_enabled_list": [],
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
 						"buffs": [],
@@ -402,7 +401,13 @@ func start() -> void:
 	
 	await U.tick()
 	start_new_game()
-	
+
+func restart_game() -> void:
+	GBL.loaded_gameplay_data = {}
+	setup_complete = false
+	await U.tick()
+	start_new_game()
+
 func start_new_game() -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
@@ -441,15 +446,24 @@ func start_new_game() -> void:
 	# -----------------------
 	SetupContainer.subtitle = "Synchronizing mission parameters..."
 	SetupContainer.progressbar_val = 0.5
-	await U.set_timeout(duration)	
-	# 3.) generate researchers (if new game)
+	await U.set_timeout(duration)
+	
+	# 3.) generate researchers/security/dclass (if new game)
 	if is_new_game:
-		var starting_number_of_researchers:int = DEBUG.get_val(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT) if DEBUG.get_val(DEBUG.GAMEPLAY_USE_FRESH_BASE) else 5
+		var staff_debug:bool = DEBUG.get_val(DEBUG.STAFF_DEBUG)
 		var staff_list:Array = []
-		for ref in [RESEARCHER.SPECIALIZATION.STAFF, RESEARCHER.SPECIALIZATION.SECURITY, RESEARCHER.SPECIALIZATION.DCLASS]:
-			for item in RESEARCHER_UTIL.generate_new_researcher_hires(starting_number_of_researchers, ref):
-				staff_list.push_back(item)
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires(3 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_ADMIN), RESEARCHER.SPECIALIZATION.ADMIN):
+			staff_list.push_back(item)		
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires(1 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_RESEARCHERS), RESEARCHER.SPECIALIZATION.RESEARCHER):
+			staff_list.push_back(item)
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires(1 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_SECURITY), RESEARCHER.SPECIALIZATION.SECURITY):
+			staff_list.push_back(item)
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires(0 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_DCLASS), RESEARCHER.SPECIALIZATION.DCLASS):
+			staff_list.push_back(item)
+		staff_list.reverse()
+		
 		SUBSCRIBE.hired_lead_researchers_arr = staff_list
+		
 
 	# -----------------------
 	SetupContainer.subtitle = "Finalizing deployment protocols..."
@@ -664,9 +678,11 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	await show_only([Structure3dContainer, ActionContainer,  ResourceContainer])
-	show_marked_objectives = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val	
-	show_timeline = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_TIMELINE].val			
+	var arr:Array = [Structure3dContainer, ActionContainer,  ResourceContainer, TimelineContainer]
+	if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val:
+		arr.push_back(MarkedObjectivesContainer)
+
+	await show_only(arr)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -842,15 +858,16 @@ func on_current_phase_update() -> void:
 			# hide objectives
 			show_marked_objectives = false
 			
-			if camera_settings_snapshot.type != CAMERA.TYPE.WING_SELECT:
-				camera_settings.type = CAMERA.TYPE.WING_SELECT
-				SUBSCRIBE.camera_settings = camera_settings	
-				await U.set_timeout(0.5)
-			
-			
+			#if camera_settings_snapshot.type != CAMERA.TYPE.WING_SELECT:
+				#camera_settings.type = CAMERA.TYPE.WING_SELECT
+				#SUBSCRIBE.camera_settings = camera_settings	
+				#await U.set_timeout(0.5)
+			#
+			#
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
-
 			await U.set_timeout(0.5)
+			GAME_UTIL.update_daily_resources()
+			
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
@@ -860,16 +877,16 @@ func on_current_phase_update() -> void:
 			progress_data.day += 1
 			
 			# mark rooms and push to subscriptions
-			#for floor_index in room_config.floor.size():		
-				#for ring_index in room_config.floor[floor_index].ring.size():
-					#for room_index in room_config.floor[floor_index].ring[ring_index].size():
-						#var room_designation:String = str(floor_index, ring_index, room_index)
-						#for key in base_states.room[room_designation].ability_on_cooldown:
-							#if base_states.room[room_designation].ability_on_cooldown[key] > 0:
-								#base_states.room[room_designation].ability_on_cooldown[key] -= 1
-								#if base_states.room[room_designation].ability_on_cooldown[key] == 0:
-									#ToastContainer.add("[%s] is ready!" % [key])
-				#
+			for floor_index in room_config.floor.size():		
+				for ring_index in room_config.floor[floor_index].ring.size():
+					for room_index in room_config.floor[floor_index].ring[ring_index].size():
+						var room_designation:String = str(floor_index, ring_index, room_index)
+						for key in base_states.room[room_designation].ability_on_cooldown:
+							if base_states.room[room_designation].ability_on_cooldown[key] > 0:
+								base_states.room[room_designation].ability_on_cooldown[key] -= 1
+								if base_states.room[room_designation].ability_on_cooldown[key] == 0:
+									ToastContainer.add("[%s] is ready!" % [key])
+				
 			# update subscriptions
 			SUBSCRIBE.progress_data = progress_data
 			SUBSCRIBE.base_states = base_states
@@ -922,7 +939,6 @@ func on_current_phase_update() -> void:
 						#await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
 
 			# restore hud
-			restore_player_hud()
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
 		PHASE.CONCLUDE:
@@ -951,10 +967,9 @@ func on_current_phase_update() -> void:
 			await restore_player_hud()
 			current_phase = PHASE.PLAYER
 			phase_cycle_complete.emit()
-			
 		# ------------------------
 		PHASE.GAME_WON:
-			await show_only([])
+			PhaseAnnouncement.end()
 			
 			# trigger reward event
 			await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
@@ -967,7 +982,6 @@ func on_current_phase_update() -> void:
 				)
 			])	
 			
-			restore_player_hud()
 				
 			# fetch next objective, update objective
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -991,16 +1005,15 @@ func on_current_phase_update() -> void:
 				story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
 						
 			# create a quicksave
-			quicksave(true)
+			#quicksave(true)
 			
 			# also create a checkpoint
 			create_checkpoint(true)
 			
 			# update objectives
-			PhaseAnnouncement.start("OBJECTIVES HAVE BEEN UPDATED.")
-			
-			# display next objectives
-			#await GAME_UTIL.open_objectives()
+			PhaseAnnouncement.start("OBJECTIVES ARE BEING UPDATED...")
+			await U.set_timeout(2.0)
+			await GAME_UTIL.open_objectives()
 			# update bookmarked objectives
 			GAME_UTIL.mark_current_objectives()
 			
@@ -1008,7 +1021,7 @@ func on_current_phase_update() -> void:
 				ActionContainer.show_new_message_btn = true
 			
 			# continue game
-			
+			restore_player_hud()			
 			PhaseAnnouncement.end()			
 			current_phase = PHASE.PLAYER
 			phase_cycle_complete.emit()
@@ -1026,8 +1039,6 @@ func on_current_phase_update() -> void:
 func get_save_state() -> Dictionary:
 	return {
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
-		# OF ALL THE OTHER DATA THAT'S HERE		
-		#"scenario_ref": scenario_ref,
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
 		"timeline_array": timeline_array,
@@ -1369,7 +1380,7 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 		var is_activated:bool = room_config.is_activated
 		
 		# if passives are enabled...
-		if is_activated and "passive_abilities" in room_data:
+		if room_data.has("passive_abilities"):
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
@@ -1378,7 +1389,11 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 				var room_abl_lvl:int = new_room_config.floor[floor].ring[ring].room[room].abl_lvl
 				var wing_abl_lvl:int = new_room_config.floor[floor].ring[ring].abl_lvl
 				var abl_lvl:int = room_abl_lvl + wing_abl_lvl
-
+				
+				if !is_activated:
+					room_base_state.passives_enabled_list.erase(ability.ref)
+					return
+					
 				# check if passive is enabled
 				if room_base_state.passives_enabled[ability_uid]:
 					# check if level is equal or less then what is required...
@@ -1387,6 +1402,10 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 						# if it's enabled, add to energy cost
 						ring_config.energy.used += energy_cost
 						room_config.energy_used += energy_cost
+						
+						# add to list of enabled passives
+						if ability.ref not in room_base_state.passives_enabled_list:
+							room_base_state.passives_enabled_list.push_back(ability.ref)
 
 						# check provides (like staff, dclass, security, etc)
 						if "personnel" in ability: 
@@ -1412,8 +1431,15 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 						# check for any conditional changes
 						if "conditional" in ability:
 							ability.conditional.call(gameplay_conditionals)
+							
+					# not enough energy or below room requirment level, deactivate and remove from list
 					else:
 						room_base_state.passives_enabled[ability_uid] = false
+						room_base_state.passives_enabled_list.erase(ability.ref)
+				else:
+					# ability not active, remove from list
+					room_base_state.passives_enabled_list.erase(ability.ref)
+
 						
 func room_activation_check(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
@@ -1430,34 +1456,6 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 
 		room_config.is_activated = assigned_to_room_count >= required_staffing.size() 
 
-#func room_passive_activation_check(new_room_config:Dictionary) -> void:
-	## NEXT check for passives in rooms
-	#for item in purchased_facility_arr:
-		#var floor:int = item.location.floor
-		#var ring:int = item.location.ring
-		#var room:int = item.location.room
-		#var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
-		#var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
-		#var ring_config:Dictionary = new_room_config.floor[floor].ring[ring]
-		#var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		#var floor_ring_designation:String = str(floor, ring)
-		#var is_activated:bool = room_config.is_activated
-#
-		## if passives are enabled...
-		#if "passive_abilities" in room_data:
-			#var passive_abilities:Array = room_data.passive_abilities.call()
-			#for ability_index in passive_abilities.size():
-				#var ability:Dictionary = passive_abilities[ability_index]
-				#var ability_uid:String = str(room_data.ref, ability_index)
-				#var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
-				#
-				## check if passive is enabled
-				#if room_base_state.passives_enabled[ability_uid]:
-					## check if level is equal or less then what is required...
-					#if !is_activated:
-						##room_base_state.passives_enabled[ability_uid] = false
-						#ring_config.energy.used -= energy_cost
-						#room_config.energy_used -= energy_cost
 
 func room_calculate(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://0wbd87xeuk1l"]
+[gd_scene load_steps=20 format=3 uid="uid://0wbd87xeuk1l"]
 
 [ext_resource type="Script" uid="uid://ccq216c2w0su1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/active_menu.gd" id="1_yhadw"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_epm40"]
@@ -7,12 +7,13 @@
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_aa1g3"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_o0to0"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_epm40"]
+[ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="6_hjr8x"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hjr8x"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epm40"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_l1lsc"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_hjr8x"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aa1g3"]
@@ -124,38 +125,42 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer" instance=ExtResource("3_hjr8x")]
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-card_size = Vector2(200, 200)
+theme_override_constants/separation = 10
 
-[node name="TextureRect" parent="MenuControl/PanelContainer/MarginContainer/CardBody" index="0"]
-texture = SubResource("ViewportTexture_l1lsc")
+[node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_hjr8x")]
+layout_mode = 2
+card_size = Vector2(250, 200)
 
-[node name="SubViewport" parent="MenuControl/PanelContainer/MarginContainer/CardBody" index="1"]
-size = Vector2i(200, 200)
+[node name="TextureRect" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody" index="0"]
+texture = SubResource("ViewportTexture_hjr8x")
 
-[node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control" index="0"]
-custom_minimum_size = Vector2(200, 200)
-offset_right = 226.0
-offset_bottom = 314.0
+[node name="SubViewport" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody" index="1"]
+size = Vector2i(250, 200)
 
-[node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front" index="0"]
+[node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control" index="0"]
+custom_minimum_size = Vector2(250, 200)
+offset_right = 250.0
+offset_bottom = 200.0
+
+[node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_aa1g3")
 
-[node name="CardMenuHeader" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("4_aa1g3")]
+[node name="CardMenuHeader" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("4_aa1g3")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e7jbp")
 is_small = true
 title = ""
 
-[node name="PaginationContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader"]
+[node name="PaginationContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader"]
 layout_mode = 2
 
-[node name="PrevIcon" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer" instance=ExtResource("2_o0to0")]
+[node name="PrevIcon" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -166,12 +171,12 @@ icon = 27
 flip_h = true
 is_hoverable = false
 
-[node name="PaginationList" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer"]
+[node name="PaginationList" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="NextIcon" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer" instance=ExtResource("2_o0to0")]
+[node name="NextIcon" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer" instance=ExtResource("2_o0to0")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -181,11 +186,11 @@ theme_override_constants/margin_bottom = 0
 icon = 27
 is_hoverable = false
 
-[node name="List" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+[node name="List" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="FooterLabel" type="Label" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+[node name="FooterLabel" type="Label" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
@@ -195,8 +200,19 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_group_ = true
 
-[node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Back" index="0"]
+[node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_63pvq")
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 0
+
+[node name="CostPanel" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer" instance=ExtResource("6_hjr8x")]
+layout_mode = 2
+title = "BUILDING COST"
 
 [node name="BtnControl" type="Control" parent="."]
 layout_mode = 2
@@ -321,4 +337,4 @@ layout_mode = 2
 text = "Hint goes here."
 label_settings = ExtResource("5_epm40")
 
-[editable path="MenuControl/PanelContainer/MarginContainer/CardBody"]
+[editable path="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody"]

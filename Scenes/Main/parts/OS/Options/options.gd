@@ -37,11 +37,11 @@ func _ready() -> void:
 				SelectedNode = node
 	
 	BtnControls.onBack = func() -> void:
-		end()
+		end(true)
 # ----------------------------------------------	
 
 # ----------------------------------------------	
-func end() -> void:
+func end(on_back:bool = false) -> void:
 	for n in itemlist:
 		n.is_selected = false
 
@@ -52,7 +52,7 @@ func end() -> void:
 
 	hide()
 	clear()
-	wait_for_response.emit()
+	wait_for_response.emit({"on_back": on_back})
 # ----------------------------------------------	
 
 # ----------------------------------------------	
@@ -86,7 +86,8 @@ func setup(btn_list:Array, option_list:Array, new_position:Vector2 = Vector2()) 
 		new_node.title = item.title
 		new_node.display_checkmark = false
 		new_node.onClick = func() -> void:
-			await end()
+			print(item)
+			await end(false)
 			item.onClick.call(properties)		
 			
 		BtnList.add_child(new_node)	

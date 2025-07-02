@@ -13,9 +13,9 @@ extends GameContainer
 
 @onready var ResourcePanel:PanelContainer = $ResourceControl/PanelContainer
 @onready var ResourceMargin:MarginContainer = $ResourceControl/PanelContainer/MarginContainer
-@onready var DaysRemainingLabel:Label = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/DaysRemaining/MarginContainer/VBoxContainer/DaysLabel
-@onready var CoreLabel:Label = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Cores/MarginContainer/VBoxContainer/CoreLabel
-@onready var CoreCount:Label = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Cores/MarginContainer/VBoxContainer/CoreCount
+
+@onready var Days:Control = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Days
+@onready var Cores:Control = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Cores
 
 @onready var ObjectiveCard:Control = $ObjectivesControl/PanelContainer/MarginContainer/ObjectiveCard
 
@@ -129,9 +129,7 @@ func activate() -> void:
 # --------------------------------------------------------------------------------------------------		
 func start() -> void:
 	on_resources_data_update()
-	DaysRemainingLabel.text = str(88)
 
-	
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
 	await TransitionScreen.start(0.7)
 	U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].show)	
@@ -156,7 +154,7 @@ func end() -> void:
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	super.on_resources_data_update(new_val)
 	if !is_node_ready():return
-	CoreCount.text = str(resources_data[RESOURCE.CURRENCY.CORE].amount)
+	Cores.amount = str(resources_data[RESOURCE.CURRENCY.CORE].amount)	
 # --------------------------------------------------------------------------------------------------		
 
 
@@ -169,17 +167,16 @@ func clear_hints() -> void:
 # --------------------------------------------------------------------------------------------------		
 func build_hints(hints:Array = current_hints) -> void:
 	clear_hints()
-	
 	var is_expired:bool = objective_index < story_progress.current_story_val 	
 	var already_completed:bool = current_objective.is_completed.call()	
 	var filter_arr:Array = hints.filter(func(x): return x.is_purchased.call() )
-	
+
 	# all hints
 	var all_complete:bool = true
 	var last_index:int
 	
 	# has none and is expired
-	if is_expired and filter_arr.size() == 0:
+	if hints.is_empty():
 		var new_hint:Control = ObjectiveHintPreload.instantiate()
 		new_hint.is_expired = true
 		new_hint.is_locked = false
@@ -190,7 +187,7 @@ func build_hints(hints:Array = current_hints) -> void:
 	# build hint list
 	for index in hints.size():
 		var hint:Dictionary = hints[index]
-		if !hint.is_purchased.call():
+		if !hint.is_purchased.call() and !is_expired:
 			all_complete = false
 			last_index = index
 			break
@@ -241,37 +238,25 @@ func on_objective_index_update() -> void:
 	var is_upcoming:bool = objective_index > story_progress.current_story_val 
 	var is_expired:bool = objective_index < story_progress.current_story_val 
 	
+	Days.amount = str(current_objectives.complete_by_day - progress_data.day)	
+	
 	ObjectiveCard.at_start = objective_index == 0
 	ObjectiveCard.at_end = objective_index == objectives.size() - 1
 	ObjectiveCard.is_upcoming = is_upcoming
 	ObjectiveCard.is_expired = is_expired
 	ObjectiveCard.objectives = current_objectives
 	
-	
 	if is_upcoming:
 		ObjectiveCard.title = "UPCOMING OBJECTIVES"
 		HintPanel.hide()
 
-		
 	elif is_expired:
 		ObjectiveCard.title = "PREVIOUS OBJECTIVES"
 		HintPanel.show()
-		#ObjectiveCard.title = "COMPLETED"
-		#ObjectiveTitle.text = current_objectives.title
-		#ObjectiveDeadline.text = ""
-		#bookmark_data = {}
 	
 	else:
 		ObjectiveCard.title = "OBJECTIVES"
 		HintPanel.show()
-		#
-	#if objective_index == story_progress.current_story_val:
-		#ObjectiveHeader.text = "Current Objective"
-		#ObjectiveCard.title = "OBJECTIVES" 
-		#ObjectiveTitle.text = current_objectives.title
-		#ObjectiveDeadline.text = "Must be completed by day %s.\r(You have %s days remaining)." % [current_objectives.complete_by_day, current_objectives.complete_by_day - progress_data.day]		
-		#bookmark_data = current_objectives
-		#
 		
 	await U.tick()
 	BtnControls.itemlist = ObjectiveCard.get_buttons()

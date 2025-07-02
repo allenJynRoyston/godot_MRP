@@ -86,6 +86,15 @@ func update_control_pos() -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
+func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+	super.on_gameplay_conditionals_update(new_val)
+	if !is_node_ready() or new_val.is_empty():return
+	
+	var make_visible:bool = new_val[CONDITIONALS.TYPE.ENABLE_TIMELINE].val		
+	ListScrollContainer.show() if make_visible else ListScrollContainer.hide()
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
 func show_details(state:bool) -> void:
 	fade_in_gradiant(state)
 	

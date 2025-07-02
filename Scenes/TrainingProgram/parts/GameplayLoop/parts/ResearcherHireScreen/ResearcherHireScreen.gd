@@ -174,7 +174,7 @@ func create_researchers() -> void:
 	clear_list()
 	
 	# fills in the 
-	new_hire_list = RESEARCHER_UTIL.generate_new_researcher_hires(total_options, RESEARCHER.SPECIALIZATION.STAFF)
+	new_hire_list = RESEARCHER_UTIL.generate_new_researcher_hires(total_options, RESEARCHER.SPECIALIZATION.ADMIN)
 	
 	# recruit data
 	var recruit_data := []

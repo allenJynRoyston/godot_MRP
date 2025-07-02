@@ -69,6 +69,7 @@ func change_bus(bus:String) -> void:
 		"Reverb":
 			current_audio_stream_player = AudioStreamPlayerReverb
 			
+			
 	var effect = AudioServer.get_bus_effect_instance(0, 0)
 	if effect is AudioEffectSpectrumAnalyzerInstance:
 		spectrum = effect
@@ -130,9 +131,12 @@ func play_selected_track() -> void:
 	if "file" not in track_data:
 		print("No file in track_data")
 		return
-		
+	
+	# set to loop	
+	track_data.file.loop = true
 	current_audio_stream_player.stream = track_data.file
 	current_audio_stream_player.play()
+	current_audio_stream_player.volume_db = -10
 	
 	on_pause_or_play_update()
 	check_track_scroll.call_deferred()

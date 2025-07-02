@@ -30,7 +30,7 @@ var selected_node:Control
 
 var onBackToDesktop:Callable = func() -> void:pass
 var onBack:Callable = func() -> void:pass
-
+const btn_controls_offset:Vector2 = Vector2(20, 50)
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -56,20 +56,28 @@ func _ready() -> void:
 		
 		match selected_node:
 			PlayBtn:
+				GBL.find_node(REFS.OS_LAYOUT).freeze_inputs = true
+				BtnControl.offset = Vector2(0, 0)
 				BtnControl.hide_c_btn = true
 				update_media_player.call()
 				get_parent().currently_running_app = null
 			NextBtn:
+				GBL.find_node(REFS.OS_LAYOUT).freeze_inputs = true
+				BtnControl.offset = Vector2(0, 0)
 				BtnControl.hide_c_btn = true
 				BtnControl.a_btn_title = "NEXT TRACK"
 				# replace with music node later
 				get_parent().currently_running_app = null
 			DesktopBtn:
+				GBL.find_node(REFS.OS_LAYOUT).freeze_inputs = false
+				BtnControl.offset = btn_controls_offset + Vector2(30, 0)
 				BtnControl.a_btn_title = "DESKTOP"
 				BtnControl.hide_c_btn = true
 				# replace with music node later
 				get_parent().currently_running_app = null
 			_:
+				GBL.find_node(REFS.OS_LAYOUT).freeze_inputs = false
+				BtnControl.offset = btn_controls_offset				
 				BtnControl.hide_c_btn = false
 				BtnControl.a_btn_title = "SWITCH"
 
@@ -79,11 +87,16 @@ func _ready() -> void:
 	BtnControl.onAction = func() -> void:
 		match selected_node:
 			PlayBtn:
-				MediaPlayer.on_pause()
+				if SUBSCRIBE.music_data.is_empty():
+					SUBSCRIBE.music_data = {"selected": 0}
+				else:
+					MediaPlayer.on_pause()
 				update_media_player.call()
 			NextBtn:
-				MediaPlayer.on_next()
-				update_media_player.call()
+				if SUBSCRIBE.music_data.is_empty():
+					SUBSCRIBE.music_data = {"selected": 0}
+				else:				
+					MediaPlayer.on_next()
 			DesktopBtn:
 				await set_show_taskbar(false)
 				GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()

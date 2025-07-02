@@ -152,7 +152,7 @@ func fill_template(data:Dictionary, ref:int) -> void:
 		if key in template_copy:
 			template_copy[key] = value
 
-	template_copy.name = "SCP-T-%s" % [str(0,ref + 1) if ref + 1 < 10 else ref + 1]
+	template_copy.name = "SCP-T-0%s" % [str(0,ref + 1) if ref + 1 < 10 else ref + 1]
 
 
 	reference_list.push_back(ref)

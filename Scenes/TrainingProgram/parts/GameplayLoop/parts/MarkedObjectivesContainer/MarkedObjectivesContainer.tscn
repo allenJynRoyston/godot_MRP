@@ -104,7 +104,7 @@ label_settings = ExtResource("2_hud5c")
 custom_minimum_size = Vector2(400, 270)
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_constants/separation = 0
+theme_override_constants/separation = -10
 
 [node name="ObjectiveItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/ObjectiveList" instance=ExtResource("1_sed7y")]
 layout_mode = 2

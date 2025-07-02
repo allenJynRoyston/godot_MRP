@@ -212,11 +212,13 @@ func start(start_at_ring_level:bool = false) -> void:
 	# -------------------------------------
 	for btn in [GenEndTurnBtn, WingEndTurnBtn, FacilityEndTurnBtn]:
 		btn.onClick = func() -> void:
+			ControllerOverlay.hide()
 			reveal_notification(false)
 			await lock_actions(true)
 			await GameplayNode.next_day()
 			reveal_notification(true)			
 			lock_actions(false)
+			ControllerOverlay.show()
 	
 	# -------------------------------------
 	if !GameplayNode.is_tutorial:
@@ -385,10 +387,10 @@ func clear_lines() -> void:
 
 # --------------------------------------------------------------------------------------------------
 signal query_complete
-func query_items(cards_on_screen:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable) -> void:
+func query_items(query_size:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable) -> void:
 	var query:Dictionary
-	var start_at:int = page * cards_on_screen
-	query = ROOM_UTIL.get_unlocked_category(category, start_at, cards_on_screen)	
+	var start_at:int = page * query_size
+	query = ROOM_UTIL.get_unlocked_category(category, start_at, query_size)	
 
 	return_list.push_back(
 		query.list.map(func(x):return {
@@ -411,16 +413,17 @@ func query_items(cards_on_screen:int, category:ROOM.CATEGORY, page:int, return_l
 	)	
 	
 	if query.has_more:
-		query_items(cards_on_screen, category, page + 1, return_list, is_disabled_func, hint_func)
+		query_items(query_size, category, page + 1, return_list, is_disabled_func, hint_func)
 	else:
 		await U.tick()
 		query_complete.emit(return_list)
 		
 func show_build_options() -> void:
-	const list_size:int = 8
+	const query_size:int = 100
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var options:Array = []
 	
+
 	for listitem in [
 			{
 				"title": 'FACILITY', 
@@ -428,7 +431,7 @@ func show_build_options() -> void:
 				"is_disabled_func": func(x:Dictionary) -> bool:
 					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
 				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = "Construction cost: %s (You have %s available.)" % [x.details.costs.purchase, resources_data[RESOURCE.CURRENCY.MONEY].amount]
+					var description:String = x.details.description
 					return {
 						"icon": SVGS.TYPE.MONEY,
 						"title": x.details.name,
@@ -441,7 +444,7 @@ func show_build_options() -> void:
 				"is_disabled_func": func(x:Dictionary) -> bool:
 					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
 				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = "Construction cost: %s (You have %s available.)" % [x.details.costs.purchase, resources_data[RESOURCE.CURRENCY.MONEY].amount]
+					var description:String = x.details.description
 					return {
 						"icon": SVGS.TYPE.MONEY,
 						"title": x.details.name,
@@ -454,7 +457,7 @@ func show_build_options() -> void:
 				"is_disabled_func": func(x:Dictionary) -> bool:
 					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.CORE].amount or ROOM_UTIL.at_own_limit(x.ref),
 				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = "Construction cost: %s (You have %s available.)" % [x.details.costs.purchase, resources_data[RESOURCE.CURRENCY.CORE].amount]
+					var description:String = x.details.description
 					return {
 						"icon": SVGS.TYPE.GLOBAL,
 						"title": x.details.name,
@@ -462,7 +465,9 @@ func show_build_options() -> void:
 					},
 			},
 		]:
-		query_items(list_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func)
+	
+			
+		query_items(query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func)
 		var query_results:Array = await query_complete
 		for index in query_results.size():
 			var items:Array = query_results[index]
@@ -489,12 +494,20 @@ func show_build_options() -> void:
 		ActiveMenuNode.disable_active_btn = !can_afford
 		ActiveMenuNode.hint_border_color = Color.RED if !can_afford else Color(0.337, 0.275, 1.0)
 
+		# update cost_val
+		ActiveMenuNode.cost_data = {
+			"title": "CONSTRUCTION COSTS",
+			"icon": SVGS.TYPE.MONEY,
+			"amount": item.details.costs.purchase,
+			"is_negative": !can_afford
+		} 
+
 		# draw lines
 		var get_node_pos:Callable = func() -> Vector2: 
 			return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
 			"draw_to_active_menu": true,
-			"draw_to_money": item.details.costs.purchase > 0
+			#"draw_to_money": item.details.costs.purchase > 0
 		}, 0 )
 	
 	ActiveMenuNode.onBeforeClose = func() -> void:
@@ -678,6 +691,16 @@ func show_settings() -> void:
 					},
 					"action": func() -> void:
 						GameplayNode.load_checkpoint(),
+												
+				},
+				{
+					"title": "Restart from beginning",
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"description": "Restart on day 1."
+					},
+					"action": func() -> void:
+						GameplayNode.restart_game(),
 												
 				}				
 			]
@@ -1089,7 +1112,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				NewMessageBtn.is_disabled = !show_new_message_btn
 				current_mode = MODE.ACTIONS
 				GameplayNode.show_marked_objectives = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
-				GameplayNode.show_timeline = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_TIMELINE].val
+				GameplayNode.show_timeline = true
 
 			enable_room_focus(true)
 			set_backdrop_state(true)	

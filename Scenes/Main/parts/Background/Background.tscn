@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://eqyg3c15y82h"]
 
 [ext_resource type="Script" uid="uid://c7tynm067h14t" path="res://Scenes/Main/parts/Background/background.gd" id="1_h1t15"]
-[ext_resource type="Shader" uid="uid://6r13xmwr8jsw" path="res://CanvasShader/AudioShader/audio_shader_2.gdshader" id="2_6cd5x"]
+[ext_resource type="Shader" uid="uid://cyesre6to6sl6" path="res://CanvasShader/AudioShader/audio_shader_1.gdshader" id="2_6cd5x"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vgw3k"]
 shader = ExtResource("2_6cd5x")

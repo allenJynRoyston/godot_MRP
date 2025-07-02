@@ -4,14 +4,17 @@ var specialization_data:Dictionary = {
 	RESEARCHER.SPECIALIZATION.ANY: {
 		"shortname": "ANY",
 		"name": "ANY",
-		"title": "ANY"
 	},	
-	RESEARCHER.SPECIALIZATION.STAFF: {
+	RESEARCHER.SPECIALIZATION.RESEARCHER: {
 		"shortname": "RS",
 		"name": "RESEARCHER"
 	},
+	RESEARCHER.SPECIALIZATION.ADMIN: {
+		"shortname": "ADM",
+		"name": "ADMIN"
+	},	
 	RESEARCHER.SPECIALIZATION.SECURITY: {
-		"shortname": "SEC",
+		"shortname": "AGT",
 		"name": "AGENT"
 	},
 	RESEARCHER.SPECIALIZATION.DCLASS: {
@@ -109,7 +112,7 @@ func generate_researcher(assign_spec:int = 1) -> Array:
 	# var img_src:String = "res://Media/images/example_doctor.jpg"		
 	var specialization:int = U.min_max(assign_spec, 1, RESEARCHER.SPECIALIZATION.size() - 1) 
 	var max_health:int = 3 if specialization == RESEARCHER.SPECIALIZATION.SECURITY else 2
-	var max_sanity:int = 3 if specialization == RESEARCHER.SPECIALIZATION.STAFF else 2
+	var max_sanity:int = 3 if specialization == RESEARCHER.SPECIALIZATION.RESEARCHER else 2
 	
 	var traits:int = U.generate_rand(0, RESEARCHER.TRAITS.size() - 1)
 	var mood:int = RESEARCHER.MOODS.STABLE

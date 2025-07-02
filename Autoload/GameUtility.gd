@@ -69,7 +69,7 @@ func are_objectives_complete() -> bool:
 	# CHECK FOR FAIL STATE
 	var objective_failed:bool = false
 	for objective in current_objectives.list:
-		if !objective.is_completed.call():
+		if !objective.is_optional and !objective.is_completed.call():
 			objective_failed = true
 			break	
 	
@@ -269,22 +269,12 @@ func get_metric_val(use_location:Dictionary, metric_ref:RESOURCE.METRICS) -> int
 	return floor_val + ring_val + room_val	
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
-func apply_morale_bonus(use_location:Dictionary, total_morale_val:int, resource_amount:int,  use_room_config:Dictionary = room_config) -> Dictionary:
-	var floor:int = use_location.floor
-	var ring:int = use_location.ring
-	var room:int = use_location.room
-	var room_config:Dictionary = use_room_config.floor[floor].ring[ring].room[room]
-	var applied_bonus:float = (total_morale_val * 10) * 0.01		
-	# if it costs money, it makes the final amount c
-	var amount:int = resource_amount - floori( resource_amount * applied_bonus ) if resource_amount < 0 else resource_amount + floori( resource_amount * applied_bonus )
+func update_daily_resources() -> void:
+	for ref in resources_data:
+		resources_data[ref].amount += resources_data[ref].diff
 	
-	return {
-		"applied_bonus": applied_bonus,
-		"total_morale_val": total_morale_val,
-		"amount": amount
-	}
+	SUBSCRIBE.resources_data = resources_data
 # ------------------------------------------------------------------------------
 
 
@@ -427,6 +417,7 @@ func reset_room() -> bool:
 # -----------------------------------
 func add_objectives_to_timeline(objectives:Array = []) -> void:
 	for objective in objectives:
+		print(objective.complete_by_day)
 		GAME_UTIL.add_timeline_item({
 			"title": "Objectives deadline",
 			"icon": SVGS.TYPE.INFO,

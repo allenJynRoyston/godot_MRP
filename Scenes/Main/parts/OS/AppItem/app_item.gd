@@ -42,10 +42,16 @@ var is_running:bool = false :
 var onFocus:Callable = func(node:Control) -> void:pass
 var onBlur:Callable = func(node:Control) -> void:pass
 
+var flat_stylebox_copy:StyleBoxFlat
+
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
+	hide()
+	flat_stylebox_copy = RootPanel.get('theme_override_styles/panel').duplicate()	
 	after_ready.call_deferred()
+
+	
 
 func after_ready():
 	init_pos = position
@@ -56,6 +62,10 @@ func after_ready():
 	on_data_update()
 	on_position_update()	
 	on_is_runnning_update()
+	
+	
+	await U.set_timeout(0.5)
+	show()	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -64,6 +74,7 @@ func on_data_update() -> void:
 	title = data.title
 	icon = data.icon
 	hint_description = "Run application: %s" % data.title
+	
 		
 func on_title_update() -> void:
 	if !is_node_ready():return
@@ -98,24 +109,22 @@ func on_focus(state:bool = is_focused) -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready(): return
-	var new_color:Color = Color(1, 1, 1)
-	var flat_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
-	var alpha:float = 1 if is_selected else 0.7
-
+	var alpha:float = 1 if is_selected else 0.8
+	var txt_color:Color = Color(1, 1, 1, alpha) if is_selected else Color(1.0, 0.75, 0.2, alpha)
+	var bg_color:Color = Color(1, 1, 1, alpha) if is_selected else flat_stylebox_copy.bg_color
+	
 	# update icon
-	IconButton.static_color.a = alpha
+	IconButton.static_color = txt_color
+	RunningButton.static_color = txt_color
 	
 	# update label
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
-	#label_setting.font_color = Color.BLACK
-	label_setting.font_color.a = alpha
+	label_setting.font_color = txt_color
 	AppLabel.label_settings = label_setting
 	
 	# update panel
-	flat_stylebox.border_color = Color(new_color.r, new_color.g, new_color.b, alpha).inverted()
-	flat_stylebox.bg_color = Color(new_color.r, new_color.g, new_color.b, alpha)
-	#flat_stylebox.bg_color = Color(0.478, 0.624, 0.8, 1) if is_selected else Color(0.478, 0.624, 0.8, 1) 
-	RootPanel.set('theme_override_styles/panel', flat_stylebox)
+	flat_stylebox_copy.border_color = bg_color
+	RootPanel.set('theme_override_styles/panel', flat_stylebox_copy)
 
 #func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:
 	#if on_hover and btn == MOUSE_BUTTON_LEFT:

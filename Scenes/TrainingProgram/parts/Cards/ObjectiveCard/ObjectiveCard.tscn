@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d33nsdab6tg1o"]
+[gd_scene load_steps=14 format=3 uid="uid://d33nsdab6tg1o"]
 
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_fauax"]
 [ext_resource type="Script" uid="uid://b4b20axee6byi" path="res://Scenes/TrainingProgram/parts/Cards/ObjectiveCard/objective_card.gd" id="1_ykk6s"]
@@ -49,6 +49,9 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 10
 shadow_offset = Vector2(0, 2)
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_cyy12"]
+color = Color(0.337255, 0.27451, 1, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cyy12"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
 border_width_left = 2
@@ -82,7 +85,7 @@ size = Vector2i(300, 140)
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(300, 140)
 offset_right = 300.0
-offset_bottom = 140.0
+offset_bottom = 146.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_pjqb0")
@@ -115,22 +118,31 @@ layout_mode = 2
 icon = 27
 is_hoverable = false
 
-[node name="HSeparator" type="HSeparator" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
-visible = false
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+[node name="MarginContainer" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 
-[node name="ObjectiveItemList" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
-[node name="ObjectiveItem" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/ObjectiveItemList" instance=ExtResource("4_vnmty")]
+[node name="ObjectiveItemList" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ObjectiveItem" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/ObjectiveItemList" instance=ExtResource("4_vnmty")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_rakey")
 is_naked = true
+
+[node name="OptionalSeperator" type="HSeparator" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_cyy12")
+
+[node name="OptionalObjectiveItemList" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_cyy12")

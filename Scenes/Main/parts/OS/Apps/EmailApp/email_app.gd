@@ -14,14 +14,14 @@ var email_data:Array[Dictionary] = [
 		"attachment": {
 			"title": "Site_Director_Training_Program.exe",
 			"is_installed": func() -> bool:
-				return Layout.APPS.SDT_FULL in GBL.find_node(REFS.OS_LAYOUT).apps_installed,
+				return Layout.APPS.SITE_DIRECTOR_TRAINING_PROGRAM in GBL.find_node(REFS.OS_LAYOUT).apps_installed,
 			"onClick": func(attachment:Dictionary) -> void:
 				events.install.call({
 					"type": "download", 
 					"installer_data": {
 						"filename": attachment.title,
 						"duration": 3,
-						"ref": Layout.APPS.SDT_FULL
+						"ref": Layout.APPS.SITE_DIRECTOR_TRAINING_PROGRAM
 					}
 				}),
 		}
@@ -51,7 +51,8 @@ func _ready() -> void:
 		await pause()
 		GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()
 		
-	EmailComponent.email_data = email_data			
+	EmailComponent.email_data = email_data
+	await U.tick()
 	EmailComponent.read_emails = events.fetch_read_emails.call()
 
 

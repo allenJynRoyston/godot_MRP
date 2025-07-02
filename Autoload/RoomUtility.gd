@@ -52,7 +52,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	
 	# ------------------------------------------
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: -25,
+		RESOURCE.CURRENCY.MONEY: 0,
 		RESOURCE.CURRENCY.SCIENCE: 0,
 		RESOURCE.CURRENCY.MATERIAL: 0,
 		RESOURCE.CURRENCY.CORE: 0
@@ -225,6 +225,16 @@ func get_max_possible_level(ref:int) -> int:
 	return max_lvl
 ## ------------------------------------------------------------------------------
 
+## ------------------------------------------------------------------------------
+func get_activated_count() -> int:
+	var count:int = purchased_facility_arr.filter(func(x): 
+		var room_config:Dictionary = room_config.floor[x.location.floor].ring[x.location.ring].room[x.location.room]
+		if room_config.is_activated:
+			return x
+	).size()	
+	
+	return count
+## ------------------------------------------------------------------------------
 
 ## ------------------------------------------------------------------------------
 #func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
@@ -307,20 +317,20 @@ func get_unlocked_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> D
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-# remove this later
-#func return_wing_effects_list(room_extract:Dictionary) -> Array:
-	#return []
-	##return SHARED_UTIL.return_wing_effects_list(return_data(room_extract.room.details.ref), room_extract, "activation_effect")
-## ------------------------------------------------------------------------------	
-
-## ------------------------------------------------------------------------------		
-#func return_wing_effect(extract_data:Dictionary) -> Dictionary:
-	#var room_data:Dictionary = return_data(extract_data.room.details.ref)
-	#if "wing_effect" in room_data:
-		#return room_data.wing_effect.call(extract_data)
-	#
-	#return {}
-## ------------------------------------------------------------------------------		
+func check_if_passive_is_active(ref:ABL_P.REF) -> bool:
+	for item in purchased_facility_arr:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room
+		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
+		var room_config:Dictionary = room_config.floor[floor].ring[ring].room[room]
+		
+		if ref in room_base_state.passives_enabled_list:
+			return true
+			break
+					
+	return false
+# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func has_prerequisites(ref:int, arr:Array) -> bool:

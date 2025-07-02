@@ -1,7 +1,5 @@
 extends Node
 
-
-
 var track_list:Array = [
 	{
 		"details": {

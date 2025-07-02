@@ -67,7 +67,6 @@ func pause() -> void:
 	
 func unpause() -> void:
 	await BtnControls.reveal(true)
-	on_music_data_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -78,7 +77,6 @@ func on_music_data_update(new_val:Dictionary = music_data) -> void:
 		var n:Control = TrackList.get_child(index)
 		n.icon = SVGS.TYPE.MUSIC if index == music_data.selected else SVGS.TYPE.NONE
 		
-			
 
 func on_music_track_list_update() -> void:
 	if !is_node_ready():return

@@ -28,81 +28,27 @@ const EmailAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/Ema
 const MediaPlayerAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/MediaPlayerApp.tscn")
 
 
-#const SiteDirectorTrainingModsAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/ModApp/ModApp.tscn")
-#const MediaPlayerMiniAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/MediaPlayerMiniApp/MediaPlayerMiniApp.tscn")
-#const TaskBarMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/TaskbarMenuApp/TaskbarMenuApp.tscn")
-#const ContextMenuAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/ContextMenuApp/ContextMenuApp.tscn")
-#const TextFileAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/TextFileApp/TextFileApp.tscn")
-#const RecycleBinAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/RecycleBin/RecycleBin.tscn")
-
 enum APPS {
-	SDT_TUTORIAL, SDT_FULL, SDT_MODS, README, SETTINGS, MUSIC_PLAYER, EMAIL, MEDIA_PLAYER_MINI, 
-	BIN, CONTEXT_MENU, TASKBAR_MENU, RECYCLE_BIN
+	SITE_DIRECTOR_TRAINING_PROGRAM, 
+	SETTINGS, 
+	MUSIC_PLAYER, 
+	EMAIL, 
 }
 
-enum MODS {
-	NONE,
-	DIFFICULTY_EASY, DIFFICULTY_NORMAL, DIFFICULTY_STORY,
-	PRODUCTION_ONE, PRODUCTION_TWO, PRODUCTION_THREE,
-	ECONOMY_ONE, ECONOMY_TWO, ECONOMY_THREE,
-}
-
-enum PLAYLIST {
-	TRACK_1, TRACK_2, TRACK_3
-}
 
 
 # -----------------------------------
 #region SAVABLE DATA
-var settings:Dictionary ={
-	"video": {
-		"MSAA": Viewport.MSAA_DISABLED,
-		"SSAA": Viewport.SCREEN_SPACE_AA_DISABLED,
-		"resolution": Vector2(1280, 720),
-		"full_screen": DisplayServer.WINDOW_MODE_WINDOWED
-	},
-	"sound_enabled": {
-		"fx": true,
-		"music": true
-	},
-	"sound_volume": {
-		"fx": 100,
-		"music": 100,	
-	},
-	"controls": {
-		
+var 	os_setting:Dictionary = {
+	"read_emails": [],
+	"tracks_unlocked": [],
+	"apps_installed": [],
+	"currency": {
+		"amount": 0,
+		"spent": 0
 	}
 }
 
-var event_switches:Dictionary = {
-	"show_status_on_boot": true
-}
-
-var tracklist_unlocks:Dictionary = {
-	PLAYLIST.TRACK_1: true,
-	PLAYLIST.TRACK_2: true,
-	PLAYLIST.TRACK_3: true
-}
-
-var modifications_unlocked:Dictionary = {
-	MODS.DIFFICULTY_EASY: true,
-	MODS.DIFFICULTY_NORMAL: true,
-	MODS.DIFFICULTY_STORY: false,
-	# ------------------------------
-	MODS.PRODUCTION_ONE: true,
-	MODS.PRODUCTION_TWO: true,
-	MODS.PRODUCTION_THREE: false,
-	# ------------------------------
-	MODS.ECONOMY_ONE: true,
-	MODS.ECONOMY_TWO: true,
-	MODS.ECONOMY_THREE: false	
-}
-
-var mod_settings:Array = []
-var installed_mods:Array = ["00"]  #"00" makes easy "marked" in mods
-var read_emails:Array = []
-#var in_recycle_bin:Array = []
-var apps_installed:Array = [] 
 var apps_installing:Array = []
 var has_started:bool = false
 
@@ -112,6 +58,26 @@ var previous_desktop_index:int = 0
 
 # -----------------------------------
 #region LOCAL DATA
+func update_media_options(_options:Dictionary) -> void:
+	for key in _options:
+		var val:bool = _options[key]
+		if os_setting.media_player.has(key):
+			os_setting.media_player[key] = val
+	
+	AudioVisualizer.show() if os_setting.media_player.enable_visulizer else AudioVisualizer.hide()
+	TransitionScreen.start(0.3, true)	
+	save_state()
+	
+func update_settings_options(_options:Dictionary) -> void:
+	for key in _options:
+		var val:bool = _options[key]
+		if GBL.active_user_profile.graphics.shaders.has(key):
+			GBL.active_user_profile.graphics.shaders[key] = val
+	
+	# update settings
+	check_graphics_settings()
+	save_state()
+
 var app_list:Array[Dictionary] = [
 	# ----------
 	{
@@ -131,16 +97,16 @@ var app_list:Array[Dictionary] = [
 	# ----------
 	{
 		"details": {
-			"ref": APPS.SDT_FULL,
-			"title": "Sim Site Director 2000",
+			"ref": APPS.SITE_DIRECTOR_TRAINING_PROGRAM,
+			"title": "Site Director Training Program",
 			"icon": SVGS.TYPE.EXE_FILE,
 			"app": SiteDirectorTrainingAppPreload,
 		},
 		"installed": func() -> bool:
-			return APPS.SDT_FULL in apps_installed,
+			return true,
 		"events": {
 			"close": func() -> void:
-				close_app(APPS.SDT_FULL),			
+				close_app(APPS.SITE_DIRECTOR_TRAINING_PROGRAM),			
 			"open": func(data:Dictionary) -> void:
 				var options:Array = [
 					{
@@ -212,12 +178,11 @@ var app_list:Array[Dictionary] = [
 			"install": func(data:Dictionary) -> void:
 				Installer.add_item(data.installer_data),
 			"fetch_read_emails": func() -> Array:
-				return read_emails,
+				return os_setting.read_emails,
 			"mark": func(index:int) -> void:
-				if index not in read_emails:
-					read_emails.push_back(index)
+				if index not in os_setting.read_emails:
+					os_setting.read_emails.push_back(index)
 				save_state(0.2),
-					
 		},
 	},
 	# ----------
@@ -233,12 +198,14 @@ var app_list:Array[Dictionary] = [
 		"installed": func() -> bool:
 			return true,
 		"events": {
+			"fetch_tracks_unlocked": func() -> Array:
+				return os_setting.tracks_unlocked,			
 			"open": func(data:Dictionary) -> void:
 				var options:Array = 	[
 						{
 							"title": "ENABLE AUDIO VISUALIZER", 
-							"key": "audio_visualizer",
-							"value": true,
+							"key": "enable_visulizer",
+							"value": os_setting.media_player.enable_visulizer,
 							"hint_description": "Enable/Disable audio visulizer."
 						}
 					]
@@ -251,9 +218,17 @@ var app_list:Array[Dictionary] = [
 								"title": "LAUNCH...",
 								"onClick": func(_options:Dictionary) -> void:
 									await open_app(data, _options)
-									AudioVisualizer.show() if _options.audio_visualizer else AudioVisualizer.hide(),
-
-							}
+									update_media_options(_options),
+								
+							},
+							{
+								"title": "OPEN MINI PLAYER...",
+								"onClick": func(_options:Dictionary) -> void:
+									Taskbar.show_media_player = true
+									update_media_options(_options)
+									await toggle_show_taskbar(true),
+								
+							}							
 						],
 						# ------- OPTIONS
 						options
@@ -275,7 +250,10 @@ var app_list:Array[Dictionary] = [
 							{
 								"title": "APPLY CHANGES...",
 								"onClick": func(_options:Dictionary) -> void:
-									AudioVisualizer.show() if _options.audio_visualizer else AudioVisualizer.hide(),
+									update_media_options(_options)
+									
+									# then show controls
+									BtnControls.reveal(true),
 							},							
 						],
 						# ------- OPTIONS
@@ -301,19 +279,11 @@ var app_list:Array[Dictionary] = [
 					[
 						{
 							"title": "APPLY CHANGES...",
-							"onClick": func(options:Dictionary) -> void:
-								# TODO: add changes to settings here (like adding/removing filters)
-								for key in options:
-									var val:bool = options[key]
-									match key:
-										"crt_filter":
-											GBL.active_user_profile.graphics.shaders.crt_effect = val
+							"onClick": func(_options:Dictionary) -> void:
+								update_settings_options(_options)
 
-												
-								# update settings
-								check_graphics_settings()
-								# update and save profile
-								GBL.update_and_save_user_profile(GBL.active_user_profile),
+								# reveal controls
+								BtnControls.reveal(true),
 						},
 					],
 					[
@@ -325,26 +295,26 @@ var app_list:Array[Dictionary] = [
 						},
 						{
 							"title": "CRT FX", 
-							"key": "crt_filter",
+							"key": "crt_effect",
 							"value": GBL.active_user_profile.graphics.shaders.crt_effect,
 							"hint_description": "Enable/Disable crt effect."
 						},
 						{
 							"title": "SCREEN BEND", 
 							"key": "screen_bend",
-							"value": false,
+							"value": GBL.active_user_profile.graphics.shaders.screen_bend,
 							"hint_description": "Enable/Disable screen bend effect."
 						},
 						{
 							"title": "SCREEN BURN", 
 							"key": "screen_burn",
-							"value": false,
+							"value": GBL.active_user_profile.graphics.shaders.screen_burn,
 							"hint_description": "Enable/Disable screen burn effect."
 						},
 						{
 							"title": "MONITOR OVERLAY", 
 							"key": "monitor_overlay",
-							"value": false,
+							"value": GBL.active_user_profile.graphics.shaders.monitor_overlay,
 							"hint_description": "Enable/Disable monitor overlay color."
 						}
 					]
@@ -445,6 +415,8 @@ func start() -> void:
 	load_state()	
 	on_simulated_busy_update()
 	
+	await U.tick()
+	
 	control_pos[LogoPanel] = {
 		"show": 0,
 		"hide": -LogoMargin.size.x
@@ -461,10 +433,9 @@ func start() -> void:
 		
 	await render_desktop_icons()	
 	Taskbar.activate()
-
 	
 	if skip_to_game:
-		var app:Dictionary = find_in_app_list(APPS.SDT_FULL)
+		var app:Dictionary = find_in_app_list(APPS.SITE_DIRECTOR_TRAINING_PROGRAM)
 		open_app(app.details)
 		
 func return_to_desktop() -> void:
@@ -511,10 +482,11 @@ func open_options(btn_list:Array, option_list:Array = []) -> void:
 	
 	var app_pos:Vector2 = selected_app_item.global_position + Vector2(0, selected_app_item.size.y + 10) 
 	OptionsMenu.setup(btn_list, option_list, app_pos)
-	await OptionsMenu.wait_for_response
-	BtnControls.reveal(true)
+	var res:Dictionary = await OptionsMenu.wait_for_response
+	if res.on_back:
+		await BtnControls.reveal(true)
+		
 	freeze_inputs = false
-
 
 func find_in_app_list(ref:APPS) -> Dictionary:
 	return app_list.filter(func(i): return ("ref" in i.details) and (i.details.ref == ref))[0]
@@ -525,10 +497,11 @@ func installing_app_start(ref:APPS) -> void:
 
 func install_app_complete(ref:APPS) -> void:
 	apps_installing.erase(ref)
-	if ref not in apps_installed:
-		apps_installed.push_back(ref)
+	#
+	#if ref not in apps_installed:
+		#apps_installed.push_back(ref)
 	await render_desktop_icons()
-	save_state()
+	#save_state()
 # -----------------------------------
 #endregion
 
@@ -542,41 +515,18 @@ func check_graphics_settings(instant:bool = false) -> void:
 	else:
 		GBL.find_node(REFS.MAIN).use_focus_shader_settings(instant)	
 
-
 func save_state(duration:float = 0.2) -> void:
-	var save_data:Dictionary = {
-		"settings": settings,
-		"read_emails": read_emails,
-		"installed_mods": installed_mods,
-		"tracklist_unlocks": tracklist_unlocks,
-		"modifications_unlocked": modifications_unlocked,
-		"event_switches": event_switches,
-		"apps_installed": apps_installed,
-		"mod_settings": mod_settings,
-	}	
-	FS.save_file(FS.FILE.SETTINGS, save_data)
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting
+	GBL.update_and_save_user_profile(GBL.active_user_profile)
 	
 	await simulate_wait(duration)
 
 func load_state() -> void:
-	var res:Dictionary = FS.load_file(FS.FILE.SETTINGS)		
-	if res.success:
-		restore_state(res.filedata.data)
+	restore_state(GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting)
 		
-func restore_state(restore_data:Dictionary = {}) -> void:
-	var no_save:bool = DEBUG.get_val(DEBUG.NEW_SYSTEM_FILE) or restore_data.is_empty() 
-	if no_save:
-		print("No SYSTEM_FILE available: creating new one.")
-		
-	settings = restore_data.settings if !no_save else settings
-	read_emails =  read_emails
-	installed_mods = restore_data.installed_mods if !no_save else installed_mods
-	tracklist_unlocks = restore_data.tracklist_unlocks if !no_save else tracklist_unlocks
-	modifications_unlocked = restore_data.modifications_unlocked if !no_save else modifications_unlocked
-	event_switches = restore_data.event_switches if !no_save else event_switches
-	apps_installed = restore_data.apps_installed if !no_save else apps_installed
-	mod_settings = restore_data.mod_settings if !no_save else mod_settings
-	
+func restore_state(restore_os_setting:Dictionary) -> void:
+	os_setting = restore_os_setting
+
 #endregion		
 # -----------------------------------
 
@@ -676,7 +626,7 @@ func mark_as_running() -> void:
 			child.is_running = child.data.ref in active_refs	
 
 func on_currently_running_app_update() -> void:
-	TransitionScreen.start(0.2, true)
+	TransitionScreen.start(0.1, true)
 	
 	# hide/show any desktop icons 
 	for node in DesktopGrid.get_children():
@@ -784,6 +734,7 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 		PauseContainer.hide()
 		if Taskbar.BtnControl.item_index == 0:
 			currently_running_app = null
+			
 			await BtnControls.reveal(true)
 		
 	freeze_inputs = false		

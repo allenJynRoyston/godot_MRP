@@ -5,16 +5,16 @@
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_nx7qp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nx7qp"]
-bg_color = Color(0.162, 0.162, 0.162, 0.5)
+bg_color = Color(0.078815, 0.078815, 0.078815, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 1, 1, 0.4)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="OptionItem" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 45)

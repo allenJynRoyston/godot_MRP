@@ -6,7 +6,9 @@ extends MouseInteractions
 @onready var CardBodySubviewport:SubViewport = $CardBody/SubViewport
 
 # drawer items
-@onready var ObjectiveItemList:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/ObjectiveItemList
+@onready var ObjectiveItemList:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/ObjectiveItemList
+@onready var OptionalObjectiveItemList:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/OptionalObjectiveItemList
+@onready var OptionalSeperator:HSeparator = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/OptionalSeperator
 
 # title/next/back buttons
 @onready var CardDrawerTitle:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle
@@ -42,28 +44,33 @@ const ObjectiveItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/p
 # ------------------------------------------------------------------------------
 func on_objectives_update() -> void:
 	if !is_node_ready():return
-	
-	for node in ObjectiveItemList.get_children():
-		node.queue_free()
+	for node in [ObjectiveItemList, OptionalObjectiveItemList]:
+		for child in node.get_children():
+			child.queue_free()
 		
 	for index in objectives.list.size():
 		var objective:Dictionary = objectives.list[index]
 		var new_btn:Control = ObjectiveItemPreload.instantiate()
+		var is_optional:bool = objective.is_optional
 		
 		new_btn.index = index
 		new_btn.show_bookmark = false
 		new_btn.is_naked = false
+		new_btn.is_optional = is_optional
 		new_btn.is_expired = is_expired
 		new_btn.is_upcoming = is_upcoming
 		new_btn.content = "???" if is_upcoming else objective.title
-		new_btn.you_have = str(objective.you_have.call())
+		new_btn.you_have = objective.count_str.call(objective.you_have.call())
 		new_btn.is_completed = true if is_expired else (false if is_upcoming else objective.is_completed.call())
-		new_btn.onFocus = func(node:Control) -> void:
-			for child in ObjectiveItemList.get_children():
-				child.is_selected = child == node		
 		
-		ObjectiveItemList.add_child(new_btn)	
-	
+		if is_optional:
+			OptionalObjectiveItemList.add_child(new_btn)
+		else:
+			ObjectiveItemList.add_child(new_btn)	
+		
+	print(OptionalObjectiveItemList.get_child_count())
+	OptionalSeperator.show() if OptionalObjectiveItemList.get_child_count() > 0 and !is_upcoming else OptionalSeperator.hide()
+
 	await U.tick()
 	CardControlBody.size.y = 0
 # ------------------------------------------------------------------------------
@@ -83,17 +90,11 @@ func on_title_update() -> void:
 
 # ------------------------------------------------------------------------------
 func get_buttons() -> Array:
-	return ObjectiveItemList.get_children()
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:	
-	if !is_node_ready():return	
-	is_focused = state
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+	var arr:Array = []
+	for node in [OptionalObjectiveItemList, ObjectiveItemList]:
+		for btn in node.get_children():
+			arr.append(btn)
+	return arr
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

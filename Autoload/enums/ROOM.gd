@@ -3,19 +3,31 @@ extends Node
 
 enum REF {
 	DEBUG_ROOM,
+	
+	# -----------------
 	DIRECTORS_OFFICE,
 	HQ,
+	
+	# -----------------
+	HR_DEPARTMENT, 
+	ENGINEERING_BAY,
+	
+	# -----------------
 	STANDARD_CONTAINMENT_CELL,
+	
+	# -----------------
+	DARK_MONEY,
 	PRISONER_BLOCK,
-	HR_DEPARTMENT,
 	OPERATIONS_SUPPORT,
 	SECURITY_DEPARTMENT,
 	WEAPONS_RANGE,
-	ENGINEERING_BAY,
 	ENERGY_STORAGE,
 	TEST1,
 	TEST2,
-	TEST3
+	TEST3,
+	TEST4,
+	TEST5,
+	TEST6
 }
 
 

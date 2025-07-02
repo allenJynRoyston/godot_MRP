@@ -5,7 +5,7 @@
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_282hj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34og0"]
-bg_color = Color(0.478431, 0.623529, 0.8, 1)
+bg_color = Color(0.758296, 0.832661, 0.92436, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_282hj"]
 font = ExtResource("3_282hj")

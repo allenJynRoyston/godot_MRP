@@ -49,6 +49,6 @@ autowrap_mode = 2
 [node name="PropertyLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "(MORALE)"
+text = "[MORALE] "
 label_settings = ExtResource("4_hvfea")
 horizontal_alignment = 2

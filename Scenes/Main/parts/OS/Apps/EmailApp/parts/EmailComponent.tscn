@@ -78,7 +78,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="TextBtn" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_yu6nn")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_yu6nn")
 

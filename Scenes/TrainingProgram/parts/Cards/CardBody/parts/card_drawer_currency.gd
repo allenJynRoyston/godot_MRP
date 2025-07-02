@@ -75,28 +75,6 @@ func on_list_update() -> void:
 		new_node.title = str(base_amount) if is_researched else "?"
 		new_node.use_second_val = true
 
-		#if !preview_mode:
-			#if !use_location.is_empty():
-				#var currencies:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies
-				#var applied_bonus:int = int(room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].applied_bonus * 100)
-				#new_node.second_val = currencies[item.ref]
-				#AppliedBonusLabel.text =  str("%s %s %s%s" % ["Morale", "bonus" if applied_bonus > 0 else "debuff", "+" if applied_bonus > 0 else "", applied_bonus], "%") if applied_bonus != 0 else "No bonuses"
-				#new_node.use_second_val = base_amount !=  currencies[item.ref] #applied_bonus != 0
-			#else:
-				#var floor_config_data:Dictionary = room_config.floor[current_location.floor]
-				#var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
-				#var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]
-				#var floor_morale_val:int = floor_config_data.metrics[RESOURCE.METRICS.MORALE]
-				#var ring_morale_val:int = ring_config_data.metrics[RESOURCE.METRICS.MORALE]
-				#var room_morale_val:int = room_config_data.metrics[RESOURCE.METRICS.MORALE]
-				#var total_morale_val:int = floor_morale_val + ring_morale_val + room_morale_val
-				#var res:Dictionary = GAME_UTIL.apply_morale_bonus(current_location, total_morale_val, int(item.title), room_config)
-				#var applied_bonus:int = int(res.applied_bonus * 100)
-				#var applied_value:int = res.amount
-				#AppliedBonusLabel.text = str("%s %s %s%s" % ["Morale", "bonus" if applied_bonus > 0 else "debuff", "+" if applied_bonus > 0 else "", applied_bonus], "%") if applied_bonus != 0 else "No bonuses"
-				#new_node.second_val = str(res.amount)
-				#new_node.use_second_val = applied_bonus != 0 and (base_value != res.amount)
-
 
 		new_node.icon = item.icon
 		new_node.icon_size = Vector2(20, 20)

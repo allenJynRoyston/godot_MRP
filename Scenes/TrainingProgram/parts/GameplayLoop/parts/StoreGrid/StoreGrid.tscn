@@ -1,25 +1,16 @@
-[gd_scene load_steps=13 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=10 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" uid="uid://cuo7fn44s3f17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/store_grid.gd" id="1_v8g2t"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_rerlm"]
 [ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_2ktk6"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_ne0x7"]
-[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="5_it3qm"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_wq8yk"]
+[ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="6_o6blh"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="7_jhptp"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="8_v07qp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jvufl"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v8g2t"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rerlm"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
 
 [node name="StoreContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -76,33 +67,17 @@ layout_mode = 2
 theme_override_constants/separation = 25
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-alignment = 1
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 0
 
-[node name="CostResourceItem" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("5_it3qm")]
+[node name="CostPanel" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2" instance=ExtResource("6_o6blh")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_v8g2t")
 icon = 44
-no_bg = true
-title = "999"
-display_at_bottom = true
-icon_size = Vector2(50, 50)
-
-[node name="IconBtn" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_wq8yk")]
-layout_mode = 2
-icon = 27
-is_hoverable = false
-
-[node name="CostResourceItemDiff" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("5_it3qm")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rerlm")
-icon = 44
-no_bg = true
-title = "999"
-display_at_bottom = true
-is_negative = true
-icon_size = Vector2(50, 50)
+title = "RESEARCH COST"
 
 [node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("7_jhptp")]
 custom_minimum_size = Vector2(0, 350)

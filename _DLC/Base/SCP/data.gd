@@ -16,7 +16,7 @@ var SCP0:Dictionary = {
 	"abstract": func(_scp_details:Dictionary) -> String:
 		return "A gilded picture frame that opens a window into a subtly altered mirrored version of the room it faces. Objects entering vanish without trace. Categorized as SPATIAL and CONCEPTUAL.",
 	"img_src": "res://Media/scps/mirror_frame.png",
-	"breach_check_frequency": 1,
+	"breach_check_frequency": 5,
 	
 	"containment_requirements": [
 		SCP.CONTAINMENT_TYPES.SPATIAL,

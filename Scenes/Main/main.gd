@@ -39,7 +39,6 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 		shader_profile = val
 		on_shader_profile_update()
 
-
 # GAMEPLAY OPTIONS
 @export_category("PRODUCTION DEBUG")
 @export var is_production_build:bool = false
@@ -89,16 +88,18 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var stdr_skip_loadingscreen:bool = false
 
 @export_category("DEBUG GAMEPLAYLOOP")
-@export var use_fresh_base:bool = false
 @export var skip_setup_progress:bool = false
 @export var start_at_ring_level:bool = false
 @export var skip_objectives:bool = false
 @export var max_energy:bool = true
 @export var all_personnel:bool = false
-@export var researchers_per_room:int = 3
-@export var researchers_by_default:int = 5
 
 @export_category("RESEARCHERS DEBUG")
+@export var staff_debug:bool = false
+@export var staff_starting_researchers:int = 9
+@export var staff_starting_admin:int = 9
+@export var staff_starting_security:int = 9
+@export var staff_starting_dclass:int = 9
 @export var xp_needed_for_promotion:int = 0
 
 # SHADER VARS
@@ -157,6 +158,18 @@ var colorrect_defaults:Dictionary = {
 
 # SAVE FILE STRUCTURE/DEFAULTS
 var default_save_profiles:Dictionary = {
+	"os_setting": {
+		"read_emails": [],
+		"tracks_unlocked": [],
+		"apps_installed": [],
+		"media_player": {
+			"enable_visulizer": true	
+		},
+		"currency": {
+			"amount": 0,
+			"spent": 0
+		}
+	},
 	"snapshots": {
 		"restore_checkpoint": {},
 		"quicksaves": {}
@@ -172,8 +185,12 @@ var user_profile_schema:Dictionary = {
 		"at_story_limit": false,		
 	},
 	"graphics": {
+		"fullscreen": false,
 		"shaders":{
-			"crt_effect": true
+			"crt_effect": true,
+			"screen_bend": true,
+			"screen_burn": true,
+			"monitor_overlay": true
 		}	
 	},
 	"use_save_profile": FS.FILE.SAVE_ONE if !user_profile_ref else user_profile_ref,
@@ -286,19 +303,23 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, stdr_skip_loadingscreen)	
 	
 	# gameplayloop
-	DEBUG.assign(DEBUG.GAMEPLAY_USE_FRESH_BASE, use_fresh_base)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
 	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)
 	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
-	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_PER_ROOM, researchers_per_room if !is_production_build else 1)
-	DEBUG.assign(DEBUG.GAMEPLAY_RESEARCHERS_BY_DEFAULT, researchers_by_default if !is_production_build else 0)
+
+	# staff
+	DEBUG.assign(DEBUG.STAFF_DEBUG, staff_debug)
+	DEBUG.assign(DEBUG.STAFF_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)			
+	DEBUG.assign(DEBUG.STAFF_STARTING_RESEARCHERS, staff_starting_researchers)	
+	DEBUG.assign(DEBUG.STAFF_STARTING_ADMIN, staff_starting_admin)	
+	DEBUG.assign(DEBUG.STAFF_STARTING_SECURITY, staff_starting_security)	
+	DEBUG.assign(DEBUG.STAFF_STARTING_DCLASS, staff_starting_dclass)	
 	
-	# events
 	
-	# researchers
-	DEBUG.assign(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)		
+
+
 # -----------------------------------	
 
 # -----------------------------------	

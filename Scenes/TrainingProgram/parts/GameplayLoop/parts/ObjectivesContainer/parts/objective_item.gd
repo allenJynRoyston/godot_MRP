@@ -15,6 +15,7 @@ extends BtnBase
 
 var content:String = "Objective"
 var you_have:String = ""
+var is_optional:bool = false
 var is_completed:bool = false
 var is_expired:bool = false
 var is_upcoming:bool = false
@@ -46,8 +47,8 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	
-	ContentLabel.text = "Upcoming..." if is_upcoming else content
-	YouHaveLabel.text = "(Objective complete)" if is_expired else ("(Currently have %s.)" % you_have)
+	ContentLabel.text = "Upcoming..." if is_upcoming else ("OPTIONAL: \r%s" % content) if is_optional else content
+	YouHaveLabel.text = "(Objective complete)" if is_expired else you_have
 	YouHaveLabel.hide() if (you_have == "" or is_upcoming) else YouHaveLabel.show()
 	IconBtn.icon = SVGS.TYPE.CLEAR if is_expired else (SVGS.TYPE.CHECKBOX if is_completed else SVGS.TYPE.EMPTY_CHECKBOX)
 	BookmarkIcon.show() if show_bookmark else BookmarkIcon.hide()
@@ -59,9 +60,11 @@ func _ready() -> void:
 		use_color = Color(0.337, 0.275, 1.0)
 	if is_expired:
 		use_color = Color(0.337, 0.275, 1.0).lightened(0.5)
+	if is_optional:
+		use_color = Color(1.0, 0.694, 0.0)
 		
 	hint_title = "HINT"
-	hint_description = content
+	hint_description = "%s %s" % [ContentLabel.text, "" if is_upcoming else YouHaveLabel.text]
 	hint_icon = SVGS.TYPE.INFO
 	
 	if is_hoverable:

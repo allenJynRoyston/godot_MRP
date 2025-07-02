@@ -1,9 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://dmjokg2svoddw"]
+[gd_scene load_steps=12 format=3 uid="uid://dmjokg2svoddw"]
 
 [ext_resource type="Script" uid="uid://cotsvaq7of3j7" path="res://UI/Buttons/MenuBtn/menu_btn.gd" id="1_b56nf"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="2_aglnc"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_yu543"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_oae0j"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_oae0j"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_oae0j"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_asb5s"]
@@ -48,6 +48,12 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="LabelSettings" id="LabelSettings_ixh6f"]
+font = ExtResource("4_oae0j")
+font_color = Color(0.357535, 0.00116721, 0.501693, 1)
+outline_size = 8
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+
 [node name="MenuBtn" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
 offset_left = 2.0
@@ -73,7 +79,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_nqoss")
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/InnerPanel"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 0
@@ -135,7 +141,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "TITLE OF ITEM "
-label_settings = ExtResource("4_oae0j")
+label_settings = SubResource("LabelSettings_ixh6f")
 vertical_alignment = 1
 
 [node name="EnergyPanel" type="HBoxContainer" parent="MarginContainer/InnerPanel/MarginContainer/HBoxContainer"]

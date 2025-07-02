@@ -3,7 +3,8 @@ extends Node
 
 enum SPECIALIZATION { 
 	ANY,
-	STAFF,
+	ADMIN,
+	RESEARCHER,
 	DCLASS,
 	SECURITY,
 }

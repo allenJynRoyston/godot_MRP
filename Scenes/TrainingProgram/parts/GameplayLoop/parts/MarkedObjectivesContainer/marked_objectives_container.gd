@@ -65,7 +65,7 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	for index in bookmarked_objectives.size():
 		var objective:Dictionary = bookmarked_objectives[index]		
 		var btn:Control = ObjectiveList.get_child(index)
-		btn.you_have = str(objective.you_have.call())
+		btn.you_have = objective.count_str.call(objective.you_have.call())
 		btn.is_completed = objective.is_completed.call()
 		btn._ready()
 	
@@ -85,7 +85,7 @@ func on_bookmarked_objectives_update(new_val:Array) -> void:
 		new_btn.is_expired = false
 		new_btn.is_upcoming = false
 		new_btn.content = objective.title
-		new_btn.you_have = str(objective.you_have.call())
+		new_btn.you_have = objective.count_str.call(objective.you_have.call())
 		new_btn.is_completed = objective.is_completed.call()
 		ObjectiveList.add_child(new_btn)		
 	

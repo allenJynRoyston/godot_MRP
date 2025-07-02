@@ -1,11 +1,9 @@
 extends Node
 
 enum REF {
-	
-	
 	# --- DIRECTORS OFFICE
 	PREDICTIVE_TIMELINE,
-	ENABLE_OBJECTIVES,
+	OBJECTIVE_ASSIST,
 	
 	UPGRADE_ABL_LVL,
 	ADDITIONAL_STORE_UNLOCKS,
@@ -38,8 +36,8 @@ var PREDICTIVE_TIMELINE:Dictionary = {
 	"conditionals": [CONDITIONALS.TYPE.ENABLE_TIMELINE]
 }
 
-var ENABLE_OBJECTIVES:Dictionary = {
-	"name": "ENABLE OBJECTIVES",
+var OBJECTIVE_ASSIST:Dictionary = {
+	"name": "OBJECTIVES ASSIST",
 	"description": "Objectives are always visible on the main screen.",
 	"lvl_required": 0,
 	"energy_cost": 1,
@@ -201,8 +199,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# ------------------
 		REF.PREDICTIVE_TIMELINE:
 			ability = PREDICTIVE_TIMELINE
-		REF.ENABLE_OBJECTIVES:	
-			ability = ENABLE_OBJECTIVES
+		REF.OBJECTIVE_ASSIST:	
+			ability = OBJECTIVE_ASSIST
 		
 		# ------------------
 		REF.UPGRADE_ABL_LVL:
