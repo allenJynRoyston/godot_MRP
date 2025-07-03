@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbbfm67s1r6vm"]
+[gd_scene load_steps=9 format=3 uid="uid://dbbfm67s1r6vm"]
 
 [ext_resource type="Script" uid="uid://ct60vhtup6174" path="res://Scenes/TrainingProgram/parts/LogoScreen/logo_screen.gd" id="1_hhjxh"]
+[ext_resource type="Texture2D" uid="uid://bqjgyfcx1odqb" path="res://Media/images/Boxart/stdr_boxart.png" id="2_i2vsh"]
 [ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_jqr35"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_kkl0i"]
+[ext_resource type="Material" uid="uid://bvao31du74g1" path="res://Shader/HorizontalInterupt/HorizontalInterupt.tres" id="2_qbek0"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="3_n7hac"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kp6tv"]
@@ -21,6 +23,22 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_kp6tv")
 script = ExtResource("1_hhjxh")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = ExtResource("2_qbek0")
+layout_mode = 2
+texture = ExtResource("2_i2vsh")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ColorRect" type="ColorRect" parent="TextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.431373)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 2

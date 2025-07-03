@@ -96,6 +96,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
+is_production_build = true
 audio_mute = true
 skip_splash = true
 skip_intro = true

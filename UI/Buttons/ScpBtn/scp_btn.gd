@@ -117,6 +117,8 @@ func on_panel_color_update() -> void:
 	
 func update_text() -> void:
 	if !is_node_ready():return
+	
+	print("is_disabled: ", is_disabled)
 
 	if is_disabled:
 		if scp_ref == -1:

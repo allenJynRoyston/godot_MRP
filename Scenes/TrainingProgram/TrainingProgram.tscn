@@ -24,6 +24,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="FailState" parent="." instance=ExtResource("4_8qqsj")]
+visible = false
 layout_mode = 2
 
 [node name="TransitionScreen" parent="." instance=ExtResource("5_vpp5c")]

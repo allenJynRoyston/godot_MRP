@@ -16,6 +16,7 @@ shadow_color = Color(1, 1, 1, 0.803922)
 shadow_offset = Vector2(0, 0)
 
 [node name="Splash" type="Control"]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,6 +26,7 @@ grow_vertical = 2
 script = ExtResource("1_l733j")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

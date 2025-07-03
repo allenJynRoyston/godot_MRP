@@ -37,6 +37,8 @@ func _ready() -> void:
 			await ActionContainerNode.after_use()	
 			# unlocks
 			onUnlock.call()			
+	
+
 
 func get_is_activated() -> bool:
 	if !use_location.is_empty():
@@ -44,9 +46,10 @@ func get_is_activated() -> bool:
 		return extract_data.room.is_activated	 if (extract_data.has("room") and extract_data.room.has("is_activated")) else false
 		
 	return false
-	
 
-func on_room_config_update(new_val:Dictionary) -> void:
+
+
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready():return
 	ScpBtn.is_disabled = !get_is_activated()
