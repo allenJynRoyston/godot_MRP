@@ -50,9 +50,12 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_is_disabled_updated() -> void:
+	U.debounce(str(self.name, "_update_all"), update_all)
+	
 func on_scp_ref_update() -> void:
 	if !is_node_ready():return
-	update_all()
+	U.debounce(str(self.name, "_update_all"), update_all)
 	
 func on_use_location_update() -> void:
 	if !is_node_ready():return
@@ -84,6 +87,7 @@ func update_all() -> void:
 	update_font_color()
 	on_panel_color_update()
 	update_text()	
+	
 
 func update_font_color() -> void:
 	if !is_node_ready():return
@@ -92,6 +96,9 @@ func update_font_color() -> void:
 	
 	if is_available:
 		new_color = Color(0.561, 1.0, 0.0)
+		
+	if is_disabled:		
+		new_color = Color.RED
 		
 	label_duplicate.font_color = new_color
 	for node in [NameLabel]:
@@ -110,12 +117,30 @@ func on_panel_color_update() -> void:
 	
 func update_text() -> void:
 	if !is_node_ready():return
+
+	if is_disabled:
+		if scp_ref == -1:
+			NameLabel.text = "UNAVAILABLE"
+			IconBtn.icon = SVGS.TYPE.LOCK
+			hint_description = "Room must be active to assign an object to containment."
+			
+		else:
+			var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+			NameLabel.text = "%s (AT RISK)" % [scp_details.name]	
+			IconBtn.icon = SVGS.TYPE.DANGER			
+			hint_description = "Room not activated - risk of containment breach increased!"
+
+		return
+
 	if scp_ref == -1:
 		NameLabel.text = "ASSIGN OBJECT"
+		IconBtn.icon = SVGS.TYPE.PLUS		
 		return
 	
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	NameLabel.text = "%s" % [scp_details.name]
+	IconBtn.icon = SVGS.TYPE.CONTAIN		
+
 	
 # ------------------------------------------------------------------------------
 

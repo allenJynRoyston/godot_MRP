@@ -3,6 +3,8 @@ extends CardDrawerClass
 
 @onready var ScpBtn:BtnBase = $MarginContainer/MarginContainer/VBoxContainer/ScpBtn
 
+var room_config:Dictionary = {}
+
 var preview_mode:bool = false
 var use_location:Dictionary = {} : 
 	set(val):
@@ -11,6 +13,12 @@ var use_location:Dictionary = {} :
 		
 var onLock:Callable = func() -> void:pass
 var onUnlock:Callable = func() -> void:pass
+
+func _init() -> void:
+	SUBSCRIBE.subscribe_to_room_config(self)
+	
+func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_room_config(self)
 
 func _ready() -> void:
 	super._ready()
@@ -29,6 +37,19 @@ func _ready() -> void:
 			await ActionContainerNode.after_use()	
 			# unlocks
 			onUnlock.call()			
+
+func get_is_activated() -> bool:
+	if !use_location.is_empty():
+		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		return extract_data.room.is_activated	 if (extract_data.has("room") and extract_data.room.has("is_activated")) else false
+		
+	return false
+	
+
+func on_room_config_update(new_val:Dictionary) -> void:
+	room_config = new_val
+	if !is_node_ready():return
+	ScpBtn.is_disabled = !get_is_activated()
 
 func on_use_location_update() -> void:
 	if !is_node_ready():return

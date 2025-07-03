@@ -111,7 +111,7 @@ theme_override_constants/separation = -5
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ASSIGN RESEARCHER"
+text = "ASSIGN"
 label_settings = SubResource("LabelSettings_q5tva")
 vertical_alignment = 1
 

@@ -12,6 +12,7 @@ var required_staffing:Array = [] :
 		
 var preview_mode:bool = false
 var use_location:Dictionary = {}
+var room_details:Dictionary = {}
 var onLock:Callable = func() -> void:pass
 var onUnlock:Callable = func() -> void:pass
 
@@ -31,6 +32,7 @@ func on_required_staffing_update() -> void:
 		var new_btn:Control = RoomResearchersBtnPreload.instantiate()
 		new_btn.index = index
 		new_btn.use_location = use_location
+		new_btn.room_details = room_details
 		#new_btn.pairs_with = pairs_with
 		new_btn.onClick = func() -> void:
 			var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)

@@ -150,6 +150,7 @@ func on_room_ref_update() -> void:
 	
 	# attach researcher data
 	#CardDrawerResearchers.pairs_with = room_details.pairs_with.specialization
+	CardDrawerResearchers.room_details = room_details
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.required_staffing = required_staffing
 	CardDrawerResearchers.show() if required_staffing.size() > 0 else CardDrawerResearchers.hide()

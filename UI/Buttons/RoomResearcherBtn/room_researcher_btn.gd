@@ -16,6 +16,7 @@ extends BtnBase
 		on_panel_color_update()		
 
 var use_location:Dictionary = {}
+var room_details:Dictionary = {}
 
 var hired_lead_researchers:Array = []
 
@@ -30,7 +31,6 @@ var is_selected:bool = false :
 		on_is_selected_update()
 
 var is_available:bool = true
-var has_pairing:bool = false
 
 const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
 
@@ -45,21 +45,23 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	super._ready()	
-	on_hired_lead_researchers_arr_update()
+	on_hired_lead_researchers_arr_update.call_deferred()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers) -> void:
 	hired_lead_researchers = new_val
+	if room_details.is_empty():return
+	
 	var filtered:Array = hired_lead_researchers.filter(func(x): 
 		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
-		return !researcher_data.props.assigned_to_room.is_empty() and (use_location == researcher_data.props.assigned_to_room) 
+		var required_slot:Dictionary = RESEARCHER_UTIL.return_specialization_data(room_details.required_staffing[index])
+		
+		return !researcher_data.props.assigned_to_room.is_empty() and (use_location == researcher_data.props.assigned_to_room) and (researcher_data.specialization.ref == required_slot.ref) 
 	)
-	if index >= 0 and index < filtered.size():
-		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(filtered[index])
-		researcher = researcher_data
-	else:
-		researcher = {}
+	
+
+	researcher = RESEARCHER_UTIL.get_user_object(filtered[0]) if filtered.size() > 0 else {}
 
 func on_researcher_update() -> void:
 	if !is_node_ready():return
@@ -67,9 +69,7 @@ func on_researcher_update() -> void:
 	
 	if !researcher.is_empty() and !researcher.props.assigned_to_room.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher.props.assigned_to_room)
-		#if !has_pairing:
-			#has_pairing = ROOM_UTIL.check_for_room_pair(extract_data.room.details.ref, researcher)	
-	#
+
 	update_all()
 
 func on_is_selected_update() -> void:
@@ -106,28 +106,28 @@ func on_panel_color_update() -> void:
 	
 func update_text() -> void:
 	if !is_node_ready():return
-	
+	var required_slot:Dictionary = RESEARCHER_UTIL.return_specialization_data(room_details.required_staffing[index])
+		
 	if researcher.is_empty():
 		IconBtn.icon = SVGS.TYPE.PLUS
 		LvlLabel.hide()
-		NameLabel.text = "ASSIGN RESEARCHER"
+		NameLabel.text = "ASSIGN %s" % [required_slot.name]
 		
-		hint_title = "ASSIGN RESEARCHER"
+		hint_title = "HINT"
 		hint_icon = SVGS.TYPE.PLUS
-		hint_description = "Assigning a researcher to this room will increase its level."
+		hint_description = "This room requires a %s to be activated." % required_slot.name
 		return
 	
 	IconBtn.icon = SVGS.TYPE.ASSIGN
 	LvlLabel.text = str(researcher.level)
 	LvlLabel.show()
 	
-	NameLabel.text = ("%s, %s" % [researcher.name, researcher.specialization.details.name])
+	NameLabel.text = researcher.name
 	SpecLabel.text = "" if researcher.is_empty() else researcher.specialization.details.name	
 	TraitLabel.text = "" if researcher.is_empty() else researcher.trait.details.name
 	
-	hint_title = "RESEARCHER"
-	hint_icon = SVGS.TYPE.DRS if has_pairing else SVGS.TYPE.DRS
-	hint_description = ("Researcher %s, %s specialist." % [researcher.name, researcher.specialization.details.name])
+	hint_title = "HINT"
+	hint_description = str("Slotted by ",  researcher.name, ".")
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------	

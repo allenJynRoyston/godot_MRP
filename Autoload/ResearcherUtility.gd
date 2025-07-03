@@ -14,8 +14,8 @@ var specialization_data:Dictionary = {
 		"name": "ADMIN"
 	},	
 	RESEARCHER.SPECIALIZATION.SECURITY: {
-		"shortname": "AGT",
-		"name": "AGENT"
+		"shortname": "SEC",
+		"name": "SECURITY OFFICER"
 	},
 	RESEARCHER.SPECIALIZATION.DCLASS: {
 		"shortname": "DC",

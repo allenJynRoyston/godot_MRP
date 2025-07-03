@@ -978,10 +978,6 @@ func on_current_phase_update() -> void:
 
 				# CHECK FOR FAIL STATE
 				var is_complete:bool = GAME_UTIL.are_objectives_complete()
-				if is_complete:
-					# create a quicksave
-					await quicksave(true)
-					
 				current_phase = PHASE.GAME_LOST if !is_complete else PHASE.GAME_WON
 				return
 			
@@ -1042,13 +1038,17 @@ func on_current_phase_update() -> void:
 			# create a restore point
 			create_checkpoint()
 			
+
+								
 			
 			# update objectives
 			PhaseAnnouncement.start("OBJECTIVES ARE BEING UPDATED...")
-			await U.set_timeout(2.0)
+			await U.set_timeout(1.0)
 			await GAME_UTIL.open_objectives()
 			# update bookmarked objectives
 			GAME_UTIL.mark_current_objectives()
+			
+			await quicksave(true)			
 			
 			if show_new_message:
 				ActionContainer.show_new_message_btn = true
