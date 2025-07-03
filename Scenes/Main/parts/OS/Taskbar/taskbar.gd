@@ -43,7 +43,6 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)		
-	on_show_media_player_update()
 	
 	var update_media_player:Callable = func() -> void:
 		BtnControl.a_btn_title = "RESUME TRACK" if !MediaPlayer.is_already_playing() else 'PAUSE TRACK'	
@@ -131,6 +130,8 @@ func activate() -> void:
 	
 	TaskbarPanel.position.y = control_pos[TaskbarPanel].hide	
 	self.modulate = Color(1, 1, 1, 1)
+	
+	on_show_media_player_update()
 # ------------------------------------------------------------------------------
 
 
@@ -159,8 +160,7 @@ func set_show_taskbar(state:bool, skip_animation:bool = false) -> void:
 func on_show_media_player_update() -> void:
 	if !is_node_ready():return
 	MediaPlayer.show() if show_media_player else MediaPlayer.hide()
-	if !show_media_player:
-		MediaPlayer.on_stop()
+
 	
 func add_item(item:Dictionary) -> void:
 	if !is_node_ready():return

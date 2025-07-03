@@ -82,14 +82,14 @@ func _ready() -> void:
 		"show": PressStartMainPanel.position.y - 10
 	}
 	
-	
-	on_current_mode_update()	
+	#on_current_mode_update()	
 # ---------------------------------------------	
 
 # ---------------------------------------------
 func start() -> void:
 	set_process(true)
 	current_mode = MODE.START
+
 
 func end() -> void:
 	on_complete.emit()
@@ -113,6 +113,10 @@ func on_current_mode_update() -> void:
 		# ---------
 		MODE.DISPLAY_LOGO:
 			if !DEBUG.get_val(DEBUG.INTRO_SKIP_LOGO):
+				SUBSCRIBE.music_data = {
+					"selected": MUSIC.TRACK.INTRO,
+				}	
+					
 				# fade in
 				U.tween_node_property(LogoTextureRect, 'scale:x', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
 				U.tween_node_property(LogoTextureRect, 'scale:y', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
@@ -137,15 +141,9 @@ func on_current_mode_update() -> void:
 				for index in range(0, TitleLetterContainers.get_child_count()):
 					var letter_node:Control = TitleLetterContainers.get_child(index)
 					await letter_node.start()
-					
-				await U.set_timeout(3.0)
 				
-				for index in range(0, TitleLetterContainers.get_child_count()):
-					var letter_node:Control = TitleLetterContainers.get_child(index)
-					await letter_node.end()
-					
-				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 0), 2.0)
-				
+				await U.set_timeout(1.0)
+	
 			current_mode = MODE.DISPLAY_SIDE_TEXT
 		# ---------
 		MODE.DISPLAY_SIDE_TEXT:			
@@ -170,10 +168,19 @@ func on_current_mode_update() -> void:
 				U.tween_node_property(SceneCamera, 'fov', 60, 4.0)
 				U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 0), 0.5)
 				
+				await U.set_timeout(1.0)
+				
+				for index in range(0, TitleLetterContainers.get_child_count()):
+					var letter_node:Control = TitleLetterContainers.get_child(index)
+					await letter_node.end()
+					
+				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 0), 2.0)				
+				
 			current_mode = MODE.WAIT_FOR_INPUT
 		# ---------
 		MODE.WAIT_FOR_INPUT:	
 			if !DEBUG.get_val(DEBUG.INTRO_SKIP_STARTAT):
+
 				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].show)
 				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 1), 0.3)
 				await user_input
@@ -181,12 +188,12 @@ func on_current_mode_update() -> void:
 				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide, 0.3)
 				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3, 0.3)
 				
+				GBL.find_node(REFS.AUDIO).fade_out(2.0)
 				await U.tween_node_property(SceneCamera, 'fov', 100, 2.0)
 			
 			current_mode = MODE.EXIT
 		# ---------
 		MODE.EXIT:
-			await U.set_timeout(1.0)
 			end()
 # ---------------------------------------------
 

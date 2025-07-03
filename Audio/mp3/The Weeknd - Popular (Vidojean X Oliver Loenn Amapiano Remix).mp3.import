@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bkxgbhnj1boy1"
+path="res://.godot/imported/The Weeknd - Popular (Vidojean X Oliver Loenn Amapiano Remix).mp3-27154ec4917f79dda67ae1a68ba398e5.mp3str"
+
+[deps]
+
+source_file="res://Audio/mp3/The Weeknd - Popular (Vidojean X Oliver Loenn Amapiano Remix).mp3"
+dest_files=["res://.godot/imported/The Weeknd - Popular (Vidojean X Oliver Loenn Amapiano Remix).mp3-27154ec4917f79dda67ae1a68ba398e5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

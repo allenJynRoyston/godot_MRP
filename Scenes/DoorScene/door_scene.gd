@@ -210,6 +210,10 @@ func on_current_mode_update() -> void:
 			ColorBG.color = Color.BLACK	
 		# ---------
 		MODE.START:
+			SUBSCRIBE.music_data = {
+				"selected": MUSIC.TRACK.LOADING
+			}
+			
 			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1.0)
 
 			RenderSubviewport.set_process(true)

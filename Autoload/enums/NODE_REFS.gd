@@ -1,6 +1,7 @@
 extends Node
 
 enum {
+	AUDIO,
 	MAIN, 
 	AUDIO_BG,
 	TASKBAR,

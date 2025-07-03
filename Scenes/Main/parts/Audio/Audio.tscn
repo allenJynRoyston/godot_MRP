@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://blq88bwlfy7io"]
+
+[ext_resource type="Script" uid="uid://bp2udquwaoqdi" path="res://Scenes/Main/parts/Audio/audio.gd" id="1_o32pj"]
+
+[node name="Audio" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o32pj")
+
+[node name="AudioStreamPlayerMaster" type="AudioStreamPlayer" parent="."]
+autoplay = true
+
+[node name="AudioStreamPlayerReverb" type="AudioStreamPlayer" parent="."]
+autoplay = true
+bus = &"Reverb"

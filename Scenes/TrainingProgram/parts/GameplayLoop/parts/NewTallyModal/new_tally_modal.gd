@@ -13,10 +13,7 @@ extends GameContainer
 
 @onready var ResourcePanel:PanelContainer = $ResourceControl/PanelContainer
 @onready var ResourceMargin:MarginContainer = $ResourceControl/PanelContainer/MarginContainer
-
-#@onready var StaffingList:VBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List
-#@onready var BeforeList:HBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before
-#@onready var AfterList:HBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after
+@onready var ResourceHBox:HBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer
 
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
@@ -24,8 +21,6 @@ const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/pa
 @onready var allow_controls:bool = false : 
 	set(val):
 		allow_controls = val
-		check_for_unavailable_rooms()
-		#GBL.find_node(REFS.ROOM_NODES).enable_room_focus = val
 
 var title:String = "" : 
 	set(val):
@@ -52,31 +47,26 @@ var cancel_only:bool = false :
 		cancel_only = val
 		on_cancel_only_update()
 
-var activation_requirements:Array = [] : 
-	set(val): 
-		activation_requirements = val
-		on_activation_requirements_update()
-
 var bg_color:Color = Color(0, 0, 0, 0)
+
+signal tally_complete
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
 	super._ready()
 	self.modulate = Color(1, 1, 1, 0)
-	BtnControls.onDirectional = on_key_press
 	
 	BtnControls.onAction = func() -> void:
+		initiate_tally()	
+		await tally_complete
+				
 		end(true)
 
-	BtnControls.onBack = func() -> void:
-		end(false)
-			
 	BtnControls.reveal(false)
 		
 	on_title_update()
 	on_subtitle_update()
 	on_image_update()
-	on_activation_requirements_update()
 	
 
 func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "", bg_color:Color = bg_color) -> void:
@@ -97,6 +87,9 @@ func end(made_changes:bool) -> void:
 		TextureRectUI.material.set_shader_parameter("blur_radius", val)
 	).finished	
 	
+	U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
+	await U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].hide)	
+	
 	await U.tween_node_property(self, "modulate:a", 0)
 
 	await U.set_timeout(0.3)
@@ -106,6 +99,7 @@ func end(made_changes:bool) -> void:
 	
 			
 	user_response.emit(made_changes)
+
 	queue_free()
 # --------------------------------------------------------------------------------------------------		
 
@@ -115,7 +109,7 @@ func activate(auto_start:bool = true) -> void:
 	
 	control_pos[ContentPanel] = {
 		"show": 0, 
-		"hide": ContentMargin.size.x
+		"hide": -ContentMargin.size.y
 	}
 	
 	control_pos[ResourcePanel] = {
@@ -123,12 +117,22 @@ func activate(auto_start:bool = true) -> void:
 		"hide": ResourceMargin.size.y
 	}	
 	
-
-
-	ColorRectBG.modulate = Color(1, 1, 1, 0)
 	ResourcePanel.position.y = control_pos[ResourcePanel].hide
-	ContentPanel.position.x = control_pos[ContentPanel].hide
+	ContentPanel.position.y = control_pos[ContentPanel].hide
 	
+	var index:int = 0
+	for ref in resources_data:
+		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+		var ResourceNode:VBoxContainer = ResourceHBox.get_child(index)
+		var CostPanel:Control = ResourceNode.get_child(0)
+		var DiffLabel:Label = ResourceNode.get_child(1)
+		
+		CostPanel.amount = resources_data[ref].amount
+		CostPanel.icon = resource_details.icon
+		DiffLabel.text =  "%s %s" % ["+" if resources_data[ref].diff >= 0 else "-", absi(resources_data[ref].diff)]
+		#
+		index += 1
+			
 # --------------------------------------------------------------------------------------------------	
 
 # -------------------------------------------------------------------------------------------------	
@@ -138,49 +142,52 @@ func start() -> void:
 		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 	
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
-	U.tween_node_property(ContentPanel, "position:x", control_pos[ContentPanel].show)
+	U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show)
 	await U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show)
 	
 	BtnControls.reveal(true)
 # -------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------
-func check_for_unavailable_rooms() -> void:
-	if current_location.is_empty():return
-	var designation:String = U.location_to_designation(current_location)	
-	BtnControls.disable_active_btn = designation in unavailable_rooms
-# --------------------------------------------------------------------------------------------------	
+# -------------------------------------------------------------------------------------------------
+func initiate_tally() -> void:
+	var index:int = 0
+	for ref in resources_data:
+		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+		var ResourceNode:VBoxContainer = ResourceHBox.get_child(index)
+		var CostPanel:Control = ResourceNode.get_child(0)
+		var DiffLabel:Label = ResourceNode.get_child(1)
 
-# --------------------------------------------------------------------------------------------------	
-#func on_is_showing_update(skip_animation:bool = false) -> void:
-	#super.on_is_showing_update()
-	#if !is_node_ready() or control_pos.is_empty():return
-	#var duration:float = 0 if skip_animation else 0.3
-	#
-	#if !is_showing:
-		#allow_input = false	
-		#BtnControls.reveal(false)
-	#
-	#self.modulate = Color(1, 1, 1, 1)	
-	#
-	#U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0.6 if is_showing else 0), duration)
-	#
-	#
-	#if !allow_controls:
-		#U.tween_range(0 if is_showing else 4.0, 4 if is_showing else 0, duration, func(val:float) -> void:
-			#TextureRectUI.material.set_shader_parameter("blur_radius", val)
-		#).finished	
-		#
-	#U.tween_node_property(ContentPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  duration)
-	#U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, duration)
-	#await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide, duration)
-	#
-	## reset confirm only state
-	#if is_showing:
-		#allow_input = true
-		#BtnControls.reveal(true)
+		var current_amount:int = resources_data[ref].amount
+		var diff:int = resources_data[ref].diff
+		var target_amount:int = current_amount + diff
+
+		# Animate increasing the amount incrementally
+		animate_amount_increment( absi(diff) , 0, -10, 0.02, func(val):
+			DiffLabel.text = "%s %s" % ["+" if val >= 0 else "-", absi(val)]
+		)
+		
+		await animate_amount_increment(current_amount, target_amount, 10 if diff >= 0 else -10, 0.02, func(val): 
+			CostPanel.amount = U.min_max(val, 0, resources_data[ref].capacity )
+		)
+
+		index += 1
+	
+	await U.set_timeout(1.0)
+	tally_complete.emit()
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+func animate_amount_increment(start:int, target:int, step:int, delay:float, callback:Callable) -> void:
+	var amount = start
+	#var step = 10 if target > start else 0
+	while amount != target:
+		amount += step
+		callback.call(amount)
+		await get_tree().create_timer(delay).timeout
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------	
 func on_image_update() -> void:
 	if !is_node_ready():return	
 	ImageTextureRect.texture = CACHE.fetch_image("res://Media/rooms/redacted.jpg" if image.is_empty() else image)
@@ -195,53 +202,6 @@ func on_subtitle_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_activation_requirements_update() -> void:
-	if !is_node_ready():return
-	
-	#for node in [BeforeList, AfterList, StaffingList]:
-		#for child in node.get_children():
-			#child.free()
-		#
-	if activation_requirements.is_empty():
-		return
-	
-	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show)
-	
-	var disable_btn:bool = false
-		
-	for item in activation_requirements:
-		var current_amount:int = resources_data[item.resource.ref].amount		
-		var has_enough:bool = current_amount - absi(item.amount) >= 0
-		var new_node:Control = CheckboxBtnPreload.instantiate()
-		var new_resource_node:Control = ResourceItemPreload.instantiate()
-		
-		if !disable_btn and !has_enough:
-			disable_btn = true
-		
-		new_node.is_hoverable = false
-		new_node.no_bg = true
-		new_node.is_checked = has_enough
-		new_node.modulate = Color(1, 0, 0, 1) if !has_enough else Color(1, 1, 1, 1)
-		new_node.title =  "%s %s required.  (You have %s)" % [abs(item.amount), item.resource.name, current_amount]
-		#StaffingList.add_child(new_node)
-		
-		new_resource_node.is_hoverable = false
-		new_resource_node.no_bg = true
-		new_resource_node.display_at_bottom = true
-		new_resource_node.icon = item.resource.icon
-		new_resource_node.title = str(current_amount)
-		#BeforeList.add_child(new_resource_node)
-		
-		var after_node:Control = new_resource_node.duplicate()
-		after_node.title = str(current_amount - abs(item.amount))
-		after_node.is_negative = disable_btn
-		#AfterList.add_child(after_node) 
-
-	await U.tick()
-	BtnControls.disable_active_btn = disable_btn
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
 func on_cancel_only_update() -> void:
 	if !is_node_ready():return
 	BtnControls.disable_active_btn = cancel_only
@@ -250,26 +210,3 @@ func on_confirm_only_update() -> void:
 	if !is_node_ready():return
 	BtnControls.disable_back_btn = confirm_only
 # --------------------------------------------------------------------------------------------------		
-
-
-# --------------------------------------------------------------------------------------------------	
-func on_key_press(key:String) -> void:
-	if !allow_controls:return
-
-	match key:
-		# ----------------------------
-		"W":
-			U.room_up()
-		# ----------------------------
-		"S":
-			U.room_down()
-		# ----------------------------
-		"D":
-			U.room_right()
-		# ----------------------------
-		"A":
-			U.room_left()
-	
-	
-	check_for_unavailable_rooms()
-# --------------------------------------------------------------------------------------------------	

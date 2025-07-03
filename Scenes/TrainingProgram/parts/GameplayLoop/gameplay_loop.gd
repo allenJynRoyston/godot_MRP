@@ -494,6 +494,11 @@ func start_new_game() -> void:
 	await U.set_timeout(duration)	
 	await SetupContainer.end()	
 
+	# start game music
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.GAME_TRACK_ONE,
+	}	
+
 	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
 	# needs to be done after setup is complete
 	if is_new_game:
@@ -920,9 +925,11 @@ func on_current_phase_update() -> void:
 			
 			# start breach splash
 			if refs.size() > 0:
+				var previous_track:MUSIC.TRACK = SUBSCRIBE.music_data.selected
+				
 				# open music player, no music selected
 				SUBSCRIBE.music_data = {
-					"selected": 3,
+					"selected": MUSIC.TRACK.CONTAINMENT_BREACH,
 				}
 				
 				# get the splash
@@ -941,7 +948,7 @@ func on_current_phase_update() -> void:
 						
 						# open music player, no music selected
 						SUBSCRIBE.music_data = {
-							"selected": 1,
+							"selected": previous_track,
 						}	
 			
 			# CHECK FOR TIMELINE EVENTS			

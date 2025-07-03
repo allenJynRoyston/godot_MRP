@@ -51,6 +51,7 @@ var camera_size_arr:Array = [20, 24, 28, 32, 36]
 var freeze_input:bool = false 
 var room_config:Dictionary = {}
 var menu_index:int = 0
+var default_camera_rotation:Vector3
 var menu_actions:Array = []
 
 			
@@ -69,7 +70,6 @@ var in_lockdown:bool = false
 var is_powered:bool = false
 var in_brownout:bool = false
 var emergency_mode:ROOM.EMERGENCY_MODES
-var default_camera_rotation:Vector3
 
 var camera_tween:Tween 
 
@@ -93,7 +93,7 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.ROOM_NODES)
 	
 func _ready() -> void:
-	default_camera_rotation = MainCamera.rotation_degrees
+	default_camera_rotation = MainCamera.rotation
 	await U.tick()	
 	on_assigned_location_update()
 	on_is_active_update()
@@ -297,6 +297,18 @@ func get_room_position(room_index:int) -> Vector2:
 	# Convert screen position to Control node's local space
 	return screen_position / self.size
 # --------------------------------------------------------
+
+# --------------------------------------------------------
+func camera_rotate_left() -> void:
+	await U.tween_node_property(MainCamera, "rotation:y", default_camera_rotation.y + 0.1, 0.5)
+	
+func camera_rotate_right() -> void:
+	await U.tween_node_property(MainCamera, "rotation:y", default_camera_rotation.y - 0.1, 0.5)
+
+func camera_center() -> void:
+	await U.tween_node_property(MainCamera, "rotation:y", default_camera_rotation.y, 0.5)
+# --------------------------------------------------------
+
 
 # --------------------------------------------------------
 func update_room_lighting(reset_lights:bool = false) -> void:

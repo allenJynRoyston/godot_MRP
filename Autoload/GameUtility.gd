@@ -1013,6 +1013,7 @@ func open_tally(color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
 	var NewtallyNode:Control = NewTallyPreload.instantiate()
 	NewtallyNode.z_index = 100	
 	GameplayNode.add_child(NewtallyNode)
+	NewtallyNode.set_props("DAILY RESOURCES", "We gots to get paid.", "", Color(0, 0, 0, 0.5))	
 	await NewtallyNode.activate(false)
 	
 	NewtallyNode.start()

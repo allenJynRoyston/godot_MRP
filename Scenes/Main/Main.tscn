@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=26 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="4_18xdc"]
@@ -10,6 +10,7 @@
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="9_xggvw"]
 [ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="10_xd21n"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="11_iwp64"]
+[ext_resource type="PackedScene" uid="uid://blq88bwlfy7io" path="res://Scenes/Main/parts/Audio/Audio.tscn" id="12_wgovn"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
@@ -95,7 +96,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-is_production_build = true
 reset_userprofile_save = true
 skip_splash = true
 skip_intro = true
@@ -307,3 +307,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("ViewportTexture_cv8e0")
+
+[node name="Audio" parent="." instance=ExtResource("12_wgovn")]
+layout_mode = 2

@@ -1,8 +1,5 @@
 extends MouseInteractions
 
-@onready var AudioStreamPlayerMaster:AudioStreamPlayer = $AudioStreamPlayerMaster
-@onready var AudioStreamPlayerReverb:AudioStreamPlayer = $AudioStreamPlayerReverb
-
 @onready var TrackNameScrollContainer:ScrollContainer = $MarginContainer/HBoxContainer/TrackNameScrollContainer
 @onready var TrackNameLabel:Label = $MarginContainer/HBoxContainer/TrackNameScrollContainer/PanelContainer/MarginContainer/TrackName
 
@@ -22,12 +19,11 @@ var max_values:Array = []
 var frames_to_skip: int = 5
 var frame_counter: int = 0
 
-var AudioNode:Control
-var current_audio_stream_player:AudioStreamPlayer
+#var current_audio_stream_player:AudioStreamPlayer
 var spectrum:AudioEffectSpectrumAnalyzerInstance
 
 var hover_nodes:Array = []
-var track_list:Array = []
+var track_list:Array = MUSIC.track_list
 var selected_track:int = 0
 var scroll_name:bool = false
 		
@@ -43,46 +39,21 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	super._ready()
-	current_audio_stream_player = AudioStreamPlayerMaster	
-	AudioNode = GBL.find_node(REFS.AUDIO_BG)
-	
+
 	min_values.resize(VU_COUNT)
 	min_values.fill(0.0)
 	max_values.resize(VU_COUNT)
 	max_values.fill(0.0)
 	
-	on_focus(false)	
+	await U.tick()
 	on_pause_or_play_update()
-# --------------------------------------	
-
-# --------------------------------------	
-func change_bus(bus:String) -> void:
-	var stream_position:float = current_audio_stream_player.get_playback_position()
-	var current_track = null
-	if current_audio_stream_player.playing:
-		current_audio_stream_player.stop()	
-		current_track = current_audio_stream_player.stream
-	
-	match bus:
-		"Master":
-			current_audio_stream_player = AudioStreamPlayerMaster
-		"Reverb":
-			current_audio_stream_player = AudioStreamPlayerReverb
-			
-			
-	var effect = AudioServer.get_bus_effect_instance(0, 0)
-	if effect is AudioEffectSpectrumAnalyzerInstance:
-		spectrum = effect
-		
-	if current_track != null:
-		current_audio_stream_player.stream = current_track
-		current_audio_stream_player.play(stream_position)
+	update_track_data()
 # --------------------------------------	
 
 # --------------------------------------	
 func on_pause() -> void:
 	if track_list.is_empty():return	
-	current_audio_stream_player.playing = !current_audio_stream_player.playing
+	GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing = !GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing
 	on_pause_or_play_update()	
 # --------------------------------------	
 
@@ -93,50 +64,36 @@ func on_next() -> void:
 	SUBSCRIBE.music_data = {
 		"selected": selected_track,
 	}
-	#play_selected_track()	
 # --------------------------------------	
 
-# --------------------------------------	
-func on_stop() -> void:
-	current_audio_stream_player.stop()
-# --------------------------------------	
+## --------------------------------------	
+#func on_stop() -> void:
+	#GBL.find_node(REFS.AUDIO).current_audio_stream_player.stop()
+## --------------------------------------	
 
 # --------------------------------------	
 func is_already_playing() -> bool:
-	return current_audio_stream_player.playing
+	return GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing
 # --------------------------------------	
-
-# --------------------------------------	
-#func skip_to_track(track_data:Dictionary) -> void:
-	#selected_track = 1
-	#SUBSCRIBE.music_data = {
-		#"track_list": track_list,
-		#"selected": selected_track,
-	#}	
-	##play_selected_track()
-# --------------------------------------		
 
 # --------------------------------------	
 func on_pause_or_play_update() -> void:
-	PlayPauseBtn.icon = SVGS.TYPE.MEDIA_PLAY if !current_audio_stream_player.playing else SVGS.TYPE.MEDIA_PAUSE	
+	if !is_node_ready():return
+	PlayPauseBtn.icon = SVGS.TYPE.MEDIA_PLAY if !GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing else SVGS.TYPE.MEDIA_PAUSE
 # --------------------------------------	
 
 # --------------------------------------	
-func play_selected_track() -> void:
+func on_music_data_update(new_val:Dictionary) -> void:
+	selected_track = new_val.selected
+	update_track_data()	
+# --------------------------------------	
+
+# --------------------------------------	
+func update_track_data() -> void:
+	if selected_track == null:return	
 	var track_data:Dictionary = track_list[selected_track]
 	var details:Dictionary = track_data.details if "details" in track_data else {"name": "No details...", "author": "unknown"}
-	
 	TrackNameLabel.text = "%s by %s" % [details.name, details.author]
-	
-	if "file" not in track_data:
-		print("No file in track_data")
-		return
-	
-	# set to loop	
-	track_data.file.loop = true
-	current_audio_stream_player.stream = track_data.file
-	current_audio_stream_player.play()
-	current_audio_stream_player.volume_db = -10
 	
 	on_pause_or_play_update()
 	check_track_scroll.call_deferred()
@@ -154,18 +111,9 @@ func check_track_scroll() -> void:
 # --------------------------------------	
 
 # --------------------------------------		
-func on_music_data_update(music_data:Dictionary) -> void:
-	track_list = MUSIC.track_list.filter(func(item):
-		if "unlocked" in item:
-			return item.unlocked.call(item.details)
-		return true
-	)
-	
-	selected_track = music_data.selected if "selected" in music_data else 0
-	play_selected_track()
-
 func on_process_update(delta: float) -> void:
 	super.on_process_update(delta)
+	var current_audio_stream_player:AudioStreamPlayer = GBL.find_node(REFS.AUDIO).current_audio_stream_player
 	
 	if spectrum != null and current_audio_stream_player.playing:
 		var prev_hz = 0.0
@@ -190,8 +138,8 @@ func on_process_update(delta: float) -> void:
 		var fft = []
 		for i in range(VU_COUNT):
 			fft.append(lerp(min_values[i], max_values[i], ANIMATION_SPEED))
-			
-		AudioNode.update_music_shader(fft, current_audio_stream_player.get_playback_position())
+
+		GBL.find_node(REFS.AUDIO_BG).update_music_shader(fft, current_audio_stream_player.get_playback_position())
 
 	#if scroll_name:
 	frame_counter += 1

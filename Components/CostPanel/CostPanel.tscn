@@ -26,7 +26,7 @@ font_size = 32
 outline_size = 16
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
-[node name="Cores" type="PanelContainer"]
+[node name="CostPanel" type="PanelContainer"]
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_km3b6")
 script = ExtResource("1_ubdh6")
@@ -45,11 +45,12 @@ theme_override_constants/separation = 10
 [node name="IconBtn" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_lwo2w")]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-icon = 71
+icon = 31
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+text = "TITLE"
 label_settings = ExtResource("3_hmus3")
 horizontal_alignment = 1
 
@@ -60,6 +61,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_kdx6o")
 [node name="AmountLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+text = "0"
 label_settings = SubResource("LabelSettings_ubdh6")
 horizontal_alignment = 1
 vertical_alignment = 1

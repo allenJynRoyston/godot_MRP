@@ -2,7 +2,6 @@ extends PanelContainer
 
 @onready var MousePointer:TextureRect = $FinalComposition/MousePointer
 @onready var Output:TextureRect = $FinalOutput/Output
-
 @onready var Gamelayer:SubViewport = $GameLayer
 @onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
 @onready var DoorScene:PanelContainer = $GameLayer/DoorScene
@@ -23,12 +22,14 @@ extends PanelContainer
 @onready var CRTColorRect:ColorRect = $CRTShader/ColorRectBG
 @onready var FinalCompositionColorRect:ColorRect = $FinalComposition/ColorRectBG
 
+# SHADERS
 @onready var MusicShaderTexture:TextureRect = $MusicShader/MusicShaderTexture
 
-
+# ENUMS
 enum LAYER {DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
 enum SHADER_PROFILE {NONE, ALL}
 
+# CONSTS
 const mouse_cursor:CompressedTexture2D = preload("res://Media/mouse/icons8-select-cursor-24.png")
 const mouse_busy:CompressedTexture2D = preload("res://Media/mouse/icons8-hourglass-24.png")
 const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-click-24.png")
@@ -471,14 +472,14 @@ func on_current_layer_update() -> void:
 		# -----------
 		LAYER.DOOR_LAYER:
 			switch_to_node(DoorScene)
-			if GBL.find_node(REFS.MEDIA_PLAYER) != null:
-				GBL.find_node(REFS.MEDIA_PLAYER).change_bus('Reverb')
+			if GBL.find_node(REFS.AUDIO) != null:
+				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
 	
 		# -----------
 		LAYER.OS_lAYER:
 			switch_to_node(OSNode)
-			if GBL.find_node(REFS.MEDIA_PLAYER) != null:
-				GBL.find_node(REFS.MEDIA_PLAYER).change_bus('Master')	
+			if GBL.find_node(REFS.AUDIO) != null:
+				GBL.find_node(REFS.AUDIO).change_bus('Master')	
 # -----------------------------------	
 
 # -----------------------------------		

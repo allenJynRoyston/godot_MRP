@@ -64,6 +64,12 @@ func enable_wing(state:bool) -> void:
 		WingNode.show()
 		WingNode.set_process(true)
 		WingCamera.make_current()
+		
+		#WingNode.camera_rotate_right()
+		#await U.set_timeout(1.0)
+		#WingNode.camera_rotate_left()
+		#await U.set_timeout(1.0)
+		#WingNode.camera_center()
 	else:
 		WingScene.hide()
 		WingNode.hide()

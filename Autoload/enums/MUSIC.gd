@@ -1,45 +1,48 @@
 extends Node
 
+enum TRACK { INTRO, LOADING, GAME_TRACK_ONE, CONTAINMENT_BREACH }
+
+
 var track_list:Array = [
 	{
 		"details": {
-			"name": "ghost trick finale",
-			"author": "CAPCOM",
-			"ref": 0,
+			"name": "INTRO",
+			"author": "INTRO",
+			"ref": TRACK.INTRO,
 		},
 		"unlocked": func(data:Dictionary) -> bool:
 			return true,
-		"file": preload("res://Media/mp3/ghost_trick_test_track.mp3")
+		"file": preload("res://Audio/mp3/R6S Loading Screen - itryti - SoundLoadMate.com.mp3")
 	},
 	{
 		"details": {
-			"name": "phoenix wright",
-			"author": "CAPCOM",
-			"ref": 1,
+			"name": "LOADING",
+			"author": "LOADING",
+			"ref": TRACK.LOADING,
 		},
 		"unlocked": func(data:Dictionary) -> bool:
 			return true,
-		"file": preload("res://Media/mp3/phoenix wright.mp3")
+		"file": preload("res://Audio/mp3/DEMO - Minimalista Electrónico - Gianluca Faccilongo - SoundLoadMate.com.mp3")
 	},
 	{
 		"details": {
-			"name": "The Weeknd - Popular",
-			"author": "Vidojean X Oliver Loenn Amapiano Remix",
-			"ref": 2
+			"name": "GAME_TRACK_ONE",
+			"author": "GAME_TRACK_ONE",
+			"ref": TRACK.GAME_TRACK_ONE
 		},
 		"unlocked": func(data:Dictionary) -> bool:
 			return true,
-		"file": preload("res://Media/mp3/The Weeknd - Popular (Vidojean X Oliver Loenn Amapiano Remix).mp3")
+		"file": preload("res://Audio/mp3/Heretic Frypan (Eastward OST Extended).mp3")
 	},
 	{
 		"details": {
-			"name": "Horror Night",
-			"author": "Uncredited (temp file erase later)",
-			"ref": 3
+			"name": "CONTAINMENT_BREACH",
+			"author": "CONTAINMENT_BREACH",
+			"ref": TRACK.CONTAINMENT_BREACH
 		},
 		"unlocked": func(data:Dictionary) -> bool:
 			return true,
-		"file": preload("res://Media/mp3/Horror Night - Chiptune.mp3")
+		"file": preload("res://Audio/mp3/Horror Night - Chiptune.mp3")
 	},	
 	
 ]
