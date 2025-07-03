@@ -23,7 +23,7 @@ layout_mode = 2
 [node name="TitleScreen" parent="." instance=ExtResource("3_8ygkj")]
 layout_mode = 2
 
-[node name="WinConditionScreen" parent="." instance=ExtResource("4_8qqsj")]
+[node name="FailState" parent="." instance=ExtResource("4_8qqsj")]
 layout_mode = 2
 
 [node name="TransitionScreen" parent="." instance=ExtResource("5_vpp5c")]

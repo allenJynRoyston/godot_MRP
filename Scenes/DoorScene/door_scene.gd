@@ -70,11 +70,12 @@ func _ready() -> void:
 		var story_progress:Dictionary = GBL.active_user_profile.story_progress
 		var max_story_val:int = mini(story_progress.current_story_val, STORY.chapters.size() - 1)
 		
-		match key:
-			"A":
-				story_index = U.min_max(story_index - 1, 0, max_story_val)
-			"D":
-				story_index = U.min_max(story_index + 1, 0, max_story_val)
+		pass
+		#match key:
+			#"A":
+				#story_index = U.min_max(story_index - 1, 0, max_story_val)
+			#"D":
+				#story_index = U.min_max(story_index + 1, 0, max_story_val)
 		
 		check_btn_states()
 	
@@ -84,9 +85,10 @@ func _ready() -> void:
 func play_current_story_sequence() -> void:	
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	
-	StoryNarration.text_list = STORY.chapters[story_index].story_message 
-	await StoryNarration.reveal(true)
-	await StoryNarration.on_end
+	if "story_message" in STORY.chapters[story_index]:
+		StoryNarration.text_list = STORY.chapters[story_index].story_message 
+		await StoryNarration.reveal(true)
+		await StoryNarration.on_end
 	# update current progress val to story value ONLY if it's the first one
 	
 	if story_index == story_progress.max_story_val and story_progress.play_message_required:
@@ -131,13 +133,16 @@ func play_next_sequence() -> void:
 # ---------------------------------------------
 func check_btn_states(use_for_skip:bool = false) -> void:
 	if allow_replay:
-		var play_message_required:bool = GBL.active_user_profile.story_progress.play_message_required
+		var play_message_required:bool = GBL.active_user_profile.story_progress.current_story_val == GBL.active_user_profile.story_progress.max_story_val
+		var story_progress:Dictionary = GBL.active_user_profile.story_progress
+		var has_story_message:bool = "story_message" in STORY.chapters[story_index]
+
 		
 		# if the story val is 0 (new game), then hide until the first story segement has been completed
-		BtnControls.hide_a_btn = play_message_required
+		BtnControls.hide_a_btn = play_message_required and has_story_message
 		
 		# c btn title
-		BtnControls.c_btn_title = "PLAY MESSAGE" if (play_message_required) else "REPLAY MESSAGE"
+		BtnControls.c_btn_title = "PLAY MESSAGE" if (play_message_required and has_story_message) else "REPLAY MESSAGE"
 		
 		# modify on action so it skips
 		BtnControls.a_btn_title = "SKIP" if use_for_skip else "LOGIN"

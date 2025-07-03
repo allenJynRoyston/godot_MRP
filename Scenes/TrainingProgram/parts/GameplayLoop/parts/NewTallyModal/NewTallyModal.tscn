@@ -89,6 +89,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="ImageTextureRect" type="TextureRect" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 texture = ExtResource("2_tlry5")
@@ -132,7 +133,7 @@ custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 400
+theme_override_constants/margin_top = 200
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 0
 

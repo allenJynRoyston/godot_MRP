@@ -1,20 +1,15 @@
 extends PanelContainer
 
-@onready var MenuList:VBoxContainer = $CenterContainer/VBoxContainer/MenuList
+@onready var BtnControls:Control = $BtnControl
+
 @onready var SubTitle:Label = $CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer/SubTitle
 
-@onready var ContinueBtn:Control = $CenterContainer/VBoxContainer/MenuList/ContinueBtn
-@onready var NewBtn:Control = $CenterContainer/VBoxContainer/MenuList/NewBtn
-#@onready var TutorialBtn:Control = $CenterContainer/VBoxContainer/MenuList/TutorialBtn
-#@onready var ScenarioBtn:Control = $CenterContainer/VBoxContainer/MenuList/ScenairoBtn
-
-@onready var BtnControls:Control = $BtnControl
-#@onready var QuitBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/QuitBtn
-#@onready var NextBtn:Control = $BtnControl/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/NextBtn
-
-@onready var ScenarioPanel:Control = $ScenarioPanel
-@onready var ScenarioMarginContainer:MarginContainer = $ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer
-@onready var ScenarioList:HBoxContainer = $ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer/ScenarioList
+@onready var BtnList:VBoxContainer = $CenterContainer/VBoxContainer/BtnList
+@onready var NewBtn:Control = $CenterContainer/VBoxContainer/BtnList/NewBtn
+@onready var ContinueAfterSetup:BtnBase = $CenterContainer/VBoxContainer/BtnList/ContinueAfterSetup
+@onready var ContinueFromCheckpoint:BtnBase = $CenterContainer/VBoxContainer/BtnList/ContinueFromCheckpoint
+@onready var ContinueFromQuisksave:BtnBase = $CenterContainer/VBoxContainer/BtnList/ContinueQuicksave
+@onready var QuitBtn:Control = $CenterContainer/VBoxContainer/BtnList/QuitBtn
 
 @onready var ContinueDetails:PanelContainer = $ContinueControl/ContinueDetails
 @onready var DetailName:Label = $ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer/DetailName
@@ -26,13 +21,6 @@ enum MODE {TITLE, SCENARIO}
 const ScenarioBtnPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/TitleScreen/parts/ScenarioBtn.tscn")
 
 var is_tutorial:bool = false
-
-var scenario_list:Array = []
-var current_mode:MODE = MODE.TITLE : 
-	set(val):
-		current_mode = val
-		on_current_mode_update()
-
 var completed_scenarios:Array = []
 var	disable_story:bool = false
 var disable_scenario:bool = false
@@ -44,228 +32,86 @@ var freeze_inputs:bool = false :
 		
 var btn_arr:Array[Control] = []
 var slist:Array = []
-var selected_index:int = 0 : 
-	set(val):
-		selected_index = val
-		on_selected_index_update()
-		
-var scenario_index:int = 0 : 
-	set(val):
-		scenario_index = val
-		on_scenario_index_update()
+
+var after_setup_data:Dictionary 
+var checkpoint_data:Dictionary 
+var 	quicksave_data:Dictionary
 
 signal wait_for_input
 
+# ------------------------------------------
 func _init() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 
-# ------------------------------------------
-func _ready() -> void:
-	ScenarioPanel.hide()	
+func _ready() -> void:	
+	modulate = Color(1, 1, 1, 0)
+
+	after_setup_data = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup
+	checkpoint_data = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint
+	quicksave_data = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves	
+	
+	ContinueAfterSetup.hint_description = "Continue from day %s." % [after_setup_data.progress_data.day] if !after_setup_data.is_empty() else "Unavailable"
+	ContinueFromCheckpoint.hint_description = "Continue from day %s." % [checkpoint_data.progress_data.day] if !checkpoint_data.is_empty() else "Unavailable"
+	ContinueFromQuisksave.hint_description = "Continue from day %s." % [quicksave_data.progress_data.day] if !quicksave_data.is_empty() else "Unavailable"
+
+	BtnControls.reveal(false)
+	BtnControls.directional_pref = "UD"
+	BtnControls.onUpdate = func(node:Control) -> void:
+		for btn in BtnList.get_children():
+			btn.is_selected = btn == node
+			btn.panel_color = Color(0.337, 0.275, 1.0) if btn == node else Color.BLACK
 		
-	ContinueBtn.onClick = func() -> void:
-		end("continue")
+	BtnControls.onBack = func() -> void:
+		await BtnControls.reveal(false)
+		end("QUIT")		
 			
 	NewBtn.onClick = func() -> void:
-		end("story")
+		await BtnControls.reveal(false)
+		end("START_NEW_GAME")
 		
-	#TutorialBtn.onClick = func() -> void:
-		#build_tutorial_list() 
-		#current_mode = MODE.SCENARIO
-#
-	#ScenarioBtn.onClick = func() -> void:
-		#build_scenario_list()
-		#current_mode = MODE.SCENARIO
+	ContinueAfterSetup.onClick = func() -> void:
+		await BtnControls.reveal(false)
+		end("START_FROM_AFTER_SETUP")
 
-	btn_arr = [ContinueBtn, NewBtn] 
-	
-	for btn in btn_arr:
-		btn.onFocus = func(node:Control) -> void:
-			for index in MenuList.get_child_count():
-				var btn_node:Control = MenuList.get_child(index)
-				if btn_node == node:
-					selected_index = index
-	
-	ScenarioMarginContainer.set("theme_override_constants/margin_left", GBL.game_resolution.x/2 - 110)
-	
-	# show and setup btns
-	on_freeze_inputs_update()
-	on_current_mode_update()
+	ContinueFromCheckpoint.onClick = func() -> void:
+		await BtnControls.reveal(false)
+		end("START_FROM_CHECKPOINT")		
+		
+	ContinueFromQuisksave.onClick = func() -> void:
+		await BtnControls.reveal(false)
+		end("START_FROM_QUICKSAVE")		
+					
+	QuitBtn.onClick = func() -> void:
+		await BtnControls.reveal(false)
+		end("QUIT")			
 # ------------------------------------------
 
 # ------------------------------------------
 func start(fast_boot:bool = false) -> void:
-	self.modulate = Color(1, 1, 1, 1)
+	modulate = Color(1, 1, 1, 1)
 	
-	SubTitle.text = "TUTORIAL" if is_tutorial else "v1.0"
-
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var quicksaves:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves
-	has_quicksave = false if quicksaves.is_empty() or story_progress.current_story_val not in quicksaves else true
-
-	NewBtn.is_disabled = false
-	ContinueBtn.is_disabled = !has_quicksave
-	selected_index = 0
-	
-	if has_quicksave:
-		var quicksave_data:Dictionary = quicksaves[story_progress.current_story_val]
-		GBL.loaded_gameplay_data = quicksave_data
-		#var modification_date:Dictionary = quickload_res.filedata.metadata.modification_date		
-		DetailName.text = "QUICKSAVE"
-		DetailDay.text = "DAY %s" % [quicksave_data.progress_data.day]
-		DetailDate.text = "%s/%s/%s" % [1, 2, 2025]
-	else:
-		GBL.loaded_gameplay_data = {} 
+	SubTitle.text = "TUTORIAL VERSION" if is_tutorial else "BASE MANAGEMENT SIMULATOR"
 		
-	await U.set_timeout(0.3)
+	ContinueAfterSetup.is_disabled = after_setup_data.is_empty()
+	ContinueFromCheckpoint.is_disabled = checkpoint_data.is_empty()
+	ContinueFromQuisksave.is_disabled = quicksave_data.is_empty()
+			
+	await U.tick()
+	BtnControls.itemlist = BtnList.get_children()
+	BtnControls.item_index = 0
 	BtnControls.reveal(true)
 # ------------------------------------------
 
 # ------------------------------------------
 func end(action:String, props:Dictionary = {}) -> void:
-	disable_btns(true)
-	ScenarioPanel.hide()	
 	ContinueDetails.hide()
 	# add animation here
 	await U.set_timeout(0.5)
 	hide()
 	wait_for_input.emit({"action": action, "props": props})
-	current_mode = MODE.TITLE
 # ------------------------------------------
 
 # ------------------------------------------
 func on_freeze_inputs_update() -> void:
 	BtnControls.freeze_and_disable(freeze_inputs)
 # ------------------------------------------
-
-# ------------------------------------------
-func disable_btns(state:bool) -> void:
-	for btn in [ContinueBtn, NewBtn]:
-		btn.is_disabled = state
-# ------------------------------------------
-
-# ------------------------------------------
-func on_selected_index_update() -> void:
-	if !is_node_ready():return
-	await U.tick()
-	for index in MenuList.get_child_count():
-		var btn_node:Control = MenuList.get_child(index)
-		btn_node.icon = SVGS.TYPE.NEXT if index == selected_index else SVGS.TYPE.NONE
-		btn_node.is_active(index == selected_index)
-		if index == selected_index:
-			if btn_node == ContinueBtn and has_quicksave:
-				ContinueDetails.global_position = ContinueBtn.global_position + Vector2(ContinueBtn.size.x + 10, -ContinueBtn.size.y/4)
-				ContinueDetails.show() 
-			else:
-				ContinueDetails.hide()
-	
-# ------------------------------------------	
-
-# ------------------------------------------	
-func on_scenario_index_update() -> void:
-	if !is_node_ready():return
-	var inital_val:int = GBL.game_resolution.x/2 - 110	
-	var start_val:int = ScenarioMarginContainer.get("theme_override_constants/margin_left")
-	var next_val:int = inital_val - (scenario_index * 220)
-	for index in ScenarioList.get_child_count():	
-		var distance_from_center:int = abs(scenario_index - index)
-		var btn_node:Control = ScenarioList.get_child(index)
-		btn_node.distance_from_center = distance_from_center
-		#if scenario_index == index:
-			#pass
-			##NextBtn.is_disabled = btn_node.is_disabled
-
-	freeze_inputs = true
-	await U.tween_range(start_val, next_val, 0.3, func(val:float) -> void:
-		ScenarioMarginContainer.set("theme_override_constants/margin_left", val)
-	).finished 		
-	freeze_inputs = false
-# ------------------------------------------	
-
-
-# ------------------------------------------
-func build_tutorial_list() -> void:
-	build_list( SCENARIO_UTIL.get_list_of_tutorials() )
-		
-func build_scenario_list() -> void:
-	build_list( SCENARIO_UTIL.get_list_of_scenarios() )
-		
-func build_list(list:Array) -> void:
-	slist = list
-	for node in ScenarioList.get_children():
-		node.queue_free()
-	
-	selected_index = 0
-	
-	for index in list.size():
-		var scenario:Dictionary = list[index]
-		var is_unlocked:bool = list.size() >= (scenario.ref - 1)
-		var is_completed:bool = scenario.ref in list
-		var new_btn:Control = ScenarioBtnPreload.instantiate()
-
-		new_btn.is_completed = is_completed
-		new_btn.is_disabled = !is_unlocked
-		new_btn.scenario_ref = scenario.ref
-
-			
-		ScenarioList.add_child(new_btn)
-# ------------------------------------------
-
-# ------------------------------------------
-var previous_btn_index_title:int = 0
-func on_current_mode_update() -> void:
-	if !is_node_ready():return
-	await U.tick()
-	match current_mode:
-		MODE.TITLE:
-			BtnControls.directional_pref = "UD"
-			BtnControls.itemlist = btn_arr
-			BtnControls.item_index = previous_btn_index_title
-
-			BtnControls.onBack = func() -> void:
-				BtnControls.reveal(false)
-				end('quit')
-			
-			BtnControls.onAction = func() -> void:pass
-			
-			BtnControls.onDirectional = func(_key:String) -> void:
-				pass
-				
-			await U.tick()
-			
-			await U.set_timeout(0.1)
-			ScenarioPanel.hide()
-			scenario_index = 0	
-		# -----------------	
-		MODE.SCENARIO:	
-			ScenarioPanel.show()	
-
-			previous_btn_index_title = BtnControls.item_index
-
-			BtnControls.directional_pref = "LR"
-			BtnControls.itemlist = ScenarioPanel.get_children()
-			BtnControls.item_index = 0
-			
-			
-			BtnControls.onBack = func() -> void:
-				current_mode = MODE.TITLE
-			
-			BtnControls.onAction = func() -> void:
-				var btn_node:Control = ScenarioList.get_child(scenario_index)
-				if btn_node.is_disabled:return
-				end("scenario", {"ref": slist[scenario_index].ref})
-
-			
-			BtnControls.onDirectional = func(key:String) -> void:
-				match key:
-					"A":
-						scenario_index = U.min_max(scenario_index - 1, 0, ScenarioList.get_child_count() - 1)
-					"D":
-						scenario_index = U.min_max(scenario_index + 1, 0, ScenarioList.get_child_count() - 1)
-			
-			
-			scenario_index = 0	
-			
-	
-# ------------------------------------------
-	

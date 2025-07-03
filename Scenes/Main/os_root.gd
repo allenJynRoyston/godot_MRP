@@ -80,33 +80,6 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export_category("RESEARCHERS DEBUG")
 @export var xp_needed_for_promotion:int = 0
 
-## SAVE FILE STRUCTURE/DEFAULTS
-#var default_save_profiles:Dictionary = {
-	#"os_settings": {
-		#"read_emails": [],
-		#"tracks_unlocked": [],
-		#"apps_installed": []
-	#},
-	#"snapshots": {
-		#"restore_checkpoint": {},
-		#"quicksaves": {}
-	#}	
-#}
-#
-## DEFAULT (NEW) USER PROFILE SCHEMA
-#var user_profile_schema:Dictionary = {
-	#"story_progress": {
-		#"play_message_required": true,
-		#"max_story_val": 0 if !user_profile_ref else story_progress,
-		#"current_story_val": 0 if !user_profile_ref else current_story_val,
-		#"at_story_limit": false,		
-	#},
-	#"use_save_profile": FS.FILE.SAVE_ONE if !user_profile_ref else user_profile_ref,
-	#"save_profiles":{
-		#FS.FILE.SAVE_ONE: default_save_profiles.duplicate(),
-		#FS.FILE.SAVE_TWO: default_save_profiles.duplicate()
-	#}
-#}
 
 # DEFAULT RESOLUTION IS MAX WIDTH/HEIGHT
 var resolution:Vector2i = DisplayServer.screen_get_size()

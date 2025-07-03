@@ -33,10 +33,10 @@ material = ExtResource("2_jqr35")
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 texture = ExtResource("3_n7hac")
-expand_mode = 2
-stretch_mode = 5
+stretch_mode = 4
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "SECURE. CONTAIN. PROTECT."
 label_settings = SubResource("LabelSettings_wrpt2")

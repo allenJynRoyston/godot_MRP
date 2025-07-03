@@ -10,7 +10,7 @@ extends GameContainer
 @onready var ImageTextureRect:TextureRect = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect
 @onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/TitleLabel
 @onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/SubLabel
-@onready var Splash:Control = $ContainmentBreachSplash
+@onready var Splash:Control = $Splash
 
 @onready var StaffingList:VBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List
 @onready var BeforeList:HBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before
@@ -84,8 +84,6 @@ func set_props(new_title:String = "", new_subtitle:String = "", new_image:String
 func end(made_changes:bool) -> void:
 	BtnControls.reveal(false)
 	
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-
 	var duplicate_material:Material = TextureRectUI.material.duplicate(true)
 	TextureRectUI.material = duplicate_material
 
@@ -93,10 +91,11 @@ func end(made_changes:bool) -> void:
 		TextureRectUI.material.set_shader_parameter("blur_radius", val)
 	).finished	
 	
-	#U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].hide)
+	
+	Splash.end()
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
+	
 	await U.tween_node_property(self, "modulate:a", 0)
-
-	await U.set_timeout(0.3)
 			
 	user_response.emit(made_changes)
 	queue_free()
@@ -108,11 +107,10 @@ func activate(auto_start:bool = true) -> void:
 	
 	control_pos[ContentPanel] = {
 		"show": 0, 
-		"hide": ContentMargin.size.x
+		"hide": -ContentMargin.size.y
 	}
 	
-	ColorRectBG.modulate = Color(1, 1, 1, 1)
-	ContentPanel.position.x = control_pos[ContentPanel].hide
+	ContentPanel.position.y = control_pos[ContentPanel].hide
 	
 # --------------------------------------------------------------------------------------------------	
 
@@ -124,7 +122,7 @@ func start() -> void:
 		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 	
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
-	await U.tween_node_property(ContentPanel, "position:x", control_pos[ContentPanel].show)
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show)
 	
 	BtnControls.reveal(true)
 # -------------------------------------------------------------------------------------------------	

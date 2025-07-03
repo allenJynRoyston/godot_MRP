@@ -48,6 +48,7 @@ var cancel_only:bool = false :
 		on_cancel_only_update()
 
 var bg_color:Color = Color(0, 0, 0, 0)
+var is_ending:bool = false
 
 signal tally_complete
 
@@ -57,10 +58,8 @@ func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 	
 	BtnControls.onAction = func() -> void:
-		initiate_tally()	
-		await tally_complete
-				
-		end(true)
+		BtnControls.reveal(false)		
+		end()
 
 	BtnControls.reveal(false)
 		
@@ -77,7 +76,8 @@ func set_props(new_title:String = "", new_subtitle:String = "", new_image:String
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func end(made_changes:bool) -> void:
+func end() -> void:
+	is_ending = true
 	BtnControls.reveal(false)
 	
 	var duplicate_material:Material = TextureRectUI.material.duplicate(true)
@@ -98,7 +98,7 @@ func end(made_changes:bool) -> void:
 	GAME_UTIL.update_daily_resources()
 	
 			
-	user_response.emit(made_changes)
+	user_response.emit()
 
 	queue_free()
 # --------------------------------------------------------------------------------------------------		
@@ -146,6 +146,13 @@ func start() -> void:
 	await U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show)
 	
 	BtnControls.reveal(true)
+	
+	await U.set_timeout(0.5)
+	initiate_tally()	
+	await tally_complete
+	
+	if !is_ending:
+		end()
 # -------------------------------------------------------------------------------------------------	
 
 # -------------------------------------------------------------------------------------------------

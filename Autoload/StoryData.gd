@@ -44,17 +44,7 @@ var chapters:Array = [
 						{"title": "Step 1", "cost": 1},
 					]
 				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.HR_DEPARTMENT
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-					]
-				},
+
 				{
 					"custom": {
 						"title": "Activate all rooms.",

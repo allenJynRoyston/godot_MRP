@@ -10,7 +10,7 @@ extends PanelContainer
 @onready var OSTexture:TextureRect = $GameLayer/OSTexture
 @onready var TransitionScreen:Control = $GameLayer/TransitionScreen
 
-# TEXT RECTS with SHADERS
+# TEXT RECTS with SHADERSs
 @onready var GlitchShaderTextureRect:TextureRect = $GlitchShader/TextureRect
 @onready var CRTShaderTextureRect:TextureRect = $CRTShader/TextureRect
 @onready var ScreenBendTextureRect:TextureRect = $Screenbend/Bend/TextureRect
@@ -51,6 +51,10 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 # GRAPHICS DEBUG
 @export_category("GRAPHIC DEBUG")
 @export var start_at_fullscreen:bool = false
+
+# AUDIO DEBUG
+@export_category("AUDIO DEBUG")
+@export var audio_mute:bool = false
 
 # SKIPS
 @export_category("SKIPS")
@@ -172,6 +176,7 @@ var default_save_profiles:Dictionary = {
 		}
 	},
 	"snapshots": {
+		"after_setup": {},
 		"restore_checkpoint": {},
 		"quicksaves": {}
 	}	
@@ -180,7 +185,6 @@ var default_save_profiles:Dictionary = {
 # DEFAULT (NEW) USER PROFILE SCHEMA
 var user_profile_schema:Dictionary = {
 	"story_progress": {
-		"play_message_required": true,
 		"max_story_val": 0 if !user_profile_ref else story_progress,
 		"current_story_val": 0 if !user_profile_ref else current_story_val,
 		"at_story_limit": false,		
@@ -270,6 +274,9 @@ func assign_debugs() -> void:
 	
 	# GRAPHICS
 	DEBUG.assign(DEBUG.START_AT_FULLSCREEN, start_at_fullscreen)
+
+	# GRAPHICS
+	DEBUG.assign(DEBUG.AUDIO_MUTE, audio_mute)	
 	
 	# progress 
 	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS, debug_story_progress)	

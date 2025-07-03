@@ -1,10 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://cwnspteeyje6q"]
+[gd_scene load_steps=11 format=3 uid="uid://cwnspteeyje6q"]
 
 [ext_resource type="Script" uid="uid://c57unpcppvd0n" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/WarningModal/warning_modal.gd" id="1_q3rcv"]
 [ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentBreachSplash/ContainmentBreachSplash.tscn" id="2_w10ti"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_wo0rv"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_e1078"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="5_w10ti"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_w10ti"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_0amot"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_75o2t"]
@@ -40,12 +40,6 @@ shader_parameter/blur_direction = Vector2(0.5, 0.5)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kq5a2"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_2qvr3"]
-font = ExtResource("5_w10ti")
-font_size = 24
-font_color = Color(0, 0, 0, 1)
-outline_size = 12
-
 [node name="WarningModal" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -60,11 +54,11 @@ material = SubResource("ShaderMaterial_t4xaw")
 layout_mode = 2
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-visible = false
 layout_mode = 2
 color = Color(0, 0, 0, 0.796078)
 
-[node name="ContainmentBreachSplash" parent="." instance=ExtResource("2_w10ti")]
+[node name="Splash" parent="." instance=ExtResource("2_w10ti")]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 title = "OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET"
 v_offset = 100
@@ -86,9 +80,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_kq5a2")
 [node name="MarginContainer2" type="MarginContainer" parent="ModalControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 200
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
@@ -116,11 +110,10 @@ autowrap_mode = 2
 [node name="SubLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-text = "Warning details"
-label_settings = SubResource("LabelSettings_2qvr3")
+text = "Warning details."
+label_settings = ExtResource("5_w10ti")
 horizontal_alignment = 1
 autowrap_mode = 2
-uppercase = true
 
 [node name="BtnControls" parent="." instance=ExtResource("9_0amot")]
 layout_mode = 2

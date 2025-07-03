@@ -425,7 +425,7 @@ func start_new_game() -> void:
 	# -----------------------
 	var SetupContainer:Control = SetupContainedPreload.instantiate()
 	add_child(SetupContainer)
-	SetupContainer.z_index = 100
+	SetupContainer.z_index = 9
 	
 	await SetupContainer.start()
 	SetupContainer.title = "SETTING UP. PLEASE WAIT."
@@ -500,9 +500,13 @@ func start_new_game() -> void:
 	}	
 
 	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
-	# needs to be done after setup is complete
+	# clear all quicksaves/restorespoints/aftersetup
 	if is_new_game:
-		create_checkpoint(true)
+		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves = {}
+		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint = {}
+		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup = {}
+		GBL.update_and_save_user_profile(GBL.active_user_profile)	
+
 	
 	# update phase and start game
 	if is_tutorial:
@@ -974,6 +978,10 @@ func on_current_phase_update() -> void:
 
 				# CHECK FOR FAIL STATE
 				var is_complete:bool = GAME_UTIL.are_objectives_complete()
+				if is_complete:
+					# create a quicksave
+					await quicksave(true)
+					
 				current_phase = PHASE.GAME_LOST if !is_complete else PHASE.GAME_WON
 				return
 			
@@ -983,6 +991,8 @@ func on_current_phase_update() -> void:
 			# revert
 			SUBSCRIBE.camera_settings = camera_settings_snapshot
 			SUBSCRIBE.current_location = current_location_snapshot
+			
+			
 			
 			await restore_player_hud()
 			current_phase = PHASE.PLAYER
@@ -1011,7 +1021,6 @@ func on_current_phase_update() -> void:
 			if story_progress.current_story_val == story_progress.max_story_val and !story_progress.at_story_limit:
 				# update story progress
 				story_progress.max_story_val = U.min_max(story_progress.max_story_val + 1, 0, STORY.get_objectives().size() - 1)	
-				story_progress.play_message_required = true
 				story_progress.at_story_limit = story_progress.max_story_val == STORY.get_objectives().size() - 1				
 				# then update
 				GBL.update_and_save_user_profile(GBL.active_user_profile)
@@ -1024,11 +1033,15 @@ func on_current_phase_update() -> void:
 				# increament current story val
 				story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
 						
-			# create a quicksave
-			#quicksave(true)
 			
-			# also create a checkpoint
-			create_checkpoint(true)
+			# also this checkpoint ONLY ONCE
+			if GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup.is_empty():
+				create_after_setup_restore_point()
+				print("create_after_setup_restore_point ")
+			
+			# create a restore point
+			create_checkpoint()
+			
 			
 			# update objectives
 			PhaseAnnouncement.start("OBJECTIVES ARE BEING UPDATED...")
@@ -1057,7 +1070,10 @@ func on_current_phase_update() -> void:
 # ------------------------------------------------------------------------------	SAVE/LOAD
 #region SAVE/LOAD
 func get_save_state() -> Dictionary:
+	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+
 	return {
+		"current_story_val": story_progress.current_story_val,
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
@@ -1078,13 +1094,7 @@ func get_save_state() -> Dictionary:
 func quicksave(skip_timeout:bool = false) -> void:
 	is_busy = true
 
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var quicksaves:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves
-	
-	# save snapshot
-	if story_progress.current_story_val not in quicksaves:
-		quicksaves[story_progress.current_story_val] = {}
-	quicksaves[story_progress.current_story_val] = get_save_state()	
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves = get_save_state()	
 
 	# update and save user profile
 	GBL.update_and_save_user_profile(GBL.active_user_profile)
@@ -1093,6 +1103,20 @@ func quicksave(skip_timeout:bool = false) -> void:
 		await U.set_timeout(1.0)
 		
 	is_busy = false
+
+
+func create_after_setup_restore_point(skip_timeout:bool = false) -> void:
+	is_busy = true
+	
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup = get_save_state()
+	
+	# update and save user profile
+	GBL.update_and_save_user_profile(GBL.active_user_profile)	
+	
+	if !skip_timeout:
+		await U.set_timeout(1.0)
+	is_busy = false
+	
 
 func create_checkpoint(skip_timeout:bool = false) -> void:
 	is_busy = true

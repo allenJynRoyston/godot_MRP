@@ -1006,21 +1006,20 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func open_tally(color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+func open_tally(color_bg:Color = Color(0, 0, 0, 0.7)) -> void:
 	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
 	disable_taskbar(true)
 	
 	var NewtallyNode:Control = NewTallyPreload.instantiate()
 	NewtallyNode.z_index = 100	
 	GameplayNode.add_child(NewtallyNode)
-	NewtallyNode.set_props("DAILY RESOURCES", "We gots to get paid.", "", Color(0, 0, 0, 0.5))	
+	NewtallyNode.set_props("DAILY RESOURCES", "We gots to get paid.", "", Color(0, 0, 0, 0.7))	
 	await NewtallyNode.activate(false)
 	
 	NewtallyNode.start()
-	var confirm:bool = await NewtallyNode.user_response	
+	await NewtallyNode.user_response	
 	
 	disable_taskbar(previous_show_taskbar_state)
-	return confirm
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

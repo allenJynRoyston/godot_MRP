@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=17 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
@@ -6,18 +6,28 @@
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_s4nou"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_p3swr"]
 [ext_resource type="LabelSettings" uid="uid://cwsa8o7i4f0n3" path="res://Fonts/game/label_medium_thick.tres" id="6_kfvw8"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_oonus"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="7_3sdtd"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="7_46a2l"]
-[ext_resource type="PackedScene" uid="uid://dpuqbxd6wb6sa" path="res://Scenes/TrainingProgram/parts/TitleScreen/parts/ScenarioBtn.tscn" id="7_ousww"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_3sdtd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfvw8"]
-bg_color = Color(0.20871, 0.20871, 0.20871, 0.521569)
+bg_color = Color(0, 0, 0, 0.337255)
 
 [sub_resource type="LabelSettings" id="LabelSettings_f0u0i"]
 font = ExtResource("3_id14l")
 font_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8mru"]
+bg_color = Color(0, 0, 0, 0.733333)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
+bg_color = Color(0.337255, 0.27451, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w78h0"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46a2l"]
 bg_color = Color(0, 0, 0, 0.733333)
@@ -26,21 +36,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w78h0"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q51us"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8mru"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
 bg_color = Color(0, 0, 0, 0.733333)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -58,9 +54,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bp7c2"]
-bg_color = Color(0, 0, 0, 0.933333)
 
 [node name="TitleScreen" type="PanelContainer"]
 anchors_preset = 15
@@ -97,7 +90,7 @@ vertical_alignment = 1
 
 [node name="SubTitle" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "Subtitle"
+text = "GAME MODE TYPE"
 label_settings = SubResource("LabelSettings_f0u0i")
 horizontal_alignment = 2
 
@@ -109,49 +102,68 @@ label_settings = ExtResource("6_kfvw8")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MenuList" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+[node name="BtnList" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="ContinueBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
-custom_minimum_size = Vector2(120, 40)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
-panel_color = Color(0, 0, 0, 0.733333)
-inactive_color = Color(1, 1, 1, 0.796078)
-title = "Continue Progress"
-
-[node name="TutorialBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
-visible = false
-custom_minimum_size = Vector2(120, 40)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_w78h0")
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "TUTORIAL"
-
-[node name="ScenairoBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
-visible = false
-custom_minimum_size = Vector2(120, 40)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_q51us")
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "???"
-
-[node name="NewBtn" parent="CenterContainer/VBoxContainer/MenuList" instance=ExtResource("3_s4nou")]
+[node name="NewBtn" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_s8mru")
+icon = 71
 panel_color = Color(0, 0, 0, 0.733333)
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "New Game"
+title = "New game"
+hint_title = "HINT"
+hint_description = "Start a new game."
+
+[node name="ContinueAfterSetup" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
+icon = 71
+panel_color = Color(0.337255, 0.27451, 1, 1)
+title = "Continue after setup"
+hint_title = "HINT"
+hint_description = "Restart after base setup."
+
+[node name="ContinueFromCheckpoint" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_styles/panel = SubResource("StyleBoxFlat_w78h0")
+icon = 71
+title = "Continue from checkpoint"
+hint_title = "HINT"
+hint_description = "Restart from the last checkpoint."
+
+[node name="ContinueQuicksave" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
+icon = 71
+panel_color = Color(0, 0, 0, 0.733333)
+inactive_color = Color(1, 1, 1, 0.796078)
+title = "Continue from quicksave"
+hint_title = "HINT"
+
+[node name="QuitBtn" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
+icon = 71
+panel_color = Color(0, 0, 0, 0.733333)
+inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
+title = "Return to desktop"
+hint_title = "HINT"
+hint_description = "Exit to desktop."
 
 [node name="ContinueControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="ContinueDetails" type="PanelContainer" parent="ContinueControl"]
-visible = false
 layout_mode = 2
 offset_left = 1032.0
 offset_top = 539.0
@@ -195,99 +207,6 @@ label_settings = ExtResource("7_46a2l")
 layout_mode = 2
 text = "01/12/2024"
 label_settings = ExtResource("7_46a2l")
-
-[node name="ScenarioPanel" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="ScenarioPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="ScenarioPanel/MarginContainer"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bp7c2")
-
-[node name="MarginContainer" type="MarginContainer" parent="ScenarioPanel/MarginContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = -350
-
-[node name="Label" type="Label" parent="ScenarioPanel/MarginContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-text = "SELECT A SCENARIO"
-label_settings = ExtResource("7_3sdtd")
-horizontal_alignment = 1
-
-[node name="ScrollContainer" type="ScrollContainer" parent="ScenarioPanel/MarginContainer/PanelContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer"]
-layout_mode = 2
-size_flags_vertical = 6
-theme_override_constants/margin_left = 565
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="ScenarioList" type="HBoxContainer" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="ScenarioBtn" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer/ScenarioList" instance=ExtResource("7_ousww")]
-layout_mode = 2
-
-[node name="ScenarioBtn2" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer/ScenarioList" instance=ExtResource("7_ousww")]
-layout_mode = 2
-
-[node name="ScenarioBtn3" parent="ScenarioPanel/MarginContainer/PanelContainer/ScrollContainer/MarginContainer/ScenarioList" instance=ExtResource("7_ousww")]
-layout_mode = 2
-
-[node name="Control" type="Control" parent="ScenarioPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="CenterContainer" type="CenterContainer" parent="ScenarioPanel/Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -123.0
-offset_bottom = -123.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="IconBtn" parent="ScenarioPanel/Control/CenterContainer" instance=ExtResource("6_oonus")]
-layout_mode = 2
-icon = 37
-is_hoverable = false
-
-[node name="CenterContainer2" type="CenterContainer" parent="ScenarioPanel/Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 127.0
-offset_bottom = 127.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="IconBtn" parent="ScenarioPanel/Control/CenterContainer2" instance=ExtResource("6_oonus")]
-layout_mode = 2
-icon = 37
-flip_v = true
-is_hoverable = false
 
 [node name="BtnControl" parent="." instance=ExtResource("10_3sdtd")]
 layout_mode = 2

@@ -86,7 +86,6 @@ material = SubResource("ShaderMaterial_t4xaw")
 layout_mode = 2
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-visible = false
 layout_mode = 2
 color = Color(0, 0, 0, 0.796078)
 

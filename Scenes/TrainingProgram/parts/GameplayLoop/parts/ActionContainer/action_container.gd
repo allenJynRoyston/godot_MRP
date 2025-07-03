@@ -684,26 +684,36 @@ func show_settings() -> void:
 						GameplayNode.quicksave(),
 												
 				},
-				{
-					"title": "Load Previous Checkpoint",
-					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"description": "Load from the last checkpoint."
-					},
-					"action": func() -> void:
-						GameplayNode.load_checkpoint(),
-												
-				},
-				{
-					"title": "Restart from beginning",
-					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"description": "Restart on day 1."
-					},
-					"action": func() -> void:
-						GameplayNode.restart_game(),
-												
-				}				
+				#{
+					#"title": "Load Previous Checkpoint",
+					#"hint": {
+						#"icon": SVGS.TYPE.CONVERSATION,
+						#"description": "Load from the last checkpoint."
+					#},
+					#"action": func() -> void:
+						#GameplayNode.load_from(),
+												#
+				#},
+				#{
+					#"title": "Restart from beginning",
+					#"hint": {
+						#"icon": SVGS.TYPE.CONVERSATION,
+						#"description": "Restart on day 1."
+					#},
+					#"action": func() -> void:
+						#GameplayNode.restart_game(),
+												#
+				#},
+				#{
+					#"title": "Restart from beginning",
+					#"hint": {
+						#"icon": SVGS.TYPE.CONVERSATION,
+						#"description": "Restart on day 1."
+					#},
+					#"action": func() -> void:
+						#GameplayNode.restart_game(),
+												#
+				#}										
 			]
 		},
 		{

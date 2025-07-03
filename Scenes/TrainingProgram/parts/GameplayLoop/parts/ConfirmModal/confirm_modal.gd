@@ -122,9 +122,6 @@ func activate(auto_start:bool = true) -> void:
 		"hide": -350
 	}	
 	
-
-
-	ColorRectBG.modulate = Color(1, 1, 1, 0)
 	ResourcePanel.position.x = control_pos[ResourcePanel].hide
 	ContentPanel.position.x = control_pos[ContentPanel].hide
 	

@@ -5,7 +5,7 @@
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_nlxs0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o40oq"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.144063, 0.144063, 0.144063, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mhehc"]
 bg_color = Color(0.337255, 0.27451, 1, 1)

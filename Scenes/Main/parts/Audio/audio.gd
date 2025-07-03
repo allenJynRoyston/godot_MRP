@@ -10,6 +10,8 @@ var spectrum:AudioEffectSpectrumAnalyzerInstance
 
 var track_data:Dictionary	
 
+var max_volumne:float = -60.0
+
 # --------------------------------------	
 func _init() -> void:
 	GBL.register_node(REFS.AUDIO, self)
@@ -23,6 +25,9 @@ func _ready() -> void:
 	current_audio_stream_player = AudioStreamPlayerMaster	
 	AudioNode = GBL.find_node(REFS.AUDIO_BG)
 	current_audio_stream_player.stop()
+	
+	await U.tick()	
+	max_volumne = -60 if DEBUG.get_val(DEBUG.AUDIO_MUTE) else 0
 # --------------------------------------	
 
 # --------------------------------------	
@@ -57,9 +62,9 @@ func play_track(duration:float = 1.0) -> void:
 	track_data.file.loop = true
 	current_audio_stream_player.stream = track_data.file
 	current_audio_stream_player.play()
-	current_audio_stream_player.volume_db = -5
+	current_audio_stream_player.volume_db = max_volumne - 5
 	
-	await U.tween_range(current_audio_stream_player.volume_db, 0, duration, 
+	await U.tween_range(current_audio_stream_player.volume_db, max_volumne, duration, 
 		func(val):
 			current_audio_stream_player.volume_db = val
 	).finished

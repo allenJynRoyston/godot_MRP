@@ -20,8 +20,7 @@ var control_pos:Dictionary
 
 # --------------------------------	
 func _ready() -> void:
-	modulate = Color(1, 1, 1, 1 if Engine.is_editor_hint() else 0)
-	ColorBG.color = Color(0, 0, 0, 0.8)
+	modulate = Color(1, 1, 1, 0)
 	set_process(false)
 	on_title_update()
 # --------------------------------	
@@ -41,14 +40,13 @@ func activate() -> void:
 # --------------------------------	
 
 # --------------------------------	
-func start(use_zero:bool = false) -> void:
+func start(use_zero:bool = false, duration:float = 0.3, delay:float = 0.0) -> void:
 	set_process(true)	
 	await U.tick()
 	
-	U.tween_node_property(ColorBG, "color:a", 0, 3.0, 1.0)	
-	U.tween_node_property(self, "modulate:a", 1, 0.5)
+	U.tween_node_property(self, "modulate:a", 1, duration)
 	
-	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].zero if use_zero else control_pos[MainPanel].show, 0.5, 1.0)
+	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].zero if use_zero else control_pos[MainPanel].show, duration, delay)
 # --------------------------------	
 
 # --------------------------------	
@@ -65,6 +63,7 @@ func zero() -> void:
 # --------------------------------	
 func end() -> void:
 	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide)
+	queue_free()
 # --------------------------------	
 
 # --------------------------------		
