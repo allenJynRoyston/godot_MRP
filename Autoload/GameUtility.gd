@@ -668,6 +668,12 @@ func contain_scp() -> bool:
 	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
 		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
 	)
+	
+	# update music
+	var previous_track:int = SUBSCRIBE.music_data.selected
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.INITIAL_CONTAINMENT,
+	}		
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
 		EVT.TYPE.SCP_ON_CONTAINMENT, 
@@ -680,6 +686,10 @@ func contain_scp() -> bool:
 		)
 	])
 	
+	# then revert music...
+	SUBSCRIBE.music_data = {
+		"selected": previous_track
+	}			
 
 	return true
 # --------------------------------------------------------------------------------------------------	

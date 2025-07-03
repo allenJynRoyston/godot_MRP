@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=30 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_f7wb2"]
@@ -6,7 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_cetvo"]
 [ext_resource type="PackedScene" uid="uid://27mgphkrarqr" path="res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn" id="3_pusk1"]
 [ext_resource type="Script" uid="uid://dt3k1f4p0t5j7" path="res://Scenes/IntroAndTitleScreen/spot_light_3d.gd" id="3_shiyv"]
+[ext_resource type="Texture2D" uid="uid://byco6us867lcw" path="res://Media/images/GameLogo/studio_logo.png" id="3_yi28m"]
 [ext_resource type="PackedScene" uid="uid://d26ruk5g28ttk" path="res://Scenes/IntroSplash/IntroSplash.tscn" id="4_6bd6i"]
+[ext_resource type="FontFile" uid="uid://b3cbpkbx676gq" path="res://Fonts/dogicapixelbold.ttf" id="4_bp17p"]
 [ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="5_5hhmy"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="8_6bd6i"]
@@ -16,7 +18,12 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
 bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r577g"]
+[sub_resource type="LabelSettings" id="LabelSettings_vwpy2"]
+font = ExtResource("4_bp17p")
+font_size = 42
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0.325441, 0.325441, 0.325441, 1)
+shadow_size = 0
 
 [sub_resource type="World3D" id="World3D_f7wb2"]
 
@@ -133,8 +140,29 @@ offset_top = -250.0
 offset_right = 250.0
 offset_bottom = 250.0
 pivot_offset = Vector2(250, 250)
-texture = SubResource("PlaceholderTexture2D_r577g")
-stretch_mode = 6
+texture = ExtResource("3_yi28m")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="Logo/MarginContainer/CenterContainer/Control/TextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="Logo/MarginContainer/CenterContainer/Control/TextureRect/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "GAME STUDIO"
+label_settings = SubResource("LabelSettings_vwpy2")
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="Title" type="Control" parent="."]
 layout_mode = 2
