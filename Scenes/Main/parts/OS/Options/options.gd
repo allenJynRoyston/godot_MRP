@@ -86,7 +86,6 @@ func setup(btn_list:Array, option_list:Array, new_position:Vector2 = Vector2()) 
 		new_node.title = item.title
 		new_node.display_checkmark = false
 		new_node.onClick = func() -> void:
-			print(item)
 			await end(false)
 			item.onClick.call(properties)		
 			

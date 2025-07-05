@@ -131,19 +131,24 @@ func start() -> void:
 	on_resources_data_update()
 
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
-	await TransitionScreen.start(0.7)
+	await TransitionScreen.start()
+	
 	U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].show)	
 	U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].show)
+	U.tween_node_property(HintPanel, "position:y", control_pos[HintPanel].show)
+	
 	await BtnControls.reveal(true)
 		
-	U.tween_node_property(HintPanel, "position:y", control_pos[HintPanel].show)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:						
 	BtnControls.reveal(false)
+	U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].hide)	
 	U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].hide)
-	await U.tween_node_property(ObjectivePanel, "position:x", control_pos[ObjectivePanel].hide)
+	await U.tween_node_property(HintPanel, "position:y", control_pos[HintPanel].hide)
+	
+	TransitionScreen.end()	
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0))
 	
 	user_response.emit()

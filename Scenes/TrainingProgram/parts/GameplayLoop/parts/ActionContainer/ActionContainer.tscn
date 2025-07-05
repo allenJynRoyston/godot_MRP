@@ -993,6 +993,7 @@ allow_hint = false
 [node name="BtnControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 intercept_click_event = true
+c_btn_icon = 26
 
 [node name="NotificationControls" type="Control" parent="."]
 layout_mode = 2

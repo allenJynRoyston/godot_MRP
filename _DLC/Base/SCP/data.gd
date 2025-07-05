@@ -1,7 +1,221 @@
 extends SubscribeWrapper
 
+
 # -----------------------------------------------------------
 var SCP0:Dictionary = {
+	"nickname": "DEBUG",
+	"description": func(_scp_details:Dictionary) -> Array:
+		return [
+			"%s description.", % _scp_details.name
+		],
+	"abstract": func(_scp_details:Dictionary) -> String:
+		return "Abstract",
+		
+	"img_src": "res://Media/scps/mirror_frame.png",
+	"breach_check_frequency": 1,
+	
+	"containment_requirements": [
+		SCP.CONTAINMENT_TYPES.PHYSICAL,
+	],
+
+	"event": {
+		# ----------------------------
+		EVT.TYPE.SCP_ON_CONTAINMENT: [
+			{
+				"story": func(props:Dictionary) -> Array:
+					var _staff_details:Dictionary = props.selected_staff
+					var _scp_details:Dictionary = props.scp_details
+					return [
+						"%s has been assigned to oversee initial containment of %s." % [_staff_details.name, _scp_details.name],
+					],
+
+				"choices": func(props:Dictionary) -> Array:
+					var _staff_details:Dictionary = props.selected_staff
+					var _scp_details:Dictionary = props.scp_details
+					var _vibes:Dictionary = props.vibes
+
+					return [
+						# -----------------------------------------
+						{
+							"title": "HEAL/HURT HP",
+							"success_rate": 50,
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"HP SUCCESS"
+									] if is_success else [
+										"HP FAILURE"
+									],
+									"consequence": [
+										EVT.CONSEQUENCE.HP_HEAL
+									] if is_success else [
+										EVT.CONSEQUENCE.HP_HURT
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "HEAL/HURT SP",
+							"success_rate": 50,
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"SP SUCCESS"
+									] if is_success else [
+										"SP FAILURE"
+									],
+									"consequence": [
+										EVT.CONSEQUENCE.SP_HEAL
+									] if is_success else [
+										EVT.CONSEQUENCE.SP_HURT
+									]
+								},
+						},
+						# -----------------------------------------						
+						# -----------------------------------------
+						{
+							"title": "CHANGE MOOD",
+							"success_rate": 10,
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"CHANGE MOOD SUCCESS"
+									] if is_success else [
+										"CHANGE MOOD FAILURE"
+									],
+									"consequence": [
+										EVT.CONSEQUENCE.MOOD_CHANGED_TO_STABLE
+									] if is_success else [
+										EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "KILL OPTION",
+							"success_rate": 10,
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"KILL OPTION SUCCESS"
+									] if is_success else [
+										"KILL OPTION FAILURE"
+									],
+									"consequence": [
+										# NONE
+									] if is_success else [
+										EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "INSANITY OPTION",
+							"success_rate": 50,
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"INSANITY OPTION SUCCESS"
+									] if is_success else [
+										"INSANITY OPTION FAILURE"
+									],
+									"consequence": [
+										# NONE
+									] if is_success else [
+										EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE
+									]
+								},
+						},
+					],
+				
+			}
+		],
+		# ----------------------------
+		
+		# ----------------------------
+		EVT.TYPE.SCP_BREACH_EVENT_1: [
+			# -----------------------------------------------------------------------
+			{
+				"story": func(props:Dictionary) -> Array:
+					var _staff_details:Dictionary = props.selected_staff
+					var _scp_details:Dictionary = props.scp_details
+					return [
+						"%s is undergoing a breach event!" % _staff_details.name,
+					],
+				"choices": func(props:Dictionary) -> Array:
+					var _staff_details:Dictionary = props.selected_staff
+					var _scp_details:Dictionary = props.scp_details
+					var _vibes:Dictionary = props.vibes
+
+					return [
+						# -----------------------------------------
+						{
+							"title": "MORALE OPTION",
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"MORALE OPTION SUCCESS"
+									] if is_success else [
+										"MORALE OPTION FAILURE"
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "READINESS OPTION",
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"READINESS OPTION SUCCESS"
+									] if is_success else [
+										"READINESS OPTION FAILURE"
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "SAFETY OPTION ",
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"SAFETY OPTION SUCCESS"
+									] if is_success else [
+										"SAFETY OPTION FAILURE"
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "ALTERNATIVE OPTION",
+							"success_rate": 50,
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"ALTERNATIVE OPTION SUCCESS"
+									] if is_success else [
+										"ALTERNATIVE OPTION FAILURE"
+									]
+								},
+						},
+						# -----------------------------------------
+					],
+			},
+			# ----------------------------------------------------------------------
+		]
+		# ----------------------------
+	}
+}
+
+
+
+
+var SCP1:Dictionary = {
 	"nickname": "The Mirror",
 	"description": func(_scp_details:Dictionary) -> Array:
 		return [
@@ -310,145 +524,6 @@ var SCP0:Dictionary = {
 		# ----------------------------
 	}
 }
-
-
-
-
-var SCP1:Dictionary = {
-	"nickname": "The Latchkeeper",
-	
-	"description": func(_scp_details:Dictionary) -> String:
-		return "%s is a rusted iron doorframe, approximately 2m by 0.9m, mounted on a mobile reinforced platform. Passing through %s causes subjects to vanish from baseline reality without return. Attempts to tether objects through it fail as tethers sever cleanly at passage. Though no physical door exists, every 37 hours %s produces a loud metallic latch noise and 'closes' for 1 hour, becoming inert. The inner edges flicker subtly, indicating dimensional discontinuity. It exhibits limited awareness, distorting in response to speech and mimicking heartbeat patterns. Personnel near %s report dreams of endless corridors and hear faint knocking from 'the other side'." % [_scp_details.name, _scp_details.name, _scp_details.name, _scp_details.name],
-		
-	"abstract": func(_scp_details:Dictionary) -> String:
-		return "%s is a doorframe that distorts dimensional boundaries, reacts acoustically to stimuli, and imposes moral containment protocols due to its sentient, anxious behavior." % [_scp_details.name],
-	
-	"img_src": "",
-	
-	"containment_requirements": [
-		SCP.CONTAINMENT_TYPES.DIMENSIONAL,
-		SCP.CONTAINMENT_TYPES.ACOUSTIC,
-		SCP.CONTAINMENT_TYPES.MORAL,
-	],
-
-	"event": {
-		EVT.TYPE.SCP_ON_CONTAINMENT: {
-			"story": func(props:Dictionary) -> Array:
-				var _staff_details:Dictionary = props.selected_staff
-				var _scp_details:Dictionary = props.scp_details
-				return [
-					"%s has been assigned to oversee initial containment of %s." % [_staff_details.name, _scp_details.name],
-					"%s was secured inside a soundproof vault with dimensional locks engaged." % [_scp_details.name],
-					"As %s adjusted the restraints, the frame emitted a low hum and vibrated gently." % [_scp_details.name],
-					"A faint knocking echoed from inside the frame despite no visible opening.",
-					"%s hesitated before whispering, 'Hello?'" % [_staff_details.name],
-					"The inner edges of %s rippled briefly, resembling a curtain stirred by wind." % [_scp_details.name],
-				],
-
-			"choices": func(props:Dictionary) -> Dictionary:
-				var _staff_details:Dictionary = props.selected_staff
-				var _scp_details:Dictionary = props.scp_details
-				return {
-					"standard": [
-						{
-							"title": "Attempt communication using harmonic acoustic protocol",
-							"success_rate": 65,
-							"story": func(is_success:bool) -> Array:
-								return [
-									"A low harmonic tone plays through the speakers.",
-									"%s quivers softly, then stills, as a whisper says: 'Thank you for knocking.' Containment stabilizes." % [_scp_details.name]
-								] if is_success else [
-									"The tone plays, but %s suddenly emits a harsh screech, shattering nearby glass." % [_scp_details.name],
-									"%s's vibrations intensify, cracking the containment cell's walls." % [_scp_details.name],
-								],
-							"effect": func(is_success:bool) -> void:
-								if is_success:
-									# containment stabilized, no damage
-									pass
-								else:
-									# containment cell damaged
-									pass,
-						},
-						{
-							"title": "Physically inspect the edges of the frame",
-							"success_rate": 40,
-							"story": func(is_success:bool) -> Array:
-								return [
-									"%s's edges feel impossibly cold but solid, with faint pulses matching a heartbeat." % [_scp_details.name],
-									"%s remains inert during inspection." % [_scp_details.name]
-								] if is_success else [
-									"While touching %s, %s suddenly flinches and emits a violent pulse, knocking %s back." % [_scp_details.name, _scp_details.name, _staff_details.name],
-									"%s is shaken but unharmed; containment protocols adjusted." % [_staff_details.name]
-								],
-							"effect": func(is_success:bool) -> void:
-								if is_success:
-									# knowledge gained, no harm
-									pass
-								else:
-									# staff mood changed, containment protocols updated
-									pass,
-						},
-						{
-							"title": "Ignore subtle noises and secure the cell quickly",
-							"success_rate": 85,
-							"story": func(is_success:bool) -> Array:
-								return [
-									"%s's noises are ignored; containment cell locks successfully engaged." % [_scp_details.name],
-									"Containment is secured without incident."
-								] if is_success else [
-									"%s emits an unexpected loud latch sound as the cell locks, startling %s." % [_scp_details.name, _staff_details.name],
-									"Anomalous vibrations damage some containment sensors."
-								],
-							"effect": func(is_success:bool) -> void:
-								if is_success:
-									# containment secured, no damage
-									pass
-								else:
-									# containment cell damaged
-									pass,
-						},
-					],
-
-					"traits": {
-						RESEARCHER.TRAITS.AVERAGE: {
-							"title": "Use routine protocols without deviation",
-							"success_rate": 50,
-							"story": func(is_success:bool) -> Array:
-								return [
-									"%s follows standard procedures. Containment is uneventful." % [_staff_details.name]
-								] if is_success else [
-									"%s's lack of flexibility leads to a missed cue; %s reacts with a sudden pulse." % [_staff_details.name, _scp_details.name]
-								],
-							"effect": func(is_success:bool) -> void:
-								if is_success:
-									pass
-								else:
-									# minor containment cell damage
-									pass,
-						},
-						RESEARCHER.TRAITS.PARANOID: {
-							"title": "Suspect hidden dangers and proceed cautiously",
-							"success_rate": 70,
-							"story": func(is_success:bool) -> Array:
-								return [
-									"%s is hyper-aware of every sound and vibration, preventing surprises." % [_staff_details.name]
-								] if is_success else [
-									"%s’s nervousness causes delays, agitating %s into sudden vibration." % [_staff_details.name, _scp_details.name]
-								],
-							"effect": func(is_success:bool) -> void:
-								if is_success:
-									# staff mood improved, containment stable
-									pass
-								else:
-									# containment cell damaged
-									pass,
-						},
-					}
-				},
-			},
-		}
-}
-
 var SCP2:Dictionary = {
 	"nickname": "The Tiny Intruder",
 	

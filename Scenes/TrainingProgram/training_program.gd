@@ -11,10 +11,13 @@ const GameplayLoopPreload:PackedScene = preload("res://Scenes/TrainingProgram/pa
 var fast_start:bool = false
 var options:Dictionary = {} 
 
-var after_setup_data:Dictionary 
-var checkpoint_data:Dictionary 
-var 	quicksave_data:Dictionary
+var after_setup_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup
+var checkpoint_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint
+var 	quicksave_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves		
 
+var has_after_setup:bool = !after_setup_data.is_empty()
+var has_checkpoint_data:bool = !checkpoint_data.is_empty()
+var has_quicksave_data:bool = !quicksave_data.is_empty()
 
 # control
 var GameplayLoopNode:Control
@@ -24,26 +27,31 @@ var onQuit:Callable = func() -> void:pass
 
 # ---------------------------------------------
 func _ready() -> void:
-	for node in [LogoScreen, TitleScreen, FailState]:
-		node.modulate = Color(1, 1, 1, 0)
-		node.hide()
-		
-	after_setup_data = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup
-	checkpoint_data = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint
-	quicksave_data = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves			
+	pass
 # ---------------------------------------------
 
 # ---------------------------------------------
 func start() -> void:	
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var quicksaves:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves
-	var has_savedata = false if quicksaves.is_empty() or story_progress.current_story_val not in quicksaves else true	
-	var savedata:Dictionary = quicksaves[story_progress.current_story_val] if has_savedata else {}
-	
-	# ... DEBUG, JUMP STRAIGHT TO GAME WITH MOST CURRENT SAVE DATA, IF ONE DOESN'T EXIST LOADS EMPTY DATA
+	var savedata:Dictionary = quicksave_data if !quicksave_data.is_empty() else {}
+
+	# ... DEBUG, JUMP STRAIGHT TO GAME WITH MOST CURRENT QUICKSAVE, 
 	if DEBUG.get_val(DEBUG.APP_SKIP_TITLESCREEN):
-		GBL.loaded_gameplay_data = savedata		
-		start_game(savedata)
+		if has_quicksave_data:
+			GBL.loaded_gameplay_data = quicksave_data		
+			start_game(quicksave_data)
+			return
+		if has_checkpoint_data:
+			GBL.loaded_gameplay_data = checkpoint_data		
+			start_game(checkpoint_data)
+			return			
+		if has_after_setup:
+			GBL.loaded_gameplay_data = after_setup_data		
+			start_game(after_setup_data)
+			return	
+
+		GBL.loaded_gameplay_data = {}		
+		start_game({})
 		return
 
 	# start logo screen
@@ -54,7 +62,7 @@ func start() -> void:
 	
 	# start gamescreen
 	TitleScreen.is_tutorial = options.is_tutorial if "is_tutorial" in options else false
-	TitleScreen.show()			
+	await TitleScreen.activate()
 	TitleScreen.start(fast_start)
 	await transition_node(TitleScreen, true)
 	
@@ -83,12 +91,13 @@ func start_game(filedata:Dictionary) -> void:
 	GameplayLoopNode.options = options
 	GameplayLoopNode.onGameOver = on_game_over	
 	GameplayLoopNode.onExitGame = on_exit_game
-	
+	# set loaded data
 	GBL.loaded_gameplay_data = filedata
 		
 	# fade out
 	transition_node(TitleScreen, false)		
 	await transition_node(LogoScreen, false)	
+	await U.set_timeout(0.3)
 	
 	add_child(GameplayLoopNode)
 	GameplayLoopNode.start()	
@@ -97,7 +106,7 @@ func start_game(filedata:Dictionary) -> void:
 func transition_node(node:Control, fade_in:bool, duration:float = 1.0) -> void:
 	if fade_in:
 		node.show()
-			
+
 	U.tween_node_property(node, "modulate", Color(1, 1, 1, 1 if fade_in else 0), duration)
 	
 	TransitionScreen.show()
@@ -147,25 +156,21 @@ func execute_action(action:String) -> void:
 	match action:
 		"START_NEW_GAME":
 			GBL.active_user_profile.story_progress.current_story_val = 0
-			GBL.loaded_gameplay_data = {}
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game({})
 			
 		"START_FROM_CHECKPOINT":
 			GBL.active_user_profile.story_progress.current_story_val = checkpoint_data.current_story_val
-			GBL.loaded_gameplay_data = checkpoint_data
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game(checkpoint_data)
 			
 		"START_FROM_QUICKSAVE":
 			GBL.active_user_profile.story_progress.current_story_val = quicksave_data.current_story_val
-			GBL.loaded_gameplay_data = quicksave_data
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game(quicksave_data)
 			
 		"START_FROM_AFTER_SETUP":
 			GBL.active_user_profile.story_progress.current_story_val = after_setup_data.current_story_val
-			GBL.loaded_gameplay_data = after_setup_data
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game(after_setup_data)
 

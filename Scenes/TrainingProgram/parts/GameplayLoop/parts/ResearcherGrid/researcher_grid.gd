@@ -130,7 +130,7 @@ func start(_assigned_uids:Array = [], _filter_for_type:int = RESEARCHER.SPECIALI
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	await TransitionScreen.start()	
 	setup_gridselect()	
-	
+		
 	filter_for_type = _filter_for_type
 	use_location = _use_location
 	assigned_uids = _assigned_uids
@@ -138,7 +138,7 @@ func start(_assigned_uids:Array = [], _filter_for_type:int = RESEARCHER.SPECIALI
 	
 	var init_func:Callable = func(node:Control) -> void:
 		node.uid = ""
-	GridSelect.start(ResearcherMiniCard, init_func)
+	GridSelect.start(ResearcherMiniCard, filter_for_type, init_func)
 
 
 func promote() -> void:

@@ -32,7 +32,8 @@ func _ready() -> void:
 			# then disables the btn controls
 			await ActionContainerNode.before_use()
 			
-			await GAME_UTIL.contain_scp()
+			var scp_ref:int = await GAME_UTIL.select_scp_to_contain()
+			await GAME_UTIL.trigger_initial_containment(scp_ref)
 
 			await ActionContainerNode.after_use()	
 			# unlocks

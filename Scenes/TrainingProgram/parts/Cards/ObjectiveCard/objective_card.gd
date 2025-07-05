@@ -68,7 +68,6 @@ func on_objectives_update() -> void:
 		else:
 			ObjectiveItemList.add_child(new_btn)	
 		
-	print(OptionalObjectiveItemList.get_child_count())
 	OptionalSeperator.show() if OptionalObjectiveItemList.get_child_count() > 0 and !is_upcoming else OptionalSeperator.hide()
 
 	await U.tick()

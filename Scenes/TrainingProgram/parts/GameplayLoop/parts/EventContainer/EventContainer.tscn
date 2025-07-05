@@ -305,6 +305,9 @@ layout_mode = 2
 [node name="BtnControls" parent="." instance=ExtResource("11_h7wp5")]
 layout_mode = 2
 offset = Vector2(10, 25)
+c_btn_title = "FORCE FAIL"
+c_btn_icon = 2
+hide_c_btn = false
 
 [node name="TransistionScreen" parent="." instance=ExtResource("12_1e555")]
 z_index = 1

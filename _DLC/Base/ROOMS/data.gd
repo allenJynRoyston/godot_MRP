@@ -108,9 +108,18 @@ var DIRECTORS_OFFICE:Dictionary = {
 	},
 	# ------------------------------------------
 	
+	# ------------------------------------------
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 100,
+		RESOURCE.CURRENCY.SCIENCE: 50,
+		RESOURCE.CURRENCY.MATERIAL: 25,
+		RESOURCE.CURRENCY.CORE: 0,
+	},
+	# ------------------------------------------
+	
 	# ------------------------------------------	
 	"metrics": {
-		RESOURCE.METRICS.MORALE: 1,
+		RESOURCE.METRICS.MORALE: 0,
 		RESOURCE.METRICS.SAFETY: 0,
 		RESOURCE.METRICS.READINESS: 0
 	},	
@@ -162,11 +171,22 @@ var HQ:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES),
+			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES),
 			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 1),
-			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 2),
+			#ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 2),
 		],	
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 0),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 0),
+			ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS, 0)
+			
+		],	
+	# ------------------------------------------				
 }
 
 var STANDARD_CONTAINMENT_CELL:Dictionary = {

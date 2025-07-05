@@ -84,6 +84,7 @@ func on_is_selected_update() -> void:
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 
 func update_all() -> void:
+	#print("update all...")
 	update_font_color()
 	on_panel_color_update()
 	update_text()	
@@ -118,8 +119,6 @@ func on_panel_color_update() -> void:
 func update_text() -> void:
 	if !is_node_ready():return
 	
-	print("is_disabled: ", is_disabled)
-
 	if is_disabled:
 		if scp_ref == -1:
 			NameLabel.text = "UNAVAILABLE"

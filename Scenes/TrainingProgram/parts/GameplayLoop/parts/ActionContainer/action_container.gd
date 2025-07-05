@@ -601,6 +601,73 @@ func show_generator_updates() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func show_events_debug() -> void:
+	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+	
+	var scp_ref:int
+	for ref in scp_data:
+		if scp_data[ref].location == current_location:
+			scp_ref = ref
+			
+	var options:Array = [
+		{
+			"title": "EVENTS",
+			"items": [
+				{
+					"title": "INITIAL CONTAINMENT",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for initial containment"
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.trigger_initial_containment(scp_ref)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "CONTAINMENT BREACH",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for containment breach"
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.trigger_breach_event(scp_ref)
+						ActiveMenuNode.unlock(),
+				}				
+			]
+		}
+	]
+
+
+	BtnControls.reveal(false)
+
+	reveal_cardminipanel(false)
+	RoomDetailsControl.reveal(false)
+
+	ActiveMenuNode.onClose = func() -> void:	
+		set_backdrop_state(false)
+		reveal_cardminipanel(true)	
+		RoomDetailsControl.reveal(true)		
+		await BtnControls.reveal(true)
+		
+	
+	ActiveMenuNode.use_color = Color.WHITE
+	ActiveMenuNode.options_list = options
+	
+	set_backdrop_state(true)
+	add_child(ActiveMenuNode)
+	await ActiveMenuNode.activate()
+	
+	ActiveMenuNode.open()	
+# --------------------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------------------
 func show_facility_updates() -> void:			
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 
@@ -1034,14 +1101,6 @@ func enable_room_focus(state:bool) -> void:
 	GBL.find_node(REFS.ROOM_NODES).enable_room_focus = state
 # --------------------------------------------------------------------------------------------------	
 
-## --------------------------------------------------------------------------------------------------
-#func hide_nametags(state:bool, fast:bool = false) -> void:
-	#for nametag in NameControl.get_children():
-		#nametag.fade = state
-		#if !fast:
-			#await U.set_timeout(0.02)
-## --------------------------------------------------------------------------------------------------		
-
 # --------------------------------------------------------------------------------------------------		
 func lock_panel_btn_state(state:bool, panels:Array) -> void:
 	for panel in panels:		
@@ -1149,7 +1208,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			BtnControls.itemlist = SummaryCard.get_ability_btns()
 			BtnControls.item_index = 0
-			
 			BtnControls.directional_pref = "UD"
 			BtnControls.offset = SummaryCard.global_position
 
@@ -1162,10 +1220,27 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				# ----------------------
 				if "ability_data" in node:
+					BtnControls.a_btn_title = "USE"
+					
+					BtnControls.hide_c_btn = true
 					RoomDetailsControl.hide()
 					return
 				# ----------------------
 				if "researcher" in node:
+					# check if there are any available researchers
+					var filter_for_spec:Array = [extract_room_data.room.details.required_staffing[node.index]]
+					var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)
+					
+					BtnControls.a_btn_title = "ASSIGN" if node.researcher.is_empty() else "UNASSIGN"
+					
+					BtnControls.hide_c_btn = !node.researcher.is_empty() and available_researchers.size() > 0
+					BtnControls.disable_c_btn = available_researchers.is_empty()
+					BtnControls.c_btn_title = "AUTO ASSIGN"
+					BtnControls.onCBtn = func() -> void:
+						var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
+						GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref)
+						
+					
 					RoomDetailsControl.hide() if node.researcher.is_empty() else RoomDetailsControl.show()
 					RoomDetailsControl.researcher_uid = node.researcher.uid if !node.researcher.is_empty() else -1
 					RoomDetailsControl.cycle_to_reseacher(true)
@@ -1176,6 +1251,14 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					return
 				# ----------------------
 				if "scp_ref" in node:
+					BtnControls.a_btn_title = "CONTAIN"
+					
+					BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
+					BtnControls.disable_c_btn = node.scp_ref == -1
+					BtnControls.c_btn_title = "DEBUG EVENT"
+					BtnControls.onCBtn = func() -> void:
+						show_events_debug()
+						
 					RoomDetailsControl.hide() if node.scp_ref == -1 else RoomDetailsControl.show()
 					RoomDetailsControl.scp_ref = node.scp_ref 
 					RoomDetailsControl.cycle_to_scp(true)

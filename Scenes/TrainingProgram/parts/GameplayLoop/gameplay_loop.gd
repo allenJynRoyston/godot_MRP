@@ -498,15 +498,6 @@ func start_new_game() -> void:
 	SUBSCRIBE.music_data = {
 		"selected": MUSIC.TRACK.GAME_TRACK_ONE,
 	}	
-
-	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
-	# clear all quicksaves/restorespoints/aftersetup
-	if is_new_game:
-		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves = {}
-		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint = {}
-		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup = {}
-		GBL.update_and_save_user_profile(GBL.active_user_profile)	
-
 	
 	# update phase and start game
 	if is_tutorial:
@@ -525,6 +516,14 @@ func start_new_game() -> void:
 		ActionContainer.start(true)		
 	else:
 		ActionContainer.start()
+		
+	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
+	# clear all quicksaves/restorespoints/aftersetup
+	if is_new_game:
+		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves = {}
+		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint = {}
+		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup = {}
+		GBL.update_and_save_user_profile(GBL.active_user_profile)			
 	
 	current_phase = PHASE.PLAYER
 		
@@ -929,6 +928,9 @@ func on_current_phase_update() -> void:
 			
 			# start breach splash
 			if refs.size() > 0:
+				# hide phase 
+				PhaseAnnouncement.end()				
+				
 				var previous_track:MUSIC.TRACK = SUBSCRIBE.music_data.selected
 				
 				# open music player, no music selected
@@ -936,20 +938,11 @@ func on_current_phase_update() -> void:
 					"selected": MUSIC.TRACK.CONTAINMENT_BREACH,
 				}
 				
-				# get the splash
-				var BreachNode:Control = await GAME_UTIL.start_containment_breach()
-				
-				# hide phase 
-				PhaseAnnouncement.end()
 				
 				# then do them...
 				for index in refs.size():
-					await GAME_UTIL.trigger_breach_event(refs[index], BreachNode)
-					if index == refs.size() - 1:
-						await BreachNode.end()
-						BreachNode.queue_free()
-
-						
+					await GAME_UTIL.trigger_breach_event(refs[index])
+					if index == refs.size() - 1:					
 						# open music player, no music selected
 						SUBSCRIBE.music_data = {
 							"selected": previous_track,
@@ -1038,24 +1031,22 @@ func on_current_phase_update() -> void:
 			# create a restore point
 			create_checkpoint()
 			
-
-								
-			
 			# update objectives
 			PhaseAnnouncement.start("OBJECTIVES ARE BEING UPDATED...")
-			await U.set_timeout(1.0)
+			await U.set_timeout(1.5)
+			PhaseAnnouncement.end()			
+			
 			await GAME_UTIL.open_objectives()
 			# update bookmarked objectives
 			GAME_UTIL.mark_current_objectives()
 			
-			await quicksave(true)			
+			#await quicksave(true)			
 			
 			if show_new_message:
 				ActionContainer.show_new_message_btn = true
 			
 			# continue game
 			restore_player_hud()			
-			PhaseAnnouncement.end()			
 			current_phase = PHASE.PLAYER
 			phase_cycle_complete.emit()
 		# ------------------------
@@ -1073,6 +1064,9 @@ func get_save_state() -> Dictionary:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 
 	return {
+		"metadata":{
+			"modification_date": Time.get_date_dict_from_system()
+		},		
 		"current_story_val": story_progress.current_story_val,
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
 		"progress_data": progress_data,		
@@ -1185,7 +1179,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
-	var resource_diff:Dictionary = initial_values.resource_diff.call()
+	#var resource_diff:Dictionary = initial_values.resource_diff.call()
 
 	# EXECUTE IN THIS ORDER
 	# zero out defaults 
@@ -1213,9 +1207,9 @@ func update_room_config(force_setup:bool = false) -> void:
 	
 	# calculate diff amount	
 	# first, get baseline for differential
-	for key in resource_diff:
-		var amount:int = resource_diff[key]
-		resources_data[key].diff = amount
+	#for key in resource_diff:
+		#var amount:int = resource_diff[key]
+		#resources_data[key].diff = amount
 		
 	## then go through each floor and add/sub from the diff
 	for floor_index in new_room_config.floor.size():

@@ -62,16 +62,14 @@ var current_text:String = "" :
 		current_text = val
 		on_current_text_update()
 
-#var current_mode:MODE = MODE.HIDE : 
-	#set(val):
-		#current_mode = val
-		#on_current_mode_update()
-		
-#var current_controls:CONTROLS = CONTROLS.FREEZE 
 var event_output:Dictionary = {}
 var has_more:bool = true
 var text_reveal_tween:Tween
+var apply_dyslexia_to_content:bool = false
 
+# debugging
+var use_force_results:bool = false
+var force_is_success:bool = false
 
 signal text_phase_complete
 
@@ -83,6 +81,13 @@ func _ready() -> void:
 		
 	reset()
 	reset_content_nodes()
+	
+	BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
+	use_force_results = DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
+	
+	BtnControls.onCBtn = func() -> void:
+		force_is_success = !force_is_success
+		BtnControls.c_btn_title = "FORCE %s" % ['SUCCESS' if force_is_success else 'FAILURE']
 	
 	# setup btn controls
 	BtnControls.onUpdate = func(_node:Control) -> void:
@@ -296,97 +301,78 @@ func on_current_text_update() -> void:
 	BodyLabelBtm.text = current_text
 	BodyLabelTop.text = current_text
 
+	await tween_text_reveal(current_text.length() * 0.01)
+
 	# watch for certain strings to apply effects
 	if ResearcherCard.uid != null:
 		var staff_detail:Dictionary = RESEARCHER_UTIL.return_data_with_uid(ResearcherCard.uid)
-		
+		var delay:float = 1.0
 		
 		if !staff_detail.is_empty():
-			# -------------------------------------------------	SANITY
+			# -------------------------------------------------	DAMAGE HP/SANITY
 			# take 1 damage
-			if current_text == str(staff_detail.name, " sanity is effected!"):
-				RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 1)
-				ResearcherCard.shake(3)	
-			
-			# take 2 damage
-			if current_text == str(staff_detail.name, " sanity is seriously effected!"):
-				RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 2)
-				ResearcherCard.shake(3)	
-				
-			# take 3 damage	
-			if current_text == str(staff_detail.name, " sanity is critically effected!"):
-				RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 3)
-				ResearcherCard.shake(3)							
-				
-			if current_text == str(staff_detail.name, " goes insane!"):
-				# automatically change sstatus from take_damage
-				ResearcherCard.disappear()				
-			
-			# ------------------------------------------------- DAMAGE
-			# take 1 damage
-			if current_text == str(staff_detail.name, " is hurt!"):
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.HP_HURT)]):
+				await ResearcherCard.shake(3)
+				await U.set_timeout(delay)
 				RESEARCHER_UTIL.take_damage(staff_detail.uid, 1)
-				ResearcherCard.shake(3)
 			
-			# take 2 damage
-			if current_text == str(staff_detail.name, " is seriously hurt!"):
-				RESEARCHER_UTIL.take_damage(staff_detail.uid, 2)
-				ResearcherCard.shake(4)
-			
-			# take 3 damage
-			if current_text == str(staff_detail.name, " is critically hurt!"):
-				RESEARCHER_UTIL.take_damage(staff_detail.uid, 3)
-				ResearcherCard.shake(5)
-			
-			# ------------------------------------------------- RESTORE HEALTH
-			if current_text == str(staff_detail.name, " is restored to full health!"):
-				RESEARCHER_UTIL.restore_health(staff_detail.uid, 2)
-				ResearcherCard.shake(5)
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.SP_HURT)]):
+				await ResearcherCard.shake(3)
+				await U.set_timeout(delay)
+				RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 1)
 				
-			if current_text == str(staff_detail.name, " is feeling better!"):
+			# -------------------------------------------------	RESTORE HP/SANITY
+			# take 1 damage
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.HP_HEAL)]):
+				await ResearcherCard.shake(3)
+				await U.set_timeout(delay)
 				RESEARCHER_UTIL.restore_health(staff_detail.uid, 1)
-				ResearcherCard.shake(5)
-
-			# ------------------------------------------------- RESTORE SANITY
-			if current_text == str(staff_detail.name, " feels focused!"):
-				RESEARCHER_UTIL.restore_sanity(staff_detail.uid, 2)
-				ResearcherCard.shake(5)
-				
-			if current_text == str(staff_detail.name, " feels more grounded!"):
+			
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.SP_HEAL)]):
+				await ResearcherCard.shake(3)
+				await U.set_timeout(delay)
 				RESEARCHER_UTIL.restore_sanity(staff_detail.uid, 1)
-				ResearcherCard.shake(5)
-			
-			# ------------------------------------------------- WOUNDED
-			# out of health...
-			if current_text == str(staff_detail.name, " passes out!"):
-				# automatically change sstatus from take_damage
-				ResearcherCard.disappear()
-			
-			# -------------------------------------------------	KILLED
-			# killed
-			if current_text == str(staff_detail.name, " has been killed!"):
-				ResearcherCard.shake(5)
-				await U.set_timeout(1.0)
-				RESEARCHER_UTIL.kill(staff_detail.uid)
+
+			## -------------------------------------------------	CHANGE STATUS TO KILLED/INSANE
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA)]):
+				await ResearcherCard.shake(5)
+				await U.set_timeout(delay)
+				
+				RESEARCHER_UTIL.change_status_to_kia(staff_detail.uid)
 				ResearcherCard.reveal = false
 				ResearcherCard.is_deselected = true
-			
-			# -------------------------------------------------	CHANGES TO MOOD/TRAITS
+				
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE)]):
+				await ResearcherCard.shake(5)
+				await U.set_timeout(delay)
+				
+				RESEARCHER_UTIL.change_status_to_insane(staff_detail.uid)
+				ResearcherCard.reveal = false
+				ResearcherCard.is_deselected = true
+			#
+			## -------------------------------------------------	CHANGES TO MOOD
 			# mood changed to
-			if current_text.find( str(staff_detail.name, " starts to feel") ) == 0:
-				var arr:Array = current_text.split(" ")
-				var as_string:String = arr[arr.size() - 1].rstrip("!?,.:;\"'")
-				var new_mood_data:Dictionary = RESEARCHER_UTIL.return_mood_data_from_string(as_string)
-				RESEARCHER_UTIL.change_mood(staff_detail.uid, new_mood_data.ref)
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_STABLE)]):
+				await ResearcherCard.shake(5)
+				await U.set_timeout(delay)
+				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.STABLE)
+				
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED)]):
+				await ResearcherCard.shake(5)
+				await U.set_timeout(delay)
+				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.FRIGHTENED)
+				
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_DEPRESSED)]):
+				await ResearcherCard.shake(5)
+				await U.set_timeout(delay)
+				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.DEPRESSED)	
+			
+			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED)]):
+				await ResearcherCard.shake(5)
+				await U.set_timeout(delay)
+				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.FRIGHTENED)
 
-			# trait changed to
-			if current_text.find( str(staff_detail.name, " is now") ) == 0:
-				var arr:Array = current_text.split(" ")
-				var as_string:String = arr[arr.size() - 1].rstrip("!?,.:;\"'")
-				var new_trait_data:Dictionary = RESEARCHER_UTIL.return_trait_data_from_string(as_string)
-				RESEARCHER_UTIL.change_trait(staff_detail.uid, new_trait_data.ref)		
 
-	await tween_text_reveal(current_text.length() * 0.01)
 	update_next_btn(true)	
 # --------------------------------------------------------------------------------------------------		
 
@@ -427,7 +413,7 @@ func on_current_instruction_update() -> void:
 	if "use_success_roll" in current_instruction and current_instruction.use_success_roll:
 		reveal_researcher(false)
 		await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
-		await SuccessRoll.use(current_instruction.use_success_roll, 1.5)
+		await SuccessRoll.use(current_instruction.is_success if !use_force_results else force_is_success, 1.5)
 		await BtnControls.reveal(true)
 		if ResearcherCard.uid != null:
 			reveal_researcher(true)
@@ -545,7 +531,13 @@ func on_option_select(option:Dictionary) -> void:
 	await U.set_timeout(1.5)
 
 	if "onSelected" in option:
-		option.onSelected.call({"index": option_selected_index, "option": option})
+		if use_force_results and option.has('success_rate'):
+			option.success_rate = 100 if force_is_success else 0
+		
+		option.onSelected.call({
+			"index": option_selected_index, 
+			"option": option
+		})
 		
 	# goto next instruction
 	next_instruction(true)
@@ -567,3 +559,17 @@ func tween_text_reveal(duration:float = 0.3) -> void:
 	await text_reveal_tween.finished
 	await U.set_timeout(0.5)
 # --------------------------------------------------------------------------------------------------	
+
+
+var time_accumulator := 0.0
+var trigger_time := randf_range(0.5, 1.0)
+func _process(delta: float) -> void:
+	if !is_node_ready() or !apply_dyslexia_to_content:return
+	time_accumulator += delta
+
+	if time_accumulator >= trigger_time:
+		time_accumulator = 0.0
+		trigger_time = randf_range(0.5, 1.0)
+		
+		BodyLabelBtm.text = U.simulate_dyslexia(current_text)
+		BodyLabelTop.text = U.simulate_dyslexia(current_text)

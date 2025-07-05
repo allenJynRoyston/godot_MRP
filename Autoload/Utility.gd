@@ -329,3 +329,68 @@ func location_lookup(val:int, dir:DIR) -> int:
 	
 	return val
 # -----------------------------------------------------------------------------------------------
+
+
+
+# ----------------------
+func simulate_dyslexia(input_text: String) -> String:
+	var words = input_text.split(" ")
+	var distorted_words: Array[String] = []
+
+	for word in words:
+		var distorted_word = word
+
+		# Scramble internal letters of the word (not first/last)
+		if word.length() > 3 and randf() < 0.2:
+			distorted_word = scramble_word(distorted_word)
+
+		# Distort letters randomly
+		var distorted_chars: Array[String] = []
+		for ch in distorted_word:
+			if randf() < 0.2:
+				distorted_chars.append(distort_letter(ch))
+			else:
+				distorted_chars.append(ch)
+
+		distorted_words.append("".join(distorted_chars))
+
+	return " ".join(distorted_words)
+
+
+func distort_letter(letter: String) -> String:
+	var distortions := {
+		"a": ["o", "e", "u"],
+		"e": ["a", "o", "i"],
+		"o": ["a", "e", "u"],
+		"i": ["e", "o", "a"],
+		"t": ["f", "l", "j"],
+		"l": ["i", "t", "h"],
+		"h": ["l", "u", "k"],
+		"b": ["d", "p"],
+		"d": ["b", "p"],
+		"p": ["b", "d"]
+	}
+	letter = letter.to_lower()
+	if distortions.has(letter):
+		var options: Array = distortions[letter]
+		return options[randi() % options.size()]
+	return letter
+
+
+func scramble_word(word: String) -> String:
+	if word.length() <= 3:
+		return word
+
+	var first_char = word[0]
+	var last_char = word[word.length() - 1]
+	var middle_chars: Array[String] = []
+
+	# Get middle characters as array
+	for i in range(1, word.length() - 1):
+		middle_chars.append(word[i])
+
+	# Shuffle middle characters
+	middle_chars.shuffle()
+
+	return first_char + "".join(middle_chars) + last_char
+# ----------------------

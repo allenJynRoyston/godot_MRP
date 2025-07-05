@@ -102,14 +102,21 @@ func _ready() -> void:
 	ContentPanel.position.y = control_pos[ContentPanel].hide
 
 
-func start(use_node:PackedScene, init_func:Callable) -> void:
+func start(use_node:PackedScene, start_on_tab:int, init_func:Callable) -> void:
 	for n in range(0, 9):
 		var new_node:Control = use_node.instantiate()
 		init_func.call(new_node)
 		GridContent.add_child(new_node)
-		
+	
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	current_mode = MODE.TAB_SELECT
+	
+	var spec_details:Dictionary = RESEARCHER_UTIL.return_specialization_data(start_on_tab)
+	for index in tabs.size():
+		var tab:Dictionary = tabs[index]
+		if tab.title == spec_details.name:
+			tab_index = index
+			break
 	
 	on_tab_index_update()
 	
@@ -144,7 +151,6 @@ func on_tabs_update() -> void:
 func on_tab_index_update() -> void:
 	if !is_node_ready():return
 	onTabUpdate.call(tab_index)
-	
 	
 	for index in Tabs.get_child_count():
 		var tab:Control = Tabs.get_child(index)

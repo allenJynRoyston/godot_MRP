@@ -1,33 +1,42 @@
-[gd_scene load_steps=17 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=18 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_id14l"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_s4nou"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_p3swr"]
-[ext_resource type="LabelSettings" uid="uid://cwsa8o7i4f0n3" path="res://Fonts/game/label_medium_thick.tres" id="6_kfvw8"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="7_46a2l"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_oonus"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_3sdtd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfvw8"]
 bg_color = Color(0, 0, 0, 0.337255)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nwmuc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oonus"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_f0u0i"]
 font = ExtResource("3_id14l")
 font_size = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8mru"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwmuc"]
 bg_color = Color(0, 0, 0, 0.733333)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oonus"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w78h0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
+bg_color = Color(0, 0, 0, 0.733333)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46a2l"]
 bg_color = Color(0, 0, 0, 0.733333)
@@ -36,24 +45,14 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
-bg_color = Color(0, 0, 0, 0.733333)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ktom1"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+bg_color = Color(0.337255, 0.27451, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ktom1"]
+font = ExtResource("3_id14l")
+font_size = 8
+outline_color = Color(0.160784, 0.160784, 0.160784, 1)
+shadow_size = 0
 
 [node name="TitleScreen" type="PanelContainer"]
 anchors_preset = 15
@@ -64,21 +63,51 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kfvw8")
 script = ExtResource("1_1obr7")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="MainControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MainControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nwmuc")
+
+[node name="MarginContainer" type="MarginContainer" parent="MainControl/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/margin_top = 100
+
+[node name="PanelContainer" type="PanelContainer" parent="MainControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxEmpty_oonus")
+
+[node name="MarginContainer" type="MarginContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
+alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 0
@@ -88,30 +117,22 @@ label_settings = ExtResource("2_wrxma")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SubTitle" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="SubTitle" type="Label" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "GAME MODE TYPE"
 label_settings = SubResource("LabelSettings_f0u0i")
 horizontal_alignment = 2
 
-[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "SELECT A SCENARIO"
-label_settings = ExtResource("6_kfvw8")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BtnList" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+[node name="BtnList" type="VBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="NewBtn" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+[node name="NewBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s8mru")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
 icon = 71
 panel_color = Color(0, 0, 0, 0.733333)
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
@@ -119,39 +140,39 @@ title = "New game"
 hint_title = "HINT"
 hint_description = "Start a new game."
 
-[node name="ContinueAfterSetup" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+[node name="ContinueAfterSetup" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
 size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
 icon = 71
 panel_color = Color(0.337255, 0.27451, 1, 1)
 title = "Continue after setup"
 hint_title = "HINT"
 hint_description = "Restart after base setup."
 
-[node name="ContinueFromCheckpoint" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+[node name="ContinueFromCheckpoint" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
 layout_mode = 2
 size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_w78h0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
 icon = 71
 title = "Continue from checkpoint"
 hint_title = "HINT"
 hint_description = "Restart from the last checkpoint."
 
-[node name="ContinueQuicksave" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+[node name="ContinueQuicksave" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
 icon = 71
 panel_color = Color(0, 0, 0, 0.733333)
 inactive_color = Color(1, 1, 1, 0.796078)
 title = "Continue from quicksave"
 hint_title = "HINT"
 
-[node name="QuitBtn" parent="CenterContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+[node name="QuitBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
 custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
+theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
 icon = 71
 panel_color = Color(0, 0, 0, 0.733333)
 inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
@@ -160,7 +181,6 @@ hint_title = "HINT"
 hint_description = "Exit to desktop."
 
 [node name="ContinueControl" type="Control" parent="."]
-visible = false
 layout_mode = 2
 
 [node name="ContinueDetails" type="PanelContainer" parent="ContinueControl"]
@@ -175,38 +195,42 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ktom1")
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContinueControl/ContinueDetails/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Label4" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer"]
-layout_mode = 2
-label_settings = ExtResource("5_p3swr")
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer"]
-layout_mode = 2
 theme_override_constants/separation = 5
-alignment = 2
 
-[node name="DetailName" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="DetailName" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "SCENARIO NAME"
-label_settings = ExtResource("7_46a2l")
+label_settings = SubResource("LabelSettings_ktom1")
 
-[node name="DetailDay" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="DetailDay" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "DAY 1"
-label_settings = ExtResource("7_46a2l")
+label_settings = SubResource("LabelSettings_ktom1")
 
-[node name="DetailDate" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="DetailDate" type="Label" parent="ContinueControl/ContinueDetails/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "01/12/2024"
-label_settings = ExtResource("7_46a2l")
+label_settings = SubResource("LabelSettings_ktom1")
+
+[node name="Control" type="Control" parent="ContinueControl/ContinueDetails"]
+layout_mode = 2
+
+[node name="IconBtn" parent="ContinueControl/ContinueDetails/Control" instance=ExtResource("6_oonus")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+offset_left = -23.0
+offset_top = 18.0
+offset_right = 17.0
+offset_bottom = 58.0
+icon = 28
+static_color = Color(0.337255, 0.27451, 1, 1)
+is_hoverable = false
 
 [node name="BtnControl" parent="." instance=ExtResource("10_3sdtd")]
 layout_mode = 2

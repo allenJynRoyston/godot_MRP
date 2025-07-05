@@ -355,7 +355,7 @@ func change_trait(uid:String, trait_ref:RESEARCHER.TRAITS) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func kill(uid:String) -> Dictionary:
+func change_status_to_kia(uid:String) -> Dictionary:
 	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
 		if i[0] == uid:
 			# update health val
@@ -374,6 +374,24 @@ func kill(uid:String) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func change_status_to_insane(uid:String) -> Dictionary:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
+		if i[0] == uid:
+			# update sanity val
+			i[7].current = 0
+			
+			# out of hp, change status and remove from room
+			if i[7].current <= 0:
+				i[5] = RESEARCHER.STATUS.INSANE
+		return i
+	)
+	
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+	
+	return get_user_object(filtered[0])
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func damage_sanity(uid:String, amount:int) -> Dictionary:
 	var filtered:Array = hired_lead_researchers_arr.filter(func(i):
 		if i[0] == uid:
@@ -382,8 +400,7 @@ func damage_sanity(uid:String, amount:int) -> Dictionary:
 			
 			# out of hp, change status and remove from room
 			if i[7].current <= 0:
-				i[5] = RESEARCHER.STATUS.INSANE
-				i[11].assigned_to_room = {}
+				change_status_to_insane(uid)
 		return i
 	)
 	
@@ -402,8 +419,7 @@ func take_damage(uid:String, amount:int) -> Dictionary:
 			
 			# out of hp, change status and remove from room
 			if i[6].current <= 0:
-				i[5] = RESEARCHER.STATUS.WOUNDED
-				i[11].assigned_to_room = {}
+				change_status_to_kia(uid)
 		return i
 	)
 	
@@ -451,8 +467,6 @@ func restore_sanity(uid:String, amount:int) -> Dictionary:
 	return get_user_object(filtered[0])
 # ------------------------------------------------------------------------------
 
-
-
 # ------------------------------------------------------------------------------
 func add_experience(uid:String, amount:int) -> bool:
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
@@ -462,7 +476,6 @@ func add_experience(uid:String, amount:int) -> bool:
 		return i
 	) 	
 	
-
 	var researcher:Array = hired_lead_researchers_arr.filter(func(i): return i[0] == uid)[0]
 	# returns if reasearcher leveled up
 	return researcher[9].can_promote
@@ -472,6 +485,15 @@ func add_experience(uid:String, amount:int) -> bool:
 func can_be_promoted(uid:String) -> bool:	
 	var xp_required_for_promotion:int = DEBUG.get_val(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION)
 	return hired_lead_researchers_arr.filter(func(i): return i[8] >= xp_required_for_promotion and i[0] == uid).size() > 0
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------		
+func get_list_of_available(filter_for_specs:Array = []) -> Array:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(x):
+		var data:Dictionary = get_user_object(x)
+		return data.props.assigned_to_room.is_empty() and (data.specialization.ref in filter_for_specs)
+	)
+	return filtered
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		

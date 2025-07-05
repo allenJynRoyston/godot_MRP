@@ -391,21 +391,9 @@ hint_title = "Money"
 hint_description = "Money description."
 allow_hint = true
 
-[node name="Materials" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
-icon = 40
-no_bg = true
-title = "99"
-display_at_bottom = true
-hint_icon = 41
-hint_title = "Materials"
-hint_description = "Materials description."
-allow_hint = true
-
 [node name="Research" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0dffn")
 icon = 44
 no_bg = true
 title = "99"
@@ -413,6 +401,18 @@ display_at_bottom = true
 hint_icon = 44
 hint_title = "Research"
 hint_description = "Research description."
+allow_hint = true
+
+[node name="Materials" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bsj2a")
+icon = 40
+no_bg = true
+title = "99"
+display_at_bottom = true
+hint_icon = 41
+hint_title = "Materials"
+hint_description = "Materials description."
 allow_hint = true
 
 [node name="Core" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_4m2u1")]

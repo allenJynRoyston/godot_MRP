@@ -446,7 +446,7 @@ func open_objectives() -> void:
 	
 	await ObjectivesNode.activate()
 	
-	GameplayNode.show_only([Structure3dContainer])
+	await GameplayNode.show_only([Structure3dContainer])
 	ObjectivesNode.start()
 
 	await ObjectivesNode.user_response
@@ -601,13 +601,29 @@ func eval_scp() -> bool:
 # ---------------------
 
 # --------------------------------------------------------------------------------------------------	
-func trigger_breach_event(scp_ref:int, BreachNode:Control) -> void:	
+func select_scp_to_contain() -> int:
+	var ScpGridNode:Control = ScpGridPreload.instantiate()
+	GameplayNode.add_child(ScpGridNode)
+	ScpGridNode.z_index = z_index_lvl
+	
+	await ScpGridNode.activate()
+	ScpGridNode.contain()
+	return await ScpGridNode.user_response
+# --------------------------------------------------------------------------------------------------	
+
+
+# --------------------------------------------------------------------------------------------------	
+func trigger_breach_event(scp_ref:int) -> void:	
+	# get the splash
+	var SplashNode:Control = await GAME_UTIL.start_containment_breach()
+		
 	# pull details
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	
 	# Check for initial breach event
-	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
-		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	var researchers:Array = hired_lead_researchers_arr.map(func(x): 
+		return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+			return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
 	)
 	
 	# update next breach event day
@@ -621,7 +637,8 @@ func trigger_breach_event(scp_ref:int, BreachNode:Control) -> void:
 	SUBSCRIBE.base_states = base_states
 	await U.set_timeout(3.5)	
 	GameplayNode.show_only([])
-	await BreachNode.zero()
+	
+	await SplashNode.zero()
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
 		EVT.TYPE.SCP_BREACH_EVENT_1, 
@@ -634,21 +651,16 @@ func trigger_breach_event(scp_ref:int, BreachNode:Control) -> void:
 		)
 	])
 	
+
+	await SplashNode.end()
+	
 	# restore previous emergency mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
 	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------	
-	
 
 # --------------------------------------------------------------------------------------------------	
-func contain_scp() -> bool:
-	var ScpGridNode:Control = ScpGridPreload.instantiate()
-	GameplayNode.add_child(ScpGridNode)
-	ScpGridNode.z_index = z_index_lvl
-	
-	await ScpGridNode.activate()
-	ScpGridNode.contain()
-	var scp_ref:int = await ScpGridNode.user_response
+func trigger_initial_containment(scp_ref:int) -> bool:
 	if scp_ref == -1:return false
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 
@@ -793,16 +805,32 @@ func hire_researcher(total_options:int) -> bool:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
+func auto_assign_staff(spec_ref:int, location_data:Dictionary = current_location) -> void:
+	var filter_for_spec:Array = [spec_ref]
+	var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)	
+	if available_researchers.is_empty():return
+	var uid:String = available_researchers[0][0]
+	
+	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+		# add current users
+		if i[0] in uid:
+			i[11].assigned_to_room = location_data.duplicate()
+		return i
+	)
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr	
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
 func assign_researcher(staffing_type:int, location_data:Dictionary = current_location) -> bool:
 	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
 	GameplayNode.add_child(ResearcherGrid)
-	ResearcherGrid.z_index = 10
+	ResearcherGrid.z_index = z_index_lvl
+	
 	
 	var assigned_uids:Array =  hired_lead_researchers_arr.filter(func(i):				
 		return U.dictionaries_equal(i[11].assigned_to_room, current_location)
 	).map(func(i): return i[0])	
 	
-
 	await ResearcherGrid.activate()
 	ResearcherGrid.start(assigned_uids, staffing_type, current_location)
 	var uid:String = await ResearcherGrid.user_response
@@ -965,7 +993,7 @@ func upgrade_facility(blacklist_self:bool = true) -> bool:
 func open_store() -> bool:	
 	var StoreGrid:Control = StoreGridPreload.instantiate()
 	GameplayNode.add_child(StoreGrid)
-	StoreGrid.z_index = 10
+	StoreGrid.z_index = z_index_lvl
 	
 	await StoreGrid.activate()
 	StoreGrid.start()
@@ -1021,7 +1049,7 @@ func open_tally(color_bg:Color = Color(0, 0, 0, 0.7)) -> void:
 	disable_taskbar(true)
 	
 	var NewtallyNode:Control = NewTallyPreload.instantiate()
-	NewtallyNode.z_index = 100	
+	NewtallyNode.z_index = z_index_lvl + 1	
 	GameplayNode.add_child(NewtallyNode)
 	NewtallyNode.set_props("DAILY RESOURCES", "We gots to get paid.", "", Color(0, 0, 0, 0.7))	
 	await NewtallyNode.activate(false)
@@ -1038,7 +1066,7 @@ func create_warning(title:String = "", subtitle:String = "", img_src:String = ""
 	disable_taskbar(true)
 	
 	var WarningNode:Control = WarningModalPreload.instantiate()
-	WarningNode.z_index = 100	
+	WarningNode.z_index = z_index_lvl + 1	
 	GameplayNode.add_child(WarningNode)
 	WarningNode.set_props(title, subtitle, img_src, color_bg)
 	WarningNode.allow_controls = allow_controls
@@ -1058,7 +1086,7 @@ func create_modal(title:String = "", subtitle:String = "", img_src:String = "", 
 	disable_taskbar(true)
 	
 	var ConfirmNode:Control = ConfirmModalPreload.instantiate()
-	ConfirmNode.z_index = 100	
+	ConfirmNode.z_index = z_index_lvl + 1	
 	GameplayNode.add_child(ConfirmNode)
 	ConfirmNode.set_props(title, subtitle, img_src, color_bg)
 	ConfirmNode.allow_controls = allow_controls

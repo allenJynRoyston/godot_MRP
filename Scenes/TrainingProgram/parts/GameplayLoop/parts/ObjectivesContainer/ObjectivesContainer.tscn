@@ -37,7 +37,7 @@ script = ExtResource("1_5mn2c")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0.19, 0.19, 0.19, 0.596078)
+color = Color(0, 0, 0, 0.596078)
 
 [node name="ResourceControl" type="Control" parent="."]
 layout_mode = 2
@@ -67,13 +67,11 @@ theme_override_constants/separation = 20
 layout_mode = 2
 icon = 22
 title = "DAYS REMAINING"
-is_negative = null
 
 [node name="Cores" parent="ResourceControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_ul6yg")]
 layout_mode = 2
 icon = 39
 title = "CORES"
-is_negative = null
 
 [node name="HintControl" type="Control" parent="."]
 layout_mode = 2

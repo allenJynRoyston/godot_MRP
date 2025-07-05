@@ -96,6 +96,8 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var skip_setup_progress:bool = false
 @export var start_at_ring_level:bool = false
 @export var skip_objectives:bool = false
+@export var enable_scp_debug:bool = false
+
 @export var max_energy:bool = true
 @export var all_personnel:bool = false
 
@@ -314,6 +316,9 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
+	DEBUG.assign(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG, enable_scp_debug)
+	
+	
 	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)
 	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
 

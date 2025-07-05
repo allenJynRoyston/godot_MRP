@@ -147,7 +147,7 @@ func setup() -> void:
 	var init_func:Callable = func(node:Control) -> void:
 		node.scp_ref = -1
 		
-	GridSelect.start(ScpMiniCardPreload, init_func)	
+	GridSelect.start(ScpMiniCardPreload, -1, init_func)	
 
 func end(scp_ref:int = -1) -> void:
 	if scp_ref != -1:
