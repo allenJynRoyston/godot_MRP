@@ -78,9 +78,9 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"resource_diff": func() -> Dictionary:
 		return { 
-			RESOURCE.CURRENCY.MONEY: 100,
-			RESOURCE.CURRENCY.MATERIAL: 50,
-			RESOURCE.CURRENCY.SCIENCE: 10,
+			RESOURCE.CURRENCY.MONEY: 0,
+			RESOURCE.CURRENCY.MATERIAL: 0,
+			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0
 		},
 	"resources_data": func() -> Dictionary:
@@ -125,17 +125,23 @@ var initial_values:Dictionary = {
 					RESOURCE.METRICS.SAFETY: 0,
 					RESOURCE.METRICS.READINESS: 0
 				},
-				"personnel": {
-					RESOURCE.PERSONNEL.TECHNICIANS: false,
-					RESOURCE.PERSONNEL.STAFF: false,
-					RESOURCE.PERSONNEL.SECURITY: false,
-					RESOURCE.PERSONNEL.DCLASS: false	
-				},		
 				"currencies": {
 					RESOURCE.CURRENCY.MONEY: 0,
 					RESOURCE.CURRENCY.MATERIAL: 0,
 					RESOURCE.CURRENCY.SCIENCE: 0,
 					RESOURCE.CURRENCY.CORE: 0,
+				},
+				"personnel": {
+					RESOURCE.PERSONNEL.TECHNICIANS: false,
+					RESOURCE.PERSONNEL.STAFF: false,
+					RESOURCE.PERSONNEL.SECURITY: false,
+					RESOURCE.PERSONNEL.DCLASS: false	
+				},
+				"staff_capacity": {
+					RESEARCHER.SPECIALIZATION.ADMIN: 9,
+					RESEARCHER.SPECIALIZATION.RESEARCHER: 9,
+					RESEARCHER.SPECIALIZATION.SECURITY: 9,
+					RESEARCHER.SPECIALIZATION.DCLASS: 9,
 				},
 				"buffs": [],
 				"debuffs": [],
@@ -718,7 +724,7 @@ func show_only(nodes:Array = []) -> void:
 func next_day() -> void:
 	var objectives:Array = STORY.get_objectives()
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var current_objectives:Dictionary = objectives[story_progress.current_story_val]	
+	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
 	
 	if !GAME_UTIL.are_objectives_complete() and (progress_data.day + 1) >= current_objectives.complete_by_day:
 		var res:bool = await GAME_UTIL.create_warning("OBJECTIVES NOT MET!", "Ignore warning and continue?", "", false, Color(1, 1, 1, 0.2))
@@ -885,8 +891,7 @@ func on_current_phase_update() -> void:
 			#
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 			await U.set_timeout(0.5)
-			
-			await GAME_UTIL.open_tally()
+			await GAME_UTIL.open_tally( RESOURCE_UTIL.return_diff() )
 			
 			
 			current_phase = PHASE.CALC_NEXT_DAY
@@ -962,7 +967,7 @@ func on_current_phase_update() -> void:
 			# CHECK IF SCENARIO DATA IS COMPLETE
 			var objectives:Array = STORY.get_objectives()
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			var current_objectives:Dictionary = objectives[story_progress.current_story_val]
+			var current_objectives:Dictionary = objectives[story_progress.on_chapter]
 						
 			# check for objectivess fail/succeed on appropriate day
 			if progress_data.day >= current_objectives.complete_by_day:
@@ -989,40 +994,31 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.GAME_WON:
 			PhaseAnnouncement.end()
-			
+				
+			# fetch next objective, update objective
+			var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
+
 			# trigger reward event
 			await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
 				EVT.TYPE.OBJECTIVE_REWARD, 
 					{
+						"rewarded": chapter.rewarded.call() if chapter.has("rewarded") else [],
 						"onSelection": func(selection:Dictionary) -> void:
-							# add buff, debuff
-							print(selection),
+							await selection.func.call(),
 					}
 				)
 			])	
-			
-				
-			# fetch next objective, update objective
-			var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			var show_new_message:bool = false
-			
-			# ... if you're at the max story val, increament
-			if story_progress.current_story_val == story_progress.max_story_val and !story_progress.at_story_limit:
-				# update story progress
-				story_progress.max_story_val = U.min_max(story_progress.max_story_val + 1, 0, STORY.get_objectives().size() - 1)	
-				story_progress.at_story_limit = story_progress.max_story_val == STORY.get_objectives().size() - 1				
-				# then update
-				GBL.update_and_save_user_profile(GBL.active_user_profile)
-				# increament current story val
-				story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
-				var chapter:Dictionary = STORY.get_chapter(story_progress.current_story_val )
-				show_new_message = "story_message" in chapter
-				
-			else:	
-				# increament current story val
-				story_progress.current_story_val = U.min_max(story_progress.current_story_val + 1, 0, story_progress.max_story_val)
 						
 			
+			# update story...
+			GAME_UTIL.increament_story()
+
+			# increament current story val
+			var next_chapter = STORY.get_chapter(GBL.active_user_profile.story_progress.on_chapter )
+			var show_new_message:bool = "story_message" in next_chapter
+
+			#
 			# also this checkpoint ONLY ONCE
 			if GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup.is_empty():
 				create_after_setup_restore_point()
@@ -1067,7 +1063,7 @@ func get_save_state() -> Dictionary:
 		"metadata":{
 			"modification_date": Time.get_date_dict_from_system()
 		},		
-		"current_story_val": story_progress.current_story_val,
+		"on_chapter": story_progress.on_chapter,
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
@@ -1179,7 +1175,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
-	#var resource_diff:Dictionary = initial_values.resource_diff.call()
+	var resource_diff:Dictionary = initial_values.resource_diff.call()
 
 	# EXECUTE IN THIS ORDER
 	# zero out defaults 
@@ -1197,26 +1193,23 @@ func update_room_config(force_setup:bool = false) -> void:
 	room_calculate(new_room_config)
 	scp_calculate(new_room_config)
 
-	
 	# trigger any gameplay conditional effects
 	for key in new_gameplay_conditionals:
 		var conditional_dict:Dictionary = new_gameplay_conditionals[key]
 		var val = conditional_dict.val
 		if "on_change" in conditional_dict:
 			conditional_dict.on_change.call(val)
-	
-	# calculate diff amount	
-	# first, get baseline for differential
-	#for key in resource_diff:
-		#var amount:int = resource_diff[key]
-		#resources_data[key].diff = amount
 		
-	## then go through each floor and add/sub from the diff
+	# then go through each floor and add/sub from the diff
 	for floor_index in new_room_config.floor.size():
 		var floor_level:Dictionary = new_room_config.floor[floor_index]
 		for key in floor_level.currencies:
 			var amount:int = floor_level.currencies[key]
-			resources_data[key].diff += amount
+			resource_diff[key] += amount
+	
+	# add to diff in resource data
+	for key in resource_diff:
+		resources_data[key].diff = resource_diff[key]
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
@@ -1477,8 +1470,7 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 				else:
 					# ability not active, remove from list
 					room_base_state.passives_enabled_list.erase(ability.ref)
-
-						
+								
 func room_activation_check(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1513,14 +1505,15 @@ func room_calculate(new_room_config:Dictionary) -> void:
 					# add to totals
 					floor_config_data.currencies[key] += amount
 					ring_config_data.currencies[key] += amount
-					room_config_data.currencies[key] = amount
+					room_config_data.currencies[key] += amount
 					
 			# tally metrics
 			for key in room_data.metrics:
 				var amount:int = room_data.metrics[key]
 				ring_config_data.metrics[key] += amount
 				room_config_data.metrics[key] += amount
-				
+		
+					
 		room_config_data.room_data = {
 			"ref": item.ref,
 			"details": ROOM_UTIL.return_data(item.ref), 

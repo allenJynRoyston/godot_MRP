@@ -26,7 +26,7 @@ func start() -> void:
 			line += c
 			LoginRTL.text += c
 
-		LoginRTL.text += "\r"  # Move to new line after each string
+		LoginRTL.text += "[center] \r [/center]"  # Move to new line after each string
 
 		if i == login_arr.size() - 1:
 			await U.set_timeout(1.0)

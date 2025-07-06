@@ -37,6 +37,7 @@ func activate() -> void:
 	
 	MainPanel.position.y = control_pos[MainPanel].hide
 	
+	print(control_pos[MainPanel])
 # --------------------------------	
 
 # --------------------------------	

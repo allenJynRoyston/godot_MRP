@@ -77,36 +77,7 @@ func _ready() -> void:
 	on_subtitle_update()
 	on_image_update()
 	on_activation_requirements_update()
-	
-
-func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "", bg_color:Color = bg_color) -> void:
-	title = new_title
-	subtitle = new_subtitle
-	image = new_image
-	ColorRectBG.color = bg_color
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
-func end(made_changes:bool) -> void:
-	BtnControls.reveal(false)
-	
-	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
-
-	var duplicate_material:Material = TextureRectUI.material.duplicate(true)
-	TextureRectUI.material = duplicate_material
-
-	await U.tween_range(TextureRectUI.material.get_shader_parameter("blur_radius"), 0.0, 0.3, func(val:float) -> void:
-		TextureRectUI.material.set_shader_parameter("blur_radius", val)
-	).finished	
-	
-	U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].hide)
-	await U.tween_node_property(ContentPanel, "position:x", control_pos[ContentPanel].hide)
-
-	await U.set_timeout(0.3)
-			
-	user_response.emit(made_changes)
-	queue_free()
-# --------------------------------------------------------------------------------------------------		
+# --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func activate(auto_start:bool = true) -> void:
@@ -114,19 +85,18 @@ func activate(auto_start:bool = true) -> void:
 	
 	control_pos[ContentPanel] = {
 		"show": 0, 
-		"hide": ContentMargin.size.x
+		"hide": -ContentMargin.size.x
 	}
 	
 	control_pos[ResourcePanel] = {
 		"show": 0, 
-		"hide": -350
+		"hide": ResourceMargin.size.y
 	}	
 	
-	ResourcePanel.position.x = control_pos[ResourcePanel].hide
-	ContentPanel.position.x = control_pos[ContentPanel].hide
+	ResourcePanel.position.y = control_pos[ResourcePanel].hide
+	ContentPanel.position.y = control_pos[ContentPanel].hide
 	
 # --------------------------------------------------------------------------------------------------	
-
 
 # -------------------------------------------------------------------------------------------------	
 func start() -> void:
@@ -135,10 +105,46 @@ func start() -> void:
 		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 	
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
-	await U.tween_node_property(ContentPanel, "position:x", control_pos[ContentPanel].show)
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show)
 	
 	BtnControls.reveal(true)
 # -------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------		
+func end(made_changes:bool) -> void:
+	BtnControls.reveal(false)
+	
+	#await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
+
+	var duplicate_material:Material = TextureRectUI.material.duplicate(true)
+	TextureRectUI.material = duplicate_material
+
+	await U.tween_range(TextureRectUI.material.get_shader_parameter("blur_radius"), 0.0, 0.3, func(val:float) -> void:
+		TextureRectUI.material.set_shader_parameter("blur_radius", val)
+	).finished	
+	
+	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].hide)
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
+
+	if made_changes:
+		var tally_dict:Dictionary = {}
+		for item in activation_requirements:
+			tally_dict[item.resource.ref] = item.amount
+
+		if !tally_dict.is_empty():
+			await GAME_UTIL.open_tally( tally_dict )
+			
+	user_response.emit(made_changes)
+	queue_free()
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func set_props(new_title:String = "", new_subtitle:String = "", new_image:String = "", bg_color:Color = bg_color) -> void:
+	title = new_title
+	subtitle = new_subtitle
+	image = new_image
+	ColorRectBG.color = bg_color
+# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
 func check_for_unavailable_rooms() -> void:
@@ -148,35 +154,6 @@ func check_for_unavailable_rooms() -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-#func on_is_showing_update(skip_animation:bool = false) -> void:
-	#super.on_is_showing_update()
-	#if !is_node_ready() or control_pos.is_empty():return
-	#var duration:float = 0 if skip_animation else 0.3
-	#
-	#if !is_showing:
-		#allow_input = false	
-		#BtnControls.reveal(false)
-	#
-	#self.modulate = Color(1, 1, 1, 1)	
-	#
-	#U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0.6 if is_showing else 0), duration)
-	#
-	#
-	#if !allow_controls:
-		#U.tween_range(0 if is_showing else 4.0, 4 if is_showing else 0, duration, func(val:float) -> void:
-			#TextureRectUI.material.set_shader_parameter("blur_radius", val)
-		#).finished	
-		#
-	#U.tween_node_property(ContentPanel, "modulate", Color(1, 1, 1, 1 if is_showing else 0),  duration)
-	#U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show if is_showing else control_pos[ResourcePanel].hide, duration)
-	#await U.tween_node_property(ContentPanelContainer, "position:y", control_pos[ContentPanelContainer].show if is_showing else control_pos[ContentPanelContainer].hide, duration)
-	#
-	## reset confirm only state
-	#if is_showing:
-		#allow_input = true
-		#BtnControls.reveal(true)
-
-
 func on_image_update() -> void:
 	if !is_node_ready():return	
 	ImageTextureRect.texture = CACHE.fetch_image("res://Media/rooms/redacted.jpg" if image.is_empty() else image)
@@ -201,7 +178,7 @@ func on_activation_requirements_update() -> void:
 	if activation_requirements.is_empty():
 		return
 	
-	U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].show)
+	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show)
 	
 	var disable_btn:bool = false
 		

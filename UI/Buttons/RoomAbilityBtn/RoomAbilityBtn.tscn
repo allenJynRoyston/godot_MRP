@@ -65,7 +65,7 @@ icon = 44
 static_color = Color(0.827451, 0.827451, 0.827451, 1)
 is_hoverable = false
 
-[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer"]
+[node name="CooldownLabel" type="Label" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(15, 25)
 layout_mode = 2
 text = "99"

@@ -175,7 +175,6 @@ func reset_content_nodes() -> void:
 # --------------------------------------------------------------------------------------------------		
 func start(new_event_data:Array) -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))				
-	U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 1))	
 	await BtnControls.reveal(true)
 	
 	BtnControls.disable_back_btn = true
@@ -396,7 +395,7 @@ func on_current_instruction_update() -> void:
 	if "img_src" in current_instruction:	
 		if ImageTextureRect.texture != CACHE.fetch_image(current_instruction.img_src):
 			ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
-			reveal_outputtexture(true, 2.0)
+			reveal_outputtexture(true, 0.3)
 		
 	if "selected_staff" in current_instruction:
 		if ResearcherCard.uid != current_instruction.selected_staff.uid:
@@ -464,15 +463,17 @@ func on_current_instruction_update() -> void:
 			var is_unavailable:bool = option.is_unavailable if "is_unavailable" in option else false
 			var render_if:Dictionary = option.render_if if "render_if" in option else {}
 			var show:bool = option.show if "show" in option else true
-			
+			var hint_description:String = option.hint_description if option.has("hint_description") else ""
+						
 			if !render_if.is_empty():
 				if "show" in render_if:
 					show = render_if.show
 			
 			if show:
+				new_node.index = index
+				new_node.hint_description = hint_description
 				new_node.is_paranoid = is_paranoid
 				new_node.data = option
-				new_node.index = index 
 				new_node.render_if = render_if
 				new_node.is_hoverable = false
 				new_node.onClick = func() -> void:

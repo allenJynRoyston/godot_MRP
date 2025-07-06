@@ -17,7 +17,7 @@ func fetch_image(src:String = "") -> CompressedTexture2D:
 
 	# if image fails or does not exists, return redacted image
 	if new_texture == null:
-		new_texture = load("res://Media/images/redacted.png")
+		new_texture = load("res://Media/images/Defaults/redacted.png")
 	
 	image_cache.push_back({
 		"src": src, 

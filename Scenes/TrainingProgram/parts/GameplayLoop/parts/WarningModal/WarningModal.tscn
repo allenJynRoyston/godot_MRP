@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://cwnspteeyje6q"]
 
 [ext_resource type="Script" uid="uid://c57unpcppvd0n" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/WarningModal/warning_modal.gd" id="1_q3rcv"]
-[ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentBreachSplash/ContainmentBreachSplash.tscn" id="2_w10ti"]
-[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_wo0rv"]
+[ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn" id="2_w10ti"]
+[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_wo0rv"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_e1078"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_w10ti"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_0amot"]
@@ -58,7 +58,6 @@ layout_mode = 2
 color = Color(0, 0, 0, 0.796078)
 
 [node name="Splash" parent="." instance=ExtResource("2_w10ti")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 title = "OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET OBJECTIVES NOT MET"
 v_offset = 100

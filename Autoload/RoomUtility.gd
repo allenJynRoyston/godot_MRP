@@ -242,6 +242,13 @@ func get_activated_count() -> int:
 	#return room_data.requires_specialization == researcher.specialization.ref
 ## ------------------------------------------------------------------------------
 
+## ------------------------------------------------------------------------------
+func add_to_unlocked_list(ref:int) -> void:
+	if ref not in shop_unlock_purchases:
+		shop_unlock_purchases.push_back(ref)
+	SUBSCRIBE.shop_unlock_purchases = shop_unlock_purchases	
+## ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func calculate_unlock_cost(ref:int, add:bool = false) -> void:		

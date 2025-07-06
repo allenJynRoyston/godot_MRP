@@ -47,6 +47,7 @@ var cancel_only:bool = false :
 		cancel_only = val
 		on_cancel_only_update()
 
+var differential:Dictionary = {}
 var bg_color:Color = Color(0, 0, 0, 0)
 var is_ending:bool = false
 
@@ -95,7 +96,9 @@ func end() -> void:
 	await U.set_timeout(0.3)
 	
 	# update amount
-	GAME_UTIL.update_daily_resources()
+	for ref in differential:
+		var amount:int = differential[ref]
+		RESOURCE_UTIL.make_update_to_currency_amount(ref, amount)
 	
 			
 	user_response.emit()
@@ -136,10 +139,24 @@ func activate(auto_start:bool = true) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # -------------------------------------------------------------------------------------------------	
-func start() -> void:
+func start(new_differential:Dictionary) -> void:
 	if !allow_controls:
 		TextureRectUI.show()
 		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+	
+	differential = new_differential
+	
+	var index:int = 0
+	for ref in resources_data:
+		var ResourceNode:VBoxContainer = ResourceHBox.get_child(index)
+		var CostPanel:Control = ResourceNode.get_child(0)
+		var DiffLabel:Label = ResourceNode.get_child(1)		
+		var diff_amount:int = differential[ref] if differential.has(ref) else 0
+		CostPanel.modulate = Color(1, 1, 1, 1 if diff_amount != 0 else 0.5)
+		DiffLabel.modulate = Color(1, 1, 1, 1 if diff_amount != 0 else 0.5)
+		CostPanel.update_colors()
+		index += 1	
+	
 	
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
 	U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show)
@@ -158,26 +175,29 @@ func start() -> void:
 # -------------------------------------------------------------------------------------------------
 func initiate_tally() -> void:
 	var index:int = 0
+
 	for ref in resources_data:
-		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-		var ResourceNode:VBoxContainer = ResourceHBox.get_child(index)
-		var CostPanel:Control = ResourceNode.get_child(0)
-		var DiffLabel:Label = ResourceNode.get_child(1)
+		if differential.has(ref):
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+			var ResourceNode:VBoxContainer = ResourceHBox.get_child(index)
+			var CostPanel:Control = ResourceNode.get_child(0)
+			var DiffLabel:Label = ResourceNode.get_child(1)
 
-		var current_amount:int = resources_data[ref].amount
-		var diff:int = resources_data[ref].diff
-		var target_amount:int = current_amount + diff
+			var current_amount:int = resources_data[ref].amount
+			var diff_amount:int = differential[ref]
+			var target_amount:int = current_amount + diff_amount
 
-		# Animate increasing the amount incrementally
-		animate_amount_increment( absi(diff) , 0, -10, 0.02, func(val):
-			DiffLabel.text = "%s %s" % ["+" if val >= 0 else "-", absi(val)]
-		)
-		
-		await animate_amount_increment(current_amount, target_amount, 10 if diff >= 0 else -10, 0.02, func(val): 
-			CostPanel.amount = U.min_max(val, 0, resources_data[ref].capacity )
-		)
+			# Animate increasing the amount incrementally
+			animate_amount_increment( absi(diff_amount) , 0, -10, 0.02, func(val):
+				DiffLabel.text = "%s %s" % ["+" if val >= 0 else "-", absi(val)]
+			)
+			
+			await animate_amount_increment(current_amount, target_amount, 10 if diff_amount >= 0 else -10, 0.02, func(val): 
+				CostPanel.amount = U.min_max(val, 0, resources_data[ref].capacity )
+			)
 
 		index += 1
+			
 	
 	await U.set_timeout(1.0)
 	tally_complete.emit()
@@ -186,10 +206,17 @@ func initiate_tally() -> void:
 # -------------------------------------------------------------------------------------------------
 func animate_amount_increment(start:int, target:int, step:int, delay:float, callback:Callable) -> void:
 	var amount = start
-	#var step = 10 if target > start else 0
-	while amount != target:
-		amount += step
+
+	while (step > 0 and amount < target) or (step < 0 and amount > target):
+		# Clamp step if it would overshoot the target
+		var remaining = target - amount
+		var actual_step = step
+		if abs(remaining) < abs(step):
+			actual_step = remaining
+
+		amount += actual_step
 		callback.call(amount)
+
 		await get_tree().create_timer(delay).timeout
 # -------------------------------------------------------------------------------------------------
 

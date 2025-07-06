@@ -1,33 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://d26ruk5g28ttk"]
+[gd_scene load_steps=5 format=3 uid="uid://d26ruk5g28ttk"]
 
 [ext_resource type="Script" uid="uid://bqjop57mc4ev2" path="res://Scenes/Main/title_splash.gd" id="1_rj601"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_neclw"]
+[ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn" id="2_rj601"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="3_sonds"]
-[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_rmh6p"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xhedy"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_1g6k8"]
-font = ExtResource("2_neclw")
-font_size = 80
-font_color = Color(1, 0, 1, 1)
-outline_size = 6
-outline_color = Color(0.8, 0, 0, 1)
-shadow_size = 4
-shadow_color = Color(1, 1, 1, 0.803922)
-shadow_offset = Vector2(2, 2)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rj601"]
-bg_color = Color(0.675147, 0, 0.298457, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_rj601"]
 
 [node name="TitleSplash" type="PanelContainer"]
 anchors_preset = 15
@@ -41,66 +17,46 @@ script = ExtResource("1_rj601")
 layout_mode = 2
 color = Color(0.122252, 0.122252, 0.122252, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Splash" parent="." instance=ExtResource("2_rj601")]
 layout_mode = 2
-theme_override_constants/margin_left = 200
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 200
-theme_override_constants/margin_bottom = 10
+title = "COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING"
+v_offset = 200
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 60
-alignment = 1
 
-[node name="TitleHeader" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxEmpty_xhedy")
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TitleHeader"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "COGNITOHAZARD
-WARNING"
-label_settings = SubResource("LabelSettings_1g6k8")
-horizontal_alignment = 1
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
+[node name="RichTextLabel2" type="RichTextLabel" parent="CenterContainer/HBoxContainer4"]
 modulate = Color(1, 1, 1, 0.831373)
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("3_sonds")
 bbcode_enabled = true
-text = "
+text = "[center]
+The following software has been classified as a SEVERE COGNITOHAZARD by containment authorities.
 
-The following document contains an active cognitohazard posing severe risk to mental integrity. 
+Visual, auditory, and conceptual exposure has been linked to irreversible cognitive degradation, identity fracturing, and high-risk behavioral anomalies.
 
-[wave]You are already affected.[/wave]
+Do not proceed.
+Do not attempt to interact.
+Do not observe any further content.
 
-Remain calm and do not panic. Immediately close this document and cease all interactions.  Every moment of continued exposure increases the risk of non-recoverable neural disintegration
 
+This is your final warning. Exposure beyond this point is considered self-terminating.
 
-
-"
+[/center]"
 fit_content = true
 
-[node name="KeyBtn" parent="MarginContainer/VBoxContainer" instance=ExtResource("4_rmh6p")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_rj601")
-title = "ACKNOWLEDGE YOUR WEAKNESS"
-assigned_key = "ENTER"
-icon = 20
-panel_color = Color(0.675147, 0, 0.298457, 1)
-is_disabled = false
-
 [node name="ColorRect2" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 color = Color(0, 0, 0, 1)
+
+[node name="BtnControls" parent="." instance=ExtResource("4_rj601")]
+layout_mode = 2
+a_btn_title = "CONTINUE"
+hide_b_btn = true

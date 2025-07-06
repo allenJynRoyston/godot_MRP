@@ -184,7 +184,7 @@ var GENERATE_MONEY:Dictionary = {
 	"name": "GENERATE MONEY",
 	"description": "Room generates money.",
 	"lvl_required": 0,
-	"energy_cost": 1,
+	"energy_cost": 2,
 	"currencies":{
 		RESOURCE.CURRENCY.MONEY: 50
 	}

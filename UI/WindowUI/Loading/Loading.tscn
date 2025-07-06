@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dq5icchnwt717" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_0kr8o"]
-[ext_resource type="Texture2D" uid="uid://q14ayb5jrajl" path="res://Media/images/wondertainment_logo.png" id="2_1rmxq"]
+[ext_resource type="Texture2D" uid="uid://ciyxen7577ylg" path="res://Media/images/Defaults/orange_software.png" id="2_1rmxq"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_chhwg"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_1rmxq"]
 
@@ -38,13 +38,13 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(400, 400)
+custom_minimum_size = Vector2(800, 500)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("2_1rmxq")
 expand_mode = 1
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="LoadingVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

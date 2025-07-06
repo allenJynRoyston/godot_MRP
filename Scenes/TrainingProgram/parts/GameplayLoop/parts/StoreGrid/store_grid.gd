@@ -50,11 +50,6 @@ func setup_gridselect() -> void:
 			"title": "CONTAINMENT",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
 				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, room_unlock_level, start_at, end_at),
-		},
-		{
-			"title": "SPECIAL",
-			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.SPECIAL, room_unlock_level, start_at, end_at),
 		}
 	]
 	
@@ -121,7 +116,7 @@ func start() -> void:
 	var init_func:Callable = func(node:Control) -> void:
 		node.ref = -1
 		
-	GridSelect.start(ShopMiniCardPreload, init_func)
+	GridSelect.start(ShopMiniCardPreload, 0, init_func)
 	
 func end() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.3)	
@@ -141,18 +136,15 @@ func unlock_room(ref:int) -> void:
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	
 	var activation_requirements:Array = [{
-		"amount": room_details.costs.unlock, 
+		"amount": -room_details.costs.unlock, 
 		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)
 	}]
 	
 	var confirm:bool = await GAME_UTIL.create_modal("Unlock %s?" % room_details.name, room_details.description, room_details.img_src, activation_requirements, false)
 	if confirm:
-		if room_details.ref not in shop_unlock_purchases:
-			shop_unlock_purchases.push_back(room_details.ref)
-
+		ROOM_UTIL.add_to_unlocked_list(room_details.ref)
 		ROOM_UTIL.calculate_unlock_cost(room_details.ref)
-		SUBSCRIBE.shop_unlock_purchases = shop_unlock_purchases
-		
+
 		GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
 		
 		made_changes = true

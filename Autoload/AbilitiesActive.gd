@@ -1,19 +1,32 @@
-extends Node
+extends SubscribeWrapper
 
 enum REF {
 	EVAL_SCP, 
 	
+	# site director
 	TRIGGER_ONSITE_NUKE,
+	
+	# hire
+	HIRE_RESEARCHERS, HIRE_SECURITY, HIRE_ADMIN, HIRE_DCLASS,	
+	
+	# personell
+	CLONE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
+	
+	# set
 	SET_WARNING_MODE, SET_DANGER_MODE, 
 	
-	CLONE_RESEARCHER, HIRE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
-	
+	# upgrade/unlocks
 	UPGRADE_FACILITY,
 	UNLOCK_FACILITIES,
 	
+	# events
 	HAPPY_HOUR, UNHAPPY_HOUR,
 	
-	MONEY_HACK, SCIENCE_HACK, CONVERT_TO_SCIENCE, CONVERT_TO_MONEY
+	# resource gain
+	MONEY_HACK, SCIENCE_HACK, 
+	
+	# scp containment 
+	CONVERT_TO_SCIENCE, CONVERT_TO_MONEY
 }
 
 # ---------------------------------
@@ -59,7 +72,6 @@ var SET_DANGER_MODE:Dictionary = {
 var UNLOCK_FACILITIES:Dictionary = {
 	"name": "UNLOCK FACILITIES", 
 	"description": "Unlock new facilities and make them available for your site.",
-	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.open_store(),
@@ -68,7 +80,6 @@ var UNLOCK_FACILITIES:Dictionary = {
 var UPGRADE_FACILITY:Dictionary = {
 	"name": "UPGRADE FACILITY", 
 	"description": "Upgrade a facility and unlock additional properties.",
-	"science_cost": 100,
 	"cooldown_duration":  3, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.upgrade_facility(),	
@@ -78,7 +89,6 @@ var UPGRADE_FACILITY:Dictionary = {
 var PROMOTE_RESEARCHER:Dictionary = {
 	"name": "PROMOTE RESEARCHER",
 	"description": "Promote a researcher.",
-	"science_cost": 0,
 	"cooldown_duration":  0, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.promote_researcher(),
@@ -87,25 +97,78 @@ var PROMOTE_RESEARCHER:Dictionary = {
 var CLONE_RESEARCHER:Dictionary = {
 	"name": "CLONE RESEARCHER",
 	"description": "Clone a researcher.",
-	"science_cost": 50,
 	"cooldown_duration":  0, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.clone_researcher(),
 }
 
-var HIRE_RESEARCHER:Dictionary = {
-	"name": "HIRE RESEARCHER",
-	"description": "Hire a researcher.",
-	"science_cost": 0,
-	"cooldown_duration":  0, 
+var HIRE_RESEARCHERS:Dictionary = {
+	"name": "HIRE RESEARCHERS",
+	"description": "Hire 5 researcher (if room is available).",
+	"cooldown_duration":  7, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.hire_researcher(3)
+		var costs := [{"amount": -(5 * 50), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Hire researchers?", "You have room for X reseearchers", "", costs )
+		
+		if confirm:
+			for item in RESEARCHER_UTIL.generate_new_researcher_hires(5, RESEARCHER.SPECIALIZATION.RESEARCHER):
+				hired_lead_researchers_arr.push_back(item)
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+			
+		return confirm
+}
+
+var HIRE_SECURITY:Dictionary = {
+	"name": "HIRE SECURITY",
+	"description": "Hire 5 SECURITY (if room is available).",
+	"cooldown_duration":  7, 
+	"effect": func() -> bool:
+		var costs := [{"amount": -(5 * 50), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Hire SECURITY?", "You have room for X reseearchers", "", costs )
+		
+		if confirm:
+			for item in RESEARCHER_UTIL.generate_new_researcher_hires(5, RESEARCHER.SPECIALIZATION.SECURITY):
+				hired_lead_researchers_arr.push_back(item)
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+			
+		return confirm
+}
+
+var HIRE_ADMIN:Dictionary = {
+	"name": "HIRE ADMIN",
+	"description": "Hire 5 ADMIN (if room is available).",
+	"cooldown_duration":  7, 
+	"effect": func() -> bool:
+		var costs := [{"amount": -(5 * 50), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Hire ADMIN?", "You have room for X reseearchers", "", costs )
+		
+		if confirm:
+			for item in RESEARCHER_UTIL.generate_new_researcher_hires(5, RESEARCHER.SPECIALIZATION.ADMIN):
+				hired_lead_researchers_arr.push_back(item)
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+			
+		return confirm
+}
+
+var HIRE_DCLASS:Dictionary = {
+	"name": "'HIRE' DCLASS",
+	"description": "Hire 5 DCLASS (if room is available).",
+	"cooldown_duration":  7, 
+	"effect": func() -> bool:
+		var costs := [{"amount": -(5 * 20), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Hire DCLASS?", "You have room for X reseearchers", "res://Media/images/dclass.jpg", costs )
+		
+		if confirm:
+			for item in RESEARCHER_UTIL.generate_new_researcher_hires(5, RESEARCHER.SPECIALIZATION.DCLASS):
+				hired_lead_researchers_arr.push_back(item)
+			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+			
+		return confirm
 }
 
 var ADD_TRAIT:Dictionary = {
 	"name": "ADD TRAIT",
 	"description": "Allows a researcher to gain a new trait.",
-	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
 		await U.set_timeout(0.5)
@@ -115,7 +178,6 @@ var ADD_TRAIT:Dictionary = {
 var REMOVE_TRAIT:Dictionary = {
 	"name": "REMOVE TRAIT",
 	"description": "Allows a researcher to remove an existing trait.",
-	"science_cost": 50,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
 		await U.set_timeout(0.5)
@@ -233,8 +295,17 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# -----------------------------
 		
 		# -----------------------------
-		REF.HIRE_RESEARCHER:
-			ability = HIRE_RESEARCHER
+		REF.HIRE_RESEARCHERS:
+			ability = HIRE_RESEARCHERS
+		REF.HIRE_SECURITY:
+			ability = HIRE_SECURITY
+		REF.HIRE_ADMIN:
+			ability = HIRE_ADMIN
+		REF.HIRE_DCLASS:
+			ability = HIRE_DCLASS
+		# -----------------------------
+		
+		# -----------------------------
 		REF.PROMOTE_RESEARCHER:
 			ability = PROMOTE_RESEARCHER
 		REF.CLONE_RESEARCHER:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://loky6w15vqbn"]
 
-[ext_resource type="Script" uid="uid://sl723tgtsdei" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentBreachSplash/containment_breach_splash.gd" id="1_l733j"]
+[ext_resource type="Script" uid="uid://sl723tgtsdei" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/splash.gd" id="1_l733j"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_nofqc"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l733j"]

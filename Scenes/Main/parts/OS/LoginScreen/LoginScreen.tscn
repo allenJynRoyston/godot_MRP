@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://cbwnq2nmqkgf0"]
 
 [ext_resource type="Script" uid="uid://y2k3wyjctrpj" path="res://Scenes/Main/parts/OS/LoginScreen/login_screen.gd" id="1_w1kdg"]
-[ext_resource type="Texture2D" uid="uid://q14ayb5jrajl" path="res://Media/images/wondertainment_logo.png" id="2_ya276"]
+[ext_resource type="Texture2D" uid="uid://ciyxen7577ylg" path="res://Media/images/Defaults/orange_software.png" id="2_ya276"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_ya276"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_sifuj"]
 
@@ -37,7 +37,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(600, 500)
 layout_mode = 2
 texture = ExtResource("2_ya276")
 expand_mode = 2

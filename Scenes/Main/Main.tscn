@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=27 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/DoorScene/DoorScene.tscn" id="4_18xdc"]
@@ -14,6 +14,9 @@
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
+bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_dvlhv"]
 viewport_path = NodePath("OS")
@@ -99,12 +102,9 @@ script = ExtResource("1_cv8e0")
 audio_mute = true
 skip_splash = true
 skip_intro = true
-skip_office_intro = true
 office_skip_animation = true
 debug_story_progress = true
 os_skip_boot = true
-os_skip_to_game = true
-os_app_fast_load = true
 skip_setup_progress = true
 start_at_ring_level = true
 skip_objectives = true
@@ -121,6 +121,7 @@ clip_contents = true
 size = Vector2i(1920, 1080)
 
 [node name="IntroAndTitleScreen" parent="GameLayer" instance=ExtResource("4_cv8e0")]
+theme_override_styles/panel = SubResource("StyleBoxFlat_cetvo")
 
 [node name="OSTexture" type="TextureRect" parent="GameLayer"]
 anchors_preset = 15

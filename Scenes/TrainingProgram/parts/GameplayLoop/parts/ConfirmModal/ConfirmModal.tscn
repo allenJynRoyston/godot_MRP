@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" uid="uid://d3rdbn88vaa70" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
-[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_upopm"]
+[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_upopm"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_kq5a2"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_t4xaw"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_eu6o6"]
@@ -105,7 +105,8 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_kq5a2")
 
 [node name="MarginContainer2" type="MarginContainer" parent="ModalControl/PanelContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 4
+size_flags_vertical = 0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 20
@@ -127,7 +128,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "TITLE GOES HERE"
 label_settings = ExtResource("3_kq5a2")
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
@@ -136,7 +137,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "subtitle goes here"
 label_settings = ExtResource("4_t4xaw")
-horizontal_alignment = 2
+horizontal_alignment = 1
 autowrap_mode = 2
 uppercase = true
 
@@ -157,16 +158,16 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_t4xaw")
 [node name="MarginContainer" type="MarginContainer" parent="ResourceControl/PanelContainer"]
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
+size_flags_horizontal = 4
+size_flags_vertical = 8
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_bottom = 200
 
 [node name="PanelContainer" type="PanelContainer" parent="ResourceControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_t8u6m")
 
 [node name="MarginContainer" type="MarginContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer"]

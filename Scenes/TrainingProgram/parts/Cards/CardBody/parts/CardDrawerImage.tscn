@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://b38bvj8mti387"]
 
 [ext_resource type="Script" uid="uid://dbcjx0aq66hmg" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_image.gd" id="1_ndhov"]
-[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_ndhov"]
+[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_ndhov"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_e6u7c"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4suv"]

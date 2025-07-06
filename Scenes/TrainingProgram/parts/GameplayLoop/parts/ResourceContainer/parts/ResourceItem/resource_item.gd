@@ -42,7 +42,7 @@ extends MouseInteractions
 	set(val):
 		is_negative = val
 		on_is_negative_update()
-
+		
 @export var icon_size:Vector2 = Vector2(20, 20) : 
 	set(val):
 		icon_size = val
@@ -117,10 +117,6 @@ func on_icon_size_update() -> void:
 	await U.tick()
 	IconBtn.custom_minimum_size = icon_size
 
-func on_is_faded_updated() -> void:
-	if !is_node_ready():return	
-	on_is_negative_update()
-
 
 func on_display_at_bottom_update() -> void:
 	if !is_node_ready():return
@@ -129,18 +125,25 @@ func on_display_at_bottom_update() -> void:
 
 func on_is_negative_update() -> void:
 	if !is_node_ready():return
+	U.debounce( str(self, "_update_all"), update_all)
+
+func on_is_faded_updated() -> void:
+	if !is_node_ready():return	
+	U.debounce( str(self, "_update_all"), update_all)
+
+	
+func update_all() -> void:
 	var label_settings_btm:LabelSettings = BtmItemLabel.label_settings.duplicate()
 	var label_settings:LabelSettings = ItemLabel.label_settings.duplicate() 	
-	var a:float = 0.3 if is_faded else 1.0
+	var a:float = 0.8 if is_faded else 1.0
+	var new_color:Color = Color(1, 0, 0, a) if is_negative else Color(1, 1, 1, a)
 	
-	label_settings.font_color = Color(1, 0, 0, a) if is_negative else Color(1, 1, 1, a)
-	label_settings_btm.font_color = Color(1, 0, 0, a) if is_negative else Color(1, 1, 1, a)
-	
-	IconBtn.static_color = Color(1, 0, 0, a) if is_negative else Color(1, 1, 1, a)
+	label_settings.font_color = new_color
+	label_settings_btm.font_color = new_color
+	IconBtn.static_color = new_color
 
 	ItemLabel.label_settings = label_settings
 	BtmItemLabel.label_settings = label_settings_btm
-	
 
 func on_no_bg_update() -> void:
 	if !is_node_ready():return	

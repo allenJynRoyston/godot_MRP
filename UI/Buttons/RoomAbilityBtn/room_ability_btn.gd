@@ -4,7 +4,7 @@ extends BtnBase
 @onready var RootPanel:PanelContainer = $"."
 
 @onready var CostAndCooldownContainer:PanelContainer = $MarginContainer/HBoxContainer/CostAndCooldown
-@onready var CostLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/CostLabel
+@onready var CooldownLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/CooldownLabel
 @onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/IconBtn
 @onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/NameLabel
 
@@ -28,11 +28,11 @@ extends BtnBase
 		on_cooldown = val
 		on_cooldown_update()	
 		
-@export var not_enough_resources:bool = false : 
-	set(val):
-		not_enough_resources = val
-		on_not_enough_resources_update()	
-		
+#@export var not_enough_resources:bool = false : 
+	#set(val):
+		#not_enough_resources = val
+		#on_not_enough_resources_update()	
+		#
 @export var preview_mode:bool = false
 @export var abl_lvl:int = 0 :
 	set(val):
@@ -106,7 +106,7 @@ func on_base_states_update(new_val:Dictionary = base_states) -> void:
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 	if !is_node_ready() or ability_data.is_empty():return
-	not_enough_resources = ability_data.science_cost > resources_data[RESOURCE.CURRENCY.SCIENCE].amount
+	#not_enough_resources = ability_data.science_cost > resources_data[RESOURCE.CURRENCY.SCIENCE].amount
 
 func update_all() -> void:
 	update_font_color()
@@ -145,7 +145,7 @@ func on_ability_name_update() -> void:
 
 func on_cost_update() -> void:
 	if !is_node_ready():return
-	CostLabel.text = str(cost)
+	CooldownLabel.text = str(cost)
 
 func on_abl_lvl_update() -> void:
 	if ability_data.is_empty():return	
@@ -165,15 +165,15 @@ func update_font_color() -> void:
 		if lvl_locked and !altered:
 			new_color = Color.WEB_GRAY
 			altered = true
-		if not_enough_resources and !altered:
-			new_color = Color.RED
-			altered = true
+		#if not_enough_resources and !altered:
+			#new_color = Color.RED
+			#altered = true
 		if is_disabled:
 			new_color = Color.RED
 			altered = true
 				
 	label_duplicate.font_color = new_color
-	for node in [NameLabel, CostLabel]:
+	for node in [NameLabel, CooldownLabel]:
 		node.label_settings = label_duplicate	
 	IconBtn.static_color = new_color
 	
@@ -198,16 +198,15 @@ func update_text() -> void:
 			ability_name = "UNAVAILABLE"
 			hint_description = "Room must be active to use this ability."
 			IconBtn.icon = SVGS.TYPE.LOCK
-			CostLabel.hide()
+			CooldownLabel.hide()
 			return		
-		
-		CostLabel.show()
-		
+
 		if lvl_locked:
 			ability_name = "LVL %s REQUIRED" % [ability_data.lvl_required]
 			hint_description = "%s %s" % [ability_data.description, "(Level requirement must be higher to use this program)."]
 			IconBtn.icon = SVGS.TYPE.LOCK
 			cost = ability_data.lvl_required
+			CooldownLabel.show()
 			return
 		
 		if on_cooldown:
@@ -216,29 +215,23 @@ func update_text() -> void:
 			hint_description = "%s %s" % [ability_data.description, "(On cooldown for %s %s)." % [cooldown_val, "days" if cooldown_val > 1 else "day"]]
 			IconBtn.icon = SVGS.TYPE.FROZEN
 			cost = cooldown_val
+			CooldownLabel.show()
 			return
-		
-		if not_enough_resources:
-			ability_name = ability_data.name
-			hint_title = ability_data.name
-			hint_description = "%s %s" % [ability_data.description, "(Not enough resources to run this program)."]
-			IconBtn.icon = SVGS.TYPE.RESEARCH
-			cost = ability_data.science_cost
-			return
+	
 	
 		
 	ability_name = ability_data.name
 	hint_title = ability_data.name
 	hint_icon = SVGS.TYPE.RESEARCH
 	hint_description = ability_data.description
-	IconBtn.icon = SVGS.TYPE.RESEARCH
-	cost = ability_data.science_cost
-	
+	IconBtn.icon = SVGS.TYPE.NO_ISSUES
+	cost = 0
+	CooldownLabel.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func is_clickable() -> bool:
-	return !on_cooldown and !lvl_locked and !not_enough_resources
+	return !on_cooldown and !lvl_locked
 	
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)

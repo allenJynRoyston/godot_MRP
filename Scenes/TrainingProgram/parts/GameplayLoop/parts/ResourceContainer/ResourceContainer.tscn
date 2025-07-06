@@ -440,10 +440,10 @@ alignment = 1
 [node name="CurrencyTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 layout_mode = 2
 
-[node name="MaterialTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+[node name="ScienceTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 layout_mode = 2
 
-[node name="ScienceTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
+[node name="MaterialTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]
 layout_mode = 2
 
 [node name="CoreTag" parent="PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("6_0dffn")]

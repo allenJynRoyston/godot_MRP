@@ -8,13 +8,13 @@ var DEBUG_ROOM:Dictionary = {
 	"categories": [ROOM.CATEGORY.STANDARD],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Debug room.",
+	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
 	"can_contain": false,
 	"can_destroy": true,
 	"can_assign_researchers": true,
-	"requires_unlock": false,	
 	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],
 	# ------------------------------------------
 
@@ -35,7 +35,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"costs": {
 		"unlock": 0,
-		"purchase": 500,
+		"purchase": 100,
 	},
 	# ------------------------------------------
 	
@@ -128,8 +128,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			#ABL.get_ability(ABL.REF.EVAL_SCP, 0),
-			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0)
+			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 3)
 		],	
 	# ------------------------------------------
 	
@@ -156,9 +155,9 @@ var HQ:Dictionary = {
 	"can_contain": false,
 	"can_destroy": true,
 	"can_assign_researchers": true,
-	"requires_unlock": false,	
 	"own_limit": 1,	
 	"required_staffing": [RESEARCHER.SPECIALIZATION.ADMIN],
+	"requires_unlock": false,	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -167,25 +166,33 @@ var HQ:Dictionary = {
 		"purchase": 0,
 	},
 	# ------------------------------------------
+	
+	# ------------------------------------------	
+	"metrics": {
+		RESOURCE.METRICS.MORALE: 1,
+		RESOURCE.METRICS.SAFETY: 1,
+		RESOURCE.METRICS.READINESS: 1
+	},	
+	# ------------------------------------------		
 		
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES),
-			ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 1),
+			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES),
+			#ABL.get_ability(ABL.REF.HIRE_RESEARCHERS, 1),
 			#ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 2),
 		],	
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
-		return [
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 0),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 0),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS, 0)
-			
-		],	
+	#"passive_abilities": func() -> Array: 
+		#return [
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY, 0),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 0),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 0),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS, 0)
+			#
+		#],	
 	# ------------------------------------------				
 }
 
@@ -200,7 +207,6 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 		
 	# ------------------------------------------
 	"can_contain": true,
-	"requires_unlock": false,	
 	"containment_properties": [
 		SCP.CONTAINMENT_TYPES.PHYSICAL
 	],
@@ -297,29 +303,40 @@ var HR_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.HR_DEPARTMENT,
 	"name": "HR DEPARTMENT",
 	"shortname": "HR",
-	"categories": [ROOM.CATEGORY.STANDARD],
+	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Supplies staff.",
+	"own_limit": 1,		
 	# ------------------------------------------
 
 	# ------------------------------------------
-	"requires_unlock": false,	
 	"required_staffing": [RESEARCHER.SPECIALIZATION.ADMIN],	
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 0,
+		"purchase": 0,
 	},
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
+	"abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
-		],	
+			ABL.get_ability(ABL.REF.HIRE_RESEARCHERS),
+			ABL.get_ability(ABL.REF.HIRE_ADMIN),
+			ABL.get_ability(ABL.REF.HIRE_SECURITY),
+			ABL.get_ability(ABL.REF.HIRE_DCLASS),
+		],		
+	
+	# ------------------------------------------
+	#"passive_abilities": func() -> Array: 
+		#return [
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
+			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
+		#],	
 	# ------------------------------------------	
 }
 
@@ -578,7 +595,7 @@ var TEST6:Dictionary = {
 
 # -----------------------------------	
 var list:Array[Dictionary] = [
-	#DEBUG_ROOM,
+	# DEBUG_ROOM,
 	# ---------------
 	DIRECTORS_OFFICE, HQ, 
 	# ---------------

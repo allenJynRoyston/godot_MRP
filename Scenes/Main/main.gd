@@ -78,8 +78,7 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export_category("STORYPROGRESS DEBUG")
 @export var debug_story_progress:bool = false
 @export var user_profile_ref:FS.FILE = FS.FILE.SAVE_ONE
-@export var story_progress:int = 0
-@export var current_story_val:int = 0
+@export var skip_to_chapter:int = 0
 
 # OS
 @export_category("DEBUG OS")
@@ -187,9 +186,8 @@ var default_save_profiles:Dictionary = {
 # DEFAULT (NEW) USER PROFILE SCHEMA
 var user_profile_schema:Dictionary = {
 	"story_progress": {
-		"max_story_val": 0 if !user_profile_ref else story_progress,
-		"current_story_val": 0 if !user_profile_ref else current_story_val,
-		"at_story_limit": false,		
+		"on_chapter": skip_to_chapter if debug_story_progress else 0,
+		"completed_chapters": []
 	},
 	"graphics": {
 		"fullscreen": false,
@@ -283,8 +281,7 @@ func assign_debugs() -> void:
 	# progress 
 	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS, debug_story_progress)	
 	DEBUG.assign(DEBUG.DEBUG_USER_PROFILE_REF, user_profile_ref)
-	DEBUG.assign(DEBUG.DEBUG_STORY_PROGRESS_VAL, story_progress)
-	DEBUG.assign(DEBUG.DEBUG_CURRENT_STORY_VAL, current_story_val)
+	DEBUG.assign(DEBUG.DEBUG_CURRENT_STORY_VAL, skip_to_chapter)
 		
 	# save files
 	DEBUG.assign(DEBUG.NEW_SYSTEM_FILE, false)	

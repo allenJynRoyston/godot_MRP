@@ -53,11 +53,21 @@ func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers
 	hired_lead_researchers = new_val
 	if room_details.is_empty():return
 	
-	var filtered:Array = hired_lead_researchers.filter(func(x): 
-		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
-		var required_slot:Dictionary = RESEARCHER_UTIL.return_specialization_data(room_details.required_staffing[index])
+	var required_slot:Dictionary = RESEARCHER_UTIL.return_specialization_data(room_details.required_staffing[index])
+
+	var filtered:Array = hired_lead_researchers.filter(func(x):
+		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x)
+		var assigned_room = researcher_data.props.assigned_to_room
+		var specialization_ref = researcher_data.specialization.ref
+
+		var is_assigned_to_room = !assigned_room.is_empty()
+		var matches_location = assigned_room == use_location
+		var is_specialist_match = specialization_ref == required_slot.ref
+
+		if required_slot.ref == RESEARCHER.SPECIALIZATION.ANY:
+			return is_assigned_to_room and matches_location
 		
-		return !researcher_data.props.assigned_to_room.is_empty() and (use_location == researcher_data.props.assigned_to_room) and (researcher_data.specialization.ref == required_slot.ref) 
+		return is_assigned_to_room and matches_location and is_specialist_match
 	)
 	
 

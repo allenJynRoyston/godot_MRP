@@ -29,7 +29,7 @@ var data:Dictionary = {} :
 	set(val):
 		data = val
 		on_data_update()
-		
+				
 var apply_dyslexia:bool = false
 var allow_for_hint:bool = false
 
@@ -79,10 +79,11 @@ func on_is_selected_update() -> void:
 	modulate = Color(1, 1, 1, 1 if is_selected else 0.6)
 	IconBtn.static_color.a = 1 if is_selected else 0.6
 	
-	if is_available:
-		hint_description = "" if ("success_rate" not in data or !allow_for_hint) else "Estimated chance of success: %s%s." % [data.success_rate, "%"] 
-	else:
-		hint_description = "UNAVAILABLE" if render_if.is_empty() else render_if.hint_description
+	if hint_description == "":
+		if is_available:
+			hint_description = "" if ("success_rate" not in data or !allow_for_hint) else "Estimated chance of success: %s%s." % [data.success_rate, "%"] 
+		else:
+			hint_description = "UNAVAILABLE" if render_if.is_empty() else render_if.hint_description
 
 
 func on_render_if_update() -> void:

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byco6us867lcw"
-path="res://.godot/imported/studio_logo.png-50a2de2159856042f626c068b2c70642.ctex"
+uid="uid://ckky2re0y65md"
+path="res://.godot/imported/05-council.png-8414fa799e11668a29ebdfebf38de1d2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Media/images/GameLogo/studio_logo.png"
-dest_files=["res://.godot/imported/studio_logo.png-50a2de2159856042f626c068b2c70642.ctex"]
+source_file="res://Media/images/Defaults/05-council.png"
+dest_files=["res://.godot/imported/05-council.png-8414fa799e11668a29ebdfebf38de1d2.ctex"]
 
 [params]
 

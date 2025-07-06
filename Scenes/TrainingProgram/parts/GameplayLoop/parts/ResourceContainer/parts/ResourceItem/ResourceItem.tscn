@@ -68,6 +68,7 @@ is_hoverable = false
 allow_hint = false
 
 [node name="ItemLabel" type="Label" parent="MarginContainer/ResourceItem/VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 1
 label_settings = SubResource("LabelSettings_rcc13")
@@ -79,6 +80,7 @@ label_settings = SubResource("LabelSettings_n01h6")
 horizontal_alignment = 1
 
 [node name="SecondValContainer" type="VBoxContainer" parent="MarginContainer/ResourceItem"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 

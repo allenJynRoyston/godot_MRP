@@ -155,22 +155,22 @@ func execute_action(action:String) -> void:
 	
 	match action:
 		"START_NEW_GAME":
-			GBL.active_user_profile.story_progress.current_story_val = 0
+			GBL.active_user_profile.story_progress.on_chapter = 0
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game({})
 			
 		"START_FROM_CHECKPOINT":
-			GBL.active_user_profile.story_progress.current_story_val = checkpoint_data.current_story_val
+			GBL.active_user_profile.story_progress.on_chapter = checkpoint_data.on_chapter
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game(checkpoint_data)
 			
 		"START_FROM_QUICKSAVE":
-			GBL.active_user_profile.story_progress.current_story_val = quicksave_data.current_story_val
+			GBL.active_user_profile.story_progress.on_chapter = quicksave_data.on_chapter
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game(quicksave_data)
 			
 		"START_FROM_AFTER_SETUP":
-			GBL.active_user_profile.story_progress.current_story_val = after_setup_data.current_story_val
+			GBL.active_user_profile.story_progress.on_chapter = after_setup_data.on_chapter
 			GBL.update_and_save_user_profile(GBL.active_user_profile)
 			start_game(after_setup_data)
 

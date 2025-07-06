@@ -83,7 +83,7 @@ func _ready() -> void:
 		var story_progress:Dictionary = GBL.active_user_profile.story_progress
 		
 		var total_objectives:int = objectives.size() - 1
-		var max_val:int = U.min_max(story_progress.current_story_val + 1, 0, total_objectives)
+		var max_val:int = U.min_max(story_progress.on_chapter + 1, 0, total_objectives)
 
 		match key:
 			"A":
@@ -99,7 +99,7 @@ func activate() -> void:
 	# assign objectives and assign to current index
 	story_progress = GBL.active_user_profile.story_progress
 	objectives = STORY.get_objectives()
-	objective_index = story_progress.current_story_val
+	objective_index = story_progress.on_chapter
 	
 	await U.tick()
 	control_pos[ObjectivePanel] = {
@@ -172,7 +172,7 @@ func clear_hints() -> void:
 # --------------------------------------------------------------------------------------------------		
 func build_hints(hints:Array = current_hints) -> void:
 	clear_hints()
-	var is_expired:bool = objective_index < story_progress.current_story_val 	
+	var is_expired:bool = objective_index < story_progress.on_chapter 	
 	var already_completed:bool = current_objective.is_completed.call()	
 	var filter_arr:Array = hints.filter(func(x): return x.is_purchased.call() )
 
@@ -240,8 +240,8 @@ func on_objective_index_update() -> void:
 	if !is_node_ready():return
 
 	var current_objectives:Dictionary = objectives[objective_index]	
-	var is_upcoming:bool = objective_index > story_progress.current_story_val 
-	var is_expired:bool = objective_index < story_progress.current_story_val 
+	var is_upcoming:bool = objective_index > story_progress.on_chapter 
+	var is_expired:bool = objective_index < story_progress.on_chapter 
 	
 	Days.amount = str(current_objectives.complete_by_day - progress_data.day)	
 	

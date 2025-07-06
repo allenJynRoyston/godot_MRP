@@ -68,15 +68,6 @@ func on_progress_data_update(new_val:Dictionary = progress_data) -> void:
 func on_value_update() -> void:
 	if !is_node_ready():return
 	TotalAmount.text = str(value)
-	
-	match assigned_metric:
-		RESOURCE.METRICS.MORALE:
-			StatusLabel.text = RESOURCE_UTIL.return_morale_data(value).title
-		RESOURCE.METRICS.SAFETY:
-			StatusLabel.text = RESOURCE_UTIL.return_safety_data(value).title
-		RESOURCE.METRICS.READINESS:
-			StatusLabel.text = RESOURCE_UTIL.return_readiness_data(value).title
-
 
 func on_status_update() -> void:
 	if !is_node_ready():return

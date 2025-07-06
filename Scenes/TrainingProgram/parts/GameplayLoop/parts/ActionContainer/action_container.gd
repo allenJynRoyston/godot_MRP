@@ -1239,7 +1239,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					BtnControls.onCBtn = func() -> void:
 						var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
 						GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref)
-						
+						RoomDetailsControl.show()
+						RoomDetailsControl.researcher_uid = node.researcher.uid 
+
 					
 					RoomDetailsControl.hide() if node.researcher.is_empty() else RoomDetailsControl.show()
 					RoomDetailsControl.researcher_uid = node.researcher.uid if !node.researcher.is_empty() else -1

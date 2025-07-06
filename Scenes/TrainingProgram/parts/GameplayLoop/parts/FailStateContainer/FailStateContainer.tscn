@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://dpn30udt7bfeb"]
 
 [ext_resource type="Script" uid="uid://b6cei623mwxdh" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FailStateContainer/fail_state_container.gd" id="1_lxx8t"]
-[ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentBreachSplash/ContainmentBreachSplash.tscn" id="2_lxx8t"]
+[ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn" id="2_lxx8t"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_4b14y"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_4b14y"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="5_i2pgy"]

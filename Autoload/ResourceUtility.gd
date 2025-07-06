@@ -104,6 +104,14 @@ func return_metric(key:int) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func return_diff() -> Dictionary:
+	var dict:Dictionary = {}
+	for key in resources_data:
+		dict[key] = resources_data[key].diff
+	return dict	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func check_if_have_enough(cost_arr:Array) -> bool:
 	var has_enough:bool = true
 	for item in cost_arr:
@@ -118,143 +126,17 @@ func check_if_have_enough(cost_arr:Array) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func return_morale_data(value:int) -> Dictionary:
-	var dict:Dictionary = {}
-	match value:
-		-3: 
-			dict = {
-				"title": "-5 AP", 
-				"amount": -5
-			}
-		-2: 
-			dict = {
-				"title": "-3 AP", 
-				"amount": -3
-			}
-		-1: 
-			dict = {
-				"title": "-1 AP", 
-				"amount": -1
-			}
-		0: 
-			dict = {
-				"title": "NO BONUS", 
-				"amount": 0
-			}			
-		1: 
-			dict = {
-				"title": "+1 AP", 
-				"amount": 1
-			}						
-		2: 
-			dict = {
-				"title": "+3 AP", 
-				"amount": 3
-			}
-		3: 
-			dict = {
-				"title": "+5 AP", 
-				"amount": 5
-			}
-		_:
-			dict = {
-				"title": "UNKNOWN",
-				"amount": 5
-			}						
-	return dict
+func make_update_to_currency_amount(ref:RESOURCE.CURRENCY, amount:int) -> void:
+	resources_data[ref].amount = U.min_max(resources_data[ref].amount + amount, 0, resources_data[ref].capacity) 
+	print("update resources_data: ", resources_data)
+	SUBSCRIBE.resources_data = resources_data	
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func return_readiness_data(value:int) -> Dictionary:
-	var dict:Dictionary = {}
-	match value:
-		-3: 
-			dict = {
-				"title": "OPTIONS DISABLED", 
-			}
-		-2: 
-			dict = {
-				"title": "2 OPTIONS HIDDEN",
-			}
-		-1: 
-			dict = {
-				"title": "1 OPTION HIDDEN",
-			}
-		0: 
-			dict = {
-				"title": "NO BONUS",
-			}			
-		1: 
-			dict = {
-				"title": "VISIBLE ODDS", 
-			}						
-		2: 
-			dict = {
-				"title": "VISIBLE OUTCOMES", 
-			}
-		3: 
-			dict = {
-				"title": "ALWAYS LUCKY", 
-			}				
-		_:
-			dict = {
-				"title": "UNKNOWN"
-			}			
-	return dict
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func return_safety_data(value:int) -> Dictionary:
-	var dict:Dictionary = {}
-	match value:
-		-3: 
-			dict = {
-				"title": "CONTAINMENT BREACH", 
-				"value": 0,
-			}
-		-2: 
-			dict = {
-				"title": "TIMELINE HIDDEN",
-				"value": 0,
-			}
-		-1: 
-			dict = {
-				"title": "SHORTENED TIMELINE",
-				"value": 0,
-			}
-		0: 
-			dict = {
-				"title": "NO BONUS",
-				"value": 0,
-			}			
-		1: 
-			dict = {
-				"title": "1 DAY FORESIGHT", 
-				"value": 1,
-			}						
-		2: 
-			dict = {
-				"title": "3 DAYS FORESIGHT", 
-				"value": 3,
-			}
-		3: 
-			dict = {
-				"title": "5 DAYS FORESIGHT", 
-				"value": 5,
-			}
-		_:
-			dict = {
-				"title": "UNKNOWN", 
-				"value": 0,
-			}
-	return dict
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func subtract_costs(cost_array:Array) -> void:
-	for item in cost_array:
-		var amount:int = item.amount
-		resources_data[item.resource.ref].amount = U.min_max(resources_data[item.resource.ref].amount - absi(amount), 0, resources_data[item.resource.ref].capacity)
-	SUBSCRIBE.resources_data = resources_data
-# ------------------------------------------------------------------------------
-	
+## ------------------------------------------------------------------------------
+#func subtract_costs(cost_array:Array) -> void:
+	#for item in cost_array:
+		#var amount:int = item.amount
+		#resources_data[item.resource.ref].amount = U.min_max(resources_data[item.resource.ref].amount - absi(amount), 0, resources_data[item.resource.ref].capacity)
+	#SUBSCRIBE.resources_data = resources_data
+## ------------------------------------------------------------------------------
+	#

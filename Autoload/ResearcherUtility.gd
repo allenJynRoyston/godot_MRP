@@ -245,6 +245,16 @@ func return_mood_data(ref:RESEARCHER.MOODS) -> Dictionary:
 	return mood_data[ref]
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func get_spec_count(ref:RESEARCHER.SPECIALIZATION) -> int:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(x): 
+		var data:Dictionary = return_data_with_uid(x[0])
+		if data.specialization.ref == ref:
+			return x
+	)
+	return filtered.size()
+# ------------------------------------------------------------------------------
+	
 # ------------------------------------------------------------------------------	
 func get_details_from_extract(location:Dictionary) -> Dictionary:
 	if !location.is_empty():
@@ -488,12 +498,19 @@ func can_be_promoted(uid:String) -> bool:
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
-func get_list_of_available(filter_for_specs:Array = []) -> Array:
-	var filtered:Array = hired_lead_researchers_arr.filter(func(x):
-		var data:Dictionary = get_user_object(x)
-		return data.props.assigned_to_room.is_empty() and (data.specialization.ref in filter_for_specs)
+func get_list_of_available(filter_for_specs: Array = []) -> Array:
+	return hired_lead_researchers_arr.filter(func(x):
+		var researcher_data: Dictionary = get_user_object(x)
+		var is_unassigned = researcher_data.props.assigned_to_room.is_empty()
+		var specialization_ref = researcher_data.specialization.ref
+		var accepts_any = RESEARCHER.SPECIALIZATION.ANY in filter_for_specs
+		var matches_spec = specialization_ref in filter_for_specs
+
+		if accepts_any and is_unassigned:
+			return true
+		
+		return is_unassigned and matches_spec
 	)
-	return filtered
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		

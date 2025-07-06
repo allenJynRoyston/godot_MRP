@@ -26,7 +26,7 @@ var onLogin:Callable = func():pass
 
 # new values
 var story_progress:Dictionary = {}
-var story_index:int
+#var story_index:int
 var allow_replay:bool = true
 
 
@@ -60,7 +60,8 @@ func _ready() -> void:
 	BtnControls.onCBtn = func() -> void:
 		if !is_ready:return
 		await BtnControls.reveal(false)		
-		play_current_story_sequence()
+		await play_current_story_sequence()
+		BtnControls.reveal(true)	
 	
 	BtnControls.onBack = func() -> void:
 		pass
@@ -68,9 +69,9 @@ func _ready() -> void:
 	BtnControls.onDirectional = func(key:String):
 		if !is_visible_in_tree() or !is_node_ready() or !allow_replay:return
 		var story_progress:Dictionary = GBL.active_user_profile.story_progress
-		var max_story_val:int = mini(story_progress.current_story_val, STORY.chapters.size() - 1)
+		#var max_story_val:int = mini(story_progress.current_story_val, STORY.chapters.size() - 1)
 		
-		pass
+		#pass
 		#match key:
 			#"A":
 				#story_index = U.min_max(story_index - 1, 0, max_story_val)
@@ -84,32 +85,21 @@ func _ready() -> void:
 # ---------------------------------------------
 func play_current_story_sequence() -> void:	
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	var on_chapter:int = GBL.active_user_profile.story_progress.on_chapter
 	
-	if "story_message" in STORY.chapters[story_index]:
-		StoryNarration.text_list = STORY.chapters[story_index].story_message 
-		await StoryNarration.reveal(true)
-		await StoryNarration.on_end
-	# update current progress val to story value ONLY if it's the first one
-	
-	if story_index == story_progress.max_story_val and story_progress.play_message_required:
-		GBL.active_user_profile.story_progress.play_message_required = false
-		GBL.update_and_save_user_profile(GBL.active_user_profile)
+	StoryNarration.text_list = STORY.chapters[on_chapter].story_message 
+	await StoryNarration.reveal(true)
+	await StoryNarration.on_end
 
 	# update btn states, reveal buttons
 	check_btn_states(false)	
 		
 	await U.set_timeout(0.3)
 	wait_for_story.emit()
-	
-
-	BtnControls.reveal(true)
-
 # ---------------------------------------------
 
 # ---------------------------------------------
 func play_next_sequence() -> void:
-	story_index = GBL.active_user_profile.story_progress.current_story_val
-	
 	allow_replay = false
 
 	# update available buttons
@@ -132,17 +122,14 @@ func play_next_sequence() -> void:
 
 # ---------------------------------------------
 func check_btn_states(use_for_skip:bool = false) -> void:
+	print( GBL.active_user_profile.story_progress )
+	
 	if allow_replay:
-		var play_message_required:bool = GBL.active_user_profile.story_progress.current_story_val == GBL.active_user_profile.story_progress.max_story_val
-		var story_progress:Dictionary = GBL.active_user_profile.story_progress
-		var has_story_message:bool = "story_message" in STORY.chapters[story_index]
+		var on_chapter:int = GBL.active_user_profile.story_progress.on_chapter
+		var has_story_message:bool = "story_message" in STORY.chapters[on_chapter]
 
-		
-		# if the story val is 0 (new game), then hide until the first story segement has been completed
-		BtnControls.hide_a_btn = play_message_required and has_story_message
-		
 		# c btn title
-		BtnControls.c_btn_title = "PLAY MESSAGE" if (play_message_required and has_story_message) else "REPLAY MESSAGE"
+		BtnControls.c_btn_title = "PLAY MESSAGE"
 		
 		# modify on action so it skips
 		BtnControls.a_btn_title = "SKIP" if use_for_skip else "LOGIN"
@@ -170,7 +157,6 @@ func check_btn_states(use_for_skip:bool = false) -> void:
 func start() -> void:
 	show()	
 	await U.tick()	
-	story_index = GBL.active_user_profile.story_progress.current_story_val
 	check_btn_states(false)	
 
 	current_mode = MODE.START

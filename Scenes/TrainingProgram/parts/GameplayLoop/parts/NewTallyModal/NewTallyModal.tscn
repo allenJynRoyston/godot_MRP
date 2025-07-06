@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://b5vcatxkos4a3"]
 
 [ext_resource type="Script" uid="uid://djbh6v6e8b7nd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/NewTallyModal/new_tally_modal.gd" id="1_o0y4m"]
-[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/redacted.png" id="2_tlry5"]
+[ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_tlry5"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_6dlkw"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_o0sm6"]
 [ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="5_gug6l"]

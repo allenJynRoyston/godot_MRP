@@ -144,29 +144,28 @@ func on_ref_update() -> void:
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-	var is_activated:bool = true
-	var morale_val:int = GAME_UTIL.get_metric_val(use_location, RESOURCE.METRICS.MORALE)
+	var is_activated:bool = false
 	var metrics:Dictionary = room_details.metrics
 	var currency_list:Array = []
 
+	if use_location.is_empty() or preview_mode:
+		for ref in room_details.currencies:
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+			var amount:int = room_details.currencies[ref]
+			# apply bonus
+			currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})					
+		
+
 	# if location is provided, return extract data
-	if !use_location.is_empty():
+	else:
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		if !extract_data.room.is_empty():
 			is_activated = extract_data.room.is_activated
 			metrics = extract_data.room.metrics
 			currency_list = extract_data.room.currency_list
-	
-	
-	# else, use just the room details
-	else:
-		for ref in room_details.currencies:
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-			var amount:int = room_details.currencies[ref]
-			# apply bonus
-			currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
+			
 
-
+	
 	for node in [CardBody]:
 		node.border_color = default_border_color if is_activated else Color.RED
 
@@ -175,6 +174,7 @@ func on_ref_update() -> void:
 		var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
 		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
+
 
 	# -----------
 	InactivePanel.show() if !is_activated else InactivePanel.hide()
@@ -195,7 +195,6 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.room_details = room_details	
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
-	CardDrawerCurrency.morale_val = morale_val
 	CardDrawerCurrency.list = currency_list
 	
 # ------------------------------------------------------------------------------

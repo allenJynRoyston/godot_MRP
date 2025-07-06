@@ -14,7 +14,7 @@ const ScpGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/G
 const ResearchersGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherGrid/ResearcherGrid.tscn")
 
 const DialogPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/DialogueContainer/DialogueContainer.tscn")
-const ContainmentBreachPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ContainmentBreachSplash/ContainmentBreachSplash.tscn")
+const SplashPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn")
 
 const z_index_lvl:int = 10
 const new_scp_entry:Dictionary = {
@@ -47,7 +47,7 @@ func assign_nodes() -> void:
 func mark_current_objectives() -> void:
 	var objectives:Array = STORY.get_objectives()
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var current_objectives:Dictionary = objectives[story_progress.current_story_val]	
+	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
 	
 	var bookmarked_objectives:Array = []
 	for objective in current_objectives.list:
@@ -61,7 +61,7 @@ func are_objectives_complete() -> bool:
 	# CHECK IF SCENARIO DATA IS COMPLETE
 	var objectives:Array = STORY.get_objectives()
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var current_objectives:Dictionary = objectives[story_progress.current_story_val]
+	var current_objectives:Dictionary = objectives[story_progress.on_chapter]
 	var completed_by_day:int = current_objectives.complete_by_day
 	
 					
@@ -266,15 +266,6 @@ func get_metric_val(use_location:Dictionary, metric_ref:RESOURCE.METRICS) -> int
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func update_daily_resources() -> void:
-	for ref in resources_data:
-		resources_data[ref].amount += resources_data[ref].diff
-	
-	SUBSCRIBE.resources_data = resources_data
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
 func extract_room_details(use_location:Dictionary = current_location, use_config:Dictionary = room_config) -> Dictionary:
 	if use_config.is_empty():return {}
 	var designation:String = U.location_to_designation(use_location)
@@ -298,6 +289,8 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
+	
+
 	# compiles metrics
 	var metrics:Dictionary = {}
 	for dict in [room_details, scp_details]:
@@ -313,6 +306,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	for ref in room_level.currencies:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
 		var amount:int = room_level.currencies[ref]		
+		
 		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
 				
 	return {
@@ -347,7 +341,6 @@ func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use
 			base_states.room[designation].ability_on_cooldown[ability_uid] = 0		
 			
 		base_states.room[designation].ability_on_cooldown[ability_uid] = ability.cooldown_duration
-		resources_data[RESOURCE.CURRENCY.SCIENCE].amount -= ability.science_cost
 		
 		SUBSCRIBE.resources_data = resources_data
 		SUBSCRIBE.base_states = base_states
@@ -413,7 +406,7 @@ func reset_room() -> bool:
 # -----------------------------------
 func add_objectives_to_timeline(objectives:Array = []) -> void:
 	for objective in objectives:
-		print(objective.complete_by_day)
+		
 		GAME_UTIL.add_timeline_item({
 			"title": "Objectives deadline",
 			"icon": SVGS.TYPE.INFO,
@@ -424,15 +417,15 @@ func add_objectives_to_timeline(objectives:Array = []) -> void:
 
 # -----------------------------------
 func start_containment_breach() -> Control:
-	var ContainmentNode:Control = ContainmentBreachPreload.instantiate()
-	ContainmentNode.z_index = z_index_lvl
-	GameplayNode.add_child(ContainmentNode)
+	var SplashNode:Control = SplashPreload.instantiate()
+	SplashNode.z_index = z_index_lvl
+	GameplayNode.add_child(SplashNode)
 	
-	await ContainmentNode.activate()
+	await SplashNode.activate()
 	
-	ContainmentNode.start()
+	SplashNode.start()
 	
-	return ContainmentNode
+	return SplashNode
 # -----------------------------------
 
 
@@ -914,7 +907,6 @@ func activate_floor(floor_val:int) -> bool:
 	var confirm:bool = await create_modal(title, subtitle, "", activation_requirements)
 
 	if confirm:
-		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
 		base_states.floor[str(floor_val)].is_powered = true
 		SUBSCRIBE.base_states = base_states 
 		SUBSCRIBE.resources_data = resources_data
@@ -933,7 +925,6 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> bool
 	var confirm:bool = await create_modal(title, subtitle, "", activation_requirements)
 
 	if confirm:
-		resources_data[RESOURCE.CURRENCY.MONEY].amount -= activation_cost
 		base_states.floor[str(use_location.floor)].generator_level += 1
 		SUBSCRIBE.base_states = base_states
 		SUBSCRIBE.resources_data = resources_data
@@ -1044,7 +1035,7 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func open_tally(color_bg:Color = Color(0, 0, 0, 0.7)) -> void:
+func open_tally(differential:Dictionary, color_bg:Color = Color(0, 0, 0, 0.7)) -> void:
 	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
 	disable_taskbar(true)
 	
@@ -1054,7 +1045,7 @@ func open_tally(color_bg:Color = Color(0, 0, 0, 0.7)) -> void:
 	NewtallyNode.set_props("DAILY RESOURCES", "We gots to get paid.", "", Color(0, 0, 0, 0.7))	
 	await NewtallyNode.activate(false)
 	
-	NewtallyNode.start()
+	NewtallyNode.start(differential)
 	await NewtallyNode.user_response	
 	
 	disable_taskbar(previous_show_taskbar_state)
@@ -1081,7 +1072,7 @@ func create_warning(title:String = "", subtitle:String = "", img_src:String = ""
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func create_modal(title:String = "", subtitle:String = "", img_src:String = "", activation_requirements:Array = [], allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+func create_modal(title:String = "", subtitle:String = "", img_src:String = "", cost:Array = [], allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
 	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
 	disable_taskbar(true)
 	
@@ -1092,7 +1083,7 @@ func create_modal(title:String = "", subtitle:String = "", img_src:String = "", 
 	ConfirmNode.allow_controls = allow_controls
 	
 	await ConfirmNode.activate(false)
-	ConfirmNode.activation_requirements = activation_requirements
+	ConfirmNode.activation_requirements = cost
 	
 	ConfirmNode.start()
 	var confirm:bool = await ConfirmNode.user_response	
@@ -1148,6 +1139,19 @@ func add_dialogue(data:Dictionary) -> void:
 	disable_taskbar(false)
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+func increament_story() -> void:
+	# add to completed chapters
+	if GBL.active_user_profile.story_progress.on_chapter not in GBL.active_user_profile.story_progress.completed_chapters:
+		GBL.active_user_profile.story_progress.completed_chapters.push_back(GBL.active_user_profile.story_progress.on_chapter)
+	
+	# ... increament story
+	GBL.active_user_profile.story_progress.on_chapter = U.min_max(GBL.active_user_profile.story_progress.on_chapter + 1, 0, STORY.get_objectives().size() - 1)	
+	
+	# then update
+	print("GBL.active_user_profile.story_progress: ", GBL.active_user_profile.story_progress)
+	GBL.update_and_save_user_profile(GBL.active_user_profile)	
+# ------------------------------------------------------------------------------	
 
 
 # ------------------------------------------------------------------------------	TUTORIAL

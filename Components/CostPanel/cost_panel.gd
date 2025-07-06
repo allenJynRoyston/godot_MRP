@@ -31,6 +31,7 @@ func _ready() -> void:
 	on_title_update()
 	on_amount_update()
 	on_is_negative_update()
+	
 
 func on_icon_update() -> void:
 	if !is_node_ready():return
@@ -46,10 +47,15 @@ func on_title_update() -> void:
 
 func on_is_negative_update() -> void:
 	if !is_node_ready():return
-	var label_settings_copy:LabelSettings = AmountLabel.label_settings.duplicate()
-	var new_color:Color = Color.WHITE if !is_negative else Color.RED
+	update_colors()
 	
-	label_settings_copy.font_color = new_color
+func update_colors() -> void:
+	var label_settings_copy:LabelSettings = AmountLabel.label_settings.duplicate()
+	var alpha:float = self.modulate.a
+	var new_color:Color = Color.WHITE if !is_negative else Color.RED
+	var mixed_color:Color = Color(new_color.r, new_color.g, new_color.b, alpha)
+	
+	label_settings_copy.font_color = mixed_color
 	AmountLabel.label_settings = label_settings_copy
 	
-	IconBtn.static_color = new_color
+	IconBtn.static_color = mixed_color	
