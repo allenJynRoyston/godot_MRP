@@ -113,8 +113,10 @@ func check_track_scroll() -> void:
 # --------------------------------------		
 func on_process_update(delta: float) -> void:
 	super.on_process_update(delta)
-	var current_audio_stream_player:AudioStreamPlayer = GBL.find_node(REFS.AUDIO).current_audio_stream_player
 	
+	var current_audio_stream_player:AudioStreamPlayer = GBL.find_node(REFS.AUDIO).current_audio_stream_player
+	spectrum = AudioServer.get_bus_effect_instance(0, 0)
+
 	if spectrum != null and current_audio_stream_player.playing:
 		var prev_hz = 0.0
 		var data:Array = []

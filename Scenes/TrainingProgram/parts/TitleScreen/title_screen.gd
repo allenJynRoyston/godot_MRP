@@ -121,7 +121,7 @@ func start(fast_boot:bool = false) -> void:
 	
 	SubTitle.text = "TUTORIAL VERSION" if is_tutorial else "BASE MANAGEMENT SIMULATOR"
 	
-	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show)
+	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show, 0.7)
 	
 	ContinueAfterSetup.is_disabled = !has_after_setup
 	ContinueFromCheckpoint.is_disabled = !has_checkpoint_data
@@ -149,7 +149,7 @@ func start(fast_boot:bool = false) -> void:
 # ------------------------------------------
 func end(action:String, props:Dictionary = {}) -> void:
 	ContinueDetails.hide()	
-	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide)
+	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide, 0.7)
 	hide()
 	wait_for_input.emit({"action": action, "props": props})
 # ------------------------------------------
