@@ -7,13 +7,7 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"Alright, listen up D-9973, uh... okay, you know what.  If I have to use your full name each time this is going to take forever.  You're just D from now on.",
-			"I know it's not very professional, but I've been doing this all day and we just need to get through it.",
-			"Now, lets go over your situation.  As far as you're conerned, you just hit the lottery.  Out of all the horrors we could of had you test on, this one is relatively harmless.",
-			"Nothing going to come out of the screen.  There's no monsters hidden around the corner.  We literally just need you to test some software.",
-			"In front of you is a computer.  There's a game on there called \"Site Director Training Program\".",
-			"You're gonna play until you beat it.  If you're able to do that we let you go. If you don't, then I'm afraid we have to terminate you.",
-			"For now, just get past day 10.",
+			"Story section 1"
 		],
 		"objectives": {
 			"title": "SETUP",
@@ -83,7 +77,6 @@ var chapters:Array = [
 				},				
 				# ---------------------
 			],
-			
 		},
 		"rewarded": func() -> Array:
 			return [
@@ -103,6 +96,9 @@ var chapters:Array = [
 	
 	# ----------------------------------------------------------------------------------------------
 	{
+		"story_message": [
+			"Story section 2"
+		],		
 		"objectives": {
 			"title": "STAFF UP",
 			"complete_by_day": 7,

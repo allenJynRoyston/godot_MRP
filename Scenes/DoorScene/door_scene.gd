@@ -121,9 +121,7 @@ func play_next_sequence() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
-func check_btn_states(use_for_skip:bool = false) -> void:
-	print( GBL.active_user_profile.story_progress )
-	
+func check_btn_states(use_for_skip:bool = false) -> void:	
 	if allow_replay:
 		var on_chapter:int = GBL.active_user_profile.story_progress.on_chapter
 		var has_story_message:bool = "story_message" in STORY.chapters[on_chapter]
