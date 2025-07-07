@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://cey4msk4p7tpa"]
+[gd_scene load_steps=32 format=3 uid="uid://cey4msk4p7tpa"]
 
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_soqd8"]
 [ext_resource type="Script" uid="uid://c2g08ld7dokr2" path="res://Scenes/TrainingProgram/parts/Cards/ROOM/room_card.gd" id="1_tq8sf"]
@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://car8yud4yb0pj" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerVibes.tscn" id="7_p42hl"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="9_esvi2"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="9_f84t7"]
+[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="11_nu0ye"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="12_wvj30"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tq8sf"]
 
@@ -39,6 +41,15 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d5120"]
+bg_color = Color(0, 0, 0, 0.823529)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5qho3"]
+font = ExtResource("12_wvj30")
+font_size = 32
+outline_size = 16
+outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvj30"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -193,6 +204,8 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tq8sf")
 script = ExtResource("1_tq8sf")
 reveal = true
+show_cost = null
+show_research_cost = null
 
 [node name="CardBody" parent="." instance=ExtResource("1_soqd8")]
 layout_mode = 2
@@ -216,6 +229,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_6kgnm")
 theme_override_constants/separation = 10
 
 [node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("2_tq8sf")]
+custom_minimum_size = Vector2(200, 170)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nu0ye")
 img_src = "-"
@@ -223,6 +237,45 @@ use_static = true
 title = ""
 is_left_side = true
 border_color = Color(0.3672, 0.378, 0.9, 1)
+
+[node name="CostPanel" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_d5120")
+
+[node name="MarginContainer" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="CostLabel" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+text = "CONSTRUCTION COST"
+label_settings = ExtResource("11_nu0ye")
+horizontal_alignment = 1
+
+[node name="CostIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2" instance=ExtResource("9_f84t7")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+icon = 31
+is_hoverable = false
+
+[node name="CostAmount" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "0"
+label_settings = SubResource("LabelSettings_5qho3")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2
@@ -329,6 +382,7 @@ is_left_side = false
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="InactivePanel" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody" index="2"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4

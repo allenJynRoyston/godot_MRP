@@ -26,7 +26,7 @@ extends Control
 
 @onready var CostPanel:Control = $MenuControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/CostPanel
 
-const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/MenuBtn/MenuBtn.tscn")
+const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
 const LabelSettingPreload:LabelSettings = preload("res://Fonts/game/label_small_thick.tres")
 
 const LIST_SIZE:int = 4
@@ -264,6 +264,7 @@ func on_options_list_update() -> void:
 		#btn_node.title = "NO LVL %s ACTIONS AVAILABLE" % [level + 1]
 		btn_node.btn_color = use_color
 		btn_node.is_empty = true
+		btn_node.is_hollow = true
 		
 		List.add_child(btn_node)		
 		return
@@ -277,26 +278,27 @@ func on_options_list_update() -> void:
 	for index in options_list[tab_index].items.size():
 		var item:Dictionary = options_list[tab_index].items[index]
 		var btn_node:Control = MenuBtnPreload.instantiate()
+		var show:bool = item.show if item.has("show") else true
 		
 		CardMenuHeader.content = str(options_list[tab_index].title) if "title" in options_list[tab_index] else ""
 		
-		btn_node.title = item.title
-		btn_node.btn_color = use_color
-
-		btn_node.is_togglable = item.is_togglable if "is_togglable" in item else false
-		btn_node.is_checked = item.is_checked if "is_checked" in item else false
-		btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
-
-		btn_node.onClick = func() -> void:
-			on_action()
-		
-		#btn_node.onFocus = func(_node:Control) -> void:
-			#selected_index = index			
-		
-		if index >= LIST_SIZE:
-			btn_node.hide()
-		
-		List.add_child(btn_node)
+		if show:
+			btn_node.title = item.title
+			#btn_node.btn_color = use_color
+			btn_node.COLOR_A = Color.WHITE
+			#btn_node.COLOR_B = Color.WHITE
+			btn_node.display_checkmark = item.is_togglable if "is_togglable" in item else false
+			btn_node.is_checked = item.is_checked if "is_checked" in item else false
+			btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
+			btn_node.is_hollow = true
+			
+			btn_node.onClick = func() -> void:
+				on_action()
+			
+			if index >= LIST_SIZE:
+				btn_node.hide()
+			
+			List.add_child(btn_node)
 		
 
 	await U.tick()

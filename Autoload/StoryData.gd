@@ -60,6 +60,19 @@ var chapters:Array = [
 			],
 			"optional": [
 				# --------------------- OPTIONAL
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1,
+						"type": TYPE.BUILDING,
+						"ref": ROOM.REF.UI_ASSIST
+					},
+					"hints": [
+						{"title": "Step 1", "cost": 1},
+						{"title": "Step 2", "cost": 2},
+						{"title": "Step 3", "cost": 5},
+					]
+				},				
 				{
 					"custom": {
 						"is_optional": true,

@@ -12,7 +12,7 @@ extends PanelContainer
 @onready var BtnList:VBoxContainer = $Control/PanelContainer/MarginContainer/VBoxContainer/BtnList
 
 
-const OptionItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Options/parts/OptionItem.tscn")
+const ItemBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
 
 var properties:Dictionary = {}
 var itemlist:Array = []
@@ -80,7 +80,7 @@ func setup(btn_list:Array, option_list:Array, new_position:Vector2 = Vector2()) 
 	BtnList.hide() if btn_list.is_empty() else BtnList.show()
 	
 	for item in btn_list:
-		var new_node:Control = OptionItemPreload.instantiate()
+		var new_node:Control = ItemBtnPreload.instantiate()
 		itemlist.push_back(new_node)
 		
 		new_node.title = item.title
@@ -93,7 +93,7 @@ func setup(btn_list:Array, option_list:Array, new_position:Vector2 = Vector2()) 
 	
 	# options_list
 	for item in option_list:
-		var new_node:Control = OptionItemPreload.instantiate()
+		var new_node:Control = ItemBtnPreload.instantiate()
 		properties[item.key] = item.value
 		itemlist.push_back(new_node)
 		

@@ -1,10 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccfxehln1766x"]
+[gd_scene load_steps=13 format=3 uid="uid://ccfxehln1766x"]
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_id14l"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_s4nou"]
-[ext_resource type="PackedScene" uid="uid://bi7xftrg6xgiu" path="res://Scenes/TrainingProgram/parts/TitleScreen/parts/ContinuePanel.tscn" id="5_nwmuc"]
+[ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://UI/Buttons/ItemBtn/ItemBtn.tscn" id="4_oonus"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_3sdtd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfvw8"]
@@ -18,32 +17,29 @@ bg_color = Color(0, 0, 0, 0.337255)
 font = ExtResource("3_id14l")
 font_size = 12
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3swr"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwmuc"]
-bg_color = Color(0, 0, 0, 0.733333)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oonus"]
-bg_color = Color(0.337255, 0.27451, 1, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
-bg_color = Color(0, 0, 0, 0.733333)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46a2l"]
-bg_color = Color(0, 0, 0, 0.733333)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="TitleScreen" type="PanelContainer"]
 anchors_preset = 15
@@ -120,60 +116,37 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="NewBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
-custom_minimum_size = Vector2(120, 40)
+[node name="NewBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
+title = "NEW GAME"
+is_disabled = false
+is_hollow = false
+COLOR_A = Color(1, 1, 1, 1)
+COLOR_A_DISABLED = Color(1, 0, 0, 1)
+COLOR_B_DISABLED = Color(0, 0, 0, 1)
+
+[node name="ContinueBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
-icon = 71
-panel_color = Color(0, 0, 0, 0.733333)
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "New game"
-hint_title = "HINT"
-hint_description = "Start a new game."
+title = "CONTINUE..."
+is_disabled = false
+is_hollow = false
+COLOR_A = Color(1, 1, 1, 1)
+COLOR_A_DISABLED = Color(1, 0, 0, 1)
+COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
-[node name="ContinueAfterSetup" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
+[node name="QuitBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
-size_flags_horizontal = 5
 theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
-icon = 71
-panel_color = Color(0.337255, 0.27451, 1, 1)
-title = "Continue after setup"
-hint_title = "HINT"
-hint_description = "Restart after base setup."
-
-[node name="ContinueFromCheckpoint" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
-layout_mode = 2
-size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
-icon = 71
-title = "Continue from checkpoint"
-hint_title = "HINT"
-hint_description = "Restart from the last checkpoint."
-
-[node name="ContinueQuicksave" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
-custom_minimum_size = Vector2(120, 40)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
-icon = 71
-panel_color = Color(0, 0, 0, 0.733333)
-inactive_color = Color(1, 1, 1, 0.796078)
-title = "Continue from quicksave"
-hint_title = "HINT"
-
-[node name="QuitBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("3_s4nou")]
-custom_minimum_size = Vector2(120, 40)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_46a2l")
-icon = 71
-panel_color = Color(0, 0, 0, 0.733333)
-inactive_color = Color(0.691357, 0.691357, 0.691357, 0.796078)
-title = "Return to desktop"
-hint_title = "HINT"
-hint_description = "Exit to desktop."
-
-[node name="ContinuePanel" parent="." instance=ExtResource("5_nwmuc")]
-layout_mode = 2
+title = "EXIT APPLICATION"
+is_disabled = false
+is_hollow = false
+COLOR_A = Color(1, 1, 1, 1)
+COLOR_A_DISABLED = Color(1, 0, 0, 1)
+COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="BtnControl" parent="." instance=ExtResource("10_3sdtd")]
 layout_mode = 2
+offset = Vector2(5, 15)
 b_btn_title = "CLOSE"

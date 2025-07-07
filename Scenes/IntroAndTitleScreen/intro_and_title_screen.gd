@@ -7,8 +7,7 @@ enum MODE {INIT, START, TITLESPLASH, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_T
 @onready var RenderSubviewport:SubViewport = $Title/RenderSubviewport
 @onready var SceneCamera:Camera3D = $Title/RenderSubviewport/Node3D/Camera3D
 
-@onready var TitleSplashControl:Control = $TitleSplash
-@onready var TitleSplash:PanelContainer = $TitleSplash/TitleSplash
+@onready var TitleSplash:PanelContainer = $TitleSplash
 
 @onready var LogoControl:Control = $Logo
 @onready var LogoPanel:MarginContainer = $Logo/MarginContainer

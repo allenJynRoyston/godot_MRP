@@ -63,7 +63,7 @@ shader_parameter/step_count = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25k47"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jsaqf"]
-bg_color = Color(0.0941176, 0.0941176, 0.0941176, 0.878431)
+bg_color = Color(0, 0, 0, 0.796078)
 border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10

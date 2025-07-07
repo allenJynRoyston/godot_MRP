@@ -40,6 +40,8 @@ extends Control
 @export var disable_location:bool = false
 
 @export var preview_mode:bool = false
+@export var show_cost:bool = false
+@export var show_research_cost:bool = false
 
 var is_revealed:bool = false : 
 	set(val):
@@ -205,6 +207,8 @@ func animate(state:bool, skip_animation:bool = false) -> void:
 # ---------------------------------
 func on_room_ref_update() -> void:
 	if !is_node_ready():return
+	RoomCard.show_research_cost = show_research_cost
+	RoomCard.show_cost = show_cost
 	RoomCard.preview_mode = preview_mode
 	RoomCard.use_location = use_location if !disable_location else {}	
 	RoomCard.ref = room_ref

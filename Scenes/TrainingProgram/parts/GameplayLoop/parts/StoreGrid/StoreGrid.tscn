@@ -35,6 +35,8 @@ layout_mode = 2
 show_researcher_card = false
 show_scp_card = false
 disable_location = true
+preview_mode = true
+show_research_cost = true
 
 [node name="SummaryControl" type="Control" parent="."]
 layout_mode = 2
@@ -68,6 +70,7 @@ theme_override_constants/separation = 25
 alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 0

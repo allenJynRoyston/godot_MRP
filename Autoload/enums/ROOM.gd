@@ -28,7 +28,8 @@ enum REF {
 	STAFF_ROOM,
 	
 	
-	# -----------------  UTILITY
+	# -----------------  UTILITY\
+	UI_ASSIST,
 	WEAPONS_RANGE,
 	SCRANTON_REALITY_ANCHOR,
 	

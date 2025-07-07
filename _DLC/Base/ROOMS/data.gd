@@ -140,8 +140,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.PREDICTIVE_TIMELINE),
-			ABL_P.get_ability(ABL_P.REF.OBJECTIVE_ASSIST),
+
 			
 		],	
 	# ------------------------------------------		
@@ -679,6 +678,46 @@ var ENERGY_STORAGE:Dictionary = {
 
 #region UTILITY
 # ------------------------------------------------------------------------------ UTILITY
+var UI_ASSIST:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.UI_ASSIST,
+	"name": "UI_ASSIST",
+	"shortname": "UI.ASSIST",
+	"categories": [ROOM.CATEGORY.UTILITY],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Containment breaches are less likely to occur, however...",	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"own_limit": 1,	
+	"requires_unlock": false,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	# ------------------------------------------	
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 0,
+		"purchase": 50,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	#"required_personnel": [
+		#RESOURCE.PERSONNEL.TECHNICIANS
+	#],
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.PREDICTIVE_TIMELINE),
+			ABL_P.get_ability(ABL_P.REF.OBJECTIVE_ASSIST),
+		],	
+	# ------------------------------------------	
+}
+
 var STAFF_ROOM:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.STAFF_ROOM,
@@ -830,6 +869,7 @@ var list:Array[Dictionary] = [
 	ENERGY_STORAGE,
 	
 	# --------------- UTILITY
+	UI_ASSIST,
 	WEAPONS_RANGE, 
 	SCRANTON_REALITY_ANCHOR,
 ]

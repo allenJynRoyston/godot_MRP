@@ -1,25 +1,21 @@
 extends PanelContainer
 
 @onready var BtnControls:Control = $BtnControl
-@onready var ContinuePanel:Control = $ContinuePanel
 
 @onready var MainPanel:PanelContainer = $MainControl/PanelContainer
 @onready var MainMargin:MarginContainer = $MainControl/PanelContainer/MarginContainer
 
 @onready var SubTitle:Label = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/SubTitle
+
 @onready var BtnList:VBoxContainer = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList
 @onready var NewBtn:Control = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/NewBtn
-@onready var ContinueAfterSetup:BtnBase = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/ContinueAfterSetup
-@onready var ContinueFromCheckpoint:BtnBase = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/ContinueFromCheckpoint
-@onready var ContinueFromQuicksave:BtnBase = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/ContinueQuicksave
+@onready var ContinueBtn:Control = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/ContinueBtn
 @onready var QuitBtn:Control = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/QuitBtn
 
-
-
+const ActiveMenuPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ActiveMenu.tscn")
+const ScenarioBtnPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/TitleScreen/parts/ScenarioBtn.tscn")
 
 enum MODE {TITLE, SCENARIO}
-
-const ScenarioBtnPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/TitleScreen/parts/ScenarioBtn.tscn")
 
 var is_tutorial:bool = false
 var completed_scenarios:Array = []
@@ -31,8 +27,6 @@ var freeze_inputs:bool = false :
 		freeze_inputs = val
 		on_freeze_inputs_update()
 		
-var btn_arr:Array[Control] = []
-var slist:Array = []
 var control_pos:Dictionary
 
 var after_setup_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup
@@ -51,28 +45,12 @@ func _init() -> void:
 
 func _ready() -> void:	
 	modulate = Color(1, 1, 1, 0)
-	
-	ContinueAfterSetup.hint_description = "Continue from day %s." % [after_setup_data.progress_data.day] if !after_setup_data.is_empty() else "Unavailable"
-	ContinueFromCheckpoint.hint_description = "Continue from day %s." % [checkpoint_data.progress_data.day] if !checkpoint_data.is_empty() else "Unavailable"
-	ContinueFromQuicksave.hint_description = "Continue from day %s." % [quicksave_data.progress_data.day] if !quicksave_data.is_empty() else "Unavailable"
 
 	BtnControls.reveal(false)
 	BtnControls.directional_pref = "UD"
 	BtnControls.onUpdate = func(node:Control) -> void:
 		for btn in BtnList.get_children():
 			btn.is_selected = btn == node
-			btn.panel_color = Color(0.337, 0.275, 1.0) if btn == node else Color.BLACK
-			if btn == node:
-				match node:
-					ContinueAfterSetup:
-						update_continue_panel(after_setup_data, node)
-					ContinueFromCheckpoint:
-						update_continue_panel(checkpoint_data, node)
-					ContinueFromQuicksave:
-						update_continue_panel(quicksave_data, node)
-					_:
-						ContinuePanel.data = {}
-		
 		
 	BtnControls.onBack = func() -> void:
 		await BtnControls.reveal(false)
@@ -81,18 +59,11 @@ func _ready() -> void:
 	NewBtn.onClick = func() -> void:
 		await BtnControls.reveal(false)
 		end("START_NEW_GAME")
-		
-	ContinueAfterSetup.onClick = func() -> void:
-		await BtnControls.reveal(false)
-		end("START_FROM_AFTER_SETUP")
+	
+	ContinueBtn.onClick = func() -> void:
+		show_continue_options()
 
-	ContinueFromCheckpoint.onClick = func() -> void:
-		await BtnControls.reveal(false)
-		end("START_FROM_CHECKPOINT")		
-		
-	ContinueFromQuicksave.onClick = func() -> void:
-		await BtnControls.reveal(false)
-		end("START_FROM_QUICKSAVE")		
+	ContinueBtn.is_disabled = !has_after_setup and !has_checkpoint_data and !has_quicksave_data
 					
 	QuitBtn.onClick = func() -> void:
 		await BtnControls.reveal(false)
@@ -120,33 +91,18 @@ func start(fast_boot:bool = false) -> void:
 	SubTitle.text = "TUTORIAL VERSION" if is_tutorial else "BASE MANAGEMENT SIMULATOR"
 	
 	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].show, 0.7)
-	
-	ContinueAfterSetup.is_disabled = !has_after_setup
-	ContinueFromCheckpoint.is_disabled = !has_checkpoint_data
-	ContinueFromQuicksave.is_disabled = !has_quicksave_data
-			
-	await U.tick()
+
 	BtnControls.itemlist = BtnList.get_children()
 	BtnControls.reveal(true)
 	
-	if has_quicksave_data:
-		BtnControls.item_index = 3
-		return
-		
-	if has_checkpoint_data:
-		BtnControls.item_index = 2
-		return
-
-	if has_after_setup:
+	if has_quicksave_data or has_checkpoint_data or has_after_setup:
 		BtnControls.item_index = 1
-		return
-
-	BtnControls.item_index = 0
+	else:
+		BtnControls.item_index = 0
 # ------------------------------------------
 
 # ------------------------------------------
 func end(action:String, props:Dictionary = {}) -> void:
-	ContinuePanel.data = {}
 	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide, 0.7)
 	hide()
 	wait_for_input.emit({"action": action, "props": props})
@@ -157,11 +113,63 @@ func on_freeze_inputs_update() -> void:
 	BtnControls.freeze_and_disable(freeze_inputs)
 # ------------------------------------------
 
-# ------------------------------------------
-func update_continue_panel(save_data:Dictionary, node:Control) -> void:
-	if save_data.is_empty():
-		return
+# --------------------------------------------------------------------------------------------------
+func show_continue_options() -> void:			
+	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 
-	ContinuePanel.position = node.global_position + node.size  - Vector2(0, 50) + Vector2(20, 0)
-	ContinuePanel.data = save_data
-# ------------------------------------------
+	var options:Array = [
+		{
+			"title": "SAVE POINTS",
+			"items": [
+				{
+					"show": has_after_setup,
+					"title": "CONTINUE AFTER SEUP",
+					"hint": {
+						"icon": SVGS.TYPE.EXE_FILE,
+						"title": "FILE DATA",
+						"description": "Continue from day %s." % [after_setup_data.progress_data.day] if !after_setup_data.is_empty() else "Unavailable"
+					},
+					"action": func() -> void:
+						ActiveMenuNode.close()
+						end("START_FROM_AFTER_SETUP"),
+				},				
+				{
+					"show": has_checkpoint_data,
+					"title": "CONTINUE FROM CHECKPOINT",
+					"hint": {
+						"icon": SVGS.TYPE.EXE_FILE,
+						"title": "FILE DATA",
+						"description": "Continue from day %s." % [checkpoint_data.progress_data.day] if !checkpoint_data.is_empty() else "Unavailable"
+					},
+					"action": func() -> void:
+						ActiveMenuNode.close()
+						end("START_FROM_AFTER_SETUP"),
+				},
+				{
+					"show": has_quicksave_data,
+					"title": "CONTINUE FROM QUICKSAVE",
+					"hint": {
+						"icon": SVGS.TYPE.EXE_FILE,
+						"title": "FILE DATA",
+						"description": "Continue from day %s." % [quicksave_data.progress_data.day] if !quicksave_data.is_empty() else "Unavailable"
+					},
+					"action": func() -> void:
+						ActiveMenuNode.close()
+						end("START_FROM_QUICKSAVE"),
+				},
+			]
+		}
+	]
+	
+
+	BtnControls.reveal(false)
+	ActiveMenuNode.onClose = func() -> void:	
+		BtnControls.reveal(true)
+
+	ActiveMenuNode.use_color = Color.WHITE
+	ActiveMenuNode.options_list = options
+	
+	add_child(ActiveMenuNode)
+	await ActiveMenuNode.activate()
+	ActiveMenuNode.open()	
+# --------------------------------------------------------------------------------------------------

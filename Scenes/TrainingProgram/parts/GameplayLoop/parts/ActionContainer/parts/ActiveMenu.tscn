@@ -22,7 +22,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -34,7 +34,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -46,7 +46,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
+border_color = Color(0.337255, 0.27451, 1, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -134,6 +134,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="MarginContainer" type="MarginContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 0
@@ -148,6 +149,7 @@ title = ""
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_hjr8x")]
 layout_mode = 2
 card_size = Vector2(250, 200)
+border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="TextureRect" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody" index="0"]
 texture = SubResource("ViewportTexture_hjr8x")
@@ -168,6 +170,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e7jbp")
 is_small = true
 title = ""
+border_color = Color(0.337255, 0.27451, 1, 1)
 
 [node name="PaginationContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/VBoxContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader"]
 layout_mode = 2

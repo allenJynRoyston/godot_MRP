@@ -28,12 +28,13 @@ const login_arr:Array[String] = [
 signal is_complete
 
 func start() -> void:
-	show()
+	
 	SUBSCRIBE.music_data = {
 		"selected": MUSIC.TRACK.OS_STARTUP_SFX,
 	}
 	
-	await U.set_timeout(1.5)
+	show()	
+	await U.set_timeout(2.5)
 
 	for i in login_arr.size():
 		var str:String = login_arr[i]

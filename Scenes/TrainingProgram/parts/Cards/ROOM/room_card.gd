@@ -7,13 +7,15 @@ extends MouseInteractions
 @onready var Front:Control = $CardBody/SubViewport/Control/CardBody/Front
 @onready var Back:Control = $CardBody/SubViewport/Control/CardBody/Back
 @onready var InactivePanel:Control = $CardBody/SubViewport/Control/CardBody/InactivePanel
+@onready var CostPanel:MarginContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel
+@onready var CostAmount:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostAmount
+@onready var CostIcon:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostIcon
+@onready var CostLabel:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostLabel
 
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerLevel
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerName
-#@onready var CardDrawerStaffingRequirements:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerStaffingRequirements
-#@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerPairsWith
 @onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerCurrency
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerVibes
 
@@ -61,6 +63,8 @@ extends MouseInteractions
 		on_is_selected_update()
 		
 @export var preview_mode:bool = false
+@export var show_cost:bool = false
+@export var show_research_cost:bool = false
 	
 
 const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
@@ -74,15 +78,20 @@ var onFocus:Callable = func(node:Control):pass
 var onBlur:Callable = func(node:Control):pass
 var onClick:Callable = func():pass
 
+var resources_data:Dictionary = {}
+
 signal flip_complete
 
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+	
 
 func _ready() -> void:
 	super._ready()
@@ -131,8 +140,13 @@ func on_reveal_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_resources_data_update(new_val:Dictionary) -> void:
+	resources_data = new_val
+	
 func on_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty():return	
+	
+	CostPanel.show() if show_cost or show_research_cost else CostPanel.hide()
 	
 	if ref == -1:
 		CardDrawerImage.use_static = true
@@ -144,9 +158,11 @@ func on_ref_update() -> void:
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-	var is_activated:bool = false
+	var is_activated:bool = preview_mode
 	var metrics:Dictionary = room_details.metrics
 	var currency_list:Array = []
+	var label_settings_copy:LabelSettings = CostAmount.label_settings 
+
 
 	if use_location.is_empty() or preview_mode:
 		for ref in room_details.currencies:
@@ -177,7 +193,7 @@ func on_ref_update() -> void:
 
 
 	# -----------
-	InactivePanel.show() if !is_activated else InactivePanel.hide()
+	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()	
 	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	#CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel
@@ -197,6 +213,31 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.list = currency_list	
 	CardDrawerCurrency.list = currency_list
 	
+	if show_cost:
+		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= room_details.costs.purchase
+		var use_color:Color = Color.WHITE if can_afford else Color.RED
+		
+		CostLabel.text = "CONSTRUCTION COST"
+		CostAmount.text = str(room_details.costs.purchase) if room_details.costs.purchase > 0 else "FREE"
+		
+		label_settings_copy.font_color = use_color
+		
+		CostAmount.label_settings = label_settings_copy
+		CostIcon.icon = SVGS.TYPE.MONEY
+		CostIcon.static_color = use_color
+	
+	if show_research_cost:
+		var can_afford:bool = resources_data[RESOURCE.CURRENCY.SCIENCE].amount >= room_details.costs.unlock
+		var use_color:Color = Color.WHITE if can_afford else Color.RED
+
+		CostLabel.text = "RESEARCH COST"
+		CostAmount.text = str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
+		
+		label_settings_copy.font_color = use_color
+		
+		CostAmount.label_settings = label_settings_copy
+		CostIcon.icon = SVGS.TYPE.RESEARCH
+		CostIcon.static_color = use_color		
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

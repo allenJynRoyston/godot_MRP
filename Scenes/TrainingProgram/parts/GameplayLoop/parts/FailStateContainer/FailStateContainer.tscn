@@ -1,31 +1,39 @@
-[gd_scene load_steps=14 format=3 uid="uid://dpn30udt7bfeb"]
+[gd_scene load_steps=11 format=3 uid="uid://dpn30udt7bfeb"]
 
 [ext_resource type="Script" uid="uid://b6cei623mwxdh" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/FailStateContainer/fail_state_container.gd" id="1_lxx8t"]
 [ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn" id="2_lxx8t"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="4_4b14y"]
+[ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://UI/Buttons/ItemBtn/ItemBtn.tscn" id="4_lxx8t"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="5_4b14y"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="5_i2pgy"]
-[ext_resource type="PackedScene" uid="uid://bi7xftrg6xgiu" path="res://Scenes/TrainingProgram/parts/TitleScreen/parts/ContinuePanel.tscn" id="6_uhu2d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lxx8t"]
 bg_color = Color(0, 0, 0, 0.337255)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3tkg2"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i2pgy"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhu2d"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cdtp"]
-bg_color = Color(0.337255, 0.27451, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3tkg2"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ktlf0"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vqys7"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qcsax"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4b14y"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="FailState" type="PanelContainer"]
 z_index = 200
@@ -37,7 +45,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lxx8t")
 script = ExtResource("1_lxx8t")
 
-[node name="ContainmentBreachSplash" parent="." instance=ExtResource("2_lxx8t")]
+[node name="Splash" parent="." instance=ExtResource("2_lxx8t")]
 layout_mode = 2
 title = "DON'T GIVE UP DON'T GIVE UP DON'T GIVE UP DON'T GIVE UP DON'T GIVE UP DON'T GIVE UP DON'T GIVE UP DON'T GIVE UP"
 v_offset = 100
@@ -81,61 +89,43 @@ text = "You failed to meet your objectives."
 label_settings = ExtResource("5_4b14y")
 horizontal_alignment = 1
 
-[node name="FailStateBtnContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="BtnList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 10
 
-[node name="RestartBeginningBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
+[node name="NewBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_lxx8t")]
 layout_mode = 2
-size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_i2pgy")
-icon = 71
-title = "Restart from beginning"
-hint_title = "HINT"
-hint_description = "Restart from day 0."
+theme_override_styles/panel = SubResource("StyleBoxFlat_uhu2d")
+title = "RESTART FROM BEGINNING"
+is_disabled = false
+is_hollow = null
+COLOR_A = Color(1, 1, 1, 1)
+COLOR_A_DISABLED = Color(1, 0, 0, 1)
+COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
-[node name="RestartAfterSetupBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
+[node name="ContinueBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_lxx8t")]
 layout_mode = 2
-size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_7cdtp")
-icon = 71
-panel_color = Color(0.337255, 0.27451, 1, 1)
-title = "Restart after setup"
-hint_title = "HINT"
-hint_description = "Restart after base setup."
+theme_override_styles/panel = SubResource("StyleBoxFlat_3tkg2")
+title = "CONTINUE..."
+is_disabled = false
+is_hollow = null
+COLOR_A = Color(1, 1, 1, 1)
+COLOR_A_DISABLED = Color(1, 0, 0, 1)
+COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
-[node name="RestartFromCheckpoint" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
+[node name="QuitBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_lxx8t")]
 layout_mode = 2
-size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_ktlf0")
-icon = 71
-title = "Restart from checkpoint"
-hint_title = "HINT"
-hint_description = "Restart from the last checkpoint."
-
-[node name="RestartFromQuicksaveBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
-layout_mode = 2
-size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_vqys7")
-icon = 71
-title = "Restart from quicksave"
-hint_title = "HINT"
-hint_description = "Restart from the last checkpoint."
-
-[node name="QuitBtn" parent="Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/FailStateBtnContainer" instance=ExtResource("4_4b14y")]
-layout_mode = 2
-size_flags_horizontal = 5
-theme_override_styles/panel = SubResource("StyleBoxFlat_qcsax")
-icon = 71
-title = "Return to desktop"
-hint_title = "HINT"
-hint_description = "Return to desktop"
+theme_override_styles/panel = SubResource("StyleBoxFlat_4b14y")
+title = "EXIT APPLICATION"
+is_disabled = false
+is_hollow = null
+COLOR_A = Color(1, 1, 1, 1)
+COLOR_A_DISABLED = Color(1, 0, 0, 1)
+COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="BtnControls" parent="." instance=ExtResource("5_i2pgy")]
 layout_mode = 2
 b_btn_title = "BACK TO TITLE"
 b_btn_icon = 16
-
-[node name="ContinuePanel" parent="." instance=ExtResource("6_uhu2d")]
-layout_mode = 2
+hide_b_btn = true

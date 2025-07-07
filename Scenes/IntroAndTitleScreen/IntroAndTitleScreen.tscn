@@ -103,11 +103,8 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_cetvo")
 script = ExtResource("1_iwjdn")
 
-[node name="TitleSplash" type="Control" parent="."]
+[node name="TitleSplash" parent="." instance=ExtResource("4_6bd6i")]
 layout_mode = 2
-
-[node name="TitleSplash" parent="TitleSplash" instance=ExtResource("4_6bd6i")]
-layout_mode = 1
 
 [node name="Logo" type="Control" parent="."]
 z_index = 1

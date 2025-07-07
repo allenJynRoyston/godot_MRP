@@ -31,6 +31,7 @@ func start() -> void:
 	BtnControls.reveal(true)
 	
 func end() -> void:
+	Splash.end()	
 	BtnControls.reveal(false)
 	await U.tween_node_property(RiskLabel, 'modulate', Color(1, 0, 0, 1), 1.0)
 	await U.set_timeout(0.3)

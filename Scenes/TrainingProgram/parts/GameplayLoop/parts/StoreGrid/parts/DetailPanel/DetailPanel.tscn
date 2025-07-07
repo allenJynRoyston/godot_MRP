@@ -121,6 +121,7 @@ size_flags_horizontal = 2
 [node name="RoomCard" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer/CardContainer" instance=ExtResource("2_xwi2o")]
 layout_mode = 2
 size_flags_horizontal = 2
+show_cost = false
 
 [node name="IconBtn2" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_8ajdb")]
 visible = false

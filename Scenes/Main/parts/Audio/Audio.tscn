@@ -17,3 +17,7 @@ autoplay = true
 [node name="AudioStreamPlayerReverb" type="AudioStreamPlayer" parent="."]
 autoplay = true
 bus = &"Reverb"
+
+[node name="AudioStreamPlayerSFX" type="AudioStreamPlayer" parent="."]
+autoplay = true
+bus = &"SFX"

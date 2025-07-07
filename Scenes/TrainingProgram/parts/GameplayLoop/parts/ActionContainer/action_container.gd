@@ -401,14 +401,17 @@ func query_items(query_size:int, category:ROOM.CATEGORY, page:int, return_list:A
 			"ref": x.ref,
 			"details": x.details,
 			"action": func() -> void:
+				# purchase and show tally
+				var room_details:Dictionary = ROOM_UTIL.return_data(x.details.ref)
+				GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -(room_details.costs.purchase)}, Color(1, 1, 1, 0) )
+				
 				# update
 				purchased_facility_arr.push_back({
 					"ref": x.details.ref,
 					"location": current_location.duplicate()
 				})
 				
-				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr	
-				SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(x.details.ref),
+				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr,
 		})
 	)	
 	
@@ -422,7 +425,6 @@ func show_build_options() -> void:
 	const query_size:int = 100
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var options:Array = []
-	
 
 	for listitem in [
 			{
@@ -544,6 +546,7 @@ func show_build_options() -> void:
 		# draw lines
 		var get_node_pos:Callable = func() -> Vector2: 
 			return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
+		
 		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
 			"draw_to_active_menu": true,
 			#"draw_to_money": item.details.costs.purchase > 0
@@ -1041,6 +1044,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			RoomDetailsControl.disable_location = false
 
 			# update roomDetailsControl
+			RoomDetailsControl.show_cost = false
 			RoomDetailsControl.preview_mode = false
 			RoomDetailsControl.show_room_card = !is_room_empty
 			RoomDetailsControl.show_scp_card = false
@@ -1072,6 +1076,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			}, 0 )
 		# -----------	
 		MODE.BUILD:
+			RoomDetailsControl.show_cost = true
 			RoomDetailsControl.preview_mode = true
 			RoomDetailsControl.show_room_card = true
 			RoomDetailsControl.show_scp_card = false
